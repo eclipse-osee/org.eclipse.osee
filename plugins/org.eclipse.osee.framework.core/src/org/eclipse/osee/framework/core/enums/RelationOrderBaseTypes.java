@@ -28,8 +28,11 @@ public class RelationOrderBaseTypes extends NamedIdentity implements IRelationSo
       "Lexicographical Descending");
    public static final RelationOrderBaseTypes UNORDERED = new RelationOrderBaseTypes("AAT1uKZpeDQExlygoIAA",
       "Unordered");
-   public static final RelationOrderBaseTypes[] values = new RelationOrderBaseTypes[] {USER_DEFINED,
-      LEXICOGRAPHICAL_ASC, LEXICOGRAPHICAL_DESC, UNORDERED};
+   public static final RelationOrderBaseTypes[] values = new RelationOrderBaseTypes[] {
+      USER_DEFINED,
+      LEXICOGRAPHICAL_ASC,
+      LEXICOGRAPHICAL_DESC,
+      UNORDERED};
 
    RelationOrderBaseTypes(String guid, String name) {
       super(guid, name);

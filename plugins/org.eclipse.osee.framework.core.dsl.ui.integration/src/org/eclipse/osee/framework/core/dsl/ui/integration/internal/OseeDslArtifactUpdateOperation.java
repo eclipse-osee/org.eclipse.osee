@@ -50,7 +50,7 @@ public class OseeDslArtifactUpdateOperation extends AbstractOperation {
       if (segments.isEmpty()) {
          throw new OseeStateException("No tagged segments Found");
       } else {
-         double workPercentage = 0.80 * (1.0 / segments.size());
+         double workPercentage = 0.80 * 1.0 / segments.size();
          int workAmount = calculateWork(workPercentage);
 
          Map<Branch, SkynetTransaction> transactionMap = new HashMap<Branch, SkynetTransaction>();

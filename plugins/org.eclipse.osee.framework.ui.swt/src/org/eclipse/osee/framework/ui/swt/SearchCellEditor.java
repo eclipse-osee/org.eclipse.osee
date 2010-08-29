@@ -151,7 +151,7 @@ public class SearchCellEditor extends CellEditor {
       comboBox.setFont(parent.getFont());
 
       comboBox.addKeyListener(new KeyAdapter() {
-         // hook key pressed - see PR 14201  
+         // hook key pressed - see PR 14201
          @Override
          public void keyPressed(KeyEvent e) {
             keyReleaseOccured(e);

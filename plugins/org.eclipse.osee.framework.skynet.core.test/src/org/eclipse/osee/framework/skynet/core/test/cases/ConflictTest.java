@@ -47,9 +47,12 @@ import org.junit.BeforeClass;
 public class ConflictTest {
    private static final boolean DEBUG =
       "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core.test/debug/Junit"));
-   private static final String[] NO_TX_CURRENT_SET = {"SELECT distinct t1.", ", txs1.branch_id FROM osee_txs txs1, ",
+   private static final String[] NO_TX_CURRENT_SET = {
+      "SELECT distinct t1.",
+      ", txs1.branch_id FROM osee_txs txs1, ",
       " t1 WHERE txs1.gamma_id = t1.gamma_id AND txs1.tx_current = 0 %s SELECT distinct t2.",
-      ", txs2.branch_id FROM osee_txs txs2, ", " t2 WHERE txs2.gamma_id = t2.gamma_id AND txs2.tx_current != 0"};
+      ", txs2.branch_id FROM osee_txs txs2, ",
+      " t2 WHERE txs2.gamma_id = t2.gamma_id AND txs2.tx_current != 0"};
 
    private static final String[] MULTIPLE_TX_CURRENT_SET =
       {

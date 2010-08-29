@@ -17,8 +17,38 @@ import java.util.Arrays;
  */
 public class TagEncoder {
 
-   private static final char[] tagChars = new char[] {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c',
-      'd', 'e', 'f', 'g', 'h', 'i', 'l', 'm', 'n', 'o', 'p', 'r', 's', 't', 'u', 'v', 'w', 'y'};
+   private static final char[] tagChars = new char[] {
+      '0',
+      '1',
+      '2',
+      '3',
+      '4',
+      '5',
+      '6',
+      '7',
+      '8',
+      '9',
+      'a',
+      'b',
+      'c',
+      'd',
+      'e',
+      'f',
+      'g',
+      'h',
+      'i',
+      'l',
+      'm',
+      'n',
+      'o',
+      'p',
+      'r',
+      's',
+      't',
+      'u',
+      'v',
+      'w',
+      'y'};
 
    /**
     * Create a bit-packed tag that will fit in a 64-bit integer that can provide an extremely quick search mechanism for

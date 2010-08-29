@@ -67,7 +67,7 @@ public class TestRunXViewer extends XViewer {
    private Action editDisposition;
 
    public TestRunXViewer(Composite parent) {
-      super(parent, //SWT.VIRTUAL | 
+      super(parent, //SWT.VIRTUAL |
          SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI, new TestRunXViewerFactory());
       setSorter(null);
       setContentProvider(new DataItemContentProvider());

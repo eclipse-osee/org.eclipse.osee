@@ -123,7 +123,8 @@ public class BranchUpdateEventImpl implements IBranchUpdateEvent {
                      is_0_9_2_Compatible(serverInfo.getVersion()) ? request : request0_9_1;
 
                   AcquireResult updateResponse =
-                     HttpMessage.send(urlString, translationService, CoreTranslatorId.BRANCH_CACHE_STORE_REQUEST, message, null);
+                     HttpMessage.send(urlString, translationService, CoreTranslatorId.BRANCH_CACHE_STORE_REQUEST,
+                        message, null);
                   if (!updateResponse.wasSuccessful()) {
                      OseeLog.log(Activator.class, Level.SEVERE, "Error relaying branch updates to servers");
                   }

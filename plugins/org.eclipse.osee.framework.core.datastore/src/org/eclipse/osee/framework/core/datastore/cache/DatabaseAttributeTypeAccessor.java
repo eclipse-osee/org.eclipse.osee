@@ -129,11 +129,17 @@ public class DatabaseAttributeTypeAccessor extends AbstractDatabaseAccessor<Attr
    private Object[] toInsertValues(AttributeType type) throws OseeDataStoreException {
       int attrBaseTypeId = getOrCreateAttributeBaseType(type.getBaseAttributeTypeId());
       int attrProviderTypeId = getOrCreateAttributeProviderType(type.getAttributeProviderId());
-      return new Object[] {type.getId(), type.getGuid(), attrBaseTypeId, attrProviderTypeId,
+      return new Object[] {
+         type.getId(),
+         type.getGuid(),
+         attrBaseTypeId,
+         attrProviderTypeId,
          type.getFileTypeExtension() == null ? SQL3DataType.VARCHAR : type.getFileTypeExtension(),
          type.getName() == null ? SQL3DataType.VARCHAR : type.getName(),
-         type.getDefaultValue() == null ? SQL3DataType.VARCHAR : type.getDefaultValue(), type.getOseeEnumTypeId(),
-         type.getMinOccurrences(), type.getMaxOccurrences(),
+         type.getDefaultValue() == null ? SQL3DataType.VARCHAR : type.getDefaultValue(),
+         type.getOseeEnumTypeId(),
+         type.getMinOccurrences(),
+         type.getMaxOccurrences(),
          type.getDescription() == null ? SQL3DataType.VARCHAR : type.getDescription(),
          type.getTaggerId() == null ? SQL3DataType.VARCHAR : type.getTaggerId()};
    }
@@ -141,13 +147,18 @@ public class DatabaseAttributeTypeAccessor extends AbstractDatabaseAccessor<Attr
    private Object[] toUpdateValues(AttributeType type) throws OseeDataStoreException {
       int attrBaseTypeId = getOrCreateAttributeBaseType(type.getBaseAttributeTypeId());
       int attrProviderTypeId = getOrCreateAttributeProviderType(type.getAttributeProviderId());
-      return new Object[] {attrBaseTypeId, attrProviderTypeId,
+      return new Object[] {
+         attrBaseTypeId,
+         attrProviderTypeId,
          type.getFileTypeExtension() == null ? SQL3DataType.VARCHAR : type.getFileTypeExtension(),
          type.getName() == null ? SQL3DataType.VARCHAR : type.getName(),
-         type.getDefaultValue() == null ? SQL3DataType.VARCHAR : type.getDefaultValue(), type.getOseeEnumTypeId(),
-         type.getMinOccurrences(), type.getMaxOccurrences(),
+         type.getDefaultValue() == null ? SQL3DataType.VARCHAR : type.getDefaultValue(),
+         type.getOseeEnumTypeId(),
+         type.getMinOccurrences(),
+         type.getMaxOccurrences(),
          type.getDescription() == null ? SQL3DataType.VARCHAR : type.getDescription(),
-         type.getTaggerId() == null ? SQL3DataType.VARCHAR : type.getTaggerId(), type.getId()};
+         type.getTaggerId() == null ? SQL3DataType.VARCHAR : type.getTaggerId(),
+         type.getId()};
    }
 
    @SuppressWarnings("unchecked")

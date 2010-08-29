@@ -29,9 +29,9 @@ import org.junit.Test;
  * @formatter:off
  * Tests by inputing the whole requirements sample ICD file.
  * Tests:
- * 	- if user answers store as content vs store as an outline number, 
+ * 	- if user answers store as content vs store as an outline number,
  *      depending on what user selects.
- *      
+ * 
  *      THESE TESTS MUST RUN AS PART OF THE SUITE, RoughArtifact* classes need
  *      the osee caching service.
  * 

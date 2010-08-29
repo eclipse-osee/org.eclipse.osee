@@ -27,6 +27,11 @@ import org.w3c.dom.Element;
  * @author Michael A. Winston
  */
 public abstract class TestRecord extends LogRecord implements Xmlizable {
+   /**
+    * 
+    */
+   private static final long serialVersionUID = 2663140700880844240L;
+
    private static boolean filterTheStacktrace = true;
 
    private static final ArrayList<Pattern> stacktraceExcludes = new ArrayList<Pattern>(32);

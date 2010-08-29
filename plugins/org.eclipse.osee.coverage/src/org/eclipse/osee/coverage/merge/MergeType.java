@@ -27,9 +27,9 @@ public enum MergeType {
    CI_Method_Update,
    // This will result in deleting this child and re-ordering
    CI_Delete,
-   // This will result in changing name of package to match import, clearing rationale and setting coverage method 
+   // This will result in changing name of package to match import, clearing rationale and setting coverage method
    CI_Renamed,
-   // This will result in changing name of package to match import, clearing rationale and setting coverage method 
+   // This will result in changing name of package to match import, clearing rationale and setting coverage method
    CI_Moved,
    // Group option containing Add, Rename of coverage items
    CI_Changes,

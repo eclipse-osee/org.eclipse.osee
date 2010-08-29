@@ -247,7 +247,10 @@ public class RelationOrderDataTest {
       Assert.assertEquals(expectedValues.size(), orderData.size());
       for (Entry<Pair<String, String>, Pair<String, List<String>>> entry : orderData.getOrderedEntrySet()) {
          Object[] actual =
-            new Object[] {entry.getKey().getFirst(), entry.getKey().getSecond(), entry.getValue().getFirst(),
+            new Object[] {
+               entry.getKey().getFirst(),
+               entry.getKey().getSecond(),
+               entry.getValue().getFirst(),
                entry.getValue().getSecond()};
          Object[] expected = expectedValues.get(index++);
          Assert.assertEquals(expected.length, actual.length);

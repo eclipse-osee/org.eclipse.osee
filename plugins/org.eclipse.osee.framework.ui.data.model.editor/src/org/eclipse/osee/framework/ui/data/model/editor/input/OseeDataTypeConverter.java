@@ -56,7 +56,7 @@ public class OseeDataTypeConverter implements IOseeDataTypeProcessor {
          new AttributeDataType(name, baseAttributeClass, defaultValue, fileTypeExtension, maxOccurrence, minOccurrence,
             providerAttributeClass, taggerId, toolTipText, enumTypeId);
 
-      // Create attribute provider and base attribute classes here ?? 
+      // Create attribute provider and base attribute classes here ??
 
       this.dataTypeSource.add(attributeDataType);
    }

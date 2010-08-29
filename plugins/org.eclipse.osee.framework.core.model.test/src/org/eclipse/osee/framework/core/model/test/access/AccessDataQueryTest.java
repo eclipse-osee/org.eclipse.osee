@@ -30,7 +30,7 @@ import org.junit.Test;
 
 /**
  * Test Case for {@link AccessDataQuery}
- *
+ * 
  * @author Jeff C. Phillips
  */
 public class AccessDataQueryTest {

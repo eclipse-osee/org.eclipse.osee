@@ -43,8 +43,10 @@ public class ShowRevertTransactions extends AbstractBlam {
       try {
          chStmt.runPreparedQuery(GET_REVERT_TRANSACTIONS);
          while (chStmt.next()) {
-            sbFull.append(AHTML.addRowMultiColumnTable(new String[] {String.valueOf(chStmt.getInt("branch_id")),
-               chStmt.getString("value"), String.valueOf(chStmt.getInt("transaction_id")),
+            sbFull.append(AHTML.addRowMultiColumnTable(new String[] {
+               String.valueOf(chStmt.getInt("branch_id")),
+               chStmt.getString("value"),
+               String.valueOf(chStmt.getInt("transaction_id")),
                chStmt.getDate("time").toString()}));
          }
          sbFull.append(AHTML.endMultiColumnTable());

@@ -128,8 +128,11 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
       if (mods.size() == 1) {
          if (mod0 == ModificationType.MODIFIED) {
             knownCase = true;
-            updateTxsCurrentModData.add(new Object[] {ModificationType.NEW.getValue(),
-               mods.get(0).getTxCurrent().getValue(), mods.get(0).getTransactionId(), mods.get(0).getGammaId()});
+            updateTxsCurrentModData.add(new Object[] {
+               ModificationType.NEW.getValue(),
+               mods.get(0).getTxCurrent().getValue(),
+               mods.get(0).getTransactionId(),
+               mods.get(0).getGammaId()});
          } else {
             knownCase = true;
          }
@@ -143,8 +146,11 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
                if (mod1 == ModificationType.DELETED && mod2 == ModificationType.DELETED) {
                   knownCase = true;
                   // must purge most recent delete and set previous one to current
-                  updateTxsCurrentModData.add(new Object[] {mods.get(1).getModType().getValue(),
-                     TxChange.DELETED.getValue(), mods.get(1).getTransactionId(), mods.get(1).getGammaId()});
+                  updateTxsCurrentModData.add(new Object[] {
+                     mods.get(1).getModType().getValue(),
+                     TxChange.DELETED.getValue(),
+                     mods.get(1).getTransactionId(),
+                     mods.get(1).getGammaId()});
                   addressingToDelete.add(new Object[] {mods.get(2).getTransactionId(), mods.get(2).getGammaId()});
                } else if (mod1 == ModificationType.MERGED && mod2 == ModificationType.DELETED) {
                   knownCase = true;

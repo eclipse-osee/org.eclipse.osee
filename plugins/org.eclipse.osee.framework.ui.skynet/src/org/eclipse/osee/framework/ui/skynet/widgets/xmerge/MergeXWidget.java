@@ -701,7 +701,8 @@ public class MergeXWidget extends XWidget implements IAdaptable {
                         new ListSelectionDialogNoSave(selections.toArray(), Displays.getActiveShell().getShell(),
                            "Apply Prior Merge Resolution", null,
                            "Select the destination branch that the previous commit was appplied to", 2, new String[] {
-                              "Apply", "Cancel"}, 1);
+                              "Apply",
+                              "Cancel"}, 1);
                      if (dialog.open() == 0) {
                         System.out.print("Applying the merge found for Branch " + branchIds.toArray()[dialog.getSelection()]);
                         applyPreviousMerge(branchIds.get(dialog.getSelection()));

@@ -110,7 +110,7 @@ public class DiagramEditPart extends AbstractGraphicalEditPart implements Proper
    @Override
    public void propertyChange(PropertyChangeEvent evt) {
       String prop = evt.getPropertyName();
-      // these properties are fired when Shapes are added into or removed from 
+      // these properties are fired when Shapes are added into or removed from
       // the ShapeDiagram instance and must cause a call of refreshChildren()
       // to update the diagram's contents.
       if (WorkflowDiagram.CHILD_ADDED_PROP.equals(prop) || WorkflowDiagram.CHILD_REMOVED_PROP.equals(prop)) {
@@ -145,7 +145,7 @@ public class DiagramEditPart extends AbstractGraphicalEditPart implements Proper
       protected Command getCreateCommand(CreateRequest request) {
          Object childClass = request.getNewObjectType();
          if (childClass == EllipticalShape.class || WorkPageShape.class.isAssignableFrom(((Class<?>) childClass))) {
-            // return a command that can add a Shape to a WorkflowDiagram 
+            // return a command that can add a Shape to a WorkflowDiagram
             return new ShapeCreateCommand((Shape) request.getNewObject(), (WorkflowDiagram) getHost().getModel(),
                (Rectangle) getConstraintFor(request));
          }

@@ -63,7 +63,7 @@ public class OseeLinkBuilder {
 
    public String getWordMlBookmark(Artifact source) {
       Random random = new Random();
-      int idNumber = getValidNumber(random.nextInt(19580427), random);
+      getValidNumber(random.nextInt(19580427), random);
 
       return String.format(WORDML_BOOKMARK_FORMAT, 0, source.getGuid(), 0);
    }

@@ -88,7 +88,9 @@ public class ArtifactIdWithoutVersionsCheck extends DatabaseHealthOperation {
       appendToDetails(AHTML.beginMultiColumnTable(100, 1));
       appendToDetails(AHTML.addHeaderRowMultiColumnTable(new String[] {"TABLE", "REFERENCED_BY", "TOTAL INVALIDS"}));
       for (ItemEntry entry : itemsToDelete) {
-         appendToDetails(AHTML.addRowMultiColumnTable(new String[] {entry.table, entry.invalidField,
+         appendToDetails(AHTML.addRowMultiColumnTable(new String[] {
+            entry.table,
+            entry.invalidField,
             String.valueOf(entry.invalids.size())}));
       }
       appendToDetails(AHTML.endMultiColumnTable());

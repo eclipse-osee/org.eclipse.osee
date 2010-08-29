@@ -341,7 +341,7 @@ public class LoadAIsAndTeamsAction {
    //
    //   /**
    //    * We can use this method to dispose of any system resources we previously allocated.
-   //    * 
+   //    *
    //    * @see IWorkbenchWindowActionDelegate#dispose
    //    */
    //   public void dispose() {
@@ -349,7 +349,7 @@ public class LoadAIsAndTeamsAction {
    //
    //   /**
    //    * We will cache window object in order to be able to provide parent shell for the message dialog.
-   //    * 
+   //    *
    //    * @see IWorkbenchWindowActionDelegate#init
    //    */
    //   public void init(IWorkbenchWindow window) {

@@ -31,7 +31,7 @@ public class OseeBranchServiceRegistrationHandler extends AbstractTrackingHandle
    //@formatter:off
    private final static Class<?>[] SERVICE_DEPENDENCIES = new Class<?>[] {
       IOseeDatabaseService.class,
-      IOseeModelFactoryService.class, 
+      IOseeModelFactoryService.class,
       IOseeCachingService.class
    };
    //@formatter:on

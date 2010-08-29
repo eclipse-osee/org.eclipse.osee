@@ -149,7 +149,7 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
 
          boolean newOutlineNumber = processOutlineNumberAndName(content, outlineNumber, outlineName);
 
-         //outline number detection failed, try content 
+         //outline number detection failed, try content
          if (!newOutlineNumber) {
             processContentOfParagraph(content, outlineContent);
          }

@@ -51,7 +51,7 @@ public class Collections {
          } else {
             strB.append(separator);
          }
-         strB.append((String.valueOf(item)));
+         strB.append(String.valueOf(item));
       }
 
       if (suffix != null) {

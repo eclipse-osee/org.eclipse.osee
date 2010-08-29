@@ -81,7 +81,8 @@ public class WorkPageShape extends RectangleShape {
       for (String type : attributeProperties) {
          descriptorList.add(new TextPropertyDescriptor(type, type)); // id and description pair
       }
-      descriptorList.add(new ComboBoxPropertyDescriptor(START_PAGE, START_PAGE, new String[] {StartPageEnum.Yes.name(),
+      descriptorList.add(new ComboBoxPropertyDescriptor(START_PAGE, START_PAGE, new String[] {
+         StartPageEnum.Yes.name(),
          StartPageEnum.No.name()}));
    }
 

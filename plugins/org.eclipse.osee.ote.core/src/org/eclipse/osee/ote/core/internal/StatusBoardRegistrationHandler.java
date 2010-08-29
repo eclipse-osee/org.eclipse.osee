@@ -19,7 +19,8 @@ import org.osgi.framework.BundleContext;
 
 public class StatusBoardRegistrationHandler extends AbstractTrackingHandler {
 
-   private final static Class<?>[] SERVICE_DEPENDENCIES = new Class<?>[] {OTEStatusBoard.class,
+   private final static Class<?>[] SERVICE_DEPENDENCIES = new Class<?>[] {
+      OTEStatusBoard.class,
       TestEnvironmentInterface.class};
    private TestEnvironmentInterface testEnv;
    private StatusBoard statusBoard;

@@ -52,7 +52,8 @@ public class EntryDialogWithBranchSelect extends MessageDialog {
    private final List<IShellCloseEvent> closeEventListeners = new ArrayList<IShellCloseEvent>();
 
    public EntryDialogWithBranchSelect(String dialogTitle, String dialogMessage) {
-      super(Displays.getActiveShell(), dialogTitle, null, dialogMessage, MessageDialog.QUESTION, new String[] {"OK",
+      super(Displays.getActiveShell(), dialogTitle, null, dialogMessage, MessageDialog.QUESTION, new String[] {
+         "OK",
          "Cancel"}, 0);
    }
 

@@ -34,13 +34,13 @@ import org.junit.runners.Suite;
 JdkCoreTestSuite.class, //
    FrameworkCoreTestSuite.class, //
    AllCoreModelTestSuite.class, //
-   AllCoreDatastoreTestSuite.class, // 
+   AllCoreDatastoreTestSuite.class, //
    AllCoreMessageTestSuite.class, //
    CoreServerTestSuite.class, //
-   BranchManagementTestSuite.class, // 
+   BranchManagementTestSuite.class, //
    AllLifecycleTestSuite.class,//
-   ResourceManagementTestSuite.class, // 
-   AttributeLocatorProviderTestSuite.class, // 
+   ResourceManagementTestSuite.class, //
+   AttributeLocatorProviderTestSuite.class, //
    AttributeProviderTestSuite.class, //
    AllSearchEngineTestSuite.class, //
    AllDslIntegrationTestSuite.class,})

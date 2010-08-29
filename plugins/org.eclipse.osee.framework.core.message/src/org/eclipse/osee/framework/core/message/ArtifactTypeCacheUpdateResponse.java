@@ -91,7 +91,11 @@ public class ArtifactTypeCacheUpdateResponse {
       }
 
       public String[] toArray() {
-         return new String[] {String.valueOf(getId()), getGuid(), getName(), String.valueOf(isAbstract()),
+         return new String[] {
+            String.valueOf(getId()),
+            getGuid(),
+            getName(),
+            String.valueOf(isAbstract()),
             getStorageState().name()};
       }
 

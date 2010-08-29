@@ -138,8 +138,11 @@ public class PurgeArchivedBranch extends AbstractBlam {
             rd.addRaw(AHTML.beginMultiColumnTable(100, 1));
             rd.addRaw(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
             for (BranchInfo purgedBranch : branches) {
-               rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {purgedBranch.getName(), purgedBranch.getId(),
-                  purgedBranch.getArchived(), purgedBranch.getState()}));
+               rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {
+                  purgedBranch.getName(),
+                  purgedBranch.getId(),
+                  purgedBranch.getArchived(),
+                  purgedBranch.getState()}));
             }
             rd.addRaw(AHTML.endMultiColumnTable());
 

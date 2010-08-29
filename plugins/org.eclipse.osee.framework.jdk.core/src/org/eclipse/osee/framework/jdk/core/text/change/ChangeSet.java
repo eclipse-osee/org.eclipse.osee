@@ -188,7 +188,7 @@ public class ChangeSet {
 
    private void addNormalized(CharacterChanger previous, CharacterChanger changer, CharacterChanger next) {
       // assumptions: if next is non-null, changer.srcEndIndex < next.srcStartIndex
-      //            previous.srcEndIndex <= changer.srcEndIndex 
+      //            previous.srcEndIndex <= changer.srcEndIndex
       //					the current set of changes have no overlaps (i.e. is already normalized)
 
       // if these changes are adjacent deletes, just combine them

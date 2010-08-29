@@ -117,7 +117,11 @@ public class RelationOrderRendererTest {
       } catch (Exception ex) {
          // Do Nothing
       }
-      expectedData.add(new Object[] {relationType, relationSideName, side.name().toLowerCase(), expectedOrderId,
+      expectedData.add(new Object[] {
+         relationType,
+         relationSideName,
+         side.name().toLowerCase(),
+         expectedOrderId,
          artGuids});
    }
 

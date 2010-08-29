@@ -71,7 +71,8 @@ public class BranchGraphActionBarContributor extends ActionBarContributor {
       toolBarManager.add(new FilterConnectionAction());
 
       toggleTxFilterAction =
-         new ToggleTxFilterAction[] {new ToggleTxFilterAction("Show All", TxFilter.NO_FILTER),
+         new ToggleTxFilterAction[] {
+            new ToggleTxFilterAction("Show All", TxFilter.NO_FILTER),
             new ToggleTxFilterAction("Hide All", TxFilter.HIDE_ALL)};
       toolBarManager.add(new FilterTxAction());
    }

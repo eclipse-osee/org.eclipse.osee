@@ -74,7 +74,7 @@ public class TransactionMonitor {
          throw new OseeStateException(
             "reportTxEnd called for key: " + key + " but reportTxCreation had not been called.");
       } else if (currentTx.getState() != TxState.RUNNING) {
-         // This is a valid case -- can add a log to detect when a reportTxEnd is called before a transaction has a chance to run 
+         // This is a valid case -- can add a log to detect when a reportTxEnd is called before a transaction has a chance to run
       }
 
       if (currentTx.getTransaction().equals(transaction)) {

@@ -171,7 +171,11 @@ public final class ArtifactLoader {
          List<Object[]> insertParameters = new LinkedList<Object[]>();
 
          for (int artId : org.eclipse.osee.framework.jdk.core.util.Collections.unique(artIds)) {
-            insertParameters.add(new Object[] {queryId, insertTime, artId, BranchManager.getBranchId(branch),
+            insertParameters.add(new Object[] {
+               queryId,
+               insertTime,
+               artId,
+               BranchManager.getBranchId(branch),
                historical ? transactionId.getId() : SQL3DataType.INTEGER});
          }
 
@@ -281,7 +285,11 @@ public final class ArtifactLoader {
                artifacts.add(artifact);
             } else {
                Object transactionParameter = transactionId == null ? SQL3DataType.INTEGER : transactionId.getId();
-               insertParameters.put(artId, branchId, new Object[] {queryId, insertTime, artId, branchId,
+               insertParameters.put(artId, branchId, new Object[] {
+                  queryId,
+                  insertTime,
+                  artId,
+                  branchId,
                   transactionParameter});
             }
          }

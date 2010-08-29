@@ -252,12 +252,12 @@ public class SafeWorkspaceTracker extends ServiceTracker implements OteBundleLoc
 
       Set<URL> sysNewBundles = systemLibListener.consumeNewBundles();
       Set<URL> sysChangedBundles = systemLibListener.consumeChangedBundles();
-      //		Set<URL> sysRemovedBundles = 
+      //		Set<URL> sysRemovedBundles =
       systemLibListener.consumeRemovedBundles();
 
       Set<URL> userNewBundles = userLibListener.consumeNewBundles();
       Set<URL> userChangedBundles = userLibListener.consumeChangedBundles();
-      //		Set<URL> userRemovedBundles = 
+      //		Set<URL> userRemovedBundles =
       userLibListener.consumeRemovedBundles();
 
       Collection<URL> sysNewModLibs = new ArrayList<URL>(sysNewBundles.size() + sysChangedBundles.size());
@@ -277,7 +277,7 @@ public class SafeWorkspaceTracker extends ServiceTracker implements OteBundleLoc
       // modifiedLibs.add(info);
       // }
       // }
-      //      
+      //
       // return modifiedLibs;
    }
 }

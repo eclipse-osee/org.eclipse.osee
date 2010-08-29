@@ -83,7 +83,7 @@ public class TestManagerEditorContributor extends MultiPageEditorActionBarContri
    }
 
    private void createActions() {
-      //Left here for future actions that might want to be contributed to the status 
+      //Left here for future actions that might want to be contributed to the status
       //line for Test Manager.
    }
 
@@ -93,7 +93,7 @@ public class TestManagerEditorContributor extends MultiPageEditorActionBarContri
 
       if (part instanceof TestManagerEditor) {
 
-         //Left here for future actions that might want to be contributed to the status 
+         //Left here for future actions that might want to be contributed to the status
          //line for Test Manager.
       }
 

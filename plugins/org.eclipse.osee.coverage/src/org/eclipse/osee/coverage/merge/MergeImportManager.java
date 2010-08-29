@@ -250,7 +250,7 @@ public class MergeImportManager {
             ICoverage parentImportItem = importItem.getParent();
             // If null, this is top level item, just add to package
             if (parentImportItem instanceof CoverageImport) {
-               coveragePackage.addCoverageUnit((importItem).copy(true));
+               coveragePackage.addCoverageUnit(importItem.copy(true));
                rd.log(String.format("Added [%s] as top level CoverageUnit", importCoverageUnit));
                rd.log("");
             } else {

@@ -60,7 +60,7 @@ public class EclipseConsolePrintStream extends PrintStream {
 
    //   public void write(byte[] cbuf, int off, int len) {
    //	  super.write(cbuf, off, len);
-   //      buffer.append(cbuf, off, len);     
+   //      buffer.append(cbuf, off, len);
    //      masterBuffer.append(cbuf, off, len);
    //   }
 

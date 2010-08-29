@@ -184,8 +184,8 @@ public class OseeDslSegmentParser {
       public int hashCode() {
          final int prime = 31;
          int result = 1;
-         result = prime * result + ((artifactGuid == null) ? 0 : artifactGuid.hashCode());
-         result = prime * result + ((branchGuid == null) ? 0 : branchGuid.hashCode());
+         result = prime * result + (artifactGuid == null ? 0 : artifactGuid.hashCode());
+         result = prime * result + (branchGuid == null ? 0 : branchGuid.hashCode());
          result = prime * result + end;
          result = prime * result + start;
          return result;

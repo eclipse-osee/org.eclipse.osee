@@ -33,7 +33,7 @@ public class SearchEngineTaggerRegHandler extends AbstractTrackingHandler {
    //@formatter:off
    private static final Class<?>[] SERVICE_DEPENDENCIES = new Class<?>[] {
       IApplicationServerManager.class,
-      IOseeDatabaseService.class, 
+      IOseeDatabaseService.class,
       IAttributeTaggerProviderManager.class
    };
    //@formatter:on

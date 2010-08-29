@@ -176,7 +176,9 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler, IFr
 
       // Do not allow drop if default branch is not same as artifacts that reside in this table
       DropTarget target = new DropTarget(getTree(), DND.DROP_COPY);
-      target.setTransfer(new Transfer[] {FileTransfer.getInstance(), TextTransfer.getInstance(),
+      target.setTransfer(new Transfer[] {
+         FileTransfer.getInstance(),
+         TextTransfer.getInstance(),
          ArtifactTransfer.getInstance()});
       target.addDropListener(new DropTargetAdapter() {
 

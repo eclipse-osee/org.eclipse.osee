@@ -51,7 +51,7 @@ class ConnectionEditPart extends AbstractConnectionEditPart implements PropertyC
 
    @Override
    protected void createEditPolicies() {
-      // Selection handle edit policy. 
+      // Selection handle edit policy.
       // Makes the connection show a feedback, when selected by the user.
       installEditPolicy(EditPolicy.CONNECTION_ENDPOINTS_ROLE, new ConnectionEndpointEditPolicy());
       // Allows the removal of the connection model element

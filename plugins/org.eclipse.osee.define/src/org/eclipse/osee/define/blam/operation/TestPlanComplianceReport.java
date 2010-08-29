@@ -40,7 +40,7 @@ import org.eclipse.swt.program.Program;
 
 /**
  * Test: @link: TestPlanComplianceReportTest
- *
+ * 
  * @author: Karol M. Wilk
  */
 public final class TestPlanComplianceReport extends AbstractBlam {

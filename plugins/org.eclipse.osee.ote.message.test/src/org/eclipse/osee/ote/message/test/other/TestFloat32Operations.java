@@ -44,8 +44,11 @@ public class TestFloat32Operations {
       TestMessage msg = new TestMessage();
       support.activateMsg(msg);
 
-      support.genericTestCheckWaitForValue(msg.FLOAT32_ELEMENT_1, new Double[] {new Double(0.0f), new Double(0.2f),
-         new Double(100.0f), new Double(999.00075f)}, new Double(33.4001f));
+      support.genericTestCheckWaitForValue(msg.FLOAT32_ELEMENT_1, new Double[] {
+         new Double(0.0f),
+         new Double(0.2f),
+         new Double(100.0f),
+         new Double(999.00075f)}, new Double(33.4001f));
 
    }
 }

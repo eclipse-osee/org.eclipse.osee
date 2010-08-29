@@ -51,8 +51,17 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
 public class WordUtil {
    public static final String BODY_START = "<w:body>";
    public static final String BODY_END = "</w:body>";
-   private static final String[] NUMBER = new String[] {"Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven",
-      "Eight", "Nine"};
+   private static final String[] NUMBER = new String[] {
+      "Zero",
+      "One",
+      "Two",
+      "Three",
+      "Four",
+      "Five",
+      "Six",
+      "Seven",
+      "Eight",
+      "Nine"};
 
    private static final String SELECT_WORD_VALUES =
       "SELECT attr.content, attr.gamma_id FROM osee_attribute attr, osee_txs txs WHERE attr.art_id=? AND attr.attr_type_id=? AND attr.gamma_id = txs.gamma_id AND txs.branch_id=? ORDER BY attr.gamma_id DESC";

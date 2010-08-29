@@ -20,6 +20,11 @@ import org.eclipse.osee.ote.message.enums.DataType;
 public class MessageEventLogger implements UniversalMessageListener {
    private static final String BUNDLE = "org.eclipse.osee.ote.message";
    private static final class StackTrace extends RuntimeException {
+      /**
+       * 
+       */
+      private static final long serialVersionUID = 6805422596135323489L;
+
       public StackTrace() {
          super("Event stack trace");
       }

@@ -146,8 +146,20 @@ public class SessionTest extends AbstractOseeTypeTest<Session> {
          session.setStorageState(StorageState.LOADED);
          session.clearDirty();
 
-         data.add(new Object[] {session, guid, name, expectedId, clientAddress, clientMachine, clientVersion,
-            clientPort, creationDate, userId, lastInteractionDate, lastInteraction, managedByServerId});
+         data.add(new Object[] {
+            session,
+            guid,
+            name,
+            expectedId,
+            clientAddress,
+            clientMachine,
+            clientVersion,
+            clientPort,
+            creationDate,
+            userId,
+            lastInteractionDate,
+            lastInteraction,
+            managedByServerId});
       }
       return data;
    }

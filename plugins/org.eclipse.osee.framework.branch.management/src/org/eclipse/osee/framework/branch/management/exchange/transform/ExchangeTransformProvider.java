@@ -29,8 +29,11 @@ public class ExchangeTransformProvider implements IExchangeTransformProvider {
       List<IOseeExchangeVersionTransformer> toReturn = new ArrayList<IOseeExchangeVersionTransformer>();
 
       IOseeExchangeVersionTransformer[] transforms =
-         new IOseeExchangeVersionTransformer[] {new V0_8_3Transformer(), new V0_9_0Transformer(cachingService),
-            new V0_9_2Transformer(), new V0_9_4Transformer()};
+         new IOseeExchangeVersionTransformer[] {
+            new V0_8_3Transformer(),
+            new V0_9_0Transformer(cachingService),
+            new V0_9_2Transformer(),
+            new V0_9_4Transformer()};
 
       for (IOseeExchangeVersionTransformer transformer : transforms) {
          if (isApplicable(transformer.getMaxVersion(), versionToCheck)) {

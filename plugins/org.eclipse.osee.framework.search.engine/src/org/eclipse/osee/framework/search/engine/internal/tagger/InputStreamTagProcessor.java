@@ -49,7 +49,7 @@ final class InputStreamTagProcessor extends InputToTagQueueTx {
 
       @Override
       public void endElementFound(String uri, String localName, String name) {
-         // Do nothing         
+         // Do nothing
       }
 
       @Override

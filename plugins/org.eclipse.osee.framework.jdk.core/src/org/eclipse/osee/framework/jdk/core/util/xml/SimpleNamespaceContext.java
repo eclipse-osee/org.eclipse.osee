@@ -40,7 +40,7 @@ public class SimpleNamespaceContext implements NamespaceContext {
    public synchronized void addNamespace(String prefix, String namespaceURI) {
       urisByPrefix.put(prefix, namespaceURI);
       if (prefixesByURI.containsKey(namespaceURI)) {
-         (prefixesByURI.get(namespaceURI)).add(prefix);
+         prefixesByURI.get(namespaceURI).add(prefix);
       } else {
          Set<String> set = new HashSet<String>();
          set.add(prefix);
@@ -71,7 +71,7 @@ public class SimpleNamespaceContext implements NamespaceContext {
          throw new IllegalArgumentException("namespaceURI cannot be null");
       }
       if (prefixesByURI.containsKey(namespaceURI)) {
-         return (prefixesByURI.get(namespaceURI)).iterator();
+         return prefixesByURI.get(namespaceURI).iterator();
       } else {
          return Collections.EMPTY_SET.iterator();
       }

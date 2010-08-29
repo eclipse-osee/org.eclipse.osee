@@ -61,14 +61,14 @@ public class ServletRegistrationHandler extends AbstractTrackingHandler {
       //
       ISessionManager.class, //k
       IApplicationServerLookup.class, // k
-      IApplicationServerManager.class, //k 
+      IApplicationServerManager.class, //k
       IAuthenticationManager.class,// k
-      IDataTranslationService.class, // 
-      IOseeModelingService.class, // 
-      IOseeCachingService.class,// 
-      IOseeDatabaseService.class, //k 
-      IOseeBranchService.class, // 
-      IBranchExchange.class, // 
+      IDataTranslationService.class, //
+      IOseeModelingService.class, //
+      IOseeCachingService.class,//
+      IOseeDatabaseService.class, //k
+      IOseeBranchService.class, //
+      IBranchExchange.class, //
       ISearchEngine.class,// k
       ISearchEngineTagger.class, // k
       IOseeModelFactoryService.class, // k

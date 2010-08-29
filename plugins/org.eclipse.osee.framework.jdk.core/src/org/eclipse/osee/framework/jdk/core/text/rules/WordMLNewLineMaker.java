@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
  * @author Karol M. Wilk
  */
 
-//NOTE: Rule implements a main(), so start this by passing path to files as argument			
+//NOTE: Rule implements a main(), so start this by passing path to files as argument
 //TODO: update methods to use ChangeSet rather than current logic
 public final class WordMLNewLineMaker extends Rule {
 

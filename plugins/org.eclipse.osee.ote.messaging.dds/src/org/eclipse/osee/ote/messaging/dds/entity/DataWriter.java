@@ -168,7 +168,7 @@ public class DataWriter extends DomainEntity {
       return ReturnCode.ERROR;
    }
 
-   // PARTIAL InstanceHandle is not used 
+   // PARTIAL InstanceHandle is not used
    /**
     * Method for writing data to the DDS system. This should be overridden to provide type-specific methods for writing
     * data to the system.

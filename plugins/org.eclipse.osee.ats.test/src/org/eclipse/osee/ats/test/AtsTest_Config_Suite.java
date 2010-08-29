@@ -17,7 +17,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({AtsWorkItemDefinitionTest.class, AtsActionableItemToTeamDefinitionTest.class,
+@Suite.SuiteClasses({
+   AtsWorkItemDefinitionTest.class,
+   AtsActionableItemToTeamDefinitionTest.class,
    AtsTeamDefintionToWorkflowTest.class})
 /**
  * This test suite contains test that can be run against any production db

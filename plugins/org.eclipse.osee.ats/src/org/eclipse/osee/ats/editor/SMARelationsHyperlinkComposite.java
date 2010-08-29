@@ -42,10 +42,14 @@ public class SMARelationsHyperlinkComposite extends Composite {
 
    private final XFormToolkit toolkit;
    private static IRelationEnumeration[] sides = new IRelationEnumeration[] {
-      AtsRelationTypes.TeamWorkflowToReview_Review, AtsRelationTypes.TeamWorkflowToReview_Team,
-      CoreRelationTypes.Supercedes_Superceded, CoreRelationTypes.Supercedes_Supercedes,
-      CoreRelationTypes.SupportingInfo_SupportedBy, CoreRelationTypes.SupportingInfo_SupportingInfo,
-      CoreRelationTypes.Dependency__Artifact, CoreRelationTypes.Dependency__Dependency};
+      AtsRelationTypes.TeamWorkflowToReview_Review,
+      AtsRelationTypes.TeamWorkflowToReview_Team,
+      CoreRelationTypes.Supercedes_Superceded,
+      CoreRelationTypes.Supercedes_Supercedes,
+      CoreRelationTypes.SupportingInfo_SupportedBy,
+      CoreRelationTypes.SupportingInfo_SupportingInfo,
+      CoreRelationTypes.Dependency__Artifact,
+      CoreRelationTypes.Dependency__Dependency};
    private StateMachineArtifact sma;
    private Label actionableItemsLabel;
 
@@ -78,7 +82,7 @@ public class SMARelationsHyperlinkComposite extends Composite {
       createArtifactRelationHyperlinks("This", sma, "has supporting info",
          CoreRelationTypes.SupportingInfo_SupportingInfo);
 
-      // Create label for review's related actionable items (if any) 
+      // Create label for review's related actionable items (if any)
       if (sma instanceof ReviewSMArtifact) {
          processReviewArtifact((ReviewSMArtifact) sma);
       }

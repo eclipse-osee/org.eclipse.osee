@@ -70,7 +70,7 @@ public class ShapeDeleteCommand extends Command {
 
    @Override
    public void execute() {
-      // store a copy of incoming & outgoing connections before proceeding 
+      // store a copy of incoming & outgoing connections before proceeding
       sourceConnections = child.getSourceConnections();
       targetConnections = child.getTargetConnections();
       redo();

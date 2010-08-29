@@ -133,7 +133,7 @@ public class ByteUtil {
    }
 
    /**
-    *  
+    * 
     */
    public ByteUtil() {
       super();

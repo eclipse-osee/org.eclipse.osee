@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.core.model.internal.fields.EnumEntryField;
 
 /**
  * Test: @link OseeEnumTypeTest
- *
+ * 
  * @author Roberto E. Escobar
  */
 public class OseeEnumType extends AbstractOseeType implements Comparable<OseeEnumType> {

@@ -86,14 +86,14 @@ import org.eclipse.osee.ote.core.testPoint.CheckPoint;
  * <li>		this (null,null);
  * 		</ul>
  * <li>	}
- * <li>	
+ * <li>
  * <li>	</code><i>This constructor is used at runtime.</i><code>
  * <li>	SampleScript (TestEnvironment environment, TestEnvironmentController connection) {
  * 		<ul style="list-style: none">
  * <li>		super (environment, connection, [batchability, true or false]);
  * <li>
  * <li>		</code><i>Place construction for <b>LRU Models</b>,<b>Messages</b>, and <b>Support</b> classes here.</i><code>
- * <li> 
+ * <li>
  * <li>		</code><i>Construct all test cases here. The base TestCase constructor will automatically add
  * <li>itself to the run list of the TestScript.</i><code>
  * <li>		new OipCase(this);
@@ -133,7 +133,7 @@ import org.eclipse.osee.ote.core.testPoint.CheckPoint;
  * <li>			</code><i>Use <b>one</b> of the following constructors based on if this TestCase is standalone</i><code>
  * <li>			super(parent);</code> <i>Standalone defaulted to <b>false</b></i><code>
  * <li>			super(parent, true);</code><i>Standalone explicitly set to <b>true</b></i><code>
- * <li>			
+ * <li>
  * <li>			</code><i>All requirements tested in the test case should be noted here with the </i>
  * <code>{@link org.eclipse.osee.ote.core.TestCase#addTracability(String) addTracability}</code><i> method.</i> <code>
  * 			</ul>

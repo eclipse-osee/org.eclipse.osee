@@ -38,9 +38,11 @@ public class AttributeExtensionManager {
    private static final String ATTRIBUTE_TYPE = Activator.PLUGIN_ID + ".AttributeType";
    private static final String ATTRIBUTE_DATA_PROVIDER_TYPE = Activator.PLUGIN_ID + ".AttributeDataProvider";
 
-   private static final String[] attributeBaseTypes = new String[] {"CharacterBackedAttributeType",
+   private static final String[] attributeBaseTypes = new String[] {
+      "CharacterBackedAttributeType",
       "BinaryBackedAttributeType"};
-   private static final String[] attributeProviderBaseTypes = new String[] {"CharacterAttributeDataProvider",
+   private static final String[] attributeProviderBaseTypes = new String[] {
+      "CharacterAttributeDataProvider",
       "BinaryAttributeDataProvider"};
 
    private static final AttributeExtensionManager instance = new AttributeExtensionManager();

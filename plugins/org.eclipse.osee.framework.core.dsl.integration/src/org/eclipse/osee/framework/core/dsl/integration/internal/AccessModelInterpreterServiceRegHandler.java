@@ -44,7 +44,7 @@ public class AccessModelInterpreterServiceRegHandler extends AbstractTrackingHan
          new ArtifactInstanceRestrictionHandler(), //
          new ArtifactTypeRestrictionHandler(), //
          new AttributeTypeRestrictionHandler(), //
-         new RelationTypeRestrictionHandler(), // 
+         new RelationTypeRestrictionHandler(), //
       };
 
       AccessModelInterpreter service = new AccessModelInterpreterImpl(artifactDataProvider, restrictionHandlers);

@@ -95,13 +95,22 @@ public class DatabaseOseeConflictAccessor {
    }
 
    private Object[] toInsertValues(Conflict conflict) {
-      return new Object[] {conflict.getId(), conflict.getMergeBranch().getId(), conflict.getSourceGammaId(),
-         conflict.getDestinationGammaId(), conflict.getStatus().getValue(), conflict.getType().getValue()};
+      return new Object[] {
+         conflict.getId(),
+         conflict.getMergeBranch().getId(),
+         conflict.getSourceGammaId(),
+         conflict.getDestinationGammaId(),
+         conflict.getStatus().getValue(),
+         conflict.getType().getValue()};
    }
 
    private Object[] toUpdateValues(Conflict conflict) {
-      return new Object[] {conflict.getSourceGammaId(), conflict.getDestinationGammaId(),
-         conflict.getStatus().getValue(), conflict.getMergeBranch().getId(), conflict.getId(),
+      return new Object[] {
+         conflict.getSourceGammaId(),
+         conflict.getDestinationGammaId(),
+         conflict.getStatus().getValue(),
+         conflict.getMergeBranch().getId(),
+         conflict.getId(),
          conflict.getType().getValue()};
    }
 

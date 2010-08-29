@@ -76,7 +76,9 @@ public class ConfigureCoverageMethodsAction extends Action {
                MessageDialog localGlobalDialog =
                   new MessageDialog(Displays.getActiveShell(), "Question", null,
                      "No Custom Coverage Methods Configured, Configure Now?", MessageDialog.WARNING, new String[] {
-                        "Save local to Coverage Pacakge", "Save globally for Branch", "Cancel"}, 0);
+                        "Save local to Coverage Pacakge",
+                        "Save globally for Branch",
+                        "Cancel"}, 0);
 
                int result = localGlobalDialog.open();
                if (result == 0) {

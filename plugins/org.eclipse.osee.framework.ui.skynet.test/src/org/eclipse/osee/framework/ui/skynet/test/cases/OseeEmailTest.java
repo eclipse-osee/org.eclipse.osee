@@ -74,7 +74,7 @@ public class OseeEmailTest {
       "2) Verify Time 8am - 1pm\n" +
       //
       "3) Verify date (today)\n" +
-      // 
+      //
       "4) Verify location: Conference Room\n" +
       //
       "5) Verify subject is name of this test" + infoStr, BodyType.Text);

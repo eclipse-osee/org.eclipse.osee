@@ -178,8 +178,12 @@ public class CommitDbOperation extends AbstractDbTxOperation {
       List<Object[]> insertData = new ArrayList<Object[]>();
       for (ChangeItem change : changes) {
          ModificationType modType = change.getNetChange().getModType();
-         insertData.add(new Object[] {txHolder.getTransaction().getId(), destinationBranch.getId(),
-            change.getNetChange().getGammaId(), modType.getValue(), TxChange.getCurrent(modType).getValue()});
+         insertData.add(new Object[] {
+            txHolder.getTransaction().getId(),
+            destinationBranch.getId(),
+            change.getNetChange().getGammaId(),
+            modType.getValue(),
+            TxChange.getCurrent(modType).getValue()});
       }
       getDatabaseService().runBatchUpdate(connection, INSERT_COMMIT_ADDRESSING, insertData);
    }

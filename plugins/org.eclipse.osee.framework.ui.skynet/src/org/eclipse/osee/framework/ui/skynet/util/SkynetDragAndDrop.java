@@ -62,7 +62,9 @@ public abstract class SkynetDragAndDrop {
    }
 
    private void setupDragSupport() {
-      source.setTransfer(new Transfer[] {HTMLTransfer.getInstance(), ArtifactTransfer.getInstance(),
+      source.setTransfer(new Transfer[] {
+         HTMLTransfer.getInstance(),
+         ArtifactTransfer.getInstance(),
          TextTransfer.getInstance()});
       source.addDragListener(new DragSourceListener() {
 
@@ -94,7 +96,9 @@ public abstract class SkynetDragAndDrop {
    }
 
    private void setupDropSupport() {
-      target.setTransfer(new Transfer[] {FileTransfer.getInstance(), TextTransfer.getInstance(),
+      target.setTransfer(new Transfer[] {
+         FileTransfer.getInstance(),
+         TextTransfer.getInstance(),
          ArtifactTransfer.getInstance()});
       target.addDropListener(new DropTargetAdapter() {
 

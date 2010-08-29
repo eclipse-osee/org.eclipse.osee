@@ -56,8 +56,16 @@ public class BranchStateHealthCheck extends DatabaseHealthOperation {
       checkForCancelledStatus(monitor);
 
       appendToDetails(AHTML.beginMultiColumnTable(100, 1));
-      appendToDetails(AHTML.addHeaderRowMultiColumnTable(new String[] {"Reason", "Was State", "Fixed State",
-         "BranchType", "Archived", "Txs", "Commit Tx", "BranchId", "Branch Name"}));
+      appendToDetails(AHTML.addHeaderRowMultiColumnTable(new String[] {
+         "Reason",
+         "Was State",
+         "Fixed State",
+         "BranchType",
+         "Archived",
+         "Txs",
+         "Commit Tx",
+         "BranchId",
+         "Branch Name"}));
       Collections.sort(itemsToFix, new Comparator<BranchData>() {
 
          @Override
@@ -77,11 +85,16 @@ public class BranchStateHealthCheck extends DatabaseHealthOperation {
 
       });
       for (BranchData data : itemsToFix) {
-         appendToDetails(AHTML.addRowMultiColumnTable(new String[] {data.getReason(),
-            String.valueOf(data.getOriginalBranchState()), String.valueOf(data.getBranchState()),
-            String.valueOf(data.getBranchType()), String.valueOf(data.isArchived()),
-            String.valueOf(data.getNumberOfTxs()), String.valueOf(data.hasCommitTransactionId()),
-            String.valueOf(data.getId()), data.getBranchName()}));
+         appendToDetails(AHTML.addRowMultiColumnTable(new String[] {
+            data.getReason(),
+            String.valueOf(data.getOriginalBranchState()),
+            String.valueOf(data.getBranchState()),
+            String.valueOf(data.getBranchType()),
+            String.valueOf(data.isArchived()),
+            String.valueOf(data.getNumberOfTxs()),
+            String.valueOf(data.hasCommitTransactionId()),
+            String.valueOf(data.getId()),
+            data.getBranchName()}));
       }
       appendToDetails(AHTML.endMultiColumnTable());
       monitor.worked(calculateWork(0.25));

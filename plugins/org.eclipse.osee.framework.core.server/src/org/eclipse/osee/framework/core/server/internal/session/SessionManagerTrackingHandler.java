@@ -27,8 +27,10 @@ import org.osgi.framework.ServiceRegistration;
  */
 public final class SessionManagerTrackingHandler extends AbstractTrackingHandler {
 
-   private static final Class<?>[] SERVICE_DEPENDENCIES = new Class<?>[] {IOseeDatabaseService.class,
-      IApplicationServerManager.class, IAuthenticationManager.class};
+   private static final Class<?>[] SERVICE_DEPENDENCIES = new Class<?>[] {
+      IOseeDatabaseService.class,
+      IApplicationServerManager.class,
+      IAuthenticationManager.class};
 
    private ServiceRegistration registration;
 

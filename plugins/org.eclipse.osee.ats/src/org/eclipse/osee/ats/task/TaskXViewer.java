@@ -238,8 +238,8 @@ public class TaskXViewer extends WorldXViewer {
          public void run() {
             try {
                boolean success =
-                  PromptChangeUtil.promptChangeAttribute(getSelectedTaskArtifacts(),
-                     AtsAttributeTypes.RelatedToState, false, true);
+                  PromptChangeUtil.promptChangeAttribute(getSelectedTaskArtifacts(), AtsAttributeTypes.RelatedToState,
+                     false, true);
                if (success) {
                   editor.onDirtied();
                   update(getSelectedTaskArtifacts().toArray(), null);
@@ -255,8 +255,8 @@ public class TaskXViewer extends WorldXViewer {
          public void run() {
             try {
                boolean success =
-                  PromptChangeUtil.promptChangeAttribute(getSelectedTaskArtifacts(), AtsAttributeTypes.SmaNote,
-                     false, true);
+                  PromptChangeUtil.promptChangeAttribute(getSelectedTaskArtifacts(), AtsAttributeTypes.SmaNote, false,
+                     true);
                if (success) {
                   editor.onDirtied();
                   update(getSelectedTaskArtifacts().toArray(), null);
@@ -343,7 +343,7 @@ public class TaskXViewer extends WorldXViewer {
    }
 
    public boolean handleChangeResolution() throws OseeCoreException {
-      // Ensure tasks are related to current state of workflow 
+      // Ensure tasks are related to current state of workflow
       SMAPromptChangeStatus promptChangeStatus = new SMAPromptChangeStatus(getSelectedTaskArtifacts());
       Result result = promptChangeStatus.isValidToChangeStatus();
       if (result.isFalse()) {
@@ -377,13 +377,11 @@ public class TaskXViewer extends WorldXViewer {
          boolean modified = false;
 
          if (isSelectedTaskArtifactsAreInWork() && xCol.equals(WorldXViewerFactory.Estimated_Hours_Col)) {
-            modified =
-               PromptChangeUtil.promptChangeAttribute(taskArt, AtsAttributeTypes.EstimatedHours, false, false);
+            modified = PromptChangeUtil.promptChangeAttribute(taskArt, AtsAttributeTypes.EstimatedHours, false, false);
          } else if (isSelectedTaskArtifactsAreInWork() && xCol.equals(WorldXViewerFactory.Title_Col)) {
             modified = PromptChangeUtil.promptChangeAttribute(taskArt, AtsAttributeTypes.Title, false, false);
          } else if (isSelectedTaskArtifactsAreInWork() && xCol.equals(WorldXViewerFactory.Related_To_State_Col)) {
-            modified =
-               PromptChangeUtil.promptChangeAttribute(taskArt, AtsAttributeTypes.RelatedToState, false, false);
+            modified = PromptChangeUtil.promptChangeAttribute(taskArt, AtsAttributeTypes.RelatedToState, false, false);
          } else if (isSelectedTaskArtifactsAreInWork() && xCol.equals(WorldXViewerFactory.Assignees_Col)) {
             modified = PromptChangeUtil.promptChangeAssignees(taskArt, false);
          } else if (isUsingTaskResolutionOptions() && (xCol.equals(WorldXViewerFactory.Hours_Spent_State_Col) || xCol.equals(WorldXViewerFactory.Hours_Spent_Total_Col) || xCol.equals(WorldXViewerFactory.Percent_Complete_State_Col) || xCol.equals(WorldXViewerFactory.Percent_Complete_Total_Col))) {

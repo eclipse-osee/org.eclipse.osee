@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 
 /**
  * Test: @link ExcelXmlWriterTest
- *
+ * 
  * @author Ryan D. Brooks
  * @author Karol M. Wilk
  */
@@ -84,7 +84,7 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
 
    /**
     * Calls original constructor with provided style.
-    *
+    * 
     * @param writer output
     * @param style Excel Style XML of form <Styles><Style/><Style/></Styles>
     * @throws IOException
@@ -175,7 +175,7 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
             applyStyleToCell(cellIndex);
          }
 
-         if (previousCellIndex + 1 != cellIndex) { // use explicit index if at least one cell was skipped 
+         if (previousCellIndex + 1 != cellIndex) { // use explicit index if at least one cell was skipped
             out.write(" ss:Index=\"" + (cellIndex + 1) + "\"");
          }
          previousCellIndex = cellIndex;

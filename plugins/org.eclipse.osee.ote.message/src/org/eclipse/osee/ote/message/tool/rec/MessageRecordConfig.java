@@ -50,7 +50,7 @@ public class MessageRecordConfig {
    //		this.bodyElements = vals.toArray(new Element[vals.size()]);
    //		this.type = type;
    //	}
-   //	
+   //
    //	public MessageRecordConfig(final Message<?, ? ,?> msg, Element[] hdrElements) {
    //		super();
    //		this.msg = msg;

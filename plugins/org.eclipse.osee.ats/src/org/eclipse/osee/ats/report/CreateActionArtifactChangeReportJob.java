@@ -102,8 +102,13 @@ public class CreateActionArtifactChangeReportJob extends Job {
 
       int x = 1;
       rd.addRaw(AHTML.beginMultiColumnTable(95));
-      rd.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"HRID", "Bulld", "UI", attributeType.getName(),
-         "RPCR", "Change"}));
+      rd.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {
+         "HRID",
+         "Bulld",
+         "UI",
+         attributeType.getName(),
+         "RPCR",
+         "Change"}));
       for (TeamWorkFlowArtifact teamArt : teamArts) {
          String rcprId = teamArt.getSoleAttributeValue(AtsAttributeTypes.LegacyPcrId, "");
          String result =
@@ -132,8 +137,13 @@ public class CreateActionArtifactChangeReportJob extends Job {
             attrStrs.add(EnumeratedAttribute.UNSPECIFIED_VALUE);
          }
          for (String attrStr : attrStrs) {
-            rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {teamArt.getHumanReadableId(), buildId,
-               modArt.getName(), attrStr, rpcrNum, "Content"}));
+            rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {
+               teamArt.getHumanReadableId(),
+               buildId,
+               modArt.getName(),
+               attrStr,
+               rpcrNum,
+               "Content"}));
          }
       }
       for (Artifact artChg : changeData.getArtifacts(KindType.Artifact, ModificationType.DELETED)) {
@@ -142,8 +152,13 @@ public class CreateActionArtifactChangeReportJob extends Job {
             attrStrs.add(EnumeratedAttribute.UNSPECIFIED_VALUE);
          }
          for (String attrStr : attrStrs) {
-            rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {teamArt.getHumanReadableId(), buildId,
-               artChg.getName(), attrStr, rpcrNum, "Deleted"}));
+            rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {
+               teamArt.getHumanReadableId(),
+               buildId,
+               artChg.getName(),
+               attrStr,
+               rpcrNum,
+               "Deleted"}));
          }
       }
       for (Artifact artChg : changeData.getArtifacts(KindType.RelationOnly, ModificationType.NEW,
@@ -153,8 +168,13 @@ public class CreateActionArtifactChangeReportJob extends Job {
             attrStrs.add(EnumeratedAttribute.UNSPECIFIED_VALUE);
          }
          for (String attrStr : attrStrs) {
-            rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {teamArt.getHumanReadableId(), buildId,
-               artChg.getName(), attrStr, rpcrNum, "Relation"}));
+            rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {
+               teamArt.getHumanReadableId(),
+               buildId,
+               artChg.getName(),
+               attrStr,
+               rpcrNum,
+               "Relation"}));
          }
       }
    }

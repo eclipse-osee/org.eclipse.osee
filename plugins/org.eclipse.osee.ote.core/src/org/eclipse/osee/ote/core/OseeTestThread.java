@@ -107,6 +107,11 @@ public abstract class OseeTestThread {
    }
 
    private static final class Trace extends RuntimeException {
+      /**
+       * 
+       */
+      private static final long serialVersionUID = 8520935964300439490L;
+
       Trace() {
          super("call trace");
       }

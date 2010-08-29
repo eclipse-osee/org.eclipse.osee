@@ -57,9 +57,17 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
       int parentBranchId = parentBranch != null ? parentBranch.getId() : NULL_PARENT_BRANCH_ID;
       int baselineTransaction = baseTxRecord != null ? baseTxRecord.getId() : NULL_PARENT_BRANCH_ID;
 
-      return new Object[] {branch.getId(), branch.getGuid(), branch.getName(), parentBranchId,
-         branch.getSourceTransaction().getId(), branch.getArchiveState().getValue(), branch.getAssociatedArtifactId(),
-         branch.getBranchType().getValue(), branch.getBranchState().getValue(), baselineTransaction};
+      return new Object[] {
+         branch.getId(),
+         branch.getGuid(),
+         branch.getName(),
+         parentBranchId,
+         branch.getSourceTransaction().getId(),
+         branch.getArchiveState().getValue(),
+         branch.getAssociatedArtifactId(),
+         branch.getBranchType().getValue(),
+         branch.getBranchState().getValue(),
+         baselineTransaction};
    }
 
    private Object[] toUpdateValues(Branch branch) throws OseeCoreException {
@@ -67,9 +75,16 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
       TransactionRecord baseTxRecord = branch.getBaseTransaction();
       int parentBranchId = parentBranch != null ? parentBranch.getId() : NULL_PARENT_BRANCH_ID;
       int baselineTransaction = baseTxRecord != null ? baseTxRecord.getId() : NULL_PARENT_BRANCH_ID;
-      return new Object[] {branch.getName(), parentBranchId, branch.getSourceTransaction().getId(),
-         branch.getArchiveState().getValue(), branch.getAssociatedArtifactId(), branch.getBranchType().getValue(),
-         branch.getBranchState().getValue(), baselineTransaction, branch.getId()};
+      return new Object[] {
+         branch.getName(),
+         parentBranchId,
+         branch.getSourceTransaction().getId(),
+         branch.getArchiveState().getValue(),
+         branch.getAssociatedArtifactId(),
+         branch.getBranchType().getValue(),
+         branch.getBranchState().getValue(),
+         baselineTransaction,
+         branch.getId()};
    }
 
    private Object[] toDeleteValues(Branch branch) {

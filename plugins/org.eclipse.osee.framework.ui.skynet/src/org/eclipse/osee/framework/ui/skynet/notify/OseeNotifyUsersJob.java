@@ -86,8 +86,11 @@ public class OseeNotifyUsersJob extends Job {
       sb.append(AHTML.beginMultiColumnTable(100, 1));
       sb.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Reason", "Description", "Id", "URL"}));
       for (OseeNotificationEvent notificationEvent : notificationEvents) {
-         sb.append(AHTML.addRowMultiColumnTable(new String[] {notificationEvent.getType(),
-            notificationEvent.getDescription(), notificationEvent.getId(), getHyperlink(notificationEvent)}));
+         sb.append(AHTML.addRowMultiColumnTable(new String[] {
+            notificationEvent.getType(),
+            notificationEvent.getDescription(),
+            notificationEvent.getId(),
+            getHyperlink(notificationEvent)}));
       }
       sb.append(AHTML.endMultiColumnTable());
       return sb.toString().replaceAll("\n", "");

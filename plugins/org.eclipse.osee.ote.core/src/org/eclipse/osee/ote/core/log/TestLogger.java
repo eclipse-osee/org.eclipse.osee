@@ -198,7 +198,7 @@ public class TestLogger extends Logger implements ITestLogger {
 
    //   /**
    //    * Log the beginning of a method with a the MethodFormatter formatted argument object.
-   //    * 
+   //    *
    //    * @param source The object requesting the logging (Usually "this" is passed in).
    //    * @param methodFormat Reference to the MethodFormatter formatted argument list.
    //    */
@@ -232,7 +232,7 @@ public class TestLogger extends Logger implements ITestLogger {
    //   /**
    //    * Log the start of a method with the object variable name and a formatted string with the
    //    * arguments.
-   //    * 
+   //    *
    //    * @param source The object requesting the logging (Usually "this" is passed in).
    //    * @param objectName The class variable name.
    //    * @param arguments The arguments in a formatted string.

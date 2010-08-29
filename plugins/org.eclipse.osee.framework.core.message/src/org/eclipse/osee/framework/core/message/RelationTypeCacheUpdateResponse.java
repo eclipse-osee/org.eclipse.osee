@@ -105,9 +105,17 @@ public class RelationTypeCacheUpdateResponse {
       }
 
       public String[] toArray() {
-         return new String[] {String.valueOf(getId()), getGuid(), getName(), getStorageState().name(), getSideAName(),
-            getSideBName(), String.valueOf(getArtifactTypeSideA()), String.valueOf(getArtifactTypeSideB()),
-            getMultiplicity().name(), getDefaultOrderTypeGuid()};
+         return new String[] {
+            String.valueOf(getId()),
+            getGuid(),
+            getName(),
+            getStorageState().name(),
+            getSideAName(),
+            getSideBName(),
+            String.valueOf(getArtifactTypeSideA()),
+            String.valueOf(getArtifactTypeSideB()),
+            getMultiplicity().name(),
+            getDefaultOrderTypeGuid()};
       }
 
       public static RelationTypeRow fromArray(String[] data) {

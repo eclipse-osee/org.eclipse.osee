@@ -95,7 +95,7 @@ public class SMAEditorArtifactEventManager implements IArtifactEventListener {
          } else if (artifactEvent.isModifiedReloaded(sma) ||
          //
          artifactEvent.isRelAddedChangedDeleted(sma) ||
-         // 
+         //
          artifactEvent.isModifiedReloaded(actionArt) ||
          //
          artifactEvent.isRelAddedChangedDeleted(actionArt)) {

@@ -63,15 +63,25 @@ public final class DatabaseSessionAccessor implements IOseeDataAccessor<Session>
    }
 
    private Object[] toInsert(Session session) {
-      return new Object[] {session.getManagedByServerId(), session.getGuid(), session.getName(),
-         session.getClientMachineName(), session.getClientAddress(), session.getClientPort(),
-         session.getClientVersion(), session.getCreationDate(), session.getLastInteractionDate(),
+      return new Object[] {
+         session.getManagedByServerId(),
+         session.getGuid(),
+         session.getName(),
+         session.getClientMachineName(),
+         session.getClientAddress(),
+         session.getClientPort(),
+         session.getClientVersion(),
+         session.getCreationDate(),
+         session.getLastInteractionDate(),
          session.getLastInteractionDetails()};
    }
 
    private Object[] toUpdate(Session session) {
-      return new Object[] {session.getManagedByServerId(), session.getLastInteractionDate(),
-         session.getLastInteractionDetails(), session.getGuid()};
+      return new Object[] {
+         session.getManagedByServerId(),
+         session.getLastInteractionDate(),
+         session.getLastInteractionDetails(),
+         session.getGuid()};
    }
 
    private Object[] toDelete(Session session) {

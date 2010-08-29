@@ -129,8 +129,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
 
       ElapsedTime time = new ElapsedTime("My World via Attribute Search");
       List<Artifact> assignedList =
-         ArtifactQuery.getArtifactListFromAttribute(AtsAttributeTypes.CurrentState, "%727536%",
-            AtsUtil.getAtsBranch());
+         ArtifactQuery.getArtifactListFromAttribute(AtsAttributeTypes.CurrentState, "%727536%", AtsUtil.getAtsBranch());
       System.out.println("Returned " + assignedList.size() + " objects");
       time.end();
 

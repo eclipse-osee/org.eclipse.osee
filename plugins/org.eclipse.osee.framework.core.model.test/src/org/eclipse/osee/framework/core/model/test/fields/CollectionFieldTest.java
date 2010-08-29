@@ -65,7 +65,7 @@ public class CollectionFieldTest {
       FieldTestUtil.assertSetGet(field, Arrays.asList(1, 2), Arrays.asList(1, 2), true);
       field.clearDirty();
 
-      // Test add 
+      // Test add
       FieldTestUtil.assertSetGet(field, Arrays.asList(1, 2, 4, 5), Arrays.asList(1, 2, 4, 5), true);
       field.clearDirty();
 

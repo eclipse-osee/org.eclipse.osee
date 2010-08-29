@@ -15,7 +15,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({//
-BranchCommitServiceTest.class // 
+BranchCommitServiceTest.class //
 })
 /**
  * @author Roberto E. Escobar

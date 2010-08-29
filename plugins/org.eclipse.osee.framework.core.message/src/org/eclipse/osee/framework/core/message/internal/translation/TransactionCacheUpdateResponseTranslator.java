@@ -72,9 +72,14 @@ public class TransactionCacheUpdateResponseTranslator implements ITranslator<Tra
    }
 
    private String[] toArray(TransactionRecord row) {
-      return new String[] {String.valueOf(row.getId()), row.getTxType().name(), row.getComment(),
-         String.valueOf(row.getTimeStamp().getTime()), String.valueOf(row.getAuthor()),
-         String.valueOf(row.getCommit()), String.valueOf(row.getBranchId())};
+      return new String[] {
+         String.valueOf(row.getId()),
+         row.getTxType().name(),
+         row.getComment(),
+         String.valueOf(row.getTimeStamp().getTime()),
+         String.valueOf(row.getAuthor()),
+         String.valueOf(row.getCommit()),
+         String.valueOf(row.getBranchId())};
    }
 
    private static TransactionRecord fromArray(TransactionRecordFactory factory, String[] data) throws OseeCoreException {

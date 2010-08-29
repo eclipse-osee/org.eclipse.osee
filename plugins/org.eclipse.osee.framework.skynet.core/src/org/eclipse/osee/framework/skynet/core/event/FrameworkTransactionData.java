@@ -48,8 +48,8 @@ public class FrameworkTransactionData {
    public Set<Artifact> cacheDeletedArtifacts = new HashSet<Artifact>();
    public Set<Artifact> cacheAddedArtifacts = new HashSet<Artifact>();
 
-   // collection of unloaded artifact changes that are NOT currently loaded in the client's artifact cache;  
-   // where UnloadedArtifact contains artifact id, branch and artifact type id 
+   // collection of unloaded artifact changes that are NOT currently loaded in the client's artifact cache;
+   // where UnloadedArtifact contains artifact id, branch and artifact type id
    public Set<UnloadedArtifact> unloadedChangedArtifacts = new HashSet<UnloadedArtifact>();
    public Set<UnloadedArtifact> unloadedDeletedArtifacts = new HashSet<UnloadedArtifact>();
    public Set<UnloadedArtifact> unloadedAddedArtifacts = new HashSet<UnloadedArtifact>();

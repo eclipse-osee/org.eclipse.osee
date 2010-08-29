@@ -34,12 +34,24 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({EventBasicGuidArtifactTest.class, EventBasicGuidRelationTest.class,
-   EventChangeTypeBasicGuidArtifactTest.class, ArtifactQueryTestDemo.class, TransactionManagerTest.class,
-   BranchTestSuite.class, RelationTestSuite.class, ArtifactTypeInheritanceTest.class,
-   Artifact_setAttributeValues.class, Artifact_getLastModified.class, CsvArtifactTest.class,
-   SevereLogMonitorTest.class, RelationDeletionTest.class, StaticIdManagerTest.class, DuplicateHridTest.class,
-   RelationOrderingTest.class, ParsersSuite.class})
+@Suite.SuiteClasses({
+   EventBasicGuidArtifactTest.class,
+   EventBasicGuidRelationTest.class,
+   EventChangeTypeBasicGuidArtifactTest.class,
+   ArtifactQueryTestDemo.class,
+   TransactionManagerTest.class,
+   BranchTestSuite.class,
+   RelationTestSuite.class,
+   ArtifactTypeInheritanceTest.class,
+   Artifact_setAttributeValues.class,
+   Artifact_getLastModified.class,
+   CsvArtifactTest.class,
+   SevereLogMonitorTest.class,
+   RelationDeletionTest.class,
+   StaticIdManagerTest.class,
+   DuplicateHridTest.class,
+   RelationOrderingTest.class,
+   ParsersSuite.class})
 /**
  * @author Donald G. Dunne
  */

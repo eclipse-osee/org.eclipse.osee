@@ -33,7 +33,7 @@ public class TestPrompt implements Serializable {
    }
 
    /**
-    *  
+    * 
     */
    public TestPrompt(String prompt, PromptResponseType type) {
       super();

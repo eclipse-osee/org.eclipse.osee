@@ -37,7 +37,8 @@ public class EnvVariableDialogHelper implements Runnable {
    public void run() {
       EnvVariableDialog dlg =
          new EnvVariableDialog(null, "Add Environment Variable", null, "Enter Name:", MessageDialog.NONE, new String[] {
-            "OK", "Cancel"}, 0);
+            "OK",
+            "Cancel"}, 0);
 
       result = dlg.open();
 

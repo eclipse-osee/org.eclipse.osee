@@ -26,8 +26,13 @@ import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
  * @author Roberto E. Escobar
  */
 public class HighLevelSummary implements ITestRunReport {
-   private static final String[] HEADER = new String[] {CoreAttributeTypes.Partition.getName(),
-      CoreAttributeTypes.Subsystem.getName(), "ScriptCount", "RunTime Issues", "Scripts with Failures", "Scripts Pass"};
+   private static final String[] HEADER = new String[] {
+      CoreAttributeTypes.Partition.getName(),
+      CoreAttributeTypes.Subsystem.getName(),
+      "ScriptCount",
+      "RunTime Issues",
+      "Scripts with Failures",
+      "Scripts Pass"};
    private final Map<String, CollectedData> dataMap;
 
    public HighLevelSummary() {

@@ -441,7 +441,7 @@ public class Jaxp {
     * @param xslPath
     */
    public static void setXslProperty(Document d, String xslPath) {
-      ProcessingInstruction xsl = d.createProcessingInstruction("xml-stylesheet", // 
+      ProcessingInstruction xsl = d.createProcessingInstruction("xml-stylesheet", //
          "type=\"text/xsl\" href=\"" + xslPath + "\"");
       d.appendChild(xsl);
    }

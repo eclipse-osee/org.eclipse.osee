@@ -110,9 +110,14 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
       Artifact programRoot = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(programBranch);
       programRoot.addChild(sawProduct);
 
-      for (String name : new String[] {Requirements.SYSTEM_REQUIREMENTS, Requirements.SUBSYSTEM_REQUIREMENTS,
-         Requirements.SOFTWARE_REQUIREMENTS, Requirements.HARDWARE_REQUIREMENTS, "Verification Tests",
-         "Validation Tests", "Integration Tests"}) {
+      for (String name : new String[] {
+         Requirements.SYSTEM_REQUIREMENTS,
+         Requirements.SUBSYSTEM_REQUIREMENTS,
+         Requirements.SOFTWARE_REQUIREMENTS,
+         Requirements.HARDWARE_REQUIREMENTS,
+         "Verification Tests",
+         "Validation Tests",
+         "Integration Tests"}) {
          programRoot.addChild(ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, programBranch, name));
       }
 

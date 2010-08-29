@@ -72,7 +72,8 @@ public class MultipleHridSearchUi {
          } else {
             ed =
                new EntryDialog(Displays.getActiveShell(), data.getName(), null,
-                  "Enter Legacy ID, Guid or HRID (comma separated)", MessageDialog.QUESTION, new String[] {"OK",
+                  "Enter Legacy ID, Guid or HRID (comma separated)", MessageDialog.QUESTION, new String[] {
+                     "OK",
                      "Cancel"}, 0);
          }
          int response = ed.open();

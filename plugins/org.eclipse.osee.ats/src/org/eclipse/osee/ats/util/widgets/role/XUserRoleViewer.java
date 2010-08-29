@@ -407,11 +407,19 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IArtifa
       try {
          html.append(AHTML.addSpace(1) + AHTML.getLabelStr(AHTML.LABEL_FONT, "Tasks"));
          html.append(AHTML.startBorderTable(100, normalColor, ""));
-         html.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Role", "User", "Hours", "Major", "Minor",
+         html.append(AHTML.addHeaderRowMultiColumnTable(new String[] {
+            "Role",
+            "User",
+            "Hours",
+            "Major",
+            "Minor",
             "Issues"}));
          for (UserRole item : reviewArt.getUserRoleManager().getUserRoles()) {
-            html.append(AHTML.addRowMultiColumnTable(new String[] {item.getRole().name(), item.getUser().getName(),
-               item.getHoursSpentStr(), reviewArt.getUserRoleManager().getNumMajor(item.getUser()) + "",
+            html.append(AHTML.addRowMultiColumnTable(new String[] {
+               item.getRole().name(),
+               item.getUser().getName(),
+               item.getHoursSpentStr(),
+               reviewArt.getUserRoleManager().getNumMajor(item.getUser()) + "",
                reviewArt.getUserRoleManager().getNumMinor(item.getUser()) + "",
                reviewArt.getUserRoleManager().getNumIssues(item.getUser()) + ""}));
          }

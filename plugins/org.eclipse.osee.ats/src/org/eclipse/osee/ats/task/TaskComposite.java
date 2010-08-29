@@ -269,7 +269,9 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
       });
 
       DropTarget target = new DropTarget(taskXViewer.getTree(), DND.DROP_COPY);
-      target.setTransfer(new Transfer[] {FileTransfer.getInstance(), TextTransfer.getInstance(),
+      target.setTransfer(new Transfer[] {
+         FileTransfer.getInstance(),
+         TextTransfer.getInstance(),
          ArtifactTransfer.getInstance()});
       target.addDropListener(new DropTargetAdapter() {
 

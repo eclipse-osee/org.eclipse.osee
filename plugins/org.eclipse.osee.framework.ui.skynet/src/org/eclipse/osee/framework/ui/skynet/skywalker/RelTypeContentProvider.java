@@ -35,7 +35,8 @@ public class RelTypeContentProvider implements ITreeContentProvider {
       }
       if (parentElement instanceof RelationType) {
 
-         return new Object[] {new RelationTypeSide((RelationType) parentElement, RelationSide.SIDE_A),
+         return new Object[] {
+            new RelationTypeSide((RelationType) parentElement, RelationSide.SIDE_A),
             new RelationTypeSide((RelationType) parentElement, RelationSide.SIDE_B)};
       }
       return new Object[] {};

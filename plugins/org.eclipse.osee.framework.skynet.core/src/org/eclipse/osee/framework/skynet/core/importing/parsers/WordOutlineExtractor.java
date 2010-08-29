@@ -38,8 +38,14 @@ public class WordOutlineExtractor extends AbstractArtifactExtractor {
    private static final String TABLE_TAG_WITH_ATTRS = "<w:tbl ";
    private static final String TABLE_TAG_EMPTY = "<w:tbl/>";
    private static final String TABLE_TAG = "<w:tbl>";
-   private static final CharSequence[] BODY_TAGS = new CharSequence[] {PARAGRAPH_TAG, PARAGRAPH_TAG_EMPTY,
-      PARAGRAPH_TAG_WITH_ATTRS, TABLE_TAG, TABLE_TAG_EMPTY, TABLE_TAG_WITH_ATTRS, WordUtil.BODY_END};
+   private static final CharSequence[] BODY_TAGS = new CharSequence[] {
+      PARAGRAPH_TAG,
+      PARAGRAPH_TAG_EMPTY,
+      PARAGRAPH_TAG_WITH_ATTRS,
+      TABLE_TAG,
+      TABLE_TAG_EMPTY,
+      TABLE_TAG_WITH_ATTRS,
+      WordUtil.BODY_END};
 
    // A regex for reading xml elements. Assumes that an element never has a descendant with the same name as itself
    private static final Pattern internalAttributeElementsPattern = Pattern.compile(

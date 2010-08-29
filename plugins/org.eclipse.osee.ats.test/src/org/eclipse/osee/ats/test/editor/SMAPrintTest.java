@@ -49,14 +49,14 @@ public class SMAPrintTest {
       SMAPrint smaPrint = new SMAPrint(teamArt);
       XResultData resultData = smaPrint.getResultData();
       Assert.assertNotNull(resultData);
-      // Make sure it's a reasonable length 
+      // Make sure it's a reasonable length
       Assert.assertTrue(resultData.getReport("report").getManipulatedHtml().length() > 7000);
 
       PeerToPeerReviewArtifact peerArt = (PeerToPeerReviewArtifact) ReviewManager.getReviews(teamArt).iterator().next();
       smaPrint = new SMAPrint(peerArt);
       resultData = smaPrint.getResultData();
       Assert.assertNotNull(resultData);
-      // Make sure it's a reasonable length 
+      // Make sure it's a reasonable length
       Assert.assertTrue(resultData.getReport("report").getManipulatedHtml().length() > 3500);
 
       TaskArtifact taskArt = null;
@@ -69,7 +69,7 @@ public class SMAPrintTest {
       smaPrint = new SMAPrint(taskArt);
       resultData = smaPrint.getResultData();
       Assert.assertNotNull(resultData);
-      // Make sure it's a reasonable length 
+      // Make sure it's a reasonable length
       Assert.assertTrue(resultData.getReport("report").getManipulatedHtml().length() > 2700);
 
       teamArt =
@@ -80,7 +80,7 @@ public class SMAPrintTest {
       smaPrint = new SMAPrint(decArt);
       resultData = smaPrint.getResultData();
       Assert.assertNotNull(resultData);
-      // Make sure it's a reasonable length 
+      // Make sure it's a reasonable length
       Assert.assertTrue(resultData.getReport("report").getManipulatedHtml().length() > 2900);
 
       TestUtil.severeLoggingEnd(monitorLog);

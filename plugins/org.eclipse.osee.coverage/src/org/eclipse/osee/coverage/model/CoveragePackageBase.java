@@ -112,7 +112,7 @@ public abstract class CoveragePackageBase extends NamedIdentity implements ICove
             return coverageUnit;
          }
       }
-      // Create 
+      // Create
       String[] names = namespace.split("\\.");
       String nameStr = "";
       for (String name : names) {

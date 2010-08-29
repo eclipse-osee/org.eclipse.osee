@@ -242,7 +242,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                testNameToResultsMap.put("testArtifactIds",
                   "Error: Duplicate HRIDs: " + XResultData.getHyperlink(artifact));
             }
-            // Check that duplicate Legacy PCR IDs team arts do not exist with different parent actions 
+            // Check that duplicate Legacy PCR IDs team arts do not exist with different parent actions
             if (artifact instanceof TeamWorkFlowArtifact) {
                TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
                String legacyPcrId = artifact.getSoleAttributeValueAsString(AtsAttributeTypes.LegacyPcrId, null);
@@ -408,7 +408,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          for (Artifact artifact : artifacts) {
 
             try {
-               // Test for null attribute values 
+               // Test for null attribute values
                for (Attribute<?> attr : artifact.getAttributes()) {
                   if (attr.getValue() == null) {
                      testNameToResultsMap.put(

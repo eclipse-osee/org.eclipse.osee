@@ -35,7 +35,8 @@ import org.osgi.framework.BundleContext;
  */
 public class OseeEventSystemServiceRegHandler extends AbstractTrackingHandler {
 
-   private static final Class<?>[] DEPENDENCIES = new Class<?>[] {IOseeCachingService.class,
+   private static final Class<?>[] DEPENDENCIES = new Class<?>[] {
+      IOseeCachingService.class,
       IOseeCoreModelEventService.class};
 
    @Override

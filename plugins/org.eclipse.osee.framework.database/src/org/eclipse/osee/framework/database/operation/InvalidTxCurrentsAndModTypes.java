@@ -81,7 +81,9 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
                purgeData.add(new Object[] {address.getTransactionId(), address.getGammaId()});
             } else if (address.getCorrectedTxCurrent() != null) {
                logIssue("corrected txCurrent: " + address.getCorrectedTxCurrent(), address);
-               currentData.add(new Object[] {address.getCorrectedTxCurrent().getValue(), address.getTransactionId(),
+               currentData.add(new Object[] {
+                  address.getCorrectedTxCurrent().getValue(),
+                  address.getTransactionId(),
                   address.getGammaId()});
             } else {
                System.out.println("would have fixed merge here");

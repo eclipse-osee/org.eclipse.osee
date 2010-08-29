@@ -239,7 +239,7 @@ public class SingletonServiceBinderTest {
 
       handler.reset();
 
-      // Add another dependency to check that onActivate is 
+      // Add another dependency to check that onActivate is
       // not called when dependencies that might be managed by other binders are missing
       serviceMap.put(Boolean.class, new HashSet<Object>());
 

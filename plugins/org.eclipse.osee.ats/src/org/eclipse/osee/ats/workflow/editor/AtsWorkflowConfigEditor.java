@@ -140,7 +140,7 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
             super.configurePaletteViewer(viewer);
             // create a drag source listener for this palette viewer
             // together with an appropriate transfer drop target listener, this will enable
-            // model element creation by dragging a CombinatedTemplateCreationEntries 
+            // model element creation by dragging a CombinatedTemplateCreationEntries
             // from the palette into the editor
             // @see ShapesEditor#createTransferDropTargetListener()
             viewer.addDragSourceListener(new TemplateTransferDragSourceListener(viewer));

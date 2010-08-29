@@ -24,7 +24,7 @@ import java.util.Map.Entry;
  * <pre>
  *    Character Entity Name   Description
  *       &quot;   &amp;quot;    quotation mark
- *       '        &amp;apos; apostrophe 
+ *       '        &amp;apos; apostrophe
  *       &amp;    &amp;amp;     ampersand
  *       &lt;     &amp;lt;      less-than
  *       &gt;     &amp;gt;      greater-than
@@ -48,7 +48,7 @@ import java.util.Map.Entry;
  *       ®    &amp;reg     registered trademark
  *       ¯    &amp;macr    spacing macron
  *       °    &amp;deg     degree
- *       ±    &amp;plusmn  plus-or-minus 
+ *       ±    &amp;plusmn  plus-or-minus
  *       ²    &amp;sup2    superscript 2
  *       ³    &amp;sup3    superscript 3
  *       ´    &amp;acute   spacing acute

@@ -14,7 +14,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({CrossBranchRelationLinkTest.class, RelationOrderTestSuite.class, RelationTypeSideSorterTest.class,
+@Suite.SuiteClasses({
+   CrossBranchRelationLinkTest.class,
+   RelationOrderTestSuite.class,
+   RelationTypeSideSorterTest.class,
    LoadDeletedRelationTest.class})
 /**
  * @author Roberto E. Escobar

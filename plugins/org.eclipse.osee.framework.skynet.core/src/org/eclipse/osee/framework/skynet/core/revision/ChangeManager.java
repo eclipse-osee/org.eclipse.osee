@@ -137,7 +137,11 @@ public final class ChangeManager {
          while (branch.hasParentBranch()) {
             transactionNumber = branch.getSourceTransaction().getId();
             branch = branch.getParentBranch();
-            insertParameters.add(new Object[] {queryId, insertTime, artifact.getArtId(), branch.getId(),
+            insertParameters.add(new Object[] {
+               queryId,
+               insertTime,
+               artifact.getArtId(),
+               branch.getId(),
                transactionNumber});
          }
       }
@@ -184,7 +188,11 @@ public final class ChangeManager {
          // hierarchy
          for (Branch workingBranch : BranchManager.getBranches(BranchArchivedState.UNARCHIVED, BranchType.WORKING)) {
             if (artifact.getBranch().equals(workingBranch.getParentBranch())) {
-               insertParameters.add(new Object[] {queryId, insertTime, artifact.getArtId(), workingBranch.getId(),
+               insertParameters.add(new Object[] {
+                  queryId,
+                  insertTime,
+                  artifact.getArtId(),
+                  workingBranch.getId(),
                   SQL3DataType.INTEGER});
             }
          }

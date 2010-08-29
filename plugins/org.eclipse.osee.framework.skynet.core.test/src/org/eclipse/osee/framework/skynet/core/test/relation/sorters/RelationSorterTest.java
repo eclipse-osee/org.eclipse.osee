@@ -99,8 +99,13 @@ public class RelationSorterTest {
       IArtifact art4 = createArtifact(names[3], GUID.create());
 
       List<IArtifact> artifacts = Arrays.asList(art1, art2, art3, art4);
-      return new Object[] {"Unordered Test", new UnorderedRelationSorter(), RelationOrderBaseTypes.UNORDERED, null,
-         artifacts, artifacts};
+      return new Object[] {
+         "Unordered Test",
+         new UnorderedRelationSorter(),
+         RelationOrderBaseTypes.UNORDERED,
+         null,
+         artifacts,
+         artifacts};
    }
 
    private static Object[] createLexicographicalTest(SortMode mode, String... names) {
@@ -114,8 +119,13 @@ public class RelationSorterTest {
 
       List<IArtifact> itemsToOrder = Arrays.asList(art3, art1, art4, art2);
       List<IArtifact> expectedOrder = Arrays.asList(art1, art2, art3, art4);
-      return new Object[] {"Lex Test " + mode.name(), new LexicographicalRelationSorter(mode), orderId, null,
-         itemsToOrder, expectedOrder};
+      return new Object[] {
+         "Lex Test " + mode.name(),
+         new LexicographicalRelationSorter(mode),
+         orderId,
+         null,
+         itemsToOrder,
+         expectedOrder};
    }
 
    private static Object[] getTestUserDefined(String... names) {
@@ -127,8 +137,13 @@ public class RelationSorterTest {
       List<IArtifact> itemsToOrder = Arrays.asList(art2, art1, art3, art4);
       List<IArtifact> expectedOrder = Arrays.asList(art1, art2, art3, art4);
       List<String> relatives = Artifacts.toGuids(Arrays.asList(art1, art2, art3, art4));
-      return new Object[] {"UserDefined", new UserDefinedRelationSorter(), RelationOrderBaseTypes.USER_DEFINED,
-         relatives, itemsToOrder, expectedOrder};
+      return new Object[] {
+         "UserDefined",
+         new UserDefinedRelationSorter(),
+         RelationOrderBaseTypes.USER_DEFINED,
+         relatives,
+         itemsToOrder,
+         expectedOrder};
    }
 
    private static IArtifact createArtifact(String name, String guid) {

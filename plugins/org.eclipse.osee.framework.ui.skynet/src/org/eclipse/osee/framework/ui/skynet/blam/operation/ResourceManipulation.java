@@ -167,11 +167,22 @@ public class ResourceManipulation extends AbstractBlam {
                if (countlast + 1 != count) {
                   System.out.println("");
                }
-               System.out.println(count + "   " + byt + " " + new String(new byte[] {originalData[count - 8],
-                  originalData[count - 7], originalData[count - 6], originalData[count - 5], originalData[count - 4],
-                  originalData[count - 3], originalData[count - 2], originalData[count - 1], originalData[count],
-                  originalData[count + 1], originalData[count + 2], originalData[count + 3], originalData[count + 4],
-                  originalData[count + 5], originalData[count + 6]}, "UTF-8"));
+               System.out.println(count + "   " + byt + " " + new String(new byte[] {
+                  originalData[count - 8],
+                  originalData[count - 7],
+                  originalData[count - 6],
+                  originalData[count - 5],
+                  originalData[count - 4],
+                  originalData[count - 3],
+                  originalData[count - 2],
+                  originalData[count - 1],
+                  originalData[count],
+                  originalData[count + 1],
+                  originalData[count + 2],
+                  originalData[count + 3],
+                  originalData[count + 4],
+                  originalData[count + 5],
+                  originalData[count + 6]}, "UTF-8"));
                countlast = count;
             }
          }
@@ -185,11 +196,23 @@ public class ResourceManipulation extends AbstractBlam {
                if (countlast + 1 != count) {
                   System.out.println("");
                }
-               System.out.println(count + "   " + byt + " " + new String(new byte[] {finalVersion[count - 9],
-                  finalVersion[count - 8], finalVersion[count - 7], finalVersion[count - 6], finalVersion[count - 5],
-                  finalVersion[count - 4], finalVersion[count - 3], finalVersion[count - 2], finalVersion[count - 1],
-                  finalVersion[count], finalVersion[count + 1], finalVersion[count + 2], finalVersion[count + 3],
-                  finalVersion[count + 4], finalVersion[count + 5], finalVersion[count + 6]}, "UTF-8"));
+               System.out.println(count + "   " + byt + " " + new String(new byte[] {
+                  finalVersion[count - 9],
+                  finalVersion[count - 8],
+                  finalVersion[count - 7],
+                  finalVersion[count - 6],
+                  finalVersion[count - 5],
+                  finalVersion[count - 4],
+                  finalVersion[count - 3],
+                  finalVersion[count - 2],
+                  finalVersion[count - 1],
+                  finalVersion[count],
+                  finalVersion[count + 1],
+                  finalVersion[count + 2],
+                  finalVersion[count + 3],
+                  finalVersion[count + 4],
+                  finalVersion[count + 5],
+                  finalVersion[count + 6]}, "UTF-8"));
                countlast = count;
             }
          }

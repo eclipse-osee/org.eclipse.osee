@@ -175,8 +175,12 @@ public class ConsolidateRelationsTxOperation extends AbstractDbTxOperation {
 
             if (isNextAddressing(netGammaId, transactionId)) {
                if (updateAddressing) {
-                  updateAddressingData.add(new Object[] {previousNetGammaId, netModType.getValue(),
-                     netTxCurrent.getValue(), previousTransactionId, previousObsoleteGammaId});
+                  updateAddressingData.add(new Object[] {
+                     previousNetGammaId,
+                     netModType.getValue(),
+                     netTxCurrent.getValue(),
+                     previousTransactionId,
+                     previousObsoleteGammaId});
                }
                updateAddressing = obsoleteGammaId != netGammaId;
                previousNetGammaId = netGammaId;

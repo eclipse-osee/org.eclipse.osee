@@ -64,7 +64,10 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       MessageDialog dialog =
          new MessageDialog(Displays.getActiveShell(), getName(), null,
             getName() + "\n\nSelect Source or Destination Client", MessageDialog.QUESTION, new String[] {
-               "Source Client", "Destination Client - Start", "Destination Client - End", "Cancel"}, 2);
+               "Source Client",
+               "Destination Client - Start",
+               "Destination Client - End",
+               "Cancel"}, 2);
       int result = dialog.open();
       resultData = new XResultData();
       if (result == 0) {

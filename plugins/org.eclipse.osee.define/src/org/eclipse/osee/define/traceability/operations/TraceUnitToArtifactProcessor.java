@@ -356,8 +356,11 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
             for (TraceUnit unit : reportTraceNotFound.keySet()) {
                Collection<TraceMark> traceMarks = reportTraceNotFound.getValues(unit);
                for (TraceMark traceMark : traceMarks) {
-                  rows.add(new ResultsXViewerRow(new String[] {unit.getName(), unit.getTraceUnitType(),
-                     traceMark.getTraceType(), traceMark.getRawTraceMark()}));
+                  rows.add(new ResultsXViewerRow(new String[] {
+                     unit.getName(),
+                     unit.getTraceUnitType(),
+                     traceMark.getTraceType(),
+                     traceMark.getRawTraceMark()}));
                }
             }
             toReturn.add(new ResultsEditorTableTab("Trace Marks Not Found", columns, rows));

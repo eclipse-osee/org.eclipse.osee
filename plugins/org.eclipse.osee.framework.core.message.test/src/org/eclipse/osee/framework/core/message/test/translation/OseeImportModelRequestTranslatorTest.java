@@ -46,7 +46,8 @@ public class OseeImportModelRequestTranslatorTest extends BaseTranslatorTest<Ose
       ITranslator<OseeImportModelRequest> translator = new OseeImportModelRequestTranslator();
 
       List<Object[]> data = new ArrayList<Object[]>();
-      data.add(new Object[] {new OseeImportModelRequest("dummy:/model.osee", "dummy model", false, true, false),
+      data.add(new Object[] {
+         new OseeImportModelRequest("dummy:/model.osee", "dummy model", false, true, false),
          translator});
       return data;
    }

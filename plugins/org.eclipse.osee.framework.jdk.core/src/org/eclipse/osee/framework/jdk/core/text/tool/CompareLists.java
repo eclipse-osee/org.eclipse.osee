@@ -65,7 +65,7 @@ public class CompareLists {
          out.write(complement.get(i) + "\n");
       }
 
-      //The intersection of two sets A and B is the set of elements common to A and B. 
+      //The intersection of two sets A and B is the set of elements common to A and B.
       out.write("\nItems in both lists\n\n");
       ArrayList intersection = Collections.setIntersection(setA, setB);
       for (int i = 0; i < intersection.size(); i++) {

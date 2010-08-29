@@ -18,6 +18,10 @@ import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironment;
  * @author Ken J. Aguilar
  */
 public class ConnectionRequestResult implements Serializable {
+   /**
+    * 
+    */
+   private static final long serialVersionUID = -2269465634573908989L;
    private final ITestEnvironment environment;
    private final UserTestSessionKey sessionKey;
    private final ReturnStatus status;

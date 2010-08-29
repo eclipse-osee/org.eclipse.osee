@@ -38,8 +38,10 @@ import org.junit.Test;
  * @author Roberto E. Escobar
  */
 public class AttributeTypeEditPresenterTest {
-   private static final IAttributeType[] selectableTypes = new IAttributeType[] {CoreAttributeTypes.RelationOrder,
-      CoreAttributeTypes.Annotation, CoreAttributeTypes.StaticId};
+   private static final IAttributeType[] selectableTypes = new IAttributeType[] {
+      CoreAttributeTypes.RelationOrder,
+      CoreAttributeTypes.Annotation,
+      CoreAttributeTypes.StaticId};
 
    private static AttributeTypeEditPresenter controller;
    private static MockDisplay display;

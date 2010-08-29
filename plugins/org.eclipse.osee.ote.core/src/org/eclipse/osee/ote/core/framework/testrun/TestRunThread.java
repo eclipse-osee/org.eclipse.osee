@@ -128,7 +128,7 @@ public class TestRunThread extends OseeTestThread {
       if (Thread.currentThread() == this.getThread()) {
          throw new TestException("", Level.SEVERE);
       }
-      // 
+      //
       if (lock.isLocked()) {
          // test case is in process
          this.interrupt();
@@ -159,7 +159,7 @@ public class TestRunThread extends OseeTestThread {
       if (Thread.currentThread() == this.getThread()) {
          throw new TestException("", Level.SEVERE);
       }
-      // 
+      //
       if (lock.isLocked()) {
          // test case is in process
          this.interrupt();

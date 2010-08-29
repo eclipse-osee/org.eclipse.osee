@@ -70,8 +70,10 @@ public class RepeatEnumerationAttributeValues extends DatabaseHealthOperation {
       for (Branch branch : attributesWithErrors.keySet()) {
          appendToDetails(AHTML.addRowSpanMultiColumnTable(branch.getName(), 3));
          for (AttrData attrData : attributesWithErrors.getValues(branch)) {
-            appendToDetails(AHTML.addRowMultiColumnTable(new String[] {attrData.getArtifactGuid(),
-               AttributeTypeManager.getType(attrData.getAttributeTypeId()).getName(), attrData.getValue()}));
+            appendToDetails(AHTML.addRowMultiColumnTable(new String[] {
+               attrData.getArtifactGuid(),
+               AttributeTypeManager.getType(attrData.getAttributeTypeId()).getName(),
+               attrData.getValue()}));
          }
       }
       appendToDetails(AHTML.endMultiColumnTable());

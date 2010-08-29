@@ -27,7 +27,7 @@ public final class AtsObjectContextId {
    // @formatter:on
 
    private AtsObjectContextId() {
-      // 
+      //
    }
 
 }

@@ -105,13 +105,13 @@ public class ModelManager implements IModelManager, DestroyableService {
    //      ModelKey realKey = findModelKey(referenceCountOfModels.keySet(), key);
    //      referenceCountOfModels.put(realKey, referenceCountOfModels.get(key).intValue() + 1);
    //   }
-   //   
+   //
    //   private void decrementReferenceCount(ModelKey key)
    //   {
    //      ModelKey realKey = findModelKey(referenceCountOfModels.keySet(), key);
    //      referenceCountOfModels.put(realKey, referenceCountOfModels.get(key).intValue() -1);
    //   }
-   //   
+   //
    //   private Integer getReferenceCount(ModelKey key)
    //   {
    //      ModelKey realKey = findModelKey(referenceCountOfModels.keySet(), key);

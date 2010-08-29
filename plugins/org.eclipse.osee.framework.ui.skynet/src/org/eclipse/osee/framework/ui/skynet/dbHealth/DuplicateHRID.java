@@ -114,13 +114,19 @@ public class DuplicateHRID extends DatabaseHealthOperation {
 
                if (results == null) {
                   results =
-                     new String[] {String.valueOf(getAdditionalCounts(COUNT_ATTRIBUTE_VALUES_CONTAINING, dup.hrid)),
+                     new String[] {
+                        String.valueOf(getAdditionalCounts(COUNT_ATTRIBUTE_VALUES_CONTAINING, dup.hrid)),
                         String.valueOf(getAdditionalCounts(COUNT_COMMENTS_CONTAINING, dup.hrid)),
                         String.valueOf(getAdditionalCounts(COUNT_BRANCH_NAMES_CONTAINING, dup.hrid))};
                   knownValues.put(dup.hrid, results);
                }
-               rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {dup.guid, dup.hrid, dup.artTypeName, results[0],
-                  results[1], results[2]}));
+               rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {
+                  dup.guid,
+                  dup.hrid,
+                  dup.artTypeName,
+                  results[0],
+                  results[1],
+                  results[2]}));
                monitor.worked(stepAmount);
             }
          } else {

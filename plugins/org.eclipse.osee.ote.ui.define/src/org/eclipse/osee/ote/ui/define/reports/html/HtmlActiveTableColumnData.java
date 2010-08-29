@@ -66,7 +66,7 @@ public class HtmlActiveTableColumnData {
       builder.append(", sortable: ");
       builder.append(isSortable());
 
-      //TODO: Add special renderer calls 
+      //TODO: Add special renderer calls
 
       builder.append(", dataIndex: ");
       builder.append(escapeString(getName().toLowerCase()));

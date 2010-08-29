@@ -1522,7 +1522,7 @@ public final class SearchCCombo extends Composite {
                }
             }
 
-            // Further work : Need to add support for incremental search in 
+            // Further work : Need to add support for incremental search in
             // pop up list as characters typed in text widget
 
             Event e = new Event();

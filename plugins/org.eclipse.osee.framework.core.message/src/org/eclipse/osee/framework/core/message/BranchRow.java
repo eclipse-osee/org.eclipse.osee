@@ -70,8 +70,14 @@ public final class BranchRow {
    }
 
    public String[] toArray() {
-      return new String[] {getBranchArchived().name(), getBranchGuid(), String.valueOf(getBranchId()), getBranchName(),
-         getBranchState().name(), getBranchType().name(), getStorageState().name()};
+      return new String[] {
+         getBranchArchived().name(),
+         getBranchGuid(),
+         String.valueOf(getBranchId()),
+         getBranchName(),
+         getBranchState().name(),
+         getBranchType().name(),
+         getStorageState().name()};
    }
 
    public static BranchRow fromArray(String[] data) {

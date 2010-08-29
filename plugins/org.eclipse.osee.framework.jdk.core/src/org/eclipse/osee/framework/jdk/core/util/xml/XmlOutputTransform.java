@@ -48,7 +48,7 @@ public final class XmlOutputTransform {
       boolean isNetworked = false;
 
       if (true != isNetworked) {
-         // Perform Transform Directly 
+         // Perform Transform Directly
          xmlToHtml(inputXML, inputXslt, new StreamResult(result));
       } else {
          // Perform Transform as a Separate process by launching an XmlTransformServer.

@@ -28,8 +28,12 @@ import org.osgi.service.packageadmin.PackageAdmin;
  */
 public class OteServiceStarterCreationHandler extends AbstractTrackingHandler {
 
-   private final static Class<?>[] SERVICE_DEPENDENCIES = new Class<?>[] {IRuntimeLibraryManager.class,
-      RemoteServiceRegistrar.class, MessageService.class, IConnectionService.class, PackageAdmin.class};
+   private final static Class<?>[] SERVICE_DEPENDENCIES = new Class<?>[] {
+      IRuntimeLibraryManager.class,
+      RemoteServiceRegistrar.class,
+      MessageService.class,
+      IConnectionService.class,
+      PackageAdmin.class};
    private ServiceRegistration registration;
 
    OteServiceStarterCreationHandler() {

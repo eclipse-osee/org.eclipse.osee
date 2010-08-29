@@ -29,7 +29,7 @@ public class AttributeTaggerProviderServiceRegHandler extends AbstractTrackingHa
 
    //@formatter:off
    private static final Class<?>[] SERVICE_DEPENDENCIES = new Class<?>[] {
-      IResourceLocatorManager.class, 
+      IResourceLocatorManager.class,
       IResourceManager.class
    };
    //@formatter:on

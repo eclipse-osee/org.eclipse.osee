@@ -328,11 +328,11 @@ public class UnitTestSupport {
          checkList(element, goodValues, 100);
       }
 
-      // check pass 
+      // check pass
       maintainRandomizedList(element, goodValues, 500);
       checkList(element, goodValues, 500);
 
-      // check failure 
+      // check failure
       maintainRandomizedList(element, badValues, 500);
       checkListFail(element, goodValues, 500);
    }
@@ -360,7 +360,7 @@ public class UnitTestSupport {
          }
       }
 
-      // check failure 
+      // check failure
       handle = maintainRandomizedList(element, excludeValues, 10);
       try {
          checkNotInListFail(element, excludeValues, 550);

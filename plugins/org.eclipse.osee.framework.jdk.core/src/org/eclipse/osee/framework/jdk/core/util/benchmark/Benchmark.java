@@ -244,8 +244,11 @@ public class Benchmark {
 
       // Sorry Need to keep this java 1.4 compatible
       Object[] formatArgs =
-         {new Long(bm.getTotalSamples()), new Float((float) bm.getLongestSample() / 1000),
-            new Float((float) bm.getShortestSample() / 1000), new Float((float) bm.getAverage() / 1000),
+         {
+            new Long(bm.getTotalSamples()),
+            new Float((float) bm.getLongestSample() / 1000),
+            new Float((float) bm.getShortestSample() / 1000),
+            new Float((float) bm.getAverage() / 1000),
             new Long(bm.getExceedCount())};
       MessageFormat outmessage =
          new MessageFormat(

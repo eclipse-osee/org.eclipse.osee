@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
  * Test: @link RoughArtifactTest
- *
+ * 
  * @author Robert A. Fisher
  * @author Ryan D. Brooks
  */

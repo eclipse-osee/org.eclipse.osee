@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.providers.IBinaryAttribu
 public abstract class BinaryBackedAttribute<T> extends Attribute<T> {
    @Override
    public IBinaryAttributeDataProvider getAttributeDataProvider() {
-      // this cast is always safe since the the data provider passed in the constructor to 
+      // this cast is always safe since the the data provider passed in the constructor to
       // the super class is of type  IBinaryAttributeDataProvider
       return (IBinaryAttributeDataProvider) super.getAttributeDataProvider();
    }

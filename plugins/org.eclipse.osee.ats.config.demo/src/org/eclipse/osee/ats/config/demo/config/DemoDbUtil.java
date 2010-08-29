@@ -42,7 +42,8 @@ public class DemoDbUtil {
    public static List<DemoCodeTeamWorkflowArtifact> getSampleCodeWorkflows() throws OseeCoreException {
       if (codeArts == null) {
          codeArts = new ArrayList<DemoCodeTeamWorkflowArtifact>();
-         for (String actionName : new String[] {"SAW (committed) Reqt Changes for Diagram View",
+         for (String actionName : new String[] {
+            "SAW (committed) Reqt Changes for Diagram View",
             "SAW (uncommitted) More Reqt Changes for Diagram View"}) {
             DemoCodeTeamWorkflowArtifact codeArt = null;
             for (Artifact art : ArtifactQuery.getArtifactListFromName(actionName, AtsUtil.getAtsBranch(),

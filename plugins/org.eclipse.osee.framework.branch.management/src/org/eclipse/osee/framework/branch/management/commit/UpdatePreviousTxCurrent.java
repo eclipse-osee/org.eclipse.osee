@@ -71,7 +71,10 @@ public class UpdatePreviousTxCurrent {
       try {
          chStmt.runPreparedQuery(10000, query, queryId, branch.getId());
          while (chStmt.next()) {
-            updateData.add(new Object[] {branch.getId(), chStmt.getLong("gamma_id"), TxChange.NOT_CURRENT.getValue(),
+            updateData.add(new Object[] {
+               branch.getId(),
+               chStmt.getLong("gamma_id"),
+               TxChange.NOT_CURRENT.getValue(),
                chStmt.getInt("transaction_id")});
          }
       } finally {

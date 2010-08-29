@@ -144,7 +144,7 @@ class OteJmsServiceConnector implements ServiceNotification, OseeMessagingStatus
             ByteArrayInputStream bais = new ByteArrayInputStream((byte[]) message);
             ObjectInputStream ois = new ObjectInputStream(bais);
             Object msg = ois.readObject();
-            String messageId = msg.toString();
+            msg.toString();
             Object obj = ois.readObject();
             IHostTestEnvironment hostEnv = (IHostTestEnvironment) obj;
             String id = hostEnv.getProperties().getProperty("id").toString();

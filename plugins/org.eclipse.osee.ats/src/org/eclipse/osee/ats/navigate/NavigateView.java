@@ -136,7 +136,7 @@ public class NavigateView extends ViewPart implements IActionable {
                   AtsPlugin.getInstance().setHelp(xNavComp, HELP_CONTEXT_ID, "org.eclipse.osee.ats.help.ui");
                   createToolBar();
 
-                  // add search text box      
+                  // add search text box
                   AtsQuickSearchComposite composite = new AtsQuickSearchComposite(xNavComp, SWT.NONE);
                   composite.addDisposeListener(new DisposeListener() {
 

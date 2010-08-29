@@ -46,8 +46,24 @@ public class TestIntegerOperations {
       TestMessage msg = new TestMessage();
       support.activateMsg(msg);
       int maxElementValue = getMaxIntValue(msg.INT_ELEMENT_1);
-      support.genericTestCheckWaitForValue(msg.INT_ELEMENT_1, new Integer[] {10, 30, 31, 30, 50, 75, maxElementValue,
-         maxElementValue, 400, 1, maxElementValue, 0, maxElementValue, 1, 0, 1, 2}, 49);
+      support.genericTestCheckWaitForValue(msg.INT_ELEMENT_1, new Integer[] {
+         10,
+         30,
+         31,
+         30,
+         50,
+         75,
+         maxElementValue,
+         maxElementValue,
+         400,
+         1,
+         maxElementValue,
+         0,
+         maxElementValue,
+         1,
+         0,
+         1,
+         2}, 49);
    }
 
    @Test
@@ -63,8 +79,17 @@ public class TestIntegerOperations {
       TestMessage msg = new TestMessage();
       support.activateMsg(msg);
       int maxElementValue = getMaxIntValue(msg.INT_ELEMENT_1);
-      support.genericCheckMaintain(msg.INT_ELEMENT_1, new Integer[] {0, maxElementValue, 0, 0, maxElementValue,
-         maxElementValue, 1000, 5, 1, maxElementValue - 1});
+      support.genericCheckMaintain(msg.INT_ELEMENT_1, new Integer[] {
+         0,
+         maxElementValue,
+         0,
+         0,
+         maxElementValue,
+         maxElementValue,
+         1000,
+         5,
+         1,
+         maxElementValue - 1});
    }
 
    @Test
@@ -250,8 +275,12 @@ public class TestIntegerOperations {
       TestMessage msg = new TestMessage();
       support.activateMsg(msg);
 
-      support.genericTestCheckList(msg.INT_ELEMENT_1, new Integer[] {20, 40, 50, 60, 80, 100}, new Integer[] {200, 300,
-         400, 500, 600});
+      support.genericTestCheckList(msg.INT_ELEMENT_1, new Integer[] {20, 40, 50, 60, 80, 100}, new Integer[] {
+         200,
+         300,
+         400,
+         500,
+         600});
    }
 
    @Test
@@ -259,8 +288,12 @@ public class TestIntegerOperations {
       TestMessage msg = new TestMessage();
       support.activateMsg(msg);
 
-      support.genericTestCheckNotList(msg.INT_ELEMENT_1, new Integer[] {20, 40, 50, 60, 80, 100}, new Integer[] {200,
-         300, 400, 500, 600});
+      support.genericTestCheckNotList(msg.INT_ELEMENT_1, new Integer[] {20, 40, 50, 60, 80, 100}, new Integer[] {
+         200,
+         300,
+         400,
+         500,
+         600});
    }
 
    @Test

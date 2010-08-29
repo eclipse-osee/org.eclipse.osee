@@ -120,14 +120,27 @@ public class DatabaseRelationTypeAccessor extends AbstractDatabaseAccessor<Relat
    }
 
    private Object[] toInsertValues(RelationType type) {
-      return new Object[] {type.getId(), type.getGuid(), type.getName(), type.getSideAName(), type.getSideBName(),
-         type.getArtifactTypeSideA().getId(), type.getArtifactTypeSideB().getId(), type.getMultiplicity().getValue(),
+      return new Object[] {
+         type.getId(),
+         type.getGuid(),
+         type.getName(),
+         type.getSideAName(),
+         type.getSideBName(),
+         type.getArtifactTypeSideA().getId(),
+         type.getArtifactTypeSideB().getId(),
+         type.getMultiplicity().getValue(),
          type.getDefaultOrderTypeGuid()};
    }
 
    private Object[] toUpdateValues(RelationType type) {
-      return new Object[] {type.getName(), type.getSideAName(), type.getSideBName(),
-         type.getArtifactTypeSideA().getId(), type.getArtifactTypeSideB().getId(), type.getMultiplicity().getValue(),
-         type.getDefaultOrderTypeGuid(), type.getId()};
+      return new Object[] {
+         type.getName(),
+         type.getSideAName(),
+         type.getSideBName(),
+         type.getArtifactTypeSideA().getId(),
+         type.getArtifactTypeSideB().getId(),
+         type.getMultiplicity().getValue(),
+         type.getDefaultOrderTypeGuid(),
+         type.getId()};
    }
 }

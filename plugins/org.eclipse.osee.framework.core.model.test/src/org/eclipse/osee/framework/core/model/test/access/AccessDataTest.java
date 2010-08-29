@@ -188,7 +188,7 @@ public class AccessDataTest {
       String message =
          "accessData [\n" + //
          "\tCommon - accessDetail [ object=[RelationTypeSide [type=[sideA_2]<-[relType_2]->[sideB_2], side=SIDE_A]] permission=[WRITE] reason=[item 2 - write]],\n" + //
-         "\tSystem Root Branch - accessDetail [ object=[RelationTypeSide [type=[sideA_2]<-[relType_2]->[sideB_2], side=SIDE_A]] permission=[DENY] reason=[item 1 - deny]],\n" + // 
+         "\tSystem Root Branch - accessDetail [ object=[RelationTypeSide [type=[sideA_2]<-[relType_2]->[sideB_2], side=SIDE_A]] permission=[DENY] reason=[item 1 - deny]],\n" + //
          "]";
       Assert.assertEquals(message, data.toString());
    }

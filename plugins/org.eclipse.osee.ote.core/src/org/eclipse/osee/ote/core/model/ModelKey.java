@@ -14,11 +14,11 @@ import java.io.Serializable;
 
 @SuppressWarnings("unchecked")
 /**
- * This key is used by the model manager to search for a model already instanciated for this environment. 
+ * This key is used by the model manager to search for a model already instanciated for this environment.
  * Each of the getter functions MUST return a unique identifier for the specific model they represent ( or null if
  * that particular type isn't available).
  * @author Andrew M. Finkbeiner
- * @param <M> 
+ * @param <M>
  */
 public class ModelKey<M extends IModel> implements Serializable, Comparable {
    /**

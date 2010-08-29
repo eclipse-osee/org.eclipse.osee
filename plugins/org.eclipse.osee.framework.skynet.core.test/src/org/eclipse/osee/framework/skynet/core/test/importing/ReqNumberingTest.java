@@ -49,7 +49,11 @@ public class ReqNumberingTest {
    @Test
    public void testCompare() {
       ReqNumbering[] sequence =
-         {new ReqNumbering("1"), new ReqNumbering("1.3"), new ReqNumbering("1.3.1.1.1.1.1.1"), new ReqNumbering("2.4"),
+         {
+            new ReqNumbering("1"),
+            new ReqNumbering("1.3"),
+            new ReqNumbering("1.3.1.1.1.1.1.1"),
+            new ReqNumbering("2.4"),
             new ReqNumbering("3")};
       for (int i = 0; i <= 2; i++) {
          assertTrue(sequence[i].compareTo(sequence[i + 1]) < 0);

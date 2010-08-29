@@ -43,7 +43,7 @@ public class WordMLExtractorDelegateTableOfContentsTest {
          try {
             delegate.processContent(null, false, false, null, null, null, matcher.group(), false);
          } catch (OseeCoreException ex) {
-            //we should get an exception because 
+            //we should get an exception because
             Assert.assertTrue(true);
          }
       }

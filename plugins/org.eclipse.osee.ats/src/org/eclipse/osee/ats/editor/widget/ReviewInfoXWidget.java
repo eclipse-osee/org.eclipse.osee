@@ -214,7 +214,9 @@ public class ReviewInfoXWidget extends XLabelValueBase {
          html.append(AHTML.startBorderTable(100, Overview.normalColor, ""));
          html.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Review Type", "Title", "ID"}));
          for (ReviewSMArtifact art : ReviewManager.getReviews(teamArt, forStateName)) {
-            html.append(AHTML.addRowMultiColumnTable(new String[] {art.getArtifactTypeName(), art.getName(),
+            html.append(AHTML.addRowMultiColumnTable(new String[] {
+               art.getArtifactTypeName(),
+               art.getName(),
                art.getHumanReadableId()}));
          }
          html.append(AHTML.endBorderTable());

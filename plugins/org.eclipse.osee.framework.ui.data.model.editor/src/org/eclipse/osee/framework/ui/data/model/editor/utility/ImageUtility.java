@@ -24,8 +24,15 @@ import org.eclipse.swt.graphics.ImageLoader;
 public class ImageUtility {
 
    private final static byte[] JPEG_HEADER = new byte[] {(byte) 0xff, (byte) 0xd8};
-   private final static byte[] PNG_HEADER = new byte[] {(byte) 0x89, (byte) 0x50, (byte) 0x4E, (byte) 0x47,
-      (byte) 0x0D, (byte) 0x0A, (byte) 0x1A, (byte) 0x0A};
+   private final static byte[] PNG_HEADER = new byte[] {
+      (byte) 0x89,
+      (byte) 0x50,
+      (byte) 0x4E,
+      (byte) 0x47,
+      (byte) 0x0D,
+      (byte) 0x0A,
+      (byte) 0x1A,
+      (byte) 0x0A};
    private final static byte[] GIF_HEADER = new byte[] {(byte) 0x47, (byte) 0x49, (byte) 0x46};
    private final static byte[] TIFF_HEADER = new byte[] {(byte) 0x49, (byte) 0x49, (byte) 0x2A};
    private final static byte[] BMP_HEADER = new byte[] {(byte) 0x42, (byte) 0x4D};

@@ -19,8 +19,12 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({RelationOrderParserTest.class, RelationSorterProviderTest.class, RelationOrderDataTest.class,
-   RelationSorterTest.class, RelationOrderMergerTest.class})
+@Suite.SuiteClasses({
+   RelationOrderParserTest.class,
+   RelationSorterProviderTest.class,
+   RelationOrderDataTest.class,
+   RelationSorterTest.class,
+   RelationOrderMergerTest.class})
 /**
  * @author Roberto E. Escobar
  */

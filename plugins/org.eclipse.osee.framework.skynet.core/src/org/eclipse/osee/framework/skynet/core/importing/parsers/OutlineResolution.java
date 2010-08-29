@@ -60,7 +60,7 @@ public final class OutlineResolution {
             //i.e. last=2.1.1.1 current=2.1.1.1.1
             zeroDeltaCounter++;
          } else if (delta < 0) {
-            //negative delta, therefore number 
+            //negative delta, therefore number
             //does not follow pattern
             //invalidate previous findings.
             if (currentDigit == 0) {
@@ -73,7 +73,7 @@ public final class OutlineResolution {
             }
          }
 
-         //check for last=2.1.1.1 current=2.1.1.1.1, indented paragraphs 
+         //check for last=2.1.1.1 current=2.1.1.1.1, indented paragraphs
          if (nextNumberIndex == minLength - 1 && zeroDeltaCounter == minLength && currentOutlineNumberArray.length > lastOutlineNumberArray.length) {
             if (Strings.isValid(currentOutlineNumberArray[currentOutlineNumberArray.length - 1])) {
                if (currentOutlineNumberArray[currentOutlineNumberArray.length - 1].compareTo("1") == 0) {

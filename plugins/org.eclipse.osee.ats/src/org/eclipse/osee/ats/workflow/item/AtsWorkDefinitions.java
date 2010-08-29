@@ -66,8 +66,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.XWidgetFactory;
 public final class AtsWorkDefinitions implements IWorkDefinitionProvider {
 
    public static final String ATS_DESCRIPTION_NOT_REQUIRED_ID = AtsAttributeTypes.Description + ".notRequired";
-   public static final String ATS_ESTIMATED_HOURS_NOT_REQUIRED_ID =
-      AtsAttributeTypes.EstimatedHours + ".notRequired";
+   public static final String ATS_ESTIMATED_HOURS_NOT_REQUIRED_ID = AtsAttributeTypes.EstimatedHours + ".notRequired";
 
    public static enum RuleWorkItemId {
       atsRequireStateHourSpentPrompt("Work Page Option: Will popup a dialog to prompt user for time spent in this state."),
@@ -151,8 +150,7 @@ public final class AtsWorkDefinitions implements IWorkDefinitionProvider {
       workItems.add(new AtsAttributeXWidgetWorkItem("Decision",
          AtsDecisionDecisionWorkPageDefinition.DECISION_ANSWER_LABEL, AtsAttributeTypes.Decision, "XLabelDam"));
 
-      workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.ProposedResolution, "XTextDam",
-         FILL_VERTICALLY));
+      workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.ProposedResolution, "XTextDam", FILL_VERTICALLY));
       workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.Description, "XTextDam", XOption.REQUIRED,
          FILL_VERTICALLY));
       workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.Description.getUnqualifiedName(),
@@ -174,8 +172,8 @@ public final class AtsWorkDefinitions implements IWorkDefinitionProvider {
          "OPTIONS_FROM_ATTRIBUTE_VALIDITY", XOption.REQUIRED, XOption.BEGIN_COMPOSITE_6));
       workItems.add(new AtsAttributeSoleComboXWidgetWorkItem(AtsAttributeTypes.PriorityType,
          "OPTIONS_FROM_ATTRIBUTE_VALIDITY", XOption.REQUIRED));
-      workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.NeedBy, "XDateDam",
-         XOption.HORIZONTAL_LABEL, XOption.END_COMPOSITE));
+      workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.NeedBy, "XDateDam", XOption.HORIZONTAL_LABEL,
+         XOption.END_COMPOSITE));
       workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.ValidationRequired, "XCheckBoxDam",
          XOption.HORIZONTAL_LABEL, XOption.LABEL_BEFORE));
       workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.UserCommunity,
@@ -256,8 +254,11 @@ public final class AtsWorkDefinitions implements IWorkDefinitionProvider {
 
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Import ATS Work Item Definitions");
       // Items must be imported in order due to the relations that are created between items
-      for (Class<?> clazz : new Class[] {WorkRuleDefinition.class, WorkWidgetDefinition.class,
-         WorkPageDefinition.class, WorkFlowDefinition.class}) {
+      for (Class<?> clazz : new Class[] {
+         WorkRuleDefinition.class,
+         WorkWidgetDefinition.class,
+         WorkPageDefinition.class,
+         WorkFlowDefinition.class}) {
          for (WorkItemDefinition wid : workItemDefinitions) {
             if (clazz.isInstance(wid)) {
                // System.out.println("Adding " + wid.getId() + " as class " + clazz);

@@ -112,7 +112,9 @@ public class StartJini extends JiniService {
          String model = "CJS";
          String description = "Provides means to shutdown spawned Jini Lookup Services";
 
-         this.registerService(new Entry[] {new ServiceInfo("", "", "", "", model, ""), new Comment(description),
+         this.registerService(new Entry[] {
+            new ServiceInfo("", "", "", "", model, ""),
+            new Comment(description),
             new SimpleFormattedEntry(SPAWNED_REGGIE_SERVICE_ID, reggieServiceId),
             new SimpleFormattedEntry(SPAWNED_REGGIE_ON_HOST, getHostName())}, getHeaders(manifestFile));
 

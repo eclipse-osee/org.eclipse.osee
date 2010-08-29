@@ -60,7 +60,8 @@ public class EntryDialog extends MessageDialog {
    private final String dialogTitle;
 
    public EntryDialog(String dialogTitle, String dialogMessage) {
-      super(Displays.getActiveShell(), dialogTitle, null, dialogMessage, MessageDialog.QUESTION, new String[] {"OK",
+      super(Displays.getActiveShell(), dialogTitle, null, dialogMessage, MessageDialog.QUESTION, new String[] {
+         "OK",
          "Cancel"}, 0);
       this.dialogTitle = dialogTitle;
    }

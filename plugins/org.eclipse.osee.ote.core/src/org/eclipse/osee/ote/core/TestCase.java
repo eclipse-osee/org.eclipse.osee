@@ -65,7 +65,7 @@ import org.w3c.dom.Element;
  * <li>			</code><i>Use <b>one</b> of the following constructors based on if this TestCase is standalone</i><code>
  * <li>			super(parent);</code> <i>Standalone defaulted to <b>false</b></i><code>
  * <li>			super(parent, true);</code><i>Standalone explicitly set to <b>true</b></i><code>
- * <li>			
+ * <li>
  * <li>			</code><i>All requirements tested in the test case should be noted here with the </i>
  * <code>{@link org.eclipse.osee.ote.core.TestCase#addTracability(String) addTracability}</code><i> method.</i> <code>
  * 			</ul>
@@ -283,7 +283,7 @@ public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable {
    public void baseDoTestCase(ITestEnvironmentAccessor environment) throws InterruptedException {
       this.logger = environment.getLogger();
 
-      logger.testCaseBegan(this); // This is required for valid outfile.  
+      logger.testCaseBegan(this); // This is required for valid outfile.
       //This creates the test case outfile logging.
 
       environment.getTestScript().setTestCase(this);

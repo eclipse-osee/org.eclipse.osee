@@ -30,7 +30,7 @@ import org.junit.rules.TemporaryFolder;
  * Tests ability to read files in charsets, particularly UTF8
  * 
  * <pre>
- * {@link Rule} 
+ * {@link Rule}
  * {@link Lib}
  * </pre>
  * 

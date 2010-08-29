@@ -331,7 +331,11 @@ public class ConflictManagerInternal {
 
             List<Object[]> insertParameters = new LinkedList<Object[]>();
             for (Conflict conflict : conflicts) {
-               insertParameters.add(new Object[] {queryId, insertTime, conflict.getObjectId(), branchId,
+               insertParameters.add(new Object[] {
+                  queryId,
+                  insertTime,
+                  conflict.getObjectId(),
+                  branchId,
                   SQL3DataType.INTEGER});
             }
             ArtifactLoader.insertIntoArtifactJoin(insertParameters);

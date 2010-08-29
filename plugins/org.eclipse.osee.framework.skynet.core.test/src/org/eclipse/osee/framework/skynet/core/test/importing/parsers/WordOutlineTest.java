@@ -54,7 +54,7 @@ public final class WordOutlineTest {
 
    /**
 	 * @formatter:off
-	 * Note: some of the data objects need to repeat data 
+	 * Note: some of the data objects need to repeat data
 	 * from previous test because they are considered to
 	 * be lastHeaderNumber or lastHeaderName or lastContent
 	 * 
@@ -65,11 +65,13 @@ public final class WordOutlineTest {
    public static Collection<Object[]> getData() {
       List<Object[]> data = new ArrayList<Object[]>();
       data.add(new Object[] {outlineNameWithNumber, new DelegateData[] {data("1.", "Outline TITLE", "")}});
-      data.add(new Object[] {outlineNameNumberAndContent,
+      data.add(new Object[] {
+         outlineNameNumberAndContent,
          new DelegateData[] {data("5.", "SCOPE", ""), data("5.", "SCOPE", "content content content more content")}});
       data.add(new Object[] {
          numberEmbeddedInTheContent,
-         new DelegateData[] {data("1.", "SCOPE", ""),
+         new DelegateData[] {
+            data("1.", "SCOPE", ""),
             data("1.", "SCOPE", "This 1.6 is some interesting content 2.3SAMPLâ€“10.")}});
       return data;
    }

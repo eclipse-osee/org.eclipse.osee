@@ -95,8 +95,8 @@ public class CoverageEditorInput implements IEditorInput {
    public int hashCode() {
       final int prime = 31;
       int result = 1;
-      result = prime * result + ((coveragePackageArtifact == null) ? 0 : coveragePackageArtifact.hashCode());
-      result = prime * result + ((coveragePackageBase == null) ? 0 : coveragePackageBase.hashCode());
+      result = prime * result + (coveragePackageArtifact == null ? 0 : coveragePackageArtifact.hashCode());
+      result = prime * result + (coveragePackageBase == null ? 0 : coveragePackageBase.hashCode());
       return result;
    }
 

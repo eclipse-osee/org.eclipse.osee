@@ -1455,8 +1455,17 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, Co
    }
 
    private static final Pattern safeNamePattern = Pattern.compile("[^A-Za-z0-9 ]");
-   private static final String[] NUMBER = new String[] {"Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven",
-      "Eight", "Nine"};
+   private static final String[] NUMBER = new String[] {
+      "Zero",
+      "One",
+      "Two",
+      "Three",
+      "Four",
+      "Five",
+      "Six",
+      "Seven",
+      "Eight",
+      "Nine"};
 
    /**
     * Since artifact names are free text it is important to reformat the name to ensure it is suitable as an element

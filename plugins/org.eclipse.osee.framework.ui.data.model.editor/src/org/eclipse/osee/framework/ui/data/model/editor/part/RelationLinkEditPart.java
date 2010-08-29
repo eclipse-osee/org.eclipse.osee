@@ -154,7 +154,7 @@ public class RelationLinkEditPart extends ConnectionEditPart {
          srcDecor = createPolygonDecoration();
          getConnection().setSourceDecoration(srcDecor);
       }
-      //      } else 
+      //      } else
       //      if (srcDecor != null) {
       //         srcDecor = null;
       getConnection().setSourceDecoration(srcDecor);

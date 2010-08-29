@@ -135,7 +135,7 @@ public class CoverageUnitTest {
 
    /**
     * Test method for {@link org.eclipse.osee.coverage.model.CoverageUnit#setName(java.lang.String)}.
-    *
+    * 
     * @throws OseeCoreException
     */
    @Test

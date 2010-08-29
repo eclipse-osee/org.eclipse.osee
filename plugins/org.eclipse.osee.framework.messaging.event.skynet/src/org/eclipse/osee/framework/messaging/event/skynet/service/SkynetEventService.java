@@ -72,7 +72,8 @@ public class SkynetEventService extends JiniService implements ISkynetEventServi
    private void registerWithJini(String dbConfig) throws Exception {
       jiniClassServer = JiniClassServer.getInstance();
       jiniClassServer.addResourceFinder(new BundleResourceFinder(new String[] {
-         "org.eclipse.osee.framework.messaging.event.skynet", "org.eclipse.osee.framework.jdk.core"}));
+         "org.eclipse.osee.framework.messaging.event.skynet",
+         "org.eclipse.osee.framework.jdk.core"}));
 
       Dictionary dictionary = null;
       String name = "OSEE Event Service";
@@ -88,8 +89,10 @@ public class SkynetEventService extends JiniService implements ISkynetEventServi
          dictionary = plugin.getBundle().getHeaders();
       }
 
-      this.registerService(new Entry[] {new SimpleFormattedEntry("db", dbConfig),
-         new ServiceInfo(name, manufacturer, vendor, version, model, serialNumber), new Name(name),
+      this.registerService(new Entry[] {
+         new SimpleFormattedEntry("db", dbConfig),
+         new ServiceInfo(name, manufacturer, vendor, version, model, serialNumber),
+         new Name(name),
          new Comment(description)}, dictionary);
 
       System.out.println("....................OSEE Event Service(" + dbConfig + ") is Alive....................");

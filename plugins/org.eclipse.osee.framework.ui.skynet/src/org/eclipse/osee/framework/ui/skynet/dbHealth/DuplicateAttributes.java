@@ -104,8 +104,18 @@ public class DuplicateAttributes extends DatabaseHealthOperation {
          StringBuffer sbFull = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
          try {
             String[] columnHeaders =
-               new String[] {"Art Id", "Attr id 1", "Attr id 2", "Name", "Value 1", "Value 2", "URI 1", "URI 2",
-                  "Gamma ID 1", "Gamma Id 2", "ID to Delete"};
+               new String[] {
+                  "Art Id",
+                  "Attr id 1",
+                  "Attr id 2",
+                  "Name",
+                  "Value 1",
+                  "Value 2",
+                  "URI 1",
+                  "URI 2",
+                  "Gamma ID 1",
+                  "Gamma Id 2",
+                  "ID to Delete"};
             sbFull.append(AHTML.beginMultiColumnTable(100, 1));
             sbFull.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
             sbFull.append(AHTML.addRowSpanMultiColumnTable("Attributes with the same values", columnHeaders.length));
@@ -158,11 +168,18 @@ public class DuplicateAttributes extends DatabaseHealthOperation {
 
          AttributeData attributeData1 = duplicate.getAttributeData1();
          AttributeData attributeData2 = duplicate.getAttributeData2();
-         builder.append(AHTML.addRowMultiColumnTable(new String[] {String.valueOf(duplicate.getArtId()),
-            String.valueOf(attributeData1.getAttrId()), String.valueOf(attributeData2.getAttrId()),
-            duplicate.getName(), attributeData1.getValue(), attributeData2.getValue(), attributeData1.getUri(),
-            attributeData2.getUri(), String.valueOf(attributeData1.getGamma()),
-            String.valueOf(attributeData2.getGamma()), fixMessage}));
+         builder.append(AHTML.addRowMultiColumnTable(new String[] {
+            String.valueOf(duplicate.getArtId()),
+            String.valueOf(attributeData1.getAttrId()),
+            String.valueOf(attributeData2.getAttrId()),
+            duplicate.getName(),
+            attributeData1.getValue(),
+            attributeData2.getValue(),
+            attributeData1.getUri(),
+            attributeData2.getUri(),
+            String.valueOf(attributeData1.getGamma()),
+            String.valueOf(attributeData2.getGamma()),
+            fixMessage}));
          count++;
       }
       return count;

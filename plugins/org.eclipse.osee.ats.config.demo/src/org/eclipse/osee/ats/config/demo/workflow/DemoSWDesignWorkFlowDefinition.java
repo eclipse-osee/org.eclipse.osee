@@ -58,13 +58,13 @@ public class DemoSWDesignWorkFlowDefinition extends TeamWorkflowDefinition {
       AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(writeType, xResultData, new DemoSWDesignWorkFlowDefinition());
       AtsWorkDefinitions.relatePageToBranchCommitRules(ID + "." + DefaultTeamState.Implement.name());
 
-      // Add Non-blocking createBranch decision review to Implement state 
+      // Add Non-blocking createBranch decision review to Implement state
       WorkItemDefinitionFactory.relateWorkItemDefinitions(ID + "." + DefaultTeamState.Analyze.name(),
          decisionTransitionToRule.getId());
       WorkItemDefinitionFactory.relateWorkItemDefinitions(ID + "." + DefaultTeamState.Implement.name(),
          decisionCreateBranchRule.getId());
 
-      // Add Non-blocking commitBranch peerToPeer review to Implement state 
+      // Add Non-blocking commitBranch peerToPeer review to Implement state
       WorkItemDefinitionFactory.relateWorkItemDefinitions(ID + "." + DefaultTeamState.Authorize.name(),
          peerTransitionToRule.getId());
       WorkItemDefinitionFactory.relateWorkItemDefinitions(ID + "." + DefaultTeamState.Implement.name(),

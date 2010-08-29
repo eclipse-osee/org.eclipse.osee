@@ -45,8 +45,17 @@ public class TestStringOperations {
    public void testCheckWaitForValue() throws InterruptedException {
       TestMessage msg = new TestMessage();
       support.activateMsg(msg);
-      support.genericTestCheckWaitForValue(msg.STRING_ELEMENT_1, new String[] {"Expected 1", " Expected", "Expected ",
-         "", "expected", "EXPECTED", "Expected", "Expected", "01234", "x"}, "abc");
+      support.genericTestCheckWaitForValue(msg.STRING_ELEMENT_1, new String[] {
+         "Expected 1",
+         " Expected",
+         "Expected ",
+         "",
+         "expected",
+         "EXPECTED",
+         "Expected",
+         "Expected",
+         "01234",
+         "x"}, "abc");
    }
 
    @Test

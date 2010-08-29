@@ -38,8 +38,19 @@ public class GoalXViewerFactory extends SkynetXViewerFactory {
       WorldXViewerFactory.State_Col, WorldXViewerFactory.Priority_Col, WorldXViewerFactory.Change_Type_Col,
       WorldXViewerFactory.Assignees_Col, new XViewerHridColumn(true), WorldXViewerFactory.Created_Date_Col,
       WorldXViewerFactory.Version_Target_Col, WorldXViewerFactory.Notes_Col);
-   public static Integer[] widths = new Integer[] {WorldXViewerFactory.Goal_Order.getWidth(),
-      WorldXViewerFactory.Goal_Order_Vote_Col.getWidth(), 250, 60, 60, 20, 20, 100, 50, 50, 50, 80};
+   public static Integer[] widths = new Integer[] {
+      WorldXViewerFactory.Goal_Order.getWidth(),
+      WorldXViewerFactory.Goal_Order_Vote_Col.getWidth(),
+      250,
+      60,
+      60,
+      20,
+      20,
+      100,
+      50,
+      50,
+      50,
+      80};
 
    public GoalXViewerFactory(GoalArtifact soleGoalArtifact) {
       super("org.eclipse.osee.ats.GoalXViewer");

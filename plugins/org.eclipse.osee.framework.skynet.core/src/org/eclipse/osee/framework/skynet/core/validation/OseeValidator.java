@@ -104,7 +104,7 @@ public class OseeValidator {
    //      if (loadedObjects.isEmpty()) {
    //         List<IConfigurationElement> elements = ExtensionPoints.getExtensionElements(EXTENSION_ID, EXTENSION_ELEMENT);
    //         for (IConfigurationElement element : elements) {
-   //            // TODO Implement dynamic attribute type validation chain definition  
+   //            // TODO Implement dynamic attribute type validation chain definition
    //            //            IExtension extension = ((IExtension) element.getParent());
    //            //            String identifier = extension.getUniqueIdentifier();
    //            String attributeTypeName = element.getAttribute(ATTRIBUTE_TYPENAME);
@@ -135,7 +135,7 @@ public class OseeValidator {
    //      }
    //   }
 
-   // TODO Implement dynamic attribute type validation chain definition  
+   // TODO Implement dynamic attribute type validation chain definition
    //   public List<IValidator> createValidateChain(String xml) {
    //      List<IValidator> validators = new ArrayList<IValidator>();
    //      return validators;

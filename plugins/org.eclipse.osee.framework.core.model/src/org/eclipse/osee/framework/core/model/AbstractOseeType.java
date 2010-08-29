@@ -115,6 +115,7 @@ public abstract class AbstractOseeType extends NamedIdentity implements IOseeSto
       setField(UNIQUE_ID_FIELD_KEY, uniqueId);
    }
 
+   @Override
    public void setName(String name) {
       setFieldLogException(NAME_FIELD_KEY, name);
    }

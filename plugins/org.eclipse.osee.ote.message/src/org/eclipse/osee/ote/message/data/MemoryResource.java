@@ -133,7 +133,7 @@ public class MemoryResource {
          v <<= 8;
          v |= data[endByte] & 0xFF;
       }
-      return (v >>> 7 - lsb % 8);
+      return v >>> 7 - lsb % 8;
    }
 
    public final long getLong(int offset, int msb, int lsb) {

@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.jdk.core.util;
 
-
 /**
  * @author Jeff C. Phillips
  * @author Don Dunne

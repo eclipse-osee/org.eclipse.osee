@@ -75,7 +75,7 @@ public class CoverageRenderer extends DefaultArtifactRenderer {
    @Override
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
       if (presentationType != GENERALIZED_EDIT && !artifact.isHistorical()) {
-         if ((artifact.isOfType(CoveragePackage, CoverageFolder, CoverageUnit))) {
+         if (artifact.isOfType(CoveragePackage, CoverageFolder, CoverageUnit)) {
             return PRESENTATION_SUBTYPE_MATCH;
          }
       }

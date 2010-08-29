@@ -58,7 +58,12 @@ public class ItemsDeletedWithNoOtherModification extends DatabaseHealthOperation
    private static final String REMOVE_NOT_ADDRESSED_GAMMAS =
       "DELETE FROM osee_txs WHERE gamma_id = ? AND transaction_id = ?";
 
-   private static final String[] COLUMN_HEADER = {"Gamma Id", "Transaction Id", "Branch Id", "Art id", "Attribute Id",
+   private static final String[] COLUMN_HEADER = {
+      "Gamma Id",
+      "Transaction Id",
+      "Branch Id",
+      "Art id",
+      "Attribute Id",
       "Rel Link Id"};
 
    private Set<LocalValues> addressing = null;
@@ -152,9 +157,13 @@ public class ItemsDeletedWithNoOtherModification extends DatabaseHealthOperation
          if (value.relLinkId != 0) {
             relLinkCount++;
          }
-         sbFull.append(AHTML.addRowMultiColumnTable(new String[] {String.valueOf(value.gammaId),
-            String.valueOf(value.transactionId), String.valueOf(value.branchId), String.valueOf(value.artId),
-            String.valueOf(value.attributeId), String.valueOf(value.relLinkId)}));
+         sbFull.append(AHTML.addRowMultiColumnTable(new String[] {
+            String.valueOf(value.gammaId),
+            String.valueOf(value.transactionId),
+            String.valueOf(value.branchId),
+            String.valueOf(value.artId),
+            String.valueOf(value.attributeId),
+            String.valueOf(value.relLinkId)}));
       }
       builder.append(verify ? "Found " : "Fixed ");
       builder.append(String.valueOf(artifactCount));

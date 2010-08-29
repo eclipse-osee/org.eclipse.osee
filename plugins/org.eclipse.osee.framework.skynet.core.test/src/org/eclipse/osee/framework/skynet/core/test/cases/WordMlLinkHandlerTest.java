@@ -62,7 +62,7 @@ public class WordMlLinkHandlerTest {
             input = input.replaceAll("#SESSION#", sessionId);
             Artifact source = user;
 
-            // TODO this test will fail - add live artifact -- need to change test to use artifact instead of 
+            // TODO this test will fail - add live artifact -- need to change test to use artifact instead of
             // input files.
             if (source != null) {
                if (isLinkTest) {

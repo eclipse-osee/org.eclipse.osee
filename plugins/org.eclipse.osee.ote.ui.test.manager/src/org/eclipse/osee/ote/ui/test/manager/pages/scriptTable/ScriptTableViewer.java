@@ -394,7 +394,7 @@ public class ScriptTableViewer {
       // }
       // }
       // });
-      //      
+      //
       // item = new MenuItem(previewMenu, SWT.CASCADE);
       // item.setText("Remove All Test Output Markers");
       // item.addSelectionListener(new SelectionAdapter() {

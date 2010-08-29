@@ -19,7 +19,6 @@ import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.logging.Level;
-
 import javax.jms.Connection;
 import javax.jms.DeliveryMode;
 import javax.jms.ExceptionListener;
@@ -31,7 +30,6 @@ import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.TemporaryTopic;
 import javax.jms.Topic;
-
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
@@ -329,7 +327,7 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
       }
       try {
          if (connection != null) {
-        	connection.setExceptionListener(null);
+            connection.setExceptionListener(null);
             connection.close();
             connection = null;
          }

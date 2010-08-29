@@ -87,6 +87,7 @@ public final class AttributeType extends AbstractOseeType implements Comparable<
       return getFieldValueLogException(0, ATTRIBUTE_MIN_OCCURRENCE_FIELD_KEY);
    }
 
+   @Override
    public String getDescription() {
       return getFieldValueLogException("", ATTRIBUTE_DESCRIPTION_FIELD_KEY);
    }

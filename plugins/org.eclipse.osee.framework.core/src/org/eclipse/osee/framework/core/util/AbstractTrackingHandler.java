@@ -35,7 +35,7 @@ public abstract class AbstractTrackingHandler {
    public abstract void onDeActivate();
 
    public void onServiceAdded(BundleContext context, Class<?> clazz, Object services) {
-      // 
+      //
    }
 
    public void onServiceRemoved(BundleContext context, Class<?> clazz, Object services) {

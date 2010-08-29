@@ -274,7 +274,7 @@ public class CoveragePackageImportTest {
    }
 
    @Test
-   // Re-import two new Coverage Unit files 
+   // Re-import two new Coverage Unit files
    // com.screenA.ComScrnButton3 and epu.PowerUnit3
    public void testImport2() throws Exception {
       CoverageImport2TestBlam coverageImport2TestBlam = new CoverageImport2TestBlam();

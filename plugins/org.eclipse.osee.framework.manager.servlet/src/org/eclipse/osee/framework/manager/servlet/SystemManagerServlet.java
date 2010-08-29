@@ -270,8 +270,16 @@ public class SystemManagerServlet extends UnsecuredOseeHttpServlet {
       StringBuffer sb = new StringBuffer(1000);
       sb.append(AHTML.heading(3, title));
       sb.append(AHTML.beginMultiColumnTable(100, 1));
-      sb.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Created", "Cmds", "User", "Version", "Machine",
-         "Last Interaction", "IP", "Port", "Delete"}));
+      sb.append(AHTML.addHeaderRowMultiColumnTable(new String[] {
+         "Created",
+         "Cmds",
+         "User",
+         "Version",
+         "Machine",
+         "Last Interaction",
+         "IP",
+         "Port",
+         "Delete"}));
 
       List<String> items = new ArrayList<String>();
       for (ISession session : sessionDatas) {
@@ -279,10 +287,15 @@ public class SystemManagerServlet extends UnsecuredOseeHttpServlet {
          String clientAddress = session.getClientAddress();
          String clientPort = String.valueOf(session.getClientPort());
 
-         items.add(AHTML.addRowMultiColumnTable(new String[] {dateFormat.format(session.getCreationDate()),
-            createCmds(sessionId, clientAddress, clientPort, requestAddress, requestPort), session.getUserId(),
-            session.getClientVersion(), session.getClientMachineName(),
-            dateFormat.format(session.getLastInteractionDate()), clientAddress, clientPort,
+         items.add(AHTML.addRowMultiColumnTable(new String[] {
+            dateFormat.format(session.getCreationDate()),
+            createCmds(sessionId, clientAddress, clientPort, requestAddress, requestPort),
+            session.getUserId(),
+            session.getClientVersion(),
+            session.getClientMachineName(),
+            dateFormat.format(session.getLastInteractionDate()),
+            clientAddress,
+            clientPort,
             createAnchor(AnchorType.DELETE_ANCHOR, sessionId, requestAddress, requestPort)}));
       }
       String[] sortedItems = items.toArray(new String[items.size()]);

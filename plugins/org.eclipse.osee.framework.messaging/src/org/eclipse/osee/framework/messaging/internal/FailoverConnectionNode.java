@@ -17,9 +17,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
-
 import javax.jms.JMSException;
-
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.ConnectionListener;
@@ -250,7 +248,7 @@ public class FailoverConnectionNode implements ConnectionNode, Runnable {
             if (connectionNode.isConnected()) {
                connected();
             }
-         }catch (OseeCoreException ex) {
+         } catch (OseeCoreException ex) {
             OseeLog.log(FailoverConnectionNode.class, Level.FINE, ex);
             notConnected();
          }

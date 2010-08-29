@@ -134,7 +134,7 @@ public class Branch extends AbstractOseeType implements Comparable<Branch>, IAda
 
    public boolean isEditable() {
       BranchState state = getBranchState();
-      return !state.isCommitted() && !state.isRebaselined() && // 
+      return !state.isCommitted() && !state.isRebaselined() && //
       !state.isDeleted() && !state.isCreationInProgress() && //
       !getArchiveState().isArchived() && !isPurged();
    }

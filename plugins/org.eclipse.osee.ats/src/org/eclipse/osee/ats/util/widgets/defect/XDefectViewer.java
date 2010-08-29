@@ -497,12 +497,27 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IArtifact
       try {
          html.append(AHTML.addSpace(1) + AHTML.getLabelStr(AHTML.LABEL_FONT, "Tasks"));
          html.append(AHTML.startBorderTable(100, normalColor, ""));
-         html.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Date", "User", "Location", "Description",
-            "Severity", "Disposition", "Injection Activity", "Resolution", "Location", "Closted"}));
+         html.append(AHTML.addHeaderRowMultiColumnTable(new String[] {
+            "Date",
+            "User",
+            "Location",
+            "Description",
+            "Severity",
+            "Disposition",
+            "Injection Activity",
+            "Resolution",
+            "Location",
+            "Closted"}));
          for (DefectItem item : reviewArt.getDefectManager().getDefectItems()) {
-            html.append(AHTML.addRowMultiColumnTable(new String[] {item.getCreatedDate(XDate.MMDDYY),
-               item.getUser().getName(), item.getLocation(), item.getDescription(), item.getSeverity().name(),
-               item.getDisposition().name(), item.getInjectionActivity().name(), item.getResolution(),
+            html.append(AHTML.addRowMultiColumnTable(new String[] {
+               item.getCreatedDate(XDate.MMDDYY),
+               item.getUser().getName(),
+               item.getLocation(),
+               item.getDescription(),
+               item.getSeverity().name(),
+               item.getDisposition().name(),
+               item.getInjectionActivity().name(),
+               item.getResolution(),
                item.isClosed() + ""}));
          }
          html.append(AHTML.endBorderTable());

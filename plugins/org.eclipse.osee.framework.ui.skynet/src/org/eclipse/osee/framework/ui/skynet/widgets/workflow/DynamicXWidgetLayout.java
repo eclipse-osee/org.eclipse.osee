@@ -169,8 +169,7 @@ public class DynamicXWidgetLayout {
          if (artifact != null) {
             if (xWidget instanceof IAttributeWidget) {
                try {
-                  IAttributeType attributeType =
-                     AttributeTypeManager.getType(xWidgetLayoutData.getStoreName());
+                  IAttributeType attributeType = AttributeTypeManager.getType(xWidgetLayoutData.getStoreName());
                   ((IAttributeWidget) xWidget).setAttributeType(artifact, attributeType);
                } catch (Exception ex) {
                   OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);

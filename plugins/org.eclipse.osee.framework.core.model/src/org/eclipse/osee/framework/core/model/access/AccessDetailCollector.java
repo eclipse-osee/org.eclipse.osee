@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.core.model.access;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.access.AccessDetail;
 
 /**
  * @author Roberto E. Escobar

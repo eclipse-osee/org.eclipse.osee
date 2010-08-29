@@ -49,7 +49,8 @@ public class TagEncoderTest {
    public static Collection<Object[]> data() {
       List<Object[]> data = new ArrayList<Object[]>();
       data.add(new Object[] {"hello", EngineAsserts.asTags("hello", 1520625)});
-      data.add(new Object[] {"what happens when we have a long string",
+      data.add(new Object[] {
+         "what happens when we have a long string",
          EngineAsserts.asTags("what happens when we have a long string", 2080358399, -545259521, 290692031)});
       return data;
    }

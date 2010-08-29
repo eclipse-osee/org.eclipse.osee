@@ -95,7 +95,7 @@ public class OseeFieldMainTest {
 
       data.add(new Object[] { //
       new OseeFieldTestData<Boolean>(new OseeField<Boolean>(), //
-         null, false, // 
+         null, false, //
          new FieldGetSetTestData<Boolean>(true, true, true, true), //
          new FieldGetSetTestData<Boolean>(false, true, true, true), //
          new FieldGetSetTestData<Boolean>(true, false, false, true),//

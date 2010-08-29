@@ -85,9 +85,20 @@ public class MultipleParentRelations extends DatabaseHealthOperation {
 
    private static final String GET_BRANCH_NAME = "Select branch_name from osee_branch where branch_id = ?";
 
-   private static final String[] columnHeaders = new String[] {"Rel Link ID 1", "Rel Link ID 2", "Parent Art ID 1",
-      "P1 Art Name", "Parent Art ID 2", "P2 Art Name", "Child Art ID", "Child Art Name", "Branch Ids", "Branch Name",
-      "Archived", "Author 1", "Author 2"};
+   private static final String[] columnHeaders = new String[] {
+      "Rel Link ID 1",
+      "Rel Link ID 2",
+      "Parent Art ID 1",
+      "P1 Art Name",
+      "Parent Art ID 2",
+      "P2 Art Name",
+      "Child Art ID",
+      "Child Art Name",
+      "Branch Ids",
+      "Branch Name",
+      "Archived",
+      "Author 1",
+      "Author 2"};
 
    private static final String HEADER = "Artifacts that have multiple Parents";
 
@@ -183,12 +194,20 @@ public class MultipleParentRelations extends DatabaseHealthOperation {
       for (LocalRelationLink relLink : relations) {
          if (!relLink.author1.equals("")) {
             count++;
-            sbFull.append(AHTML.addRowMultiColumnTable(new String[] {Integer.toString(relLink.relLinkId1),
-               Integer.toString(relLink.relLinkId2), Integer.toString(relLink.parentArtId1), relLink.parentArt1,
-               Integer.toString(relLink.parentArtId2), relLink.parentArt2, Integer.toString(relLink.childArtId),
+            sbFull.append(AHTML.addRowMultiColumnTable(new String[] {
+               Integer.toString(relLink.relLinkId1),
+               Integer.toString(relLink.relLinkId2),
+               Integer.toString(relLink.parentArtId1),
+               relLink.parentArt1,
+               Integer.toString(relLink.parentArtId2),
+               relLink.parentArt2,
+               Integer.toString(relLink.childArtId),
                relLink.childArt,
                displayAll ? branches.get(relLink.relLinkId1).toString() : Integer.toString(relLink.branchId),
-               relLink.branch, Integer.toString(relLink.archived), relLink.author1, relLink.author2}));
+               relLink.branch,
+               Integer.toString(relLink.archived),
+               relLink.author1,
+               relLink.author2}));
          }
       }
    }

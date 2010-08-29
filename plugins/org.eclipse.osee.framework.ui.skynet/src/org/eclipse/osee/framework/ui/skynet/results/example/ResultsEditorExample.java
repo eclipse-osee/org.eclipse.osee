@@ -87,8 +87,10 @@ public class ResultsEditorExample extends XNavigateItemAction {
       StringBuilder sb = new StringBuilder();
       sb.append(AHTML.heading(3, TITLE));
       sb.append(AHTML.beginMultiColumnTable(100, 1));
-      sb.append(AHTML.addHeaderRowMultiColumnTable(new String[] {Columns.Date.name(),
-         Columns.Priority_123_Open_Bugs.name(), Columns.Goal.name()}));
+      sb.append(AHTML.addHeaderRowMultiColumnTable(new String[] {
+         Columns.Date.name(),
+         Columns.Priority_123_Open_Bugs.name(),
+         Columns.Goal.name()}));
       for (int x = 0; x < chartDateStrs.size(); x++) {
          sb.append(AHTML.addRowMultiColumnTable(chartDateStrs.get(x), "" + chartValueStrs.get(x),
             "" + chartValueStrsGoal.get(x)));
@@ -198,8 +200,10 @@ public class ResultsEditorExample extends XNavigateItemAction {
          public List<IResultsEditorTab> getResultsEditorTabs() {
             List<IResultsXViewerRow> rows = new ArrayList<IResultsXViewerRow>();
             for (int x = 0; x < chartDateStrs.size(); x++) {
-               rows.add(new ResultsXViewerRow(new String[] {chartDateStrs.get(x),
-                  String.valueOf(chartValueStrs.get(x)), String.valueOf(chartValueStrsGoal.get(x))}));
+               rows.add(new ResultsXViewerRow(new String[] {
+                  chartDateStrs.get(x),
+                  String.valueOf(chartValueStrs.get(x)),
+                  String.valueOf(chartValueStrsGoal.get(x))}));
             }
             List<XViewerColumn> columns =
                Arrays.asList(new XViewerColumn(Columns.Date.name(), Columns.Date.name(), 80, SWT.LEFT, true,

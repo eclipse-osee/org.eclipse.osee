@@ -154,7 +154,7 @@ public class ODMEditor extends GraphicalEditorWithFlyoutPalette {
       // Scroll-wheel Zoom
       viewer.setProperty(MouseWheelHandler.KeyGenerator.getKey(SWT.MOD1), MouseWheelZoomHandler.SINGLETON);
 
-      // keyboard 
+      // keyboard
       //      IHandlerService service = (IHandlerService) getSite().getService(IHandlerService.class);
       //      service.activateHandler(zoomIn.getActionDefinitionId(), new ActionHandler(zoomIn));
       //      service.activateHandler(zoomOut.getActionDefinitionId(), new ActionHandler(zoomOut));

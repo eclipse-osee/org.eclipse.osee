@@ -45,7 +45,7 @@ public abstract class EnumBase extends EnumSyntax {
 
       throw new IllegalArgumentException("Not a valid enumeration name: " + str);
       // TODO - We might want to come back and make this more efficient later!!!
-      // This was a binary search, but was changed because it was forcing the tables to have to be 
+      // This was a binary search, but was changed because it was forcing the tables to have to be
       // in the correct binary search order to work.
 
    }

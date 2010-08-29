@@ -163,7 +163,7 @@ public class OseeDslAccessModelTest {
       @SuppressWarnings("unused")
       @Override
       public void computeAccessDetails(AccessDetailCollector collector, AccessContext context, Object objectToCheck) throws OseeCoreException {
-         // 
+         //
          wasComputeCalled = true;
       }
 

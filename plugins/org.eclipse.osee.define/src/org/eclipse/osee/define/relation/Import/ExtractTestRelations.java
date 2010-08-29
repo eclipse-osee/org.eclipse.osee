@@ -107,7 +107,7 @@ public class ExtractTestRelations {
       //      link.setArtifact("Requirement", reqArtifact);
       //      link.setArtifact("Test", getTestArtifact(testArtifactName, reqArtifact.getTag()));
       //      reqArtifact.getLinkManager().addLink(link);
-      //      
+      //
       //      link.setArtifactA(reqArtifact);
       //      link.setArtifactB(getTestArtifact(testArtifactName, reqArtifact.getTag()));
       //      link.persist();

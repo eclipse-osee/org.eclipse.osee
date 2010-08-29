@@ -54,7 +54,7 @@ public class FrameworkRelayMessagingListener<T extends RemoteEvent> extends Osee
    public int hashCode() {
       final int prime = 31;
       int result = 1;
-      result = prime * result + ((frameworkEventListener == null) ? 0 : frameworkEventListener.hashCode());
+      result = prime * result + (frameworkEventListener == null ? 0 : frameworkEventListener.hashCode());
       return result;
    }
 

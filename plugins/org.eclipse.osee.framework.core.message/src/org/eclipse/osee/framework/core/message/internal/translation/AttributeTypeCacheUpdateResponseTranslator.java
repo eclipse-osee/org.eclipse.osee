@@ -77,10 +77,19 @@ public class AttributeTypeCacheUpdateResponseTranslator implements ITranslator<A
    }
 
    private String[] toArray(AttributeType type) {
-      return new String[] {type.getAttributeProviderId(), type.getBaseAttributeTypeId(), type.getDefaultValue(),
-         type.getDescription(), type.getFileTypeExtension(), type.getGuid(), String.valueOf(type.getId()),
-         String.valueOf(type.getMaxOccurrences()), String.valueOf(type.getMinOccurrences()),
-         type.getStorageState().name(), type.getName(), type.getTaggerId()};
+      return new String[] {
+         type.getAttributeProviderId(),
+         type.getBaseAttributeTypeId(),
+         type.getDefaultValue(),
+         type.getDescription(),
+         type.getFileTypeExtension(),
+         type.getGuid(),
+         String.valueOf(type.getId()),
+         String.valueOf(type.getMaxOccurrences()),
+         String.valueOf(type.getMinOccurrences()),
+         type.getStorageState().name(),
+         type.getName(),
+         type.getTaggerId()};
    }
 
    private AttributeType createfromArray(AttributeTypeFactory factory, String[] data) throws OseeCoreException {

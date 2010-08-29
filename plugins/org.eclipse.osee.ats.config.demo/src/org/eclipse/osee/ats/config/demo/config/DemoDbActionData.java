@@ -71,17 +71,22 @@ public class DemoDbActionData {
    public static Set<DemoDbActionData> getReqSawActionsData() {
       Set<DemoDbActionData> actionDatas = new HashSet<DemoDbActionData>();
       actionDatas.add(new DemoDbActionData(new String[] {"SAW (committed) Reqt Changes for"}, "Diagram View",
-         PriorityType.Priority_1, new String[] {DemoDbAIs.SAW_Requirements.getAIName(), DemoDbAIs.SAW_Code.getAIName(),
+         PriorityType.Priority_1, new String[] {
+            DemoDbAIs.SAW_Requirements.getAIName(),
+            DemoDbAIs.SAW_Code.getAIName(),
             DemoDbAIs.SAW_Test.getAIName()}, new Integer[] {1}, DefaultTeamState.Implement));
       actionDatas.add(new DemoDbActionData(new String[] {"SAW (uncommitted) More Reqt Changes for"}, "Diagram View",
-         PriorityType.Priority_3, new String[] {DemoDbAIs.SAW_Code.getAIName(), DemoDbAIs.SAW_SW_Design.getAIName(),
-            DemoDbAIs.SAW_Requirements.getAIName(), DemoDbAIs.SAW_Test.getAIName()}, new Integer[] {1},
-         DefaultTeamState.Implement));
+         PriorityType.Priority_3, new String[] {
+            DemoDbAIs.SAW_Code.getAIName(),
+            DemoDbAIs.SAW_SW_Design.getAIName(),
+            DemoDbAIs.SAW_Requirements.getAIName(),
+            DemoDbAIs.SAW_Test.getAIName()}, new Integer[] {1}, DefaultTeamState.Implement));
       actionDatas.add(new DemoDbActionData(new String[] {"SAW (no-branch) Even More Requirement Changes for"},
-         "Diagram View", PriorityType.Priority_3,
-         new String[] {DemoDbAIs.SAW_Code.getAIName(), DemoDbAIs.SAW_SW_Design.getAIName(),
-            DemoDbAIs.SAW_Requirements.getAIName(), DemoDbAIs.SAW_Test.getAIName()}, new Integer[] {1},
-         DefaultTeamState.Implement));
+         "Diagram View", PriorityType.Priority_3, new String[] {
+            DemoDbAIs.SAW_Code.getAIName(),
+            DemoDbAIs.SAW_SW_Design.getAIName(),
+            DemoDbAIs.SAW_Requirements.getAIName(),
+            DemoDbAIs.SAW_Test.getAIName()}, new Integer[] {1}, DefaultTeamState.Implement));
       actionDatas.add(new DemoDbActionData(new String[] {"SAW (uncommitted-conflicted) More Requirement Changes for"},
          "Diagram View", PriorityType.Priority_3, new String[] {DemoDbAIs.SAW_Requirements.getAIName()},
          new Integer[] {1}, DefaultTeamState.Implement));

@@ -74,13 +74,21 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
    private static final String INSERT_TXS =
       "INSERT INTO osee_txs (gamma_id, transaction_id, tx_current, mod_type, branch_id) VALUES (?, ?, " + TxChange.ARTIFACT_DELETED.getValue() + ", " + ModificationType.ARTIFACT_DELETED.getValue() + ", ?)";
 
-   private static final String[] columnHeaders = new String[] {"Rel Link ID", "Gamma Id", "Transaction Id",
-      "Branch_id", "A Art Id", "B Art Id", "Transaction ID of Deleted Artifact"};
+   private static final String[] columnHeaders = new String[] {
+      "Rel Link ID",
+      "Gamma Id",
+      "Transaction Id",
+      "Branch_id",
+      "A Art Id",
+      "B Art Id",
+      "Transaction ID of Deleted Artifact"};
 
-   private static final String[] DESCRIPTION = {"Relation Links with non existent Artifacts on the Branch\n",
+   private static final String[] DESCRIPTION = {
+      "Relation Links with non existent Artifacts on the Branch\n",
       "Relation Links with deleted Artifacts on the Branch\n"};
 
-   private static final String[] HEADER = {"%S Relation Links that have artifacts that don't exist on the branch",
+   private static final String[] HEADER = {
+      "%S Relation Links that have artifacts that don't exist on the branch",
       "%s Relation Links that have artifacts that are deleted on the branch"};
 
    private DoubleKeyHashMap<Integer, Integer, LocalRelationLink> deleteMap = null;
@@ -178,7 +186,9 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
             updateCurrentAddressing.add(new Object[] {relLink.gammaId, relLink.relTransId});
          } else {
             updatePreviousAddressing.add(new Object[] {relLink.gammaId, relLink.relTransId});
-            insertArtifactDeleted.add(new Object[] {relLink.gammaId, relLink.transIdForArtifactDeletion,
+            insertArtifactDeleted.add(new Object[] {
+               relLink.gammaId,
+               relLink.transIdForArtifactDeletion,
                relLink.branchId});
          }
       }
@@ -212,9 +222,13 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
       sbFull.append(AHTML.addRowSpanMultiColumnTable(header, columnHeaders.length));
       for (LocalRelationLink relLink : map.allValues()) {
          count++;
-         sbFull.append(AHTML.addRowMultiColumnTable(new String[] {Integer.toString(relLink.relLinkId),
-            Integer.toString(relLink.gammaId), Integer.toString(relLink.relTransId),
-            Integer.toString(relLink.branchId), Integer.toString(relLink.aArtId), Integer.toString(relLink.bArtId),
+         sbFull.append(AHTML.addRowMultiColumnTable(new String[] {
+            Integer.toString(relLink.relLinkId),
+            Integer.toString(relLink.gammaId),
+            Integer.toString(relLink.relTransId),
+            Integer.toString(relLink.branchId),
+            Integer.toString(relLink.aArtId),
+            Integer.toString(relLink.bArtId),
             Integer.toString(relLink.transIdForArtifactDeletion)}));
       }
 

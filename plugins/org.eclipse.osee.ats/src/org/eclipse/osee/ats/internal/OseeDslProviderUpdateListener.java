@@ -31,9 +31,9 @@ import org.eclipse.osee.framework.skynet.core.event2.filter.IEventFilter;
 public final class OseeDslProviderUpdateListener implements IArtifactEventListener {
 
    //@formatter:off
-   private static final List<? extends IEventFilter> eventFilters = 
+   private static final List<? extends IEventFilter> eventFilters =
       Arrays.asList(
-         new ArtifactTypeEventFilter(CoreArtifactTypes.AccessControlModel), 
+         new ArtifactTypeEventFilter(CoreArtifactTypes.AccessControlModel),
          new BranchGuidEventFilter(CoreBranches.COMMON)
          );
    //@formatter:on

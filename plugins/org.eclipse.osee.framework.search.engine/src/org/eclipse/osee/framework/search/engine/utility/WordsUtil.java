@@ -22,9 +22,42 @@ import org.eclipse.osee.framework.jdk.core.util.ReservedCharacters;
  */
 public class WordsUtil {
 
-   private static Character[] DEFAULT_PUNCTUACTION = new Character[] {'\n', '\r', ' ', '!', '"', '#', '$', '%', '(',
-      ')', '*', '+', ',', '-', '.', '/', ':', ';', '<', '>', '?', '@', '[', '\\', ']', '^', '{', '|', '}', '~', '_',
-      '`', '\\', '=', '&'};
+   private static Character[] DEFAULT_PUNCTUACTION = new Character[] {
+      '\n',
+      '\r',
+      ' ',
+      '!',
+      '"',
+      '#',
+      '$',
+      '%',
+      '(',
+      ')',
+      '*',
+      '+',
+      ',',
+      '-',
+      '.',
+      '/',
+      ':',
+      ';',
+      '<',
+      '>',
+      '?',
+      '@',
+      '[',
+      '\\',
+      ']',
+      '^',
+      '{',
+      '|',
+      '}',
+      '~',
+      '_',
+      '`',
+      '\\',
+      '=',
+      '&'};
 
    private static char[] PUNCTUATION = null;
 

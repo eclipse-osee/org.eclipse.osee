@@ -6,15 +6,11 @@
  */
 package org.eclipse.osee.framework.core.dsl.oseeDsl.provider;
 
-
 import java.util.Collection;
 import java.util.List;
-
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.ecore.EStructuralFeature;
-
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
@@ -22,29 +18,20 @@ import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
 import org.eclipse.emf.edit.provider.ViewerNotification;
-
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslFactory;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslPackage;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumType;
 
 /**
  * This is the item provider adapter for a {@link org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumType} object.
- * <!-- begin-user-doc -->
- * <!-- end-user-doc -->
+ * <!-- begin-user-doc --> <!-- end-user-doc -->
+ * 
  * @generated
  */
-public class XOseeEnumTypeItemProvider
-   extends OseeTypeItemProvider
-   implements
-      IEditingDomainItemProvider,
-      IStructuredItemContentProvider,
-      ITreeItemContentProvider,
-      IItemLabelProvider,
-      IItemPropertySource {
+public class XOseeEnumTypeItemProvider extends OseeTypeItemProvider implements IEditingDomainItemProvider, IStructuredItemContentProvider, ITreeItemContentProvider, IItemLabelProvider, IItemPropertySource {
    /**
-    * This constructs an instance from a factory and a notifier.
-    * <!-- begin-user-doc -->
-    * <!-- end-user-doc -->
+    * This constructs an instance from a factory and a notifier. <!-- begin-user-doc --> <!-- end-user-doc -->
+    * 
     * @generated
     */
    public XOseeEnumTypeItemProvider(AdapterFactory adapterFactory) {
@@ -52,9 +39,8 @@ public class XOseeEnumTypeItemProvider
    }
 
    /**
-    * This returns the property descriptors for the adapted class.
-    * <!-- begin-user-doc -->
-    * <!-- end-user-doc -->
+    * This returns the property descriptors for the adapted class. <!-- begin-user-doc --> <!-- end-user-doc -->
+    * 
     * @generated
     */
    @Override
@@ -69,9 +55,9 @@ public class XOseeEnumTypeItemProvider
    /**
     * This specifies how to implement {@link #getChildren} and is used to deduce an appropriate feature for an
     * {@link org.eclipse.emf.edit.command.AddCommand}, {@link org.eclipse.emf.edit.command.RemoveCommand} or
-    * {@link org.eclipse.emf.edit.command.MoveCommand} in {@link #createCommand}.
-    * <!-- begin-user-doc -->
-    * <!-- end-user-doc -->
+    * {@link org.eclipse.emf.edit.command.MoveCommand} in {@link #createCommand}. <!-- begin-user-doc --> <!--
+    * end-user-doc -->
+    * 
     * @generated
     */
    @Override
@@ -84,8 +70,8 @@ public class XOseeEnumTypeItemProvider
    }
 
    /**
-    * <!-- begin-user-doc -->
-    * <!-- end-user-doc -->
+    * <!-- begin-user-doc --> <!-- end-user-doc -->
+    * 
     * @generated
     */
    @Override
@@ -97,9 +83,8 @@ public class XOseeEnumTypeItemProvider
    }
 
    /**
-    * This returns XOseeEnumType.gif.
-    * <!-- begin-user-doc -->
-    * <!-- end-user-doc -->
+    * This returns XOseeEnumType.gif. <!-- begin-user-doc --> <!-- end-user-doc -->
+    * 
     * @generated
     */
    @Override
@@ -108,24 +93,21 @@ public class XOseeEnumTypeItemProvider
    }
 
    /**
-    * This returns the label text for the adapted class.
-    * <!-- begin-user-doc -->
-    * <!-- end-user-doc -->
+    * This returns the label text for the adapted class. <!-- begin-user-doc --> <!-- end-user-doc -->
+    * 
     * @generated
     */
    @Override
    public String getText(Object object) {
-      String label = ((XOseeEnumType)object).getName();
-      return label == null || label.length() == 0 ?
-         getString("_UI_XOseeEnumType_type") :
-         getString("_UI_XOseeEnumType_type") + " " + label;
+      String label = ((XOseeEnumType) object).getName();
+      return label == null || label.length() == 0 ? getString("_UI_XOseeEnumType_type") : getString("_UI_XOseeEnumType_type") + " " + label;
    }
 
    /**
-    * This handles model notifications by calling {@link #updateChildren} to update any cached
-    * children and by creating a viewer notification, which it passes to {@link #fireNotifyChanged}.
-    * <!-- begin-user-doc -->
-    * <!-- end-user-doc -->
+    * This handles model notifications by calling {@link #updateChildren} to update any cached children and by creating
+    * a viewer notification, which it passes to {@link #fireNotifyChanged}. <!-- begin-user-doc --> <!-- end-user-doc
+    * -->
+    * 
     * @generated
     */
    @Override
@@ -141,20 +123,17 @@ public class XOseeEnumTypeItemProvider
    }
 
    /**
-    * This adds {@link org.eclipse.emf.edit.command.CommandParameter}s describing the children
-    * that can be created under this object.
-    * <!-- begin-user-doc -->
-    * <!-- end-user-doc -->
+    * This adds {@link org.eclipse.emf.edit.command.CommandParameter}s describing the children that can be created under
+    * this object. <!-- begin-user-doc --> <!-- end-user-doc -->
+    * 
     * @generated
     */
    @Override
    protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object) {
       super.collectNewChildDescriptors(newChildDescriptors, object);
 
-      newChildDescriptors.add
-         (createChildParameter
-            (OseeDslPackage.Literals.XOSEE_ENUM_TYPE__ENUM_ENTRIES,
-             OseeDslFactory.eINSTANCE.createXOseeEnumEntry()));
+      newChildDescriptors.add(createChildParameter(OseeDslPackage.Literals.XOSEE_ENUM_TYPE__ENUM_ENTRIES,
+         OseeDslFactory.eINSTANCE.createXOseeEnumEntry()));
    }
 
 }

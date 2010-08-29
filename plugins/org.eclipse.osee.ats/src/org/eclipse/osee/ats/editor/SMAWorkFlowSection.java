@@ -337,7 +337,7 @@ public class SMAWorkFlowSection extends SectionPart {
    public Result isXWidgetDirty() throws OseeCoreException {
       for (XWidget widget : allXWidgets) {
          if (widget instanceof IArtifactStoredWidget) {
-            IArtifactStoredWidget artifactStoredWidget = ((IArtifactStoredWidget) widget);
+            IArtifactStoredWidget artifactStoredWidget = (IArtifactStoredWidget) widget;
             Result result = artifactStoredWidget.isDirty();
             if (result.isTrue()) {
                return result;
@@ -350,7 +350,7 @@ public class SMAWorkFlowSection extends SectionPart {
    public void getDirtyIArtifactWidgets(List<IArtifactStoredWidget> widgets) throws OseeCoreException {
       for (XWidget widget : allXWidgets) {
          if (widget instanceof IArtifactStoredWidget) {
-            IArtifactStoredWidget artifactStoredWidget = ((IArtifactStoredWidget) widget);
+            IArtifactStoredWidget artifactStoredWidget = (IArtifactStoredWidget) widget;
             if (artifactStoredWidget.isDirty().isTrue()) {
                widgets.add(artifactStoredWidget);
             }
@@ -780,7 +780,7 @@ public class SMAWorkFlowSection extends SectionPart {
             }
          }
 
-         // Persist must be done prior and separate from transition 
+         // Persist must be done prior and separate from transition
          sma.persist();
 
          // Perform transition separate from persist of previous changes to state machine artifact

@@ -72,7 +72,7 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
    protected void createEditPolicies() {
       // allow removal of the associated model element
       installEditPolicy(EditPolicy.COMPONENT_ROLE, new ShapeComponentEditPolicy());
-      // allow the creation of connections and 
+      // allow the creation of connections and
       // and the reconnection of connections between Shape instances
       installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE, new GraphicalNodeEditPolicy() {
          @Override
@@ -234,7 +234,7 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
    @Override
    protected void refreshVisuals() {
       // notify parent container of changed position & location
-      // if this line is removed, the XYLayoutManager used by the parent container 
+      // if this line is removed, the XYLayoutManager used by the parent container
       // (the Figure of the ShapesDiagramEditPart), will not know the bounds of this figure
       // and will not draw it correctly.
       Rectangle bounds = new Rectangle(getCastedModel().getLocation(), getCastedModel().getSize());

@@ -51,7 +51,8 @@ public final class WordUiUtil {
                rd.addRaw(AHTML.beginMultiColumnTable(60, 1));
                rd.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"Artifact Name", "HRID"}));
                for (Artifact artifact : artifacts) {
-                  rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {artifact.toString(),
+                  rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {
+                     artifact.toString(),
                      XResultData.getHyperlink(artifact)}));
                }
                rd.addRaw(AHTML.endMultiColumnTable());
@@ -72,7 +73,8 @@ public final class WordUiUtil {
                rd.addRaw(AHTML.beginMultiColumnTable(60, 1));
                rd.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"Artifact Name", "HRID"}));
                for (Artifact artifact : artifacts) {
-                  rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {artifact.toString(),
+                  rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {
+                     artifact.toString(),
                      XResultData.getHyperlink(artifact)}));
                }
                rd.addRaw(AHTML.endMultiColumnTable());

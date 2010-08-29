@@ -40,8 +40,11 @@ public final class TraceUnitReportProcessor implements ITraceUnitProcessor {
    @Override
    public void initialize(IProgressMonitor monitor) {
       resultData.addRaw(AHTML.beginMultiColumnTable(95, 1));
-      resultData.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"Test Unit Type", "Test Unit Name",
-         "Trace Type", "Trace Mark"}));
+      resultData.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {
+         "Test Unit Type",
+         "Test Unit Name",
+         "Trace Type",
+         "Trace Mark"}));
    }
 
    @Override

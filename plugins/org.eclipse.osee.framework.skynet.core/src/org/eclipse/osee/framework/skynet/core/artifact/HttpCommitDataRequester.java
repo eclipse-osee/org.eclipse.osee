@@ -81,8 +81,13 @@ public class HttpCommitDataRequester {
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          Object[] queryData =
-            new Object[] {newTransaction.getBranchId(), newTransaction.getId(), newTransaction.getBranchId(),
-               newTransaction.getId(), newTransaction.getBranchId(), newTransaction.getId()};
+            new Object[] {
+               newTransaction.getBranchId(),
+               newTransaction.getId(),
+               newTransaction.getBranchId(),
+               newTransaction.getId(),
+               newTransaction.getBranchId(),
+               newTransaction.getId()};
          chStmt.runPreparedQuery(ARTIFACT_CHANGES, queryData);
          while (chStmt.next()) {
             int artId = chStmt.getInt("art_id");

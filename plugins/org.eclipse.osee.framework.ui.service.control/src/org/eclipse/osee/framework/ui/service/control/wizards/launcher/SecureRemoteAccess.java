@@ -131,7 +131,8 @@ public class SecureRemoteAccess {
          Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
          MessageDialog dialog =
             new MessageDialog(shell, "Warning", null, message, MessageDialog.WARNING, new String[] {
-               IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL}, 0);
+               IDialogConstants.YES_LABEL,
+               IDialogConstants.NO_LABEL}, 0);
          return dialog.open() == 0;
       }
 

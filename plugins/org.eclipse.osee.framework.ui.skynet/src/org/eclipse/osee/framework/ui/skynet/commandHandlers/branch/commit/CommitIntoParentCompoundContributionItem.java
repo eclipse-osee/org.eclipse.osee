@@ -40,7 +40,8 @@ import org.eclipse.ui.menus.CommandContributionItemParameter;
  * @author Jeff C. Phillips
  */
 public class CommitIntoParentCompoundContributionItem extends CompoundContributionItem {
-   private static final IParameter[] BRANCH_COMMIT_PARAMETER_DEF = new IParameter[] {new BranchIdParameter(),
+   private static final IParameter[] BRANCH_COMMIT_PARAMETER_DEF = new IParameter[] {
+      new BranchIdParameter(),
       new CommitBranchParameter()};
 
    private ICommandService commandService;
