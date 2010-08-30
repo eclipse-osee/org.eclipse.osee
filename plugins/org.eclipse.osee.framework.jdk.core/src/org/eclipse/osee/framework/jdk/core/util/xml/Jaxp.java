@@ -25,6 +25,8 @@ import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -32,11 +34,19 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.ProcessingInstruction;
@@ -176,7 +186,6 @@ public class Jaxp {
    /**
     * Obtains the character data for each element in the collection, return as a List. Each entry in the list
     * corresponding to the character data for one of the elements in the collection.
-    * 
     */
    public static List<String> getElementsCharacterData(Collection<Element> elements) {
       List<String> result = new ArrayList<String>(elements.size());
@@ -435,7 +444,6 @@ public class Jaxp {
 
    /**
     * Adds the XSL style sheet processing instruction to the document.
-    * 
     */
    public static void setXslProperty(Document d, String xslPath) {
       ProcessingInstruction xsl = d.createProcessingInstruction("xml-stylesheet", //
@@ -445,7 +453,6 @@ public class Jaxp {
 
    /**
     * Adds an XML comment to a document
-    * 
     */
    public static void addComment(Document d, String comment) {
       d.appendChild(d.createComment(comment));
@@ -621,6 +628,95 @@ public class Jaxp {
          ex.printStackTrace();
       } catch (ParserConfigurationException ex) {
          ex.printStackTrace();
+      }
+   }
+
+   public static final String selectNodesText(Node startingNode) {
+      StringBuffer buffer = new StringBuffer();
+      NodeList childNodes = startingNode.getChildNodes();
+      for (int i = 0; i < childNodes.getLength(); i++) {
+         if (childNodes.item(i).getNodeType() == Node.CDATA_SECTION_NODE || childNodes.item(i).getNodeType() == Node.TEXT_NODE) {
+            buffer.append(childNodes.item(i).getNodeValue().trim());
+         }
+      }
+      return buffer.toString();
+   }
+
+   public static final Collection<Node> selectNodesViaXPath(XPath xPath, Node startingNode, String xPathExpression) throws XPathExpressionException {
+      Collection<Node> data = new ArrayList<Node>();
+      XPathExpression expression = xPath.compile(xPathExpression);
+      Object result = expression.evaluate(startingNode, XPathConstants.NODESET);
+      NodeList nodeList = (NodeList) result;
+      for (int index = 0; index < nodeList.getLength(); index++) {
+         data.add(nodeList.item(index));
+      }
+      return data;
+   }
+
+   public static XPath createXPath() {
+      XPathFactory factory = XPathFactory.newInstance();
+      return factory.newXPath();
+   }
+
+   public static void writeNode(XMLStreamWriter writer, Node node) throws XMLStreamException {
+      if (node instanceof Element) {
+         Element element = (Element) node;
+
+         String namespace = element.getNamespaceURI();
+         String prefix = element.getPrefix();
+         String name = element.getNodeName();
+         if (Strings.isValid(name)) {
+            if (prefix != null && namespace != null) {
+               writer.writeStartElement(prefix, name, namespace);
+            } else if (namespace != null) {
+               writer.writeStartElement(namespace, name);
+            } else {
+               writer.writeStartElement(name);
+            }
+
+            if (node.hasAttributes()) {
+               NamedNodeMap nodeMap = node.getAttributes();
+               for (int index = 0; index < nodeMap.getLength(); index++) {
+                  writeAttrNode(writer, nodeMap.item(index));
+               }
+            }
+
+            if (node.hasChildNodes()) {
+               serialize(writer, element.getChildNodes());
+            }
+
+            String text = Jaxp.getElementCharacterData(element, true);
+            if (Strings.isValid(text)) {
+               writer.writeCharacters(text);
+            }
+            writer.writeEndElement();
+         }
+      }
+   }
+
+   public static void serialize(XMLStreamWriter writer, NodeList nodes) throws XMLStreamException {
+      for (int index = 0; index < nodes.getLength(); index++) {
+         writeNode(writer, nodes.item(index));
+      }
+   }
+
+   public static void writeAttrNode(XMLStreamWriter writer, Node node) throws XMLStreamException {
+      if (node instanceof Attr) {
+         Attr attrNode = (Attr) node;
+
+         String namespace = attrNode.getNamespaceURI();
+         String prefix = attrNode.getPrefix();
+         String name = attrNode.getName();
+         String value = attrNode.getValue();
+         if (Strings.isValid(name) && Strings.isValid(value)) {
+            if (prefix != null && namespace != null) {
+               writer.writeAttribute(prefix, namespace, name, value);
+            } else if (namespace != null) {
+               writer.writeAttribute(namespace, name, value);
+            } else {
+               writer.writeAttribute(name, value);
+            }
+         }
       }
    }
 }
