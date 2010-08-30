@@ -21,9 +21,9 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
-import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 
 /**
  * @author Donald G. Dunne
@@ -68,7 +68,7 @@ public class VersionMetrics {
       if (verArt.getReleaseDate() == null) {
          return null;
       }
-      return XDate.calculateDifference(startDate, verArt.getReleaseDate());
+      return DateUtil.getDifference(startDate, verArt.getReleaseDate());
    }
 
    public Date getReleaseStartDate() throws OseeCoreException {

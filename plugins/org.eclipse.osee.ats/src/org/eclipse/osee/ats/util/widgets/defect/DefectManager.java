@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -30,7 +31,6 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 
 /**
  * @author Donald G. Dunne
@@ -185,7 +185,7 @@ public class DefectManager {
          } else {
             builder.append("<TD>NONE</TD>");
          }
-         builder.append("<TD>" + item.getCreatedDate(XDate.MMDDYYHHMM) + "</TD>");
+         builder.append("<TD>" + DateUtil.getMMDDYYHHMM(item.getDate()) + "</TD>");
          builder.append("<TD>" + item.getDescription() + "</TD>");
          builder.append("<TD>" + item.getLocation() + "</TD>");
          builder.append("<TD>" + item.getResolution() + "</TD>");

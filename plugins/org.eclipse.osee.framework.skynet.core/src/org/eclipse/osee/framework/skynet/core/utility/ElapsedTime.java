@@ -8,10 +8,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.util;
+package org.eclipse.osee.framework.skynet.core.utility;
 
 import java.util.Date;
-import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 
 /**
  * @author Donald G. Dunne
@@ -29,7 +29,7 @@ public class ElapsedTime {
    public void start(String name) {
       this.name = name;
       startDate = new Date();
-      System.out.println("\n" + name + " - start " + XDate.getTimeStamp());
+      System.out.println("\n" + name + " - start " + DateUtil.getTimeStamp());
    }
 
    public void end() {
@@ -37,7 +37,7 @@ public class ElapsedTime {
       long diff = endDate.getTime() - startDate.getTime();
       String str =
          String.format("%s - elapsed %d sec - start %s - end %s", name, (diff / 1000),
-            XDate.getDateStr(startDate, XDate.HHMMSSSS), XDate.getDateStr(endDate, XDate.HHMMSSSS));
+            DateUtil.getDateStr(startDate, DateUtil.HHMMSSSS), DateUtil.getDateStr(endDate, DateUtil.HHMMSSSS));
       System.out.println(str);
    }
 }

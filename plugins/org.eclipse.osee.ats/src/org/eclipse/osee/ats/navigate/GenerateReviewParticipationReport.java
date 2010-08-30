@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.ats.world.search.MyReviewWorkflowItem;
 import org.eclipse.osee.ats.world.search.MyReviewWorkflowItem.ReviewState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -32,7 +33,6 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditorInput;
-import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserListDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerArtifactNameColumn;
@@ -85,7 +85,7 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
             MyReviewWorkflowItem srch = new MyReviewWorkflowItem("", user, ReviewState.All);
             Collection<Artifact> reviewArts = srch.performSearchGetResults();
             MassArtifactEditorInput input =
-               new MassArtifactEditorInput(getName() + " as of " + XDate.getDateNow(), reviewArts,
+               new MassArtifactEditorInput(getName() + " as of " + DateUtil.getDateNow(), reviewArts,
                   new ReviewParticipationXViewerFactory(user));
             MassArtifactEditor.editArtifacts(input);
          } catch (Exception ex) {

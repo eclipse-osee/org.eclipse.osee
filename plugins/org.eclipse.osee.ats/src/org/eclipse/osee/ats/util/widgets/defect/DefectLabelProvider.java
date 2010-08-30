@@ -16,10 +16,10 @@ import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Disposition;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.InjectionActivity;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Severity;
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 
@@ -56,7 +56,7 @@ public class DefectLabelProvider extends XViewerLabelProvider {
       } else if (aCol.equals(DefectXViewerFactory.Closed_Col)) {
          return String.valueOf(defectItem.isClosed());
       } else if (aCol.equals(DefectXViewerFactory.Created_Date_Col)) {
-         return defectItem.getCreatedDate(XDate.MMDDYYHHMM);
+         return DateUtil.getMMDDYYHHMM(defectItem.getDate());
       } else if (aCol.equals(DefectXViewerFactory.Description_Col)) {
          return defectItem.getDescription();
       } else if (aCol.equals(DefectXViewerFactory.Resolution_Col)) {

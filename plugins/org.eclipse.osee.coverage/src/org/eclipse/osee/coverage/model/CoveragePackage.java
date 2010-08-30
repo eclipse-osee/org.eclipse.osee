@@ -12,10 +12,10 @@ package org.eclipse.osee.coverage.model;
 
 import java.util.Date;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.KeyValueArtifact;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
-import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 
 public class CoveragePackage extends CoveragePackageBase {
 
@@ -44,8 +44,7 @@ public class CoveragePackage extends CoveragePackageBase {
 
    @Override
    public void getOverviewHtmlHeader(XResultData xResultData) {
-      xResultData.log(AHTML.bold("Coverage Package " + getName() + " as of " + XDate.getDateStr(new Date(),
-         XDate.MMDDYYHHMM)) + AHTML.newline());
+      xResultData.log(AHTML.bold("Coverage Package " + getName() + " as of " + DateUtil.getMMDDYYHHMM(new Date())) + AHTML.newline());
    }
 
    public void setCreationDate(Date creationDate) {

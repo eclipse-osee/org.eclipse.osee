@@ -11,13 +11,12 @@
 
 package org.eclipse.osee.ats.artifact;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import org.eclipse.osee.ats.NoteType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 
 public class NoteItem {
 
@@ -44,13 +43,6 @@ public class NoteItem {
       return date;
    }
 
-   public String getDate(String pattern) {
-      if (pattern != null) {
-         return new SimpleDateFormat(pattern).format(date);
-      }
-      return date.toString();
-   }
-
    public void setDate(Date date) {
       this.date = date;
    }
@@ -65,7 +57,7 @@ public class NoteItem {
 
    @Override
    public String toString() {
-      return "Note: \"" + type + "\" from \"" + user.getName() + "\"" + (state.equals("") ? "" : " for \"" + state + "\" state") + " on " + getDate(XDate.MMDDYYHHMM) + " - " + msg;
+      return "Note: \"" + type + "\" from \"" + user.getName() + "\"" + (state.equals("") ? "" : " for \"" + state + "\" state") + " on " + DateUtil.getMMDDYYHHMM(date) + " - " + msg;
    }
 
    public User getUser() {
@@ -81,7 +73,7 @@ public class NoteItem {
    }
 
    public String toHTML() {
-      return "<b>Note:</b> \"" + type + "\" from \"" + user.getName() + "\"" + (state.equals("") ? "" : " for \"" + state + "\" state") + " on " + getDate(XDate.MMDDYYHHMM) + " - " + msg;
+      return "<b>Note:</b> \"" + type + "\" from \"" + user.getName() + "\"" + (state.equals("") ? "" : " for \"" + state + "\" state") + " on " + DateUtil.getMMDDYYHHMM(date) + " - " + msg;
    }
 
    public String getState() {

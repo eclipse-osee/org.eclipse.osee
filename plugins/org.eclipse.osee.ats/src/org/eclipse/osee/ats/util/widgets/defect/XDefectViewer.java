@@ -32,6 +32,7 @@ import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Disposition;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Severity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -49,7 +50,6 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -497,27 +497,12 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IArtifact
       try {
          html.append(AHTML.addSpace(1) + AHTML.getLabelStr(AHTML.LABEL_FONT, "Tasks"));
          html.append(AHTML.startBorderTable(100, normalColor, ""));
-         html.append(AHTML.addHeaderRowMultiColumnTable(new String[] {
-            "Date",
-            "User",
-            "Location",
-            "Description",
-            "Severity",
-            "Disposition",
-            "Injection Activity",
-            "Resolution",
-            "Location",
-            "Closted"}));
+         html.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Date", "User", "Location", "Description",
+            "Severity", "Disposition", "Injection Activity", "Resolution", "Location", "Closted"}));
          for (DefectItem item : reviewArt.getDefectManager().getDefectItems()) {
-            html.append(AHTML.addRowMultiColumnTable(new String[] {
-               item.getCreatedDate(XDate.MMDDYY),
-               item.getUser().getName(),
-               item.getLocation(),
-               item.getDescription(),
-               item.getSeverity().name(),
-               item.getDisposition().name(),
-               item.getInjectionActivity().name(),
-               item.getResolution(),
+            html.append(AHTML.addRowMultiColumnTable(new String[] {DateUtil.getMMDDYY(item.getDate()),
+               item.getUser().getName(), item.getLocation(), item.getDescription(), item.getSeverity().name(),
+               item.getDisposition().name(), item.getInjectionActivity().name(), item.getResolution(),
                item.isClosed() + ""}));
          }
          html.append(AHTML.endBorderTable());

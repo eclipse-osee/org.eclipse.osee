@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.role.UserRole;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -41,7 +42,6 @@ import org.eclipse.osee.framework.ui.skynet.notify.INotificationManager;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationEvent;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
 import org.eclipse.osee.framework.ui.skynet.util.email.EmailUtil;
-import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 
 /**
  * <REM2>
@@ -146,7 +146,7 @@ public class AtsNotifyUsers implements IArtifactEventListener, IFrameworkTransac
                      getIdString(sma), NotifyType.Cancelled.name(), String.format(
                         "[%s] titled [%s] was cancelled from the [%s] state on [%s].<br>Reason: [%s]",
                         sma.getArtifactTypeName(), sma.getName(), cancelledItem.getState(),
-                        cancelledItem.getDate(XDate.MMDDYYHHMM), cancelledItem.getMsg())));
+                        cancelledItem.getDate(DateUtil.MMDDYYHHMM), cancelledItem.getMsg())));
                }
             }
          }

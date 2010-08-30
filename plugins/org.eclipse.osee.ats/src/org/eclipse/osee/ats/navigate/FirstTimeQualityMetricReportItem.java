@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -42,7 +43,6 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
-import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
@@ -128,13 +128,9 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
       }
    }
 
-   private static String[] HEADER_STRINGS = new String[] {
-      "Version",
-      "StartDate",
-      "RelDate",
-      "Num 1 + 2 Orig During Next Release Cycle",
-      "Num Non-Support Released",
-      "Ratio Orig 1 and 2 Bugs/Number Released"};
+   private static String[] HEADER_STRINGS =
+      new String[] {"Version", "StartDate", "RelDate", "Num 1 + 2 Orig During Next Release Cycle",
+         "Num Non-Support Released", "Ratio Orig 1 and 2 Bugs/Number Released"};
 
    /**
     * Ratio of # of priority 1 and 2 OSEE problem actions (non-cancelled) that were orginated between a release and the
@@ -184,8 +180,8 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
          }
          sb.append(AHTML.addRowMultiColumnTable(new String[] {
             verMet.getVerArt().getName(),
-            XDate.getDateStr(thisReleaseStartDate, XDate.MMDDYY),
-            XDate.getDateStr(thisReleaseEndDate, XDate.MMDDYY),
+            DateUtil.getMMDDYY(thisReleaseStartDate),
+            DateUtil.getMMDDYY(thisReleaseEndDate),
             numOrigDurningNextReleaseCycle == 0 ? "N/A" : String.valueOf(numOrigDurningNextReleaseCycle),
             numNonSupportReleased == null ? "N/A" : String.valueOf(numNonSupportReleased),
             numOrigDurningNextReleaseCycle == 0 || numNonSupportReleased == null || numNonSupportReleased == 0 ? "N/A" : AtsUtil.doubleToI18nString((double) numOrigDurningNextReleaseCycle / (double) numNonSupportReleased)}));

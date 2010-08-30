@@ -20,10 +20,10 @@ import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 
@@ -105,7 +105,8 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
          TransactionRecord transactionRecord =
             commitXManager.getXCommitViewer().getTeamArt().getBranchMgr().getCommitTransactionRecord(configArt);
          if (transactionRecord != null) {
-            return new XDate(transactionRecord.getTimeStamp()).getMMDDYYHHMM();
+            new DateUtil();
+            return DateUtil.getMMDDYYHHMM(transactionRecord.getTimeStamp());
          }
          return "Not Committed";
       } else if (xCol.equals(CommitXManagerFactory.Commit_Comment)) {

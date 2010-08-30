@@ -14,9 +14,9 @@ import java.util.logging.Level;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
-import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -31,7 +31,7 @@ public class VersionArtifactLabelProvider extends LabelProvider {
          String str = verArt.getName();
          try {
             if (verArt.getEstimatedReleaseDate() != null) {
-               str += " - Estimated Release: " + XDate.getDateStr(verArt.getEstimatedReleaseDate(), XDate.MMDDYY);
+               str += " - Estimated Release: " + DateUtil.getMMDDYY(verArt.getEstimatedReleaseDate());
             }
          } catch (Exception ex) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);

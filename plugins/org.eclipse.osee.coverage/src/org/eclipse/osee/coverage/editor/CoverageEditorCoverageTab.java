@@ -29,6 +29,7 @@ import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -36,7 +37,6 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.action.CollapseAllAction;
 import org.eclipse.osee.framework.ui.skynet.action.ExpandAllAction;
-import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
@@ -73,8 +73,7 @@ public class CoverageEditorCoverageTab extends FormPage implements ISaveable {
       super.createFormContent(managedForm);
 
       scrolledForm = managedForm.getForm();
-      scrolledForm.setText(coveragePackageBase.getName() + " - " + XDate.getDateStr(coveragePackageBase.getDate(),
-         XDate.MMDDYYHHMM) + " - " + coveragePackageBase.getCoverageItems().size() + " Coverage Items");
+      scrolledForm.setText(coveragePackageBase.getName() + " - " + DateUtil.getMMDDYYHHMM(coveragePackageBase.getDate()) + " - " + coveragePackageBase.getCoverageItems().size() + " Coverage Items");
       scrolledForm.setImage(ImageManager.getImage(CoverageUtil.getCoveragePackageBaseImage(coveragePackageBase)));
       scrolledForm.getBody().setLayout(new GridLayout(2, false));
       Composite mainComp = scrolledForm.getBody();

@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -36,7 +37,6 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
-import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
@@ -115,7 +115,7 @@ public class GenerateFullVersionReportItem extends XNavigateItemAction {
       private final TeamDefinitionArtifact teamDef;
 
       public PublishReportJob(TeamDefinitionArtifact teamDef) {
-         super(teamDef.getName() + " as of " + XDate.getDateNow());
+         super(teamDef.getName() + " as of " + DateUtil.getDateNow());
          this.teamDef = teamDef;
       }
 

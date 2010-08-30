@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -34,7 +35,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -344,7 +344,7 @@ public class ATSLog {
             } else {
                builder.append("<TD>" + user.getName() + "</TD>");
             }
-            builder.append("<TD>" + item.getDate(XDate.MMDDYYHHMM) + "</TD>");
+            builder.append("<TD>" + item.getDate(DateUtil.MMDDYYHHMM) + "</TD>");
             builder.append("</TR>");
          }
       }

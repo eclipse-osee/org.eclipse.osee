@@ -57,6 +57,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.services.CmAccessControl;
 import org.eclipse.osee.framework.core.services.HasCmAccessControl;
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -74,7 +75,6 @@ import org.eclipse.osee.framework.ui.skynet.group.IGroupExplorerProvider;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.framework.ui.skynet.util.email.EmailGroup;
-import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinitionFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition;
@@ -526,7 +526,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements HasCmA
       if (getWorldViewCreatedDate() == null) {
          return XViewerCells.getCellExceptionString("No creation date");
       }
-      return new XDate(getWorldViewCreatedDate()).getMMDDYYHHMM();
+      return DateUtil.getMMDDYYHHMM(getWorldViewCreatedDate());
    }
 
    @Override
@@ -536,7 +536,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements HasCmA
             OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Completed with no date => " + getHumanReadableId());
             return XViewerCells.getCellExceptionString("Completed with no date.");
          }
-         return new XDate(getWorldViewCompletedDate()).getMMDDYYHHMM();
+         return DateUtil.getMMDDYYHHMM(getWorldViewCompletedDate());
       }
       return "";
    }
@@ -548,7 +548,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements HasCmA
             OseeLog.log(AtsPlugin.class, Level.SEVERE, "Cancelled with no date => " + getHumanReadableId());
             return XViewerCells.getCellExceptionString("Cancelled with no date.");
          }
-         return new XDate(getWorldViewCancelledDate()).getMMDDYYHHMM();
+         return DateUtil.getMMDDYYHHMM(getWorldViewCancelledDate());
       }
       return "";
    }
@@ -958,7 +958,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements HasCmA
       if (getWorldViewEstimatedReleaseDate() == null) {
          return "";
       }
-      return new XDate(getWorldViewEstimatedReleaseDate()).getMMDDYYHHMM();
+      return DateUtil.getMMDDYYHHMM(getWorldViewEstimatedReleaseDate());
    }
 
    @Override
@@ -966,7 +966,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements HasCmA
       if (getWorldViewEstimatedCompletionDate() == null) {
          return "";
       }
-      return new XDate(getWorldViewEstimatedCompletionDate()).getMMDDYYHHMM();
+      return DateUtil.getMMDDYYHHMM(getWorldViewEstimatedCompletionDate());
    }
 
    @Override
@@ -977,7 +977,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements HasCmA
       if (getWorldViewReleaseDate() == null) {
          return "";
       }
-      return new XDate(getWorldViewReleaseDate()).getMMDDYYHHMM();
+      return DateUtil.getMMDDYYHHMM(getWorldViewReleaseDate());
    }
 
    /**
@@ -1367,12 +1367,12 @@ public abstract class StateMachineArtifact extends ATSArtifact implements HasCmA
    }
 
    public String getWorldViewLastUpdated() throws OseeCoreException {
-      return XDate.getDateStr(getLastModified(), XDate.MMDDYYHHMM);
+      return DateUtil.getMMDDYYHHMM(getLastModified());
    }
 
    @Override
    public String getWorldViewLastStatused() throws OseeCoreException {
-      return XDate.getDateStr(getLog().getLastStatusedDate(), XDate.MMDDYYHHMM);
+      return DateUtil.getMMDDYYHHMM(getLog().getLastStatusedDate());
    }
 
    @SuppressWarnings("unused")
@@ -1409,7 +1409,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements HasCmA
       if (timeInCurrState == 0) {
          return "0.0";
       }
-      return AtsUtil.doubleToI18nString(timeInCurrState / XDate.MILLISECONDS_IN_A_DAY);
+      return AtsUtil.doubleToI18nString(timeInCurrState / DateUtil.MILLISECONDS_IN_A_DAY);
    }
 
    @Override

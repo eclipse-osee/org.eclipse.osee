@@ -15,7 +15,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IStatus;
@@ -23,6 +22,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.nebula.widgets.calendarcombo.CalendarCombo;
 import org.eclipse.nebula.widgets.calendarcombo.CalendarListenerAdapter;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
@@ -36,20 +36,9 @@ import org.eclipse.swt.widgets.Label;
  * @author Donald G. Dunne
  */
 public class XDate extends XWidget {
-   public static final long MILLISECONDS_IN_A_WEEK = 604800000;
-   public static final long MILLISECONDS_IN_A_DAY = 86400000;
-   public final static String MMDDYY = "MM/dd/yyyy";
-   public final static String YYYYMMDD = "yyyy/MM/dd";
-   public final static String YYYY_MM_DD = "yyyy_MM_dd";
-   public final static String MMDDYYHHMM = "MM/dd/yyyy hh:mm a";
-   public final static String HHMMSS = "hh:mm:ss";
-   public final static String HHMMSSSS = "hh:mm:ss:SS";
-   public final static String HHMM = "hh:mm";
-
-   public static final HashMap<String, DateFormat> dateFormats = new HashMap<String, DateFormat>();
 
    private final ArrayList<ModifyListener> listeners = new ArrayList<ModifyListener>();
-   private String defaultFormat = MMDDYYHHMM;
+   private String defaultFormat = DateUtil.MMDDYYHHMM;
    private boolean requireFutureDate = false;
    private CalendarCombo dateCombo;
    private Composite parent;
@@ -73,22 +62,6 @@ public class XDate extends XWidget {
       date = null;
    }
 
-   public String getHHMM() {
-      return get(HHMM);
-   }
-
-   public String getHHMMSS() {
-      return get(HHMMSS);
-   }
-
-   public String getMMDDYY() {
-      return get(MMDDYY);
-   }
-
-   public String getMMDDYYHHMM() {
-      return get(MMDDYYHHMM);
-   }
-
    @Override
    public Control getControl() {
       return dateCombo;
@@ -96,7 +69,6 @@ public class XDate extends XWidget {
 
    /**
     * Set the default format for the date ADate.MMMDDDYY or ADate MMMDDDYYYHHHMM or use java.util.date format string
-    * 
     */
    public void setFormat(String format) {
       defaultFormat = format;
@@ -104,32 +76,6 @@ public class XDate extends XWidget {
 
    public void clearData() {
       date = null;
-   }
-
-   public static String getDateStr(Date date, String format) {
-      if (date == null) {
-         return "";
-      }
-      DateFormat dateFormat = dateFormats.get(format);
-      if (dateFormat == null) {
-         dateFormat = new SimpleDateFormat(format);
-         dateFormats.put(format, dateFormat);
-      }
-      return dateFormat.format(date);
-   }
-
-   public static String getDateNow() {
-      return getDateNow(MMDDYY);
-   }
-
-   public static String getTimeStamp() {
-      return getDateNow(HHMMSSSS);
-   }
-
-   public static String getDateNow(String format) {
-      XDate d = new XDate();
-      d.setDateToNow();
-      return d.get(format);
    }
 
    /**
@@ -335,37 +281,7 @@ public class XDate extends XWidget {
    }
 
    public int getDifference(Date date) {
-      return calculateDifference(getDate(), date);
+      return DateUtil.getDifference(getDate(), date);
    }
 
-   public static int calculateDifference(Date a, Date b) {
-      int tempDifference = 0;
-      int difference = 0;
-      Calendar earlier = Calendar.getInstance();
-      Calendar later = Calendar.getInstance();
-
-      if (a.compareTo(b) < 0) {
-         earlier.setTime(a);
-         later.setTime(b);
-      } else {
-         earlier.setTime(b);
-         later.setTime(a);
-      }
-
-      while (earlier.get(Calendar.YEAR) != later.get(Calendar.YEAR)) {
-         tempDifference = 365 * (later.get(Calendar.YEAR) - earlier.get(Calendar.YEAR));
-         difference += tempDifference;
-
-         earlier.add(Calendar.DAY_OF_YEAR, tempDifference);
-      }
-
-      if (earlier.get(Calendar.DAY_OF_YEAR) != later.get(Calendar.DAY_OF_YEAR)) {
-         tempDifference = later.get(Calendar.DAY_OF_YEAR) - earlier.get(Calendar.DAY_OF_YEAR);
-         difference += tempDifference;
-
-         earlier.add(Calendar.DAY_OF_YEAR, tempDifference);
-      }
-
-      return difference;
-   }
 }

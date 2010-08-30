@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 
 /**
  * @author Donald G. Dunne
@@ -147,8 +146,7 @@ public class SMAMetrics {
             (manDaysNeeded > 0 ? String.format("ManDaysNeeded: %5.2f ", manDaysNeeded) : ""),
             (versionArtifact != null ? String.format("Version: %s  EstRelDate: %s DaysLeft: %d ",
                versionArtifact.getName(),
-               (estimatedReleaseDate == null ? "Not Set" : XDate.getDateStr(estimatedReleaseDate, XDate.MMDDYY)),
-               daysTillRel) : ""));
+               (estimatedReleaseDate == null ? "Not Set" : DateUtil.getMMDDYY(estimatedReleaseDate)), daysTillRel) : ""));
    }
 
    /**
@@ -288,8 +286,7 @@ public class SMAMetrics {
          hrsSpent,
          (versionArtifact != null ? String.format("\nVersion: %s  Estimated Release Date: %s Days Left: %d ",
             versionArtifact.getName(),
-            (estimatedReleaseDate == null ? "Not Set" : XDate.getDateStr(estimatedReleaseDate, XDate.MMDDYY)),
-            daysTillRel) : ""));
+            (estimatedReleaseDate == null ? "Not Set" : DateUtil.getMMDDYY(estimatedReleaseDate)), daysTillRel) : ""));
    }
 
    /**

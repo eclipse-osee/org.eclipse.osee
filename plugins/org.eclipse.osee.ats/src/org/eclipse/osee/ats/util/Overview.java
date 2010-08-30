@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.AHTML.CellItem;
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -36,7 +37,6 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultBrowserHyperCmd;
-import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 
 public class Overview {
 
@@ -142,7 +142,7 @@ public class Overview {
          AHTML.getLabelStr(labelFont, "Type: ") + sma.getArtifactTypeName(),
          AHTML.getLabelStr(labelFont, "Id: ") + sma.getHumanReadableId()}));
       addTable(getLabelValue("Originator", sma.getOriginator().getName()),
-         getLabelValue("Creation Date", XDate.getDateStr(sma.getLog().getCreationDate(), XDate.MMDDYYHHMM)));
+         getLabelValue("Creation Date", DateUtil.getMMDDYYHHMM(sma.getLog().getCreationDate())));
       if (sma.isTeamWorkflow()) {
          addTable(getLabelValue("Team", ((TeamWorkFlowArtifact) sma).getTeamName()),
             getLabelValue("Assignees", Artifacts.toString("; ", sma.getStateMgr().getAssignees())));

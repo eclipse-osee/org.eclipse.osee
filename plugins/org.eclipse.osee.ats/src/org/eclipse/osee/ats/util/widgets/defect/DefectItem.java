@@ -17,11 +17,11 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 
@@ -195,20 +195,13 @@ public class DefectItem {
       return date;
    }
 
-   public String getCreatedDate(String pattern) {
-      if (pattern != null) {
-         return new SimpleDateFormat(pattern).format(date);
-      }
-      return date.toString();
-   }
-
    public void setDate(Date date) {
       this.date = date;
    }
 
    @Override
    public String toString() {
-      return severity + " - " + disposition + " - " + injectionActivity + " - " + user + " on " + getCreatedDate(XDate.MMDDYYHHMM) + "\n";
+      return severity + " - " + disposition + " - " + injectionActivity + " - " + user + " on " + DateUtil.getMMDDYYHHMM(date) + "\n";
    }
 
    public User getUser() {

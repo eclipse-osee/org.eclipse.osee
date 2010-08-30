@@ -32,12 +32,12 @@ import org.eclipse.osee.coverage.model.CoveragePackageBase;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.TableWriterAdaptor;
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.program.Program;
@@ -70,7 +70,7 @@ public class GenerateDetailedCoverageReportAction extends Action {
       try {
          Date date = new Date();
          File file =
-            OseeData.getFile("coverage_" + XDate.getDateStr(date, XDate.YYYY_MM_DD).replaceAll("\\\\", "_") + ".pdf");
+            OseeData.getFile("coverage_" + DateUtil.getDateStr(date, DateUtil.YYYY_MM_DD).replaceAll("\\\\", "_") + ".pdf");
          OutputStream outputStream = new FileOutputStream(file, true);
          TableWriterAdaptor masterAdaptor = new TableWriterAdaptor("pdf", outputStream);
 
@@ -83,7 +83,7 @@ public class GenerateDetailedCoverageReportAction extends Action {
             masterAdaptor.writeRow(values);
          }
 
-         masterAdaptor.writeTitle("Detailed Coverage Report as of " + XDate.getDateStr(date, XDate.MMDDYYHHMM) + " for " + this.coveragePackageHandler.getCoveragePackageBase().getName());
+         masterAdaptor.writeTitle("Detailed Coverage Report as of " + DateUtil.getMMDDYYHHMM(date) + " for " + this.coveragePackageHandler.getCoveragePackageBase().getName());
          masterAdaptor.openDocument();
          masterAdaptor.writeDocument();
 

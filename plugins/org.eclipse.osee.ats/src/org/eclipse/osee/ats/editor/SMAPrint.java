@@ -28,11 +28,11 @@ import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
-import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPage;
 
 /**
@@ -76,8 +76,7 @@ public class SMAPrint extends Action {
          //
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Originator: ", ((IWorldViewArtifact) sma).getWorldViewOriginator()),
          //
-         AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Created: ",
-            XDate.getDateStr(sma.getLog().getCreationDate(), XDate.MMDDYYHHMM))
+         AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Created: ", DateUtil.getMMDDYYHHMM(sma.getLog().getCreationDate()))
 
       }));
       resultData.addRaw(AHTML.endMultiColumnTable());
@@ -123,23 +122,13 @@ public class SMAPrint extends Action {
       try {
          rd.addRaw(AHTML.addSpace(1) + AHTML.getLabelStr(AHTML.LABEL_FONT, "Tasks"));
          rd.addRaw(AHTML.startBorderTable(100, Overview.normalColor, ""));
-         rd.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {
-            "Title",
-            "State",
-            "POC",
-            "%",
-            "Hrs",
-            "Resolution",
+         rd.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"Title", "State", "POC", "%", "Hrs", "Resolution",
             "ID"}));
          for (TaskArtifact art : ((TaskableStateMachineArtifact) sma).getTaskArtifacts()) {
-            rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {
-               art.getName(),
-               art.getStateMgr().getCurrentStateName().replaceAll("(Task|State)", ""),
-               art.getWorldViewActivePoc(),
-               art.getPercentCompleteSMATotal() + "",
-               art.getHoursSpentSMATotal() + "",
-               art.getSoleAttributeValue(AtsAttributeTypes.Resolution, ""),
-               art.getHumanReadableId()}));
+            rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {art.getName(),
+               art.getStateMgr().getCurrentStateName().replaceAll("(Task|State)", ""), art.getWorldViewActivePoc(),
+               art.getPercentCompleteSMATotal() + "", art.getHoursSpentSMATotal() + "",
+               art.getSoleAttributeValue(AtsAttributeTypes.Resolution, ""), art.getHumanReadableId()}));
          }
          rd.addRaw(AHTML.endBorderTable());
       } catch (Exception ex) {

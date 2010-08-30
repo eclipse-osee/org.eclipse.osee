@@ -16,10 +16,10 @@ import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.KeyValueArtifact;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
-import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 
 /**
  * Single import of coverage information that includes
@@ -49,17 +49,17 @@ public class CoverageImport extends CoveragePackageBase {
 
    @Override
    public String getName() {
-      return super.getName() + " - " + XDate.getDateStr(runDate, XDate.MMDDYYHHMM) + " - " + getCoverageItems().size() + " Coverage Items";
+      return super.getName() + " - " + DateUtil.getMMDDYYHHMM(runDate) + " - " + getCoverageItems().size() + " Coverage Items";
    }
 
    @Override
    public void getOverviewHtmlHeader(XResultData xResultData) {
-      xResultData.log(AHTML.bold("Coverage Import for " + XDate.getDateStr(getRunDate(), XDate.HHMMSSSS)) + AHTML.newline());
+      xResultData.log(AHTML.bold("Coverage Import for " + DateUtil.getDateStr(getRunDate(), DateUtil.HHMMSSSS)) + AHTML.newline());
       xResultData.log(AHTML.getLabelValueStr("Location", location));
       if (Strings.isValid(getBlamName())) {
          xResultData.log(AHTML.getLabelValueStr("Blam Name", getBlamName()));
       }
-      xResultData.log(AHTML.getLabelValueStr("Run Date", XDate.getDateStr(getRunDate(), XDate.MMDDYYHHMM)));
+      xResultData.log(AHTML.getLabelValueStr("Run Date", DateUtil.getMMDDYYHHMM(getRunDate())));
    }
 
    @Override

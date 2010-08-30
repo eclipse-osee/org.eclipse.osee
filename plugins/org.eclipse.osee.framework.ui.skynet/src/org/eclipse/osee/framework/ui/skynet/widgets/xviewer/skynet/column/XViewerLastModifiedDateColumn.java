@@ -15,9 +15,9 @@ import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.Change;
-import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.swt.SWT;
 
 /**
@@ -36,7 +36,6 @@ public class XViewerLastModifiedDateColumn extends XViewerValueColumn {
    /**
     * XViewer uses copies of column definitions so originals that are registered are not corrupted. Classes extending
     * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
-    * 
     */
    @Override
    public XViewerLastModifiedDateColumn copy() {
@@ -48,10 +47,10 @@ public class XViewerLastModifiedDateColumn extends XViewerValueColumn {
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
          if (element instanceof Artifact) {
-            return XDate.getDateStr(((Artifact) element).getLastModified(), XDate.MMDDYYHHMM);
+            return DateUtil.getMMDDYYHHMM(((Artifact) element).getLastModified());
          } else if (element instanceof Change) {
             Date date = ((Change) element).getChangeArtifact().getLastModified();
-            return XDate.getDateStr(date, XDate.MMDDYYHHMM);
+            return DateUtil.getMMDDYYHHMM(date);
          }
       } catch (OseeCoreException ex) {
          return XViewerCells.getCellExceptionString(ex);

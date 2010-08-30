@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.health;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
@@ -26,6 +27,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
 import org.eclipse.osee.ats.health.change.DataChangeReportComparer;
 import org.eclipse.osee.ats.health.change.ValidateChangeReportParser;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -114,71 +116,99 @@ public class ValidateChangeReports extends XNavigateItemAction {
       }
    }
 
+   @SuppressWarnings("unused")
    private void runIt(IProgressMonitor monitor, XResultData xResultData) throws OseeCoreException {
       String currentDbGuid = OseeInfo.getDatabaseGuid();
-      SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
-      OseeLog.registerLoggerListener(monitorLog);
-      StringBuffer sbFull = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
-      String[] columnHeaders = new String[] {"HRID", "PCR", "Results"};
-      sbFull.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
-      for (IArtifactType artifactType : TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactTypes()) {
-         sbFull.append(AHTML.addRowSpanMultiColumnTable(artifactType.getName(), columnHeaders.length));
+      if (true) {
+         validateSome(xResultData, currentDbGuid);
+      } else {
+         SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
+         OseeLog.registerLoggerListener(monitorLog);
+         StringBuffer sbFull = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
+         String[] columnHeaders = new String[] {"HRID", "PCR", "Results"};
+         sbFull.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
+         for (IArtifactType artifactType : TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactTypes()) {
+            sbFull.append(AHTML.addRowSpanMultiColumnTable(artifactType.getName(), columnHeaders.length));
 
-         try {
-            int x = 1;
-            Collection<Artifact> artifacts =
-               ArtifactQuery.getArtifactListFromType(artifactType, AtsUtil.getAtsBranch());
-            for (Artifact artifact : artifacts) {
-               String resultStr = "PASS";
-               TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
+            try {
+               int x = 1;
+               Collection<Artifact> artifacts =
+                  ArtifactQuery.getArtifactListFromType(artifactType, AtsUtil.getAtsBranch());
+               for (Artifact artifact : artifacts) {
+                  String resultStr = "PASS";
+                  TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
 
-               // Uncomment to only do a single program
-               //               if (!teamArt.getTeamName().contains("ATS")) {
-               //                  System.err.println("Skipping non ATS workflow...Remove this.");
-               //                  continue;
-               //               }
-               //               if (x >= 20) {
-               //                  System.err.println("Only do first 20...Remove this.");
-               //                  return;
-               //               }
+                  try {
+                     String str = String.format("Processing %s/%s  - %s", x++, artifacts.size(), artifact);
+                     OseeLog.log(AtsPlugin.class, Level.INFO, str);
+                     if (monitor != null) {
+                        monitor.subTask(str);
+                     }
 
-               try {
-                  String str = String.format("Processing %s/%s  - %s", x++, artifacts.size(), artifact);
-                  OseeLog.log(AtsPlugin.class, Level.INFO, str);
-                  if (monitor != null) {
-                     monitor.subTask(str);
+                     // Only validate committed branches cause working branches change too much
+                     if (!teamArt.getBranchMgr().isCommittedBranchExists()) {
+                        continue;
+                     }
+                     Result valid = changeReportValidated(currentDbGuid, teamArt, xResultData, false);
+                     if (valid.isFalse()) {
+                        resultStr = "Error: " + valid.getText();
+                     }
+                  } catch (Exception ex) {
+                     resultStr = "Error: Exception Validating: " + ex.getLocalizedMessage();
+                     OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
                   }
-
-                  // Only validate committed branches cause working branches change too much
-                  if (!teamArt.getBranchMgr().isCommittedBranchExists()) {
-                     continue;
-                  }
-                  Result valid = changeReportValidated(currentDbGuid, teamArt, xResultData, false);
-                  if (valid.isFalse()) {
-                     resultStr = "Error: " + valid.getText();
-                  }
-               } catch (Exception ex) {
-                  resultStr = "Error: Exception Validating: " + ex.getLocalizedMessage();
-                  OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+                  sbFull.append(AHTML.addRowMultiColumnTable(teamArt.getHumanReadableId(),
+                     teamArt.getSoleAttributeValue(AtsAttributeTypes.LegacyPcrId, ""), resultStr));
                }
-               sbFull.append(AHTML.addRowMultiColumnTable(teamArt.getHumanReadableId(),
-                  teamArt.getSoleAttributeValue(AtsAttributeTypes.LegacyPcrId, ""), resultStr));
+            } catch (Exception ex) {
+               sbFull.append(AHTML.addRowSpanMultiColumnTable("Exception: " + ex.getLocalizedMessage(),
+                  columnHeaders.length));
             }
-         } catch (Exception ex) {
-            sbFull.append(AHTML.addRowSpanMultiColumnTable("Exception: " + ex.getLocalizedMessage(),
-               columnHeaders.length));
          }
-      }
-      sbFull.append(AHTML.endMultiColumnTable());
-      xResultData.addRaw(sbFull.toString().replaceAll("\n", ""));
-      List<IHealthStatus> stats = new ArrayList<IHealthStatus>(monitorLog.getAllLogs());
-      for (IHealthStatus stat : stats) {
-         Throwable tr = stat.getException();
-         if (tr != null) {
-            xResultData.logError("Exception: " + Lib.exceptionToString(stat.getException()));
+         sbFull.append(AHTML.endMultiColumnTable());
+         xResultData.addRaw(sbFull.toString().replaceAll("\n", ""));
+         List<IHealthStatus> stats = new ArrayList<IHealthStatus>(monitorLog.getAllLogs());
+         for (IHealthStatus stat : stats) {
+            Throwable tr = stat.getException();
+            if (tr != null) {
+               xResultData.logError("Exception: " + Lib.exceptionToString(stat.getException()));
+            }
          }
       }
    }
+
+   private void validateSome(XResultData rd, String currentDbGuid) throws OseeCoreException {
+      Collection<Artifact> artifacts =
+         ArtifactQuery.getArtifactListFromIds(analyzeForMergeDifferences, AtsUtil.getAtsBranch());
+      int x = 0;
+      for (Artifact artifact : artifacts) {
+         if (!artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
+            rd.logError("Unexpected type for " + artifact.toStringWithId());
+         }
+         TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
+
+         String str = String.format("Processing %s/%s  - %s", x++, artifacts.size(), artifact);
+         OseeLog.log(AtsPlugin.class, Level.INFO, str);
+
+         // Only validate committed branches cause working branches change too much
+         if (!teamArt.getBranchMgr().isCommittedBranchExists()) {
+            continue;
+         }
+         Result valid = changeReportValidated(currentDbGuid, teamArt, rd, false);
+         if (valid.isFalse()) {
+            rd.logError(valid.getText());
+         }
+      }
+   }
+   private final List<String> analyzeForMergeDifferences = Arrays.asList("D11QS", "15TT6", "9BJ55", "KJSXG", "W7C6Q",
+      "QJN6U", "ABKL6", "57C55", "C7JVC", "FJ8QG", "PD2L9", "R544L", "H2ZWZ", "XZDFL", "ZQYNV", "2M3R1", "H3MPT",
+      "DQWMJ", "G985U", "SC16V", "6HN4Y", "HMQZ0", "DHBYH", "B7NVG", "DNTLC", "C8C7G", "D96KZ", "L2VQY", "547KS",
+      "GN5SD", "E02FA", "6H998", "9SRR7", "GBTY3", "C7HGV", "KVFFX", "GB0R4", "417PW", "9JK7Q", "Y84NK", "LRMZT",
+      "BXH48", "L5554", "XJNLZ", "VNTWE", "5QG8E", "FC7PB", "BLN8W", "D9496", "QQKJS", "X808E", "YN188", "VHM3X",
+      "2ZSZ7", "YFKYZ", "3Q50H", "646WD", "J6L48", "0P9YU", "89B4J", "ZVS1V", "XXFFH", "Y2NCG", "9K6WL", "8SX10",
+      "BW2Q0", "B0JXG", "QQ1R9", "FR6SE", "WQZ9V", "JSWYS", "6W54P", "BDN3C", "533VS", "ECMZL", "PQN1T", "6SG3K",
+      "WCZ3S", "J6G34", "99VFY", "GXWCE", "77BNS", "D5SBA", "AYV56", "ZTQ8U", "A1B4Q", "6K4C5", "6MDYJ", "NZBT2",
+      "MR1LL", "98ZKQ", "DS6CQ");
 
    /**
     * Return true if current change report is same as stored change report data

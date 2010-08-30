@@ -20,6 +20,7 @@ import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.enums.Active;
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.ArtifactViewerSorter;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactDescriptiveLabelProvider;
@@ -138,7 +139,7 @@ public class ActionTeamDateListDialog extends SelectionDialog {
       comp.setLayout(new GridLayout(2, false));
       comp.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-      dateCombo.setFormat(XDate.MMDDYY);
+      dateCombo.setFormat(DateUtil.MMDDYY);
       dateCombo.setRequiredEntry(true);
       dateCombo.createWidgets(comp, 2);
       if (selectedDate != null) {

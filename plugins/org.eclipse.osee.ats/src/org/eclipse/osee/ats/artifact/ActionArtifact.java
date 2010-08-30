@@ -40,6 +40,7 @@ import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -52,7 +53,6 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
-import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -313,7 +313,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
          if (date == null) {
             strs.add("");
          } else {
-            strs.add(XDate.getDateStr(team.getWorldViewCreatedDate(), XDate.MMDDYYHHMM));
+            strs.add(DateUtil.getMMDDYYHHMM(team.getWorldViewCreatedDate()));
          }
       }
       return Collections.toString(";", strs);
@@ -1167,7 +1167,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    }
 
    public String getWorldViewLastUpdated() throws OseeCoreException {
-      return XDate.getDateStr(getLastModified(), XDate.MMDDYYHHMM);
+      return DateUtil.getMMDDYYHHMM(getLastModified());
    }
 
    @Override

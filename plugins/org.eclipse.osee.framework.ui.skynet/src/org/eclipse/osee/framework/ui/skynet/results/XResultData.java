@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.IHealthStatus;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -31,7 +32,6 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultBrowserHyperCmd;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
-import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
@@ -148,7 +148,7 @@ public final class XResultData {
    }
 
    public XResultPage getReport(final String title, Manipulations... manipulations) {
-      return new XResultPage(title + " - " + XDate.getDateNow(XDate.MMDDYYHHMM),
+      return new XResultPage(title + " - " + DateUtil.getMMDDYYHHMM(),
          (sb.toString().equals("") ? "Nothing Logged" : sb.toString()), manipulations);
    }
 
@@ -274,9 +274,7 @@ public final class XResultData {
          for (int x = 0; x < 3; x++) {
             rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {"Type " + x, "Title " + x, x + ""}));
          }
-         rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {
-            "Error / Warning in table ",
-            "Error: this is error",
+         rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {"Error / Warning in table ", "Error: this is error",
             "Warning: this is warning"}));
          rd.addRaw(AHTML.endMultiColumnTable());
          rd.report("This is my report title");

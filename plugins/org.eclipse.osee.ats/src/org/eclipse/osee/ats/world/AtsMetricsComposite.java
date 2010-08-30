@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.SMAMetrics;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -113,7 +114,7 @@ public class AtsMetricsComposite extends ScrolledComposite {
 
       if (!refreshedOnce) {
          Label label = new Label(toolBarComposite, SWT.NONE);
-         label.setText("        Last Updated: " + XDate.getDateNow(XDate.MMDDYYHHMM));
+         label.setText("        Last Updated: " + DateUtil.getMMDDYYHHMM());
          adapt(label);
       }
 

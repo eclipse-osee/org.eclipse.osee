@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -35,7 +36,6 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
-import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 
 /**
  * @author Donald G. Dunne
@@ -61,7 +61,7 @@ public class ExtendedStatusReportJob extends Job {
       try {
 
          final String html = AHTML.simplePage(getStatusReport(monitor, jobName, teamArts));
-         ResultsEditor.open(new XResultPage(jobName + " - " + XDate.getDateNow(XDate.MMDDYYHHMM), html,
+         ResultsEditor.open(new XResultPage(jobName + " - " + DateUtil.getMMDDYYHHMM(), html,
             Manipulations.HTML_MANIPULATIONS));
          AWorkbench.popup("Complete", jobName + " Complete...Results in ATS Results");
          monitor.done();

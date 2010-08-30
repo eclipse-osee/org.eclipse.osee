@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -37,7 +38,6 @@ import org.eclipse.osee.framework.ui.skynet.action.RefreshAction.IRefreshActionH
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
-import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
@@ -216,7 +216,7 @@ public class WorldComposite extends ScrolledComposite implements IWorldViewerEve
          @Override
          public void run() {
             iWorldEditor.setTableTitle(title, warning);
-            worldXViewer.setReportingTitle(title + " - " + XDate.getDateNow());
+            worldXViewer.setReportingTitle(title + " - " + DateUtil.getDateNow());
          };
       });
    }
