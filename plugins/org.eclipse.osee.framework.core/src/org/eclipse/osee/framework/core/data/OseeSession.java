@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.core.data;
 import java.io.InputStream;
 import java.sql.Timestamp;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 
 /**
  * @author Roberto E. Escobar
@@ -92,7 +91,7 @@ public class OseeSession extends OseeClientInfo {
    /**
     * Get a the session id and version in a single string
     * 
-    * @param the session id and version
+    * @return the session id and version
     */
    public String getSessionIdAndVersion() {
       return String.format("%s - %s", getSessionId(), getVersion());
@@ -101,7 +100,7 @@ public class OseeSession extends OseeClientInfo {
    /**
     * Create new instance from XML input
     * 
-    * @param OseeSession the new instance
+    * @return OseeSession the new instance
     */
    public static OseeSession fromXml(InputStream inputStream) throws OseeCoreException {
       OseeSession session = new OseeSession();
