@@ -186,12 +186,12 @@ public class ArtifactQuery {
    }
 
    /**
-    * search for artifacts with any of the given artifact ids
+    * search for un-deleted artifacts with any of the given artifact ids
     * 
     * @return a collection of the artifacts found or an empty collection if none are found
     */
    public static List<Artifact> getArtifactListFromIds(Collection<Integer> artifactIds, IOseeBranch branch) throws OseeCoreException {
-      return ArtifactLoader.loadArtifacts(artifactIds, branch, LoadLevel.FULL, INCLUDE_CACHE);
+      return ArtifactLoader.loadArtifacts(artifactIds, branch, LoadLevel.FULL, INCLUDE_CACHE, INCLUDE_DELETED);
    }
 
    /**
@@ -200,17 +200,7 @@ public class ArtifactQuery {
     * @return a collection of the artifacts found or an empty collection if none are found
     */
    public static List<Artifact> getArtifactListFromIds(Collection<Integer> artifactIds, IOseeBranch branch, DeletionFlag allowDeleted) throws OseeCoreException {
-      List<Artifact> toReturn = ArtifactLoader.loadArtifacts(artifactIds, branch, LoadLevel.FULL, INCLUDE_CACHE);
-      if (allowDeleted == EXCLUDE_DELETED) {
-         for (int i = 0; i < toReturn.size(); i++) {
-            if (toReturn.get(i).isDeleted()) {
-               toReturn.remove(i);
-               i--;
-            }
-         }
-      }
-
-      return toReturn;
+      return ArtifactLoader.loadArtifacts(artifactIds, branch, LoadLevel.FULL, INCLUDE_CACHE, allowDeleted);
    }
 
    /**

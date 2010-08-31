@@ -131,17 +131,20 @@ public final class ArtifactLoader {
       }
    }
 
-   public static List<Artifact> loadArtifacts(Collection<Integer> artIds, IOseeBranch branch, LoadLevel loadLevel, LoadType reload) throws OseeCoreException {
-      return loadArtifacts(artIds, branch, loadLevel, null, reload);
+   public static List<Artifact> loadArtifacts(Collection<Integer> artIds, IOseeBranch branch, LoadLevel loadLevel, LoadType reload, DeletionFlag allowDeleted) throws OseeCoreException {
+      return loadArtifacts(artIds, branch, loadLevel, null, reload, allowDeleted);
    }
 
-   private static void checkArtifactCache(ArrayList<Artifact> artifacts, Collection<Integer> artIds, TransactionRecord transactionId, IOseeBranch branch) throws OseeCoreException {
+   private static void checkArtifactCache(ArrayList<Artifact> artifacts, Collection<Integer> artIds, TransactionRecord transactionId, IOseeBranch branch, DeletionFlag allowDeleted) throws OseeCoreException {
       Iterator<Integer> iterator = artIds.iterator();
       while (iterator.hasNext()) {
          Integer artId = iterator.next();
          Artifact artifact = getArtifactFromCache(artId, transactionId, branch);
 
          if (artifact != null) {
+            if (allowDeleted == EXCLUDE_DELETED && artifact.isDeleted()) {
+               continue;
+            }
             iterator.remove();
             artifacts.add(artifact);
          }
@@ -159,10 +162,10 @@ public final class ArtifactLoader {
    /**
     * loads or reloads artifacts based on artifact ids and branch ids
     */
-   public static List<Artifact> loadArtifacts(Collection<Integer> artIds, IOseeBranch branch, LoadLevel loadLevel, TransactionRecord transactionId, LoadType reload) throws OseeCoreException {
+   public static List<Artifact> loadArtifacts(Collection<Integer> artIds, IOseeBranch branch, LoadLevel loadLevel, TransactionRecord transactionId, LoadType reload, DeletionFlag allowDeleted) throws OseeCoreException {
       ArrayList<Artifact> artifacts = new ArrayList<Artifact>();
 
-      checkArtifactCache(artifacts, artIds, transactionId, branch);
+      checkArtifactCache(artifacts, artIds, transactionId, branch, allowDeleted);
       if (artIds != null && !artIds.isEmpty()) {
          int queryId = ArtifactLoader.getNewQueryId();
          Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
@@ -180,7 +183,7 @@ public final class ArtifactLoader {
          }
 
          for (Artifact artifact : loadArtifacts(queryId, loadLevel, null, insertParameters, reload, historical,
-            INCLUDE_DELETED)) {
+            allowDeleted)) {
             artifacts.add(artifact);
          }
       }

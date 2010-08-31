@@ -218,7 +218,11 @@ public class RelationManager {
    }
 
    private static List<RelationLink> getFlattenedList(List<List<RelationLink>> values) {
+      if (values == null) {
+         return Collections.emptyList();
+      }
       List<RelationLink> links = new ArrayList<RelationLink>();
+
       for (List<RelationLink> valueLinks : values) {
          for (RelationLink link : valueLinks) {
             links.add(link);
@@ -252,8 +256,8 @@ public class RelationManager {
       }
 
       Collection<Artifact> bulkLoadedArtifacts =
-         ArtifactQuery.getArtifactListFromIds(getRelatedArtifactIds(selectedRelations, relationSide),
-            artifact.getBranch());
+         ArtifactQuery.getArtifactListFromIds(
+            getRelatedArtifactIds(selectedRelations, relationSide, DeletionFlag.EXCLUDE_DELETED), artifact.getBranch());
 
       List<Artifact> relatedArtifacts = new ArrayList<Artifact>(selectedRelations.size());
       relatedArtifacts.clear();
@@ -275,11 +279,13 @@ public class RelationManager {
       return relatedArtifacts;
    }
 
-   private static Collection<Integer> getRelatedArtifactIds(List<RelationLink> relations, RelationSide side) {
+   private static Collection<Integer> getRelatedArtifactIds(List<RelationLink> relations, RelationSide side, DeletionFlag allowDeleted) {
       Collection<Integer> ret = new HashSet<Integer>();
       if (relations != null) {
          for (RelationLink rel : relations) {
-            ret.add(rel.getArtifactId(side));
+            if (allowDeleted == INCLUDE_DELETED || (allowDeleted == EXCLUDE_DELETED && !rel.isDeleted())) {
+               ret.add(rel.getArtifactId(side));
+            }
          }
       }
       return ret;
@@ -290,27 +296,47 @@ public class RelationManager {
    }
 
    public static Set<Artifact> getRelatedArtifacts(Collection<? extends Artifact> artifacts, int depth, DeletionFlag allowDeleted, IRelationEnumeration... relationEnums) throws OseeCoreException {
-      ElapsedTime elapsedTime = new ElapsedTime("RelMgr - getRelatedArtifacts");
       Set<Artifact> relatedArtifacts = new HashSet<Artifact>(artifacts.size() * 8);
       Collection<Artifact> newArtifactsToSearch = new ArrayList<Artifact>(artifacts);
       Collection<Artifact> newArtifacts = new ArrayList<Artifact>();
-      Collection<Integer> relatedArtIds = new ArrayList<Integer>();
+      Set<Integer> relatedArtIds = new HashSet<Integer>();
       if (artifacts.isEmpty()) {
          return relatedArtifacts;
       }
 
+      // loop through till either depth is reached or there re no more artifacts to search at this level
       for (int i = 0; i < depth && !newArtifactsToSearch.isEmpty(); i++) {
+         relatedArtIds.clear();
          for (Artifact artifact : newArtifactsToSearch) {
-            List<RelationLink> selectedRelations = null;
+            List<RelationLink> selectedRelations = new ArrayList<RelationLink>();
             if (relationEnums.length == 0) {
-               selectedRelations = getFlattenedList(relationsByType.getValues(threadLocalKey.get().getKey(artifact)));
-               relatedArtIds.addAll(getRelatedArtifactIds(selectedRelations, RelationSide.SIDE_B));
+               /**
+                * since getting relations by type will return the link between this artifact and it's parent, make sure
+                * not to put it in the list of selected relations
+                */
+               for (RelationLink rel : getFlattenedList(relationsByType.getValues(threadLocalKey.get().getKey(artifact)))) {
+                  if (!rel.getArtifactA().equals(artifact)) {
+                     selectedRelations.add(rel);
+                  }
+               }
+               relatedArtIds.addAll(getRelatedArtifactIds(selectedRelations, RelationSide.SIDE_B, allowDeleted));
             } else {
                for (IRelationEnumeration relationEnum : relationEnums) {
-                  selectedRelations =
+                  Collection<RelationLink> links =
                      relationsByType.get(threadLocalKey.get().getKey(artifact),
                         RelationTypeManager.getType(relationEnum));
-                  relatedArtIds.addAll(getRelatedArtifactIds(selectedRelations, relationEnum.getSide()));
+                  if (links != null) {
+                     for (RelationLink rel : links) {
+                        /**
+                         * since getting relations by type will return the link between this artifact and it's parent,
+                         * make sure not to put it in the list of selected relations
+                         */
+                        if (rel.getArtifactId(relationEnum.getSide()) != artifact.getArtId()) {
+                           selectedRelations.add(rel);
+                        }
+                     }
+                  }
+                  relatedArtIds.addAll(getRelatedArtifactIds(selectedRelations, relationEnum.getSide(), allowDeleted));
                }
             }
          }
