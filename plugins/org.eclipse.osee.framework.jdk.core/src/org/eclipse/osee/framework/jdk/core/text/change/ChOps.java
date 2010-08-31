@@ -18,7 +18,6 @@ public class ChOps {
    /**
     * take a string containing one or more "\n" and replace with a new line char then replace all "\\n" with "\n"
     * 
-    * @return char[]
     */
    public static char[] embedNewLines(char[] src, int srcStartIndex, int srcEndIndex) {
       int stop = srcEndIndex - 1; //don't loop for the last char so we can use src[i+1]

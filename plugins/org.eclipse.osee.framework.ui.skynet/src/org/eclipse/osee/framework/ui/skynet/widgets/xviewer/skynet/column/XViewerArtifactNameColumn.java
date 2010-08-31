@@ -40,7 +40,6 @@ public class XViewerArtifactNameColumn extends XViewerValueColumn {
    /**
     * XViewer uses copies of column definitions so originals that are registered are not corrupted. Classes extending
     * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
-    * 
     */
    @Override
    public XViewerArtifactNameColumn copy() {

@@ -22,7 +22,6 @@ public class NonMappingFloat32Element extends Float32Element {
 
    /**
     * Copy constructor.
-    * 
     */
    public NonMappingFloat32Element(Float32Element element) {
       super(element.getMessage(), element.getElementName(), element.getMsgData(), element.getByteOffset(),

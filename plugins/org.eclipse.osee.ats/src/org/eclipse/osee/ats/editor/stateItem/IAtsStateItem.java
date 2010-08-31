@@ -51,7 +51,6 @@ public interface IAtsStateItem {
 
    /**
     * @return Result of operation. If Result.isFalse(), transition will not continue and Result.popup will occur.
-    * @throws Exception
     */
    public Result transitioning(StateMachineArtifact sma, String fromState, String toState, Collection<User> toAssignees) throws OseeCoreException;
 
@@ -59,7 +58,6 @@ public interface IAtsStateItem {
 
    /**
     * @return Result of operation. If Result.isFalse(), commit will not continue and Result.popup will occur.
-    * @throws Exception
     */
    public Result committing(StateMachineArtifact sma) throws OseeCoreException;
 

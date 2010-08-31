@@ -87,7 +87,6 @@ public class PortUtil {
    /**
     * @param numberOfPorts The number of consecutive available ports to find
     * @return The port of first number in the sequence of valid ports
-    * @throws Exception
     */
    private int getConsecutiveLocalPorts(int numberOfPorts) throws Exception {
       if (nextPort >= basePort + 250 - numberOfPorts) {

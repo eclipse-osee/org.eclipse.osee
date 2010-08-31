@@ -73,9 +73,6 @@ public class AtsAddPeerToPeerReviewRule extends WorkRuleDefinition {
 
    /**
     * Creates PeerToPeer review if one of same name doesn't already exist
-    * 
-    * @return review
-    * @throws OseeCoreException
     */
    public static PeerToPeerReviewArtifact createNewPeerToPeerReview(WorkRuleDefinition atsAddPeerToPeerReviewRule, TeamWorkFlowArtifact teamArt, SkynetTransaction transaction) throws OseeCoreException {
       if (!atsAddPeerToPeerReviewRule.getId().startsWith(AtsAddPeerToPeerReviewRule.ID)) {

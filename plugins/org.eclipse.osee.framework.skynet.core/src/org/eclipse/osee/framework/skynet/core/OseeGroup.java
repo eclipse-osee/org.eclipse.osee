@@ -37,7 +37,6 @@ public class OseeGroup {
 
    /**
     * @return Returns the group.
-    * @throws OseeCoreException
     */
    public Artifact getGroupArtifact() throws OseeCoreException {
       checkGroupExists();
@@ -46,7 +45,6 @@ public class OseeGroup {
 
    /**
     * This does not persist the newly created relation that is the callers responsibility.
-    * 
     */
    public void addMember(User user) throws OseeCoreException {
       getGroupArtifact().addRelation(CoreRelationTypes.Users_User, user);
@@ -57,7 +55,6 @@ public class OseeGroup {
     * 
     * @param user to check
     * @return whether the user is a member of this group
-    * @throws OseeCoreException
     */
    public boolean isMember(User user) throws OseeCoreException {
       return getGroupArtifact().isRelated(CoreRelationTypes.Users_User, user);
@@ -67,7 +64,6 @@ public class OseeGroup {
     * Determines whether the current user is a member of this group
     * 
     * @return whether the current user is a member of this group
-    * @throws OseeCoreException
     */
    public boolean isCurrentUserMember() throws OseeCoreException {
       return isMember(UserManager.getUser());

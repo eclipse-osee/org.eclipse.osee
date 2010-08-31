@@ -120,8 +120,6 @@ public class StaticIdManagerTest {
    /**
     * Test method for
     * {@link org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager#setSingletonAttributeValue(org.eclipse.osee.framework.skynet.core.artifact.Artifact, java.lang.String)}
-    * 
-    * @throws InterruptedException
     */
    @org.junit.Test
    public void testSetSingletonAttributeValue() throws OseeCoreException {
@@ -159,8 +157,6 @@ public class StaticIdManagerTest {
     * Test method for
     * {@link org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager#getArtifactsFromArtifactQuery(java.lang.String, java.lang.String, org.eclipse.osee.framework.skynet.core.artifact.Branch)}
     * .
-    * 
-    * @throws InterruptedException
     */
    @org.junit.Test
    public void testGetArtifacts() throws OseeCoreException {
@@ -252,8 +248,6 @@ public class StaticIdManagerTest {
     * Test method for
     * {@link org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager#getSingletonArtifact(java.lang.String, java.lang.String, org.eclipse.osee.framework.skynet.core.artifact.Branch)}
     * .
-    * 
-    * @throws InterruptedException
     */
    @org.junit.Test
    public void testGetSingletonArtifactStringStringBranch() throws OseeCoreException {

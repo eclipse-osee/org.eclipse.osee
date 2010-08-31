@@ -34,7 +34,6 @@ public abstract class AbstractTreeNode {
 
    /**
     * constructs the node and adds this node to the parent
-    * 
     */
    public AbstractTreeNode(final String treeViewName, final Image image) {
       this.treeViewName = treeViewName;
@@ -51,7 +50,6 @@ public abstract class AbstractTreeNode {
 
    /**
     * sets the level or depth of this node. Usually the root is level 0. The level policy is up to the implementation
-    * 
     */
    protected void setLevel(final int level) {
       this.level = level;
@@ -187,9 +185,6 @@ public abstract class AbstractTreeNode {
       return "";
    }
 
-   /**
-    * @return Image
-    */
    public Image getImage() {
       return image;
    }

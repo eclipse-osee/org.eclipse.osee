@@ -102,7 +102,6 @@ public class SkynetXViewerFactory extends XViewerFactory {
 
    /**
     * @return columns for attributes valid for at least on of the given artifacts
-    * @throws OseeCoreException
     */
    public static List<XViewerColumn> getAllAttributeColumnsForArtifacts(Collection<? extends Artifact> artifacts) throws OseeCoreException {
       List<XViewerColumn> columns = new ArrayList<XViewerColumn>();

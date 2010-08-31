@@ -56,7 +56,6 @@ public class TeamDefinitionTreeWithChildrenDialog extends CheckedTreeSelectionDi
 
    /**
     * @return selected team defs and children if recurseChildren was checked
-    * @throws OseeCoreException
     */
    public Collection<TeamDefinitionArtifact> getResultAndRecursedTeamDefs() throws OseeCoreException {
       Set<TeamDefinitionArtifact> teamDefs = new HashSet<TeamDefinitionArtifact>(10);

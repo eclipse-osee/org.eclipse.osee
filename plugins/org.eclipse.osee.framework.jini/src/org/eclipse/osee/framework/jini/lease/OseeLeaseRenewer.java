@@ -55,7 +55,6 @@ public class OseeLeaseRenewer {
 
    /**
     * Attempts to maintain a lease until cancelRenewal is called
-    * 
     */
    public synchronized void startRenewal(OseeLease lease) {
       if (timer == null) {
@@ -74,7 +73,6 @@ public class OseeLeaseRenewer {
 
    /**
     * Prevents the lease from being renewed. This does not cancel the lease, only the renewal attempts.
-    * 
     */
    public synchronized void cancelRenewal(OseeLease lease) {
       Renewer renewer = map.remove(lease);

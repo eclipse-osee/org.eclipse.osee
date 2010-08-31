@@ -22,7 +22,6 @@ public class RecUtil {
    /**
     * a very fast way of converting a byte into a two digit, zero padded hex value that is written directly into a byte
     * buffer
-    * 
     */
    public static void byteToAsciiHex(byte byteValue, ByteBuffer buffer) {
       int value = byteValue & 0xFF;

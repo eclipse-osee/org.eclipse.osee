@@ -28,8 +28,6 @@ public abstract class AbstractSheetWriter implements ISheetWriter {
 
    /**
     * must be called by subclasses in their implementations of writeCell(String data, int cellIndex)
-    * 
-    * @throws IOException
     */
    protected void startRowIfNecessary() throws IOException {
       if (startRow) {

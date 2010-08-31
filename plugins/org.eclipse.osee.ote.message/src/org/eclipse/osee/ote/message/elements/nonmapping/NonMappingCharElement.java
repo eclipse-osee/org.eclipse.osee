@@ -47,7 +47,6 @@ public class NonMappingCharElement extends CharElement {
     * 
     * @param cause The originator of the signal
     * @param value The value sent by cause and being forwarded by this element
-    * @throws InterruptedException
     */
    public void checkForwarding(ITestAccessor accessor, CharElement cause, char value) throws InterruptedException {
 
@@ -256,7 +255,6 @@ public class NonMappingCharElement extends CharElement {
     * @param value Expected value.
     * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
     * @return If the check passed.
-    * @throws InterruptedException
     */
    public boolean check(ITestAccessor accessor, char value, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
@@ -275,7 +273,6 @@ public class NonMappingCharElement extends CharElement {
     * @param value Expected value.
     * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
     * @return If the check passed.
-    * @throws InterruptedException
     */
    public boolean check(ITestAccessor accessor, CheckGroup checkGroup, char value, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
@@ -290,7 +287,6 @@ public class NonMappingCharElement extends CharElement {
     * @param maxValue The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait for the element to be within the range.
     * @return if the check passed
-    * @throws InterruptedException
     */
    public boolean checkRange(ITestAccessor accessor, char minValue, char maxValue, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
@@ -311,7 +307,6 @@ public class NonMappingCharElement extends CharElement {
     * @param maxValue The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait for the element to be within the range.
     * @return if the check passed
-    * @throws InterruptedException
     */
    public boolean checkRange(ITestAccessor accessor, CheckGroup checkGroup, char minValue, char maxValue, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
@@ -328,7 +323,6 @@ public class NonMappingCharElement extends CharElement {
     * @param maxInclusive If the maximum value of the range is inclusive.
     * @param milliseconds Number of milliseconds to wait for the element to be within the range.
     * @return if the check passed
-    * @throws InterruptedException
     */
    public boolean checkRange(ITestAccessor accessor, char minValue, boolean minInclusive, char maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
@@ -351,7 +345,6 @@ public class NonMappingCharElement extends CharElement {
     * @param maxInclusive If the maximum value of the range is inclusive.
     * @param milliseconds Number of milliseconds to wait for the element to be within the range.
     * @return if the check passed
-    * @throws InterruptedException
     */
    public boolean checkRange(ITestAccessor accessor, CheckGroup checkGroup, char minValue, boolean minInclusive, char maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
@@ -365,7 +358,6 @@ public class NonMappingCharElement extends CharElement {
     * @param value value to test against.
     * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
     * @return If the check passed.
-    * @throws InterruptedException
     */
    public boolean checkNot(ITestAccessor accessor, char value, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
@@ -385,7 +377,6 @@ public class NonMappingCharElement extends CharElement {
     * @param value value to test against.
     * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
     * @return If the check passed.
-    * @throws InterruptedException
     */
    public boolean checkNot(ITestAccessor accessor, CheckGroup checkGroup, char value, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
@@ -400,7 +391,6 @@ public class NonMappingCharElement extends CharElement {
     * @param maxValue The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait for the element to be outside the range.
     * @return if the check passed
-    * @throws InterruptedException
     */
    public boolean checkNotRange(ITestAccessor accessor, char minValue, char maxValue, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
@@ -421,7 +411,6 @@ public class NonMappingCharElement extends CharElement {
     * @param maxValue The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait for the element to be outside the range.
     * @return if the check passed
-    * @throws InterruptedException
     */
    public boolean checkNotRange(ITestAccessor accessor, CheckGroup checkGroup, char minValue, char maxValue, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
@@ -440,7 +429,6 @@ public class NonMappingCharElement extends CharElement {
     * to the range value.
     * @param milliseconds Number of milliseconds to wait for the element to be outside the range.
     * @return if the check passed
-    * @throws InterruptedException
     */
    public boolean checkNotRange(ITestAccessor accessor, char minValue, boolean minInclusive, char maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
@@ -465,7 +453,6 @@ public class NonMappingCharElement extends CharElement {
     * to the range value.
     * @param milliseconds Number of milliseconds to wait for the element to be outside the range.
     * @return if the check passed
-    * @throws InterruptedException
     */
    public boolean checkNotRange(ITestAccessor accessor, CheckGroup checkGroup, char minValue, boolean minInclusive, char maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
@@ -478,7 +465,6 @@ public class NonMappingCharElement extends CharElement {
     * @param value Expected value.
     * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
     * @return If the check passed.
-    * @throws InterruptedException
     */
    @Override
    public boolean checkNot(ITestAccessor accessor, String value, int milliseconds) throws InterruptedException {
@@ -498,7 +484,6 @@ public class NonMappingCharElement extends CharElement {
     * @param value Expected value.
     * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
     * @return If the check passed.
-    * @throws InterruptedException
     */
    @Override
    public boolean checkNot(ITestAccessor accessor, CheckGroup checkGroup, String value, int milliseconds) throws InterruptedException {
@@ -513,7 +498,6 @@ public class NonMappingCharElement extends CharElement {
     * @param value Expected value.
     * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
     * @return If the check passed.
-    * @throws InterruptedException
     */
    @Override
    public boolean check(ITestAccessor accessor, String value, int milliseconds) throws InterruptedException {
@@ -533,7 +517,6 @@ public class NonMappingCharElement extends CharElement {
     * @param value Expected value.
     * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
     * @return If the check passed.
-    * @throws InterruptedException
     */
    @Override
    public boolean check(ITestAccessor accessor, CheckGroup checkGroup, String value, int milliseconds) throws InterruptedException {
@@ -615,7 +598,6 @@ public class NonMappingCharElement extends CharElement {
     * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
     * will log the test point.
     * @return last value observed. Either value expected or value found at timeout.
-    * @throws InterruptedException
     */
    public char checkMaintain(ITestAccessor accessor, CheckGroup checkGroup, char value, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
@@ -633,7 +615,6 @@ public class NonMappingCharElement extends CharElement {
     * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
     * will log the test point.
     * @return last value observed
-    * @throws InterruptedException
     */
    public char checkMaintainNot(ITestAccessor accessor, CheckGroup checkGroup, char value, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
@@ -654,7 +635,6 @@ public class NonMappingCharElement extends CharElement {
     * @param maxValue The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
-    * @throws InterruptedException
     */
    public char checkMaintainRange(ITestAccessor accessor, CheckGroup checkGroup, char minValue, char maxValue, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
@@ -676,7 +656,6 @@ public class NonMappingCharElement extends CharElement {
     * @param maxInclusive If the maximum value of the range is inclusive.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
-    * @throws InterruptedException
     */
    public char checkMaintainRange(ITestAccessor accessor, CheckGroup checkGroup, char minValue, boolean minInclusive, char maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
@@ -697,7 +676,6 @@ public class NonMappingCharElement extends CharElement {
     * @param maxValue The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
-    * @throws InterruptedException
     */
    public char checkMaintainNotRange(ITestAccessor accessor, CheckGroup checkGroup, char minValue, char maxValue, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
@@ -721,7 +699,6 @@ public class NonMappingCharElement extends CharElement {
     * to the range value.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
-    * @throws InterruptedException
     */
    public char checkMaintainNotRange(ITestAccessor accessor, CheckGroup checkGroup, char minValue, boolean minInclusive, char maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
@@ -806,7 +783,6 @@ public class NonMappingCharElement extends CharElement {
     * to the range value.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
-    * @throws InterruptedException
     */
    public char waitForNotRange(ITestEnvironmentAccessor accessor, char minValue, boolean minInclusive, char maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
@@ -820,7 +796,6 @@ public class NonMappingCharElement extends CharElement {
     * @param maxValue The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
-    * @throws InterruptedException
     */
    public char waitForNotRange(ITestEnvironmentAccessor accessor, char minValue, char maxValue, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
@@ -838,7 +813,6 @@ public class NonMappingCharElement extends CharElement {
     * to the range value.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
-    * @throws InterruptedException
     */
    public char waitForRange(ITestEnvironmentAccessor accessor, char minValue, boolean minInclusive, char maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
@@ -852,7 +826,6 @@ public class NonMappingCharElement extends CharElement {
     * @param maxValue The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
-    * @throws InterruptedException
     */
    public char waitForRange(ITestEnvironmentAccessor accessor, char minValue, char maxValue, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
@@ -865,7 +838,6 @@ public class NonMappingCharElement extends CharElement {
     * @param value The expected value to wait for.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
-    * @throws InterruptedException
     */
    public char waitNotValue(ITestEnvironmentAccessor accessor, char value, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
@@ -878,7 +850,6 @@ public class NonMappingCharElement extends CharElement {
     * @param value The expected value to wait for.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value found. Either value expected or value found at timeout.
-    * @throws InterruptedException
     */
    public char waitForValue(ITestEnvironmentAccessor accessor, char value, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
@@ -891,7 +862,6 @@ public class NonMappingCharElement extends CharElement {
     * @param value The expected value to wait for.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value found. Either value expected or value found at timeout.
-    * @throws InterruptedException
     */
    @Override
    protected String waitForValue(ITestEnvironmentAccessor accessor, String value, int milliseconds) throws InterruptedException {
@@ -906,7 +876,6 @@ public class NonMappingCharElement extends CharElement {
     * @param value The expected value to wait for.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value found. Either value expected or value found at timeout.
-    * @throws InterruptedException
     */
    @Override
    protected String waitForNotValue(ITestEnvironmentAccessor accessor, String value, int milliseconds) throws InterruptedException {

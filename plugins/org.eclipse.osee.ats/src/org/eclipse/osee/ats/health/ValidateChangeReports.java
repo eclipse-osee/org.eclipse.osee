@@ -214,7 +214,6 @@ public class ValidateChangeReports extends XNavigateItemAction {
     * Return true if current change report is same as stored change report data
     * 
     * @return Result.TrueResult if same, else Result.FalseResult with comparison in resultData
-    * @throws ParserConfigurationException
     */
    static Result changeReportValidated(final String currentDbGuid, final TeamWorkFlowArtifact teamArt, XResultData resultData, boolean displayWasIs) throws OseeCoreException {
       String name = "VCR_" + teamArt.getHumanReadableId();

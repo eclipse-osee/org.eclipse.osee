@@ -37,7 +37,6 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
     * Return current date or null if not set
     * 
     * @return date or null if not set
-    * @throws OseeCoreException
     */
    @Override
    public Date getValue() throws OseeCoreException {
@@ -82,7 +81,6 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
     * Sets date
     * 
     * @param value value or null to clear
-    * @throws OseeCoreException
     */
    @Override
    public boolean subClassSetValue(Date value) throws OseeCoreException {
@@ -108,7 +106,6 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
     * 
     * @param pattern DateAttribute.MMDDYY, etc...
     * @return formated date
-    * @throws OseeCoreException
     */
    public String getAsFormattedString(DateFormat dateFormat) throws OseeCoreException {
       Date date = getValue();

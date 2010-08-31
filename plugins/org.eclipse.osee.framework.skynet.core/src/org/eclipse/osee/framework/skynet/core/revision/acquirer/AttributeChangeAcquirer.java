@@ -161,10 +161,6 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
       }
    }
 
-   /**
-    * @throws OseeCoreException
-    * @throws OseeDataStoreException
-    */
    private void loadAttributeWasValues(Branch sourceBranch, TransactionRecord transactionId, Set<Integer> artIds, IProgressMonitor monitor, Map<Integer, ChangeBuilder> attributesWasValueCache, boolean hasBranch) throws OseeCoreException, OseeDataStoreException {
       if (!artIds.isEmpty()) {
          int count = 0;

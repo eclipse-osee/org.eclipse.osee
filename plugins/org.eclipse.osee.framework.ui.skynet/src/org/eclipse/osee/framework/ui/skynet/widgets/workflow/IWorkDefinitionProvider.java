@@ -23,15 +23,11 @@ public interface IWorkDefinitionProvider {
     * Return WorkItemDefinitions to be contributed programatically to the WorkDefinitionFactory. This includes Page and
     * Workflow Definitions. This should only be used for development as all WorkItemDefinitions should be imported into
     * the DB using ImportWorkItemDefinitions.
-    * 
-    * @throws Exception
     */
    public Collection<WorkItemDefinition> getProgramaticWorkItemDefinitions() throws OseeCoreException;
 
    /**
     * Return WorkFlowDefinition to use for the given state machine artifact.
-    * 
-    * @throws Exception
     */
    public WorkFlowDefinition getWorkFlowDefinition(Artifact artifact) throws OseeCoreException;
 

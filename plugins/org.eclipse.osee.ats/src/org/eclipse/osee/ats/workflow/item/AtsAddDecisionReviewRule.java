@@ -81,9 +81,6 @@ public class AtsAddDecisionReviewRule extends WorkRuleDefinition {
 
    /**
     * Creates decision review if one of same name doesn't already exist
-    * 
-    * @return DecisionReviewArtifact
-    * @throws OseeCoreException
     */
    public static DecisionReviewArtifact createNewDecisionReview(WorkRuleDefinition atsAddDecisionReviewRule, SkynetTransaction transaction, TeamWorkFlowArtifact teamArt, DecisionRuleOption... decisionRuleOption) throws OseeCoreException {
       if (!atsAddDecisionReviewRule.getId().startsWith(AtsAddDecisionReviewRule.ID)) {

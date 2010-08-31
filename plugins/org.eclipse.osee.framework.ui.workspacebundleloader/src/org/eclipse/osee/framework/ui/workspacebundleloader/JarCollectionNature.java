@@ -138,8 +138,6 @@ public class JarCollectionNature implements IProjectNature {
 
    /**
     * @return
-    * @throws IOException
-    * @throws FileNotFoundException
     */
    private Manifest getManifestFile() {
       try {

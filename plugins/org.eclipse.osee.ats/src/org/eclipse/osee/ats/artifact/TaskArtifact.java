@@ -233,8 +233,6 @@ public class TaskArtifact extends StateMachineArtifact implements IATSStateMachi
    /**
     * Tasks must transition in/out of completed when percent changes between 100 and <100. This method will handle these
     * cases.
-    * 
-    * @throws OseeCoreException
     */
    public void statusPercentChanged(double additionalHours, int percentComplete, SkynetTransaction transaction) throws OseeCoreException {
       if (percentComplete == 100 && !isCompleted()) {

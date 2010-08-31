@@ -111,7 +111,6 @@ public class ExtractDatabaseSchemaOperation extends AbstractOperation {
    //    * Writes the XML files in the directory specified.
    //    *
    //    * @param directory The directory tow write the XML files.
-   //    * @throws IOException
    //    */
    //   public void writeToFile(File directory) throws IOException {
    //      FileUtility.setupDirectoryForWrite(directory);

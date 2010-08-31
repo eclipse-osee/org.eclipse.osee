@@ -72,8 +72,6 @@ public class ByteUtil {
    /**
     * NOTE the SDK supplies a Integer.toBinaryString but it is not formatted to a standard number of chars so it was not
     * a good option.
-    * 
-    * @return String
     */
    public static String toBinaryString(byte b) {
       StringBuffer sb = new StringBuffer();
@@ -137,7 +135,6 @@ public class ByteUtil {
 
    /**
     * writes message data to a buffer in hex format
-    * 
     */
    public static void printByteDump(StringBuilder strBuilder, byte[] data, int offset, int length, int columnNum) {
       printByteDump(strBuilder, data, offset, length, columnNum, true);
@@ -145,7 +142,6 @@ public class ByteUtil {
 
    /**
     * writes message data to a buffer in hex format
-    * 
     */
    public static void printByteDump(StringBuilder strBuilder, byte[] data, int offset, int length, int columnNum, boolean hex) {
       int columnCount = 0;

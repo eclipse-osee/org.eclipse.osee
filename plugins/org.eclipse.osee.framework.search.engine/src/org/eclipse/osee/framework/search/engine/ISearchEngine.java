@@ -24,7 +24,6 @@ public interface ISearchEngine {
     * 
     * @param attributeType search filter. When null, all types are searched.
     * @return search result
-    * @throws Exception
     */
    public SearchResult search(String searchString, int branchId, SearchOptions options, AttributeType... attributeTypes) throws Exception;
 

@@ -80,9 +80,6 @@ public class TelnetShell implements TelnetNotificationHandler {
 
    /**
     * Connects telnet to the specified ipAddress and port
-    * 
-    * @throws IOException
-    * @throws SocketException
     */
    public TelnetShell(String ipAddress, int port) throws SocketException, IOException {
       this(ipAddress, port, true);
@@ -177,7 +174,6 @@ public class TelnetShell implements TelnetNotificationHandler {
     * Sits on the line, reading in characters, and waits for the expected output from telnet
     * 
     * @param string The String this function will stop on and return
-    * @throws InterruptedException
     */
    public synchronized void waitFor(String string) throws InterruptedException {
       if (inputBuffer.waitFor(string, true, MAX_RESPONSE_TIME) < 0) {
@@ -218,7 +214,6 @@ public class TelnetShell implements TelnetNotificationHandler {
     * Writes the command to telnet and waits for the normal command prompt
     * 
     * @param string The command to issue
-    * @throws InterruptedException
     */
    public void sendCommand(String string) throws InterruptedException {
       currentOutput = inputBuffer.getLength() + string.length() + 1;

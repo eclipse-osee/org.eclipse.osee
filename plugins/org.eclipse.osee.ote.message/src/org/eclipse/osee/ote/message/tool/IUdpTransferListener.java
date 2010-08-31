@@ -24,7 +24,6 @@ public interface IUdpTransferListener {
    /**
     * called when the an error is experienced during transfer operations. The handle for this transfer will be
     * automatically stopped prior to this method being called
-    * 
     */
    void onTransferException(TransferConfig config, Throwable t);
 }

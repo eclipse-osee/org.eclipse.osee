@@ -150,7 +150,6 @@ public class ClientSession extends AbstractRemoteSession {
 
    /**
     * this must be called prior to establishing a test host connection
-    * 
     */
    synchronized void setSessionDelegate(SessionDelegate sessionDelegate) {
       // intentionally package-private

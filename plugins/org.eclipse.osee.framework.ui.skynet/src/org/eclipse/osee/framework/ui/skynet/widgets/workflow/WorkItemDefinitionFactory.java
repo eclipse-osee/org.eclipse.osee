@@ -101,7 +101,6 @@ public class WorkItemDefinitionFactory {
    /**
     * This should only be called on database initialization or when new work item definitions are created during
     * run-time.
-    * 
     */
    public static void cacheWorkItemDefinitionArtifact(WriteType writeType, WorkItemDefinition workItemDefinition, Artifact artifact) throws OseeCoreException {
       addItemDefinition(writeType, workItemDefinition, artifact);

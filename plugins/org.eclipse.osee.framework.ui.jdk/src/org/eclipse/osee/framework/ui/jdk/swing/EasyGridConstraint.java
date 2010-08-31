@@ -170,7 +170,6 @@ public class EasyGridConstraint extends GridBagConstraints {
     * and the edges of its display area.
     * @param ipadx Specifies the component's horizontal internal padding
     * @param ipady Specifies the component's vertical internal padding
-    * @return java.awt.GridBagConstraints
     */
    public static GridBagConstraints setConstraints(int gridx, int gridy, double weightx, double weighty, int gridwidth, int gridheight, char fill, String anchor, int ipadx, int ipady, Insets insets) {
       // gridx, gridy, weightx, weighty, gridwidth, gridheight, char fill, String anchor, insets, ipadx, ipady

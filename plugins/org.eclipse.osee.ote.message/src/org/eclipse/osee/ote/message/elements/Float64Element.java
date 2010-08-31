@@ -40,7 +40,6 @@ public class Float64Element extends RealElement {
     * 
     * @param cause The originator of the signal
     * @param value The value sent by cause and being forwarded by this element
-    * @throws InterruptedException
     */
    public void checkForwarding(ITestAccessor accessor, Float64Element cause, double value) throws InterruptedException {
       /* check for 0 to begine */
@@ -133,7 +132,6 @@ public class Float64Element extends RealElement {
 
    /**
     * Sest the element without the logging.
-    * 
     */
    public void setRawBits(long bits) {
       getMsgData().getMem().setLong(bits, byteOffset, msb, lsb);

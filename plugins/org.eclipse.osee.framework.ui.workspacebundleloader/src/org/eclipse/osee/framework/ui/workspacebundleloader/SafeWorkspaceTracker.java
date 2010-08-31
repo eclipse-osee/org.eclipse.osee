@@ -130,19 +130,10 @@ public class SafeWorkspaceTracker extends ServiceTracker implements IJarChangeLi
       installedBundles.clear();
    }
 
-   /**
-    * @throws CoreException
-    * @throws CoreException
-    * @throws BundleException
-    * @throws BundleException
-    */
    private void installWorkspacePlugins() throws CoreException {
       loadBundles();
    }
 
-   /**
-    * @throws BundleException
-    */
    @Override
    public void handleBundleAdded(URL url) {
       try {
@@ -156,9 +147,6 @@ public class SafeWorkspaceTracker extends ServiceTracker implements IJarChangeLi
       }
    }
 
-   /**
-    * @throws BundleException
-    */
    @Override
    public void handleBundleChanged(URL url) {
       try {
@@ -179,9 +167,6 @@ public class SafeWorkspaceTracker extends ServiceTracker implements IJarChangeLi
       }
    }
 
-   /**
-    * @throws BundleException
-    */
    @Override
    public void handleBundleRemoved(URL url) {
       try {
@@ -199,9 +184,6 @@ public class SafeWorkspaceTracker extends ServiceTracker implements IJarChangeLi
       }
    }
 
-   /**
-    * @throws BundleException
-    */
    private void transitionInstalledPlugins() {
       Iterator<String> iter = installedBundles.keySet().iterator();
       while (iter.hasNext()) {
@@ -227,9 +209,6 @@ public class SafeWorkspaceTracker extends ServiceTracker implements IJarChangeLi
       // }
    }
 
-   /**
-    * @throws BundleException
-    */
    private void transitionStoppedBundles() {
       Iterator<Bundle> iter = stoppedBundles.iterator();
       while (iter.hasNext()) {
@@ -256,10 +235,6 @@ public class SafeWorkspaceTracker extends ServiceTracker implements IJarChangeLi
       closeAllPlugins(nature);
    }
 
-   /**
-    * @throws CoreException
-    * @throws BundleException
-    */
    private void closeAllPlugins(WorkspaceStarterNature nature) {
       for (URL url : nature.getBundles()) {
          handleBundleRemoved(url);

@@ -81,7 +81,6 @@ public class NonMappingEnumeratedElement<T extends Enum<T> & IEnumValue<T>> exte
     * @param list List of values to check for
     * @param milliseconds Number of milliseconds to wait
     * @return if check passed
-    * @throws InterruptedException
     */
    @Override
    public boolean checkList(ITestAccessor accessor, CheckGroup checkGroup, boolean isInList, T[] list, int milliseconds) throws InterruptedException {
@@ -103,7 +102,6 @@ public class NonMappingEnumeratedElement<T extends Enum<T> & IEnumValue<T>> exte
     * @param isInList If the value is expected to be in or not in the "list"
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
-    * @throws InterruptedException
     */
    @Override
    public T checkMaintainList(ITestAccessor accessor, CheckGroup checkGroup, T[] list, boolean isInList, int milliseconds) throws InterruptedException {
@@ -118,7 +116,6 @@ public class NonMappingEnumeratedElement<T extends Enum<T> & IEnumValue<T>> exte
     * @param isInList If the value is expected to be in or not in the "list"
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
-    * @throws InterruptedException
     */
    @Override
    public T waitForList(ITestAccessor accessor, T[] list, boolean isInList, int milliseconds) throws InterruptedException {
@@ -132,7 +129,6 @@ public class NonMappingEnumeratedElement<T extends Enum<T> & IEnumValue<T>> exte
     * @param enumeration The expected value to wait for.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
-    * @throws InterruptedException
     */
    @Override
    public T waitForNotValue(ITestEnvironmentAccessor accessor, T enumeration, int milliseconds) throws InterruptedException {
@@ -145,7 +141,6 @@ public class NonMappingEnumeratedElement<T extends Enum<T> & IEnumValue<T>> exte
     * Sets the element to the first enumeration for the wait time and then it sets it to the second
     * enumeration.
     * 
-    * @throws InterruptedException
     */
    public void toggle(ITestEnvironmentAccessor accessor, T enumeration1, T enumeration2, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
@@ -184,7 +179,6 @@ public class NonMappingEnumeratedElement<T extends Enum<T> & IEnumValue<T>> exte
     * @param list The list of values to check against
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
-    * @throws InterruptedException
     */
    public T waitForNotInList(ITestAccessor accessor, T[] list, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
@@ -198,7 +192,6 @@ public class NonMappingEnumeratedElement<T extends Enum<T> & IEnumValue<T>> exte
     * @param list The list of values to check against
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
-    * @throws InterruptedException
     */
    public T waitForInList(ITestAccessor accessor, T[] list, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
@@ -254,7 +247,6 @@ public class NonMappingEnumeratedElement<T extends Enum<T> & IEnumValue<T>> exte
     * @param enumeration Expected value.
     * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
     * @return If the check passed.
-    * @throws InterruptedException
     */
    public boolean check(ITestAccessor accessor, CheckGroup checkGroup, T enumeration, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
@@ -276,7 +268,6 @@ public class NonMappingEnumeratedElement<T extends Enum<T> & IEnumValue<T>> exte
     * @param enumeration value to test against.
     * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
     * @return If the check passed.
-    * @throws InterruptedException
     */
    public boolean checkNot(ITestAccessor accessor, CheckGroup checkGroup, T enumeration, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
@@ -296,7 +287,6 @@ public class NonMappingEnumeratedElement<T extends Enum<T> & IEnumValue<T>> exte
     *           If an outside method is not going to log the check then a <b>null </b> reference
     *           should be passed and this method will log the test point.
     * @return last value observed. Either value expected or value found at timeout.
-    * @throws InterruptedException
     */
    public T checkMaintain(ITestAccessor accessor, CheckGroup checkGroup, T enumeration, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
@@ -316,7 +306,6 @@ public class NonMappingEnumeratedElement<T extends Enum<T> & IEnumValue<T>> exte
     *           If an outside method is not going to log the check then a <b>null </b> reference
     *           should be passed and this method will log the test point.
     * @return last value observed
-    * @throws InterruptedException
     */
    public T checkMaintainNot(ITestAccessor accessor, CheckGroup checkGroup, T enumeration, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
@@ -327,16 +316,12 @@ public class NonMappingEnumeratedElement<T extends Enum<T> & IEnumValue<T>> exte
     * This function will verify that this signal is pulsed for 2 cycles.
     * 
     * @param value The value to be checked
-    * @throws InterruptedException
     */
    @Override
    public void checkPulse(ITestAccessor accessor, T value) throws InterruptedException {
       throwNoMappingElementException();
    }
 
-   /**
-    * @throws InterruptedException
-    */
    @Override
    public boolean checkPulse(ITestAccessor accessor, CheckGroup checkGroup, T pulsedValue, T nonPulsedValue, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();

@@ -94,8 +94,6 @@ public class CreateActionArtifactChangeReportJob extends Job {
 
    /**
     * used recursively when originally passed a directory, thus an array of files is accepted
-    * 
-    * @throws Exception
     */
    private static void retrieveData(IProgressMonitor monitor, Collection<TeamWorkFlowArtifact> teamArts, IAttributeType attributeType, XResultData rd) throws OseeCoreException {
       monitor.subTask("Retrieving Actions");

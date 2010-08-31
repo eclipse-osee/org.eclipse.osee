@@ -39,7 +39,6 @@ public class HttpBranchCreation {
     * Creates a new root branch. Should NOT be used outside BranchManager.
     * 
     * @return the newly created branch
-    * @throws OseeCoreException
     */
    public static Branch createBranch(BranchType branchType, int sourceTransactionId, int parentBranchId, String branchName, String branchGuid, Artifact associatedArtifact, String creationComment, int populateBaseTxFromAddressingQueryId, int destinationBranchId) throws OseeCoreException {
       Map<String, String> parameters = new HashMap<String, String>();

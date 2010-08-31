@@ -62,9 +62,6 @@ public final class ChangeManager {
 
    /**
     * Acquires changes for a particular artifact
-    * 
-    * @return changes
-    * @throws OseeCoreException
     */
    public static Collection<Change> getChangesPerArtifact(Artifact artifact, IProgressMonitor monitor) throws OseeCoreException {
       return revsionChangeLoader.getChangesPerArtifact(artifact, monitor);
@@ -72,9 +69,6 @@ public final class ChangeManager {
 
    /**
     * Acquires artifact, relation and attribute changes from a source branch since its creation.
-    * 
-    * @return changes
-    * @throws OseeCoreException
     */
    public static IOperation comparedToPreviousTx(TransactionRecord transactionId, Collection<Change> changes) throws OseeCoreException {
       TransactionRecord startTx = TransactionManager.getPriorTransaction(transactionId);
@@ -86,9 +80,6 @@ public final class ChangeManager {
 
    /**
     * Acquires artifact, relation and attribute changes from a source branch since its creation.
-    * 
-    * @return changes
-    * @throws OseeCoreException
     */
    public static IOperation comparedToParent(IOseeBranch sourceBranch, Collection<Change> changes) throws OseeCoreException {
       Branch branch = BranchManager.getBranch(sourceBranch);
@@ -111,7 +102,6 @@ public final class ChangeManager {
     * The branch's baseline transaction is excluded.
     * 
     * @return a map of artifact to collection of TransactionIds which affected the given artifact
-    * @throws OseeCoreException
     */
    public static HashCollection<Artifact, TransactionRecord> getModifingTransactions(Collection<Artifact> artifacts) throws OseeCoreException {
       List<Object[]> insertParameters = new ArrayList<Object[]>(artifacts.size() * 5);
@@ -166,7 +156,6 @@ public final class ChangeManager {
     * artifact.
     * 
     * @return a map of artifact to collection of branches which affected the given artifact
-    * @throws OseeCoreException
     */
    public static HashCollection<Artifact, Branch> getModifingBranches(Collection<Artifact> artifacts) throws OseeCoreException {
       List<Object[]> insertParameters = new ArrayList<Object[]>(artifacts.size() * 5);

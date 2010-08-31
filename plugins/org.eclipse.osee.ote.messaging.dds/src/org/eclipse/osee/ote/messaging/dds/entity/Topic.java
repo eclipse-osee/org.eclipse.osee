@@ -43,7 +43,6 @@ public class Topic extends DomainEntity implements TopicDescription {
    /**
     * Creates a topic with all of the necessary information. This constructor is only visible to the DDS system,
     * applications should use {@link DomainParticipant#createTopic(String, String, TopicListener)} to create a Topic.
-    * 
     */
    Topic(DomainParticipant participant, TypeSignature typeName, String name, String namespace, boolean enabled, TopicListener listener, EntityFactory parentFactory) {
       super(enabled, listener, parentFactory);

@@ -32,7 +32,6 @@ public class CsvReader {
     * @param file a comma separate value file
     * @param totalNumFields the largest number of fields on any row (whether they are used or not)
     * @param enabled whether to enable or disable all the feilds initially
-    * @throws IOException
     */
    public CsvReader(File file, int totalNumFields, boolean enabled) throws IOException {
       this(new BufferedReader(new FileReader(file)), totalNumFields, enabled);
@@ -43,7 +42,6 @@ public class CsvReader {
     * 
     * @param file a comma separate value file
     * @param totalNumFields the largest number of fields on any row (whether they are used or not)
-    * @throws IOException
     */
    public CsvReader(File file, int totalNumFields) throws IOException {
       this(new BufferedReader(new FileReader(file)), totalNumFields);
@@ -81,7 +79,6 @@ public class CsvReader {
 
    /**
     * inclusive range
-    * 
     */
    public void setFieldsEnabled(int start, int end, boolean enable) {
       for (int i = start; i <= end; i++) {
@@ -110,7 +107,6 @@ public class CsvReader {
 
    /**
     * @return an array
-    * @throws IOException
     */
    private String[] getRowInternal() throws IOException {
       String[] values = new String[fieldCount];

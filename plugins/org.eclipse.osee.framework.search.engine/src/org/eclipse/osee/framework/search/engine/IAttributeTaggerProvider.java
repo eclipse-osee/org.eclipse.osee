@@ -25,7 +25,6 @@ public interface IAttributeTaggerProvider {
     * 
     * @param attributeData attribute to content to tag
     * @param collector object collecting tags
-    * @throws Exception
     */
    public void tagIt(AttributeData attributeData, ITagCollector collector) throws OseeCoreException;
 

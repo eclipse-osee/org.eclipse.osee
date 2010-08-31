@@ -22,7 +22,6 @@ public interface IEventFilter extends Serializable {
     * Determine if the event meets the requirement of this filter.
     * 
     * @param event The event to inspect.
-    * @return boolean
     */
    public boolean accepts(ISkynetEvent event);
 }

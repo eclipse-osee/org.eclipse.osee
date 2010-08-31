@@ -140,8 +140,6 @@ public class SafeWorkspaceTracker extends ServiceTracker implements OteBundleLoc
     * system libraries are in the workspace then this method will return an empty collection.
     * 
     * @return runtime library bundle infos
-    * @throws IOException
-    * @throws CoreException
     */
    @Override
    public Collection<BundleInfo> getRuntimeLibs() throws IOException, CoreException {
@@ -184,7 +182,6 @@ public class SafeWorkspaceTracker extends ServiceTracker implements OteBundleLoc
     * libraries.
     * 
     * @return system library URL's
-    * @throws CoreException
     */
    public Collection<URL> getSystemLibUrls() throws CoreException {
       Collection<URL> libs = new LinkedList<URL>();
@@ -199,7 +196,6 @@ public class SafeWorkspaceTracker extends ServiceTracker implements OteBundleLoc
     * Returns a list of URL's to all user libraries in the workspace.
     * 
     * @return user library URL's
-    * @throws CoreException
     */
    public Collection<URL> getUserLibUrls() throws CoreException {
       Collection<URL> libs = new LinkedList<URL>();
@@ -212,7 +208,6 @@ public class SafeWorkspaceTracker extends ServiceTracker implements OteBundleLoc
 
    /**
     * @return
-    * @throws IOException
     */
    private String getBundleNameFromJar(URL url) throws IOException {
       File file;
@@ -229,9 +224,6 @@ public class SafeWorkspaceTracker extends ServiceTracker implements OteBundleLoc
 
    /**
     * Returns a list of all bundles that have been modified since the last time this was called.
-    * 
-    * @throws CoreException
-    * @throws IOException
     */
    @Override
    public Collection<BundleInfo> consumeModifiedLibs() throws IOException {

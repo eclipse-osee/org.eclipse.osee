@@ -32,7 +32,6 @@ public class AFile {
    /**
     * Use the Lib method directly - the original implementation of this method was not memory efficient and suppressed
     * exceptions
-    * 
     */
    public static String readFile(String filename) {
       return readFile(new File(filename));
@@ -41,7 +40,6 @@ public class AFile {
    /**
     * Use the Lib method directly - the original implementation of this method was not memory efficient and suppressed
     * exceptions
-    * 
     */
    public static String readFile(File file) {
       try {

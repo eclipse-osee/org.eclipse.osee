@@ -63,7 +63,6 @@ public abstract class OseeUiActivator extends AbstractUIPlugin {
     * finds a resource in the plugin bundle and writes it out to the default persistent storage area as a regualar file
     * 
     * @return Return plugin file reference
-    * @throws IOException
     */
    public File getPluginFile(String path) throws IOException {
       return helper.getPluginFile(path);

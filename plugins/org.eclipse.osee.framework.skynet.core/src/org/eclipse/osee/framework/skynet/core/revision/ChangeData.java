@@ -68,9 +68,6 @@ public class ChangeData {
 
    /**
     * Return artifacts of kind and modType.
-    * 
-    * @return artifacts
-    * @throws OseeCoreException
     */
    public Collection<Artifact> getArtifacts(KindType kindType, ModificationType... modificationType) throws OseeCoreException {
       if (kindType == KindType.RelationOnly) {

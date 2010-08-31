@@ -48,7 +48,6 @@ public class ClassServerInst {
 
    /**
     * Creates a new ClassServer which will serve all projects currently in the workspace
-    * 
     */
    private ClassServerInst() {
       try {

@@ -19,9 +19,6 @@ import java.util.Set;
  * A hash map implementation that uses composite keys. This class is not thread safe.
  * 
  * @author Ken J. Aguilar
- * @param <KeyOne>
- * @param <KeyTwo>
- * @param <Value>
  */
 public class CompositeKeyTripleHashMap<KeyOne, KeyTwo, KeyThree, Value> implements Map<Triplet<KeyOne, KeyTwo, KeyThree>, Value> {
 

@@ -142,8 +142,6 @@ public class WordUtil {
     * 
     * @throws IllegalArgumentException if branch is null
     * @return returns true if some addressing was removed, otherwise false
-    * @throws OseeCoreException
-    * @throws Exception
     */
    public static boolean revertNonusefulWordChanges(int artId, Branch branch, String table) throws OseeCoreException {
       if (branch == null) {

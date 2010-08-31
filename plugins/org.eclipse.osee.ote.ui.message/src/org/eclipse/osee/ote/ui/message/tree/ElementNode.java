@@ -46,7 +46,6 @@ public class ElementNode extends AbstractTreeNode implements IElementPath {
 
    /**
     * Convience Constructor
-    * 
     */
    public ElementNode(final ElementPath elementName) {
       super(elementName.get(elementName.size() - 1).toString(), normalImg);
@@ -199,9 +198,6 @@ public class ElementNode extends AbstractTreeNode implements IElementPath {
       return messageElementPath;
    }
 
-   /**
-    * @return List<ElementNode>
-    */
    public List<ElementNode> getAllChildren() {
       List<ElementNode> allChildren = new ArrayList<ElementNode>();
       for (AbstractTreeNode node : getChildren()) {

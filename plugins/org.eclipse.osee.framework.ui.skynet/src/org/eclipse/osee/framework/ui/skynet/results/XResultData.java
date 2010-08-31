@@ -274,7 +274,9 @@ public final class XResultData {
          for (int x = 0; x < 3; x++) {
             rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {"Type " + x, "Title " + x, x + ""}));
          }
-         rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {"Error / Warning in table ", "Error: this is error",
+         rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {
+            "Error / Warning in table ",
+            "Error: this is error",
             "Warning: this is warning"}));
          rd.addRaw(AHTML.endMultiColumnTable());
          rd.report("This is my report title");

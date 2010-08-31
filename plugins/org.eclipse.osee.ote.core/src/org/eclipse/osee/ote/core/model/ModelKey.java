@@ -18,7 +18,6 @@ import java.io.Serializable;
  * Each of the getter functions MUST return a unique identifier for the specific model they represent ( or null if
  * that particular type isn't available).
  * @author Andrew M. Finkbeiner
- * @param <M>
  */
 public class ModelKey<M extends IModel> implements Serializable, Comparable {
    private static final long serialVersionUID = 4735332847721441142L;

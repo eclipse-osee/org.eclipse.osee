@@ -44,7 +44,6 @@ public class PropertyEntry extends AbstractEntry {
 
    /**
     * fills the supplied {@link EnhancedProperties} object with all the properties contained in this entry
-    * 
     */
    public void fillProps(Map<String, Serializable> props) {
       props.putAll(map);

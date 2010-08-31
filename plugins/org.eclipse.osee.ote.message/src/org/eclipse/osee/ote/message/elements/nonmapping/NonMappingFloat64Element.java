@@ -22,7 +22,6 @@ public class NonMappingFloat64Element extends Float64Element {
 
    /**
     * Copy constructor.
-    * 
     */
    public NonMappingFloat64Element(Float64Element element) {
       super(element.getMessage(), element.getElementName(), element.getMsgData(), element.getByteOffset(),

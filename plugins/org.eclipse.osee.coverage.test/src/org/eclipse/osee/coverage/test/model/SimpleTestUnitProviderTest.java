@@ -38,8 +38,6 @@ public class SimpleTestUnitProviderTest {
     * Test method for
     * {@link org.eclipse.osee.coverage.model.SimpleTestUnitProvider#getTestUnits(org.eclipse.osee.coverage.model.CoverageItem)}
     * .
-    * 
-    * @throws OseeCoreException
     */
    @Test
    public void testAddGetTestUnits() {
@@ -63,8 +61,6 @@ public class SimpleTestUnitProviderTest {
     * Test method for
     * {@link org.eclipse.osee.coverage.model.SimpleTestUnitProvider#toXml(org.eclipse.osee.coverage.model.CoverageItem)}
     * .
-    * 
-    * @throws OseeCoreException
     */
    @Test
    public void testToFromXml() throws OseeCoreException {

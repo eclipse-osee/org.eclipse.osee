@@ -25,8 +25,6 @@ public interface IMessageDictionary {
    /**
     * Generates a listing of all messages and associated elements defined in the message jar. The intent is to provide a
     * method for searching the message jar for certain messages
-    * 
-    * @throws IOException
     */
    void generateMessageIndex(final MessageSink sink) throws Exception;
 

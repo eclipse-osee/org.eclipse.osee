@@ -20,7 +20,6 @@ public final class Objects {
    /**
     * Produces a hash code that uses all of the supplied values. This method is guaranteed to return the same value
     * given the same input.
-    * 
     */
    public static int hashCode(int PRIME_1, int PRIME_2, Object... data) {
       int result = PRIME_1;

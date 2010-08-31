@@ -60,9 +60,6 @@ public class OteClasspathContainer implements IClasspathContainer {
       activeContainers.add(this);
    }
 
-   /**
-    * @throws InterruptedException
-    */
    private void initializeBundleLocator() throws InterruptedException {
       Object obj = tracker.waitForService(1);
       locator = (OteBundleLocator) obj;
@@ -137,9 +134,6 @@ public class OteClasspathContainer implements IClasspathContainer {
       return entries.toArray(retVal);
    }
 
-   /**
-    * @throws InterruptedException
-    */
    private void lazyLoadLocator() throws InterruptedException {
       if (locator == null) {
          initializeBundleLocator();

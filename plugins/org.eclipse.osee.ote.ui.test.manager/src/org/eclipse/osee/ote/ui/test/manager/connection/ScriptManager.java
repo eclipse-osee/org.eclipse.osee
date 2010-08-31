@@ -84,7 +84,6 @@ public abstract class ScriptManager implements Runnable {
     * This should be called after the environment is received in order to configure necessary items.
     * 
     * @return null if successful, otherwise a string describing the error
-    * @throws RemoteException
     */
    public boolean connect(ConnectionEvent event) {
 

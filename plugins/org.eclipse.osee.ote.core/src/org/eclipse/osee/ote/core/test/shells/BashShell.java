@@ -32,9 +32,6 @@ public class BashShell {
 
    /**
     * Connects telnet to the specified ipAddress and port
-    * 
-    * @throws IOException
-    * @throws SocketException
     */
    public BashShell() throws SocketException, IOException {
       String shell;
@@ -70,7 +67,6 @@ public class BashShell {
     * 
     * @param string The String this function will stop on and return
     * @return The entire string seen up to finding the string provided
-    * @throws InterruptedException
     */
    public synchronized String waitFor(String string) throws InterruptedException {
 
@@ -94,7 +90,6 @@ public class BashShell {
     * 
     * @param string The command to issue
     * @return Returns the whole buffer up to the prompt
-    * @throws InterruptedException
     */
    public String sendCommand(String string, long wait) throws InterruptedException {
 

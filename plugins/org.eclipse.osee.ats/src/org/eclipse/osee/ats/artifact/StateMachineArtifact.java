@@ -255,7 +255,6 @@ public abstract class StateMachineArtifact extends ATSArtifact implements HasCmA
     * Override to apply different algorithm to current section expansion.
     * 
     * @return true if section should be expanded
-    * @throws OseeCoreException
     */
    public boolean isCurrentSectionExpanded(String stateName) throws OseeCoreException {
       return getStateMgr().getCurrentStateName().equals(stateName);
@@ -983,8 +982,6 @@ public abstract class StateMachineArtifact extends ATSArtifact implements HasCmA
    /**
     * Called at the end of a transition just before transaction manager persist. SMAs can override to perform tasks due
     * to transition.
-    * 
-    * @throws Exception
     */
    @SuppressWarnings("unused")
    public void transitioned(WorkPageDefinition fromPage, WorkPageDefinition toPage, Collection<User> toAssignees, boolean persist, SkynetTransaction transaction) throws OseeCoreException {
@@ -1502,7 +1499,6 @@ public abstract class StateMachineArtifact extends ATSArtifact implements HasCmA
 
    /**
     * @return true if this is a TeamWorkflow and it uses versions
-    * @throws OseeStateException
     */
    public boolean isTeamUsesVersions() {
       if (!isTeamWorkflow()) {

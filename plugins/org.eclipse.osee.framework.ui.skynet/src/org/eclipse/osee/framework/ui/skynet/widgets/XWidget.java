@@ -195,8 +195,6 @@ public abstract class XWidget {
    /**
     * Return the control that the error message is to be placed. By default the getControl() will be used. Override to
     * change.
-    * 
-    * @return control
     */
    public Control getErrorMessageControl() {
       return getControl();

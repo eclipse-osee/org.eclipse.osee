@@ -59,9 +59,6 @@ public class OseeEmail extends MimeMessage {
       Text
    };
 
-   /**
-    * @throws OseeCoreException
-    */
    public OseeEmail() throws OseeCoreException {
       super(getSession());
       mainMessage = new MimeMultipart();
@@ -75,7 +72,6 @@ public class OseeEmail extends MimeMessage {
     * @param replyToAddress - a valid address of who the message should reply to
     * @param subject - the subject of the message
     * @param textBody - the plain text of the body
-    * @throws OseeCoreException
     */
    public OseeEmail(Collection<String> toAddresses, String fromAddress, String replyToAddress, String subject, String body, BodyType bodyType) throws OseeCoreException {
       this();
@@ -104,7 +100,6 @@ public class OseeEmail extends MimeMessage {
     * @param subject - the subject of the message
     * @param body - the text/html of the body
     * @param bodyType - Html or Text
-    * @throws OseeCoreException
     */
    public OseeEmail(String toAddress, String subject, String body, BodyType bodyType) throws OseeCoreException {
       this(Arrays.asList(toAddress), UserManager.getUser().getEmail(), UserManager.getUser().getEmail(), subject, body,
@@ -115,7 +110,6 @@ public class OseeEmail extends MimeMessage {
     * Adds a single address to the recipient list
     * 
     * @param addresses - a valid address to send the message TO
-    * @throws MessagingException
     */
    public void addRecipients(String addresses) throws MessagingException {
       addRecipients(Message.RecipientType.TO, addresses);
@@ -125,7 +119,6 @@ public class OseeEmail extends MimeMessage {
     * Adds a list of addresses to the recipient list
     * 
     * @param addresses - a list of valid addresses to send the message TO
-    * @throws MessagingException
     */
    public void addRecipients(String[] addresses) throws MessagingException {
       addRecipients(Message.RecipientType.TO, addresses);
@@ -136,7 +129,6 @@ public class OseeEmail extends MimeMessage {
     * 
     * @param type - specifies which field the address should be put in
     * @param addresses - a list of valid addresses to send the message
-    * @throws MessagingException
     */
    public void addRecipients(Message.RecipientType type, String[] addresses) throws MessagingException {
       if (addresses != null) {
@@ -155,7 +147,6 @@ public class OseeEmail extends MimeMessage {
     * Sets the recipient TO field
     * 
     * @param addresses - a valid address to send the message TO
-    * @throws MessagingException
     */
    public void setRecipients(String addresses) throws MessagingException {
       setRecipients(Message.RecipientType.TO, addresses);
@@ -165,7 +156,6 @@ public class OseeEmail extends MimeMessage {
     * Sets a list of addresses to the recipient list
     * 
     * @param addresses - a list of valid addresses to send the message TO
-    * @throws MessagingException
     */
    public void setRecipients(String[] addresses) throws MessagingException {
       setRecipients(Message.RecipientType.TO, addresses);
@@ -176,7 +166,6 @@ public class OseeEmail extends MimeMessage {
     * 
     * @param type - specifies which field the address should be put in
     * @param addresses - a list of valid addresses to send the message
-    * @throws MessagingException
     */
    public void setRecipients(Message.RecipientType type, String[] addresses) throws MessagingException {
       if (addresses != null) {
@@ -195,8 +184,6 @@ public class OseeEmail extends MimeMessage {
     * Sets the from address
     * 
     * @param address - the user name the message is from
-    * @throws AddressException
-    * @throws MessagingException
     */
    // Set all the From Values
    public void setFrom(String address) throws AddressException, MessagingException {
@@ -207,7 +194,6 @@ public class OseeEmail extends MimeMessage {
     * Sets the address to reply to (if different than the from addresss)
     * 
     * @param address - a valid address to reply to
-    * @throws MessagingException
     */
    public void setReplyTo(String address) throws MessagingException {
       InternetAddress replyAddresses[] = new InternetAddress[1];
@@ -332,7 +318,6 @@ public class OseeEmail extends MimeMessage {
     * Gets the current session
     * 
     * @return the Current SMTP Session
-    * @throws OseeCoreException
     */
    private static Session getSession() throws OseeCoreException {
       Properties props = System.getProperties();
@@ -344,8 +329,6 @@ public class OseeEmail extends MimeMessage {
 
    /**
     * Adds an attachment to an email
-    * 
-    * @throws MessagingException
     */
    public void addAttachment(DataSource source, String attachmentName) throws MessagingException {
       MimeBodyPart messageBodyPart = new MimeBodyPart();

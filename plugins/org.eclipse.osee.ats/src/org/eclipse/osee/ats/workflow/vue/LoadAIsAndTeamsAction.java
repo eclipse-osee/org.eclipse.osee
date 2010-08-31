@@ -82,8 +82,6 @@ public class LoadAIsAndTeamsAction {
 
    /**
     * This method is package private to prevent others from using it - only AtsDbConfig children are allowed access;
-    * 
-    * @throws OseeCoreException
     */
    static void executeForDbConfig(String bundleId) throws OseeCoreException {
       new LoadAIsAndTeamsAction(false, bundleId, true).run();

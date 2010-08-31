@@ -25,9 +25,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * determined by the isThreadSafe of its constructors.
  * 
  * @author Ken J. Aguilar
- * @param <KeyOne>
- * @param <KeyTwo>
- * @param <Value>
  */
 public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Pair<KeyOne, KeyTwo>, Value> {
    private final HashCollection<KeyOne, KeyTwo> singleKeyMap;

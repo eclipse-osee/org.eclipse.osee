@@ -70,7 +70,6 @@ public class ColumnSorter extends ViewerSorter {
     * the "..." will be used.
     * 
     * @return
-    * @throws NumberFormatException
     */
    private int getIntValue(String string) throws NumberFormatException {
       int elipseIndex;

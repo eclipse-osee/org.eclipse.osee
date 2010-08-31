@@ -22,7 +22,6 @@ public class NonMappingFixedPointElement extends FixedPointElement {
 
    /**
     * Copy constructor.
-    * 
     */
    public NonMappingFixedPointElement(FixedPointElement element) {
       super(element.getMessage(), element.getElementName(), element.getMsgData(), 0, false, element.getByteOffset(),

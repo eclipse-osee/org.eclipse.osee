@@ -75,8 +75,6 @@ public class ConflictTest {
    /**
     * Test method for
     * {@link org.eclipse.osee.framework.skynet.core.artifact.BranchManager#getMergeBranch(Branch, Branch)} .
-    * 
-    * @throws Exception
     */
    @org.junit.Test
    public void testGetMergeBranchNotCreated() throws Exception {
@@ -111,8 +109,6 @@ public class ConflictTest {
    /**
     * Test method for
     * {@link org.eclipse.osee.framework.skynet.core.artifact.BranchManager#getMergeBranch(Branch, Branch)} .
-    * 
-    * @throws Exception
     */
    @org.junit.Test
    public void testGetMergeBranchCreated() throws Exception {

@@ -49,7 +49,6 @@ public class TeamWorkflowDefinition extends WorkFlowDefinition {
    /**
     * Instantiate workflow as inherited from parentWorkflowId. Default transitions and startPageId are not set as they
     * will most likely come from parent.
-    * 
     */
    public TeamWorkflowDefinition(String name, String workflowId, String parentWorkflowId) {
       super(name, workflowId, parentWorkflowId);
@@ -61,7 +60,6 @@ public class TeamWorkflowDefinition extends WorkFlowDefinition {
 
    /**
     * Instantiate workflow as a TeamWorkflowDefinition with default transitions and startPageId set.
-    * 
     */
    public TeamWorkflowDefinition(String name, String workflowId) {
       super(name, workflowId, null);

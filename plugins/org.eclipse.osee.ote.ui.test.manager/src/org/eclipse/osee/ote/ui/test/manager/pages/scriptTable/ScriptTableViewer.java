@@ -469,9 +469,6 @@ public class ScriptTableViewer {
       }
    }
 
-   /**
-    * @return StructuredViewer
-    */
    public StructuredViewer getXViewer() {
       return scriptTable;
    }

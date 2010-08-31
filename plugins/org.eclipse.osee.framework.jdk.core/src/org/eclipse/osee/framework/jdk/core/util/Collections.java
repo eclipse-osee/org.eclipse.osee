@@ -125,8 +125,6 @@ public class Collections {
    /**
     * Returns the unique union of the given lists
     * 
-    * @param <T>
-    * @return Set
     */
    public static <T> Set<T> setUnion(Collection<T>... lists) {
       Set<T> union = new HashSet<T>(lists[0].size() * 2);
@@ -140,8 +138,6 @@ public class Collections {
    /**
     * Return true if same objects exist in listA and listB
     * 
-    * @param <T>
-    * @return boolean
     */
    public static <T> boolean isEqual(Collection<T> listA, Collection<T> listB) {
       if (listA.size() != listB.size()) {
@@ -164,8 +160,6 @@ public class Collections {
    /**
     * Convert an aggregate list of objects into a List
     * 
-    * @param <T>
-    * @return list
     */
    public static <T> List<T> getAggregate(T... objects) {
       List<T> objs = new ArrayList<T>();
@@ -226,7 +220,6 @@ public class Collections {
    /**
     * Cast objects to clazz
     * 
-    * @param <A>
     * @param castOption if ALL, cast all and throw exception if cast fails; if MATCHING, only cast those of type clazz
     * @return
     */
@@ -243,8 +236,6 @@ public class Collections {
    /**
     * Cast objects to clazz
     * 
-    * @param <A>
-    * @return List
     */
    public static <A> List<A> castAll(Collection<?> objects) {
       List<A> results = new ArrayList<A>(objects.size());
@@ -259,8 +250,6 @@ public class Collections {
     * <br>
     * Use when all objects are expected to be of type class and exception is desired if not
     * 
-    * @param <A>
-    * @return List
     */
    public static <A extends Object> List<A> castAll(Class<A> clazz, Collection<? extends Object> objects) {
       return cast(clazz, objects, CastOption.ALL);
@@ -271,8 +260,6 @@ public class Collections {
     * <br>
     * Use when objects may contain classes that are not desired
     * 
-    * @param <A>
-    * @return List
     */
    public static <A extends Object> List<A> castMatching(Class<A> clazz, Collection<? extends Object> objects) {
       return cast(clazz, objects, CastOption.MATCHING);

@@ -48,8 +48,6 @@ public interface IArtifactExtractorDelegate {
     * Called as content is parsed out of a WordML source. A typical action to take would be to create a RoughArtifact
     * and initialize it with data from the content, or to append the content to the last, or a prior created
     * RoughArtifact.
-    * 
-    * @throws OseeCoreException
     */
    public void processContent(RoughArtifactCollector collector, boolean forceBody, boolean forcePrimaryType, String headerNumber, String listIdentifier, String paragraphStyle, String content, boolean isParagraph) throws OseeCoreException;
 

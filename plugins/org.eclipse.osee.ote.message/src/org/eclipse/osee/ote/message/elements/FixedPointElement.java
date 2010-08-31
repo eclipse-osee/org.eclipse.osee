@@ -96,7 +96,6 @@ public class FixedPointElement extends RealElement {
     * 
     * @param cause The originator of the signal
     * @param value The value sent by cause and being forwarded by this element
-    * @throws InterruptedException
     */
    public void checkForwarding(ITestAccessor accessor, FixedPointElement cause, double value) throws InterruptedException {
       /* check for 0 to begine */

@@ -77,8 +77,6 @@ public abstract class Attribute<T> {
 
    /**
     * Base implementation does nothing. Subclasses may override to do setup that depends on the attribute state data.
-    * 
-    * @throws OseeCoreException
     */
    @SuppressWarnings("unused")
    protected void uponInitialize() throws OseeCoreException {
@@ -162,8 +160,6 @@ public abstract class Attribute<T> {
    /**
     * Subclasses must provide an implementation of this method and in general should not override the other set value
     * methods
-    * 
-    * @throws OseeCoreException
     */
    protected abstract boolean subClassSetValue(T value) throws OseeCoreException;
 
@@ -266,8 +262,6 @@ public abstract class Attribute<T> {
 
    /**
     * Deletes the attribute
-    * 
-    * @throws OseeStateException
     */
    public final void setArtifactDeleted() {
       markAsChanged(ModificationType.ARTIFACT_DELETED);
@@ -275,8 +269,6 @@ public abstract class Attribute<T> {
 
    /**
     * Deletes the attribute
-    * 
-    * @throws OseeStateException
     */
    public final void delete() {
       markAsChanged(ModificationType.DELETED);
@@ -334,7 +326,6 @@ public abstract class Attribute<T> {
 
    /**
     * @return the deleted
-    * @throws OseeStateException
     */
    public boolean isDeleted() throws OseeStateException {
       try {

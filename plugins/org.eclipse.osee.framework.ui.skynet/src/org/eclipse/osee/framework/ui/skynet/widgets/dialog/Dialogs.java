@@ -36,7 +36,6 @@ public class Dialogs {
     * Allows user to save html from a file selection dialog
     * 
     * @param openInSystem true if desire to open resulting file in system browser after saving
-    * @return Result
     */
    public static Result saveHtmlDialog(String htmlText, boolean openInSystem) {
       if (!Strings.isValid(htmlText)) {

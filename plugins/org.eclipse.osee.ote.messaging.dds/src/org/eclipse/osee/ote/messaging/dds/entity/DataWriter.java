@@ -175,7 +175,6 @@ public class DataWriter extends DomainEntity {
     * 
     * @param destination TODO
     * @param source TODO
-    * @return <ul>
     * <li>{@link ReturnCode#NOT_ENABLED} if this writer is not enabled.
     * <li>{@link ReturnCode#OK} otherwise.
     * </ul>

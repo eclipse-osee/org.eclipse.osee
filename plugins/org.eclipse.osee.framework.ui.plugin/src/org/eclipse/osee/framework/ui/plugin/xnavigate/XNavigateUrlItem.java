@@ -37,7 +37,6 @@ public class XNavigateUrlItem extends XNavigateItemAction {
     * @param name to use as display name
     * @param url to open
     * @param external true to open in system browser; false to open inside Eclipse
-    * @throws OseeArgumentException
     */
    public XNavigateUrlItem(XNavigateItem parent, String name, String url, boolean external) throws OseeArgumentException {
       this(parent, name, url, external, PluginUiImage.URL);

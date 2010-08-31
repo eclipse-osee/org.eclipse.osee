@@ -102,7 +102,6 @@ final public class ChannelProcessor {
    /**
     * called when there is data to be processed from a channel. Can be called by one or more threads for the same data
     * concurrently to so implementors need to be thread safe
-    * 
     */
    protected void onUpdate(MessageInstance instance, ByteBuffer buffer, long time) {
       MessageData msgData = instance.getMessage().getActiveDataSource(memType);

@@ -36,8 +36,6 @@ public class WordMlLinkHandlerTest {
 
    /**
     * Data driven test to check document link manager link/unlink methods
-    * 
-    * @throws Exception
     */
    @org.junit.Test
    public void testLinkUnLink() throws Exception {

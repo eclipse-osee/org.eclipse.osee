@@ -37,7 +37,6 @@ public interface IAtsWorldEditorItem {
     * worldSearchItem
     * 
     * @return applicable pull-down actions
-    * @throws OseeCoreException
     */
    public List<? extends Action> getWorldEditorMenuActions(IWorldEditorProvider worldEditorProvider, WorldEditor worldEditor) throws OseeCoreException;
 

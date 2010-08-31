@@ -320,7 +320,6 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
 
    /**
     * Associates Messages to MemTypes based on the memType's physical availability
-    * 
     */
    //	public abstract void associateMessages(S accessor);
    /**
@@ -476,9 +475,6 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       return clazz.cast(getElement(elementName, currentMemType));
    }
 
-   /**
-    * @return boolean
-    */
    public boolean hasElement(List<Object> elementPath) {
       return getElement(elementPath) != null;
    }
@@ -593,8 +589,6 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
 
    /**
     * Returns if the message is turned off.
-    * 
-    * @return boolean
     */
    public boolean isTurnedOff() {
       return isTurnedOff;
@@ -637,8 +631,6 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
 
    /**
     * Returns if the message is scheduled or not.
-    * 
-    * @return boolean
     */
    @Deprecated
    public boolean isScheduled() {
@@ -754,7 +746,6 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
     * Verifies that the message is sent at least once using the default message timeout.
     * 
     * @return if the check passed
-    * @throws InterruptedException
     */
    public final boolean checkForTransmission(ITestAccessor accessor) throws InterruptedException {
       return checkForTransmission(accessor, TransmissionTimeoutDefault);
@@ -765,7 +756,6 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
     * 
     * @param milliseconds the amount to time (in milliseconds) to allow
     * @return if the check passed
-    * @throws InterruptedException
     */
    public final boolean checkForTransmission(ITestAccessor accessor, int milliseconds) throws InterruptedException {
       return checkForTransmissions(accessor, 1, milliseconds);
@@ -776,7 +766,6 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
     * 
     * @param numTransmissions the number of transmissions to look for
     * @return if the check passed
-    * @throws InterruptedException
     */
    public final boolean checkForTransmissions(ITestAccessor accessor, int numTransmissions) throws InterruptedException {
       return checkForTransmissions(accessor, numTransmissions, TransmissionTimeoutDefault);
@@ -788,7 +777,6 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
     * @param numTransmissions the number of transmission to look for
     * @param milliseconds the amount to time (in milliseconds) to allow
     * @return if the check passed
-    * @throws InterruptedException
     */
    public boolean checkForTransmissions(ITestAccessor accessor, int numTransmissions, int milliseconds) throws InterruptedException {
       checkState();
@@ -809,7 +797,6 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
     * 
     * @param milliseconds the amount to time (in milliseconds) to check
     * @return if the check passed
-    * @throws InterruptedException
     */
    public boolean checkForNoTransmissions(ITestEnvironmentMessageSystemAccessor accessor, int milliseconds) throws InterruptedException {
       checkState();
@@ -847,7 +834,6 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
     * Waits until message is sent at least once within the default message timeout.
     * 
     * @return if the check passed
-    * @throws InterruptedException
     */
    public boolean waitForTransmission(ITestEnvironmentMessageSystemAccessor accessor) throws InterruptedException {
       return waitForTransmission(accessor, TransmissionTimeoutDefault);
@@ -858,7 +844,6 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
     * 
     * @param milliseconds the amount to time (in milliseconds) to allow
     * @return if the check passed
-    * @throws InterruptedException
     */
    public boolean waitForTransmission(ITestEnvironmentMessageSystemAccessor accessor, int milliseconds) throws InterruptedException {
       return waitForTransmissions(accessor, 1, milliseconds);
@@ -869,7 +854,6 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
     * 
     * @param numTransmissions the number of transmissions to look for
     * @return if the check passed
-    * @throws InterruptedException
     */
    public boolean waitForTransmissions(ITestEnvironmentMessageSystemAccessor accessor, int numTransmissions) throws InterruptedException {
       return waitForTransmissions(accessor, numTransmissions, TransmissionTimeoutDefault);
@@ -880,7 +864,6 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
     * 
     * @param milliseconds the amount to time (in milliseconds) to allow
     * @return if the check passed
-    * @throws InterruptedException
     */
    public boolean waitForTransmissions(ITestEnvironmentMessageSystemAccessor accessor, int numTransmissions, int milliseconds) throws InterruptedException {
       checkState();
@@ -947,7 +930,6 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
 
    /**
     * restores the state of this message. The state is intended to come from a remote instance of this message.
-    * 
     */
    public void setMessageState(final MessageState state) {
       checkState();
@@ -1168,9 +1150,6 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       return finalized.get();
    }
 
-   /**
-    * @return boolean
-    */
    public boolean isValidElement(Element currentElement, Element proposedElement) {
       return true;
    }
@@ -1252,7 +1231,6 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
 
    /**
     * Changes the rate back to the default rate.
-    * 
     */
    public void changeRateToDefault(ITestEnvironmentMessageSystemAccessor accessor) {
       //      accessor.getMsgManager().changeMessageRate(this, defaultRate, rate);

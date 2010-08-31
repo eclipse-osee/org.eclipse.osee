@@ -68,9 +68,6 @@ public class CharBackedInputStream extends InputStream implements Appendable {
       }
    }
 
-   /**
-    * @throws CharacterCodingException
-    */
    public CharBackedInputStream(CharBuffer source, String encodingName) throws CharacterCodingException {
       super();
       this.encoder = Charset.forName(encodingName).newEncoder();

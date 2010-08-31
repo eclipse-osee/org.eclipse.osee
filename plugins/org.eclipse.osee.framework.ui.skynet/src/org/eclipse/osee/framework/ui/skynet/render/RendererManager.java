@@ -54,7 +54,6 @@ public final class RendererManager {
 
    /**
     * @return Returns the intersection of renderers applicable for all of the artifacts
-    * @throws OseeCoreException
     */
    public static List<IRenderer> getCommonRenderers(Collection<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
       List<IRenderer> commonRenders = getApplicableRenderers(presentationType, artifacts.iterator().next(), null);

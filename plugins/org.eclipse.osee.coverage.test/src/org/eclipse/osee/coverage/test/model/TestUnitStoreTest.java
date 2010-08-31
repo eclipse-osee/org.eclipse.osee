@@ -35,8 +35,6 @@ public class TestUnitStoreTest {
    /**
     * Test method for
     * {@link org.eclipse.osee.coverage.store.TestUnitStore#addTestUnitNameToDb(java.lang.String, java.lang.String)}.
-    * 
-    * @throws OseeCoreException
     */
    @Test
    public void testAddTestUnitNameToDb() throws OseeCoreException {

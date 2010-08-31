@@ -24,7 +24,6 @@ public class NonMappingStringElement extends StringElement {
 
    /**
     * Copy constructor.
-    * 
     */
    public NonMappingStringElement(StringElement element) {
       super(element.getMessage(), element.getElementName(), element.getMsgData(), element.getByteOffset(),
@@ -58,7 +57,6 @@ public class NonMappingStringElement extends StringElement {
     * @param value Expected value.
     * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
     * @return If the check passed.
-    * @throws InterruptedException
     */
    @Override
    public boolean checkTrimWhiteSpace(ITestAccessor accessor, String value, int milliseconds) throws InterruptedException {
@@ -78,7 +76,6 @@ public class NonMappingStringElement extends StringElement {
     * @param value Expected value.
     * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
     * @return If the check passed.
-    * @throws InterruptedException
     */
    @Override
    public boolean check(ITestAccessor accessor, CheckGroup checkGroup, String value, int milliseconds) throws InterruptedException {
@@ -99,7 +96,6 @@ public class NonMappingStringElement extends StringElement {
     * @param value value to test against.
     * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
     * @return If the check passed.
-    * @throws InterruptedException
     */
    @Override
    public boolean checkNot(ITestAccessor accessor, CheckGroup checkGroup, String value, int milliseconds) throws InterruptedException {
@@ -118,7 +114,6 @@ public class NonMappingStringElement extends StringElement {
     * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
     * will log the test point.
     * @return last value observed. Either value expected or value found at timeout.
-    * @throws InterruptedException
     */
    @Override
    public String checkMaintain(ITestAccessor accessor, CheckGroup checkGroup, String value, int milliseconds) throws InterruptedException {
@@ -137,7 +132,6 @@ public class NonMappingStringElement extends StringElement {
     * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
     * will log the test point.
     * @return last value observed
-    * @throws InterruptedException
     */
    @Override
    public String checkMaintainNot(ITestAccessor accessor, CheckGroup checkGroup, String value, int milliseconds) throws InterruptedException {
@@ -151,7 +145,6 @@ public class NonMappingStringElement extends StringElement {
     * @param value The expected value to wait for.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
-    * @throws InterruptedException
     */
    @Override
    public String waitForNotValue(ITestEnvironmentAccessor accessor, String value, int milliseconds) throws InterruptedException {

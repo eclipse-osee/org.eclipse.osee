@@ -34,7 +34,6 @@ public interface IRuntimeLibraryManager extends Xmlizable {
    void removeRuntimeLibraryListener(RuntimeLibraryListener listener);
 
    /**
-    * @throws IOException
     * @deprecated see loadBundle
     */
    @Deprecated

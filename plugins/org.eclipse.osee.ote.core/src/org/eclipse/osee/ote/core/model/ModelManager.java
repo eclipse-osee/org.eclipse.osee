@@ -118,14 +118,6 @@ public class ModelManager implements IModelManager, DestroyableService {
    //      return referenceCountOfModels.get(realKey);
    //   }
 
-   /**
-    * @param <CLASSTYPE>
-    * @return IModel
-    * @throws ClassNotFoundException
-    * @throws IllegalAccessException
-    * @throws InstantiationException
-    * @throws RemoteException
-    */
    private <CLASSTYPE extends IModel> CLASSTYPE createModel(ModelKey<CLASSTYPE> key) throws ClassNotFoundException, InstantiationException, IllegalAccessException, RemoteException {
       if (key == null) {
          throw new IllegalArgumentException("key cannot be null");

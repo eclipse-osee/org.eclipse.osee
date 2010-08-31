@@ -36,7 +36,6 @@ public interface ConnectionNode {
    /**
     * Subscribes listener to updates to message/s with the given id. A default status handler will be used to log
     * failures.
-    * 
     */
    void subscribe(MessageID messageId, OseeMessagingListener listener);
 
@@ -50,7 +49,6 @@ public interface ConnectionNode {
    /**
     * Unsubscribes listener from updates for message with id equal to messageId. A default status handler will be used
     * to log failures.
-    * 
     */
    void unsubscribe(MessageID messageId, OseeMessagingListener listener);
 
@@ -63,7 +61,6 @@ public interface ConnectionNode {
     * 
     * @param statusCallback Used to relay the status of the sending of the message ( success, failure, etc). Can not be
     * null.
-    * @throws OseeCoreException
     */
    void send(MessageID messageId, Object message, final OseeMessagingStatusCallback statusCallback) throws OseeCoreException;
 
@@ -73,14 +70,11 @@ public interface ConnectionNode {
     * @param properties Set of properties to be attached to the message.
     * @param statusCallback Used to relay the status of the sending of the message ( success, failure, etc). Can not be
     * null.
-    * @throws OseeCoreException
     */
    void send(MessageID messageId, Object message, Properties properties, OseeMessagingStatusCallback statusCallback) throws OseeCoreException;
 
    /**
     * Sends given message. Uses default status handler to log failures in sending given message.
-    * 
-    * @throws OseeCoreException
     */
    void send(MessageID messageId, Object message) throws OseeCoreException;
 

@@ -35,8 +35,6 @@ public interface IRemoteMessageService extends Remote {
 
    /**
     * Sets a message element to a specified value
-    * 
-    * @throws RemoteException
     */
    void setElementValue(SetElementValue cmd) throws RemoteException;
 
@@ -46,8 +44,6 @@ public interface IRemoteMessageService extends Remote {
 
    /**
     * Notifies service to send message updates to the specified ip address
-    * 
-    * @throws RemoteException
     */
    SubscriptionDetails subscribeToMessage(SubscribeToMessage cmd) throws RemoteException;
 

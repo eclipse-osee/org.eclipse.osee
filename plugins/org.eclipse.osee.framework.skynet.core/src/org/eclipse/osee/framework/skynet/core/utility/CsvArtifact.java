@@ -61,8 +61,6 @@ public class CsvArtifact {
 
    /**
     * Creates a new un-persisted CsvArtifact
-    * 
-    * @throws OseeCoreException
     */
    public static CsvArtifact generateCsvArtifact(String staticId, String artifactName, String csvData, IOseeBranch branch) throws OseeCoreException {
       Artifact artifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralDocument, branch);

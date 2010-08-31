@@ -15,7 +15,6 @@ public interface ILibraryLoader {
     * loads a message class dictionary. If one is already loaded then it will be unloaded. Calls the
     * {@link IMessageDictionaryListener#onDictionaryLoaded(IMessageDictionary)} method for all registered
     * {@link IMessageDictionaryListener}s.
-    * 
     */
    void loadMessageDictionary(IMessageDictionary dictionary);
 

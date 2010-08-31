@@ -42,7 +42,6 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
     * given value.
     * 
     * @param value to search; supports % wildcard
-    * @throws OseeCoreException
     */
    public AttributeCriteria(IAttributeType attributeType, String value) throws OseeDataStoreException {
       this(attributeType, value, null, false, Operator.EQUAL);
@@ -51,8 +50,6 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
    /**
     * Constructor for search criteria that finds an attribute of the given type and any value (i.e. checks for
     * existence)
-    * 
-    * @throws OseeCoreException
     */
    public AttributeCriteria(IAttributeType attributeType) throws OseeCoreException {
       this(attributeType, null, null, false, Operator.EQUAL);
@@ -63,8 +60,6 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
     * any one of the given literal values. If the list only contains one value, then the search is conducted exactly as
     * if the single value constructor was called. This search does not support the wildcard for multiple values. Throws
     * OseeArgumentException values is empty or null
-    * 
-    * @throws OseeCoreException
     */
    public AttributeCriteria(IAttributeType attributeType, Collection<String> values) throws OseeCoreException {
       this(attributeType, null, validate(values), false, Operator.EQUAL);
@@ -79,8 +74,6 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
     * not equal) to any one of the given literal values. If the list only contains one value, then the search is
     * conducted exactly as if the single value constructor was called. This search does not support the wildcard for
     * multiple values.
-    * 
-    * @throws OseeCoreException
     */
    public AttributeCriteria(String attributeTypeName, Collection<String> values, Operator operator) throws OseeCoreException {
       this(toAttributeType(attributeTypeName), null, validate(values), false, operator);
@@ -96,7 +89,6 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
     * 
     * @param value to search; supports % wildcard
     * @param historical if true will search on any branch and any attribute revision
-    * @throws OseeCoreException
     */
    public AttributeCriteria(String attributeTypeName, String value, boolean historical) throws OseeCoreException {
       this(toAttributeType(attributeTypeName), value, null, historical, Operator.EQUAL);

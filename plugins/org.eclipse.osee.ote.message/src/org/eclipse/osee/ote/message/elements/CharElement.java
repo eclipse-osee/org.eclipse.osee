@@ -50,7 +50,6 @@ public class CharElement extends DiscreteElement<Character> {
     * 
     * @param cause The originator of the signal
     * @param value The value sent by cause and being forwarded by this element
-    * @throws InterruptedException
     */
    public void checkForwarding(ITestAccessor accessor, CharElement cause, Character value) throws InterruptedException {
       /* check for 0 to begine */
@@ -82,7 +81,6 @@ public class CharElement extends DiscreteElement<Character> {
     * @param value Expected value.
     * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
     * @return If the check passed.
-    * @throws InterruptedException
     */
    public boolean checkNot(ITestAccessor accessor, String value, int milliseconds) throws InterruptedException {
       return this.checkNot(accessor, (CheckGroup) null, value, milliseconds);
@@ -100,7 +98,6 @@ public class CharElement extends DiscreteElement<Character> {
     * @param value Expected value.
     * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
     * @return If the check passed.
-    * @throws InterruptedException
     */
    public boolean checkNot(ITestAccessor accessor, CheckGroup checkGroup, String value, int milliseconds) throws InterruptedException {
       if (accessor == null) {
@@ -157,7 +154,6 @@ public class CharElement extends DiscreteElement<Character> {
     * @param value Expected value.
     * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
     * @return If the check passed.
-    * @throws InterruptedException
     */
    public boolean check(ITestAccessor accessor, String value, int milliseconds) throws InterruptedException {
       return this.check(accessor, (CheckGroup) null, value, milliseconds);
@@ -175,7 +171,6 @@ public class CharElement extends DiscreteElement<Character> {
     * @param value Expected value.
     * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
     * @return If the check passed.
-    * @throws InterruptedException
     */
    public boolean check(ITestAccessor accessor, CheckGroup checkGroup, String value, int milliseconds) throws InterruptedException {
       if (accessor == null) {
@@ -401,7 +396,6 @@ public class CharElement extends DiscreteElement<Character> {
     * @param value The expected value to wait for.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value found. Either value expected or value found at timeout.
-    * @throws InterruptedException
     */
    protected String waitForValue(ITestEnvironmentAccessor accessor, String value, int milliseconds) throws InterruptedException {
       if (accessor != null) {
@@ -446,7 +440,6 @@ public class CharElement extends DiscreteElement<Character> {
     * @param value The expected value to wait for.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value found. Either value expected or value found at timeout.
-    * @throws InterruptedException
     */
    protected String waitForNotValue(ITestEnvironmentAccessor accessor, String value, int milliseconds) throws InterruptedException {
       if (accessor != null) {

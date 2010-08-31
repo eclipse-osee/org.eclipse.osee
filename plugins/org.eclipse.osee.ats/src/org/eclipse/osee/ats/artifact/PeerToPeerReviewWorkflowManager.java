@@ -34,8 +34,6 @@ public class PeerToPeerReviewWorkflowManager {
     * for things such as developmental testing and demos.
     * 
     * @param user User to transition to OR null if should use user of current state
-    * @return Result
-    * @throws Exception
     */
    public static Result transitionTo(PeerToPeerReviewArtifact reviewArt, PeerToPeerReviewArtifact.PeerToPeerReviewState toState, Collection<UserRole> roles, Collection<DefectItem> defects, User user, boolean popup, SkynetTransaction transaction) throws OseeCoreException {
       Result result = setPrepareStateData(reviewArt, roles, "DoThis.java", 100, .2, transaction);

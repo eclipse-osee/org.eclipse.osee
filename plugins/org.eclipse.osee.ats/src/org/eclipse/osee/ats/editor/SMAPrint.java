@@ -122,13 +122,23 @@ public class SMAPrint extends Action {
       try {
          rd.addRaw(AHTML.addSpace(1) + AHTML.getLabelStr(AHTML.LABEL_FONT, "Tasks"));
          rd.addRaw(AHTML.startBorderTable(100, Overview.normalColor, ""));
-         rd.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"Title", "State", "POC", "%", "Hrs", "Resolution",
+         rd.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {
+            "Title",
+            "State",
+            "POC",
+            "%",
+            "Hrs",
+            "Resolution",
             "ID"}));
          for (TaskArtifact art : ((TaskableStateMachineArtifact) sma).getTaskArtifacts()) {
-            rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {art.getName(),
-               art.getStateMgr().getCurrentStateName().replaceAll("(Task|State)", ""), art.getWorldViewActivePoc(),
-               art.getPercentCompleteSMATotal() + "", art.getHoursSpentSMATotal() + "",
-               art.getSoleAttributeValue(AtsAttributeTypes.Resolution, ""), art.getHumanReadableId()}));
+            rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {
+               art.getName(),
+               art.getStateMgr().getCurrentStateName().replaceAll("(Task|State)", ""),
+               art.getWorldViewActivePoc(),
+               art.getPercentCompleteSMATotal() + "",
+               art.getHoursSpentSMATotal() + "",
+               art.getSoleAttributeValue(AtsAttributeTypes.Resolution, ""),
+               art.getHumanReadableId()}));
          }
          rd.addRaw(AHTML.endBorderTable());
       } catch (Exception ex) {

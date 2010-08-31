@@ -59,9 +59,6 @@ public class DbTableViewer {
    private DbDescribe dbDescribe;
    private final DbItem dbItem;
 
-   /**
-    * @throws OseeDataStoreException
-    */
    public DbTableViewer(Composite parent, int numColumns, DbTableTab dbTab, DbItem dbItem) throws OseeDataStoreException {
       this.dbTab = dbTab;
       this.dbItem = dbItem;
@@ -214,8 +211,6 @@ public class DbTableViewer {
 
    /**
     * Load table with administration items
-    * 
-    * @throws OseeDataStoreException
     */
    public void load() throws OseeDataStoreException {
       dbTaskList = dbDescribe.getDbTaskList(describeList);

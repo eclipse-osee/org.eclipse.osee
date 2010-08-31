@@ -69,7 +69,6 @@ public abstract class ConsoleShell {
    /**
     * Prevents the currently running command from being saved as the last executed command. This is useful for commands
     * that process the last executed command but do not want themselves to become the last command executed
-    * 
     */
    public void setSaveLastCmdFlag(boolean save) {
       saveLastCmdFlag = save;

@@ -26,7 +26,6 @@ public class EqualsCondition<T extends Comparable<T>> extends AbstractCondition 
    /**
     * sets up a condition that only passes when the notEquals flag is set to false and actual value equals the expected
     * value or when the notEquals flag is true and the actual value does not equal the expected.
-    * 
     */
    public EqualsCondition(DiscreteElement<T> element, boolean notEquals, T value) {
       this.element = element;

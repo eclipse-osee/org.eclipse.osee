@@ -683,7 +683,6 @@ public final class Widgets {
 
    /**
     * Used in form layouts. Attaches the specified control to the specified edge of the item's parent
-    * 
     */
    public static void attachToParent(final Control control, final int edge, final int percent, final int offset) {
       attachToParent(control, edge, percent, offset, SWT.DEFAULT, SWT.DEFAULT);
@@ -756,7 +755,6 @@ public final class Widgets {
 
    /**
     * sets the the layout of the specified composite to a form layout.
-    * 
     */
    public static void setFormLayout(final Composite composite, final int marginWidth, final int marginHeight) {
       final FormLayout fl = new FormLayout();
@@ -768,7 +766,6 @@ public final class Widgets {
    /**
     * disposes all the supplied widgets if they are not null and not already disposed
     * 
-    * @param <T>
     */
    public static <T extends Widget> void disposeWidgets(final T... widgets) {
       if (widgets == null) {

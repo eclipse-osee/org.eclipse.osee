@@ -82,7 +82,6 @@ public abstract class WorldSearchItem {
     * values (eg MyWorld)
     * 
     * @return selected name
-    * @throws OseeCoreException
     */
    public String getSelectedName(SearchType searchType) throws OseeCoreException {
       return getName();

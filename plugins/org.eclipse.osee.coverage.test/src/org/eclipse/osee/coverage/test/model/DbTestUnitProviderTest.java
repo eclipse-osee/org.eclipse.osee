@@ -61,8 +61,6 @@ public class DbTestUnitProviderTest {
    /**
     * Test method for
     * {@link org.eclipse.osee.coverage.store.TestUnitStore#getTestUnits(org.eclipse.osee.coverage.model.CoverageUnit)}.
-    * 
-    * @throws OseeCoreException
     */
    @Test
    public void testGetTestUnits() throws OseeCoreException {
@@ -85,8 +83,6 @@ public class DbTestUnitProviderTest {
    /**
     * Test method for
     * {@link org.eclipse.osee.coverage.store.TestUnitStore#removeTestUnitsFromDb(java.lang.String, java.util.List)}.
-    * 
-    * @throws OseeCoreException
     */
    @Test
    public void testRemoveTestUnitsFromDb() throws OseeCoreException {

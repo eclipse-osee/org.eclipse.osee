@@ -31,10 +31,6 @@ public class JarCreator {
    private final JarOutputStream out;
    private final byte[] buffer;
 
-   /**
-    * @throws IOException
-    * @throws FileNotFoundException
-    */
    public JarCreator(File path, String title, String version) throws FileNotFoundException, IOException {
       super();
       Manifest manifest = new Manifest();
@@ -59,9 +55,6 @@ public class JarCreator {
       in.close();
    }
 
-   /**
-    * @throws IOException
-    */
    private void addRelativeToPosition(File path, int rootPathPos, FileFilter filenameFilter) throws IOException {
       if (path.isDirectory()) {
          File[] files = path.listFiles(filenameFilter);

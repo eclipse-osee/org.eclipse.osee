@@ -87,8 +87,6 @@ public class ArtifactTypeManager {
 
    /**
     * @return Returns all of the descriptors.
-    * @throws OseeTypeDoesNotExist
-    * @throws OseeCoreException
     */
    public static Collection<ArtifactType> getAllTypes() throws OseeCoreException {
       return getCache().getAll();
@@ -105,8 +103,6 @@ public class ArtifactTypeManager {
    /**
     * @return Returns the artifact type matching the guid
     * @param guid artifact type guid to match
-    * @throws OseeDataStoreException
-    * @throws OseeTypeDoesNotExist
     */
    public static ArtifactType getTypeByGuid(String guid) throws OseeCoreException {
       if (!GUID.isValid(guid)) {
@@ -122,8 +118,6 @@ public class ArtifactTypeManager {
    /**
     * @return Returns the artifact type matching the name
     * @param name artifact type name to match
-    * @throws OseeDataStoreException
-    * @throws OseeTypeDoesNotExist
     */
    public static ArtifactType getType(String name) throws OseeCoreException {
       ArtifactType artifactType = getCache().getUniqueByName(name);
@@ -146,7 +140,6 @@ public class ArtifactTypeManager {
     * 
     * @return Returns the types with a particular name
     * @param artifactTypeNames names to get
-    * @throws OseeDataStoreException
     * @throws OseeTypeDoesNotExist if any name in the artifactTypeNames does not match
     */
    public static List<IArtifactType> getTypes(Iterable<String> artifactTypeNames) throws OseeCoreException {
@@ -159,7 +152,6 @@ public class ArtifactTypeManager {
 
    /**
     * @return Returns the descriptor with a particular name, null if it does not exist.
-    * @throws OseeTypeDoesNotExist
     */
    public static ArtifactType getType(int artTypeId) throws OseeCoreException {
       ArtifactType artifactType = getCache().getById(artTypeId);
@@ -191,7 +183,6 @@ public class ArtifactTypeManager {
     * 
     * @param branch branch on which artifact will be created
     * @return Return artifact reference
-    * @throws OseeCoreException
     * @see ArtifactFactory#makeNewArtifact(Branch, ArtifactType, String, String, ArtifactProcessor)
     */
    public static Artifact addArtifact(IArtifactType artifactType, Branch branch, String guid, String humandReadableId) throws OseeCoreException {
@@ -230,7 +221,6 @@ public class ArtifactTypeManager {
     * 
     * @param purgeArtifactTypes types to be converted and purged
     * @param newArtifactType new type to convert any existing artifacts of the old type
-    * @throws OseeCoreException
     */
    public static void purgeArtifactTypesWithCheck(Collection<ArtifactType> purgeArtifactTypes, ArtifactType newArtifactType) throws OseeCoreException {
       for (ArtifactType purgeArtifactType : purgeArtifactTypes) {
@@ -259,8 +249,6 @@ public class ArtifactTypeManager {
    /**
     * Run code that will be run during purge with convert and report on what relations, attributes will be deleted as
     * part of the conversion.
-    * 
-    * @throws OseeCoreException
     */
    public static void purgeArtifactTypesWithConversionReportOnly(StringBuffer results, Collection<ArtifactType> purgeArtifactTypes, ArtifactType newArtifactType) throws OseeCoreException {
       try {
@@ -290,7 +278,6 @@ public class ArtifactTypeManager {
     * branch.
     * 
     * @return Return artifact reference
-    * @throws OseeCoreException
     * @see ArtifactFactory#makeNewArtifact(Branch, ArtifactType)
     * @use {@link ArtifactTypeManager}.addArtifact
     */
@@ -310,7 +297,6 @@ public class ArtifactTypeManager {
     * 
     * @param branch branch on which artifact will be created
     * @return Return artifact reference
-    * @throws OseeCoreException
     * @see ArtifactFactory#makeNewArtifact(Branch, ArtifactType, String, String, ArtifactProcessor)
     * @use {@link ArtifactTypeManager}.addArtifact
     */

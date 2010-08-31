@@ -538,7 +538,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
    }
 
    /**
-    * @param priviledgedEditMode the priviledgedEditMode to set s * @throws OseeCoreException
+    * @param priviledgedEditMode the priviledgedEditMode to set s
     */
    public void setPriviledgedEditMode(boolean enabled) {
       this.priviledgedEditModeEnabled = enabled;

@@ -16,7 +16,6 @@ import org.eclipse.osee.framework.core.model.IBasicArtifact;
 /**
  * @author Jeff C. Phillips
  * @author Roberto E. Escobar
- * @param <T>
  */
 public interface IAcceptFilter<T> {
    boolean accept(T item, IBasicArtifact<?> artifact, PermissionEnum permission);

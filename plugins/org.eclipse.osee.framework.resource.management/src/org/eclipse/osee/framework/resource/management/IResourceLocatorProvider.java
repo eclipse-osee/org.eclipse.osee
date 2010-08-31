@@ -34,7 +34,6 @@ public interface IResourceLocatorProvider {
     * Generate a resource locator based on seed and name
     * 
     * @return a resource locator
-    * @throws MalformedLocatorException
     */
    IResourceLocator generateResourceLocator(String seed, String name) throws OseeCoreException;
 
@@ -42,7 +41,6 @@ public interface IResourceLocatorProvider {
     * Get resource locator
     * 
     * @return a resource locator
-    * @throws MalformedLocatorException
     */
    IResourceLocator getResourceLocator(String path) throws OseeCoreException;
 }

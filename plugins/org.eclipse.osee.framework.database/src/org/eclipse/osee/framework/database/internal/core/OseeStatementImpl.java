@@ -70,7 +70,6 @@ public final class OseeStatementImpl implements IOseeStatement {
    /**
     * @param fetchSize hint as to the number of rows that should be fetched from the database at a time. will be limited
     * to 10,000
-    * @throws OseeDataStoreException
     */
    @Override
    public void runPreparedQuery(int fetchSize, String query, Object... data) throws OseeDataStoreException {
@@ -90,8 +89,6 @@ public final class OseeStatementImpl implements IOseeStatement {
    /**
     * Invokes a stored procedure parameters of type SQL3DataType are registered as Out parameters and all others are set
     * as in parameters
-    * 
-    * @throws OseeDataStoreException
     */
    @Override
    public void runCallableStatement(String query, Object... data) throws OseeDataStoreException {
@@ -145,9 +142,6 @@ public final class OseeStatementImpl implements IOseeStatement {
 
    /**
     * allows for multiple uses of this object to have an open connection
-    * 
-    * @throws SQLException
-    * @throws OseeDataStoreException
     */
    private void allowReuse() throws OseeDataStoreException {
       if (connection == null) {
@@ -255,9 +249,6 @@ public final class OseeStatementImpl implements IOseeStatement {
 
    /**
     * should not be used by application code because it is less readable than using the column name
-    * 
-    * @return value
-    * @throws OseeDataStoreException
     */
    @Override
    public long getLong(int columnIndex) throws OseeDataStoreException {
@@ -270,9 +261,6 @@ public final class OseeStatementImpl implements IOseeStatement {
 
    /**
     * should not be used by application code because it is less readable than using the column name
-    * 
-    * @return value
-    * @throws OseeDataStoreException
     */
    @Override
    public String getString(int columnIndex) throws OseeDataStoreException {
@@ -387,7 +375,6 @@ public final class OseeStatementImpl implements IOseeStatement {
     * row
     * 
     * @return the number of rows in the result set
-    * @throws OseeDataStoreException
     */
    @Override
    public int getRowCount() throws OseeDataStoreException {

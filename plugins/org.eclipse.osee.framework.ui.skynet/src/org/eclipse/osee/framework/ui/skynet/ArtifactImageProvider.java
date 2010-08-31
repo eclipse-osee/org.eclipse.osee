@@ -27,8 +27,6 @@ public abstract class ArtifactImageProvider {
     * Providers can return null which will cause null to be returned from the associated getImage or getImageDescriptor
     * call. Alternatively, providers that wish to defer to the basic implementation should call return
     * super.setupImage()
-    * 
-    * @throws OseeCoreException
     */
    @SuppressWarnings("unused")
    public String setupImage(Artifact artifact) throws OseeCoreException {
@@ -42,8 +40,6 @@ public abstract class ArtifactImageProvider {
 
    /**
     * Provide image artifact type registration by ImageManager.register.* calls
-    * 
-    * @throws OseeCoreException
     */
    public abstract void init() throws OseeCoreException;
 

@@ -239,7 +239,6 @@ public class UpdateMergeBranch extends DbTransaction {
     * Removes an artifact, it's attributes and any relations that have become invalid from the removal of this artifact
     * from the database. It also removes all history associated with this artifact (i.e. all transactions and gamma ids
     * will also be removed from the database only for the branch it is on).
-    * 
     */
    private static void purgeArtifactFromBranch(OseeConnection connection, Branch branch, int artId) throws OseeCoreException {
       int baseTxId = branch.getBaseTransaction().getId();

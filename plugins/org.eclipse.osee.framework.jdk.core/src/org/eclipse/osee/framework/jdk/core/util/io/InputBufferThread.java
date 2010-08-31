@@ -172,7 +172,6 @@ public class InputBufferThread extends Thread {
 
    /**
     * @return true if a transmission occurred false otherwise
-    * @throws InterruptedException
     */
    public synchronized boolean waitFor(int millis) throws InterruptedException {
       if (shouldStopRunning) {

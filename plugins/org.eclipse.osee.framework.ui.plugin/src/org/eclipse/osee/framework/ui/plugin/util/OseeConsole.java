@@ -102,7 +102,6 @@ public class OseeConsole {
 
    /**
     * Writes string to console without popping console forward
-    * 
     */
    public void write(String str) {
       write(str, false);
@@ -110,7 +109,6 @@ public class OseeConsole {
 
    /**
     * Writes string to console without popping console forward
-    * 
     */
    public void writeError(String str) {
       write(str, CONSOLE_ERROR, true);

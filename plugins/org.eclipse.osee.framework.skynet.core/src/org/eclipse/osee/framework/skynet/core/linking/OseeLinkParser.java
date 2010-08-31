@@ -84,7 +84,6 @@ public final class OseeLinkParser {
    /**
     * Process new style requests are of the following format:
     * http://127.0.0.1:<port>/<ProcessType>?key1=value1&key2=value2...&key3=value3
-    * 
     */
    private void parseNewStyleRequests(String link) {
       String noHostStr = link.replaceFirst("^http:\\/\\/(.*?)\\/", "/");

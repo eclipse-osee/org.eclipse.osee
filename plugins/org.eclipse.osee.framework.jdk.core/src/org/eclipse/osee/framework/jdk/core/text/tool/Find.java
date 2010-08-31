@@ -129,7 +129,6 @@ public class Find {
     * Search a given file for all patterns: maxIsPerPattern == true up to maxMatches of any single pattern (then search
     * the same file for the next pattern) otherwise up to a maxMatches for all patterns in a given file(then end search
     * of that file and start on the next one)
-    * 
     */
    public void find(int maxMatches, boolean maxIsPerPattern) {
       for (Iterator<File> iter = files.iterator(); iter.hasNext();) { // for each file

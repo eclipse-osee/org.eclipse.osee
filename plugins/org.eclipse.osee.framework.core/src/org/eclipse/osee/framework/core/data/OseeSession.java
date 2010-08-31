@@ -77,7 +77,6 @@ public class OseeSession extends OseeClientInfo {
 
    /**
     * Set the last interaction name
-    * 
     */
    public void setLastInteraction(String lastInteractionName) {
       this.backingData.put(LAST_INTERACTION, lastInteractionName);
@@ -85,7 +84,6 @@ public class OseeSession extends OseeClientInfo {
 
    /**
     * Set the last interaction date
-    * 
     */
    public void setLastInteractionDate(Timestamp timestamp) {
       this.backingData.put(LAST_INTERACTION_DATE, timestamp.getTime());
@@ -104,7 +102,6 @@ public class OseeSession extends OseeClientInfo {
     * Create new instance from XML input
     * 
     * @param OseeSession the new instance
-    * @throws OseeWrappedException
     */
    public static OseeSession fromXml(InputStream inputStream) throws OseeCoreException {
       OseeSession session = new OseeSession();

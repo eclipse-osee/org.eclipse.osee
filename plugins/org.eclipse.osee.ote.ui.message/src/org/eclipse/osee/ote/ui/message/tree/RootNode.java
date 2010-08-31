@@ -40,9 +40,6 @@ public final class RootNode extends AbstractTreeNode {
       return visitor.rootNode(this);
    }
 
-   /**
-    * @return MessageNode
-    */
    public MessageNode getMessageByName(String message) {
       return childMessages.get(message);
    }

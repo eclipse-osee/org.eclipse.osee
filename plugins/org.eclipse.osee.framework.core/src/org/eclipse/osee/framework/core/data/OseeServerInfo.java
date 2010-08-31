@@ -96,7 +96,6 @@ public class OseeServerInfo extends BaseExchangeData {
     * Create new instance from XML input
     * 
     * @param OseeServerInfo the new instance
-    * @throws OseeWrappedException
     */
    public static OseeServerInfo fromXml(InputStream inputStream) throws OseeCoreException {
       OseeServerInfo serverInfo = new OseeServerInfo();

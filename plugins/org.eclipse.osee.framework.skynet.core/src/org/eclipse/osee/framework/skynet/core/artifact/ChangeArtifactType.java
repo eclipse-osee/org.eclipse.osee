@@ -131,7 +131,6 @@ public class ChangeArtifactType {
    /**
     * Splits the attributes of the current artifact into two groups. The attributes that are compatible for the new type
     * and the attributes that will need to be purged.
-    * 
     */
    private static void processAttributes(Artifact artifact, ArtifactType artifactType) throws OseeCoreException {
       attributesToPurge = new LinkedList<Attribute<?>>();
@@ -146,8 +145,6 @@ public class ChangeArtifactType {
    /**
     * Splits the relationLinks of the current artifact into Two groups. The links that are compatible for the new type
     * and the links that will need to be purged.
-    * 
-    * @throws OseeCoreException
     */
    private static void processRelations(Artifact artifact, ArtifactType artifactType) throws OseeCoreException {
       relationsToDelete = new LinkedList<RelationLink>();
@@ -182,8 +179,6 @@ public class ChangeArtifactType {
 
    /**
     * Sets the artifact descriptor.
-    * 
-    * @throws OseeCoreException
     */
    private static boolean changeArtifactTypeThroughHistory(Artifact artifact, ArtifactType newArtifactType) throws OseeCoreException {
       for (Attribute<?> attribute : attributesToPurge) {

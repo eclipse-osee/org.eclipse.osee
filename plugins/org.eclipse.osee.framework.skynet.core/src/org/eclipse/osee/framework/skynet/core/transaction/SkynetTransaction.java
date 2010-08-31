@@ -202,8 +202,6 @@ public final class SkynetTransaction extends AbstractOperation {
     * <br>
     * IF transaction has not been executed, this is the transaction that will be used.<br>
     * ELSE this is next transaction to be used upon execute
-    * 
-    * @throws OseeCoreException
     */
    public int getTransactionNumber() throws OseeCoreException {
       return getTransactionRecord().getId();

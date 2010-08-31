@@ -24,7 +24,6 @@ public interface IArtifactCheck {
     * Checks set of artifacts for validation prior to delete
     * 
     * @return Result with description of which artifact and why can't delete
-    * @throws OseeCoreException
     */
    public IStatus isDeleteable(Collection<Artifact> artifacts) throws OseeCoreException;
 
@@ -32,7 +31,6 @@ public interface IArtifactCheck {
     * Checks set of artifacts for validation prior to rename
     * 
     * @return Result with description of which artifact and why can't rename
-    * @throws OseeCoreException
     */
    public IStatus isRenamable(Collection<Artifact> artifacts) throws OseeCoreException;
 

@@ -77,7 +77,6 @@ public class EnumeratedElement<T extends Enum<T> & IEnumValue<T>> extends Discre
     * @param list The list of values to check against
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
-    * @throws InterruptedException
     */
    public T waitForNotInList(ITestAccessor accessor, T[] list, int milliseconds) throws InterruptedException {
       return this.waitForList(accessor, list, false, milliseconds);
@@ -89,7 +88,6 @@ public class EnumeratedElement<T extends Enum<T> & IEnumValue<T>> extends Discre
     * @param list The list of values to check against
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
-    * @throws InterruptedException
     */
    public T waitForInList(ITestAccessor accessor, T[] list, int milliseconds) throws InterruptedException {
       return this.waitForList(accessor, list, true, milliseconds);
@@ -99,7 +97,6 @@ public class EnumeratedElement<T extends Enum<T> & IEnumValue<T>> extends Discre
     * This function will verify that this signal is pulsed for 2 cycles.
     * 
     * @param value The value to be checked
-    * @throws InterruptedException
     */
    public void checkPulse(ITestAccessor accessor, T value) throws InterruptedException {
 

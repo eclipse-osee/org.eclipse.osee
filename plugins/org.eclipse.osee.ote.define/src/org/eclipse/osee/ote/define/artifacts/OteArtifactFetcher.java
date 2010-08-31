@@ -42,8 +42,6 @@ public class OteArtifactFetcher<T extends Artifact> {
 
    /**
     * Creates a new Artifact in the specified branch
-    * 
-    * @throws OseeCoreException
     */
    @SuppressWarnings("unchecked")
    public T getNewArtifact(Branch branch) throws OseeCoreException {
@@ -58,8 +56,6 @@ public class OteArtifactFetcher<T extends Artifact> {
     * @param value attribute value to match
     * @param branch to search in
     * @return the unique artifact
-    * @throws MultipleArtifactsExist
-    * @throws ArtifactDoesNotExist
     */
    @SuppressWarnings("unchecked")
    public T searchForUniqueArtifactMatching(IAttributeType attributeType, String attributeValue, Branch branch) throws OseeCoreException {
@@ -74,7 +70,6 @@ public class OteArtifactFetcher<T extends Artifact> {
     * 
     * @param branch to search in
     * @return artifact instances
-    * @throws OseeArgumentException
     */
    @SuppressWarnings("unchecked")
    public Set<T> getAllArtifacts(Branch branch) throws OseeArgumentException {
@@ -98,7 +93,6 @@ public class OteArtifactFetcher<T extends Artifact> {
     * 
     * @param branch to search in
     * @return artifact instances indexed by descriptive name
-    * @throws OseeArgumentException
     */
    public Map<String, T> getAllArtifactsIndexedByName(Branch branch) throws OseeArgumentException {
       Map<String, T> toReturn = new HashMap<String, T>();

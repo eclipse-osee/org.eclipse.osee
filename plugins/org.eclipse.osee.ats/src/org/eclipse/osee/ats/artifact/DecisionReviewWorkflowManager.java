@@ -30,8 +30,6 @@ public class DecisionReviewWorkflowManager {
     * transitioning for things such as developmental testing and demos.
     * 
     * @param user User to transition to OR null if should use user of current state
-    * @return Result
-    * @throws Exception
     */
    public static Result transitionTo(DecisionReviewArtifact reviewArt, DecisionReviewArtifact.DecisionReviewState toState, User user, boolean popup, SkynetTransaction transaction) throws OseeCoreException {
       Result result = Result.TrueResult;

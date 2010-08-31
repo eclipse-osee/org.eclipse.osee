@@ -22,7 +22,6 @@ public interface IResourceProvider {
     * Determines whether this provider is valid for this locator
     * 
     * @param locator location of the resource needed
-    * @return boolean
     */
    public boolean isValid(IResourceLocator locator);
 
@@ -48,7 +47,6 @@ public interface IResourceProvider {
     * @param locator location where to store the data
     * @param options operation options
     * @param resource the resource to save
-    * @return status
     */
    public IResourceLocator save(IResourceLocator locator, IResource resource, Options options) throws OseeCoreException;
 
@@ -56,7 +54,6 @@ public interface IResourceProvider {
     * Delete resource specified by resource locator
     * 
     * @param locator location of the resource to delete
-    * @return status
     */
    public int delete(IResourceLocator locator) throws OseeCoreException;
 

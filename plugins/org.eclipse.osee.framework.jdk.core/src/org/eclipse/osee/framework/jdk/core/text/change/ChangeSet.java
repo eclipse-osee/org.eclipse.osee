@@ -91,8 +91,6 @@ public class ChangeSet {
 
    /**
     * Make sure this writer is buffered if source is only a CharSequence
-    * 
-    * @throws IOException
     */
    public void applyChanges(Writer writer) throws IOException {
       int lastEndIndex = 0;
@@ -247,7 +245,6 @@ public class ChangeSet {
 
    /**
     * This function calls reset(source) on your matcher and will replace all matched items in the ChangesSet source.
-    * 
     */
    public void replaceAll(Matcher matcher, String replacement) {
       matcher.reset(source);

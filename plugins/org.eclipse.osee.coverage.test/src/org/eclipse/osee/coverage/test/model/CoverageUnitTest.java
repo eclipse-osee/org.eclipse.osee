@@ -135,8 +135,6 @@ public class CoverageUnitTest {
 
    /**
     * Test method for {@link org.eclipse.osee.coverage.model.CoverageUnit#setName(java.lang.String)}.
-    * 
-    * @throws OseeCoreException
     */
    @Test
    public void testSetName() throws OseeCoreException {
@@ -161,8 +159,6 @@ public class CoverageUnitTest {
 
    /**
     * Test method for {@link org.eclipse.osee.coverage.model.CoverageUnit#getFileContents()}.
-    * 
-    * @throws OseeCoreException
     */
    @Test
    public void testSetGetText() throws OseeCoreException {

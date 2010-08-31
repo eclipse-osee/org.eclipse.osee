@@ -36,7 +36,6 @@ public class RulesLogHandler extends Handler {
     * the XML format to be used.
     * 
     * @param outFile Reference to the file that will be used to output the log.
-    * @throws ParserConfigurationException
     */
    public RulesLogHandler(File outFile) throws ParserConfigurationException {
       super();

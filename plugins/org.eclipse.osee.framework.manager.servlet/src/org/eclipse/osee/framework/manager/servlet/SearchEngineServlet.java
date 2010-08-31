@@ -127,8 +127,6 @@ public class SearchEngineServlet extends SecureOseeHttpServlet {
 
    /**
     * <match artId="" branchId=""> <attr gammaId=""><location start="" end="" /></attr> </match>
-    * 
-    * @throws Exception
     */
    private void sendAsXml(HttpServletResponse response, SearchResult results) throws Exception {
       response.setCharacterEncoding("UTF-8");

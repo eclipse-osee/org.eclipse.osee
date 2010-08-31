@@ -58,7 +58,6 @@ public final class Operations {
    /**
     * Executes an operation by calling {@link #executeWork(IOperation, IProgressMonitor)} and checks for error status
     * {@link #checkForErrorStatus(IStatus)}. An OseeCoreException is thrown is an error is detected
-    * 
     */
    public static IStatus executeWorkAndCheckStatus(IOperation operation, IProgressMonitor monitor) throws OseeCoreException {
       IStatus status = executeWork(operation, monitor);
@@ -69,7 +68,6 @@ public final class Operations {
    /**
     * Executes an operation calling the monitor begin and done methods. If workPercentage is set greater than 0, monitor
     * will be wrapped into a SubProgressMonitor set to the appropriate number of ticks to consume from the main monitor.
-    * 
     */
    public static IStatus executeWork(IOperation operation, IProgressMonitor monitor) {
       SubMonitor subMonitor = SubMonitor.convert(monitor, operation.getName(), TASK_WORK_RESOLUTION);

@@ -77,8 +77,6 @@ public class AttributeTypeManager {
    /**
     * @return Returns the attribute type matching the guid
     * @param guid attribute type guid to match
-    * @throws OseeDataStoreException
-    * @throws OseeTypeDoesNotExist
     */
    public static AttributeType getTypeByGuid(String guid) throws OseeCoreException {
       if (!GUID.isValid(guid)) {
@@ -97,7 +95,6 @@ public class AttributeTypeManager {
 
    /**
     * @return the attribute type with the given name or throws an OseeTypeDoesNotExist if it does not exist.
-    * @throws OseeCoreException
     */
    public static AttributeType getType(String name) throws OseeCoreException {
       AttributeType attributeType = getCache().getUniqueByName(name);
@@ -109,8 +106,6 @@ public class AttributeTypeManager {
 
    /**
     * Returns the attribute type with the given type id or throws an IllegalArgumentException if it does not exist.
-    * 
-    * @throws OseeCoreException
     */
    public static AttributeType getType(int attrTypeId) throws OseeCoreException {
       AttributeType attributeType = getCache().getById(attrTypeId);

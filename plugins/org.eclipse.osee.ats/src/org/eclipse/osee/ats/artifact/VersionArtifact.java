@@ -187,8 +187,6 @@ public class VersionArtifact extends Artifact implements ICommitConfigArtifact {
 
    /**
     * Refrain from using this method as Version Artifact names can be changed by the user.
-    * 
-    * @return Version
     */
    public static VersionArtifact getSoleVersion(String name) throws OseeCoreException {
       return (VersionArtifact) AtsCacheManager.getArtifactsByName(AtsArtifactTypes.Version, name).iterator().next();

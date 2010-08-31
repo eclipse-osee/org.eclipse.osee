@@ -115,7 +115,6 @@ public class RelationManager {
 
    /**
     * @return Returns all cached relations including deleted relations
-    * @throws OseeArgumentException
     */
    private static RelationLink getLoadedRelation(Artifact artifact, int aArtifactId, int bArtifactId, RelationType relationType) throws OseeArgumentException {
       RelationLink relationLink = getLoadedRelation(artifact, aArtifactId, bArtifactId, relationType, false);
@@ -560,8 +559,6 @@ public class RelationManager {
    /**
     * Check whether artifactCount number of additional artifacts of type artifactType can be related to the artifact on
     * side relationSide for relations of type relationType
-    * 
-    * @throws OseeArgumentException
     */
    private static void ensureSideWillSupport(Artifact artifact, RelationType relationType, RelationSide relationSide, int artifactCount) throws OseeCoreException {
       if (!relationType.isArtifactTypeAllowed(relationSide, artifact.getArtifactType())) {
@@ -630,8 +627,6 @@ public class RelationManager {
    /**
     * This method should only be called for unordered Relation Types. It does not handle reordering relation types that
     * maintain order.
-    * 
-    * @throws OseeCoreException
     */
    public static void revertRelations(Artifact artifact, RelationType relationType, RelationSide relationSide) throws OseeCoreException {
       List<RelationLink> selectedRelations = relationsByType.get(threadLocalKey.get().getKey(artifact), relationType);
@@ -650,8 +645,6 @@ public class RelationManager {
 
    /**
     * Remove all relations stored in the list awaiting to be deleted.
-    * 
-    * @throws OseeDataStoreException
     */
    public static void purgeRelationsFor(Artifact artifact) throws OseeDataStoreException {
       Collection<RelationLink> links =

@@ -22,8 +22,6 @@ public interface IDbTransactionWork extends Named {
 
    /**
     * Provides the transaction's work implementation.
-    * 
-    * @throws OseeCoreException
     */
    void handleTxWork(OseeConnection connection) throws OseeCoreException;
 
@@ -31,8 +29,6 @@ public interface IDbTransactionWork extends Named {
     * When an exception is detected during transaction processing, the exception is caught and passed to this method.
     * This convenience method is provided so child classes have access to the exception. <br/>
     * <b>Override to handle transaction exception</b>
-    * 
-    * @throws Exception
     */
    void handleTxException(Exception ex);
 
@@ -40,8 +36,6 @@ public interface IDbTransactionWork extends Named {
     * This convenience method is provided in case child classes have a portion of code that needs to execute always at
     * the end of the transaction, regardless of exceptions. <br/>
     * <b>Override to add additional code to finally block</b>
-    * 
-    * @throws OseeCoreException
     */
    void handleTxFinally() throws OseeCoreException;
 }

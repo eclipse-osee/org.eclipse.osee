@@ -71,7 +71,6 @@ public class SignedInteger16Element extends NumericElement<Integer> {
     * 
     * @param cause The originator of the signal
     * @param value The value sent by cause and being forwarded by this element
-    * @throws InterruptedException
     */
    public void checkForwarding(ITestAccessor accessor, SignedInteger16Element cause, int value) throws InterruptedException {
       /* check for 0 to begine */
@@ -101,7 +100,6 @@ public class SignedInteger16Element extends NumericElement<Integer> {
     * This function will verify that this signal is pulsed for 2 cycles.
     * 
     * @param value The value to be checked
-    * @throws InterruptedException
     */
    public void checkPulse(ITestAccessor accessor, int value) throws InterruptedException {
 
@@ -144,7 +142,6 @@ public class SignedInteger16Element extends NumericElement<Integer> {
     * to the range value.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
-    * @throws InterruptedException
     */
    public int waitForRange(ITestEnvironmentAccessor accessor, int minValue, boolean minInclusive, int maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
       return super.waitForRange(accessor, Integer.valueOf(minValue), minInclusive, Integer.valueOf(maxValue),
@@ -158,7 +155,6 @@ public class SignedInteger16Element extends NumericElement<Integer> {
     * @param maxValue The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
-    * @throws InterruptedException
     */
    public int waitForNotRange(ITestEnvironmentAccessor accessor, int minValue, int maxValue, int milliseconds) throws InterruptedException {
       return this.waitForNotRange(accessor, minValue, true, maxValue, true, milliseconds);
@@ -175,7 +171,6 @@ public class SignedInteger16Element extends NumericElement<Integer> {
     * to the range value.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
-    * @throws InterruptedException
     */
    public int waitForNotRange(ITestEnvironmentAccessor accessor, int minValue, boolean minInclusive, int maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
       return super.waitForNotRange(accessor, Integer.valueOf(minValue), minInclusive, Integer.valueOf(maxValue),

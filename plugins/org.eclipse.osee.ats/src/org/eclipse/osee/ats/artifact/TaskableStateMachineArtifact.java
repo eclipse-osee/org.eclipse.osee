@@ -248,9 +248,6 @@ public abstract class TaskableStateMachineArtifact extends StateMachineArtifact 
 
    /**
     * Return Estimated Hours for all tasks
-    * 
-    * @return hours
-    * @throws Exception
     */
    @Override
    public double getEstimatedHoursFromTasks() throws OseeCoreException {
@@ -278,9 +275,6 @@ public abstract class TaskableStateMachineArtifact extends StateMachineArtifact 
 
    /**
     * Return Remain Hours for all tasks
-    * 
-    * @return hours
-    * @throws Exception
     */
    public double getRemainHoursFromTasks() throws OseeCoreException {
       double hours = 0;

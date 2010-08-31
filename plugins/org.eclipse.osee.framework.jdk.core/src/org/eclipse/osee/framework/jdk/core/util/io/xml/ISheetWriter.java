@@ -32,7 +32,6 @@ public interface ISheetWriter {
    /**
     * @param cellData text value of cell
     * @param cellIndex zero-based index
-    * @throws IOException
     */
    public void writeCell(String cellData, int cellIndex) throws IOException;
 

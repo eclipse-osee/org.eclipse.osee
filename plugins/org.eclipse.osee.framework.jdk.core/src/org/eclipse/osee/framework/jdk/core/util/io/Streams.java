@@ -29,7 +29,6 @@ public class Streams {
     * Converts a String into a InputStream using specifiec charSet
     * 
     * @return Return input stream reference
-    * @throws UnsupportedEncodingException
     */
    public static InputStream convertStringToInputStream(String string, String charSet) throws UnsupportedEncodingException {
       return new ByteArrayInputStream(string.getBytes(charSet));

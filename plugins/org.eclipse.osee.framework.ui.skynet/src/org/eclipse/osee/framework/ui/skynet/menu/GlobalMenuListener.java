@@ -29,7 +29,6 @@ public interface GlobalMenuListener {
 
    /**
     * Called after performing the menu event.
-    * 
     */
    public void actioned(GlobalMenuItem item, Collection<Artifact> artifacts);
 

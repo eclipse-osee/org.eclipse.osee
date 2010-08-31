@@ -116,9 +116,6 @@ public class AtsBranchManager {
 
    /**
     * Return true if merge branch exists in DB (whether archived or not)
-    * 
-    * @return true
-    * @throws OseeCoreException
     */
    public boolean isMergeBranchExists(Branch destinationBranch) throws OseeCoreException {
       return isMergeBranchExists(getWorkingBranch(), destinationBranch);
@@ -510,7 +507,6 @@ public class AtsBranchManager {
 
    /**
     * @return whether there is a working branch that is not committed
-    * @throws OseeCoreException
     */
    public boolean isWorkingBranchInWork() throws OseeCoreException {
       Branch branch = getWorkingBranch();

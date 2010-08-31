@@ -139,8 +139,6 @@ public final class Lib {
 
    /**
     * this version of changeExtension will work even if the extension we want to replace contains a .
-    * 
-    * @return String
     */
    public static String changeExtension(String str, String oldExt, String newExt) {
       int pos = str.lastIndexOf(oldExt);
@@ -330,7 +328,6 @@ public final class Lib {
 
    /**
     * Deletes all files from directory
-    * 
     */
    public static void emptyDirectory(File directory) {
       File[] children = directory.listFiles();
@@ -506,8 +503,6 @@ public final class Lib {
     * usage: char[] buf = new char[5500000]; for (Iterator iter = files.iterator(); iter.hasNext(); ) { // for each file
     * File file = (File)iter.next(); buf = Lib.fileToChars(file, buf);
     * 
-    * @return char[]
-    * @throws IOException
     */
    public static char[] fileToChars(File file, char[] buf) throws IOException {
       FileReader in = new FileReader(file);
@@ -890,8 +885,6 @@ public final class Lib {
 
    /**
     * Returns an array list of File objects
-    * 
-    * @return List
     */
    public static List<File> recursivelyListFiles(ArrayList<File> fileList, File rootPath, Pattern filePathP) {
       return recursivelyListFilesAndDirectories(fileList, rootPath, filePathP, false);
@@ -904,8 +897,6 @@ public final class Lib {
    /**
     * Assumptions: block comments are not nested and comment blocks have an ending Note: may be fooled by string
     * literals that contains the block comment indicators
-    * 
-    * @return CharBuffer
     */
    public static CharBuffer stripBlockComments(CharBuffer charBuf) {
       char[] chars = charBuf.array();
@@ -1157,7 +1148,6 @@ public final class Lib {
     * Returns a list of the arguments in the source String passed. It assumes that the first character is a '(' and
     * matches till it finds the matching ')'.
     * 
-    * @return String[]
     */
    public static String[] getArguments(String source) {
       ArrayList<String> theResults = new ArrayList<String>();
@@ -1244,7 +1234,6 @@ public final class Lib {
     * Returns a list of Strings representing each comma separated string in the string passed. It ignores commas inside
     * () or {}.
     * 
-    * @return String[]
     */
    public static String[] getCommaSeparatedItems(String source) {
       ArrayList<String> theResults = new ArrayList<String>();

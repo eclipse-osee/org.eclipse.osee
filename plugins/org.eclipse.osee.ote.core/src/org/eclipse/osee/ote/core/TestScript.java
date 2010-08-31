@@ -390,8 +390,6 @@ public abstract class TestScript implements ITimeout {
 
    /**
     * This method will display a null prompt to the console.
-    * 
-    * @throws InterruptedException
     */
    public void prompt() throws InterruptedException {
       getTestScript().prompt(new TestPrompt(null, PromptResponseType.NONE));
@@ -399,8 +397,6 @@ public abstract class TestScript implements ITimeout {
 
    /**
     * This method will display the message input to the console.
-    * 
-    * @throws InterruptedException
     */
    public void prompt(String message) throws InterruptedException {
       getTestScript().prompt(new TestPrompt(message, PromptResponseType.NONE));
@@ -409,8 +405,6 @@ public abstract class TestScript implements ITimeout {
    /**
     * This method will display the message input to the console. It will also prompt the user with a dialog box to input
     * whether the condition passed or failed.
-    * 
-    * @throws InterruptedException
     */
    public void promptPassFail(String message) throws InterruptedException {
       getTestScript().prompt(new TestPrompt(message, PromptResponseType.PASS_FAIL));
@@ -419,8 +413,6 @@ public abstract class TestScript implements ITimeout {
    /**
     * This method will display the message input to the console. It also pauses the script running, and will prompt the
     * user with a dialog box to continue on with the running of the script.
-    * 
-    * @throws InterruptedException
     */
    public void promptPause(String message) throws InterruptedException {
       prompt(new TestPrompt(message, PromptResponseType.SCRIPT_PAUSE));
@@ -445,8 +437,6 @@ public abstract class TestScript implements ITimeout {
 
    /**
     * Add a single test case to selective run list.
-    * 
-    * @throws IllegalArgumentException
     */
    public void selectTestCase(int testCaseNumber) {
       TestCase testCase = testCases.get(testCaseNumber - 1);
@@ -458,7 +448,6 @@ public abstract class TestScript implements ITimeout {
 
    /**
     * Add multiple test cases to the selective run list.
-    * 
     */
    public void selectTestCases(int testCaseNumberStart, int testCaseNumberEnd) {
       for (int i = testCaseNumberStart; i <= testCaseNumberEnd; i++) {
@@ -468,7 +457,6 @@ public abstract class TestScript implements ITimeout {
 
    /**
     * Sets the script initializer.
-    * 
     */
    public void setScriptInitializer(IScriptInitializer scriptInitializer) {
 
@@ -483,8 +471,6 @@ public abstract class TestScript implements ITimeout {
    /**
     * Causes current thread to wait until another thread invokes the {@link java.lang.Object#notify()}method or the
     * {@link java.lang.Object#notifyAll()}method for this object.
-    * 
-    * @throws InterruptedException
     */
    public synchronized void testWait(int milliseconds) throws InterruptedException {
       environment.getLogger().methodCalled(this.environment, new MethodFormatter().add(milliseconds));
@@ -506,7 +492,6 @@ public abstract class TestScript implements ITimeout {
     * 1000 ms.
     * 
     * @param ms Milliseconds to wait for.
-    * @throws InterruptedException
     */
    public synchronized void testWaitWithInfo(int ms) throws InterruptedException {
       int mult = 0;

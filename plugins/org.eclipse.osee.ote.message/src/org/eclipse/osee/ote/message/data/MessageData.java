@@ -143,7 +143,6 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
 
    /**
     * adds a {@link Message} who are mapped to this data object
-    * 
     */
    @SuppressWarnings("unchecked")
    public void addMessage(Message message) {
@@ -229,8 +228,6 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
 
    /**
     * Notifies all {@link Message}s that have this registered as a data source of the update
-    * 
-    * @throws MessageSystemException
     */
    @SuppressWarnings("unchecked")
    public void notifyListeners() throws MessageSystemException {
@@ -265,7 +262,6 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
 
    /**
     * Override this method if you need to set some default data in the backing buffer.
-    * 
     */
    public void setNewBackingBuffer(byte[] data) {
       setCurrentLength(data.length);
@@ -495,8 +491,6 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
    /**
     * Override this method if you want to specialize the send criteria in a data source. For example, if you only want
     * to send data to the MUX driver if the data has changed.
-    * 
-    * @return boolean
     */
    protected boolean shouldSendData() {
       return true;

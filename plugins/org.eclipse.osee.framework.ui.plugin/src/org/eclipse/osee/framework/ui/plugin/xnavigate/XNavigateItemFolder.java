@@ -19,16 +19,10 @@ import org.eclipse.osee.framework.ui.swt.KeyedImage;
  */
 public class XNavigateItemFolder extends XNavigateItem {
 
-   /**
-    * @throws OseeArgumentException
-    */
    public XNavigateItemFolder(XNavigateItem parent, String name) throws OseeArgumentException {
       super(parent, name, name.contains("Admin") ? PluginUiImage.ADMIN : PluginUiImage.FOLDER);
    }
 
-   /**
-    * @throws OseeArgumentException
-    */
    public XNavigateItemFolder(XNavigateItem parent, String name, KeyedImage oseeImage) throws OseeArgumentException {
       super(parent, name, oseeImage);
    }

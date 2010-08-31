@@ -593,7 +593,6 @@ public final class WatchView extends ViewPart implements IActionable, IMessageDi
 
    /**
     * shows a context menu depending on the point
-    * 
     */
    void showContextMenu(Point p) {
       final Tree tree = treeViewer.getTree();
@@ -645,7 +644,6 @@ public final class WatchView extends ViewPart implements IActionable, IMessageDi
 
    /**
     * Convienence method. Opens an info dialog
-    * 
     */
    private void openInfo(final String title, final String message) {
       MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), title, message);

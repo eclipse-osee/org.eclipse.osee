@@ -76,8 +76,6 @@ public class MessageSystemListener implements IOSEEMessageReaderListener, IOSEEM
 
    /**
     * returns the number of received messages since the last call to waitForData
-    * 
-    * @return int
     */
    public synchronized int getLocalMessageCount() {
       return messageCount;
@@ -89,8 +87,6 @@ public class MessageSystemListener implements IOSEEMessageReaderListener, IOSEEM
 
    /**
     * return whether new data has been received since the last call to waitForData
-    * 
-    * @return boolean
     */
    @Override
    public boolean isTimedOut() {

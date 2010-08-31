@@ -48,9 +48,6 @@ public class AtsPurgeTest {
    List<String> tables = Arrays.asList("osee_attribute", "osee_artifact", "osee_relation_link", "osee_tx_details",
       "osee_txs");
 
-   /**
-    * @throws java.lang.Exception
-    */
    @Before
    public void setUp() throws Exception {
       // This test should only be run on test db

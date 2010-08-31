@@ -19,19 +19,16 @@ public interface IJarChangeListener<T extends JarCollectionNature> {
 
    /**
     * Called for each addition of bundle
-    * 
     */
    public void handleBundleAdded(URL url);
 
    /**
     * Called for each change of bundle
-    * 
     */
    public void handleBundleChanged(URL url);
 
    /**
     * Called for each removal of bundle
-    * 
     */
    public void handleBundleRemoved(URL url);
 
@@ -42,7 +39,6 @@ public interface IJarChangeListener<T extends JarCollectionNature> {
 
    /**
     * Called just before a project with the nature is closed
-    * 
     */
    public void handleNatureClosed(T nature);
 }

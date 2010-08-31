@@ -32,8 +32,6 @@ public abstract class DbTransaction {
    /**
     * This template method calls {@link #handleTxWork} which is provided by child classes. This method handles
     * roll-backs and exception handling to prevent transactions from being left in an incorrect state.
-    * 
-    * @throws OseeCoreException
     */
    public void execute() throws OseeCoreException {
       DatabaseTransactions.execute(new InternalTransactionWork());
@@ -41,8 +39,6 @@ public abstract class DbTransaction {
 
    /**
     * Provides the transaction's work implementation.
-    * 
-    * @throws OseeCoreException
     */
    protected abstract void handleTxWork(OseeConnection connection) throws OseeCoreException;
 
@@ -50,8 +46,6 @@ public abstract class DbTransaction {
     * When an exception is detected during transaction processing, the exception is caught and passed to this method.
     * This convenience method is provided so child classes have access to the exception. <br/>
     * <b>Override to handle transaction exception</b>
-    * 
-    * @throws Exception
     */
    protected void handleTxException(Exception ex) {
    }
@@ -60,8 +54,6 @@ public abstract class DbTransaction {
     * This convenience method is provided in case child classes have a portion of code that needs to execute always at
     * the end of the transaction, regardless of exceptions. <br/>
     * <b>Override to add additional code to finally block</b>
-    * 
-    * @throws OseeCoreException
     */
    protected void handleTxFinally() throws OseeCoreException {
       // override to add additional code to finally

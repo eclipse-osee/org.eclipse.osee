@@ -33,9 +33,6 @@ public class BundleInfo {
    private final boolean systemLibrary;
    private byte[] md5Digest;
 
-   /**
-    * @throws IOException
-    */
    public BundleInfo(URL systemLocation, String bundleServerBaseLocation, boolean systemLibrary) throws IOException {
       File tmpFile;
       try {

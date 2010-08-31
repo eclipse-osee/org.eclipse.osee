@@ -138,7 +138,6 @@ public class WordMlLinkHandler {
     * Find WordML links locations in content grouped by GUID
     * 
     * @return locations where WordMlLinks were found grouped by GUID
-    * @throws OseeWrappedException
     */
    public static HashCollection<String, MatchRange> parseOseeWordMLLinks(String content) throws OseeCoreException {
       HashCollection<String, MatchRange> matchMap = new HashCollection<String, MatchRange>();

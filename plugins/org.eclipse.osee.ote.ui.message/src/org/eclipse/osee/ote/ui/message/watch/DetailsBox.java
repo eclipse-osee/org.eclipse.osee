@@ -225,7 +225,6 @@ public class DetailsBox implements IRegistryEventListener {
 
    /**
     * writes message data to a buffer in hex format
-    * 
     */
    private int printByteDump(Message<?, ?, ?> msg) {
       strBuilder.setLength(0);

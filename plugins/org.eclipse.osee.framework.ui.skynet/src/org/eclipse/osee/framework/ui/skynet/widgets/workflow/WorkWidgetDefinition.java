@@ -85,8 +85,6 @@ public class WorkWidgetDefinition extends WorkItemDefinition {
     * Create WorkItemXWidgetDefinition from xml
     * 
     * @param xml <XWidget displayName="Problem" storageName="ats.Problem" xwidgetType="XTextDam" fill="Vertically"/>
-    * @return WorkWidgetDefinition
-    * @throws Exception
     */
    public static WorkWidgetDefinition createFromXml(String xml) throws OseeCoreException {
       DynamicXWidgetLayoutData data = getFromXml(xml);

@@ -136,7 +136,6 @@ public class DiffWizardPage extends WizardPage {
       }
    };
 
-
    public DiffWizardPage(Conflict conflict) {
       super(TITLE);
       this.conflict = conflict;

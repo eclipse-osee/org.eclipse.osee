@@ -87,8 +87,6 @@ public class SMAState {
 
    /**
     * Sets the assignees but DOES NOT write to SMA. This method should NOT be called outside the StateMachineArtifact.
-    * 
-    * @throws OseeCoreException
     */
    public void setAssignees(Collection<User> assignees) throws OseeCoreException {
       if (assignees != null) {
@@ -115,9 +113,6 @@ public class SMAState {
 
    /**
     * Sets the assignees but DOES NOT write to SMA. This method should NOT be called outside the StateMachineArtifact.
-    * 
-    * @throws OseeCoreException
-    * @throws IllegalOseeArgumentException
     */
    public void setAssignee(User assignee) throws OseeCoreException {
       if (assignee != null && (name.equals(DefaultTeamState.Completed.name()) || name.equals(DefaultTeamState.Cancelled.name()))) {

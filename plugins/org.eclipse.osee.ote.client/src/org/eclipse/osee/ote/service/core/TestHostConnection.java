@@ -74,9 +74,6 @@ class TestHostConnection {
       return serviceConnector;
    }
 
-   /**
-    * @throws RemoteException
-    */
    void endConnection() throws RemoteException {
       // intentionally package-private
 

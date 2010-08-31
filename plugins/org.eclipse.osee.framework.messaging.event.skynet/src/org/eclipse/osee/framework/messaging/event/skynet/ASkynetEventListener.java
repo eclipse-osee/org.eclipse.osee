@@ -46,8 +46,6 @@ public abstract class ASkynetEventListener implements ISkynetEventListener {
    /**
     * Callback for the client to process remote skynet events. The array will contain a list of events to which this
     * listener is subscribed.
-    * 
-    * @throws RemoteException
     */
    @Override
    public abstract void onEvent(ISkynetEvent[] events) throws RemoteException;

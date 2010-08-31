@@ -33,8 +33,6 @@ public class RealTime extends TimerControl {
 
    /**
     * Constructor
-    * 
-    * @throws IOException
     */
    public RealTime() {
       super((Runtime.getRuntime().availableProcessors() + 1) / 2 + 1);

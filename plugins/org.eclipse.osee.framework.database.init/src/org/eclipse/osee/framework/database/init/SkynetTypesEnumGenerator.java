@@ -71,9 +71,6 @@ public class SkynetTypesEnumGenerator implements RowProcessor {
    private static final String skynetTypeCode =
       "   private String name;\n   private CLASSNAME_PLACEHOLDER(String name){ this.name = name; }\n   public String getName(){ return this.name;}\n";
 
-   /**
-    * @throws SAXException
-    */
    public SkynetTypesEnumGenerator() throws SAXException {
 
       excelHandler = new ExcelSaxHandler(this, true, true);
@@ -173,7 +170,6 @@ public class SkynetTypesEnumGenerator implements RowProcessor {
 
    /**
     * import Artifacts
-    * 
     */
    public void processRow(String[] row) {
       if (done) {
@@ -198,9 +194,6 @@ public class SkynetTypesEnumGenerator implements RowProcessor {
       }
    }
 
-   /**
-    * @throws ClassNotFoundException
-    */
    private void addAttributeType(String[] row) throws ClassNotFoundException {
       //      String attrBaseType = row[0];
       //      String attrProviderType = row[1];

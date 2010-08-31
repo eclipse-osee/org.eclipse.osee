@@ -98,7 +98,6 @@ public class StringElement extends DiscreteElement<String> {
     * @param value Expected value.
     * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
     * @return If the check passed.
-    * @throws InterruptedException
     */
    public boolean checkTrimWhiteSpace(ITestAccessor accessor, String value, int milliseconds) throws InterruptedException {
       if (accessor == null) {

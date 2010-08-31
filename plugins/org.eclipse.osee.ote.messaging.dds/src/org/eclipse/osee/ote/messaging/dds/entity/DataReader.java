@@ -182,7 +182,6 @@ public class DataReader extends DomainEntity {
     * 
     * @param dataSample - A <code>DataSample</code> which the information will be placed in.
     * @param isTake - a <code>boolean</code> stating whether the data should be taken by this call.
-    * @return <ul>
     * <li>{@link ReturnCode#NOT_ENABLED} if this reader is not enabled.
     * <li>{@link ReturnCode#NO_DATA} if no data is available to read or take.
     * <li>{@link ReturnCode#OK} otherwise.
@@ -221,7 +220,6 @@ public class DataReader extends DomainEntity {
     * Method for reading the next available <code>DataSample</code> for this reader.
     * 
     * @param dataSample - A <code>DataSample</code> which the information will be placed in.
-    * @return <ul>
     * <li>{@link ReturnCode#NOT_ENABLED} if this reader is not enabled.
     * <li>{@link ReturnCode#NO_DATA} if no data is available to read or take.
     * <li>{@link ReturnCode#OK} otherwise.
@@ -235,7 +233,6 @@ public class DataReader extends DomainEntity {
     * Method for taking the next available <code>DataSample</code> for this reader.
     * 
     * @param dataSample - A <code>DataSample</code> which the information will be placed in.
-    * @return <ul>
     * <li>{@link ReturnCode#NOT_ENABLED} if this reader is not enabled.
     * <li>{@link ReturnCode#NO_DATA} if no data is available to read or take.
     * <li>{@link ReturnCode#OK} otherwise.
@@ -600,7 +597,6 @@ public class DataReader extends DomainEntity {
    /**
     * This is intended to be called whenever new data is "published" to the Service. Calls onDataAvailable on the
     * attached <code>DataReaderListener</code> as appropriate.
-    * 
     */
    void store(Data theData) { // package scope
       // Get the data portion from theData

@@ -198,7 +198,6 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
     * specializedOutlineNumberTitleExtract()
     * 
     * @return
-    * @throws OseeCoreException
     */
    private boolean processOutlineNumberAndName(String content, StringBuilder outlineNumber, StringBuilder outlineName) throws OseeCoreException {
       Matcher listItemMatcher = LIST_ITEM_REGEX.matcher(content);
@@ -228,7 +227,6 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
 
    /**
     * Grabs outline text or content. Stores results in outLineStorage.
-    * 
     */
    private void grabNameAndTemplateContent(String paragraph, StringBuilder outLineStorage) {
       if (outLineStorage.length() == 0) {
@@ -245,8 +243,6 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
    /**
     * Specializes in extraction of "1. scope" type of outline number and names. Outline name can also be spread out over
     * multiple <w:t>s
-    * 
-    * @throws OseeCoreException
     */
    private void specializedOutlineNumberTitleExtract(String paragraph, StringBuilder outlineNumberStorage, StringBuilder outlineTitleStorage) throws OseeCoreException {
       StringBuilder wtStorage = new StringBuilder(paragraph.length());

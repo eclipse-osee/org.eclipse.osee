@@ -156,9 +156,13 @@ public class VersionReportJob extends Job {
                }
                System.out.println(str);
                sb.append(AHTML.addRowMultiColumnTable(
-                  new String[] {"Action", team.getTeamName(), team.getWorldViewPriority(),
-                     team.getWorldViewChangeTypeStr(), team.getName(), team.getHumanReadableId()}, null,
-                  (x % 2 == 0 ? null : "#cccccc")));
+                  new String[] {
+                     "Action",
+                     team.getTeamName(),
+                     team.getWorldViewPriority(),
+                     team.getWorldViewChangeTypeStr(),
+                     team.getName(),
+                     team.getHumanReadableId()}, null, (x % 2 == 0 ? null : "#cccccc")));
 
                for (TaskArtifact taskArt : team.getTaskArtifacts()) {
                   sb.append(AHTML.addRowMultiColumnTable(

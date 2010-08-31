@@ -119,8 +119,6 @@ public class CoverageParameters {
     * Match if no assignee specified OR<br>
     * coverage isn't CoverageUnit OR<br>
     * CoverageUnit assignee equals search assignee
-    * 
-    * @throws OseeCoreException
     */
    public boolean isAssigneeMatch(ICoverage coverage) throws OseeCoreException {
       if (assignee == null || !(coverage instanceof CoverageUnit)) {

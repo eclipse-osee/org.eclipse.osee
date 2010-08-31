@@ -83,7 +83,6 @@ public final class ImageManager {
    /**
     * @param baseImageName must refer to an image that is already mapped to this key in the image registry
     * @return the overlay keyed image
-    * @throws OseeArgumentException
     */
    public synchronized static KeyedImage setupImageWithOverlay(KeyedImage baseImageEnum, KeyedImage overlay, Location location) {
       String baseImageName = setupImage(baseImageEnum);

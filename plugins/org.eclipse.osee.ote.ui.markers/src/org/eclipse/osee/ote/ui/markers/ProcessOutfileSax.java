@@ -80,13 +80,6 @@ public class ProcessOutfileSax implements IExceptionableRunnable {
       return Status.OK_STATUS;
    }
 
-   /**
-    * @throws SAXException
-    * @throws Exception
-    * @throws SAXNotRecognizedException
-    * @throws SAXNotSupportedException
-    * @throws IOException
-    */
    private void parseContents(InputStream contents) throws SAXException, Exception, SAXNotRecognizedException, SAXNotSupportedException, IOException {
       XMLReader xmlReader = XMLReaderFactory.createXMLReader();
       OteSaxHandler handler = new OteSaxHandler();

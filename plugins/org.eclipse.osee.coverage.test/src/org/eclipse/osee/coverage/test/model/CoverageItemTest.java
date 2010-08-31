@@ -56,8 +56,6 @@ public class CoverageItemTest {
     * Test method for
     * {@link org.eclipse.osee.coverage.model.CoverageItem#CoverageItem(org.eclipse.osee.coverage.model.CoverageUnit, java.lang.String)}
     * .
-    * 
-    * @throws OseeCoreException
     */
    @Test
    public void testCoverageItemCoverageUnitString() throws OseeCoreException {
@@ -149,8 +147,6 @@ public class CoverageItemTest {
 
    /**
     * Test method for {@link org.eclipse.osee.coverage.model.CoverageItem#equals(java.lang.Object)}.
-    * 
-    * @throws OseeCoreException
     */
    @Test
    public void testEqualsObject() throws OseeCoreException {
@@ -162,8 +158,6 @@ public class CoverageItemTest {
 
    /**
     * Test method for {@link org.eclipse.osee.coverage.model.CoverageItem#getGuid()}.
-    * 
-    * @throws OseeCoreException
     */
    @Test
    public void testGetGuid() throws OseeCoreException {
@@ -192,8 +186,6 @@ public class CoverageItemTest {
 
    /**
     * Test method for {@link org.eclipse.osee.coverage.model.CoverageItem#setName(java.lang.String)}.
-    * 
-    * @throws OseeCoreException
     */
    @Test
    public void testSetGetText() throws OseeCoreException {

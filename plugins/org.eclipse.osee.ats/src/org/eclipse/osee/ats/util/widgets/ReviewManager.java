@@ -141,7 +141,6 @@ public class ReviewManager {
     * Return Remain Hours for all reviews
     * 
     * @return remain hours
-    * @throws Exception
     */
    public static double getRemainHours(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       double hours = 0;
@@ -170,7 +169,6 @@ public class ReviewManager {
     * Return Estimated Hours for all reviews
     * 
     * @return estimated hours
-    * @throws Exception
     */
    public static double getEstimatedHours(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       double hours = 0;

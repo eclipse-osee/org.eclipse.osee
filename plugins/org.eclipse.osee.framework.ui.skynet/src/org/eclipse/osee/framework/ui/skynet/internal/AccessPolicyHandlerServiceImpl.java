@@ -41,8 +41,6 @@ public class AccessPolicyHandlerServiceImpl implements IAccessPolicyHandlerServi
    /**
     * @param level - A level of OseeLevel.SEVERE_POPUP will cause an error dialog to be displayed to the user. All
     * others will write to the log.
-    * @return PermissionStatus
-    * @throws OseeCoreException
     */
    @Override
    public PermissionStatus hasAttributeTypePermission(Collection<? extends IBasicArtifact<?>> artifacts, IAttributeType attributeType, PermissionEnum permission, Level level) throws OseeCoreException {

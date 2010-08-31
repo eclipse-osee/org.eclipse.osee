@@ -43,11 +43,6 @@ public abstract class MessageSystemTestEnvironment extends TestEnvironment imple
    protected boolean promptResponse = false;
    private IOInstrumentationDB ioInstrumentation;
 
-   /**
-    * @throws IOException
-    * @throws UnknownHostException
-    * @throws MalformedURLException
-    */
    protected MessageSystemTestEnvironment(IEnvironmentFactory factory) {
       super(factory);
       getScriptCtrl().setScriptReady(false);
@@ -96,12 +91,6 @@ public abstract class MessageSystemTestEnvironment extends TestEnvironment imple
 
    /**
     * provides a way for sub classes to instantiate test scripts in their own way.
-    * 
-    * @return TestScript
-    * @throws NoSuchMethodException
-    * @throws InstantiationException
-    * @throws IllegalAccessException
-    * @throws InvocationTargetException
     */
    protected abstract TestScript instantiateScriptClass(Class<?> scriptClass, IUserSession connection) throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException;
 

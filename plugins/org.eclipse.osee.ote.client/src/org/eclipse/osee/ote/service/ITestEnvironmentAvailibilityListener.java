@@ -23,13 +23,11 @@ public interface ITestEnvironmentAvailibilityListener {
 
    /**
     * this method will be called when a {@link IHostTestEnvironment} becomes available for use.
-    * 
     */
    void environmentAvailable(IHostTestEnvironment testEnvironment, IServiceConnector connector, OteServiceProperties properties);
 
    /**
     * this method will be called whenever a {@link IHostTestEnvironment} becomes unavailable.
-    * 
     */
    void environmentUnavailable(IHostTestEnvironment testEnvironment, IServiceConnector connector, OteServiceProperties properties);
 }

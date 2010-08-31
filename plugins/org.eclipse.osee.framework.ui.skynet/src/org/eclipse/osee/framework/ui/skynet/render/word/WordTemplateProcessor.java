@@ -114,9 +114,6 @@ public class WordTemplateProcessor {
    /**
     * Parse through template to find xml defining artifact sets and replace it with the result of publishing those
     * artifacts Only used by Publish SRS
-    * 
-    * @throws OseeCoreException
-    * @throws IOException
     */
    public void publishWithExtensionTemplates(VariableMap variableMap, Artifact masterTemplateArtifact, Artifact slaveTemplateArtifact, List<Artifact> artifacts) throws OseeCoreException {
       String masterTemplate = masterTemplateArtifact.getSoleAttributeValue(CoreAttributeTypes.WholeWordContent, "");
@@ -142,8 +139,6 @@ public class WordTemplateProcessor {
     * @param artifacts = null if the template defines the artifacts to be used in the publishing
     * @param folder = null when not using an extension template
     * @param outlineNumber if null will find based on first artifact
-    * @return InputStream
-    * @throws OseeCoreException
     */
    public InputStream applyTemplate(VariableMap variableMap, List<Artifact> artifacts, String template, IFolder folder, String outlineNumber, String outlineType, PresentationType presentationType) throws OseeCoreException {
       WordMLProducer wordMl = null;
@@ -239,9 +234,6 @@ public class WordTemplateProcessor {
       processedArtifacts.clear();
    }
 
-   /**
-    * @throws CoreException
-    */
    private void processExtensionTemplate(String elementValue, VariableMap variableMap, IFolder folder, WordMLProducer wordMl, PresentationType presentationType, String template) throws OseeCoreException, CoreException {
       String subdocumentName = null;
       boolean doSubDocuments = false;

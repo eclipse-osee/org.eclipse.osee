@@ -57,8 +57,6 @@ public class ActionTeamListDialog extends ArtifactListDialog {
 
    /**
     * Return the style flags for the table viewer.
-    * 
-    * @return int
     */
    @Override
    protected int getTableStyle() {

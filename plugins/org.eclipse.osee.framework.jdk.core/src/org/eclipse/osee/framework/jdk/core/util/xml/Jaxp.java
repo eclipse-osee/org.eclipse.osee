@@ -471,8 +471,6 @@ public class Jaxp {
     * 
     * @param document The XML document to output
     * @param file Where to put the output
-    * @throws TransformerException
-    * @throws IOException
     */
    public static void writeXmlDocument(Document document, File file) throws TransformerException, IOException {
       writeXmlDocument(document, file, getCompactFormat(document));
@@ -485,8 +483,6 @@ public class Jaxp {
     * @param file Where to put the output
     * @param prettyOutput If true, turns on indention so the output is more easily readable, if False turns indention
     * off to save space.
-    * @throws TransformerException
-    * @throws IOException
     */
    public static void writeXmlDocument(Document document, File file, OutputFormat format) throws TransformerException, IOException {
       BufferedWriter out = new BufferedWriter(new FileWriter(file));
@@ -501,7 +497,6 @@ public class Jaxp {
     * @param file Where to put the output
     * @param prettyOutput If true, turns on indention so the output is more easily readable, if False turns indention
     * off and is assumed to provide the XML as compactly as possible.
-    * @throws TransformerException
     */
    public static String xmlToString(Document document, OutputFormat format) throws IOException {
       StringWriter stringWriter = new StringWriter();
@@ -515,7 +510,6 @@ public class Jaxp {
     * @param document The source XML
     * @param output Where the XML is 'printed' to
     * @param format The format style to use
-    * @throws IOException
     */
    private static void outputXmlDocument(Document document, Writer output, OutputFormat format) throws IOException {
       XMLSerializer serializer = new XMLSerializer(output, format);

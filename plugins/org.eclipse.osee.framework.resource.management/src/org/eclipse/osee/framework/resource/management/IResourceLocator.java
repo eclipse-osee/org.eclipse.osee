@@ -26,8 +26,6 @@ public interface IResourceLocator {
 
    /**
     * Get this locators protocol
-    * 
-    * @return String
     */
    public String getProtocol();
 

@@ -23,8 +23,6 @@ public interface IAttributeWidget extends IArtifactStoredWidget {
 
    /**
     * Set attributeType used as storage for this widget
-    * 
-    * @throws OseeCoreException
     */
    public void setAttributeType(Artifact artifact, IAttributeType attributeTypeName) throws OseeCoreException;
 

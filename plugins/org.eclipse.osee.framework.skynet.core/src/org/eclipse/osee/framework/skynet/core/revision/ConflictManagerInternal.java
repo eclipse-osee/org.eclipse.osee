@@ -177,10 +177,6 @@ public class ConflictManagerInternal {
       return artifacts;
    }
 
-   /**
-    * @throws OseeCoreException
-    */
-
    private static void loadArtifactVersionConflicts(String sql, Branch sourceBranch, Branch destinationBranch, TransactionRecord baselineTransaction, Collection<ConflictBuilder> conflictBuilders, Set<Integer> artIdSet, Set<Integer> artIdSetDontShow, Set<Integer> artIdSetDontAdd, IProgressMonitor monitor, TransactionRecord transactionId) throws OseeCoreException {
       boolean hadEntries = false;
 
@@ -231,9 +227,6 @@ public class ConflictManagerInternal {
       }
    }
 
-   /**
-    * @throws OseeCoreException
-    */
    private static void loadAttributeConflictsNew(Branch sourceBranch, Branch destinationBranch, TransactionRecord baselineTransaction, Collection<ConflictBuilder> conflictBuilders, Set<Integer> artIdSet, IProgressMonitor monitor, TransactionRecord transactionId) throws OseeCoreException {
       monitor.subTask("Finding the Attribute Conflicts");
       IOseeStatement chStmt = ConnectionHandler.getStatement();
@@ -278,7 +271,6 @@ public class ConflictManagerInternal {
     * the source branch has already seen this change.
     * 
     * @return Returns True if the AttributeConflict candidate is really a conflict.
-    * @throws OseeCoreException
     */
    private static boolean isAttributeConflictValid(int destinationGammaId, Branch sourceBranch) throws OseeCoreException {
       boolean isValidConflict = true;
@@ -304,7 +296,6 @@ public class ConflictManagerInternal {
 
    /**
     * @return Returns True if the destination gamma does not exist on a branch else false if it does.
-    * @throws OseeDataStoreException
     */
    private static boolean isAttributeConflictValidOnBranch(int destinationGammaId, Branch branch, int endTransactionNumber) throws OseeDataStoreException {
       String sql =

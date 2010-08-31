@@ -180,10 +180,6 @@ public class WordArtifactElementExtractor implements IElementExtractor {
       }
    }
 
-   /**
-    * @throws DOMException
-    * @throws OseeCoreException
-    */
    private void populateNewArtifactElementFromHlink(Element newArtifactElement, Element element) throws OseeCoreException, DOMException {
       OseeLinkParser linkParser = new OseeLinkParser();
       linkParser.parse(element.getAttribute("w:dest"));

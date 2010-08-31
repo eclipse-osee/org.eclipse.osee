@@ -45,7 +45,6 @@ public class MessageEventLogger implements UniversalMessageListener {
 
    /**
     * Creates a message event logger that also prints a stack trace when the event is fired
-    * 
     */
    public MessageEventLogger(Message<?, ?, ?> message, boolean showStackTrace) {
       this.message = message;

@@ -85,7 +85,6 @@ public class XListDropViewer extends XListViewer {
 
    /**
     * Adds artifacts to the viewer's input.
-    * 
     */
    public void addToInput(Artifact... artifacts) {
       ArrayList<Object> objects = new ArrayList<Object>();

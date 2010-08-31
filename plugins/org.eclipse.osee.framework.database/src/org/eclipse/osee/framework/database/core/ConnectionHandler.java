@@ -65,7 +65,6 @@ public final class ConnectionHandler {
     * This method should only be used when not contained in a DB transaction
     * 
     * @return number of records updated
-    * @throws OseeDataStoreException
     */
    public static <O extends Object> int runPreparedUpdate(String query, O... data) throws OseeDataStoreException {
       return getDatabase().runPreparedUpdate(query, data);
@@ -75,7 +74,6 @@ public final class ConnectionHandler {
     * This method should only be used when not contained in a DB transaction
     * 
     * @return number of records updated
-    * @throws OseeDataStoreException
     */
    public static <O extends Object> int runBatchUpdate(String query, List<O[]> dataList) throws OseeDataStoreException {
       return getDatabase().runBatchUpdate(query, dataList);
@@ -85,7 +83,6 @@ public final class ConnectionHandler {
     * This method should only be used when contained in a DB transaction
     * 
     * @return number of records updated
-    * @throws OseeDataStoreException
     */
    public static <O extends Object> int runPreparedUpdate(OseeConnection connection, String query, O... data) throws OseeDataStoreException {
       return getDatabase().runPreparedUpdate(connection, query, data);
@@ -155,8 +152,6 @@ public final class ConnectionHandler {
 
    /**
     * Cause constraint checking to be deferred until the end of the current transaction.
-    * 
-    * @throws OseeDataStoreException
     */
    public static void deferConstraintChecking(OseeConnection connection) throws OseeDataStoreException {
       if (SupportedDatabase.getDatabaseType(connection.getMetaData()) == SupportedDatabase.derby) {

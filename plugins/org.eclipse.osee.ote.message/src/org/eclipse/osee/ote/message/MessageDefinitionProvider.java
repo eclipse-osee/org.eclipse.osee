@@ -21,8 +21,6 @@ public interface MessageDefinitionProvider {
    /**
     * This function returns an ID that is intended to be unique to the running system. The system should not allow more
     * than one active instance of a service with the same singletonId.
-    * 
-    * @return String
     */
    String singletonId();
 

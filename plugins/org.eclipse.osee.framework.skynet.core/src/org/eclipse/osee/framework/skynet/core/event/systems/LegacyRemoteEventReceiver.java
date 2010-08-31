@@ -298,7 +298,6 @@ public final class LegacyRemoteEventReceiver extends ASkynetEventListener {
 
    /**
     * Updates local cache
-    * 
     */
    private void updateArtifacts(Sender sender, ISkynetArtifactEvent event, Collection<ArtifactTransactionModifiedEvent> xModifiedEvents) {
       if (event == null) {

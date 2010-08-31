@@ -123,7 +123,6 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
    /**
     * Reset managers for case where artifact is re-loaded/initialized
     * 
-    * @throws OseeCoreException
     * @see org.eclipse.osee.ats.artifact.StateMachineArtifact#initialize()
     */
    @Override

@@ -25,7 +25,6 @@ public interface IMessageHeader {
 
    /**
     * Sets the data that backs this header.
-    * 
     */
    //   public void copyData(byte[] data);
    public byte[] getData();

@@ -45,7 +45,6 @@ public class ValidateArtifactsToDelete extends AbstractBlam {
 
    /**
     * Changes the descriptor of the artifacts to the provided artifact descriptor
-    * 
     */
    private void processChange(List<Artifact> artifacts) {
       if (artifacts.isEmpty()) {

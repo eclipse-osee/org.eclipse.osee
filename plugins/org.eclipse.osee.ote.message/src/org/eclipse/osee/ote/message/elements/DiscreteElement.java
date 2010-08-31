@@ -137,7 +137,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * @param value Expected value.
     * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
     * @return If the check passed.
-    * @throws InterruptedException
     */
    public final boolean check(ITestAccessor accessor, T value, int milliseconds) throws InterruptedException {
       return check(accessor, (CheckGroup) null, value, milliseconds);
@@ -264,7 +263,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * @param maxValue The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
-    * @throws InterruptedException
     */
    public final T checkMaintainRange(ITestAccessor accessor, T minValue, T maxValue, int milliseconds) throws InterruptedException {
       return checkMaintainRange(accessor, null, minValue, true, maxValue, true, milliseconds);
@@ -279,7 +277,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * @param maxInclusive If the maximum value of the range is inclusive.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
-    * @throws InterruptedException
     */
    public final T checkMaintainRange(ITestAccessor accessor, T minValue, boolean minInclusive, T maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
       return checkMaintainRange(accessor, (CheckGroup) null, minValue, minInclusive, maxValue, maxInclusive,
@@ -300,7 +297,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * @param maxValue The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
-    * @throws InterruptedException
     */
    public final T checkMaintainNotRange(ITestAccessor accessor, T minValue, T maxValue, int milliseconds) throws InterruptedException {
       return checkMaintainNotRange(accessor, null, minValue, true, maxValue, true, milliseconds);
@@ -315,7 +311,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * @param maxInclusive If the maximum value of the range is inclusive.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
-    * @throws InterruptedException
     */
    public final T checkMaintainNotRange(ITestAccessor accessor, T minValue, boolean minInclusive, T maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
       return checkMaintainNotRange(accessor, (CheckGroup) null, minValue, minInclusive, maxValue, maxInclusive,
@@ -336,7 +331,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * @param maxValue The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
-    * @throws InterruptedException
     */
    public final T checkMaintainRange(ITestAccessor accessor, CheckGroup checkGroup, T minValue, T maxValue, int milliseconds) throws InterruptedException {
       return checkMaintainRange(accessor, checkGroup, minValue, true, maxValue, true, milliseconds);
@@ -354,7 +348,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * to the range value.
     * @param milliseconds Number of milliseconds to wait for the element to be outside the range.
     * @return if the check passed
-    * @throws InterruptedException
     */
    public final boolean checkNotRange(ITestAccessor accessor, T minValue, boolean minInclusive, T maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
       return checkNotRange(accessor, (CheckGroup) null, minValue, minInclusive, maxValue, maxInclusive, milliseconds);
@@ -390,7 +383,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * @param value The expected value to wait for.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value found. Either value expected or value found at timeout.
-    * @throws InterruptedException
     */
    public T waitForValue(ITestEnvironmentAccessor accessor, T value, int milliseconds) throws InterruptedException {
       if (accessor != null) {
@@ -412,7 +404,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * @param value The expected value to wait for.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
-    * @throws InterruptedException
     */
    public T waitForNotValue(ITestEnvironmentAccessor accessor, T value, int milliseconds) throws InterruptedException {
       if (accessor != null) {
@@ -437,7 +428,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * @param maxInclusive If the maximum value of the range is inclusive.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
-    * @throws InterruptedException
     */
    public T waitForRange(ITestEnvironmentAccessor accessor, T minValue, boolean minInclusive, T maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
       if (accessor != null) {
@@ -460,7 +450,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * @param maxValue The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
-    * @throws InterruptedException
     */
    public final T waitForRange(ITestEnvironmentAccessor accessor, T minValue, T maxValue, int milliseconds) throws InterruptedException {
       return waitForRange(accessor, minValue, true, maxValue, true, milliseconds);
@@ -478,7 +467,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * to the range value.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
-    * @throws InterruptedException
     */
    public T waitForNotRange(ITestEnvironmentAccessor accessor, T minValue, boolean minInclusive, T maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
       if (accessor != null) {
@@ -503,7 +491,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * @param maxValue The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
-    * @throws InterruptedException
     */
    public final T waitForNotRange(ITestEnvironmentAccessor accessor, T minValue, T maxValue, int milliseconds) throws InterruptedException {
       return waitForRange(accessor, minValue, true, maxValue, true, milliseconds);
@@ -515,7 +502,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * @param value The expected value to wait for.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
-    * @throws InterruptedException
     */
    public final T waitNotValue(ITestEnvironmentAccessor accessor, T value, int milliseconds) throws InterruptedException {
       return waitForNotValue(accessor, value, milliseconds);
@@ -534,7 +520,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * @param value Expected value.
     * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
     * @return If the check passed.
-    * @throws InterruptedException
     */
    public boolean check(ITestAccessor accessor, CheckGroup checkGroup, T value, int milliseconds) throws InterruptedException {
       checkAccessor(accessor);
@@ -566,7 +551,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * @param maxInclusive If the maximum value of the range is inclusive.
     * @param milliseconds Number of milliseconds to wait for the element to be in the range.
     * @return if the check passed
-    * @throws InterruptedException
     */
    public boolean checkRange(ITestAccessor accessor, CheckGroup checkGroup, T minValue, boolean minInclusive, T maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
       checkAccessor(accessor);
@@ -593,7 +577,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * @param maxInclusive If the maximum value of the range is inclusive.
     * @param milliseconds Number of milliseconds to wait for the element to be within the range.
     * @return if the check passed
-    * @throws InterruptedException
     */
    public final boolean checkRange(ITestAccessor accessor, T minValue, boolean minInclusive, T maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
       return checkRange(accessor, (CheckGroup) null, minValue, minInclusive, maxValue, maxInclusive, milliseconds);
@@ -627,7 +610,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * @param maxValue The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait for the element to be within the range.
     * @return if the check passed
-    * @throws InterruptedException
     */
    public final boolean checkRange(ITestAccessor accessor, CheckGroup checkGroup, T minValue, T maxValue, int milliseconds) throws InterruptedException {
       return checkRange(accessor, checkGroup, minValue, true, maxValue, true, milliseconds);
@@ -641,7 +623,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * @param maxValue The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait for the element to be within the range.
     * @return if the check passed
-    * @throws InterruptedException
     */
    public final boolean checkRange(ITestAccessor accessor, T minValue, T maxValue, int milliseconds) throws InterruptedException {
       return this.checkRange(accessor, (CheckGroup) null, minValue, true, maxValue, true, milliseconds);
@@ -673,7 +654,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * @param value value to test against.
     * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
     * @return If the check passed.
-    * @throws InterruptedException
     */
    public boolean checkNot(ITestAccessor accessor, CheckGroup checkGroup, T value, int milliseconds) throws InterruptedException {
       checkAccessor(accessor);
@@ -703,7 +683,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * @param value value to test against.
     * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
     * @return If the check passed.
-    * @throws InterruptedException
     */
    public final boolean checkNot(ITestAccessor accessor, T value, int milliseconds) throws InterruptedException {
       return checkNot(accessor, (CheckGroup) null, value, milliseconds);
@@ -741,7 +720,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * @param maxInclusive If the maximum value of the range is inclusive. If true the actual value must not > and not =
     * to the range value.
     * @return if the check passed
-    * @throws InterruptedException
     */
    public boolean checkNotRange(ITestAccessor accessor, CheckGroup checkGroup, T minValue, boolean minInclusive, T maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
       checkAccessor(accessor);
@@ -788,7 +766,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * @param maxValue The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait for the element to be outside the range.
     * @return if the check passed
-    * @throws InterruptedException
     */
    public final boolean checkNotRange(ITestAccessor accessor, T minValue, T maxValue, int milliseconds) throws InterruptedException {
       return checkNotRange(accessor, (CheckGroup) null, minValue, true, maxValue, true, milliseconds);
@@ -808,7 +785,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * @param maxValue The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait for the element to be outside the range.
     * @return if the check passed
-    * @throws InterruptedException
     */
    public final boolean checkNotRange(ITestAccessor accessor, CheckGroup checkGroup, T minValue, T maxValue, int milliseconds) throws InterruptedException {
       return checkNotRange(accessor, checkGroup, minValue, true, maxValue, true, milliseconds);
@@ -860,7 +836,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
     * will log the test point.
     * @return last value observed. Either value expected or value found at timeout.
-    * @throws InterruptedException
     */
    public T checkMaintain(ITestAccessor accessor, CheckGroup checkGroup, T value, int milliseconds) throws InterruptedException {
       checkAccessor(accessor);
@@ -897,7 +872,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * value found that caused failure or last value observed if time expires.
     * 
     * @return last value observed. Either value expected or value found at timeout.
-    * @throws InterruptedException
     */
    public final T checkMaintain(ITestAccessor accessor, T value, int milliseconds) throws InterruptedException {
       return checkMaintain(accessor, (CheckGroup) null, value, milliseconds);
@@ -915,7 +889,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
     * will log the test point.
     * @return last value observed
-    * @throws InterruptedException
     */
    public T checkMaintainNot(ITestAccessor accessor, CheckGroup checkGroup, T value, int milliseconds) throws InterruptedException {
       checkAccessor(accessor);
@@ -935,7 +908,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * value found that caused failure or last value observed if time expires.
     * 
     * @return last value observed
-    * @throws InterruptedException
     */
    public final T checkMaintainNot(ITestAccessor accessor, T value, int milliseconds) throws InterruptedException {
       return checkMaintainNot(accessor, (CheckGroup) null, value, milliseconds);
@@ -957,7 +929,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * @param maxInclusive If the maximum value of the range is inclusive.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
-    * @throws InterruptedException
     */
    public T checkMaintainRange(ITestAccessor accessor, CheckGroup checkGroup, T minValue, boolean minInclusive, T maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
       checkAccessor(accessor);
@@ -1002,7 +973,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * to the range value.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
-    * @throws InterruptedException
     */
    public T checkMaintainNotRange(ITestAccessor accessor, CheckGroup checkGroup, T minValue, boolean minInclusive, T maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
       checkAccessor(accessor);
@@ -1044,7 +1014,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * @param maxValue The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
-    * @throws InterruptedException
     */
    public final T checkMaintainNotRange(ITestAccessor accessor, CheckGroup checkGroup, T minValue, T maxValue, int milliseconds) throws InterruptedException {
       return checkMaintainNotRange(accessor, checkGroup, minValue, true, maxValue, true, milliseconds);
@@ -1074,16 +1043,10 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
       return passFail.isPass();
    }
 
-   /**
-    * @throws InterruptedException
-    */
    public final boolean checkPulse(ITestAccessor accessor, T pulsedValue, T nonPulsedValue) throws InterruptedException {
       return checkPulse(accessor, null, pulsedValue, nonPulsedValue);
    }
 
-   /**
-    * @throws InterruptedException
-    */
    public final boolean checkPulse(ITestAccessor accessor, CheckGroup checkGroup, T pulsedValue, T nonPulsedValue) throws InterruptedException {
       return checkPulse(accessor, checkGroup, pulsedValue, nonPulsedValue, 1000);
    }
@@ -1140,7 +1103,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * @param list List of values to check for
     * @param milliseconds Number of milliseconds to wait
     * @return if check passed
-    * @throws InterruptedException
     */
    public boolean checkList(ITestAccessor accessor, CheckGroup checkGroup, boolean isInList, T[] list, int milliseconds) throws InterruptedException {
       ListCondition<T> c = new ListCondition<T>(this, isInList, list);
@@ -1185,7 +1147,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * @param list List of values to check for
     * @param milliseconds Number of milliseconds to wait
     * @return if check passed
-    * @throws InterruptedException
     */
    public final boolean checkNotInList(ITestAccessor accessor, T[] list, int milliseconds) throws InterruptedException {
       return this.checkList(accessor, (CheckGroup) null, false, list, milliseconds);
@@ -1213,7 +1174,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * @param list List of values to check for
     * @param milliseconds Number of milliseconds to wait
     * @return if check passed
-    * @throws InterruptedException
     */
    public final boolean checkList(ITestAccessor accessor, boolean isInList, T[] list, int milliseconds) throws InterruptedException {
       return checkList(accessor, (CheckGroup) null, isInList, list, milliseconds);
@@ -1256,7 +1216,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * @param list List of values to check for
     * @param milliseconds Number of milliseconds to wait
     * @return if check passed
-    * @throws InterruptedException
     */
    public final boolean checkInList(ITestAccessor accessor, T[] list, int milliseconds) throws InterruptedException {
       return this.checkList(accessor, (CheckGroup) null, true, list, milliseconds);
@@ -1274,7 +1233,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * @param list List of values to check for
     * @param milliseconds Number of milliseconds to wait
     * @return if check passed
-    * @throws InterruptedException
     */
    public final boolean checkNotInList(ITestAccessor accessor, CheckGroup checkGroup, T[] list, int milliseconds) throws InterruptedException {
       return this.checkList(accessor, checkGroup, false, list, milliseconds);
@@ -1292,7 +1250,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * @param list The list of values to check against
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
-    * @throws InterruptedException
     */
    public final T checkMaintainInList(ITestAccessor accessor, CheckGroup checkGroup, T[] list, int milliseconds) throws InterruptedException {
       return this.checkMaintainList(accessor, checkGroup, list, true, milliseconds);
@@ -1310,7 +1267,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * @param list The list of values to check against
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
-    * @throws InterruptedException
     */
    public final T checkMaintainNotInList(ITestAccessor accessor, CheckGroup checkGroup, T[] list, int milliseconds) throws InterruptedException {
       return this.checkMaintainList(accessor, checkGroup, list, false, milliseconds);
@@ -1328,7 +1284,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * @param list List of values to check for
     * @param milliseconds Number of milliseconds to wait
     * @return if check passed
-    * @throws InterruptedException
     */
    public final boolean checkInList(ITestAccessor accessor, CheckGroup checkGroup, T[] list, int milliseconds) throws InterruptedException {
       return this.checkList(accessor, checkGroup, true, list, milliseconds);
@@ -1357,7 +1312,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
     * @param isInList If the value is expected to be in or not in the "list"
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
-    * @throws InterruptedException
     */
    public T waitForList(ITestAccessor accessor, T[] list, boolean isInList, int milliseconds) throws InterruptedException {
 
@@ -1434,8 +1388,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
 
    /**
     * Sets the element to the first enumeration for the wait time and then it sets it to the second enumeration.
-    * 
-    * @throws InterruptedException
     */
    public synchronized void toggle(ITestEnvironmentAccessor accessor, T value1, T value2, int milliseconds) throws InterruptedException {
       accessor.getLogger().methodCalledOnObject(accessor, this.getFullName(),
@@ -1462,7 +1414,6 @@ public abstract class DiscreteElement<T extends Comparable<T>> extends Element i
 
    /**
     * gets this element's current value. Does logging
-    * 
     */
    public T get(ITestEnvironmentAccessor accessor) {
       accessor.getLogger().methodCalled(accessor, new MethodFormatter());

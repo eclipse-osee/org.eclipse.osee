@@ -35,7 +35,6 @@ public abstract class OseeTestThread {
 
    /**
     * Creates the thread with the given name and as a non daemon thread
-    * 
     */
    public OseeTestThread(String name, TestEnvironment env) {
       this(name, false, null, env);
@@ -115,8 +114,6 @@ public abstract class OseeTestThread {
 
    /**
     * This method will be called upon thread execution
-    * 
-    * @throws TestException
     */
    protected abstract void run() throws Exception;
 

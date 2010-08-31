@@ -24,7 +24,6 @@ public interface ILeaseGrantor extends Remote {
     * @param duration The amount of time requested for the renewed lease
     * @throws LeaseDeniedException If the lease is denied for any reason
     * @throws UnknownLeaseException If the lease type is unknown
-    * @throws RemoteException
     */
    public void renewRequest(Lease lease, Object consumer, long duration) throws LeaseDeniedException, UnknownLeaseException, RemoteException;
 
@@ -32,7 +31,6 @@ public interface ILeaseGrantor extends Remote {
     * @param lease The existing lease
     * @param consumer The "consumer" of the lease (as opposed to the grantor of the lease)
     * @throws UnknownLeaseException If the lease type is unknown
-    * @throws RemoteException
     */
    public void cancelRequest(Lease lease, Object consumer) throws UnknownLeaseException, RemoteException;
 

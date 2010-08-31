@@ -29,7 +29,6 @@ public class XViewerReviewRoleColumn extends XViewerValueColumn {
    /**
     * XViewer uses copies of column definitions so originals that are registered are not corrupted. Classes extending
     * XViewerValueColumn need to extend this constructor to copy extra stored fields
-    * 
     */
    @Override
    public XViewerReviewRoleColumn copy() {

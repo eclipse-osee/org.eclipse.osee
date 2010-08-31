@@ -154,7 +154,6 @@ public final class TransactionManager {
 
    /**
     * @return the largest (most recent) transaction on the given branch
-    * @throws OseeCoreException
     */
    public static TransactionRecord getHeadTransaction(IOseeBranch branch) throws OseeCoreException {
       int branchId = BranchManager.getBranchId(branch);
@@ -198,9 +197,6 @@ public final class TransactionManager {
 
    /**
     * @return The prior transactionId, or null if there is no prior.
-    * @throws BranchDoesNotExist
-    * @throws TransactionDoesNotExist
-    * @throws OseeDataStoreException
     */
    public static TransactionRecord getPriorTransaction(TransactionRecord transactionId) throws OseeCoreException {
       TransactionRecord priorTransactionId = null;

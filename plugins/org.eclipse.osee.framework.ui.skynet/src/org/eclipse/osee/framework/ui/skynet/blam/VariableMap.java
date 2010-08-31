@@ -28,9 +28,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 public class VariableMap {
    private final Map<String, Object> variableMap = new HashMap<String, Object>();
 
-   /**
-    * @throws OseeArgumentException
-    */
    public VariableMap(Object... optionArgs) throws OseeArgumentException {
       for (int i = 0; i < optionArgs.length; i += 2) {
          if (optionArgs[i] instanceof String) {

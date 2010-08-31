@@ -27,7 +27,6 @@ public class DataStoreItem {
    /**
     * Create a new <code>DataStoreItem</code> that stores references to all of the necessary information for the system
     * to propogate the data.
-    * 
     */
    public DataStoreItem(DataSample theData, TopicDescription theTopicDescription, DataWriter theWriter) {
       super();

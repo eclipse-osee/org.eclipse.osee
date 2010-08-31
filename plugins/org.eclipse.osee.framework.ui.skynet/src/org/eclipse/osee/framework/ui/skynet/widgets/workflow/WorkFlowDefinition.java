@@ -121,8 +121,6 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
 
    /**
     * If deCache, clears cache and reloads workflow data
-    * 
-    * @throws OseeCoreException
     */
    public void loadPageData(boolean deCache) throws OseeCoreException {
       if (deCache) {
@@ -229,7 +227,6 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
     * completed that can be returned from<br>
     * 1) fromPageId, toPageId, ToPage<br>
     * 2) toPageId, fromPageId, ToPageAsReturn
-    * 
     */
    public void addPageTransitionToPageAndReturn(String fromPageId, String toPageId) {
       addPageTransition(pageIdToPageIdsViaTransitionType, fromPageId, toPageId, TransitionType.ToPage);
@@ -324,9 +321,6 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
 
    /**
     * Return all registered page definitions including those inherited from parent(s)
-    * 
-    * @return definitions
-    * @throws Exception
     */
    public List<WorkPageDefinition> getPageDefinitions(String fromPageId, TransitionType... transitionType) throws OseeCoreException {
       return getPageDefinitions(this, fromPageId, true, transitionType);

@@ -178,8 +178,6 @@ public class HttpRequest {
    /**
     * Process new style requests are of the following format:
     * http://127.0.0.1:<port>/<ProcessType>?key1=value1&key2=value2...&key3=value3
-    * 
-    * @throws Exception
     */
    private void parseNewStyleRequests(String request) throws Exception {
       String noHostStr = request.replaceFirst("^http:\\/\\/(.*?)\\/", "/");
@@ -208,7 +206,6 @@ public class HttpRequest {
     * all legacy references are change to new format
     * 
     * @return
-    * @throws Exception
     */
    private boolean parseOldSchoolStyleLinks(String entry) throws Exception {
       boolean handled = false;

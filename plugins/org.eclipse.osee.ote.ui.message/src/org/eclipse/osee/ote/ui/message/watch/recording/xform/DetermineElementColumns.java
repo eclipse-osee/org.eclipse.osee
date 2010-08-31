@@ -42,9 +42,6 @@ public class DetermineElementColumns extends AbstractSaxHandler {
       }
    }
 
-   /**
-    * @return String[]
-    */
    public String[] getElementColumns() {
       return elementNames.toArray(new String[elementNames.size()]);
    }

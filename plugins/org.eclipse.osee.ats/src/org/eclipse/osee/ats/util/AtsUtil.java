@@ -161,9 +161,6 @@ public final class AtsUtil {
     * persistent number from the file-system so each action has a different name. By entering "tt" in the title, new
     * action wizard will be pre-populated with selections and the action name will be created as "tt <number in
     * atsNumFilename>".
-    * 
-    * @return number
-    * @throws IOException
     */
    public static int getAtsDeveloperIncrementingNum() {
       try {
@@ -237,8 +234,6 @@ public final class AtsUtil {
 
    /**
     * Only to be used by browser. Use open (artifact) instead.
-    * 
-    * @throws OseeCoreException
     */
    public static void openArtifact(String guid, OseeEditor view) {
       AtsBulkLoad.loadConfig(false);
@@ -413,7 +408,6 @@ public final class AtsUtil {
    /**
     * TODO Remove duplicate Active flags, need to convert all ats.Active to Active in DB
     * 
-    * @param <A>
     * @param artifacts to iterate through
     * @param active state to validate against; Both will return all artifacts matching type
     * @param clazz type of artifacts to consider; null for all

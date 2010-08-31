@@ -31,7 +31,6 @@ public interface IOteClientService {
     * <B>NOTE: </B>The newly registered listener's
     * {@link ITestEnvironmentAvailibilityListener#environmentAvailable(IHostTestEnvironment, org.eclipse.osee.connection.service.IServiceConnector, ServiceProperty)}
     * method will be called immediately for each test host currently available
-    * 
     */
    void addEnvironmentAvailibiltyListener(ITestEnvironmentAvailibilityListener listener);
 
@@ -41,7 +40,6 @@ public interface IOteClientService {
     * adds the {@link ITestConnectionListener} that will be notified of connection events. <B>NOTE:</B> that if a
     * connection has already been made prior to calling this method then the listener's
     * {@link ITestConnectionListener#onPostConnect(ITestEnvironment)} method will be immediately called.
-    * 
     */
    void addConnectionListener(ITestConnectionListener listener);
 
@@ -51,7 +49,6 @@ public interface IOteClientService {
     * adds a listener that will be notified of dictionary events. <B>NOTE: </B>if a dictionary was loaded prior to
     * calling this method then the listener's {@link IMessageDictionaryListener#onDictionaryLoaded(IMessageDictionary)}
     * will be called immediately
-    * 
     */
    void addDictionaryListener(IMessageDictionaryListener listener);
 
@@ -64,7 +61,6 @@ public interface IOteClientService {
    /**
     * sets the user that will logged into the OTE client service. A user must be set prior to connecting to an OTE test
     * environment. If a connection is already established it will be broken prior to setting the new user.
-    * 
     */
    void setUser(OSEEPerson1_4 user, InetAddress address) throws TestSessionException;
 
@@ -79,7 +75,6 @@ public interface IOteClientService {
     * creates a connection to a test server. <B>NOTE: </B><I>A user must be logged in prior to calling this method.>/I>
     * 
     * @see #setUser(OSEEPerson1_4, InetAddress)
-    * @throws Exception
     */
    ConnectionEvent connect(IHostTestEnvironment env, IEnvironmentConfigurer configurer, TestEnvironmentConfig config) throws TestSessionException;
 
@@ -87,8 +82,6 @@ public interface IOteClientService {
     * breaks the current connection to a test server. This will call the
     * {@link ITestConnectionListener#onPreDisconnect(ConnectionEvent)} method for each registered
     * {@link ITestConnectionListener} before the connection is actually broken.
-    * 
-    * @throws Exception
     */
    void disconnect() throws TestSessionException;
 
@@ -96,7 +89,6 @@ public interface IOteClientService {
     * gets the currently connected test environment
     * 
     * @return returns the connected {@link ITestEnvironment} or null if no connection exists
-    * @throws Exception
     */
    ITestEnvironment getConnectedEnvironment();
 
@@ -114,7 +106,6 @@ public interface IOteClientService {
    /**
     * sets a {@link SessionDelegate} who will handle certain aspects of the client session A successful call to
     * {@link #setUser(OSEEPerson1_4, InetAddress)} must have occurred prior to calling this method.
-    * 
     */
    void setSessionDelegate(SessionDelegate sessionDelegate);
 

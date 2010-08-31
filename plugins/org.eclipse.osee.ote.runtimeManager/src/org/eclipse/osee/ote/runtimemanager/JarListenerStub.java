@@ -125,7 +125,6 @@ public class JarListenerStub<T extends JarCollectionNature> implements IJarChang
 
    /**
     * @return
-    * @throws IOException
     */
    private String getBundleNameFromJar(URL url) throws IOException {
       File file;

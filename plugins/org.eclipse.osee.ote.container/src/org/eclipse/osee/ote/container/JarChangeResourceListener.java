@@ -67,10 +67,6 @@ public class JarChangeResourceListener<T extends JarCollectionNature> implements
       }
    }
 
-   /**
-    * @throws CoreException
-    * @throws MalformedURLException
-    */
    private void handleChangeEvent(IResourceChangeEvent event) throws CoreException, MalformedURLException {
       IResourceDelta rootDelta = event.getDelta();
       if (rootDelta != null) {
@@ -102,10 +98,6 @@ public class JarChangeResourceListener<T extends JarCollectionNature> implements
       }
    }
 
-   /**
-    * @throws BundleException
-    * @throws MalformedURLException
-    */
    protected void handlePluginChanges(IPath workspacePath, IResourceDelta[] affectedChildren) throws MalformedURLException {
       for (IResourceDelta affectedPluginDelta : affectedChildren) {
          URL url = workspacePath.append(affectedPluginDelta.getFullPath()).toFile().toURI().toURL();

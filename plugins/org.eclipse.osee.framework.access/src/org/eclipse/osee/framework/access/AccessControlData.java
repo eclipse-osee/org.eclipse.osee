@@ -75,9 +75,6 @@ public class AccessControlData implements Comparable<AccessControlData> {
       return artifactTypePermission;
    }
 
-   /**
-    * @return PermissionEnum
-    */
    public PermissionEnum getPermission() {
       return permission;
    }

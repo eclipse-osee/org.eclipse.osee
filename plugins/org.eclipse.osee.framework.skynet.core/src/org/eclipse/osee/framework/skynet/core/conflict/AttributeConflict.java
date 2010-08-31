@@ -154,7 +154,6 @@ public class AttributeConflict extends Conflict {
 
    /**
     * @return the attributeType
-    * @throws OseeCoreException
     */
    public AttributeType getAttributeType() throws OseeCoreException {
       if (attributeType == null) {

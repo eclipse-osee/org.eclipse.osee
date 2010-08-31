@@ -44,9 +44,6 @@ public class RelationImporter implements RowProcessor {
    private boolean done;
    private final Branch branch;
 
-   /**
-    * @throws SAXException
-    */
    public RelationImporter(Branch branch) throws SAXException {
       this.branch = branch;
       excelHandler = new ExcelSaxHandler(this, true, true);

@@ -64,7 +64,6 @@ public class OseeCredential extends OseeClientInfo {
     * Create new instance from XML input
     * 
     * @param OseeCredential the new instance
-    * @throws OseeWrappedException
     */
    public static OseeCredential fromXml(InputStream inputStream) throws OseeCoreException {
       OseeCredential session = new OseeCredential();

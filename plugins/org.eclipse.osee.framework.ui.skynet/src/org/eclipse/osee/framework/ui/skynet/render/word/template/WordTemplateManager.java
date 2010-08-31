@@ -166,9 +166,6 @@ public class WordTemplateManager {
       return this.artifactSetName;
    }
 
-   /**
-    * @throws Exception
-    */
    public void processArtifacts(WordMLProducer wordMl, List<Artifact> artifacts) throws OseeCoreException {
       String outlineNumber = peekAtFirstArtifactToGetParagraphNumber(template, artifacts);
       template = wordMl.setHeadingNumbers(outlineNumber, template, null);
@@ -214,7 +211,6 @@ public class WordTemplateManager {
 
    /**
     * @return
-    * @throws OseeCoreException
     */
    private List<Artifact> recurseArtifactChildren(List<Artifact> artifacts) throws OseeCoreException {
       List<Artifact> arts = new ArrayList<Artifact>();
@@ -235,7 +231,6 @@ public class WordTemplateManager {
     * This method expands wildcard(*) attribute names into all of the attribute types of a particular artifact.
     * 
     * @return
-    * @throws OseeCoreException
     */
    private List<ITemplateTask> preProcessTemplateTasks(List<ITemplateTask> tasks, Artifact artifact) throws OseeCoreException {
       List<ITemplateTask> newTasks = new ArrayList<ITemplateTask>();

@@ -22,8 +22,6 @@ public class ConfigFileHandler {
     * contains the XML specified for the sourceDoc's root node, it will be replaced, otherwise it will be appended to
     * the file. If the file does not exist, a new file will be created only containing the sourceDoc underneath a root
     * TestManagerConfig node.
-    * 
-    * @throws Exception
     */
    public static void writeFile(Document sourceDoc, String fileString) throws Exception {
       Document doc;

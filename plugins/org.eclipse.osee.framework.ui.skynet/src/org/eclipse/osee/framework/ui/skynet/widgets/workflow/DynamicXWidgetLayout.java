@@ -274,8 +274,6 @@ public class DynamicXWidgetLayout {
     * Required flags are set per XWidget and the labels change from Red to Black when the widget has been edited
     * successfully. When a page is made up of two or more widgets that need to work together, these required flags need
     * to be set/unset whenever a widget from the group gets modified.
-    * 
-    * @throws OseeArgumentException
     */
    private void refreshOrAndXOrRequiredFlags() throws OseeCoreException {
       // Handle orRequired
@@ -379,7 +377,6 @@ public class DynamicXWidgetLayout {
 
    /**
     * @return true if ANY item in group is entered
-    * @throws OseeArgumentException
     */
    public boolean isOrGroupFromAttrNameComplete(String name) throws OseeCoreException {
       for (String aName : getOrRequiredGroup(name)) {
@@ -393,7 +390,6 @@ public class DynamicXWidgetLayout {
 
    /**
     * @return true if only ONE item in group is entered
-    * @throws OseeArgumentException
     */
    public boolean isXOrGroupFromAttrNameComplete(String attrName) throws OseeCoreException {
       boolean oneFound = false;

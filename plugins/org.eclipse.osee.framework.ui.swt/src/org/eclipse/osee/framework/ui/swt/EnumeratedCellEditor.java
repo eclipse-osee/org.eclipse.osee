@@ -155,7 +155,6 @@ public abstract class EnumeratedCellEditor<T extends Enum<T>> extends CustomTabl
    /**
     * Either enables or disables this cell editor. A disabled cell editor will not edit any cells in the entire column
     * that this cell editor is attached to.
-    * 
     */
    public void setEnabled(boolean enabled) {
       // do nothing if already enabled/disabled

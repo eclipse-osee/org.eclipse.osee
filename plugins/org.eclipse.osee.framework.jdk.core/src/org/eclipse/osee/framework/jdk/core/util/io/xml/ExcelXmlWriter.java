@@ -87,7 +87,6 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
     * 
     * @param writer output
     * @param style Excel Style XML of form <Styles><Style/><Style/></Styles>
-    * @throws IOException
     */
    public ExcelXmlWriter(Writer writer, String style) throws IOException {
       super();

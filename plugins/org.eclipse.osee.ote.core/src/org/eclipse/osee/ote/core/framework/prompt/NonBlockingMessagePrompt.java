@@ -20,16 +20,10 @@ import org.eclipse.osee.ote.core.IUserSession;
  */
 public class NonBlockingMessagePrompt extends AbstractRemotePrompt implements IResumeResponse {
 
-   /**
-    * @throws UnknownHostException
-    */
    public NonBlockingMessagePrompt(IServiceConnector connector, String id, String message) throws UnknownHostException {
       super(connector, id, message);
    }
 
-   /**
-    * @throws Exception
-    */
    public void open(IUserSession session) throws Exception {
 
       session.initiateResumePrompt(this);

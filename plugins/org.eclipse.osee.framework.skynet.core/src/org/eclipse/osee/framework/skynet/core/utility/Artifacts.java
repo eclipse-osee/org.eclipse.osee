@@ -115,8 +115,6 @@ public final class Artifacts {
    /**
     * Recurses default hierarchy and collections children of parentArtifact that are of type class
     * 
-    * @param <A>
-    * @throws OseeDataStoreException
     */
    @SuppressWarnings("unchecked")
    public static <A extends Artifact> void getChildrenOfType(Artifact parentArtifact, Collection<A> children, Class<A> clazz, boolean recurse) throws OseeCoreException {

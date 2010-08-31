@@ -128,15 +128,17 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
       }
    }
 
-   private static String[] HEADER_STRINGS =
-      new String[] {"Version", "StartDate", "RelDate", "Num 1 + 2 Orig During Next Release Cycle",
-         "Num Non-Support Released", "Ratio Orig 1 and 2 Bugs/Number Released"};
+   private static String[] HEADER_STRINGS = new String[] {
+      "Version",
+      "StartDate",
+      "RelDate",
+      "Num 1 + 2 Orig During Next Release Cycle",
+      "Num Non-Support Released",
+      "Ratio Orig 1 and 2 Bugs/Number Released"};
 
    /**
     * Ratio of # of priority 1 and 2 OSEE problem actions (non-cancelled) that were orginated between a release and the
     * next release / # of non-support actions released in that release
-    * 
-    * @return report
     */
    public static String getTeamWorkflowReport(String title, TeamDefinitionArtifact teamDef, IProgressMonitor monitor) throws OseeCoreException {
       StringBuilder sb = new StringBuilder();

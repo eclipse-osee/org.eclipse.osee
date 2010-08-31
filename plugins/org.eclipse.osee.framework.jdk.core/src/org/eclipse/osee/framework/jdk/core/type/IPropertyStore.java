@@ -159,7 +159,6 @@ public interface IPropertyStore {
     * Save a property store to an outputStream.
     * 
     * @param outputStream the outputStream to write to.
-    * @throws IOException
     */
    public void save(OutputStream outputStream) throws Exception;
 
@@ -167,7 +166,6 @@ public interface IPropertyStore {
     * Loads a property store from an inputStream.
     * 
     * @param inputStream to read property store values from.
-    * @throws IOException
     */
    public void load(InputStream inputStream) throws Exception;
 

@@ -157,9 +157,6 @@ public class ElementPath {
       return elementName != UNKNOWN;
    }
 
-   /**
-    * @return boolean
-    */
    public boolean isHeader() {
       return isHeader;
    }

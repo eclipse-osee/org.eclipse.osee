@@ -364,7 +364,6 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
     * getLeads(Collection<ActionableItemArtifact>) instead.
     * 
     * @return users configured as leads for this TeamDefinitionArtifact
-    * @throws OseeCoreException
     */
    public Collection<User> getLeads() throws OseeCoreException {
       return getRelatedArtifacts(AtsRelationTypes.TeamLead_Lead, User.class);

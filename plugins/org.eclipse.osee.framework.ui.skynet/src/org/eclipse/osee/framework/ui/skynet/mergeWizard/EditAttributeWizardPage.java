@@ -80,7 +80,6 @@ public class EditAttributeWizardPage extends WizardPage {
       }
    };
 
-
    public EditAttributeWizardPage(AttributeConflict conflict) {
       super(TITLE);
       try {

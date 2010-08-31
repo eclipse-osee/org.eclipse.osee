@@ -77,8 +77,6 @@ public final class ArtifactGuis {
 
    /**
     * Returns non-archived sibling branches that this artifact's attributes have been edited on
-    * 
-    * @throws OseeCoreException
     */
    private static boolean addBranchesWhereArtifactHasBeenModified(Artifact artifact, Set<String> otherBranches) throws OseeCoreException {
       boolean wasModified = false;

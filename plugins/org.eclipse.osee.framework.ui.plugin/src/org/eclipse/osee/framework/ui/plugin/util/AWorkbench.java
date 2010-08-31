@@ -29,8 +29,6 @@ public class AWorkbench {
 
    /**
     * Popup a workbench viewer eg: AWorkbench.popupView(IPageLayout.ID_PROBLEM_VIEW);
-    * 
-    * @return success
     */
    public static boolean popupView(String iPageLayoutView) {
       IViewPart p = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(iPageLayoutView);

@@ -26,7 +26,6 @@ public interface ITransactionDataAccessor {
     * 
     * @param cache to populate
     * @param transaction ids to load
-    * @throws OseeCoreException
     */
    public void loadTransactionRecord(TransactionCache cache, Collection<Integer> transactionIds) throws OseeCoreException;
 
@@ -35,7 +34,6 @@ public interface ITransactionDataAccessor {
     * 
     * @param cache to populate
     * @param branch to load
-    * @throws OseeCoreException
     */
    public void loadTransactionRecord(TransactionCache cache, Branch branch) throws OseeCoreException;
 
@@ -47,7 +45,6 @@ public interface ITransactionDataAccessor {
     * @param branch to load
     * @param transactionType transaction type to load, can be {@link TransactionVersion#HEAD} or
     * {@link TransactionVersion#BASE}
-    * @throws OseeCoreException
     */
    public TransactionRecord loadTransactionRecord(TransactionCache cache, Branch branch, TransactionVersion transactionType) throws OseeCoreException;
 

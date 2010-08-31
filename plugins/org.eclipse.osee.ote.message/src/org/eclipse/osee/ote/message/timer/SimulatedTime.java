@@ -62,7 +62,6 @@ public class SimulatedTime extends TimerControl {
 
    /**
     * @param scriptControl -
-    * @throws IOException
     */
    public SimulatedTime(IScriptControl scriptControl) throws IOException {
       super(3);

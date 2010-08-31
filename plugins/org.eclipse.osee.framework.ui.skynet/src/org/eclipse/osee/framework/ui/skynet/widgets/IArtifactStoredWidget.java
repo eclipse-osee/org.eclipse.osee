@@ -28,22 +28,16 @@ public interface IArtifactStoredWidget {
 
    /**
     * Save data changes to artifact
-    * 
-    * @throws Exception
     */
    public void saveToArtifact() throws OseeCoreException;
 
    /**
     * Revert changes to widget data back to what was in artifact
-    * 
-    * @throws Exception
     */
    public void revert() throws OseeCoreException;
 
    /**
     * Return true if storage data different than widget data
-    * 
-    * @throws Exception
     */
    public Result isDirty() throws OseeCoreException;
 

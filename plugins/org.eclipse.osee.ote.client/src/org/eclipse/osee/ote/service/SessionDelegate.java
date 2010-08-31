@@ -35,7 +35,6 @@ public interface SessionDelegate {
     * client.
     * 
     * @return an array bytes that represent the content of the requested file
-    * @throws Exception
     */
    byte[] getFile(String path) throws Exception;
 

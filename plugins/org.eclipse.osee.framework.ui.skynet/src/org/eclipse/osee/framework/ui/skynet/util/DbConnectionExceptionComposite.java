@@ -27,7 +27,6 @@ public class DbConnectionExceptionComposite extends ExceptionComposite {
    /**
     * Tests the DB Connection and returns true if ok. If exceptions and parent != null, the
     * DbConnectionExceptionComposite will be displayed in parent giving exception information.
-    * 
     */
    public static boolean dbConnectionIsOk(Composite parent) {
       //      try {

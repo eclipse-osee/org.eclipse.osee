@@ -257,7 +257,6 @@ public class AbstractRuntimeManager implements IRuntimeLibraryManager {
 
    /**
     * @return
-    * @throws IOException
     */
    private InputStream getBundleInputStream(BundleDescription bundleDescription) throws IOException {
       if (bundleDescription.isSystemLibrary()) {
@@ -269,7 +268,6 @@ public class AbstractRuntimeManager implements IRuntimeLibraryManager {
 
    /**
     * @return
-    * @throws IOException
     */
    private InputStream acquireUserLibraryStream(BundleDescription bundleDescription) throws IOException {
       return bundleDescription.getBundleData();
@@ -277,7 +275,6 @@ public class AbstractRuntimeManager implements IRuntimeLibraryManager {
 
    /**
     * @return
-    * @throws IOException
     */
    private InputStream acquireSystemLibraryStream(BundleDescription bundleDescription) throws IOException {
       try {
@@ -392,10 +389,6 @@ public class AbstractRuntimeManager implements IRuntimeLibraryManager {
       return jarCache;
    }
 
-   /**
-    * @throws BundleException
-    * @throws BundleResolveException
-    */
    private void transitionInstalledBundles() throws BundleException, BundleResolveException {
       Iterator<Bundle> iter = installedBundles.iterator();
 
@@ -429,10 +422,6 @@ public class AbstractRuntimeManager implements IRuntimeLibraryManager {
       }
    }
 
-   /**
-    * @throws BundleException
-    * @throws BundleResolveException
-    */
    private void resolveBundles() throws BundleResolveException {
       // Note: This is done one by one for simpler debugging when some
       //            bundles don't resolve

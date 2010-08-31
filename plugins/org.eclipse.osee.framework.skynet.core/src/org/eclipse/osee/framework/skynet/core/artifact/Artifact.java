@@ -508,8 +508,6 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, Co
 
    /**
     * The use of this method is discouraged since it directly returns Attributes.
-    * 
-    * @return attributes
     */
    public List<Attribute<?>> getAttributes() throws OseeCoreException {
       return getAttributes(false);
@@ -1058,7 +1056,6 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, Co
     * exist.
     * 
     * @return child at the leaf (bottom) of the specified hierarchy.
-    * @throws OseeCoreException
     */
    public Artifact getDescendant(String... names) throws OseeCoreException {
       if (names.length == 0) {

@@ -386,7 +386,6 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
 
    /**
     * Reveal an artifact in the viewer and select it.
-    * 
     */
    public static void exploreBranch(Branch branch) {
       if (branch != null) {
@@ -1448,7 +1447,6 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
 
    /**
     * Reveal an artifact in the viewer and select it.
-    * 
     */
    public static void revealArtifact(Artifact artifact) {
       final ArtifactData data = new ArtifactData(artifact);

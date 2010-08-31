@@ -21,13 +21,11 @@ public interface IAttributeTaggerProviderManager {
 
    /**
     * Add attribute tagger provider
-    * 
     */
    public void addAttributeTaggerProvider(IAttributeTaggerProvider attributeTaggerProvider);
 
    /**
     * Remove attribute tagger provider
-    * 
     */
    public void removeAttributeTaggerProvider(IAttributeTaggerProvider attributeTaggerProvider);
 
@@ -36,7 +34,6 @@ public interface IAttributeTaggerProviderManager {
     * 
     * @param attributeData attribute to content to tag
     * @param collector object collecting tags
-    * @throws Exception
     */
    public void tagIt(AttributeData attributeData, ITagCollector collector) throws Exception;
 

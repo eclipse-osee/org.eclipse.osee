@@ -55,7 +55,6 @@ public class TagEncoder {
     * for the first pass. The second pass will do a full text search to provide more exact matches. The tag will
     * represent up to 12 characters (all that can be stuffed into 64-bits). Longer search tags will be turned into
     * consecutive search tags
-    * 
     */
    public static void encode(String text, ITagCollector collector) {
       int tagBitsPos = 0;

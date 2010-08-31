@@ -19,13 +19,11 @@ public interface IDirectory extends Remote {
 
    /**
     * @return person object
-    * @throws RemoteException
     */
    public DirectoryPerson getPerson(int bemsid) throws RemoteException;
 
    /**
     * @return arraylist of people
-    * @throws RemoteException
     */
    public ArrayList<String> getGroup(String[] dept) throws RemoteException;
 

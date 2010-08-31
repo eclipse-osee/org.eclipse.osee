@@ -110,7 +110,6 @@ public abstract class AbstractOseeCache<T extends AbstractOseeType> implements I
     * the views because it is not a copy. This method exists to improve performance for subclasses
     * 
     * @return
-    * @throws OseeCoreException
     */
    protected synchronized Collection<T> getRawValues() throws OseeCoreException {
       ensurePopulated();

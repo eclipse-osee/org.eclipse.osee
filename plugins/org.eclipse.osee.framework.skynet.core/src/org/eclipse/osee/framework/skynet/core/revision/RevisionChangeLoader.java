@@ -45,7 +45,6 @@ public final class RevisionChangeLoader {
 
    /**
     * @return Returns artifact, relation and attribute changes from a specific artifact
-    * @throws OseeCoreException
     */
    public Collection<Change> getChangesPerArtifact(Artifact artifact, IProgressMonitor monitor) throws OseeCoreException {
       ArrayList<Change> changes = new ArrayList<Change>();
@@ -97,7 +96,6 @@ public final class RevisionChangeLoader {
     * creation.
     * 
     * @return
-    * @throws OseeCoreException
     */
    private Collection<Change> getChanges(Branch sourceBranch, TransactionRecord transactionId, IProgressMonitor monitor, Artifact specificArtifact) throws OseeCoreException {
       @SuppressWarnings("unused")

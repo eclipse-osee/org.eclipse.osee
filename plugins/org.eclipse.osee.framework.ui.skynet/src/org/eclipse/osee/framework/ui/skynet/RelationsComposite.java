@@ -562,7 +562,6 @@ public class RelationsComposite extends Composite implements IFrameworkTransacti
 
    /**
     * Performs the deletion functionality
-    * 
     */
    private void performDeleteArtifact(IStructuredSelection selection) {
       try {
@@ -589,8 +588,6 @@ public class RelationsComposite extends Composite implements IFrameworkTransacti
 
    /**
     * Performs the deletion functionality
-    * 
-    * @throws ArtifactDoesNotExist
     */
    private void performDeleteRelation(IStructuredSelection selection) {
       if (artifact.isReadOnly()) {

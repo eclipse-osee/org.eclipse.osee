@@ -90,8 +90,6 @@ public class OseeLeaseGrantor implements ILeaseGrantor {
     * Returns a new lease
     * 
     * @return Return lease reference.
-    * @throws LeaseDeniedException
-    * @throws ExportException
     */
    public OseeLease newLease(Object consumer, long duration) throws LeaseDeniedException, ExportException {
       // debug.report("New Lease:" + consumer + " @" + new Date());

@@ -35,7 +35,6 @@ public class LoadedArtifacts {
 
    /**
     * Called when network event passes artifactIds that may or may not be in current client's cache
-    * 
     */
    public LoadedArtifacts(int branchId, Collection<Integer> artifactIds, Collection<Integer> artifactTypeIds) {
       unloadedArtifacts = new ArrayList<UnloadedArtifact>();
@@ -49,7 +48,6 @@ public class LoadedArtifacts {
 
    /**
     * Called when local event is kicked. Since local, all artifacts are, by definition, cached
-    * 
     */
    public LoadedArtifacts(Collection<? extends Artifact> artifacts) {
       this.artifacts = new HashSet<Artifact>();
@@ -59,7 +57,6 @@ public class LoadedArtifacts {
 
    /**
     * Called when local event is kicked. Since local, all artifacts are, by definition, cached
-    * 
     */
    public LoadedArtifacts(Artifact artifact) {
       this.artifacts = new HashSet<Artifact>();

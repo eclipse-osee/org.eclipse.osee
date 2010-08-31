@@ -123,8 +123,6 @@ public class UdpFileTransferHandler {
 
    /**
     * @return true if successful or false if a lock on the file was not obtained
-    * @throws IOException
-    * @throws FileNotFoundException
     */
    public IFileTransferHandle registerTransfer(TransferConfig config) throws IOException, FileNotFoundException {
       synchronized (gate) {
@@ -264,8 +262,6 @@ public class UdpFileTransferHandler {
 
    /**
     * stops all currently running file transfers but does not shutdown the file transfer service
-    * 
-    * @throws IOException
     */
    public synchronized void stopAllTransfers() throws IOException {
       OseeLog.log(MessageSystemTestEnvironment.class, Level.FINE, "stopping all transfers");

@@ -58,7 +58,6 @@ public class RelationTypeManager {
 
    /**
     * @return all the relation types that are valid for the given branch
-    * @throws OseeCoreException
     */
    public static Collection<RelationType> getValidTypes(IOseeBranch branch) throws OseeCoreException {
       return getAllTypes();
@@ -66,7 +65,6 @@ public class RelationTypeManager {
 
    /**
     * @return all Relation types
-    * @throws OseeCoreException
     */
    public static Collection<RelationType> getAllTypes() throws OseeCoreException {
       return getCache().getAll();

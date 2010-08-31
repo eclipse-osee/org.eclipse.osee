@@ -23,8 +23,6 @@ public class StreamPumper {
 
    /**
     * Pumps all data from the InputStream to the OutputStream through an in place 2k buffer.
-    * 
-    * @throws IOException
     */
    public static void pumpData(InputStream in, OutputStream out) throws IOException {
       if (in == null) {

@@ -86,7 +86,6 @@ public enum ModificationType {
    /**
     * @param value The value of the ModificationType to get.
     * @return The ModificationType that has the value passed.
-    * @throws OseeArgumentException
     */
    public static ModificationType getMod(int value) throws OseeArgumentException {
       for (ModificationType modtype : values()) {

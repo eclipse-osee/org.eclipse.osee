@@ -26,7 +26,6 @@ public class NonMappingSignedInteger16Element extends IntegerElement {
 
    /**
     * Copy constructor.
-    * 
     */
    public NonMappingSignedInteger16Element(SignedInteger16Element element) {
       super(element.getMessage(), element.getElementName(), element.getMsgData(), element.getByteOffset(),
@@ -53,7 +52,6 @@ public class NonMappingSignedInteger16Element extends IntegerElement {
     * 
     * @param cause The originator of the signal
     * @param value The value sent by cause and being forwarded by this element
-    * @throws InterruptedException
     */
    @Override
    public void checkForwarding(ITestAccessor accessor, IntegerElement cause, int value) throws InterruptedException {
@@ -263,7 +261,6 @@ public class NonMappingSignedInteger16Element extends IntegerElement {
     * @param value Expected value.
     * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
     * @return If the check passed.
-    * @throws InterruptedException
     */
    public boolean check(ITestAccessor accessor, int value, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
@@ -282,7 +279,6 @@ public class NonMappingSignedInteger16Element extends IntegerElement {
     * @param value Expected value.
     * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
     * @return If the check passed.
-    * @throws InterruptedException
     */
    public boolean check(ITestAccessor accessor, CheckGroup checkGroup, int value, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
@@ -293,23 +289,16 @@ public class NonMappingSignedInteger16Element extends IntegerElement {
     * This function will verify that this signal is pulsed for 2 cycles.
     * 
     * @param value The value to be checked
-    * @throws InterruptedException
     */
    public void checkPulse(ITestAccessor accessor, int value) throws InterruptedException {
 
       throwNoMappingElementException();
    }
 
-   /**
-    * @throws InterruptedException
-    */
    public void checkPulse(ITestAccessor accessor, int pulsedValue, int nonPulsedValue) throws InterruptedException {
       throwNoMappingElementException();
    }
 
-   /**
-    * @throws InterruptedException
-    */
    public void checkPulse(ITestAccessor accessor, CheckGroup checkGroup, int pulsedValue, int nonPulsedValue) throws InterruptedException {
       throwNoMappingElementException();
    }
@@ -318,9 +307,6 @@ public class NonMappingSignedInteger16Element extends IntegerElement {
       throwNoMappingElementException();
    }
 
-   /**
-    * @throws InterruptedException
-    */
    public void checkPulse(ITestAccessor accessor, CheckGroup checkGroup, int pulsedValue, int nonPulsedValue, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
    }
@@ -333,7 +319,6 @@ public class NonMappingSignedInteger16Element extends IntegerElement {
     * @param maxValue The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait for the element to be within the range.
     * @return if the check passed
-    * @throws InterruptedException
     */
    public boolean checkRange(ITestAccessor accessor, int minValue, int maxValue, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
@@ -354,7 +339,6 @@ public class NonMappingSignedInteger16Element extends IntegerElement {
     * @param maxValue The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait for the element to be within the range.
     * @return if the check passed
-    * @throws InterruptedException
     */
    public boolean checkRange(ITestAccessor accessor, CheckGroup checkGroup, int minValue, int maxValue, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
@@ -371,7 +355,6 @@ public class NonMappingSignedInteger16Element extends IntegerElement {
     * @param maxInclusive If the maximum value of the range is inclusive.
     * @param milliseconds Number of milliseconds to wait for the element to be within the range.
     * @return if the check passed
-    * @throws InterruptedException
     */
    public boolean checkRange(ITestAccessor accessor, int minValue, boolean minInclusive, int maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
@@ -394,7 +377,6 @@ public class NonMappingSignedInteger16Element extends IntegerElement {
     * @param maxInclusive If the maximum value of the range is inclusive.
     * @param milliseconds Number of milliseconds to wait for the element to be within the range.
     * @return if the check passed
-    * @throws InterruptedException
     */
    public boolean checkRange(ITestAccessor accessor, CheckGroup checkGroup, int minValue, boolean minInclusive, int maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
@@ -408,7 +390,6 @@ public class NonMappingSignedInteger16Element extends IntegerElement {
     * @param value value to test against.
     * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
     * @return If the check passed.
-    * @throws InterruptedException
     */
    public boolean checkNot(ITestAccessor accessor, int value, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
@@ -428,7 +409,6 @@ public class NonMappingSignedInteger16Element extends IntegerElement {
     * @param value value to test against.
     * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
     * @return If the check passed.
-    * @throws InterruptedException
     */
    public boolean checkNot(ITestAccessor accessor, CheckGroup checkGroup, int value, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
@@ -443,7 +423,6 @@ public class NonMappingSignedInteger16Element extends IntegerElement {
     * @param maxValue The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait for the element to be outside the range.
     * @return if the check passed
-    * @throws InterruptedException
     */
    public boolean checkNotRange(ITestAccessor accessor, int minValue, int maxValue, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
@@ -464,7 +443,6 @@ public class NonMappingSignedInteger16Element extends IntegerElement {
     * @param maxValue The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait for the element to be outside the range.
     * @return if the check passed
-    * @throws InterruptedException
     */
    public boolean checkNotRange(ITestAccessor accessor, CheckGroup checkGroup, int minValue, int maxValue, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
@@ -483,7 +461,6 @@ public class NonMappingSignedInteger16Element extends IntegerElement {
     * to the range value.
     * @param milliseconds Number of milliseconds to wait for the element to be outside the range.
     * @return if the check passed
-    * @throws InterruptedException
     */
    public boolean checkNotRange(ITestAccessor accessor, int minValue, boolean minInclusive, int maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
@@ -508,7 +485,6 @@ public class NonMappingSignedInteger16Element extends IntegerElement {
     * to the range value.
     * @param milliseconds Number of milliseconds to wait for the element to be outside the range.
     * @return if the check passed
-    * @throws InterruptedException
     */
    public boolean checkNotRange(ITestAccessor accessor, CheckGroup checkGroup, int minValue, boolean minInclusive, int maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
@@ -520,7 +496,6 @@ public class NonMappingSignedInteger16Element extends IntegerElement {
     * value found that caused failure or last value observed if time expires.
     * 
     * @return last value observed. Either value expected or value found at timeout.
-    * @throws InterruptedException
     */
    public int checkMaintain(ITestAccessor accessor, int value, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
@@ -538,7 +513,6 @@ public class NonMappingSignedInteger16Element extends IntegerElement {
     * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
     * will log the test point.
     * @return last value observed. Either value expected or value found at timeout.
-    * @throws InterruptedException
     */
    public int checkMaintain(ITestAccessor accessor, CheckGroup checkGroup, int value, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
@@ -550,7 +524,6 @@ public class NonMappingSignedInteger16Element extends IntegerElement {
     * value found that caused failure or last value observed if time expires.
     * 
     * @return last value observed
-    * @throws InterruptedException
     */
    public int checkMaintainNot(ITestAccessor accessor, int value, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
@@ -568,7 +541,6 @@ public class NonMappingSignedInteger16Element extends IntegerElement {
     * If an outside method is not going to log the check then a <b>null </b> reference should be passed and this method
     * will log the test point.
     * @return last value observed
-    * @throws InterruptedException
     */
    public int checkMaintainNot(ITestAccessor accessor, CheckGroup checkGroup, int value, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
@@ -589,7 +561,6 @@ public class NonMappingSignedInteger16Element extends IntegerElement {
     * @param maxValue The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
-    * @throws InterruptedException
     */
    public int checkMaintainRange(ITestAccessor accessor, CheckGroup checkGroup, int minValue, int maxValue, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
@@ -611,7 +582,6 @@ public class NonMappingSignedInteger16Element extends IntegerElement {
     * @param maxInclusive If the maximum value of the range is inclusive.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
-    * @throws InterruptedException
     */
    public int checkMaintainRange(ITestAccessor accessor, CheckGroup checkGroup, int minValue, boolean minInclusive, int maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
@@ -626,7 +596,6 @@ public class NonMappingSignedInteger16Element extends IntegerElement {
     * @param maxValue The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
-    * @throws InterruptedException
     */
    public int checkMaintainRange(ITestAccessor accessor, int minValue, int maxValue, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
@@ -642,7 +611,6 @@ public class NonMappingSignedInteger16Element extends IntegerElement {
     * @param maxInclusive If the maximum value of the range is inclusive.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
-    * @throws InterruptedException
     */
    public int checkMaintainRange(ITestAccessor accessor, int minValue, boolean minInclusive, int maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
@@ -657,8 +625,7 @@ public class NonMappingSignedInteger16Element extends IntegerElement {
    // * @param maxValue The maximum value of the range.
    // * @param milliseconds Number of milliseconds to wait before failing.
    // * @return last value observed
-   // * @throws InterruptedException
-   // */
+   //   // */
    // public int checkMaintainRange(ITestAccessor accessor, int minValue, int maxValue, int
    // milliseconds) throws InterruptedException {
    // return checkMaintainRange(accessor, (CheckGroup)null, minValue, true, maxValue, true,
@@ -674,8 +641,7 @@ public class NonMappingSignedInteger16Element extends IntegerElement {
    // * @param maxInclusive If the maximum value of the range is inclusive.
    // * @param milliseconds Number of milliseconds to wait before failing.
    // * @return last value observed
-   // * @throws InterruptedException
-   // */
+   //   // */
    // public int checkMaintainRange(ITestAccessor accessor, int minValue, boolean minInclusive, int
    // maxValue, boolean maxInclusive,
    // int milliseconds) throws InterruptedException {
@@ -697,7 +663,6 @@ public class NonMappingSignedInteger16Element extends IntegerElement {
     * @param maxValue The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
-    * @throws InterruptedException
     */
    public int checkMaintainNotRange(ITestAccessor accessor, CheckGroup checkGroup, int minValue, int maxValue, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
@@ -721,7 +686,6 @@ public class NonMappingSignedInteger16Element extends IntegerElement {
     * to the range value.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
-    * @throws InterruptedException
     */
    public int checkMaintainNotRange(ITestAccessor accessor, CheckGroup checkGroup, int minValue, boolean minInclusive, int maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
@@ -768,7 +732,6 @@ public class NonMappingSignedInteger16Element extends IntegerElement {
     * @param value The expected value to wait for.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value found. Either value expected or value found at timeout.
-    * @throws InterruptedException
     */
    public int waitForValue(ITestEnvironmentAccessor accessor, int value, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
@@ -781,7 +744,6 @@ public class NonMappingSignedInteger16Element extends IntegerElement {
     * @param value The expected value to wait for.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
-    * @throws InterruptedException
     */
    public int waitForNotValue(ITestEnvironmentAccessor accessor, int value, int milliseconds) throws InterruptedException {
       throwNoMappingElementException();
@@ -795,7 +757,6 @@ public class NonMappingSignedInteger16Element extends IntegerElement {
     * @param maxValue The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
-    * @throws InterruptedException
     */
    @Override
    public int waitForRange(ITestEnvironmentAccessor accessor, int minValue, int maxValue, int milliseconds) throws InterruptedException {
@@ -814,7 +775,6 @@ public class NonMappingSignedInteger16Element extends IntegerElement {
     * to the range value.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
-    * @throws InterruptedException
     */
    @Override
    public int waitForRange(ITestEnvironmentAccessor accessor, int minValue, boolean minInclusive, int maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {
@@ -829,7 +789,6 @@ public class NonMappingSignedInteger16Element extends IntegerElement {
     * @param maxValue The maximum value of the range.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
-    * @throws InterruptedException
     */
    @Override
    public int waitForNotRange(ITestEnvironmentAccessor accessor, int minValue, int maxValue, int milliseconds) throws InterruptedException {
@@ -848,7 +807,6 @@ public class NonMappingSignedInteger16Element extends IntegerElement {
     * to the range value.
     * @param milliseconds Number of milliseconds to wait before failing.
     * @return last value observed
-    * @throws InterruptedException
     */
    @Override
    public int waitForNotRange(ITestEnvironmentAccessor accessor, int minValue, boolean minInclusive, int maxValue, boolean maxInclusive, int milliseconds) throws InterruptedException {

@@ -88,7 +88,6 @@ public class TreeNode implements ITreeNode, Serializable {
    /**
     * Recursively fill a node from a content provider runnable. If an exception is thrown from the provider then it will
     * be set as the child of the node.
-    * 
     */
    public static void fillNode(ITreeNode node, IContentProviderRunnable provider) {
       try {

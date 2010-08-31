@@ -264,8 +264,6 @@ public class WordMLProducer extends Producer {
 
    /**
     * This method will escape the provided text.
-    * 
-    * @throws OseeWrappedException
     */
    public void addTextInsideParagraph(CharSequence text) throws OseeCoreException {
       append("<w:r><w:t>");
@@ -329,8 +327,6 @@ public class WordMLProducer extends Producer {
     * Sets the page layout to either portrait/landscape depending on the artifacts pageType attribute value. Note: This
     * call should be done after processing each artifact so if a previous artifact was landscaped the following artifact
     * would be set back to portrait.
-    * 
-    * @throws OseeCoreException
     */
    public void setPageLayout(Artifact artifact) throws OseeCoreException {
       String pageTypeValue = null;

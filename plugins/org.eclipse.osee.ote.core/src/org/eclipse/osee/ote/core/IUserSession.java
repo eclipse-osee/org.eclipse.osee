@@ -25,7 +25,6 @@ public interface IUserSession {
     * returns the contents of the requested file on the client session
     * 
     * @return the byte contents of the requested file or null if it does not exist
-    * @throws Exception
     */
    public byte[] getFile(String workspacePath) throws Exception;
 

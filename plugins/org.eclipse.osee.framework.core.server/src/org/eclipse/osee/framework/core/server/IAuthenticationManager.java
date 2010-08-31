@@ -35,7 +35,6 @@ public interface IAuthenticationManager {
 
    /**
     * @return <b>true</b> if authentication success
-    * @throws OseeAuthenticationException
     */
    public boolean authenticate(OseeCredential credential) throws OseeAuthenticationException;
 
@@ -43,7 +42,6 @@ public interface IAuthenticationManager {
     * Resolves user credentials into an OSEE User Info
     * 
     * @return OSEE user info
-    * @throws OseeAuthenticationException
     */
    public IOseeUserInfo asOseeUser(OseeCredential credential) throws OseeAuthenticationException;
 

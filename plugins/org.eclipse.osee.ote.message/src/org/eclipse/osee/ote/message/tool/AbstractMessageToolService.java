@@ -138,7 +138,6 @@ public class AbstractMessageToolService implements IRemoteMessageService {
 
       /**
        * Creates a new listener. A listener is a one to one mapping of a message to a list of client addresses
-       * 
        */
       SubscriptionRecord(final Message<?, ?, ?> msg, final DataType type, final MessageMode mode, final ClientInfo... clients) {
          this.msg = msg;
@@ -209,7 +208,6 @@ public class AbstractMessageToolService implements IRemoteMessageService {
 
       /**
        * Adds a new client who will be notified when new updates occur
-       * 
        */
       public synchronized void addClient(final ClientInfo client) {
          clients.add(client);
@@ -343,8 +341,6 @@ public class AbstractMessageToolService implements IRemoteMessageService {
 
    /**
     * Constructs a new message manager service
-    * 
-    * @throws IOException
     */
    public AbstractMessageToolService(IMessageManager messageManager) throws IOException {
 
@@ -841,7 +837,6 @@ public class AbstractMessageToolService implements IRemoteMessageService {
 
    /**
     * sends the message update buffer to all of the specified addresses data
-    * 
     */
    private void xmitMsg(final Collection<ClientInfo> sendToList, final String msgName, final ByteBuffer buffer) throws IOException {
       assert buffer.position() == 0;

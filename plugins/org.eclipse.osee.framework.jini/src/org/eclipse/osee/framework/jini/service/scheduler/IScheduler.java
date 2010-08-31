@@ -17,8 +17,6 @@ public interface IScheduler extends Remote {
 
    /**
     * method is called by the scheduler
-    * 
-    * @throws RemoteException
     */
    public void run() throws RemoteException;
 

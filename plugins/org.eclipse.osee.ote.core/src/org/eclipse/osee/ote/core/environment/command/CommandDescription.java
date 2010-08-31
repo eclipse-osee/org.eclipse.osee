@@ -23,7 +23,6 @@ public class CommandDescription implements Serializable {
 
    /**
     * CommandDescription Constructor. Sets the command's description.
-    * 
     */
    public CommandDescription(String description) {
       super();

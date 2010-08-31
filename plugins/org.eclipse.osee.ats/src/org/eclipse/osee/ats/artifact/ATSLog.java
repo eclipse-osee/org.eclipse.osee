@@ -291,8 +291,6 @@ public class ATSLog {
 
    /**
     * @param state name of state or null
-    * @throws OseeArgumentException
-    * @throws MultipleAttributesExist
     */
    public void addLog(LogType type, String state, String msg) throws OseeCoreException {
       addLog(type, state, msg, new Date(), UserManager.getUser());
@@ -300,7 +298,6 @@ public class ATSLog {
 
    /**
     * @param state name of state or null
-    * @throws MultipleAttributesExist
     */
    public void addLog(LogType type, String state, String msg, User user) throws OseeCoreException {
       addLog(type, state, msg, new Date(), user);
@@ -312,7 +309,6 @@ public class ATSLog {
 
    /**
     * @param state name of state or null
-    * @throws MultipleAttributesExist
     */
    public void addLog(LogType type, String state, String msg, Date date, User user) throws OseeCoreException {
       if (!enabled) {

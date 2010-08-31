@@ -27,16 +27,12 @@ public class BlockingMessagePrompt extends AbstractRemotePrompt implements IResu
    private final Condition responseAvailable = lock.newCondition();
    private boolean responded;
 
-   /**
-    * @throws UnknownHostException
-    */
    public BlockingMessagePrompt(IServiceConnector connector, String id, String message) throws UnknownHostException {
       super(connector, id, message);
    }
 
    /**
     * @return true if the user did not respond within the time specified and false if the user responded in time
-    * @throws Exception
     */
    public boolean open(IUserSession session, int timeout) throws Exception {
       lock.lock();

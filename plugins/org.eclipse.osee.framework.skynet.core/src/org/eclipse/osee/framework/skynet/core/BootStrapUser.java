@@ -21,16 +21,12 @@ public class BootStrapUser extends User {
 
    public static BootStrapUser instance;
 
-   /**
-    * @throws OseeDataStoreException
-    */
    private BootStrapUser() throws OseeDataStoreException {
       super(null, null, null, null, null);
    }
 
    /**
     * @return the instance
-    * @throws OseeDataStoreException
     */
    public static BootStrapUser getInstance() throws OseeDataStoreException {
       if (instance == null) {

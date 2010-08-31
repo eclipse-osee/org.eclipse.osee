@@ -73,7 +73,6 @@ public class LongIntegerElement extends NumericElement<Long> {
     * 
     * @param cause The originator of the signal
     * @param value The value sent by cause and being forwarded by this element
-    * @throws InterruptedException
     */
    public void checkForwarding(ITestAccessor accessor, LongIntegerElement cause, long value) throws InterruptedException {
       value = removeSign(value);
@@ -106,7 +105,6 @@ public class LongIntegerElement extends NumericElement<Long> {
     * @param value Expected value.
     * @param milliseconds Number of milliseconds to wait for the element to equal the "value".
     * @return If the check passed.
-    * @throws InterruptedException
     */
    public boolean check(ITestAccessor accessor, long value, int milliseconds) throws InterruptedException {
       return super.check(accessor, (CheckGroup) null, removeSign(value), milliseconds);
@@ -116,7 +114,6 @@ public class LongIntegerElement extends NumericElement<Long> {
     * This function will verify that this signal is pulsed for 2 cycles.
     * 
     * @param value The value to be checked
-    * @throws InterruptedException
     */
    public void checkPulse(ITestAccessor accessor, long value) throws InterruptedException {
       long nonPulsedValue = 0;

@@ -23,13 +23,11 @@ public interface IResourceManager {
 
    /**
     * Add listener to list
-    * 
     */
    public boolean addResourceListener(IResourceListener listener);
 
    /**
     * Remove listener from list
-    * 
     */
    public boolean removeResourceListener(IResourceListener listener);
 
@@ -69,7 +67,6 @@ public interface IResourceManager {
     * @param locator location where to store the data
     * @param resource to store
     * @param options operation options
-    * @return status
     */
    public IResourceLocator save(final IResourceLocator locatorHint, final IResource resource, final Options options) throws OseeCoreException;
 
@@ -77,7 +74,6 @@ public interface IResourceManager {
     * Delete resource specified by resource locator
     * 
     * @param locator location of the resource to delete
-    * @return status
     */
    public int delete(IResourceLocator locator) throws OseeCoreException;
 }

@@ -46,7 +46,6 @@ public class FileWatcher extends TimerTask {
    /**
     * adds a {@link File} to the files to be monitored. This method can be called before or after the {@link #start()}
     * method is called.
-    * 
     */
    public synchronized void addFile(File file) {
       filesToWatch.put(file, file.lastModified());
@@ -66,7 +65,6 @@ public class FileWatcher extends TimerTask {
    /**
     * registers a listener who will be notified of file change events. This method can be called before or after the
     * {@link #start()} method is called.
-    * 
     */
    public synchronized void addListener(IFileWatcherListener listener) {
       listeners.add(listener);
@@ -75,7 +73,6 @@ public class FileWatcher extends TimerTask {
    /**
     * unregisters a listener from receiving file change events. This method can be called before or after the
     * {@link #start()} method is called.
-    * 
     */
    public synchronized void removeListener(IFileWatcherListener listener) {
       listeners.remove(listener);

@@ -32,9 +32,6 @@ public class OseeEmailTest {
    private static String infoStr =
       "\n\nOseeEmailTest: This test will send 3 emails. If you do not receive 3, the test failed.";
 
-   /**
-    * @throws java.lang.Exception
-    */
    @Before
    public void setUp() throws Exception {
       if (emailAddress == null) {
@@ -86,8 +83,6 @@ public class OseeEmailTest {
 
    /**
     * This test only exists to report the results of the email tests above
-    * 
-    * @throws Exception
     */
    @org.junit.Test
    public void testReportResults() throws Exception {

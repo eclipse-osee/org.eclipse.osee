@@ -112,8 +112,6 @@ public class JavaFileBuilder {
    /**
     * Write the file out to disk. The file will be written to the specified directory. By virtue of Java, the filename
     * will be the name of the class with .java as the extension.
-    * 
-    * @throws FileNotFoundException
     */
    public void write(File directory) throws FileNotFoundException {
       if (!directory.isDirectory()) {

@@ -81,8 +81,6 @@ public abstract class ImageManagerTest {
 
    /**
     * Test that image that is not found, returns MISSING image
-    * 
-    * @throws Exception
     */
    @org.junit.Test
    public void testFrameworkImageMissing() throws Exception {
@@ -92,8 +90,6 @@ public abstract class ImageManagerTest {
 
    /**
     * Test that all image enums have associated image files. (Non return missing image)
-    * 
-    * @throws Exception
     */
    @org.junit.Test
    public void testFrameworkImageEnums() throws Exception {

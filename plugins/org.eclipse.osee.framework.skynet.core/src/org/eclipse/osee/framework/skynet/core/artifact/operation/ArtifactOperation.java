@@ -35,8 +35,6 @@ public abstract class ArtifactOperation extends Artifact implements WorkflowStep
     * 
     * @param monitor progress monitor for upating the GUI
     * @return may return null because the engine will use an empty list in this case
-    * @throws IllegalArgumentException
-    * @throws Exception
     */
    public abstract List<Artifact> applyToArtifacts(List<Artifact> artifacts, IProgressMonitor monitor) throws IllegalArgumentException, Exception;
 

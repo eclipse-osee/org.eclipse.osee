@@ -37,7 +37,6 @@ public class BaseExchangeData implements Serializable {
     * Set data from XML input stream
     * 
     * @param xml inputStream
-    * @throws OseeWrappedException
     */
    protected void loadfromXml(InputStream inputStream) throws OseeCoreException {
       try {
@@ -50,8 +49,6 @@ public class BaseExchangeData implements Serializable {
 
    /**
     * Write to output stream
-    * 
-    * @throws OseeWrappedException
     */
    public void write(OutputStream outputStream) throws OseeCoreException {
       try {

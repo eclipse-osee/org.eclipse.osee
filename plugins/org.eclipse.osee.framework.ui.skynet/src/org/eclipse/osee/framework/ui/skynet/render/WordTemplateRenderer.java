@@ -101,7 +101,6 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
    /**
     * Displays a list of artifacts in the Artifact Explorer that could not be multi edited because they contained
     * artifacts that had an OLEData attribute.
-    * 
     */
    private void displayNotMultiEditArtifacts(final Collection<Artifact> artifacts, final String warningString) {
       if (!artifacts.isEmpty()) {

@@ -55,9 +55,6 @@ public class ArtifactPurgeTest {
       monitorLog = TestUtil.severeLoggingStart();
    }
 
-   /**
-    * @throws java.lang.Exception
-    */
    @Before
    public void setUp() throws Exception {
       // This test should only be run on test db
@@ -67,9 +64,6 @@ public class ArtifactPurgeTest {
       postPurgeCount = new HashMap<String, Integer>();
    }
 
-   /**
-    * @throws java.lang.Exception
-    */
    @After
    public void tearDown() throws Exception {
       if (preCreateArtifactsCount != null) {

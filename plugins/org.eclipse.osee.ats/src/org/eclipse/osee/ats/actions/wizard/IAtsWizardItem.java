@@ -27,14 +27,11 @@ public interface IAtsWizardItem {
     * Add the desired XWidget declarations to the stringbuffer. Selected AIAs are provided so validation can be done to
     * determine what (if any) widgets should be added. eg. <XWidget displayName=\"Description\" height=\"80\"
     * required=\"true\" xwidgetType=\"XText\" fill=\"Vertically\" \"/>");
-    * 
-    * @throws Exception
     */
    public void getWizardXWidgetExtensions(Collection<ActionableItemArtifact> aias, StringBuffer sb) throws Exception;
 
    /**
     * @return true if widgets will be added based on selected aias
-    * @throws Exception
     */
    public boolean hasWizardXWidgetExtensions(Collection<ActionableItemArtifact> aias) throws Exception;
 
@@ -50,8 +47,6 @@ public interface IAtsWizardItem {
    /**
     * Callback with created action upon completion and creation of the action and it's workflows.
     * hasWizardXWidgetExtenstions will be called to determine if this method should be called.
-    * 
-    * @throws Exception
     */
    public void wizardCompleted(ActionArtifact actionArt, NewActionWizard wizard, SkynetTransaction transaction) throws Exception;
 

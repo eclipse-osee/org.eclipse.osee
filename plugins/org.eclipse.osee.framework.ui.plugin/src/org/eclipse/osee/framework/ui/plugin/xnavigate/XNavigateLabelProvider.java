@@ -20,7 +20,6 @@ public class XNavigateLabelProvider implements ILabelProvider {
     * ListViewers don't support images
     * 
     * @param arg0 the element
-    * @return Image
     */
    @Override
    public Image getImage(Object arg0) {
@@ -31,7 +30,6 @@ public class XNavigateLabelProvider implements ILabelProvider {
     * Gets the text for an element
     * 
     * @param arg0 the element
-    * @return String
     */
    @Override
    public String getText(Object arg0) {
@@ -64,7 +62,6 @@ public class XNavigateLabelProvider implements ILabelProvider {
     * 
     * @param arg0 the element
     * @param arg1 the property
-    * @return boolean
     */
    @Override
    public boolean isLabelProperty(Object arg0, String arg1) {
