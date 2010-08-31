@@ -21,3 +21,5 @@ plugin@org.aopalliance,1.0.0=GET,http://download.eclipse.org/tools/orbit/downloa
 plugin@javax.servlet,2.5.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/javax.servlet_2.5.0.v200910301333.jar
 plugin@org.mortbay.jetty.server,6.1.23=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.mortbay.jetty.server_6.1.23.v201004211559.jar
 plugin@org.mortbay.jetty.util,6.1.23=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.mortbay.jetty.util_6.1.23.v201004211559.jar
+
+plugin@com.jcraft.jsch,0.1.41=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/com.jcraft.jsch_0.1.41.v200903070017.jar
