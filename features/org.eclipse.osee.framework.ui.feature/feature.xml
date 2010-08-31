@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.osee.framework.ui.feature"
       label="%featureName"
-      version="0.9.5.qualifier"
+      version="0.9.6.qualifier"
       provider-name="%providerName"
       plugin="org.eclipse.osee.framework.ui.product">
 
@@ -66,9 +66,9 @@
       <import plugin="org.antlr.runtime"/>
       <import plugin="org.eclipse.osee.ote.define"/>
       <import plugin="org.eclipse.osee.framework.svn"/>
-      <import feature="org.eclipse.osee.core.runtime.feature" version="0.9.5.qualifier" match="greaterOrEqual"/>
-      <import feature="org.eclipse.osee.core.ui.feature" version="0.9.5.qualifier" match="greaterOrEqual"/>
-      <import feature="org.eclipse.osee.core.feature" version="0.9.5.qualifier" match="greaterOrEqual"/>
+      <import feature="org.eclipse.osee.core.runtime.feature" version="0.9.6.qualifier" match="greaterOrEqual"/>
+      <import feature="org.eclipse.osee.core.ui.feature" version="0.9.6.qualifier" match="greaterOrEqual"/>
+      <import feature="org.eclipse.osee.core.feature" version="0.9.6.qualifier" match="greaterOrEqual"/>
       <import plugin="org.eclipse.osee.framework.skynet.core" version="0.9.5" match="greaterOrEqual"/>
       <import plugin="org.apache.ant" version="1.7.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.xtend" version="1.0.0" match="greaterOrEqual"/>
