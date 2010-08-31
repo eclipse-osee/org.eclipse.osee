@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactChange;
+import org.eclipse.osee.framework.skynet.core.change.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.change.RelationChange;
 
@@ -84,7 +85,11 @@ public class ChangeData {
                Artifact artifact = change.getChangeArtifact();
 
                ModificationType modType = change.getModificationType();
-               if ((kindType == KindType.Artifact || kindType == KindType.ArtifactOrRelation) && change instanceof ArtifactChange) {
+               if ((kindType == KindType.Artifact || kindType == KindType.ArtifactOrRelation) && change instanceof AttributeChange) {
+                  if (modTypes.contains(modType)) {
+                     artifacts.add(artifact);
+                  }
+               } else if ((kindType == KindType.Artifact || kindType == KindType.ArtifactOrRelation) && change instanceof ArtifactChange) {
                   if (modTypes.contains(modType)) {
                      artifacts.add(artifact);
                   }
