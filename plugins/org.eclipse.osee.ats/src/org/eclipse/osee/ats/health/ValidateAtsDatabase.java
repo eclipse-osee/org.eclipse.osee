@@ -50,10 +50,12 @@ import org.eclipse.osee.ats.util.widgets.SMAState;
 import org.eclipse.osee.ats.util.widgets.XCurrentStateDam;
 import org.eclipse.osee.ats.util.widgets.XStateDam;
 import org.eclipse.osee.ats.world.WorldXNavigateItemAction;
+import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -65,7 +67,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
-import org.eclipse.osee.framework.skynet.core.OseeGroup;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -199,25 +200,25 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             artifacts.addAll(artifactsTemp);
          }
          count += artifacts.size();
-         testArtifactIds(artifacts);
-         testAtsAttributeValues(artifacts);
-         testAtsActionsHaveTeamWorkflow(artifacts);
-         testAtsWorkflowsHaveAction(artifacts);
-         testAtsWorkflowsHaveZeroOrOneVersion(artifacts);
-         testTasksHaveParentWorkflow(artifacts);
-         testReviewsHaveParentWorkflowOrActionableItems(artifacts);
-         testReviewsHaveValidDefectAndRoleXml(artifacts);
-         testTeamWorkflows(artifacts);
-         testAtsBranchManager(artifacts);
-         testTeamDefinitions(artifacts);
-         testVersionArtifacts(artifacts);
-         testStateMachineAssignees(artifacts);
-         testAtsLogs(artifacts);
-         testActionableItemToTeamDefinition(artifacts);
-         testTeamDefinitionHasWorkflow(artifacts);
-         for (IAtsHealthCheck atsHealthCheck : AtsHealthCheck.getAtsHealthCheckItems()) {
-            atsHealthCheck.validateAtsDatabase(artifacts, testNameToResultsMap);
-         }
+         //         testArtifactIds(artifacts);
+         //         testAtsAttributeValues(artifacts);
+         //         testAtsActionsHaveTeamWorkflow(artifacts);
+         //         testAtsWorkflowsHaveAction(artifacts);
+         //         testAtsWorkflowsHaveZeroOrOneVersion(artifacts);
+         //         testTasksHaveParentWorkflow(artifacts);
+         //         testReviewsHaveParentWorkflowOrActionableItems(artifacts);
+         //         testReviewsHaveValidDefectAndRoleXml(artifacts);
+         //         testTeamWorkflows(artifacts);
+         //         testAtsBranchManager(artifacts);
+         //         testTeamDefinitions(artifacts);
+         //         testVersionArtifacts(artifacts);
+         //         testStateMachineAssignees(artifacts);
+         //         testAtsLogs(artifacts);
+         //         testActionableItemToTeamDefinition(artifacts);
+         //         testTeamDefinitionHasWorkflow(artifacts);
+         //         for (IAtsHealthCheck atsHealthCheck : AtsHealthCheck.getAtsHealthCheckItems()) {
+         //            atsHealthCheck.validateAtsDatabase(artifacts, testNameToResultsMap);
+         //         }
          if (monitor != null) {
             monitor.worked(1);
          }
@@ -241,17 +242,18 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    private void removeRelatedAssignees(XResultData rd) {
       try {
          SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "remove related assignees");
-         OseeGroup atsAdminGroup = AtsUtil.getAtsAdminGroup();
-         rd.log("Only removing assignee relations for ATS Admin first...switch to all after a few days 8/31");
          for (User user : UserManager.getUsers()) {
-            if (!atsAdminGroup.isMember(user)) {
-               continue;
-            }
             Set<Artifact> smasToRemove = new HashSet<Artifact>();
             for (Artifact art : user.getRelatedArtifacts(CoreRelationTypes.Users_Artifact)) {
                if (art instanceof StateMachineArtifact) {
-                  user.deleteRelation(CoreRelationTypes.Users_Artifact, art);
-                  smasToRemove.add(art);
+                  if (!AccessControlManager.hasPermission(art, PermissionEnum.FULLACCESS)) {
+                     String errStr = String.format("No permission to remove relations for [%s]", art);
+                     System.err.println(errStr);
+                     rd.logError(errStr);
+                  } else {
+                     user.deleteRelation(CoreRelationTypes.Users_Artifact, art);
+                     smasToRemove.add(art);
+                  }
                }
             }
             if (smasToRemove.size() > 0) {
