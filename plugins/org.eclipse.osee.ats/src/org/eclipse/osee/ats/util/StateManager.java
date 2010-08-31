@@ -25,7 +25,6 @@ import org.eclipse.osee.ats.util.widgets.SMAState;
 import org.eclipse.osee.ats.util.widgets.XCurrentStateDam;
 import org.eclipse.osee.ats.util.widgets.XStateDam;
 import org.eclipse.osee.framework.core.data.SystemUser;
-import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -74,20 +73,6 @@ public class StateManager {
       }
       SMAState smaState = getSMAState(name, true);
       putState(smaState);
-   }
-
-   /**
-    * This method will create an assignee relation for each current assignee. Assignees are related to user artifacts to
-    * speed up ATS searching. This does not persist the artifact.<br>
-    * <br>
-    * The "UnAssigned" user is no longer related due to the performance and event service issues with having a single
-    * user related to > 5000 items. Since these relations are only used for searching, no need to have them for
-    * "UnAssigned".
-    */
-   public static void updateAssigneeRelations(StateMachineArtifact sma) throws OseeCoreException {
-      Collection<User> assignees = sma.getStateMgr().getAssignees();
-      assignees.remove(UserManager.getUser(SystemUser.UnAssigned));
-      sma.setRelations(CoreRelationTypes.Users_User, assignees);
    }
 
    /**
