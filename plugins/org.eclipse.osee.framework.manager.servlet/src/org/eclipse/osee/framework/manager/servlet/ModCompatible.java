@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 public final class ModCompatible {
 
    private ModCompatible() {
-
+      // Utility Class
    }
 
    public static boolean is_0_9_2_Compatible(String clientVersion) {
