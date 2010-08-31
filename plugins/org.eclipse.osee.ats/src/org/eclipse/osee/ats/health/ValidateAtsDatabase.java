@@ -199,25 +199,25 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             artifacts.addAll(artifactsTemp);
          }
          count += artifacts.size();
-         //         testArtifactIds(artifacts);
-         //         testAtsAttributeValues(artifacts);
-         //         testAtsActionsHaveTeamWorkflow(artifacts);
-         //         testAtsWorkflowsHaveAction(artifacts);
-         //         testAtsWorkflowsHaveZeroOrOneVersion(artifacts);
-         //         testTasksHaveParentWorkflow(artifacts);
-         //         testReviewsHaveParentWorkflowOrActionableItems(artifacts);
-         //         testReviewsHaveValidDefectAndRoleXml(artifacts);
-         //         testTeamWorkflows(artifacts);
-         //         testAtsBranchManager(artifacts);
-         //         testTeamDefinitions(artifacts);
-         //         testVersionArtifacts(artifacts);
-         //         testStateMachineAssignees(artifacts);
-         //         testAtsLogs(artifacts);
-         //         testActionableItemToTeamDefinition(artifacts);
-         //         testTeamDefinitionHasWorkflow(artifacts);
-         //         for (IAtsHealthCheck atsHealthCheck : AtsHealthCheck.getAtsHealthCheckItems()) {
-         //            atsHealthCheck.validateAtsDatabase(artifacts, testNameToResultsMap);
-         //         }
+         testArtifactIds(artifacts);
+         testAtsAttributeValues(artifacts);
+         testAtsActionsHaveTeamWorkflow(artifacts);
+         testAtsWorkflowsHaveAction(artifacts);
+         testAtsWorkflowsHaveZeroOrOneVersion(artifacts);
+         testTasksHaveParentWorkflow(artifacts);
+         testReviewsHaveParentWorkflowOrActionableItems(artifacts);
+         testReviewsHaveValidDefectAndRoleXml(artifacts);
+         testTeamWorkflows(artifacts);
+         testAtsBranchManager(artifacts);
+         testTeamDefinitions(artifacts);
+         testVersionArtifacts(artifacts);
+         testStateMachineAssignees(artifacts);
+         testAtsLogs(artifacts);
+         testActionableItemToTeamDefinition(artifacts);
+         testTeamDefinitionHasWorkflow(artifacts);
+         for (IAtsHealthCheck atsHealthCheck : AtsHealthCheck.getAtsHealthCheckItems()) {
+            atsHealthCheck.validateAtsDatabase(artifacts, testNameToResultsMap);
+         }
          if (monitor != null) {
             monitor.worked(1);
          }
