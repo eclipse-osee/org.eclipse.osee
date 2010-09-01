@@ -177,7 +177,7 @@
 		<pathconvert property="oseeClientUnitTestsZip" setonempty="false">
 			<path>
 				<fileset dir="${tempTestSnapFolder}/testing">
-					<include name="osee_client-junit-tests-*.zip" />
+					<include name="*-junit-tests-*.zip" />
 				</fileset>
 			</path>
 		</pathconvert>

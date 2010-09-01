@@ -105,7 +105,7 @@
 		<antcall target="setHttpProxy" />
 		<ant antfile="${relengCommonBuilderDir}/buildAll.xml" target="runEclipse" dir="${relengCommonBuilderDir}" inheritrefs="true" inheritall="true" />
 	</target>
-	
+
 	<target name="setHttpProxy" if="http.proxyHost">
 		<echo message="proxy: - ${http.proxyHost}:${http.proxyPort}" />
 		<setproxy proxyhost="${http.proxyHost}" proxyport="${http.proxyPort}" />
@@ -144,10 +144,12 @@
 		<copy flatten="true" toDir="${snapshotFolder}" failonerror="true" includeemptydirs="false">
 			<fileset dir="${buildFolder}" includes="athena/*-Update-*.zip" />
 			<fileset dir="${buildFolder}" includes="athena/*-osgi-runtime-*.zip" />
+			<fileset dir="${buildFolder}" includes="athena/*-Automated-Tests-*.zip" />
 		</copy>
 
 		<available file="${snapshotFolder}" property="containsFile" />
 		<antcall target="doMoveZip" inheritall="true" />
+		<antcall target="createUnitTestSnapshot" inheritall="true" />
 	</target>
 
 	<target name="doMoveZip" if="containsFile">
@@ -158,5 +160,33 @@
 		<move includeemptydirs="false" tofile="${snapshotFolder}/${zipPrefix}${incubation}-osgi-runtime-${BUILDTYPE}-Snapshot.zip" filtering="true">
 			<fileset dir="${snapshotFolder}" includes="*-osgi-runtime-*.zip" />
 		</move>
+	</target>
+
+	<target name="createUnitTestSnapshot">
+		<property name="snapshotTestZipArchive" value="${zipPrefix}-update-tests${incubation}-${BUILDTYPE}-Snapshot.zip" />
+
+		<property name="fullTestSuite" value="${snapshotFolder}/full_test_suite-Snapshot.zip" />
+		<property name="tempTestSnapFolder" value="${snapshotFolder}/test_snap_tmp" />
+
+		<move includeemptydirs="false" tofile="${fullTestSuite}" filtering="true">
+			<fileset dir="${snapshotFolder}">
+				<filename name="*-Automated-Tests-*.zip" />
+			</fileset>
+		</move>
+
+		<mkdir dir="${tempTestSnapFolder}" />
+		<unzip src="${fullTestSuite}" dest="${tempTestSnapFolder}" />
+
+		<pathconvert property="oseeClientUnitTestsZip" setonempty="false">
+			<path>
+				<fileset dir="${tempTestSnapFolder}/testing">
+					<include name="*-junit-tests-*.zip" />
+				</fileset>
+			</path>
+		</pathconvert>
+		<move file="${oseeClientUnitTestsZip}" tofile="${snapshotFolder}/${snapshotTestZipArchive}" />
+
+		<delete failonerror="false" file="${fullTestSuite}" />
+		<delete failonerror="false" dir="${tempTestSnapFolder}" />
 	</target>
 </project>
