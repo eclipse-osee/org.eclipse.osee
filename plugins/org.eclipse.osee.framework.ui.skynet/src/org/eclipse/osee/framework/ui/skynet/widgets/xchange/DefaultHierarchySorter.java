@@ -11,102 +11,80 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xchange;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 /**
  * @author Jeff C. Phillips
  */
-public class DefaultHierarchySorter {
-   private Map<Artifact, Set<Artifact>> childrenMap;
-   private ArrayList<Artifact> orderedList;
-   private Set<Artifact> orginalList;
+public class DefaultHierarchySorter implements Comparator<Artifact> {
 
-   public List<Artifact> sort(Collection<Artifact> artifacts) throws OseeCoreException {
-      childrenMap = new HashMap<Artifact, Set<Artifact>>();
-      orderedList = new ArrayList<Artifact>();
-      orginalList = new HashSet<Artifact>();
-
-      if (artifacts.isEmpty()) {
-         return orderedList;
+   private List<Artifact> populateParent(Artifact artifact, List<Artifact> parentList) throws OseeCoreException {
+      if (artifact != null) {
+         parentList.add(artifact);
+         parentList = populateParent(artifact.getParent(), parentList);
       }
-
-      for (Artifact artifact : artifacts) {
-         createAncestorTree(artifact);
-         orginalList.add(artifact);
-      }
-
-      orderChildren(OseeSystemArtifacts.getDefaultHierarchyRootArtifact(artifacts.iterator().next().getBranch()));
-      addDeletedArtifacts();
-
-      if (artifacts.size() != orderedList.size()) {
-         throw new OseeCoreException("Error in sorting artifacts");
-      }
-
-      return orderedList;
+      return parentList;
    }
 
-   private void addDeletedArtifacts() {
-      for (Artifact artifact : orderedList) {
-         if (orginalList.contains(artifact)) {
-            orginalList.remove(artifact);
-         }
-      }
+   @Override
+   public int compare(Artifact firstArtifact, Artifact secondArtifact) {
+      List<Artifact> firstArtifactsParentList = new ArrayList<Artifact>();
+      List<Artifact> secondArtifactParentList = new ArrayList<Artifact>();
 
-      orderedList.addAll(orginalList);
-   }
+      try {
+         firstArtifactsParentList = populateParent(firstArtifact, firstArtifactsParentList);
+         secondArtifactParentList = populateParent(secondArtifact, secondArtifactParentList);
 
-   private void orderChildren(Artifact parent) throws OseeCoreException {
-      if (orginalList.contains(parent)) {
-         orderedList.add(parent);
-      }
+         Artifact commonParent = getCommonParent(firstArtifactsParentList, secondArtifactParentList);
 
-      if (childrenMap.get(parent) == null) {
-         return;
-      }
+         if (commonParent != null) {
 
-      if (childrenMap.get(parent).size() > 1) {
-         for (Artifact child : parent.getChildren(true)) {
-            if (childrenMap.get(parent).contains(child)) {
-               orderChildren(child);
+            if (commonParent.equals(firstArtifact)) {
+               return -1;
+            } else if (commonParent.equals(secondArtifact)) {
+               return 1;
+            }
+
+            for (Artifact possibleChild : commonParent.getChildren()) {
+               int firstIndex = firstArtifactsParentList.indexOf(commonParent);
+               if (firstIndex > 0) {
+                  firstArtifact = firstArtifactsParentList.get(firstIndex - 1);
+               }
+               int secondIndex = secondArtifactParentList.indexOf(commonParent);
+               if (secondIndex > 0) {
+                  secondArtifact = secondArtifactParentList.get(secondIndex - 1);
+               }
+
+               if (possibleChild.equals(firstArtifact)) {
+                  return -1;
+               } else if (possibleChild.equals(secondArtifact)) {
+                  return 1;
+               }
             }
          }
-      } else if (childrenMap.get(parent).size() == 1) {
-         orderChildren(childrenMap.get(parent).iterator().next());
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
+      return 0;
    }
 
-   private void createAncestorTree(Artifact child) throws OseeCoreException {
-      Artifact parent = child.getParent();
-
-      while (parent != null) {
-         if (!insertChild(parent, child)) {
-            return;
-         }
-
-         child = parent;
-         parent = child.getParent();
-
-         if (parent != null) {
-            createAncestorTree(parent);
+   /**
+    * @return Returns the common parent for both lists.
+    */
+   private Artifact getCommonParent(List<Artifact> firstArtifactsParentList, List<Artifact> secondArtifactParentList) {
+      Artifact toReturn = null;
+      for (Artifact commonParent : firstArtifactsParentList) {
+         if (secondArtifactParentList.contains(commonParent)) {
+            toReturn = commonParent;
+            break;
          }
       }
+      return toReturn;
    }
-
-   private boolean insertChild(Artifact parent, Artifact child) {
-      Set<Artifact> children = childrenMap.get(parent);
-      if (children == null) {
-         children = new HashSet<Artifact>();
-         childrenMap.put(parent, children);
-      }
-      return children.add(child);
-   }
-
 }
