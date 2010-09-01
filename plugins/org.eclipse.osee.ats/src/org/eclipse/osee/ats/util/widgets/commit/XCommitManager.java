@@ -33,8 +33,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
-import org.eclipse.osee.framework.skynet.core.event.IMergeBranchEventListener;
-import org.eclipse.osee.framework.skynet.core.event.MergeBranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
@@ -65,7 +63,7 @@ import org.eclipse.swt.widgets.Tree;
 /**
  * @author Donald G. Dunne
  */
-public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBranchEventListener, IBranchEventListener {
+public class XCommitManager extends XWidget implements IArtifactWidget, IBranchEventListener {
 
    private CommitXManager xCommitManager;
    private IDirtiableEditor editor;
@@ -383,32 +381,6 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
     */
    public TeamWorkFlowArtifact getTeamArt() {
       return teamArt;
-   }
-
-   @Override
-   public void handleBranchEventREM1(Sender sender, final BranchEventType branchModType, int branchId) {
-      Displays.ensureInDisplayThread(new Runnable() {
-         @Override
-         public void run() {
-            if (branchModType == BranchEventType.MergeConflictResolved) {
-               xCommitManager.refresh();
-               refresh();
-            } else {
-               loadTable();
-            }
-         }
-      });
-   }
-
-   @Override
-   public void handleMergeBranchEvent(Sender sender, MergeBranchEventType branchModType, int branchId) {
-      Displays.ensureInDisplayThread(new Runnable() {
-         @Override
-         public void run() {
-            xCommitManager.refresh();
-            refresh();
-         }
-      });
    }
 
    @Override

@@ -109,14 +109,6 @@ public class ArtifactEditorEventManager implements IArtifactEventListener, IBran
       });
    }
 
-   /**
-    * Not used by REM2; remove when REM1 removed
-    */
-   @Override
-   public void handleBranchEventREM1(Sender sender, final BranchEventType branchModType, final int branchId) {
-      // do nothing
-   }
-
    @Override
    public void handleBranchEvent(Sender sender, final BranchEvent branchEvent) {
       Displays.ensureInDisplayThread(new Runnable() {

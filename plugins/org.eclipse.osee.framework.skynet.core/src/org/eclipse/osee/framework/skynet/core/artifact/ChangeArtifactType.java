@@ -35,7 +35,6 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
-import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 
 /**
  * Changes the descriptor type of an artifact to the provided descriptor.
@@ -72,11 +71,6 @@ public class ChangeArtifactType {
       }
 
       // Kick Local and Remote Events
-      // Old Events
-      OseeEventManager.kickArtifactsChangeTypeEvent(ChangeArtifactType.class, artifactType.getId(),
-         artifactType.getGuid(), new LoadedArtifacts(artifactsUserAccepted), artifactChanges);
-
-      // New Events
       ArtifactEvent artifactEvent = new ArtifactEvent(artifacts.iterator().next().getBranch());
       for (EventBasicGuidArtifact guidArt : artifactChanges) {
          artifactEvent.getArtifacts().add(guidArt);

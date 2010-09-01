@@ -116,10 +116,6 @@ public class ConfigurationDetails extends PreferencePage implements IWorkbenchPr
          "<b>Remote Event Service</b>",
          OseeEventManager.getConnectionDetails().replaceAll("]", "]<br/>"),
          OseeEventManager.isEventManagerConnected() ? "<font color=\"green\"><b>Ok</b></font>" : "<font color=\"red\"><b>Unavailable - " + getEventServiceDetails() + "</b></font>"));
-      builder.append(AHTML.addRowMultiColumnTable(
-         "<b>Old Remote Event Service</b>",
-         OseeEventManager.getLegacyConnectionDetails().replaceAll("]", "]<br/>"),
-         OseeEventManager.isLegacyEventManagerConnected() ? "<font color=\"green\"><b>Ok</b></font>" : "<font color=\"red\"><b>Unavailable</b></font>"));
 
       builder.append(AHTML.endMultiColumnTable());
       browser.setText(String.format(PAGE_TEMPLATE, builder.toString()));
@@ -127,9 +123,7 @@ public class ConfigurationDetails extends PreferencePage implements IWorkbenchPr
 
    public String getEventServiceDetails() {
       String toReturn;
-      if (!OseeEventManager.getPreferences().isNewEvents()) {
-         toReturn = "New Events == OFF";
-      } else if (OseeEventManager.isEventManagerConnected()) {
+      if (OseeEventManager.isEventManagerConnected()) {
          toReturn = "Connected";
       } else {
          toReturn = "ActiveMQ JMS Service is down";

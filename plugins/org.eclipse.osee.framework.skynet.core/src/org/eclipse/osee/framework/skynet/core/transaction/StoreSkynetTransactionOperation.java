@@ -35,11 +35,8 @@ import org.eclipse.osee.framework.lifecycle.AbstractLifecyclePoint;
 import org.eclipse.osee.framework.lifecycle.ILifecycleService;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.event.Sender;
-import org.eclipse.osee.framework.skynet.core.event.systems.ArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModifiedBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
@@ -178,9 +175,6 @@ public final class StoreSkynetTransactionOperation extends AbstractLifecycleOper
       // Collect attribute events
       for (Artifact artifact : artifactReferences) {
          if (artifact.hasDirtyAttributes()) {
-            artifactEvent.getSkynetTransactionDetails().add(
-               new ArtifactModifiedEvent(new Sender(this.getClass().getName()), ArtifactModType.Changed, artifact,
-                  artifact.getTransactionNumber(), artifact.getDirtySkynetAttributeChanges()));
             EventModifiedBasicGuidArtifact guidArt =
                new EventModifiedBasicGuidArtifact(artifact.getBranch().getGuid(), artifact.getArtifactType().getGuid(),
                   artifact.getGuid(), artifact.getDirtyFrameworkAttributeChanges());
@@ -203,7 +197,7 @@ public final class StoreSkynetTransactionOperation extends AbstractLifecycleOper
          artifact.getRelationOrderRecords().clear();
       }
 
-      if (!artifactEvent.getSkynetTransactionDetails().isEmpty()) {
+      if (!artifactEvent.getArtifacts().isEmpty() || !artifactEvent.getRelations().isEmpty()) {
          OseeEventManager.kickPersistEvent(this, artifactEvent);
       }
    }

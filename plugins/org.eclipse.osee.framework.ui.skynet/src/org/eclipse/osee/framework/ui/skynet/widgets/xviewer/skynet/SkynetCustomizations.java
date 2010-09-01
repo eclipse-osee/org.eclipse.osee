@@ -28,8 +28,6 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
-import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
@@ -41,7 +39,7 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 /**
  * @author Donald G. Dunne
  */
-public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEventListener, IFrameworkTransactionEventListener {
+public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEventListener {
 
    // Artifact that stores shared/global customizations
    private static Artifact globalCustomizationsArtifact;
@@ -232,16 +230,6 @@ public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEv
    @Override
    public boolean isCustomizationPersistAvailable() {
       return true;
-   }
-
-   @Override
-   public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
-      // If global customization artifact or user artifact change, clear cache so it can be loaded again
-      if (transData.cacheChangedArtifacts.size() > 0) {
-         if (transData.cacheChangedArtifacts.contains(getGlobalCustomizationsArtifact()) || transData.cacheChangedArtifacts.contains(UserManager.getUser())) {
-            ensurePopulated(true);
-         }
-      }
    }
 
    public static SkynetCustomizations getInstance() {

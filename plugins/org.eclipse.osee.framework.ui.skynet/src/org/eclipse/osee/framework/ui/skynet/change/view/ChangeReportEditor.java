@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
-import org.eclipse.osee.framework.skynet.core.event.ITransactionsDeletedEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
@@ -160,45 +159,7 @@ public class ChangeReportEditor extends FormEditor implements IChangeReportView 
       }
    }
 
-   private final class EventRelay implements IBranchEventListener, ITransactionEventListener, ITransactionsDeletedEventListener {
-
-      @Override
-      public void handleBranchEventREM1(Sender sender, BranchEventType branchModType, final int branchId) {
-         ChangeUiData changeUiData = getEditorInput().getChangeData();
-         Branch[] branches = new Branch[2];
-         try {
-            branches[0] = changeUiData.getTxDelta().getStartTx().getBranch();
-            branches[1] = changeUiData.getTxDelta().getEndTx().getBranch();
-         } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, "Error obtaining change report branches for branch event",
-               ex);
-         }
-         for (Branch branch : branches) {
-            if (branch != null && branch.getId() == branchId) {
-               if (branchModType == BranchEventType.Deleted && branchModType == BranchEventType.Purged) {
-                  close(false);
-               } else if (branchModType == BranchEventType.Committed) {
-                  recomputeChangeReport();
-               }
-            }
-         }
-      }
-
-      @Override
-      public void handleTransactionsDeletedEvent(Sender sender, int[] transactionIds) {
-         ChangeUiData changeUiData = getEditorInput().getChangeData();
-         int[] txDeltas = new int[2];
-         txDeltas[0] = changeUiData.getTxDelta().getStartTx().getId();
-         txDeltas[1] = changeUiData.getTxDelta().getEndTx().getId();
-         for (int transactionIdToMatch : txDeltas) {
-            for (int txId : transactionIds) {
-               if (transactionIdToMatch == txId) {
-                  close(false);
-                  break;
-               }
-            }
-         }
-      }
+   private final class EventRelay implements IBranchEventListener, ITransactionEventListener {
 
       @Override
       public void handleTransactionEvent(Sender sender, TransactionEvent transEvent) {

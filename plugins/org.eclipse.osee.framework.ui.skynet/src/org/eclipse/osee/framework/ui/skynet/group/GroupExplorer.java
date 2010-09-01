@@ -35,8 +35,6 @@ import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
-import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
-import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
@@ -80,7 +78,7 @@ import org.eclipse.ui.part.ViewPart;
 /**
  * @author Donald G. Dunne
  */
-public class GroupExplorer extends ViewPart implements IArtifactEventListener, IFrameworkTransactionEventListener, IActionable, IRebuildMenuListener {
+public class GroupExplorer extends ViewPart implements IArtifactEventListener, IActionable, IRebuildMenuListener {
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.group.GroupExplorer";
    private GroupTreeViewer treeViewer;
    private Artifact rootArt;
@@ -492,28 +490,6 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
       return "";
    }
 
-   @Override
-   public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) {
-      if (rootArt != null && transData.branchId != rootArt.getBranch().getId()) {
-         return;
-      }
-      try {
-         Artifact topArt = UniversalGroup.getTopUniversalGroupArtifact(branch);
-         if (topArt != null) {
-            Displays.ensureInDisplayThread(new Runnable() {
-               @Override
-               public void run() {
-                  storeExpandedAndSelection();
-                  refresh();
-                  restoreExpandedAndSelection();
-               }
-            });
-            return;
-         }
-      } catch (Exception ex) {
-         // do nothing
-      }
-   }
    private class NeedProjectMenuListener implements MenuListener {
       Collection<MenuItem> items;
 

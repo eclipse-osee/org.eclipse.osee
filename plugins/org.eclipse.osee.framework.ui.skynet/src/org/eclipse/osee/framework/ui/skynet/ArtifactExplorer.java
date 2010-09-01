@@ -39,7 +39,6 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.access.AccessControlManager;
-import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -63,20 +62,14 @@ import org.eclipse.osee.framework.skynet.core.artifact.IBranchProvider;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.AccessControlEventType;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
-import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
-import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData.ChangeType;
 import org.eclipse.osee.framework.skynet.core.event.IAccessControlEventListener;
-import org.eclipse.osee.framework.skynet.core.event.IArtifactsChangeTypeEventListener;
-import org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
-import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.AccessControlEvent;
 import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event2.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -109,7 +102,6 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.MenuItems;
 import org.eclipse.osee.framework.ui.swt.TreeViewerUtility;
-import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.custom.TreeEditor;
@@ -151,11 +143,9 @@ import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.progress.UIJob;
 
 /**
- * <REM2>
- * 
  * @author Ryan D. Brooks
  */
-public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEventHandler, IRebuildMenuListener, IAccessControlEventListener, IFrameworkTransactionEventListener, IBranchEventListener, IArtifactsPurgedEventListener, IArtifactsChangeTypeEventListener, IActionable, ISelectionProvider, IBranchProvider {
+public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEventHandler, IRebuildMenuListener, IAccessControlEventListener, IBranchEventListener, IActionable, ISelectionProvider, IBranchProvider {
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.ArtifactExplorer";
    private static final String ROOT_GUID = "artifact.explorer.last.root_guid";
    private static final String ROOT_BRANCH = "artifact.explorer.last.root_branch";
@@ -1292,106 +1282,6 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
    private void setHelpContexts() {
       SkynetGuiPlugin.getInstance().setHelp(treeViewer.getControl(), "artifact_explorer_tree_viewer",
          "org.eclipse.osee.framework.help.ui");
-   }
-
-   @Override
-   public void handleArtifactsPurgedEvent(Sender sender, LoadedArtifacts loadedArtifacts) {
-      try {
-         if (loadedArtifacts.isNotForBranch(branch)) {
-            return;
-         }
-      } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-      }
-      Displays.ensureInDisplayThread(new Runnable() {
-         @Override
-         public void run() {
-            treeViewer.refresh();
-         }
-      });
-   }
-
-   @Override
-   public void handleArtifactsChangeTypeEvent(Sender sender, int toArtifactTypeId, final LoadedArtifacts loadedArtifacts) {
-      try {
-         if (loadedArtifacts.isNotForBranch(branch)) {
-            return;
-         }
-      } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-      }
-      Displays.ensureInDisplayThread(new Runnable() {
-         @Override
-         public void run() {
-            try {
-               Set<Artifact> parents = new HashSet<Artifact>();
-               for (Artifact art : loadedArtifacts.getLoadedArtifacts()) {
-                  if (art.getParent() != null) {
-                     parents.add(art.getParent());
-                  }
-               }
-               for (Artifact art : parents) {
-                  treeViewer.refresh(art);
-               }
-            } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-            }
-         }
-      });
-   }
-
-   @Override
-   public void handleFrameworkTransactionEvent(Sender sender, final FrameworkTransactionData transData) {
-      if (branch == null || transData.branchId != branch.getId()) {
-         return;
-      }
-
-      Displays.ensureInDisplayThread(new Runnable() {
-         @Override
-         public void run() {
-            if (treeViewer != null && Widgets.isAccessible(treeViewer.getTree())) {
-               for (Artifact art : transData.cacheDeletedArtifacts) {
-                  treeViewer.remove(art);
-               }
-               try {
-                  if (!transData.cacheDeletedArtifacts.isEmpty()) {
-                     getTreeViewer().remove(
-                        transData.cacheDeletedArtifacts.toArray(new Object[transData.cacheDeletedArtifacts.size()]));
-                  }
-                  for (Artifact artifact : transData.cacheChangedArtifacts) {
-                     // Don't refresh deleted artifacts
-                     if (artifact.isDeleted()) {
-                        continue;
-                     }
-                     getTreeViewer().update(artifact, null);
-                  }
-
-                  treeViewer.update(
-                     transData.getArtifactsInRelations(ChangeType.Changed,
-                        CoreRelationTypes.Default_Hierarchical__Child).toArray(), null);
-               } catch (Exception ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-               }
-               try {
-                  for (Artifact art : transData.getArtifactsInRelations(ChangeType.Added,
-                     CoreRelationTypes.Default_Hierarchical__Child)) {
-                     if (!art.isDeleted() && art.getParent() != null) {
-                        treeViewer.refresh(art.getParent());
-                     }
-                  }
-               } catch (Exception ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-               }
-            }
-         }
-      });
-   }
-
-   @Override
-   public void handleBranchEventREM1(Sender sender, BranchEventType branchModType, final int branchId) {
-      if (branchModType == BranchEventType.Committed && branch != null && branch.getId() == branchId) {
-         SkynetViews.closeView(VIEW_ID, getViewSite().getSecondaryId());
-      }
    }
 
    @Override

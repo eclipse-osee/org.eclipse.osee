@@ -38,7 +38,6 @@ public class BranchEventFiltersTest {
 
    @Before
    public void setup() {
-      OseeEventManager.getPreferences().setNewEvents(true);
       OseeEventManager.getPreferences().setPendRunning(true);
    }
 
@@ -112,11 +111,6 @@ public class BranchEventFiltersTest {
       public void handleBranchEvent(Sender sender, BranchEvent branchEvent) {
          resultBranchEvent = branchEvent;
          resultSender = sender;
-      }
-
-      @Override
-      public void handleBranchEventREM1(Sender sender, BranchEventType branchModType, int branchId) {
-         // do nothing, this is legacy branch handler call
       }
 
       @Override

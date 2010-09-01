@@ -58,11 +58,6 @@ public class SMAEditorBranchEventManager implements IBranchEventListener {
    }
 
    @Override
-   public void handleBranchEventREM1(Sender sender, BranchEventType branchModType, int branchId) {
-      // do nothing - <REM2> shouldn't be called unless new event system available
-   }
-
-   @Override
    public void handleBranchEvent(Sender sender, BranchEvent branchEvent) {
       try {
          handleBranchEvent(branchEvent.getEventType(), BranchManager.getBranchByGuid(branchEvent.getBranchGuid()));

@@ -41,10 +41,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.conflict.ArtifactConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
-import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
-import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
-import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
@@ -87,7 +84,7 @@ import org.eclipse.ui.part.ViewPart;
  * @see ViewPart
  * @author Donald G. Dunne
  */
-public class MergeView extends ViewPart implements IActionable, IBranchEventListener, IArtifactEventListener, IFrameworkTransactionEventListener {
+public class MergeView extends ViewPart implements IActionable, IBranchEventListener, IArtifactEventListener {
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView";
    public static final String HELP_CONTEXT_ID = "Merge_Manager_View";
    private MergeXWidget mergeXWidget;
@@ -759,98 +756,6 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
 
          return AccessControlManager.hasPermission(artifacts, PermissionEnum.READ);
       }
-   }
-
-   @Override
-   public void handleBranchEventREM1(Sender sender, BranchEventType branchModType, int branchId) {
-      if (sourceBranch != null && destBranch != null && (sourceBranch.getId() == branchId || destBranch.getId() == branchId)) {
-         Displays.ensureInDisplayThread(new Runnable() {
-            @Override
-            public void run() {
-               if (mergeXWidget != null && mergeXWidget.getXViewer().getTree().isDisposed() != true) {
-                  mergeXWidget.refresh();
-               }
-            }
-         });
-      }
-   }
-
-   @Override
-   public void handleFrameworkTransactionEvent(final Sender sender, final FrameworkTransactionData transData) {
-      try {
-         if (sourceBranch == null || destBranch == null) {
-            return;
-         }
-         if (sourceBranch.getId() != transData.getBranchId() && destBranch.getId() != transData.getBranchId()) {
-            Branch mergeBranch = BranchManager.getMergeBranch(sourceBranch, destBranch);
-            if (mergeBranch == null || mergeBranch.getId() != transData.getBranchId()) {
-               return;
-            }
-         }
-      } catch (OseeCoreException ex) {
-         //ignore the exception for an event don't want them popping up on people for no reason
-      }
-      final MergeView mergeView = this;
-      Displays.ensureInDisplayThread(new Runnable() {
-         @Override
-         public void run() {
-            if (mergeXWidget.getXViewer() == null || mergeXWidget.getXViewer().getTree() == null || mergeXWidget.getXViewer().getTree().isDisposed()) {
-               return;
-            }
-            Conflict[] conflicts = getConflicts();
-            for (Artifact artifact : transData.cacheChangedArtifacts) {
-               try {
-                  Branch branch = artifact.getBranch();
-                  if (showConflicts) {
-                     for (Conflict conflict : conflicts) {
-                        if (artifact.equals(conflict.getSourceArtifact()) && branch.equals(conflict.getSourceBranch()) || artifact.equals(conflict.getDestArtifact()) && branch.equals(conflict.getDestBranch())) {
-                           mergeXWidget.setInputData(sourceBranch, destBranch, transactionId, mergeView, commitTrans,
-                              "Source Artifact Changed", showConflicts);
-                           if (artifact.equals(conflict.getSourceArtifact()) && sender.isLocal()) {
-                              new MessageDialog(
-                                 Displays.getActiveShell().getShell(),
-                                 "Modifying Source artifact while merging",
-                                 null,
-                                 "Typically changes done while merging should be done on the merge branch.  You should not normally merge on the source branch.",
-                                 2, new String[] {"OK"}, 1).open();
-                           }
-                           return;
-                        } else if (artifact.equals(conflict.getArtifact())) {
-                           conflict.computeEqualsValues();
-                           mergeXWidget.refresh();
-                        }
-                     }
-                     if (conflicts.length > 0 && (branch.equals(conflicts[0].getSourceBranch()) || branch.equals(conflicts[0].getDestBranch()))) {
-                        mergeXWidget.setInputData(
-                           sourceBranch,
-                           destBranch,
-                           transactionId,
-                           mergeView,
-                           commitTrans,
-                           branch.equals(conflicts[0].getSourceBranch()) ? "Source Branch Changed" : "Destination Branch Changed",
-                           showConflicts);
-                     }
-                  }
-               } catch (Exception ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-               }
-            }
-            if (!transData.cacheDeletedArtifacts.isEmpty()) {
-               Branch branch = transData.cacheDeletedArtifacts.iterator().next().getBranch();
-               if (conflicts.length > 0 && (branch.equals(conflicts[0].getSourceBranch()) || branch.equals(conflicts[0].getDestBranch()))) {
-                  mergeXWidget.setInputData(
-                     sourceBranch,
-                     destBranch,
-                     transactionId,
-                     mergeView,
-                     commitTrans,
-                     branch.equals(conflicts[0].getSourceBranch()) ? "Source Branch Changed" : "Destination Branch Changed",
-                     showConflicts);
-               }
-            }
-         }
-      });
-
    }
 
    protected void showConflicts(boolean show) {

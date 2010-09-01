@@ -17,7 +17,6 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
@@ -36,12 +35,8 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.IBranchProvider;
-import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
-import org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListener;
-import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
@@ -49,7 +44,6 @@ import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArti
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModType;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactEventListener;
 import org.eclipse.osee.framework.skynet.core.event2.filter.IEventFilter;
-import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 import org.eclipse.osee.framework.ui.skynet.ArtifactDecorator;
 import org.eclipse.osee.framework.ui.skynet.ArtifactDoubleClick;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
@@ -73,11 +67,9 @@ import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.part.IPageSite;
 
 /**
- * <REM2>
- * 
  * @author Roberto E. Escobar
  */
-public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implements IAdaptable, IRebuildMenuListener, IArtifactEventListener, IFrameworkTransactionEventListener, IArtifactsPurgedEventListener, IBranchProvider {
+public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implements IAdaptable, IRebuildMenuListener, IArtifactEventListener, IBranchProvider {
    private static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.ArtifactSearchView";
 
    protected static final Match[] EMPTY_MATCH_ARRAY = new Match[0];
@@ -440,52 +432,6 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
    @Override
    public void rebuildMenu() {
       // Do Nothing
-   }
-
-   @Override
-   public void handleFrameworkTransactionEvent(final Sender sender, final FrameworkTransactionData transData) {
-      Displays.ensureInDisplayThread(new Runnable() {
-         @Override
-         public void run() {
-            if (getViewer() != null) {
-               AbstractArtifactSearchResult results = getInput();
-               if (results != null) {
-                  for (Artifact artifact : transData.cacheDeletedArtifacts) {
-                     for (Match match : results.getMatches(artifact)) {
-                        results.removeMatch(match);
-                     }
-                  }
-                  getViewer().refresh();
-               }
-            }
-         }
-      });
-
-   }
-
-   @Override
-   public void handleArtifactsPurgedEvent(Sender sender, final LoadedArtifacts loadedArtifacts) {
-      Displays.ensureInDisplayThread(new Runnable() {
-         @Override
-         public void run() {
-            try {
-               if (getViewer() != null) {
-                  AbstractArtifactSearchResult results = getInput();
-                  if (results != null) {
-                     for (Artifact artifact : loadedArtifacts.getLoadedArtifacts()) {
-                        for (Match match : results.getMatches(artifact)) {
-                           results.removeMatch(match);
-                        }
-                     }
-                     getViewer().refresh();
-                  }
-               }
-            } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-            }
-         }
-      });
-
    }
 
    private class SearchSelectionProvider implements ISelectionProvider {

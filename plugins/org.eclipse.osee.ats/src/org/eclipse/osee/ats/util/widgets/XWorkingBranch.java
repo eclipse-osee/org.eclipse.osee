@@ -22,10 +22,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
-import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
-import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
@@ -52,12 +49,10 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 
 /**
- * <REM2>
- * 
  * @author Megumi Telles
  * @author Donald G. Dunne
  */
-public class XWorkingBranch extends XWidget implements IArtifactWidget, IArtifactEventListener, IFrameworkTransactionEventListener, IBranchEventListener {
+public class XWorkingBranch extends XWidget implements IArtifactWidget, IArtifactEventListener, IBranchEventListener {
 
    private TeamWorkFlowArtifact teamArt;
    private Button createBranchButton;
@@ -276,16 +271,6 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IArtifac
    public void setArtifact(Artifact artifact) {
       this.teamArt = (TeamWorkFlowArtifact) artifact;
       enablement = new XWorkingBranchEnablement(teamArt);
-   }
-
-   @Override
-   public void handleBranchEventREM1(Sender sender, BranchEventType branchModType, int branchId) {
-      refreshOnBranchEvent();
-   }
-
-   @Override
-   public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) {
-      refreshOnBranchEvent();
    }
 
    public Button getCreateBranchButton() {

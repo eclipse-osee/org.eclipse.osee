@@ -39,7 +39,6 @@ import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
@@ -361,9 +360,6 @@ public final class ArtifactLoader {
 
       for (Artifact artifact : artifacts) {
          artifact.onInitializationComplete();
-         if (reload == RELOAD_CACHE) {
-            OseeEventManager.kickArtifactModifiedEvent(ArtifactLoader.class, ArtifactModType.Reverted, artifact);
-         }
       }
    }
 

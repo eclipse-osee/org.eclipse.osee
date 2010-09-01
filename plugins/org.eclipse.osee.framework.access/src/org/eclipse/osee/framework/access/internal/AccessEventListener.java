@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
-import org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
@@ -31,14 +30,11 @@ import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArti
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModType;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactEventListener;
 import org.eclipse.osee.framework.skynet.core.event2.filter.IEventFilter;
-import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 
 /**
- * <REM2>
- * 
  * @author Donald G. Dunne
  */
-public final class AccessEventListener implements IBranchEventListener, IArtifactsPurgedEventListener, IArtifactEventListener {
+public final class AccessEventListener implements IBranchEventListener, IArtifactEventListener {
 
    private final AccessControlService service;
 
@@ -48,30 +44,6 @@ public final class AccessEventListener implements IBranchEventListener, IArtifac
 
    private void reload() throws OseeCoreException {
       service.reloadCache();
-   }
-
-   @Override
-   public void handleBranchEventREM1(Sender sender, BranchEventType branchModType, int branchId) {
-      try {
-         if (branchModType == BranchEventType.Deleted || sender.isLocal() && branchModType == BranchEventType.Purged) {
-            BranchAccessObject branchAccessObject = BranchAccessObject.getBranchAccessObject(branchId);
-            updateAccessList(sender, branchAccessObject);
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
-   }
-
-   @Override
-   public void handleArtifactsPurgedEvent(Sender sender, LoadedArtifacts loadedArtifacts) {
-      try {
-         for (Artifact artifact : loadedArtifacts.getLoadedArtifacts()) {
-            ArtifactAccessObject artifactAccessObject = ArtifactAccessObject.getArtifactAccessObject(artifact);
-            updateAccessList(sender, artifactAccessObject);
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
    }
 
    @Override

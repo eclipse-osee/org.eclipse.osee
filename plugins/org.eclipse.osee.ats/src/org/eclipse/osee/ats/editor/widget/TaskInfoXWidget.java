@@ -35,8 +35,6 @@ import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.IMessageManager;
 
 /**
- * <REM2> handled through SMAEditorEventManager
- * 
  * @author Donald G. Dunne
  */
 public class TaskInfoXWidget extends XLabelValueBase {

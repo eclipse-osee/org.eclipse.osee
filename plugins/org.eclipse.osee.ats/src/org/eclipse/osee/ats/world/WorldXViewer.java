@@ -24,7 +24,6 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
@@ -66,16 +65,8 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
-import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
-import org.eclipse.osee.framework.skynet.core.event.IArtifactReloadEventListener;
-import org.eclipse.osee.framework.skynet.core.event.IArtifactsChangeTypeEventListener;
-import org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListener;
-import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
-import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
-import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
@@ -94,11 +85,9 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 
 /**
- * <REM2>
- * 
  * @author Donald G. Dunne
  */
-public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArtifactsPurgedEventListener, IArtifactReloadEventListener, IArtifactsChangeTypeEventListener, IFrameworkTransactionEventListener {
+public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts {
    private String title;
    private String extendedStatusString = "";
    public static final String MENU_GROUP_ATS_WORLD_EDIT = "ATS WORLD EDIT";
@@ -116,131 +105,15 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
    }
 
    @Override
-   public void handleArtifactsPurgedEvent(Sender sender, final LoadedArtifacts loadedArtifacts) {
-      if (thisXViewer.getTree().isDisposed()) {
-         OseeEventManager.removeListener(this);
-         return;
-      }
-      try {
-         if (loadedArtifacts.getLoadedArtifacts().isEmpty()) {
-            return;
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-      }
-      Displays.ensureInDisplayThread(new Runnable() {
-         @Override
-         public void run() {
-            try {
-               IContentProvider contentProvider = getContentProvider();
-               if (contentProvider instanceof WorldContentProvider) {
-                  remove(loadedArtifacts.getLoadedArtifacts().toArray());
-               }
-            } catch (OseeCoreException ex) {
-               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-            }
-         }
-      });
-
-   }
-
-   @Override
-   public void handleArtifactsChangeTypeEvent(Sender sender, int toArtifactTypeId, final LoadedArtifacts loadedArtifacts) {
-      if (thisXViewer.getTree().isDisposed()) {
-         OseeEventManager.removeListener(this);
-         return;
-      }
-      try {
-         if (loadedArtifacts.getLoadedArtifacts().isEmpty()) {
-            return;
-         }
-         Displays.ensureInDisplayThread(new Runnable() {
-            @Override
-            public void run() {
-               try {
-                  remove(loadedArtifacts.getLoadedArtifacts().toArray(
-                     new Object[loadedArtifacts.getLoadedArtifacts().size()]));
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-               }
-            }
-         });
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-      }
-   }
-
-   @Override
-   public void handleFrameworkTransactionEvent(Sender sender, final FrameworkTransactionData transData) throws OseeCoreException {
-      if (thisXViewer.getTree().isDisposed()) {
-         OseeEventManager.removeListener(this);
-         return;
-      }
-      if (transData.branchId != AtsUtil.getAtsBranch().getId()) {
-         return;
-      }
-      Displays.ensureInDisplayThread(new Runnable() {
-         @Override
-         public void run() {
-            if (getContentProvider() == null) {
-               return;
-            }
-            if (transData.cacheDeletedArtifacts.size() > 0) {
-               remove(transData.cacheDeletedArtifacts.toArray(new Object[transData.cacheDeletedArtifacts.size()]));
-            }
-            if (transData.cacheChangedArtifacts.size() > 0) {
-               update(transData.cacheChangedArtifacts.toArray(new Object[transData.cacheChangedArtifacts.size()]), null);
-               for (Artifact art : transData.cacheChangedArtifacts) {
-                  if (art instanceof IWorldViewArtifact) {
-                     // If parent is loaded and child changed, refresh parent
-                     try {
-                        if (art instanceof StateMachineArtifact && ((StateMachineArtifact) art).getParentAtsArtifact() instanceof IWorldViewArtifact) {
-                           update(((StateMachineArtifact) art).getParentAtsArtifact(), null);
-                        }
-                     } catch (OseeCoreException ex) {
-                        OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-                     }
-                  }
-               }
-            }
-            Set<Artifact> arts = new HashSet<Artifact>();
-            arts.addAll(transData.cacheRelationAddedArtifacts);
-            arts.addAll(transData.cacheRelationChangedArtifacts);
-            arts.addAll(transData.cacheRelationDeletedArtifacts);
-            for (Artifact art : arts) {
-               // Don't refresh deleted artifacts
-               if (art.isDeleted()) {
-                  continue;
-               }
-               if (art instanceof IWorldViewArtifact) {
-                  refresh(art);
-                  // If parent is loaded and child changed, refresh parent
-                  try {
-                     if (art instanceof StateMachineArtifact && ((StateMachineArtifact) art).getParentAtsArtifact() instanceof IWorldViewArtifact) {
-                        refresh(((StateMachineArtifact) art).getParentAtsArtifact());
-                     }
-                  } catch (OseeCoreException ex) {
-                     OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-                  }
-               }
-            }
-         }
-      });
-   }
-
-   @Override
    protected void createSupportWidgets(Composite parent) {
-      final WorldXViewer fWorldXViewer = this;
       super.createSupportWidgets(parent);
       parent.addDisposeListener(new DisposeListener() {
          @Override
          public void widgetDisposed(DisposeEvent e) {
-            OseeEventManager.removeListener(fWorldXViewer); // <REM2> Don't need this cause handled through IWorldViewerEventHandler
             ((WorldContentProvider) getContentProvider()).clear(false);
          }
       });
       createMenuActions();
-      OseeEventManager.addListener(this); // <REM2> Don't need this cause handled through IWorldViewerEventHandler
    }
 
    Action editStatusAction, editNotesAction, editResolutionAction, editEstimateAction, editChangeTypeAction,
@@ -1060,35 +933,6 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
    public void setExtendedStatusString(String extendedStatusString) {
       this.extendedStatusString = extendedStatusString;
       updateStatusLabel();
-   }
-
-   @Override
-   public void handleReloadEvent(Sender sender, final Collection<? extends Artifact> artifacts) throws OseeCoreException {
-      if (!Widgets.isAccessible(getTree())) {
-         return;
-      }
-      if (!artifacts.iterator().next().getBranch().equals(AtsUtil.getAtsBranch())) {
-         return;
-      }
-      Displays.ensureInDisplayThread(new Runnable() {
-         @Override
-         public void run() {
-            for (Artifact art : artifacts) {
-               if (art instanceof IWorldViewArtifact) {
-                  refresh(art);
-                  // If parent is loaded and child changed, refresh parent
-                  try {
-                     if (art instanceof StateMachineArtifact && ((StateMachineArtifact) art).getParentAtsArtifact() instanceof IWorldViewArtifact) {
-                        refresh(((StateMachineArtifact) art).getParentAtsArtifact());
-                     }
-                  } catch (OseeCoreException ex) {
-                     OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-                  }
-               }
-            }
-         }
-      });
-
    }
 
    private GoalArtifact getParentGoalArtifact(TreeItem treeItem) {

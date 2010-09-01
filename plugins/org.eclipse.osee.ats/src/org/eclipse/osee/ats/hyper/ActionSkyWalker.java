@@ -27,8 +27,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
-import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
@@ -51,11 +49,9 @@ import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.PlatformUI;
 
 /**
- * <REM2>
- * 
  * @author Donald G. Dunne
  */
-public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IActionable, IArtifactEventListener, IFrameworkTransactionEventListener, IPerspectiveListener2 {
+public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IActionable, IArtifactEventListener, IPerspectiveListener2 {
 
    public static final String VIEW_ID = "org.eclipse.osee.ats.hyper.ActionSkyWalker";
 
@@ -202,35 +198,6 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAc
 
    public void clear() {
       System.out.println("clear viewer here");
-   }
-
-   @Override
-   public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
-      if (sender.isRemote()) {
-         return;
-      }
-      if (transData.branchId != AtsUtil.getAtsBranch().getId()) {
-         return;
-      }
-      if (getOptions().getArtifact() == null) {
-         return;
-      }
-      if (transData.isDeleted(getOptions().getArtifact())) {
-         Displays.ensureInDisplayThread(new Runnable() {
-            @Override
-            public void run() {
-               clear();
-            }
-         });
-      }
-      if (transData.isChanged(getOptions().getArtifact()) || transData.isRelAddedChangedDeleted(getOptions().getArtifact())) {
-         Displays.ensureInDisplayThread(new Runnable() {
-            @Override
-            public void run() {
-               explore(getOptions().getArtifact());
-            }
-         });
-      }
    }
 
    @Override

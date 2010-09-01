@@ -34,7 +34,6 @@ import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArti
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModType;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
-import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 
 /**
  * @author Ryan D. Brooks
@@ -174,11 +173,6 @@ public class PurgeArtifacts extends DbTransaction {
          }
 
          // Kick Local and Remote Events
-         // Old Events
-         OseeEventManager.kickArtifactsPurgedEvent("PurgeDbTransaction", new LoadedArtifacts(artifactsToPurge),
-            artifactChanges);
-
-         // New Events
          ArtifactEvent artifactEvent = new ArtifactEvent(artifactsToPurge.iterator().next().getBranch());
          for (EventBasicGuidArtifact guidArt : artifactChanges) {
             artifactEvent.getArtifacts().add(guidArt);

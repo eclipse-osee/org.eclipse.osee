@@ -10,13 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.event;
 
-import java.util.logging.Level;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.database.core.OseeInfo;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
  * @author Roberto E. Escobar
@@ -54,33 +49,6 @@ public final class EventSystemPreferences {
 
    public boolean isPendRunning() {
       return pendRunning;
-   }
-
-   public boolean isNewEvents() {
-      try {
-         String dbProperty = OseeInfo.getCachedValue("eventSystem");
-         if (Strings.isValid(dbProperty)) {
-            return dbProperty.equals("new");
-         }
-      } catch (OseeDataStoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
-      if (!Strings.isValid(getEventSystemType())) {
-         return false;
-      }
-      return getEventSystemType().equals("new");
-   }
-
-   public void setNewEvents(boolean enabled) {
-      System.setProperty("eventSystem", enabled ? "new" : "old");
-   }
-
-   public boolean isOldEvents() {
-      return !isNewEvents();
-   }
-
-   public String getEventSystemType() {
-      return System.getProperty("eventSystem");
    }
 
    public String getEventDebug() {

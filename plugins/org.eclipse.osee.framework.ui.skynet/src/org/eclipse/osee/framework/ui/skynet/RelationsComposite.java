@@ -31,7 +31,6 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
 import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.RelationTypeSide;
 import org.eclipse.osee.framework.core.model.type.RelationType;
@@ -40,10 +39,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
-import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
-import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
-import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSideSorter;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
@@ -79,11 +74,9 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.PlatformUI;
 
 /**
- * <REM2> handled by IArtifactEditorEventHandler
- * 
  * @author Ryan D. Brooks
  */
-public class RelationsComposite extends Composite implements IFrameworkTransactionEventListener {
+public class RelationsComposite extends Composite {
    private TreeViewer treeViewer;
    private Tree tree;
    private NeedSelectedArtifactListener needSelectedArtifactListener;
@@ -124,7 +117,6 @@ public class RelationsComposite extends Composite implements IFrameworkTransacti
       this.relationLabelProvider = new RelationLabelProvider(artifact);
 
       createPartControl();
-      OseeEventManager.addListener(this);
       this.toolBar = toolBar;
    }
 
@@ -548,7 +540,6 @@ public class RelationsComposite extends Composite implements IFrameworkTransacti
 
    @Override
    public void dispose() {
-      OseeEventManager.removeListener(this);
       super.dispose();
    }
 
@@ -805,17 +796,4 @@ public class RelationsComposite extends Composite implements IFrameworkTransacti
       return toolBar;
    }
 
-   @Override
-   public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) {
-      if (transData.isRelAddedChangedDeleted(this.artifact)) {
-         Displays.ensureInDisplayThread(new Runnable() {
-            @Override
-            public void run() {
-               if (!treeViewer.getControl().isDisposed()) {
-                  treeViewer.refresh();
-               }
-            }
-         });
-      }
-   }
 }

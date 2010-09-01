@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
-import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
@@ -64,14 +63,6 @@ public abstract class Attribute<T> {
       }
 
       dirty = markDirty;
-      if (dirty) {
-         // Kick Local Event
-         try {
-            OseeEventManager.kickArtifactModifiedEvent(this, ArtifactModType.Changed, artifact);
-         } catch (Exception ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
-         }
-      }
       uponInitialize();
    }
 
@@ -192,13 +183,6 @@ public abstract class Attribute<T> {
    protected void markAsChanged(ModificationType modificationType) {
       setDirtyFlag(true);
       this.modificationType = modificationType;
-
-      // Kick Local Event
-      try {
-         OseeEventManager.kickArtifactModifiedEvent(this, ArtifactModType.Changed, getArtifact());
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
    }
 
    public void setNotDirty() {

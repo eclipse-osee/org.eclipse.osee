@@ -24,15 +24,12 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.actions.wizard.ArtifactSelectWizard;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
-import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
@@ -57,11 +54,9 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
 /**
- * <REM2>
- * 
  * @author Donald G. Dunne
  */
-public class ArtifactHyperView extends HyperView implements IArtifactEventListener, IFrameworkTransactionEventListener, IActionable, IPerspectiveListener2 {
+public class ArtifactHyperView extends HyperView implements IArtifactEventListener, IActionable, IPerspectiveListener2 {
 
    public static String VIEW_ID = "org.eclipse.osee.ats.hyper.ArtifactHyperView";
    public static ArtifactHyperItem topAHI;
@@ -322,35 +317,6 @@ public class ArtifactHyperView extends HyperView implements IArtifactEventListen
    @Override
    public void perspectiveChanged(IWorkbenchPage page, IPerspectiveDescriptor perspective, IWorkbenchPartReference partRef, String changeId) {
       handleWindowChange();
-   }
-
-   @Override
-   public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
-      if (sender.isRemote()) {
-         return;
-      }
-      if (transData.branchId != AtsUtil.getAtsBranch().getId()) {
-         return;
-      }
-      if (currentArtifact == null) {
-         return;
-      }
-      if (transData.isDeleted(currentArtifact)) {
-         Displays.ensureInDisplayThread(new Runnable() {
-            @Override
-            public void run() {
-               clear();
-            }
-         });
-      }
-      if (transData.isRelAddedChangedDeleted(currentArtifact)) {
-         Displays.ensureInDisplayThread(new Runnable() {
-            @Override
-            public void run() {
-               display();
-            }
-         });
-      }
    }
 
    @Override

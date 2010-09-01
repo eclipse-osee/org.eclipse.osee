@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.HttpBranchCreation;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
-import org.eclipse.osee.framework.skynet.core.event.MergeBranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -199,10 +198,6 @@ public class MergeXViewer extends XViewer {
          MergeUtility.setToDest(conflict, shell, true);
       } else if (isXViewerColumn(treeColumn, MergeXViewerFactory.Conflict_Resolved)) {
          conflict.handleResolvedSelection();
-         // old events
-         OseeEventManager.kickMergeBranchEvent(HttpBranchCreation.class, MergeBranchEventType.ConflictResolved,
-            conflict.getMergeBranchID());
-         // new events
          OseeEventManager.kickBranchEvent(HttpBranchCreation.class, new BranchEvent(
             BranchEventType.MergeConflictResolved, conflict.getMergeBranch().getGuid()), conflict.getMergeBranchID());
       } else if (isXViewerColumn(treeColumn, MergeXViewerFactory.Merged)) {

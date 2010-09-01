@@ -28,33 +28,24 @@ import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.HttpProcessor;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetAttributeChange;
-import org.eclipse.osee.framework.skynet.core.event.ArtifactTransactionModifiedEvent;
-import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
-import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
-import org.eclipse.osee.framework.skynet.core.event.IArtifactsChangeTypeEventListener;
-import org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListener;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
-import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
-import org.eclipse.osee.framework.skynet.core.event.ITransactionsDeletedEventListener;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
-import org.eclipse.osee.framework.skynet.core.event.systems.ArtifactModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event2.ITransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event2.TransactionEvent;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.AttributeChange;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
+import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModifiedBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactEventListener;
 import org.eclipse.osee.framework.skynet.core.event2.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
-import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 
 /**
- * <REM2>
- * 
  * @author Roberto E. Escobar
  */
-public class HttpAttributeTaggingListener implements IArtifactEventListener, IFrameworkTransactionEventListener, IBranchEventListener, IArtifactsPurgedEventListener, IArtifactsChangeTypeEventListener, ITransactionEventListener, ITransactionsDeletedEventListener {
+public class HttpAttributeTaggingListener implements IArtifactEventListener, IBranchEventListener, ITransactionEventListener {
    private static final String XML_START = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><AttributeTag>";
    private static final String XML_FINISH = "</AttributeTag>";
    private static final String PREFIX = "<entry gammaId=\"";
@@ -66,71 +57,8 @@ public class HttpAttributeTaggingListener implements IArtifactEventListener, IFr
    }
 
    @Override
-   public void handleBranchEventREM1(Sender sender, BranchEventType branchModType, int branchId) {
-      // do nothing
-   }
-
-   @Override
-   public void handleArtifactsPurgedEvent(Sender sender, LoadedArtifacts loadedArtifacts) {
-      //         if (sender.isRemote()) {
-      //            return;
-      //         }
-      //         try {
-      //            loadedArtifacts.
-      //            //TODO: implements
-      //            //            Map<String, String> parameters = new HashMap<String, String>();
-      //            //            parameters.put("sessionId", ClientSessionManager.getSessionId());
-      //            //            parameters.put("queryId", Integer.toString(transactionJoinId));
-      //            //            String url =
-      //            //                  HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeServerContext.SEARCH_TAGGING_CONTEXT,
-      //            //                        parameters);
-      //            //            String response = HttpProcessor.delete(new URL(url));
-      //
-      //         } catch (Exception ex) {
-      //            OseeLog.log(Activator.class, Level.WARNING, "Error Deleting Tags during purge.", ex);
-      //         }
-   }
-
-   @Override
-   public void handleArtifactsChangeTypeEvent(Sender sender, int toArtifactTypeId, LoadedArtifacts loadedArtifacts) {
-      // Need to fix tags based on this event
-   }
-
-   @Override
-   public void handleTransactionsDeletedEvent(Sender sender, int[] transactionIds) {
-      // Need to fix tags based on this event
-   }
-
-   @Override
    public void handleTransactionEvent(Sender sender, TransactionEvent transEvent) {
       // Need to fix tags based on this event
-   }
-
-   @Override
-   public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData txData) throws OseeCoreException {
-      if (sender.isRemote()) {
-         return;
-      }
-      TagService taggingInfo = new TagService();
-      for (ArtifactTransactionModifiedEvent event : txData.getXModifiedEvents()) {
-         if (event instanceof ArtifactModifiedEvent) {
-            for (SkynetAttributeChange change : ((ArtifactModifiedEvent) event).getAttributeChanges()) {
-               if (AttributeTypeManager.getType(change.getTypeId()).isTaggable()) {
-                  taggingInfo.add(change.getGammaId());
-               }
-            }
-         }
-      }
-      if (taggingInfo.size() > 0) {
-         Future<?> future = executor.submit(taggingInfo);
-         if (DbUtil.isDbInit()) {
-            try {
-               future.get();
-            } catch (Exception ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, "Error while waiting for tagger to complete.", ex);
-            }
-         }
-      }
    }
 
    @Override
@@ -145,10 +73,10 @@ public class HttpAttributeTaggingListener implements IArtifactEventListener, IFr
             return;
          }
          TagService taggingInfo = new TagService();
-         for (ArtifactTransactionModifiedEvent event : artifactEvent.getSkynetTransactionDetails()) {
-            if (event instanceof ArtifactModifiedEvent) {
-               for (SkynetAttributeChange change : ((ArtifactModifiedEvent) event).getAttributeChanges()) {
-                  if (AttributeTypeManager.getType(change.getTypeId()).isTaggable()) {
+         for (EventBasicGuidArtifact guidArt : artifactEvent.getArtifacts()) {
+            if (guidArt instanceof EventModifiedBasicGuidArtifact) {
+               for (AttributeChange change : ((EventModifiedBasicGuidArtifact) guidArt).getAttributeChanges()) {
+                  if (AttributeTypeManager.getTypeByGuid(change.getAttrTypeGuid()).isTaggable()) {
                      taggingInfo.add(change.getGammaId());
                   }
                }

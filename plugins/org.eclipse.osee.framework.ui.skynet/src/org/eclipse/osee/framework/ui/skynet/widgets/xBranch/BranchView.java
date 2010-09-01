@@ -32,7 +32,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
-import org.eclipse.osee.framework.skynet.core.event.ITransactionsDeletedEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
@@ -58,7 +57,7 @@ import org.eclipse.ui.part.ViewPart;
  * 
  * @author Jeff C. Phillips
  */
-public class BranchView extends ViewPart implements IActionable, IBranchEventListener, ITransactionEventListener, ITransactionsDeletedEventListener, ITransactionRecordSelectionProvider {
+public class BranchView extends ViewPart implements IActionable, IBranchEventListener, ITransactionEventListener, ITransactionRecordSelectionProvider {
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView";
    private BranchViewPresentationPreferences branchViewPresentationPreferences;
    private static String HELP_CONTEXT_ID = "BranchView";
@@ -157,24 +156,6 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
    }
 
    @Override
-   public void handleBranchEventREM1(Sender sender, final BranchEventType branchModType, final int branchId) {
-      Displays.ensureInDisplayThread(new Runnable() {
-         @Override
-         public void run() {
-            try {
-               if (branchModType.equals(BranchEventType.Renamed)) {
-                  xBranchWidget.refresh();
-               } else {
-                  xBranchWidget.loadData();
-               }
-            } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         }
-      });
-   }
-
-   @Override
    public void handleBranchEvent(Sender sender, final BranchEvent branchEvent) {
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
@@ -206,20 +187,6 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
             }
          });
       }
-   }
-
-   @Override
-   public void handleTransactionsDeletedEvent(Sender sender, int[] transactionIds) {
-      Displays.ensureInDisplayThread(new Runnable() {
-         @Override
-         public void run() {
-            try {
-               xBranchWidget.refresh();
-            } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         }
-      });
    }
 
    public void changeBranchPresentation(boolean flat) {

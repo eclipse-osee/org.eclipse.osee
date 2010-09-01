@@ -14,7 +14,6 @@ import java.util.List;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
@@ -65,11 +64,6 @@ public class DefaultBranchContentProvider implements ITreeContentProvider, IBran
    @Override
    public Object[] getElements(Object inputElement) {
       return provider.getElements(branch);
-   }
-
-   @Override
-   public void handleBranchEventREM1(Sender sender, BranchEventType branchModType, final int branchId) {
-      // do nothing
    }
 
    @Override

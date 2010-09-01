@@ -105,7 +105,6 @@ public class ArtifactEventTest {
 
    @Before
    public void setup() {
-      OseeEventManager.getPreferences().setNewEvents(true);
       OseeEventManager.getPreferences().setPendRunning(true);
    }
 
@@ -274,7 +273,7 @@ public class ArtifactEventTest {
       String NEW_RATIONALE_STR = "This is the rationale";
       Assert.assertEquals(1, newArt.internalGetRelations(rootArt).size());
       RelationLink relLink = newArt.internalGetRelations(rootArt).iterator().next();
-      relLink.setRationale(NEW_RATIONALE_STR, true);
+      relLink.setRationale(NEW_RATIONALE_STR);
       newArt.persist();
 
       Assert.assertEquals("No artifact events should be sent", 0, resultEventArtifacts.size());

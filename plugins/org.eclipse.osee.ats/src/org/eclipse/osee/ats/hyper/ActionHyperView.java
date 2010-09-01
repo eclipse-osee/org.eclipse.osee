@@ -32,8 +32,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
-import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
@@ -57,11 +55,9 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
 /**
- * <REM2>
- * 
  * @author Donald G. Dunne
  */
-public class ActionHyperView extends HyperView implements IActionable, IArtifactEventListener, IFrameworkTransactionEventListener, IPerspectiveListener2 {
+public class ActionHyperView extends HyperView implements IActionable, IArtifactEventListener, IPerspectiveListener2 {
 
    public static String VIEW_ID = "org.eclipse.osee.ats.hyper.ActionHyperView";
    private static String HELP_CONTEXT_ID = "atsActionView";
@@ -315,30 +311,6 @@ public class ActionHyperView extends HyperView implements IActionable, IArtifact
    @Override
    public void perspectiveChanged(IWorkbenchPage page, IPerspectiveDescriptor perspective, IWorkbenchPartReference partRef, String changeId) {
       processWindowActivated();
-   }
-
-   @Override
-   public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
-      if (currentArtifact == null) {
-         return;
-      }
-      if (transData.branchId != AtsUtil.getAtsBranch().getId()) {
-         return;
-      }
-      if (transData.isDeleted(currentArtifact)) {
-         Displays.ensureInDisplayThread(new Runnable() {
-            @Override
-            public void run() {
-               clear();
-            }
-         });
-      }
-      Displays.ensureInDisplayThread(new Runnable() {
-         @Override
-         public void run() {
-            display();
-         }
-      });
    }
 
    @Override

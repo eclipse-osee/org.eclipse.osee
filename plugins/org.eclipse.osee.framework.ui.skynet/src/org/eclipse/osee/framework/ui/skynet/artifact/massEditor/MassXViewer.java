@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -25,20 +24,12 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
-import org.eclipse.osee.framework.skynet.core.event.IArtifactsChangeTypeEventListener;
-import org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListener;
-import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
-import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.event.Sender;
-import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
-import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSource;
@@ -57,11 +48,9 @@ import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
 /**
- * <REM2> new handled in MassXViewerEventManager
- * 
  * @author Donald G. Dunne
  */
-public class MassXViewer extends XViewer implements IMassViewerEventHandler, IFrameworkTransactionEventListener, IArtifactsPurgedEventListener, IArtifactsChangeTypeEventListener {
+public class MassXViewer extends XViewer implements IMassViewerEventHandler {
 
    private String title;
    private final Set<Artifact> artifacts = new HashSet<Artifact>(50);
@@ -73,7 +62,6 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler, IFr
       super(parent, style, ((MassArtifactEditorInput) editor.getEditorInput()).getXViewerFactory());
       this.parent = parent;
       this.editor = editor;
-      OseeEventManager.addListener(this);
       MassXViewerEventManager.add(this);
       final MassXViewer fMassXViewer = this;
       parent.addDisposeListener(new DisposeListener() {
@@ -234,7 +222,6 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler, IFr
 
    @Override
    public void dispose() {
-      OseeEventManager.removeListener(this);
       MassXViewerEventManager.remove(this);
       // Tell the label provider to release its resources
       getLabelProvider().dispose();
@@ -278,58 +265,6 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler, IFr
 
    public Collection<? extends Artifact> getArtifacts() {
       return artifacts;
-   }
-
-   @Override
-   public void handleFrameworkTransactionEvent(Sender sender, final FrameworkTransactionData transData) {
-      Displays.ensureInDisplayThread(new Runnable() {
-         @Override
-         public void run() {
-            if (getTree() == null || getTree().isDisposed()) {
-               dispose();
-               return;
-            }
-            if (transData.cacheDeletedArtifacts.size() > 0) {
-               ((MassContentProvider) getContentProvider()).removeAllArts(transData.cacheDeletedArtifacts);
-            }
-            if (transData.cacheChangedArtifacts.size() > 0) {
-               ((MassContentProvider) getContentProvider()).updateAll(transData.cacheChangedArtifacts);
-            }
-            refresh(transData.cacheRelationAddedArtifacts);
-            refresh(transData.cacheRelationChangedArtifacts);
-            refresh(transData.cacheRelationDeletedArtifacts);
-         }
-      });
-   }
-
-   @Override
-   public void handleArtifactsPurgedEvent(Sender sender, final LoadedArtifacts loadedArtifacts) {
-      Displays.ensureInDisplayThread(new Runnable() {
-         @Override
-         public void run() {
-            try {
-               if (getTree() != null && !getTree().isDisposed()) {
-                  remove(loadedArtifacts.getLoadedArtifacts().toArray());
-               }
-            } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-            }
-         }
-      });
-   }
-
-   @Override
-   public void handleArtifactsChangeTypeEvent(Sender sender, int toArtifactTypeId, final LoadedArtifacts loadedArtifacts) {
-      Displays.ensureInDisplayThread(new Runnable() {
-         @Override
-         public void run() {
-            try {
-               remove(loadedArtifacts.getLoadedArtifacts().toArray());
-            } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-            }
-         }
-      });
    }
 
    @Override

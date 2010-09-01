@@ -47,7 +47,6 @@ public class ArtifactEventFiltersTest {
 
    @Before
    public void setup() {
-      OseeEventManager.getPreferences().setNewEvents(true);
       OseeEventManager.getPreferences().setPendRunning(true);
    }
 

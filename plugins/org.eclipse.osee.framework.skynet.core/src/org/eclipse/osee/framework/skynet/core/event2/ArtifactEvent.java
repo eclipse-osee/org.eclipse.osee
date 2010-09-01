@@ -28,8 +28,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkSender;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
-import org.eclipse.osee.framework.skynet.core.event.ArtifactTransactionModifiedEvent;
-import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData.ChangeType;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidRelation;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModType;
@@ -47,8 +45,6 @@ public class ArtifactEvent extends FrameworkEvent {
    private final List<EventBasicGuidRelation> relations = new ArrayList<EventBasicGuidRelation>();
    private final Set<DefaultBasicGuidRelationReorder> relationReorderRecords =
       new HashSet<DefaultBasicGuidRelationReorder>();
-   private final Collection<ArtifactTransactionModifiedEvent> skynetTransactionDetails =
-      new ArrayList<ArtifactTransactionModifiedEvent>();
 
    public ArtifactEvent(Branch branch) {
       branchGuid = branch.getGuid();
@@ -290,7 +286,7 @@ public class ArtifactEvent extends FrameworkEvent {
       Set<Artifact> artifacts = new HashSet<Artifact>();
       Collection<RelationEventType> modTypes = Collections.getAggregate(relationEventTypes);
       for (EventBasicGuidRelation guidRel : relations) {
-         if (modTypes.contains(ChangeType.All) || modTypes.contains(guidRel.getModType())) {
+         if (modTypes.contains(guidRel.getModType())) {
             artifacts.addAll(ArtifactCache.getActive(guidRel));
          }
       }
@@ -306,14 +302,6 @@ public class ArtifactEvent extends FrameworkEvent {
          }
       }
       return false;
-   }
-
-   /**
-    * Return details of artifact and relation changes for artifact and relation events that occurred as part of a
-    * SkynetTransaction
-    */
-   public Collection<ArtifactTransactionModifiedEvent> getSkynetTransactionDetails() {
-      return skynetTransactionDetails;
    }
 
 }

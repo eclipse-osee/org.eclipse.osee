@@ -16,8 +16,6 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidRelation;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.OseeSql;
-import org.eclipse.osee.framework.skynet.core.event.Sender;
-import org.eclipse.osee.framework.skynet.core.event.systems.RelationModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidRelation;
 import org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData;
@@ -93,10 +91,5 @@ public class RelationTransactionData extends BaseTransactionData {
          event.setRationale(relation.getRationale());
       }
       artifactEvent.getRelations().add(event);
-
-      artifactEvent.getSkynetTransactionDetails().add(
-         new RelationModifiedEvent(new Sender(this.getClass().getName()), relationEventType, relation,
-            relation.getBranch(), relation.getRelationType().getName()));
-
    }
 }

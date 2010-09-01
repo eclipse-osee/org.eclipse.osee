@@ -41,10 +41,8 @@ public final class JiniSkynetEventServiceLookup implements IServiceLookupListene
    private String acceptableServiceName;
    private ISkynetEventService currentEventService;
    private ISkynetEventListener clientEventListenerRemoteReference;
-   private final EventSystemPreferences preferences;
 
    public JiniSkynetEventServiceLookup(EventSystemPreferences preferences, ISkynetEventListener clientEventListener) {
-      this.preferences = preferences;
       this.clientEventListener = clientEventListener;
       clear();
    }
@@ -72,9 +70,6 @@ public final class JiniSkynetEventServiceLookup implements IServiceLookupListene
    }
 
    public void checkJiniRegistration() {
-      if (preferences.isNewEvents()) {
-         return;
-      }
       if (clientEventListenerRemoteReference == null) {
          try {
             // We need to trigger authentication before attempting to get database information from client session manager.
@@ -142,9 +137,6 @@ public final class JiniSkynetEventServiceLookup implements IServiceLookupListene
    }
 
    private void disconnectService(Exception e) {
-      if (preferences.isNewEvents()) {
-         return;
-      }
       OseeLog.log(Activator.class, Level.WARNING, "Skynet Event Service connection lost\n" + e.toString(), e);
       setEventService(null);
       try {
@@ -155,9 +147,6 @@ public final class JiniSkynetEventServiceLookup implements IServiceLookupListene
    }
 
    private void connectToService(ISkynetEventService service) {
-      if (preferences.isNewEvents()) {
-         return;
-      }
       try {
          ISkynetEventListener clientListener = getClientEventListenerRemoteReference();
          if (clientListener != null) {
@@ -176,9 +165,6 @@ public final class JiniSkynetEventServiceLookup implements IServiceLookupListene
 
    @Override
    public void serviceAdded(ServiceItem serviceItem) {
-      if (preferences.isNewEvents()) {
-         return;
-      }
       if (serviceItem.service instanceof ISkynetEventService) {
          ISkynetEventService service = (ISkynetEventService) serviceItem.service;
          if (isValidService(service)) {

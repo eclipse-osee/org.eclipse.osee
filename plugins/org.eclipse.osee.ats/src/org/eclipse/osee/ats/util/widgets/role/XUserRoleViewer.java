@@ -33,8 +33,6 @@ import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
-import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
@@ -70,11 +68,9 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 /**
- * <REM2>
- * 
  * @author Donald G. Dunne
  */
-public class XUserRoleViewer extends XWidget implements IArtifactWidget, IArtifactEventListener, IFrameworkTransactionEventListener {
+public class XUserRoleViewer extends XWidget implements IArtifactWidget, IArtifactEventListener {
 
    private UserRoleXViewer xViewer;
    private IDirtiableEditor editor;
@@ -486,26 +482,6 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IArtifa
    @Override
    public void revert() {
       // Nothing to revert cause artifact will be reverted
-   }
-
-   @Override
-   public void handleFrameworkTransactionEvent(Sender sender, final FrameworkTransactionData transData) throws OseeCoreException {
-      if (transData.getBranchId() != AtsUtil.getAtsBranch().getId()) {
-         return;
-      }
-      Displays.ensureInDisplayThread(new Runnable() {
-         @Override
-         public void run() {
-            if (xViewer == null || xViewer.getTree() == null || xViewer.getTree().isDisposed()) {
-               return;
-            }
-            if (transData.isRelAddedChangedDeleted(reviewArt.getArtifact())) {
-               loadTable();
-            } else {
-               refresh();
-            }
-         }
-      });
    }
 
    @Override

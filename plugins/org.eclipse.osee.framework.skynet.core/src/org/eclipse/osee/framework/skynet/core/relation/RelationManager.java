@@ -43,14 +43,12 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactKey;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderFactory;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationSorterProvider;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
-import org.eclipse.osee.framework.skynet.core.utility.ElapsedTime;
 
 /**
  * @author Ryan D. Brooks
@@ -706,12 +704,6 @@ public class RelationManager {
          RelationTypeSideSorter sorter = createTypeSideSorter(artifactA, relationType, RelationSide.SIDE_B);
          sorter.addItem(sorterId, artifactB);
 
-         try {
-            OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationEventType.Added, relation,
-               relation.getABranch(), relationType.getName());
-         } catch (Exception ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
-         }
       } else if (relation.isDeleted()) {
          relation.undelete();
          RelationTypeSideSorter sorter = createTypeSideSorter(artifactA, relationType, RelationSide.SIDE_B);
@@ -721,7 +713,7 @@ public class RelationManager {
 
    public static void setRelationRationale(Artifact artifactA, Artifact artifactB, RelationType relationType, String rationale) throws OseeCoreException {
       RelationLink relation = getRelationLink(artifactA, artifactB, relationType);
-      relation.setRationale(rationale, true);
+      relation.setRationale(rationale);
    }
 
    public static String getRelationRationale(Artifact artifactA, Artifact artifactB, RelationType relationType) throws OseeCoreException {

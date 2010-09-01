@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.skynet.core.event.RemoteEventServiceEventType;
 import org.eclipse.osee.framework.skynet.core.event.systems.EventManagerData;
 import org.eclipse.osee.framework.skynet.core.event.systems.EventManagerFactory;
 import org.eclipse.osee.framework.skynet.core.event.systems.InternalEventManager2;
-import org.eclipse.osee.framework.skynet.core.event.systems.LegacyEventManager;
 import org.eclipse.osee.framework.skynet.core.event.systems.ResMessagingConnectionListener;
 import org.osgi.framework.BundleContext;
 
@@ -60,45 +59,27 @@ public class OseeEventSystemServiceRegHandler extends AbstractTrackingHandler {
 
       EventManagerFactory factory = new EventManagerFactory();
 
-      LegacyEventManager legacyEventManager = null;
       InternalEventManager2 eventManager = null;
-      if (eventManagerData.getPreferences().isOldEvents()) {
-         legacyEventManager =
-            factory.createLegacyEventManager(eventManagerData.getPreferences(), eventManagerData.getListeners(),
-               eventManagerData.getPriorityListeners());
-      } else if (eventManagerData.getPreferences().isNewEvents()) {
-         connectionStatusListener = new ResMessagingConnectionListener(eventManagerData.getPreferences());
-         eventManager =
-            factory.createNewEventManager(coreModelEventService, eventManagerData.getPreferences(),
-               eventManagerData.getListeners(), eventManagerData.getPriorityListeners(), connectionStatusListener);
-      }
+      connectionStatusListener = new ResMessagingConnectionListener(eventManagerData.getPreferences());
+      eventManager =
+         factory.createNewEventManager(coreModelEventService, eventManagerData.getPreferences(),
+            eventManagerData.getListeners(), eventManagerData.getPriorityListeners(), connectionStatusListener);
 
-      if (legacyEventManager == null && eventManager == null) {
-         OseeLog.log(Activator.class, Level.SEVERE, "Neither Event System Enabled - This is a problem.");
+      if (eventManager != null) {
+         eventManagerData.setMessageEventManager(eventManager);
+         coreModelEventService.addConnectionListener(connectionStatusListener);
+         eventManager.start();
+         try {
+            OseeEventManager.kickLocalRemEvent(eventManager, RemoteEventServiceEventType.Rem2_Connected);
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, Level.INFO, ex);
+         }
+         OseeLog.log(Activator.class, Level.INFO, "REM2: Enabled");
       } else {
-         if (eventManager != null) {
-            eventManagerData.setMessageEventManager(eventManager);
-            coreModelEventService.addConnectionListener(connectionStatusListener);
-            eventManager.start();
-            try {
-               OseeEventManager.kickLocalRemEvent(eventManager, RemoteEventServiceEventType.Rem2_Connected);
-            } catch (OseeCoreException ex) {
-               OseeLog.log(Activator.class, Level.INFO, ex);
-            }
-            OseeLog.log(Activator.class, Level.INFO, "REM2: Enabled");
-         } else {
-            OseeLog.log(Activator.class, Level.INFO, "REM2: Disabled");
-         }
-
-         if (legacyEventManager != null) {
-            eventManagerData.setLegacyEventManager(legacyEventManager);
-            legacyEventManager.start();
-            OseeLog.log(Activator.class, Level.INFO, "REM1 Enabled");
-         } else {
-            OseeLog.log(Activator.class, Level.INFO, "REM1 Disabled");
-         }
-         addCoreListeners();
+         OseeLog.log(Activator.class, Level.INFO, "REM2: Disabled");
       }
+
+      addCoreListeners();
    }
 
    private void addCoreListeners() {
@@ -126,11 +107,6 @@ public class OseeEventSystemServiceRegHandler extends AbstractTrackingHandler {
          eventManager.stop();
          //         OseeEventManager.kickLocalRemEvent(eventManager, RemoteEventServiceEventType.Rem2_DisConnected);
          eventManagerData.setMessageEventManager(null);
-      }
-      LegacyEventManager legacyEventManager = eventManagerData.getLegacyEventManager();
-      if (legacyEventManager != null) {
-         legacyEventManager.stop();
-         eventManagerData.setLegacyEventManager(null);
       }
    }
 }

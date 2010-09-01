@@ -84,7 +84,7 @@ public class InternalEventManager2 {
    }
 
    public boolean isConnected() {
-      return preferences.isNewEvents() && connectionStatus.isConnected();
+      return connectionStatus.isConnected();
    }
 
    private void execute(Runnable runnable) {
@@ -540,7 +540,7 @@ public class InternalEventManager2 {
     * ui. SessionId needs to be modified so this client doesn't think the events came from itself.
     */
    private void sendRemoteEvent(final RemoteEvent remoteEvent) {
-      if (preferences.isNewEvents() && isConnected()) {
+      if (isConnected()) {
          EventUtil.eventLog(String.format("REM2: kick - [%s]", remoteEvent));
          Job job =
             new Job(String.format("[%s] - sending [%s]", getClass().getSimpleName(),

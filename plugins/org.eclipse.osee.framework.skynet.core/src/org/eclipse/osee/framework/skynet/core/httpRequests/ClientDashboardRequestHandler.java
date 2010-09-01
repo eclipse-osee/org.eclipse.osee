@@ -93,10 +93,7 @@ public class ClientDashboardRequestHandler implements IHttpServerRequest {
       for (IHealthStatus status : OseeLog.getStatus()) {
          sb.append("\n" + status.getSourceName() + ": [" + status.getMessage() + "]");
       }
-      sb.append("\nRemote Event Service - Old Connected: [" + OseeEventManager.isLegacyEventManagerConnected() + "]");
-      sb.append("\nRemote Event Service - Old Active: [" + OseeEventManager.getPreferences().isOldEvents() + "]");
-      sb.append("\nRemote Event Service - New Connected: [" + OseeEventManager.isEventManagerConnected() + "]");
-      sb.append("\nRemote Event Service - New Active: [" + OseeEventManager.getPreferences().isNewEvents() + "]");
+      sb.append("\nRemote Event Service Connected: [" + OseeEventManager.isEventManagerConnected() + "]");
       return sb.toString();
    }
 

@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
@@ -153,12 +152,6 @@ public class RelationLink {
 
    public void undelete() {
       internalUnDelete();
-      try {
-         OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationEventType.Undeleted, this,
-            getABranch(), relationType.getName());
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
    }
 
    public void internalUnDelete() {
@@ -187,15 +180,6 @@ public class RelationLink {
          }
 
          markAsDeleted(setDirty);
-
-         if (setDirty) {
-            try {
-               OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationEventType.Deleted, this,
-                  getABranch(), relationType.getName());
-            } catch (OseeCoreException ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, ex);
-            }
-         }
       }
    }
 
@@ -243,7 +227,7 @@ public class RelationLink {
       return rationale;
    }
 
-   public void setRationale(String rationale, boolean notify) {
+   public void setRationale(String rationale) {
       if (rationale == null) {
          rationale = "";
       }
@@ -253,14 +237,6 @@ public class RelationLink {
       internalSetRationale(rationale);
       markedAsChanged(ModificationType.MODIFIED, SET_DIRTY);
 
-      if (notify) {
-         try {
-            OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationEventType.ModifiedRationale,
-               this, getABranch(), relationType.getName());
-         } catch (Exception ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
-         }
-      }
    }
 
    public void internalSetRationale(String rationale) {

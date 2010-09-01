@@ -56,8 +56,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
-import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
@@ -81,11 +79,10 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
 /**
  * A graphical editor for the configuration of ATS workflows<br>
- * <REM2>
  * 
  * @author Donald G. Dunne
  */
-public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette implements IArtifactEventListener, IFrameworkTransactionEventListener {
+public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette implements IArtifactEventListener {
 
    /** This is the root of the editor's model. */
    private WorkflowDiagram diagram;
@@ -403,21 +400,6 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
             }
          }
       });
-   }
-
-   @Override
-   public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
-      if (transData.branchId != AtsUtil.getAtsBranch().getId()) {
-         return;
-      }
-      for (Artifact delArt : transData.cacheDeletedArtifacts) {
-         if (delArt.isOfType(CoreArtifactTypes.WorkFlowDefinition)) {
-            if (delArt.getName().equals(getPartName())) {
-               closeEditor();
-            }
-         }
-      }
-      System.out.println("Add refresh of editor if workflow mod");
    }
 
    @Override

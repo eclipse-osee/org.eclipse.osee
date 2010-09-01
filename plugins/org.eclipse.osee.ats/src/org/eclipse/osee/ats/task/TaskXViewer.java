@@ -28,26 +28,17 @@ import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsRelationTypes;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.PromptChangeUtil;
 import org.eclipse.osee.ats.world.WorldXViewer;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
-import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.event.Sender;
-import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
-import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
@@ -63,12 +54,10 @@ public class TaskXViewer extends WorldXViewer {
    private boolean tasksEditable = true;
    private boolean newTaskSelectionEnabled = false;
    private static String viewerId = GUID.create();
-   private final TaskComposite taskComposite;
    private ITaskAction showRelatedTasksAction = null;
 
    public TaskXViewer(TaskComposite taskComposite, int style, IDirtiableEditor editor, TaskComposite xTaskViewer) {
       super(taskComposite, style, new TaskXViewerFactory());
-      this.taskComposite = taskComposite;
       this.editor = editor;
       this.xTaskViewer = xTaskViewer;
       registerAdvancedSectionsFromExtensionPoints();
@@ -405,9 +394,6 @@ public class TaskXViewer extends WorldXViewer {
       return false;
    }
 
-   /**
-    * @return the tasksEditable
-    */
    public boolean isTasksEditable() {
       return tasksEditable;
    }
@@ -417,56 +403,6 @@ public class TaskXViewer extends WorldXViewer {
     */
    public void setTasksEditable(boolean tasksEditable) {
       this.tasksEditable = tasksEditable;
-   }
-
-   @Override
-   public void dispose() {
-      OseeEventManager.removeListener(this);
-      super.dispose();
-   }
-
-   @Override
-   public void handleFrameworkTransactionEvent(Sender sender, final FrameworkTransactionData transData) throws OseeCoreException {
-      if (transData.branchId != AtsUtil.getAtsBranch().getId()) {
-         return;
-      }
-      Displays.ensureInDisplayThread(new Runnable() {
-         @Override
-         public void run() {
-            if (xTaskViewer.getTaskXViewer().getContentProvider() == null) {
-               return;
-            }
-            remove(transData.cacheDeletedArtifacts.toArray(new Object[transData.cacheDeletedArtifacts.size()]));
-            update(transData.cacheChangedArtifacts.toArray(new Object[transData.cacheChangedArtifacts.size()]), null);
-            try {
-               if (xTaskViewer.getIXTaskViewer().getSma() == null) {
-                  return;
-               }
-               Artifact parentSma = xTaskViewer.getIXTaskViewer().getSma();
-               if (parentSma != null) {
-                  // Add any new tasks related to parent sma
-                  Collection<TaskArtifact> artifacts =
-                     Collections.castMatching(TaskArtifact.class, transData.getRelatedArtifacts(parentSma.getArtId(),
-                        RelationTypeManager.getTypeId(AtsRelationTypes.SmaToTask_Task), AtsUtil.getAtsBranch().getId(),
-                        transData.cacheAddedRelations));
-                  if (artifacts.size() > 0) {
-                     taskComposite.add(artifacts);
-                  }
-
-                  // Remove any tasks related to parent sma
-                  artifacts =
-                     Collections.castMatching(TaskArtifact.class, transData.getRelatedArtifacts(parentSma.getArtId(),
-                        RelationTypeManager.getTypeId(AtsRelationTypes.SmaToTask_Task), AtsUtil.getAtsBranch().getId(),
-                        transData.cacheDeletedRelations));
-                  if (artifacts.size() > 0) {
-                     remove(artifacts.toArray(new Object[artifacts.size()]));
-                  }
-               }
-            } catch (Exception ex) {
-               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-            }
-         }
-      });
    }
 
    public boolean isNewTaskSelectionEnabled() {

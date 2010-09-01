@@ -333,19 +333,9 @@ public class BranchEventTest {
       }
 
       @Override
-      public void handleBranchEventREM1(Sender sender, BranchEventType branchModType, int branchId) {
-         // do nothing, this is legacy branch handler call
-      }
-
-      @Override
       public List<? extends IEventFilter> getEventFilters() {
          return null;
       }
-   }
-
-   @org.junit.Before
-   public void setUpTest() {
-      OseeEventManager.getPreferences().setNewEvents(true);
    }
 
    @org.junit.BeforeClass

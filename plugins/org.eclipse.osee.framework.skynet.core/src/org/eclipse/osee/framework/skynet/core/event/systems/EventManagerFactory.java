@@ -25,17 +25,6 @@ import org.eclipse.osee.framework.skynet.core.event.systems.InternalEventManager
  */
 public class EventManagerFactory {
 
-   public LegacyEventManager createLegacyEventManager(EventSystemPreferences preferences, Collection<IEventListener> listeners, Collection<IEventListener> priorityListeners) {
-      LegacyRemoteEventReceiver clientEventListener = new LegacyRemoteEventReceiver();
-      JiniSkynetEventServiceLookup serviceLookup = new JiniSkynetEventServiceLookup(preferences, clientEventListener);
-      ExecutorService executorService = createExecutor("Osee Events");
-      LegacyEventManager manager =
-         new LegacyEventManager(listeners, priorityListeners, executorService, preferences, serviceLookup,
-            clientEventListener);
-      clientEventListener.setInternalEventManager(manager);
-      return manager;
-   }
-
    public InternalEventManager2 createNewEventManager(IOseeCoreModelEventService coreModelEventService, EventSystemPreferences preferences, Collection<IEventListener> listeners, Collection<IEventListener> priorityListeners, ConnectionStatus connectionStatus) {
       ExecutorService executorService = createExecutor("Osee Events2");
       InternalEventManager2 eventManager =

@@ -24,12 +24,7 @@ public class EventManagerData {
    private final Collection<IEventListener> listeners = new CopyOnWriteArrayList<IEventListener>();
    private final EventSystemPreferences preferences = new EventSystemPreferences();
 
-   private LegacyEventManager legacyEventManager;
    private InternalEventManager2 messageEventManager;
-
-   public void setLegacyEventManager(LegacyEventManager legacyEventManager) {
-      this.legacyEventManager = legacyEventManager;
-   }
 
    public void setMessageEventManager(InternalEventManager2 messageEventManager) {
       this.messageEventManager = messageEventManager;
@@ -45,10 +40,6 @@ public class EventManagerData {
 
    public EventSystemPreferences getPreferences() {
       return preferences;
-   }
-
-   public LegacyEventManager getLegacyEventManager() {
-      return legacyEventManager;
    }
 
    public InternalEventManager2 getMessageEventManager() {
