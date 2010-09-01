@@ -120,7 +120,7 @@ public class SMAGoalMembersSection extends SectionPart implements ISelectedAtsAr
       toolkit.paintBordersFor(section);
 
       RefreshTableSizeJob job = new RefreshTableSizeJob("");
-      job.schedule(300);
+      job.schedule(400);
    }
 
    private class RefreshTableSizeJob extends Job {
@@ -196,6 +196,10 @@ public class SMAGoalMembersSection extends SectionPart implements ISelectedAtsAr
       labelProvider.setParentGoal((GoalArtifact) editor.getSma());
 
       worldComposite.getWorldXViewer().addMenuActionProvider(this);
+
+      GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+      gd.horizontalSpan = 2;
+      worldComposite.setLayoutData(gd);
 
       try {
          customizeData = null;
