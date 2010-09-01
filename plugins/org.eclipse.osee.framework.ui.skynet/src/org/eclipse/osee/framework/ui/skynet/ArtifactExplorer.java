@@ -594,15 +594,12 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
             Collection<ArtifactType> artifactTypes =
                ArtifactTypeManager.getConcreteArtifactTypes(branchSelect.getData());
 
-            //            IAccessPolicyHandlerService policyHandlerService = SkynetGuiPlugin.getInstance().getPolicyHandlerService();
-            //            policyHandlerService.
-
             ArtifactType rootArtifactType = ArtifactTypeManager.getType(RootArtifact);
             artifactTypes.remove(rootArtifactType);
 
             ArtifactTypeFilteredTreeEntryDialog dialog =
-               new ArtifactTypeFilteredTreeEntryDialog("New Child", "Enter name and select Artifact type to create",
-                  "Artifact Name");
+               new ArtifactTypeFilteredTreeEntryDialog(SkynetGuiPlugin.getInstance().getPolicyHandlerService(), branch,
+                  "New Child", "Enter name and select Artifact type to create", "Artifact Name");
             dialog.setInput(artifactTypes);
             return dialog;
          }

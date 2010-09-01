@@ -16,12 +16,14 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.RelationTypeSide;
 import org.eclipse.osee.framework.core.model.access.PermissionStatus;
+import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
 import org.eclipse.osee.framework.ui.skynet.artifact.IAccessPolicyHandlerService;
@@ -65,6 +67,11 @@ public class ArtifactPromptChangeTest {
 
       @Override
       public PermissionStatus hasRelationSidePermission(Collection<RelationTypeSide> relationTypeSides, PermissionEnum permission, Level level) throws OseeCoreException {
+         return new PermissionStatus();
+      }
+
+      @Override
+      public PermissionStatus hasArtifactTypePermission(IOseeBranch branch, Collection<ArtifactType> artifactTypes, PermissionEnum permission, Level level) throws OseeCoreException {
          return new PermissionStatus();
       }
    }

@@ -35,7 +35,6 @@ import org.eclipse.ui.dialogs.PatternFilter;
  * @author Donald G. Dunne
  */
 public class ArtifactTypeFilteredTreeDialog extends OSEEFilteredTreeDialog<Collection<ArtifactType>> {
-
    private ArtifactType selection;
 
    public ArtifactTypeFilteredTreeDialog(String title, String message) {

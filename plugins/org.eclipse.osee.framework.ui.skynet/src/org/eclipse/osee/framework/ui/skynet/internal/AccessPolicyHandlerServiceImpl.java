@@ -13,12 +13,14 @@ package org.eclipse.osee.framework.ui.skynet.internal;
 import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.RelationTypeSide;
 import org.eclipse.osee.framework.core.model.access.AccessDataQuery;
 import org.eclipse.osee.framework.core.model.access.PermissionStatus;
+import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.services.IAccessControlService;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -86,5 +88,22 @@ public class AccessPolicyHandlerServiceImpl implements IAccessPolicyHandlerServi
             "No Permission Error: \n" + Collections.toString(",", objects) + " does not have permissions because: " + permissionStatus.getReason());
       }
       return notMatched;
+   }
+
+   @Override
+   public PermissionStatus hasArtifactTypePermission(IOseeBranch branch, Collection<ArtifactType> artifactTypes, PermissionEnum permission, Level level) throws OseeCoreException {
+      AccessDataQuery query = accessControlService.getAccessData(user, java.util.Collections.singleton(branch));
+      PermissionStatus permissionStatus = new PermissionStatus();
+
+      if (artifactTypes != null) {
+         for (ArtifactType artifactType : artifactTypes) {
+            query.branchArtifactTypeMatches(permission, branch, artifactType, permissionStatus);
+
+            if (printErrorMessage(artifactTypes, permissionStatus, level)) {
+               break;
+            }
+         }
+      }
+      return permissionStatus;
    }
 }
