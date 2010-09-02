@@ -18,17 +18,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.define.DefinePlugin;
 import org.eclipse.osee.define.traceability.data.RequirementData;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -46,7 +44,7 @@ import org.eclipse.swt.program.Program;
 /**
  * @author Ryan D. Brooks
  */
-public class ImportTraceabilityJob extends Job {
+public class ImportTraceabilityOperation extends AbstractOperation {
    private static final Pattern filePattern = Pattern.compile(".*\\.(java|ada|ads|adb|c|h)");
    private static final TraceabilityExtractor traceExtractor = TraceabilityExtractor.getInstance();
 
@@ -61,8 +59,8 @@ public class ImportTraceabilityJob extends Job {
    private int pathPrefixLength;
    private final boolean writeOutResults;
 
-   public ImportTraceabilityJob(File file, Branch branch, boolean writeOutResults) throws CoreException, IOException {
-      super("Importing Traceability");
+   public ImportTraceabilityOperation(File file, Branch branch, boolean writeOutResults) throws IOException {
+      super("Importing Traceability", DefinePlugin.PLUGIN_ID);
       this.file = file;
       this.requirementData = new RequirementData(branch);
       noTraceabilityFiles = new ArrayList<String>(200);
@@ -75,61 +73,39 @@ public class ImportTraceabilityJob extends Job {
    }
 
    @Override
-   public IStatus run(IProgressMonitor monitor) {
-      IStatus toReturn = Status.CANCEL_STATUS;
-      try {
-         monitor.beginTask("Importing From " + file.getName(), 100);
-         monitor.worked(1);
+   protected void doWork(IProgressMonitor monitor) throws Exception {
+      monitor.worked(1);
 
-         toReturn = requirementData.initialize(monitor);
-         if (toReturn.getSeverity() == IStatus.OK) {
-            if (monitor.isCanceled() != true) {
-               if (writeOutResults) {
-                  excelWriter.startSheet("srs <--> code units", 6);
-                  excelWriter.writeRow("Req in DB", "Code Unit", "Requirement Name", "Requirement Trace Mark in Code");
-               }
-
-               if (file.isFile()) {
-                  for (String path : Lib.readListFromFile(file, true)) {
-                     monitor.subTask(path);
-                     handleDirectory(new File(path));
-                     if (monitor.isCanceled() == true) {
-                        break;
-                     }
-                  }
-               } else if (file.isDirectory()) {
-                  handleDirectory(file);
-               } else {
-                  throw new IllegalStateException("unexpected file system type");
-               }
-
-               if (writeOutResults && monitor.isCanceled() != true) {
-                  excelWriter.endSheet();
-
-                  writeNoTraceFilesSheet();
-                  writeTraceCountsSheet();
-
-                  excelWriter.endWorkbook();
-                  IFile iFile = OseeData.getIFile("CodeUnit_To_SRS_Trace.xml");
-                  AIFile.writeToFile(iFile, charBak);
-                  Program.launch(iFile.getLocation().toOSString());
-               }
-
-               if (monitor.isCanceled() != true) {
-                  toReturn = Status.OK_STATUS;
-               } else {
-                  toReturn = Status.CANCEL_STATUS;
-               }
-            }
-         }
-      } catch (IOException ex) {
-         toReturn = new Status(IStatus.ERROR, DefinePlugin.PLUGIN_ID, -1, ex.getLocalizedMessage(), ex);
-      } catch (OseeCoreException ex) {
-         toReturn = new Status(IStatus.ERROR, DefinePlugin.PLUGIN_ID, -1, ex.getLocalizedMessage(), ex);
-      } finally {
-         monitor.done();
+      requirementData.initialize(monitor);
+      if (writeOutResults) {
+         excelWriter.startSheet("srs <--> code units", 6);
+         excelWriter.writeRow("Req in DB", "Code Unit", "Requirement Name", "Requirement Trace Mark in Code");
       }
-      return toReturn;
+
+      if (file.isFile()) {
+         for (String path : Lib.readListFromFile(file, true)) {
+            monitor.subTask(path);
+            handleDirectory(new File(path));
+            checkForCancelledStatus(monitor);
+         }
+      } else if (file.isDirectory()) {
+         handleDirectory(file);
+      } else {
+         throw new OseeStateException(String.format("Invalid path [%s]", file.getCanonicalPath()));
+      }
+
+      checkForCancelledStatus(monitor);
+      if (writeOutResults) {
+         excelWriter.endSheet();
+
+         writeNoTraceFilesSheet();
+         writeTraceCountsSheet();
+
+         excelWriter.endWorkbook();
+         IFile iFile = OseeData.getIFile("CodeUnit_To_SRS_Trace.xml");
+         AIFile.writeToFile(iFile, charBak);
+         Program.launch(iFile.getLocation().toOSString());
+      }
    }
 
    private void handleDirectory(File directory) throws IOException, OseeCoreException {

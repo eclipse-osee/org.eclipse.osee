@@ -15,9 +15,9 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.define.DefinePlugin;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
 
@@ -38,7 +38,7 @@ public class ImportTraceabilityWizard extends Wizard implements IImportWizard {
       try {
          Branch branch = mainPage.getSelectedBranch();
          File file = mainPage.getImportFile();
-         Jobs.startJob(new ImportTraceabilityJob(file, branch, true));
+         Operations.executeWorkAndCheckStatus(new ImportTraceabilityOperation(file, branch, true));
       } catch (Exception ex) {
          OseeLog.log(DefinePlugin.class, OseeLevel.SEVERE_POPUP, "Traceability Import Error", ex);
       }
