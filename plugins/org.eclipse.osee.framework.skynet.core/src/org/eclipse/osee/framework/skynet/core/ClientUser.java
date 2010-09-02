@@ -24,12 +24,11 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.IExceptionableRunnable;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.event.AccessControlEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.event2.AccessControlEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEventType;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 
 /**
  * @author Roberto E. Escobar
@@ -118,7 +117,7 @@ final class ClientUser {
          public IStatus run(IProgressMonitor monitor) throws Exception {
             AccessControlEvent event = new AccessControlEvent();
             event.setEventType(AccessControlEventType.UserAuthenticated);
-            OseeEventManager.kickAccessControlArtifactsEvent(this, event, LoadedArtifacts.createEmptyLoadedArtifacts());
+            OseeEventManager.kickAccessControlArtifactsEvent(this, event);
             return Status.OK_STATUS;
          }
 

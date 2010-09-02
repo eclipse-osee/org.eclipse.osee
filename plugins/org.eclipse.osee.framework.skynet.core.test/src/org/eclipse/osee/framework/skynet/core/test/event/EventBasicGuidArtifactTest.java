@@ -16,8 +16,8 @@ import junit.framework.Assert;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidArtifact;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
-import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModType;
+import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
+import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.junit.Test;
 
 /**

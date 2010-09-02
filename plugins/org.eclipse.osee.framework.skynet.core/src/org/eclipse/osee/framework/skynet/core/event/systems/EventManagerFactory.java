@@ -16,8 +16,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import org.eclipse.osee.framework.messaging.event.res.IOseeCoreModelEventService;
 import org.eclipse.osee.framework.skynet.core.event.EventSystemPreferences;
-import org.eclipse.osee.framework.skynet.core.event.IEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventThreadFactory;
+import org.eclipse.osee.framework.skynet.core.event.listener.IEventListener;
 import org.eclipse.osee.framework.skynet.core.event.systems.InternalEventManager2.ConnectionStatus;
 
 /**

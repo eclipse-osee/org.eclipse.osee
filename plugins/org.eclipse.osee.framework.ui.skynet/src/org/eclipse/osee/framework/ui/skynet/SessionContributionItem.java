@@ -19,12 +19,11 @@ import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.event.AccessControlEventType;
-import org.eclipse.osee.framework.skynet.core.event.IAccessControlEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.event.Sender;
-import org.eclipse.osee.framework.skynet.core.event2.AccessControlEvent;
-import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
+import org.eclipse.osee.framework.skynet.core.event.listener.IAccessControlEventListener;
+import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEventType;
+import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.ui.skynet.dialogs.AuthenticationDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -80,8 +79,7 @@ public final class SessionContributionItem extends OseeContributionItem implemen
                            try {
                               AccessControlEvent event = new AccessControlEvent();
                               event.setEventType(AccessControlEventType.UserAuthenticated);
-                              OseeEventManager.kickAccessControlArtifactsEvent(this, event,
-                                 LoadedArtifacts.createEmptyLoadedArtifacts());
+                              OseeEventManager.kickAccessControlArtifactsEvent(this, event);
                            } catch (Exception ex) {
                               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                            }

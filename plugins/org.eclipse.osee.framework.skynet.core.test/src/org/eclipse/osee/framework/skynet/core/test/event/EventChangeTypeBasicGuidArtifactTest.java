@@ -14,8 +14,8 @@ import java.util.HashSet;
 import java.util.Set;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
-import org.eclipse.osee.framework.skynet.core.event2.artifact.EventChangeTypeBasicGuidArtifact;
+import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
+import org.eclipse.osee.framework.skynet.core.event.model.EventChangeTypeBasicGuidArtifact;
 import org.junit.Test;
 
 /**

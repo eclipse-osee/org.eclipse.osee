@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.skynet.core.event.systems;
 import java.util.Collection;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.osee.framework.skynet.core.event.EventSystemPreferences;
-import org.eclipse.osee.framework.skynet.core.event.IEventListener;
+import org.eclipse.osee.framework.skynet.core.event.listener.IEventListener;
 
 /**
  * @author Roberto E. Escobar

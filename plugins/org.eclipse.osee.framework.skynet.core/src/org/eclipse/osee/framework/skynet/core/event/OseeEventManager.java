@@ -26,20 +26,22 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.event.filter.BranchGuidEventFilter;
+import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
+import org.eclipse.osee.framework.skynet.core.event.listener.IEventListener;
+import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.BroadcastEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
+import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
+import org.eclipse.osee.framework.skynet.core.event.model.RemoteEventServiceEventType;
+import org.eclipse.osee.framework.skynet.core.event.model.Sender;
+import org.eclipse.osee.framework.skynet.core.event.model.TransactionChange;
+import org.eclipse.osee.framework.skynet.core.event.model.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.systems.EventManagerData;
 import org.eclipse.osee.framework.skynet.core.event.systems.InternalEventManager2;
-import org.eclipse.osee.framework.skynet.core.event2.AccessControlEvent;
-import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
-import org.eclipse.osee.framework.skynet.core.event2.BranchEvent;
-import org.eclipse.osee.framework.skynet.core.event2.BroadcastEvent;
-import org.eclipse.osee.framework.skynet.core.event2.TransactionChange;
-import org.eclipse.osee.framework.skynet.core.event2.TransactionEvent;
-import org.eclipse.osee.framework.skynet.core.event2.artifact.EventBasicGuidArtifact;
-import org.eclipse.osee.framework.skynet.core.event2.artifact.EventModType;
-import org.eclipse.osee.framework.skynet.core.event2.filter.BranchGuidEventFilter;
-import org.eclipse.osee.framework.skynet.core.event2.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
-import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 
 /**
  * Front end to OSEE events. Provides ability to add and remove different event listeners as well as the ability to kick
@@ -174,7 +176,7 @@ public class OseeEventManager {
    }
 
    // Kick LOCAL and REMOTE access control events
-   public static void kickAccessControlArtifactsEvent(Object source, AccessControlEvent accessControlEvent, final LoadedArtifacts loadedArtifacts) throws OseeAuthenticationRequiredException {
+   public static void kickAccessControlArtifactsEvent(Object source, AccessControlEvent accessControlEvent) throws OseeAuthenticationRequiredException {
       if (isDisableEvents()) {
          return;
       }

@@ -61,11 +61,10 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.event.AccessControlEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.event2.AccessControlEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEventType;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
-import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 import org.osgi.framework.Bundle;
 import org.osgi.util.tracker.ServiceTracker;
 
@@ -582,7 +581,7 @@ public class AccessControlService implements IAccessControlService {
          }
       }
       try {
-         OseeEventManager.kickAccessControlArtifactsEvent(this, event, new LoadedArtifacts(lockedArts));
+         OseeEventManager.kickAccessControlArtifactsEvent(this, event);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
@@ -611,7 +610,7 @@ public class AccessControlService implements IAccessControlService {
          }
       }
       try {
-         OseeEventManager.kickAccessControlArtifactsEvent(this, event, new LoadedArtifacts(lockedArts));
+         OseeEventManager.kickAccessControlArtifactsEvent(this, event);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
