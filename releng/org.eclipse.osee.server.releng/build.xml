@@ -243,8 +243,6 @@
 			<for param="line.data" delimiter="${line.separator}" list="${data}" trim="true">
 				<sequential>
 					<propertyregex property="resourceName" input="@{line.data}" defaultvalue="" regexp="[^,]+$" select="\0" casesensitive="false" override="true" />
-
-					<echo message="creating a link to src [${resourceName}]" />
 					<symlink link="@{targetDir}/${resourceName}" resource="@{sourceDir}/${resourceName}" overwrite="true" />
 				</sequential>
 			</for>
