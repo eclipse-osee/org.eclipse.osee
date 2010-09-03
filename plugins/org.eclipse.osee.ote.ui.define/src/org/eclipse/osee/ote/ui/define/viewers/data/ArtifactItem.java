@@ -27,13 +27,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
-import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
-import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.event.Sender;
-import org.eclipse.osee.framework.skynet.core.event2.ArtifactEvent;
-import org.eclipse.osee.framework.skynet.core.event2.artifact.IArtifactEventListener;
-import org.eclipse.osee.framework.skynet.core.event2.filter.IEventFilter;
+import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
+import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -49,7 +47,7 @@ import org.eclipse.swt.widgets.TreeColumn;
 /**
  * @author Roberto E. Escobar
  */
-public class ArtifactItem extends DataItem implements IXViewerItem, IArtifactEventListener, IFrameworkTransactionEventListener {
+public class ArtifactItem extends DataItem implements IXViewerItem, IArtifactEventListener {
    private static Image FROM_LOCAL_WS_COMMIT_ALLOWED_IMAGE = null;
    private static Image FROM_DATABASE_IMAGE = null;
    private static Image FROM_LOCAL_WS_COMMIT_NOT_ALLOWED_IMAGE = null;
@@ -218,7 +216,7 @@ public class ArtifactItem extends DataItem implements IXViewerItem, IArtifactEve
       return FROM_LOCAL_WS_COMMIT_ALLOWED_IMAGE != null && FROM_DATABASE_IMAGE != null && FROM_LOCAL_WS_COMMIT_NOT_ALLOWED_IMAGE != null;
    }
 
-   private void initializeImages() throws OseeArgumentException {
+   private void initializeImages() {
       Artifact artifact = getData();
       Image defaultImage = ArtifactImageManager.getImage(artifact);
       DecorationOverlayIcon overlay = null;
@@ -260,36 +258,40 @@ public class ArtifactItem extends DataItem implements IXViewerItem, IArtifactEve
       return ArtifactItem.isFullDescriptionMode;
    }
 
-   @Override
-   public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
-      if (artifact.isDeleted()) {
-         return;
-      }
-      if (transData.isDeleted(artifact)) {
-         Displays.ensureInDisplayThread(new Runnable() {
-            @Override
-            public void run() {
-               if (!xViewer.getTree().isDisposed()) {
-                  xViewer.remove(this);
-               }
-               dispose();
-            }
-         });
-         return;
-      }
-      if (transData.isRelAddedChangedDeleted(artifact) || transData.isChanged(artifact)) {
-         Displays.ensureInDisplayThread(new Runnable() {
-            @Override
-            public void run() {
-               if (!xViewer.getTree().isDisposed()) {
-                  xViewer.remove(this);
-               } else {
-                  xViewer.update(this, null);
-               }
-            }
-         });
-      }
-   }
+   //   @Override
+   //   public void handleTransactionEvent(Sender sender, TransactionEvent transData) {
+   //      if (artifact.isDeleted()) {
+   //         return;
+   //      }
+   //      
+   ////      transData.getTransactions()
+   //      TransactionChange change = null;
+   //      change.
+   //      if (transData.isDeleted(artifact)) {
+   //         Displays.ensureInDisplayThread(new Runnable() {
+   //            @Override
+   //            public void run() {
+   //               if (!xViewer.getTree().isDisposed()) {
+   //                  xViewer.remove(this);
+   //               }
+   //               dispose();
+   //            }
+   //         });
+   //         return;
+   //      }
+   //      if (transData.isRelAddedChangedDeleted(artifact) || transData.isChanged(artifact)) {
+   //         Displays.ensureInDisplayThread(new Runnable() {
+   //            @Override
+   //            public void run() {
+   //               if (!xViewer.getTree().isDisposed()) {
+   //                  xViewer.remove(this);
+   //               } else {
+   //                  xViewer.update(this, null);
+   //               }
+   //            }
+   //         });
+   //      }
+   //   }
 
    @Override
    public List<? extends IEventFilter> getEventFilters() {
