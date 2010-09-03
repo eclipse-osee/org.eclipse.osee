@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.widgets.Composite;
@@ -142,7 +143,11 @@ public abstract class XWidget {
    public void setControlCausedMessageByObject(String messageText, int type) {
       IMessageManager messageManager = getMessageManager();
       if (messageManager != null && isFormReady()) {
-         messageManager.addMessage(this, messageText, null, type, getErrorMessageControl());
+         try {
+            messageManager.addMessage(this, messageText, null, type, getErrorMessageControl());
+         } catch (SWTException ex) {
+            //Do nothing
+         }
       }
    }
 
