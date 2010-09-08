@@ -120,7 +120,7 @@ public class ResultsEditorConverter {
       private final static String JAVASCRIPT = "<script type=\"text/javascript\">\n" + //
       "function opendiv(id){\n" + //
       "var divStyle = document.getElementById(id).style;\n" + //
-      "divStyle.display = (divStyle.display=='none') ? 'block':'none';\n" + // 
+      "divStyle.display = (divStyle.display=='none') ? 'block':'none';\n" + //
       "}\n";
       private final static String START_HTML = "</script>\n</head>\n<body>\n";
       private final static String END_HTML = "\n</body>\n</html>\n";

@@ -281,7 +281,7 @@ public class RelationManager {
       Collection<Integer> ret = new HashSet<Integer>();
       if (relations != null) {
          for (RelationLink rel : relations) {
-            if (allowDeleted == INCLUDE_DELETED || (allowDeleted == EXCLUDE_DELETED && !rel.isDeleted())) {
+            if (allowDeleted == INCLUDE_DELETED || allowDeleted == EXCLUDE_DELETED && !rel.isDeleted()) {
                ret.add(rel.getArtifactId(side));
             }
          }

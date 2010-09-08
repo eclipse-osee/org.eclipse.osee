@@ -45,7 +45,8 @@ public abstract class OSEEFilteredTreeDialog<T> extends MessageDialog {
    private final IBaseLabelProvider labelProvider;
 
    public OSEEFilteredTreeDialog(String dialogTitle, String dialogMessage, IBaseLabelProvider labelProvider, IContentProvider contentProvider, PatternFilter patternFilter) {
-      super(Displays.getActiveShell(), dialogTitle, null, dialogMessage, MessageDialog.NONE, new String[] {"OK",
+      super(Displays.getActiveShell(), dialogTitle, null, dialogMessage, MessageDialog.NONE, new String[] {
+         "OK",
          "Cancel"}, 0);
       this.contentProvider = contentProvider;
       this.labelProvider = labelProvider;

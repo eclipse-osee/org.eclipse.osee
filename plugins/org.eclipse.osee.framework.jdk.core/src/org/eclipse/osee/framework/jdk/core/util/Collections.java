@@ -124,7 +124,6 @@ public class Collections {
 
    /**
     * Returns the unique union of the given lists
-    * 
     */
    public static <T> Set<T> setUnion(Collection<T>... lists) {
       Set<T> union = new HashSet<T>(lists[0].size() * 2);
@@ -137,7 +136,6 @@ public class Collections {
 
    /**
     * Return true if same objects exist in listA and listB
-    * 
     */
    public static <T> boolean isEqual(Collection<T> listA, Collection<T> listB) {
       if (listA.size() != listB.size()) {
@@ -159,7 +157,6 @@ public class Collections {
 
    /**
     * Convert an aggregate list of objects into a List
-    * 
     */
    public static <T> List<T> getAggregate(T... objects) {
       List<T> objs = new ArrayList<T>();
@@ -235,7 +232,6 @@ public class Collections {
 
    /**
     * Cast objects to clazz
-    * 
     */
    public static <A> List<A> castAll(Collection<?> objects) {
       List<A> results = new ArrayList<A>(objects.size());
@@ -249,7 +245,6 @@ public class Collections {
     * Unchecked cast objects to clazz; CastClassException will occur when object sent in does not match clazz<br>
     * <br>
     * Use when all objects are expected to be of type class and exception is desired if not
-    * 
     */
    public static <A extends Object> List<A> castAll(Class<A> clazz, Collection<? extends Object> objects) {
       return cast(clazz, objects, CastOption.ALL);
@@ -259,7 +254,6 @@ public class Collections {
     * Cast objects matching class, ignore rest; no ClassCastException will occur<br>
     * <br>
     * Use when objects may contain classes that are not desired
-    * 
     */
    public static <A extends Object> List<A> castMatching(Class<A> clazz, Collection<? extends Object> objects) {
       return cast(clazz, objects, CastOption.MATCHING);

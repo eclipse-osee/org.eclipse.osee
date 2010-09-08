@@ -160,7 +160,7 @@ public class AttributeFindReplaceDialog extends Dialog {
       final Pattern pattern = Pattern.compile(txtFindRegEx.getText());
       final String replaceText = txtReplaceStr.getText();
       final IAttributeType attributeType =
-         ((IAttributeType) ((IStructuredSelection) cmbAttributeDescriptors.getSelection()).getFirstElement());
+         (IAttributeType) ((IStructuredSelection) cmbAttributeDescriptors.getSelection()).getFirstElement();
 
       Job job = new Job("Find/Replace") {
 

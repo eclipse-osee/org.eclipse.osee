@@ -263,7 +263,7 @@ public class ArtifactItem extends DataItem implements IXViewerItem, IArtifactEve
    //      if (artifact.isDeleted()) {
    //         return;
    //      }
-   //      
+   //
    ////      transData.getTransactions()
    //      TransactionChange change = null;
    //      change.

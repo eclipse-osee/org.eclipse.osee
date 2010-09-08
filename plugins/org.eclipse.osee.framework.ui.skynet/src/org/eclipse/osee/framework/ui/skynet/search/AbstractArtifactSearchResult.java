@@ -46,7 +46,7 @@ public abstract class AbstractArtifactSearchResult extends AbstractTextSearchRes
 
    //   /**
    //    * Removes the children artifacts from the search
-   //    * 
+   //    *
    //   //    */
    //   public void removeArtifacts(Collection<Artifact> children) {
    //      for (Artifact artifact : children) {

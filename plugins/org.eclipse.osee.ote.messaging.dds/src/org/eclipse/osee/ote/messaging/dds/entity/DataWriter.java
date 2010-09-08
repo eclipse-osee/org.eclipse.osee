@@ -174,10 +174,8 @@ public class DataWriter extends DomainEntity {
     * data to the system.
     * 
     * @param destination TODO
-    * @param source TODO
-    * <li>{@link ReturnCode#NOT_ENABLED} if this writer is not enabled.
-    * <li>{@link ReturnCode#OK} otherwise.
-    * </ul>
+    * @param source TODO <li>{@link ReturnCode#NOT_ENABLED} if this writer is not enabled. <li>{@link ReturnCode#OK}
+    * otherwise. </ul>
     */
    public ReturnCode write(IDestination destination, ISource source, Data data, InstanceHandle handle) {
       // Check that the Entity is enabled before proceeding (See description of enable on the Entity object in the DDS spec)

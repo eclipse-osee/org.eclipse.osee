@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.core.data;
 
 import java.io.InputStream;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 
 /**
  * @author Roberto E. Escobar

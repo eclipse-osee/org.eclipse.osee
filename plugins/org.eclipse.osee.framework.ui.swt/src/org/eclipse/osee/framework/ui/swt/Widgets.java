@@ -765,7 +765,6 @@ public final class Widgets {
 
    /**
     * disposes all the supplied widgets if they are not null and not already disposed
-    * 
     */
    public static <T extends Widget> void disposeWidgets(final T... widgets) {
       if (widgets == null) {

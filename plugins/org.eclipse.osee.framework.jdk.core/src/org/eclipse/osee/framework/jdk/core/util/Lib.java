@@ -502,7 +502,6 @@ public final class Lib {
    /**
     * usage: char[] buf = new char[5500000]; for (Iterator iter = files.iterator(); iter.hasNext(); ) { // for each file
     * File file = (File)iter.next(); buf = Lib.fileToChars(file, buf);
-    * 
     */
    public static char[] fileToChars(File file, char[] buf) throws IOException {
       FileReader in = new FileReader(file);
@@ -1147,7 +1146,6 @@ public final class Lib {
    /**
     * Returns a list of the arguments in the source String passed. It assumes that the first character is a '(' and
     * matches till it finds the matching ')'.
-    * 
     */
    public static String[] getArguments(String source) {
       ArrayList<String> theResults = new ArrayList<String>();
@@ -1233,7 +1231,6 @@ public final class Lib {
    /**
     * Returns a list of Strings representing each comma separated string in the string passed. It ignores commas inside
     * () or {}.
-    * 
     */
    public static String[] getCommaSeparatedItems(String source) {
       ArrayList<String> theResults = new ArrayList<String>();

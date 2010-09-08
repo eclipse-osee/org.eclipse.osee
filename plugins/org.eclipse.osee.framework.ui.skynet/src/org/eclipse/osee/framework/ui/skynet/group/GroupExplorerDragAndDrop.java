@@ -181,7 +181,7 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
          if (dragOverTreeITem.getData() instanceof GroupExplorerItem) {
             final GroupExplorerItem dragOverExplorerItem = (GroupExplorerItem) dragOverTreeITem.getData();
 
-            // Drag item dropped ON universal group item 
+            // Drag item dropped ON universal group item
             if (dragOverExplorerItem.isUniversalGroup()) {
 
                // Drag item came from inside Group Explorer

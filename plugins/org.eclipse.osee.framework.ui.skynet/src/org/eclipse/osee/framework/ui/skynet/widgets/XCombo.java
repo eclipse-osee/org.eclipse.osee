@@ -38,7 +38,7 @@ public class XCombo extends XWidget {
    private Composite parent;
    protected String data = "";
    protected String[] inDataStrings; // Strings sent in for display
-   // 
+   //
    private final Map<String, Integer> displayDataStrings = new HashMap<String, Integer>();
    protected Map<String, String> dataStringToXmlString;
    private String displayArray[];

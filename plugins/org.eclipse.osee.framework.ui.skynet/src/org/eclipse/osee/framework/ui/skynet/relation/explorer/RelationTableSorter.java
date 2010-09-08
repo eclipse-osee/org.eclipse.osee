@@ -24,7 +24,7 @@ public class RelationTableSorter extends ViewerSorter {
    public final static int ARTIFACT_NAME = 1;
    public final static int ARTIFACT_TYPE = 2;
 
-   // Criteria that the instance uses 
+   // Criteria that the instance uses
    private final int criteria;
 
    /**

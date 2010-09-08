@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.resource.management;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.resource.management.exception.MalformedLocatorException;
 
 /**
  * @author Roberto E. Escobar

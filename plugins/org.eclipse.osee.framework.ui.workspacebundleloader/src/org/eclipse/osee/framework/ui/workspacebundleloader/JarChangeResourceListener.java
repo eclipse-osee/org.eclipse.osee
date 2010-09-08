@@ -20,7 +20,6 @@ import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.osgi.framework.BundleException;
 
 /**
  * Handler for IResourceChangeEvent.POST_CHANGE and IResourceChangeEvent.PRE_CLOSE events for projects with a given

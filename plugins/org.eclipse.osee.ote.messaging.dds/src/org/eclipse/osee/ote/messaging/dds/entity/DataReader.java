@@ -181,11 +181,9 @@ public class DataReader extends DomainEntity {
     * Method for reading or taking the next available <code>DataSample</code> for this reader.
     * 
     * @param dataSample - A <code>DataSample</code> which the information will be placed in.
-    * @param isTake - a <code>boolean</code> stating whether the data should be taken by this call.
-    * <li>{@link ReturnCode#NOT_ENABLED} if this reader is not enabled.
-    * <li>{@link ReturnCode#NO_DATA} if no data is available to read or take.
-    * <li>{@link ReturnCode#OK} otherwise.
-    * </ul>
+    * @param isTake - a <code>boolean</code> stating whether the data should be taken by this call. <li>
+    * {@link ReturnCode#NOT_ENABLED} if this reader is not enabled. <li>{@link ReturnCode#NO_DATA} if no data is
+    * available to read or take. <li>{@link ReturnCode#OK} otherwise. </ul>
     */
    private ReturnCode readOrTakeNextSample(DataSample dataSample, boolean isTake) {
 
@@ -219,11 +217,9 @@ public class DataReader extends DomainEntity {
    /**
     * Method for reading the next available <code>DataSample</code> for this reader.
     * 
-    * @param dataSample - A <code>DataSample</code> which the information will be placed in.
-    * <li>{@link ReturnCode#NOT_ENABLED} if this reader is not enabled.
-    * <li>{@link ReturnCode#NO_DATA} if no data is available to read or take.
-    * <li>{@link ReturnCode#OK} otherwise.
-    * </ul>
+    * @param dataSample - A <code>DataSample</code> which the information will be placed in. <li>
+    * {@link ReturnCode#NOT_ENABLED} if this reader is not enabled. <li>{@link ReturnCode#NO_DATA} if no data is
+    * available to read or take. <li>{@link ReturnCode#OK} otherwise. </ul>
     */
    public ReturnCode readNextSample(DataSample dataSample) {
       return readOrTakeNextSample(dataSample, false);
@@ -232,11 +228,9 @@ public class DataReader extends DomainEntity {
    /**
     * Method for taking the next available <code>DataSample</code> for this reader.
     * 
-    * @param dataSample - A <code>DataSample</code> which the information will be placed in.
-    * <li>{@link ReturnCode#NOT_ENABLED} if this reader is not enabled.
-    * <li>{@link ReturnCode#NO_DATA} if no data is available to read or take.
-    * <li>{@link ReturnCode#OK} otherwise.
-    * </ul>
+    * @param dataSample - A <code>DataSample</code> which the information will be placed in. <li>
+    * {@link ReturnCode#NOT_ENABLED} if this reader is not enabled. <li>{@link ReturnCode#NO_DATA} if no data is
+    * available to read or take. <li>{@link ReturnCode#OK} otherwise. </ul>
     */
    public ReturnCode takeNextSample(DataSample dataSample) {
       return readOrTakeNextSample(dataSample, true);

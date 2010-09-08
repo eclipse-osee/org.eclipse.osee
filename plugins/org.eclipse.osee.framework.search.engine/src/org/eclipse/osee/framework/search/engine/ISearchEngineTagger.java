@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.search.engine;
 
 import java.io.InputStream;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeStateException;
 
 /**
  * @author Roberto E. Escobar

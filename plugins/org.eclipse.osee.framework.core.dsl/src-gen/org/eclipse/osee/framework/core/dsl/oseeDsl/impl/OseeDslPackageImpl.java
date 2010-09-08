@@ -535,6 +535,7 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage {
     * 
     * @generated
     */
+   @Override
    public EAttribute getXAttributeType_BaseAttributeType() {
       return (EAttribute) xAttributeTypeEClass.getEStructuralFeatures().get(0);
    }
@@ -544,6 +545,7 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage {
     * 
     * @generated
     */
+   @Override
    public EReference getXAttributeType_Override() {
       return (EReference) xAttributeTypeEClass.getEStructuralFeatures().get(1);
    }
@@ -553,6 +555,7 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage {
     * 
     * @generated
     */
+   @Override
    public EAttribute getXAttributeType_DataProvider() {
       return (EAttribute) xAttributeTypeEClass.getEStructuralFeatures().get(2);
    }
@@ -562,6 +565,7 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage {
     * 
     * @generated
     */
+   @Override
    public EAttribute getXAttributeType_Min() {
       return (EAttribute) xAttributeTypeEClass.getEStructuralFeatures().get(3);
    }
@@ -571,6 +575,7 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage {
     * 
     * @generated
     */
+   @Override
    public EAttribute getXAttributeType_Max() {
       return (EAttribute) xAttributeTypeEClass.getEStructuralFeatures().get(4);
    }
@@ -580,6 +585,7 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage {
     * 
     * @generated
     */
+   @Override
    public EAttribute getXAttributeType_TaggerId() {
       return (EAttribute) xAttributeTypeEClass.getEStructuralFeatures().get(5);
    }
@@ -589,6 +595,7 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage {
     * 
     * @generated
     */
+   @Override
    public EReference getXAttributeType_EnumType() {
       return (EReference) xAttributeTypeEClass.getEStructuralFeatures().get(6);
    }
@@ -598,6 +605,7 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage {
     * 
     * @generated
     */
+   @Override
    public EAttribute getXAttributeType_Description() {
       return (EAttribute) xAttributeTypeEClass.getEStructuralFeatures().get(7);
    }
@@ -607,6 +615,7 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage {
     * 
     * @generated
     */
+   @Override
    public EAttribute getXAttributeType_DefaultValue() {
       return (EAttribute) xAttributeTypeEClass.getEStructuralFeatures().get(8);
    }
@@ -616,6 +625,7 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage {
     * 
     * @generated
     */
+   @Override
    public EAttribute getXAttributeType_FileExtension() {
       return (EAttribute) xAttributeTypeEClass.getEStructuralFeatures().get(9);
    }
@@ -625,6 +635,7 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage {
     * 
     * @generated
     */
+   @Override
    public EClass getXOseeEnumType() {
       return xOseeEnumTypeEClass;
    }
@@ -634,6 +645,7 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage {
     * 
     * @generated
     */
+   @Override
    public EReference getXOseeEnumType_EnumEntries() {
       return (EReference) xOseeEnumTypeEClass.getEStructuralFeatures().get(0);
    }

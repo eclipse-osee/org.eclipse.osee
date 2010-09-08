@@ -205,7 +205,7 @@ public class XRadioButtons extends XWidget {
 
       int numRows = 1;
       if (vertical && xButtons.size() > verticalColumns) {
-         numRows = (xButtons.size() / verticalColumns);
+         numRows = xButtons.size() / verticalColumns;
          if (xButtons.size() / verticalColumns > 0) {
             numRows++;
             // System.out.println("numRows *" + numRows + "*");

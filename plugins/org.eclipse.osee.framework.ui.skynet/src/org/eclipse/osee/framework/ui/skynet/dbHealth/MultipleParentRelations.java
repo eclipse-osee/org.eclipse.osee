@@ -212,7 +212,7 @@ public class MultipleParentRelations extends DatabaseHealthOperation {
       }
    }
 
-   //public LocalRelationLink(int branchId, int childArtId, int gammaId1, int gammaId2, int parentArtId1, int parentArtId2, 
+   //public LocalRelationLink(int branchId, int childArtId, int gammaId1, int gammaId2, int parentArtId1, int parentArtId2,
    //int relLinkId1, int relLinkId2, Timestamp time1, Timestamp time2, int transactionId1, int transactionId2) {
 
    private void loadData() throws OseeDataStoreException {

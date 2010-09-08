@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
@@ -114,7 +113,6 @@ public final class Artifacts {
 
    /**
     * Recurses default hierarchy and collections children of parentArtifact that are of type class
-    * 
     */
    @SuppressWarnings("unchecked")
    public static <A extends Artifact> void getChildrenOfType(Artifact parentArtifact, Collection<A> children, Class<A> clazz, boolean recurse) throws OseeCoreException {
