@@ -85,6 +85,20 @@
 			</not>
 		</condition>
 
+		<condition property="isGitSourceDirSet">
+			<isset property="gitSourceDir" />
+		</condition>
+
+		<taskdef resource="net/sf/antcontrib/antlib.xml">
+			<classpath>
+				<pathelement path="${classpath}" />
+				<pathelement location="${relengCommonBuilderDir}/lib/ant-contrib.jar" />
+				<pathelement location="${relengBuilderDir}/lib/ant-contrib.jar" />
+				<pathelement location="${thirdPartyJarsDir}/ant-contrib.jar" />
+				<pathelement location="/usr/share/java/ant-contrib.jar" />
+			</classpath>
+		</taskdef>
+
 		<echo message="JAVA_HOME = ${JAVA_HOME}" />
 		<echo message="JAVE 6.0 HOME: ${JAVA60_HOME}" />
 		<echo message="WORKSPACE = ${WORKSPACE}" />
@@ -95,10 +109,11 @@
 		<echo message="buildDir = ${buildDir}" />
 		<echo message="fetchTag = ${fetchTag}" />
 		<echo message="forceContextQualifier = ${forceContextQualifier}" />
+		<echo message="GitSourceDir = ${gitSourceDir}" />
 	</target>
 
 
-	<target name="run" depends="init,build,createSnapshot,cleanUp">
+	<target name="run" depends="init,createLocalSourceWorkspaceFromMaps,build,createSnapshot,cleanUp">
 	</target>
 
 	<target name="build">
@@ -107,6 +122,7 @@
 	</target>
 
 	<target name="setHttpProxy" if="http.proxyHost">
+		<echo message="proxy: - ${http.proxyHost}:${http.proxyPort}" />
 		<setproxy proxyhost="${http.proxyHost}" proxyport="${http.proxyPort}" />
 	</target>
 
@@ -186,4 +202,48 @@
 		<delete failonerror="false" file="${fullTestSuite}" />
 		<delete failonerror="false" dir="${tempTestSnapFolder}" />
 	</target>
+	
+	<target name="createLocalSourceWorkspaceFromMaps" depends="init" if="isGitSourceDirSet">
+		<pathconvert property="mapFiles" setonempty="false" pathsep=";">
+			<path>
+				<fileset dir="${relengBuilderDir}/maps">
+					<include name="*.map" />
+				</fileset>
+			</path>
+		</pathconvert>
+
+		<property name="localSourceCheckoutDir" value="${buildDir}/localBuildSources" />
+
+		<mkdir dir="${localSourceCheckoutDir}/features" />
+		<mkdir dir="${localSourceCheckoutDir}/plugins" />
+
+		<for param="aMapFile" delimiter=";" list="${mapFiles}">
+			<sequential>
+				<processMapFile file="@{aMapFile}" sourceDir="${gitSourceDir}" targetDir="${localSourceCheckoutDir}" />
+			</sequential>
+		</for>
+	</target>
+
+	<macrodef name="processMapFile">
+		<attribute name="file" />
+		<attribute name="sourceDir" />
+		<attribute name="targetDir" />
+		<sequential>
+			<var name="data" unset="true" />
+			<loadfile property="data" srcfile="@{file}">
+				<filterchain>
+					<linecontains>
+						<contains value="SVN" />
+					</linecontains>
+				</filterchain>
+			</loadfile>
+
+			<for param="line.data" delimiter="${line.separator}" list="${data}" trim="true">
+				<sequential>
+					<propertyregex property="resourceName" input="@{line.data}" defaultvalue="" regexp="[^,]+$" select="\0" casesensitive="false" override="true" />
+					<symlink link="@{targetDir}/${resourceName}" resource="@{sourceDir}/${resourceName}" overwrite="true" />
+				</sequential>
+			</for>
+		</sequential>
+	</macrodef>
 </project>
