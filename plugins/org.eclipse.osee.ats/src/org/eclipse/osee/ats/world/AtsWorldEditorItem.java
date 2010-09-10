@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.actions.ExportChangeReportsAction;
 import org.eclipse.osee.ats.export.AtsExportManager;
 import org.eclipse.osee.ats.operation.CancelMultipleWorkflows;
 import org.eclipse.osee.ats.operation.CompleteMultipleWorkflows;
+import org.eclipse.osee.ats.task.TaskXViewer;
 
 /**
  * @author Donald G. Dunne
@@ -30,4 +31,10 @@ public class AtsWorldEditorItem extends AtsWorldEditorItemBase {
          new DuplicateWorkflowViaWorldEditorAction(worldEditor), new CompleteMultipleWorkflows(worldEditor),
          new CancelMultipleWorkflows(worldEditor));
    }
+
+   @Override
+   public void updateTaskEditMenuActions(TaskXViewer taskXViewer) {
+      // do nothing
+   }
+
 }

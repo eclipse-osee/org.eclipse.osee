@@ -17,25 +17,24 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.PromptChangeUtil;
+import org.eclipse.osee.ats.world.AtsWorldEditorItems;
+import org.eclipse.osee.ats.world.IAtsWorldEditorItem;
 import org.eclipse.osee.ats.world.WorldXViewer;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
@@ -48,44 +47,28 @@ import org.eclipse.swt.widgets.TreeItem;
  */
 public class TaskXViewer extends WorldXViewer {
 
-   public static final String MENU_GROUP_ATS_TASK_SHOW = "ATS TASK SHOW";
-   private final TaskComposite xTaskViewer;
+   private final TaskComposite taskComposite;
    private final IDirtiableEditor editor;
    private boolean tasksEditable = true;
    private boolean newTaskSelectionEnabled = false;
    private static String viewerId = GUID.create();
-   private ITaskAction showRelatedTasksAction = null;
 
    public TaskXViewer(TaskComposite taskComposite, int style, IDirtiableEditor editor, TaskComposite xTaskViewer) {
       super(taskComposite, style, new TaskXViewerFactory());
       this.editor = editor;
-      this.xTaskViewer = xTaskViewer;
-      registerAdvancedSectionsFromExtensionPoints();
-   }
-
-   private void registerAdvancedSectionsFromExtensionPoints() {
-
-      ExtensionDefinedObjects<ITaskAction> extensions =
-         new ExtensionDefinedObjects<ITaskAction>(AtsPlugin.PLUGIN_ID + ".AtsMenuAction", "AtsMenuAction", "classname");
-      for (ITaskAction item : extensions.getObjects()) {
-         try {
-            showRelatedTasksAction = item;
-         } catch (Exception ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-         }
-      }
+      this.taskComposite = xTaskViewer;
    }
 
    @Override
    public String toString() {
-      if (xTaskViewer == null) {
+      if (taskComposite == null) {
          return "TaskXViewer";
       }
       try {
-         if (xTaskViewer.getIXTaskViewer().getSma() != null) {
-            return "TaskXViewer - id:" + viewerId + " - " + xTaskViewer.getIXTaskViewer().getSma().toString();
+         if (taskComposite.getIXTaskViewer().getSma() != null) {
+            return "TaskXViewer - id:" + viewerId + " - " + taskComposite.getIXTaskViewer().getSma().toString();
          }
-         return "TaskXViewer - id:" + viewerId + " - " + xTaskViewer.getIXTaskViewer().toString();
+         return "TaskXViewer - id:" + viewerId + " - " + taskComposite.getIXTaskViewer().toString();
       } catch (Exception ex) {
          return "TaskXViewer - id:" + viewerId;
       }
@@ -259,7 +242,7 @@ public class TaskXViewer extends WorldXViewer {
       addNewTaskAction = new Action("New Task", IAction.AS_PUSH_BUTTON) {
          @Override
          public void run() {
-            xTaskViewer.handleNewTask();
+            taskComposite.handleNewTask();
          }
       };
 
@@ -267,7 +250,7 @@ public class TaskXViewer extends WorldXViewer {
          @Override
          public void run() {
             try {
-               xTaskViewer.handleDeleteTask();
+               taskComposite.handleDeleteTask();
             } catch (Exception ex) {
                OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
@@ -280,16 +263,11 @@ public class TaskXViewer extends WorldXViewer {
    public void updateEditMenuActions() {
       MenuManager mm = getMenuManager();
 
-      if (showRelatedTasksAction == null) {
-         registerAdvancedSectionsFromExtensionPoints();
+      for (IAtsWorldEditorItem item : AtsWorldEditorItems.getItems()) {
+         item.updateTaskEditMenuActions(this);
       }
-      if (showRelatedTasksAction != null && showRelatedTasksAction.isValid(getSelectedTaskArtifacts())) {
-         showRelatedTasksAction.setXViewer(this);
-         mm.insertBefore(XViewer.MENU_GROUP_PRE, new GroupMarker(MENU_GROUP_ATS_TASK_SHOW));
-         mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_EDIT, (Action) showRelatedTasksAction);
-         mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_EDIT, new Separator());
-         editTaskNotesAction.setEnabled(isTasksEditable() && getSelectedArtifacts().size() > 0);
-      }
+
+      editTaskNotesAction.setEnabled(isTasksEditable() && getSelectedArtifacts().size() > 0);
 
       // EDIT MENU BLOCK
       mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_EDIT, editTaskTitleAction);
@@ -411,6 +389,10 @@ public class TaskXViewer extends WorldXViewer {
 
    public void setNewTaskSelectionEnabled(boolean newTaskSelectionEnabled) {
       this.newTaskSelectionEnabled = newTaskSelectionEnabled;
+   }
+
+   public TaskComposite getTaskComposite() {
+      return taskComposite;
    }
 
 }

@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.world;
 import java.util.List;
 import org.eclipse.jface.action.Action;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.osee.ats.task.TaskXViewer;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
@@ -35,9 +36,8 @@ public interface IAtsWorldEditorItem {
    /**
     * Return menu item objects to add to the World Editor pull-down menu only if applicable for the given
     * worldSearchItem
-    * 
-    * @return applicable pull-down actions
     */
    public List<? extends Action> getWorldEditorMenuActions(IWorldEditorProvider worldEditorProvider, WorldEditor worldEditor) throws OseeCoreException;
 
+   public void updateTaskEditMenuActions(TaskXViewer taskXViewer);
 }
