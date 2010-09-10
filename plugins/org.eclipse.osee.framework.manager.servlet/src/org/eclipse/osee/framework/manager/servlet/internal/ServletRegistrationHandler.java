@@ -57,25 +57,26 @@ import org.osgi.service.http.HttpService;
  */
 public class ServletRegistrationHandler extends AbstractTrackingHandler {
 
+   //@formatter:off
    private static final Class<?>[] SERVICE_DEPENDENCIES = new Class<?>[] {
-      //
-      ISessionManager.class, //k
-      IApplicationServerLookup.class, // k
-      IApplicationServerManager.class, //k
-      IAuthenticationManager.class,// k
-      IDataTranslationService.class, //
-      IOseeModelingService.class, //
-      IOseeCachingService.class,//
-      IOseeDatabaseService.class, //k
-      IOseeBranchService.class, //
-      IBranchExchange.class, //
-      ISearchEngine.class,// k
-      ISearchEngineTagger.class, // k
-      IOseeModelFactoryService.class, // k
-      IResourceLocatorManager.class,// k
-      IResourceManager.class, // k
-      HttpService.class, // k
+      ISessionManager.class, 
+      IApplicationServerLookup.class,  
+      IApplicationServerManager.class,
+      IAuthenticationManager.class,
+      IDataTranslationService.class,
+      IOseeModelingService.class,
+      IOseeCachingService.class,
+      IOseeDatabaseService.class,
+      IOseeBranchService.class,
+      IBranchExchange.class,
+      ISearchEngine.class, 
+      ISearchEngineTagger.class, 
+      IOseeModelFactoryService.class, 
+      IResourceLocatorManager.class, 
+      IResourceManager.class,
+      HttpService.class,
    };
+   //@formatter:on
 
    private final Set<String> contexts = new HashSet<String>();
    private HttpService httpService;
