@@ -31,20 +31,8 @@
 
    <requires>
       <import feature="org.eclipse.osee.client.all.feature" version="0.9.6.qualifier" match="greaterOrEqual"/>
+      <import feature="org.eclipse.test" version="3.5.0" match="greaterOrEqual"/>
+      <import feature="org.eclipse.sdk" version="3.6.0" match="greaterOrEqual"/>
    </requires>
-
-   <plugin
-         id="org.eclipse.test"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.eclipse.ant.optional.junit"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"
-         unpack="false"/>
 
 </feature>
