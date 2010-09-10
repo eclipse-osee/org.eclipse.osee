@@ -397,8 +397,4 @@ public class TaskArtifact extends StateMachineArtifact implements IATSStateMachi
       return false;
    }
 
-   @Override
-   public String getPcrId() throws OseeCoreException {
-      return getParentTeamWorkflow().getPcrId();
-   }
 }

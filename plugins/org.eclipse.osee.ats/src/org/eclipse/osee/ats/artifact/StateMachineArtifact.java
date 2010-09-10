@@ -1861,8 +1861,11 @@ public abstract class StateMachineArtifact extends ATSArtifact implements HasCmA
    /**
     * Assigned or computed Id that will show at the top of the editor
     */
-   @SuppressWarnings("unused")
    public String getPcrId() throws OseeCoreException {
+      TeamWorkFlowArtifact teamArt = getParentTeamWorkflow();
+      if (teamArt != null) {
+         return teamArt.getTeamName() + " " + getHumanReadableId();
+      }
       return "";
    }
 

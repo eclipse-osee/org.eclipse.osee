@@ -91,8 +91,7 @@ public class SMAPrint extends Action {
          //
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Workflow: ", sma.getArtifactTypeName()),
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "HRID: ", sma.getHumanReadableId()),
-         (sma.getParentActionArtifact() == null ? "" : AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Action HRID: ",
-            sma.getParentActionArtifact().getHumanReadableId()))}));
+         (sma.getPcrId() == null ? "" : AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Id: ", sma.getPcrId()))}));
       resultData.addRaw(AHTML.endMultiColumnTable());
       for (NoteItem note : sma.getNotes().getNoteItems()) {
          if (note.getState().equals("")) {
