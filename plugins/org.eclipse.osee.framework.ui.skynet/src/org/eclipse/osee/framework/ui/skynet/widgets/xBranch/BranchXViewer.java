@@ -12,21 +12,30 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xBranch;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
+import java.util.List;
+import java.util.logging.Level;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerTextFilter;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.PromptChangeUtil;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
@@ -74,25 +83,54 @@ public class BranchXViewer extends XViewer {
    @Override
    protected void createSupportWidgets(Composite parent) {
       super.createSupportWidgets(parent);
-      createMenuActions();
       getFilterDataUI().setFocus();
-   }
-
-   public void createMenuActions() {
-      MenuManager mm = getMenuManager();
-      mm.createContextMenu(getControl());
-      mm.addMenuListener(new IMenuListener() {
-         @Override
-         public void menuAboutToShow(IMenuManager manager) {
-            updateMenuActionsForTable();
-         }
-      });
    }
 
    @Override
    public void updateMenuActionsForTable() {
       MenuManager mm = getMenuManager();
       mm.insertBefore(MENU_GROUP_PRE, new Separator());
+      mm.insertBefore(MENU_GROUP_PRE, new SetAsFavoriteAction());
+   }
+
+   private class SetAsFavoriteAction extends Action {
+
+      public SetAsFavoriteAction() {
+         super("Toggle Branch as Favorite");
+      }
+
+      @Override
+      public ImageDescriptor getImageDescriptor() {
+         return ImageManager.getImageDescriptor(FrameworkImage.BRANCH_FAVORITE_OVERLAY);
+      }
+
+      @Override
+      public void run() {
+         User user;
+         try {
+            user = UserManager.getUser();
+            if (user.isSystemUser()) {
+               AWorkbench.popup("Can not set favorite as system user");
+               return;
+            }
+            List<Branch> branches = xBranchViewer.getSelectedBranches();
+            if (branches.isEmpty()) {
+               AWorkbench.popup("Must select branches");
+               return;
+            }
+            if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Toggle Branch Favorites",
+               "Toggle Branch Favorites for " + branches.size() + " branch(s)")) {
+               for (Branch branch : branches) {
+                  user.toggleFavoriteBranch(branch);
+               }
+               user.persist("Toggle Branch Favorites");
+               xBranchViewer.refresh();
+            }
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex.toString(), ex);
+         }
+      }
+
    }
 
    /**

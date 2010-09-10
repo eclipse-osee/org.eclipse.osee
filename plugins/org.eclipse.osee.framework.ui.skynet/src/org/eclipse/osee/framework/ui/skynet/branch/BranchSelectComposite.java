@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.Text;
 /**
  * @author Roberto E. Escobar
  */
-public class BranchSelectComposite extends Composite implements Listener {
+public class BranchSelectComposite extends Composite {
    protected static final int SIZING_TEXT_FIELD_WIDTH = 250;
 
    private Button branchSelectButton;
@@ -78,7 +78,14 @@ public class BranchSelectComposite extends Composite implements Listener {
 
       branchSelectButton = new Button(parent, SWT.PUSH);
       branchSelectButton.setText("Select Branch...");
-      branchSelectButton.addListener(SWT.Selection, this);
+      branchSelectButton.addListener(SWT.Selection, new Listener() {
+
+         @Override
+         public void handleEvent(Event event) {
+            handleSelectedBranch(event);
+            notifyListener(event);
+         }
+      });
       branchSelectButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL));
       branchSelectButton.addListener(SWT.MouseUp, new Listener() {
          @Override
@@ -101,12 +108,6 @@ public class BranchSelectComposite extends Composite implements Listener {
 
    private boolean areOnlyWorkingBranchesAllowed() {
       return allowOnlyWorkingBranches;
-   }
-
-   @Override
-   public void handleEvent(Event event) {
-      handleSelectedBranch(event);
-      notifyListener(event);
    }
 
    private void handleSelectedBranch(Event event) {
