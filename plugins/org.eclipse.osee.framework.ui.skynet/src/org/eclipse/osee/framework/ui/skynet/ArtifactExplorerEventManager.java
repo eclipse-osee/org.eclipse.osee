@@ -89,11 +89,18 @@ public class ArtifactExplorerEventManager implements IArtifactEventListener {
             for (IArtifactExplorerEventHandler handler : handlers) {
                if (!handler.isDisposed()) {
                   for (Artifact artifact : modifiedArts) {
-                     // Don't refresh deleted artifacts
-                     if (artifact.isDeleted()) {
-                        continue;
+                     try {
+                        // Don't refresh deleted artifacts
+                        if (artifact.isDeleted()) {
+                           continue;
+                        }
+                        handler.getArtifactExplorer().getTreeViewer().update(artifact, null);
+                        if (artifact.getParent() != null) {
+                           handler.getArtifactExplorer().getTreeViewer().refresh(artifact.getParent());
+                        }
+                     } catch (Exception ex) {
+                        OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                      }
-                     handler.getArtifactExplorer().getTreeViewer().update(artifact, null);
                   }
 
                   for (Artifact art : relModifiedArts) {
