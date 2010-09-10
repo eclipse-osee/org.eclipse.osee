@@ -21,9 +21,14 @@
          id="org.eclipse.osee.core.feature.test"
          version="0.0.0"/>
 
+   <includes
+         id="org.eclipse.osee.server.feature.test.source"
+         version="0.0.0"/>
+
    <requires>
       <import feature="org.eclipse.osee.server.feature" version="0.9.6" match="greaterOrEqual"/>
-		<import feature="org.eclipse.test" version="3.5.0" match="greaterOrEqual"/>
+      <import feature="org.eclipse.test" version="3.5.0" match="greaterOrEqual"/>
+      <import feature="org.eclipse.sdk" version="3.6.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -128,9 +133,5 @@
          version="0.0.0"
          fragment="true"
          unpack="false"/>
-         
-  <includes
-         id="org.eclipse.osee.server.feature.test.source"
-         version="0.0.0"/>
 
 </feature>
