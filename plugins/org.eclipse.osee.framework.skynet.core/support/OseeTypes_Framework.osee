@@ -515,9 +515,9 @@ attributeType "Test Frequency" extends EnumeratedAttribute {
 
 oseeEnumType "enum.req.test.frequency" {
    guid "AS7K6KiFKy3Fb5j3xlwA"
-   entry "Zero"
+   entry "One Time"
    entryGuid "AS7P7QAx8CQb1qp8BqwA"
-   entry "One"
+   entry "Reoccurring"
    entryGuid "AS7RJUFz2EPIYq+sQvwA"
 }
 
