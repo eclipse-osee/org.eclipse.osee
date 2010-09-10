@@ -658,7 +658,7 @@ public class Jaxp {
 
          String namespace = element.getNamespaceURI();
          String prefix = element.getPrefix();
-         String name = element.getNodeName();
+         String name = element.getLocalName();
          if (Strings.isValid(name)) {
             if (prefix != null && namespace != null) {
                writer.writeStartElement(prefix, name, namespace);
@@ -700,7 +700,7 @@ public class Jaxp {
 
          String namespace = attrNode.getNamespaceURI();
          String prefix = attrNode.getPrefix();
-         String name = attrNode.getName();
+         String name = attrNode.getLocalName();
          String value = attrNode.getValue();
          if (Strings.isValid(name) && Strings.isValid(value)) {
             if (prefix != null && namespace != null) {

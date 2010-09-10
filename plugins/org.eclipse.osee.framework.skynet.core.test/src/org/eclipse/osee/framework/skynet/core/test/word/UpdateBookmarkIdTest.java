@@ -13,7 +13,7 @@ import org.junit.Test;
 public class UpdateBookmarkIdTest {
 
    @Test
-   public void resetBookMarkIdTest() throws OseeCoreException {
+   public void testBookMarkIdFix() throws OseeCoreException {
       UpdateBookmarkIds bookMarkIds = new UpdateBookmarkIds(1000);
       String bookmark =
          "<aml:annotation aml:id=\"133334\" w:type=\"Word.Bookmark.Start\"/><aml:annotation aml:id=\"133334\" w:type=\"Word.Bookmark.End\" />";
