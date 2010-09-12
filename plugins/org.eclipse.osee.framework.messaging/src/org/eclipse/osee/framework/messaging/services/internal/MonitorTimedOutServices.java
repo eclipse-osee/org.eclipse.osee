@@ -18,6 +18,7 @@ import java.util.Set;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.messaging.services.ServiceNotification;
+import org.eclipse.osee.framework.messaging.services.messages.ServiceHealth;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -41,10 +42,12 @@ class MonitorTimedOutServices implements Runnable {
          Map<String, ServiceHealthPlusTimeout> items = map.get(pair.getFirst(), pair.getSecond());
          for (Entry<String, ServiceHealthPlusTimeout> key : items.entrySet()) {
             if (key.getValue().isTimedOut(currentSystemTime)) {
-               toRemove.add(new ThreeItems(pair.getFirst(), pair.getSecond(), key.getKey()));
                List<ServiceNotification> list = callbacks.get(pair.getFirst(), pair.getSecond());
-               for (ServiceNotification notify : list) {
-                  notify.onServiceGone(key.getValue().getServiceHealth());
+               if (isServiceReallyGone(list, key.getValue().getServiceHealth())) {
+                  toRemove.add(new ThreeItems(pair.getFirst(), pair.getSecond(), key.getKey()));
+                  for (ServiceNotification notify : list) {
+                     notify.onServiceGone(key.getValue().getServiceHealth());
+                  }
                }
             }
          }
@@ -58,6 +61,15 @@ class MonitorTimedOutServices implements Runnable {
             System.out.println("removed " + item.first + item.second);
          }
       }
+   }
+
+   private boolean isServiceReallyGone(List<ServiceNotification> list, ServiceHealth serviceHealth) {
+      for (ServiceNotification notify : list) {
+         if (!notify.isServiceGone(serviceHealth)) {
+            return false;
+         }
+      }
+      return true;
    }
 
    private static class ThreeItems {

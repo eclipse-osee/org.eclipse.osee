@@ -269,5 +269,10 @@ public class TestMessageServices extends BaseBrokerTesting {
          System.out.println("healthUpdates " + serviceUpdates);
       }
 
+      @Override
+      public boolean isServiceGone(ServiceHealth serviceHealth) {
+         return true;
+      }
+
    }
 }

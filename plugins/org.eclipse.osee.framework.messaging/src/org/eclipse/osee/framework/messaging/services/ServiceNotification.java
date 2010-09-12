@@ -19,4 +19,6 @@ public interface ServiceNotification {
    void onServiceUpdate(ServiceHealth serviceHealth);
 
    void onServiceGone(ServiceHealth serviceHealth);
+
+   boolean isServiceGone(ServiceHealth serviceHealth);
 }

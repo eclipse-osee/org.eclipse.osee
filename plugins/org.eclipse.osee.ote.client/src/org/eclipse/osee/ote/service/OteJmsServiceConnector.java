@@ -78,6 +78,19 @@ class OteJmsServiceConnector implements ServiceNotification, OseeMessagingStatus
       }
    }
 
+   @Override
+   public boolean isServiceGone(ServiceHealth serviceHealth) {
+      return serviceConfirmedGone(serviceHealth);
+   }
+
+   private boolean serviceConfirmedGone(ServiceHealth serviceHealth) {
+      JmsToJiniBridgeConnector connector = connectors.get(serviceHealth.getServiceUniqueId());
+      if (connector == null) {
+         return true;
+      }
+      return !connector.ping();
+   }
+
    private JmsToJiniBridgeConnector removeExistingConnector(ServiceHealth serviceHealth) {
       return connectors.remove(serviceHealth.getServiceUniqueId());
    }
