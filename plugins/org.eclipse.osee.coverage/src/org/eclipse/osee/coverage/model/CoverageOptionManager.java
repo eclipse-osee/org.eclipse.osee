@@ -100,7 +100,7 @@ public class CoverageOptionManager {
 
    public String toXml() {
       try {
-         Document doc = Jaxp.newDocument();
+         Document doc = Jaxp.newDocumentNamespaceAware();
          Element rootElement = doc.createElement(MGR_TAG);
          doc.appendChild(rootElement);
          for (CoverageOption item : options) {

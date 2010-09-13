@@ -110,7 +110,7 @@ public class SchemaData implements Xmlizable {
    }
 
    public Document getXmlDocument() throws ParserConfigurationException {
-      Document doc = Jaxp.newDocument();
+      Document doc = Jaxp.newDocumentNamespaceAware();
       Element root = doc.createElement(ROOT_TAG);
       doc.appendChild(root);
       for (TableElement table : tableDefinitions) {

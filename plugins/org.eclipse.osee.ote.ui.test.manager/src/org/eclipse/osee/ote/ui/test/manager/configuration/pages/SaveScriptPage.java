@@ -35,7 +35,7 @@ public class SaveScriptPage implements ISaveConfig, ScriptPageConstants, Xmlizab
 
    public SaveScriptPage(ScriptPage tmPage) throws ParserConfigurationException {
       this.scriptPage = tmPage;
-      doc = Jaxp.newDocument();
+      doc = Jaxp.newDocumentNamespaceAware();
       root = doc.createElement(ScriptPageConstants.SCRIPTPAGE_CONFIG);
       doc.appendChild(root);
    }

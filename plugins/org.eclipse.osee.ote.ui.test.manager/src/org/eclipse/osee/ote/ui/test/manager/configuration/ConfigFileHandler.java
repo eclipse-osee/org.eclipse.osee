@@ -29,7 +29,7 @@ public class ConfigFileHandler {
       if (file.exists()) {
          doc = writeSectionToFile(sourceDoc, file);
       } else {
-         doc = Jaxp.newDocument();
+         doc = Jaxp.newDocumentNamespaceAware();
          Element root = doc.createElement("TestManagerConfig");
          root.appendChild(doc.importNode(sourceDoc.getDocumentElement(), true));
          doc.appendChild(root);

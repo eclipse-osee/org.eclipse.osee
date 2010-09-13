@@ -120,7 +120,7 @@ public class ATSNote {
 
    public void saveNoteItems(List<NoteItem> items) {
       try {
-         Document doc = Jaxp.newDocument();
+         Document doc = Jaxp.newDocumentNamespaceAware();
          Element rootElement = doc.createElement(ATS_NOTE_TAG);
          doc.appendChild(rootElement);
          for (NoteItem item : items) {

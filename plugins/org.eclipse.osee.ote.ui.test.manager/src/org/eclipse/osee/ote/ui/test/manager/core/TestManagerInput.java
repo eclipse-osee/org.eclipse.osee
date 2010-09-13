@@ -124,7 +124,7 @@ public class TestManagerInput implements IEditorInput {
    }
 
    private void saveToFile() throws ParserConfigurationException, TransformerException, IOException {
-      Document document = Jaxp.newDocument();
+      Document document = Jaxp.newDocumentNamespaceAware();
       Element root = document.createElement("ValuePairs");
       document.appendChild(root);
 

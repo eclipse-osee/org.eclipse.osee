@@ -72,7 +72,7 @@ public class FromArtifactsSearch implements ISearchPrimitive {
    @Override
    public String getStorageString() {
       try {
-         Document document = Jaxp.newDocument();
+         Document document = Jaxp.newDocumentNamespaceAware();
 
          Element root = document.createElement("FromArtifactAttribute");
          root.appendChild(getStorageElements(document));

@@ -152,7 +152,7 @@ public class ATSLog {
 
    public void putLogItems(List<LogItem> items) {
       try {
-         Document doc = Jaxp.newDocument();
+         Document doc = Jaxp.newDocumentNamespaceAware();
          Element rootElement = doc.createElement(ATS_LOG_TAG);
          doc.appendChild(rootElement);
          for (LogItem item : items) {

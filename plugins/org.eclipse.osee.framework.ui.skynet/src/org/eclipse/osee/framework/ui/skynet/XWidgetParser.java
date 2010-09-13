@@ -75,7 +75,7 @@ public class XWidgetParser {
    public static String toXml(DynamicXWidgetLayoutData data) throws OseeCoreException {
       String xmlData = null;
       try {
-         Document doc = Jaxp.newDocument();
+         Document doc = Jaxp.newDocumentNamespaceAware();
          Element element = doc.createElement(DynamicXWidgetLayout.XWIDGET);
          element.setAttribute("displayName", data.getName());
          element.setAttribute("storageName", data.getStoreName());

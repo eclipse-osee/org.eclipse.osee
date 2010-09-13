@@ -40,7 +40,7 @@ public class RulesLogHandler extends Handler {
    public RulesLogHandler(File outFile) throws ParserConfigurationException {
       super();
       this.outFile = outFile;
-      document = Jaxp.newDocument();
+      document = Jaxp.newDocumentNamespaceAware();
       rootElement = document.createElement("Rule");
       document.appendChild(rootElement);
    }

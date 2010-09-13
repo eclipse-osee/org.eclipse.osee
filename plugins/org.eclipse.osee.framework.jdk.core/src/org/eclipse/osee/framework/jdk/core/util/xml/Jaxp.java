@@ -54,7 +54,11 @@ import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
 
 public class Jaxp {
-   private static final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+   private static final DocumentBuilderFactory namespceUnawareFactory = DocumentBuilderFactory.newInstance();
+   private static final DocumentBuilderFactory namespceAwareFactory = DocumentBuilderFactory.newInstance();
+   static {
+      namespceAwareFactory.setNamespaceAware(true);
+   }
 
    /**
     * Obtains a list of all direct descendants of element
@@ -388,12 +392,12 @@ public class Jaxp {
    }
 
    public static Document readXmlDocument(InputStream is) throws ParserConfigurationException, SAXException, IOException {
-      DocumentBuilder builder = factory.newDocumentBuilder();
+      DocumentBuilder builder = namespceUnawareFactory.newDocumentBuilder();
       return builder.parse(is);
    }
 
    public static Document readXmlDocument(String xmlString) throws ParserConfigurationException, SAXException, IOException {
-      DocumentBuilder builder = factory.newDocumentBuilder();
+      DocumentBuilder builder = namespceUnawareFactory.newDocumentBuilder();
       CharBackedInputStream charBak = new CharBackedInputStream();
       charBak.addBackingSource(xmlString);
       Document document = builder.parse(charBak);
@@ -401,26 +405,24 @@ public class Jaxp {
    }
 
    public static Document readXmlDocument(File xmlFile) throws ParserConfigurationException, SAXException, IOException {
-      DocumentBuilder builder = factory.newDocumentBuilder();
+      DocumentBuilder builder = namespceUnawareFactory.newDocumentBuilder();
       Document document = builder.parse(xmlFile);
       return document;
    }
 
    public static Document readXmlDocumentFromResource(Class<?> base, String name) throws ParserConfigurationException, SAXException, IOException {
-      DocumentBuilder builder = factory.newDocumentBuilder();
+      DocumentBuilder builder = namespceUnawareFactory.newDocumentBuilder();
       Document document = builder.parse(base.getResourceAsStream(name));
       return document;
    }
 
    public static Document readXmlDocumentNamespaceAware(InputStream is) throws ParserConfigurationException, SAXException, IOException {
-      factory.setNamespaceAware(true);
-      DocumentBuilder builder = factory.newDocumentBuilder();
+      DocumentBuilder builder = namespceAwareFactory.newDocumentBuilder();
       return builder.parse(is);
    }
 
    public static Document readXmlDocumentNamespaceAware(String xmlString) throws ParserConfigurationException, SAXException, IOException {
-      factory.setNamespaceAware(true);
-      DocumentBuilder builder = factory.newDocumentBuilder();
+      DocumentBuilder builder = namespceAwareFactory.newDocumentBuilder();
       CharBackedInputStream charBak = new CharBackedInputStream();
       charBak.addBackingSource(xmlString);
       Document document = builder.parse(charBak);
@@ -428,16 +430,14 @@ public class Jaxp {
    }
 
    public static Document readXmlDocumentNamespaceAware(File xmlFile) throws ParserConfigurationException, SAXException, IOException {
-      factory.setNamespaceAware(true);
-      DocumentBuilder builder = factory.newDocumentBuilder();
+      DocumentBuilder builder = namespceAwareFactory.newDocumentBuilder();
 
       Document document = builder.parse(xmlFile);
       return document;
    }
 
    public static Document readXmlDocumentFromResourceNamespaceAware(Class<?> base, String name) throws ParserConfigurationException, SAXException, IOException {
-      factory.setNamespaceAware(true);
-      DocumentBuilder builder = factory.newDocumentBuilder();
+      DocumentBuilder builder = namespceAwareFactory.newDocumentBuilder();
       Document document = builder.parse(base.getResourceAsStream(name));
       return document;
    }
@@ -544,9 +544,8 @@ public class Jaxp {
       return format;
    }
 
-   public static Document newDocument() throws ParserConfigurationException {
-      factory.setNamespaceAware(true);
-      DocumentBuilder builder = factory.newDocumentBuilder();
+   public static Document newDocumentNamespaceAware() throws ParserConfigurationException {
+      DocumentBuilder builder = namespceAwareFactory.newDocumentBuilder();
       return builder.newDocument();
    }
 
