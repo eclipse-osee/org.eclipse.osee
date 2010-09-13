@@ -80,54 +80,57 @@ public class ArtifactExplorerEventManager implements IArtifactEventListener {
          public void run() {
             if (!deletedPurgedArts.isEmpty()) {
                for (IArtifactExplorerEventHandler handler : handlers) {
-                  if (!handler.isDisposed()) {
-                     handler.getArtifactExplorer().getTreeViewer().remove(
-                        deletedPurgedArts.toArray(new Object[deletedPurgedArts.size()]));
+                  try {
+                     if (!handler.isDisposed()) {
+                        handler.getArtifactExplorer().getTreeViewer().remove(
+                           deletedPurgedArts.toArray(new Object[deletedPurgedArts.size()]));
+                     }
+                  } catch (Exception ex) {
+                     OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE,
+                        "Error processing event handler for deleted - " + handler, ex);
                   }
                }
             }
             for (IArtifactExplorerEventHandler handler : handlers) {
-               if (!handler.isDisposed()) {
-                  for (Artifact artifact : modifiedArts) {
-                     try {
+               try {
+                  if (!handler.isDisposed()) {
+                     for (Artifact artifact : modifiedArts) {
                         // Don't refresh deleted artifacts
                         if (artifact.isDeleted()) {
                            continue;
                         }
                         handler.getArtifactExplorer().getTreeViewer().update(artifact, null);
-                        if (artifact.getParent() != null) {
-                           handler.getArtifactExplorer().getTreeViewer().refresh(artifact.getParent());
-                        }
-                     } catch (Exception ex) {
-                        OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                      }
-                  }
 
-                  for (Artifact art : relModifiedArts) {
-                     try {
-                        // Don't refresh deleted artifacts
-                        if (art.isDeleted()) {
-                           continue;
+                     for (Artifact art : relModifiedArts) {
+                        try {
+                           // Don't refresh deleted artifacts
+                           if (art.isDeleted()) {
+                              continue;
+                           }
+                           handler.getArtifactExplorer().getTreeViewer().refresh(art);
+                           if (art.getParent() != null) {
+                              handler.getArtifactExplorer().getTreeViewer().refresh(art.getParent());
+                           }
+                        } catch (Exception ex) {
+                           OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                         }
-                        handler.getArtifactExplorer().getTreeViewer().refresh(art);
-                        if (art.getParent() != null) {
-                           handler.getArtifactExplorer().getTreeViewer().refresh(art.getParent());
-                        }
-                     } catch (Exception ex) {
-                        OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                      }
-                  }
 
-                  for (DefaultBasicGuidArtifact guidArt : relOrderChangedArtifacts) {
-                     try {
-                        Artifact artifact = ArtifactCache.getActive(guidArt);
-                        if (artifact != null) {
-                           handler.getArtifactExplorer().getTreeViewer().refresh(artifact);
+                     for (DefaultBasicGuidArtifact guidArt : relOrderChangedArtifacts) {
+                        try {
+                           Artifact artifact = ArtifactCache.getActive(guidArt);
+                           if (artifact != null) {
+                              handler.getArtifactExplorer().getTreeViewer().refresh(artifact);
+                           }
+                        } catch (Exception ex) {
+                           OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                         }
-                     } catch (Exception ex) {
-                        OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                      }
                   }
+               } catch (Exception ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE,
+                     "Error processing event handler for modified - " + handler, ex);
                }
             }
          }

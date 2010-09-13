@@ -14,7 +14,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Level;
 import org.eclipse.jface.viewers.IContentProvider;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
@@ -23,6 +25,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
@@ -69,30 +72,40 @@ public class MassXViewerEventManager implements IArtifactEventListener {
          public void run() {
             if (!deletedPurgedArts.isEmpty()) {
                for (IMassViewerEventHandler handler : handlers) {
-                  if (!handler.isDisposed()) {
-                     IContentProvider contentProvider = handler.getMassXViewer().getContentProvider();
-                     // remove from UI
-                     if (contentProvider instanceof MassContentProvider) {
-                        ((MassContentProvider) contentProvider).removeAll(deletedPurgedArts);
+                  try {
+                     if (!handler.isDisposed()) {
+                        IContentProvider contentProvider = handler.getMassXViewer().getContentProvider();
+                        // remove from UI
+                        if (contentProvider instanceof MassContentProvider) {
+                           ((MassContentProvider) contentProvider).removeAll(deletedPurgedArts);
+                        }
                      }
+                  } catch (Exception ex) {
+                     OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE,
+                        "Error processing event handler for deleted - " + handler, ex);
                   }
                }
             }
             for (IMassViewerEventHandler handler : handlers) {
-               if (!handler.isDisposed()) {
-                  IContentProvider contentProvider = handler.getMassXViewer().getContentProvider();
-                  // remove from UI
-                  if (contentProvider instanceof MassContentProvider) {
-                     ((MassContentProvider) contentProvider).updateAll(modifiedArts);
+               try {
+                  if (!handler.isDisposed()) {
+                     IContentProvider contentProvider = handler.getMassXViewer().getContentProvider();
+                     // remove from UI
+                     if (contentProvider instanceof MassContentProvider) {
+                        ((MassContentProvider) contentProvider).updateAll(modifiedArts);
+                     }
                   }
-               }
 
-               for (Artifact art : relModifiedArts) {
-                  // Don't refresh deleted artifacts
-                  if (art.isDeleted()) {
-                     continue;
+                  for (Artifact art : relModifiedArts) {
+                     // Don't refresh deleted artifacts
+                     if (art.isDeleted()) {
+                        continue;
+                     }
+                     handler.getMassXViewer().refresh(art);
                   }
-                  handler.getMassXViewer().refresh(art);
+               } catch (Exception ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE,
+                     "Error processing event handler for modified - " + handler, ex);
                }
             }
          }

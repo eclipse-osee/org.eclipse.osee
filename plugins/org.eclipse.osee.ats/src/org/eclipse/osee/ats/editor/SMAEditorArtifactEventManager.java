@@ -70,7 +70,6 @@ public class SMAEditorArtifactEventManager implements IArtifactEventListener {
             handlers.remove(handler);
          }
       }
-      //      System.out.println("SMAEditor: handleArtifactEvent called [" + artifactEvent + "] - sender " + sender + "");
       try {
          if (!artifactEvent.isForBranch(AtsUtil.getAtsBranch())) {
             return;
@@ -79,101 +78,110 @@ public class SMAEditorArtifactEventManager implements IArtifactEventListener {
          return;
       }
       for (final ISMAEditorEventHandler handler : handlers) {
-         final StateMachineArtifact sma = handler.getSMAEditor().getSma();
-         ActionArtifact actionArt = null;
-         boolean refreshed = false;
          try {
-            actionArt = sma instanceof TeamWorkFlowArtifact ? sma.getParentActionArtifact() : null;
-         } catch (OseeCoreException ex) {
-            // do nothing
-         }
-         if (sma.isInTransition()) {
-            return;
-         }
-         if (artifactEvent.isDeletedPurged(sma)) {
-            handler.getSMAEditor().closeEditor();
-         } else if (artifactEvent.isModifiedReloaded(sma) ||
-         //
-         artifactEvent.isRelAddedChangedDeleted(sma) ||
-         //
-         artifactEvent.isModifiedReloaded(actionArt) ||
-         //
-         artifactEvent.isRelAddedChangedDeleted(actionArt)) {
-            refreshed = true;
-            Displays.ensureInDisplayThread(new Runnable() {
-               @Override
-               public void run() {
-                  handler.getSMAEditor().refreshPages();
-               }
-            });
-         } else if (isReloaded(artifactEvent, sma)) {
-            SMAEditor.close(Collections.singleton(sma), false);
-            if (!sma.isDeleted()) {
-               SMAEditor.editArtifact(sma);
-            }
-         }
-         if (!refreshed && sma.isTeamWorkflow() && ReviewManager.hasReviews((TeamWorkFlowArtifact) sma)) {
-            try {
-               // If related review has made a change, redraw
-               for (ReviewSMArtifact reviewArt : ReviewManager.getReviews((TeamWorkFlowArtifact) sma)) {
-                  if (artifactEvent.isHasEvent(reviewArt)) {
-                     refreshed = true;
-                     Displays.ensureInDisplayThread(new Runnable() {
-                        @Override
-                        public void run() {
-                           handler.getSMAEditor().refreshPages();
-                        }
-                     });
-                     // Only refresh editor for first review that has event
-                     break;
-                  }
-               }
-            } catch (Exception ex) {
-               // do nothings
-            }
-         }
-         if (!refreshed && sma.isTeamWorkflow() && ((TeamWorkFlowArtifact) sma).hasTaskArtifacts()) {
-            try {
-               // If related review has made a change, redraw
-               for (TaskArtifact taskArt : ((TeamWorkFlowArtifact) sma).getTaskArtifactsFromCurrentState()) {
-                  if (artifactEvent.isHasEvent(taskArt)) {
-                     refreshed = true;
-                     Displays.ensureInDisplayThread(new Runnable() {
-                        @Override
-                        public void run() {
-                           handler.getSMAEditor().refreshPages();
-                        }
-                     });
-                     // Only refresh editor for first task that has event
-                     break;
-                  }
-               }
-            } catch (Exception ex) {
-               // do nothings
-            }
-         }
-         if (!refreshed) {
-            try {
-               // Since SMAEditor is refreshed when a sibling workflow is changed, need to refresh this
-               // list of actionable items when a sibling changes
-               for (TeamWorkFlowArtifact teamWf : sma.getParentActionArtifact().getTeamWorkFlowArtifacts()) {
-                  if (!sma.equals(teamWf) && (artifactEvent.isHasEvent(teamWf) || artifactEvent.isRelAddedChangedDeleted(teamWf.getParentActionArtifact()))) {
-                     refreshed = true;
-                     Displays.ensureInDisplayThread(new Runnable() {
-                        @Override
-                        public void run() {
-                           handler.getSMAEditor().refreshPages();
-                        }
-                     });
-                     // Only need to refresh once
-                     return;
-                  }
-               }
-            } catch (Exception ex) {
-               // do nothings
-            }
+            safelyProcessHandler(artifactEvent, handler);
+         } catch (Exception ex) {
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, "Error processing event handler - " + handler, ex);
          }
       }
+   }
+
+   private void safelyProcessHandler(final ArtifactEvent artifactEvent, final ISMAEditorEventHandler handler) {
+      final StateMachineArtifact sma = handler.getSMAEditor().getSma();
+      ActionArtifact actionArt = null;
+      boolean refreshed = false;
+      try {
+         actionArt = sma instanceof TeamWorkFlowArtifact ? sma.getParentActionArtifact() : null;
+      } catch (OseeCoreException ex) {
+         // do nothing
+      }
+      if (sma.isInTransition()) {
+         return;
+      }
+      if (artifactEvent.isDeletedPurged(sma)) {
+         handler.getSMAEditor().closeEditor();
+      } else if (artifactEvent.isModifiedReloaded(sma) ||
+      //
+      artifactEvent.isRelAddedChangedDeleted(sma) ||
+      //
+      (actionArt != null && artifactEvent.isModifiedReloaded(actionArt)) ||
+      //
+      (actionArt != null && artifactEvent.isRelAddedChangedDeleted(actionArt))) {
+         refreshed = true;
+         Displays.ensureInDisplayThread(new Runnable() {
+            @Override
+            public void run() {
+               handler.getSMAEditor().refreshPages();
+            }
+         });
+      } else if (isReloaded(artifactEvent, sma)) {
+         SMAEditor.close(Collections.singleton(sma), false);
+         if (!sma.isDeleted()) {
+            SMAEditor.editArtifact(sma);
+         }
+      }
+      if (!refreshed && sma.isTeamWorkflow() && ReviewManager.hasReviews((TeamWorkFlowArtifact) sma)) {
+         try {
+            // If related review has made a change, redraw
+            for (ReviewSMArtifact reviewArt : ReviewManager.getReviews((TeamWorkFlowArtifact) sma)) {
+               if (artifactEvent.isHasEvent(reviewArt)) {
+                  refreshed = true;
+                  Displays.ensureInDisplayThread(new Runnable() {
+                     @Override
+                     public void run() {
+                        handler.getSMAEditor().refreshPages();
+                     }
+                  });
+                  // Only refresh editor for first review that has event
+                  break;
+               }
+            }
+         } catch (Exception ex) {
+            // do nothing
+         }
+      }
+      if (!refreshed && sma.isTeamWorkflow() && ((TeamWorkFlowArtifact) sma).hasTaskArtifacts()) {
+         try {
+            // If related review has made a change, redraw
+            for (TaskArtifact taskArt : ((TeamWorkFlowArtifact) sma).getTaskArtifactsFromCurrentState()) {
+               if (artifactEvent.isHasEvent(taskArt)) {
+                  refreshed = true;
+                  Displays.ensureInDisplayThread(new Runnable() {
+                     @Override
+                     public void run() {
+                        handler.getSMAEditor().refreshPages();
+                     }
+                  });
+                  // Only refresh editor for first task that has event
+                  break;
+               }
+            }
+         } catch (Exception ex) {
+            // do nothing
+         }
+      }
+      if (!refreshed) {
+         try {
+            // Since SMAEditor is refreshed when a sibling workflow is changed, need to refresh this
+            // list of actionable items when a sibling changes
+            for (TeamWorkFlowArtifact teamWf : sma.getParentActionArtifact().getTeamWorkFlowArtifacts()) {
+               if (!sma.equals(teamWf) && (artifactEvent.isHasEvent(teamWf) || artifactEvent.isRelAddedChangedDeleted(teamWf.getParentActionArtifact()))) {
+                  refreshed = true;
+                  Displays.ensureInDisplayThread(new Runnable() {
+                     @Override
+                     public void run() {
+                        handler.getSMAEditor().refreshPages();
+                     }
+                  });
+                  // Only need to refresh once
+                  return;
+               }
+            }
+         } catch (Exception ex) {
+            // do nothing
+         }
+      }
+
    }
 
    private boolean isReloaded(ArtifactEvent artifactEvent, StateMachineArtifact sma) {

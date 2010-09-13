@@ -23,11 +23,13 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.filter.BranchGuidEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
+import org.eclipse.osee.framework.skynet.core.event.listener.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.listener.IEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
@@ -53,7 +55,7 @@ public class OseeEventManager {
 
    private static List<IEventFilter> commonBranchEventFilter;
    private static BranchGuidEventFilter commonBranchGuidEvenFilter;
-
+   private static IBranchEventListener testBranchEventListener;
    private static EventManagerData eventManagerData;
 
    private OseeEventManager() {
@@ -171,6 +173,9 @@ public class OseeEventManager {
       if (isDisableEvents()) {
          return;
       }
+      if (testBranchEventListener != null) {
+         testBranchEventListener.handleBranchEvent(createSender(source), branchEvent);
+      }
       branchEvent.setNetworkSender(createSender(source).getNetworkSender());
       getEventManager().kickBranchEvent(createSender(source), branchEvent);
    }
@@ -275,4 +280,13 @@ public class OseeEventManager {
       }
       return commonBranchGuidEvenFilter;
    }
+
+   // Registration for branch events; for test only
+   public static void registerBranchEventListenerForTest(IBranchEventListener branchEventListener) {
+      if (!OseeProperties.isInTest()) {
+         throw new IllegalStateException("Invalid registration for production");
+      }
+      testBranchEventListener = branchEventListener;
+   }
+
 }

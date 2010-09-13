@@ -133,22 +133,10 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
          SMAEditorBranchEventManager.add(this);
 
          updatePartName();
-
          setContentDescription(priviledgedEditModeEnabled ? " PRIVILEGED EDIT MODE ENABLED" : "");
 
-         // Create WorkFlow tab
-         try {
-            workFlowTab = new SMAWorkFlowTab(sma);
-            workFlowPageIndex = addPage(workFlowTab);
-         } catch (Exception ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-         }
-
-         // Create Tasks tab
-         if (sma.showTaskTab()) {
-            createTaskTab();
-         }
-
+         createWorkflowTab();
+         createTaskTab();
          createAttributesTab();
          createMetricsTab();
 
@@ -160,9 +148,23 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
       enableGlobalPrint();
    }
 
-   private void createTaskTab() throws PartInitException {
-      taskTabXWidgetActionPage = new TaskTabXWidgetActionPage(this);
-      addPage(taskTabXWidgetActionPage);
+   /**
+    * Do not throw exception here, want to create other tabs if this one fails
+    */
+   private void createWorkflowTab() {
+      try {
+         workFlowTab = new SMAWorkFlowTab(sma);
+         workFlowPageIndex = addPage(workFlowTab);
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      }
+   }
+
+   private void createTaskTab() throws PartInitException, OseeCoreException {
+      if (sma.showTaskTab()) {
+         taskTabXWidgetActionPage = new TaskTabXWidgetActionPage(this);
+         addPage(taskTabXWidgetActionPage);
+      }
    }
 
    private void updatePartName() throws OseeCoreException {

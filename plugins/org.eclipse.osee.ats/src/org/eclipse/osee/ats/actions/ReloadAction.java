@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.actions;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
@@ -25,8 +24,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
@@ -54,12 +52,6 @@ public class ReloadAction extends Action {
          if (sma instanceof TaskableStateMachineArtifact) {
             relatedArts.addAll(((TaskableStateMachineArtifact) sma).getTaskArtifacts());
          }
-         if (!MessageDialog.openConfirm(
-            Displays.getActiveShell(),
-            "Reload Action (Experimental)",
-            "Experimental Only...Use at own risk!\n\nThis operation will remove artifacts from cache and reload.\nUnsaved changes will be lost.\n\nReload [" + relatedArts.size() + "] artifacts?")) {
-            return;
-         }
          ArtifactQuery.reloadArtifacts(relatedArts);
          // Don't need to re-open editor cause event handler will do that
       } catch (OseeCoreException ex) {
@@ -69,7 +61,7 @@ public class ReloadAction extends Action {
 
    @Override
    public ImageDescriptor getImageDescriptor() {
-      return ImageManager.getImageDescriptor(FrameworkImage.RELOAD);
+      return ImageManager.getImageDescriptor(PluginUiImage.REFRESH);
    }
 
 }

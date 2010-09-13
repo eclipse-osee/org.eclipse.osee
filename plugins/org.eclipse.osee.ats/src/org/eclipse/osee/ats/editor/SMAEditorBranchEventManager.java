@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.editor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
@@ -59,16 +60,23 @@ public class SMAEditorBranchEventManager implements IBranchEventListener {
 
    @Override
    public void handleBranchEvent(Sender sender, BranchEvent branchEvent) {
-      try {
-         handleBranchEvent(branchEvent.getEventType(), BranchManager.getBranchByGuid(branchEvent.getBranchGuid()));
-      } catch (BranchDoesNotExist ex) {
-         // if branch doesn't exist (purged), don't need this event
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      for (ISMAEditorEventHandler handler : new CopyOnWriteArrayList<ISMAEditorEventHandler>(handlers)) {
+         if (handler.isDisposed()) {
+            handlers.remove(handler);
+         }
+      }
+      for (final ISMAEditorEventHandler handler : handlers) {
+         try {
+            safelyProcessHandler(branchEvent.getEventType(), BranchManager.getBranchByGuid(branchEvent.getBranchGuid()));
+         } catch (BranchDoesNotExist ex) {
+            // if branch doesn't exist (purged), don't need this event
+         } catch (Exception ex) {
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, "Error processing event handler - " + handler, ex);
+         }
       }
    }
 
-   private void handleBranchEvent(BranchEventType branchModType, Branch branch) {
+   private void safelyProcessHandler(BranchEventType branchModType, Branch branch) {
       for (final ISMAEditorEventHandler handler : handlers) {
          if (handler.isDisposed()) {
             System.out.println("Unexpected handler disposed but not unregistered.");

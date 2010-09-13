@@ -81,56 +81,66 @@ public class WorldXViewerEventManager implements IArtifactEventListener {
          public void run() {
             if (!deletedPurgedArts.isEmpty()) {
                for (IWorldViewerEventHandler handler : handlers) {
-                  if (!handler.isDisposed()) {
-                     // allow handler to remove from model
-                     handler.removeItems(deletedPurgedArts);
-                     IContentProvider contentProvider = handler.getWorldXViewer().getContentProvider();
-                     // remove from UI
-                     if (contentProvider instanceof WorldContentProvider) {
-                        handler.getWorldXViewer().remove(
-                           deletedPurgedArts.toArray(new Object[deletedPurgedArts.size()]));
+                  try {
+                     if (!handler.isDisposed()) {
+                        // allow handler to remove from model
+                        handler.removeItems(deletedPurgedArts);
+                        IContentProvider contentProvider = handler.getWorldXViewer().getContentProvider();
+                        // remove from UI
+                        if (contentProvider instanceof WorldContentProvider) {
+                           handler.getWorldXViewer().remove(
+                              deletedPurgedArts.toArray(new Object[deletedPurgedArts.size()]));
+                        }
                      }
+                  } catch (Exception ex) {
+                     OseeLog.log(AtsPlugin.class, Level.SEVERE,
+                        "Error processing event handler for deleted - " + handler, ex);
                   }
                }
             }
             for (IWorldViewerEventHandler handler : handlers) {
-               if (!handler.isDisposed()) {
-                  for (Artifact artifact : modifiedArts) {
-                     try {
-                        // Don't refresh deleted artifacts
-                        if (artifact.isDeleted()) {
-                           continue;
-                        }
-                        if (artifact instanceof IWorldViewArtifact) {
-                           handler.getWorldXViewer().refresh(artifact);
-                           // If parent is loaded and child changed, refresh parent
-                           if (artifact instanceof StateMachineArtifact && ((StateMachineArtifact) artifact).getParentAtsArtifact() instanceof IWorldViewArtifact) {
-                              handler.getWorldXViewer().refresh(
-                                 ((StateMachineArtifact) artifact).getParentAtsArtifact());
-                           }
-                        }
-                     } catch (OseeCoreException ex) {
-                        OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-                     }
-                  }
-
-                  for (Artifact art : relModifiedArts) {
-                     // Don't refresh deleted artifacts
-                     if (art.isDeleted()) {
-                        continue;
-                     }
-                     if (art instanceof IWorldViewArtifact) {
-                        handler.getWorldXViewer().refresh(art);
-                        // If parent is loaded and child changed, refresh parent
+               try {
+                  if (!handler.isDisposed()) {
+                     for (Artifact artifact : modifiedArts) {
                         try {
-                           if (art instanceof StateMachineArtifact && ((StateMachineArtifact) art).getParentAtsArtifact() instanceof IWorldViewArtifact) {
-                              handler.getWorldXViewer().refresh(((StateMachineArtifact) art).getParentAtsArtifact());
+                           // Don't refresh deleted artifacts
+                           if (artifact.isDeleted()) {
+                              continue;
+                           }
+                           if (artifact instanceof IWorldViewArtifact) {
+                              handler.getWorldXViewer().refresh(artifact);
+                              // If parent is loaded and child changed, refresh parent
+                              if (artifact instanceof StateMachineArtifact && ((StateMachineArtifact) artifact).getParentAtsArtifact() instanceof IWorldViewArtifact) {
+                                 handler.getWorldXViewer().refresh(
+                                    ((StateMachineArtifact) artifact).getParentAtsArtifact());
+                              }
                            }
                         } catch (OseeCoreException ex) {
                            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
                         }
                      }
+
+                     for (Artifact art : relModifiedArts) {
+                        // Don't refresh deleted artifacts
+                        if (art.isDeleted()) {
+                           continue;
+                        }
+                        if (art instanceof IWorldViewArtifact) {
+                           handler.getWorldXViewer().refresh(art);
+                           // If parent is loaded and child changed, refresh parent
+                           try {
+                              if (art instanceof StateMachineArtifact && ((StateMachineArtifact) art).getParentAtsArtifact() instanceof IWorldViewArtifact) {
+                                 handler.getWorldXViewer().refresh(((StateMachineArtifact) art).getParentAtsArtifact());
+                              }
+                           } catch (OseeCoreException ex) {
+                              OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+                           }
+                        }
+                     }
                   }
+               } catch (Exception ex) {
+                  OseeLog.log(AtsPlugin.class, Level.SEVERE,
+                     "Error processing event handler for modified - " + handler, ex);
                }
             }
          }

@@ -14,7 +14,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.EventUtil;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -31,6 +33,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
@@ -84,24 +87,34 @@ public class ArtifactEditorEventManager implements IArtifactEventListener, IBran
          public void run() {
             if (!deletedPurgedChangedArts.isEmpty()) {
                for (IArtifactEditorEventHandler handler : handlers) {
-                  if (!handler.isDisposed() && handler.getArtifactFromEditorInput() != null && deletedPurgedChangedArts.contains(handler.getArtifactFromEditorInput())) {
-                     handler.closeEditor();
+                  try {
+                     if (!handler.isDisposed() && handler.getArtifactFromEditorInput() != null && deletedPurgedChangedArts.contains(handler.getArtifactFromEditorInput())) {
+                        handler.closeEditor();
+                     }
+                  } catch (Exception ex) {
+                     OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE,
+                        "Error processing event handler for deleted - " + handler, ex);
                   }
                }
             }
             if (!modifiedArts.isEmpty() || !relModifiedArts.isEmpty() || !relOrderChangedArtifacts.isEmpty()) {
                for (IArtifactEditorEventHandler handler : handlers) {
-                  if (!handler.isDisposed()) {
-                     if (handler.getArtifactFromEditorInput() != null && modifiedArts.contains(handler.getArtifactFromEditorInput())) {
-                        handler.refreshDirtyArtifact();
-                     }
+                  try {
+                     if (!handler.isDisposed()) {
+                        if (handler.getArtifactFromEditorInput() != null && modifiedArts.contains(handler.getArtifactFromEditorInput())) {
+                           handler.refreshDirtyArtifact();
+                        }
 
-                     boolean relModified = relModifiedArts.contains(handler.getArtifactFromEditorInput());
-                     boolean reorderArt = relOrderChangedArtifacts.contains(handler.getArtifactFromEditorInput());
-                     if (handler.getArtifactFromEditorInput() != null && (relModified || reorderArt)) {
-                        handler.refreshRelations();
-                        handler.getEditor().onDirtied();
+                        boolean relModified = relModifiedArts.contains(handler.getArtifactFromEditorInput());
+                        boolean reorderArt = relOrderChangedArtifacts.contains(handler.getArtifactFromEditorInput());
+                        if (handler.getArtifactFromEditorInput() != null && (relModified || reorderArt)) {
+                           handler.refreshRelations();
+                           handler.getEditor().onDirtied();
+                        }
                      }
+                  } catch (Exception ex) {
+                     OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE,
+                        "Error processing event handler for modified - " + handler, ex);
                   }
                }
             }
