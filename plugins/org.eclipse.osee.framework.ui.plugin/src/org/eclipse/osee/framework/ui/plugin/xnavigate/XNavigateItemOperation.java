@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.plugin.xnavigate;
 
+import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
@@ -19,16 +20,19 @@ import org.eclipse.osee.framework.ui.swt.KeyedImage;
  */
 public final class XNavigateItemOperation extends XNavigateItem {
 
-   private final IOperationFactory operation;
+   private final IOperationFactory operationFactory;
 
-   public XNavigateItemOperation(XNavigateItem parent, KeyedImage oseeImage, String name, IOperationFactory operation) {
+   public XNavigateItemOperation(XNavigateItem parent, KeyedImage oseeImage, String name, IOperationFactory operationFactory) {
       super(parent, name, oseeImage);
-      this.operation = operation;
+      this.operationFactory = operationFactory;
    }
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
       super.run(tableLoadOptions);
-      Operations.executeAsJob(operation.createOperation(), true);
+      IOperation operation = operationFactory.createOperation();
+      if (operation != null) {
+         Operations.executeAsJob(operation, true);
+      }
    }
 }
