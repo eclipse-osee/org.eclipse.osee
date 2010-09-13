@@ -14,6 +14,7 @@ package org.eclipse.osee.framework.ui.skynet.render;
 import static org.eclipse.osee.framework.ui.skynet.render.IRenderer.DEFAULT_MATCH;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.DEFAULT_OPEN;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERAL_REQUESTED;
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.PRODUCE_ATTRIBUTE;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -140,7 +141,7 @@ public final class RendererManager {
    }
 
    public static void renderAttribute(IAttributeType attributeType, PresentationType presentationType, Artifact artifact, VariableMap options, Producer producer, AttributeElement attributeElement) throws OseeCoreException {
-      getBestRenderer(presentationType, artifact, options).renderAttribute(attributeType, artifact, presentationType,
+      getBestRenderer(PRODUCE_ATTRIBUTE, artifact, options).renderAttribute(attributeType, artifact, presentationType,
          producer, options, attributeElement);
    }
 
