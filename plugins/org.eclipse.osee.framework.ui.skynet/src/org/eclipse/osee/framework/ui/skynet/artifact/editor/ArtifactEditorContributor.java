@@ -10,23 +10,24 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.artifact.editor;
 
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ICoolBarManager;
 import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ISelectedArtifact;
 import org.eclipse.osee.framework.ui.plugin.util.SelectionCountChangeListener;
-import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.RelationsComposite;
+import org.eclipse.osee.framework.ui.skynet.action.RevealInExplorerAction;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.part.MultiPageEditorActionBarContributor;
 import org.eclipse.ui.texteditor.StatusLineContributionItem;
 
-public class ArtifactEditorContributor extends MultiPageEditorActionBarContributor {
+public class ArtifactEditorContributor extends MultiPageEditorActionBarContributor implements ISelectedArtifact {
 
    private StatusLineContributionItem typeStatusItem;
-   private ShowInExplorerAction showInExplorerAction;
+   private RevealInExplorerAction showInExplorerAction;
+   private Artifact artifact;
 
    public ArtifactEditorContributor() {
       super();
@@ -36,11 +37,10 @@ public class ArtifactEditorContributor extends MultiPageEditorActionBarContribut
    @Override
    public void setActiveEditor(IEditorPart part) {
       super.setActiveEditor(part);
-      Artifact artifact = (Artifact) part.getAdapter(Artifact.class);
+      artifact = (Artifact) part.getAdapter(Artifact.class);
       if (artifact != null) {
          typeStatusItem.setText(artifact.getArtifactType().getName());
          typeStatusItem.setImage(ArtifactImageManager.getImage(artifact));
-         showInExplorerAction.setArtifact(artifact);
 
          RelationsComposite composite = (RelationsComposite) part.getAdapter(RelationsComposite.class);
          if (composite != null) {
@@ -59,7 +59,7 @@ public class ArtifactEditorContributor extends MultiPageEditorActionBarContribut
       typeStatusItem = new StatusLineContributionItem("skynet.artifactType", true, 25);
       typeStatusItem.setToolTipText("The type of the artifact being edited.");
 
-      showInExplorerAction = new ShowInExplorerAction();
+      showInExplorerAction = new RevealInExplorerAction(this);
    }
 
    @Override
@@ -73,21 +73,9 @@ public class ArtifactEditorContributor extends MultiPageEditorActionBarContribut
       coolBarManager.add(showInExplorerAction);
    }
 
-   private static class ShowInExplorerAction extends Action {
-      private Artifact artifact;
-
-      public ShowInExplorerAction() {
-         setText("Show in Artifact Explorer");
-         setToolTipText("Show the Artifact being edited in the Artifact Explorer");
-      }
-
-      public void setArtifact(Artifact artifact) {
-         this.artifact = artifact;
-      }
-
-      @Override
-      public void run() {
-         ArtifactExplorer.revealArtifact(artifact);
-      }
+   @Override
+   public Artifact getSelectedArtifact() {
+      return artifact;
    }
+
 }

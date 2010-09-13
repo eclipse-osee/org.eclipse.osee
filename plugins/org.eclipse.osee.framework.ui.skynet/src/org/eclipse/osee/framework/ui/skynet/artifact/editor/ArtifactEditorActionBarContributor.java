@@ -31,11 +31,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.OpenWithContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.access.PolicyDialog;
+import org.eclipse.osee.framework.ui.skynet.action.RevealInExplorerAction;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView;
 import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -67,7 +67,7 @@ public class ArtifactEditorActionBarContributor implements IActionContributor {
       manager.add(new Separator());
       manager.add(new OpenOutlineAction());
       manager.add(new OpenHistoryAction());
-      manager.add(new RevealInExplorerAction());
+      manager.add(new RevealInExplorerAction(editor.getArtifactFromEditorInput()));
       manager.add(new RevealBranchAction());
       manager.add(new Separator());
       manager.add(new AccessControlAction());
@@ -157,23 +157,6 @@ public class ArtifactEditorActionBarContributor implements IActionContributor {
       public void run() {
          try {
             HistoryView.open(getSelectedArtifact());
-         } catch (Exception ex) {
-            OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
-         }
-      }
-   }
-
-   private final class RevealInExplorerAction extends Action {
-      public RevealInExplorerAction() {
-         super();
-         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.MAGNIFY));
-         setToolTipText("Reveal this artifact in the Artifact Explorer");
-      }
-
-      @Override
-      public void run() {
-         try {
-            ArtifactExplorer.revealArtifact(getSelectedArtifact());
          } catch (Exception ex) {
             OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
          }

@@ -604,4 +604,5 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
       arts.add(sma);
       return arts;
    }
+
 }

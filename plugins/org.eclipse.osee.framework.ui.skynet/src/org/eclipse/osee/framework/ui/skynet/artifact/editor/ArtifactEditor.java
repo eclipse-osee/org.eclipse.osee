@@ -250,4 +250,5 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
    public boolean isDisposed() {
       return formPage == null || formPage.getPartControl() == null || formPage.getPartControl().isDisposed();
    }
+
 }

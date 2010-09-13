@@ -296,4 +296,5 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IActio
    public String getActionDescription() {
       return "";
    }
+
 }
