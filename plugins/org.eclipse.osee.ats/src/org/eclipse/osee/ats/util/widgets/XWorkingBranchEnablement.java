@@ -70,6 +70,16 @@ public class XWorkingBranchEnablement {
       return false;
    }
 
+   public boolean isFavoriteBranchButtonEnabled() {
+      try {
+         ensurePopulated();
+         return workingBranchInWork;
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+      return false;
+   }
+
    public void refresh() {
       populated = false;
    }

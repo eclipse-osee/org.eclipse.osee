@@ -14,13 +14,18 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
@@ -28,7 +33,9 @@ import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListe
 import org.eclipse.osee.framework.skynet.core.event.listener.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -44,6 +51,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
@@ -59,6 +67,7 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IArtifac
    private Button showArtifactExplorer;
    private Button showChangeReport;
    private Button deleteBranchButton;
+   private Button favoriteBranchButton;
    private XWorkingBranchEnablement enablement;
 
    public static enum BranchStatus {
@@ -88,7 +97,7 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IArtifac
       }
 
       Composite bComp = new Composite(parent, SWT.NONE);
-      bComp.setLayout(new GridLayout(4, false));
+      bComp.setLayout(new GridLayout(5, false));
       bComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       if (toolkit != null) {
          toolkit.adapt(bComp);
@@ -135,9 +144,19 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IArtifac
          }
       });
 
+      favoriteBranchButton = createNewButton(bComp);
+      favoriteBranchButton.setToolTipText("Toggle Working Branch as Favorite");
+      favoriteBranchButton.addListener(SWT.Selection, new Listener() {
+         @Override
+         public void handleEvent(Event e) {
+            markWorkingBranchAsFavorite();
+         }
+      });
+
       if (AtsPlugin.getInstance() != null) {
          createBranchButton.setImage(ImageManager.getImage(FrameworkImage.BRANCH));
          deleteBranchButton.setImage(ImageManager.getImage(FrameworkImage.TRASH));
+         favoriteBranchButton.setImage(ImageManager.getImage(AtsImage.FAVORITE));
       }
       if (SkynetGuiPlugin.getInstance() != null) {
          showArtifactExplorer.setImage(ImageManager.getImage(FrameworkImage.ARTIFACT_EXPLORER));
@@ -145,6 +164,32 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IArtifac
       }
       refreshLabel();
       refreshEnablement();
+   }
+
+   private void markWorkingBranchAsFavorite() {
+      try {
+         User user = UserManager.getUser();
+         if (user.isSystemUser()) {
+            AWorkbench.popup("Can't set preference as System User = " + user);
+            return;
+         }
+         Branch branch = teamArt.getWorkingBranch();
+         if (branch == null) {
+            AWorkbench.popup("Working branch doesn't exist");
+            return;
+         }
+         boolean isFavorite = user.isFavoriteBranch(branch);
+         String message =
+            String.format("Working branch is currently [%s]\n\nToggle favorite?",
+               isFavorite ? "Favorite" : "NOT Favorite");
+         if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Toggle Branch as Favorite", message)) {
+            user.toggleFavoriteBranch(branch);
+            OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.FavoritesUpdated, branch.getGuid()),
+               branch.getId());
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      }
    }
 
    public Button createNewButton(Composite comp) {
@@ -172,6 +217,7 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IArtifac
       showArtifactExplorer.setEnabled(enablement.isShowArtifactExplorerButtonEnabled());
       showChangeReport.setEnabled(enablement.isShowChangeReportButtonEnabled());
       deleteBranchButton.setEnabled(enablement.isDeleteBranchButtonEnabled());
+      favoriteBranchButton.setEnabled(enablement.isFavoriteBranchButtonEnabled());
    }
 
    public static boolean isPurgeBranchButtonEnabled(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
@@ -271,22 +317,6 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IArtifac
    public void setArtifact(Artifact artifact) {
       this.teamArt = (TeamWorkFlowArtifact) artifact;
       enablement = new XWorkingBranchEnablement(teamArt);
-   }
-
-   public Button getCreateBranchButton() {
-      return createBranchButton;
-   }
-
-   public Button getShowArtifactExplorerButton() {
-      return showArtifactExplorer;
-   }
-
-   public Button getShowChangeReportButton() {
-      return showChangeReport;
-   }
-
-   public Button getDeleteBranchButton() {
-      return deleteBranchButton;
    }
 
    @Override
