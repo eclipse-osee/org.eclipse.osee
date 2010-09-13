@@ -517,7 +517,7 @@ oseeEnumType "enum.req.test.frequency" {
    guid "AS7K6KiFKy3Fb5j3xlwA"
    entry "One Time"
    entryGuid "AS7P7QAx8CQb1qp8BqwA"
-   entry "Reoccurring"
+   entry "Recurring"
    entryGuid "AS7RJUFz2EPIYq+sQvwA"
 }
 
