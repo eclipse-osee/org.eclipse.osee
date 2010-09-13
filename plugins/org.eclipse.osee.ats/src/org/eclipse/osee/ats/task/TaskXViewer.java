@@ -12,9 +12,7 @@ package org.eclipse.osee.ats.task;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
@@ -27,6 +25,7 @@ import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.PromptChangeUtil;
+import org.eclipse.osee.ats.util.xviewer.RelatedToStateColumn;
 import org.eclipse.osee.ats.world.AtsWorldEditorItems;
 import org.eclipse.osee.ats.world.IAtsWorldEditorItem;
 import org.eclipse.osee.ats.world.WorldXViewer;
@@ -89,10 +88,6 @@ public class TaskXViewer extends WorldXViewer {
    @Override
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
       handleColumnMultiEdit(treeColumn, treeItems, false);
-      Set<TaskArtifact> items = new HashSet<TaskArtifact>();
-      for (TreeItem item : treeItems) {
-         items.add((TaskArtifact) item.getData());
-      }
       refresh();
       editor.onDirtied();
    }
@@ -347,6 +342,8 @@ public class TaskXViewer extends WorldXViewer {
             modified = PromptChangeUtil.promptChangeAttribute(taskArt, AtsAttributeTypes.EstimatedHours, false, false);
          } else if (isSelectedTaskArtifactsAreInWork() && xCol.equals(WorldXViewerFactory.Title_Col)) {
             modified = PromptChangeUtil.promptChangeAttribute(taskArt, AtsAttributeTypes.Title, false, false);
+         } else if (xCol.equals(WorldXViewerFactory.Related_To_State_Col)) {
+            modified = RelatedToStateColumn.promptChangeRelatedToState(taskArt, false);
          } else if (isSelectedTaskArtifactsAreInWork() && xCol.equals(WorldXViewerFactory.Related_To_State_Col)) {
             modified = PromptChangeUtil.promptChangeAttribute(taskArt, AtsAttributeTypes.RelatedToState, false, false);
          } else if (isSelectedTaskArtifactsAreInWork() && xCol.equals(WorldXViewerFactory.Assignees_Col)) {

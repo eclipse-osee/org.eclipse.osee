@@ -58,6 +58,7 @@ import org.eclipse.osee.ats.util.ArtifactEmailWizard;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.PromptChangeUtil;
+import org.eclipse.osee.ats.util.xviewer.RelatedToStateColumn;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeColumn;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -357,6 +358,16 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts {
          } catch (OseeCoreException ex) {
             OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
+      } else if (treeColumn.getData().equals(WorldXViewerFactory.Related_To_State_Col)) {
+         Set<TaskArtifact> tasks = new HashSet<TaskArtifact>();
+         for (TreeItem item : treeItems) {
+            Artifact art = (Artifact) item.getData();
+            if (art instanceof TaskArtifact) {
+               tasks.add((TaskArtifact) art);
+            }
+         }
+         RelatedToStateColumn.promptChangeRelatedToState(tasks, true);
+         return;
       } else if (treeColumn.getData().equals(WorldXViewerFactory.Points_Col)) {
          Set<TeamWorkFlowArtifact> smas = new HashSet<TeamWorkFlowArtifact>();
          for (TreeItem item : treeItems) {
@@ -418,6 +429,8 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts {
    @Override
    public boolean isColumnMultiEditable(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
       if (treeColumn.getData().equals(WorldXViewerFactory.Groups_Col)) {
+         return true;
+      } else if (treeColumn.getData().equals(WorldXViewerFactory.Related_To_State_Col)) {
          return true;
       }
       if (!(treeColumn.getData() instanceof XViewerColumn)) {
@@ -878,6 +891,8 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts {
             modified = PromptChangeUtil.promptChangeAttribute(sma, AtsAttributeTypes.WorkPackage, persist, false);
          } else if (xCol.equals(WorldXViewerFactory.Points_Col)) {
             modified = PromptChangeUtil.promptChangePoints(sma, persist);
+         } else if (xCol.equals(WorldXViewerFactory.Related_To_State_Col)) {
+            modified = RelatedToStateColumn.promptChangeRelatedToState(sma, persist);
          } else if (xCol.equals(WorldXViewerFactory.Numeric1_Col)) {
             modified = PromptChangeUtil.promptChangeAttribute(sma, AtsAttributeTypes.Numeric1, persist, false);
          } else if (xCol.equals(WorldXViewerFactory.Numeric2_Col)) {

@@ -123,9 +123,9 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
    public static final XViewerColumn Category3_Col = new XViewerAtsAttributeColumn(AtsAttributeTypes.Category3, 80,
       SWT.LEFT, false, SortDataType.String, true);
 
-   public static XViewerAtsAttributeColumn Related_To_State_Col = new XViewerAtsAttributeColumn(
-      COLUMN_NAMESPACE + ".relatedToState", AtsAttributeTypes.RelatedToState, 80, SWT.LEFT, false, SortDataType.String,
-      true);
+   public static XViewerColumn Related_To_State_Col = new XViewerColumn(COLUMN_NAMESPACE + ".relatedToState",
+      AtsAttributeTypes.RelatedToState.getUnqualifiedName(), 80, SWT.LEFT, false, SortDataType.String, true,
+      "Parent workflow state that task is to be worked in.");
    public static final XViewerColumn Weekly_Benefit_Hrs_Col = new XViewerAtsAttributeColumn(
       COLUMN_NAMESPACE + ".weeklyBenefitHrs", AtsAttributeTypes.WeeklyBenefit, 40, SWT.CENTER, false,
       SortDataType.Float, true);

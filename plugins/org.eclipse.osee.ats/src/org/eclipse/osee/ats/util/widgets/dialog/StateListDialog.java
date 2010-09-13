@@ -48,6 +48,9 @@ public class StateListDialog extends ListDialog {
    }
 
    public String getSelectedState() {
+      if (getResult().length == 0) {
+         return "";
+      }
       return (String) getResult()[0];
    }
 }
