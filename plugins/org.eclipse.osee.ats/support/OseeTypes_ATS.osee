@@ -59,6 +59,7 @@ artifactType "Team Definition" extends "ats.Ats Artifact", "Abstract Access Cont
    attribute "ats.Team Uses Versions"
    attribute "ats.Require Targeted Version"
    attribute "ats.Baseline Branch Guid"
+   attribute "ats.Action Details Format"
    attribute "ats.Active"
    attribute "ats.Actionable"
    attribute "ats.Allow Create Branch"
@@ -452,6 +453,14 @@ attributeType "ats.Description" extends StringAttribute {
 
 attributeType "ats.Full Name" extends StringAttribute {
    guid "AAMFEdZI9XLT34cTonAA"
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "ats.Action Details Format" extends StringAttribute {
+   guid "Aij_PfM7wCsEA2Z720wA"
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1

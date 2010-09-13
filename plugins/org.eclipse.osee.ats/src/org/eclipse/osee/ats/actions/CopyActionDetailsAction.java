@@ -14,7 +14,14 @@ package org.eclipse.osee.ats.actions;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
@@ -40,9 +47,41 @@ public class CopyActionDetailsAction extends Action {
       if (clipboard == null) {
          this.clipboard = new Clipboard(null);
       }
-      clipboard.setContents(
-         new Object[] {"\"" + sma.getArtifactTypeName() + "\" - " + sma.getHumanReadableId() + " - \"" + sma.getName() + "\""},
-         new Transfer[] {TextTransfer.getInstance()});
+      try {
+         String detailsStr = "";
+         if (sma.getParentTeamWorkflow() != null) {
+            TeamDefinitionArtifact teamDef = sma.getParentTeamWorkflow().getTeamDefinition();
+            String formatStr = getFormatStr(teamDef);
+            if (Strings.isValid(formatStr)) {
+               detailsStr = formatStr;
+               detailsStr = detailsStr.replaceAll("<hrid>", sma.getHumanReadableId());
+               detailsStr = detailsStr.replaceAll("<name>", sma.getName());
+               detailsStr = detailsStr.replaceAll("<artType>", sma.getArtifactTypeName());
+               detailsStr =
+                  detailsStr.replaceAll("<changeType>",
+                     Strings.isValid(sma.getWorldViewChangeTypeStr()) ? sma.getWorldViewChangeTypeStr() : "unknown");
+            } else {
+               detailsStr =
+                  "\"" + sma.getArtifactTypeName() + "\" - " + sma.getHumanReadableId() + " - \"" + sma.getName() + "\"";
+            }
+         }
+         clipboard.setContents(new Object[] {detailsStr}, new Transfer[] {TextTransfer.getInstance()});
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+   }
+
+   private String getFormatStr(TeamDefinitionArtifact teamDef) throws OseeCoreException {
+      if (teamDef != null) {
+         String formatStr = teamDef.getSoleAttributeValue(AtsAttributeTypes.ActionDetailsFormat, "");
+         if (Strings.isValid(formatStr)) {
+            return formatStr;
+         }
+         if (teamDef.getParent() instanceof TeamDefinitionArtifact) {
+            return getFormatStr((TeamDefinitionArtifact) teamDef.getParent());
+         }
+      }
+      return null;
    }
 
    @Override

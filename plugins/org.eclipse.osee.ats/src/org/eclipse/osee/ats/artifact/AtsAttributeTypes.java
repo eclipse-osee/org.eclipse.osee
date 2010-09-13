@@ -22,6 +22,7 @@ public final class AtsAttributeTypes extends NamedIdentity implements IAttribute
    // @formatter:off
    public static final IAttributeType Actionable = new AtsAttributeTypes("AAMFEcvDtBiaJ3TMatAA", "Actionable", "True if item can have Action written against or assigned to.");
    public static final IAttributeType ActionableItem = new AtsAttributeTypes("AAMFEdbcR2zpGzFOLOQA", "Actionable Item", "Actionable Items that are impacted by this change.");
+   public static final IAttributeType ActionDetailsFormat = new AtsAttributeTypes("Aij_PfM7wCsEA2Z720wA", "Action Details Format", "Format of string when push Action Details Copy button on SMA Workflow Editor.");
    public static final IAttributeType Active = new AtsAttributeTypes("AAMFEclQOVmzkIvzyWwA", "Active", "Active ATS configuration object.");
    public static final IAttributeType AllowCommitBranch = new AtsAttributeTypes("AAMFEbCZCkwgj73BsQgA", "Allow Commit Branch");
    public static final IAttributeType AllowCreateBranch = new AtsAttributeTypes("AAMFEbARuQEvi6rtY5gA", "Allow Create Branch");
