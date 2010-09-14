@@ -27,5 +27,5 @@ CollectionsTest.class, //
    StringsTest.class, //
    ReservedCharactersTest.class})
 public class JdkCoreUtilTestSuite {
-
+   // Test Suite Class
 }

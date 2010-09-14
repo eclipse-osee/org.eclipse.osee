@@ -19,5 +19,5 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({WordMLNewLineMakerRuleTest.class})
 public class JdkCoreRuleTestSuite {
-
+   // Test Suite Class
 }

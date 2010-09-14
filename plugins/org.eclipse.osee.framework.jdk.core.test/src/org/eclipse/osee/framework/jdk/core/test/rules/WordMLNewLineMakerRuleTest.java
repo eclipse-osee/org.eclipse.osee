@@ -37,7 +37,6 @@ public final class WordMLNewLineMakerRuleTest extends TestCase {
       "<w:p wsp:rsidR=\"01234567\" wsp:rsidRDefault=\"01234567\">";
 
    private final WordMLNewLineMaker wordNewLineMaker = new WordMLNewLineMaker();
-   private final StringBuilder pathArgument = new StringBuilder();
    private final Pattern paragraphRegex = Pattern.compile("<w:p[ >].*?</w:p>", Pattern.DOTALL);
 
    @Test
@@ -62,7 +61,7 @@ public final class WordMLNewLineMakerRuleTest extends TestCase {
       String modifiedFileAsString = modifiedFile.toString();
       Assert.assertTrue(modifiedFileAsString.contains(NEW_WP_INJECTION_FINGERPRINT));
 
-      //Test Does it have 2 <w:p>s instead of 1 ?
+      //Test Does it have 2 word paragraphs instead of 1 ?
       Matcher wpMatcher = paragraphRegex.matcher(modifiedFileAsString);
       int count = 0;
       while (wpMatcher.find()) {
