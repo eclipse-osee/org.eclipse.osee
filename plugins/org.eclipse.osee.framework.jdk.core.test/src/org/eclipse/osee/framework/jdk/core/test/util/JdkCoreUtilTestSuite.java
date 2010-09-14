@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.jdk.core.test.util;
 
+import org.eclipse.osee.framework.jdk.core.test.util.io.xml.IoXmlTestSuite;
+import org.eclipse.osee.framework.jdk.core.test.util.xml.XmlTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -17,15 +19,21 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ //
-CollectionsTest.class, //
-   CompareTest.class, //
-   GuidObject.class, //
-   GUIDTest.class, //
-   HashCollectionTest.class, //
-   HumanReadableIdTest.class, //
-   StringsTest.class, //
-   ReservedCharactersTest.class})
+@Suite.SuiteClasses({
+//@formatter:off
+   IoXmlTestSuite.class,
+   XmlTestSuite.class, 
+   XmlTestSuite.class,
+   CollectionsTest.class,
+   CompareTest.class, 
+   GuidObject.class, 
+   GUIDTest.class, 
+   HashCollectionTest.class, 
+   HumanReadableIdTest.class, 
+   StringsTest.class, 
+   ReservedCharactersTest.class
+//@formatter:on
+})
 public class JdkCoreUtilTestSuite {
    // Test Suite Class
 }

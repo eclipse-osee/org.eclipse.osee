@@ -143,7 +143,7 @@ public class Jaxp {
     * the concatenation of the character data for all children of this Element.
     * 
     * @param e The element go get the character data for
-    * @param trimWhitespace iff true, each segment will be trimmed.
+    * @param trimWhitespace if true, each segment will be trimmed.
     * @return All of the character data for the Element e. This means if there are elements separating the character
     * data, it will all be concatenated together. If trimWhitespace, each segment will be trimmed of whitespace, with a
     * single space between segments; otherwise the segments will be concatenated without any space separation. If no
@@ -169,7 +169,6 @@ public class Jaxp {
             resultString.append(trimWhitespace ? n.getNodeValue().trim() : n.getNodeValue());
             first = false;
          }
-
       }
       return resultString.toString();
    }
@@ -559,71 +558,6 @@ public class Jaxp {
       return stringWriter.getBuffer().toString();
    }
 
-   public static void main(String args[]) {
-      try {
-         Document doc = readXmlDocument("<A name='george' type='level1'>" + "  <B type='level2'>I'm at level 2</B>" //
-            + "  <B type='level2'>I'm also at level 2</B>" //
-            + "  <C type='level2'>" //
-            + "      <D>likes to be C's child</D>" //
-            + "C has some more text here" //
-            + "      <D>2nd round</D>"//
-            + "END of C" //
-            + "  </C>" //
-            + "</A>");
-
-         Element e = getChild(doc.getDocumentElement(), "C");
-         System.out.println("e.getTagName     :" + e.getTagName());
-         System.out.println("e.getLocalName   :" + e.getLocalName());
-         System.out.println("e.getNodeName    :" + e.getNodeName());
-         System.out.println("e.getNodeType    :" + e.getNodeType());
-         System.out.println("e.getNodeValue   :" + e.getNodeValue());
-         System.out.println("e.getPrefix      :" + e.getPrefix());
-         System.out.println("e.getTextContent :" + e.getTextContent());
-         System.out.println("");
-         System.out.println("e.getFirstChild().getNodeValue   :" + e.getFirstChild().getNodeValue());
-         System.out.println("e.getFirstChild().getTextContent :" + e.getFirstChild().getTextContent());
-         System.out.println("");
-         System.out.println(getElementCharacterData(e));
-
-         System.out.println("");
-         System.out.println("Looking for the Top level item:");
-         NodeList nl = doc.getElementsByTagName("A");
-         for (int i = 0; i < nl.getLength(); i++) {
-            System.out.println("     Found: " + nl.item(i).getNodeName());
-         }
-         System.out.println("Looking for the Top level item:");
-         nl = doc.getDocumentElement().getElementsByTagName("A");
-         for (int i = 0; i < nl.getLength(); i++) {
-            System.out.println("Found: " + nl.item(i).getNodeName());
-         }
-
-         System.out.println("");
-         System.out.println("Searching For D:");
-         Element em = findElement(doc, "A/C/D");
-         System.out.println(em.getTagName() + ":" + getElementCharacterData(em));
-
-         List<Element> list = findElements(doc.getDocumentElement(), "C/D");
-         for (Element te : list) {
-            System.out.println(te.getTagName() + ":" + getElementCharacterData(te));
-         }
-
-         Element joe = Jaxp.createElement(doc, "f", "This is F's Data");
-         em.appendChild(joe);
-
-         System.out.println(Jaxp.getElementCharacterData(joe));
-
-         System.out.println("******");
-         System.out.println(xmlToString(doc, getPrettyFormat(doc)));
-
-      } catch (SAXException ex) {
-         ex.printStackTrace();
-      } catch (IOException ex) {
-         ex.printStackTrace();
-      } catch (ParserConfigurationException ex) {
-         ex.printStackTrace();
-      }
-   }
-
    public static final String selectNodesText(Node startingNode) {
       StringBuffer buffer = new StringBuffer();
       NodeList childNodes = startingNode.getChildNodes();
@@ -651,18 +585,21 @@ public class Jaxp {
       return factory.newXPath();
    }
 
-   public static void writeNode(XMLStreamWriter writer, Node node) throws XMLStreamException {
+   public static void writeNode(XMLStreamWriter writer, Node node, boolean trimTextNodeWhitespace) throws XMLStreamException {
       if (node instanceof Element) {
          Element element = (Element) node;
 
          String namespace = element.getNamespaceURI();
          String prefix = element.getPrefix();
          String name = element.getLocalName();
+         if (!Strings.isValid(name)) {
+            name = element.getNodeName();
+         }
          if (Strings.isValid(name)) {
             if (prefix != null && namespace != null) {
                writer.writeStartElement(prefix, name, namespace);
-            } else if (namespace != null) {
-               writer.writeStartElement(namespace, name);
+               //            } else if (namespace != null) {
+               //               writer.writeStartElement("", namespace, name);
             } else {
                writer.writeStartElement(name);
             }
@@ -675,21 +612,34 @@ public class Jaxp {
             }
 
             if (node.hasChildNodes()) {
-               serialize(writer, element.getChildNodes());
+               serialize(writer, element.getChildNodes(), trimTextNodeWhitespace);
             }
 
-            String text = Jaxp.getElementCharacterData(element, true);
-            if (Strings.isValid(text)) {
-               writer.writeCharacters(text);
+            String data = Jaxp.getElementCharacterData(element, trimTextNodeWhitespace);
+            if (Strings.isValid(data)) {
+               boolean wasCData = false;
+               NodeList childNodes = element.getChildNodes();
+               for (int i = 0; i < childNodes.getLength(); i++) {
+                  Node n = childNodes.item(i);
+                  if (n.getNodeType() == Node.TEXT_NODE) {
+                     wasCData = true;
+                     break;
+                  }
+               }
+               if (wasCData) {
+                  writer.writeCharacters(data);
+               } else {
+                  writer.writeCData(data);
+               }
             }
             writer.writeEndElement();
          }
       }
    }
 
-   public static void serialize(XMLStreamWriter writer, NodeList nodes) throws XMLStreamException {
+   public static void serialize(XMLStreamWriter writer, NodeList nodes, boolean trimTextNodeWhitespace) throws XMLStreamException {
       for (int index = 0; index < nodes.getLength(); index++) {
-         writeNode(writer, nodes.item(index));
+         writeNode(writer, nodes.item(index), trimTextNodeWhitespace);
       }
    }
 
@@ -699,13 +649,18 @@ public class Jaxp {
 
          String namespace = attrNode.getNamespaceURI();
          String prefix = attrNode.getPrefix();
-         String name = attrNode.getLocalName();
          String value = attrNode.getValue();
+
+         String name = attrNode.getLocalName();
+         if (!Strings.isValid(name)) {
+            name = attrNode.getNodeName();
+         }
+
          if (Strings.isValid(name) && Strings.isValid(value)) {
             if (prefix != null && namespace != null) {
                writer.writeAttribute(prefix, namespace, name, value);
-            } else if (namespace != null) {
-               writer.writeAttribute(namespace, name, value);
+               //            } else if (namespace != null) {
+               //               writer.writeAttribute(" ", namespace, name, value);
             } else {
                writer.writeAttribute(name, value);
             }
