@@ -17,6 +17,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.search.engine.SearchOptions;
+import org.eclipse.osee.framework.search.engine.SearchResult;
 import org.eclipse.osee.framework.search.engine.attribute.AttributeData;
 import org.eclipse.osee.framework.search.engine.attribute.AttributeDataStore;
 import org.eclipse.osee.framework.search.engine.utility.ITagCollector;
@@ -42,10 +43,14 @@ public final class AttributeSearch implements ITagCollector {
       this.attributeTypes = attributeTypes;
    }
 
-   public Set<AttributeData> getMatchingAttributes() throws Exception {
+   public Set<AttributeData> getMatchingAttributes(SearchResult results) throws Exception {
       Set<AttributeData> toReturn = null;
       long start = System.currentTimeMillis();
       tagProcessor.collectFromString(searchString, this);
+      if (tagStore.isEmpty()) {
+         results.setErrorMessage("No words found in search string.  Please reformat and try again.");
+         return Collections.emptySet();
+      }
       toReturn = AttributeDataStore.getAttributesByTags(branchId, options, tagStore, attributeTypes);
       if (toReturn == null) {
          toReturn = Collections.emptySet();

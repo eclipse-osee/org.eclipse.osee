@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.JoinUtility.ArtifactJoinQuery;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.manager.servlet.data.HttpSearchInfo;
 import org.eclipse.osee.framework.manager.servlet.internal.Activator;
@@ -87,7 +88,9 @@ public class SearchEngineServlet extends SecureOseeHttpServlet {
          SearchResult results =
             searchEngine.search(searchInfo.getQuery(), searchInfo.getId(), searchInfo.getOptions(), attributeTypes);
          response.setStatus(wasFromGet ? HttpServletResponse.SC_OK : HttpServletResponse.SC_ACCEPTED);
-         if (!results.isEmpty()) {
+         if (results.isEmpty() && Strings.isValid(results.getErrorMessage())) {
+            sendEmptyAsXml(response, results);
+         } else if (!results.isEmpty()) {
             long start = System.currentTimeMillis();
             if (!searchInfo.getOptions().getBoolean(SearchOptionsEnum.as_xml.asStringOption())) {
                sendAsDbJoin(response, results);
@@ -125,6 +128,17 @@ public class SearchEngineServlet extends SecureOseeHttpServlet {
       response.getWriter().write(String.format("%d,%d", joinQuery.getQueryId(), joinQuery.size()));
    }
 
+   private void sendEmptyAsXml(HttpServletResponse response, SearchResult results) throws Exception {
+      response.setCharacterEncoding("UTF-8");
+      response.setContentType("text/xml");
+      PrintWriter writer = response.getWriter();
+
+      writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>");
+      writer.write("<search>");
+      writer.write(String.format("<errorMessage=\"%s\">", results.getErrorMessage()));
+      writer.write("</search>");
+   }
+
    /**
     * <match artId="" branchId=""> <attr gammaId=""><location start="" end="" /></attr> </match>
     */
@@ -135,6 +149,7 @@ public class SearchEngineServlet extends SecureOseeHttpServlet {
 
       writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>");
       writer.write("<search>");
+      writer.write(String.format("<error message=\"%s\"", results.getErrorMessage()));
       for (Integer branchId : results.getBranchIds()) {
          writer.write(String.format("<match branchId=\"%s\">", branchId));
          for (ArtifactMatch match : results.getArtifacts(branchId)) {

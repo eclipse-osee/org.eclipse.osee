@@ -21,11 +21,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.server.HttpUrlBuilderClient;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
@@ -139,24 +142,29 @@ final class HttpArtifactQuery {
 
          try {
             if (data.getFirst().endsWith("xml")) {
-               List<XmlArtifactSearchResult> results = handleAsXmlResults(data.getSecond());
-               for (XmlArtifactSearchResult result : results) {
-                  try {
-                     result.getJoinQuery().store();
-                     List<Artifact> artifacts =
-                        ArtifactLoader.loadArtifactsFromQueryId(result.getJoinQuery().getQueryId(), loadLevel,
-                           confirmer, result.getJoinQuery().size(), reload, historical, allowDeleted);
-                     for (Artifact artifact : artifacts) {
-                        ArtifactMatch artMatch = new ArtifactMatch(artifact);
-                        HashCollection<Long, MatchLocation> attributeMatches =
-                           result.getAttributeMatches(artifact.getArtId());
-                        if (attributeMatches != null) {
-                           artMatch.addMatches(attributeMatches);
+               String errorMessage = isErrorMessage(data.getSecond());
+               if (Strings.isValid(errorMessage)) {
+                  throw new OseeArgumentException(errorMessage);
+               } else {
+                  List<XmlArtifactSearchResult> results = handleAsXmlResults(data.getSecond());
+                  for (XmlArtifactSearchResult result : results) {
+                     try {
+                        result.getJoinQuery().store();
+                        List<Artifact> artifacts =
+                           ArtifactLoader.loadArtifactsFromQueryId(result.getJoinQuery().getQueryId(), loadLevel,
+                              confirmer, result.getJoinQuery().size(), reload, historical, allowDeleted);
+                        for (Artifact artifact : artifacts) {
+                           ArtifactMatch artMatch = new ArtifactMatch(artifact);
+                           HashCollection<Long, MatchLocation> attributeMatches =
+                              result.getAttributeMatches(artifact.getArtId());
+                           if (attributeMatches != null) {
+                              artMatch.addMatches(attributeMatches);
+                           }
+                           toReturn.add(artMatch);
                         }
-                        toReturn.add(artMatch);
+                     } finally {
+                        result.getJoinQuery().delete();
                      }
-                  } finally {
-                     result.getJoinQuery().delete();
                   }
                }
             } else if (data.getFirst().endsWith("plain")) {
@@ -179,6 +187,18 @@ final class HttpArtifactQuery {
          }
       }
       return toReturn;
+   }
+
+   private static Pattern errorMessagePattern = Pattern.compile("<errorMessage=\"(.*?)\">");
+
+   private String isErrorMessage(ByteArrayOutputStream outputStream) {
+      String results = outputStream.toString();
+      Matcher matcher = errorMessagePattern.matcher(results);
+      if (matcher.find()) {
+         String message = matcher.group(1);
+         return message;
+      }
+      return null;
    }
 
    private Pair<String, ByteArrayOutputStream> executeSearch(boolean withMatches, boolean findAllMatchLocations) throws OseeCoreException {

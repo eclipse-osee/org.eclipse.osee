@@ -25,6 +25,7 @@ public class SearchResult {
 
    private final Map<Integer, Map<Integer, ArtifactMatch>> entries;
    private int size;
+   private String errorMessage;
 
    public SearchResult() {
       this.entries = new HashMap<Integer, Map<Integer, ArtifactMatch>>();
@@ -124,6 +125,14 @@ public class SearchResult {
       public int getId() {
          return branchId;
       }
+   }
+
+   public String getErrorMessage() {
+      return errorMessage;
+   }
+
+   public void setErrorMessage(String errorMessage) {
+      this.errorMessage = errorMessage;
    }
 
 }

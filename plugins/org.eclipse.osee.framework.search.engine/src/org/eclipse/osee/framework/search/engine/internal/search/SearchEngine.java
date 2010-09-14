@@ -50,7 +50,7 @@ public class SearchEngine implements ISearchEngine {
       AttributeSearch attributeSearch =
          new AttributeSearch(tagProcessor, searchString, branchId, options, attributeTypes);
 
-      Collection<AttributeData> tagMatches = attributeSearch.getMatchingAttributes();
+      Collection<AttributeData> tagMatches = attributeSearch.getMatchingAttributes(results);
       long timeAfterPass1 = System.currentTimeMillis() - startTime;
       long secondPass = System.currentTimeMillis();
 
