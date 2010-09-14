@@ -17,7 +17,6 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IDatabaseInfo;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.exception.OseeDatabaseConnectionInfoNotFoundException;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.database.core.IDbConnectionInformationContributor;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
@@ -82,7 +81,7 @@ public class DatabaseInfoProvider {
       } finally {
          tracker.close();
       }
-      throw new OseeDatabaseConnectionInfoNotFoundException(String.format(
+      throw new OseeDataStoreException(String.format(
          "DB connection information was not found for: [%s]\n Available connection ids are: [%s]\n", serverIdToFind,
          infoKeys));
    }
