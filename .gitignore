@@ -4,3 +4,5 @@
 */*/.settings/
 #Ignore vi temporary files
 *~
+#Ignore temp test file
+plugins/*/utf8_input_copy.xml
