@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.core.data.IOseeUserInfo;
 import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationException;
-import org.eclipse.osee.framework.core.exception.OseeInvalidAuthenticationProtocolException;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
 import org.eclipse.osee.framework.core.server.IAuthenticationProvider;
 
@@ -53,7 +52,7 @@ public class AuthenticationManager implements IAuthenticationManager {
             return provider.authenticate(credential);
          }
       }
-      throw new OseeInvalidAuthenticationProtocolException(String.format("Invalid protocol [%s]",
+      throw new OseeAuthenticationException(String.format("Invalid protocol [%s]",
          credential.getAuthenticationProtocol()));
    }
 
@@ -82,7 +81,7 @@ public class AuthenticationManager implements IAuthenticationManager {
             return provider.asOseeUserId(credential);
          }
       }
-      throw new OseeInvalidAuthenticationProtocolException(String.format("Invalid protocol [%s]",
+      throw new OseeAuthenticationException(String.format("Invalid protocol [%s]",
          credential.getAuthenticationProtocol()));
    }
 
