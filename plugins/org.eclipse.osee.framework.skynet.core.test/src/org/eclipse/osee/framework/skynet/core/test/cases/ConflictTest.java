@@ -272,7 +272,7 @@ public class ConflictTest {
 
          int expectedNumber = ConflictTestManager.numberOfArtifactsOnMergeBranch();
          int actualNumber = artifacts.size();
-         assertEquals(
+         assertTrue(
             "(Intermittent failures - needs re-write) - The merge Branch does not contain the expected number of artifacts: ",
             (expectedNumber <= actualNumber) && (actualNumber <= (expectedNumber + 1)));
       } catch (Exception ex) {
