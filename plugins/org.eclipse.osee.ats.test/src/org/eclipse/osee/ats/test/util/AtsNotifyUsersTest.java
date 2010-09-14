@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.test.util;
 
 import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.EXCLUDE_DELETED;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import junit.framework.Assert;
@@ -27,6 +28,7 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationEvent;
 import org.eclipse.osee.support.test.util.DemoUsers;
 import org.junit.AfterClass;
@@ -41,10 +43,14 @@ public class AtsNotifyUsersTest {
    @BeforeClass
    @AfterClass
    public static void cleanup() throws OseeCoreException {
-      for (Artifact artifact : ArtifactQuery.getArtifactListFromName(AtsNotifyUsersTest.class.getSimpleName(),
-         AtsUtil.getAtsBranch(), EXCLUDE_DELETED)) {
-         artifact.delete();
+      Collection<Artifact> artifacts =
+         ArtifactQuery.getArtifactListFromName(AtsNotifyUsersTest.class.getSimpleName(), AtsUtil.getAtsBranch(),
+            EXCLUDE_DELETED);
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "AtsNotifyUsersTest Clean-up");
+      for (Artifact artifact : artifacts) {
+         artifact.deleteAndPersist(transaction);
       }
+      transaction.execute();
    }
 
    @Test
