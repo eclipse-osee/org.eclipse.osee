@@ -19,6 +19,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.ReservedCharacters;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.WordOutlineExtractorDelegate;
 import org.junit.After;
@@ -35,12 +36,12 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public final class WordOutlineTest {
 
-   private static final Pattern paragraphRegex = Pattern.compile("<w:p[ >].*?</w:p>");
-   private static final Pattern outlineNumber = Pattern.compile("((?>\\d+\\.)+\\d*)\\s*");
+   private static final Pattern PARAGRAPH_REGEX = Pattern.compile("<w:p[ >].*?</w:p>");
+   private static final Pattern OUTLINE_NUMBER_PATTERN = Pattern.compile("((?>\\d+\\.)+\\d*)\\s*");
 
-   private static final String outlineNameWithNumber = "outlineNameWithNumber.xml";
-   private static final String outlineNameNumberAndContent = "outlineNameNumberAndContent.xml";
-   private static final String numberEmbeddedInTheContent = "numberEmbeddedInTheContent.xml";
+   private static final String OUTLINE_WITH_NUMBER = "outlineNameWithNumber.xml";
+   private static final String OUTLINE_WITH_NUMBER_AND_CONTENT = "outlineNameNumberAndContent.xml";
+   private static final String NUMBER_EMBED_IN_CONTENT = "numberEmbeddedInTheContent.xml";
 
    private final WordOutlineExtractorDelegate delegate;
    private final String dataFileName;
@@ -52,28 +53,34 @@ public final class WordOutlineTest {
       this.expectedData = expectedData;
    }
 
+   //@formatter:off
    /**
-	 * @formatter:off
 	 * Note: some of the data objects need to repeat data
 	 * from previous test because they are considered to
 	 * be lastHeaderNumber or lastHeaderName or lastContent
 	 * 
 	 * @return collection of data sets used as input for parameterized unit test
 	 */
-	//@formatter:on
    @Parameters
    public static Collection<Object[]> getData() {
       List<Object[]> data = new ArrayList<Object[]>();
-      data.add(new Object[] {outlineNameWithNumber, new DelegateData[] {data("1.", "Outline TITLE", "")}});
-      data.add(new Object[] {
-         outlineNameNumberAndContent,
-         new DelegateData[] {data("5.", "SCOPE", ""), data("5.", "SCOPE", "content content content more content")}});
-      data.add(new Object[] {
-         numberEmbeddedInTheContent,
-         new DelegateData[] {
-            data("1.", "SCOPE", ""),
-            data("1.", "SCOPE", "This 1.6 is some interesting content 2.3SAMPLâ€“10.")}});
+      addTest(data, OUTLINE_WITH_NUMBER, data("1.", "Outline TITLE", ""));
+      addTest(data, OUTLINE_WITH_NUMBER_AND_CONTENT, data("5.", "SCOPE", ""), data("5.", "SCOPE", "content content content more content"));
+      
+      StringBuilder builder = new StringBuilder();
+      builder.append("This 1.6 is some interesting content 2.3SAMPL");
+      builder.append(ReservedCharacters.toCharacter("&acirc;"));
+      builder.append(ReservedCharacters.toCharacter("&euro;"));
+      builder.append(ReservedCharacters.toCharacter("&ldquo;"));
+      builder.append("10.");
+      
+      addTest(data, NUMBER_EMBED_IN_CONTENT, data("1.", "SCOPE", ""), data("1.", "SCOPE", builder.toString()));
       return data;
+   }
+   //@formatter:on
+
+   private static void addTest(List<Object[]> data, String dataFileName, DelegateData... expectedData) {
+      data.add(new Object[] {dataFileName, expectedData});
    }
 
    private static DelegateData data(String headerNumber, String headerName, String content) {
@@ -97,7 +104,7 @@ public final class WordOutlineTest {
       delegate.initialize();
 
       String rawData = getResourceData(dataFileName);
-      Matcher matcher = paragraphRegex.matcher(rawData);
+      Matcher matcher = PARAGRAPH_REGEX.matcher(rawData);
       boolean foundSomething = false;
 
       List<DelegateData> actualData = new ArrayList<DelegateData>();
@@ -125,7 +132,7 @@ public final class WordOutlineTest {
                actual.getHeaderNumber(), actual.getHeaderName(), actual.getContent()), expected, actual);
          if (Strings.isValid(expected.getHeaderNumber())) {
             Assert.assertTrue("WordOutlineTester doesn't look like a outline number...",
-               outlineNumber.matcher(actual.getHeaderNumber()).matches());
+               OUTLINE_NUMBER_PATTERN.matcher(actual.getHeaderNumber()).matches());
          }
       }
    }
@@ -138,7 +145,7 @@ public final class WordOutlineTest {
       Assert.assertNull(delegate.getLastContent());
    }
 
-   private static class DelegateData {
+   private static final class DelegateData {
       private final String headerNumber;
       private final String headerName;
       private final String content;
@@ -206,6 +213,11 @@ public final class WordOutlineTest {
             return false;
          }
          return true;
+      }
+
+      @Override
+      public String toString() {
+         return "DelegateData [headerNumber=" + headerNumber + ", headerName=" + headerName + ", content=" + content + "]";
       }
 
    }
