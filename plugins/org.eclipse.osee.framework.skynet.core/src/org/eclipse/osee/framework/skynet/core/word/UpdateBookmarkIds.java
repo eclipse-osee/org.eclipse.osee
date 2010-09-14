@@ -1,8 +1,13 @@
-/*
- * Created on Aug 30, 2010
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.word;
 
 import java.io.StringWriter;
@@ -116,8 +121,15 @@ public class UpdateBookmarkIds {
    private static String xmlSectionToString(Node root) throws XMLStreamException {
       StringWriter writer = new StringWriter();
       XMLOutputFactory factory = XMLOutputFactory.newInstance();
-      XMLStreamWriter xmlWriter = factory.createXMLStreamWriter(writer);
-      Jaxp.writeNode(xmlWriter, root);
+      XMLStreamWriter xmlWriter = null;
+      try {
+         xmlWriter = factory.createXMLStreamWriter(writer);
+         Jaxp.writeNode(xmlWriter, root, false);
+      } finally {
+         if (xmlWriter != null) {
+            xmlWriter.close();
+         }
+      }
       return writer.toString();
    }
 
