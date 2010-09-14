@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.data.OseeSessionGrant;
 import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeInvalidSessionException;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
 import org.eclipse.osee.framework.core.server.ISession;
 import org.eclipse.osee.framework.core.server.ISessionManager;
@@ -82,12 +81,9 @@ public final class SessionManagerImpl implements ISessionManager {
    public void updateSessionActivity(String sessionId, String interactionName) throws OseeCoreException {
       Conditions.checkNotNull(sessionId, "sessionId");
       Session session = getSessionById(sessionId);
-      if (session != null) {
-         session.setLastInteractionDetails(Strings.isValid(interactionName) ? interactionName : "unknown");
-         session.setLastInteractionDate(GlobalTime.GreenwichMeanTimestamp());
-      } else {
-         throw new OseeInvalidSessionException(String.format("Session was invalid: [%s]", sessionId));
-      }
+      Conditions.checkNotNull(session, "Session", "for id [%s]", sessionId);
+      session.setLastInteractionDetails(Strings.isValid(interactionName) ? interactionName : "unknown");
+      session.setLastInteractionDate(GlobalTime.GreenwichMeanTimestamp());
    }
 
    @Override
