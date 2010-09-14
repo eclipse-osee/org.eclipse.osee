@@ -20,11 +20,13 @@ import org.eclipse.osee.framework.skynet.core.test.event.BranchEventLoopbackTest
 import org.eclipse.osee.framework.skynet.core.test.event.BranchEventTest;
 import org.eclipse.osee.framework.skynet.core.test.event.TransactionEventLoopbackTest;
 import org.eclipse.osee.framework.skynet.core.test.event.TransactionEventTest;
+import org.eclipse.osee.framework.skynet.core.test.word.UpdateBookmarkIdTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+   UpdateBookmarkIdTest.class,
    ArtifactEventFiltersTest.class,
    BranchEventFiltersTest.class,
    TransactionEventTest.class,

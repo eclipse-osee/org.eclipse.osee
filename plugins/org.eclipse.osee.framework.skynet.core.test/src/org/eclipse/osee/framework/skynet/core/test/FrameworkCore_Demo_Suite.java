@@ -44,12 +44,14 @@ import org.eclipse.osee.framework.skynet.core.test.event.TransactionEventTest;
 import org.eclipse.osee.framework.skynet.core.test.importing.ImportingSuite;
 import org.eclipse.osee.framework.skynet.core.test.importing.parsers.ParsersSuite;
 import org.eclipse.osee.framework.skynet.core.test.relation.RelationTestSuite;
+import org.eclipse.osee.framework.skynet.core.test.word.UpdateBookmarkIdTest;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+   UpdateBookmarkIdTest.class,
    ArtifactEventFiltersTest.class,
    BranchEventFiltersTest.class,
    BranchEventTest.class,
