@@ -18,8 +18,8 @@ import java.util.Map;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.server.HttpUrlBuilderClient;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
-import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class AttributeURL {
 
-   public static URL getStorageURL(int gammaId, String artifactGuid, String extension) throws OseeDataStoreException, MalformedURLException, OseeAuthenticationRequiredException {
+   public static URL getStorageURL(int gammaId, String artifactGuid, String extension) throws OseeCoreException, MalformedURLException {
       Map<String, String> parameterMap = new HashMap<String, String>();
       parameterMap.put("sessionId", ClientSessionManager.getSessionId());
       parameterMap.put("protocol", "attr");
@@ -41,7 +41,7 @@ public class AttributeURL {
       return new URL(urlString);
    }
 
-   private static URL generatePathURL(String uri) throws OseeDataStoreException {
+   private static URL generatePathURL(String uri) throws OseeCoreException {
       try {
          Map<String, String> parameterMap = new HashMap<String, String>();
          parameterMap.put("sessionId", ClientSessionManager.getSessionId());
@@ -51,15 +51,16 @@ public class AttributeURL {
                parameterMap);
          return new URL(urlString);
       } catch (Exception ex) {
-         throw new OseeDataStoreException(ex);
+         OseeExceptions.wrapAndThrow(ex);
+         return null; // unreachable because wrapAndThrow always throws an exception
       }
    }
 
-   public static URL getAcquireURL(String uri) throws OseeDataStoreException {
+   public static URL getAcquireURL(String uri) throws OseeCoreException {
       return generatePathURL(uri);
    }
 
-   public static URL getDeleteURL(String uri) throws OseeDataStoreException {
+   public static URL getDeleteURL(String uri) throws OseeCoreException {
       return generatePathURL(uri);
    }
 }

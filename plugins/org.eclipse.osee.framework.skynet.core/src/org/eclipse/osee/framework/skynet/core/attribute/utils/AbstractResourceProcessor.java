@@ -15,7 +15,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
-import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.util.HttpProcessor;
 import org.eclipse.osee.framework.core.util.HttpProcessor.AcquireResult;
@@ -27,15 +27,15 @@ import org.eclipse.osee.framework.skynet.core.attribute.providers.DataStore;
  */
 public abstract class AbstractResourceProcessor {
 
-   protected abstract URL getAcquireURL(DataStore dataStore) throws OseeDataStoreException, OseeAuthenticationRequiredException;
+   protected abstract URL getAcquireURL(DataStore dataStore) throws OseeCoreException;
 
-   protected abstract URL getDeleteURL(DataStore dataStore) throws OseeDataStoreException, OseeAuthenticationRequiredException;
+   protected abstract URL getDeleteURL(DataStore dataStore) throws OseeCoreException;
 
-   protected abstract URL getStorageURL(int seed, String name, String extension) throws OseeDataStoreException, OseeAuthenticationRequiredException;
+   protected abstract URL getStorageURL(int seed, String name, String extension) throws OseeCoreException;
 
    public abstract String createStorageName() throws OseeDataStoreException;
 
-   public void saveResource(int seed, String name, DataStore dataStore) throws OseeDataStoreException, OseeAuthenticationRequiredException {
+   public void saveResource(int seed, String name, DataStore dataStore) throws OseeCoreException {
       URL url = getStorageURL(seed, name, dataStore.getExtension());
       InputStream inputStream = dataStore.getInputStream();
       try {
@@ -48,7 +48,7 @@ public abstract class AbstractResourceProcessor {
       }
    }
 
-   public void acquire(DataStore dataStore) throws OseeDataStoreException, OseeAuthenticationRequiredException {
+   public void acquire(DataStore dataStore) throws OseeCoreException {
       URL url = getAcquireURL(dataStore);
       ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       AcquireResult result;

@@ -17,6 +17,7 @@ import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.client.server.HttpUrlBuilderClient;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -73,7 +74,7 @@ public class ArbitrationServerPage extends PreferencePage implements IWorkbenchP
       String defaultApplicationServer = null;
       try {
          defaultApplicationServer = HttpUrlBuilderClient.getInstance().getApplicationServerPrefix();
-      } catch (OseeDataStoreException ex) {
+      } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
 

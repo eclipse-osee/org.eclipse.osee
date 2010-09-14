@@ -39,7 +39,6 @@ import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.data.OseeSessionGrant;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.util.HttpProcessor;
 import org.eclipse.osee.framework.core.util.HttpProcessor.AcquireResult;
@@ -154,7 +153,7 @@ public class InternalClientSessionManager {
       }
    }
 
-   private void internalReleaseSession(String sessionId) throws OseeDataStoreException {
+   private void internalReleaseSession(String sessionId) throws OseeCoreException {
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("operation", "release");
       parameters.put("sessionId", sessionId);
@@ -166,7 +165,7 @@ public class InternalClientSessionManager {
          oseeSession = null;
          oseeSessionGrant = null;
       } catch (Exception ex) {
-         throw new OseeDataStoreException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       }
    }
 

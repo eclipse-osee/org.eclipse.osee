@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
@@ -30,17 +30,17 @@ public class AttributeResourceProcessor extends AbstractResourceProcessor {
    }
 
    @Override
-   protected URL getAcquireURL(DataStore dataToStore) throws OseeDataStoreException {
+   protected URL getAcquireURL(DataStore dataToStore) throws OseeCoreException {
       return AttributeURL.getAcquireURL(dataToStore.getLocator());
    }
 
    @Override
-   protected URL getDeleteURL(DataStore dataToStore) throws OseeDataStoreException {
+   protected URL getDeleteURL(DataStore dataToStore) throws OseeCoreException {
       return AttributeURL.getDeleteURL(dataToStore.getLocator());
    }
 
    @Override
-   protected URL getStorageURL(int seed, String name, String extension) throws OseeDataStoreException, OseeAuthenticationRequiredException {
+   protected URL getStorageURL(int seed, String name, String extension) throws OseeCoreException {
       try {
          return AttributeURL.getStorageURL(seed, name, extension);
       } catch (MalformedURLException ex) {

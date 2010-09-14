@@ -17,8 +17,8 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.server.HttpUrlBuilderClient;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
-import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -30,7 +30,7 @@ public class HttpBranchExchange {
    private static final String BRANCH_EXPORT = "exportBranch";
    private static final String BRANCH_IMPORT = "importBranch";
 
-   public static void exportBranches(String exportFileName, int... branchIds) throws OseeDataStoreException {
+   public static void exportBranches(String exportFileName, int... branchIds) throws OseeCoreException {
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("function", BRANCH_EXPORT);
       if (Strings.isValid(exportFileName)) {
@@ -40,7 +40,7 @@ public class HttpBranchExchange {
       execute(parameters);
    }
 
-   public static void importBranches(String path, boolean cleanAllBeforeImport, boolean allAsRootBranches, int... branchIds) throws OseeDataStoreException, OseeAuthenticationRequiredException {
+   public static void importBranches(String path, boolean cleanAllBeforeImport, boolean allAsRootBranches, int... branchIds) throws OseeCoreException {
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("sessionId", ClientSessionManager.getSessionId());
       parameters.put("function", BRANCH_IMPORT);
@@ -58,14 +58,14 @@ public class HttpBranchExchange {
       execute(parameters);
    }
 
-   private static void execute(Map<String, String> parameters) throws OseeDataStoreException {
+   private static void execute(Map<String, String> parameters) throws OseeCoreException {
       try {
          String returnVal =
             HttpProcessor.post(new URL(HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(
                OseeServerContext.BRANCH_EXCHANGE_CONTEXT, parameters)));
          OseeLog.log(HttpBranchExchange.class, Level.INFO, returnVal);
       } catch (Exception ex) {
-         throw new OseeDataStoreException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       }
    }
 

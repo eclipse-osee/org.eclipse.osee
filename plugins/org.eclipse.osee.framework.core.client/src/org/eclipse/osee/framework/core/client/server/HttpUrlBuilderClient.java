@@ -17,7 +17,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.CoreClientActivator;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.client.internal.OseeApplicationServer;
-import org.eclipse.osee.framework.core.exception.OseeArbitrationServerException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.HttpUrlBuilder;
@@ -54,7 +54,7 @@ public class HttpUrlBuilderClient {
       return String.format(urlPrefixFormat, HttpServer.getLocalServerAddress(), port);
    }
 
-   public String getApplicationServerPrefix() throws OseeDataStoreException, OseeArbitrationServerException {
+   public String getApplicationServerPrefix() throws OseeCoreException {
       String address = OseeApplicationServer.getOseeApplicationServer();
       if (address.endsWith("/") != true) {
          address += "/";
@@ -70,7 +70,7 @@ public class HttpUrlBuilderClient {
       return address;
    }
 
-   public String getOsgiServletServiceUrl(String context, Map<String, String> parameters) throws OseeDataStoreException {
+   public String getOsgiServletServiceUrl(String context, Map<String, String> parameters) throws OseeCoreException {
       try {
          return HttpUrlBuilder.createURL(getApplicationServerPrefix(), context, parameters);
       } catch (UnsupportedEncodingException ex) {

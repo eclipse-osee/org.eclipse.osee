@@ -12,9 +12,7 @@ package org.eclipse.osee.framework.skynet.core.attribute.providers;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -110,7 +108,7 @@ public class DefaultAttributeDataProvider extends AbstractAttributeDataProvider 
    }
 
    @Override
-   public void persist(int storageId) throws OseeDataStoreException, OseeAuthenticationRequiredException {
+   public void persist(int storageId) throws OseeCoreException {
       dataStore.persist(storageId);
    }
 

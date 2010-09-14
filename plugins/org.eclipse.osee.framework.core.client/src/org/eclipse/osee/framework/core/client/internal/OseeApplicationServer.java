@@ -33,8 +33,9 @@ import org.eclipse.osee.framework.core.client.server.HttpUrlBuilderClient;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.data.OseeServerInfo;
-import org.eclipse.osee.framework.core.exception.OseeArbitrationServerException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.core.util.HttpProcessor;
 import org.eclipse.osee.framework.core.util.HttpProcessor.AcquireResult;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -55,11 +56,9 @@ public class OseeApplicationServer {
    private OseeApplicationServer() {
    }
 
-   public static String getOseeApplicationServer() throws OseeArbitrationServerException {
+   public static String getOseeApplicationServer() throws OseeCoreException {
       checkAndUpdateStatus();
-      if (Strings.isValid(oseeServer) != true) {
-         throw new OseeArbitrationServerException("Invalid resource server address");
-      }
+      Conditions.checkNotNullOrEmpty(oseeServer, "resource server address");
       return oseeServer;
    }
 
