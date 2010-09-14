@@ -77,7 +77,7 @@ public class OptionsProcessor {
       File storageFile = new File(fileuri);
       if (!overwrite) {
          if (storageFile.exists()) {
-            throw new OseeStateException(String.format("The file [%s] already exists.", storageFile.getAbsolutePath()));
+            throw new OseeStateException("The file [%s] already exists.", storageFile.getAbsolutePath());
          }
       }
       File parent = storageFile.getParentFile();

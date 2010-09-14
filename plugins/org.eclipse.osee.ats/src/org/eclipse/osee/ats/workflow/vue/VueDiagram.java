@@ -54,12 +54,12 @@ public class VueDiagram {
       for (VueLink link : links) {
          VueNode fromVuePage = getPageFromVueId(link.getFromVueId());
          if (fromVuePage == null) {
-            throw new OseeArgumentException("Can't retrieve fromVuePage with id " + link.getFromVueId());
+            throw new OseeArgumentException("Can't retrieve fromVuePage with id [%s]", link.getFromVueId());
          }
          VueNode toVuePage = getPageFromVueId(link.getToVueId());
          if (toVuePage == null) {
-            throw new OseeArgumentException(
-               "Can't retrieve toVuePage " + link.getToVueId() + " fromVuePage " + link.getFromVueId() + " named \"" + fromVuePage.getWorkPage().getName() + "\"");
+            throw new OseeArgumentException("Can't retrieve toVuePage [%s] fromVuePage [%s] named [%s]",
+               link.getToVueId(), link.getFromVueId(), fromVuePage.getWorkPage().getName());
          }
          fromVuePage.getWorkPage().addToPage(toVuePage.getWorkPage(), link.getName().equals("return"));
          toVuePage.getWorkPage().addFromPage(fromVuePage.getWorkPage());
@@ -71,8 +71,8 @@ public class VueDiagram {
             if (fromVuePage.getWorkPage().getDefaultToPage() == null) {
                fromVuePage.getWorkPage().setDefaultToPage(toVuePage.getWorkPage());
             } else {
-               throw new OseeArgumentException(
-                  "Can't have 2 default transitions. Page " + fromVuePage.getWorkPage().getName());
+               throw new OseeArgumentException("Can't have 2 default transitions. Page [%s]",
+                  fromVuePage.getWorkPage().getName());
             }
          }
       }

@@ -147,8 +147,8 @@ public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
          Branch childBranch = entry.getKey();
          Branch parentBranch = branchCache.getById(entry.getValue());
          if (parentBranch == null) {
-            throw new BranchDoesNotExist(String.format("Parent Branch id:[%s] does not exist for child branch [%s]",
-               entry.getValue(), entry.getKey()));
+            throw new BranchDoesNotExist("Parent Branch id:[%s] does not exist for child branch [%s]",
+               entry.getValue(), entry.getKey());
          }
          childBranch.setParentBranch(parentBranch);
       }

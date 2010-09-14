@@ -92,8 +92,8 @@ public class StatementUtil {
             if (dataValue instanceof String) {
                int length = ((String) dataValue).length();
                if (length > 4000) {
-                  throw new OseeDataStoreException(
-                     "SQL data value length must be  <= 4000 not " + length + "\nValue: " + dataValue);
+                  throw new OseeDataStoreException("SQL data value length must be  <= 4000 not %d\nValue: %s", length,
+                     dataValue);
                }
             }
 

@@ -61,8 +61,8 @@ public class WordTemplateFileDiffer {
       Branch startBranch = variableMap.getBranch("compareBranch");
 
       if (endBranch == null || startBranch == null && !variableMap.getBoolean("Diff from Baseline")) {
-         throw new OseeCoreException(
-            "Must Select a " + endBranch == null ? "Branch" : "Date" + " to diff against when publishing as Diff");
+         throw new OseeCoreException("Must Select a %s to diff against when publishing as Diff",
+            endBranch == null ? "Branch" : "Date");
       }
       TransactionRecord startTransaction;
       boolean isDiffFromBaseline = false;//variableMap.getBoolean("Diff from Baseline");

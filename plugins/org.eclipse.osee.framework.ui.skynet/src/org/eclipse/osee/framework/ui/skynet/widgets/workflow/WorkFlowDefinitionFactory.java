@@ -27,7 +27,6 @@ public class WorkFlowDefinitionFactory {
             return workFlowDefinition;
          }
       }
-      throw new OseeArgumentException(
-         "No WorkFlowDefinition found for artifact " + artifact.getArtifactTypeName() + " - " + artifact.getGuid());
+      throw new OseeArgumentException("No WorkFlowDefinition found for artifact [%s]", artifact.getGuid());
    }
 }

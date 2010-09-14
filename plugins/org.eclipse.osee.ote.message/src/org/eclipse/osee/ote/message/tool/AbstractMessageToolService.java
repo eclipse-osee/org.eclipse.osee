@@ -770,9 +770,6 @@ public class AbstractMessageToolService implements IRemoteMessageService {
          } catch (IOException e) {
             OseeLog.log(MessageSystemTestEnvironment.class, Level.INFO, "Exception while stopping message recording", e);
             throw new RemoteException("could not stop recorder", e);
-         } catch (InterruptedException e) {
-            OseeLog.log(MessageSystemTestEnvironment.class, Level.INFO, "Exception while stopping message recording", e);
-            throw new RemoteException("could not stop recorder", e);
          }
          try {
             recorderOutputChannel.disconnect();
@@ -818,8 +815,6 @@ public class AbstractMessageToolService implements IRemoteMessageService {
             try {
                recorder.stopRecording(false);
             } catch (IOException e) {
-               OseeLog.log(MessageSystemTestEnvironment.class, Level.SEVERE, "failed to stop recording", e);
-            } catch (InterruptedException e) {
                OseeLog.log(MessageSystemTestEnvironment.class, Level.SEVERE, "failed to stop recording", e);
             }
          }

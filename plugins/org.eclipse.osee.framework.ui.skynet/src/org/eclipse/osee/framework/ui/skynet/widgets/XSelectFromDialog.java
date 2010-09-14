@@ -65,8 +65,8 @@ public abstract class XSelectFromDialog<T> extends XText {
       }
 
       if (maxSelectionRequired < minSelectionRequired) {
-         throw new OseeArgumentException(String.format("Invalid required number of selections [%s] < [%s]",
-            maxSelectionRequired, minSelectionRequired));
+         throw new OseeArgumentException("Invalid required number of selections [%s] < [%s]",
+            maxSelectionRequired, minSelectionRequired);
       }
       this.minSelectionRequired = minSelectionRequired;
       this.maxSelectionRequired = maxSelectionRequired;

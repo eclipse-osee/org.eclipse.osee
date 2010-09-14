@@ -79,7 +79,7 @@ public class GroupWorldSearchItem extends WorldUISearchItem {
          group = UniversalGroup.getGroups(groupName, branch).iterator().next();
       }
       if (group == null) {
-         throw new OseeArgumentException("Can't Find Universal Group for " + getName());
+         throw new OseeArgumentException("Can't Find Universal Group for [%s]", getName());
       }
    }
 

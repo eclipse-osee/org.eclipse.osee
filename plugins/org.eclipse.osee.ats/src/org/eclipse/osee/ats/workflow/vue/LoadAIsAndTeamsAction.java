@@ -208,8 +208,8 @@ public class LoadAIsAndTeamsAction {
                   User u = getUserByName(name, allowUserCreation, transaction);
                   members.add(u);
                } else {
-                  throw new OseeArgumentException(
-                     "Unhandled AtsConfig Line\"" + line + "\" in diagram page \"" + page.getName() + "\"");
+                  throw new OseeArgumentException("Unhandled AtsConfig Line [%s] in diagram page [%s]", line,
+                     page.getName());
                }
             }
          }
@@ -222,8 +222,8 @@ public class LoadAIsAndTeamsAction {
                if (actItem != null) {
                   actionableItems.add(actItem);
                } else {
-                  throw new OseeArgumentException(
-                     "Can't retrieve Actionable Item \"" + childPage.getName() + "\" with id " + childPage.getId());
+                  throw new OseeArgumentException("Can't retrieve Actionable Item [%s] with id [%s]",
+                     childPage.getName(), childPage.getId());
                }
             }
          }

@@ -138,7 +138,7 @@ public class XWidgetParser {
                // do nothing
                ;
             } else {
-               throw new OseeArgumentException("Unhandled xOption \"" + xOption + "\"");
+               throw new OseeArgumentException("Unhandled xOption [%s]", xOption);
             }
          }
          doc.appendChild(element);

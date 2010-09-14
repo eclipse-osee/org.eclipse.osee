@@ -37,8 +37,8 @@ public class XCurrentStateDam extends XStateAssigneesDam {
    public SMAState getState() throws OseeCoreException {
       Set<SMAState> states = getStates();
       if (states.size() != 1) {
-         throw new OseeArgumentException(
-            "Must be one current state.  Found " + states.size() + " for " + getArtifact().getGuid());
+         throw new OseeArgumentException("Must be one current state.  Found %d for %s", states.size(),
+            getArtifact().getGuid());
       }
       return states.iterator().next();
    }

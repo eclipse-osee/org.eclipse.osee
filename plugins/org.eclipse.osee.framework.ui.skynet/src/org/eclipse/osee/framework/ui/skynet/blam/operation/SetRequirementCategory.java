@@ -88,7 +88,7 @@ public class SetRequirementCategory extends AbstractBlam {
       if (bulkLoad) {
          requirement = reqs.get(canonicalRequirementName);
          if (requirement == null) {
-            throw new ArtifactDoesNotExist("cant' find " + canonicalRequirementName);
+            throw new ArtifactDoesNotExist("No requirement with name [%s] found.", canonicalRequirementName);
          }
       } else {
          try {

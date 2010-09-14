@@ -23,8 +23,8 @@ public class MalformedLocatorException extends OseeCoreException {
       super(message, cause);
    }
 
-   public MalformedLocatorException(String message) {
-      super(message);
+   public MalformedLocatorException(String message, Object... args) {
+      super(message, args);
    }
 
    public MalformedLocatorException(Throwable cause) {

@@ -17,7 +17,7 @@ public class ArtifactDoesNotExist extends OseeCoreException {
 
    private static final long serialVersionUID = 1L;
 
-   public ArtifactDoesNotExist(String message) {
-      super(message);
+   public ArtifactDoesNotExist(String message, Object... args) {
+      super(message, args);
    }
 }

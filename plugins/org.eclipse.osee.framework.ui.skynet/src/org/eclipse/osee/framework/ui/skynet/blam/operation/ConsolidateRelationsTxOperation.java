@@ -217,7 +217,7 @@ public class ConsolidateRelationsTxOperation extends AbstractDbTxOperation {
          netModType = modificationType;
          updateAddressing = true;
       } else if (!ignoreNetModType(modificationType)) {
-         throw new OseeStateException("    modType: " + modificationType + " != " + netModType);
+         throw new OseeStateException("    modType [%s] != [%s]", modificationType, netModType);
       }
    }
 

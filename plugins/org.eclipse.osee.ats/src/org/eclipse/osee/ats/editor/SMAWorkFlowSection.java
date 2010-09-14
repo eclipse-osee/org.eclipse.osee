@@ -366,7 +366,7 @@ public class SMAWorkFlowSection extends SectionPart {
       if (sma.isCancelled()) {
          LogItem item = sma.getLog().getStateEvent(LogType.StateCancelled);
          if (item == null) {
-            throw new OseeStateException("ats.Log: Cancelled state has no logItem for " + sma.getHumanReadableId());
+            throw new OseeStateException("ats.Log: Cancelled state has no logItem for [%s]", sma.getGuid());
          }
          if (item.getState().equals(atsWorkPage.getName())) {
             sb.append(" - Cancelled");

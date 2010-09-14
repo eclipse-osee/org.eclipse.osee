@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.ats.world.search.UserWorldSearchItem;
 import org.eclipse.osee.ats.world.search.UserWorldSearchItem.UserSearchOption;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -257,7 +258,7 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
       }
    }
 
-   public void setSelected(UserSearchOption userSearchOption, boolean set) {
+   public void setSelected(UserSearchOption userSearchOption, boolean set) throws OseeStateException {
       if (userSearchOption == UserSearchOption.Assignee) {
          assigneeCheckbox.set(set);
       } else if (userSearchOption == UserSearchOption.Favorites) {
@@ -277,7 +278,7 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
       } else if (userSearchOption == UserSearchOption.IncludeTasks) {
          tasksCheckbox.set(set);
       } else {
-         throw new IllegalStateException(String.format("Unhandled checkbox [%s]", userSearchOption));
+         throw new OseeStateException("Unhandled checkbox [%s]", userSearchOption);
       }
    }
 

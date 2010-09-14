@@ -133,7 +133,7 @@ public final class UserManager {
       ensurePopulated();
       User user = (User) ArtifactCache.getActive(userArtifactId, BranchManager.getCommonBranch());
       if (user == null) {
-         throw new UserNotInDatabase("User requested by artId \"" + userArtifactId + "\" was not found.");
+         throw new UserNotInDatabase("User requested by artId \"%d\" was not found.", userArtifactId);
       }
       return user;
    }
@@ -158,7 +158,7 @@ public final class UserManager {
             return tempUser;
          }
       }
-      throw new UserNotInDatabase("User requested by name \"" + name + "\" was not found.");
+      throw new UserNotInDatabase("User requested by name \"%s\" was not found.", name);
    }
 
    private static User getFromCacheByUserId(String userId) throws OseeCoreException {
@@ -182,7 +182,7 @@ public final class UserManager {
                (User) ArtifactQuery.getArtifactFromAttribute(CoreAttributeTypes.UserId, userId,
                   BranchManager.getCommonBranch());
          } catch (ArtifactDoesNotExist ex) {
-            throw new UserNotInDatabase(String.format("The user with id [%s] was not found.", userId));
+            throw new UserNotInDatabase("The user with id [%s] was not found.", userId);
          }
       }
       return user;
@@ -201,8 +201,7 @@ public final class UserManager {
             User cachedUser = cacheByUserId(user);
             if (cachedUser != null) { // if duplicate user id found
                OseeCoreException ex =
-                  new UserInDatabaseMultipleTimes(
-                     "User of userId \"" + user.getUserId() + "\" in datastore more than once");
+                  new UserInDatabaseMultipleTimes("User of userId \"%d\" in datastore more than once", user.getUserId());
 
                // exception if I am the duplicate user otherwise just log
                if (user.getUserId().equals(ClientSessionManager.getSession().getId())) {

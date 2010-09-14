@@ -99,7 +99,7 @@ public class CommitDbOperation extends AbstractDbTxOperation {
       BranchState storedBranchState;
       this.connection = connection;
       if (changes.isEmpty()) {
-         throw new OseeStateException(" A branch can not be committed without any changes made.");
+         throw new OseeStateException("A branch can not be committed without any changes made.");
       }
       storedBranchState = sourceBranch.getBranchState();
       checkPreconditions();
@@ -126,7 +126,7 @@ public class CommitDbOperation extends AbstractDbTxOperation {
          getDatabaseService().runPreparedQueryFetchObject(0, SELECT_SOURCE_BRANCH_STATE, sourceBranch.getId(),
             BranchState.COMMIT_IN_PROGRESS.getValue());
       if (sourceBranch.getBranchState().equals(BranchState.COMMIT_IN_PROGRESS) || sourceBranch.getArchiveState().isArchived() || count > 0) {
-         throw new OseeStateException(String.format("Commit completed or in progress for [%s]", sourceBranch));
+         throw new OseeStateException("Commit completed or in progress for [%s]", sourceBranch);
       }
 
       if (!sourceBranch.getBranchState().equals(BranchState.COMMITTED)) {

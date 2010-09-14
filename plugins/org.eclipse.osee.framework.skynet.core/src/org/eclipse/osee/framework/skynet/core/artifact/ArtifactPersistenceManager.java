@@ -248,8 +248,8 @@ public class ArtifactPersistenceManager {
       // Only reverts relation links that don't span multiple branches. Need
       // to revisit if additional functionality is needed.
       if (!link.getArtifactA().getBranch().equals(link.getArtifactB().getBranch())) {
-         throw new OseeArgumentException(String.format("Cannot revert Relation %d. Relation spans multiple branches",
-            link.getId()));
+         throw new OseeArgumentException("Cannot revert Relation %d. Relation spans multiple branches",
+            link.getId());
       }
       long totalTime = System.currentTimeMillis();
       Branch branch = link.getArtifactA().getBranch();

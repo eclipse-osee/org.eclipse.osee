@@ -93,7 +93,7 @@ public class ClientSessionManager {
       if (sql != null) {
          return sql;
       }
-      throw new OseeArgumentException(String.format("Invalid sql key [%s]", sqlEnum.toString()));
+      throw new OseeArgumentException("Invalid sql key [%s]", sqlEnum.toString());
    }
 
    public static List<String> getAuthenticationProtocols() {

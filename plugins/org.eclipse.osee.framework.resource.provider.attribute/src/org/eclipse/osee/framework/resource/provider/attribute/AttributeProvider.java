@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.server.OseeServerProperties;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.resource.management.IResource;
@@ -95,7 +96,7 @@ public class AttributeProvider implements IResourceProvider {
          Lib.close(inputStream);
       }
       if (toReturn == null) {
-         throw new IllegalStateException(String.format("We failed to save resource %s.", locator.getLocation()));
+         throw new OseeStateException("We failed to save resource %s.", locator.getLocation());
       }
       return toReturn;
    }

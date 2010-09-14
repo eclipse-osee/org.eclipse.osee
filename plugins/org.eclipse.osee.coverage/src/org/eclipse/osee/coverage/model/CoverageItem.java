@@ -61,7 +61,7 @@ public class CoverageItem extends NamedIdentity implements ICoverage, IWorkProdu
          OseeExceptions.wrapAndThrow(ex);
       }
       if (!store.getId().equals(PROPERTY_STORE_ID)) {
-         throw new OseeArgumentException(String.format("Invalid store id [%s] for CoverageItem", store.getId()));
+         throw new OseeArgumentException("Invalid store id [%s] for CoverageItem", store.getId());
       }
 
       CoverageItem item =

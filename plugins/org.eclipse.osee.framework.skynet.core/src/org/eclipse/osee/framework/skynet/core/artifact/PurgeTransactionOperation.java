@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.TransactionDoesNotExist;
@@ -216,8 +217,9 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
             try {
                previousTransaction = TransactionManager.getPriorTransaction(fromTransaction);
             } catch (TransactionDoesNotExist ex) {
-               throw new OseeCoreException(
-                  "You are trying to delete Transaction: " + fromTx + " which is a baseline transaction.  If your intent is to delete the Branch use the delete Branch Operation.  \n\nNO TRANSACTIONS WERE DELETED.");
+               throw new OseeArgumentException(
+                  "You are trying to delete Transaction [%d] which is a baseline transaction.  If your intent is to delete the Branch use the delete Branch Operation.  \n\nNO TRANSACTIONS WERE DELETED.",
+                  fromTx);
 
             }
 
@@ -308,7 +310,8 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
          ConnectionHandler.runPreparedQueryFetchInt(connection, 0, TRANSACATION_GAMMA_IN_USE, queryId);
       if (transaction_id > 0 && !force) {
          throw new OseeCoreException(
-            "The Transaction " + transaction_id + " holds a Gamma that is in use in other transactions.  In order to delete this Transaction you will need to select the force check box.\n\nNO TRANSACTIONS WERE DELETED.");
+            "The Transaction %d holds a Gamma that is in use in other transactions.  In order to delete this Transaction you will need to select the force check box.\n\nNO TRANSACTIONS WERE DELETED.",
+            transaction_id);
       }
    }
 

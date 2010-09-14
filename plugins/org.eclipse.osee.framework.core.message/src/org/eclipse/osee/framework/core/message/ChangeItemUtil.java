@@ -35,8 +35,7 @@ public final class ChangeItemUtil {
          if (!toReturn.isValid()) {
             toReturn = item.getCurrentVersion();
             if (!toReturn.isValid()) {
-               throw new OseeStateException(String.format("Cannot find a valid starting point for change item: %s",
-                  item));
+               throw new OseeStateException("Cannot find a valid starting point for change item: %s", item);
             }
          }
       }

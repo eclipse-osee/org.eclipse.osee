@@ -38,7 +38,7 @@ public class ObjectAccessProvider implements IAccessProvider {
          } else if (object instanceof Branch) {
             setBranchAccessData(userArtifact, (Branch) object, accessData);
          } else {
-            throw new OseeStateException("Unhandled object type for access control - " + object);
+            throw new OseeStateException("Unhandled object type for access control [%s]", object);
          }
       }
    }

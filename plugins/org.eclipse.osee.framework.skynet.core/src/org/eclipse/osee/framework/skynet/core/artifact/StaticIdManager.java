@@ -97,9 +97,9 @@ public class StaticIdManager {
       Set<Artifact> artifacts = getArtifactsFromArtifactCache(artifactType, staticId, branch, true);
       // Exception on problems
       if (artifacts.isEmpty()) {
-         throw new ArtifactDoesNotExist("Can't find requested artifact \"" + staticId + "\"");
+         throw new ArtifactDoesNotExist("No artifact with static id [%s] found.", staticId);
       } else if (artifacts.size() > 1) {
-         throw new MultipleArtifactsExist("Expected 1 \"" + staticId + "\" artifact, retrieved " + artifacts.size());
+         throw new MultipleArtifactsExist("Expected 1 artifact with static id [%s] not %d", staticId, artifacts.size());
       }
       return artifacts.iterator().next();
    }

@@ -65,8 +65,8 @@ public final class OseeSystemArtifacts {
             artifact = ArtifactTypeManager.addArtifact(artifactType, branch, artifactName);
          }
          if (artifact == null) {
-            throw new ArtifactDoesNotExist(
-               "Artifact of type " + artifactType + " with name " + artifactName + " does not exist on branch " + branch);
+            throw new ArtifactDoesNotExist("Artifact of type [%s] with name [%s] does not exist on branch [%s]",
+               artifactType, artifactName, branch);
          }
          ArtifactCache.cacheByTextId(artifactType.getName() + "." + artifactName, artifact);
       }

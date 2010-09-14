@@ -74,7 +74,7 @@ public class AtsPriority {
                return pri;
             }
          }
-         throw new OseeStateException("Invalid priority => " + type);
+         throw new OseeStateException("Invalid priority [%s]", type);
       }
 
    };

@@ -245,7 +245,7 @@ public class OseeCacheServlet extends UnsecuredOseeHttpServlet {
             transalatorId = CoreTranslatorId.RELATION_TYPE_CACHE_UPDATE_RESPONSE;
             break;
          default:
-            throw new OseeArgumentException(String.format("Invalid cacheId [%s]", updateRequest.getCacheId()));
+            throw new OseeArgumentException("Invalid cacheId [%s]", updateRequest.getCacheId());
       }
       return new Pair<Object, ITranslatorId>(response, transalatorId);
    }

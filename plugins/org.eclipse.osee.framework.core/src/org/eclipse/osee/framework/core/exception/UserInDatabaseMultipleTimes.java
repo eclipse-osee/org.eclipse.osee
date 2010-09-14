@@ -18,11 +18,7 @@ package org.eclipse.osee.framework.core.exception;
 public class UserInDatabaseMultipleTimes extends OseeCoreException {
    private static final long serialVersionUID = 1L;
 
-   public UserInDatabaseMultipleTimes(String message) {
-      super(message);
-   }
-
-   public UserInDatabaseMultipleTimes(String message, Throwable cause) {
-      super(message, cause);
+   public UserInDatabaseMultipleTimes(String message, Object... args) {
+      super(message, args);
    }
 }

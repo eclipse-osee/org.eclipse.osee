@@ -103,9 +103,9 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
    private void checkSelectedBranches(int... branchesToImport) throws OseeDataStoreException {
       if (branchesToImport != null && branchesToImport.length > 0) {
          if (!areAvailable(branchesToImport)) {
-            throw new OseeDataStoreException(String.format(
+            throw new OseeDataStoreException(
                "Branches not found in import file:\n\t\t- selected to import: [%s]\n\t\t- in import file: [%s]",
-               branchesToImport, getAllBranchDataFromImportFile()));
+               branchesToImport, getAllBranchDataFromImportFile());
          }
       }
    }

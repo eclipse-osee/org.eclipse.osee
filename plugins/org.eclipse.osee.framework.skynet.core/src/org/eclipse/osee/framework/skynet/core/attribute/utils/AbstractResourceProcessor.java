@@ -58,8 +58,8 @@ public abstract class AbstractResourceProcessor {
          if (code == HttpURLConnection.HTTP_OK) {
             dataStore.setContent(outputStream.toByteArray(), "", result.getContentType(), result.getEncoding());
          } else {
-            throw new OseeDataStoreException(String.format("Error acquiring resource: [%s] - status code: [%s]; %s",
-               dataStore.getLocator(), code, new String(outputStream.toByteArray())));
+            throw new OseeDataStoreException("Error acquiring resource: [%s] - status code: [%s]; %s",
+               dataStore.getLocator(), code, new String(outputStream.toByteArray()));
          }
       } catch (Exception ex) {
          OseeExceptions.wrapAndThrow(ex);

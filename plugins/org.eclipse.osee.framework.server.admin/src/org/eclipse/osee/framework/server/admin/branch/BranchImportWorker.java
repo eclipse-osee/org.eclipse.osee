@@ -82,9 +82,9 @@ public class BranchImportWorker extends BaseServerCommand {
 
       for (File file : importFiles) {
          if (file == null || !file.exists() || !file.canRead()) {
-            throw new OseeArgumentException(String.format("File was not accessible: [%s]", file));
+            throw new OseeArgumentException("File was not accessible: [%s]", file);
          } else if (file.isFile() && !Lib.isCompressed(file)) {
-            throw new OseeArgumentException(String.format("Invalid File: [%s]", file));
+            throw new OseeArgumentException("Invalid File: [%s]", file);
          }
       }
 

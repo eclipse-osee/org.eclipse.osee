@@ -97,8 +97,8 @@ public class PurgeArtifacts extends DbTransaction {
                   sb.append("]\n");
                }
                if (failed) {
-                  throw new OseeCoreException(String.format(
-                     "Unable to purge because the following artifacts exist on child branches.\n%s", sb.toString()));
+                  throw new OseeCoreException(
+                     "Unable to purge because the following artifacts exist on child branches.\n%s", sb.toString());
                }
             } finally {
                ArtifactLoader.clearQuery(connection, queryId);

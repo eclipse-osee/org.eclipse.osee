@@ -66,7 +66,7 @@ public class ATSLog {
                return (LogType) e;
             }
          }
-         throw new OseeArgumentException("Unhandled LogType: \"" + type + "\"");
+         throw new OseeArgumentException("Unhandled LogType: [%s]", type);
       }
 
    };

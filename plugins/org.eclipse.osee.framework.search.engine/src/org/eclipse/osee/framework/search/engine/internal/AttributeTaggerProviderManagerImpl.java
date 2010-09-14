@@ -52,7 +52,7 @@ public class AttributeTaggerProviderManagerImpl implements IAttributeTaggerProvi
       AttributeType attributeType = typeCache.getById(attrTypeId);
       IAttributeTaggerProvider toReturn = this.attributeTaggerProviders.get(attributeType.getTaggerId());
       if (toReturn == null) {
-         throw new OseeStateException("No tagger found for id " + attributeType.getTaggerId());
+         throw new OseeStateException("No tagger found for id [%s]", attributeType.getTaggerId());
       }
       return toReturn;
    }
@@ -68,5 +68,4 @@ public class AttributeTaggerProviderManagerImpl implements IAttributeTaggerProvi
       IAttributeTaggerProvider provider = getProvider(attributeData.getAttrTypeId());
       return provider.find(attributeData, toSearch, options);
    }
-
 }

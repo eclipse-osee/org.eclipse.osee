@@ -199,8 +199,7 @@ public final class XWidgetFactory {
                }
                xWidget = combo;
             } else {
-               throw new OseeArgumentException(
-                  "Invalid XComboDam.  " + "Must be \"XComboDam(option1,option2,option3)\"");
+               throw new OseeArgumentException("Invalid XComboDam.  Must be \"XComboDam(option1,option2,option3)\"");
             }
          }
       } else if (xWidgetName.startsWith("XSelectFromMultiChoiceDam")) {
@@ -213,7 +212,7 @@ public final class XWidgetFactory {
                xWidget = widget;
             } else {
                throw new OseeArgumentException(
-                  "Invalid XSelectFromMultiChoiceDam.  " + "Must be \"XSelectFromMultiChoiceDam(option1,option2,option3)\"");
+                  "Invalid XSelectFromMultiChoiceDam.  Must be \"XSelectFromMultiChoiceDam(option1,option2,option3)\"");
             }
          }
       } else if (xWidgetName.startsWith("XStackedDam")) {
@@ -264,7 +263,7 @@ public final class XWidgetFactory {
             }
             xWidget = combo;
          } else {
-            throw new OseeArgumentException("Invalid XCombo.  " + "Must be \"XCombo(option1,option2,option3)\"");
+            throw new OseeArgumentException("Invalid XCombo.  Must be \"XCombo(option1,option2,option3)\"");
          }
       } else if (xWidgetName.startsWith("XListDam")) {
          if (xWidgetLayoutData.getDynamicXWidgetLayout() != null) {
@@ -275,7 +274,7 @@ public final class XWidgetFactory {
                list.add(values);
                xWidget = list;
             } else {
-               throw new OseeArgumentException("Invalid XList.  " + "Must be \"XList(option1,option2,option3)\"");
+               throw new OseeArgumentException("Invalid XList.  Must be \"XList(option1,option2,option3)\"");
             }
          }
       } else if (xWidgetName.equals("XHyperlabelMemberSelDam")) {
@@ -305,7 +304,7 @@ public final class XWidgetFactory {
                list.setSelected(Arrays.asList(defaultValue.split(",")));
             }
          } else {
-            throw new OseeArgumentException("Invalid XList.  " + "Must be \"XList(option1,option2,option3)\"");
+            throw new OseeArgumentException("Invalid XList.  Must be \"XList(option1,option2,option3)\"");
          }
       } else if (xWidgetName.startsWith("XArtifactList")) {
          XArtifactList artifactList = new XArtifactList(name);

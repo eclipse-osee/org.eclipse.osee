@@ -37,6 +37,6 @@ public enum ConflictType {
             return type;
          }
       }
-      throw new OseeArgumentException(String.format("[%s] is not a valid ConflictType"));
+      throw new OseeArgumentException("[%s] is not a valid ConflictType");
    }
 }

@@ -741,7 +741,7 @@ public class CoveragePackageImportTest {
          } else if (mergeItem.getMergeType() == MergeType.Moved_Due_To_Delete) {
             numMoveDueToDelete++;
          } else {
-            throw new OseeStateException("Unexpected merge type for Delete" + mergeItem.getMergeType());
+            throw new OseeStateException("Unexpected merge type for Delete [%s]", mergeItem.getMergeType());
          }
       }
       Assert.assertEquals(1, numDelete);
@@ -908,8 +908,8 @@ public class CoveragePackageImportTest {
          if (mergeItem.getMergeType() == MergeType.CI_Renamed) {
             numRename++;
          } else {
-            throw new OseeStateException(String.format("Unexpected merge type [%s] for Delete_And_Reorder group",
-               mergeItem.getMergeType()));
+            throw new OseeStateException("Unexpected merge type [%s] for Delete_And_Reorder group",
+               mergeItem.getMergeType());
          }
       }
       Assert.assertEquals(2, numRename);
@@ -1058,8 +1058,7 @@ public class CoveragePackageImportTest {
          } else if (mergeItem.getMergeType() == MergeType.CI_Delete) {
             numDeleted++;
          } else {
-            throw new OseeStateException(String.format("Unexpected merge type [%s] for CI_Changes group",
-               mergeItem.getMergeType()));
+            throw new OseeStateException("Unexpected merge type [%s] for CI_Changes group", mergeItem.getMergeType());
          }
       }
       Assert.assertEquals(2, numRename);
@@ -1181,8 +1180,7 @@ public class CoveragePackageImportTest {
          if (mergeItem.getMergeType() == MergeType.CI_Method_Update) {
             numUpdateMethod++;
          } else {
-            throw new OseeStateException(String.format("Unexpected merge type [%s] for CI_Changes group",
-               mergeItem.getMergeType()));
+            throw new OseeStateException("Unexpected merge type [%s] for CI_Changes group", mergeItem.getMergeType());
          }
       }
       Assert.assertEquals(2, numUpdateMethod);

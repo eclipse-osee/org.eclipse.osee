@@ -17,7 +17,7 @@ public class OseeTypeDoesNotExist extends OseeCoreException {
 
    private static final long serialVersionUID = 1L;
 
-   public OseeTypeDoesNotExist(String message) {
-      super(message);
+   public OseeTypeDoesNotExist(String message, Object... args) {
+      super(message, args);
    }
 }

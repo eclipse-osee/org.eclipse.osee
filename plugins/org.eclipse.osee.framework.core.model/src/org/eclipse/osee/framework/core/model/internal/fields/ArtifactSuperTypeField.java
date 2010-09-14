@@ -34,13 +34,12 @@ public final class ArtifactSuperTypeField extends CollectionField<ArtifactType> 
       Collection<ArtifactType> toReturn = Collections.emptyList();
       if (input == null || input.isEmpty()) {
          if (!baseType.equals(CoreArtifactTypes.Artifact)) {
-            throw new OseeInvalidInheritanceException(String.format(
-               "All artifacts must inherit from [Artifact] - attempted make [%s] have null inheritance", baseType));
+            throw new OseeInvalidInheritanceException(
+               "All artifacts must inherit from [Artifact] - attempted make [%s] have null inheritance", baseType);
          }
       } else {
          if (input.contains(baseType)) {
-            throw new OseeInvalidInheritanceException(String.format(
-               "Circular inheritance detected for artifact type [%s]", baseType));
+            throw new OseeInvalidInheritanceException("Circular inheritance detected for artifact type [%s]", baseType);
          }
          toReturn = input;
       }

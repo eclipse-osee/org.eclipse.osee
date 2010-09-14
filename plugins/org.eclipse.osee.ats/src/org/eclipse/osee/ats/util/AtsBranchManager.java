@@ -499,7 +499,8 @@ public class AtsBranchManager {
          return null;
       } else if (branches.size() > 1) {
          throw new MultipleBranchesExist(
-            "Unexpected multiple associated un-deleted working branches found for workflow " + teamArt.getHumanReadableId());
+            "Unexpected multiple associated un-deleted working branches found for workflow [%s]",
+            teamArt.getHumanReadableId());
       } else {
          return branches.get(0);
       }
@@ -661,7 +662,7 @@ public class AtsBranchManager {
 
    public static void createNecessaryBranchEventReviews(StateEventType stateEventType, TeamWorkFlowArtifact teamArt, SkynetTransaction transaction) throws OseeCoreException {
       if (stateEventType != StateEventType.CommitBranch && stateEventType != StateEventType.CreateBranch) {
-         throw new OseeStateException("Invalid stateEventType = " + stateEventType);
+         throw new OseeStateException("Invalid stateEventType [%s]", stateEventType);
       }
       // Create any decision and peerToPeer reviews for createBranch and commitBranch
       for (String ruleId : Arrays.asList(AtsAddDecisionReviewRule.ID, AtsAddPeerToPeerReviewRule.ID)) {
@@ -766,7 +767,7 @@ public class AtsBranchManager {
     */
    public ChangeData getChangeData(ICommitConfigArtifact commitConfigArt) throws OseeCoreException {
       if (commitConfigArt != null && commitConfigArt.getParentBranch() == null) {
-         throw new OseeArgumentException("Parent Branch not configured for " + commitConfigArt);
+         throw new OseeArgumentException("Parent Branch not configured for [%s]", commitConfigArt);
       }
       Collection<Change> changes = new ArrayList<Change>();
 

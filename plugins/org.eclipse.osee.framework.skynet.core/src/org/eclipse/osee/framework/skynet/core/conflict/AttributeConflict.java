@@ -115,8 +115,8 @@ public class AttributeConflict extends Conflict {
          }
       }
       if (sourceAttribute == null) {
-         throw new AttributeDoesNotExist(
-            "Attribute " + attrId + " could not be found on Artifact " + getArtId() + " on Branch " + sourceBranch.getId());
+         throw new AttributeDoesNotExist("Attribute %d could not be found on artifact %d on branch %s", attrId,
+            getArtId(), sourceBranch.getGuid());
       }
       return sourceAttribute;
    }
@@ -132,8 +132,8 @@ public class AttributeConflict extends Conflict {
          }
       }
       if (destAttribute == null) {
-         throw new AttributeDoesNotExist(
-            "Attribute " + attrId + " could not be found on Artifact " + getArtId() + " on Branch " + destBranch.getId());
+         throw new AttributeDoesNotExist("Attribute %d could not be found on artifact %d on branch %s", attrId,
+            getArtId(), destBranch.getGuid());
       }
       return destAttribute;
    }
@@ -147,8 +147,8 @@ public class AttributeConflict extends Conflict {
          }
       }
       if (attribute == null) {
-         throw new AttributeDoesNotExist(
-            "Attribute " + attrId + " could not be found on Artifact " + artifact.getArtId() + " on Branch " + artifact.getBranch().getId());
+         throw new AttributeDoesNotExist("Attribute %d could not be found on artifact %d on branch %s", attrId,
+            artifact.getArtId(), artifact.getBranch().getGuid());
       }
       return attribute;
    }

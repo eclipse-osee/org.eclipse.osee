@@ -189,7 +189,7 @@ public class SMAState {
          }
          assignees = UsersByIds.getUsers(m.group(2));
       } else {
-         throw new OseeArgumentException("Can't unpack state data => " + xml);
+         throw new OseeArgumentException("Can't unpack state data [%s]", xml);
       }
    }
 

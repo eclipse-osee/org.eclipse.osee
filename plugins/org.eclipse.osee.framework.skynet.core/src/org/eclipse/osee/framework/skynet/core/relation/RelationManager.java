@@ -118,7 +118,8 @@ public class RelationManager {
 
       if (relationLink == null) {
          throw new OseeArgumentException(
-            "A relation link of type: " + relationType.getName() + "does exist in the cache between a artifact: " + aArtifactId + " and b artifact:" + bArtifactId);
+            "A relation link of type [%s] does exist in the cache between a artifact %d and b artifact %d",
+            relationType, aArtifactId, bArtifactId);
       }
 
       return relationLink;
@@ -394,15 +395,14 @@ public class RelationManager {
       List<Artifact> artifacts = getRelatedArtifacts(artifact, relationType, relationSide);
 
       if (artifacts.isEmpty()) {
-         throw new ArtifactDoesNotExist(String.format("There is no artifact related to %s by a relation of type %s",
-            artifact, relationType));
+         throw new ArtifactDoesNotExist("There is no artifact related to [%s] by a relation of type [%s]", artifact,
+            relationType);
       }
 
       if (artifacts.size() > 1) {
          throw new MultipleArtifactsExist(
-            String.format(
-               "There are %s artifacts related to \"%s\" by a relation of type \"%s\" on side %s instead of the expected 1.",
-               artifacts.size(), artifact, relationType, relationSide.toString()));
+            "There are %s artifacts related to \"%s\" by a relation of type \"%s\" on side %s instead of the expected 1.",
+            artifacts.size(), artifact, relationType, relationSide);
       }
       return artifacts.get(0);
    }
@@ -689,7 +689,7 @@ public class RelationManager {
 
    public static void addRelation(IRelationSorterId sorterId, RelationType relationType, Artifact artifactA, Artifact artifactB, String rationale) throws OseeCoreException {
       if (artifactA.equals(artifactB)) {
-         throw new OseeArgumentException(String.format("Not valid to relate artifact [%s] to itself", artifactA));
+         throw new OseeArgumentException("Not valid to relate artifact [%s] to itself", artifactA);
       }
       RelationLink relation =
          getLoadedRelation(artifactA, artifactA.getArtId(), artifactB.getArtId(), relationType, true);
@@ -727,8 +727,8 @@ public class RelationManager {
             return relation;
          }
       }
-      throw new OseeCoreException(String.format("Unable to find a relation link for type[%s] artA[%s] artB[%s]",
-         relationType.getName(), artifactA.getName(), artifactB.getName()));
+      throw new OseeCoreException("Unable to find a relation link for type[%s] artA[%s] artB[%s]",
+         relationType.getName(), artifactA.getName(), artifactB.getName());
    }
 
    public static RelationSorterProvider getSorterProvider() {

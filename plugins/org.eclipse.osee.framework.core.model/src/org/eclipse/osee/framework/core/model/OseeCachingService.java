@@ -98,7 +98,7 @@ public class OseeCachingService implements IOseeCachingService {
             return cache;
          }
       }
-      throw new OseeArgumentException(String.format("Unable to find cache for id [%s]", cacheId));
+      throw new OseeArgumentException("Unable to find cache for id [%s]", cacheId);
    }
 
    @Override

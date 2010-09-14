@@ -31,6 +31,6 @@ public enum Function {
             return function;
          }
       }
-      throw new OseeCoreException(String.format("Invalid name - Function [%s] was not found ", toMatch));
+      throw new OseeCoreException("Invalid name - Function [%s] was not found ", toMatch);
    }
 }

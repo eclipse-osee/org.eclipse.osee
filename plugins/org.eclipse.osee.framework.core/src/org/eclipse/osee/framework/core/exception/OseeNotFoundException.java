@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.exception;
 
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 
 /**
  * @author Ryan D. Brooks
@@ -20,19 +18,7 @@ public class OseeNotFoundException extends OseeCoreException {
 
    private static final long serialVersionUID = 3496442169445903235L;
 
-   public OseeNotFoundException(String message) {
-      super(new Status(IStatus.ERROR, "OSEE", message));
-   }
-
-   public OseeNotFoundException(String message, Throwable cause) {
-      super(new Status(IStatus.ERROR, "OSEE", message, cause));
-   }
-
-   public OseeNotFoundException(Throwable cause) {
-      super(new Status(IStatus.ERROR, "OSEE", cause.getMessage(), cause));
-   }
-
-   public OseeNotFoundException(IStatus status) {
-      super(status);
+   public OseeNotFoundException(String message, Object... args) {
+      super(message, args);
    }
 }

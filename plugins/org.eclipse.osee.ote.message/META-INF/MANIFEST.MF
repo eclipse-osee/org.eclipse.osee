@@ -30,3 +30,5 @@ Require-Bundle: org.eclipse.osee.ote.core,
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Activator: org.eclipse.osee.ote.message.internal.Activator
+Import-Package: org.eclipse.core.runtime,
+ org.eclipse.osee.framework.core.exception

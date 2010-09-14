@@ -79,11 +79,11 @@ public class AttributeTypeManager {
     */
    public static AttributeType getTypeByGuid(String guid) throws OseeCoreException {
       if (!GUID.isValid(guid)) {
-         throw new OseeArgumentException(String.format("[%s] is not a valid guid", guid));
+         throw new OseeArgumentException("[%s] is not a valid guid", guid);
       }
       AttributeType attributeType = getCache().getByGuid(guid);
       if (attributeType == null) {
-         throw new OseeTypeDoesNotExist("Attribute Type [" + guid + "] is not available.");
+         throw new OseeTypeDoesNotExist("Attribute Type [%s] is not available.", guid);
       }
       return attributeType;
    }
@@ -98,7 +98,7 @@ public class AttributeTypeManager {
    public static AttributeType getType(String name) throws OseeCoreException {
       AttributeType attributeType = getCache().getUniqueByName(name);
       if (attributeType == null) {
-         throw new OseeTypeDoesNotExist("Attribute Type with name [" + name + "] does not exist.");
+         throw new OseeTypeDoesNotExist("Attribute Type with name [%s] does not exist.", name);
       }
       return attributeType;
    }
@@ -109,7 +109,7 @@ public class AttributeTypeManager {
    public static AttributeType getType(int attrTypeId) throws OseeCoreException {
       AttributeType attributeType = getCache().getById(attrTypeId);
       if (attributeType == null) {
-         throw new OseeTypeDoesNotExist("Attribute type: " + attrTypeId + " is not available.");
+         throw new OseeTypeDoesNotExist("Attribute type: %d is not available.", attrTypeId);
       }
 
       return attributeType;
@@ -138,7 +138,8 @@ public class AttributeTypeManager {
          ConnectionHandler.runPreparedQueryFetchInt(0, COUNT_ATTRIBUTE_OCCURRENCE, attributeType.getId());
       if (attributeCount != 0) {
          throw new OseeArgumentException(
-            "Can not delete attribute type " + attributeType.getName() + " because there are " + attributeCount + " existing attributes of this type.");
+            "Can not delete attribute type [%s] because there are %d existing attributes of this type.", attributeType,
+            attributeCount);
       }
 
       new DbTransaction() {

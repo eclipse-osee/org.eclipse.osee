@@ -249,7 +249,7 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
             int yLoc = 0;
             WorkPageDefinition startPage = workflowDef.getStartPage();
             if (startPage == null || startPage.getName().equals("")) {
-               throw new OseeArgumentException("StartPage null for workflow " + workflowDef);
+               throw new OseeArgumentException("StartPage null for workflow [%s]", workflowDef);
             }
             // Create states
             List<WorkPageDefinition> pages = workflowDef.getPagesOrdered();

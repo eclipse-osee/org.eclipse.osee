@@ -18,6 +18,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.benchmark.Benchmark;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.message.IMessageHeader;
@@ -59,7 +60,7 @@ public class MessageRecEntry<T extends Message<?, ?, T>> implements IMessageEntr
    private boolean bodyDump;
    private boolean headerDump;
 
-   public MessageRecEntry(T msg, DataType type, boolean headerDump, Element[] hdrElements, boolean bodyDump, Element[] bdyElements, MessageRecorder recorder) {
+   public MessageRecEntry(T msg, DataType type, boolean headerDump, Element[] hdrElements, boolean bodyDump, Element[] bdyElements, MessageRecorder recorder) throws OseeArgumentException {
       this.msg = msg;
       this.type = type;
       this.recorder = recorder;
@@ -85,8 +86,7 @@ public class MessageRecEntry<T extends Message<?, ?, T>> implements IMessageEntr
       i = 0;
       for (Element element : bdyElements) {
          if (element.getMsgData().getType() != type) {
-            throw new IllegalArgumentException(String.format("all elements(%s) must have a mem type of %s",
-               element.getName(), type.toString()));
+            throw new OseeArgumentException("all elements(%s) must have a mem type of %s", element.getName(), type);
          }
          bodyEntries[i] = ElementEntryFactory.createEntry(element);
          i++;

@@ -221,7 +221,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
       String storedChangeReport = null;
       Artifact artifactForStore = null;
       if (arts.size() > 1) {
-         throw new OseeStateException("Multiple artifacts found of name \"" + name + "\"");
+         throw new OseeStateException("Multiple artifacts found named [%s]", name);
       } else if (arts.size() == 1) {
          artifactForStore = arts.iterator().next();
          storedChangeReport = artifactForStore.getSoleAttributeValue(CoreAttributeTypes.GeneralStringData, null);

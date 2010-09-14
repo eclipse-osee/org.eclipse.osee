@@ -131,7 +131,7 @@ public class ExportChangeReportsAction extends Action {
             }
          }
          if (minTransactionId == -1) {
-            throw new OseeStateException("no transaction records found for " + workflow);
+            throw new OseeStateException("no transaction records found for [%s]", workflow);
          }
          return TransactionManager.getTransactionId(minTransactionId);
       }

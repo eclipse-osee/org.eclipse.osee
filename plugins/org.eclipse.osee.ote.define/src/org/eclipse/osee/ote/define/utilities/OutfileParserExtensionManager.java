@@ -71,8 +71,7 @@ public class OutfileParserExtensionManager {
          }
       }
       if (toReturn == null) {
-         throw new OseeStateException(String.format("Unsupported outfile type [%s] no valid outfile parser found",
-            fileToImport));
+         throw new OseeStateException("Unsupported outfile type [%s] no valid outfile parser found", fileToImport);
       }
       return toReturn;
    }

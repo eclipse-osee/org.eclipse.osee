@@ -76,9 +76,9 @@ public final class UnsubscribeTransaction extends AbstractDbTxOperation {
             int modType = chStmt.getInt("mod_type");
             return ensureNotAlreadyDeleted(modType);
          } else {
-            throw new OseeStateException(String.format(
+            throw new OseeStateException(
                "No existing relation (deleted or otherwise) was found for group [%s] and user [%s].",
-               unsubscribeData.getGroupId(), unsubscribeData.getUserId()));
+               unsubscribeData.getGroupId(), unsubscribeData.getUserId());
          }
       } finally {
          Lib.close(chStmt);

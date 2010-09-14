@@ -160,7 +160,7 @@ public class OseeDatabaseServiceImpl implements IOseeDatabaseService {
             OseeLog.log(Activator.class, Level.SEVERE, "This is the nested exception", exlist);
          }
          throw new OseeCoreException(
-            "sql update failed: \n" + query + "\n" + StatementUtil.getBatchErrorMessage(dataList), ex);
+            "sql update failed: \n%s\n%s", query, StatementUtil.getBatchErrorMessage(dataList), ex);
       } finally {
          StatementUtil.close(preparedStatement);
       }

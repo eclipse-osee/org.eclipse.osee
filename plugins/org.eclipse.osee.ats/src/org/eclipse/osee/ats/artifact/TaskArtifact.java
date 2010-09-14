@@ -311,7 +311,7 @@ public class TaskArtifact extends StateMachineArtifact implements IATSStateMachi
       Collection<StateMachineArtifact> smas =
          getRelatedArtifacts(AtsRelationTypes.SmaToTask_Sma, StateMachineArtifact.class);
       if (smas.isEmpty()) {
-         throw new OseeStateException("Task has no parent - " + getHumanReadableId());
+         throw new OseeStateException("Task has no parent [%s]", getHumanReadableId());
       }
       parentSma = smas.iterator().next();
       return parentSma;

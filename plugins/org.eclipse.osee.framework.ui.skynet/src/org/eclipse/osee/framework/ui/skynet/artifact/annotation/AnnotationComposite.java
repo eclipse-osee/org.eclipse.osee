@@ -48,7 +48,7 @@ public class AnnotationComposite extends Composite {
             }
             if (notify.getType() == ArtifactAnnotation.Type.None) {
                OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, new OseeStateException(
-                  "None is an invalid annotation type - " + artifact.getGuid()));
+                  "None is an invalid annotation type on artifact [%s]", artifact.getGuid()));
                continue;
             }
             Label iconLabel = toolkit != null ? toolkit.createLabel(this, "") : new Label(this, SWT.NONE);

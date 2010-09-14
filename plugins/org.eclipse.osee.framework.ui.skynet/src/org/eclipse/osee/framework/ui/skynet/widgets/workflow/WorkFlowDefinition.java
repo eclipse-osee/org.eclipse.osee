@@ -241,11 +241,9 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
       for (String transition : artifact.getAttributesToStringList(CoreAttributeTypes.WorkTransition)) {
          String[] strs = transition.split(";");
          if (strs.length != 3) {
-            OseeLog.log(
-               SkynetGuiPlugin.class,
-               OseeLevel.SEVERE_POPUP,
-               new OseeStateException(
-                  "Transition attribute from artifact " + artifact.getGuid() + " is invalid.  Must be <fromState>;<transitionType>;<toState>"));
+            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, new OseeStateException(
+               "Transition attribute from artifact [%s] is invalid.  Must be <fromState>;<transitionType>;<toState>",
+               artifact.getGuid()));
             continue;
          }
          TransitionType transType = TransitionType.valueOf(strs[1]);

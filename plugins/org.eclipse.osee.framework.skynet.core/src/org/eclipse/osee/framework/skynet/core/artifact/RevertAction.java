@@ -145,8 +145,8 @@ public class RevertAction {
       int count2 = ConnectionHandler.runBatchUpdate(connection, DELETE_TXS_GAMMAS_REVERT, gammaIdsModifications);
 
       if (count1 != count2) {
-         throw new OseeCoreException(String.format("Revert Transaction moved %d transaction but should have moved %d",
-            count1, count2));
+         throw new OseeCoreException("Revert Transaction moved %d transaction but should have moved %d",
+            count1, count2);
       }
       if (DEBUG) {
          displayRevertResults(time, objectReverted, gammaIdsModifications, count2);

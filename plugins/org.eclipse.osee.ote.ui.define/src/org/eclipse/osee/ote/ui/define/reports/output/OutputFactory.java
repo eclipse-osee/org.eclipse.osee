@@ -11,6 +11,7 @@
 package org.eclipse.osee.ote.ui.define.reports.output;
 
 import java.util.Date;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 
 /**
  * @author Roberto E. Escobar
@@ -21,7 +22,7 @@ public class OutputFactory {
    private OutputFactory() {
    }
 
-   public static IReportWriter getReportWriter(OutputFormat format) {
+   public static IReportWriter getReportWriter(OutputFormat format) throws OseeArgumentException {
       IReportWriter toReturn = null;
       switch (format) {
          case EXCEL:
@@ -33,12 +34,12 @@ public class OutputFactory {
             toReturn = new ReportWriter(format.name());
             break;
          default:
-            throw new IllegalArgumentException(String.format("Unsupported format [%s]", format));
+            throw new OseeArgumentException("Unsupported format [%s]", format);
       }
       return toReturn;
    }
 
-   public static String getOutputFilename(OutputFormat format, String reportId) {
+   public static String getOutputFilename(OutputFormat format, String reportId) throws OseeArgumentException {
       String extension = "";
       switch (format) {
          case HTML:
@@ -54,7 +55,7 @@ public class OutputFactory {
             extension = "rtf";
             break;
          default:
-            throw new IllegalArgumentException(String.format("Unsupported format [%s]", format));
+            throw new OseeArgumentException("Unsupported format [%s]", format);
       }
       StringBuilder builder = new StringBuilder(reportId);
       builder.append(SEPARATOR);
@@ -64,7 +65,7 @@ public class OutputFactory {
       return builder.toString();
    }
 
-   public static String getContentType(OutputFormat format) {
+   public static String getContentType(OutputFormat format) throws OseeArgumentException {
       String toReturn = "";
       switch (format) {
          case HTML:
@@ -80,7 +81,7 @@ public class OutputFactory {
             toReturn = "application/rtf";
             break;
          default:
-            throw new IllegalArgumentException(String.format("Unsupported format [%s]", format));
+            throw new OseeArgumentException("Unsupported format [%s]", format);
       }
       return toReturn;
    }

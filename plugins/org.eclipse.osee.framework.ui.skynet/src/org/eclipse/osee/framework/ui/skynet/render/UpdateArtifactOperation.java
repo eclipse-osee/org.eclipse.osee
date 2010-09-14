@@ -221,8 +221,8 @@ public class UpdateArtifactOperation extends AbstractOperation {
          }
       } finally {
          if (!deletedGuids.isEmpty()) {
-            throw new OseeStateException("The following deleted artifacts could not be saved: " + Collections.toString(
-               ",", deletedGuids));
+            throw new OseeStateException("The following deleted artifacts could not be saved [%s]",
+               Collections.toString(",", deletedGuids));
          }
       }
    }
@@ -241,7 +241,7 @@ public class UpdateArtifactOperation extends AbstractOperation {
             return attributes.item(i).getNodeValue();
          }
       }
-      throw new OseeArgumentException("didn't find the guid attribure in element: " + artifactElement);
+      throw new OseeArgumentException("didn't find the guid attribure in element [%s]", artifactElement);
    }
 
 }

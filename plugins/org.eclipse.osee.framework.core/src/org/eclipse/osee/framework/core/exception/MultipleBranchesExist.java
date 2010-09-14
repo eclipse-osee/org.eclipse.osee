@@ -17,7 +17,7 @@ public class MultipleBranchesExist extends OseeCoreException {
 
    private static final long serialVersionUID = 1L;
 
-   public MultipleBranchesExist(String message) {
-      super(message);
+   public MultipleBranchesExist(String message, Object... args) {
+      super(message, args);
    }
 }

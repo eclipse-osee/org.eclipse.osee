@@ -80,9 +80,9 @@ public class DataToSql {
                Method mainMethod = clazz.getMethod("valueOf", new Class[] {Object.class});
                convertedObject = mainMethod.invoke(null, value);
             } catch (Exception ex1) {
-               throw new OseeArgumentException(String.format(
+               throw new OseeArgumentException(
                   "Unable to convert from string to object for - attribute [%s] to class [%s]", columnName,
-                  clazz.getName()));
+                  clazz.getName());
             }
          }
       } else {

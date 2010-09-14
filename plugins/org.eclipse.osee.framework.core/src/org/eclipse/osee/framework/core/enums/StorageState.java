@@ -39,6 +39,6 @@ public enum StorageState {
             return type;
          }
       }
-      throw new OseeArgumentException(String.format("[%s] is not a valid StorageState"));
+      throw new OseeArgumentException("[%s] is not a valid StorageState");
    }
 }

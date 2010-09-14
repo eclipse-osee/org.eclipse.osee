@@ -104,7 +104,8 @@ public final class AttributeChange extends Change {
             return attribute;
          }
       }
-      throw new AttributeDoesNotExist(String.format("Could not find Attribute %d on Artifact %d", attrId, getArtId()));
+      throw new AttributeDoesNotExist("Attribute %d could not be found on artifact %d on branch %s", attrId,
+         getArtId(), getBranch().getGuid());
    }
 
    @SuppressWarnings("rawtypes")

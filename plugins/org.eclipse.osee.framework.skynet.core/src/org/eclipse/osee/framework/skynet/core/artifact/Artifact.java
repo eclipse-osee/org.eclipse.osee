@@ -342,7 +342,7 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, Co
    public boolean hasParent() throws OseeCoreException {
       int parentCount = getRelatedArtifactsUnSorted(CoreRelationTypes.Default_Hierarchical__Parent).size();
       if (parentCount > 1) {
-         throw new MultipleArtifactsExist(humanReadableId + " has " + parentCount + " parents");
+         throw new MultipleArtifactsExist("artifact [%s] has %d parents", humanReadableId, parentCount);
       }
 
       return parentCount == 1;
@@ -373,7 +373,7 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, Co
             return artifact;
          }
       }
-      throw new ArtifactDoesNotExist("\"" + getName() + "\" has no child with the name \"" + descriptiveName + "\"");
+      throw new ArtifactDoesNotExist("artifact [%s] has no child with the name [%s]", this, descriptiveName);
    }
 
    public boolean hasChild(String descriptiveName) throws OseeCoreException {
@@ -622,13 +622,15 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, Co
       List<Attribute<T>> soleAttributes = getAttributes(attributeType);
       if (soleAttributes.isEmpty()) {
          if (!isAttributeTypeValid(attributeType)) {
-            throw new OseeArgumentException(String.format(
-               "The attribute type %s is not valid for artifacts of type [%s]", attributeType, getArtifactTypeName()));
+            throw new OseeArgumentException("The attribute type %s is not valid for artifacts of type [%s]",
+               attributeType, getArtifactTypeName());
          }
-         throw new AttributeDoesNotExist("Attribute \"" + attributeType + "\" does not exist for artifact " + getGuid());
+         throw new AttributeDoesNotExist("Attribute of type [%s] could not be found on artifact [%s] on branch [%s]",
+            attributeType.getName(), getGuid(), getBranch().getGuid());
       } else if (soleAttributes.size() > 1) {
          throw new MultipleAttributesExist(
-            "Attribute \"" + attributeType + "\" must have exactly one instance.  It currently has " + soleAttributes.size() + " for artifact " + getGuid());
+            "Attribute [%s] must have exactly one instance.  It currently has %d for artifact [%s]", attributeType,
+            soleAttributes.size(), getGuid());
       }
       return soleAttributes.iterator().next().getValue();
    }
@@ -690,7 +692,8 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, Co
          return value;
       } else if (soleAttributes.size() > 1) {
          throw new MultipleAttributesExist(
-            "Attribute \"" + attributeType + "\" must have exactly one instance.  It currently has " + soleAttributes.size() + " for artifact " + getGuid());
+            "Attribute [%s] must have exactly one instance.  It currently has %d for artifact [%s]", attributeType,
+            soleAttributes.size(), getGuid());
       } else {
          return defaultReturnValue;
       }
@@ -991,12 +994,11 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, Co
    private final void persistAttributes(SkynetTransaction transaction) throws OseeCoreException {
       if (!UserManager.duringMainUserCreation() && !getAccessControlService().hasPermission(getBranch(),
          PermissionEnum.WRITE)) {
-         throw new OseeArgumentException(
-            "No write permissions for the branch that this artifact belongs to:" + getBranch());
+         throw new OseeArgumentException("No write permissions for the branch [%s] that this artifact belongs to",
+            getBranch());
       }
       if (isHistorical()) {
-         throw new OseeArgumentException(
-            "The artifact " + getGuid() + " must be at the head of the branch to be edited.");
+         throw new OseeArgumentException("The artifact [%s] must be at the head of the branch to be edited.", getGuid());
       }
 
       if (hasDirtyAttributes() || hasDirtyArtifactType()) {

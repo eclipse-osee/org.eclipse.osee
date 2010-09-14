@@ -16,10 +16,6 @@ package org.eclipse.osee.framework.core.exception;
 public class OseeWrappedException extends OseeCoreException {
    private static final long serialVersionUID = 1L;
 
-   public OseeWrappedException(String message) {
-      super(message);
-   }
-
    public OseeWrappedException(String message, Throwable cause) {
       super(message, cause);
    }

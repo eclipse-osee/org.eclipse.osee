@@ -17,7 +17,7 @@ public class OseeStateException extends OseeCoreException {
 
    private static final long serialVersionUID = 1L;
 
-   public OseeStateException(String message) {
-      super(message);
+   public OseeStateException(String message, Object... args) {
+      super(message, args);
    }
 }

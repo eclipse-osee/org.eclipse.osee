@@ -119,10 +119,10 @@ public class BranchManager {
    public static Branch getBranch(String branchName) throws OseeCoreException {
       Collection<Branch> branches = getBranchesByName(branchName);
       if (branches.isEmpty()) {
-         throw new BranchDoesNotExist(String.format("No branch exists with the name: [%s]", branchName));
+         throw new BranchDoesNotExist("No branch exists with the name: [%s]", branchName);
       }
       if (branches.size() > 1) {
-         throw new MultipleBranchesExist(String.format("More than 1 branch exists with the name: [%s]", branchName));
+         throw new MultipleBranchesExist("More than 1 branch exists with the name: [%s]", branchName);
       }
       return branches.iterator().next();
    }
@@ -146,7 +146,7 @@ public class BranchManager {
    public static Branch getBranchByGuid(String guid) throws OseeCoreException {
       Branch branch = getCache().getByGuid(guid);
       if (branch == null) {
-         throw new BranchDoesNotExist(String.format("Branch with guid [%s] does not exist", guid));
+         throw new BranchDoesNotExist("Branch with guid [%s] does not exist", guid);
       }
       return branch;
    }
@@ -194,7 +194,7 @@ public class BranchManager {
          }
       }
       if (branch == null) {
-         throw new BranchDoesNotExist("Branch could not be acquired for branch id: " + branchId);
+         throw new BranchDoesNotExist("Branch could not be acquired for branch id %d", branchId);
       }
       return branch;
    }

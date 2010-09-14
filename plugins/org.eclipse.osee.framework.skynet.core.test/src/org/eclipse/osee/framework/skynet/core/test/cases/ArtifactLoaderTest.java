@@ -145,7 +145,7 @@ public class ArtifactLoaderTest {
                ArtifactQuery.getArtifactListFromName("ArtifactLoaderTest", BranchManager.getCommonBranch(),
                   EXCLUDE_DELETED);
             if (artifacts.size() != NUM_ARTIFACTS) {
-               throw new OseeStateException("Should have loaded " + NUM_ARTIFACTS + "; only got " + artifacts.size());
+               throw new OseeStateException("Should have loaded %d not %d", NUM_ARTIFACTS, artifacts.size());
             }
             numThreadsCompleted++;
             System.out.println("Completed " + getName() + "; NumThreads " + numThreadsCompleted);

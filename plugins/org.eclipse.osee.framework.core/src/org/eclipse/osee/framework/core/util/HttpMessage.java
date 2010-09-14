@@ -44,7 +44,7 @@ public final class HttpMessage {
                return service.convert(new ByteArrayInputStream(buffer.toByteArray()), responseId);
             }
          } else {
-            throw new OseeCoreException(String.format("Request [%s] failed.", urlString));
+            throw new OseeCoreException("Request [%s] failed.", urlString);
          }
       } catch (Exception ex) {
          OseeExceptions.wrapAndThrow(ex);

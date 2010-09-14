@@ -175,8 +175,8 @@ public class UpdateMergeBranch extends DbTransaction {
          insertGammas(connection, INSERT_ATTRIBUTE_GAMMAS, startTransactionNumber, queryId, sourceBranch, mergeBranch);
          insertGammas(connection, INSERT_ARTIFACT_GAMMAS, startTransactionNumber, queryId, sourceBranch, mergeBranch);
       } catch (OseeCoreException ex) {
-         throw new OseeCoreException(
-            "Source Branch Id: " + sourceBranch.getId() + " Artifact Ids: " + Collections.toString(",", artIds));
+         throw new OseeCoreException("Source Branch %s Artifact Ids: %s", sourceBranch.getGuid(), Collections.toString(
+            ",", artIds));
       } finally {
          ArtifactLoader.clearQuery(connection, queryId);
       }

@@ -42,7 +42,7 @@ public abstract class MergeItemBase extends NamedIdentity implements IMergeItem 
    @Override
    public void setChecked(boolean checked) throws OseeArgumentException {
       if (!isCheckable) {
-         throw new OseeArgumentException(String.format("Merge Item is not checkable [%s]", this));
+         throw new OseeArgumentException("Merge Item is not checkable [%s]", this);
       }
       this.checked = checked;
    }

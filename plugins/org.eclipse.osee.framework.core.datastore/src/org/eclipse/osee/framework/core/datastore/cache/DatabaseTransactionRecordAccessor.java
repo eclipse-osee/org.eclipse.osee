@@ -99,7 +99,7 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
             toReturn = loadFirstTransactionRecord(cache, branch, SELECT_BRANCH_TRANSACTIONS, branch.getId());
             break;
          default:
-            throw new OseeStateException(String.format("Transaction Type [%s] is not supported", transactionType));
+            throw new OseeStateException("Transaction Type [%s] is not supported", transactionType);
       }
       return toReturn;
    }

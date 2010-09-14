@@ -99,7 +99,7 @@ public class TransactionCache implements IOseeCache<TransactionRecord> {
             if (txId == 1) { // handle bootstrap case for system root branch creation
                return null;
             }
-            throw new OseeStateException(String.format("Transaction Record[%s] was not found", txId));
+            throw new OseeStateException("Transaction Record[%s] was not found", txId);
          }
       }
       return transactionRecord;

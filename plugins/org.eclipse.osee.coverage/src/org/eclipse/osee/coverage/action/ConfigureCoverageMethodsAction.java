@@ -120,8 +120,8 @@ public class ConfigureCoverageMethodsAction extends Action {
                      Set<String> names = new HashSet<String>();
                      for (CoverageOption option : manager.get()) {
                         if (names.contains(option.getName())) {
-                           throw new OseeArgumentException(String.format("Multiple options with same name [%s]",
-                              option.getName()));
+                           throw new OseeArgumentException("Multiple options with same name [%s]",
+                              option.getName());
                         } else {
                            names.add(option.getName());
                         }

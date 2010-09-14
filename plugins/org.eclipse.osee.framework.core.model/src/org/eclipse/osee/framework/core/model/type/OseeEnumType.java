@@ -86,7 +86,7 @@ public class OseeEnumType extends AbstractOseeType implements Comparable<OseeEnu
          }
       }
       if (toReturn == null) {
-         throw new OseeArgumentException(String.format("No enum const [%s] - ordinal [%s]", getName(), ordinal));
+         throw new OseeArgumentException("No enum const [%s] - ordinal [%s]", getName(), ordinal);
       }
       return toReturn;
    }
@@ -102,7 +102,7 @@ public class OseeEnumType extends AbstractOseeType implements Comparable<OseeEnu
          }
       }
       if (toReturn == null) {
-         throw new OseeArgumentException(String.format("No enum const [%s].[%s]", getName(), entryName));
+         throw new OseeArgumentException("No enum const [%s].[%s]", getName(), entryName);
       }
       return toReturn;
    }
@@ -122,8 +122,8 @@ public class OseeEnumType extends AbstractOseeType implements Comparable<OseeEnu
       List<OseeEnumEntry> entries = new ArrayList<OseeEnumEntry>();
       entries.addAll(Arrays.asList(values()));
       if (!entries.remove(entry)) {
-         throw new OseeArgumentException(String.format("OseeEnumEntry[%s] does not exist on OseeEnumType[%s]", entry,
-            this));
+         throw new OseeArgumentException("OseeEnumEntry[%s] does not exist on OseeEnumType[%s]", entry,
+            this);
       }
       setEntries(entries);
    }

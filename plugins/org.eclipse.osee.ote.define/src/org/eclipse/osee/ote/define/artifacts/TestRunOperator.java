@@ -58,8 +58,8 @@ public class TestRunOperator {
    private void checkForType(Artifact artifact) throws OseeArgumentException {
       try {
          if (!artifact.isOfType(CoreArtifactTypes.TestRun)) {
-            throw new OseeArgumentException(String.format("Unable to operate on type [%s]. Only [%s] allowed.",
-               artifact.getArtifactTypeName(), CoreArtifactTypes.TestRun));
+            throw new OseeArgumentException("Unable to operate on type [%s]. Only [%s] allowed.",
+               artifact.getArtifactTypeName(), CoreArtifactTypes.TestRun);
          }
       } catch (OseeCoreException e) {
          // TODO Auto-generated catch block

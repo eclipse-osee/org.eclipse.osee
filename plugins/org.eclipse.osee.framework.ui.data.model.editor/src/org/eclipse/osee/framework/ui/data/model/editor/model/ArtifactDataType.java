@@ -146,9 +146,9 @@ public class ArtifactDataType extends DataType {
       boolean itemIsAThis = instanceOf(item, this);
       String message = "Inheritance constraint violation - [%s] is a [%s]";
       if (thisIsAItem) {
-         throw new OseeStateException(String.format(message, this, item));
+         throw new OseeStateException(message, this, item);
       } else if (itemIsAThis) {
-         throw new OseeStateException(String.format(message, item, this));
+         throw new OseeStateException(message, item, this);
       }
    }
 

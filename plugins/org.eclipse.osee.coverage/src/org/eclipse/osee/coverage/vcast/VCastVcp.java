@@ -31,7 +31,7 @@ public class VCastVcp {
       this.vcastDirectory = vcastDirectory;
       File vCastVcpFile = getFile();
       if (!vCastVcpFile.exists()) {
-         throw new OseeArgumentException(String.format("VectorCast vcast.vcp file doesn't exist [%s]", vcastDirectory));
+         throw new OseeArgumentException("VectorCast vcast.vcp file doesn't exist [%s]", vcastDirectory);
       }
       VcpSourceFile vcpSourceFile = null;
       VcpResultsFile vcpResultsFile = null;

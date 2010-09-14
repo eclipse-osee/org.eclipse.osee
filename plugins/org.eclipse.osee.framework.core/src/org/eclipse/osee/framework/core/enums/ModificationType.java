@@ -93,7 +93,7 @@ public enum ModificationType {
             return modtype;
          }
       }
-      throw new OseeArgumentException(value + " does not correspond to any defined ModificationType enumerations");
+      throw new OseeArgumentException("[%s] does not correspond to any defined ModificationType enumerations", value);
    }
 
    public boolean isDeleted() {

@@ -14,7 +14,7 @@ public class OseeInvalidInheritanceException extends OseeCoreException {
 
    private static final long serialVersionUID = -4553986819597790648L;
 
-   public OseeInvalidInheritanceException(String message) {
-      super(message);
+   public OseeInvalidInheritanceException(String message, Object... args) {
+      super(message, args);
    }
 }

@@ -270,7 +270,7 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
                   ModificationType.MERGED)) {
                   addToUpdateAddresssing(modType, netGammaId, modType, transactionId, obsoleteGammaId);
                } else {
-                  throw new OseeStateException("unexpected mod type: " + modType);
+                  throw new OseeStateException("unexpected mod type [%s]", modType);
                }
             } else {
                if (modType.matches(ModificationType.NEW, ModificationType.INTRODUCED, ModificationType.MODIFIED)) {
@@ -280,7 +280,7 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
                      addToUpdateAddresssing(modType, netGammaId, modType, transactionId, obsoleteGammaId);
                   }
                } else {
-                  throw new OseeStateException("unexpected mod type: " + modType);
+                  throw new OseeStateException("unexpected mod type [%s]", modType);
                }
             }
 

@@ -40,7 +40,7 @@ public class UserArtifactFactory extends ArtifactFactory {
       if (artifactType.getGuid().equals(CoreArtifactTypes.User.getGuid())) {
          return new User(this, guid, humandReadableId, branch, artifactType);
       }
-      throw new OseeArgumentException("did not recognize the artifact type: " + artifactType.getName());
+      throw new OseeArgumentException("did not recognize the artifact type [%s]", artifactType);
    }
 
    @Override

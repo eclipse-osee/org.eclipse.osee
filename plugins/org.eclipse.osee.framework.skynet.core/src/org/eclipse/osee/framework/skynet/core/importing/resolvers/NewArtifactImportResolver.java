@@ -56,7 +56,7 @@ public class NewArtifactImportResolver implements IArtifactImportResolver {
       } else if (kind == RoughArtifactKind.CONTAINER) {
          return ArtifactTypeManager.getType(CoreArtifactTypes.Folder);
       } else {
-         throw new OseeCoreException("Unknown Artifact Kind " + kind);
+         throw new OseeCoreException("Unknown Artifact Kind [%s]", kind);
       }
    }
 

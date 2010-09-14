@@ -135,12 +135,12 @@ public class DatabaseArtifactTypeAccessor extends AbstractDatabaseAccessor<Artif
             ArtifactType superArtType = cache.getById(superArtTypeId);
 
             if (baseArtType == null) {
-               throw new OseeInvalidInheritanceException(String.format(
-                  "ArtifactType [%s] which inherits from [%s] is null", artTypeId, superArtType));
+               throw new OseeInvalidInheritanceException("ArtifactType [%s] which inherits from [%s] is null",
+                  artTypeId, superArtType);
             }
             if (superArtType == null) {
-               throw new OseeInvalidInheritanceException(String.format(
-                  "ArtifactType [%s] which inherits from null artifact [%s]", artTypeId, superArtType));
+               throw new OseeInvalidInheritanceException("ArtifactType [%s] which inherits from null artifact [%s]",
+                  artTypeId, superArtType);
             }
             baseToSuperTypes.put(baseArtType, superArtType);
          }

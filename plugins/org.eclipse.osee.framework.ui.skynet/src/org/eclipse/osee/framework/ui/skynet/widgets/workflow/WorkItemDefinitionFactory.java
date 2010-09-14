@@ -132,8 +132,8 @@ public class WorkItemDefinitionFactory {
          throw new OseeArgumentException("Item Id can't be null");
       }
       if (writeType == WriteType.New && itemIdToDefinition.containsKey(workItemDefinition.getId())) {
-         throw new OseeArgumentException(
-            "Item Id must be unique.  Already work item with id \"" + workItemDefinition.getId() + "\"");
+         throw new OseeArgumentException("Item Id must be unique.  Already work item with id [%s]",
+            workItemDefinition.getId());
       }
       itemIdToDefinition.put(workItemDefinition.getId(), workItemDefinition);
    }

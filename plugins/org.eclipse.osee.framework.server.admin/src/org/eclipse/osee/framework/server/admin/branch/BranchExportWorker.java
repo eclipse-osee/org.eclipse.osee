@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.branch.management.ExportOptions;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.resource.management.Options;
@@ -75,7 +76,7 @@ public class BranchExportWorker extends BaseServerCommand {
       } while (isValidArg(arg));
 
       if (!isValidArg(exportFileName)) {
-         throw new IllegalArgumentException(String.format("exportFileName was invalid: [%s]", exportFileName));
+         throw new OseeArgumentException("exportFileName was invalid: [%s]", exportFileName);
       }
 
       if (branchIds.isEmpty()) {

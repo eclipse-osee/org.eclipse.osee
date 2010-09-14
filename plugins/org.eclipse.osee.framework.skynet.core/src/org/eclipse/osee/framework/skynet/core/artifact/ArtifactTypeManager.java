@@ -106,11 +106,11 @@ public class ArtifactTypeManager {
     */
    public static ArtifactType getTypeByGuid(String guid) throws OseeCoreException {
       if (!GUID.isValid(guid)) {
-         throw new OseeArgumentException(String.format("[%s] is not a valid guid", guid));
+         throw new OseeArgumentException("[%s] is not a valid guid", guid);
       }
       ArtifactType artifactType = getCache().getByGuid(guid);
       if (artifactType == null) {
-         throw new OseeTypeDoesNotExist(String.format("Artifact type [%s] is not available.", guid));
+         throw new OseeTypeDoesNotExist("Artifact type [%s] is not available.", guid);
       }
       return artifactType;
    }
@@ -122,7 +122,7 @@ public class ArtifactTypeManager {
    public static ArtifactType getType(String name) throws OseeCoreException {
       ArtifactType artifactType = getCache().getUniqueByName(name);
       if (artifactType == null) {
-         throw new OseeTypeDoesNotExist("Artifact type [" + name + "] is not available.");
+         throw new OseeTypeDoesNotExist("Artifact type [%s] is not available.", name);
       }
       return artifactType;
    }
@@ -156,7 +156,7 @@ public class ArtifactTypeManager {
    public static ArtifactType getType(int artTypeId) throws OseeCoreException {
       ArtifactType artifactType = getCache().getById(artTypeId);
       if (artifactType == null) {
-         throw new OseeTypeDoesNotExist("Atrifact type: " + artTypeId + " is not available.");
+         throw new OseeTypeDoesNotExist("Atrifact type: %d is not available.", artTypeId);
       }
       return artifactType;
    }
@@ -201,7 +201,8 @@ public class ArtifactTypeManager {
 
       if (artifactCount != 0) {
          throw new OseeArgumentException(
-            "Can not delete artifact type " + artifactType.getName() + " because there are " + artifactCount + " existing artifacts of this type.");
+            "Can not delete artifact type [%s] because there are %d existing artifacts of this type.", artifactType,
+            artifactCount);
       }
       new DbTransaction() {
 
@@ -236,8 +237,8 @@ public class ArtifactTypeManager {
                for (Artifact artifact : artifacts) {
                   branches.add(artifact.getBranch());
                }
-               throw new OseeStateException(
-                  "Found " + artifacts.size() + " artifact references of type " + purgeArtifactType + " on branches " + branches);
+               throw new OseeStateException("Found %d artifact references of type [%s] on branches [%s]",
+                  artifacts.size(), purgeArtifactType, branches);
             } else {
                ChangeArtifactType.changeArtifactType(artifactMap.values(), newArtifactType);
             }

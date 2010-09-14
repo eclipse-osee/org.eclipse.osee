@@ -105,15 +105,15 @@ public final class ArtifactCache {
     */
    public static Artifact cacheByTextId(String key, Artifact artifact) throws OseeCoreException {
       if (artifact.isHistorical()) {
-         throw new OseeArgumentException(String.format("historical artifact cannot be cached by text [%s]", key));
+         throw new OseeArgumentException("historical artifact cannot be cached by text [%s]", key);
       }
       return ACTIVE_CACHE.cacheByText(key, artifact);
    }
 
    public static void cacheByStaticId(String staticId, Artifact artifact) throws OseeCoreException {
       if (artifact.isHistorical()) {
-         throw new OseeArgumentException(String.format("historical artifact cannot be cached by staticId [%s]",
-            staticId));
+         throw new OseeArgumentException("historical artifact cannot be cached by staticId [%s]",
+            staticId);
       }
       ACTIVE_CACHE.cacheByStaticId(staticId, artifact);
    }

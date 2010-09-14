@@ -27,8 +27,8 @@ public class OseeAuthenticationException extends OseeCoreException {
 
    private final AuthenticationErrorCode errorCode;
 
-   public OseeAuthenticationException(String message) {
-      super(message);
+   public OseeAuthenticationException(String message, Object... args) {
+      super(message, args);
       this.errorCode = null;
    }
 

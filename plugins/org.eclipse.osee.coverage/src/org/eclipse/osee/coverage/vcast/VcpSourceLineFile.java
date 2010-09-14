@@ -37,7 +37,7 @@ public class VcpSourceLineFile {
       String lineFilename = vcastDirectory + "/vcast/LINE." + vcpSourceFile.getValue(SourceValue.UNIT_NUMBER);
       resultsFile = new File(lineFilename);
       if (!resultsFile.exists()) {
-         throw new OseeArgumentException(String.format("VectorCast LINE.<num> file doesn't exist [%s]", lineFilename));
+         throw new OseeArgumentException("VectorCast LINE.<num> file doesn't exist [%s]", lineFilename);
       }
    }
 

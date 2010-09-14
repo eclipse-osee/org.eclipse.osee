@@ -120,7 +120,7 @@ public class CoverageEditorImportTab extends FormPage {
 
    public void simulateImport(String importName) throws OseeCoreException {
       if (!Strings.isValid(importName)) {
-         throw new OseeStateException(String.format("Invalid importName [%s]", importName));
+         throw new OseeStateException("Invalid importName [%s]", importName);
       }
       AbstractCoverageBlam blam = null;
       for (AbstractCoverageBlam abstractCoverageBlam : CoverageManager.getCoverageBlams()) {
@@ -129,7 +129,7 @@ public class CoverageEditorImportTab extends FormPage {
          }
       }
       if (blam == null) {
-         throw new OseeArgumentException(String.format("Can't find blam matching name [%s]", importName));
+         throw new OseeArgumentException("Can't find blam matching name [%s]", importName);
       }
       blam.setCoverageEditor(coverageEditor);
       combo.getComboViewer().setSelection(new StructuredSelection(blam), true);

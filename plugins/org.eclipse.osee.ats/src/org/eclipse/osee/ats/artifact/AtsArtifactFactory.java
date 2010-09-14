@@ -70,7 +70,7 @@ public class AtsArtifactFactory extends ArtifactFactory {
       if (artifactType.equals(AtsArtifactTypes.Goal)) {
          return new GoalArtifact(this, guid, humandReadableId, branch, artifactType);
       }
-      throw new OseeArgumentException("did not recognize the artifact type: " + artifactType.getName());
+      throw new OseeArgumentException("did not recognize the artifact type [%s]", artifactType);
    }
 
    @Override

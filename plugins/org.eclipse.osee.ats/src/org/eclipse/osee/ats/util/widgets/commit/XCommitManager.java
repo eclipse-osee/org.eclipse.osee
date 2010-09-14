@@ -355,7 +355,7 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IBranchE
    @Override
    public void setArtifact(Artifact artifact) throws OseeCoreException {
       if (!(artifact instanceof TeamWorkFlowArtifact)) {
-         throw new OseeStateException("Must be TeamWorkflowArtifact, set was a " + artifact.getArtifactTypeName());
+         throw new OseeStateException("Must be TeamWorkflowArtifact, set was a [%s]", artifact.getArtifactTypeName());
       }
       this.teamArt = (TeamWorkFlowArtifact) artifact;
       loadTable();

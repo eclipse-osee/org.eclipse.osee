@@ -23,8 +23,8 @@ import org.eclipse.osee.coverage.action.NewCoveragePackageAction;
 import org.eclipse.osee.coverage.action.OpenCoveragePackageAction;
 import org.eclipse.osee.coverage.blam.AbstractCoverageBlam;
 import org.eclipse.osee.coverage.util.CoverageUtil;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
@@ -110,8 +110,7 @@ public class CoverageNavigateViewItems extends XNavigateViewItems {
                }
                data.add((ICoverageNavigateItem) object);
             } catch (Exception ex) {
-               throw new OseeArgumentException(String.format("Unable to Load: [%s - %s]" + ex.getLocalizedMessage(),
-                  bundleName, className));
+               OseeExceptions.wrapAndThrow(ex);
             }
          }
       }

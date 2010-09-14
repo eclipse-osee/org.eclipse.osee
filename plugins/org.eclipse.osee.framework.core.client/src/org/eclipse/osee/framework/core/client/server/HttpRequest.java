@@ -187,7 +187,7 @@ public class HttpRequest {
          urlRequest = matcher.group(1);
 
          if (!Strings.isValid(urlRequest)) {
-            throw new OseeArgumentException("Unknown requestType \"" + rawRequest + "\"");
+            throw new OseeArgumentException("Unknown requestType [%s]", rawRequest);
          }
          String data = matcher.group(2);
          Matcher dataMatcher = Pattern.compile("([^&]*?)=([^&]*)").matcher(data);
@@ -223,7 +223,7 @@ public class HttpRequest {
                parameterMap.put("guid", guid);
                urlRequest = "Define";
             } else {
-               throw new OseeArgumentException("Unnable to parse old style link: \"" + rawRequest + "\"");
+               throw new OseeArgumentException("Unnable to parse old style link [%s]", rawRequest);
             }
          }
       }

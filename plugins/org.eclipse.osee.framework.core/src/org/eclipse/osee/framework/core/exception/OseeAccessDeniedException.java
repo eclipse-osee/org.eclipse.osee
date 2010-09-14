@@ -17,7 +17,7 @@ public class OseeAccessDeniedException extends OseeCoreException {
 
    private static final long serialVersionUID = 1L;
 
-   public OseeAccessDeniedException(String message) {
-      super(message);
+   public OseeAccessDeniedException(String message, Object... args) {
+      super(message, args);
    }
 }

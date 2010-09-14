@@ -88,7 +88,7 @@ public class TraceUnitFromResourceOperation {
          Set<String> ids = getTraceUnitHandlerIds();
          List<String> notFound = Collections.setComplement(Arrays.asList(traceUnitHandlerIds), ids);
          if (!notFound.isEmpty()) {
-            throw new OseeArgumentException(String.format("Invalid test unit trace id(s) [%s]", notFound));
+            throw new OseeArgumentException("Invalid test unit trace id(s) [%s]", notFound);
          }
       } catch (Exception ex) {
          OseeExceptions.wrapAndThrow(ex);
@@ -103,10 +103,10 @@ public class TraceUnitFromResourceOperation {
          IFileStore fileStore = EFS.getStore(source);
          IFileInfo fileInfo = fileStore.fetchInfo();
          if (!fileInfo.exists()) {
-            throw new OseeArgumentException(String.format("Unable to access source: [%s]", source));
+            throw new OseeArgumentException("Unable to access source: [%s]", source);
          }
       } catch (CoreException ex) {
-         throw new OseeArgumentException(String.format("Unable to access source: [%s]", source));
+         throw new OseeArgumentException("Unable to access source: [%s]", source);
       }
    }
 
@@ -115,8 +115,8 @@ public class TraceUnitFromResourceOperation {
          throw new OseeArgumentException("Branch to import into was null");
       }
       if (!importToBranch.getBranchType().isOfType(BranchType.WORKING)) {
-         throw new OseeArgumentException(String.format("Branch to import into was not a working branch: [%s]",
-            importToBranch));
+         throw new OseeArgumentException("Branch to import into was not a working branch: [%s]",
+            importToBranch);
       }
    }
 }

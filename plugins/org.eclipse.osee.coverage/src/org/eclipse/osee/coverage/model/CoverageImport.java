@@ -106,7 +106,7 @@ public class CoverageImport extends CoveragePackageBase {
 
    public void addImportRecordFile(File file) throws OseeArgumentException {
       if (!file.exists()) {
-         throw new OseeArgumentException(String.format("Import Record file [%s] doesn't exist.", file));
+         throw new OseeArgumentException("Import Record file [%s] doesn't exist.", file);
       }
       importRecordFiles.add(file);
    }

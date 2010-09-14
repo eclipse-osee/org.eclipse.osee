@@ -29,4 +29,5 @@ Export-Package: org.eclipse.osee.ote.ui.message,
  org.eclipse.osee.ote.ui.message.view,
  org.eclipse.osee.ote.ui.message.watch
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: org.eclipse.osee.framework.core.operation
+Import-Package: org.eclipse.osee.framework.core.exception,
+ org.eclipse.osee.framework.core.operation

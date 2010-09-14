@@ -17,7 +17,7 @@ public class OseeAuthenticationRequiredException extends OseeDataStoreException 
 
    private static final long serialVersionUID = 1890728724625261131L;
 
-   public OseeAuthenticationRequiredException(String message) {
-      super(message);
+   public OseeAuthenticationRequiredException(String message, Object... args) {
+      super(message, args);
    }
 }

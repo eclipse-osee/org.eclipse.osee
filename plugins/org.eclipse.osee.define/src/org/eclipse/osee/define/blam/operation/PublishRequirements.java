@@ -109,8 +109,8 @@ public class PublishRequirements extends AbstractBlam {
 
       if (publishAsDiff) {
          if (branch == null || date == null && !useBaselineTransaction) {
-            throw new OseeCoreException(
-               "Must Select a " + branch == null ? "Branch" : "Date" + " to diff against when publishing as Diff");
+            throw new OseeCoreException("Must Select a %s to diff against when publishing as Diff",
+               branch == null ? "Branch" : "Date");
          }
       }
       TransactionDelta txDelta = createTransactionDelta(branch);

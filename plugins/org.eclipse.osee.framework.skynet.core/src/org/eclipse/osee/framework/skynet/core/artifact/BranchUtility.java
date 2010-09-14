@@ -35,7 +35,7 @@ public final class BranchUtility {
       }
       String branchGuid = branch.getGuid();
       if (!GUID.isValid(branchGuid)) {
-         throw new OseeStateException(String.format("GUID for branch [%s] is invalid", branch.getId()));
+         throw new OseeStateException("GUID for branch [%s] is invalid", branch.getId());
       }
       return encode(branchGuid);
    }
@@ -66,13 +66,13 @@ public final class BranchUtility {
       if (GUID.isValid(branchGuid)) {
          toReturn = cache.getByGuid(branchGuid);
          if (toReturn == null) {
-            throw new OseeArgumentException(String.format("Unable to find branch matching guid [%s]", branchGuid));
+            throw new OseeArgumentException("Unable to find branch matching guid [%s]", branchGuid);
          }
       } else {
          int branchId = Integer.parseInt(Lib.getExtension(fileName));
          toReturn = cache.getById(branchId);
          if (toReturn == null) {
-            throw new OseeArgumentException(String.format("Unable to find branch matching id [%s]", branchId));
+            throw new OseeArgumentException("Unable to find branch matching id [%s]", branchId);
          }
       }
       return toReturn;

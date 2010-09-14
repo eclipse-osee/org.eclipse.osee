@@ -175,7 +175,7 @@ public class V0_9_2Transformer implements IOseeExchangeVersionTransformer {
    private ModificationType[] getNextPossibleStates(ModificationType state) throws OseeStateException {
       ModificationType[] nextAllowed = allowedStates.get(state);
       if (nextAllowed == null) {
-         throw new OseeStateException(String.format("Unexcepted modification type [%s]", state.toString()));
+         throw new OseeStateException("Unexcepted modification type [%s]", state.toString());
       }
       return nextAllowed;
    }

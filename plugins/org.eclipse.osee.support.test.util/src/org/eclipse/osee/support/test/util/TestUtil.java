@@ -115,8 +115,8 @@ public class TestUtil {
             }
          }
          if (numExceptions > 0) {
-            throw new OseeStateException(
-               "SevereLoggingMonitor found " + numExceptions + " exceptions (see console for details)!");
+            throw new OseeStateException("SevereLoggingMonitor found [%d] exceptions (see console for details)!",
+               numExceptions);
          }
       }
    }

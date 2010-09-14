@@ -55,8 +55,8 @@ public class TransactionMonitor {
    public synchronized void reportTxStart(final Object transaction, Object key) throws OseeCoreException {
       TxOperation currentTx = txMap.get(key);
       if (currentTx == null) {
-         throw new OseeStateException(
-            "reportTxStart called for key: " + key + " but reportTxCreation had not been called.");
+         throw new OseeStateException("reportTxStart called for key: [%s] but reportTxCreation had not been called.",
+            key);
       } else if (currentTx.getState() != TxState.CREATED) {
          OseeExceptions.wrapAndThrow(currentTx.getError());
       }
@@ -64,16 +64,14 @@ public class TransactionMonitor {
       if (currentTx.getTransaction().equals(transaction)) {
          currentTx.setState(TxState.RUNNING);
       } else {
-         throw new OseeStateException(
-            "reportTxStart called for key: " + key + " but was called for incorrect transaction");
+         throw new OseeStateException("reportTxStart called for key [%s] but was called for incorrect transaction", key);
       }
    }
 
    public synchronized void reportTxEnd(final Object transaction, Object key) throws OseeCoreException {
       TxOperation currentTx = txMap.get(key);
       if (currentTx == null) {
-         throw new OseeStateException(
-            "reportTxEnd called for key: " + key + " but reportTxCreation had not been called.");
+         throw new OseeStateException("reportTxEnd called for key: [%s] but reportTxCreation had not been called.", key);
       } else if (currentTx.getState() != TxState.RUNNING) {
          // This is a valid case -- can add a log to detect when a reportTxEnd is called before a transaction has a chance to run
       }

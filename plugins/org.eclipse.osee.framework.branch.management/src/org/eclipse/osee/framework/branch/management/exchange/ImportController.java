@@ -199,7 +199,7 @@ public final class ImportController {
    private MetaData checkMetadata(IExportItem importFile) throws OseeArgumentException {
       MetaData metadata = metadataHandler.getMetadata(importFile.getSource());
       if (metadata == null) {
-         throw new OseeArgumentException(String.format("Invalid metadata for [%s]", importFile.getSource()));
+         throw new OseeArgumentException("Invalid metadata for [%s]", importFile.getSource());
       }
       return metadata;
    }

@@ -91,7 +91,7 @@ public class ImportTraceabilityOperation extends AbstractOperation {
       } else if (file.isDirectory()) {
          handleDirectory(file);
       } else {
-         throw new OseeStateException(String.format("Invalid path [%s]", file.getCanonicalPath()));
+         throw new OseeStateException("Invalid path [%s]", file.getCanonicalPath());
       }
 
       checkForCancelledStatus(monitor);
@@ -110,7 +110,7 @@ public class ImportTraceabilityOperation extends AbstractOperation {
 
    private void handleDirectory(File directory) throws IOException, OseeCoreException {
       if (directory == null || directory.getParentFile() == null) {
-         throw new OseeArgumentException("The path " + directory + " is invalid.");
+         throw new OseeArgumentException("The path [%s] is invalid.", directory);
       }
 
       pathPrefixLength = directory.getParentFile().getAbsolutePath().length();

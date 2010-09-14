@@ -46,7 +46,7 @@ public enum TxChange {
             return change;
          }
       }
-      throw new OseeArgumentException(value + " does not correspond to any defined ModificationType enumerations");
+      throw new OseeArgumentException("[%s] does not correspond to any defined ModificationType enumerations", value);
    }
 
    public static TxChange getCurrent(ModificationType type) {

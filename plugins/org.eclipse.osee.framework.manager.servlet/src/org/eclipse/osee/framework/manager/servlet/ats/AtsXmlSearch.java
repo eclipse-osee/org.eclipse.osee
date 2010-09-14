@@ -75,7 +75,7 @@ public class AtsXmlSearch {
       } else if (IdUtils.isValidHRID(id)) {
          builder.append("workflowHrid=");
       } else {
-         throw new OseeCoreException(String.format("Invalid id [%s]", id));
+         throw new OseeCoreException("Invalid id [%s]", id);
       }
       if (builder.length() > 0) {
          builder.append("\"" + id + "\"");

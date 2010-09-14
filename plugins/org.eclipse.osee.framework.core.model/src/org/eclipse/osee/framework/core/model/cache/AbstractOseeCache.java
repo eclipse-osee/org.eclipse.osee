@@ -166,8 +166,8 @@ public abstract class AbstractOseeCache<T extends AbstractOseeType> implements I
       //         }
       //      }
       if (cachedTypes.size() > 1) {
-         throw new OseeStateException(String.format("Item [%s:%s] does not have a unique name. Matching types - ",
-            type.getName(), type.getGuid(), itemsFound));
+         throw new OseeStateException("Item [%s:%s] does not have a unique name. Matching types - ", type.getName(),
+            type.getGuid(), itemsFound);
       }
    }
 
@@ -195,7 +195,7 @@ public abstract class AbstractOseeCache<T extends AbstractOseeType> implements I
       ensurePopulated();
       Collection<T> values = getByName(typeName);
       if (values.size() > 1) {
-         throw new OseeStateException(String.format("Multiple items matching [%s] name exist", typeName));
+         throw new OseeStateException("Multiple items matching [%s] name exist", typeName);
       }
       return values.isEmpty() ? null : values.iterator().next();
    }
@@ -214,8 +214,8 @@ public abstract class AbstractOseeCache<T extends AbstractOseeType> implements I
       ensurePopulated();
       Collection<T> types = getByName(typeName);
       if (types.size() != 1) {
-         throw new OseeArgumentException(
-            "AbstractOseeCache expected 1 type but found " + types.size() + " types for " + typeName);
+         throw new OseeArgumentException("AbstractOseeCache expected 1 type but found [%d] types for [%s]",
+            types.size(), typeName);
       }
       return types.iterator().next();
    }
@@ -223,7 +223,7 @@ public abstract class AbstractOseeCache<T extends AbstractOseeType> implements I
    public T getByGuid(String guid) throws OseeCoreException {
       ensurePopulated();
       if (!GUID.isValid(guid)) {
-         throw new OseeArgumentException(String.format("[%s] is not a valid guid", guid));
+         throw new OseeArgumentException("[%s] is not a valid guid", guid);
       }
       return guidToTypeMap.get(guid);
    }

@@ -183,7 +183,7 @@ public class StateManager {
     */
    public void setAssignee(String stateName, User assignee) throws OseeCoreException {
       if (!isStateVisited(stateName)) {
-         throw new OseeArgumentException("State " + stateName + " does not exist.");
+         throw new OseeArgumentException("State [%s] does not exist.", stateName);
       }
       SMAState state = getSMAState(stateName, false);
       state.setAssignee(assignee);

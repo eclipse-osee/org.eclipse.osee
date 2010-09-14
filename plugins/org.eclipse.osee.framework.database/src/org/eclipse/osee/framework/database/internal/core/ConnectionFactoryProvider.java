@@ -46,6 +46,6 @@ public class ConnectionFactoryProvider {
       } finally {
          serviceTracker.close();
       }
-      throw new OseeNotFoundException(String.format("Unable to find connection factory with driver [%s]", driver));
+      throw new OseeNotFoundException("Unable to find connection factory with driver [%s]", driver);
    }
 }

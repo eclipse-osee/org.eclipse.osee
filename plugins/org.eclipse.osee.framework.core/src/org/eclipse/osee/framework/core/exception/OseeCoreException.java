@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.core.exception;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 
 /**
  * @author Ryan D. Brooks
@@ -20,8 +21,17 @@ import org.eclipse.core.runtime.Status;
 public class OseeCoreException extends CoreException {
    private static final long serialVersionUID = 1L;
 
-   public OseeCoreException(String message) {
-      super(new Status(IStatus.ERROR, "OSEE", message));
+   public OseeCoreException(String message, Object... args) {
+      super(new Status(IStatus.ERROR, "OSEE", formatMessage(message, args)));
+   }
+
+   private static String formatMessage(String message, Object... args) {
+      try {
+         return String.format(message, args);
+      } catch (RuntimeException ex) {
+         return String.format("exception message could not be formatted: [%s] with the following arguments [%s]",
+            message, Collections.toString(",", args));
+      }
    }
 
    public OseeCoreException(String message, Throwable cause) {

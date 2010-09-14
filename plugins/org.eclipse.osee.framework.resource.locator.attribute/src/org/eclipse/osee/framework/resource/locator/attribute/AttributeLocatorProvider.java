@@ -53,7 +53,7 @@ public class AttributeLocatorProvider implements IResourceLocatorProvider {
             throw new MalformedLocatorException(ex);
          }
       } else {
-         throw new MalformedLocatorException(String.format("Invalid path hint: [%s]", path));
+         throw new MalformedLocatorException("Invalid path hint: [%s]", path);
       }
       return new ResourceLocator(uri);
    }

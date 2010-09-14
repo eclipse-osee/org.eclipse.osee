@@ -159,7 +159,7 @@ public final class TransactionManager {
          ConnectionHandler.runPreparedQueryFetchInt(-1, ClientSessionManager.getSql(OseeSql.TX_GET_MAX_AS_LARGEST_TX),
             branchId);
       if (transactionNumber == -1) {
-         throw new TransactionDoesNotExist("No transactions where found in the database for branch: " + branchId);
+         throw new TransactionDoesNotExist("No transactions where found in the database for branch: %d", branchId);
       }
       return getTransactionId(transactionNumber);
    }
@@ -230,10 +230,8 @@ public final class TransactionManager {
             int transactionId = chStmt.getInt("transaction_id");
             if (chStmt.wasNull()) {
                DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG);
-               String message =
-                  String.format("Cannot find transaction for [%s] - the transation id was null",
-                     dateFormat.format(maxDateExclusive));
-               throw new TransactionDoesNotExist(message);
+               throw new TransactionDoesNotExist("Cannot find transaction for [%s] - the transation id was null",
+                  dateFormat.format(maxDateExclusive));
             }
             txRecord = getTransactionId(transactionId, chStmt);
          }
@@ -270,7 +268,7 @@ public final class TransactionManager {
                chStmt = ConnectionHandler.getStatement();
                chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.TX_GET_ALL_TRANSACTIONS), txId);
                if (!chStmt.next()) {
-                  throw new TransactionDoesNotExist("The transaction id " + txId + " does not exist in the databse.");
+                  throw new TransactionDoesNotExist("The transaction id %d does not exist in the databse.", txId);
                }
             }
             TransactionDetailsType txType = TransactionDetailsType.toEnum(chStmt.getInt("tx_type"));

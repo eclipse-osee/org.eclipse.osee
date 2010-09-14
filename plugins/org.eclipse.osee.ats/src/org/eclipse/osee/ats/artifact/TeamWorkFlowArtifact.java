@@ -214,8 +214,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
    public TeamDefinitionArtifact getTeamDefinition() throws OseeCoreException, OseeCoreException {
       String guid = this.getSoleAttributeValue(AtsAttributeTypes.TeamDefinition, "");
       if (!Strings.isValid(guid)) {
-         throw new OseeArgumentException(
-            "TeamWorkflow [" + getHumanReadableId() + "] has no TeamDefinition associated.");
+         throw new OseeArgumentException("TeamWorkflow [%s] has no TeamDefinition associated.", getHumanReadableId());
       }
       return AtsCacheManager.getTeamDefinitionArtifact(guid);
    }
@@ -286,9 +285,9 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
       Collection<ActionArtifact> arts =
          getRelatedArtifacts(AtsRelationTypes.ActionToWorkflow_Action, ActionArtifact.class);
       if (arts.isEmpty()) {
-         throw new OseeStateException("Team " + getHumanReadableId() + " has no parent Action");
+         throw new OseeStateException("Team [%s] has no parent Action", getGuid());
       } else if (arts.size() > 1) {
-         throw new OseeStateException("Team " + getHumanReadableId() + " has multiple parent Actions");
+         throw new OseeStateException("Team [%s] has multiple parent Actions", getGuid());
       }
       parentAction = arts.iterator().next();
       return parentAction;

@@ -234,8 +234,8 @@ public class ExcelAtsTaskArtifactExtractor {
                            percent = percent * 100;
                         }
                      } catch (Exception ex) {
-                        throw new OseeArgumentException(String.format("Invalid Percent Complete \"%s\" for row %d",
-                           str, rowNum));
+                        throw new OseeArgumentException("Invalid Percent Complete \"%s\" for row %d",
+                           str, rowNum);
                      }
                      int percentInt = percent.intValue();
                      sma.getStateMgr().updateMetrics(0, percentInt, true);
@@ -247,8 +247,8 @@ public class ExcelAtsTaskArtifactExtractor {
                      try {
                         hours = new Double(str);
                      } catch (Exception ex) {
-                        throw new OseeArgumentException(String.format("Invalid Hours Spent \"%s\" for row %d", str,
-                           rowNum));
+                        throw new OseeArgumentException("Invalid Hours Spent \"%s\" for row %d", str,
+                           rowNum);
                      }
                      sma.getStateMgr().updateMetrics(hours, sma.getStateMgr().getPercentComplete(), true);
                   }
@@ -259,8 +259,8 @@ public class ExcelAtsTaskArtifactExtractor {
                      try {
                         hours = new Double(str);
                      } catch (Exception ex) {
-                        throw new OseeArgumentException(String.format("Invalid Estimated Hours \"%s\" for row %d", str,
-                           rowNum));
+                        throw new OseeArgumentException("Invalid Estimated Hours \"%s\" for row %d", str,
+                           rowNum);
                      }
                      taskArt.setSoleAttributeValue(AtsAttributeTypes.EstimatedHours, hours);
                   }

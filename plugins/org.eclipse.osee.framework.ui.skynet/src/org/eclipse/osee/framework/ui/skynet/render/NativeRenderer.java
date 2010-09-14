@@ -76,8 +76,8 @@ public class NativeRenderer extends FileSystemRenderer {
       String extension = getAssociatedExtension(artifact);
       Program program = Program.findProgram(extension);
       if (program == null) {
-         throw new OseeArgumentException(
-            "No program associated with the extension " + extension + " found on your local machine.");
+         throw new OseeArgumentException("No program associated with the extension [%s] found on your local machine.",
+            extension);
       }
       return program;
    }

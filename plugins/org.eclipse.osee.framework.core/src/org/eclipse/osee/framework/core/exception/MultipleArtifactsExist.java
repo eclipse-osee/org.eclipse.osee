@@ -17,7 +17,7 @@ public class MultipleArtifactsExist extends OseeCoreException {
 
    private static final long serialVersionUID = 1L;
 
-   public MultipleArtifactsExist(String message) {
-      super(message);
+   public MultipleArtifactsExist(String message, Object... args) {
+      super(message, args);
    }
 }

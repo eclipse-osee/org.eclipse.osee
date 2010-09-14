@@ -20,6 +20,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.util.TableWriterAdaptor;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
@@ -52,14 +53,14 @@ public class ResultsEditorConverter {
          }
       }
       if (toReturn == null) {
-         throw new OseeArgumentException(String.format("Conversion to [%s] is not supported", type));
+         throw new OseeArgumentException("Conversion to [%s] is not supported", type);
       }
       return toReturn;
    }
 
    private void checkForNull(String param, Object object) throws OseeArgumentException {
       if (object == null) {
-         throw new OseeArgumentException(String.format("[%s] cannot be null", param));
+         throw new OseeArgumentException("[%s] cannot be null", param);
       }
    }
 
@@ -153,8 +154,7 @@ public class ResultsEditorConverter {
                   String htmlString = ((IResultsEditorHtmlTab) rawTab).getReportHtml();
                   writer.write(htmlString);
                } else {
-                  throw new UnsupportedOperationException(String.format("%s to type %s is not supported",
-                     rawTab.getClass(), getType()));
+                  throw new OseeStateException("%s to type %s is not supported", rawTab.getClass(), getType());
                }
                writer.write("</div>\n");
             }
@@ -184,8 +184,7 @@ public class ResultsEditorConverter {
       @Override
       public void canConvert(IResultsEditorTab tab) throws OseeCoreException {
          if (!(tab instanceof IResultsEditorTableTab)) {
-            throw new OseeArgumentException(String.format("%s to type %s is not supported", tab.getClass(),
-               getType().toUpperCase()));
+            throw new OseeArgumentException("%s to type %s is not supported", tab.getClass(), getType().toUpperCase());
          }
       }
 
@@ -205,8 +204,7 @@ public class ResultsEditorConverter {
                   }
                   sheetWriter.endSheet();
                } else {
-                  throw new UnsupportedOperationException(String.format("%s to type %s is not supported",
-                     rawTab.getClass(), getType()));
+                  throw new OseeStateException("%s to type %s is not supported", rawTab.getClass(), getType());
                }
             }
             sheetWriter.endWorkbook();
@@ -234,8 +232,7 @@ public class ResultsEditorConverter {
       @Override
       public void canConvert(IResultsEditorTab tab) throws OseeCoreException {
          if (!(tab instanceof IResultsEditorTableTab)) {
-            throw new OseeArgumentException(String.format("%s to type %s is not supported", tab.getClass(),
-               getType().toUpperCase()));
+            throw new OseeArgumentException("%s to type %s is not supported", tab.getClass(), getType().toUpperCase());
          }
       }
 
@@ -262,8 +259,7 @@ public class ResultsEditorConverter {
                   }
                   writerAdaptor.writeDocument();
                } else {
-                  throw new UnsupportedOperationException(String.format("%s to type %s is not supported",
-                     rawTab.getClass(), getType()));
+                  throw new OseeStateException("%s to type %s is not supported", rawTab.getClass(), getType());
                }
             }
             writerAdaptor.close();

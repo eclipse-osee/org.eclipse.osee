@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.branch.management.exchange.export.DbTableExpor
 import org.eclipse.osee.framework.branch.management.exchange.export.ManifestExportItem;
 import org.eclipse.osee.framework.branch.management.exchange.export.MetadataExportItem;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeSequence;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -205,7 +206,7 @@ public class ExchangeDb {
                }
             }
             if (minTxs > maxTxs) {
-               throw new Exception(String.format("Invalid transaction range: min - %d >  max - %d", minTxs, maxTxs));
+               throw new OseeArgumentException("Invalid transaction range: min - %d >  max - %d", minTxs, maxTxs);
             }
 
             return new Pair<String, Object[]>(String.format(originalQuery, optionString),

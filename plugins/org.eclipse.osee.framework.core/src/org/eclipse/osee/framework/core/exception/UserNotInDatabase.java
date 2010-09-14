@@ -18,11 +18,7 @@ package org.eclipse.osee.framework.core.exception;
 public class UserNotInDatabase extends OseeCoreException {
    private static final long serialVersionUID = 1L;
 
-   public UserNotInDatabase(String message) {
-      super(message);
-   }
-
-   public UserNotInDatabase(String message, Throwable cause) {
-      super(message, cause);
+   public UserNotInDatabase(String message, Object... args) {
+      super(message, args);
    }
 }

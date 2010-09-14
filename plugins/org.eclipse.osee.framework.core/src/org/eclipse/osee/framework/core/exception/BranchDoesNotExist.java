@@ -16,11 +16,7 @@ package org.eclipse.osee.framework.core.exception;
 public class BranchDoesNotExist extends OseeCoreException {
    private static final long serialVersionUID = -6197324585250025613L;
 
-   public BranchDoesNotExist(String message) {
-      super(message);
-   }
-
-   public BranchDoesNotExist(String message, Throwable cause) {
-      super(message, cause);
+   public BranchDoesNotExist(String message, Object... args) {
+      super(message, args);
    }
 }

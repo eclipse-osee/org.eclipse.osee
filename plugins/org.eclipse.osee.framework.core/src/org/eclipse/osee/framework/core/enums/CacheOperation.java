@@ -29,6 +29,6 @@ public enum CacheOperation {
             return op;
          }
       }
-      throw new OseeArgumentException(String.format("Unable to find cache operation matching [%s]", value));
+      throw new OseeArgumentException("Unable to find cache operation matching [%s]", value);
    }
 }

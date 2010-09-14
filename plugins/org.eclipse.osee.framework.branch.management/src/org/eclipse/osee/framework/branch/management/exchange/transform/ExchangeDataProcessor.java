@@ -91,7 +91,7 @@ public final class ExchangeDataProcessor {
    private void renameExportItem(File original, File destination) throws OseeCoreException {
       boolean wasSuccessful = original.renameTo(destination);
       if (!wasSuccessful) {
-         throw new OseeStateException(String.format("Error renaming [%s] to [%s]", original, destination));
+         throw new OseeStateException("Error renaming [%s] to [%s]", original, destination);
       }
    }
 

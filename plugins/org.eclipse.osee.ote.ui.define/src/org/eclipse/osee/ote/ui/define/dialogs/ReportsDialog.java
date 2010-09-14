@@ -34,7 +34,7 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
-import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -415,7 +415,7 @@ public class ReportsDialog extends TitleAreaDialog {
       });
    }
 
-   private void generatePreview(final OutputFormat outputFormat, final String reportId, final ITestRunReport report) throws URISyntaxException, OseeStateException {
+   private void generatePreview(final OutputFormat outputFormat, final String reportId, final ITestRunReport report) throws URISyntaxException, OseeCoreException {
       String urlRequest = HttpReportRequest.getUrl(reportId, outputFormat.name(), "local", getPreviewSize());
       String fileName = OutputFactory.getOutputFilename(outputFormat, reportId);
       switch (outputFormat) {

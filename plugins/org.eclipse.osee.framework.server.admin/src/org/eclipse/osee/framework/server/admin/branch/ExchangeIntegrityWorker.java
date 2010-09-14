@@ -15,6 +15,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.resource.management.util.ResourceLocator;
 import org.eclipse.osee.framework.server.admin.BaseServerCommand;
@@ -54,9 +55,9 @@ public class ExchangeIntegrityWorker extends BaseServerCommand {
 
       for (File file : importFiles) {
          if (file == null || !file.exists() || !file.canRead()) {
-            throw new IllegalArgumentException(String.format("File was not accessible: [%s]", file));
+            throw new OseeArgumentException("File was not accessible: [%s]", file);
          } else if (file.isFile() && !Lib.isCompressed(file)) {
-            throw new IllegalArgumentException(String.format("Invalid File: [%s]", file));
+            throw new OseeArgumentException("Invalid File: [%s]", file);
          }
       }
 

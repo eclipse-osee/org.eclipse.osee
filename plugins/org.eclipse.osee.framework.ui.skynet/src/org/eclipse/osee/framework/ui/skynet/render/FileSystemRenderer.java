@@ -196,7 +196,8 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
                      page.openEditor(new FileEditorInput(file), editorDescriptor.getId());
                   } catch (PartInitException ex1) {
                      throw new OseeArgumentException(
-                        "No program associated with the extension " + file.getFileExtension() + " found on your local machine.");
+                        "No program associated with the extension [%s] found on your local machine.",
+                        file.getFileExtension());
                   }
                }
             }

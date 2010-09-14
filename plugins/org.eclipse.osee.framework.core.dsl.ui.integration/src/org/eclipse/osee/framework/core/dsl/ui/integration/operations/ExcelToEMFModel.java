@@ -84,7 +84,7 @@ public class ExcelToEMFModel implements IOseeDataTypeProcessor {
       } else if (classToLookFor.equals(XOseeEnumType.class)) {
          types = getCurrentModel().getEnumTypes();
       } else {
-         throw new OseeArgumentException(classToLookFor.getName() + " not a supported type");
+         throw new OseeArgumentException("[%s] not a supported type", classToLookFor.getName());
       }
       for (OseeType oseeTypes : types) {
          if (name.equals(oseeTypes.getName())) {
@@ -98,7 +98,7 @@ public class ExcelToEMFModel implements IOseeDataTypeProcessor {
    public void onArtifactTypeInheritance(String ancestor, Collection<String> descendants) throws OseeCoreException {
       XArtifactType ancestorType = (XArtifactType) getObject(ancestor, XArtifactType.class);
       if (ancestorType == null) {
-         throw new OseeInvalidInheritanceException("Ancestor [%s]");
+         throw new OseeInvalidInheritanceException("Ancestor [%s]", ancestor);
       }
 
       //      if (superArtifactTypeName != null) {
@@ -180,7 +180,7 @@ public class ExcelToEMFModel implements IOseeDataTypeProcessor {
       }
 
       if (superArtifactType == null || attributeType == null) {
-         throw new OseeStateException(String.format("Type Missing: %s - %s", artifactSuperTypeName, attributeName));
+         throw new OseeStateException("Type Missing: %s - %s", artifactSuperTypeName, attributeName);
       }
       XAttributeTypeRef reference = factory.createXAttributeTypeRef();
       reference.setValidAttributeType(attributeType);
@@ -325,11 +325,11 @@ public class ExcelToEMFModel implements IOseeDataTypeProcessor {
 
    private static void checkEntryIntegrity(String enumTypeName, List<Pair<String, Integer>> entries) throws OseeCoreException {
       if (entries == null) {
-         throw new OseeArgumentException(String.format("Osee Enum Type [%s] had null entries", enumTypeName));
+         throw new OseeArgumentException("Osee Enum Type [%s] had null entries", enumTypeName);
       }
 
-      //      if (entries.size() <= 0) throw new OseeArgumentException(String.format("Osee Enum Type [%s] had 0 entries",
-      //            enumTypeName));
+      //      if (entries.size() <= 0) throw new OseeArgumentException("Osee Enum Type [%s] had 0 entries",
+      //            enumTypeName);
       Map<String, Integer> values = new HashMap<String, Integer>();
       for (Pair<String, Integer> entry : entries) {
          String name = entry.getFirst();
@@ -341,12 +341,10 @@ public class ExcelToEMFModel implements IOseeDataTypeProcessor {
             throw new OseeArgumentException("Enum entry ordinal cannot be of negative value");
          }
          if (values.containsKey(name)) {
-            throw new OseeArgumentException(String.format("Unique enum entry name violation - [%s] already exists.",
-               name));
+            throw new OseeArgumentException("Unique enum entry name violation - [%s] already exists.", name);
          }
          if (values.containsValue(ordinal)) {
-            throw new OseeArgumentException(String.format("Unique enum entry ordinal violation - [%s] already exists.",
-               ordinal));
+            throw new OseeArgumentException("Unique enum entry ordinal violation - [%s] already exists.", ordinal);
          }
          values.put(name, ordinal);
       }

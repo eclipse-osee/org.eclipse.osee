@@ -66,7 +66,7 @@ class ActiveMqUtil {
       } else if (body instanceof Serializable) {
          return session.createObjectMessage((Serializable) body);
       } else {
-         throw new OseeCoreException(String.format("Unsupported java type [%s]", body.getClass().getName()));
+         throw new OseeCoreException("Unsupported java type [%s]", body.getClass().getName());
       }
    }
 

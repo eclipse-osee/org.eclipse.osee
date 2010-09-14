@@ -108,7 +108,7 @@ public class RelationImporter implements RowProcessor {
          if (soleArtifact) {
             soleArtifact = false;
          } else {
-            throw new OseeArgumentException("Found more than one match for: " + artifact);
+            throw new OseeArgumentException("Found more than one match for [%s]", artifact);
          }
          artifactResult = artifact;
       }

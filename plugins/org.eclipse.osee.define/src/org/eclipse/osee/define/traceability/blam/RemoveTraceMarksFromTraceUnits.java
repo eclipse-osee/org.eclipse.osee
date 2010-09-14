@@ -109,11 +109,11 @@ public class RemoveTraceMarksFromTraceUnits extends AbstractBlam {
 
    private void checkPath(String filePath, String type) throws OseeArgumentException {
       if (!Strings.isValid(filePath)) {
-         throw new OseeArgumentException(String.format("Please enter a valid %s path", type));
+         throw new OseeArgumentException("Please enter a valid %s path", type);
       }
       File file = new File(filePath);
       if (file == null || !file.exists()) {
-         throw new OseeArgumentException(String.format("%s path [%s] is not accessible", type, filePath));
+         throw new OseeArgumentException("%s path [%s] is not accessible", type, filePath);
       }
    }
 

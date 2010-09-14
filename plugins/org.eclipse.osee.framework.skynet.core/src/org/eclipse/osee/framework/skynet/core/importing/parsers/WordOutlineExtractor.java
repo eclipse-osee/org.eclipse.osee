@@ -110,7 +110,7 @@ public class WordOutlineExtractor extends AbstractArtifactExtractor {
    }
 
    private void handleFormatError(URI source, String message) throws OseeCoreException {
-      throw new OseeStateException(String.format("File format error: %s in file [%s]", message, source.getPath()));
+      throw new OseeStateException("File format error: %s in file [%s]", message, source.getPath());
    }
 
    @Override

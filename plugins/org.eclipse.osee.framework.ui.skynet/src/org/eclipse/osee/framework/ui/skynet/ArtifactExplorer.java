@@ -1393,7 +1393,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
          Artifact artifact = artifactData.getArtifact();
          Conditions.checkNotNull(artifactData, "artifact");
          if (artifact.isDeleted()) {
-            throw new OseeStateException("The artifact " + artifact.getName() + " has been deleted.");
+            throw new OseeStateException("The artifact [%s] has been deleted.", artifact.getName());
          } else {
             if (artifact.isHistorical()) {
                artifactData.setArtifact(ArtifactQuery.getArtifactFromId(artifact.getArtId(), artifact.getBranch(),
@@ -1405,8 +1405,8 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
 
             if (!root.equals(artifactRoot)) {
                String artifactRootName = artifactRoot != null ? artifactRoot.getName() : artifact.getName();
-               throw new OseeStateException(
-                  "The artifact " + artifact.getName() + " is rooted on an orphan tree at " + artifactRootName);
+               throw new OseeStateException("The artifact [%s] is rooted on an orphan tree at [%s]",
+                  artifact.getName(), artifactRootName);
             }
          }
       }

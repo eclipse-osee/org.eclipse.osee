@@ -79,7 +79,7 @@ public final class ConflictUtil {
       } else if (item instanceof RelationChangeItem) {
          type = ConflictType.RELATION;
       } else {
-         throw new OseeArgumentException(String.format("Unable to convert change item [%s] to conflict type", item));
+         throw new OseeArgumentException("Unable to convert change item [%s] to conflict type", item);
       }
       return type;
    }

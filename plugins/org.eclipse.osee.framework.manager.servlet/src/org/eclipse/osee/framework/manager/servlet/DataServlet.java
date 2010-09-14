@@ -95,7 +95,7 @@ public class DataServlet extends UnsecuredOseeHttpServlet {
                }
             }
          }
-         throw new OseeNotFoundException(String.format("Unable to find [%s]", key));
+         throw new OseeNotFoundException("Unable to find [%s]", key);
       }
    }
 }

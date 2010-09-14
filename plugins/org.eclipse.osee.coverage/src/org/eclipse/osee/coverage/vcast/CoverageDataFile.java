@@ -37,8 +37,8 @@ public class CoverageDataFile {
       this.coverageDataFilename = coverageDataFilename;
       File coverageDataFile = getFile();
       if (!coverageDataFile.exists()) {
-         throw new OseeArgumentException(String.format("VectorCast coverage data file doesn't exist [%s]",
-            coverageDataFilename));
+         throw new OseeArgumentException("VectorCast coverage data file doesn't exist [%s]",
+            coverageDataFilename);
       }
       String fileStr = AFile.readFile(coverageDataFile);
       try {

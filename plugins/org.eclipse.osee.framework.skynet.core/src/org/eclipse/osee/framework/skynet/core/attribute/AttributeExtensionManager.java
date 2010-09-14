@@ -74,7 +74,7 @@ public class AttributeExtensionManager {
       String resolved = resolveAttributeBaseTypeId(name);
       Pair<String, String> entry = instance.attributeTypeClasses.get(resolved);
       if (entry == null) {
-         throw new OseeArgumentException(String.format("Unable to find class for: [%s]", resolved));
+         throw new OseeArgumentException("Unable to find class for: [%s]", resolved);
       }
 
       return instance.loadClass(entry.getFirst(), entry.getSecond());
@@ -88,7 +88,7 @@ public class AttributeExtensionManager {
       String resolved = resolveAttributeProviderTypeId(name);
       Pair<String, String> entry = instance.attributeDataProviderClasses.get(resolved);
       if (entry == null) {
-         throw new OseeArgumentException(String.format("Unable to find class for: [%s]", resolved));
+         throw new OseeArgumentException("Unable to find class for: [%s]", resolved);
       }
       return instance.loadClass(entry.getFirst(), entry.getSecond());
    }
@@ -121,9 +121,8 @@ public class AttributeExtensionManager {
          }
       }
       if (toReturn.isEmpty()) {
-         throw new OseeStateException(String.format(
-            "No Objects loaded for [%s] with element names %s and attribute [%s]", extensionPointId,
-            Arrays.asList(elementNames), classNameAttribute));
+         throw new OseeStateException("No Objects loaded for [%s] with element names %s and attribute [%s]",
+            extensionPointId, Arrays.asList(elementNames), classNameAttribute);
       }
       return toReturn;
    }

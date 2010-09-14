@@ -27,28 +27,28 @@ public final class Conditions {
 
    public static void checkNotNull(Object object, String objectName) throws OseeCoreException {
       if (object == null) {
-         throw new OseeArgumentException(String.format("%s cannot be null", objectName));
+         throw new OseeArgumentException("%s cannot be null", objectName);
       }
    }
 
    public static void checkNotNull(Object object, String objectName, String details, Object... data) throws OseeCoreException {
       if (object == null) {
          String message = String.format(details, data);
-         throw new OseeArgumentException(String.format("%s cannot be null - %s", objectName, message));
+         throw new OseeArgumentException("%s cannot be null - %s", objectName, message);
       }
    }
 
    public static void checkNotNullOrEmpty(String object, String objectName) throws OseeCoreException {
       checkNotNull(object, objectName);
       if (object.length() == 0) {
-         throw new OseeArgumentException(String.format("%s cannot be empty", objectName));
+         throw new OseeArgumentException("%s cannot be empty", objectName);
       }
    }
 
    public static void checkNotNullOrEmpty(Collection<? extends Object> collection, String objectName) throws OseeCoreException {
       checkNotNull(collection, objectName);
       if (collection.isEmpty()) {
-         throw new OseeArgumentException(String.format("%s cannot be empty", objectName));
+         throw new OseeArgumentException("%s cannot be empty", objectName);
       }
    }
 
@@ -56,13 +56,13 @@ public final class Conditions {
       checkNotNull(object, objectName);
       if (object.length() == 0) {
          String message = String.format(details, data);
-         throw new OseeArgumentException(String.format("%s cannot be empty - %s", objectName, message));
+         throw new OseeArgumentException("%s cannot be empty - %s", objectName, message);
       }
    }
 
    public static void checkExpressionFailOnTrue(boolean result, String message, Object... data) throws OseeCoreException {
       if (result) {
-         throw new OseeArgumentException(String.format(message, data));
+         throw new OseeArgumentException(message, data);
       }
    }
 
@@ -85,7 +85,7 @@ public final class Conditions {
       if (toCheck != null) {
          for (Object item : toCheck) {
             if (item == null) {
-               throw new OseeArgumentException(String.format(message, data));
+               throw new OseeArgumentException(message, data);
             }
          }
       } else {

@@ -63,7 +63,7 @@ public class TaskResOptionDefinition {
          } else if (nodeName.equals(Field.percent.name())) {
             percent = node.getNodeValue();
          } else {
-            throw new OseeArgumentException("Unknow Task Resolution Option Attribute \"" + nodeName + "\"");
+            throw new OseeArgumentException("Unknow Task Resolution Option Attribute [%s]", nodeName);
          }
       }
    }

@@ -103,9 +103,9 @@ public class ConflictManagerInternal {
          return getConflictsPerBranch(TransactionManager.getTransactionId(commitTransactionId), monitor);
       }
       if (sourceBranch == null || destinationBranch == null) {
-         throw new OseeArgumentException(String.format("Source Branch = %s Destination Branch = %s",
+         throw new OseeArgumentException("Source Branch = %s Destination Branch = %s",
             sourceBranch == null ? "NULL" : sourceBranch.getId(),
-            destinationBranch == null ? "NULL" : destinationBranch.getId()));
+            destinationBranch == null ? "NULL" : destinationBranch.getId());
       }
       monitor.beginTask(
          String.format("Loading Merge Manager for Branch %d into Branch %d", sourceBranch.getId(),
@@ -382,8 +382,8 @@ public class ConflictManagerInternal {
          }
       }
       if (commonBranch == null) {
-         throw new OseeCoreException(String.format("Cannot find a common ancestor for Branch %s and Branch %s",
-            sourceBranch.getShortName(), destBranch.getShortName()));
+         throw new OseeCoreException("Cannot find a common ancestor for Branch %s and Branch %s",
+            sourceBranch.getShortName(), destBranch.getShortName());
       }
       TransactionRecord sourceTransaction = null;
       TransactionRecord destTransaction = null;

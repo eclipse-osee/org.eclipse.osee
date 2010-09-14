@@ -120,7 +120,7 @@ public class ExchangeProvider implements IResourceProvider {
          Lib.close(inputStream);
       }
       if (toReturn == null) {
-         throw new OseeStateException(String.format("We failed to save resource %s.", locator.getLocation()));
+         throw new OseeStateException("We failed to save resource %s.", locator.getLocation());
       }
       return toReturn;
    }

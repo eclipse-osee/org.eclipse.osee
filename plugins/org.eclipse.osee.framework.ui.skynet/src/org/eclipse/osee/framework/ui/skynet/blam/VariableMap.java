@@ -33,10 +33,10 @@ public class VariableMap {
          if (optionArgs[i] instanceof String) {
             variableMap.put((String) optionArgs[i], optionArgs[i + 1]);
          } else if (optionArgs[i] == null) {
-            throw new OseeArgumentException(String.format("The %dth option must not be null", i));
+            throw new OseeArgumentException("The %dth option must not be null", i);
          } else {
-            throw new OseeArgumentException(String.format("The %dth option must be of type string but is of type %s",
-               i, optionArgs[i].getClass().getName()));
+            throw new OseeArgumentException("The %dth option must be of type string but is of type %s", i,
+               optionArgs[i].getClass().getName());
          }
       }
    }
@@ -90,7 +90,7 @@ public class VariableMap {
    private <T> T getSingleCollectionValue(Class<T> clazz, String parameterName) throws OseeArgumentException {
       Collection<T> objects = getCollection(clazz, parameterName);
       if (objects.size() != 1) {
-         throw new OseeArgumentException("Require a collection of size 1 not " + objects.size());
+         throw new OseeArgumentException("Require a collection of size 1 not %d", objects.size());
       }
       return objects.iterator().next();
    }
@@ -99,8 +99,7 @@ public class VariableMap {
       Object value = variableMap.get(variableName);
 
       if (value != null && !clazz.isInstance(value)) {
-         throw new OseeArgumentException(
-            "Expecting object of type " + clazz.getName() + " not " + value.getClass().getName());
+         throw new OseeArgumentException("Expecting object of type [%s] not [%s]", clazz, value.getClass());
       }
       return clazz.cast(value);
    }

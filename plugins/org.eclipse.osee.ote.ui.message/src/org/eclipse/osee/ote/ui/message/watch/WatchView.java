@@ -30,7 +30,6 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.InvalidRegistryObjectException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
@@ -49,6 +48,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.osee.connection.service.IServiceConnector;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.AFile;
 import org.eclipse.osee.framework.jdk.core.util.benchmark.Benchmark;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -300,28 +300,20 @@ public final class WatchView extends ViewPart implements IActionable, IMessageDi
                   if (icon != null) {
                      URL url = bundle.getEntry(icon);
                      if (url == null) {
-                        throw new IllegalArgumentException(String.format("Invalid icon path [{%s}/%s]",
-                           el.getContributor().getName(), icon));
+                        throw new OseeArgumentException("Invalid icon path [{%s}/%s]", el.getContributor().getName(),
+                           icon);
                      } else {
                         ImageDescriptor desc = ImageDescriptor.createFromURL(url);
                         Image img = desc.createImage();
                         if (img == null) {
-                           throw new IllegalArgumentException(String.format("Unable to create Image from [{%s}/%s]",
-                              el.getContributor().getName(), icon));
+                           throw new OseeArgumentException("Unable to create Image from [{%s}/%s]",
+                              el.getContributor().getName(), icon);
                         } else {
                            btn.setImage(img);
                         }
                      }
                   }
-               } catch (InvalidRegistryObjectException ex) {
-                  OseeLog.log(Activator.class, Level.SEVERE, ex);
-               } catch (ClassNotFoundException ex) {
-                  OseeLog.log(Activator.class, Level.SEVERE, ex);
-               } catch (InstantiationException ex) {
-                  OseeLog.log(Activator.class, Level.SEVERE, ex);
-               } catch (IllegalAccessException ex) {
-                  OseeLog.log(Activator.class, Level.SEVERE, ex);
-               } catch (IllegalArgumentException ex) {
+               } catch (Exception ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
             }

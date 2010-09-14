@@ -108,8 +108,8 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
       if (request.getBranchType().isMergeBranch()) {
          if (getDatabaseService().runPreparedQueryFetchObject(0, TEST_MERGE_BRANCH_EXISTENCE, parentBranch.getId(),
             destinationBranch.getId()) > 0) {
-            throw new OseeStateException(String.format("Existing merge branch detected for [%s] and [%s]",
-               parentBranch.getName(), destinationBranch.getName()));
+            throw new OseeStateException("Existing merge branch detected for [%s] and [%s]", parentBranch.getName(),
+               destinationBranch.getName());
          }
       } else if (!request.getBranchType().isSystemRootBranch()) {
          int associatedArtifactId = request.getAssociatedArtifactId();
@@ -120,8 +120,7 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
                   "select (1) from osee_branch where associated_art_id=? and branch_state <> ?",
                   request.getAssociatedArtifactId(), BranchState.DELETED.getValue());
             if (count > 0) {
-               throw new OseeStateException(String.format("Existing branch creation detected for [%s]",
-                  request.getBranchName()));
+               throw new OseeStateException("Existing branch creation detected for [%s]", request.getBranchName());
             }
          }
       }

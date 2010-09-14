@@ -18,7 +18,7 @@ public class AttributeDoesNotExist extends OseeCoreException {
 
    private static final long serialVersionUID = 1L;
 
-   public AttributeDoesNotExist(String message) {
-      super(message);
+   public AttributeDoesNotExist(String message, Object... args) {
+      super(message, args);
    }
 }

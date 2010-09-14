@@ -89,8 +89,8 @@ public class ArtifactTemplateProvider implements ITemplateProvider {
       } else {
          return template;
       }
-      throw new OseeArgumentException(String.format("Unable to find a valid template match for [%s, %s, %s, %s].",
-         renderer.toString(), artifact.toString(), presentationType, option));
+      throw new OseeArgumentException("Unable to find a valid template match for [%s, %s, %s, %s].",
+         renderer.toString(), artifact.toString(), presentationType, option);
    }
 
    private Artifact getArtifactFromOptionName(String name) throws OseeCoreException {
@@ -110,8 +110,8 @@ public class ArtifactTemplateProvider implements ITemplateProvider {
 
    private List<String> getPossibleTemplateNamesOrderedBySpecialization(IRenderer renderer, Artifact artifact, String presentationType, String option) throws OseeArgumentException {
       if (renderer == null || presentationType == null) {
-         throw new OseeArgumentException(String.format("Invalid renderer[%s] or presentationType[%s]",
-            renderer.toString(), presentationType.toString()));
+         throw new OseeArgumentException("Invalid renderer[%s] or presentationType[%s]",
+            renderer.toString(), presentationType.toString());
       }
       List<String> list = new ArrayList<String>();
 

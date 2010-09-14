@@ -48,8 +48,8 @@ public class CmAccessControlProviderImpl implements CmAccessControlProvider {
          } else if (applicableCms.size() == 1) {
             cmToReturn = applicableCms.iterator().next();
          } else {
-            throw new OseeStateException(String.format(
-               "Multiple Configuration Management Systems managing: [%s] cms:%s", object, applicableCms));
+            throw new OseeStateException("Multiple Configuration Management Systems managing: [%s] cms:%s", object,
+               applicableCms);
          }
          return cmToReturn;
       }

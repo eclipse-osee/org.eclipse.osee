@@ -110,11 +110,10 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
             }
             primaryDescriptor = ArtifactTypeManager.getType(sheetName);
             if (primaryDescriptor == null) {
-               throw new OseeArgumentException("The sheet name: " + sheetName + " is not a valid artifact type name.");
+               throw new OseeArgumentException("The sheet [%s] is not a valid artifact type name.", sheetName);
             }
          } catch (OseeCoreException ex) {
-            throw new IllegalArgumentException("The sheet name: " + sheetName + " is not a valid artifact type name: ",
-               ex);
+            throw new IllegalArgumentException("The sheet [%s] is not a valid artifact type name: ", ex);
          }
       }
 

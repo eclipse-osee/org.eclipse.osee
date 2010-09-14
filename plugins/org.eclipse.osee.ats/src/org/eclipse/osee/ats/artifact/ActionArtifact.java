@@ -753,8 +753,8 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
          for (TeamWorkFlowArtifact teamArt : getTeamWorkFlowArtifacts()) {
             if (teamArt.getTeamDefinition().equals(teamDef)) {
                AWorkbench.popup("ERROR", "Team already exist");
-               throw new OseeArgumentException(
-                  "Team \"" + teamDef + "\" already exists for Action " + getHumanReadableId());
+               throw new OseeArgumentException("Team [%s] already exists for Action [%s]", teamDef,
+                  getHumanReadableId());
             }
          }
       }
@@ -803,6 +803,8 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       PriorityType priType = null;
       if (Strings.isValid(priorityStr)) {
          priType = PriorityType.getPriority(priorityStr);
+      } else {
+         throw new OseeArgumentException("Invalid priority [%s]", priorityStr);
       }
       setArtifactIdentifyData(toTeam, fromAction.getName(),
          fromAction.getSoleAttributeValue(AtsAttributeTypes.Description, ""),

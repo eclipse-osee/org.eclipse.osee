@@ -80,8 +80,8 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
          oseeDatabaseProvider.getOseeDatabaseService().runPreparedQueryFetchObject(0, COUNT_CHILD_BRANCHES,
             branch.getId());
       if (numberOfChildren > 0) {
-         throw new OseeArgumentException(String.format("Unable to purge a branch containing children: branchId[%s]",
-            branch.getId()));
+         throw new OseeArgumentException("Unable to purge a branch containing children: branchId[%s]",
+            branch.getId());
       }
 
       boolean isAddressingArchived =

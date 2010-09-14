@@ -49,7 +49,7 @@ public class VueLink {
             toVueId = m.group(2);
             multiDirectional = true;
          } else if (xml.contains("arrowState=\"0\"")) {
-            throw new OseeArgumentException("Non-directional links not supported. id = " + getVueId());
+            throw new OseeArgumentException("Non-directional links not supported. id [%s]", getVueId());
          }
       }
    }

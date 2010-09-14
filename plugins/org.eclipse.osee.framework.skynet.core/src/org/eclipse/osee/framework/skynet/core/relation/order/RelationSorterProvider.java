@@ -59,7 +59,7 @@ public class RelationSorterProvider {
       }
       IRelationSorter order = orderMap.get(orderGuid);
       if (order == null) {
-         throw new OseeCoreException(String.format("Unable to locate RelationOrder for guid[%s].", orderGuid));
+         throw new OseeCoreException("Unable to locate RelationOrder for guid[%s].", orderGuid);
       }
       return order;
    }

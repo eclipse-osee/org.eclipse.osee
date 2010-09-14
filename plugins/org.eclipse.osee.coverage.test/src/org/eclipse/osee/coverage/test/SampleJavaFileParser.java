@@ -20,6 +20,7 @@ import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverageUnitFileContentsProvider;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.util.Conditions;
@@ -51,7 +52,7 @@ public class SampleJavaFileParser {
          if (m.find()) {
             fileCoverageUnit.setNamespace(m.group(1));
          } else {
-            throw new IllegalArgumentException(String.format("Can't find package for [%s]", url));
+            throw new OseeArgumentException("Can't find package for [%s]", url);
          }
          fileCoverageUnit.setFileContents(fileStr);
          CoverageUnit coverageUnit = null;

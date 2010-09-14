@@ -14,8 +14,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.rmi.activation.ActivationException;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.update.core.IFeature;
 import org.eclipse.update.core.ISite;
 import org.eclipse.update.core.ISiteFeatureReference;
@@ -38,14 +38,14 @@ public abstract class DynamicBlamOperation {
       operationFactory.createInstallOperation(site.getCurrentConfiguredSite(), feature, null, null, null);
    }
 
-   public void init() throws ActivationException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+   public void init() throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, OseeArgumentException {
       mainMethod = findMainMethod(getMainMethodName());
 
       String[] parameterNames = getParameterNames();
       Class<?>[] parameterTypes = mainMethod.getParameterTypes();
       if (parameterNames.length != parameterTypes.length) {
-         throw new ActivationException(
-            "The method " + getMainMethodName() + " has " + parameterTypes.length + " parameters, but " + parameterNames.length + " parameter names.");
+         throw new OseeArgumentException("The method [%s] has %d parameters, but %d parameter names.",
+            getMainMethodName(), parameterTypes.length, parameterNames.length);
       }
 
       parameters = new BlamParameter[parameterTypes.length];
@@ -84,5 +84,4 @@ public abstract class DynamicBlamOperation {
    public BlamParameter[] getParameters() {
       return parameters;
    }
-
 }

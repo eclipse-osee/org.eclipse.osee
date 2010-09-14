@@ -68,7 +68,7 @@ public class DataTranslationService implements IDataTranslationService {
       Conditions.checkNotNull(txId, "translator Id");
       ITranslator<?> toReturn = translators.get(txId);
       if (toReturn == null) {
-         throw new OseeStateException(String.format("Unable to find a match for translator id [%s]", txId));
+         throw new OseeStateException("Unable to find a match for translator id [%s]", txId);
       }
       return toReturn;
 

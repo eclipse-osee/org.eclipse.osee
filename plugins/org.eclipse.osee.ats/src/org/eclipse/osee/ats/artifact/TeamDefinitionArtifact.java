@@ -462,7 +462,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
       if (!hasWorkRule(ruleId)) {
          Artifact artifact = WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(ruleId);
          if (artifact == null) {
-            throw new OseeArgumentException("Rule \"" + ruleId + "\" does not exist.");
+            throw new OseeArgumentException("Rule [%s] does not exist.", ruleId);
          } else {
             addRelation(CoreRelationTypes.WorkItem__Child, artifact);
          }

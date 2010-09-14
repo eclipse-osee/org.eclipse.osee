@@ -47,8 +47,8 @@ public abstract class ArtifactFactory {
     */
    public Artifact makeNewArtifact(IOseeBranch branch, ArtifactType artifactType, String guid, String humandReadableId, ArtifactProcessor earlyArtifactInitialization) throws OseeCoreException {
       if (artifactType.isAbstract()) {
-         throw new OseeArgumentException(String.format("Cannot create an instance of abstract type [%s]",
-            artifactType.getName()));
+         throw new OseeArgumentException("Cannot create an instance of abstract type [%s]",
+            artifactType.getName());
       }
       Artifact artifact = getArtifactInstance(guid, humandReadableId, BranchManager.getBranch(branch), artifactType);
 

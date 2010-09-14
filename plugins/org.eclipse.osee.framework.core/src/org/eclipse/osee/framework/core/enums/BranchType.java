@@ -61,6 +61,6 @@ public enum BranchType {
             return type;
          }
       }
-      throw new OseeArgumentException("No branch type with value " + value);
+      throw new OseeArgumentException("No branch type with value [%s]", value);
    }
 }

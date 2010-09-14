@@ -90,7 +90,7 @@ public class ResourceManager implements IResourceManager {
       }
 
       if (toReturn == null) {
-         throw new OseeNotFoundException(String.format("Invalid Locator: [%s]", locator));
+         throw new OseeNotFoundException("Invalid Locator: [%s]", locator);
       }
       return toReturn;
    }

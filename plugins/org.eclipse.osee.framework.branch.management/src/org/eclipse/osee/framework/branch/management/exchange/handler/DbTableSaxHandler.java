@@ -85,8 +85,7 @@ public class DbTableSaxHandler extends BaseDbSaxHandler {
             transferredBinaryContent.add(locator);
             return locator.getLocation().toASCIIString();
          } else {
-            throw new OseeStateException(String.format(
-               "Unable to locate resource in zip file - ZipEntry was null for [%s]", uriValue));
+            throw new OseeStateException("Unable to locate resource in zip file - ZipEntry was null for [%s]", uriValue);
          }
       } else {
          throw new OseeStateException("Uncompressed folder was Null.");

@@ -49,8 +49,7 @@ public class Diagram {
    public DiagramNode getPage(String pageName) throws OseeCoreException {
       List<DiagramNode> pages = getPages(pageName);
       if (pages.size() > 1) {
-         throw new OseeArgumentException(
-            "Multiple node of same name found in workflow => " + getId() + " Use getPages.");
+         throw new OseeArgumentException("Multiple node of same name found in workflow [%s]. Use getPages.", getId());
       }
       return pages.iterator().next();
    }
@@ -63,7 +62,7 @@ public class Diagram {
          }
       }
       if (foundPages.isEmpty()) {
-         throw new OseeArgumentException("Invalid node Name \"" + pageName + "\" from workflow => " + getId());
+         throw new OseeArgumentException("Invalid node Name [%s] from workflow [%s]", pageName, getId());
       }
       return foundPages;
    }

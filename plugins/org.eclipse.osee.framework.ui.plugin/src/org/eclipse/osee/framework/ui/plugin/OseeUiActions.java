@@ -99,13 +99,13 @@ public final class OseeUiActions {
       }
 
       if (actionableObject == null) {
-         throw new IllegalArgumentException(String.format("actionableObject can not be null"));
+         throw new IllegalArgumentException("actionableObject can not be null");
       }
       if (!Strings.isValid(editorId)) {
-         throw new IllegalArgumentException(String.format("editorId can not be null or empty"));
+         throw new IllegalArgumentException("editorId can not be null or empty");
       }
       if (actionableItem == null) {
-         throw new IllegalArgumentException(String.format("aspect can not be null"));
+         throw new IllegalArgumentException("aspect can not be null");
       }
 
       if (toolBar != null) {
@@ -152,7 +152,7 @@ public final class OseeUiActions {
          return;
       }
       if (!Strings.isValid(viewId)) {
-         throw new IllegalArgumentException(String.format("viewId can not be null or empty"));
+         throw new IllegalArgumentException("viewId can not be null or empty");
       }
       if (actionableItem == null) {
          throw new IllegalArgumentException("Aspect can not be null.");

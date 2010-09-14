@@ -130,7 +130,7 @@ public abstract class SqlManager {
          case BOOLEAN:
             return !Strings.isValid(value) ? false : Boolean.parseBoolean(value);
          default:
-            throw new OseeDataStoreException("unexpected column type: " + columnType);
+            throw new OseeDataStoreException("unexpected column type [%s]", columnType);
       }
    }
 

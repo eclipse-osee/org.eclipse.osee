@@ -46,7 +46,7 @@ public enum ConflictStatus {
             return type;
          }
       }
-      throw new OseeArgumentException(String.format("[%s] is not a valid ConflictStatus"));
+      throw new OseeArgumentException("[%s] is not a valid ConflictStatus");
    }
 
    public boolean isConflict() {

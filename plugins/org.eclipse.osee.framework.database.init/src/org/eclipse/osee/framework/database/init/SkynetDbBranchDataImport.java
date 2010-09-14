@@ -106,9 +106,8 @@ public class SkynetDbBranchDataImport implements IDbInitializationTask {
                         element.getDeclaringExtension().getUniqueIdentifier());
                   } else {
                      throw new OseeDataStoreException(
-                        String.format(
-                           "Branch import error - cannot import twice into a branch - [%s] was already specified by [%s] ",
-                           branchName, selectedBranches.get(branchName.toLowerCase())));
+                        "Branch import error - cannot import twice into a branch - [%s] was already specified by [%s] ",
+                        branchName, selectedBranches.get(branchName.toLowerCase()));
                   }
                }
             }

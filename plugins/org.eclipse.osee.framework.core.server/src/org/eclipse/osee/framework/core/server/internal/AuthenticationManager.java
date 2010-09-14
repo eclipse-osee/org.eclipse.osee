@@ -52,8 +52,7 @@ public class AuthenticationManager implements IAuthenticationManager {
             return provider.authenticate(credential);
          }
       }
-      throw new OseeAuthenticationException(String.format("Invalid protocol [%s]",
-         credential.getAuthenticationProtocol()));
+      throw new OseeAuthenticationException("Invalid protocol [%s]", credential.getAuthenticationProtocol());
    }
 
    @Override
@@ -81,8 +80,7 @@ public class AuthenticationManager implements IAuthenticationManager {
             return provider.asOseeUserId(credential);
          }
       }
-      throw new OseeAuthenticationException(String.format("Invalid protocol [%s]",
-         credential.getAuthenticationProtocol()));
+      throw new OseeAuthenticationException("Invalid protocol [%s]", credential.getAuthenticationProtocol());
    }
 
    private boolean isGuestLogin(OseeCredential credential) {

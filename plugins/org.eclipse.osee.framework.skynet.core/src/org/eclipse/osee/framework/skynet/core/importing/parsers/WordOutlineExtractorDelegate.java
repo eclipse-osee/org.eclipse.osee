@@ -163,9 +163,9 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
             wordFormattedContent.append(content);
          }
       } else {
-         throw new OseeCoreException(String.format(
+         throw new OseeCoreException(
             "%s::processContent() Either passed in content is invalid or *Delegate hasn't been initialized...",
-            this.toString()));
+            this.toString());
       }
 
    }
@@ -338,9 +338,8 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
 
          return roughArtifact;
       } else {
-         throw new OseeStateException(String.format(
-            "Paragraph %s found more than once following \"%s\" which is a duplicate of %s", outlineNumber,
-            previousNamedArtifact.getName(), duplicateArtifact.getName()));
+         throw new OseeStateException("Paragraph %s found more than once following \"%s\" which is a duplicate of %s",
+            outlineNumber, previousNamedArtifact.getName(), duplicateArtifact.getName());
       }
    }
 

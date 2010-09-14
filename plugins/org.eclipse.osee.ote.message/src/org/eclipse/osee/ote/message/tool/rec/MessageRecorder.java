@@ -22,6 +22,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.environment.TestEnvironmentInterface;
 import org.eclipse.osee.ote.message.MessageSystemTestEnvironment;
@@ -54,7 +55,7 @@ public class MessageRecorder {
       }
    }
 
-   public void startRecording(Collection<MessageRecordConfig> list, WritableByteChannel channel) throws InterruptedException {
+   public void startRecording(Collection<MessageRecordConfig> list, WritableByteChannel channel) throws OseeCoreException {
       if (list == null) {
          throw new IllegalArgumentException("list cannot be null");
       }
@@ -100,7 +101,7 @@ public class MessageRecorder {
       return env.getEnvTime();
    }
 
-   public void stopRecording(boolean closeOutputChannel) throws IOException, InterruptedException {
+   public void stopRecording(boolean closeOutputChannel) throws IOException {
       OseeLog.log(MessageSystemTestEnvironment.class, Level.INFO, "stopping message recorder...");
       isRecording = false;
       recLock.lock();

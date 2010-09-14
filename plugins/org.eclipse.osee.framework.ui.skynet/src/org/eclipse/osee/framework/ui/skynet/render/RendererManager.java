@@ -110,8 +110,8 @@ public final class RendererManager {
       if (bestRenderer instanceof FileSystemRenderer) {
          return (FileSystemRenderer) bestRenderer;
       }
-      throw new OseeArgumentException(
-         "No FileRenderer found for " + artifact + " of type " + artifact.getArtifactTypeName());
+      throw new OseeArgumentException("No FileRenderer found for [%s] of type [%s]", artifact,
+         artifact.getArtifactType());
    }
 
    public static IRenderer getBestRenderer(PresentationType presentationType, Artifact artifact, VariableMap options) throws OseeCoreException {
@@ -135,7 +135,7 @@ public final class RendererManager {
          }
       }
       if (bestRendererPrototype == null) {
-         throw new OseeStateException(String.format("No renderer configured for %s of %s", presentationType, artifact));
+         throw new OseeStateException("No renderer configured for %s of %s", presentationType, artifact);
       }
       return bestRendererPrototype;
    }

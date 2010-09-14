@@ -68,7 +68,7 @@ public class AtsFolderUtil {
             StaticIdManager.getSingletonArtifact(atsFolder.artifactType, atsFolder.staticId, AtsUtil.getAtsBranch(),
                true);
          if (artifact == null) {
-            throw new OseeStateException(String.format("Can't retrieve Ats folder [%s]", atsFolder.displayName));
+            throw new OseeStateException("Can't retrieve Ats folder [%s]", atsFolder.displayName);
          }
          folderMap.put(atsFolder, artifact);
       }

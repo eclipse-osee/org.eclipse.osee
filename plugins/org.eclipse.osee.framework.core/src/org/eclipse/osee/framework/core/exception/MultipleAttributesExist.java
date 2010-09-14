@@ -18,7 +18,7 @@ public class MultipleAttributesExist extends OseeCoreException {
 
    private static final long serialVersionUID = 1L;
 
-   public MultipleAttributesExist(String message) {
-      super(message);
+   public MultipleAttributesExist(String message, Object... args) {
+      super(message, args);
    }
 }

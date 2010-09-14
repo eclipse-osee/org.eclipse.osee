@@ -17,7 +17,7 @@ public class BranchMergeException extends OseeCoreException {
 
    private static final long serialVersionUID = 1L;
 
-   public BranchMergeException(String message) {
-      super(message);
+   public BranchMergeException(String message, Object... args) {
+      super(message, args);
    }
 }

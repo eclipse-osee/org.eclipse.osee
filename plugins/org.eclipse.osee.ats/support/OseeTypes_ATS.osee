@@ -464,7 +464,6 @@ attributeType "ats.Action Details Format" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
-   taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "ats.Actionable Item" extends StringAttribute {

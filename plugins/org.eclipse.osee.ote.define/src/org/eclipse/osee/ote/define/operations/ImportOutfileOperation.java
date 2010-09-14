@@ -49,7 +49,7 @@ public class ImportOutfileOperation {
 
    private void checkSuccessful(IStatus status) throws OseeStateException {
       if (status.equals(Status.OK_STATUS) != true && status.equals(IStatus.OK) != true) {
-         throw new OseeStateException(String.format("Error detected: %s", status.getMessage()));
+         throw new OseeStateException("Error detected: %s", status.getMessage());
       }
    }
 
@@ -93,7 +93,7 @@ public class ImportOutfileOperation {
 
       Artifact[] notAllowed = job.getCommitNotAllowed();
       if (notAllowed.length > 0) {
-         throw new IllegalArgumentException(String.format("Some items are not commitable. [%s]", toString(notAllowed)));
+         throw new OseeArgumentException("Some items are not commitable. [%s]", toString(notAllowed));
       }
       commitSelectedArtifacts(monitor, commitComment, job.getCommitAllowed());
    }

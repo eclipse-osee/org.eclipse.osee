@@ -41,7 +41,7 @@ public class DemoArtifactFactory extends ArtifactFactory {
       if (artifactType.getName().equals(DemoReqTeamWorkflowArtifact.ARTIFACT_NAME)) {
          return new DemoReqTeamWorkflowArtifact(this, guid, humandReadableId, branch, artifactType);
       }
-      throw new OseeArgumentException("did not recognize the artifact type: " + artifactType.getName());
+      throw new OseeArgumentException("did not recognize the artifact type [%s]", artifactType);
    }
 
 }

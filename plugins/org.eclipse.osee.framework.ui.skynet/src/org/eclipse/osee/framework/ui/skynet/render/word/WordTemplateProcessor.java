@@ -12,7 +12,6 @@
 package org.eclipse.osee.framework.ui.skynet.render.word;
 
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.CharacterCodingException;
 import java.util.ArrayList;
@@ -185,7 +184,7 @@ public class WordTemplateProcessor {
                OseeExceptions.wrapAndThrow(ex);
             }
          } else {
-            throw new OseeArgumentException("Invalid input: " + elementType);
+            throw new OseeArgumentException("Invalid input [%s]", elementType);
          }
       }
       // Write out the last of the template
