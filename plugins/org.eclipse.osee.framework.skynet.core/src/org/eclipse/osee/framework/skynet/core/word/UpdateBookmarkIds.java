@@ -13,8 +13,6 @@ package org.eclipse.osee.framework.skynet.core.word;
 import java.io.StringWriter;
 import java.util.Collection;
 import java.util.Stack;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -32,7 +30,16 @@ import org.w3c.dom.Node;
 public class UpdateBookmarkIds {
    private static final String WORD_PREFIX =
       "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><?mso-application progid=\"Word.Document\"?><w:wordDocument xmlns:aml=\"http://schemas.microsoft.com/aml/2001/core\" xmlns:dt=\"uuid:C2F41010-65B3-11d1-A29F-00AA00C14882\" xmlns:ve=\"http://schemas.openxmlformats.org/markup-compatibility/2006\" xmlns:o=\"urn:schemas-microsoft-com:office:office\" xmlns:v=\"urn:schemas-microsoft-com:vml\" xmlns:w10=\"urn:schemas-microsoft-com:office:word\" xmlns:w=\"http://schemas.microsoft.com/office/word/2003/wordml\" xmlns:wx=\"http://schemas.microsoft.com/office/word/2003/auxHint\" xmlns:wsp=\"http://schemas.microsoft.com/office/word/2003/wordml/sp2\" xmlns:sl=\"http://schemas.microsoft.com/schemaLibrary/2003/core\" w:macrosPresent=\"no\" w:embeddedObjPresent=\"no\" w:ocxPresent=\"no\" xml:space=\"preserve\">";
-   private static final Pattern WORD_BODY_PATTERN = Pattern.compile("<w:body>(.*?)</w:body>");
+
+   private static final String WORD_BOOKMARK_START = "Word.Bookmark.Start";
+   private static final String WORD_BOOKMARK_END = "Word.Bookmark.End";
+
+   private static final String WORD_BODY_START = "<w:body>";
+   private static final String WORD_BODY_END = "</w:body>";
+   private static final String WORD_DOC_END = "</w:wordDocument>";
+
+   private static final String WORD_AML_ID_ATTRIBUTE = "aml:id";
+
    private static final String XPATH_EXPRESSION =
       "//aml:annotation[@w:type='Word.Bookmark.End' or @w:type='Word.Bookmark.Start']";
 
@@ -43,11 +50,11 @@ public class UpdateBookmarkIds {
    }
 
    private boolean isStartNode(Node node) {
-      return isNode("Word.Bookmark.Start", node);
+      return isNode(WORD_BOOKMARK_START, node);
    }
 
    private boolean isEndNode(Node node) {
-      return isNode("Word.Bookmark.End", node);
+      return isNode(WORD_BOOKMARK_END, node);
    }
 
    private boolean isNode(String typeToCheck, Node node) {
@@ -61,12 +68,17 @@ public class UpdateBookmarkIds {
    }
 
    private String stripOffBodyTag(String original) {
-      Matcher matcher = WORD_BODY_PATTERN.matcher(original);
-      String toReturn = original;
-      if (matcher.find()) {
-         toReturn = matcher.group(1);
+      int startIndex = original.indexOf(WORD_BODY_START);
+      if (startIndex < 0) {
+         startIndex = 0;
+      } else {
+         startIndex = startIndex + WORD_BODY_START.length();
       }
-      return toReturn;
+      int stopIndex = original.indexOf(WORD_BODY_END);
+      if (stopIndex < 0) {
+         stopIndex = original.length();
+      }
+      return original.substring(startIndex, stopIndex);
    }
 
    public String fixTags(String content) throws OseeCoreException {
@@ -75,7 +87,7 @@ public class UpdateBookmarkIds {
       try {
 
          Document document =
-            Jaxp.readXmlDocumentNamespaceAware(WORD_PREFIX + "<w:body>" + content + "</w:body></w:wordDocument>");
+            Jaxp.readXmlDocumentNamespaceAware(WORD_PREFIX + WORD_BODY_START + content + WORD_BODY_END + WORD_DOC_END);
          Element element = document.getDocumentElement();
 
          Stack<Element> nodeStack = new Stack<Element>();
@@ -94,8 +106,8 @@ public class UpdateBookmarkIds {
                   Element startNode = nodeStack.pop();
                   Element endNode = (Element) currentNode;
                   int newId = incrementBookmarkId();
-                  startNode.setAttribute("aml:id", String.valueOf(newId));
-                  endNode.setAttribute("aml:id", String.valueOf(newId));
+                  startNode.setAttribute(WORD_AML_ID_ATTRIBUTE, String.valueOf(newId));
+                  endNode.setAttribute(WORD_AML_ID_ATTRIBUTE, String.valueOf(newId));
                }
             }
          }
