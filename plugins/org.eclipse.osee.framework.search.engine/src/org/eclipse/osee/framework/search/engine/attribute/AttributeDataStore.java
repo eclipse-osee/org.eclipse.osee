@@ -24,9 +24,7 @@ import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.JoinUtility.IdJoinQuery;
 import org.eclipse.osee.framework.database.core.OseeConnection;
-import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
-import org.eclipse.osee.framework.search.engine.SearchOptions;
-import org.eclipse.osee.framework.search.engine.SearchOptions.SearchOptionsEnum;
+import org.eclipse.osee.framework.search.engine.utility.SearchTagQueryBuilder;
 
 /**
  * @author Roberto E. Escobar
@@ -46,8 +44,7 @@ public final class AttributeDataStore {
 
    private static final String RESTRICT_BY_BRANCH = " AND txs1.branch_id = ?";
 
-   private static final CompositeKeyHashMap<Integer, Boolean, String> queryCache =
-      new CompositeKeyHashMap<Integer, Boolean, String>();
+   private static final SearchTagQueryBuilder searchTagQueryBuilder = new SearchTagQueryBuilder();
 
    private AttributeDataStore() {
       // Utility Class
@@ -70,76 +67,15 @@ public final class AttributeDataStore {
       return attributeData;
    }
 
-   private static String getAttributeTagQuery(int numberOfTags, boolean useAttrTypeJoin) {
-      String query = queryCache.get(numberOfTags, useAttrTypeJoin);
-      if (query == null) {
-         StringBuilder codedTag = new StringBuilder();
-         codedTag.append("SELECT  /*+ ordered FIRST_ROWS */ attr1.art_id, attr1.gamma_id, attr1.value, attr1.uri, attr1.attr_type_id, txs1.branch_id FROM \n");
-         for (int index = 0; index < numberOfTags; index++) {
-            codedTag.append(String.format("osee_search_tags ost%d, \n", index));
-         }
-         codedTag.append("osee_attribute attr1,");
-         if (useAttrTypeJoin) {
-            codedTag.append(" osee_join_id idj,");
-         }
-         codedTag.append(" osee_txs txs1 WHERE \n");
-
-         for (int index = 0; index < numberOfTags; index++) {
-            codedTag.append(String.format("ost%d.coded_tag_id = ? and\n", index));
-         }
-         for (int index = 1; index < numberOfTags; index++) {
-            codedTag.append(String.format("ost%d.gamma_id = ost%d.gamma_id and \n", index - 1, index));
-         }
-         codedTag.append(String.format("ost%d.gamma_id = attr1.gamma_id and\n attr1.gamma_id = txs1.gamma_id \n",
-            numberOfTags - 1));
-
-         if (useAttrTypeJoin) {
-            codedTag.append(" and attr1.attr_type_id = idj.id and idj.query_id = ? ");
-         }
-         query = codedTag.toString();
-         queryCache.put(numberOfTags, useAttrTypeJoin, query);
-      }
-      return query;
-   }
-
-   private static String getQuery(final String baseQuery, final int branchId, final SearchOptions options) {
-      StringBuilder toReturn = new StringBuilder(baseQuery);
-      if (branchId > -1) {
-         toReturn.append(RESTRICT_BY_BRANCH);
-      }
-      // txs1 is for attributes, txs2 is for artifact
-      if (options.getBoolean(SearchOptionsEnum.include_deleted.asStringOption())) {
-         toReturn.append(" AND txs1.tx_current IN (1,3)");
-      } else {
-         toReturn.append(" AND txs1.tx_current = 1");
-      }
-      return toReturn.toString();
-   }
-
-   public static void main(String[] args) {
-      for (int index = 1; index < 13; index++) {
-         System.out.println("\n------------------------------------------------------------");
-         System.out.println(getQuery(getAttributeTagQuery(index, false), 2, new SearchOptions()));
-         System.out.println("\n------------------------------------------------------------");
-         System.out.println(getQuery(getAttributeTagQuery(index, true), 2, new SearchOptions()));
-      }
-
-      for (int index = 1; index < 13; index++) {
-         System.out.println("\n------------------------------------------------------------");
-         System.out.println(getQuery(getAttributeTagQuery(index, false), 2, new SearchOptions()));
-         System.out.println("\n------------------------------------------------------------");
-         System.out.println(getQuery(getAttributeTagQuery(index, true), 2, new SearchOptions()));
-      }
-   }
-
-   public static Set<AttributeData> getAttributesByTags(final int branchId, final SearchOptions options, final Collection<Long> tagData, final AttributeType... attributeTypes) throws OseeCoreException {
+   public static Set<AttributeData> getAttributesByTags(int branchId, boolean includeDeleted, final Collection<Long> tagData, final AttributeType... attributeTypes) throws OseeCoreException {
       final Set<AttributeData> toReturn = new HashSet<AttributeData>();
+
       IdJoinQuery oseeIdJoin = null;
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       boolean useAttrTypeJoin = attributeTypes.length > 1;
 
       try {
-         String sqlQuery = getQuery(getAttributeTagQuery(tagData.size(), useAttrTypeJoin), branchId, options);
+         String sqlQuery = searchTagQueryBuilder.getQuery(tagData.size(), useAttrTypeJoin, branchId, includeDeleted);
          List<Object> params = new ArrayList<Object>();
          params.addAll(tagData);
 

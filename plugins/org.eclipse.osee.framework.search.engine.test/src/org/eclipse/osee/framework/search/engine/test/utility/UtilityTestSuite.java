@@ -17,12 +17,14 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ //
-//   SearchTagQueryBuilderTest.class, //
-TagEncoderTest.class, //
-   TagProcessorTest.class, //
-   WordOrderMatcherTest.class, //
-   WordsUtilTest.class //
+@Suite.SuiteClasses({
+//@formatter:off  
+   SearchTagQueryBuilderTest.class,
+   TagEncoderTest.class,
+   TagProcessorTest.class,
+   WordOrderMatcherTest.class,
+   WordsUtilTest.class
+//@formatter:on
 })
 public class UtilityTestSuite {
    // Test Suite
