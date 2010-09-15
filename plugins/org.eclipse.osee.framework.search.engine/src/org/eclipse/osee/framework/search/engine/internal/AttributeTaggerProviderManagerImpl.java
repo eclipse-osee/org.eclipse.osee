@@ -13,9 +13,9 @@ package org.eclipse.osee.framework.search.engine.internal;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import org.eclipse.osee.framework.core.exception.InvalidTaggerException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.SearchOptions;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
@@ -52,7 +52,7 @@ public class AttributeTaggerProviderManagerImpl implements IAttributeTaggerProvi
       AttributeType attributeType = typeCache.getById(attrTypeId);
       IAttributeTaggerProvider toReturn = this.attributeTaggerProviders.get(attributeType.getTaggerId());
       if (toReturn == null) {
-         throw new InvalidTaggerException();
+         throw new OseeStateException("No tagger found for id " + attributeType.getTaggerId());
       }
       return toReturn;
    }
