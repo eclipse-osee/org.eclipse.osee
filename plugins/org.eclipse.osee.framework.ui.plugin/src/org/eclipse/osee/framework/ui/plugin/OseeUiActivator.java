@@ -103,31 +103,6 @@ public abstract class OseeUiActivator extends AbstractUIPlugin {
       super.stop(context);
    }
 
-   /**
-    * Returns the Image for the icon with the given path under images/
-    * 
-    * @return the Image object
-    * @use ImageManager.getImage
-    */
-   /*
-    * @Deprecated public Image getImage(String imageName) { Image image = getImageFromRegistry(imageName); if (image ==
-    * null) { // if image is not already cached ImageDescriptor descriptor = getImageDescriptor(imageName); // if image
-    * not found in this plug-in, then look in parent plug-in (if parent exists) if (descriptor == null && parentPlugin
-    * != null) { Image ret = parentPlugin.getImage(imageName); if (ret != null) { return ret; } } if (descriptor ==
-    * null) { throw new IllegalArgumentException(String.format("The image %s does not exist", imageName)); } image =
-    * descriptor.createImage(false); if (image != null) { // cache image only if successfully returned
-    * addImageToRegistry(imageName, image); } } return image; }
-    */
-   /**
-    * Returns the ImageDiscriptor from images/ with the given icon name
-    * 
-    * @return the Image object
-    * @use ImageManager.getImageDescriptor
-    */
-   /*
-    * @Deprecated public ImageDescriptor getImageDescriptor(String name) { return
-    * AbstractUIPlugin.imageDescriptorFromPlugin(getBundle().getSymbolicName(), imagePath + name); }
-    */
    public Object getBundleHeaderValue(String name) {
       return getBundle().getHeaders().get(name);
    }

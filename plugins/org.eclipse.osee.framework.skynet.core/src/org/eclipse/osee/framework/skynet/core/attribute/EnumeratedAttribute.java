@@ -29,9 +29,6 @@ public class EnumeratedAttribute extends StringAttribute {
 
    @Override
    public boolean subClassSetValue(String value) throws OseeCoreException {
-      if (!AttributeTypeManager.getEnumerationValues(getAttributeType()).contains(value)) {
-         //throw new OseeArgumentException(value + " is not a valid enumeration of the type " + getAttributeType());
-      }
       return super.subClassSetValue(value);
    }
 }
