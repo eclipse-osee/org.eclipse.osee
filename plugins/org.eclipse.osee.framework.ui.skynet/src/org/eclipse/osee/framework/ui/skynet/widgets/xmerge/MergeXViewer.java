@@ -22,7 +22,6 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.core.exception.MergeChangesInArtifactException;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -184,8 +183,6 @@ public class MergeXViewer extends XViewer {
          } else {
             handleResolvableConflictClick(treeColumn, conflict, shell);
          }
-      } catch (MergeChangesInArtifactException ex) {
-         MessageDialog.openError(shell, "Error", ex.getMessage());
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }

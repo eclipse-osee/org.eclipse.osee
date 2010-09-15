@@ -23,8 +23,8 @@ import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
-import org.eclipse.osee.framework.core.exception.MergeChangesInArtifactException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
@@ -455,7 +455,7 @@ public class AttributeConflict extends Conflict {
    @Override
    public void setStatus(ConflictStatus status) throws OseeCoreException {
       if (status.equals(ConflictStatus.RESOLVED) && isWordAttribute && ((WordAttribute) getAttribute()).containsWordAnnotations()) {
-         throw new MergeChangesInArtifactException(RESOLVE_MERGE_MARKUP);
+         throw new OseeStateException(RESOLVE_MERGE_MARKUP);
       }
       super.setStatus(status);
    }
