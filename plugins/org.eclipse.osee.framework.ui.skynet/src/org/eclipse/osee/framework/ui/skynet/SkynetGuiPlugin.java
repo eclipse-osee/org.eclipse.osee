@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 import org.eclipse.osee.framework.ui.plugin.OseeFormActivator;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactSaveNotificationHandler;
 import org.eclipse.osee.framework.ui.skynet.artifact.IAccessPolicyHandlerService;
-import org.eclipse.osee.framework.ui.skynet.ats.IOseeAtsService;
+import org.eclipse.osee.framework.ui.skynet.cm.IOseeCmService;
 import org.eclipse.osee.framework.ui.skynet.internal.AccessPolicyServiceRegHandler;
 import org.eclipse.osee.framework.ui.skynet.internal.ArtifactPromptService;
 import org.eclipse.osee.framework.ui.skynet.internal.ArtifactPromptServiceRegHandler;
@@ -59,7 +59,7 @@ public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEven
    private ServiceTracker packageAdminTracker;
    private ServiceTracker cacheServiceTracker;
    private ServiceTracker databaseServiceTracker;
-   private ServiceTracker atsServiceTracker;
+   private ServiceTracker cmServiceTracker;
 
    private final Map<String, ServiceDependencyTracker> trackers = new HashMap<String, ServiceDependencyTracker>();
 
@@ -74,7 +74,7 @@ public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEven
       packageAdminTracker.close();
       cacheServiceTracker.close();
       databaseServiceTracker.close();
-      atsServiceTracker.close();
+      cmServiceTracker.close();
 
       for (ServiceDependencyTracker tracker : trackers.values()) {
          Lib.close(tracker);
@@ -94,8 +94,8 @@ public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEven
       databaseServiceTracker = new ServiceTracker(context, IOseeDatabaseService.class.getName(), null);
       databaseServiceTracker.open();
 
-      atsServiceTracker = new ServiceTracker(context, IOseeAtsService.class.getName(), null);
-      atsServiceTracker.open();
+      cmServiceTracker = new ServiceTracker(context, IOseeCmService.class.getName(), null);
+      cmServiceTracker.open();
 
       trackers.put(IAccessPolicyHandlerService.class.getName(), new ServiceDependencyTracker(context,
          new AccessPolicyServiceRegHandler()));
@@ -160,8 +160,8 @@ public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEven
       return (IOseeDatabaseService) databaseServiceTracker.getService();
    }
 
-   public IOseeAtsService getOseeAtsService() {
-      return (IOseeAtsService) atsServiceTracker.getService();
+   public IOseeCmService getOseeCmService() {
+      return (IOseeCmService) cmServiceTracker.getService();
    }
 
    public IAccessPolicyHandlerService getPolicyHandlerService() throws OseeCoreException {

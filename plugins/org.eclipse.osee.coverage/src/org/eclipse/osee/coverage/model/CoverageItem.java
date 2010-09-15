@@ -33,6 +33,8 @@ public class CoverageItem extends NamedIdentity implements ICoverage {
    CoverageOption coverageMethod = CoverageOptionManager.Not_Covered;
    String rationale;
    String orderNumber;
+   String workProductGuid;
+
    private final CoverageUnit coverageUnit;
    private static String PROPERTY_STORE_ID = "coverage.item";
    private ITestUnitProvider testUnitProvider;
@@ -280,6 +282,9 @@ public class CoverageItem extends NamedIdentity implements ICoverage {
       if (Strings.isValid(getName())) {
          store.put("name", getName());
       }
+      if (Strings.isValid(getName())) {
+         store.put("name", getName());
+      }
       String toReturn = null;
       try {
          toReturn = store.save();
@@ -292,4 +297,21 @@ public class CoverageItem extends NamedIdentity implements ICoverage {
    public ITestUnitProvider getTestUnitProvider() {
       return testUnitProvider;
    }
+
+   @Override
+   public String getWorkProductTask() {
+      if (Strings.isValid(workProductGuid)) {
+         return workProductGuid;
+      }
+      return "";
+   }
+
+   public String getWorkProductGuid() {
+      return workProductGuid;
+   }
+
+   public void setWorkProductGuid(String workProductGuid) {
+      this.workProductGuid = workProductGuid;
+   }
+
 }

@@ -39,6 +39,7 @@ public class CoverageUnit extends NamedIdentity implements ICoverage, ICoverageU
    final List<CoverageItem> coverageItems = new ArrayList<CoverageItem>();
    String location;
    String orderNumber = "";
+   String workProductGuid;
    final List<CoverageUnit> coverageUnits = new ArrayList<CoverageUnit>();
    ICoverage parent;
    ICoverageUnitFileContentsProvider fileContentsProvider;
@@ -352,6 +353,22 @@ public class CoverageUnit extends NamedIdentity implements ICoverage, ICoverageU
 
    public ICoverageUnitFileContentsProvider getFileContentsProvider() {
       return fileContentsProvider;
+   }
+
+   @Override
+   public String getWorkProductTask() {
+      if (Strings.isValid(workProductGuid)) {
+         return workProductGuid;
+      }
+      return "";
+   }
+
+   public String getWorkProductGuid() {
+      return workProductGuid;
+   }
+
+   public void setWorkProductGuid(String workProductGuid) {
+      this.workProductGuid = workProductGuid;
    }
 
 }

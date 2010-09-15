@@ -70,4 +70,9 @@ public class CoveragePackage extends CoveragePackageBase {
       return getRunDate();
    }
 
+   @Override
+   public String getWorkProductTask() {
+      return "";
+   }
+
 }

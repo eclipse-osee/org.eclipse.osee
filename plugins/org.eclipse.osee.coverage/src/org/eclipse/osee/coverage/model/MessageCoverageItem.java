@@ -105,4 +105,9 @@ public class MessageCoverageItem extends NamedIdentity implements ICoverage {
    public String getOrderNumber() {
       return "";
    }
+
+   @Override
+   public String getWorkProductTask() {
+      return "";
+   }
 }

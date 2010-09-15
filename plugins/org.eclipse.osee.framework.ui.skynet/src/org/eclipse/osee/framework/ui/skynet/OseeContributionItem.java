@@ -11,8 +11,8 @@
 package org.eclipse.osee.framework.ui.skynet;
 
 import org.eclipse.jface.action.IStatusLineManager;
-import org.eclipse.osee.framework.ui.skynet.ats.IOseeAtsService;
-import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
+import org.eclipse.osee.framework.ui.skynet.cm.IOseeCmService;
+import org.eclipse.osee.framework.ui.skynet.cm.OseeCm;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.part.IPageSite;
@@ -61,8 +61,8 @@ public abstract class OseeContributionItem extends StatusLineContributionItem {
    public static void addTo(IStatusLineManager manager) {
       OseeBuildTypeContributionItem.addTo(manager);
       ResServiceContributionItem.addTo(manager);
-      IOseeAtsService atsService = OseeAts.getInstance();
-      if (atsService != null && atsService.isAtsAdmin()) {
+      IOseeCmService atsService = OseeCm.getInstance();
+      if (atsService != null && atsService.isCmAdmin()) {
          AdminContributionItem.addTo(manager);
       }
       OseeServicesStatusContributionItem.addTo(manager);

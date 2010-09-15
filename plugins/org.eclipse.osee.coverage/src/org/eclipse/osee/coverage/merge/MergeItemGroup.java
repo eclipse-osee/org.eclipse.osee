@@ -152,4 +152,9 @@ public class MergeItemGroup extends MergeItemBase {
    public String getOrderNumber() {
       return "";
    }
+
+   @Override
+   public String getWorkProductTask() {
+      return "";
+   }
 }

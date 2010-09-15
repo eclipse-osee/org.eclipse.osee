@@ -62,6 +62,7 @@ public class CoverageEditor extends FormEditor implements IActionable {
    private CoverageEditorCoverageTab coverageEditorCoverageTab = null;
    private CoverageEditorOverviewTab coverageEditorOverviewTab = null;
    private CoverageEditorLoadingTab coverageEditorLoadingTab = null;
+   private CoverageEditorWorkProductTab coverageEditorWorkProductTab = null;
 
    @Override
    protected void addPages() {
@@ -138,6 +139,9 @@ public class CoverageEditor extends FormEditor implements IActionable {
          addFormPage(coverageEditorOverviewTab);
          coverageEditorCoverageTab = new CoverageEditorCoverageTab("Coverage Items", this, getCoveragePackageBase());
          addFormPage(coverageEditorCoverageTab);
+         coverageEditorWorkProductTab =
+            new CoverageEditorWorkProductTab("Work Product Tracking", this, getCoveragePackageBase());
+         addFormPage(coverageEditorWorkProductTab);
          if (getCoveragePackageBase().isImportAllowed()) {
             coverageEditorImportTab = new CoverageEditorImportTab(this);
             addFormPage(coverageEditorImportTab);

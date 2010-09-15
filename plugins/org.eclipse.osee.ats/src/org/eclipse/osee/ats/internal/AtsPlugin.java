@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.util.ServiceDependencyTracker;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.plugin.core.IActionReportingService;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
-import org.eclipse.osee.framework.ui.skynet.ats.IOseeAtsService;
+import org.eclipse.osee.framework.ui.skynet.cm.IOseeCmService;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
@@ -52,7 +52,7 @@ public class AtsPlugin extends OseeUiActivator {
       super.start(context);
       service1 =
          context.registerService(IActionReportingService.class.getName(), new AtsActionReportingServiceImpl(), null);
-      service2 = context.registerService(IOseeAtsService.class.getName(), new OseeAtsServiceImpl(), null);
+      service2 = context.registerService(IOseeCmService.class.getName(), new OseeAtsServiceImpl(), null);
 
       // TODO Uncomment to re-enable ATS CM Access providing
       //      if (OseeInfo.isEnabled("atsAccessEnabled")) {

@@ -52,8 +52,9 @@ import org.eclipse.osee.framework.ui.plugin.util.ListSelectionDialogNoSave;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiUtil;
+import org.eclipse.osee.framework.ui.skynet.cm.OseeCm;
+import org.eclipse.osee.framework.ui.skynet.cm.OseeCmEditor;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -593,7 +594,7 @@ public class MergeXWidget extends XWidget implements IAdaptable {
             Branch sourceBranch = storedConflicts[0].getSourceBranch();
             Artifact branchAssociatedArtifact = BranchManager.getAssociatedArtifact(sourceBranch);
             if (branchAssociatedArtifact instanceof IATSArtifact) {
-               OseeAts.getInstance().openArtifact(branchAssociatedArtifact);
+               OseeCm.getInstance().openArtifact(branchAssociatedArtifact, OseeCmEditor.CmPcrEditor);
             } else if (!branchAssociatedArtifact.equals(UserManager.getUser(SystemUser.OseeSystem))) {
                RendererManager.open(branchAssociatedArtifact, PresentationType.SPECIALIZED_EDIT);
             } else {

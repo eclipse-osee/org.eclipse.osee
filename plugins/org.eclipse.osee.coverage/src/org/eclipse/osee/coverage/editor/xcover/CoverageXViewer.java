@@ -20,6 +20,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.osee.coverage.action.CreateWorkProductTaskAction;
 import org.eclipse.osee.coverage.action.DeleteCoverUnitAction;
 import org.eclipse.osee.coverage.action.EditAssigneesAction;
 import org.eclipse.osee.coverage.action.EditCoverageMethodAction;
@@ -55,7 +56,7 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
 
    protected final XCoverageViewer xCoverageViewer;
    Action editRationaleAction, editMethodAction, viewSourceAction, editAssigneesAction, editCoverageStatusAction,
-      deleteCoverUnitAction;
+      deleteCoverUnitAction, createWorkProductTaskAction;
 
    public CoverageXViewer(Composite parent, int style, XCoverageViewer xCoverageViewer) {
       this(parent, style, new CoverageXViewerFactory(), xCoverageViewer);
@@ -80,6 +81,7 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
          editCoverageStatusAction = new EditCoverageNotesAction(this, this, this);
          editRationaleAction = new EditRationaleAction(this, this, this);
          deleteCoverUnitAction = new DeleteCoverUnitAction(this, this, this);
+         createWorkProductTaskAction = new CreateWorkProductTaskAction(this);
       }
    }
 
@@ -123,6 +125,13 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
       return true;
    }
 
+   private boolean isCreateWorkProductTaskActionEnabled() {
+      if (xCoverageViewer.getSelectedCoverageItems().isEmpty()) {
+         return false;
+      }
+      return true;
+   }
+
    private boolean isEditMetricsEnabled() {
       if (xCoverageViewer.getSelectedCoverageItems().isEmpty()) {
          return false;
@@ -153,6 +162,13 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
 
          mm.insertBefore(MENU_GROUP_PRE, deleteCoverUnitAction);
          editCoverageStatusAction.setEnabled(isDeleteCoverageUnitEnabled());
+
+         mm.insertBefore(MENU_GROUP_PRE, new Separator());
+
+         mm.insertBefore(MENU_GROUP_PRE, createWorkProductTaskAction);
+         createWorkProductTaskAction.setEnabled(isCreateWorkProductTaskActionEnabled());
+
+         mm.insertBefore(MENU_GROUP_PRE, new Separator());
 
       }
       mm.insertBefore(MENU_GROUP_PRE, viewSourceAction);

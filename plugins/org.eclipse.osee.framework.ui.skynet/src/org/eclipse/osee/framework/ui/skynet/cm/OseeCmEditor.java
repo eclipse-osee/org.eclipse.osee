@@ -8,18 +8,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.ats;
-
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+package org.eclipse.osee.framework.ui.skynet.cm;
 
 /**
- * @author Roberto E. Escobar
+ * @author Donald G. Dunne
  */
-public interface IOseeAtsService {
-
-   boolean isAtsAdmin();
-
-   void openArtifact(Artifact artifact);
-
-   void openArtifact(String guid, OseeEditor view);
-}
+public enum OseeCmEditor {
+   CmPcrEditor,
+   CmMultiPcrEditor,
+   ArtifactEditor,
+   ArtifactHyperViewer,
+};

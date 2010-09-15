@@ -122,4 +122,9 @@ public class CoverageImport extends CoveragePackageBase {
    public void setImportDirectory(String importDirectory) {
       this.importDirectory = importDirectory;
    }
+
+   @Override
+   public String getWorkProductTask() {
+      return "";
+   }
 }

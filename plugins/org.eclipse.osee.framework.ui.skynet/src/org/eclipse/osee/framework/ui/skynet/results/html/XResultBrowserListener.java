@@ -20,8 +20,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
-import org.eclipse.osee.framework.ui.skynet.ats.OseeEditor;
+import org.eclipse.osee.framework.ui.skynet.cm.OseeCm;
+import org.eclipse.osee.framework.ui.skynet.cm.OseeCmEditor;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView;
@@ -55,7 +55,7 @@ public class XResultBrowserListener implements LocationListener {
          switch (xResultBrowserHyperCmd) {
             case openAction:
                event.doit = false;
-               openArtifact(value, OseeEditor.ActionEditor);
+               openArtifact(value, OseeCmEditor.CmPcrEditor);
                break;
             case openArtifactBranch:
                event.doit = false;
@@ -74,7 +74,7 @@ public class XResultBrowserListener implements LocationListener {
 
             case openArtifactEditor:
                event.doit = false;
-               openArtifact(value, OseeEditor.ArtifactEditor);
+               openArtifact(value, OseeCmEditor.ArtifactEditor);
                break;
             case openBranch:
                event.doit = false;
@@ -104,8 +104,8 @@ public class XResultBrowserListener implements LocationListener {
       }
    }
 
-   private void openArtifact(String guid, OseeEditor view) {
-      OseeAts.getInstance().openArtifact(guid, view);
+   private void openArtifact(String guid, OseeCmEditor view) {
+      OseeCm.getInstance().openArtifact(guid, view);
    }
 
    @Override

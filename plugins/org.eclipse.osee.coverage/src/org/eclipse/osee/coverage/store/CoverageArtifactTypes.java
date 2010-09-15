@@ -22,6 +22,7 @@ public final class CoverageArtifactTypes extends NamedIdentity implements IArtif
    public static final IArtifactType CoveragePackage = new CoverageArtifactTypes("AARFcyA9zyD3uEK8akgA", "Coverage Package");
    public static final IArtifactType CoverageUnit = new CoverageArtifactTypes("ALZS3MQdCCIUvEYlZeAA", "Coverage Unit");
    public static final IArtifactType CoverageFolder = new CoverageArtifactTypes("ALZR_AbpJTTf6QQn2iAA", "Coverage Folder");
+   public static final IArtifactType TeamWorkflow = new CoverageArtifactTypes("AAMFDhSiF2OD+wiUqugA", "Team Workflow");
    // @formatter:on
 
    private CoverageArtifactTypes(String guid, String name) {

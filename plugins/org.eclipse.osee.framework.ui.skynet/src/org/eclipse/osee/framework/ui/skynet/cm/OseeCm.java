@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.ats;
+package org.eclipse.osee.framework.ui.skynet.cm;
 
 import java.util.logging.Level;
 import org.eclipse.core.runtime.Platform;
@@ -16,20 +16,20 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
-public final class OseeAts {
+public final class OseeCm {
 
-   private static IOseeAtsService oseeAtsInstance;
+   private static IOseeCmService oseeCmInstance;
 
-   public static IOseeAtsService getInstance() {
+   public static IOseeCmService getInstance() {
       try {
          if (Platform.getExtensionRegistry() == null) {
             return null;
          }
-         oseeAtsInstance = SkynetGuiPlugin.getInstance().getOseeAtsService();
+         oseeCmInstance = SkynetGuiPlugin.getInstance().getOseeCmService();
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          AWorkbench.popup("ERROR", ex.getLocalizedMessage());
       }
-      return oseeAtsInstance;
+      return oseeCmInstance;
    }
 }

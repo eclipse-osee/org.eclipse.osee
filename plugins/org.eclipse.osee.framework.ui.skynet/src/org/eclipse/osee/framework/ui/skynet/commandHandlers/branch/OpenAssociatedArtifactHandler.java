@@ -25,7 +25,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
+import org.eclipse.osee.framework.ui.skynet.cm.OseeCm;
+import org.eclipse.osee.framework.ui.skynet.cm.OseeCmEditor;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
@@ -49,7 +50,7 @@ public class OpenAssociatedArtifactHandler extends CommandHandler {
          }
          if (AccessControlManager.hasPermission(associatedArtifact, PermissionEnum.READ)) {
             if (associatedArtifact instanceof IATSArtifact) {
-               OseeAts.getInstance().openArtifact(associatedArtifact);
+               OseeCm.getInstance().openArtifact(associatedArtifact, OseeCmEditor.CmPcrEditor);
             } else {
                RendererManager.open(associatedArtifact, PresentationType.DEFAULT_OPEN);
             }

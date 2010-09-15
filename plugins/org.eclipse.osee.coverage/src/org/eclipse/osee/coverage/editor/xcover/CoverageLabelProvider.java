@@ -102,6 +102,9 @@ public class CoverageLabelProvider extends XViewerLabelProvider {
       if (xCol.equals(CoverageXViewerFactory.Namespace)) {
          return coverage.getNamespace();
       }
+      if (xCol.equals(CoverageXViewerFactory.Work_Product_Task)) {
+         return coverage.getWorkProductTask();
+      }
       if (xCol.equals(CoverageXViewerFactory.Guid)) {
          return coverage.getGuid();
       }

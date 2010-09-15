@@ -62,7 +62,7 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
-import org.eclipse.osee.framework.ui.skynet.ats.OseeEditor;
+import org.eclipse.osee.framework.ui.skynet.cm.OseeCmEditor;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -221,7 +221,7 @@ public final class AtsUtil {
       }
    }
 
-   public static void openArtifact(String guidOrHrid, Integer branchId, OseeEditor view) {
+   public static void openArtifact(String guidOrHrid, Integer branchId, OseeCmEditor view) {
       try {
          Branch branch = BranchManager.getBranch(branchId);
          Artifact artifact = ArtifactQuery.getArtifactFromId(guidOrHrid, branch);
@@ -234,7 +234,7 @@ public final class AtsUtil {
    /**
     * Only to be used by browser. Use open (artifact) instead.
     */
-   public static void openArtifact(String guid, OseeEditor view) {
+   public static void openArtifact(String guid, OseeCmEditor editor) {
       AtsBulkLoad.loadConfig(false);
       Artifact artifact = null;
       try {
@@ -245,15 +245,15 @@ public final class AtsUtil {
       }
 
       try {
-         if (view == OseeEditor.ActionEditor) {
+         if (editor == OseeCmEditor.CmPcrEditor) {
             if (artifact instanceof StateMachineArtifact || artifact instanceof ActionArtifact) {
                openATSAction(artifact, AtsOpenOption.OpenOneOrPopupSelect);
             } else {
                RendererManager.open(artifact, PresentationType.GENERALIZED_EDIT);
             }
-         } else if (view == OseeEditor.ArtifactEditor) {
+         } else if (editor == OseeCmEditor.ArtifactEditor) {
             RendererManager.open(artifact, PresentationType.GENERALIZED_EDIT);
-         } else if (view == OseeEditor.ArtifactHyperViewer) {
+         } else if (editor == OseeCmEditor.ArtifactHyperViewer) {
             AWorkbench.popup("ERROR", "Unimplemented");
          }
       } catch (OseeCoreException ex) {
