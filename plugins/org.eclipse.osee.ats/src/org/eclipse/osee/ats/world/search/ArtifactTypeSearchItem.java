@@ -13,8 +13,8 @@ package org.eclipse.osee.ats.world.search;
 import java.util.Collection;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -38,9 +38,7 @@ public class ArtifactTypeSearchItem extends WorldUISearchItem {
 
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
-      if (artifactType == null) {
-         throw new OseeArgumentException("Inavlid search \"" + getName() + "\"");
-      }
+      Conditions.checkNotNull(artifactType, getName());
       return ArtifactQuery.getArtifactListFromType(artifactType, AtsUtil.getAtsBranch());
    }
 

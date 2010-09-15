@@ -18,6 +18,7 @@ import java.io.InputStream;
 import java.net.URI;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
@@ -30,17 +31,11 @@ public final class ZipBinaryResource implements IResource {
    private final IResourceLocator locator;
    private final File entry;
 
-   public ZipBinaryResource(File entry, IResourceLocator locator) {
-      checkNotNull("FileEntry", entry);
-      checkNotNull("IResourceLocator", locator);
+   public ZipBinaryResource(File entry, IResourceLocator locator) throws OseeCoreException {
+      Conditions.checkNotNull(entry, "FileEntry");
+      Conditions.checkNotNull(locator, "IResourceLocator");
       this.entry = entry;
       this.locator = locator;
-   }
-
-   private void checkNotNull(String argName, Object object) {
-      if (object == null) {
-         throw new IllegalArgumentException(String.format("Argument was null - [%s]", argName));
-      }
    }
 
    @Override

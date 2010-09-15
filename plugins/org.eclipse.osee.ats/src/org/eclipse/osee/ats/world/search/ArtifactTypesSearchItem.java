@@ -14,8 +14,8 @@ import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED
 import java.util.Collection;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -39,9 +39,7 @@ public class ArtifactTypesSearchItem extends WorldUISearchItem {
 
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
-      if (artifactTypes == null || artifactTypes.isEmpty()) {
-         throw new OseeArgumentException("Inavlid search \"" + getName() + "\"");
-      }
+      Conditions.checkNotNullOrEmpty(artifactTypes, getName());
       return ArtifactQuery.getArtifactListFromTypes(artifactTypes, AtsUtil.getAtsBranch(), EXCLUDE_DELETED);
    }
 
