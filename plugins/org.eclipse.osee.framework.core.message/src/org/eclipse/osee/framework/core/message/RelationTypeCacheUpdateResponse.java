@@ -15,7 +15,6 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.enums.StorageState;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 
 /**
@@ -138,7 +137,7 @@ public class RelationTypeCacheUpdateResponse {
       }
    }
 
-   public static RelationTypeCacheUpdateResponse fromCache(Collection<RelationType> types) throws OseeCoreException {
+   public static RelationTypeCacheUpdateResponse fromCache(Collection<RelationType> types) {
       List<RelationTypeRow> rows = new ArrayList<RelationTypeRow>();
       for (RelationType item : types) {
          rows.add(new RelationTypeRow(item.getId(), item.getName(), item.getGuid(), item.getStorageState(),

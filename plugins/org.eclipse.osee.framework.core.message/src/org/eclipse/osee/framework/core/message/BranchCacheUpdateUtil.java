@@ -156,7 +156,7 @@ public final class BranchCacheUpdateUtil {
       TranslationUtil.loadTripletList(message.getMergeBranches(), store, Fields.SRC_DEST_MERGE);
    }
 
-   public static void loadStore(PropertyStore store, AbstractBranchCacheMessage message) throws OseeCoreException {
+   public static void loadStore(PropertyStore store, AbstractBranchCacheMessage message) {
       List<BranchRow> rows = message.getBranchRows();
       for (int index = 0; index < rows.size(); index++) {
          BranchRow row = rows.get(index);

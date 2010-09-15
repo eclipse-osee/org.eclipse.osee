@@ -19,9 +19,10 @@ import org.eclipse.osee.framework.core.util.Conditions;
 /**
  * @author Roberto E. Escobar
  */
-public class ChangeItemUtil {
+public final class ChangeItemUtil {
 
    private ChangeItemUtil() {
+      // Utility Class
    }
 
    public static ChangeVersion getStartingVersion(ChangeItem item) throws OseeCoreException {

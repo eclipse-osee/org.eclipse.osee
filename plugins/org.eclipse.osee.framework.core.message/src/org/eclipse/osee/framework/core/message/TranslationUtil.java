@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.jdk.core.type.Triplet;
 public final class TranslationUtil {
 
    private TranslationUtil() {
+      //Utility Class
    }
 
    public static void loadArrayMap(Map<Integer, String[]> map, PropertyStore store, Enum<?> key) {
