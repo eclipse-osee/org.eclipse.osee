@@ -13,13 +13,13 @@ package org.eclipse.osee.framework.resource.management.internal;
 import java.util.Collection;
 import java.util.concurrent.CopyOnWriteArraySet;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeNotFoundException;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceListener;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.framework.resource.management.IResourceProvider;
 import org.eclipse.osee.framework.resource.management.Options;
-import org.eclipse.osee.framework.resource.management.exception.InvalidLocatorException;
 
 /**
  * @author Roberto E. Escobar
@@ -88,8 +88,9 @@ public class ResourceManager implements IResourceManager {
             break;
          }
       }
+
       if (toReturn == null) {
-         throw new InvalidLocatorException(String.format("Invalid Locator: [%s]", locator));
+         throw new OseeNotFoundException(String.format("Invalid Locator: [%s]", locator));
       }
       return toReturn;
    }
