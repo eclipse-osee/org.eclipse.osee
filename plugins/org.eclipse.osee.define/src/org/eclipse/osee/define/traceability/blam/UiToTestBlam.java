@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.define.traceability.blam;
 
-import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.EXCLUDE_DELETED;
+import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.InputStream;

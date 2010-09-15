@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.artifact;
+package org.eclipse.osee.framework.core.enums;
 
 /**
  * @author Ryan Schmitt
@@ -17,4 +17,8 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 public enum DeletionFlag {
    INCLUDE_DELETED,
    EXCLUDE_DELETED;
+
+   public boolean areDeletedAllowed() {
+      return this == INCLUDE_DELETED;
+   }
 }

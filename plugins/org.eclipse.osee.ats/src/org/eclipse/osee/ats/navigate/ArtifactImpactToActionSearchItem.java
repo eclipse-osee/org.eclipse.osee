@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.navigate;
 
-import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.INCLUDE_DELETED;
+import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;

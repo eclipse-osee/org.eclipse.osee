@@ -11,7 +11,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
-import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.EXCLUDE_DELETED;
+import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;

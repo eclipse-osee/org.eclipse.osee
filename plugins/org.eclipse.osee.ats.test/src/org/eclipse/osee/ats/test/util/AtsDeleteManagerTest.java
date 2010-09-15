@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.test.util;
 
-import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.EXCLUDE_DELETED;
+import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
 import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.Arrays;

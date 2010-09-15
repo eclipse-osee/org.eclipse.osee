@@ -10,19 +10,26 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.test.enums;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import junit.framework.Assert;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.junit.Test;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-//@formatter:off
-   DeletionFlagTest.class,
-   PermissionEnumTest.class,
-//@formatter:on
-})
 /**
+ * Test Case for {@link DeletionFlag}
+ * 
  * @author Roberto E. Escobar
  */
-public class EnumsTestSuite {
-   // Test Suite Class
+public class DeletionFlagTest {
+
+   @Test
+   public void testIncludeDeletion() {
+      DeletionFlag flag = DeletionFlag.INCLUDE_DELETED;
+      Assert.assertTrue(flag.areDeletedAllowed());
+   }
+
+   @Test
+   public void testExcludeDeletion() {
+      DeletionFlag flag = DeletionFlag.EXCLUDE_DELETED;
+      Assert.assertFalse(flag.areDeletedAllowed());
+   }
 }

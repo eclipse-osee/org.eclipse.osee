@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.define.blam.operation;
 
-import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.INCLUDE_DELETED;
+import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;

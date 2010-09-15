@@ -11,7 +11,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.xmerge;
 
-import static org.eclipse.osee.framework.skynet.core.artifact.DeletionFlag.INCLUDE_DELETED;
+import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
