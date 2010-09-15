@@ -32,7 +32,6 @@ import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.framework.resource.management.Options;
-import org.eclipse.osee.framework.resource.management.exception.EmptyResourceException;
 import org.eclipse.osee.framework.resource.management.exception.MalformedLocatorException;
 
 /**
@@ -141,13 +140,6 @@ public class ResourceManagerServlet extends SecureOseeHttpServlet {
          handleError(response,
             String.format("Unable to locate resource: [%s] - %s", request.getRequestURI(), ex.getLocalizedMessage()),
             ex);
-      } catch (EmptyResourceException ex) {
-         response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-         response.setContentType("text/plain");
-         handleError(
-            response,
-            String.format("Unable to store empty resource: [%s] - %s", request.getRequestURI(),
-               ex.getLocalizedMessage()), ex);
       } catch (Exception ex) {
          response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
          response.setContentType("text/plain");
