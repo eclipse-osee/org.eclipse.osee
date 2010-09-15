@@ -20,10 +20,13 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ //
-AttributeTestSuite.class, //
-   LanguageTestSuite.class, //
-   UtilityTestSuite.class, //
+@Suite.SuiteClasses({ 
+//@formatter:off   
+   AttributeTestSuite.class,
+   LanguageTestSuite.class, 
+   UtilityTestSuite.class, 
+   SearchResultToXmlOperationTest.class,
+//@formatter:on   
 })
 public class AllSearchEngineTestSuite {
    // Test Suite Class

@@ -13,23 +13,37 @@ package org.eclipse.osee.framework.search.engine;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.search.engine.utility.ITagCollector;
 
 /**
  * @author Roberto E. Escobar
  */
-public class SearchResult {
+public class SearchResult implements ITagCollector {
 
-   private final Map<Integer, Map<Integer, ArtifactMatch>> entries;
+   private final String rawSearch;
+   private final Map<String, Long> searchTags = new LinkedHashMap<String, Long>();
+   private final Map<Integer, Map<Integer, ArtifactMatch>> entries =
+      new HashMap<Integer, Map<Integer, ArtifactMatch>>();
    private int size;
    private String errorMessage;
 
-   public SearchResult() {
-      this.entries = new HashMap<Integer, Map<Integer, ArtifactMatch>>();
-      size = 0;
+   public SearchResult(String rawSearch) {
+      this.rawSearch = rawSearch;
+      this.errorMessage = Strings.emptyString();
+      this.size = 0;
+   }
+
+   public String getRawSearch() {
+      return rawSearch;
+   }
+
+   public Map<String, Long> getSearchTags() {
+      return searchTags;
    }
 
    public void add(int branchId, int artId, long gammaId) {
@@ -83,56 +97,17 @@ public class SearchResult {
       return size() == 0;
    }
 
-   public class ArtifactMatch {
-      private final int artId;
-      private final int branchId;
-      private boolean hasMatchLocations;
-      private final HashCollection<Long, MatchLocation> attributes;
-
-      public ArtifactMatch(int branchId, int artId) {
-         this.artId = artId;
-         this.branchId = branchId;
-         attributes = new HashCollection<Long, MatchLocation>();
-         hasMatchLocations = false;
-      }
-
-      private void addAttribute(long gammaId, Collection<MatchLocation> matches) {
-         if (matches != null && !matches.isEmpty()) {
-            hasMatchLocations = true;
-         }
-         if (matches == null) {
-            matches = Collections.emptyList();
-         }
-         attributes.put(gammaId, matches);
-      }
-
-      public Set<Long> getAttributes() {
-         return attributes.keySet();
-      }
-
-      public Collection<MatchLocation> getMatchLocations(long gammaId) {
-         return attributes.getValues(gammaId);
-      }
-
-      public boolean hasMatchLocations() {
-         return hasMatchLocations;
-      }
-
-      public int getArtId() {
-         return artId;
-      }
-
-      public int getId() {
-         return branchId;
-      }
-   }
-
    public String getErrorMessage() {
       return errorMessage;
    }
 
    public void setErrorMessage(String errorMessage) {
-      this.errorMessage = errorMessage;
+      this.errorMessage = errorMessage != null ? errorMessage : Strings.emptyString();
+   }
+
+   @Override
+   public void addTag(String word, Long codedTag) {
+      this.searchTags.put(word, codedTag);
    }
 
 }

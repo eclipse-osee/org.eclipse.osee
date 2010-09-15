@@ -17,8 +17,10 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ //
-AttributeDataTest.class //
+@Suite.SuiteClasses({
+//@formatter:off    
+   AttributeDataTest.class
+//@formatter:on
 })
 public class AttributeTestSuite {
    // Test Suite Class

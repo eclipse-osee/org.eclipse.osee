@@ -21,6 +21,7 @@ import org.osgi.service.http.HttpService;
 public final class ServletUtil {
 
    private ServletUtil() {
+      // Utility Class
    }
 
    private static String normalizeContext(String contextName) {

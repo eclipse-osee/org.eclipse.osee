@@ -10,7 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.search.engine;
 
-import org.eclipse.osee.framework.core.model.type.AttributeType;
+import org.eclipse.osee.framework.core.message.SearchRequest;
+import org.eclipse.osee.framework.core.message.SearchResponse;
 import org.eclipse.osee.framework.search.engine.internal.search.SearchStatistics;
 
 /**
@@ -25,7 +26,7 @@ public interface ISearchEngine {
     * @param attributeType search filter. When null, all types are searched.
     * @return search result
     */
-   public SearchResult search(String searchString, int branchId, SearchOptions options, AttributeType... attributeTypes) throws Exception;
+   public void search(SearchRequest searchRequest, SearchResponse searchResponse) throws Exception;
 
    /**
     * Get statistics

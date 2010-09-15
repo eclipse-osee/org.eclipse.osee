@@ -8,20 +8,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.search.engine.test.language;
-
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+package org.eclipse.osee.framework.core.message;
 
 /**
  * @author Roberto E. Escobar
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-//@formatter:off  
-   EnglishLanguageTest.class,
-//@formatter:on
-})
-public class LanguageTestSuite {
-   // Test Suite Class
+public class SearchResponse {
+
 }

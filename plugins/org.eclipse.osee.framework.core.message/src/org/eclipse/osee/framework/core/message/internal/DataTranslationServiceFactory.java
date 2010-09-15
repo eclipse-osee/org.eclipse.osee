@@ -34,6 +34,8 @@ import org.eclipse.osee.framework.core.message.internal.translation.OseeImportMo
 import org.eclipse.osee.framework.core.message.internal.translation.OseeImportModelResponseTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.PurgeBranchRequestTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.RelationTypeCacheUpdateResponseTranslator;
+import org.eclipse.osee.framework.core.message.internal.translation.SearchRequestTranslator;
+import org.eclipse.osee.framework.core.message.internal.translation.SearchResponseTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.TableDataTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.TransactionCacheUpdateResponseTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.TransactionRecordTranslator;
@@ -97,6 +99,9 @@ public class DataTranslationServiceFactory {
       service.addTranslator(new TableDataTranslator(), CoreTranslatorId.TABLE_DATA);
 
       service.addTranslator(new DatastoreInitRequestTranslator(), CoreTranslatorId.OSEE_DATASTORE_INIT_REQUEST);
+
+      service.addTranslator(new SearchRequestTranslator(), CoreTranslatorId.SEARCH_REQUEST);
+      service.addTranslator(new SearchResponseTranslator(), CoreTranslatorId.SEARCH_RESPONSE);
       return service;
    }
 }

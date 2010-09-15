@@ -49,7 +49,10 @@ public enum CoreTranslatorId implements ITranslatorId {
    BRANCH_CREATION_RESPONSE,
    TABLE_DATA,
 
-   STATUS_RESPONSE;
+   STATUS_RESPONSE,
+
+   SEARCH_REQUEST,
+   SEARCH_RESPONSE;
 
    @Override
    public String getKey() {

@@ -12,17 +12,18 @@ package org.eclipse.osee.framework.search.engine.internal.search;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
+import org.eclipse.osee.framework.core.message.SearchRequest;
+import org.eclipse.osee.framework.core.message.SearchResponse;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.search.engine.IAttributeTaggerProviderManager;
 import org.eclipse.osee.framework.search.engine.ISearchEngine;
 import org.eclipse.osee.framework.search.engine.MatchLocation;
-import org.eclipse.osee.framework.search.engine.SearchOptions;
 import org.eclipse.osee.framework.search.engine.SearchOptions.SearchOptionsEnum;
 import org.eclipse.osee.framework.search.engine.SearchResult;
 import org.eclipse.osee.framework.search.engine.attribute.AttributeData;
-import org.eclipse.osee.framework.search.engine.data.AttributeSearch;
+import org.eclipse.osee.framework.search.engine.attribute.AttributeDataStore;
 import org.eclipse.osee.framework.search.engine.internal.Activator;
 import org.eclipse.osee.framework.search.engine.utility.TagProcessor;
 
@@ -42,46 +43,59 @@ public class SearchEngine implements ISearchEngine {
    }
 
    @Override
-   public SearchResult search(String searchString, int branchId, SearchOptions options, AttributeType... attributeTypes) throws Exception {
-      SearchResult results = new SearchResult();
+   public void search(SearchRequest searchRequest, SearchResponse searchResponse) throws Exception {
+      String searchString = searchRequest.getRawSearch();
+
+      SearchResult results = new SearchResult(searchString);
 
       long startTime = System.currentTimeMillis();
 
-      AttributeSearch attributeSearch =
-         new AttributeSearch(tagProcessor, searchString, branchId, options, attributeTypes);
-
-      Collection<AttributeData> tagMatches = attributeSearch.getMatchingAttributes(results);
-      long timeAfterPass1 = System.currentTimeMillis() - startTime;
-      long secondPass = System.currentTimeMillis();
-
-      boolean bypassSecondPass = !options.getBoolean(SearchOptionsEnum.match_word_order.asStringOption());
-      if (bypassSecondPass) {
-         for (AttributeData attributeData : tagMatches) {
-            results.add(attributeData.getBranchId(), attributeData.getArtId(), attributeData.getGammaId());
-         }
+      tagProcessor.collectFromString(results.getRawSearch(), results);
+      Map<String, Long> searchTags = results.getSearchTags();
+      if (searchTags.isEmpty()) {
+         results.setErrorMessage("No words found in search string. Please try again.");
       } else {
-         for (AttributeData attributeData : tagMatches) {
-            try {
-               List<MatchLocation> locations = taggingManager.find(attributeData, searchString, options);
-               if (!locations.isEmpty()) {
-                  results.add(attributeData.getBranchId(), attributeData.getArtId(), attributeData.getGammaId(),
-                     locations);
+         long startDataStoreSearch = System.currentTimeMillis();
+         Collection<AttributeData> tagMatches =
+            AttributeDataStore.getAttributesByTags(searchRequest.getBranchId(), searchRequest.isIncludeDeleted(),
+               searchTags.values(), attributeTypes);
+         String message =
+            String.format("Attribute Search Query found [%d] in [%d] ms", tagMatches.size(),
+               System.currentTimeMillis() - startDataStoreSearch);
+         OseeLog.log(SearchEngine.class, Level.INFO, message);
+
+         long timeAfterPass1 = System.currentTimeMillis() - startTime;
+         long secondPass = System.currentTimeMillis();
+
+         boolean bypassSecondPass = !options.getBoolean(SearchOptionsEnum.match_word_order.asStringOption());
+         if (bypassSecondPass) {
+            for (AttributeData attributeData : tagMatches) {
+               results.add(attributeData.getBranchId(), attributeData.getArtId(), attributeData.getGammaId());
+            }
+         } else {
+            for (AttributeData attributeData : tagMatches) {
+               try {
+                  List<MatchLocation> locations = taggingManager.find(attributeData, searchString, options);
+                  if (!locations.isEmpty()) {
+                     results.add(attributeData.getBranchId(), attributeData.getArtId(), attributeData.getGammaId(),
+                        locations);
+                  }
+               } catch (Exception ex) {
+                  OseeLog.log(Activator.class, Level.SEVERE, String.format("Error processing: [%s]", attributeData));
                }
-            } catch (Exception ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, String.format("Error processing: [%s]", attributeData));
             }
          }
+         secondPass = System.currentTimeMillis() - secondPass;
+
+         String firstPassMsg =
+            String.format("Pass 1: [%d items in %d ms]);", bypassSecondPass ? results.size() : tagMatches.size(),
+               timeAfterPass1);
+         String secondPassMsg = String.format(" Pass 2: [%d items in %d ms]", results.size(), secondPass);
+
+         System.out.println(String.format("Search for [%s] - %s%s", searchString, firstPassMsg,
+            bypassSecondPass ? "" : secondPassMsg));
+         statistics.addEntry(searchString, branchId, options, results.size(), System.currentTimeMillis() - startTime);
       }
-      secondPass = System.currentTimeMillis() - secondPass;
-
-      String firstPassMsg =
-         String.format("Pass 1: [%d items in %d ms]);", bypassSecondPass ? results.size() : tagMatches.size(),
-            timeAfterPass1);
-      String secondPassMsg = String.format(" Pass 2: [%d items in %d ms]", results.size(), secondPass);
-
-      System.out.println(String.format("Search for [%s] - %s%s", searchString, firstPassMsg,
-         bypassSecondPass ? "" : secondPassMsg));
-      statistics.addEntry(searchString, branchId, options, results.size(), System.currentTimeMillis() - startTime);
       return results;
    }
 
@@ -92,10 +106,12 @@ public class SearchEngine implements ISearchEngine {
 
    @Override
    public SearchStatistics getStatistics() {
+      SearchStatistics toReturn = null;
       try {
-         return this.statistics.clone();
+         toReturn = this.statistics.clone();
       } catch (CloneNotSupportedException ex) {
-         return SearchStatistics.EMPTY_STATS;
+         toReturn = SearchStatistics.EMPTY_STATS;
       }
+      return toReturn;
    }
 }

@@ -11,17 +11,16 @@
 package org.eclipse.osee.framework.manager.servlet;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Collection;
+import java.io.StringWriter;
 import java.util.logging.Level;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
+import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.core.server.SecureOseeHttpServlet;
-import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.JoinUtility.ArtifactJoinQuery;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -30,10 +29,9 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.manager.servlet.data.HttpSearchInfo;
 import org.eclipse.osee.framework.manager.servlet.internal.Activator;
 import org.eclipse.osee.framework.search.engine.ISearchEngine;
-import org.eclipse.osee.framework.search.engine.MatchLocation;
 import org.eclipse.osee.framework.search.engine.SearchOptions.SearchOptionsEnum;
 import org.eclipse.osee.framework.search.engine.SearchResult;
-import org.eclipse.osee.framework.search.engine.SearchResult.ArtifactMatch;
+import org.eclipse.osee.framework.search.engine.SearchResultToXmlOperation;
 
 /**
  * @author Roberto E. Escobar
@@ -43,23 +41,23 @@ public class SearchEngineServlet extends SecureOseeHttpServlet {
    private static final long serialVersionUID = 3722992788943330970L;
 
    private final ISearchEngine searchEngine;
-   private final IOseeCachingService cacheService;
+   private final AttributeTypeCache attributeTypeCache;
 
-   public SearchEngineServlet(ISessionManager sessionManager, ISearchEngine searchEngine, IOseeCachingService cacheService) {
+   public SearchEngineServlet(ISessionManager sessionManager, ISearchEngine searchEngine, AttributeTypeCache attributeTypeCache) {
       super(sessionManager);
       this.searchEngine = searchEngine;
-      this.cacheService = cacheService;
+      this.attributeTypeCache = attributeTypeCache;
    }
 
    @Override
-   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
       try {
          HttpSearchInfo searchInfo = HttpSearchInfo.loadFromPost(request);
 
          String clientVersion = ModCompatible.getClientVersion(getSessionManager(), request.getParameter("sessionId"));
          boolean isCompatible = ModCompatible.is_0_9_2_Compatible(clientVersion);
 
-         executeSearch(isCompatible, searchInfo, response, false);
+         executeSearch(isCompatible, searchInfo, response);
       } catch (Exception ex) {
          response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
          response.setContentType("text/plain");
@@ -69,10 +67,8 @@ public class SearchEngineServlet extends SecureOseeHttpServlet {
       }
    }
 
-   private void executeSearch(boolean isCompatible, HttpSearchInfo searchInfo, HttpServletResponse response, boolean wasFromGet) throws IOException {
+   private void executeSearch(boolean isCompatible, HttpSearchInfo searchInfo, HttpServletResponse response) throws IOException {
       try {
-         AttributeTypeCache attributeTypeCache = cacheService.getAttributeTypeCache();
-
          String[] attributeTypeGuids = searchInfo.getAttributeTypeGuids();
          AttributeType[] attributeTypes = new AttributeType[attributeTypeGuids.length];
 
@@ -87,14 +83,25 @@ public class SearchEngineServlet extends SecureOseeHttpServlet {
 
          SearchResult results =
             searchEngine.search(searchInfo.getQuery(), searchInfo.getId(), searchInfo.getOptions(), attributeTypes);
-         response.setStatus(wasFromGet ? HttpServletResponse.SC_OK : HttpServletResponse.SC_ACCEPTED);
+         StringWriter writer = new StringWriter();
+         IOperation operation = new SearchResultToXmlOperation(results, writer);
+         Operations.executeWork(operation);
+
+         response.setStatus(HttpServletResponse.SC_ACCEPTED);
+         response.setCharacterEncoding("UTF-8");
+         response.setContentType("text/xml");
+         response.getWriter().write(writer.toString());
+
          if (results.isEmpty() && Strings.isValid(results.getErrorMessage())) {
+
             sendEmptyAsXml(response, results);
          } else if (!results.isEmpty()) {
             long start = System.currentTimeMillis();
             if (!searchInfo.getOptions().getBoolean(SearchOptionsEnum.as_xml.asStringOption())) {
                sendAsDbJoin(response, results);
             } else {
+               response.setCharacterEncoding("UTF-8");
+               response.setContentType("text/xml");
                sendAsXml(response, results);
             }
             System.out.println(String.format("Search for [%s] - [%d results sent in %d ms]", searchInfo.getQuery(),
@@ -110,8 +117,6 @@ public class SearchEngineServlet extends SecureOseeHttpServlet {
             String.format("Failed to respond to a search engine servlet request [%s]", searchInfo.toString()), ex);
          response.getWriter().write(Lib.exceptionToString(ex));
       }
-      response.getWriter().flush();
-      response.getWriter().close();
    }
 
    private void sendAsDbJoin(HttpServletResponse response, SearchResult results) throws Exception {
@@ -126,49 +131,5 @@ public class SearchEngineServlet extends SecureOseeHttpServlet {
       }
       joinQuery.store();
       response.getWriter().write(String.format("%d,%d", joinQuery.getQueryId(), joinQuery.size()));
-   }
-
-   private void sendEmptyAsXml(HttpServletResponse response, SearchResult results) throws Exception {
-      response.setCharacterEncoding("UTF-8");
-      response.setContentType("text/xml");
-      PrintWriter writer = response.getWriter();
-
-      writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>");
-      writer.write("<search>");
-      writer.write(String.format("<errorMessage=\"%s\">", results.getErrorMessage()));
-      writer.write("</search>");
-   }
-
-   /**
-    * <match artId="" branchId=""> <attr gammaId=""><location start="" end="" /></attr> </match>
-    */
-   private void sendAsXml(HttpServletResponse response, SearchResult results) throws Exception {
-      response.setCharacterEncoding("UTF-8");
-      response.setContentType("text/xml");
-      PrintWriter writer = response.getWriter();
-
-      writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>");
-      writer.write("<search>");
-      writer.write(String.format("<error message=\"%s\"", results.getErrorMessage()));
-      for (Integer branchId : results.getBranchIds()) {
-         writer.write(String.format("<match branchId=\"%s\">", branchId));
-         for (ArtifactMatch match : results.getArtifacts(branchId)) {
-            writer.write(String.format("<art artId=\"%s\" >", match.getArtId()));
-            for (Long gammaId : match.getAttributes()) {
-               Collection<MatchLocation> locations = match.getMatchLocations(gammaId);
-               writer.write(String.format("<attr gammaId=\"%s\">", gammaId));
-               if (locations != null) {
-                  for (MatchLocation location : locations) {
-                     writer.write(String.format("<location start=\"%s\" end=\"%s\" />", location.getStartPosition(),
-                        location.getEndPosition()));
-                  }
-               }
-               writer.write("</attr>");
-            }
-            writer.write("</art>");
-         }
-         writer.write("</match>");
-      }
-      writer.write("</search>");
    }
 }

@@ -26,6 +26,8 @@ import org.osgi.framework.BundleContext;
 
 public class Activator implements BundleActivator {
 
+   public static final String PLUGIN_ID = "org.eclipse.osee.framework.search.engine";
+
    private final Collection<ServiceDependencyTracker> trackers = new ArrayList<ServiceDependencyTracker>();
 
    @Override
