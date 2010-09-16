@@ -14,7 +14,6 @@ package org.eclipse.osee.framework.search.engine.internal.tagger;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.database.core.DbTransaction;
 import org.eclipse.osee.framework.database.core.JoinUtility;
@@ -84,7 +83,7 @@ public abstract class InputToTagQueueTx extends DbTransaction {
       }
    }
 
-   protected void addEntry(OseeConnection connection, long gammaId) throws OseeDataStoreException {
+   protected void addEntry(OseeConnection connection, long gammaId) throws OseeCoreException {
       if (currentJoinQuery == null) {
          currentJoinQuery = JoinUtility.createTagQueueJoinQuery();
       }
@@ -98,7 +97,7 @@ public abstract class InputToTagQueueTx extends DbTransaction {
       return this.isCacheAll != true && this.currentJoinQuery != null && this.currentJoinQuery.size() > this.cacheLimit;
    }
 
-   private void storeQueryIds(OseeConnection connection) throws OseeDataStoreException {
+   private void storeQueryIds(OseeConnection connection) throws OseeCoreException {
       if (currentJoinQuery != null && !currentJoinQuery.isEmpty()) {
          currentJoinQuery.store(connection);
          queryIds.add(currentJoinQuery.getQueryId());

@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.database.internal.core;
 
 import java.util.HashMap;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeSequence;
@@ -55,7 +56,7 @@ public class OseeSequenceImpl implements IOseeSequence {
 
    @Override
    @SuppressWarnings("unchecked")
-   public synchronized long getNextSequence(String sequenceName) throws OseeDataStoreException {
+   public synchronized long getNextSequence(String sequenceName) throws OseeCoreException {
       SequenceRange range = getRange(sequenceName);
       if (range.lastAvailable == 0) {
          long lastValue = -1L;
@@ -88,89 +89,89 @@ public class OseeSequenceImpl implements IOseeSequence {
    }
 
    @SuppressWarnings("unchecked")
-   private void internalInitializeSequence(String sequenceName) throws OseeDataStoreException {
+   private void internalInitializeSequence(String sequenceName) throws OseeCoreException {
       SequenceRange range = getRange(sequenceName);
       range.lastAvailable = 0;
       getDatabase().runPreparedUpdate(INSERT_SEQUENCE, 0, sequenceName);
    }
 
    @Override
-   public int getNextSessionId() throws OseeDataStoreException {
+   public int getNextSessionId() throws OseeCoreException {
       return (int) getNextSequence(TTE_SESSION_SEQ);
    }
 
    @Override
-   public int getNextTransactionId() throws OseeDataStoreException {
+   public int getNextTransactionId() throws OseeCoreException {
       return (int) getNextSequence(TRANSACTION_ID_SEQ);
    }
 
    @Override
-   public int getNextArtifactId() throws OseeDataStoreException {
+   public int getNextArtifactId() throws OseeCoreException {
       return (int) getNextSequence(ART_ID_SEQ);
    }
 
    @Override
-   public int getNextOseeEnumTypeId() throws OseeDataStoreException {
+   public int getNextOseeEnumTypeId() throws OseeCoreException {
       return (int) getNextSequence(ENUM_TYPE_ID_SEQ);
    }
 
    @Override
-   public int getNextGammaId() throws OseeDataStoreException {
+   public int getNextGammaId() throws OseeCoreException {
       return (int) getNextSequence(GAMMA_ID_SEQ);
    }
 
    @Override
-   public int getNextArtifactTypeId() throws OseeDataStoreException {
+   public int getNextArtifactTypeId() throws OseeCoreException {
       return (int) getNextSequence(ART_TYPE_ID_SEQ);
    }
 
    @Override
-   public int getNextAttributeBaseTypeId() throws OseeDataStoreException {
+   public int getNextAttributeBaseTypeId() throws OseeCoreException {
       return (int) getNextSequence(ATTR_BASE_TYPE_ID_SEQ);
    }
 
    @Override
-   public int getNextAttributeProviderTypeId() throws OseeDataStoreException {
+   public int getNextAttributeProviderTypeId() throws OseeCoreException {
       return (int) getNextSequence(ATTR_PROVIDER_TYPE_ID_SEQ);
    }
 
    @Override
-   public int getNextAttributeId() throws OseeDataStoreException {
+   public int getNextAttributeId() throws OseeCoreException {
       return (int) getNextSequence(ATTR_ID_SEQ);
    }
 
    @Override
-   public int getNextAttributeTypeId() throws OseeDataStoreException {
+   public int getNextAttributeTypeId() throws OseeCoreException {
       return (int) getNextSequence(ATTR_TYPE_ID_SEQ);
    }
 
    @Override
-   public int getNextFactoryId() throws OseeDataStoreException {
+   public int getNextFactoryId() throws OseeCoreException {
       return (int) getNextSequence(FACTORY_ID_SEQ);
    }
 
    @Override
-   public int getNextBranchId() throws OseeDataStoreException {
+   public int getNextBranchId() throws OseeCoreException {
       return (int) getNextSequence(BRANCH_ID_SEQ);
    }
 
    @Override
-   public int getNextRelationTypeId() throws OseeDataStoreException {
+   public int getNextRelationTypeId() throws OseeCoreException {
       return (int) getNextSequence(REL_LINK_TYPE_ID_SEQ);
    }
 
    @Override
-   public int getNextRelationId() throws OseeDataStoreException {
+   public int getNextRelationId() throws OseeCoreException {
       return (int) getNextSequence(REL_LINK_ID_SEQ);
    }
 
    @Override
-   public int getNextImportId() throws OseeDataStoreException {
+   public int getNextImportId() throws OseeCoreException {
       return (int) getNextSequence(IMPORT_ID_SEQ);
    }
 
    @Override
-   public int getNextImportMappedIndexId() throws OseeDataStoreException {
+   public int getNextImportMappedIndexId() throws OseeCoreException {
       return (int) getNextSequence(IMPORT_MAPPED_INDEX_SEQ);
    }
 

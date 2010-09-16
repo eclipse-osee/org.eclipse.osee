@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -386,7 +387,7 @@ public class AttributeConflict extends Conflict {
             inputStream1.reset();
             inputStream2.reset();
          } catch (IOException ex) {
-            throw new OseeCoreException(ex);
+            OseeExceptions.wrapAndThrow(ex);
          }
 
          return equals;

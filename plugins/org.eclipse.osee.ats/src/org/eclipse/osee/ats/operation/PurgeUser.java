@@ -16,7 +16,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.DbTransaction;
 import org.eclipse.osee.framework.database.core.OseeConnection;
@@ -113,7 +112,7 @@ public class PurgeUser extends AbstractBlam {
       }
    }
 
-   private void findAndUpdateAuthoredTransactions(OseeConnection connection, final User fromUser, final User toUser) throws OseeDataStoreException {
+   private void findAndUpdateAuthoredTransactions(OseeConnection connection, final User fromUser, final User toUser) throws OseeCoreException {
       numOfAuthoredTransactions =
          ConnectionHandler.runPreparedQueryFetchInt(defaultUpdateValue, GET_AUTHORED_TRANSACTIONS,
             new Object[] {fromUser.getArtId()});
@@ -123,12 +122,12 @@ public class PurgeUser extends AbstractBlam {
             fromUser.getArtId()});
    }
 
-   private void findAndUpdateRelations(OseeConnection connection, final User fromUser, final User toUser) throws OseeDataStoreException {
+   private void findAndUpdateRelations(OseeConnection connection, final User fromUser, final User toUser) throws OseeCoreException {
       updateRelationA(connection, fromUser, toUser);
       updateRelationB(connection, fromUser, toUser);
    }
 
-   private void updateRelationA(OseeConnection connection, final User fromUser, final User toUser) throws OseeDataStoreException {
+   private void updateRelationA(OseeConnection connection, final User fromUser, final User toUser) throws OseeCoreException {
       numOfASideRelations =
          ConnectionHandler.runPreparedQueryFetchInt(defaultUpdateValue, GET_RELATIONS_ASIDE,
             new Object[] {fromUser.getArtId()});
@@ -138,7 +137,7 @@ public class PurgeUser extends AbstractBlam {
             fromUser.getArtId()});
    }
 
-   private void updateRelationB(OseeConnection connection, final User fromUser, final User toUser) throws OseeDataStoreException {
+   private void updateRelationB(OseeConnection connection, final User fromUser, final User toUser) throws OseeCoreException {
       numOfBSideRelations =
          ConnectionHandler.runPreparedQueryFetchInt(defaultUpdateValue, GET_RELATIONS_BSIDE,
             new Object[] {fromUser.getArtId()});

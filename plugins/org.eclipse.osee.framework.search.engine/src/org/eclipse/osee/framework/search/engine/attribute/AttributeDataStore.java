@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
@@ -51,7 +50,7 @@ public final class AttributeDataStore {
       // Utility Class
    }
 
-   public static Collection<AttributeData> getAttribute(final OseeConnection connection, final int tagQueueQueryId) throws OseeDataStoreException {
+   public static Collection<AttributeData> getAttribute(final OseeConnection connection, final int tagQueueQueryId) throws OseeCoreException {
       final Collection<AttributeData> attributeData = new ArrayList<AttributeData>();
 
       IOseeStatement chStmt = ConnectionHandler.getStatement(connection);
@@ -132,7 +131,7 @@ public final class AttributeDataStore {
       return builder.toString();
    }
 
-   public static int getTotalTaggableItems(OseeConnection connection, final int branchId) throws OseeDataStoreException {
+   public static int getTotalTaggableItems(OseeConnection connection, final int branchId) throws OseeCoreException {
       return ConnectionHandler.runPreparedQueryFetchInt(connection, -1, getBranchTaggingQueries(branchId, true),
          getAllTaggableGammasByBranchQueryData(branchId));
    }

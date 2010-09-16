@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.services.IOseeCachingServiceProvider;
@@ -114,7 +113,7 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
       branchCache.decache(branch);
    }
 
-   private void purgeGammas(String tableName, double percentage) throws OseeDataStoreException {
+   private void purgeGammas(String tableName, double percentage) throws OseeCoreException {
       if (!deleteableGammas.isEmpty()) {
          monitor.setTaskName(String.format("Purge from %s", tableName));
          checkForCancelledStatus(monitor);
@@ -124,7 +123,7 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
       monitor.worked(calculateWork(percentage));
    }
 
-   private void purgeFromTable(String tableName, String sql, double percentage, Object... data) throws OseeDataStoreException {
+   private void purgeFromTable(String tableName, String sql, double percentage, Object... data) throws OseeCoreException {
       monitor.setTaskName(String.format("Purge from %s", tableName));
       checkForCancelledStatus(monitor);
       oseeDatabaseProvider.getOseeDatabaseService().runPreparedUpdate(connection, sql, data);
@@ -144,7 +143,7 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
       }
    }
 
-   private void purgeAddressing(double percentage) throws OseeDataStoreException {
+   private void purgeAddressing(double percentage) throws OseeCoreException {
       monitor.setTaskName("Purge txs addressing");
       IOseeStatement chStmt = oseeDatabaseProvider.getOseeDatabaseService().getStatement(connection);
       List<Object[]> addressing = new ArrayList<Object[]>();

@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.config.demo.artifact;
 
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
  * @author Donald G. Dunne
  */
 public class DemoCodeTeamWorkflowArtifact extends TeamWorkFlowArtifact {
-   public DemoCodeTeamWorkflowArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeDataStoreException {
+   public DemoCodeTeamWorkflowArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeCoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
 }

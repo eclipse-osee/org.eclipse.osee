@@ -15,7 +15,8 @@ import java.io.InputStream;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.sql.Types;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.IVariantData;
 import org.eclipse.osee.framework.jdk.core.type.VariantData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -25,7 +26,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  * @author Roberto E. Escobar
  */
 public class ResultSetProcessor {
-   public static IVariantData parse(IOseeStatement chStmt) throws OseeDataStoreException {
+   public static IVariantData parse(IOseeStatement chStmt) throws OseeCoreException {
       IVariantData toReturn = new VariantData();
       int numberOfColumns = chStmt.getColumnCount() + 1;
       for (int index = 1; index < numberOfColumns; index++) {
@@ -57,33 +58,24 @@ public class ResultSetProcessor {
                }
                break;
             default:
-               try {
-                  String value = chStmt.getString(name);
-                  if (Strings.isValid(value) != false) {
-                     value = value.trim();
-                  }
-                  toReturn.put(upperCasedName, chStmt.getString(name));
-               } catch (OseeDataStoreException ex) {
-                  String typeName = chStmt.getColumnTypeName(columnIndex);
-                  throw new OseeDataStoreException(getErrorMessage(name, typeName), ex);
+               String value = chStmt.getString(name);
+               if (Strings.isValid(value) != false) {
+                  value = value.trim();
                }
+               toReturn.put(upperCasedName, chStmt.getString(name));
                break;
          }
       }
       return toReturn;
    }
 
-   private static String getErrorMessage(String name, String typeName) {
-      return String.format("Unable to convert [%s] of raw type [%s] to string.", name, typeName);
-   }
-
-   private static byte[] streamToByteArray(InputStream inputStream) throws OseeDataStoreException {
+   private static byte[] streamToByteArray(InputStream inputStream) throws OseeCoreException {
       byte[] toReturn = new byte[0];
       if (inputStream != null) {
          try {
             toReturn = Lib.inputStreamToBytes(inputStream);
          } catch (IOException ex) {
-            throw new OseeDataStoreException(ex);
+            OseeExceptions.wrapAndThrow(ex);
          }
       }
       return toReturn;

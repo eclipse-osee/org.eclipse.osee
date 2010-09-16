@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
@@ -102,7 +101,7 @@ public final class ArtifactImageManager {
       }
    }
 
-   private synchronized static void ensureArtifactTypeImagesLoaded() throws OseeDataStoreException {
+   private synchronized static void ensureArtifactTypeImagesLoaded() throws OseeCoreException {
       if (!artifactTypeImagesLoaded) {
          artifactTypeImagesLoaded = true;
          // Load base images from database (which can override the ImageManager.registerImage() calls provided
@@ -227,11 +226,11 @@ public final class ArtifactImageManager {
       providersOverrideImageMap.put(artifactTypeName, imageProvider);
    }
 
-   public synchronized static void registerBaseImage(IArtifactType artifactType, KeyedImage oseeImage, ArtifactImageProvider provider) throws OseeDataStoreException {
+   public synchronized static void registerBaseImage(IArtifactType artifactType, KeyedImage oseeImage, ArtifactImageProvider provider) throws OseeCoreException {
       registerBaseImage(artifactType.getName(), oseeImage, provider);
    }
 
-   public synchronized static void registerBaseImage(String artifactTypeName, KeyedImage oseeImage, ArtifactImageProvider provider) throws OseeDataStoreException {
+   public synchronized static void registerBaseImage(String artifactTypeName, KeyedImage oseeImage, ArtifactImageProvider provider) throws OseeCoreException {
       ensureArtifactTypeImagesLoaded();
 
       boolean alreadyProvided = artifactTypeImageMap.containsKey(artifactTypeName);
@@ -306,7 +305,7 @@ public final class ArtifactImageManager {
       setArtifactTypeImageInDb(ArtifactTypeManager.getType(artifactType), byteInput);
    }
 
-   public static void setArtifactTypeImageInDb(ArtifactType artifactType, ByteArrayInputStream byteInput) throws OseeDataStoreException {
+   public static void setArtifactTypeImageInDb(ArtifactType artifactType, ByteArrayInputStream byteInput) throws OseeCoreException {
       Object imageData = byteInput != null ? byteInput : SQL3DataType.BLOB;
       ConnectionHandler.runPreparedUpdate(UPDATE_ARTIFACT_TYPE_IMAGE, imageData, artifactType.getId());
       loadCache();

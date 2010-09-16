@@ -48,7 +48,7 @@ public final class HttpMessage {
          }
       } catch (Exception ex) {
          OseeExceptions.wrapAndThrow(ex);
-         return null; // this line is not reachable since wrapAndThrow always throws an exception
+         return null; // unreachable since wrapAndThrow() always throws an exception
       } finally {
          Lib.close(inputStream);
       }

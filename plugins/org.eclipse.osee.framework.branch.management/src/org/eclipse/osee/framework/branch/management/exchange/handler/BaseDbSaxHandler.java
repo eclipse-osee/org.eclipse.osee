@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.branch.management.exchange.handler;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.branch.management.exchange.TranslationManager;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.resource.management.Options;
@@ -91,14 +91,14 @@ public abstract class BaseDbSaxHandler extends BaseExportImportSaxHandler {
       this.data.add(objects);
    }
 
-   protected void store(OseeConnection connection) throws OseeDataStoreException {
+   protected void store(OseeConnection connection) throws OseeCoreException {
       if (this.data.isEmpty() != true) {
          getDatabaseService().runBatchUpdate(connection, getMetaData().getQuery(), this.data);
          this.data.clear();
       }
    }
 
-   public void clearDataTable() throws OseeDataStoreException {
+   public void clearDataTable() throws OseeCoreException {
       getDatabaseService().runPreparedUpdate(connection, String.format("DELETE FROM %s", getMetaData().getTableName()));
    }
 

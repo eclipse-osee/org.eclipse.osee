@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
@@ -47,15 +47,15 @@ public class SearchTagDataStore {
       this.databaseService = databaseService;
    }
 
-   public long getTotalQueryIdsInQueue() throws OseeDataStoreException {
+   public long getTotalQueryIdsInQueue() throws OseeCoreException {
       return databaseService.runPreparedQueryFetchObject(-1L, SELECT_TOTAL_QUERY_IDS_IN_QUEUE);
    }
 
-   public long getTotalTags() throws OseeDataStoreException {
+   public long getTotalTags() throws OseeCoreException {
       return databaseService.runPreparedQueryFetchObject(-1L, SELECT_TOTAL_TAGS);
    }
 
-   public int deleteTags(OseeConnection connection, int queryId) throws OseeDataStoreException {
+   public int deleteTags(OseeConnection connection, int queryId) throws OseeCoreException {
       int numberDeleted = 0;
       IOseeStatement chStmt = databaseService.getStatement(connection);
       try {
@@ -73,11 +73,11 @@ public class SearchTagDataStore {
       return numberDeleted;
    }
 
-   public int deleteTags(OseeConnection connection, Collection<IAttributeLocator> locators) throws OseeDataStoreException {
+   public int deleteTags(OseeConnection connection, Collection<IAttributeLocator> locators) throws OseeCoreException {
       return deleteTags(connection, locators.toArray(new IAttributeLocator[locators.size()]));
    }
 
-   public int deleteTags(OseeConnection connection, IAttributeLocator... locators) throws OseeDataStoreException {
+   public int deleteTags(OseeConnection connection, IAttributeLocator... locators) throws OseeCoreException {
       int numberDeleted = 0;
       if (locators.length > 0) {
          List<Object[]> datas = new ArrayList<Object[]>();
@@ -89,11 +89,11 @@ public class SearchTagDataStore {
       return numberDeleted;
    }
 
-   public int storeTags(OseeConnection connection, Collection<SearchTag> searchTags) throws OseeDataStoreException {
+   public int storeTags(OseeConnection connection, Collection<SearchTag> searchTags) throws OseeCoreException {
       return storeTags(connection, searchTags.toArray(new SearchTag[searchTags.size()]));
    }
 
-   public static int storeTags(OseeConnection connection, SearchTag... searchTags) throws OseeDataStoreException {
+   public static int storeTags(OseeConnection connection, SearchTag... searchTags) throws OseeCoreException {
       int updated = 0;
       if (searchTags != null && searchTags.length > 0) {
          for (SearchTag searchTag : searchTags) {
@@ -111,7 +111,7 @@ public class SearchTagDataStore {
       return fetchTagEntries(connection, codedTags.toArray(new Long[codedTags.size()]));
    }
 
-   public static Set<IAttributeLocator> fetchTagEntries(OseeConnection connection, Long... codedTags) throws OseeDataStoreException {
+   public static Set<IAttributeLocator> fetchTagEntries(OseeConnection connection, Long... codedTags) throws OseeCoreException {
       final Set<IAttributeLocator> toReturn = new HashSet<IAttributeLocator>();
 
       for (Long codedTag : codedTags) {

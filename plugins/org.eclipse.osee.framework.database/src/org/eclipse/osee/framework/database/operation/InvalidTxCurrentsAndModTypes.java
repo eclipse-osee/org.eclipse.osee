@@ -16,7 +16,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxChange;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.OperationReporter;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
@@ -53,7 +53,7 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
       txsTableName = archived ? "_archived" : "";
    }
 
-   private void fixIssues(IProgressMonitor monitor) throws OseeDataStoreException {
+   private void fixIssues(IProgressMonitor monitor) throws OseeCoreException {
       if (isFixOperationEnabled) {
          checkForCancelledStatus(monitor);
          ConnectionHandler.runBatchUpdate(String.format(DELETE_ADDRESS, txsTableName), purgeData);

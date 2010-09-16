@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.branch.management.ImportOptions;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.resource.management.Options;
@@ -48,7 +48,7 @@ public class TranslationManager {
       }
    }
 
-   public void loadTranslators(String sourceDatabaseId) throws OseeDataStoreException {
+   public void loadTranslators(String sourceDatabaseId) throws OseeCoreException {
       for (IdTranslator translator : translators) {
          translator.load(sourceDatabaseId);
       }
@@ -62,7 +62,7 @@ public class TranslationManager {
       return toReturn;
    }
 
-   public void store(OseeConnection connection, int importIdIndex) throws OseeDataStoreException {
+   public void store(OseeConnection connection, int importIdIndex) throws OseeCoreException {
       List<Object[]> data = new ArrayList<Object[]>();
       for (IdTranslator translatedIdMap : translators) {
          if (translatedIdMap.hasItemsToStore()) {
@@ -78,7 +78,7 @@ public class TranslationManager {
       return translatorMap.containsKey(name.toLowerCase());
    }
 
-   public Object translate(String name, Object original) throws OseeDataStoreException {
+   public Object translate(String name, Object original) throws OseeCoreException {
       Object toReturn = original;
       if (original != null && !useOriginalIds) {
          IdTranslator translator = translatorMap.get(name.toLowerCase());

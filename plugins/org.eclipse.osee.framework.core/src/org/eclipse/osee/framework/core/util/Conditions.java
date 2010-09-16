@@ -48,7 +48,7 @@ public final class Conditions {
    public static void checkNotNullOrEmpty(Collection<? extends Object> collection, String objectName) throws OseeCoreException {
       checkNotNull(collection, objectName);
       if (collection.isEmpty()) {
-         throw new OseeArgumentException("%s cannot be empty", objectName);
+         throw new OseeArgumentException(String.format("%s cannot be empty", objectName));
       }
    }
 

@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.core.datastore.schema.data.ReferenceClause.OnU
 import org.eclipse.osee.framework.core.datastore.schema.data.SchemaDataLookup;
 import org.eclipse.osee.framework.core.datastore.schema.data.TableElement;
 import org.eclipse.osee.framework.core.datastore.schema.data.TableElement.ColumnFields;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
@@ -53,11 +54,11 @@ public abstract class SqlManager {
       this.sqlDataType = sqlDataType;
    }
 
-   public abstract void createTable(TableElement tableDef) throws OseeDataStoreException;
+   public abstract void createTable(TableElement tableDef) throws OseeCoreException;
 
-   public abstract void dropTable(TableElement tableDef) throws OseeDataStoreException;
+   public abstract void dropTable(TableElement tableDef) throws OseeCoreException;
 
-   public void insertData(List<ColumnDbData> rowData, TableElement tableMetadata) throws OseeDataStoreException {
+   public void insertData(List<ColumnDbData> rowData, TableElement tableMetadata) throws OseeCoreException {
       List<String> columnNames = new ArrayList<String>();
       List<String> placeHolders = new ArrayList<String>();
       List<String> columnValues = new ArrayList<String>();
@@ -233,11 +234,11 @@ public abstract class SqlManager {
       return toReturn.toString();
    }
 
-   public void createSchema(String schema) throws OseeDataStoreException {
+   public void createSchema(String schema) throws OseeCoreException {
       ConnectionHandler.runPreparedUpdate(CREATE_STRING + " SCHEMA \"" + schema + "\"");
    }
 
-   public void dropSchema(String schema) throws OseeDataStoreException {
+   public void dropSchema(String schema) throws OseeCoreException {
       ConnectionHandler.runPreparedUpdate(DROP_STRING + " SCHEMA \"" + schema + "\" CASCADE");
    }
 
@@ -251,7 +252,7 @@ public abstract class SqlManager {
       return toExecute.toString();
    }
 
-   public void createIndex(TableElement tableDef) throws OseeDataStoreException {
+   public void createIndex(TableElement tableDef) throws OseeCoreException {
       List<IndexElement> tableIndices = tableDef.getIndexData();
       String indexId = null;
       StringBuilder appliesTo = new StringBuilder();
@@ -295,7 +296,7 @@ public abstract class SqlManager {
       return original;
    }
 
-   public void dropIndex(TableElement tableDef) throws OseeDataStoreException {
+   public void dropIndex(TableElement tableDef) throws OseeCoreException {
       List<IndexElement> tableIndices = tableDef.getIndexData();
       String tableName = tableDef.getFullyQualifiedTableName();
       for (IndexElement iData : tableIndices) {

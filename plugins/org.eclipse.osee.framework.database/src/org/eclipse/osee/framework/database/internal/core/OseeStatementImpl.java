@@ -21,7 +21,8 @@ import java.sql.SQLException;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.database.core.SupportedDatabase;
@@ -63,7 +64,7 @@ public final class OseeStatementImpl implements IOseeStatement {
    }
 
    @Override
-   public void runPreparedQuery(String query, Object... data) throws OseeDataStoreException {
+   public void runPreparedQuery(String query, Object... data) throws OseeCoreException {
       runPreparedQuery(0, query, data);
    }
 
@@ -72,7 +73,7 @@ public final class OseeStatementImpl implements IOseeStatement {
     * to 10,000
     */
    @Override
-   public void runPreparedQuery(int fetchSize, String query, Object... data) throws OseeDataStoreException {
+   public void runPreparedQuery(int fetchSize, String query, Object... data) throws OseeCoreException {
 
       try {
          allowReuse();
@@ -82,7 +83,7 @@ public final class OseeStatementImpl implements IOseeStatement {
 
          rSet = preparedStatement.executeQuery();
       } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       }
    }
 
@@ -91,7 +92,7 @@ public final class OseeStatementImpl implements IOseeStatement {
     * as in parameters
     */
    @Override
-   public void runCallableStatement(String query, Object... data) throws OseeDataStoreException {
+   public void runCallableStatement(String query, Object... data) throws OseeCoreException {
 
       try {
          allowReuse();
@@ -107,17 +108,17 @@ public final class OseeStatementImpl implements IOseeStatement {
             rSet = callableStatement.getResultSet();
          }
       } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       }
    }
 
    @Override
-   public boolean next() throws OseeDataStoreException {
+   public boolean next() throws OseeCoreException {
       if (rSet != null) {
          try {
             return rSet.next();
          } catch (SQLException ex) {
-            throw new OseeDataStoreException(ex);
+            OseeExceptions.wrapAndThrow(ex);
          }
       }
       return false;
@@ -135,7 +136,7 @@ public final class OseeStatementImpl implements IOseeStatement {
             connection.close();
             connection = null;// this allows for multiple calls to runPreparedQuery to have an open connection
          }
-      } catch (OseeDataStoreException ex) {
+      } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
@@ -143,14 +144,14 @@ public final class OseeStatementImpl implements IOseeStatement {
    /**
     * allows for multiple uses of this object to have an open connection
     */
-   private void allowReuse() throws OseeDataStoreException {
+   private void allowReuse() throws OseeCoreException {
       if (connection == null) {
          connection = connectionPool.getConnection();
       }
       closePreviousResources();
    }
 
-   private void closePreviousResources() throws OseeDataStoreException {
+   private void closePreviousResources() throws OseeCoreException {
       try {
          if (rSet != null) {
             rSet.close();
@@ -162,88 +163,97 @@ public final class OseeStatementImpl implements IOseeStatement {
             callableStatement.close();
          }
       } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       }
    }
 
    @Override
-   public InputStream getBinaryStream(String columnName) throws OseeDataStoreException {
+   public InputStream getBinaryStream(String columnName) throws OseeCoreException {
       try {
          return rSet.getBinaryStream(columnName);
       } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
+         OseeExceptions.wrapAndThrow(ex);
+         return null; // unreachable since wrapAndThrow() always throws an exception
       }
    }
 
    @Override
-   public InputStream getAsciiStream(String columnName) throws OseeDataStoreException {
+   public InputStream getAsciiStream(String columnName) throws OseeCoreException {
       try {
          return rSet.getAsciiStream(columnName);
       } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
+         OseeExceptions.wrapAndThrow(ex);
+         return null; // unreachable since wrapAndThrow() always throws an exception
       }
    }
 
    @Override
-   public String getString(String columnName) throws OseeDataStoreException {
+   public String getString(String columnName) throws OseeCoreException {
       try {
          return rSet.getString(columnName);
       } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
+         OseeExceptions.wrapAndThrow(ex);
+         return null; // unreachable since wrapAndThrow() always throws an exception
       }
    }
 
    @Override
-   public float getFloat(String columnName) throws OseeDataStoreException {
+   public float getFloat(String columnName) throws OseeCoreException {
       try {
          return rSet.getFloat(columnName);
       } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
+         OseeExceptions.wrapAndThrow(ex);
+         return 0.0f; // unreachable since wrapAndThrow() always throws an exceptions
       }
    }
 
    @Override
-   public long getLong(String columnName) throws OseeDataStoreException {
+   public long getLong(String columnName) throws OseeCoreException {
       try {
          return rSet.getLong(columnName);
       } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
+         OseeExceptions.wrapAndThrow(ex);
+         return 0; // unreachable since wrapAndThrow() always throws an exception
       }
    }
 
    @Override
-   public int getInt(String columnName) throws OseeDataStoreException {
+   public int getInt(String columnName) throws OseeCoreException {
       try {
          return rSet.getInt(columnName);
       } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
+         OseeExceptions.wrapAndThrow(ex);
+         return 0; // unreachable since wrapAndThrow() always throws an exception
       }
    }
 
    @Override
-   public int getInt(int columnIndex) throws OseeDataStoreException {
+   public int getInt(int columnIndex) throws OseeCoreException {
       try {
          return rSet.getInt(columnIndex);
       } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
+         OseeExceptions.wrapAndThrow(ex);
+         return 0; // unreachable since wrapAndThrow() always throws an exception
       }
    }
 
    @Override
-   public int getCallableInt(int columnIndex) throws OseeDataStoreException {
+   public int getCallableInt(int columnIndex) throws OseeCoreException {
       try {
          return callableStatement.getInt(columnIndex);
       } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
+         OseeExceptions.wrapAndThrow(ex);
+         return 0; // unreachable since wrapAndThrow() always throws an exception
       }
    }
 
    @Override
-   public double getCallableDouble(int columnIndex) throws OseeDataStoreException {
+   public double getCallableDouble(int columnIndex) throws OseeCoreException {
       try {
          return callableStatement.getDouble(columnIndex);
       } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
+         OseeExceptions.wrapAndThrow(ex);
+         return 0; // unreachable since wrapAndThrow() always throws an exception
       }
    }
 
@@ -251,11 +261,12 @@ public final class OseeStatementImpl implements IOseeStatement {
     * should not be used by application code because it is less readable than using the column name
     */
    @Override
-   public long getLong(int columnIndex) throws OseeDataStoreException {
+   public long getLong(int columnIndex) throws OseeCoreException {
       try {
          return rSet.getLong(columnIndex);
       } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
+         OseeExceptions.wrapAndThrow(ex);
+         return 0; // unreachable since wrapAndThrow() always throws an exception
       }
    }
 
@@ -263,110 +274,122 @@ public final class OseeStatementImpl implements IOseeStatement {
     * should not be used by application code because it is less readable than using the column name
     */
    @Override
-   public String getString(int columnIndex) throws OseeDataStoreException {
+   public String getString(int columnIndex) throws OseeCoreException {
       try {
          return rSet.getString(columnIndex);
       } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
+         OseeExceptions.wrapAndThrow(ex);
+         return null; // unreachable since wrapAndThrow() always throws an exception
       }
    }
 
    @Override
-   public Timestamp getTimestamp(String columnName) throws OseeDataStoreException {
+   public Timestamp getTimestamp(String columnName) throws OseeCoreException {
       try {
          return rSet.getTimestamp(columnName);
       } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
+         OseeExceptions.wrapAndThrow(ex);
+         return null; // unreachable since wrapAndThrow() always throws an exception
       }
    }
 
    @Override
-   public BigDecimal getBigDecimal(String name) throws OseeDataStoreException {
+   public BigDecimal getBigDecimal(String name) throws OseeCoreException {
       try {
          return rSet.getBigDecimal(name);
       } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
+         OseeExceptions.wrapAndThrow(ex);
+         return null; // unreachable since wrapAndThrow() always throws an exception
       }
    }
 
    @Override
-   public Time getTime(String name) throws OseeDataStoreException {
+   public Time getTime(String name) throws OseeCoreException {
       try {
          return rSet.getTime(name);
       } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
+         OseeExceptions.wrapAndThrow(ex);
+         return null; // unreachable since wrapAndThrow() always throws an exception
       }
    }
 
    @Override
-   public double getDouble(String columnName) throws OseeDataStoreException {
+   public double getDouble(String columnName) throws OseeCoreException {
       try {
          return rSet.getDouble(columnName);
       } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
+         OseeExceptions.wrapAndThrow(ex);
+         return 0; // unreachable since wrapAndThrow() always throws an exception
       }
    }
 
    @Override
-   public Date getDate(String columnName) throws OseeDataStoreException {
+   public Date getDate(String columnName) throws OseeCoreException {
       try {
          return rSet.getDate(columnName);
       } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
+         OseeExceptions.wrapAndThrow(ex);
+         return null; // unreachable since wrapAndThrow() always throws an exception
       }
    }
 
    @Override
-   public boolean wasNull() throws OseeDataStoreException {
+   public boolean wasNull() throws OseeCoreException {
       try {
          return rSet.wasNull();
       } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
+         OseeExceptions.wrapAndThrow(ex);
+         return false; // unreachable since wrapAndThrow() always throws an exception
       }
    }
 
    @Override
-   public int getColumnCount() throws OseeDataStoreException {
+   public int getColumnCount() throws OseeCoreException {
       try {
          return rSet.getMetaData().getColumnCount();
       } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
+         OseeExceptions.wrapAndThrow(ex);
+         return 0; // unreachable since wrapAndThrow() always throws an exception
       }
    }
 
    @Override
-   public String getColumnName(int columnIndex) throws OseeDataStoreException {
+   public String getColumnName(int columnIndex) throws OseeCoreException {
       try {
          return rSet.getMetaData().getColumnName(columnIndex);
       } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
+         OseeExceptions.wrapAndThrow(ex);
+         return null; // unreachable since wrapAndThrow() always throws an exception
       }
    }
 
    @Override
-   public int getColumnType(int columnIndex) throws OseeDataStoreException {
+   public int getColumnType(int columnIndex) throws OseeCoreException {
       try {
          return rSet.getMetaData().getColumnType(columnIndex);
       } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
+         OseeExceptions.wrapAndThrow(ex);
+         return 0; // unreachable since wrapAndThrow() always throws an exception
       }
    }
 
    @Override
-   public String getColumnTypeName(int columnIndex) throws OseeDataStoreException {
+   public String getColumnTypeName(int columnIndex) throws OseeCoreException {
       try {
          return rSet.getMetaData().getColumnTypeName(columnIndex);
       } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
+         OseeExceptions.wrapAndThrow(ex);
+         return null; // unreachable since wrapAndThrow() always throws an exception
       }
    }
 
    @Override
-   public Object getObject(int columnIndex) throws OseeDataStoreException {
+   public Object getObject(int columnIndex) throws OseeCoreException {
       try {
          return rSet.getObject(columnIndex);
       } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
+         OseeExceptions.wrapAndThrow(ex);
+         return null; // unreachable since wrapAndThrow() always throws an exception
       }
    }
 
@@ -377,50 +400,52 @@ public final class OseeStatementImpl implements IOseeStatement {
     * @return the number of rows in the result set
     */
    @Override
-   public int getRowCount() throws OseeDataStoreException {
+   public int getRowCount() throws OseeCoreException {
       try {
          rSet.last();
          return rSet.getRow();
       } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
+         OseeExceptions.wrapAndThrow(ex);
+         return 0; // unreachable since wrapAndThrow() always throws an exception
       }
    }
 
    @Override
-   public boolean isNullable(int columnIndex) throws OseeDataStoreException {
+   public boolean isNullable(int columnIndex) throws OseeCoreException {
       try {
          return rSet.getMetaData().isNullable(columnIndex) == ResultSetMetaData.columnNullable;
       } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
+         OseeExceptions.wrapAndThrow(ex);
+         return false; // unreachable since wrapAndThrow() always throws an exception
       }
    }
 
    @Override
-   public String getComplementSql() throws OseeDataStoreException {
+   public String getComplementSql() throws OseeCoreException {
       allowReuse();
       return SupportedDatabase.getComplementSql(connection.getMetaData());
    }
 
    @Override
-   public boolean isDatabaseType(SupportedDatabase type) throws OseeDataStoreException {
+   public boolean isDatabaseType(SupportedDatabase type) throws OseeCoreException {
       return SupportedDatabase.isDatabaseType(connection.getMetaData(), type);
    }
 
    @Override
-   public void updateObject(String columnName, Object value) throws OseeDataStoreException {
+   public void updateObject(String columnName, Object value) throws OseeCoreException {
       try {
          rSet.updateObject(columnName, value);
       } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       }
    }
 
    @Override
-   public void updateRow() throws OseeDataStoreException {
+   public void updateRow() throws OseeCoreException {
       try {
          rSet.updateRow();
       } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       }
    }
 }

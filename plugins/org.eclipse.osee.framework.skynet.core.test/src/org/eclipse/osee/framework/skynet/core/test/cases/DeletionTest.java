@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
@@ -297,7 +296,7 @@ public class DeletionTest {
       }
    }
 
-   private void checkAttribute(Artifact artifact, Attribute<?> attribute, int value) throws OseeDataStoreException {
+   private void checkAttribute(Artifact artifact, Attribute<?> attribute, int value) throws OseeCoreException {
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(CHECK_FOR_ZERO_TX_CURRENT_ATTRIBUTE, artifact.getBranch().getId(),
@@ -323,7 +322,7 @@ public class DeletionTest {
       }
    }
 
-   public void checkRelation(Artifact artifact, RelationLink relation, int value) throws OseeDataStoreException {
+   public void checkRelation(Artifact artifact, RelationLink relation, int value) throws OseeCoreException {
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       assertTrue(
          "Relation should be deleted between Parent: " + relation.getAArtifactId() + " and child " + relation.getBArtifactId(),
@@ -355,7 +354,7 @@ public class DeletionTest {
       }
    }
 
-   public static void dumpArtifact(Artifact artifact) throws OseeDataStoreException {
+   public static void dumpArtifact(Artifact artifact) throws OseeCoreException {
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          System.out.println("  Artifact Dump : " + artifact.getName());
@@ -372,7 +371,7 @@ public class DeletionTest {
       }
    }
 
-   public static void dumpAttribute(Attribute<?> attribute) throws OseeDataStoreException, OseeStateException {
+   public static void dumpAttribute(Attribute<?> attribute) throws OseeDataStoreException, OseeCoreException {
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          System.out.println("  Attribute Dump");
@@ -390,7 +389,7 @@ public class DeletionTest {
       }
    }
 
-   public static void dumpRelation(RelationLink relation, Artifact artifact) throws OseeDataStoreException {
+   public static void dumpRelation(RelationLink relation, Artifact artifact) throws OseeCoreException {
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          System.out.println("  Relation Dump");

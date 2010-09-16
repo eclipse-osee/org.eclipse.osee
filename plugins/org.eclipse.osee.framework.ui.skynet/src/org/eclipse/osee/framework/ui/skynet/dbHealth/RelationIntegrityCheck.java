@@ -18,7 +18,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
@@ -157,7 +156,7 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
       checkForCancelledStatus(monitor);
    }
 
-   private void deleteInvalidRelationAddressing() throws OseeDataStoreException {
+   private void deleteInvalidRelationAddressing() throws OseeCoreException {
       List<Object[]> rowsToDelete = new LinkedList<Object[]>();
       for (LocalRelationLink relLink : deleteMap.allValues()) {
          rowsToDelete.add(new Object[] {relLink.gammaId, relLink.relTransId});
@@ -199,7 +198,7 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
       updateMap = null;
    }
 
-   private void runInsert(List<Object[]> insertParameters, String sql, String taskName) throws OseeDataStoreException {
+   private void runInsert(List<Object[]> insertParameters, String sql, String taskName) throws OseeCoreException {
       monitor.subTask(taskName);
       if (insertParameters.size() != 0) {
          ConnectionHandler.runBatchUpdate(sql, insertParameters);
@@ -238,7 +237,7 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
       builder.append(DESCRIPTION[x]);
    }
 
-   private void loadData(String description, String sql, boolean forDelete) throws OseeDataStoreException {
+   private void loadData(String description, String sql, boolean forDelete) throws OseeCoreException {
       monitor.subTask(description);
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       DoubleKeyHashMap<Integer, Integer, LocalRelationLink> map = forDelete ? deleteMap : updateMap;

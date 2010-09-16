@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.branch.management.commit;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.enums.TxChange;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
@@ -50,19 +50,19 @@ public class UpdatePreviousTxCurrent {
       relationJoin.add(relationId);
    }
 
-   public void updateTxNotCurrents() throws OseeDataStoreException {
+   public void updateTxNotCurrents() throws OseeCoreException {
       updateTxNotCurrents("osee_artifact", "art_id", artifactJoin);
       updateTxNotCurrents("osee_attribute", "attr_id", attributeJoin);
       updateTxNotCurrents("osee_relation_link", "rel_link_id", relationJoin);
    }
 
-   private void updateTxNotCurrents(String tableName, String columnName, IdJoinQuery idJoin) throws OseeDataStoreException {
+   private void updateTxNotCurrents(String tableName, String columnName, IdJoinQuery idJoin) throws OseeCoreException {
       idJoin.store(connection);
       updateNoLongerCurrentGammas(tableName, columnName, idJoin.getQueryId());
       idJoin.delete(connection);
    }
 
-   private void updateNoLongerCurrentGammas(String tableName, String columnName, int queryId) throws OseeDataStoreException {
+   private void updateNoLongerCurrentGammas(String tableName, String columnName, int queryId) throws OseeCoreException {
       List<Object[]> updateData = new ArrayList<Object[]>();
       IOseeStatement chStmt = ConnectionHandler.getStatement(connection);
       String query =

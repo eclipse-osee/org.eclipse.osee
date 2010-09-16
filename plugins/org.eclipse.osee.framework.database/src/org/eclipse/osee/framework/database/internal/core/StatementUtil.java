@@ -16,7 +16,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.database.internal.Activator;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -82,7 +84,7 @@ public class StatementUtil {
       }
    }
 
-   public static <O extends Object> void populateValuesForPreparedStatement(PreparedStatement preparedStatement, O... data) throws OseeDataStoreException {
+   public static <O extends Object> void populateValuesForPreparedStatement(PreparedStatement preparedStatement, O... data) throws OseeCoreException {
       try {
          int preparedIndex = 0;
          for (Object dataValue : data) {
@@ -115,7 +117,7 @@ public class StatementUtil {
             }
          }
       } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       }
    }
 }

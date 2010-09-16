@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.util.widgets.SMAState;
 import org.eclipse.osee.ats.util.widgets.XCurrentStateDam;
 import org.eclipse.osee.ats.util.widgets.XStateDam;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.jdk.core.type.MutableInteger;
@@ -85,7 +86,7 @@ public class TaskMetrics extends AbstractBlam {
          AIFile.writeToFile(iFile, charBak);
          Program.launch(iFile.getLocation().toOSString());
       } catch (Exception ex) {
-         throw new OseeCoreException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       }
    }
 

@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.skynet.core.utility;
 
 import java.util.Collection;
 import java.util.Map;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 
 /**
@@ -25,13 +25,13 @@ public final class DbUtil {
       // Utility Class - class should only have static methods
    }
 
-   public static void getTableRowCounts(Map<String, Integer> tableCount, Collection<String> tableNames) throws OseeDataStoreException {
+   public static void getTableRowCounts(Map<String, Integer> tableCount, Collection<String> tableNames) throws OseeCoreException {
       for (String tableName : tableNames) {
          tableCount.put(tableName, getTableRowCount(tableName));
       }
    }
 
-   public static int getTableRowCount(String tableName) throws OseeDataStoreException {
+   public static int getTableRowCount(String tableName) throws OseeCoreException {
       return ConnectionHandler.runPreparedQueryFetchInt(0, "SELECT count(1) FROM " + tableName);
    }
 

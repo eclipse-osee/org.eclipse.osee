@@ -15,7 +15,7 @@ import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsEditorTableTab;
@@ -40,7 +40,7 @@ public class CleanUpBackingData extends DatabaseHealthOperation {
       super("Data with no TXS Addressing and empty transactions");
    }
 
-   private void processNotAddressedGammas(String tableName) throws OseeDataStoreException {
+   private void processNotAddressedGammas(String tableName) throws OseeCoreException {
       checkForCancelledStatus(monitor);
 
       List<Object[]> notAddressedGammas = new LinkedList<Object[]>();
@@ -70,7 +70,7 @@ public class CleanUpBackingData extends DatabaseHealthOperation {
       monitor.worked(calculateWork(0.10));
    }
 
-   private void processEmptyTransactions() throws OseeDataStoreException {
+   private void processEmptyTransactions() throws OseeCoreException {
       checkForCancelledStatus(monitor);
 
       List<Object[]> emptyTransactions = new LinkedList<Object[]>();

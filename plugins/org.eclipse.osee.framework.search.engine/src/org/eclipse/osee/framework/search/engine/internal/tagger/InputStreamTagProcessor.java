@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.search.engine.internal.tagger;
 
 import java.io.InputStream;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
@@ -53,7 +53,7 @@ final class InputStreamTagProcessor extends InputToTagQueueTx {
       }
 
       @Override
-      public void startElementFound(String uri, String localName, String name, Attributes attributes) throws NumberFormatException, OseeDataStoreException {
+      public void startElementFound(String uri, String localName, String name, Attributes attributes) throws NumberFormatException, OseeCoreException {
          if (name.equalsIgnoreCase("entry")) {
             String gammaId = attributes.getValue("gammaId");
             if (Strings.isValid(gammaId)) {

@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.framework.core.datastore.schema.data.SchemaData;
 import org.eclipse.osee.framework.core.datastore.schema.data.TableElement;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 public class SchemaSqlUtil {
    private final SqlManager sqlManager;
@@ -24,7 +24,7 @@ public class SchemaSqlUtil {
       this.sqlManager = sqlManager;
    }
 
-   public void addIndices(Set<String> schemas, Map<String, SchemaData> userSpecifiedConfig) throws OseeDataStoreException {
+   public void addIndices(Set<String> schemas, Map<String, SchemaData> userSpecifiedConfig) throws OseeCoreException {
       for (String schemaId : schemas) {
          if (userSpecifiedConfig.containsKey(schemaId)) {
             SchemaData schemaData = userSpecifiedConfig.get(schemaId);
@@ -36,7 +36,7 @@ public class SchemaSqlUtil {
       }
    }
 
-   public void addTables(Set<String> schemas, Map<String, SchemaData> userSpecifiedConfig) throws OseeDataStoreException {
+   public void addTables(Set<String> schemas, Map<String, SchemaData> userSpecifiedConfig) throws OseeCoreException {
       for (String schemaId : schemas) {
          if (userSpecifiedConfig.containsKey(schemaId)) {
             SchemaData schemaData = userSpecifiedConfig.get(schemaId);
@@ -49,7 +49,7 @@ public class SchemaSqlUtil {
       }
    }
 
-   public void dropTables(Set<String> schemas, Map<String, SchemaData> userSpecifiedConfig, Map<String, SchemaData> currentDatabaseConfig) throws OseeDataStoreException {
+   public void dropTables(Set<String> schemas, Map<String, SchemaData> userSpecifiedConfig, Map<String, SchemaData> currentDatabaseConfig) throws OseeCoreException {
       for (String schemaId : schemas) {
          if (currentDatabaseConfig.containsKey(schemaId)) {
             SchemaData currentDbSchemaData = currentDatabaseConfig.get(schemaId);
@@ -75,7 +75,7 @@ public class SchemaSqlUtil {
       }
    }
 
-   public void dropIndices(Set<String> schemas, Map<String, SchemaData> userSpecifiedConfig, Map<String, SchemaData> currentDatabaseConfig) throws OseeDataStoreException {
+   public void dropIndices(Set<String> schemas, Map<String, SchemaData> userSpecifiedConfig, Map<String, SchemaData> currentDatabaseConfig) throws OseeCoreException {
       for (String schemaId : schemas) {
          if (currentDatabaseConfig.containsKey(schemaId)) {
             SchemaData currentDbSchemaData = currentDatabaseConfig.get(schemaId);
@@ -99,13 +99,13 @@ public class SchemaSqlUtil {
       }
    }
 
-   public void createSchema(Set<String> schemas) throws OseeDataStoreException {
+   public void createSchema(Set<String> schemas) throws OseeCoreException {
       for (String schemaId : schemas) {
          sqlManager.createSchema(schemaId.toLowerCase());
       }
    }
 
-   public void dropSchema(Set<String> schemas) throws OseeDataStoreException {
+   public void dropSchema(Set<String> schemas) throws OseeCoreException {
       for (String schemaId : schemas) {
          sqlManager.dropSchema(schemaId.toLowerCase());
       }

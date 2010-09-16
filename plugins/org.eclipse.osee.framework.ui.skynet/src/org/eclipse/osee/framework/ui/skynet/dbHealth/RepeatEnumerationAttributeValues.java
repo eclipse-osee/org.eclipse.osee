@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.TxChange;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
@@ -121,7 +121,7 @@ public class RepeatEnumerationAttributeValues extends DatabaseHealthOperation {
       return "Deletes the repeat attribute values using a transaction directly on the branch";
    }
 
-   private Set<AttrData> getRepeatEnumeratedAttrs(IProgressMonitor monitor, Branch branch) throws OseeDataStoreException {
+   private Set<AttrData> getRepeatEnumeratedAttrs(IProgressMonitor monitor, Branch branch) throws OseeCoreException {
       Set<AttrData> attrData = new HashSet<AttrData>();
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {

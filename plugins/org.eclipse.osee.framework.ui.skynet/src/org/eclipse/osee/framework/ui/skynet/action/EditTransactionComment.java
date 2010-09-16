@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.action;
 import java.util.ArrayList;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -54,7 +54,7 @@ public class EditTransactionComment extends Action {
             try {
                TransactionManager.setTransactionComment(record, ed.getEntry());
                record.setComment(ed.getEntry());
-            } catch (OseeDataStoreException ex) {
+            } catch (OseeCoreException ex) {
                OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }

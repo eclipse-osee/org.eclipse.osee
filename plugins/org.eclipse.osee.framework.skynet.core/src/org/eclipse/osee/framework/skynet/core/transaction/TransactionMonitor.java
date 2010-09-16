@@ -13,8 +13,9 @@ package org.eclipse.osee.framework.skynet.core.transaction;
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
@@ -51,13 +52,13 @@ public class TransactionMonitor {
       txMap.put(key, new TxOperation(transaction));
    }
 
-   public synchronized void reportTxStart(final Object transaction, Object key) throws OseeWrappedException, OseeStateException {
+   public synchronized void reportTxStart(final Object transaction, Object key) throws OseeCoreException {
       TxOperation currentTx = txMap.get(key);
       if (currentTx == null) {
          throw new OseeStateException(
             "reportTxStart called for key: " + key + " but reportTxCreation had not been called.");
       } else if (currentTx.getState() != TxState.CREATED) {
-         throw new OseeWrappedException(currentTx.getError());
+         OseeExceptions.wrapAndThrow(currentTx.getError());
       }
 
       if (currentTx.getTransaction().equals(transaction)) {
@@ -68,7 +69,7 @@ public class TransactionMonitor {
       }
    }
 
-   public synchronized void reportTxEnd(final Object transaction, Object key) throws OseeWrappedException, OseeStateException {
+   public synchronized void reportTxEnd(final Object transaction, Object key) throws OseeCoreException {
       TxOperation currentTx = txMap.get(key);
       if (currentTx == null) {
          throw new OseeStateException(
@@ -80,7 +81,7 @@ public class TransactionMonitor {
       if (currentTx.getTransaction().equals(transaction)) {
          txMap.put(key, null);
       } else {
-         throw new OseeWrappedException(currentTx.getError());
+         OseeExceptions.wrapAndThrow(currentTx.getError());
       }
    }
 

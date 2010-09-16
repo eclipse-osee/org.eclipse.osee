@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.database.core;
 
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 
 /**
@@ -34,39 +35,39 @@ public interface IOseeSequence {
    static final String IMPORT_MAPPED_INDEX_SEQ = "SKYNET_IMPORT_MAPPED_INDEX_SEQ";
    static final String TTE_SESSION_SEQ = "TTE_SESSION_SEQ";
 
-   long getNextSequence(String sequenceName) throws OseeDataStoreException;
+   long getNextSequence(String sequenceName) throws OseeCoreException;
 
-   int getNextSessionId() throws OseeDataStoreException;
+   int getNextSessionId() throws OseeCoreException;
 
-   int getNextTransactionId() throws OseeDataStoreException;
+   int getNextTransactionId() throws OseeCoreException;
 
-   int getNextArtifactId() throws OseeDataStoreException;
+   int getNextArtifactId() throws OseeCoreException;
 
-   int getNextOseeEnumTypeId() throws OseeDataStoreException;
+   int getNextOseeEnumTypeId() throws OseeCoreException;
 
-   int getNextGammaId() throws OseeDataStoreException;
+   int getNextGammaId() throws OseeCoreException;
 
-   int getNextArtifactTypeId() throws OseeDataStoreException;
+   int getNextArtifactTypeId() throws OseeCoreException;
 
-   int getNextAttributeBaseTypeId() throws OseeDataStoreException;
+   int getNextAttributeBaseTypeId() throws OseeCoreException;
 
-   int getNextAttributeProviderTypeId() throws OseeDataStoreException;
+   int getNextAttributeProviderTypeId() throws OseeCoreException;
 
-   int getNextAttributeId() throws OseeDataStoreException;
+   int getNextAttributeId() throws OseeCoreException;
 
-   int getNextAttributeTypeId() throws OseeDataStoreException;
+   int getNextAttributeTypeId() throws OseeCoreException;
 
-   int getNextFactoryId() throws OseeDataStoreException;
+   int getNextFactoryId() throws OseeCoreException;
 
-   int getNextBranchId() throws OseeDataStoreException;
+   int getNextBranchId() throws OseeCoreException;
 
-   int getNextRelationTypeId() throws OseeDataStoreException;
+   int getNextRelationTypeId() throws OseeCoreException;
 
-   int getNextRelationId() throws OseeDataStoreException;
+   int getNextRelationId() throws OseeCoreException;
 
-   int getNextImportId() throws OseeDataStoreException;
+   int getNextImportId() throws OseeCoreException;
 
-   int getNextImportMappedIndexId() throws OseeDataStoreException;
+   int getNextImportMappedIndexId() throws OseeCoreException;
 
    void clear() throws OseeDataStoreException;
 }

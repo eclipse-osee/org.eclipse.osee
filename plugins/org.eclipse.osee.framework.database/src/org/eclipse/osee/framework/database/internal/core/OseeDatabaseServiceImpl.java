@@ -20,6 +20,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IDatabaseInfo;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IDatabaseInfoProvider;
@@ -61,7 +62,7 @@ public class OseeDatabaseServiceImpl implements IOseeDatabaseService {
    }
 
    @Override
-   public OseeConnection getConnection() throws OseeDataStoreException {
+   public OseeConnection getConnection() throws OseeCoreException {
       return getConnection(getDatabaseInfoProvider());
    }
 
@@ -81,7 +82,7 @@ public class OseeDatabaseServiceImpl implements IOseeDatabaseService {
    }
 
    @Override
-   public OseeConnection getConnection(IDatabaseInfo databaseInfo) throws OseeDataStoreException {
+   public OseeConnection getConnection(IDatabaseInfo databaseInfo) throws OseeCoreException {
       return getConnectionPool(databaseInfo).getConnection();
    }
 
@@ -106,7 +107,7 @@ public class OseeDatabaseServiceImpl implements IOseeDatabaseService {
    }
 
    @Override
-   public <O extends Object> int runPreparedUpdate(OseeConnection connection, String query, O... data) throws OseeDataStoreException {
+   public <O extends Object> int runPreparedUpdate(OseeConnection connection, String query, O... data) throws OseeCoreException {
       if (connection == null) {
          return runPreparedUpdate(query, data);
       }
@@ -117,7 +118,7 @@ public class OseeDatabaseServiceImpl implements IOseeDatabaseService {
          StatementUtil.populateValuesForPreparedStatement(preparedStatement, data);
          updateCount = preparedStatement.executeUpdate();
       } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       } finally {
          StatementUtil.close(preparedStatement);
       }
@@ -125,7 +126,7 @@ public class OseeDatabaseServiceImpl implements IOseeDatabaseService {
    }
 
    @Override
-   public <O extends Object> int runBatchUpdate(OseeConnection connection, String query, List<O[]> dataList) throws OseeDataStoreException {
+   public <O extends Object> int runBatchUpdate(OseeConnection connection, String query, List<O[]> dataList) throws OseeCoreException {
       if (connection == null) {
          return runBatchUpdate(query, dataList);
       }
@@ -158,7 +159,7 @@ public class OseeDatabaseServiceImpl implements IOseeDatabaseService {
          if ((exlist = ex.getNextException()) != null) {
             OseeLog.log(Activator.class, Level.SEVERE, "This is the nested exception", exlist);
          }
-         throw new OseeDataStoreException(
+         throw new OseeCoreException(
             "sql update failed: \n" + query + "\n" + StatementUtil.getBatchErrorMessage(dataList), ex);
       } finally {
          StatementUtil.close(preparedStatement);
@@ -167,7 +168,7 @@ public class OseeDatabaseServiceImpl implements IOseeDatabaseService {
    }
 
    @Override
-   public <O> int runBatchUpdate(String query, List<O[]> dataList) throws OseeDataStoreException {
+   public <O> int runBatchUpdate(String query, List<O[]> dataList) throws OseeCoreException {
       OseeConnection connection = getConnection();
       try {
          return runBatchUpdate(connection, query, dataList);
@@ -177,7 +178,7 @@ public class OseeDatabaseServiceImpl implements IOseeDatabaseService {
    }
 
    @Override
-   public <O> int runPreparedUpdate(String query, O... data) throws OseeDataStoreException {
+   public <O> int runPreparedUpdate(String query, O... data) throws OseeCoreException {
       OseeConnection connection = getConnection();
       try {
          return runPreparedUpdate(connection, query, data);
@@ -187,22 +188,18 @@ public class OseeDatabaseServiceImpl implements IOseeDatabaseService {
    }
 
    @Override
-   public <T, O extends Object> T runPreparedQueryFetchObject(T defaultValue, String query, O... data) throws OseeDataStoreException {
+   public <T, O extends Object> T runPreparedQueryFetchObject(T defaultValue, String query, O... data) throws OseeCoreException {
       return runPreparedQueryFetchObject(getStatement(), defaultValue, query, data);
    }
 
    @Override
-   public <T, O extends Object> T runPreparedQueryFetchObject(OseeConnection connection, T defaultValue, String query, O... data) throws OseeDataStoreException {
+   public <T, O extends Object> T runPreparedQueryFetchObject(OseeConnection connection, T defaultValue, String query, O... data) throws OseeCoreException {
       return runPreparedQueryFetchObject(getStatement(connection), defaultValue, query, data);
    }
 
    @SuppressWarnings("unchecked")
-   private <T, O extends Object> T runPreparedQueryFetchObject(IOseeStatement chStmt, T defaultValue, String query, O... data) throws OseeDataStoreException {
-      try {
-         Conditions.checkNotNull(defaultValue, "default value");
-      } catch (OseeCoreException ex) {
-         throw new OseeDataStoreException(ex);
-      }
+   private <T, O extends Object> T runPreparedQueryFetchObject(IOseeStatement chStmt, T defaultValue, String query, O... data) throws OseeCoreException {
+      Conditions.checkNotNull(defaultValue, "default value");
       try {
          chStmt.runPreparedQuery(1, query, data);
          if (chStmt.next()) {

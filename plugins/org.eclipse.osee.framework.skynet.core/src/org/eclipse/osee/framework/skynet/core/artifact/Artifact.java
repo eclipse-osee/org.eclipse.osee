@@ -118,7 +118,7 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, Co
    private ModificationType lastValidModType;
    private EditState objectEditState;
 
-   public Artifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeDataStoreException {
+   public Artifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeCoreException {
       super(guid, "");
       objectEditState = EditState.NO_CHANGE;
       modType = ModificationType.NEW;
@@ -1230,12 +1230,12 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, Co
       return humanReadableId;
    }
 
-   private void populateHumanReadableID() throws OseeDataStoreException {
+   private void populateHumanReadableID() throws OseeCoreException {
       String hrid = HumanReadableId.generate();
       humanReadableId = isUniqueHRID(hrid) ? hrid : HumanReadableId.generate();
    }
 
-   public static boolean isUniqueHRID(String id) throws OseeDataStoreException {
+   public static boolean isUniqueHRID(String id) throws OseeCoreException {
       String DUPLICATE_HRID_SEARCH =
          "select count(1) from (select DISTINCT(art_id) from osee_artifact where human_readable_id = ?) t1";
       return ConnectionHandler.runPreparedQueryFetchLong(0L, DUPLICATE_HRID_SEARCH, id) <= 0;

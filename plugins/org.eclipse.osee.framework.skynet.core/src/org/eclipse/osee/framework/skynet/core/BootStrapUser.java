@@ -12,7 +12,7 @@
 package org.eclipse.osee.framework.skynet.core;
 
 import org.eclipse.osee.framework.core.data.SystemUser;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author Ryan D. Brooks
@@ -21,14 +21,11 @@ public class BootStrapUser extends User {
 
    public static BootStrapUser instance;
 
-   private BootStrapUser() throws OseeDataStoreException {
+   private BootStrapUser() throws OseeCoreException {
       super(null, null, null, null, null);
    }
 
-   /**
-    * @return the instance
-    */
-   public static BootStrapUser getInstance() throws OseeDataStoreException {
+   public static BootStrapUser getInstance() throws OseeCoreException {
       if (instance == null) {
          instance = new BootStrapUser();
       }

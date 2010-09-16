@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
@@ -184,7 +183,7 @@ public class PurgeArtifacts extends DbTransaction {
       }
    }
 
-   public void insertSelectItems(OseeConnection connection, String tableName, String artifactJoinSql, int transactionJoinId, Timestamp insertTime, int queryId) throws OseeDataStoreException {
+   public void insertSelectItems(OseeConnection connection, String tableName, String artifactJoinSql, int transactionJoinId, Timestamp insertTime, int queryId) throws OseeCoreException {
       IOseeDatabaseService databaseService = Activator.getInstance().getOseeDatabaseService();
       String sql = String.format(INSERT_SELECT_ITEM, tableName, artifactJoinSql);
       databaseService.runPreparedUpdate(connection, sql, transactionJoinId, insertTime, queryId);

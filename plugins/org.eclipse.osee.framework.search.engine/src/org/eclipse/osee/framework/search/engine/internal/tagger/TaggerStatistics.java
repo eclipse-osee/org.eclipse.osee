@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.search.engine.internal.tagger;
 
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.search.engine.ITagItemStatistics;
 import org.eclipse.osee.framework.search.engine.ITaggerStatistics;
 import org.eclipse.osee.framework.search.engine.TagListenerAdapter;
@@ -115,12 +115,12 @@ public class TaggerStatistics extends TagListenerAdapter implements Cloneable, I
    }
 
    @Override
-   public long getTagsInSystem() throws OseeDataStoreException {
+   public long getTagsInSystem() throws OseeCoreException {
       return tagDataStore != null ? tagDataStore.getTotalTags() : 0;
    }
 
    @Override
-   public long getTotalQueryIdsInQueue() throws OseeDataStoreException {
+   public long getTotalQueryIdsInQueue() throws OseeCoreException {
       return tagDataStore != null ? tagDataStore.getTotalQueryIdsInQueue() : 0;
    }
 

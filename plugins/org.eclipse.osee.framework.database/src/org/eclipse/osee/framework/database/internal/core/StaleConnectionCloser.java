@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.database.internal.core;
 
 import java.util.TimerTask;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.internal.Activator;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -31,7 +31,7 @@ public class StaleConnectionCloser extends TimerTask {
    public void run() {
       try {
          connectionPool.releaseUneededConnections();
-      } catch (OseeDataStoreException ex) {
+      } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }

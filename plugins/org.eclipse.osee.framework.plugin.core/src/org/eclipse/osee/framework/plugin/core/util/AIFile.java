@@ -11,13 +11,11 @@
 package org.eclipse.osee.framework.plugin.core.util;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -42,10 +40,8 @@ public final class AIFile {
             file.create(in, true, null);
             in.close();
          }
-      } catch (CoreException ex) {
-         throw new OseeCoreException(ex);
-      } catch (IOException ex) {
-         throw new OseeCoreException(ex);
+      } catch (Exception ex) {
+         OseeExceptions.wrapAndThrow(ex);
       }
    }
 

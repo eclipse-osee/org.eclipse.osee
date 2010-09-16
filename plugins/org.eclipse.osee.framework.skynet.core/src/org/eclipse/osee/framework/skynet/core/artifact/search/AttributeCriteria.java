@@ -214,7 +214,7 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
    }
 
    @Override
-   public void cleanUp() throws OseeDataStoreException {
+   public void cleanUp() throws OseeCoreException {
       if (joinQuery != null) {
          joinQuery.delete();
       }

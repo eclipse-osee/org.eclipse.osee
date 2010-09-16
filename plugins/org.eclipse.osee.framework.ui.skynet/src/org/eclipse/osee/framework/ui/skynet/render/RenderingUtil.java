@@ -123,7 +123,7 @@ public final class RenderingUtil {
          return renderFolder;
       } catch (CoreException ex) {
          OseeExceptions.wrapAndThrow(ex);
-         return null; // this line can never execute since the previous line always throws an exception
+         return null; // unreachable since wrapAndThrow() always throws an exception
       }
    }
 

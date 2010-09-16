@@ -52,7 +52,7 @@ public class AttributeURL {
          return new URL(urlString);
       } catch (Exception ex) {
          OseeExceptions.wrapAndThrow(ex);
-         return null; // unreachable because wrapAndThrow always throws an exception
+         return null; // unreachable since wrapAndThrow() always throws an exception
       }
    }
 

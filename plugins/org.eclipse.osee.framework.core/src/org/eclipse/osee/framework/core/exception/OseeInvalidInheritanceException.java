@@ -17,12 +17,4 @@ public class OseeInvalidInheritanceException extends OseeCoreException {
    public OseeInvalidInheritanceException(String message) {
       super(message);
    }
-
-   public OseeInvalidInheritanceException(String message, Throwable cause) {
-      super(message, cause);
-   }
-
-   public OseeInvalidInheritanceException(Throwable cause) {
-      super(cause);
-   }
 }

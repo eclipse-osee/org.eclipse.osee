@@ -16,7 +16,8 @@ import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 
 public class OseeConnectionImpl extends OseeConnection {
@@ -40,11 +41,12 @@ public class OseeConnectionImpl extends OseeConnection {
    }
 
    @Override
-   public boolean isClosed() throws OseeDataStoreException {
+   public boolean isClosed() throws OseeCoreException {
       try {
          return conn.isClosed();
       } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
+         OseeExceptions.wrapAndThrow(ex);
+         return false; // unreachable since wrapAndThrow() always throws an exception
       }
    }
 
@@ -54,11 +56,12 @@ public class OseeConnectionImpl extends OseeConnection {
    }
 
    @Override
-   public DatabaseMetaData getMetaData() throws OseeDataStoreException {
+   public DatabaseMetaData getMetaData() throws OseeCoreException {
       try {
          return conn.getMetaData();
       } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
+         OseeExceptions.wrapAndThrow(ex);
+         return null; // unreachable since wrapAndThrow() always throws an exception
       }
    }
 
@@ -84,11 +87,11 @@ public class OseeConnectionImpl extends OseeConnection {
    }
 
    @Override
-   protected void destroy() throws OseeDataStoreException {
+   protected void destroy() throws OseeCoreException {
       try {
          conn.close();
       } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       }
       pool.removeConnection(this);
    }
@@ -107,17 +110,22 @@ public class OseeConnectionImpl extends OseeConnection {
    }
 
    @Override
-   protected void setAutoCommit(boolean autoCommit) throws OseeDataStoreException {
+   protected void setAutoCommit(boolean autoCommit) throws OseeCoreException {
       try {
          conn.setAutoCommit(autoCommit);
       } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       }
    }
 
    @Override
-   protected boolean getAutoCommit() throws SQLException {
-      return conn.getAutoCommit();
+   protected boolean getAutoCommit() throws OseeCoreException {
+      try {
+         return conn.getAutoCommit();
+      } catch (SQLException ex) {
+         OseeExceptions.wrapAndThrow(ex);
+         return false; // unreachable since wrapAndThrow() always throws an exception
+      }
    }
 
    @Override
@@ -126,11 +134,11 @@ public class OseeConnectionImpl extends OseeConnection {
    }
 
    @Override
-   protected void rollback() throws OseeDataStoreException {
+   protected void rollback() throws OseeCoreException {
       try {
          conn.rollback();
       } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       }
    }
 }

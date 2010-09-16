@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.ui.admin.dbtabletab;
 
 import java.util.ArrayList;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.ui.admin.AdminPlugin;
@@ -75,7 +75,7 @@ public class DbTableTab {
          public void modifyText(ModifyEvent e) {
             try {
                handleTableSelect();
-            } catch (OseeDataStoreException ex) {
+            } catch (OseeCoreException ex) {
                OseeLog.log(AdminPlugin.class, Level.SEVERE, ex);
             }
             AdminView.setSaveNeeded(false);
@@ -181,7 +181,7 @@ public class DbTableTab {
       return null;
    }
 
-   public void handleTableSelect() throws OseeDataStoreException {
+   public void handleTableSelect() throws OseeCoreException {
       if (dbTableViewer != null) {
          dbTableViewer.dispose();
       }
@@ -195,7 +195,7 @@ public class DbTableTab {
       parent.layout();
    }
 
-   public static void refresh() throws OseeDataStoreException {
+   public static void refresh() throws OseeCoreException {
       if (filterCombo.get().equals("")) {
          return;
       }

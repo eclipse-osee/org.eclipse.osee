@@ -29,8 +29,8 @@ import org.eclipse.emf.ecore.xmi.impl.XMLResourceImpl;
 import org.eclipse.osee.framework.core.dsl.OseeDslStandaloneSetup;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.xtext.resource.SaveOptions;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.resource.XtextResourceSet;
@@ -58,7 +58,7 @@ public final class ModelUtil {
          resource.setURI(URI.createURI("http://www.eclipse.org/osee/framework/OseeTypes"));
          resource.load(inputStream, options);
       } catch (IOException ex) {
-         throw new OseeWrappedException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       }
       OseeDsl model = (OseeDsl) resource.getContents().get(0);
       for (Diagnostic diagnostic : resource.getErrors()) {
@@ -84,7 +84,8 @@ public final class ModelUtil {
          }
          return model;
       } catch (IOException ex) {
-         throw new OseeWrappedException(ex);
+         OseeExceptions.wrapAndThrow(ex);
+         return null; // unreachable since wrapAndThrow() always throws an exception
       }
    }
 
@@ -110,7 +111,7 @@ public final class ModelUtil {
          resource.getContents().add(object);
          resource.save(outputStream, options);
       } catch (IOException ex) {
-         throw new OseeWrappedException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       }
    }
 
@@ -133,7 +134,8 @@ public final class ModelUtil {
       try {
          return outputStream.toString("UTF-8");
       } catch (UnsupportedEncodingException ex) {
-         throw new OseeWrappedException(ex);
+         OseeExceptions.wrapAndThrow(ex);
+         return null; // unreachable since wrapAndThrow() always throws an exception
       }
    }
 
@@ -145,7 +147,7 @@ public final class ModelUtil {
          resource.load(new ByteArrayInputStream(compareData.getBytes("UTF-8")), resourceSet.getLoadOptions());
          snapshot = (ComparisonSnapshot) resource.getContents().get(0);
       } catch (IOException ex) {
-         throw new OseeWrappedException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       }
       return snapshot;
    }

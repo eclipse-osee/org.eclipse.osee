@@ -144,7 +144,8 @@ public abstract class Attribute<T> {
          }
          return response;
       } catch (IOException ex) {
-         throw new OseeCoreException(ex);
+         OseeExceptions.wrapAndThrow(ex);
+         return false; // unreachable since wrapAndThrow() always throws an exception
       }
    }
 

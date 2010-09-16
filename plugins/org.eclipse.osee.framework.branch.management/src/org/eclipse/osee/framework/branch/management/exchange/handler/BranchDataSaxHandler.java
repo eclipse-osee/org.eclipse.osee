@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.branch.management.exchange.ExchangeDb;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
@@ -109,7 +110,7 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
       }
    }
 
-   public int[] store(boolean writeToDb, int... branchesToImport) throws OseeDataStoreException {
+   public int[] store(boolean writeToDb, int... branchesToImport) throws OseeCoreException {
       checkSelectedBranches(branchesToImport);
       Collection<BranchData> branchesToStore = getSelectedBranchesToImport(branchesToImport);
 
@@ -144,7 +145,7 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
       return toReturn;
    }
 
-   public void updateParentTransactionId(int[] branchesStored) throws OseeDataStoreException {
+   public void updateParentTransactionId(int[] branchesStored) throws OseeCoreException {
       List<BranchData> branches = getSelectedBranchesToImport(branchesStored);
       List<Object[]> data = new ArrayList<Object[]>();
       for (BranchData branchData : branches) {
@@ -159,13 +160,13 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
       getDatabaseService().runBatchUpdate(query, data);
    }
 
-   private int translateId(String id, int originalValue) throws OseeDataStoreException {
+   private int translateId(String id, int originalValue) throws OseeCoreException {
       Long original = new Long(originalValue);
       Long newValue = (Long) getTranslator().translate(id, original);
       return newValue.intValue();
    }
 
-   private Collection<BranchData> checkTargetDbBranches(Collection<BranchData> selectedBranches) throws OseeDataStoreException {
+   private Collection<BranchData> checkTargetDbBranches(Collection<BranchData> selectedBranches) throws OseeCoreException {
       Map<String, BranchData> guidToImportFileBranchData = new HashMap<String, BranchData>();
       for (BranchData data : selectedBranches) {
          guidToImportFileBranchData.put(data.getBranchGuid(), data);
@@ -191,7 +192,7 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
    }
 
    @Override
-   public void clearDataTable() throws OseeDataStoreException {
+   public void clearDataTable() throws OseeCoreException {
       getDatabaseService().runPreparedUpdate(
          getConnection(),
          String.format("DELETE FROM %s where NOT branch_type = " + BranchType.SYSTEM_ROOT.getValue(),

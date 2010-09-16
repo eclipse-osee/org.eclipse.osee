@@ -20,8 +20,8 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
@@ -94,13 +94,13 @@ public class AttributeExtensionManager {
    }
 
    @SuppressWarnings("unchecked")
-   private <T> Class<T> loadClass(String bundleName, String className) throws OseeWrappedException {
+   private <T> Class<T> loadClass(String bundleName, String className) throws OseeCoreException {
       Class<T> toReturn = null;
       try {
          Bundle bundle = Platform.getBundle(bundleName);
          toReturn = bundle.loadClass(className);
       } catch (ClassNotFoundException ex) {
-         throw new OseeWrappedException(String.format("Unable to Load: [%s - %s]", bundleName, className), ex);
+         OseeExceptions.wrapAndThrow(ex);
       }
       return toReturn;
    }

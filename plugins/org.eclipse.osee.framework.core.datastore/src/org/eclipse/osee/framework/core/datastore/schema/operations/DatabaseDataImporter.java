@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.core.datastore.schema.data.TableElement.Column
 import org.eclipse.osee.framework.core.datastore.schema.data.TableElement.TableDescriptionFields;
 import org.eclipse.osee.framework.core.datastore.schema.data.TableElement.TableTags;
 import org.eclipse.osee.framework.core.datastore.schema.sql.SqlManager;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.w3c.dom.Document;
@@ -152,7 +152,7 @@ public class DatabaseDataImporter {
       return toReturn;
    }
 
-   private void processData(List<TableData> tables) throws OseeDataStoreException {
+   private void processData(List<TableData> tables) throws OseeCoreException {
       if (tables.size() != 0) {
          for (TableData tableData : tables) {
             OseeLog.log(Activator.class, Level.INFO, "Populating: [ " + tableData.getFullyQualifiedTableName() + "]\n");

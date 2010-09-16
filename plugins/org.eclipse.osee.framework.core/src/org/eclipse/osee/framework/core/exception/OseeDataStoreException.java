@@ -16,15 +16,7 @@ package org.eclipse.osee.framework.core.exception;
 public class OseeDataStoreException extends OseeCoreException {
    private static final long serialVersionUID = 7339636628746394923L;
 
-   public OseeDataStoreException(String message, Throwable cause) {
-      super(message, cause);
-   }
-
    public OseeDataStoreException(String message) {
       super(message);
-   }
-
-   public OseeDataStoreException(Throwable cause) {
-      super(cause);
    }
 }

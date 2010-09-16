@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import javax.xml.xpath.XPath;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -102,7 +103,7 @@ public final class OperationData {
             }
          }
       } catch (Exception ex) {
-         throw new OseeCoreException(ex);
+         OseeExceptions.wrapAndThrow(ex);
       }
       return toReturn;
    }

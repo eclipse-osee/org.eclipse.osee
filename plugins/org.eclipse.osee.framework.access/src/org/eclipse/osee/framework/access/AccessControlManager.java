@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.access.internal.Activator;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.access.AccessDataQuery;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -48,7 +47,7 @@ public final class AccessControlManager {
       getService().lockObjects(objects, subject);
    }
 
-   public static void unLockObjects(Collection<Artifact> objects, Artifact subject) throws OseeDataStoreException, OseeAuthenticationRequiredException {
+   public static void unLockObjects(Collection<Artifact> objects, Artifact subject) throws OseeCoreException, OseeAuthenticationRequiredException {
       getService().unLockObjects(objects, subject);
    }
 
@@ -84,7 +83,7 @@ public final class AccessControlManager {
       getService().persistPermission(data, isRecursionAllowed);
    }
 
-   public static void removeAccessControlDataIf(boolean removeFromDb, AccessControlData data) throws OseeDataStoreException {
+   public static void removeAccessControlDataIf(boolean removeFromDb, AccessControlData data) throws OseeCoreException {
       getService().removeAccessControlDataIf(removeFromDb, data);
    }
 

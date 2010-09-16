@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.branch.management.exchange.export.AbstractDbEx
 import org.eclipse.osee.framework.branch.management.exchange.export.AbstractExportItem;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.server.ServerThreads;
 import org.eclipse.osee.framework.database.core.DbTransaction;
@@ -82,7 +81,7 @@ final class ExportController extends DbTransaction implements IExchangeTaskListe
             joinQuery.delete(connection);
             joinQuery = null;
          }
-      } catch (OseeDataStoreException ex) {
+      } catch (OseeCoreException ex) {
          onException("Export Clean-Up", ex);
       }
       this.executorService.shutdown();
@@ -97,7 +96,7 @@ final class ExportController extends DbTransaction implements IExchangeTaskListe
       return rootDirectory;
    }
 
-   private void setUp(OseeConnection connection, List<AbstractExportItem> taskList, File tempFolder) throws OseeDataStoreException {
+   private void setUp(OseeConnection connection, List<AbstractExportItem> taskList, File tempFolder) throws OseeCoreException {
       joinQuery = JoinUtility.createExportImportJoinQuery();
       for (int branchId : branchIds) {
          joinQuery.add((long) branchId, -1L);

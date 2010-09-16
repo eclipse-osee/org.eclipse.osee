@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.database.core;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -30,13 +30,13 @@ public class OseeInfo {
 
    private static Map<String, String> cache = new HashMap<String, String>();
 
-   public static String getValue(String key) throws OseeDataStoreException {
+   public static String getValue(String key) throws OseeCoreException {
       String toReturn = ConnectionHandler.runPreparedQueryFetchString("", GET_VALUE_SQL, key);
       cache.put(key, toReturn);
       return toReturn;
    }
 
-   public static String getCachedValue(String key) throws OseeDataStoreException {
+   public static String getCachedValue(String key) throws OseeCoreException {
       String cacheValue = cache.get(key);
       if (cacheValue == null) {
          cacheValue = getValue(key);
@@ -53,7 +53,7 @@ public class OseeInfo {
     * Note: This call will hit the database every time, so shouldn't be used for often repeated calls. use
     * isCacheEnabled that will cache the value
     */
-   public static boolean isEnabled(String key) throws OseeDataStoreException {
+   public static boolean isEnabled(String key) throws OseeCoreException {
       String dbProperty = OseeInfo.getValue(key);
       if (Strings.isValid(dbProperty)) {
          return dbProperty.equals("true");
@@ -67,7 +67,7 @@ public class OseeInfo {
     * <br>
     * Return cached value (value only loaded once per session. Restart will reset value if changed in osee_info
     */
-   public static boolean isCacheEnabled(String key) throws OseeDataStoreException {
+   public static boolean isCacheEnabled(String key) throws OseeCoreException {
       String dbProperty = OseeInfo.getCachedValue(key);
       if (Strings.isValid(dbProperty)) {
          return dbProperty.equals("true");
@@ -75,17 +75,17 @@ public class OseeInfo {
       return false;
    }
 
-   public static void setEnabled(String key, boolean enabled) throws OseeDataStoreException {
+   public static void setEnabled(String key, boolean enabled) throws OseeCoreException {
       putValue(key, String.valueOf(enabled));
    }
 
-   public static void putValue(String key, String value) throws OseeDataStoreException {
+   public static void putValue(String key, String value) throws OseeCoreException {
       ConnectionHandler.runPreparedUpdate(DELETE_KEY_SQL, key);
       ConnectionHandler.runPreparedUpdate(INSERT_KEY_VALUE_SQL, key, value);
       cache.put(key, value);
    }
 
-   public static String getDatabaseGuid() throws OseeDataStoreException {
+   public static String getDatabaseGuid() throws OseeCoreException {
       return getValue(DB_ID_KEY);
    }
 }

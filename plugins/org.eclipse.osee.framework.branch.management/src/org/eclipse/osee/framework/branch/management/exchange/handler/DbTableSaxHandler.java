@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.branch.management.exchange.resource.ZipBinaryR
 import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -66,7 +65,7 @@ public class DbTableSaxHandler extends BaseDbSaxHandler {
       }
    }
 
-   public void store() throws OseeDataStoreException {
+   public void store() throws OseeCoreException {
       super.store(this.getConnection());
    }
 
@@ -206,7 +205,7 @@ public class DbTableSaxHandler extends BaseDbSaxHandler {
    }
 
    @Override
-   public void clearDataTable() throws OseeDataStoreException {
+   public void clearDataTable() throws OseeCoreException {
       if (!getMetaData().getTableName().equals("osee_tx_details")) {
          super.clearDataTable();
       }

@@ -14,7 +14,6 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Arrays;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.attribute.utils.AbstractResourceProcessor;
 
 /**
@@ -84,7 +83,7 @@ public class DataStore {
       }
    }
 
-   public void purge() throws OseeDataStoreException {
+   public void purge() throws OseeCoreException {
       if (isLocatorValid() != false) {
          resourceProcessor.purge(this);
       }

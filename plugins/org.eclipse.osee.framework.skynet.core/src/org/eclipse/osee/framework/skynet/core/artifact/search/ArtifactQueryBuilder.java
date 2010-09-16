@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
@@ -375,7 +374,7 @@ public class ArtifactQueryBuilder {
       return query;
    }
 
-   private void addToGuidJoin() throws OseeDataStoreException {
+   private void addToGuidJoin() throws OseeCoreException {
       guidJoinQuery = JoinUtility.createCharJoinQuery(ClientSessionManager.getSessionId());
       for (String guid : guids) {
          guidJoinQuery.add(guid);
@@ -483,7 +482,7 @@ public class ArtifactQueryBuilder {
       }
    }
 
-   private void clearCriteria() throws OseeDataStoreException {
+   private void clearCriteria() throws OseeCoreException {
       if (this.criteria != null) {
          for (AbstractArtifactSearchCriteria critiri : criteria) {
             critiri.cleanUp();

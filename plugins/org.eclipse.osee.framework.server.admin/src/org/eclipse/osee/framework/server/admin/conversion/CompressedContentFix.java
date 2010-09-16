@@ -19,7 +19,6 @@ import java.net.URLEncoder;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
@@ -95,7 +94,7 @@ public class CompressedContentFix {
          try {
             initializeData();
             doWork(time);
-         } catch (OseeDataStoreException ex) {
+         } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          } finally {
             clear();
@@ -109,7 +108,7 @@ public class CompressedContentFix {
          isRunning = false;
       }
 
-      private void initializeData() throws OseeDataStoreException {
+      private void initializeData() throws OseeCoreException {
          nativeExtension = Util.getArtIdMap("Extension");
          nameMap = Util.getArtIdMap("Name");
       }

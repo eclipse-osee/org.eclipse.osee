@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
@@ -58,7 +58,7 @@ public class IdTranslator {
       return this.aliases;
    }
 
-   public Object getId(Object original) throws OseeDataStoreException {
+   public Object getId(Object original) throws OseeCoreException {
       Long originalLong = null;
       if (original instanceof Double) {
          originalLong = ((Double) original).longValue();
@@ -83,7 +83,7 @@ public class IdTranslator {
       return toReturn;
    }
 
-   private Long transalateId(Long original) throws OseeDataStoreException {
+   private Long transalateId(Long original) throws OseeCoreException {
       Long newVersion = null;
       if (original <= 0L) {
          newVersion = original;
@@ -116,7 +116,7 @@ public class IdTranslator {
       return newVersion;
    }
 
-   public void load(String sourceDatabaseId) throws OseeDataStoreException {
+   public void load(String sourceDatabaseId) throws OseeCoreException {
       IOseeStatement chStmt = service.getStatement();
       try {
          originalToMapped.clear();
@@ -133,7 +133,7 @@ public class IdTranslator {
       return !newIds.isEmpty();
    }
 
-   public void store(OseeConnection connection, int sequenceId) throws OseeDataStoreException {
+   public void store(OseeConnection connection, int sequenceId) throws OseeCoreException {
       if (hasItemsToStore()) {
          List<Object[]> data = new ArrayList<Object[]>();
          for (Long original : newIds) {

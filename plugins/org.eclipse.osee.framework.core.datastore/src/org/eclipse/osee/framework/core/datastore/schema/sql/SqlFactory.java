@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.core.datastore.schema.sql;
 
 import java.sql.DatabaseMetaData;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.SupportedDatabase;
 
 /**
@@ -23,7 +23,7 @@ public class SqlFactory {
       super();
    }
 
-   public static SqlManager getSqlManager(DatabaseMetaData metaData) throws OseeDataStoreException {
+   public static SqlManager getSqlManager(DatabaseMetaData metaData) throws OseeCoreException {
       return getSqlManager(SupportedDatabase.getDatabaseType(metaData));
    }
 

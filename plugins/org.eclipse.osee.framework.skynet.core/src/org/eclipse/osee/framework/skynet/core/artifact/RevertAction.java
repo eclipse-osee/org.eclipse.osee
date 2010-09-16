@@ -163,7 +163,7 @@ public class RevertAction {
       System.out.println(String.format("     Displayed all the data in %s", Lib.getElapseString(time)));
    }
 
-   private void setTxCurrentForRevertedObjects() throws OseeDataStoreException {
+   private void setTxCurrentForRevertedObjects() throws OseeCoreException {
       int count2;
       long time = System.currentTimeMillis();
       count2 = ConnectionHandler.runBatchUpdate(connection, SET_TX_CURRENT_REVERT, gammaIdsBaseline);
@@ -176,7 +176,7 @@ public class RevertAction {
       }
    }
 
-   private void updateArtifactVersionTxCurrents(int branchId, int artId) throws OseeDataStoreException {
+   private void updateArtifactVersionTxCurrents(int branchId, int artId) throws OseeCoreException {
       if (DEBUG) {
          IOseeStatement chStmt = ConnectionHandler.getStatement(connection);
          try {

@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.RelationType;
@@ -99,7 +98,7 @@ public final class UnsubscribeTransaction extends AbstractDbTxOperation {
    }
 
    @SuppressWarnings("unchecked")
-   private void createNewTxAddressing(OseeConnection connection) throws OseeDataStoreException {
+   private void createNewTxAddressing(OseeConnection connection) throws OseeCoreException {
       int transactionId = getDatabaseService().getSequence().getNextTransactionId();
       String comment =
          String.format("User %s requested unsubscribe from group %s", unsubscribeData.getUserId(),

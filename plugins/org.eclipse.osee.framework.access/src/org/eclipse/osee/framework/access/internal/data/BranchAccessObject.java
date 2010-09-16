@@ -15,7 +15,6 @@ import java.util.Map;
 import org.eclipse.osee.framework.access.AccessObject;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -49,7 +48,7 @@ public class BranchAccessObject extends AccessObject {
    }
 
    @Override
-   public void removeFromDatabase(int subjectId) throws OseeDataStoreException {
+   public void removeFromDatabase(int subjectId) throws OseeCoreException {
       final String DELETE_BRANCH_ACL = "DELETE FROM OSEE_BRANCH_ACL WHERE privilege_entity_id = ? AND branch_id =?";
       ConnectionHandler.runPreparedUpdate(DELETE_BRANCH_ACL, subjectId, branchId);
    }

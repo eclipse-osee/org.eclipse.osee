@@ -14,7 +14,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeResourceProcessor;
@@ -57,7 +56,7 @@ public class DefaultAttributeDataProvider extends AbstractAttributeDataProvider 
             fromStorage = new String(data, "UTF-8");
          }
       } catch (IOException ex) {
-         throw new OseeWrappedException("Error retrieving data.", ex);
+         OseeExceptions.wrapAndThrow(ex);
       }
       String toReturn = fromStorage != null ? fromStorage : rawStringValue;
       return toReturn != null ? toReturn : "";

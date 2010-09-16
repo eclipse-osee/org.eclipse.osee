@@ -33,21 +33,21 @@ public interface IOseeDatabaseService {
 
    IOseeStatement getStatement(int resultSetType, int resultSetConcurrency) throws OseeDataStoreException;
 
-   OseeConnection getConnection() throws OseeDataStoreException;
+   OseeConnection getConnection() throws OseeCoreException;
 
-   OseeConnection getConnection(IDatabaseInfo info) throws OseeDataStoreException;
+   OseeConnection getConnection(IDatabaseInfo info) throws OseeCoreException;
 
-   <O extends Object> int runBatchUpdate(String query, List<O[]> dataList) throws OseeDataStoreException;
+   <O extends Object> int runBatchUpdate(String query, List<O[]> dataList) throws OseeCoreException;
 
-   <O extends Object> int runPreparedUpdate(String query, O... data) throws OseeDataStoreException;
+   <O extends Object> int runPreparedUpdate(String query, O... data) throws OseeCoreException;
 
-   <O extends Object> int runBatchUpdate(OseeConnection connection, String query, List<O[]> dataList) throws OseeDataStoreException;
+   <O extends Object> int runBatchUpdate(OseeConnection connection, String query, List<O[]> dataList) throws OseeCoreException;
 
-   <O extends Object> int runPreparedUpdate(OseeConnection connection, String query, O... data) throws OseeDataStoreException;
+   <O extends Object> int runPreparedUpdate(OseeConnection connection, String query, O... data) throws OseeCoreException;
 
-   <T, O extends Object> T runPreparedQueryFetchObject(T defaultValue, String query, O... data) throws OseeDataStoreException;
+   <T, O extends Object> T runPreparedQueryFetchObject(T defaultValue, String query, O... data) throws OseeCoreException;
 
-   <T, O extends Object> T runPreparedQueryFetchObject(OseeConnection connection, T defaultValue, String query, O... data) throws OseeDataStoreException;
+   <T, O extends Object> T runPreparedQueryFetchObject(OseeConnection connection, T defaultValue, String query, O... data) throws OseeCoreException;
 
    boolean isProduction() throws OseeCoreException;
 }

@@ -11,10 +11,8 @@
 package org.eclipse.osee.framework.database.init;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,8 +29,11 @@ import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.core.exception.OseeNotFoundException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.database.init.internal.DatabaseInitActivator;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -79,7 +80,7 @@ public class SkynetDbBranchDataImport implements IDbInitializationTask {
       }
    }
 
-   private Collection<ImportData> loadDataFromExtensions() throws OseeDataStoreException {
+   private Collection<ImportData> loadDataFromExtensions() throws OseeCoreException {
       List<ImportData> toReturn = new ArrayList<ImportData>();
       Map<String, String> selectedBranches = new HashMap<String, String>();
       List<IConfigurationElement> elements = ExtensionPoints.getExtensionElements(EXTENSION_POINT, ELEMENT_NAME);
@@ -92,7 +93,8 @@ public class SkynetDbBranchDataImport implements IDbInitializationTask {
             try {
                exchangeFile = getExchangeFile(bundleName, branchData);
             } catch (Exception ex) {
-               throw new OseeDataStoreException(ex);
+               OseeExceptions.wrapAndThrow(ex);
+               return null; // unreachable since wrapAndThrow() always throws an exception
             }
             ImportData importData = new ImportData(exchangeFile);
             for (IConfigurationElement innerElement : element.getChildren(BRANCHES_TO_IMPORT)) {
@@ -119,20 +121,25 @@ public class SkynetDbBranchDataImport implements IDbInitializationTask {
       return toReturn;
    }
 
-   private File getExchangeFile(String bundleName, String exchangeFile) throws IOException, URISyntaxException {
+   private File getExchangeFile(String bundleName, String exchangeFile) throws IOException, OseeCoreException {
       if (exchangeFile.endsWith("zip") != true) {
-         throw new IOException(String.format("Branch data file is invalid [%s] ", exchangeFile));
+         throw new OseeArgumentException(String.format("Branch data file is invalid [%s] ", exchangeFile));
       }
       Bundle bundle = Platform.getBundle(bundleName);
       URL url = bundle.getResource(exchangeFile);
-      url = FileLocator.toFileURL(url);
-      String urlValue = url.toString();
-      URI uri = new URI(urlValue.replaceAll(" ", "%20"));
-      File toReturn = new File(uri);
-      if (toReturn.exists() != true) {
-         throw new FileNotFoundException(String.format("Branch data file cannot be found [%s]", exchangeFile));
+      try {
+         url = FileLocator.toFileURL(url);
+         String urlValue = url.toString();
+         URI uri = new URI(urlValue.replaceAll(" ", "%20"));
+         File toReturn = new File(uri);
+         if (!toReturn.exists()) {
+            throw new OseeNotFoundException(String.format("Branch data file cannot be found [%s]", exchangeFile));
+         }
+         return toReturn;
+      } catch (Exception ex) {
+         OseeExceptions.wrapAndThrow(ex);
+         return null; // unreachable since wrapAndThrow() always throws an exception
       }
-      return toReturn;
    }
 
    private static final class ImportData {

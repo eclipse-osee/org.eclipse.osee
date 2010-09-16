@@ -16,7 +16,7 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author Jeff C. Phillips
@@ -24,21 +24,21 @@ import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
  */
 public interface IOseeStatement extends Closeable {
 
-   void runPreparedQuery(String query, Object... data) throws OseeDataStoreException;
+   void runPreparedQuery(String query, Object... data) throws OseeCoreException;
 
    /**
     * @param fetchSize hint as to the number of rows that should be fetched from the database at a time. will be limited
     * to 10,000
     */
-   void runPreparedQuery(int fetchSize, String query, Object... data) throws OseeDataStoreException;
+   void runPreparedQuery(int fetchSize, String query, Object... data) throws OseeCoreException;
 
    /**
     * Invokes a stored procedure parameters of type SQL3DataType are registered as Out parameters and all others are set
     * as in parameters
     */
-   void runCallableStatement(String query, Object... data) throws OseeDataStoreException;
+   void runCallableStatement(String query, Object... data) throws OseeCoreException;
 
-   boolean next() throws OseeDataStoreException;
+   boolean next() throws OseeCoreException;
 
    /**
     * The application must call close when it is done using this object; however, it is safe to use this same object
@@ -47,39 +47,39 @@ public interface IOseeStatement extends Closeable {
    @Override
    void close();
 
-   InputStream getBinaryStream(String columnName) throws OseeDataStoreException;
+   InputStream getBinaryStream(String columnName) throws OseeCoreException;
 
-   InputStream getAsciiStream(String columnName) throws OseeDataStoreException;
+   InputStream getAsciiStream(String columnName) throws OseeCoreException;
 
-   String getString(String columnName) throws OseeDataStoreException;
+   String getString(String columnName) throws OseeCoreException;
 
-   float getFloat(String columnName) throws OseeDataStoreException;
+   float getFloat(String columnName) throws OseeCoreException;
 
-   long getLong(String columnName) throws OseeDataStoreException;
+   long getLong(String columnName) throws OseeCoreException;
 
-   int getInt(String columnName) throws OseeDataStoreException;
+   int getInt(String columnName) throws OseeCoreException;
 
-   Timestamp getTimestamp(String columnName) throws OseeDataStoreException;
+   Timestamp getTimestamp(String columnName) throws OseeCoreException;
 
-   BigDecimal getBigDecimal(String name) throws OseeDataStoreException;
+   BigDecimal getBigDecimal(String name) throws OseeCoreException;
 
-   Time getTime(String name) throws OseeDataStoreException;
+   Time getTime(String name) throws OseeCoreException;
 
-   double getDouble(String columnName) throws OseeDataStoreException;
+   double getDouble(String columnName) throws OseeCoreException;
 
-   Date getDate(String columnName) throws OseeDataStoreException;
+   Date getDate(String columnName) throws OseeCoreException;
 
-   boolean wasNull() throws OseeDataStoreException;
+   boolean wasNull() throws OseeCoreException;
 
-   int getColumnCount() throws OseeDataStoreException;
+   int getColumnCount() throws OseeCoreException;
 
-   String getColumnName(int columnIndex) throws OseeDataStoreException;
+   String getColumnName(int columnIndex) throws OseeCoreException;
 
-   int getColumnType(int columnIndex) throws OseeDataStoreException;
+   int getColumnType(int columnIndex) throws OseeCoreException;
 
-   String getColumnTypeName(int columnIndex) throws OseeDataStoreException;
+   String getColumnTypeName(int columnIndex) throws OseeCoreException;
 
-   Object getObject(int columnIndex) throws OseeDataStoreException;
+   Object getObject(int columnIndex) throws OseeCoreException;
 
    /**
     * Returns the number of rows in the result set. Once this method returns the result set will be pointing to the last
@@ -87,34 +87,34 @@ public interface IOseeStatement extends Closeable {
     * 
     * @return the number of rows in the result set
     */
-   int getRowCount() throws OseeDataStoreException;
+   int getRowCount() throws OseeCoreException;
 
-   boolean isNullable(int columnIndex) throws OseeDataStoreException;
+   boolean isNullable(int columnIndex) throws OseeCoreException;
 
-   double getCallableDouble(int columnIndex) throws OseeDataStoreException;
-
-   /**
-    * should not be used by application code because it is less readable than using the column name
-    */
-   int getInt(int columnIndex) throws OseeDataStoreException;
-
-   int getCallableInt(int columnIndex) throws OseeDataStoreException;
+   double getCallableDouble(int columnIndex) throws OseeCoreException;
 
    /**
     * should not be used by application code because it is less readable than using the column name
     */
-   long getLong(int columnIndex) throws OseeDataStoreException;
+   int getInt(int columnIndex) throws OseeCoreException;
+
+   int getCallableInt(int columnIndex) throws OseeCoreException;
 
    /**
     * should not be used by application code because it is less readable than using the column name
     */
-   String getString(int columnIndex) throws OseeDataStoreException;
+   long getLong(int columnIndex) throws OseeCoreException;
 
-   String getComplementSql() throws OseeDataStoreException;
+   /**
+    * should not be used by application code because it is less readable than using the column name
+    */
+   String getString(int columnIndex) throws OseeCoreException;
 
-   boolean isDatabaseType(SupportedDatabase type) throws OseeDataStoreException;
+   String getComplementSql() throws OseeCoreException;
 
-   void updateObject(String columnName, Object value) throws OseeDataStoreException;
+   boolean isDatabaseType(SupportedDatabase type) throws OseeCoreException;
 
-   void updateRow() throws OseeDataStoreException;
+   void updateObject(String columnName, Object value) throws OseeCoreException;
+
+   void updateRow() throws OseeCoreException;
 }

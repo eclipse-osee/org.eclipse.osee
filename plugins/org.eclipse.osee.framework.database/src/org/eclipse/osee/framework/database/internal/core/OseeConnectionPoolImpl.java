@@ -17,6 +17,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.database.core.IConnectionFactory;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.internal.Activator;
@@ -59,7 +60,7 @@ public class OseeConnectionPoolImpl {
       connections.remove(conn);
    }
 
-   public synchronized OseeConnectionImpl getConnection() throws OseeDataStoreException {
+   public synchronized OseeConnectionImpl getConnection() throws OseeCoreException {
       for (OseeConnectionImpl connection : connections) {
          if (connection.lease()) {
             return connection;
@@ -70,21 +71,22 @@ public class OseeConnectionPoolImpl {
          throw new OseeDataStoreException(
             "This client has reached the maximum number of allowed simultaneous database connections of : " + MAX_CONNECTIONS_PER_CLIENT);
       }
-      try {
-         OseeConnectionImpl connection = getOseeConnection();
-         connections.add(connection);
-         OseeLog.log(Activator.class, Level.INFO, String.format("DbConnection: [%s] - [%d]", dbUrl, connections.size()));
-         return connection;
-      } catch (Throwable th) {
-         throw new OseeDataStoreException("Unable to get a database connection: ", th);
-      }
+      OseeConnectionImpl connection = getOseeConnection();
+      connections.add(connection);
+      OseeLog.log(Activator.class, Level.INFO, String.format("DbConnection: [%s] - [%d]", dbUrl, connections.size()));
+      return connection;
    }
 
-   private OseeConnectionImpl getOseeConnection() throws Exception {
-      IConnectionFactory connectionDriver = createConnection(driver);
-      Connection connection = connectionDriver.getConnection(properties, dbUrl);
-      connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
-      return new OseeConnectionImpl(connection, this);
+   private OseeConnectionImpl getOseeConnection() throws OseeCoreException {
+      try {
+         IConnectionFactory connectionDriver = createConnection(driver);
+         Connection connection = connectionDriver.getConnection(properties, dbUrl);
+         connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+         return new OseeConnectionImpl(connection, this);
+      } catch (Exception ex) {
+         OseeExceptions.wrapAndThrow(ex);
+         return null; // unreachable since wrapAndThrow() always throws an exception
+      }
    }
 
    synchronized void returnConnection(OseeConnectionImpl connection) {
@@ -94,13 +96,13 @@ public class OseeConnectionPoolImpl {
          } else {
             connection.expireLease();
          }
-      } catch (OseeDataStoreException ex) {
+      } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          removeConnection(connection);
       }
    }
 
-   synchronized void releaseUneededConnections() throws OseeDataStoreException {
+   synchronized void releaseUneededConnections() throws OseeCoreException {
       for (OseeConnectionImpl connection : connections) {
          if (connection.isStale()) {
             connection.destroy();

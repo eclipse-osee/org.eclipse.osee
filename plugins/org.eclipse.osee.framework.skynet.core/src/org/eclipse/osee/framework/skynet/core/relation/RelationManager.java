@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
@@ -670,7 +669,7 @@ public class RelationManager {
    /**
     * Remove all relations stored in the list awaiting to be deleted.
     */
-   public static void purgeRelationsFor(Artifact artifact) throws OseeDataStoreException {
+   public static void purgeRelationsFor(Artifact artifact) throws OseeCoreException {
       Collection<RelationLink> links =
          getFlattenedList(relationsByType.getValues(threadLocalKey.get().getKey(artifact)));
       if (!links.isEmpty()) {

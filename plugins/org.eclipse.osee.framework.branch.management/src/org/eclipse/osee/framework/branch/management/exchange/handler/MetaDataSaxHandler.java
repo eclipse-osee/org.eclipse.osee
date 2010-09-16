@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.branch.management.exchange.ExportImportXml;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
@@ -99,7 +98,7 @@ public class MetaDataSaxHandler extends AbstractSaxHandler {
       this.targetMetadataMap.putAll(targetTables);
    }
 
-   private Map<String, MetaData> getTargetDbMetadata() throws SQLException, OseeDataStoreException {
+   private Map<String, MetaData> getTargetDbMetadata() throws SQLException, OseeCoreException {
       Map<String, MetaData> targetDbMetadata = new HashMap<String, MetaData>();
       OseeConnection connection = service.getConnection();
       try {
@@ -113,7 +112,7 @@ public class MetaDataSaxHandler extends AbstractSaxHandler {
       return targetDbMetadata;
    }
 
-   private void processMetaData(Map<String, MetaData> targetDbMetadata, DatabaseMetaData dbMetaData, String targetTable) throws SQLException, OseeDataStoreException {
+   private void processMetaData(Map<String, MetaData> targetDbMetadata, DatabaseMetaData dbMetaData, String targetTable) throws SQLException, OseeCoreException {
       ResultSet resultSet = null;
       try {
          resultSet = dbMetaData.getTables(null, null, null, new String[] {"TABLE"});
@@ -136,7 +135,7 @@ public class MetaDataSaxHandler extends AbstractSaxHandler {
       }
    }
 
-   private void processColumnMetaData(MetaData currentMetadata, DatabaseMetaData dbMetaData, String schema, String tableName) throws SQLException, OseeDataStoreException {
+   private void processColumnMetaData(MetaData currentMetadata, DatabaseMetaData dbMetaData, String schema, String tableName) throws SQLException, OseeCoreException {
       ResultSet resultSet = null;
 
       try {

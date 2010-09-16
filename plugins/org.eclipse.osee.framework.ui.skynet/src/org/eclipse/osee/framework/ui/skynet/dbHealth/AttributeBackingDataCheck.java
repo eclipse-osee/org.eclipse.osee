@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.server.HttpUrlBuilderClient;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.HttpProcessor;
 import org.eclipse.osee.framework.core.util.HttpProcessor.AcquireResult;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
@@ -75,7 +75,7 @@ public class AttributeBackingDataCheck extends DatabaseHealthOperation {
       subMonitor.worked(10);
    }
 
-   private List<AttrData> getInvalidAttributeData(SubMonitor subMonitor) throws OseeDataStoreException {
+   private List<AttrData> getInvalidAttributeData(SubMonitor subMonitor) throws OseeCoreException {
       List<AttrData> data = new ArrayList<AttrData>();
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {

@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.server.admin.conversion;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 
@@ -27,7 +27,7 @@ public class Util {
    private static final String sqlExtensionTypes =
       "SELECT attr1.art_id, attr1.value FROM osee_attribute attr1 WHERE attr1.ATTR_TYPE_ID = ?";
 
-   public static Map<Long, String> getArtIdMap(String attrTypeName) throws OseeDataStoreException {
+   public static Map<Long, String> getArtIdMap(String attrTypeName) throws OseeCoreException {
       Map<Long, String> toReturn = new HashMap<Long, String>(250);
 
       IOseeStatement chStmt = ConnectionHandler.getStatement();

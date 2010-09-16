@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxChange;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.SupportedDatabase;
 
 /**
@@ -78,7 +78,7 @@ public enum OseeSql_0_9_1 {
       this(sql, null);
    }
 
-   public static Properties getSqlProperties(DatabaseMetaData metaData) throws OseeDataStoreException {
+   public static Properties getSqlProperties(DatabaseMetaData metaData) throws OseeCoreException {
       Properties sqlProperties = new Properties();
       boolean areHintsSupported = SupportedDatabase.areHintsSupported(metaData);
       for (OseeSql_0_9_1 oseeSql : OseeSql_0_9_1.values()) {

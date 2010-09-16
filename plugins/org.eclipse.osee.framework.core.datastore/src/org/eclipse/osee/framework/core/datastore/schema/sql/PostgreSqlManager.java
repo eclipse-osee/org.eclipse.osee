@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.core.datastore.schema.data.ReferenceClause.OnD
 import org.eclipse.osee.framework.core.datastore.schema.data.ReferenceClause.OnUpdateEnum;
 import org.eclipse.osee.framework.core.datastore.schema.data.TableElement;
 import org.eclipse.osee.framework.core.datastore.schema.data.TableElement.ColumnFields;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -52,7 +52,7 @@ public class PostgreSqlManager extends SqlManagerImpl {
       return toExecute;
    }
 
-   public void createTable(OseeConnection connection, TableElement tableDef) throws OseeDataStoreException {
+   public void createTable(OseeConnection connection, TableElement tableDef) throws OseeCoreException {
       String toExecute = "CREATE TABLE " + tableDef.getFullyQualifiedTableName() + " ( \n";
       toExecute += handleColumnCreationSection(connection, tableDef.getColumns());
       toExecute += handleConstraintCreationSection(tableDef.getConstraints(), tableDef.getFullyQualifiedTableName());
@@ -64,7 +64,7 @@ public class PostgreSqlManager extends SqlManagerImpl {
    }
 
    @Override
-   public void dropTable(TableElement tableDef) throws OseeDataStoreException {
+   public void dropTable(TableElement tableDef) throws OseeCoreException {
       String toExecute = "DROP TABLE " + formatQuotedString(tableDef.getFullyQualifiedTableName(), "\\.") + " CASCADE";
       OseeLog.log(Activator.class, Level.FINE, "Dropping Table: [ " + tableDef.getFullyQualifiedTableName() + "]");
       ConnectionHandler.runPreparedUpdate(toExecute);
@@ -79,7 +79,7 @@ public class PostgreSqlManager extends SqlManagerImpl {
       return StringUtils.join(array, splitAt.replaceAll("\\\\", ""));
    }
 
-   public void dropIndex(OseeConnection connection, TableElement tableDef) throws OseeDataStoreException {
+   public void dropIndex(OseeConnection connection, TableElement tableDef) throws OseeCoreException {
       List<IndexElement> tableIndices = tableDef.getIndexData();
       String tableName = tableDef.getFullyQualifiedTableName();
       for (IndexElement iData : tableIndices) {
@@ -155,7 +155,7 @@ public class PostgreSqlManager extends SqlManagerImpl {
       return toReturn.toString();
    }
 
-   public void createIndex(OseeConnection connection, TableElement tableDef) throws OseeDataStoreException {
+   public void createIndex(OseeConnection connection, TableElement tableDef) throws OseeCoreException {
       List<IndexElement> tableIndices = tableDef.getIndexData();
       String indexId = null;
       StringBuilder appliesTo = new StringBuilder();

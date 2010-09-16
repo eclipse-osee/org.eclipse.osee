@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.access.internal.data;
 
 import org.eclipse.osee.framework.access.AccessObject;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -55,7 +55,7 @@ public class ArtifactAccessObject extends AccessObject {
    }
 
    @Override
-   public void removeFromDatabase(int subjectId) throws OseeDataStoreException {
+   public void removeFromDatabase(int subjectId) throws OseeCoreException {
       final String DELETE_ARTIFACT_ACL =
          "DELETE FROM OSEE_ARTIFACT_ACL WHERE privilege_entity_id = ? AND art_id =? AND branch_id =?";
       ConnectionHandler.runPreparedUpdate(DELETE_ARTIFACT_ACL, subjectId, artId, branchId);

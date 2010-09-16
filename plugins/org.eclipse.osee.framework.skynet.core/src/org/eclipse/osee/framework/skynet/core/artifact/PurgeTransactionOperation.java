@@ -20,7 +20,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -199,7 +198,7 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
       return null;
    }
 
-   private void getAffectedArtifacts(OseeConnection connection, int transactionQueryId) throws OseeDataStoreException {
+   private void getAffectedArtifacts(OseeConnection connection, int transactionQueryId) throws OseeCoreException {
       artifactJoinId = ArtifactLoader.getNewQueryId();
       ConnectionHandler.runPreparedUpdate(connection, LOAD_ARTIFACTS, artifactJoinId, transactionQueryId,
          artifactJoinId, transactionQueryId, artifactJoinId, transactionQueryId, artifactJoinId, transactionQueryId);
@@ -234,13 +233,13 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
       return fromToTxData;
    }
 
-   private void deleteTransactionsFromTxDetails(OseeConnection connection, IProgressMonitor monitor, int queryId, double workPercentage) throws OseeDataStoreException {
+   private void deleteTransactionsFromTxDetails(OseeConnection connection, IProgressMonitor monitor, int queryId, double workPercentage) throws OseeCoreException {
       monitor.subTask("Deleting Tx");
       ConnectionHandler.runPreparedUpdate(connection, DELETE_TRANSACTION_FROM_TRANSACTION_DETAILS, queryId);
       monitor.worked(calculateWork(workPercentage));
    }
 
-   private void deleteItemEntriesForTransactions(OseeConnection connection, IProgressMonitor monitor, int txsToDeleteQueryId, double workPercentage) throws OseeDataStoreException {
+   private void deleteItemEntriesForTransactions(OseeConnection connection, IProgressMonitor monitor, int txsToDeleteQueryId, double workPercentage) throws OseeCoreException {
       monitor.subTask("Deleting Tx Items");
       TransactionJoinQuery txGammasToDelete = JoinUtility.createTransactionJoinQuery();
       try {
@@ -260,7 +259,7 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
       monitor.worked(calculateWork(workPercentage));
    }
 
-   private void populateJoinQueryFromSql(OseeConnection connection, TransactionJoinQuery joinQuery, String sql, String txFieldName, Object... data) throws OseeDataStoreException {
+   private void populateJoinQueryFromSql(OseeConnection connection, TransactionJoinQuery joinQuery, String sql, String txFieldName, Object... data) throws OseeCoreException {
       IOseeStatement chStmt = ConnectionHandler.getStatement(connection);
       try {
          chStmt.runPreparedQuery(sql, data);
@@ -272,7 +271,7 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
       }
    }
 
-   private void updateTxCurrent(OseeConnection conn, IProgressMonitor monitor, double workPercentage) throws OseeDataStoreException {
+   private void updateTxCurrent(OseeConnection conn, IProgressMonitor monitor, double workPercentage) throws OseeCoreException {
       monitor.setTaskName("Updating Previous Tx to Current");
       ConnectionHandler.runPreparedUpdate(conn, UPDATE_TXS, artifactJoinId, artifactJoinId, artifactJoinId);
       monitor.worked(calculateWork(workPercentage));
@@ -284,7 +283,7 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
       }
    }
 
-   private void setChildBranchBaselineTxs(OseeConnection connection, IProgressMonitor monitor, HashCollection<Branch, TxDeleteInfo> transactions, double workPercentage) throws OseeDataStoreException {
+   private void setChildBranchBaselineTxs(OseeConnection connection, IProgressMonitor monitor, HashCollection<Branch, TxDeleteInfo> transactions, double workPercentage) throws OseeCoreException {
       List<Object[]> data = new ArrayList<Object[]>();
       monitor.setTaskName("Update Baseline Txs for Child Branches");
       for (TxDeleteInfo entry : transactions.getValues()) {

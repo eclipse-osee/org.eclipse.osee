@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.skynet.core.artifact.operation;
 
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -25,7 +25,7 @@ public abstract class ArtifactOperation extends Artifact implements WorkflowStep
    public static final String PROVIDES_ACCEPTABLE_INPUT = "Provides Acceptable Input";
    public static final String ARTIFACT_NAME = "Artifact Operation";
 
-   public ArtifactOperation(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeDataStoreException {
+   public ArtifactOperation(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeCoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
 

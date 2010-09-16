@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -85,7 +84,7 @@ public final class TransactionManager {
    }
 
    @SuppressWarnings("unchecked")
-   public static void setTransactionComment(TransactionRecord transaction, String comment) throws OseeDataStoreException {
+   public static void setTransactionComment(TransactionRecord transaction, String comment) throws OseeCoreException {
       ConnectionHandler.runPreparedUpdate(UPDATE_TRANSACTION_COMMENTS, comment, transaction.getId());
    }
 

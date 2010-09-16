@@ -54,7 +54,8 @@ public final class CompressedContentAttribute extends BinaryAttribute<InputStrea
       try {
          return Lib.stringToInputStream(value);
       } catch (Exception ex) {
-         throw new OseeCoreException(ex);
+         OseeExceptions.wrapAndThrow(ex);
+         return null; // unreachable since wrapAndThrow() always throws an exception
       }
    }
 

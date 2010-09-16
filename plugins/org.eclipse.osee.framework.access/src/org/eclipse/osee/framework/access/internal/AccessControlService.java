@@ -35,7 +35,6 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
@@ -517,7 +516,7 @@ public class AccessControlService implements IAccessControlService {
       return getBranchPermission(subject, branch);
    }
 
-   public void removeAccessControlDataIf(boolean removeFromDb, AccessControlData data) throws OseeDataStoreException {
+   public void removeAccessControlDataIf(boolean removeFromDb, AccessControlData data) throws OseeCoreException {
       int subjectId = data.getSubject().getArtId();
       AccessObject accessControlledObject = data.getObject();
       if (removeFromDb) {
@@ -587,7 +586,7 @@ public class AccessControlService implements IAccessControlService {
       }
    }
 
-   public void unLockObjects(Collection<Artifact> objects, Artifact subject) throws OseeDataStoreException, OseeAuthenticationRequiredException {
+   public void unLockObjects(Collection<Artifact> objects, Artifact subject) throws OseeCoreException, OseeAuthenticationRequiredException {
       AccessControlEvent event = new AccessControlEvent();
       event.setEventType(AccessControlEventType.ArtifactsUnlocked);
       Set<Artifact> lockedArts = new HashSet<Artifact>();

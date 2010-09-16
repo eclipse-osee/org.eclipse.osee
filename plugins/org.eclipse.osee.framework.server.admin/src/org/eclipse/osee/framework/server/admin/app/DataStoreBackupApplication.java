@@ -21,7 +21,7 @@ import java.util.logging.Level;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.osee.framework.branch.management.ExportOptions;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -38,7 +38,7 @@ import org.eclipse.osee.framework.server.admin.internal.Activator;
 public class DataStoreBackupApplication implements IApplication {
    private static final String ALL_BRANCHES_QUERY = "select branch_id from osee_branch";
 
-   private List<Integer> getAllBranches() throws OseeDataStoreException {
+   private List<Integer> getAllBranches() throws OseeCoreException {
       List<Integer> toReturn = new ArrayList<Integer>();
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {

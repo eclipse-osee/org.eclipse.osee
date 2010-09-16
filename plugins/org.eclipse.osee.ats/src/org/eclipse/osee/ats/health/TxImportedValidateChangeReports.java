@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
@@ -73,7 +72,7 @@ public class TxImportedValidateChangeReports extends AbstractBlam {
       return "Tx Imported Validate Change Reports";
    }
 
-   private void setup(String databaseTargetId) throws OseeDataStoreException {
+   private void setup(String databaseTargetId) throws OseeCoreException {
       List<ImportedId> importtedIds = getImportedIds();
       for (ImportedId importedId : importtedIds) {
          print(importedId.getSequence() + "\n");
@@ -278,7 +277,7 @@ public class TxImportedValidateChangeReports extends AbstractBlam {
          return newVersion;
       }
 
-      public void load(String sourceDatabaseId) throws OseeDataStoreException {
+      public void load(String sourceDatabaseId) throws OseeCoreException {
          IOseeStatement chStmt = ConnectionHandler.getStatement();
          try {
             originalToMapped.clear();

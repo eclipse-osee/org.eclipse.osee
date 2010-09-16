@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.admin.dbtabletab;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 
@@ -28,7 +28,7 @@ public class DbDescribe {
       this.dbColumns = null;
    }
 
-   public int indexOfColumn(String name) throws OseeDataStoreException {
+   public int indexOfColumn(String name) throws OseeCoreException {
       int toReturn = -1;
       List<Describe> items = getDescription();
       for (int index = 0; index < items.size(); index++) {
@@ -40,7 +40,7 @@ public class DbDescribe {
       return toReturn;
    }
 
-   public List<Describe> getDescription() throws OseeDataStoreException {
+   public List<Describe> getDescription() throws OseeCoreException {
       if (dbColumns == null) {
          dbColumns = new ArrayList<Describe>();
          IOseeStatement chStmt = ConnectionHandler.getStatement();
@@ -63,7 +63,7 @@ public class DbDescribe {
       return dbColumns;
    }
 
-   public DbTaskList getDbTaskList(List<Describe> describeList) throws OseeDataStoreException {
+   public DbTaskList getDbTaskList(List<Describe> describeList) throws OseeCoreException {
       DbTaskList taskList = new DbTaskList();
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {

@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.internal.Activator;
@@ -121,7 +122,7 @@ public class JoinUtility {
       return new CharJoinQuery(sessionId);
    }
 
-   public static List<Integer> getAllTagQueueQueryIds() throws OseeDataStoreException {
+   public static List<Integer> getAllTagQueueQueryIds() throws OseeCoreException {
       List<Integer> queryIds = new ArrayList<Integer>();
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
@@ -172,7 +173,7 @@ public class JoinUtility {
       }
 
       @SuppressWarnings("unchecked")
-      public void store(OseeConnection connection) throws OseeDataStoreException {
+      public void store(OseeConnection connection) throws OseeCoreException {
          if (this.wasStored != true) {
             List<Object[]> data = new ArrayList<Object[]>();
             for (IJoinRow joinArray : entries) {
@@ -191,7 +192,7 @@ public class JoinUtility {
          }
       }
 
-      public int delete(OseeConnection connection) throws OseeDataStoreException {
+      public int delete(OseeConnection connection) throws OseeCoreException {
          int updated = 0;
          IOseeDatabaseService databaseService = Activator.getInstance().getOseeDatabaseService();
          if (queryId != -1) {
@@ -203,11 +204,11 @@ public class JoinUtility {
          return updated;
       }
 
-      public void store() throws OseeDataStoreException {
+      public void store() throws OseeCoreException {
          store(null);
       }
 
-      public int delete() throws OseeDataStoreException {
+      public int delete() throws OseeCoreException {
          return delete(null);
       }
 

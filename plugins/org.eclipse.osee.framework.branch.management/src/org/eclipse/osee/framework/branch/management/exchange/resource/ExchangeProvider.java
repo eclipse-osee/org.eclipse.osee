@@ -60,7 +60,7 @@ public class ExchangeProvider implements IResourceProvider {
          try {
             toReturn = new URI(rawPath);
          } catch (URISyntaxException ex) {
-            throw new MalformedLocatorException(rawPath, ex);
+            throw new MalformedLocatorException(ex);
          }
       }
       return toReturn;

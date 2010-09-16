@@ -22,7 +22,7 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.admin.AdminView;
 import org.eclipse.osee.framework.ui.admin.dbtabletab.DbDescribe.Describe;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -59,7 +59,7 @@ public class DbTableViewer {
    private DbDescribe dbDescribe;
    private final DbItem dbItem;
 
-   public DbTableViewer(Composite parent, int numColumns, DbTableTab dbTab, DbItem dbItem) throws OseeDataStoreException {
+   public DbTableViewer(Composite parent, int numColumns, DbTableTab dbTab, DbItem dbItem) throws OseeCoreException {
       this.dbTab = dbTab;
       this.dbItem = dbItem;
       getTableDescription();
@@ -204,7 +204,7 @@ public class DbTableViewer {
 
    }
 
-   public void getTableDescription() throws OseeDataStoreException {
+   public void getTableDescription() throws OseeCoreException {
       dbDescribe = new DbDescribe(dbItem);
       describeList = dbDescribe.getDescription();
    }
@@ -212,7 +212,7 @@ public class DbTableViewer {
    /**
     * Load table with administration items
     */
-   public void load() throws OseeDataStoreException {
+   public void load() throws OseeCoreException {
       dbTaskList = dbDescribe.getDbTaskList(describeList);
       tableViewer.setInput(dbTaskList);
       refresh();

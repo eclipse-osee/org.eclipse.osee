@@ -16,7 +16,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.operation.OperationReporter;
 import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
@@ -312,7 +311,7 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
       return String.format(sql, archived ? "_archived" : "");
    }
 
-   private void writeAddressingChanges(boolean archived, boolean force) throws OseeDataStoreException {
+   private void writeAddressingChanges(boolean archived, boolean force) throws OseeCoreException {
       String archivedStr = archived ? "_archived" : "";
       if (addressingToDelete.size() > 99960 || force) {
          deleteTxsCounter +=

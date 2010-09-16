@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.util;
 
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.OseeInfo;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -30,7 +31,7 @@ public class SkynetViews {
 
    private static final String MEMENTO_SOURCE_GUID = "sourceDbGuid";
 
-   public static boolean isSourceValid(IMemento memento) {
+   public static boolean isSourceValid(IMemento memento) throws OseeCoreException {
       boolean result = false;
       if (memento != null) {
          String dbId = memento.getString(MEMENTO_SOURCE_GUID);
@@ -53,7 +54,7 @@ public class SkynetViews {
       if (memento != null) {
          try {
             memento.putString(MEMENTO_SOURCE_GUID, OseeInfo.getDatabaseGuid());
-         } catch (OseeDataStoreException ex) {
+         } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.WARNING, "Unable to set memento source db guid");
          }
       }

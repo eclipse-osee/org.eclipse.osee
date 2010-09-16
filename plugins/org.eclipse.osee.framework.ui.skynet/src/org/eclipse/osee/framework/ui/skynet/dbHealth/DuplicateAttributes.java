@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.dbHealth;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -40,7 +40,7 @@ public class DuplicateAttributes extends DatabaseHealthOperation {
       super("Duplicate Attribute Errors");
    }
 
-   private DuplicateAttributeData createAttributeData(IOseeStatement chStmt) throws OseeDataStoreException {
+   private DuplicateAttributeData createAttributeData(IOseeStatement chStmt) throws OseeCoreException {
       AttributeData attributeData1 =
          new AttributeData(chStmt.getInt("attr_id_1"), chStmt.getInt("gamma_id_1"), chStmt.getString("value_1"),
             chStmt.getString("uri_1"));
@@ -51,7 +51,7 @@ public class DuplicateAttributes extends DatabaseHealthOperation {
          attributeData2);
    }
 
-   private boolean isAttributeIdSetToCurrent(int attrId) throws OseeDataStoreException {
+   private boolean isAttributeIdSetToCurrent(int attrId) throws OseeCoreException {
       return ConnectionHandler.runPreparedQueryFetchInt(-1, FILTER_DELTED, attrId) != -1;
    }
 
@@ -134,7 +134,7 @@ public class DuplicateAttributes extends DatabaseHealthOperation {
 
    }
 
-   private int showAttributeCleanUpDecisions(List<DuplicateAttributeData> values, boolean canFixAutomatically, StringBuffer builder) throws OseeDataStoreException {
+   private int showAttributeCleanUpDecisions(List<DuplicateAttributeData> values, boolean canFixAutomatically, StringBuffer builder) throws OseeCoreException {
       int count = 0;
       for (DuplicateAttributeData duplicate : values) {
          String fixMessage;
@@ -186,7 +186,7 @@ public class DuplicateAttributes extends DatabaseHealthOperation {
    }
 
    //--- Find out if there is an attribute that is on every branch that has either one of the attributes ---//
-   private void loadBranchesWhereOnlyOneIsUsed(AttributeData attributeData, int otherAttrId) throws OseeDataStoreException {
+   private void loadBranchesWhereOnlyOneIsUsed(AttributeData attributeData, int otherAttrId) throws OseeCoreException {
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(String.format(BRANCHES_WITH_ONLY_ATTR, chStmt.getComplementSql()),

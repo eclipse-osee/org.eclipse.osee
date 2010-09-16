@@ -51,7 +51,7 @@ public class ApplicationServerDataStore {
    private static final String SELECT_SUPPORTED_VERSIONS_FROM_LOOKUP_TABLE_BY_SERVER_ID =
       "SELECT version_id FROM osee_server_lookup where server_id = ?";
 
-   static void removeByServerId(Collection<OseeServerInfo> infos) throws OseeDataStoreException {
+   static void removeByServerId(Collection<OseeServerInfo> infos) throws OseeCoreException {
       if (!infos.isEmpty()) {
          List<Object[]> data = new ArrayList<Object[]>();
          for (OseeServerInfo info : infos) {
@@ -99,7 +99,7 @@ public class ApplicationServerDataStore {
    }
 
    @SuppressWarnings("unchecked")
-   static boolean updateServerState(OseeServerInfo applicationServerInfo, boolean state) throws OseeDataStoreException {
+   static boolean updateServerState(OseeServerInfo applicationServerInfo, boolean state) throws OseeCoreException {
       ConnectionHandler.runPreparedUpdate(UPDATE_LOOKUP_TABLE, state ? 1 : 0, applicationServerInfo.getServerAddress(),
          applicationServerInfo.getPort());
       return true;
@@ -118,7 +118,7 @@ public class ApplicationServerDataStore {
       return result;
    }
 
-   static Collection<OseeServerInfo> getApplicationServerInfos(String clientVersion) throws OseeDataStoreException {
+   static Collection<OseeServerInfo> getApplicationServerInfos(String clientVersion) throws OseeCoreException {
       CompositeKeyHashMap<String, Integer, OseeServerInfo> servers =
          new CompositeKeyHashMap<String, Integer, OseeServerInfo>();
       if (Strings.isValid(clientVersion)) {
@@ -159,7 +159,7 @@ public class ApplicationServerDataStore {
       return servers.values();
    }
 
-   static Collection<OseeServerInfo> getAllApplicationServerInfos() throws OseeDataStoreException {
+   static Collection<OseeServerInfo> getAllApplicationServerInfos() throws OseeCoreException {
       Collection<OseeServerInfo> infos = new ArrayList<OseeServerInfo>();
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
@@ -198,7 +198,7 @@ public class ApplicationServerDataStore {
       return supportedVersions;
    }
 
-   static int getNumberOfSessions(String serverId) throws OseeDataStoreException {
+   static int getNumberOfSessions(String serverId) throws OseeCoreException {
       return ConnectionHandler.runPreparedQueryFetchInt(0, GET_NUMBER_OF_SESSIONS, serverId);
    }
 }

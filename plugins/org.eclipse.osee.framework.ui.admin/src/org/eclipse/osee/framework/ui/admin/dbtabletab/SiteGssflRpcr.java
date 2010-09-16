@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.admin.dbtabletab;
 
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -44,7 +45,7 @@ public class SiteGssflRpcr extends DbItem {
       return 100;
    }
 
-   public boolean exists(String program) {
+   public boolean exists(String program) throws OseeCoreException {
       try {
          return ConnectionHandler.runPreparedQueryFetchInt(0,
             "SELECT count(1) FROM " + getTableName() + " WHERE PROGRAM = ?", returnTic(program)) > 0;
@@ -68,7 +69,7 @@ public class SiteGssflRpcr extends DbItem {
             query = "INSERT INTO " + getTableName() + " (program,directory,program_id) VALUES (?,?,?)";
             ConnectionHandler.runPreparedUpdate(query, program, dir, programId);
          }
-      } catch (OseeDataStoreException ex) {
+      } catch (OseeCoreException ex) {
          OseeLog.log(AdminPlugin.class, Level.SEVERE, ex);
       }
    }

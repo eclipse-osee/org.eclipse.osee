@@ -17,7 +17,6 @@ import java.util.LinkedList;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.DbTransaction;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.JoinUtility.JoinItem;
@@ -130,7 +129,7 @@ class TaggerRunnable implements Runnable {
          this.currentTag = null;
       }
 
-      private Collection<AttributeData> getDataFromQueryId(OseeConnection connection, int queryId, final int numberOfRetries) throws OseeDataStoreException {
+      private Collection<AttributeData> getDataFromQueryId(OseeConnection connection, int queryId, final int numberOfRetries) throws OseeCoreException {
          Collection<AttributeData> attributeDatas = AttributeDataStore.getAttribute(connection, getTagQueueQueryId());
          // Re-try in case query id hasn't been committed to the database
          int retry = 0;
@@ -194,7 +193,7 @@ class TaggerRunnable implements Runnable {
          }
       }
 
-      private void checkSizeStoreIfNeeded(OseeConnection connection) throws OseeDataStoreException {
+      private void checkSizeStoreIfNeeded(OseeConnection connection) throws OseeCoreException {
          int cummulative = 0;
          boolean needsStorage = false;
          for (SearchTag item : this.searchTags) {
@@ -209,7 +208,7 @@ class TaggerRunnable implements Runnable {
          }
       }
 
-      private void store(OseeConnection connection, Collection<SearchTag> toStore) throws OseeDataStoreException {
+      private void store(OseeConnection connection, Collection<SearchTag> toStore) throws OseeCoreException {
          tagDataStore.storeTags(connection, toStore);
          for (SearchTag item : toStore) {
             item.clearCache();

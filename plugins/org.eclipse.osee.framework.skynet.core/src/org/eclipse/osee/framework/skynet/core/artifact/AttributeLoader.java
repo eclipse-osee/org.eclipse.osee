@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeSql;
@@ -85,7 +84,7 @@ public class AttributeLoader {
          // do nothing
       }
 
-      public AttrData(IOseeStatement chStmt, boolean historical) throws OseeDataStoreException {
+      public AttrData(IOseeStatement chStmt, boolean historical) throws OseeCoreException {
          artifactId = chStmt.getInt("art_id");
          branchId = chStmt.getInt("branch_id");
          attrId = chStmt.getInt("attr_id");

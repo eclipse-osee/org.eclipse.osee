@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.message.BranchCreationRequest;
 import org.eclipse.osee.framework.core.message.BranchCreationResponse;
@@ -98,7 +97,7 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
          try {
             systemUserId =
                getDatabaseService().runPreparedQueryFetchObject(-1, USER_ID_QUERY, SystemUser.OseeSystem.getUserID());
-         } catch (OseeDataStoreException ex) {
+         } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.WARNING, "Unable to retrieve the system user");
          }
       }

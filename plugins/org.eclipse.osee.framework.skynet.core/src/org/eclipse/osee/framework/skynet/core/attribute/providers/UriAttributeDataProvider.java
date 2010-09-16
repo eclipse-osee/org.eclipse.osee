@@ -16,7 +16,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeResourceProcessor;
@@ -68,7 +68,7 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
             }
          }
       } catch (IOException ex) {
-         throw new OseeWrappedException("Error committing data. ", ex);
+         OseeExceptions.wrapAndThrow(ex);
       }
       return response;
    }
@@ -81,7 +81,7 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
          try {
             decompressed = ByteBuffer.wrap(Lib.decompressBytes(new ByteArrayInputStream(rawData)));
          } catch (IOException ex) {
-            throw new OseeWrappedException("Error acquiring data. - ", ex);
+            OseeExceptions.wrapAndThrow(ex);
          }
       }
 
@@ -96,7 +96,7 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
          try {
             toReturn = new String(data.array(), "UTF-8");
          } catch (UnsupportedEncodingException ex) {
-            throw new OseeWrappedException("Error encoding data.", ex);
+            OseeExceptions.wrapAndThrow(ex);
          }
       } else {
          toReturn = "";
@@ -111,7 +111,7 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
          try {
             toSet = ByteBuffer.wrap(value.getBytes("UTF-8"));
          } catch (UnsupportedEncodingException ex) {
-            throw new OseeWrappedException("Error encoding data.", ex);
+            OseeExceptions.wrapAndThrow(ex);
          }
       }
       setValue(toSet);

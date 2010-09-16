@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.test.cases;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
@@ -29,7 +30,7 @@ public class DuplicateHridTest {
    }
 
    @org.junit.Test
-   public void testDuplicatePrevention() throws OseeDataStoreException {
+   public void testDuplicatePrevention() throws OseeCoreException {
       String known_duplicate = get_used_HRID();
       String random_HRID = generate_random_HRID();
       assertFalse("Duplicate check returned false positive", Artifact.isUniqueHRID(known_duplicate));
@@ -39,7 +40,7 @@ public class DuplicateHridTest {
    }
 
    /* Queries the database and grabs the first HRID it sees */
-   private static String get_used_HRID() throws OseeDataStoreException {
+   private static String get_used_HRID() throws OseeCoreException {
       String toReturn = ConnectionHandler.runPreparedQueryFetchString("", GET_ARTIFACTS);
       if (!HumanReadableId.isValid(toReturn)) {
          throw new OseeDataStoreException("No valid HRIDs found");

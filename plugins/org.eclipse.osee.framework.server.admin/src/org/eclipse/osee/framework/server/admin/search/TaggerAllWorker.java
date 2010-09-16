@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.JoinUtility;
@@ -40,7 +40,7 @@ class TaggerAllWorker extends BaseServerCommand {
       this.processor = null;
    }
 
-   private void fetchAndProcessGammas(OseeConnection connection, int branchId, TagProcessListener processor) throws OseeDataStoreException {
+   private void fetchAndProcessGammas(OseeConnection connection, int branchId, TagProcessListener processor) throws OseeCoreException {
       IOseeStatement chStmt = ConnectionHandler.getStatement(connection);
       try {
          chStmt.runPreparedQuery(AttributeDataStore.getAllTaggableGammasByBranchQuery(branchId),
@@ -128,7 +128,7 @@ class TaggerAllWorker extends BaseServerCommand {
          Activator.getInstance().getSearchTagger().stopTaggingByQueueQueryId(toStop);
       }
 
-      public void storeAndAddQueryId(OseeConnection connection, TagQueueJoinQuery joinQuery) throws OseeDataStoreException {
+      public void storeAndAddQueryId(OseeConnection connection, TagQueueJoinQuery joinQuery) throws OseeCoreException {
          if (joinQuery.size() > 0) {
             joinQuery.store(connection);
             this.queryIdMap.put(joinQuery.getQueryId(), joinQuery);

@@ -14,7 +14,6 @@ import org.eclipse.osee.framework.access.internal.data.ArtifactAccessObject;
 import org.eclipse.osee.framework.access.internal.data.BranchAccessObject;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
@@ -24,7 +23,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 public abstract class AccessObject {
    public abstract void removeFromCache();
 
-   public abstract void removeFromDatabase(int subjectId) throws OseeDataStoreException;
+   public abstract void removeFromDatabase(int subjectId) throws OseeCoreException;
 
    public abstract int getId();
 

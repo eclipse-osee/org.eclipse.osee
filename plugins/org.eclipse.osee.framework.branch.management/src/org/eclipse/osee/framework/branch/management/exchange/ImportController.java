@@ -35,7 +35,6 @@ import org.eclipse.osee.framework.branch.management.exchange.transform.IExchange
 import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.operation.OperationReporter;
@@ -232,7 +231,7 @@ public final class ImportController {
       }
    }
 
-   private void loadImportTrace(String sourceDatabaseId, Date sourceExportDate) throws OseeDataStoreException {
+   private void loadImportTrace(String sourceDatabaseId, Date sourceExportDate) throws OseeCoreException {
       IOseeStatement chStmt = oseeServices.getDatabaseService().getStatement();
       try {
          currentSavePoint = "load.save.points";
@@ -286,7 +285,7 @@ public final class ImportController {
          branchesStored = new int[0];
       }
 
-      public void updateBranchParentTransactionId() throws OseeDataStoreException {
+      public void updateBranchParentTransactionId() throws OseeCoreException {
          currentSavePoint = "update branch parent transaction id";
          if (!doesSavePointExist(currentSavePoint)) {
             if (branchesStored.length > 0) {

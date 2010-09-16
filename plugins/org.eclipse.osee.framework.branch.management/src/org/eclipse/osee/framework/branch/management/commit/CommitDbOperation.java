@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.message.ArtifactChangeItem;
 import org.eclipse.osee.framework.core.message.AttributeChangeItem;
@@ -117,7 +116,7 @@ public class CommitDbOperation extends AbstractDbTxOperation {
       }
    }
 
-   private void updateMergeBranchCommitTx() throws OseeDataStoreException {
+   private void updateMergeBranchCommitTx() throws OseeCoreException {
       getDatabaseService().runPreparedUpdate(connection, UPDATE_MERGE_COMMIT_TX, txHolder.getTransaction().getId(),
          sourceBranch.getId(), destinationBranch.getId());
    }
@@ -140,7 +139,7 @@ public class CommitDbOperation extends AbstractDbTxOperation {
       getDatabaseService().runPreparedUpdate(UPDATE_SOURCE_BRANCH_STATE, state.getValue(), sourceBranch.getId());
    }
 
-   private void updatePreviousCurrentsOnDestinationBranch() throws OseeStateException, OseeDataStoreException {
+   private void updatePreviousCurrentsOnDestinationBranch() throws OseeCoreException {
       UpdatePreviousTxCurrent updater = new UpdatePreviousTxCurrent(destinationBranch, connection);
       for (ChangeItem change : changes) {
          if (change instanceof ArtifactChangeItem) {
@@ -174,7 +173,7 @@ public class CommitDbOperation extends AbstractDbTxOperation {
       return record;
    }
 
-   private void insertCommitAddressing() throws OseeDataStoreException {
+   private void insertCommitAddressing() throws OseeCoreException {
       List<Object[]> insertData = new ArrayList<Object[]>();
       for (ChangeItem change : changes) {
          ModificationType modType = change.getNetChange().getModType();

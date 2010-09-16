@@ -15,7 +15,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.net.URI;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorProvider;
@@ -67,7 +67,7 @@ public class AttributeLocatorProvider implements IResourceLocatorProvider {
       return Strings.isValid(value) && value.startsWith(getSupportedProtocol() + "://");
    }
 
-   private String generatePath(String seed, String name) throws MalformedLocatorException, OseeDataStoreException {
+   private String generatePath(String seed, String name) throws OseeCoreException {
       StringBuilder builder = new StringBuilder();
       builder.append(getSupportedProtocol());
       builder.append("://");
@@ -81,7 +81,7 @@ public class AttributeLocatorProvider implements IResourceLocatorProvider {
                builder.append("/");
             }
          } catch (IOException ex) {
-            throw new MalformedLocatorException(ex);
+            OseeExceptions.wrapAndThrow(ex);
          }
 
          builder.append(name);

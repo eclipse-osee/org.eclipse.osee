@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.branch.management.IOseeBranchService;
 import org.eclipse.osee.framework.core.datastore.internal.Activator;
 import org.eclipse.osee.framework.core.datastore.schema.operations.OperationFactory;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
@@ -81,7 +81,7 @@ public class DatastoreInitOperation extends AbstractOperation {
    }
 
    @SuppressWarnings("unchecked")
-   private void addDefaultPermissions() throws OseeDataStoreException {
+   private void addDefaultPermissions() throws OseeCoreException {
       for (PermissionEnum permission : PermissionEnum.values()) {
          dbService.runPreparedUpdate(ADD_PERMISSION, permission.getPermId(), permission.getName());
       }

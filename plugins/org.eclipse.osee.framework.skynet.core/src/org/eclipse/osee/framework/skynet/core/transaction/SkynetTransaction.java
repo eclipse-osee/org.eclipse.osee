@@ -82,7 +82,7 @@ public final class SkynetTransaction extends AbstractOperation {
       this(BranchManager.getBranch(branch), comment);
    }
 
-   private int getNewAttributeId(Artifact artifact, Attribute<?> attribute) throws OseeDataStoreException {
+   private int getNewAttributeId(Artifact artifact, Attribute<?> attribute) throws OseeCoreException {
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       AttributeType attributeType = attribute.getAttributeType();
       int attrId = -1;
@@ -105,7 +105,7 @@ public final class SkynetTransaction extends AbstractOperation {
       return attrId;
    }
 
-   private int getNewRelationId() throws OseeDataStoreException {
+   private int getNewRelationId() throws OseeCoreException {
       return ConnectionHandler.getSequence().getNextRelationId();
    }
 

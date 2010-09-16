@@ -235,7 +235,7 @@ public class DatabaseArtifactTypeAccessor extends AbstractDatabaseAccessor<Artif
          ArtifactType.ARTIFACT_IS_ABSTRACT_FIELD_KEY);
    }
 
-   private void storeArtifactTypeInheritance(Collection<ArtifactType> types) throws OseeDataStoreException {
+   private void storeArtifactTypeInheritance(Collection<ArtifactType> types) throws OseeCoreException {
       List<Object[]> insertInheritanceData = new ArrayList<Object[]>();
       List<Object[]> deleteInheritanceData = new ArrayList<Object[]>();
       for (ArtifactType type : types) {

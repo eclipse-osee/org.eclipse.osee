@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.core.datastore.schema.data.ColumnMetadata;
 import org.eclipse.osee.framework.core.datastore.schema.data.IndexElement;
 import org.eclipse.osee.framework.core.datastore.schema.data.TableElement;
 import org.eclipse.osee.framework.core.datastore.schema.data.TableElement.ColumnFields;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -45,7 +45,7 @@ public class OracleSqlManager extends SqlManager {
    }
 
    @Override
-   public void createTable(TableElement tableDef) throws OseeDataStoreException {
+   public void createTable(TableElement tableDef) throws OseeCoreException {
       StringBuilder toExecute = new StringBuilder();
       toExecute.append(SqlManager.CREATE_STRING + " TABLE " + formatQuotedString(tableDef.getFullyQualifiedTableName(),
          "\\.") + " ( \n");
@@ -70,7 +70,7 @@ public class OracleSqlManager extends SqlManager {
    }
 
    @Override
-   public void dropTable(TableElement tableDef) throws OseeDataStoreException {
+   public void dropTable(TableElement tableDef) throws OseeCoreException {
       StringBuilder toExecute = new StringBuilder();
       toExecute.append(SqlManager.DROP_STRING + " TABLE " + formatQuotedString(tableDef.getFullyQualifiedTableName(),
          "\\.") + " cascade constraints purge");

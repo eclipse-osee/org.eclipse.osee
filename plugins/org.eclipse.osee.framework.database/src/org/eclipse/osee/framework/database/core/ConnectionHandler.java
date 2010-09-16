@@ -16,6 +16,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IDatabaseInfo;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.internal.Activator;
@@ -38,14 +39,14 @@ public final class ConnectionHandler {
    /**
     * Avoid using if possible
     */
-   public static OseeConnection getConnection() throws OseeDataStoreException {
+   public static OseeConnection getConnection() throws OseeCoreException {
       return getDatabase().getConnection();
    }
 
    /**
     * Avoid using if possible
     */
-   public static OseeConnection getConnection(IDatabaseInfo info) throws OseeDataStoreException {
+   public static OseeConnection getConnection(IDatabaseInfo info) throws OseeCoreException {
       return getDatabase().getConnection(info);
    }
 
@@ -66,7 +67,7 @@ public final class ConnectionHandler {
     * 
     * @return number of records updated
     */
-   public static <O extends Object> int runPreparedUpdate(String query, O... data) throws OseeDataStoreException {
+   public static <O extends Object> int runPreparedUpdate(String query, O... data) throws OseeCoreException {
       return getDatabase().runPreparedUpdate(query, data);
    }
 
@@ -75,7 +76,7 @@ public final class ConnectionHandler {
     * 
     * @return number of records updated
     */
-   public static <O extends Object> int runBatchUpdate(String query, List<O[]> dataList) throws OseeDataStoreException {
+   public static <O extends Object> int runBatchUpdate(String query, List<O[]> dataList) throws OseeCoreException {
       return getDatabase().runBatchUpdate(query, dataList);
    }
 
@@ -84,31 +85,31 @@ public final class ConnectionHandler {
     * 
     * @return number of records updated
     */
-   public static <O extends Object> int runPreparedUpdate(OseeConnection connection, String query, O... data) throws OseeDataStoreException {
+   public static <O extends Object> int runPreparedUpdate(OseeConnection connection, String query, O... data) throws OseeCoreException {
       return getDatabase().runPreparedUpdate(connection, query, data);
    }
 
-   public static <O extends Object> int runBatchUpdate(OseeConnection connection, String query, List<O[]> dataList) throws OseeDataStoreException {
+   public static <O extends Object> int runBatchUpdate(OseeConnection connection, String query, List<O[]> dataList) throws OseeCoreException {
       return getDatabase().runBatchUpdate(connection, query, dataList);
    }
 
-   public static <O extends Object> int runPreparedQueryFetchInt(int defaultValue, String query, O... data) throws OseeDataStoreException {
+   public static <O extends Object> int runPreparedQueryFetchInt(int defaultValue, String query, O... data) throws OseeCoreException {
       return getDatabase().runPreparedQueryFetchObject(defaultValue, query, data);
    }
 
-   public static <O extends Object> int runPreparedQueryFetchInt(OseeConnection connection, int defaultValue, String query, O... data) throws OseeDataStoreException {
+   public static <O extends Object> int runPreparedQueryFetchInt(OseeConnection connection, int defaultValue, String query, O... data) throws OseeCoreException {
       return getDatabase().runPreparedQueryFetchObject(connection, defaultValue, query, data);
    }
 
-   public static <O extends Object> int runCallableStatementFetchInt(String query, O... data) throws OseeDataStoreException {
+   public static <O extends Object> int runCallableStatementFetchInt(String query, O... data) throws OseeCoreException {
       return runCallableStatementFetchInt(getStatement(), query, data);
    }
 
-   public static <O extends Object> int runCallableStatementFetchInt(OseeConnection connection, String query, O... data) throws OseeDataStoreException {
+   public static <O extends Object> int runCallableStatementFetchInt(OseeConnection connection, String query, O... data) throws OseeCoreException {
       return runCallableStatementFetchInt(getStatement(connection), query, data);
    }
 
-   public static <O extends Object> int runCallableStatementFetchInt(IOseeStatement chStmt, String query, O... data) throws OseeDataStoreException {
+   public static <O extends Object> int runCallableStatementFetchInt(IOseeStatement chStmt, String query, O... data) throws OseeCoreException {
       try {
          chStmt.runCallableStatement(query, data);
          return chStmt.getCallableInt(1);
@@ -117,15 +118,15 @@ public final class ConnectionHandler {
       }
    }
 
-   public static <O extends Object> double runCallableStatementFetchDouble(String query, O... data) throws OseeDataStoreException {
+   public static <O extends Object> double runCallableStatementFetchDouble(String query, O... data) throws OseeCoreException {
       return runCallableStatementFetchDouble(getStatement(), query, data);
    }
 
-   public static <O extends Object> double runCallableStatementFetchDouble(OseeConnection connection, String query, O... data) throws OseeDataStoreException {
+   public static <O extends Object> double runCallableStatementFetchDouble(OseeConnection connection, String query, O... data) throws OseeCoreException {
       return runCallableStatementFetchDouble(getStatement(connection), query, data);
    }
 
-   private static <O extends Object> double runCallableStatementFetchDouble(IOseeStatement chStmt, String query, O... data) throws OseeDataStoreException {
+   private static <O extends Object> double runCallableStatementFetchDouble(IOseeStatement chStmt, String query, O... data) throws OseeCoreException {
       try {
          chStmt.runCallableStatement(query, data);
          return chStmt.getCallableDouble(1);
@@ -134,26 +135,26 @@ public final class ConnectionHandler {
       }
    }
 
-   public static <O extends Object> long runPreparedQueryFetchLong(long defaultValue, String query, O... data) throws OseeDataStoreException {
+   public static <O extends Object> long runPreparedQueryFetchLong(long defaultValue, String query, O... data) throws OseeCoreException {
       return getDatabase().runPreparedQueryFetchObject(defaultValue, query, data);
    }
 
-   public static <O extends Object> long runPreparedQueryFetchLong(OseeConnection connection, long defaultValue, String query, O... data) throws OseeDataStoreException {
+   public static <O extends Object> long runPreparedQueryFetchLong(OseeConnection connection, long defaultValue, String query, O... data) throws OseeCoreException {
       return getDatabase().runPreparedQueryFetchObject(connection, defaultValue, query, data);
    }
 
-   public static <O extends Object> String runPreparedQueryFetchString(String defaultValue, String query, O... data) throws OseeDataStoreException {
+   public static <O extends Object> String runPreparedQueryFetchString(String defaultValue, String query, O... data) throws OseeCoreException {
       return getDatabase().runPreparedQueryFetchObject(defaultValue, query, data);
    }
 
-   public static <O extends Object> String runPreparedQueryFetchString(OseeConnection connection, String defaultValue, String query, O... data) throws OseeDataStoreException {
+   public static <O extends Object> String runPreparedQueryFetchString(OseeConnection connection, String defaultValue, String query, O... data) throws OseeCoreException {
       return getDatabase().runPreparedQueryFetchObject(connection, defaultValue, query, data);
    }
 
    /**
     * Cause constraint checking to be deferred until the end of the current transaction.
     */
-   public static void deferConstraintChecking(OseeConnection connection) throws OseeDataStoreException {
+   public static void deferConstraintChecking(OseeConnection connection) throws OseeCoreException {
       if (SupportedDatabase.getDatabaseType(connection.getMetaData()) == SupportedDatabase.derby) {
          return;
       }
@@ -161,7 +162,7 @@ public final class ConnectionHandler {
       runPreparedUpdate(connection, "SET CONSTRAINTS ALL DEFERRED");
    }
 
-   public static DatabaseMetaData getMetaData() throws OseeDataStoreException {
+   public static DatabaseMetaData getMetaData() throws OseeCoreException {
       OseeConnection connection = getDatabase().getConnection();
       try {
          return connection.getMetaData();

@@ -13,30 +13,26 @@ package org.eclipse.osee.framework.database.core;
 import java.io.Closeable;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 public abstract class OseeConnection implements Closeable {
-
-   protected OseeConnection() {
-
-   }
 
    @Override
    public abstract void close();
 
-   public abstract boolean isClosed() throws OseeDataStoreException;
+   public abstract boolean isClosed() throws OseeCoreException;
 
    public abstract boolean isStale();
 
-   public abstract DatabaseMetaData getMetaData() throws OseeDataStoreException;
+   public abstract DatabaseMetaData getMetaData() throws OseeCoreException;
 
-   protected abstract void setAutoCommit(boolean autoCommit) throws OseeDataStoreException;
+   protected abstract void setAutoCommit(boolean autoCommit) throws OseeCoreException;
 
-   protected abstract boolean getAutoCommit() throws SQLException;
+   protected abstract boolean getAutoCommit() throws OseeCoreException;
 
    protected abstract void commit() throws SQLException;
 
-   protected abstract void rollback() throws OseeDataStoreException;
+   protected abstract void rollback() throws OseeCoreException;
 
-   protected abstract void destroy() throws OseeDataStoreException;
+   protected abstract void destroy() throws OseeCoreException;
 }

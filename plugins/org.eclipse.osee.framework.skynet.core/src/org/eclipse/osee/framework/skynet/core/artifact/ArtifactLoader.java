@@ -230,14 +230,14 @@ public final class ArtifactLoader {
    /**
     * must be call in a try block with a finally clause which calls clearQuery()
     */
-   public static int insertIntoArtifactJoin(OseeConnection connection, List<Object[]> insertParameters) throws OseeDataStoreException {
+   public static int insertIntoArtifactJoin(OseeConnection connection, List<Object[]> insertParameters) throws OseeCoreException {
       return ConnectionHandler.runBatchUpdate(connection, INSERT_JOIN_ARTIFACT, insertParameters);
    }
 
    /**
     * must be call in a try block with a finally clause which calls clearQuery()
     */
-   public static int insertIntoArtifactJoin(List<Object[]> insertParameters) throws OseeDataStoreException {
+   public static int insertIntoArtifactJoin(List<Object[]> insertParameters) throws OseeCoreException {
       return insertIntoArtifactJoin(null, insertParameters);
    }
 
@@ -247,7 +247,7 @@ public final class ArtifactLoader {
     * @param queryId value gotten from call to getNewQueryId and used in populating the insert parameters for
     * selectArtifacts
     */
-   public static void clearQuery(int queryId) throws OseeDataStoreException {
+   public static void clearQuery(int queryId) throws OseeCoreException {
       ConnectionHandler.runPreparedUpdate(DELETE_FROM_JOIN_ARTIFACT, queryId);
    }
 
@@ -257,7 +257,7 @@ public final class ArtifactLoader {
     * @param queryId value gotten from call to getNewQueryId and used in populating the insert parameters for
     * selectArtifacts
     */
-   public static void clearQuery(OseeConnection connection, int queryId) throws OseeDataStoreException {
+   public static void clearQuery(OseeConnection connection, int queryId) throws OseeCoreException {
       if (connection != null) {
          ConnectionHandler.runPreparedUpdate(connection, DELETE_FROM_JOIN_ARTIFACT, queryId);
       } else {

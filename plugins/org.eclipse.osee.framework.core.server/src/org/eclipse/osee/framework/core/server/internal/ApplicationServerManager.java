@@ -27,7 +27,6 @@ import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.operation.OperationJob;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.server.OseeHttpServlet;
@@ -148,7 +147,7 @@ public class ApplicationServerManager implements IApplicationServerManager {
    }
 
    @Override
-   public synchronized void setServletRequestsAllowed(final boolean value) throws OseeDataStoreException {
+   public synchronized void setServletRequestsAllowed(final boolean value) throws OseeCoreException {
       if (getApplicationServerInfo().isAcceptingRequests() != value) {
          boolean wasSuccessful = ApplicationServerDataStore.updateServerState(getApplicationServerInfo(), value);
          if (wasSuccessful) {

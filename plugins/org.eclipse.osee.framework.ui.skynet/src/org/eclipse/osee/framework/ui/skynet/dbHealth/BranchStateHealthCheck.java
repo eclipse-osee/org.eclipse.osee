@@ -20,8 +20,7 @@ import java.util.Map;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -168,7 +167,7 @@ public class BranchStateHealthCheck extends DatabaseHealthOperation {
       }
    }
 
-   private Collection<BranchData> getAllBranchData() throws OseeDataStoreException, OseeArgumentException {
+   private Collection<BranchData> getAllBranchData() throws OseeCoreException {
       Map<Integer, BranchData> data = new HashMap<Integer, BranchData>();
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {

@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -139,7 +138,7 @@ public class DuplicateHRID extends DatabaseHealthOperation {
       }
    }
 
-   private List<ArtifactData> getDuplicateHRIDArtifacts(IProgressMonitor monitor) throws OseeDataStoreException {
+   private List<ArtifactData> getDuplicateHRIDArtifacts(IProgressMonitor monitor) throws OseeCoreException {
       List<ArtifactData> duplicateItems = new LinkedList<ArtifactData>();
       IOseeStatement chStmt1 = ConnectionHandler.getStatement();
       try {
@@ -159,7 +158,7 @@ public class DuplicateHRID extends DatabaseHealthOperation {
       return duplicateItems;
    }
 
-   private String getAdditionalCounts(String query, String hrid) throws OseeDataStoreException {
+   private String getAdditionalCounts(String query, String hrid) throws OseeCoreException {
       return String.valueOf(ConnectionHandler.runPreparedQueryFetchInt(-1, query, new Object[] {"%" + hrid + "%"}));
    }
 

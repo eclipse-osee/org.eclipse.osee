@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.admin.dbtabletab;
 
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -50,7 +50,7 @@ public class OseeInfoDbItem extends DbItem {
          String query = "SELECT * FROM " + getTableName() + " WHERE OSEE_KEY = " + returnTic(key);
          chStmt.runPreparedQuery(query);
          toReturn = chStmt.next();
-      } catch (OseeDataStoreException ex) {
+      } catch (OseeCoreException ex) {
          OseeLog.log(AdminPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       } finally {
          if (chStmt != null) {
@@ -73,7 +73,7 @@ public class OseeInfoDbItem extends DbItem {
             query = "INSERT INTO " + getTableName() + " (OSEE_KEY, OSEE_VALUE) VALUES (?, ?)";
             ConnectionHandler.runPreparedUpdate(query, key, value);
          }
-      } catch (OseeDataStoreException ex) {
+      } catch (OseeCoreException ex) {
          OseeLog.log(AdminPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }

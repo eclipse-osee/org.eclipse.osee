@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.client.internal.OseeApplicationServer;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.HttpUrlBuilder;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -74,15 +75,17 @@ public class HttpUrlBuilderClient {
       try {
          return HttpUrlBuilder.createURL(getApplicationServerPrefix(), context, parameters);
       } catch (UnsupportedEncodingException ex) {
-         throw new OseeDataStoreException(ex);
+         OseeExceptions.wrapAndThrow(ex);
+         return null; // unreachable since wrapAndThrow() always throws an exception
       }
    }
 
-   public String getOsgiArbitrationServiceUrl(String context, Map<String, String> parameters) throws OseeDataStoreException {
+   public String getOsgiArbitrationServiceUrl(String context, Map<String, String> parameters) throws OseeCoreException {
       try {
          return HttpUrlBuilder.createURL(getArbitrationServerPrefix(), context, parameters);
       } catch (UnsupportedEncodingException ex) {
-         throw new OseeDataStoreException(ex);
+         OseeExceptions.wrapAndThrow(ex);
+         return null; // unreachable since wrapAndThrow() always throws an exception
       }
    }
 }

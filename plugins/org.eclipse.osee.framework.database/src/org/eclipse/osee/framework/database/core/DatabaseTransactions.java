@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.database.core;
 
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.database.internal.Activator;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -40,11 +40,7 @@ public final class DatabaseTransactions {
          connection.commit();
          OseeLog.log(Activator.class, Level.FINEST, String.format("End Transaction: [%s]", dbWork.getName()));
       } catch (Exception ex) {
-         if (ex instanceof OseeCoreException) {
-            saveException = (OseeCoreException) ex;
-         } else {
-            saveException = new OseeWrappedException(ex);
-         }
+         saveException = OseeExceptions.wrap(ex);
          try {
             connection.rollback();
             connection.destroy();

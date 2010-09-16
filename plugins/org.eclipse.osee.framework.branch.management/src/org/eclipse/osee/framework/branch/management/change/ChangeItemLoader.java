@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.branch.management.change;
 import java.util.HashMap;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.ArtifactChangeItem;
 import org.eclipse.osee.framework.core.message.AttributeChangeItem;
 import org.eclipse.osee.framework.core.message.ChangeItem;
@@ -40,7 +40,7 @@ public class ChangeItemLoader {
 
       String getLoadByGammaQuery();
 
-      ChangeItem createItem(IOseeStatement statement) throws OseeDataStoreException;
+      ChangeItem createItem(IOseeStatement statement) throws OseeCoreException;
    }
 
    public ChangeItemLoader(IOseeDatabaseServiceProvider oseeDatabaseProvider, HashMap<Long, ModificationType> changeByGammaId) {
@@ -60,7 +60,7 @@ public class ChangeItemLoader {
       return new RelationChangeItemFactory();
    }
 
-   public void loadItemIdsBasedOnGammas(IProgressMonitor monitor, ChangeItemFactory factory, int queryId, HashMap<Integer, ChangeItem> changesByItemId, IdJoinQuery idJoin) throws OseeDataStoreException {
+   public void loadItemIdsBasedOnGammas(IProgressMonitor monitor, ChangeItemFactory factory, int queryId, HashMap<Integer, ChangeItem> changesByItemId, IdJoinQuery idJoin) throws OseeCoreException {
       IOseeStatement chStmt = oseeDatabaseProvider.getOseeDatabaseService().getStatement();
       try {
          chStmt.runPreparedQuery(10000, factory.getLoadByGammaQuery(), queryId);
@@ -85,7 +85,7 @@ public class ChangeItemLoader {
       }
 
       @Override
-      public ChangeItem createItem(IOseeStatement chStmt) throws OseeDataStoreException {
+      public ChangeItem createItem(IOseeStatement chStmt) throws OseeCoreException {
          int artId = chStmt.getInt("art_id");
          int artTypeId = chStmt.getInt("art_type_id");
 
@@ -121,7 +121,7 @@ public class ChangeItemLoader {
       }
 
       @Override
-      public ChangeItem createItem(IOseeStatement chStmt) throws OseeDataStoreException {
+      public ChangeItem createItem(IOseeStatement chStmt) throws OseeCoreException {
          int attrId = chStmt.getInt("attr_id");
          int attrTypeId = chStmt.getInt("attr_type_id");
          int artId = chStmt.getInt("art_id");
@@ -160,7 +160,7 @@ public class ChangeItemLoader {
       }
 
       @Override
-      public ChangeItem createItem(IOseeStatement chStmt) throws OseeDataStoreException {
+      public ChangeItem createItem(IOseeStatement chStmt) throws OseeCoreException {
          int relLinkId = chStmt.getInt("rel_link_id");
          int relTypeId = chStmt.getInt("rel_link_type_id");
 

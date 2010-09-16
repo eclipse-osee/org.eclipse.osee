@@ -69,7 +69,7 @@ public class ApplicationServerLookup implements IApplicationServerLookup {
             public void run() {
                try {
                   ApplicationServerDataStore.removeByServerId(unHealthyServers);
-               } catch (OseeDataStoreException ex) {
+               } catch (OseeCoreException ex) {
                   OseeLog.log(ServerActivator.class, Level.SEVERE,
                      String.format("Error removing unhealthy server entries: [%s]", unHealthyServers), ex);
                }
@@ -79,7 +79,7 @@ public class ApplicationServerLookup implements IApplicationServerLookup {
       }
    }
 
-   private OseeServerInfo getBestAvailable(Collection<OseeServerInfo> infos) {
+   private OseeServerInfo getBestAvailable(Collection<OseeServerInfo> infos) throws OseeCoreException {
       OseeServerInfo result = null;
       if (infos.size() == 1) {
          result = infos.iterator().next();

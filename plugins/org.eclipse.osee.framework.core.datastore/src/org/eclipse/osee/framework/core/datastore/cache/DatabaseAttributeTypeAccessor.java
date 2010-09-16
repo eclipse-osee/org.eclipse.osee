@@ -17,7 +17,6 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.datastore.internal.Activator;
 import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.cache.IOseeCache;
 import org.eclipse.osee.framework.core.model.cache.OseeEnumTypeCache;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
@@ -126,7 +125,7 @@ public class DatabaseAttributeTypeAccessor extends AbstractDatabaseAccessor<Attr
       }
    }
 
-   private Object[] toInsertValues(AttributeType type) throws OseeDataStoreException {
+   private Object[] toInsertValues(AttributeType type) throws OseeCoreException {
       int attrBaseTypeId = getOrCreateAttributeBaseType(type.getBaseAttributeTypeId());
       int attrProviderTypeId = getOrCreateAttributeProviderType(type.getAttributeProviderId());
       return new Object[] {
@@ -144,7 +143,7 @@ public class DatabaseAttributeTypeAccessor extends AbstractDatabaseAccessor<Attr
          type.getTaggerId() == null ? SQL3DataType.VARCHAR : type.getTaggerId()};
    }
 
-   private Object[] toUpdateValues(AttributeType type) throws OseeDataStoreException {
+   private Object[] toUpdateValues(AttributeType type) throws OseeCoreException {
       int attrBaseTypeId = getOrCreateAttributeBaseType(type.getBaseAttributeTypeId());
       int attrProviderTypeId = getOrCreateAttributeProviderType(type.getAttributeProviderId());
       return new Object[] {
@@ -162,7 +161,7 @@ public class DatabaseAttributeTypeAccessor extends AbstractDatabaseAccessor<Attr
    }
 
    @SuppressWarnings("unchecked")
-   private int getOrCreateAttributeProviderType(String attrProviderExtension) throws OseeDataStoreException {
+   private int getOrCreateAttributeProviderType(String attrProviderExtension) throws OseeCoreException {
       int attrBaseTypeId = -1;
       IOseeStatement chStmt = getDatabaseService().getStatement();
       try {
@@ -181,7 +180,7 @@ public class DatabaseAttributeTypeAccessor extends AbstractDatabaseAccessor<Attr
    }
 
    @SuppressWarnings("unchecked")
-   private int getOrCreateAttributeBaseType(String attrBaseExtension) throws OseeDataStoreException {
+   private int getOrCreateAttributeBaseType(String attrBaseExtension) throws OseeCoreException {
       int attrBaseTypeId = -1;
       IOseeStatement chStmt = getDatabaseService().getStatement();
       try {
