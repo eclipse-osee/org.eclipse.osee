@@ -24,6 +24,7 @@ import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.CoverageOptionManagerDefault;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.ICoverage;
+import org.eclipse.osee.coverage.model.SimpleWorkProductTaskProvider;
 import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
 import org.eclipse.osee.coverage.store.OseeCoverageStore;
 import org.eclipse.osee.coverage.test.util.CoverageTestUtil;
@@ -131,7 +132,9 @@ public class VectorCastImportTest {
       }
 
       // Test MergeManager
-      coveragePackage = new CoveragePackage("Test Coverage Package", CoverageOptionManagerDefault.instance());
+      coveragePackage =
+         new CoveragePackage("Test Coverage Package", CoverageOptionManagerDefault.instance(),
+            new SimpleWorkProductTaskProvider());
       MergeManager mergeManager = new MergeManager(coveragePackage, coverageImport);
       Assert.assertEquals(1, mergeManager.getMergeItems().size());
       Assert.assertEquals(MergeType.Add, mergeManager.getMergeItems().iterator().next().getMergeType());

@@ -17,6 +17,7 @@ import org.eclipse.osee.coverage.editor.CoverageEditorInput;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageOptionManagerDefault;
 import org.eclipse.osee.coverage.model.CoveragePackage;
+import org.eclipse.osee.coverage.store.DbWorkProductTaskProvider;
 import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
 import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.coverage.util.CoverageUtil;
@@ -55,7 +56,8 @@ public class NewCoveragePackageAction extends Action {
          EntryDialog dialog = new EntryDialog(getText(), "Enter Coverage Package Name");
          if (dialog.open() == 0) {
             CoveragePackage coveragePackage =
-               new CoveragePackage(dialog.getEntry(), CoverageOptionManagerDefault.instance());
+               new CoveragePackage(dialog.getEntry(), CoverageOptionManagerDefault.instance(),
+                  new DbWorkProductTaskProvider(branch));
             SkynetTransaction transaction = new SkynetTransaction(branch, "Add Coverage Package");
             OseeCoveragePackageStore.get(coveragePackage, branch).save(transaction);
             transaction.execute();

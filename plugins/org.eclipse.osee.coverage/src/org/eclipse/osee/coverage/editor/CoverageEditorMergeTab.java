@@ -95,6 +95,7 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
    private MergeManager mergeManager;
    private boolean loading = false;
    private CoverageParametersTextFilter parametersFilter;
+   public static String PAGE_ID = "coverage.merge";
 
    public CoverageEditorMergeTab(String name, CoverageEditor coverageEditor, CoveragePackage provider1, CoverageImport provider2) {
       super(coverageEditor, name, name);
@@ -440,5 +441,10 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
    @Override
    public Branch getBranch() throws OseeCoreException {
       return coverageEditor.getBranch();
+   }
+
+   @Override
+   public String getId() {
+      return PAGE_ID;
    }
 }

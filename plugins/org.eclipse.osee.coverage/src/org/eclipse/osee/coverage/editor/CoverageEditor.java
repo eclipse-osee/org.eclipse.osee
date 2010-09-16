@@ -139,8 +139,11 @@ public class CoverageEditor extends FormEditor implements IActionable {
          addFormPage(coverageEditorOverviewTab);
          coverageEditorCoverageTab = new CoverageEditorCoverageTab("Coverage Items", this, getCoveragePackageBase());
          addFormPage(coverageEditorCoverageTab);
-         coverageEditorWorkProductTab =
-            new CoverageEditorWorkProductTab("Work Product Tracking", this, getCoveragePackageBase());
+         if (getCoveragePackageBase() instanceof CoveragePackage) {
+            coverageEditorWorkProductTab =
+               new CoverageEditorWorkProductTab("Work Product Tracking", this,
+                  (CoveragePackage) getCoveragePackageBase());
+         }
          addFormPage(coverageEditorWorkProductTab);
          if (getCoveragePackageBase().isImportAllowed()) {
             coverageEditorImportTab = new CoverageEditorImportTab(this);
@@ -159,12 +162,12 @@ public class CoverageEditor extends FormEditor implements IActionable {
       if (coverageEditorImportTab == null) {
          throw new OseeStateException("Import page == null");
       }
-      setActivePage(2);
+      setActivePage(CoverageEditorImportTab.PAGE_ID);
       coverageEditorImportTab.simulateImport(importName);
    }
 
    public void simulateImportPostRun() throws OseeCoreException {
-      setActivePage(5);
+      setActivePage(CoverageEditorMergeTab.PAGE_ID);
       coverageEditorImportTab.simulateImportSearch();
    }
 

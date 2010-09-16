@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.ui.swt.KeyedImage;
 /**
  * @author Donald G. Dunne
  */
-public class CoverageItem extends NamedIdentity implements ICoverage {
+public class CoverageItem extends NamedIdentity implements ICoverage, IWorkProductRelatable {
 
    CoverageOption coverageMethod = CoverageOptionManager.Not_Covered;
    String rationale;
@@ -81,6 +81,7 @@ public class CoverageItem extends NamedIdentity implements ICoverage {
       coverageitem.setOrderNumber(orderNumber);
       coverageitem.setRationale(rationale);
       coverageitem.setTestUnitProvider(testUnitProvider);
+      coverageitem.setWorkProductGuid(workProductGuid);
       return coverageitem;
    }
 
@@ -251,6 +252,9 @@ public class CoverageItem extends NamedIdentity implements ICoverage {
       if (Strings.isValid(store.get("rationale"))) {
          setRationale(store.get("rationale"));
       }
+      if (Strings.isValid(store.get("workProductGuid"))) {
+         setWorkProductGuid(store.get("workProductGuid"));
+      }
       if (testUnitProvider == null) {
          testUnitProvider = new SimpleTestUnitProvider();
       }
@@ -273,14 +277,14 @@ public class CoverageItem extends NamedIdentity implements ICoverage {
       if (Strings.isValid(orderNumber)) {
          store.put("order", orderNumber);
       }
+      if (Strings.isValid(workProductGuid)) {
+         store.put("workProductGuid", workProductGuid);
+      }
       store.put("methodType", coverageMethod.getName());
       if (testUnitProvider != null) {
          if (Strings.isValid(testUnitProvider.toXml(this))) {
             store.put("testUnits", testUnitProvider.toXml(this));
          }
-      }
-      if (Strings.isValid(getName())) {
-         store.put("name", getName());
       }
       if (Strings.isValid(getName())) {
          store.put("name", getName());
@@ -306,10 +310,12 @@ public class CoverageItem extends NamedIdentity implements ICoverage {
       return "";
    }
 
+   @Override
    public String getWorkProductGuid() {
       return workProductGuid;
    }
 
+   @Override
    public void setWorkProductGuid(String workProductGuid) {
       this.workProductGuid = workProductGuid;
    }

@@ -24,6 +24,7 @@ public class CoverageAttributeTypes extends NamedIdentity implements IAttributeT
    public static final IAttributeType FileContents = new CoverageAttributeTypes("AARDJK8YAT3SDnghjQgA", "coverage.File Contents");
    public static final IAttributeType Location = new CoverageAttributeTypes("AARA2XwhNRddgQrd0iwA", "coverage.Location");
    public static final IAttributeType Namespace = new CoverageAttributeTypes("AAQ_v6uUrh0j39+4D5gA", "coverage.Namespace");
+   public static final IAttributeType WorkProductGuid = new CoverageAttributeTypes("A+m7Y2sV2z83QUlkzIAA", "coverage.WorkProductGuid");
    public static final IAttributeType Notes = new CoverageAttributeTypes("AARERmIjazD1udUwfLgA", "coverage.Notes");
    public static final IAttributeType Order = new CoverageAttributeTypes("AD72opMBR1pFxB0hVpQA", "coverage.Order");
    // @formatter:on

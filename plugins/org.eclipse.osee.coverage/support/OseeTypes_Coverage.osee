@@ -31,6 +31,14 @@ attributeType "coverage.File Contents" extends StringAttribute {
    fileExtension "txt"
 }
 
+attributeType "coverage.WorkProductGuid" extends StringAttribute {
+   guid "A+m7Y2sV2z83QUlkzIAA"
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   fileExtension "txt"
+}
+
 attributeType "coverage.Assignees" extends StringAttribute {
    guid "AARCA+XjSyKjnh3sweQA"
    dataProvider DefaultAttributeDataProvider

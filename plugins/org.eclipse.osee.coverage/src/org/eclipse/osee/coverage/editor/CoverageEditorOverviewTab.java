@@ -51,6 +51,7 @@ public class CoverageEditorOverviewTab extends FormPage implements IRefreshActio
    XResultsComposite xResultsComp;
    private static String ALL_COVERAGE_METHODS = " ALL Coverage Methods";
    private static String ALL_TOP_FOLDERS = " ALL Top Folders";
+   public static String PAGE_ID = "coverage.overview";
 
    public CoverageEditorOverviewTab(String name, CoverageEditor coverageEditor, CoveragePackageBase provider) {
       super(coverageEditor, name, name);
@@ -254,6 +255,11 @@ public class CoverageEditorOverviewTab extends FormPage implements IRefreshActio
    @Override
    public CoveragePackageBase getCoveragePackageBase() {
       return coveragePackageBase;
+   }
+
+   @Override
+   public String getId() {
+      return PAGE_ID;
    }
 
 }

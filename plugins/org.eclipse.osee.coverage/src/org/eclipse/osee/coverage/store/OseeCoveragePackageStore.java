@@ -53,7 +53,9 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
       super(null, CoverageArtifactTypes.CoveragePackage, artifact.getBranch());
       this.artifact = artifact;
       coverageOptionManager = new CoverageOptionManagerStore(this).getCoverageOptionManager();
-      this.coveragePackage = new CoveragePackage(artifact.getGuid(), artifact.getName(), coverageOptionManager);
+      this.coveragePackage =
+         new CoveragePackage(artifact.getGuid(), artifact.getName(), coverageOptionManager,
+            new DbWorkProductTaskProvider(this.artifact.getBranch()));
       load(coverageOptionManager);
    }
 

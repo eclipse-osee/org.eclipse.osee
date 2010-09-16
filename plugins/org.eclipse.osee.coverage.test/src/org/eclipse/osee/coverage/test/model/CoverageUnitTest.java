@@ -145,6 +145,13 @@ public class CoverageUnitTest {
       Assert.assertEquals(current, cu.getName());
    }
 
+   @Test
+   public void testSetGetWorkProductGuid() {
+      String guid = GUID.create();
+      cu.setWorkProductGuid(guid);
+      Assert.assertEquals(guid, cu.getWorkProductGuid());
+   }
+
    /**
     * Test method for {@link org.eclipse.osee.coverage.model.CoverageUnit#getLocation()}.
     */

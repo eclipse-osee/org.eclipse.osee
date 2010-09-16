@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.cm;
 
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
@@ -28,5 +29,13 @@ public interface IOseeCmService {
 
    void openArtifacts(String name, Collection<Artifact> artifacts, OseeCmEditor oseeCmEditor);
 
+   boolean isPcrArtifact(Artifact artifact);
+
+   boolean isCompleted(Artifact artifact);
+
+   List<Artifact> getTaskArtifacts(Artifact pcrArtifact);
+
    KeyedImage getOpenImage(OseeCmEditor oseeCmEditor);
+
+   Artifact createWorkTask(String name, String parentPcrGuid);
 }

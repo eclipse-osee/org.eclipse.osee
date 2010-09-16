@@ -14,6 +14,7 @@ import org.eclipse.osee.coverage.editor.CoverageEditor;
 import org.eclipse.osee.coverage.editor.CoverageEditorInput;
 import org.eclipse.osee.coverage.model.CoverageOptionManagerDefault;
 import org.eclipse.osee.coverage.model.CoveragePackage;
+import org.eclipse.osee.coverage.model.SimpleWorkProductTaskProvider;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
@@ -34,7 +35,8 @@ public class CoveragePackage1 extends XNavigateItemAction {
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
       CoveragePackage coveragePackage =
-         new CoveragePackage("Coverage Package 1", CoverageOptionManagerDefault.instance());
+         new CoveragePackage("Coverage Package 1", CoverageOptionManagerDefault.instance(),
+            new SimpleWorkProductTaskProvider());
       CoverageEditor.open(new CoverageEditorInput(coveragePackage.getName(), null, coveragePackage, true));
    }
 }

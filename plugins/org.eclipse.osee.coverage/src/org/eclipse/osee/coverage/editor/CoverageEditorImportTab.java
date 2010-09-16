@@ -77,6 +77,7 @@ public class CoverageEditorImportTab extends FormPage {
    private int coverageImportIndex, coverageImportOverviewIndex, coverageEditorMergeIndex;
    private Composite destroyableComposite;
    private boolean isSimulateImput = false;
+   public static String PAGE_ID = "coverage.import";
 
    public CoverageEditorImportTab(CoverageEditor coverageEditor) throws OseeCoreException {
       super(coverageEditor, "Import", "Import");
@@ -390,4 +391,10 @@ public class CoverageEditorImportTab extends FormPage {
          }
       });
    }
+
+   @Override
+   public String getId() {
+      return PAGE_ID;
+   }
+
 }

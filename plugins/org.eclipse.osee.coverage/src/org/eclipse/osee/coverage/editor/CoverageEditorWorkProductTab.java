@@ -11,22 +11,20 @@ package org.eclipse.osee.coverage.editor;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.logging.Level;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.osee.coverage.action.IRefreshable;
 import org.eclipse.osee.coverage.action.OpenMultipleWorkProductsAction;
 import org.eclipse.osee.coverage.action.RemoveRelatedWorkProductAction;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoveragePackage;
-import org.eclipse.osee.coverage.model.CoveragePackageBase;
 import org.eclipse.osee.coverage.model.ICoverage;
+import org.eclipse.osee.coverage.model.WorkProductAction;
 import org.eclipse.osee.coverage.store.CoverageArtifactTypes;
 import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.ISaveable;
-import org.eclipse.osee.coverage.util.TeamWorkflowLabelProvider;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -34,11 +32,10 @@ import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ISelectedArtifacts;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.ArtifactContentProvider;
+import org.eclipse.osee.framework.ui.plugin.util.StringLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.cm.IOseeCmService;
@@ -61,17 +58,17 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 /**
  * @author Donald G. Dunne
  */
-public class CoverageEditorWorkProductTab extends FormPage implements ISaveable, ISelectedArtifacts, IRefreshable {
+public class CoverageEditorWorkProductTab extends FormPage implements ISaveable, IRefreshable {
 
    private ScrolledForm scrolledForm;
-   private final CoveragePackageBase coveragePackageBase;
+   private final CoveragePackage coveragePackage;
    private final CoverageEditor coverageEditor;
    private XListViewer actionListViewer;
 
-   public CoverageEditorWorkProductTab(String name, CoverageEditor coverageEditor, CoveragePackageBase provider) {
+   public CoverageEditorWorkProductTab(String name, CoverageEditor coverageEditor, CoveragePackage coveragePackage) {
       super(coverageEditor, name, name);
       this.coverageEditor = coverageEditor;
-      this.coveragePackageBase = provider;
+      this.coveragePackage = coveragePackage;
    }
 
    @Override
@@ -79,8 +76,8 @@ public class CoverageEditorWorkProductTab extends FormPage implements ISaveable,
       super.createFormContent(managedForm);
 
       scrolledForm = managedForm.getForm();
-      scrolledForm.setText(coveragePackageBase.getName() + " - " + DateUtil.getMMDDYYHHMM(coveragePackageBase.getDate()) + " - " + coveragePackageBase.getCoverageItems().size() + " Coverage Items");
-      scrolledForm.setImage(ImageManager.getImage(CoverageUtil.getCoveragePackageBaseImage(coveragePackageBase)));
+      scrolledForm.setText(coveragePackage.getName() + " - " + DateUtil.getMMDDYYHHMM(coveragePackage.getDate()) + " - " + coveragePackage.getCoverageItems().size() + " Coverage Items");
+      scrolledForm.setImage(ImageManager.getImage(CoverageUtil.getCoveragePackageBaseImage(coveragePackage)));
       scrolledForm.getBody().setLayout(new GridLayout(2, false));
       Composite mainComp = scrolledForm.getBody();
       coverageEditor.getToolkit().adapt(mainComp);
@@ -100,17 +97,17 @@ public class CoverageEditorWorkProductTab extends FormPage implements ISaveable,
          @Override
          public void handleEvent(Event event) {
             IOseeCmService cmService = SkynetGuiPlugin.getInstance().getOseeCmService();
-            cmService.openArtifact(getSelectedArtifactItems().iterator().next(), OseeCmEditor.CmPcrEditor);
+            cmService.openArtifact(getSelectedActions().iterator().next().getGuid(), OseeCmEditor.CmPcrEditor);
          }
       });
    }
 
-   public ArrayList<Artifact> getSelectedArtifactItems() {
-      ArrayList<Artifact> arts = new ArrayList<Artifact>();
+   public ArrayList<WorkProductAction> getSelectedActions() {
+      ArrayList<WorkProductAction> arts = new ArrayList<WorkProductAction>();
       TableItem items[] = actionListViewer.getTable().getSelection();
       if (items.length > 0) {
          for (TableItem item : items) {
-            arts.add((Artifact) item.getData());
+            arts.add((WorkProductAction) item.getData());
          }
       }
       return arts;
@@ -129,15 +126,10 @@ public class CoverageEditorWorkProductTab extends FormPage implements ISaveable,
                }
             }
             try {
-               if (!(coveragePackageBase instanceof CoveragePackage)) {
-                  AWorkbench.popup("Must be coverage package");
-                  return;
-               }
                if (coverageEditor.getBranch() == null) {
                   AWorkbench.popup("Coverage Package must have imports before work package applied");
                   return;
                }
-               CoveragePackage coveragePackage = (CoveragePackage) coveragePackageBase;
                OseeCoveragePackageStore store =
                   OseeCoveragePackageStore.get(coveragePackage, coverageEditor.getBranch());
                for (Artifact artifact : dropArtifacts) {
@@ -158,28 +150,15 @@ public class CoverageEditorWorkProductTab extends FormPage implements ISaveable,
       };
    }
 
-   public Collection<Artifact> getWorkProductArtifacts() {
-      try {
-         CoveragePackage coveragePackage = (CoveragePackage) coveragePackageBase;
-         OseeCoveragePackageStore store = OseeCoveragePackageStore.get(coveragePackage, coverageEditor.getBranch());
-         Artifact art = store.getArtifact(false);
-         if (art != null) {
-            return art.getRelatedArtifacts(CoreRelationTypes.SupportingInfo_SupportingInfo);
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
-      return Collections.emptyList();
-   }
-
-   private void refresh() {
-      actionListViewer.setInput(getWorkProductArtifacts());
+   public void refresh() {
+      coveragePackage.getWorkProductTaskProvider().reload();
+      actionListViewer.setInput(coveragePackage.getWorkProductTaskProvider().getWorkProductRelatedActions());
    }
 
    private XListViewer createActionListViewer(Composite parent) {
       actionListViewer = new XListViewer("Drag in Actions related to changing work products");
-      actionListViewer.setContentProvider(new ArtifactContentProvider());
-      actionListViewer.setLabelProvider(new TeamWorkflowLabelProvider());
+      actionListViewer.setContentProvider(new ArrayContentProvider());
+      actionListViewer.setLabelProvider(new StringLabelProvider());
       actionListViewer.createWidgets(parent, 2);
       coverageEditor.getToolkit().adapt(actionListViewer.getTable());
       coverageEditor.getToolkit().adapt(actionListViewer.getLabelWidget(), true, true);
@@ -191,8 +170,9 @@ public class CoverageEditorWorkProductTab extends FormPage implements ISaveable,
 
    public void createToolbar() {
       IToolBarManager toolBarManager = scrolledForm.getToolBarManager();
-      toolBarManager.add(new OpenMultipleWorkProductsAction(coverageEditor, this));
-      toolBarManager.add(new RemoveRelatedWorkProductAction(coverageEditor, this, this));
+      toolBarManager.add(new OpenMultipleWorkProductsAction(coverageEditor,
+         coveragePackage.getWorkProductTaskProvider()));
+      toolBarManager.add(new RemoveRelatedWorkProductAction(this));
       CoverageEditor.addToToolBar(scrolledForm.getToolBarManager(), coverageEditor);
       scrolledForm.updateToolBar();
    }
@@ -204,18 +184,17 @@ public class CoverageEditorWorkProductTab extends FormPage implements ISaveable,
 
    @Override
    public Result isEditable() {
-      return coveragePackageBase.isEditable();
+      return coveragePackage.isEditable();
    }
 
    @Override
    public Result save() throws OseeCoreException {
-      return OseeCoveragePackageStore.get((CoveragePackage) coveragePackageBase, coverageEditor.getBranch()).save();
+      return OseeCoveragePackageStore.get(coveragePackage, coverageEditor.getBranch()).save();
    }
 
    @Override
    public Result save(Collection<ICoverage> coverages) throws OseeCoreException {
-      return OseeCoveragePackageStore.get((CoveragePackage) coveragePackageBase, coverageEditor.getBranch()).save(
-         coverages);
+      return OseeCoveragePackageStore.get(coveragePackage, coverageEditor.getBranch()).save(coverages);
    }
 
    @Override
@@ -228,28 +207,24 @@ public class CoverageEditorWorkProductTab extends FormPage implements ISaveable,
       return coverageEditor.getBranch();
    }
 
-   @Override
-   public Collection<Artifact> getSelectedArtifacts() {
-      return getSelectedArtifactItems();
+   public XListViewer getActionListViewer() {
+      return actionListViewer;
+   }
+
+   public CoveragePackage getCoveragePackage() {
+      return coveragePackage;
    }
 
    @Override
    public void refresh(Object element) {
-      refresh();
    }
 
    @Override
    public void update(Object element) {
-      // do nothing
    }
 
    @Override
    public void remove(Object element) {
-      // do nothing
-   }
-
-   public XListViewer getActionListViewer() {
-      return actionListViewer;
    }
 
 }

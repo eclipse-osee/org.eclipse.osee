@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.ui.swt.KeyedImage;
  * 
  * @author Donald G. Dunne
  */
-public class CoverageUnit extends NamedIdentity implements ICoverage, ICoverageUnitProvider, ICoverageItemProvider {
+public class CoverageUnit extends NamedIdentity implements IWorkProductRelatable, ICoverage, ICoverageUnitProvider, ICoverageItemProvider {
 
    String namespace;
    boolean folder;
@@ -292,6 +292,7 @@ public class CoverageUnit extends NamedIdentity implements ICoverage, ICoverageU
       coverageUnit.setOrderNumber(orderNumber);
       coverageUnit.setFolder(folder);
       coverageUnit.setAssignees(assignees);
+      coverageUnit.setWorkProductGuid(workProductGuid);
       coverageUnit.setLocation(location);
       if (includeItems) {
          for (CoverageItem coverageItem : coverageItems) {
@@ -363,10 +364,12 @@ public class CoverageUnit extends NamedIdentity implements ICoverage, ICoverageU
       return "";
    }
 
+   @Override
    public String getWorkProductGuid() {
       return workProductGuid;
    }
 
+   @Override
    public void setWorkProductGuid(String workProductGuid) {
       this.workProductGuid = workProductGuid;
    }

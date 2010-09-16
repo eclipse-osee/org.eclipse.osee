@@ -17,6 +17,7 @@ import org.eclipse.osee.coverage.model.CoverageOptionManagerDefault;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.SimpleTestUnitProvider;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -91,6 +92,13 @@ public class CoverageItemTest {
       Assert.assertEquals(CoverageOptionManager.Exception_Handling, ci1.getCoverageMethod());
       ci1.setCoverageMethod(CoverageOptionManager.Deactivated_Code);
       Assert.assertEquals(CoverageOptionManager.Deactivated_Code, ci1.getCoverageMethod());
+   }
+
+   @Test
+   public void testSetGetWorkProductGuid() {
+      String guid = GUID.create();
+      ci1.setWorkProductGuid(guid);
+      Assert.assertEquals(guid, ci1.getWorkProductGuid());
    }
 
    /**
@@ -224,6 +232,7 @@ public class CoverageItemTest {
       Assert.assertEquals(ci1.getCoverageMethod(), ci.getCoverageMethod());
       Assert.assertEquals(ci1.getFileContents(), ci.getFileContents());
       Assert.assertEquals(ci1.getRationale(), ci.getRationale());
+      Assert.assertEquals(ci1.getWorkProductGuid(), ci.getWorkProductGuid());
    }
 
    /**

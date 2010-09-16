@@ -32,7 +32,7 @@ public class XCoverageMergeViewer extends XCoverageViewer implements IRefreshAct
    private final MergeManager mergeManager;
 
    public XCoverageMergeViewer(MergeManager mergeManager, ISaveable saveable, CoverageMergeXViewerFactory coverageMergeXViewerFactory, CoverageOptionManager coverageOptionManager, TableType tableType, TableType... types) {
-      super(saveable, coverageOptionManager, tableType, types);
+      super(saveable, coverageOptionManager, null, tableType, types);
       this.mergeManager = mergeManager;
       this.coverageMergeXViewerFactory = coverageMergeXViewerFactory;
    }

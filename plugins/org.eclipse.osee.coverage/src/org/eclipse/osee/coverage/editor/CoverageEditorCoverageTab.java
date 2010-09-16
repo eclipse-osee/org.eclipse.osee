@@ -22,6 +22,7 @@ import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.CoveragePackageBase;
 import org.eclipse.osee.coverage.model.ICoverage;
+import org.eclipse.osee.coverage.model.IWorkProductTaskProvider;
 import org.eclipse.osee.coverage.model.MessageCoverageItem;
 import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
 import org.eclipse.osee.coverage.util.CoverageUtil;
@@ -61,6 +62,7 @@ public class CoverageEditorCoverageTab extends FormPage implements ISaveable {
    private final CoverageEditor coverageEditor;
    private CoverageParameters coverageParameters;
    private CoverageParametersTextFilter parametersFilter;
+   public static String PAGE_ID = "coverage.items";
 
    public CoverageEditorCoverageTab(String name, CoverageEditor coverageEditor, CoveragePackageBase provider) {
       super(coverageEditor, name, name);
@@ -97,8 +99,12 @@ public class CoverageEditorCoverageTab extends FormPage implements ISaveable {
       tableComp.setLayoutData(tableData);
       coverageEditor.getToolkit().adapt(tableComp);
 
+      IWorkProductTaskProvider provider = null;
+      if (coveragePackageBase instanceof CoveragePackage) {
+         provider = ((CoveragePackage) coveragePackageBase).getWorkProductTaskProvider();
+      }
       xCoverageViewer =
-         new XCoverageViewer(this, coveragePackageBase.getCoverageOptionManager(),
+         new XCoverageViewer(this, coveragePackageBase.getCoverageOptionManager(), provider,
             coveragePackageBase instanceof CoverageImport ? TableType.Import : TableType.Package);
       xCoverageViewer.setDisplayLabel(false);
       xCoverageViewer.createWidgets(managedForm, tableComp, 1);
@@ -183,6 +189,11 @@ public class CoverageEditorCoverageTab extends FormPage implements ISaveable {
    @Override
    public Branch getBranch() throws OseeCoreException {
       return coverageEditor.getBranch();
+   }
+
+   @Override
+   public String getId() {
+      return PAGE_ID;
    }
 
 }

@@ -20,6 +20,7 @@ import org.eclipse.osee.coverage.model.CoveragePackageBase;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverageUnitFileContentsProvider;
 import org.eclipse.osee.coverage.model.SimpleCoverageUnitFileContentsProvider;
+import org.eclipse.osee.coverage.model.SimpleWorkProductTaskProvider;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.junit.Assert;
 import org.junit.Test;
@@ -32,7 +33,8 @@ public class MatchTypeTest {
    public static ICoverageUnitFileContentsProvider fileContentsProvider = new SimpleCoverageUnitFileContentsProvider();
 
    public CoveragePackage getCoveragePackage() throws OseeCoreException {
-      CoveragePackage coveragePackage = new CoveragePackage("Package", CoverageOptionManagerDefault.instance());
+      CoveragePackage coveragePackage =
+         new CoveragePackage("Package", CoverageOptionManagerDefault.instance(), new SimpleWorkProductTaskProvider());
       CoverageUnit packageCu = new CoverageUnit(coveragePackage, "Top", "C:/UserData/", fileContentsProvider);
       packageCu.setNamespace("org.this");
       CoverageItem packageCi = new CoverageItem(packageCu, CoverageOptionManager.Deactivated_Code, "1");

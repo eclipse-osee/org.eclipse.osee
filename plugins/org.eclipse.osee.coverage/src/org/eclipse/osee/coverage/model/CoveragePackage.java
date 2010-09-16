@@ -20,17 +20,20 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 public class CoveragePackage extends CoveragePackageBase {
 
    Date creationDate;
+   IWorkProductTaskProvider workProductTaskProvider;
 
-   public CoveragePackage(String guid, String name, CoverageOptionManager coverageOptionManager) {
-      this(guid, name, new Date(), coverageOptionManager);
+   public CoveragePackage(String guid, String name, CoverageOptionManager coverageOptionManager, IWorkProductTaskProvider workProductTaskProvider) {
+      this(guid, name, new Date(), coverageOptionManager, workProductTaskProvider);
    }
 
-   public CoveragePackage(String name, CoverageOptionManager coverageOptionManager) {
-      this(null, name, coverageOptionManager);
+   public CoveragePackage(String name, CoverageOptionManager coverageOptionManager, IWorkProductTaskProvider workProductTaskProvider) {
+      this(null, name, coverageOptionManager, workProductTaskProvider);
    }
 
-   public CoveragePackage(String guid, String name, Date runDate, CoverageOptionManager coverageOptionManager) {
+   public CoveragePackage(String guid, String name, Date runDate, CoverageOptionManager coverageOptionManager, IWorkProductTaskProvider workProductTaskProvider) {
       super(guid, name, coverageOptionManager);
+      this.workProductTaskProvider = workProductTaskProvider;
+      this.workProductTaskProvider.setCoveragePackage(this);
       this.creationDate = runDate;
    }
 
@@ -73,6 +76,10 @@ public class CoveragePackage extends CoveragePackageBase {
    @Override
    public String getWorkProductTask() {
       return "";
+   }
+
+   public IWorkProductTaskProvider getWorkProductTaskProvider() {
+      return workProductTaskProvider;
    }
 
 }

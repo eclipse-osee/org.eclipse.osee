@@ -36,6 +36,7 @@ import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
+import org.eclipse.osee.coverage.model.IWorkProductTaskProvider;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -81,7 +82,7 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
          editCoverageStatusAction = new EditCoverageNotesAction(this, this, this);
          editRationaleAction = new EditRationaleAction(this, this, this);
          deleteCoverUnitAction = new DeleteCoverUnitAction(this, this, this);
-         createWorkProductTaskAction = new CreateWorkProductTaskAction(this);
+         createWorkProductTaskAction = new CreateWorkProductTaskAction(this, this, this);
       }
    }
 
@@ -132,6 +133,10 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
       return true;
    }
 
+   public IWorkProductTaskProvider getWorkProductTaskProvider() {
+      return xCoverageViewer.getWorkProductTaskProvider();
+   }
+
    private boolean isEditMetricsEnabled() {
       if (xCoverageViewer.getSelectedCoverageItems().isEmpty()) {
          return false;
@@ -165,8 +170,10 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
 
          mm.insertBefore(MENU_GROUP_PRE, new Separator());
 
-         mm.insertBefore(MENU_GROUP_PRE, createWorkProductTaskAction);
-         createWorkProductTaskAction.setEnabled(isCreateWorkProductTaskActionEnabled());
+         if (xCoverageViewer.getWorkProductTaskProvider() != null) {
+            mm.insertBefore(MENU_GROUP_PRE, createWorkProductTaskAction);
+            createWorkProductTaskAction.setEnabled(isCreateWorkProductTaskActionEnabled());
+         }
 
          mm.insertBefore(MENU_GROUP_PRE, new Separator());
 

@@ -29,6 +29,7 @@ import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.model.SimpleCoverageUnitFileContentsProvider;
 import org.eclipse.osee.coverage.model.SimpleTestUnitProvider;
+import org.eclipse.osee.coverage.model.SimpleWorkProductTaskProvider;
 import org.eclipse.osee.coverage.store.CoverageArtifactTypes;
 import org.eclipse.osee.coverage.store.DbTestUnitProvider;
 import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
@@ -43,6 +44,7 @@ import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -111,7 +113,8 @@ public class CoverageUnitPersistTest {
    @Test
    public void testSaveLoadDelete() throws OseeCoreException {
       // TEST SAVE
-      saveCoveragePackage = new CoveragePackage("CU Test", CoverageOptionManagerDefault.instance());
+      saveCoveragePackage =
+         new CoveragePackage("CU Test", CoverageOptionManagerDefault.instance(), new SimpleWorkProductTaskProvider());
       MergeManager mergeManager = new MergeManager(saveCoveragePackage, coverageImport);
       List<IMergeItem> mergeItems = new ArrayList<IMergeItem>();
       for (IMergeItem mergeItem : mergeManager.getMergeItems()) {
@@ -191,6 +194,7 @@ public class CoverageUnitPersistTest {
       TestUnitStore.clearStore();
       String cuName = DbTestUnitProviderTest.class.getSimpleName() + "-" + GUID.create();
       CoverageUnit unit = new CoverageUnit(null, cuName, "location", new SimpleCoverageUnitFileContentsProvider());
+      unit.setWorkProductGuid(GUID.create());
       CoverageItem item = new CoverageItem(unit, CoverageOptionManager.Test_Unit, "1");
       item.setTestUnitProvider(new SimpleTestUnitProvider());
       for (int x = 0; x < 10; x++) {
@@ -214,6 +218,8 @@ public class CoverageUnitPersistTest {
       Assert.assertEquals(10, dbItem.getTestUnits().size());
       Assert.assertTrue(dbItem.getTestUnits().iterator().next().startsWith("Test Unit "));
       Assert.assertEquals(10, TestUnitStore.getTestUnitCount());
+      Assert.assertTrue(Strings.isValid(dbUnit.getWorkProductGuid()));
+      Assert.assertEquals(unit.getWorkProductGuid(), dbUnit.getWorkProductGuid());
       TestUnitStore.clearStore();
    }
 }

@@ -15,6 +15,7 @@ import org.eclipse.osee.coverage.model.CoverageOption;
 import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.CoverageOptionManagerDefault;
 import org.eclipse.osee.coverage.model.CoveragePackage;
+import org.eclipse.osee.coverage.model.SimpleWorkProductTaskProvider;
 import org.eclipse.osee.coverage.store.CoverageArtifactTypes;
 import org.eclipse.osee.coverage.store.CoverageOptionManagerStore;
 import org.eclipse.osee.coverage.store.CoverageOptionManagerStore.StoreLocation;
@@ -60,7 +61,7 @@ public class CoverageOptionManagerStoreTest {
       CoverageUtil.setNavigatorSelectedBranch(BranchManager.getCommonBranch());
       CoveragePackage coveragePackage =
          new CoveragePackage(CoverageOptionManagerStoreTest.class.getSimpleName(),
-            CoverageOptionManagerDefault.instance());
+            CoverageOptionManagerDefault.instance(), new SimpleWorkProductTaskProvider());
       OseeCoveragePackageStore store = new OseeCoveragePackageStore(coveragePackage, BranchManager.getCommonBranch());
       store.save();
 

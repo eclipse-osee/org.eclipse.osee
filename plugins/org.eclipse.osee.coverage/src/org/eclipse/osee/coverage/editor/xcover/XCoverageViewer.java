@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.ICoverage;
+import org.eclipse.osee.coverage.model.IWorkProductTaskProvider;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -48,16 +49,18 @@ public class XCoverageViewer extends XWidget {
    private final Collection<TableType> tableTypes;
    private final ISaveable saveable;
    private final CoverageOptionManager coverageOptionManager;
+   private final IWorkProductTaskProvider workProductTaskProvider;
    public static enum TableType {
       Package,
       Merge,
       Import
    };
 
-   public XCoverageViewer(ISaveable saveable, CoverageOptionManager coverageOptionManager, TableType tableType, TableType... types) {
+   public XCoverageViewer(ISaveable saveable, CoverageOptionManager coverageOptionManager, IWorkProductTaskProvider workProductTaskProvider, TableType tableType, TableType... types) {
       super("Coverage Items");
       this.saveable = saveable;
       this.coverageOptionManager = coverageOptionManager;
+      this.workProductTaskProvider = workProductTaskProvider;
       this.tableTypes = Collections.getAggregate(types);
       this.tableTypes.add(tableType);
    }
@@ -243,6 +246,10 @@ public class XCoverageViewer extends XWidget {
 
    public CoverageOptionManager getCoverageOptionManager() {
       return coverageOptionManager;
+   }
+
+   public IWorkProductTaskProvider getWorkProductTaskProvider() {
+      return workProductTaskProvider;
    }
 
 }

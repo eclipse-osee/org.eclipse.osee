@@ -28,7 +28,7 @@ public class StringLabelProvider implements ILabelProvider {
 
    @Override
    public String getText(Object arg0) {
-      return (String) arg0;
+      return arg0.toString();
    }
 
    @Override
