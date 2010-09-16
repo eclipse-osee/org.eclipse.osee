@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
@@ -100,14 +101,14 @@ public class RelationImporter implements RowProcessor {
       }
    }
 
-   private Artifact getSoleArtifact(Collection<Artifact> artifacts) {
+   private Artifact getSoleArtifact(Collection<Artifact> artifacts) throws OseeArgumentException {
       Artifact artifactResult = null;
       boolean soleArtifact = true;
       for (Artifact artifact : artifacts) {
          if (soleArtifact) {
             soleArtifact = false;
          } else {
-            throw new IllegalArgumentException("Found more than one match for: " + artifact);
+            throw new OseeArgumentException("Found more than one match for: " + artifact);
          }
          artifactResult = artifact;
       }

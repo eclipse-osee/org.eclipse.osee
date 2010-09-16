@@ -23,6 +23,7 @@ import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.client.CoreClientActivator;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -186,7 +187,7 @@ public class HttpRequest {
          urlRequest = matcher.group(1);
 
          if (!Strings.isValid(urlRequest)) {
-            throw new IllegalArgumentException("Unknown requestType \"" + rawRequest + "\"");
+            throw new OseeArgumentException("Unknown requestType \"" + rawRequest + "\"");
          }
          String data = matcher.group(2);
          Matcher dataMatcher = Pattern.compile("([^&]*?)=([^&]*)").matcher(data);
@@ -222,7 +223,7 @@ public class HttpRequest {
                parameterMap.put("guid", guid);
                urlRequest = "Define";
             } else {
-               throw new IllegalArgumentException("Unnable to parse old style link: \"" + rawRequest + "\"");
+               throw new OseeArgumentException("Unnable to parse old style link: \"" + rawRequest + "\"");
             }
          }
       }
