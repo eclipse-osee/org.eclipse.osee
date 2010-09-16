@@ -804,8 +804,6 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       PriorityType priType = null;
       if (Strings.isValid(priorityStr)) {
          priType = PriorityType.getPriority(priorityStr);
-      } else {
-         throw new OseeArgumentException("Invalid priority => " + priorityStr);
       }
       setArtifactIdentifyData(toTeam, fromAction.getName(),
          fromAction.getSoleAttributeValue(AtsAttributeTypes.Description, ""),
@@ -825,7 +823,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       }
       art.setSoleAttributeValue(AtsAttributeTypes.ChangeType, changeType.name());
       //      art.setAttributeValues(ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getStoreName(), userComms);
-      if (priority != null) {
+      if (priority != null && priority != PriorityType.None) {
          art.setSoleAttributeValue(AtsAttributeTypes.PriorityType, priority.getShortName());
       }
       if (needByDate != null) {
