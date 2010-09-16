@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.enums.BranchState;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.ChangeBranchStateRequest;
 import org.eclipse.osee.framework.core.message.internal.translation.BranchChangeStateRequestTranslator;
 import org.eclipse.osee.framework.core.message.test.mocks.DataAsserts;
@@ -36,12 +35,12 @@ public class BranchChangeStateRequestTranslatorTest extends BaseTranslatorTest<C
    }
 
    @Override
-   protected void checkEquals(ChangeBranchStateRequest expected, ChangeBranchStateRequest actual) throws OseeCoreException {
+   protected void checkEquals(ChangeBranchStateRequest expected, ChangeBranchStateRequest actual) {
       DataAsserts.assertEquals(expected, actual);
    }
 
    @Parameters
-   public static Collection<Object[]> data() throws OseeCoreException {
+   public static Collection<Object[]> data() {
       List<Object[]> data = new ArrayList<Object[]>();
       ITranslator<ChangeBranchStateRequest> translator = new BranchChangeStateRequestTranslator();
 

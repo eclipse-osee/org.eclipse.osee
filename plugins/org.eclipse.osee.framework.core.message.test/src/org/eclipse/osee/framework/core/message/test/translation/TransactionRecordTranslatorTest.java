@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.core.message.test.translation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.internal.translation.TransactionRecordTranslator;
 import org.eclipse.osee.framework.core.message.test.mocks.DataAsserts;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -38,7 +37,7 @@ public class TransactionRecordTranslatorTest extends BaseTranslatorTest<Transact
    }
 
    @Override
-   protected void checkEquals(TransactionRecord expected, TransactionRecord actual) throws OseeCoreException {
+   protected void checkEquals(TransactionRecord expected, TransactionRecord actual) {
       Assert.assertNotSame(expected, actual);
       DataAsserts.assertEquals(expected, actual);
    }

@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import junit.framework.Assert;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.DatastoreInitRequest;
 import org.eclipse.osee.framework.core.message.TableData;
 import org.eclipse.osee.framework.core.message.internal.translation.DatastoreInitRequestTranslator;
@@ -37,13 +36,13 @@ public class DatastoreInitRequestTranslatorTest extends BaseTranslatorTest<Datas
    }
 
    @Override
-   protected void checkEquals(DatastoreInitRequest expected, DatastoreInitRequest actual) throws OseeCoreException {
+   protected void checkEquals(DatastoreInitRequest expected, DatastoreInitRequest actual) {
       Assert.assertNotSame(expected, actual);
       DataAsserts.assertEquals(expected, actual);
    }
 
    @Parameters
-   public static Collection<Object[]> data() throws OseeCoreException {
+   public static Collection<Object[]> data() {
       ITranslator<DatastoreInitRequest> translator = new DatastoreInitRequestTranslator();
       List<Object[]> data = new ArrayList<Object[]>();
       data.add(new Object[] {new DatastoreInitRequest("tableData", "indexData", true), translator});

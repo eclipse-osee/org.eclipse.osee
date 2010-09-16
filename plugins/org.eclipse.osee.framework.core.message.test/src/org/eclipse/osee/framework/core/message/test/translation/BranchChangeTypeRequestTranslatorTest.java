@@ -37,7 +37,7 @@ public class BranchChangeTypeRequestTranslatorTest extends BaseTranslatorTest<Ch
    }
 
    @Override
-   protected void checkEquals(ChangeBranchTypeRequest expected, ChangeBranchTypeRequest actual) throws OseeCoreException {
+   protected void checkEquals(ChangeBranchTypeRequest expected, ChangeBranchTypeRequest actual) {
       DataAsserts.assertEquals(expected, actual);
    }
 

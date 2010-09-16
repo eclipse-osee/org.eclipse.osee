@@ -35,9 +35,6 @@ import org.junit.Test;
  */
 public class ChangeItemUtilTest {
 
-   public ChangeItemUtilTest() {
-   }
-
    @Test
    public void testGetSet() {
       ChangeVersion base = ChangeTestUtility.createChange(1111L, ModificationType.NEW);

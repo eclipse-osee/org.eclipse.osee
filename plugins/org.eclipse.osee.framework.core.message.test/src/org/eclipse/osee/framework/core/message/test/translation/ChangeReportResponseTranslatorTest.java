@@ -42,7 +42,7 @@ public class ChangeReportResponseTranslatorTest extends BaseTranslatorTest<Chang
    }
 
    @Override
-   protected void checkEquals(ChangeReportResponse expected, ChangeReportResponse actual) throws OseeCoreException {
+   protected void checkEquals(ChangeReportResponse expected, ChangeReportResponse actual) {
       List<ChangeItem> expectedChangeItems = expected.getChangeItems();
       List<ChangeItem> actualChangeItems = actual.getChangeItems();
 

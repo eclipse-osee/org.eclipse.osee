@@ -43,9 +43,10 @@ import org.eclipse.osee.framework.jdk.core.util.Compare;
 public final class DataAsserts {
 
    private DataAsserts() {
+      // Utility Class
    }
 
-   public static void assertEquals(ChangeItem expected, ChangeItem actual) throws OseeCoreException {
+   public static void assertEquals(ChangeItem expected, ChangeItem actual) {
       if (expected == null) {
          Assert.assertNull(actual);
       } else {
@@ -60,7 +61,7 @@ public final class DataAsserts {
       }
    }
 
-   public static void assertEquals(AttributeType expected, AttributeType actual) throws OseeCoreException {
+   public static void assertEquals(AttributeType expected, AttributeType actual) {
       Assert.assertEquals(expected.getAttributeProviderId(), actual.getAttributeProviderId());
       Assert.assertEquals(expected.getBaseAttributeTypeId(), actual.getBaseAttributeTypeId());
       Assert.assertEquals(expected.getDefaultValue(), actual.getDefaultValue());
@@ -74,7 +75,7 @@ public final class DataAsserts {
       Assert.assertEquals(expected.getOseeEnumType(), actual.getOseeEnumType());
    }
 
-   public static void assertEquals(ArtifactType expected, ArtifactType actual) throws OseeCoreException {
+   public static void assertEquals(ArtifactType expected, ArtifactType actual) {
       Assert.assertEquals(expected.getId(), actual.getId());
       Assert.assertEquals(expected.getName(), actual.getName());
       Assert.assertEquals(expected.isAbstract(), actual.isAbstract());
@@ -96,7 +97,7 @@ public final class DataAsserts {
       }
    }
 
-   public static void assertEquals(TransactionRecord expected, TransactionRecord actual) throws OseeCoreException {
+   public static void assertEquals(TransactionRecord expected, TransactionRecord actual) {
       if (expected == null) {
          Assert.assertNull(actual);
       } else {
@@ -121,7 +122,7 @@ public final class DataAsserts {
       }
    }
 
-   public static void assertEquals(BranchCommitRequest expected, BranchCommitRequest actual) throws OseeCoreException {
+   public static void assertEquals(BranchCommitRequest expected, BranchCommitRequest actual) {
       if (expected == null) {
          Assert.assertNull(actual);
       } else {
@@ -132,7 +133,7 @@ public final class DataAsserts {
       }
    }
 
-   public static void assertEquals(BranchCommitResponse expected, BranchCommitResponse actual) throws OseeCoreException {
+   public static void assertEquals(BranchCommitResponse expected, BranchCommitResponse actual) {
       if (expected == null) {
          Assert.assertNull(actual);
       } else {
@@ -149,7 +150,7 @@ public final class DataAsserts {
       }
    }
 
-   public static void assertEquals(RelationType expected, RelationType actual) throws OseeCoreException {
+   public static void assertEquals(RelationType expected, RelationType actual) {
       if (expected == null) {
          Assert.assertNull(actual);
       } else {
@@ -239,7 +240,7 @@ public final class DataAsserts {
       }
    }
 
-   public static void assertEquals(PurgeBranchRequest expected, PurgeBranchRequest actual) throws OseeCoreException {
+   public static void assertEquals(PurgeBranchRequest expected, PurgeBranchRequest actual) {
       if (expected == null) {
          Assert.assertNull(actual);
       } else {
@@ -253,7 +254,7 @@ public final class DataAsserts {
       Assert.assertFalse(Compare.isDifferent(expected.getRows(), actual.getRows()));
    }
 
-   public static void assertEquals(ChangeBranchTypeRequest expected, ChangeBranchTypeRequest actual) throws OseeCoreException {
+   public static void assertEquals(ChangeBranchTypeRequest expected, ChangeBranchTypeRequest actual) {
       if (expected == null) {
          Assert.assertNull(actual);
       } else {
@@ -262,7 +263,7 @@ public final class DataAsserts {
       }
    }
 
-   public static void assertEquals(ChangeBranchArchiveStateRequest expected, ChangeBranchArchiveStateRequest actual) throws OseeCoreException {
+   public static void assertEquals(ChangeBranchArchiveStateRequest expected, ChangeBranchArchiveStateRequest actual) {
       if (expected == null) {
          Assert.assertNull(actual);
       } else {
@@ -271,7 +272,7 @@ public final class DataAsserts {
       }
    }
 
-   public static void assertEquals(ChangeBranchStateRequest expected, ChangeBranchStateRequest actual) throws OseeCoreException {
+   public static void assertEquals(ChangeBranchStateRequest expected, ChangeBranchStateRequest actual) {
       if (expected == null) {
          Assert.assertNull(actual);
       } else {

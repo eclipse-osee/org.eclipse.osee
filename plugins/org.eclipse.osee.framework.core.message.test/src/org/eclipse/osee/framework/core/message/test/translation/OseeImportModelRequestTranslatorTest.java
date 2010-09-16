@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import junit.framework.Assert;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.OseeImportModelRequest;
 import org.eclipse.osee.framework.core.message.internal.translation.OseeImportModelRequestTranslator;
 import org.eclipse.osee.framework.core.message.test.mocks.DataAsserts;
@@ -36,13 +35,13 @@ public class OseeImportModelRequestTranslatorTest extends BaseTranslatorTest<Ose
    }
 
    @Override
-   protected void checkEquals(OseeImportModelRequest expected, OseeImportModelRequest actual) throws OseeCoreException {
+   protected void checkEquals(OseeImportModelRequest expected, OseeImportModelRequest actual) {
       Assert.assertNotSame(expected, actual);
       DataAsserts.assertEquals(expected, actual);
    }
 
    @Parameters
-   public static Collection<Object[]> data() throws OseeCoreException {
+   public static Collection<Object[]> data() {
       ITranslator<OseeImportModelRequest> translator = new OseeImportModelRequestTranslator();
 
       List<Object[]> data = new ArrayList<Object[]>();

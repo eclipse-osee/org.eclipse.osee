@@ -15,7 +15,6 @@ import java.util.Collection;
 import java.util.List;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.CacheUpdateRequest;
 import org.eclipse.osee.framework.core.message.internal.translation.CacheUpdateRequestTranslator;
 import org.eclipse.osee.framework.core.message.test.mocks.DataAsserts;
@@ -39,13 +38,13 @@ public class CacheUpdateRequestTranslatorTest extends BaseTranslatorTest<CacheUp
    }
 
    @Override
-   protected void checkEquals(CacheUpdateRequest expected, CacheUpdateRequest actual) throws OseeCoreException {
+   protected void checkEquals(CacheUpdateRequest expected, CacheUpdateRequest actual) {
       Assert.assertNotSame(expected, actual);
       DataAsserts.assertEquals(expected, actual);
    }
 
    @Parameters
-   public static Collection<Object[]> data() throws OseeCoreException {
+   public static Collection<Object[]> data() {
       CacheUpdateRequestTranslator translator = new CacheUpdateRequestTranslator();
 
       List<Object[]> data = new ArrayList<Object[]>();

@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.core.message.test.translation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.BranchCreationRequest;
 import org.eclipse.osee.framework.core.message.internal.translation.BranchCreationRequestTranslator;
 import org.eclipse.osee.framework.core.message.test.mocks.DataAsserts;
@@ -37,13 +36,13 @@ public class BranchCreationRequestTranslatorTest extends BaseTranslatorTest<Bran
    }
 
    @Override
-   protected void checkEquals(BranchCreationRequest expected, BranchCreationRequest actual) throws OseeCoreException {
+   protected void checkEquals(BranchCreationRequest expected, BranchCreationRequest actual) {
       Assert.assertNotSame(expected, actual);
       DataAsserts.assertEquals(expected, actual);
    }
 
    @Parameters
-   public static Collection<Object[]> data() throws OseeCoreException {
+   public static Collection<Object[]> data() {
       List<Object[]> data = new ArrayList<Object[]>();
       ITranslator<BranchCreationRequest> translator = new BranchCreationRequestTranslator();
 

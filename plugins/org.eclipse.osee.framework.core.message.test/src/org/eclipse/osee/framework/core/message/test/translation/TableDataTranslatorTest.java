@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import junit.framework.Assert;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.TableData;
 import org.eclipse.osee.framework.core.message.internal.translation.TableDataTranslator;
 import org.eclipse.osee.framework.core.message.test.mocks.DataAsserts;
@@ -37,13 +36,13 @@ public class TableDataTranslatorTest extends BaseTranslatorTest<TableData> {
    }
 
    @Override
-   protected void checkEquals(TableData expected, TableData actual) throws OseeCoreException {
+   protected void checkEquals(TableData expected, TableData actual) {
       Assert.assertNotSame(expected, actual);
       DataAsserts.assertEquals(expected, actual);
    }
 
    @Parameters
-   public static Collection<Object[]> data() throws OseeCoreException {
+   public static Collection<Object[]> data() {
       ITranslator<TableData> translator = new TableDataTranslator();
 
       List<Object[]> data = new ArrayList<Object[]>();

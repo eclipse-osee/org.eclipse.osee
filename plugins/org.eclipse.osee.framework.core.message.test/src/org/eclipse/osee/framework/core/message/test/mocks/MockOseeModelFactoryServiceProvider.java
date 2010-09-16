@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.message.test.mocks;
 
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
 
@@ -26,7 +25,7 @@ public class MockOseeModelFactoryServiceProvider implements IOseeModelFactorySer
    }
 
    @Override
-   public IOseeModelFactoryService getOseeFactoryService() throws OseeCoreException {
+   public IOseeModelFactoryService getOseeFactoryService() {
       return service;
    }
 

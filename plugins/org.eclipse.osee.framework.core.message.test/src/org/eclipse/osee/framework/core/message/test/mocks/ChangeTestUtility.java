@@ -18,9 +18,10 @@ import org.junit.Assert;
 /**
  * @author Roberto E. Escobar
  */
-public class ChangeTestUtility {
+public final class ChangeTestUtility {
 
    private ChangeTestUtility() {
+      // Utility Class
    }
 
    public static ChangeVersion createChange(Long long1, ModificationType mod1) {

@@ -42,7 +42,7 @@ public class OseeImportModelResponseTranslatorTest extends BaseTranslatorTest<Os
    }
 
    @Override
-   protected void checkEquals(OseeImportModelResponse expected, OseeImportModelResponse actual) throws OseeCoreException {
+   protected void checkEquals(OseeImportModelResponse expected, OseeImportModelResponse actual) {
       Assert.assertNotSame(expected, actual);
       Assert.assertNotNull(actual);
       DataAsserts.assertEquals(expected, actual);

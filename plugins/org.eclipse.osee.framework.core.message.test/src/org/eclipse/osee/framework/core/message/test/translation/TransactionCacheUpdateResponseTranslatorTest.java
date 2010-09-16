@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import junit.framework.Assert;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.TransactionCacheUpdateResponse;
 import org.eclipse.osee.framework.core.message.internal.translation.TransactionCacheUpdateResponseTranslator;
 import org.eclipse.osee.framework.core.message.test.mocks.DataAsserts;
@@ -39,7 +38,7 @@ public class TransactionCacheUpdateResponseTranslatorTest extends BaseTranslator
    }
 
    @Override
-   protected void checkEquals(TransactionCacheUpdateResponse expected, TransactionCacheUpdateResponse actual) throws OseeCoreException {
+   protected void checkEquals(TransactionCacheUpdateResponse expected, TransactionCacheUpdateResponse actual) {
       Assert.assertNotSame(expected, actual);
       List<TransactionRecord> expectedRows = expected.getTxRows();
       List<TransactionRecord> actualRows = actual.getTxRows();

@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import junit.framework.Assert;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.ChangeVersion;
 import org.eclipse.osee.framework.core.message.internal.translation.ChangeVersionTranslator;
 import org.eclipse.osee.framework.core.message.test.mocks.DataAsserts;
@@ -38,7 +37,7 @@ public class ChangeVersionTranslatorTest extends BaseTranslatorTest<ChangeVersio
    }
 
    @Override
-   protected void checkEquals(ChangeVersion expected, ChangeVersion actual) throws OseeCoreException {
+   protected void checkEquals(ChangeVersion expected, ChangeVersion actual) {
       Assert.assertNotSame(expected, actual);
       DataAsserts.assertEquals(expected, actual);
    }

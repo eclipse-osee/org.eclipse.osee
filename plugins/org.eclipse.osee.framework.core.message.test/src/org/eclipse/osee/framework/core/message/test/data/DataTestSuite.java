@@ -15,19 +15,18 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ //
-BranchCommitRequestTest.class, //
-   BranchCommitResponseTest.class, //
-   CacheUpdateRequestTest.class, //
-   ChangeItemTest.class, //
-   ChangeItemUtilTest.class, //
-   ChangeVersionTest.class, //
-   PurgeBranchRequestTest.class, //
-   TransactionCacheUpdateResponseTest.class, //
-})
+@Suite.SuiteClasses({
+   BranchCommitRequestTest.class,
+   BranchCommitResponseTest.class,
+   CacheUpdateRequestTest.class,
+   ChangeItemTest.class,
+   ChangeItemUtilTest.class,
+   ChangeVersionTest.class,
+   PurgeBranchRequestTest.class,
+   TransactionCacheUpdateResponseTest.class,})
 /**
  * @author Roberto E. Escobar
  */
 public class DataTestSuite {
-
+   // Test Suite
 }

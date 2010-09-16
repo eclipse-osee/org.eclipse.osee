@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.core.message.test.translation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.PurgeBranchRequest;
 import org.eclipse.osee.framework.core.message.internal.translation.PurgeBranchRequestTranslator;
 import org.eclipse.osee.framework.core.message.test.mocks.DataAsserts;
@@ -36,12 +35,12 @@ public class PurgeBranchRequestTranslatorTest extends BaseTranslatorTest<PurgeBr
    }
 
    @Override
-   protected void checkEquals(PurgeBranchRequest expected, PurgeBranchRequest actual) throws OseeCoreException {
+   protected void checkEquals(PurgeBranchRequest expected, PurgeBranchRequest actual) {
       DataAsserts.assertEquals(expected, actual);
    }
 
    @Parameters
-   public static Collection<Object[]> data() throws OseeCoreException {
+   public static Collection<Object[]> data() {
       List<Object[]> data = new ArrayList<Object[]>();
       ITranslator<PurgeBranchRequest> translator = new PurgeBranchRequestTranslator();
 

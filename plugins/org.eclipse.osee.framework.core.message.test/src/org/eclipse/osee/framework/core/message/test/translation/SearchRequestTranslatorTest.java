@@ -13,40 +13,41 @@ package org.eclipse.osee.framework.core.message.test.translation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.core.message.BranchCommitRequest;
-import org.eclipse.osee.framework.core.message.internal.translation.BranchCommitRequestTranslator;
+import org.eclipse.osee.framework.core.message.internal.translation.TransactionRecordTranslator;
 import org.eclipse.osee.framework.core.message.test.mocks.DataAsserts;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
+import org.eclipse.osee.framework.core.model.test.mocks.MockDataFactory;
 import org.eclipse.osee.framework.core.translation.ITranslator;
+import org.junit.Assert;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 /**
- * Test Case for {@link BranchCommitRequestTranslator}
+ * Test Case For {@link TransactionRecordTranslator}
  * 
- * @author Megumi Telles
+ * @author Roberto E. Escobar
  */
 @RunWith(Parameterized.class)
-public class BranchCommitRequestTranslatorTest extends BaseTranslatorTest<BranchCommitRequest> {
+public class SearchRequestTranslatorTest extends BaseTranslatorTest<TransactionRecord> {
 
-   public BranchCommitRequestTranslatorTest(BranchCommitRequest data, ITranslator<BranchCommitRequest> translator) {
+   public SearchRequestTranslatorTest(TransactionRecord data, ITranslator<TransactionRecord> translator) {
       super(data, translator);
    }
 
    @Override
-   protected void checkEquals(BranchCommitRequest expected, BranchCommitRequest actual) {
+   protected void checkEquals(TransactionRecord expected, TransactionRecord actual) {
+      Assert.assertNotSame(expected, actual);
       DataAsserts.assertEquals(expected, actual);
    }
 
    @Parameters
    public static Collection<Object[]> data() {
+      ITranslator<TransactionRecord> translator = new TransactionRecordTranslator(new TransactionRecordFactory());
       List<Object[]> data = new ArrayList<Object[]>();
-      ITranslator<BranchCommitRequest> translator = new BranchCommitRequestTranslator();
-
-      boolean archive = false;
       for (int index = 1; index <= 2; index++) {
-         archive ^= archive;
-         data.add(new Object[] {new BranchCommitRequest(index * 3, index * 2, index * 4, archive), translator});
+         data.add(new Object[] {MockDataFactory.createTransaction(index * 10, index * 3), translator});
       }
       return data;
    }

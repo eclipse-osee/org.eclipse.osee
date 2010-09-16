@@ -41,7 +41,7 @@ public class ChangeItemTranslatorTest extends BaseTranslatorTest<ChangeItem> {
    }
 
    @Override
-   protected void checkEquals(ChangeItem expected, ChangeItem actual) throws OseeCoreException {
+   protected void checkEquals(ChangeItem expected, ChangeItem actual) {
       Assert.assertNotSame(expected, actual);
       DataAsserts.assertEquals(expected, actual);
    }

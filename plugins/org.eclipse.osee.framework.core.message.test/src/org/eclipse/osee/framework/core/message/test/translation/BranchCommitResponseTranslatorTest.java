@@ -42,7 +42,7 @@ public class BranchCommitResponseTranslatorTest extends BaseTranslatorTest<Branc
    }
 
    @Override
-   protected void checkEquals(BranchCommitResponse expected, BranchCommitResponse actual) throws OseeCoreException {
+   protected void checkEquals(BranchCommitResponse expected, BranchCommitResponse actual) {
       DataAsserts.assertEquals(expected, actual);
    }
 

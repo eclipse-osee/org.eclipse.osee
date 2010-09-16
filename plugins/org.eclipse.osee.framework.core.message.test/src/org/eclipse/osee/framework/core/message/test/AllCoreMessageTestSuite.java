@@ -16,13 +16,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({//
-DataTestSuite.class, //
-   TranslationTestSuite.class, //
-})
+@Suite.SuiteClasses({DataTestSuite.class, TranslationTestSuite.class,})
 /**
  * @author Roberto E. Escobar
  */
 public class AllCoreMessageTestSuite {
-
+   // Test Suite
 }
