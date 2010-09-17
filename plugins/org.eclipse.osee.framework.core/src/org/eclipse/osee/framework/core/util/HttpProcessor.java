@@ -242,8 +242,6 @@ public class HttpProcessor {
             responseInputStream = method.getResponseBodyAsStream();
             response = Lib.inputStreamToString(responseInputStream);
          }
-      } catch (Exception ex) {
-         throw new Exception(String.format("Error during POST [%s] - status code: [%s]", url, statusCode), ex);
       } finally {
          try {
             if (responseInputStream != null) {
