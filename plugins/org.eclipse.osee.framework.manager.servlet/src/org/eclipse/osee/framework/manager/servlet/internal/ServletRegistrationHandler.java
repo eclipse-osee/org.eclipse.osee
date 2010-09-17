@@ -118,8 +118,7 @@ public class ServletRegistrationHandler extends AbstractTrackingHandler {
          OseeServerContext.BRANCH_EXCHANGE_CONTEXT);
       register(new BranchManagerServlet(sessionManager, branchService, translationService),
          OseeServerContext.BRANCH_CONTEXT);
-      register(new SearchEngineServlet(sessionManager, search, caching.getAttributeTypeCache()),
-         OseeServerContext.SEARCH_CONTEXT);
+      register(new SearchEngineServlet(sessionManager, search, translationService), OseeServerContext.SEARCH_CONTEXT);
       register(new SearchEngineTaggerServlet(sessionManager, tagger), OseeServerContext.SEARCH_TAGGING_CONTEXT);
       register(new ServerLookupServlet(serverLookup, appServerManager), OseeServerContext.LOOKUP_CONTEXT);
       register(new SessionManagementServlet(sessionManager, authenticationManager), OseeServerContext.SESSION_CONTEXT);

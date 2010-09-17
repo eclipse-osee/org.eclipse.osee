@@ -14,17 +14,22 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.message.SearchOptions;
 import org.eclipse.osee.framework.core.message.SearchRequest;
 import org.eclipse.osee.framework.core.message.SearchResponse;
+import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
+import org.eclipse.osee.framework.core.model.cache.BranchCache;
+import org.eclipse.osee.framework.core.model.type.AttributeType;
+import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.search.engine.IAttributeTaggerProviderManager;
 import org.eclipse.osee.framework.search.engine.ISearchEngine;
-import org.eclipse.osee.framework.search.engine.MatchLocation;
-import org.eclipse.osee.framework.search.engine.SearchOptions.SearchOptionsEnum;
-import org.eclipse.osee.framework.search.engine.SearchResult;
 import org.eclipse.osee.framework.search.engine.attribute.AttributeData;
 import org.eclipse.osee.framework.search.engine.attribute.AttributeDataStore;
 import org.eclipse.osee.framework.search.engine.internal.Activator;
+import org.eclipse.osee.framework.search.engine.utility.ITagCollector;
 import org.eclipse.osee.framework.search.engine.utility.TagProcessor;
 
 /**
@@ -35,30 +40,54 @@ public class SearchEngine implements ISearchEngine {
    private final SearchStatistics statistics;
    private final TagProcessor tagProcessor;
    private final IAttributeTaggerProviderManager taggingManager;
+   private final AttributeTypeCache attributeTypeCache;
+   private final BranchCache branchCache;
 
-   public SearchEngine(SearchStatistics statistics, TagProcessor tagProcessor, IAttributeTaggerProviderManager taggingManager) {
+   public SearchEngine(SearchStatistics statistics, TagProcessor tagProcessor, IAttributeTaggerProviderManager taggingManager, AttributeTypeCache attributeTypeCache, BranchCache branchCache) {
       this.statistics = statistics;
       this.tagProcessor = tagProcessor;
       this.taggingManager = taggingManager;
+      this.attributeTypeCache = attributeTypeCache;
+      this.branchCache = branchCache;
+   }
+
+   private AttributeType[] getAttributeTypes(Collection<IAttributeType> tokens) throws OseeCoreException {
+      AttributeType[] attributeTypes = new AttributeType[tokens.size()];
+      int index = 0;
+      for (IAttributeType identity : tokens) {
+         attributeTypes[index++] = attributeTypeCache.get(identity);
+      }
+      return attributeTypes;
    }
 
    @Override
-   public void search(SearchRequest searchRequest, SearchResponse searchResponse) throws Exception {
+   public void search(SearchRequest searchRequest, final SearchResponse searchResponse) throws Exception {
       String searchString = searchRequest.getRawSearch();
-
-      SearchResult results = new SearchResult(searchString);
 
       long startTime = System.currentTimeMillis();
 
-      tagProcessor.collectFromString(results.getRawSearch(), results);
-      Map<String, Long> searchTags = results.getSearchTags();
+      final Map<String, Long> searchTags = searchResponse.getSearchTags();
+      tagProcessor.collectFromString(searchString, new ITagCollector() {
+
+         @Override
+         public void addTag(String word, Long codedTag) {
+            searchTags.put(word, codedTag);
+         }
+      });
+
       if (searchTags.isEmpty()) {
-         results.setErrorMessage("No words found in search string. Please try again.");
+         searchResponse.setErrorMessage("No words found in search string. Please try again.");
       } else {
          long startDataStoreSearch = System.currentTimeMillis();
+
+         SearchOptions options = searchRequest.getOptions();
+         Collection<IAttributeType> attributeTypeTokens = options.getAttributeTypeFilter();
+         AttributeType[] attributeTypes = getAttributeTypes(attributeTypeTokens);
+
+         int branchId = branchCache.get(searchRequest.getBranch()).getId();
          Collection<AttributeData> tagMatches =
-            AttributeDataStore.getAttributesByTags(searchRequest.getBranchId(), searchRequest.isIncludeDeleted(),
-               searchTags.values(), attributeTypes);
+            AttributeDataStore.getAttributesByTags(branchId, options.getDeletionFlag(), searchTags.values(),
+               attributeTypes);
          String message =
             String.format("Attribute Search Query found [%d] in [%d] ms", tagMatches.size(),
                System.currentTimeMillis() - startDataStoreSearch);
@@ -67,18 +96,18 @@ public class SearchEngine implements ISearchEngine {
          long timeAfterPass1 = System.currentTimeMillis() - startTime;
          long secondPass = System.currentTimeMillis();
 
-         boolean bypassSecondPass = !options.getBoolean(SearchOptionsEnum.match_word_order.asStringOption());
+         boolean bypassSecondPass = !options.isMatchWordOrder();
          if (bypassSecondPass) {
             for (AttributeData attributeData : tagMatches) {
-               results.add(attributeData.getBranchId(), attributeData.getArtId(), attributeData.getGammaId());
+               searchResponse.add(attributeData.getBranchId(), attributeData.getArtId(), attributeData.getGammaId());
             }
          } else {
             for (AttributeData attributeData : tagMatches) {
                try {
                   List<MatchLocation> locations = taggingManager.find(attributeData, searchString, options);
                   if (!locations.isEmpty()) {
-                     results.add(attributeData.getBranchId(), attributeData.getArtId(), attributeData.getGammaId(),
-                        locations);
+                     searchResponse.add(attributeData.getBranchId(), attributeData.getArtId(),
+                        attributeData.getGammaId(), locations);
                   }
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, String.format("Error processing: [%s]", attributeData));
@@ -88,15 +117,15 @@ public class SearchEngine implements ISearchEngine {
          secondPass = System.currentTimeMillis() - secondPass;
 
          String firstPassMsg =
-            String.format("Pass 1: [%d items in %d ms]);", bypassSecondPass ? results.size() : tagMatches.size(),
-               timeAfterPass1);
-         String secondPassMsg = String.format(" Pass 2: [%d items in %d ms]", results.size(), secondPass);
+            String.format("Pass 1: [%d items in %d ms] -",
+               bypassSecondPass ? searchResponse.matches() : tagMatches.size(), timeAfterPass1);
+
+         String secondPassMsg = String.format(" Pass 2: [%d items in %d ms]", searchResponse.matches(), secondPass);
 
          System.out.println(String.format("Search for [%s] - %s%s", searchString, firstPassMsg,
             bypassSecondPass ? "" : secondPassMsg));
-         statistics.addEntry(searchString, branchId, options, results.size(), System.currentTimeMillis() - startTime);
+         statistics.addEntry(searchRequest, searchResponse.matches(), System.currentTimeMillis() - startTime);
       }
-      return results;
    }
 
    @Override

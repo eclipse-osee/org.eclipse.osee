@@ -30,6 +30,8 @@ import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.message.SearchOptions;
+import org.eclipse.osee.framework.core.message.SearchRequest;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
@@ -431,9 +433,15 @@ public class ArtifactQuery {
     * @param allowDeleted <b>true</b> includes deleted artifacts in results; <b>false</b> omits deleted artifacts
     * @return a collection of the artifacts found or an empty collection if none are found
     */
-   public static List<Artifact> getArtifactListFromAttributeKeywords(IOseeBranch branch, String queryString, boolean matchWordOrder, DeletionFlag allowDeleted, boolean isCaseSensitive, IAttributeType... attributeTypes) throws OseeCoreException {
-      return new HttpArtifactQuery(branch, queryString, matchWordOrder, allowDeleted, isCaseSensitive, attributeTypes).getArtifacts(
-         FULL, null, INCLUDE_CACHE, false, allowDeleted);
+   public static List<Artifact> getArtifactListFromAttributeKeywords(IOseeBranch branch, String queryString, boolean isMatchWordOrder, DeletionFlag deletionFlag, boolean isCaseSensitive, IAttributeType... attributeTypes) throws OseeCoreException {
+      SearchOptions options = new SearchOptions();
+      options.setAttributeTypeFilter(attributeTypes);
+      options.setCaseSensive(isCaseSensitive);
+      options.setDeletedIncluded(deletionFlag);
+      options.setMatchWordOrder(isMatchWordOrder);
+
+      SearchRequest searchRequest = new SearchRequest(branch, queryString);
+      return new HttpArtifactQuery(searchRequest).getArtifacts(FULL, INCLUDE_CACHE);
    }
 
    /**
@@ -444,9 +452,8 @@ public class ArtifactQuery {
     * @param findAllMatchLocations when set to <b>true</b> returns all match locations instead of just returning the
     * first one. When returning all match locations, search performance may be slow.
     */
-   public static List<ArtifactMatch> getArtifactMatchesFromAttributeKeywords(IOseeBranch branch, String queryString, boolean matchWordOrder, DeletionFlag allowDeleted, boolean findAllMatchLocations, boolean isCaseSensitive, IAttributeType... attributeTypes) throws OseeCoreException {
-      return new HttpArtifactQuery(branch, queryString, matchWordOrder, allowDeleted, isCaseSensitive, attributeTypes).getArtifactsWithMatches(
-         FULL, null, INCLUDE_CACHE, false, allowDeleted, findAllMatchLocations);
+   public static List<ArtifactMatch> getArtifactMatchesFromAttributeKeywords(SearchRequest searchRequest) throws OseeCoreException {
+      return new HttpArtifactQuery(searchRequest).getArtifactsWithMatches(FULL, INCLUDE_CACHE);
    }
 
    public static Artifact reloadArtifactFromId(int artId, IOseeBranch branch) throws OseeCoreException {

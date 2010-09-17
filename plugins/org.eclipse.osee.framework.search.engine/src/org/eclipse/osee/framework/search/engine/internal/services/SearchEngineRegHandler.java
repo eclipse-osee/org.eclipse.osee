@@ -11,6 +11,9 @@
 package org.eclipse.osee.framework.search.engine.internal.services;
 
 import java.util.Map;
+import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
+import org.eclipse.osee.framework.core.model.cache.BranchCache;
+import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.util.AbstractTrackingHandler;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
@@ -30,6 +33,7 @@ public class SearchEngineRegHandler extends AbstractTrackingHandler {
    //@formatter:off
    private static final Class<?>[] SERVICE_DEPENDENCIES = new Class<?>[] {
       IAttributeTaggerProviderManager.class,
+      IOseeCachingService.class,
       IOseeDatabaseService.class
       };
    //@formatter:on
@@ -48,12 +52,17 @@ public class SearchEngineRegHandler extends AbstractTrackingHandler {
 
    @Override
    public void onActivate(BundleContext context, Map<Class<?>, Object> services) {
-      //      IOseeDatabaseService databaseService = getService(IOseeDatabaseService.class, services);
       IAttributeTaggerProviderManager taggingManager = getService(IAttributeTaggerProviderManager.class, services);
+      IOseeCachingService cachingService = getService(IOseeCachingService.class, services);
+      //      IOseeDatabaseService databaseService = getService(IOseeDatabaseService.class, services);
 
       SearchStatistics searchStatistics = new SearchStatistics();
 
-      ISearchEngine searchEngine = new SearchEngine(searchStatistics, processor, taggingManager);
+      AttributeTypeCache attributeTypeCache = cachingService.getAttributeTypeCache();
+      BranchCache branchCache = cachingService.getBranchCache();
+
+      ISearchEngine searchEngine =
+         new SearchEngine(searchStatistics, processor, taggingManager, attributeTypeCache, branchCache);
       serviceRegistration = context.registerService(ISearchEngine.class.getName(), searchEngine, null);
    }
 

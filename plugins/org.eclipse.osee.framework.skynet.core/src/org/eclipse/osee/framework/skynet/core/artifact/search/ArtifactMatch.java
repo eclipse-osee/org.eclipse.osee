@@ -10,31 +10,28 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
-import java.util.Collection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.message.SearchResponse.ArtifactMatchMetaData;
+import org.eclipse.osee.framework.core.message.SearchResponse.AttributeMatchMetaData;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactXmlQueryResultParser.MatchLocation;
 
 /**
  * @author Roberto E. Escobar
  */
 public class ArtifactMatch {
    private final Artifact artifact;
-   private HashCollection<Long, MatchLocation> attributeMatches;
+   private final ArtifactMatchMetaData matchMetaData;
 
-   protected ArtifactMatch(Artifact artifact) {
+   public ArtifactMatch(Artifact artifact, ArtifactMatchMetaData matchMetaData) {
       this.artifact = artifact;
-      this.attributeMatches = null;
+      this.matchMetaData = matchMetaData;
    }
 
    public boolean hasMatchData() {
-      return attributeMatches != null;
-   }
-
-   protected void addMatches(HashCollection<Long, MatchLocation> attributeMatches) {
-      this.attributeMatches = attributeMatches;
+      return matchMetaData != null;
    }
 
    public Artifact getArtifact() {
@@ -43,11 +40,10 @@ public class ArtifactMatch {
 
    public HashCollection<Attribute<?>, MatchLocation> getMatchData() throws OseeCoreException {
       HashCollection<Attribute<?>, MatchLocation> matchData = new HashCollection<Attribute<?>, MatchLocation>();
-
       for (Attribute<?> attribute : artifact.getAttributes()) {
-         Collection<MatchLocation> locations = attributeMatches.getValues((long) attribute.getGammaId());
-         if (locations != null) {
-            matchData.put(attribute, locations);
+         AttributeMatchMetaData match = matchMetaData.getAttributeMatch((long) attribute.getGammaId());
+         if (match != null) {
+            matchData.put(attribute, match.getLocations());
          }
       }
       return matchData;

@@ -38,11 +38,25 @@ public abstract class AbstractArtifactSearchQuery implements ISearchQuery {
    public abstract IStatus run(final IProgressMonitor pm);
 
    public String getResultLabel() {
-      String branch = "";
-      if (aResult.getArtifactResults() != null && !aResult.getArtifactResults().isEmpty()) {
-         branch = " on Branch: \"" + aResult.getArtifactResults().get(0).getBranch().getShortName() + "\"";
+      StringBuilder builder = new StringBuilder();
+      builder.append(getCriteriaLabel());
+      builder.append(" - ");
+      if (doneRunning) {
+         builder.append(aResult.getMatchCount());
+         if (aResult.getMatchCount() > 0) {
+            builder.append(" matches");
+         } else {
+            builder.append(" match");
+         }
+         if (aResult.getArtifactResults() != null && !aResult.getArtifactResults().isEmpty()) {
+            builder.append(" on Branch: \"");
+            builder.append(aResult.getArtifactResults().get(0).getBranch().getShortName());
+            builder.append("\"");
+         }
+      } else {
+         builder.append("busy");
       }
-      return getCriteriaLabel() + " - " + (doneRunning ? aResult.getMatchCount() + " matches" + branch : "busy");
+      return builder.toString();
    }
 
    public abstract String getCriteriaLabel();

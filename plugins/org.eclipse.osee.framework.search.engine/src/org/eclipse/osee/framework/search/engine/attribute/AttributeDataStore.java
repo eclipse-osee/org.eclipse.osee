@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
@@ -67,7 +68,7 @@ public final class AttributeDataStore {
       return attributeData;
    }
 
-   public static Set<AttributeData> getAttributesByTags(int branchId, boolean includeDeleted, final Collection<Long> tagData, final AttributeType... attributeTypes) throws OseeCoreException {
+   public static Set<AttributeData> getAttributesByTags(int branchId, DeletionFlag deletionFlag, final Collection<Long> tagData, final AttributeType... attributeTypes) throws OseeCoreException {
       final Set<AttributeData> toReturn = new HashSet<AttributeData>();
 
       IdJoinQuery oseeIdJoin = null;
@@ -75,7 +76,8 @@ public final class AttributeDataStore {
       boolean useAttrTypeJoin = attributeTypes.length > 1;
 
       try {
-         String sqlQuery = searchTagQueryBuilder.getQuery(tagData.size(), useAttrTypeJoin, branchId, includeDeleted);
+         String sqlQuery =
+            searchTagQueryBuilder.getQuery(tagData.size(), useAttrTypeJoin, branchId, deletionFlag.areDeletedAllowed());
          List<Object> params = new ArrayList<Object>();
          params.addAll(tagData);
 

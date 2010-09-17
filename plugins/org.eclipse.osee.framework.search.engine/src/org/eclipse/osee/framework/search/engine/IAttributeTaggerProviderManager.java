@@ -11,6 +11,8 @@
 package org.eclipse.osee.framework.search.engine;
 
 import java.util.List;
+import org.eclipse.osee.framework.core.message.SearchOptions;
+import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.search.engine.attribute.AttributeData;
 import org.eclipse.osee.framework.search.engine.utility.ITagCollector;
 
@@ -42,6 +44,7 @@ public interface IAttributeTaggerProviderManager {
     * 
     * @param attributeData attribute to search in
     * @param value to search in attribute content
+    * @param options search options
     * @return match location
     */
    public List<MatchLocation> find(AttributeData attributeData, String toSearch, SearchOptions options) throws Exception;

@@ -10,19 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.search;
 
-import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
-import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.message.SearchOptions;
+import org.eclipse.osee.framework.core.message.SearchRequest;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.XmlTextInputStream;
@@ -32,7 +30,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactMatch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactXmlQueryResultParser.MatchLocation;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.search.page.AttributeLineElement;
 import org.eclipse.osee.framework.ui.skynet.search.page.AttributeMatch;
@@ -44,52 +41,41 @@ import org.eclipse.search.ui.text.Match;
  * @author Roberto E. Escobar
  */
 final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
-   private final String queryString;
-   private final IAttributeType[] attributeTypes;
-   private final DeletionFlag includeDeleted;
-   private final boolean matchWordOrder;
-   private final Branch branch;
-   private final boolean findAllMatchLocations;
-   private final boolean isCaseSensitive;
+   private final SearchRequest searchRequest;
 
-   RemoteArtifactSearch(String queryString, Branch branch, DeletionFlag includeDeleted, boolean matchWordOrder, boolean findAllMatchLocations, boolean isCaseSensitive, IAttributeType... attributeTypes) {
-      this.branch = branch;
-      this.includeDeleted = includeDeleted;
-      this.attributeTypes = attributeTypes;
-      this.queryString = queryString;
-      this.matchWordOrder = matchWordOrder;
-      this.findAllMatchLocations = findAllMatchLocations;
-      this.isCaseSensitive = isCaseSensitive;
+   RemoteArtifactSearch(SearchRequest searchRequest) {
+      this.searchRequest = searchRequest;
    }
 
    @Override
    public String getCriteriaLabel() {
+      SearchOptions options = searchRequest.getOptions();
       List<String> optionsList = new ArrayList<String>();
-      if (includeDeleted == INCLUDE_DELETED) {
+      if (options.getDeletionFlag().areDeletedAllowed()) {
          optionsList.add("Include Deleted");
       }
 
-      if (matchWordOrder) {
+      if (options.isMatchWordOrder()) {
          optionsList.add("Match Word Order");
-         if (findAllMatchLocations) {
+         if (options.isFindAllLocationsEnabled()) {
             optionsList.add("All Matches");
          } else {
             optionsList.add("1st Match Only");
          }
       }
 
-      if (isCaseSensitive) {
+      if (options.isCaseSensitive()) {
          optionsList.add("Case Sensitive");
       }
 
-      if (attributeTypes != null && attributeTypes.length > 0) {
-         optionsList.add(String.format("Attribute Type Filter:%s", Arrays.deepToString(attributeTypes)));
+      if (options.isAttributeTypeFiltered()) {
+         optionsList.add(String.format("Attribute Type Filter:%s", options.getAttributeTypeFilter()));
       }
 
-      String options =
+      String optionsLabel =
          String.format(" - Options:[%s]",
             org.eclipse.osee.framework.jdk.core.util.Collections.toString(", ", optionsList));
-      return String.format("%s%s", queryString, optionsList.size() > 0 ? options : "");
+      return String.format("%s%s", searchRequest.getRawSearch(), optionsList.size() > 0 ? optionsLabel : "");
    }
 
    @Override
@@ -102,9 +88,7 @@ final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
       long endOfloadTime = startTime;
       int lineMatches = 0;
       try {
-         List<ArtifactMatch> matches =
-            ArtifactQuery.getArtifactMatchesFromAttributeKeywords(branch, queryString, matchWordOrder, includeDeleted,
-               findAllMatchLocations, isCaseSensitive, attributeTypes);
+         List<ArtifactMatch> matches = ArtifactQuery.getArtifactMatchesFromAttributeKeywords(searchRequest);
 
          endOfloadTime = System.currentTimeMillis();
 

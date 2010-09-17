@@ -19,10 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.core.message.SearchOptions;
+import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.search.engine.MatchLocation;
-import org.eclipse.osee.framework.search.engine.SearchOptions;
-import org.eclipse.osee.framework.search.engine.SearchOptions.SearchOptionsEnum;
 
 /**
  * @author Roberto E. Escobar
@@ -38,7 +37,7 @@ public final class WordOrderMatcher {
       Reader reader = null;
       try {
          reader = new InputStreamReader(inputStream, "UTF-8");
-         boolean isCaseInsensitive = !options.getBoolean(SearchOptionsEnum.case_sensitive.asStringOption());
+         boolean isCaseInsensitive = !options.isCaseSensitive();
          char[] charsToSearch = WordsUtil.removeExtraSpacesAndSpecialCharacters(toSearch, isCaseInsensitive);
          int charCount = 0;
          int index = 0;
@@ -89,7 +88,7 @@ public final class WordOrderMatcher {
                      matchLocation.setEndPosition(charCount);
                      matchLocations.add(matchLocation.clone());
                      index = 0;
-                     if (!options.getBoolean(SearchOptionsEnum.find_all_locations.asStringOption())) {
+                     if (!options.isFindAllLocationsEnabled()) {
                         break;
                      }
                   }

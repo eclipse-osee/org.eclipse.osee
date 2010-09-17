@@ -20,6 +20,8 @@ import java.util.List;
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.message.SearchOptions;
+import org.eclipse.osee.framework.core.message.SearchRequest;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.IActionable;
@@ -34,6 +36,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
+import org.eclipse.search.ui.ISearchQuery;
 import org.eclipse.search.ui.NewSearchUI;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -244,17 +247,22 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener {
          } else if (Widgets.isAccessible(searchComposite) && searchComposite.isExecuteSearchEvent(event) && Widgets.isAccessible(optionsComposite)) {
             DeletionFlag allowDeleted = optionsComposite.isIncludeDeletedEnabled() ? INCLUDE_DELETED : EXCLUDE_DELETED;
             NewSearchUI.activateSearchResultView();
+
+            ISearchQuery query;
             if (optionsComposite.isSearchByIdEnabled()) {
-               NewSearchUI.runQueryInBackground(new IdArtifactSearch(searchComposite.getQuery(), branch, allowDeleted));
+               query = new IdArtifactSearch(searchComposite.getQuery(), branch, allowDeleted);
             } else {
-               NewSearchUI.runQueryInBackground(new RemoteArtifactSearch(searchComposite.getQuery(), //
-                  branch, //
-                  allowDeleted, //
-                  optionsComposite.isMatchWordOrderEnabled(), //
-                  optionsComposite.isMatchAllLocationsEnabled(),//
-                  optionsComposite.isCaseSensitiveEnabled(),//
-                  optionsComposite.getAttributeTypeFilter()));
+               SearchOptions options = new SearchOptions();
+               options.setDeletedIncluded(allowDeleted);
+               options.setAttributeTypeFilter(optionsComposite.getAttributeTypeFilter());
+               options.setCaseSensive(optionsComposite.isCaseSensitiveEnabled());
+               options.setFindAllLocationsEnabled(optionsComposite.isMatchAllLocationsEnabled());
+               options.setMatchWordOrder(optionsComposite.isMatchWordOrderEnabled());
+
+               SearchRequest searchRequest = new SearchRequest(branch, searchComposite.getQuery(), options);
+               query = new RemoteArtifactSearch(searchRequest);
             }
+            NewSearchUI.runQueryInBackground(query);
          } else {
             // branch has been selected; allow user to set up search string
             compositeEnablement(searchComposite, true);

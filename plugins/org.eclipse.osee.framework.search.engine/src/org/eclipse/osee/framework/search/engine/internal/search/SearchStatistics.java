@@ -10,14 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.search.engine.internal.search;
 
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.message.SearchRequest;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.search.engine.ISearchStatistics;
-import org.eclipse.osee.framework.search.engine.SearchOptions;
 
 /**
  * @author Roberto E. Escobar
  */
 public class SearchStatistics implements Cloneable, ISearchStatistics {
-   public static final SearchStatistics EMPTY_STATS = new SearchStatistics();
+   public static final SearchStatistics EMPTY_STATS = new EmptyStats();
    private static final String EMPTY_STRING = "";
    private long averageProcessingTime;
    private int totalProcessed;
@@ -57,20 +59,21 @@ public class SearchStatistics implements Cloneable, ISearchStatistics {
       return longestQuery;
    }
 
-   public void addEntry(String queryString, int branchId, SearchOptions options, int found, long processingTime) {
+   public void addEntry(SearchRequest searchRequest, int found, long processingTime) throws OseeCoreException {
+      Conditions.checkNotNull(searchRequest, "searchRequest");
       this.totalProcessed++;
       this.totalProcessingTime += processingTime;
+
       this.averageProcessingTime = totalProcessingTime / this.totalProcessed;
 
       if (processingTime > this.longestProcessingTime) {
-         this.longestQuery =
-            String.format("Query:[%s] BranchId:[%d] Options:[%s] Found:[%d in %d ms]", queryString, branchId,
-               options.toString(), found, processingTime);
+         this.longestProcessingTime = processingTime;
+         this.longestQuery = String.format("%s - [%d in %d ms]", searchRequest.toString(), found, processingTime);
       }
    }
 
    @Override
-   protected SearchStatistics clone() throws CloneNotSupportedException {
+   public SearchStatistics clone() throws CloneNotSupportedException {
       SearchStatistics other = (SearchStatistics) super.clone();
       other.averageProcessingTime = this.averageProcessingTime;
       other.totalProcessed = this.totalProcessed;
@@ -78,5 +81,12 @@ public class SearchStatistics implements Cloneable, ISearchStatistics {
       other.longestProcessingTime = this.longestProcessingTime;
       other.longestQuery = this.longestQuery;
       return other;
+   }
+
+   private static final class EmptyStats extends SearchStatistics {
+      @Override
+      public void addEntry(SearchRequest searchRequest, int found, long processingTime) {
+         throw new UnsupportedOperationException();
+      }
    }
 }
