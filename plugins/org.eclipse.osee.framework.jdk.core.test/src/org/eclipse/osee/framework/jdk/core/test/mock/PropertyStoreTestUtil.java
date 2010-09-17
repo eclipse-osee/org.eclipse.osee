@@ -8,17 +8,20 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.jdk.core.test.type;
+package org.eclipse.osee.framework.jdk.core.test.mock;
 
 import java.util.Map.Entry;
 import java.util.Properties;
-import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.junit.Assert;
 
 /**
  * @author Roberto E. Escobar
  */
-public class PropertyStoreTestUtil {
+public final class PropertyStoreTestUtil {
+
+   private PropertyStoreTestUtil() {
+      // Utility Class
+   }
 
    public static void checkArrays(String[] expArray, String[] actualArray) {
       Assert.assertEquals(expArray.length, actualArray.length);
@@ -75,40 +78,4 @@ public class PropertyStoreTestUtil {
       }
    }
 
-   public static final class MockPropertyStore extends PropertyStore {
-
-      private static final long serialVersionUID = 750608597542081776L;
-
-      MockPropertyStore() {
-         super();
-      }
-
-      MockPropertyStore(String id) {
-         super(id);
-      }
-
-      MockPropertyStore(Properties properties) {
-         super(properties);
-      }
-
-      @Override
-      public void setId(String name) {
-         super.setId(name);
-      }
-
-      @Override
-      public Properties getItems() {
-         return super.getItems();
-      }
-
-      @Override
-      public Properties getArrays() {
-         return super.getArrays();
-      }
-
-      @Override
-      public Properties getPropertyStores() {
-         return super.getPropertyStores();
-      }
-   }
 }

@@ -17,7 +17,8 @@ import java.io.StringWriter;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
-import org.eclipse.osee.framework.jdk.core.test.type.PropertyStoreTestUtil.MockPropertyStore;
+import org.eclipse.osee.framework.jdk.core.test.mock.MockPropertyStore;
+import org.eclipse.osee.framework.jdk.core.test.mock.PropertyStoreTestUtil;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.junit.Assert;
 
