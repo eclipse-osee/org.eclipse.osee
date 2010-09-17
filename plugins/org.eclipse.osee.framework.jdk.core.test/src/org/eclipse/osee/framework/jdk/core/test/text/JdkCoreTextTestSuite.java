@@ -19,5 +19,5 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({UtfReadingRuleTest.class})
 public class JdkCoreTextTestSuite {
-
+   // Test Suite
 }
