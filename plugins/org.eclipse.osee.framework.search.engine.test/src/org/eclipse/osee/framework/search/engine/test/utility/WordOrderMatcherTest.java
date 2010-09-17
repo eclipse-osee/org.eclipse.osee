@@ -17,9 +17,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.search.engine.MatchLocation;
-import org.eclipse.osee.framework.search.engine.SearchOptions;
-import org.eclipse.osee.framework.search.engine.SearchOptions.SearchOptionsEnum;
+import org.eclipse.osee.framework.core.message.SearchOptions;
+import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.search.engine.test.mocks.EngineAsserts;
 import org.eclipse.osee.framework.search.engine.utility.WordOrderMatcher;
 import org.junit.Test;
@@ -40,14 +39,12 @@ public class WordOrderMatcherTest {
    private final List<MatchLocation> expected;
    private final SearchOptions options;
 
-   public WordOrderMatcherTest(String data, String toSearch, boolean caseSensitive, boolean allLocations, List<MatchLocation> expected) {
+   public WordOrderMatcherTest(String data, String toSearch, SearchOptions options, List<MatchLocation> expected) {
       super();
       this.toSearch = toSearch;
       this.data = data;
+      this.options = options;
       this.expected = expected;
-      this.options = new SearchOptions();
-      options.put(SearchOptionsEnum.case_sensitive.asStringOption(), caseSensitive);
-      options.put(SearchOptionsEnum.find_all_locations.asStringOption(), allLocations);
    }
 
    @Test
@@ -60,13 +57,20 @@ public class WordOrderMatcherTest {
    @Parameters
    public static Collection<Object[]> data() {
       List<Object[]> data = new ArrayList<Object[]>();
-      data.add(new Object[] {"Why is this here again.", "THIS", false, false, getLocs(8, 11)});
-      data.add(new Object[] {"Why is this here again.", "THIS", true, false, getLocs()});
-      data.add(new Object[] {"Why is this here this again.", "THIS", false, false, getLocs(8, 11)});
-      data.add(new Object[] {"Why is this here this again.", "THIS", false, true, getLocs(8, 11, 18, 21)});
-      data.add(new Object[] {"hello #@!@$$%'- again.", "hello again", false, false, getLocs(1, 21)});
-      data.add(new Object[] {"hello word again.", "hello again", false, false, getLocs()});
+      addTest(data, "Why is this here again.", "THIS", false, false, getLocs(8, 11));
+      addTest(data, "Why is this here again.", "THIS", true, false, getLocs());
+      addTest(data, "Why is this here this again.", "THIS", false, false, getLocs(8, 11));
+      addTest(data, "Why is this here this again.", "THIS", false, true, getLocs(8, 11, 18, 21));
+      addTest(data, "hello #@!@$$%'- again.", "hello again", false, false, getLocs(1, 21));
+      addTest(data, "hello word again.", "hello again", false, false, getLocs());
       return data;
+   }
+
+   private static void addTest(Collection<Object[]> testData, String data, String toSearch, boolean caseSensitive, boolean isFindAllLocationsEnabled, List<MatchLocation> expectedLocs) {
+      SearchOptions options = new SearchOptions();
+      options.setCaseSensive(caseSensitive);
+      options.setFindAllLocationsEnabled(isFindAllLocationsEnabled);
+      testData.add(new Object[] {data, toSearch, options, expectedLocs});
    }
 
    private static List<MatchLocation> getLocs(int... data) {

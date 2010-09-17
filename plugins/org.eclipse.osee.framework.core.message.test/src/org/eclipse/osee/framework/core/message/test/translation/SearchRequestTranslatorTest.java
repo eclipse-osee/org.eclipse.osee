@@ -13,11 +13,13 @@ package org.eclipse.osee.framework.core.message.test.translation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.core.message.internal.translation.TransactionRecordTranslator;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.core.message.SearchOptions;
+import org.eclipse.osee.framework.core.message.SearchRequest;
+import org.eclipse.osee.framework.core.message.internal.translation.SearchRequestTranslator;
 import org.eclipse.osee.framework.core.message.test.mocks.DataAsserts;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
-import org.eclipse.osee.framework.core.model.test.mocks.MockDataFactory;
 import org.eclipse.osee.framework.core.translation.ITranslator;
 import org.junit.Assert;
 import org.junit.runner.RunWith;
@@ -25,30 +27,57 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 /**
- * Test Case For {@link TransactionRecordTranslator}
+ * Test Case For {@link SearchRequestTranslator}
  * 
  * @author Roberto E. Escobar
  */
 @RunWith(Parameterized.class)
-public class SearchRequestTranslatorTest extends BaseTranslatorTest<TransactionRecord> {
+public class SearchRequestTranslatorTest extends BaseTranslatorTest<SearchRequest> {
 
-   public SearchRequestTranslatorTest(TransactionRecord data, ITranslator<TransactionRecord> translator) {
+   public SearchRequestTranslatorTest(SearchRequest data, ITranslator<SearchRequest> translator) {
       super(data, translator);
    }
 
    @Override
-   protected void checkEquals(TransactionRecord expected, TransactionRecord actual) {
+   protected void checkEquals(SearchRequest expected, SearchRequest actual) {
       Assert.assertNotSame(expected, actual);
       DataAsserts.assertEquals(expected, actual);
    }
 
    @Parameters
    public static Collection<Object[]> data() {
-      ITranslator<TransactionRecord> translator = new TransactionRecordTranslator(new TransactionRecordFactory());
+      ITranslator<SearchRequest> translator = new SearchRequestTranslator();
       List<Object[]> data = new ArrayList<Object[]>();
-      for (int index = 1; index <= 2; index++) {
-         data.add(new Object[] {MockDataFactory.createTransaction(index * 10, index * 3), translator});
-      }
+
+      SearchOptions options = new SearchOptions();
+      data.add(new Object[] {new SearchRequest(CoreBranches.COMMON, "", options), translator});
+
+      options = new SearchOptions();
+      options.setDeletedIncluded(DeletionFlag.INCLUDE_DELETED);
+      options.setCaseSensive(true);
+      options.setFindAllLocationsEnabled(false);
+      options.setMatchWordOrder(false);
+      options.setAttributeTypeFilter(CoreAttributeTypes.Active);
+
+      data.add(new Object[] {
+         new SearchRequest(CoreBranches.SYSTEM_ROOT, "a search &&!@#$%!%@!$^!$^!.+", options),
+         translator});
+
+      options = new SearchOptions();
+      options.setDeletedIncluded(DeletionFlag.EXCLUDE_DELETED);
+      options.setCaseSensive(false);
+      options.setFindAllLocationsEnabled(true);
+      options.setMatchWordOrder(false);
+      options.setAttributeTypeFilter(CoreAttributeTypes.Afha, CoreAttributeTypes.Annotation);
+      data.add(new Object[] {new SearchRequest(CoreBranches.SYSTEM_ROOT, "a search string", options), translator});
+
+      options = new SearchOptions();
+      options.setDeletedIncluded(DeletionFlag.INCLUDE_DELETED);
+      options.setCaseSensive(false);
+      options.setFindAllLocationsEnabled(false);
+      options.setMatchWordOrder(true);
+      options.setAttributeTypeFilter(CoreAttributeTypes.ContentUrl, CoreAttributeTypes.Country);
+      data.add(new Object[] {new SearchRequest(CoreBranches.COMMON, "one more", options), translator});
       return data;
    }
 }

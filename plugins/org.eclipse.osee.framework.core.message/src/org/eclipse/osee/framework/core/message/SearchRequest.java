@@ -10,58 +10,42 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.message;
 
-import java.util.Collection;
-import java.util.HashSet;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 
 /**
  * @author Roberto E. Escobar
  */
 public class SearchRequest {
 
-   private final int branchId;
+   private final IOseeBranch branch;
    private final String rawSearch;
-   private boolean isIncludeDeleted;
-   private boolean isMatchWordOrder;
-   private boolean isCaseSensive;
-   private boolean isFindAllLocationsEnabled;
-   private final Collection<String> attributeTypeGuids;
+   private final SearchOptions options;
 
-   public SearchRequest(int branchId, String rawSearch) {
-      super();
-      this.attributeTypeGuids = new HashSet<String>();
-      this.branchId = branchId;
-      this.rawSearch = rawSearch;
+   public SearchRequest(IOseeBranch branch, String rawSearch) {
+      this(branch, rawSearch, null);
    }
 
-   public int getBranchId() {
-      return branchId;
+   public SearchRequest(IOseeBranch branch, String rawSearch, SearchOptions options) {
+      super();
+      this.branch = branch;
+      this.rawSearch = rawSearch;
+      this.options = options != null ? options : new SearchOptions();
+   }
+
+   public IOseeBranch getBranch() {
+      return branch;
    }
 
    public String getRawSearch() {
       return rawSearch;
    }
 
-   public boolean isIncludeDeleted() {
-      return isIncludeDeleted;
+   public SearchOptions getOptions() {
+      return options;
    }
 
-   public boolean isMatchWordOrder() {
-      return isMatchWordOrder;
-   }
-
-   public boolean isCaseSensive() {
-      return isCaseSensive;
-   }
-
-   public boolean isFindAllLocationsEnabled() {
-      return isFindAllLocationsEnabled;
-   }
-
-   public Collection<String> getAttributeTypeFilter() {
-      return attributeTypeGuids;
-   }
-
-   public boolean isAttributeTypeFiltered() {
-      return !attributeTypeGuids.isEmpty();
+   @Override
+   public String toString() {
+      return "SearchRequest [branch=" + branch + ", rawSearch=" + rawSearch + "," + options + "]";
    }
 }

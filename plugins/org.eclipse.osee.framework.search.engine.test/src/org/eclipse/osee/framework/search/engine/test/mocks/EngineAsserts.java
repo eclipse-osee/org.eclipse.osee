@@ -13,8 +13,8 @@ package org.eclipse.osee.framework.search.engine.test.mocks;
 import java.util.ArrayList;
 import java.util.List;
 import junit.framework.Assert;
+import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
-import org.eclipse.osee.framework.search.engine.MatchLocation;
 import org.eclipse.osee.framework.search.engine.attribute.AttributeData;
 
 /**

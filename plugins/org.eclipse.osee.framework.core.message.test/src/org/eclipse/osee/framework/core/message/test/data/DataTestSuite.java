@@ -23,6 +23,8 @@ import org.junit.runners.Suite;
    ChangeItemUtilTest.class,
    ChangeVersionTest.class,
    PurgeBranchRequestTest.class,
+   SearchRequestTest.class,
+   SearchResponseTest.class,
    TransactionCacheUpdateResponseTest.class,})
 /**
  * @author Roberto E. Escobar

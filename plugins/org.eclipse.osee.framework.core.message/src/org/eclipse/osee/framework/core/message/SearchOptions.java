@@ -8,53 +8,86 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.search.engine;
+package org.eclipse.osee.framework.core.message;
 
-import java.util.Properties;
+import java.util.Collection;
+import java.util.HashSet;
+import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 
 /**
  * @author Roberto E. Escobar
  */
 public class SearchOptions {
 
-   public enum SearchOptionsEnum {
-      include_deleted,
-      match_word_order,
-      as_xml,
-      find_all_locations,
-      case_sensitive;
-
-      public String asStringOption() {
-         return name().replaceAll("_", " ");
-      }
-   }
-
-   private final Properties properties;
+   private final Collection<IAttributeType> attributeTypeGuids = new HashSet<IAttributeType>();
+   private DeletionFlag deletionFlag;
+   private boolean isMatchWordOrder;
+   private boolean isCaseSensive;
+   private boolean isFindAllLocationsEnabled;
 
    public SearchOptions() {
-      this.properties = new Properties();
+      super();
+      deletionFlag = DeletionFlag.EXCLUDE_DELETED;
    }
 
-   public boolean getBoolean(String key) {
-      return new Boolean(getString(key));
+   public DeletionFlag getDeletionFlag() {
+      return deletionFlag;
    }
 
-   public String getString(String key) {
-      return this.properties.getProperty(key, "");
+   public boolean isMatchWordOrder() {
+      return isMatchWordOrder;
    }
 
-   public void put(String key, String value) {
-      if (value != null && value.length() > 0) {
-         this.properties.put(key, value);
+   public boolean isCaseSensitive() {
+      return isCaseSensive;
+   }
+
+   public boolean isFindAllLocationsEnabled() {
+      return isFindAllLocationsEnabled;
+   }
+
+   public Collection<IAttributeType> getAttributeTypeFilter() {
+      return attributeTypeGuids;
+   }
+
+   public void setAttributeTypeFilter(IAttributeType... typeFilter) {
+      for (IAttributeType attributeType : typeFilter) {
+         addAttributeTypeFilter(attributeType);
       }
    }
 
-   public void put(String key, boolean value) {
-      this.properties.put(key, Boolean.toString(value));
+   public void clearTypeFilter() {
+      attributeTypeGuids.clear();
+   }
+
+   public void addAttributeTypeFilter(IAttributeType type) {
+      attributeTypeGuids.add(type);
+   }
+
+   public boolean isAttributeTypeFiltered() {
+      return !attributeTypeGuids.isEmpty();
+   }
+
+   public void setDeletedIncluded(DeletionFlag deletionFlag) {
+      this.deletionFlag = deletionFlag;
+   }
+
+   public void setMatchWordOrder(boolean isMatchWordOrder) {
+      this.isMatchWordOrder = isMatchWordOrder;
+   }
+
+   public void setCaseSensive(boolean isCaseSensive) {
+      this.isCaseSensive = isCaseSensive;
+   }
+
+   public void setFindAllLocationsEnabled(boolean isFindAllLocationsEnabled) {
+      this.isFindAllLocationsEnabled = isFindAllLocationsEnabled;
    }
 
    @Override
    public String toString() {
-      return properties.toString();
+      return "SearchOptions [attributeTypeGuids=" + attributeTypeGuids + ", isIncludeDeleted=" + getDeletionFlag() + ", isMatchWordOrder=" + isMatchWordOrder + ", isCaseSensive=" + isCaseSensive + ", isFindAllLocationsEnabled=" + isFindAllLocationsEnabled + "]";
    }
+
 }
