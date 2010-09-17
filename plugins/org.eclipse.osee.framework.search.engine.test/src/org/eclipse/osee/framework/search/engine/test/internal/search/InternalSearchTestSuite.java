@@ -8,12 +8,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.search.engine.test;
+package org.eclipse.osee.framework.search.engine.test.internal.search;
 
-import org.eclipse.osee.framework.search.engine.test.attribute.AttributeTestSuite;
-import org.eclipse.osee.framework.search.engine.test.internal.InternalTestSuite;
-import org.eclipse.osee.framework.search.engine.test.language.LanguageTestSuite;
-import org.eclipse.osee.framework.search.engine.test.utility.UtilityTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -23,12 +19,9 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ 
 //@formatter:off   
-   AttributeTestSuite.class,
-   InternalTestSuite.class,
-   LanguageTestSuite.class, 
-   UtilityTestSuite.class, 
+   SearchStatisticsTest.class,
 //@formatter:on   
 })
-public class AllSearchEngineTestSuite {
+public class InternalSearchTestSuite {
    // Test Suite Class
 }
