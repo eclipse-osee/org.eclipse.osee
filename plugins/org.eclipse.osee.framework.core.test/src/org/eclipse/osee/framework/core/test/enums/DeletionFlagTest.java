@@ -31,5 +31,15 @@ public class DeletionFlagTest {
    public void testExcludeDeletion() {
       DeletionFlag flag = DeletionFlag.EXCLUDE_DELETED;
       Assert.assertFalse(flag.areDeletedAllowed());
+
+   }
+
+   @Test
+   public void testAllowDeleted() {
+      DeletionFlag actual = DeletionFlag.allowDeleted(true);
+      Assert.assertEquals(DeletionFlag.INCLUDE_DELETED, actual);
+
+      actual = DeletionFlag.allowDeleted(false);
+      Assert.assertEquals(DeletionFlag.EXCLUDE_DELETED, actual);
    }
 }

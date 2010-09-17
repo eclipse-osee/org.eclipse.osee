@@ -21,4 +21,8 @@ public enum DeletionFlag {
    public boolean areDeletedAllowed() {
       return this == INCLUDE_DELETED;
    }
+
+   public static DeletionFlag allowDeleted(boolean areAllowed) {
+      return areAllowed ? DeletionFlag.INCLUDE_DELETED : DeletionFlag.EXCLUDE_DELETED;
+   }
 }
