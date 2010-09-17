@@ -165,20 +165,20 @@ public class HashCollectionTest {
 
    @Test
    public void testHashCollectionObject() {
-      HashCollection<GuidObject, String> collection = new HashCollection<GuidObject, String>();
+      HashCollection<Object, String> collection = new HashCollection<Object, String>();
 
       Assert.assertEquals(0, collection.size());
       Assert.assertEquals(0, collection.getValues().size());
-      Assert.assertNull(collection.getValues(new GuidObject()));
+      Assert.assertNull(collection.getValues(new Object()));
 
-      GuidObject keyObject = new GuidObject();
+      Object keyObject = new Object();
       for (int x = 1; x <= 5; x++) {
          collection.put(keyObject, "value " + x);
       }
 
       Assert.assertEquals(5, collection.size());
       Assert.assertEquals(5, collection.getValues().size());
-      Assert.assertNull(collection.getValues(new GuidObject()));
+      Assert.assertNull(collection.getValues(new Object()));
       Assert.assertEquals(5, collection.getValues(keyObject).size());
    }
 
