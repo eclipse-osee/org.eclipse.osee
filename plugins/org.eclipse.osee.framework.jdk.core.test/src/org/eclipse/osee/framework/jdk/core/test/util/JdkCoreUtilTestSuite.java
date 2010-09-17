@@ -20,20 +20,15 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-//@formatter:off
    IoXmlTestSuite.class,
-   XmlTestSuite.class, 
    XmlTestSuite.class,
    CollectionsTest.class,
-   CompareTest.class, 
-   GuidObject.class, 
-   GUIDTest.class, 
-   HashCollectionTest.class, 
-   HumanReadableIdTest.class, 
-   StringsTest.class, 
-   ReservedCharactersTest.class
-//@formatter:on
-})
+   CompareTest.class,
+   GUIDTest.class,
+   HashCollectionTest.class,
+   HumanReadableIdTest.class,
+   ReservedCharactersTest.class,
+   StringsTest.class,})
 public class JdkCoreUtilTestSuite {
    // Test Suite Class
 }
