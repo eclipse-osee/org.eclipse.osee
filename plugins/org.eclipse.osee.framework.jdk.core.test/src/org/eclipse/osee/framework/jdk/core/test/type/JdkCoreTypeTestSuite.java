@@ -18,11 +18,13 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+   CompositeKeyHashMapTest.class,
+   MatchLocationTest.class,
    PairTest.class,
    PropertyStoreTest.class,
    PropertyStoreWriterTest.class,
    QuadTest.class,
    TripletTest.class})
 public class JdkCoreTypeTestSuite {
-
+   // Test Suite
 }
