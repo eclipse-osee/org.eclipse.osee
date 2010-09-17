@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.search.engine;
+package org.eclipse.osee.framework.jdk.core.type;
 
 /**
  * @author Roberto E. Escobar
@@ -67,6 +67,42 @@ public class MatchLocation {
     */
    public void setEndPosition(int endPosition) {
       this.endPosition = endPosition;
+   }
+
+   public MatchLocation set(int startPosition, int endPosition) {
+      this.startPosition = startPosition;
+      this.endPosition = endPosition;
+      return this;
+   }
+
+   @Override
+   public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + endPosition;
+      result = prime * result + startPosition;
+      return result;
+   }
+
+   @Override
+   public boolean equals(Object obj) {
+      if (this == obj) {
+         return true;
+      }
+      if (obj == null) {
+         return false;
+      }
+      if (getClass() != obj.getClass()) {
+         return false;
+      }
+      MatchLocation other = (MatchLocation) obj;
+      if (endPosition != other.endPosition) {
+         return false;
+      }
+      if (startPosition != other.startPosition) {
+         return false;
+      }
+      return true;
    }
 
 }
