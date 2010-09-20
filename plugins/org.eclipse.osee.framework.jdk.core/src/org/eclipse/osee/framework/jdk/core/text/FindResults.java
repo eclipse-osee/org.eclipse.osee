@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import org.eclipse.osee.framework.jdk.core.text.tool.FindResultsIterator;
 
 /**
  * @author Ryan D. Brooks
@@ -49,7 +50,7 @@ public class FindResults {
    }
 
    public void writeFindResutls(Writer out) throws IOException {
-      for (FindResults.FindResultsIterator i = iterator(); i.hasNext();) {
+      for (FindResultsIterator i = iterator(); i.hasNext();) {
          // write out the file name, pattern, and region surrounding match
          out.write(i.currentPattern);
          out.write('@');
@@ -63,57 +64,7 @@ public class FindResults {
    }
 
    public FindResultsIterator iterator() {
-      return new FindResultsIterator();
-   }
-
-   /**
-    * @author Ryan D. Brooks
-    */
-   public class FindResultsIterator {
-      private Iterator<Entry<String, HashMap<File, List<String>>>> patternIterator;
-      private Iterator<Entry<File, List<String>>> fileIterator;
-      private Iterator<String> listIterator;
-      private boolean more;
-      public String currentPattern;
-      public File currentFile;
-      public String currentRegion;
-
-      private FindResultsIterator() {
-         reset();
-      }
-
-      public void reset() {
-         this.more = true;
-         this.patternIterator = results.entrySet().iterator();
-         this.listIterator = null;
-         this.fileIterator = null;
-      }
-
-      // assumption every the list and file itorator's will have at least one item
-      private void primePump() {
-         if (listIterator == null || !listIterator.hasNext()) {
-            if (fileIterator == null || !fileIterator.hasNext()) {
-               if (!patternIterator.hasNext()) {
-                  more = false;
-                  return;
-               }
-               Map.Entry<String, HashMap<File, List<String>>> entry = patternIterator.next();
-               currentPattern = entry.getKey();
-               HashMap<File, List<String>> fileMatches = entry.getValue();
-               fileIterator = fileMatches.entrySet().iterator();
-            }
-            Map.Entry<File, List<String>> entry = fileIterator.next();
-            currentFile = entry.getKey();
-            List<String> list = entry.getValue();
-            listIterator = list.iterator();
-         }
-         currentRegion = listIterator.next();
-      }
-
-      public boolean hasNext() {
-         primePump();
-         return more;
-      }
+      return new FindResultsIterator(results);
    }
 
    /**

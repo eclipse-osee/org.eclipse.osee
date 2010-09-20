@@ -59,7 +59,7 @@ public class FunctionCallStats {
 
       String lastFileName = null;
       HashMap functions = new HashMap(1000);
-      for (FindResults.FindResultsIterator i = results.iterator(); i.hasNext();) {
+      for (FindResultsIterator i = results.iterator(); i.hasNext();) {
          String currentFileName = i.currentFile.getName();
 
          if (i.currentRegion != null) {

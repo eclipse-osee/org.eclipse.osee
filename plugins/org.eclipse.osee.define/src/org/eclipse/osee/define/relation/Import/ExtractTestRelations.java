@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.text.FindResults;
 import org.eclipse.osee.framework.jdk.core.text.tool.Find;
+import org.eclipse.osee.framework.jdk.core.text.tool.FindResultsIterator;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -56,7 +57,7 @@ public class ExtractTestRelations {
       app.find(999999, true);
       FindResults results = app.getResults();
 
-      for (FindResults.FindResultsIterator i = results.iterator(); i.hasNext();) {
+      for (FindResultsIterator i = results.iterator(); i.hasNext();) {
          try {
             addRelationToDatabaseIfNotAlreadyThere(AWorkspace.fileToIFile(i.currentFile), i.currentRegion);
          } catch (Exception ex) {
