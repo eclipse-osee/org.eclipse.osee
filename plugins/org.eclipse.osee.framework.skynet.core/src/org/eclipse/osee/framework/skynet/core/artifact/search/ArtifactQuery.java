@@ -434,13 +434,13 @@ public class ArtifactQuery {
     * @return a collection of the artifacts found or an empty collection if none are found
     */
    public static List<Artifact> getArtifactListFromAttributeKeywords(IOseeBranch branch, String queryString, boolean isMatchWordOrder, DeletionFlag deletionFlag, boolean isCaseSensitive, IAttributeType... attributeTypes) throws OseeCoreException {
-      SearchOptions options = new SearchOptions();
+      SearchRequest searchRequest = new SearchRequest(branch, queryString);
+      SearchOptions options = searchRequest.getOptions();
       options.setAttributeTypeFilter(attributeTypes);
       options.setCaseSensive(isCaseSensitive);
       options.setDeletedIncluded(deletionFlag);
       options.setMatchWordOrder(isMatchWordOrder);
 
-      SearchRequest searchRequest = new SearchRequest(branch, queryString);
       return new HttpArtifactQuery(searchRequest).getArtifacts(FULL, INCLUDE_CACHE);
    }
 
