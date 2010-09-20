@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2010 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,24 +8,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.test;
+package org.eclipse.osee.framework.core.test.exception;
 
-import org.eclipse.osee.framework.core.test.enums.EnumsTestSuite;
-import org.eclipse.osee.framework.core.test.exception.ExceptionTestSuite;
-import org.eclipse.osee.framework.core.test.internal.InternalCoreTestSuite;
-import org.eclipse.osee.framework.core.test.util.UtilCoreTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({
-   EnumsTestSuite.class,
-   InternalCoreTestSuite.class,
-   UtilCoreTestSuite.class,
-   ExceptionTestSuite.class})
+@Suite.SuiteClasses({OseeCoreExceptionTest.class})
 /**
- * @author Roberto E. Escobar
+ * @author Ryan D. Brooks
  */
-public class FrameworkCoreTestSuite {
+public class ExceptionTestSuite {
    // Test Suite Class
 }

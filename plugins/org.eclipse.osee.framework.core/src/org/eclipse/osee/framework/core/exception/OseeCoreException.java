@@ -29,8 +29,9 @@ public class OseeCoreException extends CoreException {
       try {
          return String.format(message, args);
       } catch (RuntimeException ex) {
-         return String.format("exception message could not be formatted: [%s] with the following arguments [%s]",
-            message, Collections.toString(",", args));
+         return String.format(
+            "Exception message could not be formatted: [%s] with the following arguments [%s].  Cause [%s]", message,
+            Collections.toString(",", args), ex.toString());
       }
    }
 
