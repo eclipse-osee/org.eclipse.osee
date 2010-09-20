@@ -32,24 +32,6 @@
 		<delete>
 			<fileset dir="${eclipse-home}" includes="org.eclipse.osee.client.integration.tests*.xml, org.eclipse.osee.client.integration.tests.MasterTestSuite_DemoIntegrationSuite*.xml" />
 		</delete>
-
-		<echo message="extraVMargs: [${extraVMargs}]" />
-		<for param="argline" delimiter=" -D" list="${extraVMargs}" trim="true">
-			<sequential>
-				<propertyregex property="argName" override="true" input="@{argline}" regexp="(.*?)=" select="\1" casesensitive="false" />
-				<propertyregex property="argValue" override="true" input="@{argline}" regexp="=(.*)" select="\1" casesensitive="false" />
-				<echo message="Found arg - [${argName}]=[${argValue}]" />
-				<property name="${argName}" value="${argValue}" />
-			</sequential>
-		</for>
-
-		<property name="osee.app.server.data" value="${osee.app.server.home}/${eclipse-home}/testWorkspace/serverBinData" />
-		<property name="osee.app.server.connectionFile" value="${osee.app.server.home}/derbyTestConnection.xml" />
-		<property name="osee.app.server.connectionId" value="DerbyTestId" />
-
-		<echo message="Osee Application Server Home: [${osee.app.server.home}]" />
-		<echo message="Osee Application Server Port: [${osee.app.server.port}]" />
-		<echo message="Osee Application Server Derby Port: [${osee.app.server.derby.port}]" />
 	</target>
 
 	<!-- This target defines the tests that need to be run. -->
@@ -57,42 +39,7 @@
 		<property name="testWorkspace" value="${eclipse-home}/testWorkspace" />
 		<delete dir="${testWorkspace}" quiet="true" />
 
-		<writeConnectionFile connectionfilepath="${osee.app.server.connectionFile}" connectionid="${osee.app.server.connectionId}" dbServerPort="${osee.app.server.derby.port}" />
-
-		<pathconvert property="launcherJarPath" setonempty="false">
-			<path>
-				<fileset dir="${osee.app.server.home}/plugins">
-					<include name="org.eclipse.equinox.launcher_*.jar" />
-				</fileset>
-			</path>
-		</pathconvert>
-
-
-		<forget>
-			<echo message="Launching Osee Application Server..." />
-			<java taskname="build" jvm="${JAVA_HOME}/bin/java" failonerror="true" maxmemory="1024m" timeout="10800000" jar="${launcherJarPath}" fork="true">
-				<!-- spawn="true" to outlive ant
-				<syspropertyset>
-					<propertyref builtin="all" />
-				</syspropertyset> 
-				-->
-				<classpath>
-					<fileset dir="${osee.app.server.home}/plugins" includes="org.eclipse.equinox.launcher_*.jar" />
-					<pathelement location="${osee.app.server.home}/plugins" />
-				</classpath>
-				<jvmarg line=" -Dorg.osgi.service.http.port=${osee.app.server.port}" />
-				<jvmarg line=" -Dosee.db.connection.id=${osee.app.server.connectionId}" />
-				<jvmarg line=" -Dosee.derby.server=127.0.0.1:${osee.app.server.derby.port}" />
-				<jvmarg line=" -Dosee.connection.info.uri=${osee.app.server.connectionFile}" />
-				<jvmarg line=" -Dosee.application.server.data=${osee.app.server.data}" />
-				<jvmarg line=" -Dosee.check.tag.queue.on.startup=false" />
-				<arg line=" -console -consoleLog" />
-			</java>
-		</forget>
-
-		<waitfor maxwait="1" maxwaitunit="minute" checkevery="100" checkeveryunit="millisecond">
-			<http url="http://localhost:${osee.app.server.port}" />
-		</waitfor>
+		<ant antfile="${basedir}/testAppServerLaunch.xml" target="run" inheritall="true" inheritrefs="true" />
 
 		<!-- <ant target="swtbot-test" antfile="${library-file}" dir="${eclipse-home}"> -->
 		<ant target="ui-test" antfile="${library-file}" dir="${eclipse-home}" inheritall="true" inheritrefs="true">
@@ -122,44 +69,4 @@
 			<property name="output-file" value="${plugin-name}.xml" />
 		</ant>
 	</target>
-
-
-	<macrodef name="writeConnectionFile">
-		<attribute name="connectionId" />
-		<attribute name="dbServerPort" />
-		<attribute name="connectionFilePath" />
-		<sequential>
-			<echo file="@{connectionFilePath}">
-&lt;DbConnection&gt;${line.separator}
-&lt;DatabaseInfo id=&quot;DerbyServer&quot;&gt;${line.separator}
-&lt;DatabaseHome key=&quot;#DBHOME#&quot; /&gt;${line.separator}
-&lt;DatabaseName key=&quot;#DBNAME#&quot; value=&quot;DerbyDatabase&quot; /&gt;${line.separator}
-&lt;DatabaseType key=&quot;#TYPE#&quot; value=&quot;derby&quot; /&gt;${line.separator}
-&lt;Prefix key=&quot;#PREFIX#&quot; value=&quot;jdbc:derby&quot; /&gt;${line.separator}
-&lt;UserName key=&quot;#USERNAME#&quot; value=&quot;osee&quot; /&gt;${line.separator}
-&lt;Password key=&quot;#PASSWORD#&quot; value=&quot;oseeadmin&quot; /&gt;${line.separator}
-&lt;Host key=&quot;#HOST#&quot; value=&quot;@AvailableDbServices.hostAddress&quot; /&gt;${line.separator}
-&lt;Port key=&quot;#PORT#&quot; value=&quot;@AvailableDbServices.port&quot; /&gt;${line.separator}
-&lt;/DatabaseInfo&gt;${line.separator}
-${line.separator}
-&lt;ConnectionDescription id=&quot;NetDerbyClient&quot;&gt;${line.separator}
-&lt;Driver&gt;org.apache.derby.jdbc.ClientDriver&lt;/Driver&gt;${line.separator}
-&lt;Url&gt;#PREFIX#://#HOST#:#PORT#/#DBHOME##DBNAME#;&lt;/Url&gt;${line.separator}
-&lt;UrlAttributes&gt;${line.separator}
-&lt;Entry&gt;create=true&lt;/Entry&gt;${line.separator}
-&lt;/UrlAttributes&gt;${line.separator}
-&lt;/ConnectionDescription&gt;${line.separator}
-&lt;AvailableDbServices&gt;${line.separator}
-&lt;Server ${line.separator}
-id=&quot;@{connectionId}&quot; ${line.separator} 
-dbInfo=&quot;DerbyServer&quot; ${line.separator}
-hostAddress=&quot;127.0.0.1&quot; ${line.separator}
-port=&quot;@{dbServerPort}&quot; ${line.separator}
-connectsWith=&quot;NetDerbyClient&quot; /&gt;${line.separator}
-&lt;/AvailableDbServices&gt;${line.separator}
-&lt;/DbConnection&gt;${line.separator}
-</echo>
-		</sequential>
-	</macrodef>
-
 </project>

@@ -1,0 +1,151 @@
+<?xml version="1.0"?>
+<project name="Test OSEE Application Server Launcher" default="run" basedir=".">
+
+	<!--
+	${extraVMargs}
+
+	$osee.db.name=psql.osee.eclipse.org \
+   $osee.db.user=osee.eclipse \
+   $osee.db.passwd=osee.eclipse \
+   $osee.db.address=127.0.0.1 \
+   $osee.db.port=1623 \
+   $osee.db.is.derby=false \
+
+	${osee.app.server.home}	
+	${osee.app.server.port}
+	-->
+
+	<target name="init">
+		<echo message="extraVMargs: [${extraVMargs}]" />
+
+		<for param="argline" delimiter=" -D" list="${extraVMargs}" trim="true">
+			<sequential>
+				<propertyregex property="argName" override="true" input="@{argline}" regexp="(.*?)=" select="\1" casesensitive="false" />
+				<propertyregex property="argValue" override="true" input="@{argline}" regexp="=(.*)" select="\1" casesensitive="false" />
+				<echo message="Found arg - [${argName}]=[${argValue}]" />
+				<property name="${argName}" value="${argValue}" />
+			</sequential>
+		</for>
+
+		<condition property="isDerbyLaunch">
+			<equals arg1="${osee.db.is.derby}" arg2="true" casesensitive="false" />
+		</condition>
+
+		<property name="osee.app.server.data" value="${osee.app.server.home}/${eclipse-home}/testWorkspace/serverBinData" />
+		<property name="osee.app.server.connectionFile" value="${osee.app.server.home}/test.osee.client.db.connection.xml" />
+		<property name="osee.app.server.connectionId" value="test.osee.client.db.connection.id" />
+
+		<echo message="Osee Application Server Home: [${osee.app.server.home}]" />
+		<echo message="Osee Application Server Port: [${osee.app.server.port}]" />
+		<echo message="Osee Application Server Is Derby: [${isDerbyLaunch}]" />
+	</target>
+
+	<target name="writePosgresqlConnectionFile" unless="isDerbyLaunch">
+		<writeConnectionFile 
+			dbType="postgresql" 
+			dbPrefix="jdbc:postgresql" 
+			dbDriver="postgresqlDriver"
+			dbName="${osee.db.name}" 
+			dbUser="${osee.db.user}" 
+			dbPasswd="${osee.db.passwd}" 
+			dbAddress="${osee.db.address}" 
+			dbPort="${osee.db.port}" 
+			connectionFilePath="${osee.app.server.connectionFile}" 
+			connectionid="${osee.app.server.connectionId}" />
+		<property name="additionalJvmArgs" value=" " />
+	</target>
+
+	<target name="writeDerbyConnectionFile" if="isDerbyLaunch">
+		<writeConnectionFile 
+			dbType="derby"
+			dbPrefix="jdbc:derby" 
+			dbDriver="netDerbyClientDriver" 
+			dbName="${osee.db.name}" 
+			dbUser="${osee.db.user}" 
+			dbPasswd="${osee.db.passwd}" 
+			dbAddress="${osee.db.address}" 
+			dbPort="${osee.db.port}" 
+			connectionFilePath="${osee.app.server.connectionFile}" 
+			connectionid="${osee.app.server.connectionId}" />
+		<property name="additionalJvmArgs" value=" -Dosee.derby.server=${osee.db.address}:${osee.db.port}" />
+	</target>
+
+	<target name="run" depends="init,writePosgresqlConnectionFile,writeDerbyConnectionFile,launchServer" />
+
+	<target name="launchServer">
+		<pathconvert property="launcherJarPath" setonempty="false">
+			<path>
+				<fileset dir="${osee.app.server.home}/plugins">
+					<include name="org.eclipse.equinox.launcher_*.jar" />
+				</fileset>
+			</path>
+		</pathconvert>
+		<forget>
+			<echo message="Launching Osee Application Server..." />
+			<java taskname="build" jvm="${JAVA_HOME}/bin/java" failonerror="true" maxmemory="1024m" timeout="10800000" jar="${launcherJarPath}" fork="true">
+				<classpath>
+					<fileset dir="${osee.app.server.home}/plugins" includes="org.eclipse.equinox.launcher_*.jar" />
+					<pathelement location="${osee.app.server.home}/plugins" />
+				</classpath>
+				<jvmarg line=" -Dorg.osgi.service.http.port=${osee.app.server.port}" />
+				<jvmarg line=" -Dosee.db.connection.id=${osee.app.server.connectionId}" />
+				<jvmarg line=" -Dosee.connection.info.uri=${osee.app.server.connectionFile}" />
+				<jvmarg line=" -Dosee.application.server.data=${osee.app.server.data}" />
+				<jvmarg line="${additionalJvmArgs}" />
+				<jvmarg line=" -Dosee.check.tag.queue.on.startup=false" />
+				<arg line=" -console -consoleLog" />
+			</java>
+		</forget>
+
+		<waitfor maxwait="1" maxwaitunit="minute" checkevery="100" checkeveryunit="millisecond">
+			<http url="http://127.0.0.1:${osee.app.server.port}" />
+		</waitfor>
+	</target>
+
+	<macrodef name="writeConnectionFile">
+		<attribute name="dbName" />
+		<attribute name="dbUser" />
+		<attribute name="dbPasswd" />
+		<attribute name="dbType" />
+		<attribute name="dbPrefix" />
+		<attribute name="dbDriver" />
+		<attribute name="dbAddress" />
+		<attribute name="dbPort" />
+		<attribute name="connectionId" />
+		<attribute name="connectionFilePath" />
+		<sequential>
+			<echo file="@{connectionFilePath}">
+				&lt;DatabaseInfo id=&quot;dbConnectionInfo&quot;&gt;${line.separator}
+					&lt;DatabaseHome key=&quot;#DBHOME#&quot; /&gt;${line.separator}
+					&lt;DatabaseName key=&quot;#DBNAME#&quot; value=&quot;@{dbName}&quot; /&gt;${line.separator}
+					&lt;DatabaseType key=&quot;#TYPE#&quot; value=&quot;@{dbType}&quot; /&gt;${line.separator}
+					&lt;Prefix key=&quot;#PREFIX#&quot; value=&quot;@{dbPrefix}&quot; /&gt;${line.separator}
+					&lt;UserName key=&quot;#USERNAME#&quot; value=&quot;@{dbUser}&quot; /&gt;${line.separator}
+					&lt;Password key=&quot;#PASSWORD#&quot; value=&quot;@{dbPasswd}&quot; /&gt;${line.separator}
+					&lt;Host key=&quot;#HOST#&quot; value=&quot;@AvailableDbServices.hostAddress&quot; /&gt;${line.separator}
+					&lt;Port key=&quot;#PORT#&quot; value=&quot;@AvailableDbServices.port&quot; /&gt;${line.separator}
+				&lt;/DatabaseInfo&gt;${line.separator}
+				${line.separator}
+				&lt;ConnectionDescription id=&quot;postgresqlDriver&quot;&gt;${line.separator}
+					&lt;Driver&gt;org.postgresql.Driver&lt;/Driver&gt;${line.separator}
+					&lt;Url&gt;#PREFIX#://#HOST#:#PORT#/#DBHOME##DBNAME#&lt;/Url&gt;${line.separator}
+				&lt;/ConnectionDescription$gt;${line.separator}
+				${line.separator}
+				&lt;ConnectionDescription id=&quot;netDerbyClientDriver&quot;&gt;${line.separator}
+					&lt;Driver&gt;org.apache.derby.jdbc.ClientDriver&lt;/Driver&gt;${line.separator}
+					&lt;Url&gt;#PREFIX#://#HOST#:#PORT#/#DBHOME##DBNAME#;&lt;/Url&gt;${line.separator}
+					&lt;UrlAttributes&gt;${line.separator}
+						&lt;Entry&gt;create=true&lt;/Entry&gt;${line.separator}
+					&lt;/UrlAttributes&gt;${line.separator}
+				&lt;/ConnectionDescription&gt;${line.separator}
+			</echo>
+
+			<echo file="@{connectionFilePath}" append="true">
+				${line.separator}${line.separator}
+				&lt;AvailableDbServices&gt;${line.separator}
+					&lt;Server id=&quot;@{connectionId}&quot; dbInfo=&quot;dbConnectionInfo&quot; connectsWith=&quot;@{dbDriver}&quot; hostAddress=&quot;@{dbAddress}&quot; port=&quot;@{dbPort}&quot; /&gt;${line.separator}
+				&lt;/AvailableDbServices&gt;${line.separator}
+			</echo>
+		</sequential>
+	</macrodef>
+</project>

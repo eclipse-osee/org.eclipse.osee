@@ -7,15 +7,49 @@
 
 	<target name="getTestDependencies">
 		<property name="oseeServerRuntimeDir" value="${testBase}/${buildLabel}/testing/oseeServerRuntime" />
-		
+
 		<echo message="Osee Application Server Snapshot: [${oseeAppServerURL}]" />
 		<echo message="Osee Application Server Runtime Dir: [${oseeServerRuntimeDir}]" />
-		
+
 		<get src="${oseeAppServerURL}" dest="${downloadsDir}/osee_app_server.zip" usetimestamp="true" />
 		<touch file="${downloadsDir}/osee_app_server.zip" />
 		<mkdir dir="${oseeServerRuntimeDir}" />
 		<unzip src="${downloadsDir}/osee_app_server.zip" dest="${oseeServerRuntimeDir}" overwrite="true">
 			<patternset excludes="*.sh,*.pl" />
 		</unzip>
+
+		<get src="http://osee-external.googlecode.com/files/postgresql_0.9.1_incubation.zip" usetimestamp="true" />
+		<touch file="${downloadsDir}/postgresql_0.9.1_incubation.zip" />
+		<mkdir dir="${downloadsDir}/tmp_postgresqlfeature" />
+		<unzip src="${downloadsDir}/postgresql_0.9.1_incubation.zip" dest="${downloadsDir}/tmp_postgresqlfeature" overwrite="true" />
+
+		<copy todir="${oseeServerRuntimeDir}/plugins">
+			<fileset dir="${downloadsDir}/tmp_postgresqlfeature/plugins">
+				<include name="**" />
+			</fileset>
+		</copy>
+
+		<pathconvert property="pgsqlBundles" pathsep=";">
+			<path>
+				<fileset dir="${downloadsDir}/tmp_postgresqlfeature/plugins">
+					<include name="**" />
+				</fileset>
+			</path>
+		</pathconvert>
+
+		<property name="serverConfigIniPath" value="${oseeServerRuntimeDir}/configuration/config.ini" />
+		<loadfile srcfile="${serverConfigIniPath}" property="originalConfig" failonerror="true" />
+		<move file="${serverConfigIniPath}" tofile="${oseeServerRuntimeDir}/configuration/original_config.ini" />
+
+		<echo file="${serverConfigIniPath}" message="osgi.bundles= \${line.separator}\${line.separator}" append="false" />
+		<for param="bundle" delimiter=";" list="${pgsqlBundles}" trim="true">
+			<sequential>
+				<propertyregex property="projectAndVersion" override="true" input="@{bundle}" regexp="[^${file.separator}]+$" select="\0" casesensitive="false" />
+				<propertyregex property="projectName" override="true" input="${projectAndVersion}" regexp="(.*?)_" select="\1" casesensitive="false" />
+				<echo file="${serverConfigIniPath}" message="${projectName}@start, \${line.separator}" append="true" />
+			</sequential>
+		</for>
+		<propertyregex property="modifiedConfigIni" override="true" input="${originalConfig}" regexp="osgi\.bundles= \\${line.separator}\\" replace="" casesensitive="false" />
+		<echo file="${serverConfigIniPath}" message="${modifiedConfigIni}" append="true" />
 	</target>
 </project>
