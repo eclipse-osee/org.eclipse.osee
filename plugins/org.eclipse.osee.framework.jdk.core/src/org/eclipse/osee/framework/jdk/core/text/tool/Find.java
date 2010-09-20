@@ -58,6 +58,10 @@ public class Find {
       this.matcherUsed = new boolean[matchers.length];
    }
 
+   public Find(Collection<String> patterns, Collection<File> files) {
+      this(patterns, files, simpleToBuffer);
+   }
+
    private static FileToBufferConvert simpleToBuffer = new SimpleFileToBufferConvert();
 
    private static ArrayList<String> toList(String pattern) {
@@ -67,8 +71,7 @@ public class Find {
    }
 
    public Find(String pattern, File topLevelSearchDir, String fileNamePattern) {
-      this(toList(pattern), Lib.recursivelyListFiles(topLevelSearchDir, Pattern.compile(fileNamePattern)),
-         simpleToBuffer);
+      this(toList(pattern), Lib.recursivelyListFiles(topLevelSearchDir, Pattern.compile(fileNamePattern)));
    }
 
    public static void main(String[] args) throws IOException {
