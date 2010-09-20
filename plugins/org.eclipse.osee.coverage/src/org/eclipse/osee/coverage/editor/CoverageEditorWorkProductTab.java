@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.osee.coverage.action.IRefreshable;
 import org.eclipse.osee.coverage.action.OpenMultipleWorkProductsAction;
 import org.eclipse.osee.coverage.action.RemoveRelatedWorkProductAction;
 import org.eclipse.osee.coverage.internal.Activator;
@@ -25,6 +24,7 @@ import org.eclipse.osee.coverage.store.CoverageArtifactTypes;
 import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.ISaveable;
+import org.eclipse.osee.coverage.util.WorkProductActionLabelProvider;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -35,7 +35,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.plugin.util.StringLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.cm.IOseeCmService;
@@ -58,7 +57,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 /**
  * @author Donald G. Dunne
  */
-public class CoverageEditorWorkProductTab extends FormPage implements ISaveable, IRefreshable {
+public class CoverageEditorWorkProductTab extends FormPage implements ISaveable {
 
    private ScrolledForm scrolledForm;
    private final CoveragePackage coveragePackage;
@@ -158,7 +157,7 @@ public class CoverageEditorWorkProductTab extends FormPage implements ISaveable,
    private XListViewer createActionListViewer(Composite parent) {
       actionListViewer = new XListViewer("Drag in Actions related to changing work products");
       actionListViewer.setContentProvider(new ArrayContentProvider());
-      actionListViewer.setLabelProvider(new StringLabelProvider());
+      actionListViewer.setLabelProvider(new WorkProductActionLabelProvider());
       actionListViewer.createWidgets(parent, 2);
       coverageEditor.getToolkit().adapt(actionListViewer.getTable());
       coverageEditor.getToolkit().adapt(actionListViewer.getLabelWidget(), true, true);
@@ -213,18 +212,6 @@ public class CoverageEditorWorkProductTab extends FormPage implements ISaveable,
 
    public CoveragePackage getCoveragePackage() {
       return coveragePackage;
-   }
-
-   @Override
-   public void refresh(Object element) {
-   }
-
-   @Override
-   public void update(Object element) {
-   }
-
-   @Override
-   public void remove(Object element) {
    }
 
 }

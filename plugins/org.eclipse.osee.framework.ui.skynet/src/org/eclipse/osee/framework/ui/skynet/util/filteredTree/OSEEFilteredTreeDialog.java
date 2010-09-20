@@ -58,6 +58,10 @@ public abstract class OSEEFilteredTreeDialog<T> extends MessageDialog {
       // provided for subclass implementation
    }
 
+   protected void createPostCustomArea(Composite parent) {
+      // provided for subclass implementation
+   }
+
    /**
     * Sets the input. Convenience method.
     * 
@@ -132,6 +136,9 @@ public abstract class OSEEFilteredTreeDialog<T> extends MessageDialog {
       if (initialSelections != null) {
          updateInitialSelections(initialSelections);
       }
+
+      createPostCustomArea(parent);
+
       return parent;
    }
 

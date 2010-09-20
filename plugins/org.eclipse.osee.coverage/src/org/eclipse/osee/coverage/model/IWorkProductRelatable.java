@@ -10,4 +10,9 @@ public interface IWorkProductRelatable {
    public String getWorkProductGuid();
 
    public void setWorkProductGuid(String workProductGuid);
+
+   public WorkProductTask getWorkProductTask();
+
+   public void setWorkProductTask(WorkProductTask workProductTask);
+
 }

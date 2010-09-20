@@ -14,6 +14,9 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.coverage.editor.CoverageEditor;
 import org.eclipse.osee.coverage.editor.CoverageEditorInput;
+import org.eclipse.osee.coverage.event.CoverageEventManager;
+import org.eclipse.osee.coverage.event.CoverageEventType;
+import org.eclipse.osee.coverage.event.CoveragePackageEvent;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageOptionManagerDefault;
 import org.eclipse.osee.coverage.model.CoveragePackage;
@@ -59,8 +62,11 @@ public class NewCoveragePackageAction extends Action {
                new CoveragePackage(dialog.getEntry(), CoverageOptionManagerDefault.instance(),
                   new DbWorkProductTaskProvider(branch));
             SkynetTransaction transaction = new SkynetTransaction(branch, "Add Coverage Package");
-            OseeCoveragePackageStore.get(coveragePackage, branch).save(transaction);
+            CoveragePackageEvent coverageEvent =
+               new CoveragePackageEvent(coveragePackage, CoverageEventType.Added);
+            OseeCoveragePackageStore.get(coveragePackage, branch).save(transaction, coverageEvent);
             transaction.execute();
+            CoverageEventManager.getInstance().sendRemoteEvent(coverageEvent);
             CoverageEditor.open(new CoverageEditorInput(dialog.getEntry(), OseeCoveragePackageStore.get(
                coveragePackage, branch).getArtifact(false), coveragePackage, false));
          }

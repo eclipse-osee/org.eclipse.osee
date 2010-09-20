@@ -13,6 +13,8 @@ package org.eclipse.osee.coverage.test;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
 import java.util.Collection;
 import junit.framework.Assert;
+import org.eclipse.osee.coverage.event.CoverageEventType;
+import org.eclipse.osee.coverage.event.CoveragePackageEvent;
 import org.eclipse.osee.coverage.merge.IMergeItem;
 import org.eclipse.osee.coverage.merge.MergeImportManager;
 import org.eclipse.osee.coverage.merge.MergeItemGroup;
@@ -226,7 +228,7 @@ public class CoveragePackageImportTest {
          // Test Persist of CoveragePackage
          OseeCoverageStore store = OseeCoveragePackageStore.get(coveragePackage, commonBranch);
          SkynetTransaction transaction = new SkynetTransaction(commonBranch, "Coverage Package Save");
-         store.save(transaction);
+         store.save(transaction, getTestCoveragePackageEvent());
          transaction.execute();
 
          // Test Load of Coverage Package
@@ -336,7 +338,7 @@ public class CoveragePackageImportTest {
          // Test Persist of CoveragePackage
          OseeCoverageStore store = OseeCoveragePackageStore.get(coveragePackage, commonBranch);
          SkynetTransaction transaction = new SkynetTransaction(commonBranch, "Coverage Package Save");
-         store.save(transaction);
+         store.save(transaction, getTestCoveragePackageEvent());
          transaction.execute();
 
          // Test Load of Coverage Package
@@ -445,7 +447,7 @@ public class CoveragePackageImportTest {
          // Test Persist of CoveragePackage
          OseeCoverageStore store = OseeCoveragePackageStore.get(coveragePackage, commonBranch);
          SkynetTransaction transaction = new SkynetTransaction(commonBranch, "Coverage Package Save");
-         store.save(transaction);
+         store.save(transaction, getTestCoveragePackageEvent());
          transaction.execute();
 
          // Test Load of Coverage Package
@@ -561,7 +563,7 @@ public class CoveragePackageImportTest {
          // Test Persist of CoveragePackage
          OseeCoverageStore store = OseeCoveragePackageStore.get(coveragePackage, commonBranch);
          SkynetTransaction transaction = new SkynetTransaction(commonBranch, "Coverage Package Save");
-         store.save(transaction);
+         store.save(transaction, getTestCoveragePackageEvent());
          transaction.execute();
 
          // Test Load of Coverage Package
@@ -676,7 +678,7 @@ public class CoveragePackageImportTest {
          // Test Persist of CoveragePackage
          OseeCoverageStore store = OseeCoveragePackageStore.get(coveragePackage, commonBranch);
          SkynetTransaction transaction = new SkynetTransaction(commonBranch, "Coverage Package Save");
-         store.save(transaction);
+         store.save(transaction, getTestCoveragePackageEvent());
          transaction.execute();
 
          // Test Load of Coverage Package
@@ -805,7 +807,7 @@ public class CoveragePackageImportTest {
          // Test Persist of CoveragePackage
          OseeCoverageStore store = OseeCoveragePackageStore.get(coveragePackage, commonBranch);
          SkynetTransaction transaction = new SkynetTransaction(commonBranch, "Coverage Package Save");
-         store.save(transaction);
+         store.save(transaction, getTestCoveragePackageEvent());
          transaction.execute();
 
          // Test Load of Coverage Package
@@ -959,7 +961,7 @@ public class CoveragePackageImportTest {
          // Test Persist of CoveragePackage
          OseeCoverageStore store = OseeCoveragePackageStore.get(coveragePackage, commonBranch);
          SkynetTransaction transaction = new SkynetTransaction(commonBranch, "Coverage Package Save");
-         store.save(transaction);
+         store.save(transaction, getTestCoveragePackageEvent());
          transaction.execute();
 
          // Test Load of Coverage Package
@@ -1109,7 +1111,7 @@ public class CoveragePackageImportTest {
          // Test Persist of CoveragePackage
          OseeCoverageStore store = OseeCoveragePackageStore.get(coveragePackage, commonBranch);
          SkynetTransaction transaction = new SkynetTransaction(commonBranch, "Coverage Package Save");
-         store.save(transaction);
+         store.save(transaction, getTestCoveragePackageEvent());
          transaction.execute();
 
          // Test Load of Coverage Package
@@ -1230,7 +1232,7 @@ public class CoveragePackageImportTest {
          // Test Persist of CoveragePackage
          OseeCoverageStore store = OseeCoveragePackageStore.get(coveragePackage, commonBranch);
          SkynetTransaction transaction = new SkynetTransaction(commonBranch, "Coverage Package Save");
-         store.save(transaction);
+         store.save(transaction, getTestCoveragePackageEvent());
          transaction.execute();
 
          // Test Load of Coverage Package
@@ -1253,5 +1255,9 @@ public class CoveragePackageImportTest {
       Assert.assertEquals(70, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Test_Unit).size());
       Assert.assertEquals(64, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Not_Covered).size());
 
+   }
+
+   private CoveragePackageEvent getTestCoveragePackageEvent() {
+      return new CoveragePackageEvent(coveragePackage, CoverageEventType.Modified);
    }
 }

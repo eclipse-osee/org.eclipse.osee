@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.test.model;
 
+import org.eclipse.osee.coverage.event.CoverageEventType;
+import org.eclipse.osee.coverage.event.CoveragePackageEvent;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.CoverageOptionManagerDefault;
@@ -20,6 +22,7 @@ import org.eclipse.osee.coverage.test.util.CoverageTestUtil;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -94,8 +97,18 @@ public class CoverageItemPersistTest {
       Artifact artifact = new OseeCoverageUnitStore(parentCu, BranchManager.getCommonBranch()).getArtifact(true);
       Assert.assertNotNull(artifact);
       SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch(), "Save CoverageItem");
-      new OseeCoverageUnitStore(parentCu, BranchManager.getCommonBranch()).save(transaction);
+      CoveragePackageEvent coverageEvent =
+         new CoveragePackageEvent("Test CP", GUID.create(), CoverageEventType.Modified, GUID.create());
+      new OseeCoverageUnitStore(parentCu, BranchManager.getCommonBranch()).save(transaction, coverageEvent);
       transaction.execute();
+
+      // Not name/guid cause not attached to coverage package
+      Assert.assertNull(coverageEvent.getPackage().getGuid());
+      Assert.assertNull(coverageEvent.getPackage().getName());
+      Assert.assertNull(coverageEvent.getPackage().getEventType().equals(CoverageEventType.Modified));
+      Assert.assertEquals(10, coverageEvent.getCoverages().size());
+      Assert.assertEquals(CoverageEventType.Added,
+         coverageEvent.getCoverages().iterator().next().getEventType());
 
       Assert.assertEquals(10, ci.getTestUnits().size());
    }
@@ -119,7 +132,7 @@ public class CoverageItemPersistTest {
 
    /**
     * Test method for
-    * {@link org.eclipse.osee.coverage.model.CoverageItem#delete(org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction, boolean)}
+    * {@link org.eclipse.osee.coverage.model.CoverageItem#delete(org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction, coverageEvent, boolean)}
     * .
     */
    @Test
@@ -127,11 +140,16 @@ public class CoverageItemPersistTest {
       Artifact artifact = new OseeCoverageUnitStore(parentCu, BranchManager.getCommonBranch()).getArtifact(false);
       Assert.assertNotNull(artifact);
       SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch(), "Save CoverageItem");
-      new OseeCoverageUnitStore(parentCu, BranchManager.getCommonBranch()).delete(transaction, false);
+      CoveragePackageEvent coverageEvent =
+         new CoveragePackageEvent("Test CP", GUID.create(), CoverageEventType.Deleted, GUID.create());
+      new OseeCoverageUnitStore(parentCu, BranchManager.getCommonBranch()).delete(transaction, coverageEvent, false);
       transaction.execute();
       artifact = new OseeCoverageUnitStore(parentCu, BranchManager.getCommonBranch()).getArtifact(false);
       Assert.assertNull(artifact);
       Assert.assertEquals(0, CoverageTestUtil.getAllCoverageArtifacts().size());
+      Assert.assertEquals(10, coverageEvent.getCoverages().size());
+      Assert.assertEquals(CoverageEventType.Deleted,
+         coverageEvent.getCoverages().iterator().next().getEventType());
    }
 
 }

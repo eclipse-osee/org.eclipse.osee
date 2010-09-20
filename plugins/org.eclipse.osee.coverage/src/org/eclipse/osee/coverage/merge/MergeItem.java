@@ -186,7 +186,7 @@ public class MergeItem extends MergeItemBase {
    }
 
    @Override
-   public String getWorkProductTask() {
+   public String getWorkProductTaskStr() {
       return "";
    }
 

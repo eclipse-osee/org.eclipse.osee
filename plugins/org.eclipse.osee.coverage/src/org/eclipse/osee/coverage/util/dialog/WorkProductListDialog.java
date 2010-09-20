@@ -12,8 +12,8 @@ package org.eclipse.osee.coverage.util.dialog;
 
 import java.util.Collection;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.osee.coverage.util.WorkProductActionLabelProvider;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
@@ -41,12 +41,7 @@ public class WorkProductListDialog extends org.eclipse.ui.dialogs.ListDialog {
             // do nothing
          }
       });
-      setLabelProvider(new LabelProvider() {
-         @Override
-         public String getText(Object element) {
-            return element.toString();
-         }
-      });
+      setLabelProvider(new WorkProductActionLabelProvider());
 
    }
 }

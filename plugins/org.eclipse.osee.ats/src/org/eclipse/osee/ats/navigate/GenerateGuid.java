@@ -27,7 +27,11 @@ public class GenerateGuid extends XNavigateItemAction {
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
       XResultData resultData = new XResultData();
       for (int x = 0; x < 20; x++) {
-         resultData.log(GUID.create());
+         String guid = GUID.create();
+         while (guid.contains("+")) {
+            guid = GUID.create();
+         }
+         resultData.log(guid);
       }
       resultData.report("GUIDs");
    }

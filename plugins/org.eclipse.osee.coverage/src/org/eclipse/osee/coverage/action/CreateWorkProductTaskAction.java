@@ -19,17 +19,21 @@ import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.model.IWorkProductRelatable;
 import org.eclipse.osee.coverage.model.WorkProductAction;
+import org.eclipse.osee.coverage.model.WorkProductTask;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.coverage.util.dialog.WorkProductListDialog;
+import org.eclipse.osee.coverage.util.dialog.WorkProductTaskFilteredTreeEntryDialog;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.cm.IOseeCmService;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
@@ -42,7 +46,7 @@ public class CreateWorkProductTaskAction extends Action {
    private final CoverageXViewer coverageXViewer;
 
    public CreateWorkProductTaskAction(CoverageXViewer coverageXViewer, ISelectedCoverageEditorItem selectedCoverageEditorItem, ISaveable saveable) {
-      super("Create Work Product Task");
+      super("Create/Update Work Product Task");
       this.coverageXViewer = coverageXViewer;
       this.selectedCoverageEditorItem = selectedCoverageEditorItem;
       this.saveable = saveable;
@@ -81,24 +85,35 @@ public class CreateWorkProductTaskAction extends Action {
          return;
       }
 
-      WorkProductListDialog dialog = new WorkProductListDialog(getText(), "Select Work Product to add task");
+      WorkProductListDialog dialog = new WorkProductListDialog(getText(), "Select Work Product");
       dialog.setInput(coverageXViewer.getWorkProductTaskProvider().getWorkProductRelatedActions());
       if (dialog.open() != 0) {
          return;
       }
       WorkProductAction action = (WorkProductAction) dialog.getResult()[0];
-      EntryDialog eDialog = new EntryDialog(getText(), "Enter Task Title");
-      if (eDialog.open() != 0) {
-         return;
-      }
-      String taskTitle = eDialog.getEntry();
-      Artifact newTaskArt = cm.createWorkTask(taskTitle, action.getGuid());
-      if (newTaskArt == null) {
-         AWorkbench.popup("Unable to create new Work Product task.");
+
+      WorkProductTaskFilteredTreeEntryDialog taskDialog =
+         new WorkProductTaskFilteredTreeEntryDialog(getText(), "Select existing task or enter new task name",
+            "New Task Name");
+      taskDialog.setInput(action.getTasks());
+      if (taskDialog.open() != 0) {
          return;
       }
 
       try {
+         String taskTitle = taskDialog.getEntryValue();
+         Artifact newTaskArt = null;
+         if (Strings.isValid(taskTitle)) {
+            newTaskArt = cm.createWorkTask(taskTitle, action.getGuid());
+         } else {
+            WorkProductTask task = taskDialog.getSelection();
+            newTaskArt = ArtifactQuery.getArtifactFromId(task.getGuid(), BranchManager.getCommonBranch());
+         }
+         if (newTaskArt == null) {
+            AWorkbench.popup("Unable to create new Work Product task.");
+            return;
+         }
+
          for (ICoverage coverage : relateableCoverageItems) {
             if (coverage instanceof IWorkProductRelatable) {
                ((IWorkProductRelatable) coverage).setWorkProductGuid(newTaskArt.getGuid());
@@ -106,6 +121,15 @@ public class CreateWorkProductTaskAction extends Action {
          }
          newTaskArt.persist(getText());
          saveable.save(relateableCoverageItems);
+
+         coverageXViewer.getWorkProductTaskProvider().reload();
+         for (ICoverage coverage : relateableCoverageItems) {
+            if (coverage instanceof IWorkProductRelatable) {
+               ((IWorkProductRelatable) coverage).setWorkProductTask(coverageXViewer.getWorkProductTaskProvider().getWorkProductTask(
+                  newTaskArt.getGuid()));
+               coverageXViewer.update(coverage);
+            }
+         }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }

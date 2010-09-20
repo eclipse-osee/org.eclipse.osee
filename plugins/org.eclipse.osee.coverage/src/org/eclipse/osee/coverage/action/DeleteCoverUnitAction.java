@@ -15,11 +15,16 @@ import java.util.List;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.coverage.event.CoverageEventManager;
+import org.eclipse.osee.coverage.event.CoverageEventType;
+import org.eclipse.osee.coverage.event.CoveragePackageEvent;
 import org.eclipse.osee.coverage.internal.Activator;
+import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.model.ICoverageUnitProvider;
 import org.eclipse.osee.coverage.store.OseeCoverageUnitStore;
+import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -72,16 +77,21 @@ public class DeleteCoverUnitAction extends Action {
          try {
             SkynetTransaction transaction =
                new SkynetTransaction(saveable.getBranch(), "Coverage - Delete Coverage Unit");
+            ICoverage coverage = selectedCoverageEditorItem.getSelectedCoverageEditorItems().iterator().next();
+            CoveragePackage coveragePackage = (CoveragePackage) CoverageUtil.getParentCoveragePackageBase(coverage);
+            CoveragePackageEvent coverageEvent =
+               new CoveragePackageEvent(coveragePackage, CoverageEventType.Modified);
             List<ICoverage> deleteItems = new ArrayList<ICoverage>();
             for (ICoverage coverageItem : selectedCoverageEditorItem.getSelectedCoverageEditorItems()) {
                if (coverageItem.getParent() instanceof ICoverageUnitProvider) {
                   ((ICoverageUnitProvider) coverageItem.getParent()).removeCoverageUnit((CoverageUnit) coverageItem);
                   deleteItems.add(coverageItem);
                   new OseeCoverageUnitStore((CoverageUnit) coverageItem, saveable.getBranch()).delete(transaction,
-                     false);
+                     coverageEvent, false);
                }
             }
             transaction.execute();
+            CoverageEventManager.getInstance().sendRemoteEvent(coverageEvent);
             for (ICoverage coverageItem : deleteItems) {
                refreshable.remove(coverageItem);
             }

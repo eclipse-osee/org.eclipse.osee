@@ -74,7 +74,7 @@ public class CoveragePackage extends CoveragePackageBase {
    }
 
    @Override
-   public String getWorkProductTask() {
+   public String getWorkProductTaskStr() {
       return "";
    }
 

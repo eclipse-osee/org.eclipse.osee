@@ -54,6 +54,7 @@ public class OseeApplicationServer {
    private static final String ApplicationServer = "Application Server";
 
    private OseeApplicationServer() {
+      // private constructor
    }
 
    public static String getOseeApplicationServer() throws OseeCoreException {

@@ -13,14 +13,20 @@ package org.eclipse.osee.ats.internal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.ats.actions.wizard.NewActionJob;
+import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
+import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorSimpleProvider;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -29,6 +35,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.cm.IOseeCmService;
 import org.eclipse.osee.framework.ui.skynet.cm.OseeCmEditor;
+import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
 /**
@@ -108,5 +115,40 @@ public class OseeAtsServiceImpl implements IOseeCmService {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return null;
+   }
+
+   @Override
+   public Artifact createPcr(String title, String description, String changeType, String priority, Date needByDate, Collection<String> productNames) {
+      try {
+         ChangeType cType = ChangeType.getChangeType(changeType);
+         if (cType == null) {
+            cType = ChangeType.Improvement;
+         }
+         PriorityType pType = PriorityType.getPriority(priority);
+         if (pType == null) {
+            pType = PriorityType.None;
+         }
+         Set<ActionableItemArtifact> aias = ActionableItemArtifact.getActionableItems(productNames);
+         if (aias.size() == 0) {
+            throw new OseeArgumentException("Can not resolve productNames to Actionable Items");
+         }
+         NewActionJob job = new NewActionJob(title, description, cType, pType, needByDate, false, aias, null);
+         job.schedule();
+         job.join();
+         return job.getActionArt();
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      }
+      return null;
+   }
+
+   @Override
+   public KeyedImage getImage(ImageType imageType) {
+      if (imageType == ImageType.Pcr) {
+         return AtsImage.TEAM_WORKFLOW;
+      } else if (imageType == ImageType.Task) {
+         return AtsImage.TASK;
+      }
+      return AtsImage.ACTION;
    }
 }

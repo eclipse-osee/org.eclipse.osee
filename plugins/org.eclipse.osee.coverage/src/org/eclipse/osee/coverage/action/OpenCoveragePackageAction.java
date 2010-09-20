@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
@@ -54,6 +55,10 @@ public class OpenCoveragePackageAction extends Action {
             new CoveragePackageArtifactListDialog("Open Coverage Package", "Select Coverage Package");
          dialog.setInput(OseeCoveragePackageStore.getCoveragePackageArtifacts(branch));
          if (dialog.open() == 0) {
+            if (dialog.getResult().length == 0) {
+               AWorkbench.popup("Must select coverage package.");
+               return;
+            }
             Artifact coveragePackageArtifact = (Artifact) dialog.getResult()[0];
             CoverageEditor.open(new CoverageEditorInput(coveragePackageArtifact.getName(), coveragePackageArtifact,
                null, false));

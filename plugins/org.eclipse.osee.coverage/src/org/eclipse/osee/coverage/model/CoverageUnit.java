@@ -40,6 +40,7 @@ public class CoverageUnit extends NamedIdentity implements IWorkProductRelatable
    String location;
    String orderNumber = "";
    String workProductGuid;
+   WorkProductTask workProductTask;
    final List<CoverageUnit> coverageUnits = new ArrayList<CoverageUnit>();
    ICoverage parent;
    ICoverageUnitFileContentsProvider fileContentsProvider;
@@ -357,7 +358,10 @@ public class CoverageUnit extends NamedIdentity implements IWorkProductRelatable
    }
 
    @Override
-   public String getWorkProductTask() {
+   public String getWorkProductTaskStr() {
+      if (getWorkProductTask() != null) {
+         return getWorkProductTask().toString();
+      }
       if (Strings.isValid(workProductGuid)) {
          return workProductGuid;
       }
@@ -372,6 +376,16 @@ public class CoverageUnit extends NamedIdentity implements IWorkProductRelatable
    @Override
    public void setWorkProductGuid(String workProductGuid) {
       this.workProductGuid = workProductGuid;
+   }
+
+   @Override
+   public WorkProductTask getWorkProductTask() {
+      return workProductTask;
+   }
+
+   @Override
+   public void setWorkProductTask(WorkProductTask workProductTask) {
+      this.workProductTask = workProductTask;
    }
 
 }

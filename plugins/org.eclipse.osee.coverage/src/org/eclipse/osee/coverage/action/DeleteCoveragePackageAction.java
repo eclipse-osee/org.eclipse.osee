@@ -12,6 +12,9 @@ package org.eclipse.osee.coverage.action;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.coverage.event.CoverageEventManager;
+import org.eclipse.osee.coverage.event.CoverageEventType;
+import org.eclipse.osee.coverage.event.CoveragePackageEvent;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
@@ -23,6 +26,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.CheckBoxDialog;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -55,6 +59,10 @@ public class DeleteCoveragePackageAction extends Action {
             new CoveragePackageArtifactListDialog("Delete Package", "Select Package");
          dialog.setInput(OseeCoveragePackageStore.getCoveragePackageArtifacts(branch));
          if (dialog.open() == 0) {
+            if (dialog.getResult().length == 0) {
+               AWorkbench.popup("Must select coverage package.");
+               return;
+            }
             Artifact coveragePackageArtifact = (Artifact) dialog.getResult()[0];
             CoveragePackage coveragePackage = OseeCoveragePackageStore.get(coveragePackageArtifact);
             CheckBoxDialog cDialog =
@@ -69,10 +77,13 @@ public class DeleteCoveragePackageAction extends Action {
                if (!purge) {
                   transaction = new SkynetTransaction(branch, "Delete Coverage Package");
                }
-               OseeCoveragePackageStore.get(coveragePackage, branch).delete(transaction, purge);
+               CoveragePackageEvent coverageEvent =
+                  new CoveragePackageEvent(coveragePackage, CoverageEventType.Deleted);
+               OseeCoveragePackageStore.get(coveragePackage, branch).delete(transaction, coverageEvent, purge);
                if (!purge) {
                   transaction.execute();
                }
+               CoverageEventManager.getInstance().sendRemoteEvent(coverageEvent);
             }
          }
       } catch (OseeCoreException ex) {

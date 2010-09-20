@@ -34,6 +34,7 @@ public class CoverageItem extends NamedIdentity implements ICoverage, IWorkProdu
    String rationale;
    String orderNumber;
    String workProductGuid;
+   WorkProductTask workProductTask;
 
    private final CoverageUnit coverageUnit;
    private static String PROPERTY_STORE_ID = "coverage.item";
@@ -82,6 +83,7 @@ public class CoverageItem extends NamedIdentity implements ICoverage, IWorkProdu
       coverageitem.setRationale(rationale);
       coverageitem.setTestUnitProvider(testUnitProvider);
       coverageitem.setWorkProductGuid(workProductGuid);
+      coverageitem.setWorkProductTask(workProductTask);
       return coverageitem;
    }
 
@@ -303,7 +305,10 @@ public class CoverageItem extends NamedIdentity implements ICoverage, IWorkProdu
    }
 
    @Override
-   public String getWorkProductTask() {
+   public String getWorkProductTaskStr() {
+      if (getWorkProductTask() != null) {
+         return getWorkProductTask().toString();
+      }
       if (Strings.isValid(workProductGuid)) {
          return workProductGuid;
       }
@@ -318,6 +323,16 @@ public class CoverageItem extends NamedIdentity implements ICoverage, IWorkProdu
    @Override
    public void setWorkProductGuid(String workProductGuid) {
       this.workProductGuid = workProductGuid;
+   }
+
+   @Override
+   public WorkProductTask getWorkProductTask() {
+      return workProductTask;
+   }
+
+   @Override
+   public void setWorkProductTask(WorkProductTask workProductTask) {
+      this.workProductTask = workProductTask;
    }
 
 }

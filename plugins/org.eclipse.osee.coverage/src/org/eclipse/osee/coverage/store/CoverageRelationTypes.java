@@ -24,6 +24,10 @@ public class CoverageRelationTypes extends NamedIdentity implements IRelationEnu
       RelationSide.SIDE_B, "AAMFE99pzm4zSibDT9gA", "TeamWorkflowTargetedForVersion");
    public static final CoverageRelationTypes TeamWorkflowTargetedForVersion_Workflow = new CoverageRelationTypes(
       RelationSide.SIDE_A, "AAMFE99pzm4zSibDT9gA", "TeamWorkflowTargetedForVersion");
+   public static final CoverageRelationTypes ActionToWorkflow_Action = new CoverageRelationTypes(RelationSide.SIDE_A,
+      "AAMFE953ixQThusHUPwA", "ActionToWorkflow");
+   public static final CoverageRelationTypes ActionToWorkflow_WorkFlow = new CoverageRelationTypes(RelationSide.SIDE_B,
+      "AAMFE953ixQThusHUPwA", "ActionToWorkflow");
 
    private CoverageRelationTypes(RelationSide relationSide, String guid, String name) {
       super(guid, name);

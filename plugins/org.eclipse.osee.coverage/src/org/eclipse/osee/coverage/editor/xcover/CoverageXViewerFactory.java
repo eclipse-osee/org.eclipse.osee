@@ -37,7 +37,7 @@ public class CoverageXViewerFactory extends SkynetXViewerFactory {
    public static XViewerColumn Coverage_Method = new XViewerColumn(NAMESPACE + ".coverateMethod", "Coverage Method",
       100, SWT.LEFT, true, SortDataType.String, false, "");
    public static XViewerColumn Work_Product_Task = new XViewerColumn(NAMESPACE + ".workProductTask",
-      "Work Product Task", 100, SWT.LEFT, false, SortDataType.String, false, "");
+      "Work Product Task", 100, SWT.LEFT, true, SortDataType.String, false, "");
    public static XViewerColumn Coverage_Rationale = new XViewerColumn(NAMESPACE + ".coverageRationale",
       "Coverage Rationale", 100, SWT.LEFT, true, SortDataType.String, false, "");
    public static XViewerColumn Coverage_Test_Units = new XViewerColumn(NAMESPACE + ".coverageTestUnits",

@@ -124,7 +124,7 @@ public class CoverageImport extends CoveragePackageBase {
    }
 
    @Override
-   public String getWorkProductTask() {
+   public String getWorkProductTaskStr() {
       return "";
    }
 }

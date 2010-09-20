@@ -45,9 +45,6 @@ public class CoverageTestNavigateViews implements ICoverageNavigateItem {
          return items;
       }
 
-      //      items.add(new CoverageImportTestNavigateItem(null, new CoverageImport1TestBlam()));
-      //      items.add(new CoverageImportTestNavigateItem(null, new CoverageImport2TestBlam()));
-      //      items.add(new CoverageImportTestNavigateItem(null, new CoverageImport3TestBlam()));
       items.add(new CoveragePackage1(null));
       items.add(new CoveragePackage1Import1(null));
       items.add(new CoveragePackage1Import1B(null));
@@ -59,6 +56,7 @@ public class CoverageTestNavigateViews implements ICoverageNavigateItem {
       items.add(new CoveragePackage1Import7(null));
       items.add(new CoveragePackage1Import8(null));
       items.add(new CoveragePackage1Import9(null));
+      items.add(new CreateWorkProductAction(null));
 
       return items;
    }

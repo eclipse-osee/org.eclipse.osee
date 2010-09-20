@@ -14,6 +14,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import junit.framework.Assert;
+import org.eclipse.osee.coverage.event.CoverageEventType;
+import org.eclipse.osee.coverage.event.CoveragePackageEvent;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.merge.MergeImportManager;
 import org.eclipse.osee.coverage.merge.MergeManager;
@@ -203,7 +205,9 @@ public class VectorCastImportTest {
          OseeCoverageStore store = OseeCoveragePackageStore.get(coveragePackage, BranchManager.getCommonBranch());
          SkynetTransaction transaction =
             new SkynetTransaction(BranchManager.getCommonBranch(), "Coverage Package Save");
-         store.save(transaction);
+         CoveragePackageEvent coverageEvent =
+            new CoveragePackageEvent(coveragePackage, CoverageEventType.Modified);
+         store.save(transaction, coverageEvent);
          transaction.execute();
 
          // Test Load of Coverage Package

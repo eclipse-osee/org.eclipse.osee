@@ -115,7 +115,7 @@ public class CoverageTestUnit extends NamedIdentity implements ICoverage {
    }
 
    @Override
-   public String getWorkProductTask() {
+   public String getWorkProductTaskStr() {
       return "";
    }
 }

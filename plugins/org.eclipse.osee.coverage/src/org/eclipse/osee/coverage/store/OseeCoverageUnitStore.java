@@ -14,16 +14,21 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import org.eclipse.osee.coverage.event.CoverageChange;
+import org.eclipse.osee.coverage.event.CoverageEventType;
+import org.eclipse.osee.coverage.event.CoveragePackageEvent;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.CoverageOptionManagerDefault;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.UsersByIds;
@@ -61,7 +66,7 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
    }
 
    @Override
-   public void delete(SkynetTransaction transaction, boolean purge) throws OseeCoreException {
+   public void delete(SkynetTransaction transaction, CoveragePackageEvent coverageEvent, boolean purge) throws OseeCoreException {
       if (getArtifact(false) != null) {
          if (purge) {
             getArtifact(false).purgeFromBranch();
@@ -69,8 +74,9 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
             getArtifact(false).deleteAndPersist(transaction);
          }
       }
+      coverageEvent.getCoverages().add(new CoverageChange(coverageUnit, CoverageEventType.Deleted));
       for (CoverageUnit childCoverageUnit : coverageUnit.getCoverageUnits()) {
-         new OseeCoverageUnitStore(childCoverageUnit, branch).delete(transaction, purge);
+         new OseeCoverageUnitStore(childCoverageUnit, branch).delete(transaction, coverageEvent, purge);
       }
    }
 
@@ -104,7 +110,7 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
    }
 
    @Override
-   public Result save(SkynetTransaction transaction) throws OseeCoreException {
+   public Result save(SkynetTransaction transaction, CoveragePackageEvent coverageEvent) throws OseeCoreException {
       Artifact artifact = getArtifact(true);
       artifact.setName(coverageUnit.getName());
 
@@ -121,6 +127,17 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
          items.add(coverageItem.toXml());
       }
       artifact.setAttributeValues(CoverageAttributeTypes.Item, items);
+      for (Attribute<Object> attr : artifact.getAttributes(CoverageAttributeTypes.Item)) {
+         if (attr.isDirty()) {
+            CoverageChange change = new CoverageChange(coverageUnit, CoverageEventType.Modified);
+            if (attr.getModificationType() == ModificationType.NEW || attr.getModificationType() == ModificationType.UNDELETED || attr.getModificationType() == ModificationType.INTRODUCED) {
+               change.setEventType(CoverageEventType.Added);
+            } else if (attr.getModificationType() == ModificationType.DELETED) {
+               change.setEventType(CoverageEventType.Deleted);
+            }
+            coverageEvent.getCoverages().add(change);
+         }
+      }
       if (Strings.isValid(coverageUnit.getNotes())) {
          artifact.setSoleAttributeFromString(CoverageAttributeTypes.Notes, coverageUnit.getNotes());
       }
@@ -154,7 +171,7 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
       }
       // Save current/new coverage items
       for (CoverageUnit childCoverageUnit : coverageUnit.getCoverageUnits()) {
-         new OseeCoverageUnitStore(childCoverageUnit, branch).save(transaction);
+         new OseeCoverageUnitStore(childCoverageUnit, branch).save(transaction, coverageEvent);
       }
       // Delete removed coverage units and folders
       for (Artifact childArt : artifact.getChildren()) {
@@ -168,12 +185,19 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
             }
             if (!found) {
                new OseeCoverageUnitStore(coverageUnit, childArt, CoverageOptionManagerDefault.instance()).delete(
-                  transaction, false);
+                  transaction, coverageEvent, false);
             }
          }
       }
 
       artifact.persist(transaction);
+      if (artifact.isDirty()) {
+         CoverageChange change = new CoverageChange(coverageUnit, CoverageEventType.Modified);
+         if (artifact.getModType() == ModificationType.NEW) {
+            change.setEventType(CoverageEventType.Added);
+         }
+         coverageEvent.getCoverages().add(change);
+      }
       return Result.TrueResult;
    }
 
@@ -202,5 +226,10 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
          return Collections.emptyList();
       }
       return UsersByIds.getUsers(string);
+   }
+
+   @Override
+   public CoveragePackageEvent getBaseCoveragePackageEvent(CoverageEventType coverageEventType) {
+      throw new IllegalArgumentException("Should never be called");
    }
 }

@@ -54,6 +54,6 @@ public interface ICoverage extends Named, Identity {
 
    public String getOrderNumber();
 
-   public String getWorkProductTask();
+   public String getWorkProductTaskStr();
 
 }

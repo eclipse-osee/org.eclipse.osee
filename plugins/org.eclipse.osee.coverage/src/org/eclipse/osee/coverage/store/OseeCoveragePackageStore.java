@@ -16,6 +16,8 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.osee.coverage.event.CoverageEventManager;
+import org.eclipse.osee.coverage.event.CoverageEventType;
+import org.eclipse.osee.coverage.event.CoveragePackageEvent;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageItem;
@@ -24,7 +26,7 @@ import org.eclipse.osee.coverage.model.CoverageOptionManagerDefault;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
-import org.eclipse.osee.coverage.msgs.CoveragePackageSave;
+import org.eclipse.osee.coverage.model.IWorkProductRelatable;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -32,6 +34,7 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -88,34 +91,43 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
             }
          }
       }
+      loadWorkProductTaskNames();
+   }
+
+   private void loadWorkProductTaskNames() {
+      for (ICoverage coverage : coveragePackage.getCoverageItems()) {
+         if (coverage instanceof IWorkProductRelatable) {
+            if (Strings.isValid(((IWorkProductRelatable) coverage).getWorkProductGuid())) {
+               ((IWorkProductRelatable) coverage).setWorkProductTask(this.coveragePackage.getWorkProductTaskProvider().getWorkProductTask(
+                  ((IWorkProductRelatable) coverage).getWorkProductGuid()));
+            }
+         }
+      }
    }
 
    @Override
-   public Result save(SkynetTransaction transaction) throws OseeCoreException {
+   public Result save(SkynetTransaction transaction, CoveragePackageEvent coverageEvent) throws OseeCoreException {
+      boolean newCoveragePackage = getArtifact(false) == null;
       getArtifact(true);
       ElapsedTime elapsedTime = new ElapsedTime(getClass().getSimpleName() + " - save");
-      CoveragePackageSave coveragePackageSave = new CoveragePackageSave();
-      coveragePackageSave.setName(coveragePackage.getName());
       artifact.setName(coveragePackage.getName());
+      coverageEvent.getPackage().setEventType(newCoveragePackage ? CoverageEventType.Added : CoverageEventType.Modified);
       artifact.setSoleAttributeValue(CoreAttributeTypes.Active, coveragePackage.isEditable().isTrue());
       for (CoverageUnit coverageUnit : coveragePackage.getCoverageUnits()) {
-         OseeCoverageStore store = new OseeCoverageUnitStore(coverageUnit, artifact.getBranch());
-         store.save(transaction);
+         OseeCoverageUnitStore store = new OseeCoverageUnitStore(coverageUnit, artifact.getBranch());
+         store.save(transaction, coverageEvent);
          Artifact childArt = store.getArtifact(false);
          if (childArt.getParent() == null && !artifact.getChildren().contains(childArt)) {
             artifact.addChild(store.getArtifact(false));
          }
       }
       artifact.persist(transaction);
-      CoverageEventManager.getInstance().sendRemoteEvent(coveragePackageSave);
       elapsedTime.end();
       return Result.TrueResult;
    }
 
-   public Result save(SkynetTransaction transaction, Collection<ICoverage> coverages) throws OseeCoreException {
+   public Result save(SkynetTransaction transaction, CoveragePackageEvent coverageEvent, Collection<ICoverage> coverages) throws OseeCoreException {
       ElapsedTime elapsedTime = new ElapsedTime(getClass().getSimpleName() + " - save(coverages)");
-      CoveragePackageSave coveragePackageSave = new CoveragePackageSave();
-      coveragePackageSave.setName(coveragePackage.getName());
       for (ICoverage coverage : coverages) {
          CoverageUnit coverageUnit = null;
          if (coverage instanceof CoverageItem) {
@@ -126,10 +138,9 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
             throw new OseeArgumentException("Unhandled coverage type");
          }
          OseeCoverageUnitStore store = new OseeCoverageUnitStore(coverageUnit, transaction.getBranch());
-         store.save(transaction);
+         store.save(transaction, coverageEvent);
       }
       elapsedTime.end();
-      CoverageEventManager.getInstance().sendRemoteEvent(coveragePackageSave);
       return Result.TrueResult;
    }
 
@@ -171,7 +182,7 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
    }
 
    @Override
-   public void delete(SkynetTransaction transaction, boolean purge) throws OseeCoreException {
+   public void delete(SkynetTransaction transaction, CoveragePackageEvent coverageEvent, boolean purge) throws OseeCoreException {
       if (getArtifact(false) != null) {
          if (purge) {
             getArtifact(false).purgeFromBranch();
@@ -180,7 +191,7 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
          }
       }
       for (CoverageUnit childCoverageUnit : coveragePackage.getCoverageUnits()) {
-         new OseeCoverageUnitStore(childCoverageUnit, transaction.getBranch()).delete(transaction, purge);
+         new OseeCoverageUnitStore(childCoverageUnit, transaction.getBranch()).delete(transaction, coverageEvent, purge);
       }
    }
 
@@ -197,8 +208,10 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
    public Result save(Collection<ICoverage> coverages) {
       try {
          SkynetTransaction transaction = new SkynetTransaction(branch, "Coverage Save");
-         save(transaction, coverages);
+         CoveragePackageEvent coverageEvent = new CoveragePackageEvent(coveragePackage, CoverageEventType.Modified);
+         save(transaction, coverageEvent, coverages);
          transaction.execute();
+         CoverageEventManager.getInstance().sendRemoteEvent(coverageEvent);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          return new Result("Save Failed: " + ex.getLocalizedMessage());
@@ -215,4 +228,8 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
       this.coverageOptionManager = coverageOptionManager;
    }
 
+   @Override
+   public CoveragePackageEvent getBaseCoveragePackageEvent(CoverageEventType coverageEventType) {
+      return new CoveragePackageEvent(coveragePackage, coverageEventType);
+   }
 }

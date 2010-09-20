@@ -243,6 +243,8 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
             editMethodAction.run();
          } else if (xCol.equals(CoverageXViewerFactory.Coverage_Rationale)) {
             editRationaleAction.run();
+         } else if (xCol.equals(CoverageXViewerFactory.Work_Product_Task)) {
+            createWorkProductTaskAction.run();
          } else if (xCol.equals(CoverageXViewerFactory.Name)) {
             viewSourceAction.run();
          }

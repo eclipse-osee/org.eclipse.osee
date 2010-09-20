@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 
-import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.ui.skynet.ArtifactContentProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.ListDialog;
@@ -32,7 +32,7 @@ public class UserListDialog extends ListDialog {
       super(parent);
       setTitle(title);
       setMessage(title);
-      setContentProvider(new ArrayContentProvider());
+      setContentProvider(new ArtifactContentProvider());
       setLabelProvider(new LabelProvider() {
          @Override
          public String getText(Object element) {
@@ -42,7 +42,8 @@ public class UserListDialog extends ListDialog {
             return "Unknown Object";
          }
       });
-      setInput(UserManager.getUsersSortedByName());
+      System.err.println("Switch this back to only active: getUsersSortedByName");
+      setInput(UserManager.getUsersAllSortedByName());
       setShellStyle(getShellStyle() | SWT.RESIZE);
    }
 

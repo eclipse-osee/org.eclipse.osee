@@ -11,6 +11,9 @@
 package org.eclipse.osee.coverage.store;
 
 import java.util.logging.Level;
+import org.eclipse.osee.coverage.event.CoverageEventManager;
+import org.eclipse.osee.coverage.event.CoverageEventType;
+import org.eclipse.osee.coverage.event.CoveragePackageEvent;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -55,14 +58,16 @@ public abstract class OseeCoverageStore extends CoverageStore {
 
    }
 
-   public abstract void delete(SkynetTransaction transaction, boolean purge) throws OseeCoreException;
+   public abstract void delete(SkynetTransaction transaction, CoveragePackageEvent coverageEvent, boolean purge) throws OseeCoreException;
 
    @Override
    public Result save() {
       try {
          SkynetTransaction transaction = new SkynetTransaction(branch, "Coverage Save");
-         save(transaction);
+         CoveragePackageEvent coverageEvent = getBaseCoveragePackageEvent(CoverageEventType.Modified);
+         save(transaction, coverageEvent);
          transaction.execute();
+         CoverageEventManager.getInstance().sendRemoteEvent(coverageEvent);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          return new Result("Save Failed: " + ex.getLocalizedMessage());
@@ -73,11 +78,15 @@ public abstract class OseeCoverageStore extends CoverageStore {
    @Override
    public void delete(boolean purge) throws OseeCoreException {
       SkynetTransaction transaction = new SkynetTransaction(branch, "Coverage Save");
-      delete(transaction, purge);
+      CoveragePackageEvent coverageEvent = getBaseCoveragePackageEvent(CoverageEventType.Deleted);
+      delete(transaction, coverageEvent, purge);
       transaction.execute();
+      CoverageEventManager.getInstance().sendRemoteEvent(coverageEvent);
    }
 
-   public abstract Result save(SkynetTransaction transaction) throws OseeCoreException;
+   public abstract CoveragePackageEvent getBaseCoveragePackageEvent(CoverageEventType coverageEventType);
+
+   public abstract Result save(SkynetTransaction transaction, CoveragePackageEvent coverageEvent) throws OseeCoreException;
 
    public Branch getBranch() {
       return branch;

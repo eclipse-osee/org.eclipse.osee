@@ -38,7 +38,6 @@ public class ArtifactTypeAccessProvder {
 
    /**
     * @return Returns artifact types that a user has write permissions for on a specific branch
-    * @throws OseeCoreException
     */
    public Collection<ArtifactType> getWritableTypes() throws OseeCoreException {
       Iterator<ArtifactType> artTypeIterator = artifactTypes.iterator();
