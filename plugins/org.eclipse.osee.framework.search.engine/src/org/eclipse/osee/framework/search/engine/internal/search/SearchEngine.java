@@ -11,11 +11,13 @@
 package org.eclipse.osee.framework.search.engine.internal.search;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.message.SearchOptions;
 import org.eclipse.osee.framework.core.message.SearchRequest;
 import org.eclipse.osee.framework.core.message.SearchResponse;
@@ -51,11 +53,16 @@ public class SearchEngine implements ISearchEngine {
       this.branchCache = branchCache;
    }
 
-   private AttributeType[] getAttributeTypes(Collection<IAttributeType> tokens) throws OseeCoreException {
-      AttributeType[] attributeTypes = new AttributeType[tokens.size()];
-      int index = 0;
+   private Collection<AttributeType> getAttributeTypes(Collection<IAttributeType> tokens) throws OseeCoreException {
+      Collection<AttributeType> attributeTypes = new HashSet<AttributeType>();
       for (IAttributeType identity : tokens) {
-         attributeTypes[index++] = attributeTypeCache.get(identity);
+         AttributeType type = attributeTypeCache.get(identity);
+         if (type != null) {
+            attributeTypes.add(type);
+         } else {
+            throw new OseeStateException(String.format("Search Attribute Type Filter - attribute type [%s] not found",
+               identity));
+         }
       }
       return attributeTypes;
    }
@@ -82,7 +89,7 @@ public class SearchEngine implements ISearchEngine {
 
          SearchOptions options = searchRequest.getOptions();
          Collection<IAttributeType> attributeTypeTokens = options.getAttributeTypeFilter();
-         AttributeType[] attributeTypes = getAttributeTypes(attributeTypeTokens);
+         Collection<AttributeType> attributeTypes = getAttributeTypes(attributeTypeTokens);
 
          int branchId = branchCache.get(searchRequest.getBranch()).getId();
          Collection<AttributeData> tagMatches =

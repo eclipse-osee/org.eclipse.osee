@@ -68,12 +68,12 @@ public final class AttributeDataStore {
       return attributeData;
    }
 
-   public static Set<AttributeData> getAttributesByTags(int branchId, DeletionFlag deletionFlag, final Collection<Long> tagData, final AttributeType... attributeTypes) throws OseeCoreException {
+   public static Set<AttributeData> getAttributesByTags(int branchId, DeletionFlag deletionFlag, final Collection<Long> tagData, final Collection<AttributeType> attributeTypes) throws OseeCoreException {
       final Set<AttributeData> toReturn = new HashSet<AttributeData>();
 
       IdJoinQuery oseeIdJoin = null;
       IOseeStatement chStmt = ConnectionHandler.getStatement();
-      boolean useAttrTypeJoin = attributeTypes.length > 1;
+      boolean useAttrTypeJoin = attributeTypes.size() > 1;
 
       try {
          String sqlQuery =
@@ -81,7 +81,7 @@ public final class AttributeDataStore {
          List<Object> params = new ArrayList<Object>();
          params.addAll(tagData);
 
-         if (attributeTypes.length == 1) {
+         if (attributeTypes.size() == 1) {
             sqlQuery += " and attr1.attr_type_id = ?";
          } else if (useAttrTypeJoin) {
             oseeIdJoin = JoinUtility.createIdJoinQuery();
@@ -95,8 +95,9 @@ public final class AttributeDataStore {
          if (branchId > -1) {
             params.add(branchId);
          }
-         if (attributeTypes.length == 1) {
-            params.add(attributeTypes[0].getId());
+         if (attributeTypes.size() == 1) {
+            AttributeType type = attributeTypes.iterator().next();
+            params.add(type.getId());
          }
 
          chStmt.runPreparedQuery(sqlQuery, params.toArray(new Object[params.size()]));
