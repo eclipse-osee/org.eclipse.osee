@@ -543,6 +543,14 @@ public class Jaxp {
       return format;
    }
 
+   /**
+    * @deprecated Use {@link #newDocumentNamespaceAware()} instead
+    */
+   @Deprecated
+   public static Document newDocument() throws ParserConfigurationException {
+      return newDocumentNamespaceAware();
+   }
+
    public static Document newDocumentNamespaceAware() throws ParserConfigurationException {
       DocumentBuilder builder = namespceAwareFactory.newDocumentBuilder();
       return builder.newDocument();
