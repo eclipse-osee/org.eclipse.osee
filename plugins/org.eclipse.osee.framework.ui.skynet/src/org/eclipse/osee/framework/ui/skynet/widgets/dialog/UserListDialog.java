@@ -10,11 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 
-import org.eclipse.jface.viewers.LabelProvider;
+import java.util.ArrayList;
+import java.util.List;
+import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.skynet.ArtifactContentProvider;
+import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.ListDialog;
@@ -24,16 +27,16 @@ import org.eclipse.ui.dialogs.ListDialog;
  */
 public class UserListDialog extends ListDialog {
 
-   public UserListDialog(Shell parent) throws OseeCoreException {
-      this(parent, "Select User");
+   public UserListDialog(Shell parent, Active active) throws OseeCoreException {
+      this(parent, "Select User", active);
    }
 
-   public UserListDialog(Shell parent, String title) throws OseeCoreException {
+   public UserListDialog(Shell parent, String title, Active active) throws OseeCoreException {
       super(parent);
       setTitle(title);
       setMessage(title);
       setContentProvider(new ArtifactContentProvider());
-      setLabelProvider(new LabelProvider() {
+      setLabelProvider(new ArtifactLabelProvider() {
          @Override
          public String getText(Object element) {
             if (element instanceof User) {
@@ -42,8 +45,20 @@ public class UserListDialog extends ListDialog {
             return "Unknown Object";
          }
       });
-      System.err.println("Switch this back to only active: getUsersSortedByName");
-      setInput(UserManager.getUsersAllSortedByName());
+      List<User> users = null;
+      if (active == Active.Both) {
+         users = UserManager.getUsersAllSortedByName();
+      } else if (active == Active.Active) {
+         users = UserManager.getUsersSortedByName();
+      } else {
+         users = new ArrayList<User>();
+         for (User user : UserManager.getUsersAllSortedByName()) {
+            if (!user.isActive()) {
+               users.add(user);
+            }
+         }
+      }
+      setInput(users);
       setShellStyle(getShellStyle() | SWT.RESIZE);
    }
 

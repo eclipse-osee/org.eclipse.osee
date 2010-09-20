@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.util.widgets.dialog.VersionListDialog;
 import org.eclipse.osee.ats.world.search.GoalSearchItem;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.SystemUser;
+import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -159,7 +160,7 @@ public final class PromptChangeUtil {
    }
 
    public static boolean promptChangeOriginator(final Collection<? extends StateMachineArtifact> smas) throws OseeCoreException {
-      UserListDialog ld = new UserListDialog(Displays.getActiveShell(), "Select New Originator");
+      UserListDialog ld = new UserListDialog(Displays.getActiveShell(), "Select New Originator", Active.Active);
       int result = ld.open();
       if (result == 0) {
          User selectedUser = ld.getSelection();

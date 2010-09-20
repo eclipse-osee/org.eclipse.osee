@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Disposition;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.InjectionActivity;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Severity;
+import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -490,7 +491,7 @@ public class DefectXViewer extends XViewer {
                modified = setLocation(defectItems, loc);
             }
          } else if (xCol.equals(DefectXViewerFactory.User_Col)) {
-            UserListDialog ld = new UserListDialog(Displays.getActiveShell(), "Select New User");
+            UserListDialog ld = new UserListDialog(Displays.getActiveShell(), "Select New User", Active.Active);
             int result = ld.open();
             if (result == 0) {
                modified = setUser(defectItems, ld.getSelection());

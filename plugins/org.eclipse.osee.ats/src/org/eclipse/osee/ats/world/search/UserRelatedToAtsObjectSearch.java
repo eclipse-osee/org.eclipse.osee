@@ -17,6 +17,7 @@ import java.util.List;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -35,11 +36,13 @@ public class UserRelatedToAtsObjectSearch extends UserSearchItem {
       super(name, user);
       this.activeObjectsOnly = activeObjectsOnly;
       setLoadView(loadView);
+      setActive(Active.Both);
    }
 
    public UserRelatedToAtsObjectSearch(UserRelatedToAtsObjectSearch userRelatedToAtsObjectSearch) {
       super(userRelatedToAtsObjectSearch);
       this.activeObjectsOnly = userRelatedToAtsObjectSearch.activeObjectsOnly;
+      setActive(Active.Both);
    }
 
    @Override

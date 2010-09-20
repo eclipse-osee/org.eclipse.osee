@@ -23,6 +23,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.util.EnumStringSingleSelectionDialog;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.role.UserRole.Role;
+import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -237,7 +238,7 @@ public class UserRoleXViewer extends XViewer {
          } else if (xCol.equals(UserRoleXViewerFactory.Completed_Col)) {
             modified = setCompleted(userRoles);
          } else if (xCol.equals(UserRoleXViewerFactory.User_Col)) {
-            UserListDialog ld = new UserListDialog(Displays.getActiveShell(), "Select New User");
+            UserListDialog ld = new UserListDialog(Displays.getActiveShell(), "Select New User", Active.Active);
             int result = ld.open();
             if (result == 0) {
                modified = setUser(userRoles, ld.getSelection());

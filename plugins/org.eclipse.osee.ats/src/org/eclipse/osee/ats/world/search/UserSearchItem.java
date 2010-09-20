@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.world.search;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -28,6 +29,7 @@ public abstract class UserSearchItem extends WorldUISearchItem {
 
    protected final User user;
    protected User selectedUser;
+   private Active active = Active.Active;
 
    public UserSearchItem(String name, User user) {
       super(name);
@@ -106,7 +108,7 @@ public abstract class UserSearchItem extends WorldUISearchItem {
       if (searchType == SearchType.ReSearch && selectedUser != null) {
          return;
       }
-      UserListDialog ld = new UserListDialog(Displays.getActiveShell());
+      UserListDialog ld = new UserListDialog(Displays.getActiveShell(), active);
       int result = ld.open();
       if (result == 0) {
          selectedUser = ld.getSelection();
@@ -171,6 +173,14 @@ public abstract class UserSearchItem extends WorldUISearchItem {
          return image;
       }
       return ImageManager.getImage(FrameworkImage.USER);
+   }
+
+   public Active getActive() {
+      return active;
+   }
+
+   public void setActive(Active active) {
+      this.active = active;
    }
 
 }

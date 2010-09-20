@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.util.xviewer.column.XViewerSmaStateColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.ats.world.search.MyReviewWorkflowItem;
 import org.eclipse.osee.ats.world.search.MyReviewWorkflowItem.ReviewState;
+import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -54,7 +55,7 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
-      UserListDialog ld = new UserListDialog(Displays.getActiveShell());
+      UserListDialog ld = new UserListDialog(Displays.getActiveShell(), Active.Active);
       int result = ld.open();
       if (result == 0) {
          if (ld.getResult().length == 0) {
