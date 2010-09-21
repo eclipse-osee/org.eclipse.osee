@@ -215,8 +215,8 @@ public class MergeImportManager {
          ((CoverageItem) packageCoverage).setOrderNumber(((CoverageItem) importCoverage).getOrderNumber());
          updateFileContents((CoverageItem) packageCoverage, (CoverageItem) importCoverage);
       } else {
-         rd.logError(String.format("[%s] doesn't support merge item [%s] (1)", mergeItem.getClass().getSimpleName(),
-            MergeType.Add_With_Moves.toString(), mergeItem));
+         rd.logError(String.format("[%s] doesn't support merge type [%s] for item [%s] (1)",
+            mergeItem.getClass().getSimpleName(), MergeType.Add_With_Moves, mergeItem));
       }
 
    }

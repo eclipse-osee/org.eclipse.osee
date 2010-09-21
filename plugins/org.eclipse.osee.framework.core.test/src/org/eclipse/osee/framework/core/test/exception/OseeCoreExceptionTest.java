@@ -15,6 +15,8 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.junit.Test;
 
 /**
+ * Test Case for {@link OseeCoreException}
+ * 
  * @author Ryan D. Brooks
  */
 public class OseeCoreExceptionTest {

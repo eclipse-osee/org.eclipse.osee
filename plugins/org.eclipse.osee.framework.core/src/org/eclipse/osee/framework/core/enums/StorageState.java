@@ -39,6 +39,6 @@ public enum StorageState {
             return type;
          }
       }
-      throw new OseeArgumentException("[%s] is not a valid StorageState");
+      throw new OseeArgumentException("%d is not a valid StorageState", value);
    }
 }

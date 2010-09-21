@@ -20,9 +20,9 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
    EnumsTestSuite.class,
+   ExceptionTestSuite.class,
    InternalCoreTestSuite.class,
-   UtilCoreTestSuite.class,
-   ExceptionTestSuite.class})
+   UtilCoreTestSuite.class})
 /**
  * @author Roberto E. Escobar
  */

@@ -63,7 +63,7 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
          xWidgetName = "XTextDam";
          StringBuilder builder = new StringBuilder();
          builder.append("Unable to determine base type for attribute type");
-         builder.append(String.format("[%]", attributeType.getName()));
+         builder.append(String.format("[%s]", attributeType));
          builder.append(Lib.exceptionToString(ex));
          defaultData.setDefaultValue(builder.toString());
       }

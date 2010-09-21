@@ -166,7 +166,7 @@ public abstract class AbstractOseeCache<T extends AbstractOseeType> implements I
       //         }
       //      }
       if (cachedTypes.size() > 1) {
-         throw new OseeStateException("Item [%s:%s] does not have a unique name. Matching types - ", type.getName(),
+         throw new OseeStateException("Item [%s:%s] does not have a unique name. Matching types [%s]", type.getName(),
             type.getGuid(), itemsFound);
       }
    }

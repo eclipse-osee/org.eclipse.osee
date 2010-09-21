@@ -172,7 +172,7 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
                         coverageItem.setName(m.group(1));
                      } else {
                         coverageImport.getLog().logError(
-                           String.format("Coverage line doesn't match \"n n <line>\" [%s].  " + sourceLine));
+                           String.format("Coverage line doesn't match \"n n <line>\" [%s].  ", sourceLine));
                         continue;
                      }
                      if (vectorCastCoverageImportProvider.isResolveExceptionHandling() && lineData.getSecond()) {

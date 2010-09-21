@@ -37,6 +37,6 @@ public enum ConflictType {
             return type;
          }
       }
-      throw new OseeArgumentException("[%s] is not a valid ConflictType");
+      throw new OseeArgumentException("%d is not a valid ConflictType", value);
    }
 }
