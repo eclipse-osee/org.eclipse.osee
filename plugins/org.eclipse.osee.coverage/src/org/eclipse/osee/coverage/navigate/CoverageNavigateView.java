@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
-import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
+import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -62,7 +62,7 @@ public class CoverageNavigateView extends ViewPart implements IActionable {
          return;
       }
 
-      OseeContributionItem.addTo(this, false);
+      OseeStatusContributionItemFactory.addTo(this, false);
 
       Composite comp = new Composite(parent, SWT.None);
       comp.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));

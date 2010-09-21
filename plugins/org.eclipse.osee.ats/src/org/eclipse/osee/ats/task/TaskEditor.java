@@ -40,7 +40,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
-import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
+import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
 import org.eclipse.osee.framework.ui.swt.CursorManager;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -155,7 +155,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IActionable, I
    protected void addPages() {
 
       try {
-         OseeContributionItem.addTo(this, true);
+         OseeStatusContributionItemFactory.addTo(this, true);
 
          IEditorInput editorInput = getEditorInput();
          if (!(editorInput instanceof TaskEditorInput)) {

@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
+import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.skynet.RelationsComposite;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.pages.ArtifactEditorOutlinePage;
@@ -155,7 +155,7 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
 
    @Override
    protected void addPages() {
-      OseeContributionItem.addTo(this, true);
+      OseeStatusContributionItemFactory.addTo(this, true);
       setPartName(getEditorInput().getName());
       setTitleImage(getEditorInput().getImage());
 

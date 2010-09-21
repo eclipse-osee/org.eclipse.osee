@@ -45,7 +45,7 @@ import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.OpenWithMenuListener;
-import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
+import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener;
 import org.eclipse.osee.framework.ui.skynet.menu.ArtifactTreeViewerGlobalMenuHelper;
@@ -146,7 +146,7 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
       treeViewer.getControl().setLayoutData(gridData);
 
       globalMenuHelper = new ArtifactTreeViewerGlobalMenuHelper(treeViewer);
-      OseeContributionItem.addTo(this, true);
+      OseeStatusContributionItemFactory.addTo(this, true);
 
       OseeEventManager.addListener(this);
 

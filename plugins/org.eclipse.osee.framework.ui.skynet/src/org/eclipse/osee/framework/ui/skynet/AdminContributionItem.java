@@ -10,41 +10,29 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet;
 
-import org.eclipse.jface.action.IContributionItem;
-import org.eclipse.jface.action.IStatusLineManager;
+import org.eclipse.osee.framework.ui.plugin.OseeStatusContributionItem;
+import org.eclipse.osee.framework.ui.skynet.cm.IOseeCmService;
+import org.eclipse.osee.framework.ui.skynet.cm.OseeCm;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Donald G. Dunne
  */
-public class AdminContributionItem extends OseeContributionItem {
+public class AdminContributionItem extends OseeStatusContributionItem {
 
    private static final String ID = "ats.admin";
 
    private static String ENABLED_TOOLTIP = "AtsAdmin";
    private static String DISABLED_TOOLTIP = "";
 
-   private AdminContributionItem() {
+   public AdminContributionItem() {
       super(ID);
       init();
    }
 
    private void init() {
       updateStatus(true);
-   }
-
-   public static void addTo(IStatusLineManager manager) {
-      boolean wasFound = false;
-      for (IContributionItem item : manager.getItems()) {
-         if (item instanceof AdminContributionItem) {
-            wasFound = true;
-            break;
-         }
-      }
-      if (!wasFound) {
-         manager.add(new AdminContributionItem());
-      }
    }
 
    @Override
@@ -65,6 +53,12 @@ public class AdminContributionItem extends OseeContributionItem {
    @Override
    protected String getEnabledToolTip() {
       return ENABLED_TOOLTIP;
+   }
+
+   @Override
+   public boolean isCreationAllowed() {
+      IOseeCmService atsService = OseeCm.getInstance();
+      return atsService != null && atsService.isCmAdmin();
    }
 
 }

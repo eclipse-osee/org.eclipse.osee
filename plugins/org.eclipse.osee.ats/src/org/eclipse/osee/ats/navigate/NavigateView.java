@@ -47,7 +47,7 @@ import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
-import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
+import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.skynet.action.CollapseAllAction;
 import org.eclipse.osee.framework.ui.skynet.action.ExpandAllAction;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
@@ -170,7 +170,7 @@ public class NavigateView extends ViewPart implements IActionable {
                   gridData.heightHint = 15;
                   label.setLayoutData(gridData);
 
-                  OseeContributionItem.addTo(navView, false);
+                  OseeStatusContributionItemFactory.addTo(navView, false);
                   xNavComp.layout();
 
                   addExtensionPointListenerBecauseOfWorkspaceLoading();

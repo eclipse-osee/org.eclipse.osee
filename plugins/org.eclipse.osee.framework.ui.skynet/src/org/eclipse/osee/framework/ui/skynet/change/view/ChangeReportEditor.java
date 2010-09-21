@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionChange;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionEvent;
-import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
+import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeReportActionBarContributor;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeReportEditorInput;
@@ -79,14 +79,13 @@ public class ChangeReportEditor extends FormEditor implements IChangeReportView 
 
    @Override
    protected void addPages() {
-      OseeContributionItem.addTo(this, true);
+      OseeStatusContributionItemFactory.addTo(this, true);
       try {
          changeReportPage = new ChangeReportPage(this);
          addPage(changeReportPage);
       } catch (PartInitException ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
-      OseeContributionItem.addTo(this, true);
       OseeEventManager.addListener(eventRelay);
    }
 

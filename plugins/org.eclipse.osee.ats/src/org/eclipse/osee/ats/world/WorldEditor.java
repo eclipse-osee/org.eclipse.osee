@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
+import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.SWT;
@@ -142,7 +142,7 @@ public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableE
    protected void addPages() {
 
       try {
-         OseeContributionItem.addTo(this, true);
+         OseeStatusContributionItemFactory.addTo(this, true);
 
          IWorldEditorProvider provider = getWorldEditorProvider();
          if (provider instanceof IWorldEditorConsumer) {

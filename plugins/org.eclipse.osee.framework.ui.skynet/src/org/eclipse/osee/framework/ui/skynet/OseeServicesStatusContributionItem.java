@@ -10,11 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet;
 
-import org.eclipse.jface.action.IContributionItem;
-import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.osee.framework.logging.IHealthStatus;
 import org.eclipse.osee.framework.logging.IStatusListener;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.plugin.OseeStatusContributionItem;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.OverlayImage;
@@ -23,7 +22,7 @@ import org.eclipse.swt.graphics.Image;
 /**
  * @author Roberto E. Escobar
  */
-public class OseeServicesStatusContributionItem extends OseeContributionItem implements IStatusListener {
+public class OseeServicesStatusContributionItem extends OseeStatusContributionItem implements IStatusListener {
    private static final String ID = "osee.service.status";
    private static final Image DISABLED_IMAGE = new OverlayImage(
       ImageManager.getImage(FrameworkImage.APPLICATION_SERVER),
@@ -32,7 +31,7 @@ public class OseeServicesStatusContributionItem extends OseeContributionItem imp
    private static String errorMessage;
    private static String okMessage;
 
-   private OseeServicesStatusContributionItem() {
+   public OseeServicesStatusContributionItem() {
       super(ID);
       errorMessage = null;
       okMessage = null;
@@ -44,19 +43,6 @@ public class OseeServicesStatusContributionItem extends OseeContributionItem imp
    public void dispose() {
       OseeLog.deregister(this);
       super.dispose();
-   }
-
-   public static void addTo(IStatusLineManager manager) {
-      boolean wasFound = false;
-      for (IContributionItem item : manager.getItems()) {
-         if (item instanceof OseeServicesStatusContributionItem) {
-            wasFound = true;
-            break;
-         }
-      }
-      if (!wasFound) {
-         manager.add(new OseeServicesStatusContributionItem());
-      }
    }
 
    @Override

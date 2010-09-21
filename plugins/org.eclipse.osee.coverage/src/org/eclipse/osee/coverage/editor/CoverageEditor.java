@@ -39,7 +39,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.utility.ElapsedTime;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
+import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -67,7 +67,7 @@ public class CoverageEditor extends FormEditor implements IActionable {
    @Override
    protected void addPages() {
       try {
-         OseeContributionItem.addTo(this, true);
+         OseeStatusContributionItemFactory.addTo(this, true);
          String loadingStr = "Loading Coverage Package \"" + getCoverageEditorInput().getPreLoadName() + "\" ...";
          coverageEditorLoadingTab = new CoverageEditorLoadingTab(loadingStr, this);
          addFormPage(coverageEditorLoadingTab);

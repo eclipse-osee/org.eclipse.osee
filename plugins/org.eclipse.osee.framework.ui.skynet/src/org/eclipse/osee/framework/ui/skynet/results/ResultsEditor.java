@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
+import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.results.html.ResultsEditorHtmlTab;
@@ -49,7 +49,7 @@ public class ResultsEditor extends AbstractArtifactEditor implements IActionable
    protected void addPages() {
 
       try {
-         OseeContributionItem.addTo(this, true);
+         OseeStatusContributionItemFactory.addTo(this, true);
 
          IResultsEditorProvider provider = getResultsEditorProvider();
          List<IResultsEditorTab> tabs = provider.getResultsEditorTabs();

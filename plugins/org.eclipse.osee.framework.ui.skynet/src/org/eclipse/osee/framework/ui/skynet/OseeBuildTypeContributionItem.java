@@ -15,13 +15,12 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IContributionItem;
-import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
+import org.eclipse.osee.framework.ui.plugin.OseeStatusContributionItem;
 import org.eclipse.osee.framework.ui.skynet.preferences.ConfigurationDetails;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
@@ -34,13 +33,13 @@ import org.eclipse.ui.progress.UIJob;
 /**
  * @author Roberto E. Escobar
  */
-public class OseeBuildTypeContributionItem extends OseeContributionItem {
+public class OseeBuildTypeContributionItem extends OseeStatusContributionItem {
 
    private static final String ID = "osee.build.type";
 
    private static String TOOLTIP = "Version [%s]\nBuild Type[%s]\nDouble-Click for details";
 
-   private OseeBuildTypeContributionItem() {
+   public OseeBuildTypeContributionItem() {
       super(ID);
       setActionHandler(new OpenConfigDetailsAction());
       updateStatus(true);
@@ -84,19 +83,6 @@ public class OseeBuildTypeContributionItem extends OseeContributionItem {
          // Do Nothing
       }
       return version;
-   }
-
-   public static void addTo(IStatusLineManager manager) {
-      boolean wasFound = false;
-      for (IContributionItem item : manager.getItems()) {
-         if (item instanceof OseeBuildTypeContributionItem) {
-            wasFound = true;
-            break;
-         }
-      }
-      if (!wasFound) {
-         manager.add(new OseeBuildTypeContributionItem());
-      }
    }
 
    public final static class OpenConfigDetailsAction extends Action {

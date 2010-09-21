@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
+import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
@@ -61,7 +61,7 @@ public class BlamEditor extends FormEditor implements IDirtiableEditor {
 
    @Override
    protected void addPages() {
-      OseeContributionItem.addTo(this, true);
+      OseeStatusContributionItemFactory.addTo(this, true);
       setPartName(getEditorInput().getName());
       setTitleImage(getEditorInput().getImage());
       try {

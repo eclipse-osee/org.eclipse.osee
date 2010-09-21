@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
+import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.panels.SearchComposite;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
@@ -162,7 +162,7 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener {
             branchSelect.getSelectComposite().getBranchSelectText().setDoubleClickEnabled(true);
          }
       }
-      OseeContributionItem.addTo(this, true);
+      OseeStatusContributionItemFactory.addTo(this, true);
 
       createActions();
 

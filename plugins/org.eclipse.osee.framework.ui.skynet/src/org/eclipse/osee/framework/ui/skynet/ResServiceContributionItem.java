@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.listener.IRemoteEventManagerEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.RemoteEventServiceEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
+import org.eclipse.osee.framework.ui.plugin.OseeStatusContributionItem;
 import org.eclipse.osee.framework.ui.skynet.OseeBuildTypeContributionItem.OpenConfigDetailsAction;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -26,7 +27,7 @@ import org.eclipse.swt.graphics.Image;
 /**
  * @author Jeff C. Phillips
  */
-public class ResServiceContributionItem extends OseeContributionItem implements IRemoteEventManagerEventListener {
+public class ResServiceContributionItem extends OseeStatusContributionItem implements IRemoteEventManagerEventListener {
 
    public static final String ID = "res.service";
    private static final Image ENABLED_IMAGE = ImageManager.getImageDescriptor(FrameworkImage.RES).createImage();

@@ -12,8 +12,6 @@ package org.eclipse.osee.framework.ui.skynet;
 
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IContributionItem;
-import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -24,6 +22,7 @@ import org.eclipse.osee.framework.skynet.core.event.listener.IAccessControlEvent
 import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
+import org.eclipse.osee.framework.ui.plugin.OseeStatusContributionItem;
 import org.eclipse.osee.framework.ui.skynet.dialogs.AuthenticationDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -34,7 +33,7 @@ import org.eclipse.ui.PlatformUI;
 /**
  * @author Roberto E. Escobar
  */
-public final class SessionContributionItem extends OseeContributionItem implements IAccessControlEventListener {
+public final class SessionContributionItem extends OseeStatusContributionItem implements IAccessControlEventListener {
 
    private static final String CONTRIBUTION_ITEM_ID = "session.contribution.item";
 
@@ -44,7 +43,7 @@ public final class SessionContributionItem extends OseeContributionItem implemen
    private static final String ENABLED_TOOLTIP = "Authenticated as: %s (%s) - session(%s)\nDouble-Click to Log Off.";
    private static final String DISABLED_TOOLTIP = "Not Authenticated.\nDouble-Click to Log On.";
 
-   private SessionContributionItem() {
+   public SessionContributionItem() {
       super(CONTRIBUTION_ITEM_ID);
       init();
       updateStatus(true);
@@ -93,19 +92,6 @@ public final class SessionContributionItem extends OseeContributionItem implemen
          }
       });
 
-   }
-
-   public static void addTo(IStatusLineManager manager) {
-      boolean wasFound = false;
-      for (IContributionItem item : manager.getItems()) {
-         if (item instanceof SessionContributionItem) {
-            wasFound = true;
-            break;
-         }
-      }
-      if (!wasFound) {
-         manager.add(new SessionContributionItem());
-      }
    }
 
    @Override

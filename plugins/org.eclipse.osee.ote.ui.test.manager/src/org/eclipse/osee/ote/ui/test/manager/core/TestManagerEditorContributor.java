@@ -10,11 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.ui.test.manager.core;
 
-import java.util.logging.Level;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IStatusLineManager;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.ote.ui.test.manager.internal.TestManagerPlugin;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.actions.ActionFactory;
@@ -102,18 +99,5 @@ public class TestManagerEditorContributor extends MultiPageEditorActionBarContri
    @Override
    public void contributeToStatusLine(final IStatusLineManager statusLineManager) {
       super.contributeToStatusLine(statusLineManager);
-      try {
-         /*
-          * Job addStatusLineManager = new Job("TM contributing to the status line.") {
-          * @Override protected IStatus run(IProgressMonitor monitor) { try {
-          * OseeContributionItem.addTo(statusLineManager); } catch (Throwable th) { OseeLog.log(TestManagerPlugin.class,
-          * Level.SEVERE, th.getMessage(), th); return Status.CANCEL_STATUS; } return Status.OK_STATUS; } };
-          * addStatusLineManager.schedule();
-          */
-
-      } catch (Throwable th) {
-         OseeLog.log(TestManagerPlugin.class, Level.WARNING, "Unable to contribute to the status line.", th);
-      }
    }
-
 }

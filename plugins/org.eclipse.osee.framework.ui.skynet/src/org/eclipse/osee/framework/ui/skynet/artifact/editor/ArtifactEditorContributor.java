@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ISelectedArtifact;
 import org.eclipse.osee.framework.ui.plugin.util.SelectionCountChangeListener;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
-import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
+import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.skynet.RelationsComposite;
 import org.eclipse.osee.framework.ui.skynet.action.RevealInExplorerAction;
 import org.eclipse.ui.IEditorPart;
@@ -65,7 +65,7 @@ public class ArtifactEditorContributor extends MultiPageEditorActionBarContribut
    @Override
    public void contributeToStatusLine(IStatusLineManager statusLineManager) {
       statusLineManager.add(typeStatusItem);
-      OseeContributionItem.addTo(statusLineManager);
+      OseeStatusContributionItemFactory.addTo(statusLineManager);
    }
 
    @Override

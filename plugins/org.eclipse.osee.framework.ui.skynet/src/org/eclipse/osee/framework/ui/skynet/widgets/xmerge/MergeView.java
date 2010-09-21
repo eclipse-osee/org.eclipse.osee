@@ -56,7 +56,7 @@ import org.eclipse.osee.framework.ui.plugin.util.AbstractSelectionEnabledHandler
 import org.eclipse.osee.framework.ui.plugin.util.Commands;
 import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
+import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
@@ -223,7 +223,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
       menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
       createRevertUnresolvableConflictsMenuItem(menuManager);
 
-      OseeContributionItem.addTo(this, true);
+      OseeStatusContributionItemFactory.addTo(this, true);
       getSite().registerContextMenu("org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView", menuManager,
          mergeXWidget.getXViewer());
 

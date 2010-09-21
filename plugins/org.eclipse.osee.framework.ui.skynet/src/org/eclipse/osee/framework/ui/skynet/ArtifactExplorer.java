@@ -357,7 +357,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
 
          OseeUiActions.addBugToViewToolbar(this, this, SkynetGuiPlugin.getInstance(), VIEW_ID, "Artifact Explorer");
 
-         OseeContributionItem.addTo(this, false);
+         OseeStatusContributionItemFactory.addTo(this, false);
 
          updateEnablementsEtAl();
          trees.add(tree);

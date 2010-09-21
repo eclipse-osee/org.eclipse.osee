@@ -48,7 +48,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
-import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
+import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -228,7 +228,7 @@ public class HyperView extends ViewPart implements IPartListener {
       if (HyperView.debugOn) {
          System.out.println("createPartControl");
       }
-      OseeContributionItem.addTo(this, true);
+      OseeStatusContributionItemFactory.addTo(this, true);
 
       canvas = new FigureCanvas(parent);
       canvas.setScrollBarVisibility(FigureCanvas.ALWAYS);

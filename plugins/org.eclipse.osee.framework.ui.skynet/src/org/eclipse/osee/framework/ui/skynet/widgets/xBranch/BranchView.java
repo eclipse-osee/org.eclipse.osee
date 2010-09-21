@@ -40,7 +40,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionEventType;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
+import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.action.EditTransactionComment;
 import org.eclipse.osee.framework.ui.skynet.action.ITransactionRecordSelectionProvider;
@@ -132,7 +132,7 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
 
       getSite().setSelectionProvider(xBranchWidget.getXViewer());
       SkynetGuiPlugin.getInstance().setHelp(parent, HELP_CONTEXT_ID, "org.eclipse.osee.framework.help.ui");
-      OseeContributionItem.addTo(this, true);
+      OseeStatusContributionItemFactory.addTo(this, true);
       getViewSite().getActionBars().updateActionBars();
 
    }
