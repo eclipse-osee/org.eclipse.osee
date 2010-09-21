@@ -10,9 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet;
 
-import java.util.ArrayList;
-import org.eclipse.jface.action.IContributionItem;
-import org.eclipse.jface.action.IStatusLineManager;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.CopyOnWriteArraySet;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.listener.IRemoteEventManagerEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.RemoteEventServiceEventType;
@@ -35,58 +37,25 @@ public class ResServiceContributionItem extends OseeStatusContributionItem imple
       ImageManager.getImageDescriptor(FrameworkImage.SLASH_RED_OVERLAY)).createImage();
    private static final String ENABLED_TOOLTIP = "Event Service is connected.";
    private static final String DISABLED_TOOLTIP = "Event Service is disconnected.";
-   private static Thread updateThread = null;
-   private static ArrayList<ResServiceContributionItem> icons = new ArrayList<ResServiceContributionItem>();
+
+   private static final Timer timer = new Timer("Event Service Update Status", true);
+   private static final UpdateStatusTimerTask updateTask = new UpdateStatusTimerTask();
    private static final int FOUR_MINUTES = 1000 * 60 * 4;
-   private static Runnable threadRunnable = new Runnable() {
-      @Override
-      public void run() {
-         do {
-            boolean status = OseeEventManager.isEventManagerConnected();
-            for (ResServiceContributionItem icon : icons) {
-               icon.updateStatus(status);
-            }
-            try {
-               Thread.sleep(FOUR_MINUTES);
-            } catch (InterruptedException ex) {
-               return;
-            }
-         } while (true);
-      }
-   };
+   static {
+      timer.schedule(updateTask, FOUR_MINUTES);
+   }
 
    public ResServiceContributionItem() {
       super(ID);
       updateStatus(OseeEventManager.isEventManagerConnected());
       OseeEventManager.addListener(this);
       setActionHandler(new OpenConfigDetailsAction());
-      icons.add(this);
-      createUpdateThread();
-   }
-
-   private static void createUpdateThread() {
-      if (updateThread == null) {
-         System.out.println("Thread added");
-         updateThread = new Thread(threadRunnable, "Event Service Icon Updater");
-         updateThread.start();
-      }
-   }
-
-   public static void addTo(IStatusLineManager manager) {
-      boolean wasFound = false;
-      for (IContributionItem item : manager.getItems()) {
-         if (item instanceof ResServiceContributionItem) {
-            wasFound = true;
-            break;
-         }
-      }
-      if (!wasFound) {
-         manager.add(new ResServiceContributionItem());
-      }
+      updateTask.addItem(this);
    }
 
    @Override
    public void dispose() {
+      updateTask.removeItem(this);
       OseeEventManager.removeListener(this);
       super.dispose();
    }
@@ -119,5 +88,36 @@ public class ResServiceContributionItem extends OseeStatusContributionItem imple
    @Override
    protected String getEnabledToolTip() {
       return ENABLED_TOOLTIP;
+   }
+
+   private static final class UpdateStatusTimerTask extends TimerTask {
+      private final Set<OseeStatusContributionItem> itemsToUpdate =
+         new CopyOnWriteArraySet<OseeStatusContributionItem>();
+
+      public void addItem(OseeStatusContributionItem item) {
+         itemsToUpdate.add(item);
+      }
+
+      public void removeItem(OseeStatusContributionItem item) {
+         itemsToUpdate.remove(item);
+      }
+
+      protected boolean getStatus() {
+         return OseeEventManager.isEventManagerConnected();
+      }
+
+      @Override
+      public void run() {
+         boolean isActive = getStatus();
+         Set<OseeStatusContributionItem> toRemove = new HashSet<OseeStatusContributionItem>();
+         for (OseeStatusContributionItem item : itemsToUpdate) {
+            if (item.isDisposed()) {
+               toRemove.add(item);
+            } else {
+               item.updateStatus(isActive);
+            }
+         }
+         itemsToUpdate.removeAll(toRemove);
+      }
    }
 }
