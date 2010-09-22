@@ -82,7 +82,6 @@ public class ExcelSaxHandler extends AbstractSaxHandler {
          isRowHeader = firstRowIsHeader; // next non-empty row will be considered a header (if
          // applicable)
          rowProcessor.foundStartOfWorksheet(attributes.getValue("ss:Name"));
-         // System.out.println("Worksheet =" +attributes.getValue("ss:Name"));
       }
    }
 
