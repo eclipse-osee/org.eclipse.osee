@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.util.AtsPreSaveCacheRemoteEventHandler;
 import org.eclipse.osee.framework.core.services.CmAccessControl;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.core.util.ServiceDependencyTracker;
+import org.eclipse.osee.framework.database.core.OseeInfo;
 import org.eclipse.osee.framework.plugin.core.IActionReportingService;
 import org.eclipse.osee.framework.ui.skynet.cm.IOseeCmService;
 import org.osgi.framework.BundleActivator;
@@ -51,11 +52,11 @@ public class AtsPlugin implements BundleActivator {
       service2 = context.registerService(IOseeCmService.class.getName(), new OseeAtsServiceImpl(), null);
 
       // TODO Uncomment to re-enable ATS CM Access providing
-      //      if (OseeInfo.isEnabled("atsAccessEnabled")) {
-      cmAccessHandler = new AtsCmAccessControlRegHandler();
-      //         tracker = new ServiceDependencyTracker(context, cmAccessHandler);
-      //         tracker.open();
-      //      }
+      if (OseeInfo.isEnabled("atsAccessEnabled")) {
+         cmAccessHandler = new AtsCmAccessControlRegHandler();
+         tracker = new ServiceDependencyTracker(context, cmAccessHandler);
+         tracker.open();
+      }
    }
 
    @Override
