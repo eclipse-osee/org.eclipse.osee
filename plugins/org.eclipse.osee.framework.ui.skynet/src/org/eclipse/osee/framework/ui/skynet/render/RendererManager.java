@@ -146,7 +146,7 @@ public final class RendererManager {
    }
 
    public static Collection<AttributeType> getAttributeTypeOrderList(Artifact artifact) throws OseeCoreException {
-      return getBestRenderer(PresentationType.PREVIEW, artifact, null).orderAttributeNames(artifact,
+      return getBestRenderer(PresentationType.PRODUCE_ATTRIBUTE, artifact, null).orderAttributeNames(artifact,
          artifact.getAttributeTypes());
    }
 
