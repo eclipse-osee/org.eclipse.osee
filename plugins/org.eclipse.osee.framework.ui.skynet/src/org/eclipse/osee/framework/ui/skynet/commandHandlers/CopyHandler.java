@@ -19,8 +19,11 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.accessProviders.ArtifactAccessProvider;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactClipboard;
 import org.eclipse.search.ui.text.Match;
 import org.eclipse.ui.IWorkbenchPartSite;
@@ -72,7 +75,12 @@ public class CopyHandler extends AbstractHandler {
             if (!names.isEmpty() && artifacts.isEmpty()) {
                clipboard.setTextToClipboard(names);
             } else if (!names.isEmpty() && !artifacts.isEmpty()) {
-               clipboard.setArtifactsToClipboard(artifacts, names);
+               try {
+                  clipboard.setArtifactsToClipboard(new ArtifactAccessProvider(),
+                     SkynetGuiPlugin.getInstance().getPolicyHandlerService(), artifacts, names);
+               } catch (OseeCoreException ex) {
+                  throw new ExecutionException(ex.getLocalizedMessage());
+               }
             }
          }
       }

@@ -62,6 +62,23 @@ public class AccessPolicyHandlerServiceImpl implements IAccessPolicyHandlerServi
    }
 
    @Override
+   public PermissionStatus hasArtifactPermission(Collection<? extends IBasicArtifact<?>> artifacts, PermissionEnum permission, Level level) throws OseeCoreException {
+      AccessDataQuery query = accessControlService.getAccessData(user, artifacts);
+      PermissionStatus permissionStatus = new PermissionStatus();
+
+      if (artifacts != null) {
+         for (IBasicArtifact<?> artifact : artifacts) {
+            query.artifactMatches(PermissionEnum.WRITE, artifact, permissionStatus);
+
+            if (printErrorMessage(artifacts, permissionStatus, level)) {
+               break;
+            }
+         }
+      }
+      return permissionStatus;
+   }
+
+   @Override
    public PermissionStatus hasRelationSidePermission(Collection<RelationTypeSide> relationTypeSides, PermissionEnum permission, Level level) throws OseeCoreException {
       AccessDataQuery query = accessControlService.getAccessData(user, relationTypeSides);
       PermissionStatus permissionStatus = new PermissionStatus();

@@ -36,19 +36,20 @@ public class ArtifactTypeFilteredTreeEntryDialog extends ArtifactTypeFilteredTre
    private XText xText = null;
    private final Branch branch;
    private final IAccessPolicyHandlerService accessService;
+   private final ArtifactTypeAccessProvder artifactTypeAccessProvder;
 
-   public ArtifactTypeFilteredTreeEntryDialog(IAccessPolicyHandlerService accessService, Branch branch, String title, String message, String entryName) {
+   public ArtifactTypeFilteredTreeEntryDialog(ArtifactTypeAccessProvder artifactTypeAccessProvder, IAccessPolicyHandlerService accessService, Branch branch, String title, String message, String entryName) {
       super(title, message);
       this.entryName = entryName;
       this.branch = branch;
       this.accessService = accessService;
+      this.artifactTypeAccessProvder = artifactTypeAccessProvder;
    }
 
    @Override
    public void setInput(Collection<? extends IArtifactType> input) {
-      ArtifactTypeAccessProvder artifactTypeAccessProvder = new ArtifactTypeAccessProvder(accessService, branch, input);
       try {
-         input = artifactTypeAccessProvder.getWritableTypes();
+         input = artifactTypeAccessProvder.getWritableTypes(accessService, branch, input);
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }

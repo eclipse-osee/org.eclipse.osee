@@ -13,11 +13,15 @@ package org.eclipse.osee.framework.ui.skynet.util;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.core.enums.PermissionEnum;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.ui.skynet.HTMLTransferFormatter;
+import org.eclipse.osee.framework.ui.skynet.accessProviders.ArtifactAccessProvider;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
+import org.eclipse.osee.framework.ui.skynet.artifact.IAccessPolicyHandlerService;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.HTMLTransfer;
 import org.eclipse.swt.dnd.TextTransfer;
@@ -36,7 +40,7 @@ public class ArtifactClipboard {
       this.viewId = viewId;
    }
 
-   public void setArtifactsToClipboard(Collection<Artifact> artifactTransferData, Collection<String> textTransferData) {
+   public void setArtifactsToClipboard(ArtifactAccessProvider artifactAccessProvider, IAccessPolicyHandlerService policyHandlerService, List<Artifact> artifactTransferData, List<String> textTransferData) throws OseeCoreException {
       if (artifactTransferData == null) {
          throw new IllegalArgumentException("Artifacts can not be null for artifact copy.");
       }
@@ -44,7 +48,11 @@ public class ArtifactClipboard {
          throw new IllegalArgumentException("Artifacts can not be empty.");
       }
 
-      Artifact[] artifacts = artifactTransferData.toArray(new Artifact[artifactTransferData.size()]);
+      List<Artifact> authorizedArtifacts =
+         artifactAccessProvider.getArtifactsWithPermission(policyHandlerService, PermissionEnum.WRITE,
+            artifactTransferData);
+
+      Artifact[] artifacts = authorizedArtifacts.toArray(new Artifact[authorizedArtifacts.size()]);
 
       clipboard.setContents(
          new Object[] {

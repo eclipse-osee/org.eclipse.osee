@@ -85,6 +85,8 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.plugin.util.SelectionCountChangeListener;
 import org.eclipse.osee.framework.ui.skynet.access.PolicyDialog;
+import org.eclipse.osee.framework.ui.skynet.accessProviders.ArtifactAccessProvider;
+import org.eclipse.osee.framework.ui.skynet.accessProviders.ArtifactTypeAccessProvder;
 import org.eclipse.osee.framework.ui.skynet.action.OpenAssociatedArtifactFromBranchProvider;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactNameConflictHandler;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPasteOperation;
@@ -639,8 +641,9 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
             artifactTypes.remove(CoreArtifactTypes.RootArtifact);
 
             ArtifactTypeFilteredTreeEntryDialog dialog =
-               new ArtifactTypeFilteredTreeEntryDialog(SkynetGuiPlugin.getInstance().getPolicyHandlerService(), branch,
-                  "New Child", "Enter name and select Artifact type to create", "Artifact Name");
+               new ArtifactTypeFilteredTreeEntryDialog(new ArtifactTypeAccessProvder(),
+                  SkynetGuiPlugin.getInstance().getPolicyHandlerService(), branch, "New Child",
+                  "Enter name and select Artifact type to create", "Artifact Name");
             dialog.setInput(artifactTypes);
             return dialog;
          }
@@ -968,15 +971,19 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
 
          @Override
          public void widgetSelected(SelectionEvent e) {
-            performCopy();
+            try {
+               performCopy();
+            } catch (OseeCoreException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            }
          }
       });
    }
 
-   private void performCopy() {
+   private void performCopy() throws OseeCoreException {
       IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
-      ArrayList<Artifact> artifactTransferData = new ArrayList<Artifact>();
-      ArrayList<String> textTransferData = new ArrayList<String>();
+      List<Artifact> artifactTransferData = new ArrayList<Artifact>();
+      List<String> textTransferData = new ArrayList<String>();
       Artifact artifact;
 
       if (selection != null && !selection.isEmpty()) {
@@ -988,7 +995,8 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
                textTransferData.add(artifact.getName());
             }
          }
-         artifactClipboard.setArtifactsToClipboard(artifactTransferData, textTransferData);
+         artifactClipboard.setArtifactsToClipboard(new ArtifactAccessProvider(),
+            SkynetGuiPlugin.getInstance().getPolicyHandlerService(), artifactTransferData, textTransferData);
       }
    }
 

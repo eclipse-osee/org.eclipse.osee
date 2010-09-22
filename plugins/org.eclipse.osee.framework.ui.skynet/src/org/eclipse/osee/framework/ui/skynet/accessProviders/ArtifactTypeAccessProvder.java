@@ -42,8 +42,9 @@ public class ArtifactTypeAccessProvder {
    public Collection<? extends IArtifactType> getWritableTypes() throws OseeCoreException {
       Iterator<? extends IArtifactType> artTypeIterator = artifactTypes.iterator();
 
-      // Remove ArtifactTypes that do not have write permissions.
+      // Remove ArtifactTypes that do not have write permission.
       while (artTypeIterator.hasNext()) {
+         artTypeIterator.next();
          if (!accessService.hasArtifactTypePermission(branch, Collections.singleton(artTypeIterator.next()),
             PermissionEnum.WRITE, Level.WARNING).matched()) {
             artTypeIterator.remove();

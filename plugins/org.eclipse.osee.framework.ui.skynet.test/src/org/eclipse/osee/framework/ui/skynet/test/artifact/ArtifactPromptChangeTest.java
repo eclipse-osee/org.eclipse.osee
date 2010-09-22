@@ -74,6 +74,11 @@ public class ArtifactPromptChangeTest {
       public PermissionStatus hasArtifactTypePermission(IOseeBranch branch, Collection<? extends IArtifactType> artifactTypes, PermissionEnum permission, Level level) throws OseeCoreException {
          return new PermissionStatus();
       }
+
+      @Override
+      public PermissionStatus hasArtifactPermission(Collection<? extends IBasicArtifact<?>> artifacts, PermissionEnum permission, Level level) throws OseeCoreException {
+         return new PermissionStatus();
+      }
    }
 
    private static class MockPromptFactory implements IPromptFactory {

@@ -42,7 +42,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.artifact.ISelectedArtifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSideSorter;
-import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
+import org.eclipse.osee.framework.ui.skynet.accessProviders.RelationTypeAccessProvider;
 import org.eclipse.osee.framework.ui.skynet.RelationOrderContributionItem.SelectionListener;
 import org.eclipse.osee.framework.ui.skynet.action.RevealInExplorerAction;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
@@ -551,26 +551,28 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
 
       Object[] objects = selection.toArray();
       for (Object object : objects) {
-         if (object instanceof WrapperForRelationLink) {
-            WrapperForRelationLink wrapper = (WrapperForRelationLink) object;
-            try {
+         if (hasWriteRelationTypePermission(object)) {
+            if (object instanceof WrapperForRelationLink) {
+               WrapperForRelationLink wrapper = (WrapperForRelationLink) object;
+               try {
                RelationManager.deleteRelation(wrapper.getRelationType(), wrapper.getArtifactA(), wrapper.getArtifactB());
-               Object parent = ((ITreeContentProvider) treeViewer.getContentProvider()).getParent(object);
-               if (parent != null) {
-                  treeViewer.refresh(parent);
-               } else {
-                  treeViewer.refresh();
+                  Object parent = ((ITreeContentProvider) treeViewer.getContentProvider()).getParent(object);
+                  if (parent != null) {
+                     treeViewer.refresh(parent);
+                  } else {
+                     treeViewer.refresh();
+                  }
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                }
-            } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-            }
-         } else if (object instanceof RelationTypeSideSorter) {
-            RelationTypeSideSorter group = (RelationTypeSideSorter) object;
-            try {
-               RelationManager.deleteRelations(artifact, group.getRelationType(), group.getSide());
-               treeViewer.refresh(group);
-            } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            } else if (object instanceof RelationTypeSideSorter) {
+               RelationTypeSideSorter group = (RelationTypeSideSorter) object;
+               try {
+                  RelationManager.deleteRelations(artifact, group.getRelationType(), group.getSide());
+                  treeViewer.refresh(group);
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+               }
             }
          }
       }
@@ -717,26 +719,28 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
          TreeItem selected = treeViewer.getTree().getItem(treeViewer.getTree().toControl(event.x, event.y));
          Object object = selected.getData();
          try {
-            if (object instanceof WrapperForRelationLink) {//used for ordering
-               WrapperForRelationLink targetLink = (WrapperForRelationLink) object;
-               Artifact[] artifactsToMove = ((ArtifactData) event.data).getArtifacts();
-               for (Artifact artifactToMove : artifactsToMove) {
+            if (hasWriteRelationTypePermission(object)) {
+               if (object instanceof WrapperForRelationLink) {//used for ordering
+                  WrapperForRelationLink targetLink = (WrapperForRelationLink) object;
+                  Artifact[] artifactsToMove = ((ArtifactData) event.data).getArtifacts();
+                  for (Artifact artifactToMove : artifactsToMove) {
                   IRelationEnumeration typeSide =
-                     new RelationTypeSide(targetLink.getRelationType(), targetLink.getRelationSide());
-                  artifact.setRelationOrder(typeSide, targetLink.getOther(), isFeedbackAfter, artifactToMove);
+                        new RelationTypeSide(targetLink.getRelationType(), targetLink.getRelationSide());
+                     artifact.setRelationOrder(typeSide, targetLink.getOther(), isFeedbackAfter, artifactToMove);
+                  }
+                  treeViewer.refresh();
+                  editor.onDirtied();
+               } else if (object instanceof RelationTypeSideSorter) {
+                  RelationTypeSideSorter group = (RelationTypeSideSorter) object;
+
+                  RelationExplorerWindow window = new RelationExplorerWindow(treeViewer, group);
+
+                  ArtifactDragDropSupport.performDragDrop(event, window,
+                     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
+                  window.createArtifactInformationBox();
+                  treeViewer.refresh();
+                  editor.onDirtied();
                }
-               treeViewer.refresh();
-               editor.onDirtied();
-            } else if (object instanceof RelationTypeSideSorter) {
-               RelationTypeSideSorter group = (RelationTypeSideSorter) object;
-
-               RelationExplorerWindow window = new RelationExplorerWindow(treeViewer, group);
-
-               ArtifactDragDropSupport.performDragDrop(event, window,
-                  PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
-               window.createArtifactInformationBox();
-               treeViewer.refresh();
-               editor.onDirtied();
             }
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -744,6 +748,28 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
 
          isFeedbackAfter = false;
       }
+   }
+
+   private boolean hasWriteRelationTypePermission(Object object) {
+      boolean hasPermission = false;
+      try {
+         RelationTypeSide relationTypeSide = null;
+         if (object instanceof WrapperForRelationLink) {//used for ordering
+            WrapperForRelationLink targetLink = (WrapperForRelationLink) object;
+            relationTypeSide = new RelationTypeSide(targetLink.getRelationType(), targetLink.getRelationSide());
+         } else if (object instanceof RelationTypeSideSorter) {
+            RelationTypeSideSorter group = (RelationTypeSideSorter) object;
+            relationTypeSide = new RelationTypeSide(group.getRelationType(), group.getSide());
+         }
+
+         RelationTypeAccessProvider relationTypeAccessProvider = new RelationTypeAccessProvider();
+         hasPermission =
+            relationTypeAccessProvider.relationTypeHasPermission(
+               SkynetGuiPlugin.getInstance().getPolicyHandlerService(), Collections.asCollection(relationTypeSide));
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+      return hasPermission;
    }
 
    private void setHelpContexts() {
