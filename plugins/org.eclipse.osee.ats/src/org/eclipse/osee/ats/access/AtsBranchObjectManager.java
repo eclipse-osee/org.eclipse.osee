@@ -34,7 +34,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 public class AtsBranchObjectManager implements AtsAccessContextIdResolver {
 
    private final Collection<IAtsAccessControlService> atsAccessServices;
-
    private final IOseeBranch atsBranch;
 
    public AtsBranchObjectManager(IOseeBranch atsBranch, Collection<IAtsAccessControlService> atsAccessServices) {
@@ -60,6 +59,7 @@ public class AtsBranchObjectManager implements AtsAccessContextIdResolver {
          // If artifact has a context id on it, use that
          contextId = getFromArtifact(artifact);
          if (contextId == null) {
+            // Else, get from associated artifact
             Artifact assocArtifact =
                ArtifactQuery.getArtifactFromId(artifact.getBranch().getAssociatedArtifactId(), atsBranch);
             ArtifactType assocArtType = assocArtifact.getArtifactType();
@@ -106,7 +106,7 @@ public class AtsBranchObjectManager implements AtsAccessContextIdResolver {
       return null;
    }
 
-   private AccessContextId getFromArtifact(Artifact artifact) {
+   private AccessContextId getFromArtifact(Artifact artifact) throws OseeCoreException {
       if (artifact.isOfType(CoreArtifactTypes.AbstractAccessControlled)) {
          try {
             List<String> attributes = artifact.getAttributesToStringList(CoreAttributeTypes.AccessContextId);
