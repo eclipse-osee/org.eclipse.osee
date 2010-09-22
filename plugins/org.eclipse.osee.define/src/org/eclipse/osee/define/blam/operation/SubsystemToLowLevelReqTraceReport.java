@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
@@ -95,7 +96,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
       generateSubsystemToLowLevelReqTrace();
 
       excelWriter.endWorkbook();
-      IFile iFile = OseeData.getIFile("Subsystem_To_Lower_Level_Trace.xml");
+      IFile iFile = OseeData.getIFile("Subsystem_To_Lower_Level_Trace_" + Lib.getDateTimeString() + ".xml");
       AIFile.writeToFile(iFile, charBak);
       Program.launch(iFile.getLocation().toOSString());
    }
@@ -137,7 +138,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
       excelWriter.endSheet();
    }
 
-   private boolean isLowerLevelRequirement(Artifact artifact) throws OseeCoreException {
+   private boolean isLowerLevelRequirement(Artifact artifact) {
       for (ArtifactType artifactType : lowerLevelTypes) {
          if (artifact.isOfType(artifactType)) {
             return true;
