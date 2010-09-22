@@ -101,11 +101,15 @@ final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
                try {
                   Artifact artifact = artifactMatch.getArtifact();
                   HashCollection<Attribute<?>, MatchLocation> matchData = artifactMatch.getMatchData();
-                  for (Attribute<?> attribute : matchData.keySet()) {
-                     for (MatchLocation matchLocation : matchData.getValues(attribute)) {
-                        resultCollector.acceptMatchData(artifact, attribute, matchLocation);
-                        lineMatches++;
+                  if (!matchData.isEmpty()) {
+                     for (Attribute<?> attribute : matchData.keySet()) {
+                        for (MatchLocation matchLocation : matchData.getValues(attribute)) {
+                           resultCollector.acceptMatchData(artifact, attribute, matchLocation);
+                           lineMatches++;
+                        }
                      }
+                  } else {
+                     resultCollector.acceptArtifactMatch(artifactMatch);
                   }
                } catch (OseeCoreException ex) {
                   OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE,
