@@ -37,7 +37,7 @@ public class WorldEditorOperationProvider extends WorldEditorProvider implements
       // WorldEditor is provided to the operation independently
       // Don't need search type cause operation should already handle if it wants to search or re-search
       if (forcePend) {
-         Operations.executeAndPend(operation, true);
+         Operations.executeWork(operation);
       } else {
          Operations.executeAsJob(operation, true);
       }

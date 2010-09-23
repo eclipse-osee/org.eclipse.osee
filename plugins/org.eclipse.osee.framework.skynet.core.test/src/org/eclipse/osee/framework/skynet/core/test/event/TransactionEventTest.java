@@ -99,7 +99,7 @@ public class TransactionEventTest {
 
       // Delete it
       IOperation operation = new PurgeTransactionOperation(Activator.getInstance(), false, transIdToDelete);
-      Operations.executeAndPend(operation, false);
+      Operations.executeWork(operation);
 
       // Verify that all stuff reverted
       Assert.assertNotNull(resultTransEvent);

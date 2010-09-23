@@ -16,11 +16,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -108,12 +106,7 @@ public class WordTemplateFileDiffer {
       options.setValue("paragraphNumber", nextParagraphNumber);
       options.setValue("outlineType", outlineType);
 
-      Job job = RendererManager.diffInJob(artifactDeltas, options);
-      try {
-         job.join();
-      } catch (InterruptedException ex) {
-         OseeExceptions.wrapAndThrow(ex);
-      }
+      RendererManager.diff(artifactDeltas, options);
    }
 
    private List<Artifact> getStartArtifacts(List<Artifact> artifacts, Branch startBranch) throws OseeCoreException {

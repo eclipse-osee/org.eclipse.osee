@@ -242,19 +242,7 @@ public class BranchManager {
     * undo-able)
     */
    public static Job deleteBranch(final Branch branch) {
-      return deleteBranch(branch, false);
-   }
-
-   /**
-    * Delete a branch from the system. (This operation will set the branch state to deleted. This operation is
-    * undo-able)
-    */
-   public static Job deleteBranch(final Branch branch, boolean pend) {
-      if (pend) {
-         return Operations.executeAndPend(new DeleteBranchOperation(branch), true);
-      } else {
-         return Operations.executeAsJob(new DeleteBranchOperation(branch), true);
-      }
+      return Operations.executeAsJob(new DeleteBranchOperation(branch), true);
    }
 
    /**

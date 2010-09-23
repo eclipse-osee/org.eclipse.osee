@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
@@ -31,6 +32,7 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.DeleteBranchOperation;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
@@ -191,7 +193,8 @@ public class BranchEventTest {
       final String guid = workingBranch.getGuid();
       Assert.assertNotNull(workingBranch);
       Assert.assertNotSame(BranchState.DELETED, workingBranch.getBranchState());
-      BranchManager.deleteBranch(workingBranch, true);
+
+      Operations.executeWork(new DeleteBranchOperation(workingBranch));
 
       //      if (isRemoteTest()) {
       //         Thread.sleep(2000);

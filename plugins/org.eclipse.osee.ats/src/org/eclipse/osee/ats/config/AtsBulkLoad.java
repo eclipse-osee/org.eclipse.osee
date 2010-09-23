@@ -41,7 +41,7 @@ public class AtsBulkLoad {
          return;
       }
       if (pend) {
-         Operations.executeAndPend(new AtsLoadConfigArtifactsOperation(), false);
+         Operations.executeWork(new AtsLoadConfigArtifactsOperation());
       } else {
          Operations.executeAsJob(new AtsLoadConfigArtifactsOperation(), false);
       }

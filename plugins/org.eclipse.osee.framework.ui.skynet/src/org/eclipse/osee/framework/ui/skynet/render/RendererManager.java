@@ -23,7 +23,6 @@ import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -233,42 +232,39 @@ public final class RendererManager {
       return comparator.compare(baseVersion, newerVersion, baseFile, newerFile, PresentationType.MERGE_EDIT);
    }
 
-   public static Job diffInJob(ArtifactDelta artifactDelta) {
-      return diff(artifactDelta, null, true);
+   public static void diffInJob(ArtifactDelta artifactDelta) {
+      diff(artifactDelta, null, true);
    }
 
-   public static Job diffInJob(ArtifactDelta artifactDelta, VariableMap options) {
-      return diff(artifactDelta, options, true);
+   public static void diffInJob(ArtifactDelta artifactDelta, VariableMap options) {
+      diff(artifactDelta, options, true);
    }
 
-   public static Job diff(ArtifactDelta artifactDelta, VariableMap options) {
-      return diff(artifactDelta, options, false);
+   public static void diff(ArtifactDelta artifactDelta, VariableMap options) {
+      diff(artifactDelta, options, false);
    }
 
-   public static Job diff(ArtifactDelta artifactDelta) {
-      return diff(artifactDelta, null, false);
+   public static void diffInJob(Collection<ArtifactDelta> artifactDeltas) {
+      diffInJob(artifactDeltas, null);
    }
 
-   public static Job diffInJob(Collection<ArtifactDelta> artifactDeltas) {
-      return diff(artifactDeltas, null);
-   }
-
-   public static Job diffInJob(Collection<ArtifactDelta> artifactDeltas, VariableMap options) {
-      return diff(artifactDeltas, options);
-   }
-
-   private static Job diff(Collection<ArtifactDelta> artifactDeltas, VariableMap options) {
+   public static void diffInJob(Collection<ArtifactDelta> artifactDeltas, VariableMap options) {
       IOperation operation = new DiffUsingRenderer(artifactDeltas, options);
-      return Operations.executeAsJob(operation, true);
+      Operations.executeAsJob(operation, true);
    }
 
-   private static Job diff(ArtifactDelta artifactDelta, VariableMap options, boolean asynchronous) {
+   public static void diff(Collection<ArtifactDelta> artifactDeltas, VariableMap options) {
+      IOperation operation = new DiffUsingRenderer(artifactDeltas, options);
+      Operations.executeWork(operation);
+   }
+
+   private static void diff(ArtifactDelta artifactDelta, VariableMap options, boolean asynchronous) {
       IOperation operation = new DiffUsingRenderer(artifactDelta, options);
 
       if (asynchronous) {
-         return Operations.executeAsJob(operation, true);
+         Operations.executeAsJob(operation, true);
       } else {
-         return Operations.executeAndPend(operation, true);
+         Operations.executeWork(operation);
       }
    }
 }

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.operation;
 
-import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.SubMonitor;
@@ -19,6 +18,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.internal.Activator;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -82,10 +82,6 @@ public final class Operations {
       return scheduleJob(new OperationJob(operation), user, Job.LONG, null);
    }
 
-   public static Job executeAndPend(IOperation operation, boolean user) {
-      return scheduleJob(new OperationJob(operation), user, Job.LONG, null, true);
-   }
-
    public static Job executeAsJob(IOperation operation, boolean user, int priority, IJobChangeListener jobChangeListener) {
       return scheduleJob(new OperationJob(operation), user, priority, jobChangeListener);
    }
@@ -105,7 +101,7 @@ public final class Operations {
          try {
             job.join();
          } catch (InterruptedException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
       return job;

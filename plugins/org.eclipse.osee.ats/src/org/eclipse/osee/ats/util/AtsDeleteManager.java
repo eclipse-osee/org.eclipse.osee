@@ -144,7 +144,7 @@ public class AtsDeleteManager {
             }
          };
       if (forcePend) {
-         Operations.executeAndPend(operation, true);
+         Operations.executeWork(operation);
       } else {
          Operations.executeAsJob(operation, true);
       }
