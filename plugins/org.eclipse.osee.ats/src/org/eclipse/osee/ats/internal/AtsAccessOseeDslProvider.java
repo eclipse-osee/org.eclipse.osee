@@ -16,10 +16,13 @@ import org.eclipse.osee.ats.access.AtsAccessUtil;
 import org.eclipse.osee.framework.core.dsl.integration.OseeDslProvider;
 import org.eclipse.osee.framework.core.dsl.integration.util.ModelUtil;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl;
+import org.eclipse.osee.framework.core.dsl.ui.integration.operations.OseeTypesExportOperation;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -40,7 +43,16 @@ public class AtsAccessOseeDslProvider implements OseeDslProvider {
    public void loadDsl() throws OseeCoreException {
       Artifact artifact = getStorageArtifact();
       String accessModel = artifact.getSoleAttributeValue(CoreAttributeTypes.GeneralStringData);
-      oseeDsl = ModelUtil.loadModel("ats:/xtext/cm.access.osee", accessModel);
+
+      ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      IOperation operation = new OseeTypesExportOperation(outputStream);
+      Operations.executeWorkAndCheckStatus(operation);
+      try {
+         outputStream.write(accessModel.getBytes("utf-8"));
+         oseeDsl = ModelUtil.loadModel("ats:/xtext/cm.access.osee", outputStream.toString("utf-8"));
+      } catch (Exception ex) {
+         OseeExceptions.wrap(ex);
+      }
    }
 
    @Override
