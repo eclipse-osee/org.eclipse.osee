@@ -55,6 +55,16 @@ public class CoveragePackage extends CoveragePackageBase {
    }
 
    @Override
+   public ICoverage getCoverage(String guid) {
+      for (ICoverage coverage : getChildren(true)) {
+         if (coverage.getGuid().equals(guid)) {
+            return coverage;
+         }
+      }
+      return null;
+   }
+
+   @Override
    public void saveKeyValues(KeyValueArtifact keyValueArtifact) {
       keyValueArtifact.setValue("date", String.valueOf(creationDate.getTime()));
    }

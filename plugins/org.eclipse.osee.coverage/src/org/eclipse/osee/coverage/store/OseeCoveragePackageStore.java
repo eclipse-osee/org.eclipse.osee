@@ -26,6 +26,8 @@ import org.eclipse.osee.coverage.model.CoverageOptionManagerDefault;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
+import org.eclipse.osee.coverage.model.ICoverageItemProvider;
+import org.eclipse.osee.coverage.model.ICoverageUnitProvider;
 import org.eclipse.osee.coverage.model.IWorkProductRelatable;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -91,16 +93,23 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
             }
          }
       }
-      loadWorkProductTaskNames();
+      loadWorkProductTaskNames(coveragePackage.getCoverageUnits());
    }
 
-   private void loadWorkProductTaskNames() {
-      for (ICoverage coverage : coveragePackage.getCoverageItems()) {
+   public void loadWorkProductTaskNames(Collection<? extends ICoverage> coverages) {
+      this.coveragePackage.getWorkProductTaskProvider().reload();
+      for (ICoverage coverage : coverages) {
          if (coverage instanceof IWorkProductRelatable) {
             if (Strings.isValid(((IWorkProductRelatable) coverage).getWorkProductGuid())) {
                ((IWorkProductRelatable) coverage).setWorkProductTask(this.coveragePackage.getWorkProductTaskProvider().getWorkProductTask(
                   ((IWorkProductRelatable) coverage).getWorkProductGuid()));
             }
+         }
+         if (coverage instanceof ICoverageUnitProvider) {
+            loadWorkProductTaskNames(((ICoverageUnitProvider) coverage).getCoverageUnits());
+         }
+         if (coverage instanceof ICoverageItemProvider) {
+            loadWorkProductTaskNames(((ICoverageItemProvider) coverage).getCoverageItems());
          }
       }
    }

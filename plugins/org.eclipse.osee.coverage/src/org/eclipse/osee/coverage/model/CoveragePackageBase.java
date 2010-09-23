@@ -65,6 +65,15 @@ public abstract class CoveragePackageBase extends NamedIdentity implements ICove
       return items;
    }
 
+   public ICoverage getCoverage(String guid) {
+      for (ICoverage coverage : getChildren(true)) {
+         if (coverage.getGuid().equals(guid)) {
+            return coverage;
+         }
+      }
+      return null;
+   }
+
    @Override
    public String getCoveragePercentStr() {
       return CoverageUtil.getPercent(getCoverageItemsCovered().size(), getCoverageItems().size(), true).getSecond();

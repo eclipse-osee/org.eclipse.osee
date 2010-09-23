@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.data.NamedIdentity;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -77,14 +78,18 @@ public class CoverageItem extends NamedIdentity implements ICoverage, IWorkProdu
     * Copies the coverage unit. Does not copy test units.
     */
    public CoverageItem copy(CoverageUnit parent) throws OseeCoreException {
-      CoverageItem coverageitem = new CoverageItem(getGuid(), parent, coverageMethod, orderNumber);
-      coverageitem.setName(getName());
-      coverageitem.setOrderNumber(orderNumber);
-      coverageitem.setRationale(rationale);
-      coverageitem.setTestUnitProvider(testUnitProvider);
-      coverageitem.setWorkProductGuid(workProductGuid);
-      coverageitem.setWorkProductTask(workProductTask);
-      return coverageitem;
+      CoverageItem coverageItem = new CoverageItem(getGuid(), parent, coverageMethod, orderNumber);
+      copy(this, coverageItem);
+      return coverageItem;
+   }
+
+   public void copy(CoverageItem fromItem, CoverageItem toItem) throws OseeCoreException {
+      toItem.setName(fromItem.getName());
+      toItem.setOrderNumber(fromItem.getOrderNumber());
+      toItem.setRationale(fromItem.getRationale());
+      toItem.setTestUnitProvider(fromItem.getTestUnitProvider());
+      toItem.setWorkProductGuid(fromItem.getWorkProductGuid());
+      toItem.setWorkProductTask(fromItem.getWorkProductTask());
    }
 
    public Collection<String> getTestUnits() throws OseeCoreException {
@@ -243,6 +248,12 @@ public class CoverageItem extends NamedIdentity implements ICoverage, IWorkProdu
       this.testUnitProvider = testUnitProvider;
    }
 
+   public static Pair<String, String> getNameGuidFromStore(String string) throws Exception {
+      PropertyStore store = new PropertyStore();
+      store.load(string);
+      return new Pair<String, String>(store.get("name"), store.get("guid"));
+   }
+
    private void setFromPropertyStore(PropertyStore store, CoverageOptionManager coverageOptionManager) throws OseeCoreException {
       setCoverageMethod(coverageOptionManager.get(store.get("methodType")));
       if (Strings.isValid(store.get("order"))) {
@@ -310,7 +321,7 @@ public class CoverageItem extends NamedIdentity implements ICoverage, IWorkProdu
          return getWorkProductTask().toString();
       }
       if (Strings.isValid(workProductGuid)) {
-         return workProductGuid;
+         return "Task Not Found: " + workProductGuid;
       }
       return "";
    }

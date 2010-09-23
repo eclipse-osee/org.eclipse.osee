@@ -363,7 +363,7 @@ public class CoverageUnit extends NamedIdentity implements IWorkProductRelatable
          return getWorkProductTask().toString();
       }
       if (Strings.isValid(workProductGuid)) {
-         return workProductGuid;
+         return "Task Not Found: " + workProductGuid;
       }
       return "";
    }

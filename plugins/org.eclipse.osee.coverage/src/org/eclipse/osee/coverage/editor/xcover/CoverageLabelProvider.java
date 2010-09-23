@@ -31,6 +31,8 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.skynet.core.utility.UsersByIds;
 import org.eclipse.osee.framework.ui.skynet.FrameworkArtifactImageProvider;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.cm.IOseeCmService.ImageType;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 
@@ -68,6 +70,11 @@ public class CoverageLabelProvider extends XViewerLabelProvider {
       }
       if (xCol.equals(CoverageXViewerFactory.Name)) {
          return ImageManager.getImage(coverageItem.getOseeImage());
+      }
+      if (xCol.equals(CoverageXViewerFactory.Work_Product_Task)) {
+         if (Strings.isValid(coverageItem.getWorkProductTaskStr())) {
+            return ImageManager.getImage(SkynetGuiPlugin.getInstance().getOseeCmService().getImage(ImageType.Task));
+         }
       }
       return null;
    }

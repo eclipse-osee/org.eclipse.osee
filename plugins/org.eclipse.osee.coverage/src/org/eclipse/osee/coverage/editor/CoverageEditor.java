@@ -21,6 +21,7 @@ import org.eclipse.osee.coverage.event.CoverageEventManager;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.CoveragePackageBase;
+import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
 import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.coverage.util.CoverageUtil;
@@ -272,6 +273,11 @@ public class CoverageEditor extends FormEditor implements IActionable {
          }
       });
       return editors;
+   }
+
+   public void refresh(ICoverage coverage) {
+      coverageEditorCoverageTab.refresh(coverage);
+      coverageEditorOverviewTab.refreshActionHandler();
    }
 
    public static void closeAll() {

@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.Set;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.osee.coverage.action.IRefreshable;
 import org.eclipse.osee.coverage.editor.params.CoverageParameters;
 import org.eclipse.osee.coverage.editor.params.CoverageParametersComposite;
 import org.eclipse.osee.coverage.editor.params.CoverageParametersTextFilter;
@@ -54,7 +55,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 /**
  * @author Donald G. Dunne
  */
-public class CoverageEditorCoverageTab extends FormPage implements ISaveable {
+public class CoverageEditorCoverageTab extends FormPage implements ISaveable, IRefreshable {
 
    private XCoverageViewer xCoverageViewer;
    private ScrolledForm scrolledForm;
@@ -194,6 +195,21 @@ public class CoverageEditorCoverageTab extends FormPage implements ISaveable {
    @Override
    public String getId() {
       return PAGE_ID;
+   }
+
+   @Override
+   public void refresh(Object element) {
+      xCoverageViewer.getXViewer().refresh(element);
+   }
+
+   @Override
+   public void update(Object element) {
+      xCoverageViewer.getXViewer().update(element);
+   }
+
+   @Override
+   public void remove(Object element) {
+      // do nothing
    }
 
 }

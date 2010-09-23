@@ -28,6 +28,8 @@ import org.eclipse.osee.coverage.action.EditCoverageNotesAction;
 import org.eclipse.osee.coverage.action.EditRationaleAction;
 import org.eclipse.osee.coverage.action.IRefreshable;
 import org.eclipse.osee.coverage.action.ISelectedCoverageEditorItem;
+import org.eclipse.osee.coverage.action.OpenWorkProductTaskAction;
+import org.eclipse.osee.coverage.action.RemoveWorkProductTaskAction;
 import org.eclipse.osee.coverage.action.ViewSourceAction;
 import org.eclipse.osee.coverage.editor.xcover.XCoverageViewer.TableType;
 import org.eclipse.osee.coverage.internal.Activator;
@@ -57,7 +59,7 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
 
    protected final XCoverageViewer xCoverageViewer;
    Action editRationaleAction, editMethodAction, viewSourceAction, editAssigneesAction, editCoverageStatusAction,
-      deleteCoverUnitAction, createWorkProductTaskAction;
+      deleteCoverUnitAction, createWorkProductTaskAction, removeWorkProductTaskAction, openWorkProductTaskAction;
 
    public CoverageXViewer(Composite parent, int style, XCoverageViewer xCoverageViewer) {
       this(parent, style, new CoverageXViewerFactory(), xCoverageViewer);
@@ -83,6 +85,8 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
          editRationaleAction = new EditRationaleAction(this, this, this);
          deleteCoverUnitAction = new DeleteCoverUnitAction(this, this, this);
          createWorkProductTaskAction = new CreateWorkProductTaskAction(this, this, this);
+         removeWorkProductTaskAction = new RemoveWorkProductTaskAction(this, this, this);
+         openWorkProductTaskAction = new OpenWorkProductTaskAction(this);
       }
    }
 
@@ -173,6 +177,12 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
          if (xCoverageViewer.getWorkProductTaskProvider() != null) {
             mm.insertBefore(MENU_GROUP_PRE, createWorkProductTaskAction);
             createWorkProductTaskAction.setEnabled(isCreateWorkProductTaskActionEnabled());
+
+            mm.insertBefore(MENU_GROUP_PRE, removeWorkProductTaskAction);
+            removeWorkProductTaskAction.setEnabled(isCreateWorkProductTaskActionEnabled());
+
+            mm.insertBefore(MENU_GROUP_PRE, openWorkProductTaskAction);
+            openWorkProductTaskAction.setEnabled(isCreateWorkProductTaskActionEnabled());
          }
 
          mm.insertBefore(MENU_GROUP_PRE, new Separator());

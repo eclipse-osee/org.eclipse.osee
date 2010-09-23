@@ -14,9 +14,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.osee.coverage.event.CoverageChange;
 import org.eclipse.osee.coverage.event.CoverageEventType;
 import org.eclipse.osee.coverage.event.CoveragePackageEvent;
+import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.CoverageOptionManagerDefault;
@@ -25,7 +27,9 @@ import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
@@ -109,6 +113,28 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
       }
    }
 
+   public void reloadItem(CoverageEventType eventType, CoverageItem currentCoverageItem, CoverageChange change, CoverageOptionManager coverageOptionManager) throws OseeCoreException {
+      Artifact artifact = getArtifact(false);
+
+      if (artifact == null) {
+         return;
+      }
+      if (eventType == CoverageEventType.Modified) {
+         for (String value : artifact.getAttributesToStringList(CoverageAttributeTypes.Item)) {
+            CoverageItem dbChangedItem =
+               CoverageItem.createCoverageItem(coverageUnit, value, coverageOptionManager,
+                  DbTestUnitProvider.instance());
+            if (currentCoverageItem.getGuid().equals(dbChangedItem.getGuid())) {
+               currentCoverageItem.copy(currentCoverageItem, dbChangedItem);
+            }
+         }
+      } else if (eventType == CoverageEventType.Deleted) {
+         coverageUnit.removeCoverageItem(currentCoverageItem);
+      } else if (eventType == CoverageEventType.Added) {
+         // do nothing; full coverage unit needs reload
+      }
+   }
+
    @Override
    public Result save(SkynetTransaction transaction, CoveragePackageEvent coverageEvent) throws OseeCoreException {
       Artifact artifact = getArtifact(true);
@@ -127,15 +153,22 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
          items.add(coverageItem.toXml());
       }
       artifact.setAttributeValues(CoverageAttributeTypes.Item, items);
+      // Determine which items have changed and log for event
       for (Attribute<Object> attr : artifact.getAttributes(CoverageAttributeTypes.Item)) {
          if (attr.isDirty()) {
-            CoverageChange change = new CoverageChange(coverageUnit, CoverageEventType.Modified);
-            if (attr.getModificationType() == ModificationType.NEW || attr.getModificationType() == ModificationType.UNDELETED || attr.getModificationType() == ModificationType.INTRODUCED) {
-               change.setEventType(CoverageEventType.Added);
-            } else if (attr.getModificationType() == ModificationType.DELETED) {
-               change.setEventType(CoverageEventType.Deleted);
+            try {
+               Pair<String, String> nameGuid = CoverageItem.getNameGuidFromStore((String) attr.getValue());
+               CoverageChange change =
+                  new CoverageChange(nameGuid.getFirst(), nameGuid.getSecond(), CoverageEventType.Modified);
+               if (attr.getModificationType() == ModificationType.NEW || attr.getModificationType() == ModificationType.UNDELETED || attr.getModificationType() == ModificationType.INTRODUCED) {
+                  change.setEventType(CoverageEventType.Added);
+               } else if (attr.getModificationType() == ModificationType.DELETED) {
+                  change.setEventType(CoverageEventType.Deleted);
+               }
+               coverageEvent.getCoverages().add(change);
+            } catch (Exception ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
-            coverageEvent.getCoverages().add(change);
          }
       }
       if (Strings.isValid(coverageUnit.getNotes())) {
@@ -194,7 +227,7 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
       if (artifact.isDirty()) {
          CoverageChange change = new CoverageChange(coverageUnit, CoverageEventType.Modified);
          if (artifact.getModType() == ModificationType.NEW) {
-            change.setEventType(CoverageEventType.Added);
+            change.setEventType(CoverageEventType.Modified);
          }
          coverageEvent.getCoverages().add(change);
       }

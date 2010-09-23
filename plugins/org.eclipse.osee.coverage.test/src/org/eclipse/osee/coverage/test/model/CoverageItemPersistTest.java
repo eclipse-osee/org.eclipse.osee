@@ -97,18 +97,20 @@ public class CoverageItemPersistTest {
       Artifact artifact = new OseeCoverageUnitStore(parentCu, BranchManager.getCommonBranch()).getArtifact(true);
       Assert.assertNotNull(artifact);
       SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch(), "Save CoverageItem");
+      String coverageGuid = GUID.create();
+      String coverageName = "Test CP";
       CoveragePackageEvent coverageEvent =
-         new CoveragePackageEvent("Test CP", GUID.create(), CoverageEventType.Modified, GUID.create());
+         new CoveragePackageEvent(coverageName, coverageGuid, CoverageEventType.Modified, GUID.create());
       new OseeCoverageUnitStore(parentCu, BranchManager.getCommonBranch()).save(transaction, coverageEvent);
       transaction.execute();
 
       // Not name/guid cause not attached to coverage package
-      Assert.assertNull(coverageEvent.getPackage().getGuid());
-      Assert.assertNull(coverageEvent.getPackage().getName());
-      Assert.assertNull(coverageEvent.getPackage().getEventType().equals(CoverageEventType.Modified));
-      Assert.assertEquals(10, coverageEvent.getCoverages().size());
-      Assert.assertEquals(CoverageEventType.Added,
-         coverageEvent.getCoverages().iterator().next().getEventType());
+      Assert.assertEquals(coverageGuid, coverageEvent.getPackage().getGuid());
+      Assert.assertEquals(coverageName, coverageEvent.getPackage().getName());
+      Assert.assertEquals(CoverageEventType.Modified, coverageEvent.getPackage().getEventType());
+      // 10 coverage items added and one coverage unit == 11
+      Assert.assertEquals(11, coverageEvent.getCoverages().size());
+      Assert.assertEquals(CoverageEventType.Added, coverageEvent.getCoverages().iterator().next().getEventType());
 
       Assert.assertEquals(10, ci.getTestUnits().size());
    }
@@ -147,9 +149,8 @@ public class CoverageItemPersistTest {
       artifact = new OseeCoverageUnitStore(parentCu, BranchManager.getCommonBranch()).getArtifact(false);
       Assert.assertNull(artifact);
       Assert.assertEquals(0, CoverageTestUtil.getAllCoverageArtifacts().size());
-      Assert.assertEquals(10, coverageEvent.getCoverages().size());
-      Assert.assertEquals(CoverageEventType.Deleted,
-         coverageEvent.getCoverages().iterator().next().getEventType());
+      Assert.assertEquals(11, coverageEvent.getCoverages().size());
+      Assert.assertEquals(CoverageEventType.Deleted, coverageEvent.getCoverages().iterator().next().getEventType());
    }
 
 }

@@ -16,13 +16,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.coverage.editor.CoverageEditor;
 import org.eclipse.osee.coverage.internal.Activator;
+import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoveragePackage;
+import org.eclipse.osee.coverage.model.CoverageUnit;
+import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.msgs.CoverageChange1;
 import org.eclipse.osee.coverage.msgs.CoveragePackageEvent1;
 import org.eclipse.osee.coverage.store.CoverageArtifactTypes;
-import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
+import org.eclipse.osee.coverage.store.OseeCoverageUnitStore;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.ConnectionNode;
@@ -103,16 +111,30 @@ public class CoverageEventManager implements IArtifactEventListener, OseeMessagi
       connectionNode.subscribe(CoverageMessages.CoveragePackageEvent1, new CoverageMessageListener(), instance);
    }
 
-   public void sendRemoteEvent(CoveragePackageEvent coverageEvent) {
-      System.out.println(String.format("Sending CoveragePackageEvent [%s]", coverageEvent.getPackage().getName()));
-      if (connectionNode != null) {
-         try {
-            CoveragePackageEvent1 event1 = getCoveragePackageEvent(coverageEvent);
-            connectionNode.send(CoverageMessages.CoveragePackageEvent1, event1, instance);
-         } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
+   public void sendRemoteEvent(final CoveragePackageEvent coverageEvent) {
+      Job job = new Job("Sending Coverage Event") {
+
+         @Override
+         protected IStatus run(IProgressMonitor monitor) {
+            try {
+               Thread.sleep(1000);
+            } catch (InterruptedException ex1) {
+               // do nothing
+            }
+            System.out.println(String.format("Sending CoveragePackageEvent %d items [%s]",
+               coverageEvent.getCoverages().size(), coverageEvent.getPackage().getName()));
+            if (connectionNode != null) {
+               try {
+                  CoveragePackageEvent1 event1 = getCoveragePackageEvent(coverageEvent);
+                  connectionNode.send(CoverageMessages.CoveragePackageEvent1, event1, instance);
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
+               }
+            }
+            return Status.OK_STATUS;
          }
-      }
+      };
+      job.schedule();
    }
 
    public void register(CoverageEditor coverageEditor) {
@@ -176,14 +198,6 @@ public class CoverageEventManager implements IArtifactEventListener, OseeMessagi
             @Override
             public void run() {
                CoveragePackageEvent1 coverageEvent1 = (CoveragePackageEvent1) message;
-               try {
-                  // Don't process this event if sent from this session
-                  if (coverageEvent1.getSessionId().equals(ClientSessionManager.getSessionId())) {
-                     return;
-                  }
-               } catch (Exception ex) {
-                  OseeLog.log(Activator.class, Level.SEVERE, ex);
-               }
                CoveragePackageEvent coverageEvent = getCoveragePackageEvent(coverageEvent1);
                if (coverageEvent != null) {
                   processCoveragePackageEvent(coverageEvent);
@@ -200,12 +214,14 @@ public class CoverageEventManager implements IArtifactEventListener, OseeMessagi
          CoverageEventType packageModType = packageCoverage.getEventType();
          for (CoverageEditor editor : new CopyOnWriteArrayList<CoverageEditor>(editors)) {
             try {
-               if (packageModType == CoverageEventType.Deleted) {
-                  unregister(editor);
-                  editor.closeEditor();
-               } else if (packageModType == CoverageEventType.Modified) {
-                  CoveragePackage coveragePackage = (CoveragePackage) editor.getCoveragePackageBase();
-                  handleCoverageEditorSaveEvent(editor, coveragePackage, coverageEvent);
+               if (coverageEvent.getPackage().getGuid().equals(editor.getCoveragePackageBase().getGuid())) {
+                  if (packageModType == CoverageEventType.Deleted) {
+                     unregister(editor);
+                     editor.closeEditor();
+                  } else if (packageModType == CoverageEventType.Modified) {
+                     CoveragePackage coveragePackage = (CoveragePackage) editor.getCoveragePackageBase();
+                     handleCoverageEditorSaveEvent(editor, coveragePackage, coverageEvent);
+                  }
                }
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -215,8 +231,43 @@ public class CoverageEventManager implements IArtifactEventListener, OseeMessagi
 
    }
 
-   private void handleCoverageEditorSaveEvent(CoverageEditor editor, CoveragePackage coveragePackage, CoveragePackageEvent coverageEvent) {
-      System.out.println("handle coverage save event => " + coverageEvent);
+   private void handleCoverageEditorSaveEvent(CoverageEditor editor, CoveragePackage coveragePackage, CoveragePackageEvent coverageEvent) throws OseeCoreException {
+      System.out.println("handle coverage save event => " + coverageEvent.getCoverages().size() + " items");
+      for (CoverageChange change : coverageEvent.getCoverages()) {
+         if (change.getEventType() == CoverageEventType.Modified) {
+            reloadCoverage(editor, coveragePackage, change);
+         }
+      }
+   }
+
+   private void reloadCoverage(CoverageEditor editor, CoveragePackage coveragePackage, CoverageChange change) {
+      System.out.println("handle reloadCoverage coverage => " + change);
+      ICoverage coverage = coveragePackage.getCoverage(change.getGuid());
+      if (coverage != null) {
+         if (coverage instanceof CoverageItem) {
+            try {
+               CoverageUnit parent = (CoverageUnit) ((CoverageItem) coverage).getParent();
+               OseeCoverageUnitStore store = new OseeCoverageUnitStore(parent, editor.getBranch());
+               store.reloadItem(change.getEventType(), (CoverageItem) coverage, change,
+                  coveragePackage.getCoverageOptionManager());
+               OseeCoveragePackageStore cpStore = new OseeCoveragePackageStore(coveragePackage, editor.getBranch());
+               cpStore.loadWorkProductTaskNames(Arrays.asList(coverage));
+               editor.refresh(coverage);
+            } catch (OseeCoreException ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
+            }
+         } else if (coverage instanceof CoverageUnit) {
+            try {
+               OseeCoverageUnitStore store = new OseeCoverageUnitStore((CoverageUnit) coverage, editor.getBranch());
+               store.load(coveragePackage.getCoverageOptionManager());
+               OseeCoveragePackageStore cpStore = new OseeCoveragePackageStore(coveragePackage, editor.getBranch());
+               cpStore.loadWorkProductTaskNames(Arrays.asList(coverage));
+               editor.refresh(coverage);
+            } catch (OseeCoreException ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
+            }
+         }
+      }
    }
 
    @Override
@@ -237,6 +288,7 @@ public class CoverageEventManager implements IArtifactEventListener, OseeMessagi
          childChange1.setGuid(change.getGuid());
          childChange1.setName(change.getName());
          childChange1.setModTypeGuid(change.getEventType().getGuid());
+         event1.getCoverages().add(childChange1);
       }
       return event1;
    }
@@ -251,7 +303,7 @@ public class CoverageEventManager implements IArtifactEventListener, OseeMessagi
                   coveragePackageEvent1.getPackage().getGuid(), packageEventType, coveragePackageEvent1.getSessionId());
             event.setSessionId(coveragePackageEvent1.getSessionId());
             for (CoverageChange1 change : coveragePackageEvent1.getCoverages()) {
-               CoverageEventType eventType = CoverageEventType.getType(change.getGuid());
+               CoverageEventType eventType = CoverageEventType.getType(change.getModTypeGuid());
                if (eventType != null) {
                   event.getCoverages().add(new CoverageChange(change.getName(), change.getGuid(), eventType));
                } else {

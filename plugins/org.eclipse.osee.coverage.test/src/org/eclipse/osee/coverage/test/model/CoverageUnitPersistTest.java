@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.coverage.event.CoverageEventType;
+import org.eclipse.osee.coverage.event.CoveragePackageEvent;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.merge.IMergeItem;
 import org.eclipse.osee.coverage.merge.MergeImportManager;
@@ -202,7 +204,11 @@ public class CoverageUnitPersistTest {
       }
       Assert.assertEquals(10, item.getTestUnits().size());
       OseeCoverageUnitStore store = new OseeCoverageUnitStore(unit, BranchManager.getCommonBranch());
-      Result result = store.save();
+      CoveragePackageEvent coverageEvent =
+         new CoveragePackageEvent("Test CP", GUID.create(), CoverageEventType.Deleted, GUID.create());
+      SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch(), "Coverage Unit Commit");
+      Result result = store.save(transaction, coverageEvent);
+      transaction.execute();
       Assert.assertTrue(result.isTrue());
 
       Artifact artifact =

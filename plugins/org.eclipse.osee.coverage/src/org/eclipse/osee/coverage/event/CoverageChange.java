@@ -50,4 +50,8 @@ public class CoverageChange {
       this.coverageEventType = coverageEventType;
    }
 
+   @Override
+   public String toString() {
+      return String.format("[%s - %s - %s]", this.coverageEventType, this.guid, this.name);
+   }
 }
