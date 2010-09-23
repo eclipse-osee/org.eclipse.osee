@@ -42,7 +42,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionChange;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.systems.EventManagerData;
-import org.eclipse.osee.framework.skynet.core.event.systems.InternalEventManager2;
+import org.eclipse.osee.framework.skynet.core.event.systems.InternalEventManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
@@ -100,7 +100,7 @@ public class OseeEventManager {
       eventManagerData.getPriorityListeners().remove(listener);
    }
 
-   private static InternalEventManager2 getEventManager() {
+   private static InternalEventManager getEventManager() {
       return eventManagerData.getMessageEventManager();
    }
 

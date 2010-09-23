@@ -52,7 +52,7 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
  * 
  * @author Donald G. Dunne
  */
-public class InternalEventManager2 {
+public class InternalEventManager {
    public static interface ConnectionStatus {
       boolean isConnected();
    }
@@ -65,13 +65,13 @@ public class InternalEventManager2 {
    private final IFrameworkEventListener frameworkListener;
    private final ConnectionStatus connectionStatus;
 
-   public InternalEventManager2(IOseeCoreModelEventService coreModelEventService, Collection<IEventListener> listeners, Collection<IEventListener> priorityListeners, ExecutorService executorService, EventSystemPreferences preferences, ConnectionStatus connectionStatus) {
+   public InternalEventManager(IOseeCoreModelEventService coreModelEventService, Collection<IEventListener> listeners, Collection<IEventListener> priorityListeners, ExecutorService executorService, EventSystemPreferences preferences, ConnectionStatus connectionStatus) {
       this.coreModelEventService = coreModelEventService;
       this.listeners = listeners;
       this.priorityListeners = priorityListeners;
       this.executorService = executorService;
       this.preferences = preferences;
-      this.frameworkListener = new FrameworkEventToRemoteEvent2Listener(this);
+      this.frameworkListener = new FrameworkEventToRemoteEventListener(this);
       this.connectionStatus = connectionStatus;
    }
 
@@ -99,7 +99,7 @@ public class InternalEventManager2 {
     * For all IBranchEventListener, process priorityListeners, then normal listeners
     */
    public void processBranchEvent(Sender sender, BranchEvent branchEvent) {
-      EventUtil.eventLog(String.format("IEM2: processBranchEvent [%s]", branchEvent));
+      EventUtil.eventLog(String.format("IEM: processBranchEvent [%s]", branchEvent));
       for (IEventListener listener : priorityListeners) {
          try {
             if (listener instanceof IBranchEventListener) {
@@ -107,7 +107,7 @@ public class InternalEventManager2 {
             }
          } catch (Exception ex) {
             EventUtil.eventLog(
-               String.format("IEM2: processBranchEvent [%s] error processing priorityListeners", branchEvent), ex);
+               String.format("IEM: processBranchEvent [%s] error processing priorityListeners", branchEvent), ex);
          }
       }
       for (IEventListener listener : listeners) {
@@ -116,7 +116,7 @@ public class InternalEventManager2 {
                processBranchEventListener((IBranchEventListener) listener, sender, branchEvent);
             }
          } catch (Exception ex) {
-            EventUtil.eventLog(String.format("IEM2: processBranchEvent [%s] error processing listeners", branchEvent),
+            EventUtil.eventLog(String.format("IEM: processBranchEvent [%s] error processing listeners", branchEvent),
                ex);
          }
       }
@@ -147,7 +147,7 @@ public class InternalEventManager2 {
             }
          } catch (Exception ex) {
             EventUtil.eventLog(
-               String.format("IEM2: processArtsAndRels [%s] error processing priorityListeners", artifactEvent), ex);
+               String.format("IEM: processArtsAndRels [%s] error processing priorityListeners", artifactEvent), ex);
          }
       }
       for (IEventListener listener : listeners) {
@@ -156,14 +156,14 @@ public class InternalEventManager2 {
                processEventArtifactsAndRelationsListener((IArtifactEventListener) listener, artifactEvent, sender);
             }
          } catch (Exception ex) {
-            EventUtil.eventLog(
-               String.format("IEM2: processArtsAndRels [%s] error processing listeners", artifactEvent), ex);
+            EventUtil.eventLog(String.format("IEM: processArtsAndRels [%s] error processing listeners", artifactEvent),
+               ex);
          }
       }
    }
 
    private void processEventArtifactsAndRelationsListener(IArtifactEventListener listener, ArtifactEvent artifactEvent, Sender sender) {
-      EventUtil.eventLog(String.format("IEM2: processArtsAndRels [%s]", artifactEvent));
+      EventUtil.eventLog(String.format("IEM: processArtsAndRels [%s]", artifactEvent));
       // If any filter doesn't match, don't call listener
       if (((IEventFilteredListener) listener).getEventFilters() != null) {
          for (IEventFilter eventFilter : ((IEventFilteredListener) listener).getEventFilters()) {
@@ -188,14 +188,14 @@ public class InternalEventManager2 {
    }
 
    public void processAccessControlEvent(Sender sender, AccessControlEvent accessControlEvent) {
-      EventUtil.eventLog(String.format("IEM2: processAccessControlEvent [%s]", accessControlEvent));
+      EventUtil.eventLog(String.format("IEM: processAccessControlEvent [%s]", accessControlEvent));
       for (IEventListener listener : priorityListeners) {
          try {
             if (listener instanceof IAccessControlEventListener) {
                ((IAccessControlEventListener) listener).handleAccessControlArtifactsEvent(sender, accessControlEvent);
             }
          } catch (Exception ex) {
-            EventUtil.eventLog(String.format("IEM2: processAccessControlEvent [%s] error processing priorityListeners",
+            EventUtil.eventLog(String.format("IEM: processAccessControlEvent [%s] error processing priorityListeners",
                accessControlEvent), ex);
          }
       }
@@ -206,13 +206,13 @@ public class InternalEventManager2 {
             }
          } catch (Exception ex) {
             EventUtil.eventLog(
-               String.format("IEM2: processAccessControlEvent [%s] error processing listeners", accessControlEvent), ex);
+               String.format("IEM: processAccessControlEvent [%s] error processing listeners", accessControlEvent), ex);
          }
       }
    }
 
    public void processEventBroadcastEvent(Sender sender, BroadcastEvent broadcastEvent) {
-      EventUtil.eventLog(String.format("IEM2: processEventBroadcastEvent [%s]", broadcastEvent));
+      EventUtil.eventLog(String.format("IEM: processEventBroadcastEvent [%s]", broadcastEvent));
       if (broadcastEvent.getUsers().size() == 0) {
          return;
       }
@@ -223,7 +223,7 @@ public class InternalEventManager2 {
             }
          } catch (Exception ex) {
             EventUtil.eventLog(
-               String.format("IEM2: processEventBroadcastEvent [%s] error processing priorityListeners", broadcastEvent),
+               String.format("IEM: processEventBroadcastEvent [%s] error processing priorityListeners", broadcastEvent),
                ex);
          }
       }
@@ -234,13 +234,13 @@ public class InternalEventManager2 {
             }
          } catch (Exception ex) {
             EventUtil.eventLog(
-               String.format("IEM2: processEventBroadcastEvent [%s] error processing listeners", broadcastEvent), ex);
+               String.format("IEM: processEventBroadcastEvent [%s] error processing listeners", broadcastEvent), ex);
          }
       }
    }
 
    public void processRemoteEventManagerEvent(Sender sender, RemoteEventServiceEventType remoteEventServiceEvent) {
-      EventUtil.eventLog(String.format("IEM2: processRemoteEventManagerEvent [%s]", remoteEventServiceEvent));
+      EventUtil.eventLog(String.format("IEM: processRemoteEventManagerEvent [%s]", remoteEventServiceEvent));
       for (IEventListener listener : priorityListeners) {
          try {
             if (listener instanceof IRemoteEventManagerEventListener) {
@@ -248,9 +248,9 @@ public class InternalEventManager2 {
                   remoteEventServiceEvent);
             }
          } catch (Exception ex) {
-            EventUtil.eventLog(
-               String.format("IEM2: processRemoteEventManagerEvent [%s] error processing priorityListeners",
-                  remoteEventServiceEvent), ex);
+            EventUtil.eventLog(String.format(
+               "IEM: processRemoteEventManagerEvent [%s] error processing priorityListeners", remoteEventServiceEvent),
+               ex);
          }
       }
       for (IEventListener listener : listeners) {
@@ -260,14 +260,14 @@ public class InternalEventManager2 {
                   remoteEventServiceEvent);
             }
          } catch (Exception ex) {
-            EventUtil.eventLog(String.format("IEM2: processRemoteEventManagerEvent [%s] error processing listeners",
+            EventUtil.eventLog(String.format("IEM: processRemoteEventManagerEvent [%s] error processing listeners",
                remoteEventServiceEvent), ex);
          }
       }
    }
 
    public void processTransactionEvent(Sender sender, TransactionEvent transactionEvent) {
-      EventUtil.eventLog(String.format("IEM2: processTransactionEvent [%s]", transactionEvent));
+      EventUtil.eventLog(String.format("IEM: processTransactionEvent [%s]", transactionEvent));
       for (IEventListener listener : priorityListeners) {
          try {
             if (listener instanceof ITransactionEventListener) {
@@ -275,7 +275,7 @@ public class InternalEventManager2 {
             }
          } catch (Exception ex) {
             EventUtil.eventLog(
-               String.format("IEM2: processTransactionEvent [%s] error processing priorityListeners", transactionEvent),
+               String.format("IEM: processTransactionEvent [%s] error processing priorityListeners", transactionEvent),
                ex);
          }
       }
@@ -286,7 +286,7 @@ public class InternalEventManager2 {
             }
          } catch (Exception ex) {
             EventUtil.eventLog(
-               String.format("IEM2: processTransactionEvent [%s] error processing listeners", transactionEvent), ex);
+               String.format("IEM: processTransactionEvent [%s] error processing listeners", transactionEvent), ex);
          }
       }
    }
@@ -308,7 +308,7 @@ public class InternalEventManager2 {
       if (preferences.isDisableEvents()) {
          return;
       }
-      EventUtil.eventLog("IEM2: kickAccessControlEvent - type: " + accessControlEvent + sender + " artifacts: " + accessControlEvent.getArtifacts());
+      EventUtil.eventLog("IEM: kickAccessControlEvent - type: " + accessControlEvent + sender + " artifacts: " + accessControlEvent.getArtifacts());
       Runnable runnable = new Runnable() {
          @Override
          public void run() {
@@ -325,7 +325,7 @@ public class InternalEventManager2 {
                   sendRemoteEvent(FrameworkEventUtil.getRemoteAccessControlEvent(accessControlEvent));
                }
             } catch (Exception ex) {
-               EventUtil.eventLog("IEM2 kickAccessControlEvent", ex);
+               EventUtil.eventLog("IEM: kickAccessControlEvent", ex);
             }
          }
       };
@@ -337,7 +337,7 @@ public class InternalEventManager2 {
       if (preferences.isDisableEvents()) {
          return;
       }
-      EventUtil.eventLog("IEM2: kickLocalRemEvent: type: " + remoteEventServiceEventType + " - " + sender);
+      EventUtil.eventLog("IEM: kickLocalRemEvent: type: " + remoteEventServiceEventType + " - " + sender);
       Runnable runnable = new Runnable() {
          @Override
          public void run() {
@@ -359,7 +359,7 @@ public class InternalEventManager2 {
       if (preferences.isDisableEvents()) {
          return;
       }
-      EventUtil.eventLog("IEM2: kickArtifactReloadEvent [" + artifactEvent + "] - " + sender);
+      EventUtil.eventLog("IEM: kickArtifactReloadEvent [" + artifactEvent + "] - " + sender);
       Runnable runnable = new Runnable() {
          @Override
          public void run() {
@@ -374,7 +374,7 @@ public class InternalEventManager2 {
 
                // NO REMOTE KICK
             } catch (Exception ex) {
-               EventUtil.eventLog("IEM2 kickArtifactReloadEvent", ex);
+               EventUtil.eventLog("IEM: kickArtifactReloadEvent", ex);
             }
          }
       };
@@ -386,19 +386,19 @@ public class InternalEventManager2 {
     */
    public void kickBranchEvent(final Sender sender, final BranchEvent branchEvent) {
       if (branchEvent.getNetworkSender() == null) {
-         EventUtil.eventLog("IEM2: kickBranchEvent - ERROR networkSender can't be null.");
+         EventUtil.eventLog("IEM: kickBranchEvent - ERROR networkSender can't be null.");
          return;
       }
       if (preferences.isDisableEvents()) {
          return;
       }
-      EventUtil.eventLog("IEM2: kickBranchEvent: type: " + branchEvent.getEventType() + " guid: " + branchEvent.getBranchGuid() + " - " + sender);
+      EventUtil.eventLog("IEM: kickBranchEvent: type: " + branchEvent.getEventType() + " guid: " + branchEvent.getBranchGuid() + " - " + sender);
       Runnable runnable = new Runnable() {
          @Override
          public void run() {
             // Log if this is a loopback and what is happening
             if (preferences.isEnableRemoteEventLoopback()) {
-               EventUtil.eventLog("IEM2: BranchEvent Loopback enabled" + (sender.isLocal() ? " - Ignoring Local Kick" : " - Kicking Local from Loopback"));
+               EventUtil.eventLog("IEM: BranchEvent Loopback enabled" + (sender.isLocal() ? " - Ignoring Local Kick" : " - Kicking Local from Loopback"));
             }
             BranchEventType branchEventType = branchEvent.getEventType();
 
@@ -422,13 +422,13 @@ public class InternalEventManager2 {
    // Kick LOCAL and REMOTE ArtifactEvent
    public void kickArtifactEvent(final Sender sender, final ArtifactEvent artifactEvent) {
       if (artifactEvent.getNetworkSender() == null) {
-         EventUtil.eventLog("IEM2: kickArtifactEvent - ERROR networkSender can't be null.");
+         EventUtil.eventLog("IEM: kickArtifactEvent - ERROR networkSender can't be null.");
          return;
       }
       if (preferences.isDisableEvents()) {
          return;
       }
-      EventUtil.eventLog("IEM2: kickArtifactEvent [" + artifactEvent + "] - " + sender);
+      EventUtil.eventLog("IEM: kickArtifactEvent [" + artifactEvent + "] - " + sender);
       Runnable runnable = new Runnable() {
          @Override
          public void run() {
@@ -436,7 +436,7 @@ public class InternalEventManager2 {
             try {
                // Log if this is a loopback and what is happening
                if (preferences.isEnableRemoteEventLoopback()) {
-                  EventUtil.eventLog("IEM2: ArtifactEvent Loopback enabled" + (sender.isLocal() ? " - Ignoring Local Kick" : " - Kicking Local from Loopback"));
+                  EventUtil.eventLog("IEM: ArtifactEvent Loopback enabled" + (sender.isLocal() ? " - Ignoring Local Kick" : " - Kicking Local from Loopback"));
                }
 
                // Kick LOCAL
@@ -452,7 +452,7 @@ public class InternalEventManager2 {
                   sendRemoteEvent(FrameworkEventUtil.getRemotePersistEvent(artifactEvent));
                }
             } catch (Exception ex) {
-               EventUtil.eventLog("IEM2 kickArtifactEvent", ex);
+               EventUtil.eventLog("IEM: kickArtifactEvent", ex);
             }
          }
       };
@@ -462,13 +462,13 @@ public class InternalEventManager2 {
    // Kick LOCAL and REMOTE ArtifactEvent
    public void kickTransactionEvent(final Sender sender, final TransactionEvent transEvent) {
       if (transEvent.getNetworkSender() == null) {
-         EventUtil.eventLog("IEM2: kickTransactionEvent - ERROR networkSender can't be null.");
+         EventUtil.eventLog("IEM: kickTransactionEvent - ERROR networkSender can't be null.");
          return;
       }
       if (preferences.isDisableEvents()) {
          return;
       }
-      EventUtil.eventLog("IEM2: kickTransactionEvent [" + transEvent + "] - " + sender);
+      EventUtil.eventLog("IEM: kickTransactionEvent [" + transEvent + "] - " + sender);
       Runnable runnable = new Runnable() {
          @Override
          public void run() {
@@ -476,7 +476,7 @@ public class InternalEventManager2 {
             try {
                // Log if this is a loopback and what is happening
                if (!preferences.isEnableRemoteEventLoopback()) {
-                  EventUtil.eventLog("IEM2: TransactionEvent Loopback enabled" + (sender.isLocal() ? " - Ignoring Local Kick" : " - Kicking Local from Loopback"));
+                  EventUtil.eventLog("IEM: TransactionEvent Loopback enabled" + (sender.isLocal() ? " - Ignoring Local Kick" : " - Kicking Local from Loopback"));
                }
 
                // Kick LOCAL
@@ -493,7 +493,7 @@ public class InternalEventManager2 {
                   sendRemoteEvent(FrameworkEventUtil.getRemoteTransactionEvent(transEvent));
                }
             } catch (Exception ex) {
-               EventUtil.eventLog("IEM2: kickTransactionEvent", ex);
+               EventUtil.eventLog("IEM: kickTransactionEvent", ex);
             }
          }
       };
@@ -509,7 +509,7 @@ public class InternalEventManager2 {
       }
 
       if (!broadcastEvent.getBroadcastEventType().isPingOrPong()) {
-         EventUtil.eventLog("IEM2: kickBroadcastEvent: type: " + broadcastEvent.getBroadcastEventType().name() + " message: " + broadcastEvent.getMessage() + " - " + sender);
+         EventUtil.eventLog("IEM: kickBroadcastEvent: type: " + broadcastEvent.getBroadcastEventType().name() + " message: " + broadcastEvent.getMessage() + " - " + sender);
       }
       Runnable runnable = new Runnable() {
          @Override

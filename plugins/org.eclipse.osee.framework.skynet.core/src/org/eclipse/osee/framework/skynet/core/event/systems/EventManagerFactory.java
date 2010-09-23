@@ -18,17 +18,17 @@ import org.eclipse.osee.framework.messaging.event.res.IOseeCoreModelEventService
 import org.eclipse.osee.framework.skynet.core.event.EventSystemPreferences;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventThreadFactory;
 import org.eclipse.osee.framework.skynet.core.event.listener.IEventListener;
-import org.eclipse.osee.framework.skynet.core.event.systems.InternalEventManager2.ConnectionStatus;
+import org.eclipse.osee.framework.skynet.core.event.systems.InternalEventManager.ConnectionStatus;
 
 /**
  * @author Roberto E. Escobar
  */
 public class EventManagerFactory {
 
-   public InternalEventManager2 createNewEventManager(IOseeCoreModelEventService coreModelEventService, EventSystemPreferences preferences, Collection<IEventListener> listeners, Collection<IEventListener> priorityListeners, ConnectionStatus connectionStatus) {
+   public InternalEventManager createNewEventManager(IOseeCoreModelEventService coreModelEventService, EventSystemPreferences preferences, Collection<IEventListener> listeners, Collection<IEventListener> priorityListeners, ConnectionStatus connectionStatus) {
       ExecutorService executorService = createExecutor("Osee Events2");
-      InternalEventManager2 eventManager =
-         new InternalEventManager2(coreModelEventService, listeners, priorityListeners, executorService, preferences,
+      InternalEventManager eventManager =
+         new InternalEventManager(coreModelEventService, listeners, priorityListeners, executorService, preferences,
             connectionStatus);
       return eventManager;
    }

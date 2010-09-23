@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.skynet.core.event.listener.IEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.RemoteEventServiceEventType;
 import org.eclipse.osee.framework.skynet.core.event.systems.EventManagerData;
 import org.eclipse.osee.framework.skynet.core.event.systems.EventManagerFactory;
-import org.eclipse.osee.framework.skynet.core.event.systems.InternalEventManager2;
+import org.eclipse.osee.framework.skynet.core.event.systems.InternalEventManager;
 import org.eclipse.osee.framework.skynet.core.event.systems.ResMessagingConnectionListener;
 import org.osgi.framework.BundleContext;
 
@@ -59,7 +59,7 @@ public class OseeEventSystemServiceRegHandler extends AbstractTrackingHandler {
 
       EventManagerFactory factory = new EventManagerFactory();
 
-      InternalEventManager2 eventManager = null;
+      InternalEventManager eventManager = null;
       connectionStatusListener = new ResMessagingConnectionListener(eventManagerData.getPreferences());
       eventManager =
          factory.createNewEventManager(coreModelEventService, eventManagerData.getPreferences(),
@@ -101,7 +101,7 @@ public class OseeEventSystemServiceRegHandler extends AbstractTrackingHandler {
    public void onDeActivate() {
       removeCoreListeners();
 
-      InternalEventManager2 eventManager = eventManagerData.getMessageEventManager();
+      InternalEventManager eventManager = eventManagerData.getMessageEventManager();
       if (eventManager != null) {
          coreModelEventService.removeConnectionListener(connectionStatusListener);
          eventManager.stop();

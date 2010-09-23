@@ -61,12 +61,12 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 /**
  * @author Donald G. Dunne
  */
-public final class FrameworkEventToRemoteEvent2Listener implements IFrameworkEventListener {
+public final class FrameworkEventToRemoteEventListener implements IFrameworkEventListener {
 
    private final ISchedulingRule mutexRule;
-   private InternalEventManager2 eventManager;
+   private InternalEventManager eventManager;
 
-   public FrameworkEventToRemoteEvent2Listener(InternalEventManager2 eventManager) {
+   public FrameworkEventToRemoteEventListener(InternalEventManager eventManager) {
       this.eventManager = eventManager;
       this.mutexRule = new ISchedulingRule() {
 

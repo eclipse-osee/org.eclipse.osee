@@ -24,9 +24,9 @@ public class EventManagerData {
    private final Collection<IEventListener> listeners = new CopyOnWriteArrayList<IEventListener>();
    private final EventSystemPreferences preferences = new EventSystemPreferences();
 
-   private InternalEventManager2 messageEventManager;
+   private InternalEventManager messageEventManager;
 
-   public void setMessageEventManager(InternalEventManager2 messageEventManager) {
+   public void setMessageEventManager(InternalEventManager messageEventManager) {
       this.messageEventManager = messageEventManager;
    }
 
@@ -42,7 +42,7 @@ public class EventManagerData {
       return preferences;
    }
 
-   public InternalEventManager2 getMessageEventManager() {
+   public InternalEventManager getMessageEventManager() {
       return messageEventManager;
    }
 
