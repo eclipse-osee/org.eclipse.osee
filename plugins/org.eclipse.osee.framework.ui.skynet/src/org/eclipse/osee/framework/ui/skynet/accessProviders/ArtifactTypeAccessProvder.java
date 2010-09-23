@@ -25,21 +25,10 @@ import org.eclipse.osee.framework.ui.skynet.artifact.IAccessPolicyHandlerService
  */
 public class ArtifactTypeAccessProvder {
 
-   private final Collection<? extends IArtifactType> artifactTypes;
-   private final Branch branch;
-   private final IAccessPolicyHandlerService accessService;
-
-   public ArtifactTypeAccessProvder(IAccessPolicyHandlerService accessService, Branch branch, Collection<? extends IArtifactType> artifactTypes) {
-      super();
-      this.artifactTypes = artifactTypes;
-      this.branch = branch;
-      this.accessService = accessService;
-   }
-
    /**
     * @return Returns artifact types that a user has write permissions for on a specific branch
     */
-   public Collection<? extends IArtifactType> getWritableTypes() throws OseeCoreException {
+   public Collection<? extends IArtifactType> getWritableTypes(IAccessPolicyHandlerService accessService, Branch branch, Collection<? extends IArtifactType> artifactTypes) throws OseeCoreException {
       Iterator<? extends IArtifactType> artTypeIterator = artifactTypes.iterator();
 
       // Remove ArtifactTypes that do not have write permission.

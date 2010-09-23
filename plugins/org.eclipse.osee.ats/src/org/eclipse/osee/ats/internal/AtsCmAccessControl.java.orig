@@ -14,6 +14,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.access.AtsBranchObjectManager;
+import org.eclipse.osee.ats.access.IAtsAccessControlService;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.data.AccessContextId;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
@@ -32,9 +34,9 @@ public class AtsCmAccessControl implements CmAccessControl, HasAccessModel {
    private final AccessModel accessModel;
    private final AtsBranchObjectManager atsBranchObjectManager;
 
-   public AtsCmAccessControl(AccessModel accessModel, AtsBranchObjectManager atsBranchObjectManager) {
+   public AtsCmAccessControl(AccessModel accessModel, Collection<IAtsAccessControlService> atsAccessServices) {
       this.accessModel = accessModel;
-      this.atsBranchObjectManager = atsBranchObjectManager;
+      atsBranchObjectManager = new AtsBranchObjectManager(atsAccessServices);
    }
 
    @Override
@@ -68,8 +70,22 @@ public class AtsCmAccessControl implements CmAccessControl, HasAccessModel {
    public Collection<? extends AccessContextId> getContextId(IBasicArtifact<?> user, Object object) {
       AccessContextId contextId = null;
       Artifact artifact = asCastedObject(object);
+<<<<<<< HEAD
       if (artifact != null) {
-         contextId = atsBranchObjectManager.getContextId(artifact);
+         if (atsBranch.equals(artifact.getBranch())) {
+            contextId = atsObjectAccessManager.getContextId(artifact, AtsUtil.isAtsAdmin());
+         } else {
+            contextId = atsBranchObjectManager.getContextId(artifact);
+=======
+      try {
+         if (artifact != null) {
+            if (!artifact.getBranch().equals(AtsUtil.getAtsBranch())) {
+               contextId = atsBranchObjectManager.getContextId(artifact);
+            }
+>>>>>>> fa1c473... AccessControl[YGHW1] - remove ATS object access control
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
       return contextId != null ? Collections.singletonList(contextId) : Collections.<AccessContextId> emptyList();
    }

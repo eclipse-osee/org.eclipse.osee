@@ -42,6 +42,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.artifact.ISelectedArtifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSideSorter;
+import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.accessProviders.RelationTypeAccessProvider;
 import org.eclipse.osee.framework.ui.skynet.RelationOrderContributionItem.SelectionListener;
 import org.eclipse.osee.framework.ui.skynet.action.RevealInExplorerAction;
@@ -555,7 +556,8 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
             if (object instanceof WrapperForRelationLink) {
                WrapperForRelationLink wrapper = (WrapperForRelationLink) object;
                try {
-               RelationManager.deleteRelation(wrapper.getRelationType(), wrapper.getArtifactA(), wrapper.getArtifactB());
+                  RelationManager.deleteRelation(wrapper.getRelationType(), wrapper.getArtifactA(),
+                     wrapper.getArtifactB());
                   Object parent = ((ITreeContentProvider) treeViewer.getContentProvider()).getParent(object);
                   if (parent != null) {
                      treeViewer.refresh(parent);

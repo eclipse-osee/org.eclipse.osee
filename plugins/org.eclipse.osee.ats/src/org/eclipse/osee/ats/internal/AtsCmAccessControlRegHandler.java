@@ -15,13 +15,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.access.AtsBranchObjectManager;
 import org.eclipse.osee.ats.access.IAtsAccessControlService;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.dsl.integration.AccessModelInterpreter;
 import org.eclipse.osee.framework.core.dsl.integration.OseeDslAccessModel;
 import org.eclipse.osee.framework.core.dsl.integration.OseeDslProvider;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.access.AccessModel;
 import org.eclipse.osee.framework.core.services.CmAccessControl;
 import org.eclipse.osee.framework.core.util.AbstractTrackingHandler;
@@ -71,25 +71,22 @@ public class AtsCmAccessControlRegHandler extends AbstractTrackingHandler {
       IAtsAccessControlService atsService = getService(IAtsAccessControlService.class, services);
       try {
          if (OseeInfo.isEnabled("atsAccessEnabled")) {
-            Branch atsBranch = AtsUtil.getAtsBranch();
-            createAtsCmAccessService(context, atsBranch, interpreter, atsService);
+            atsAccessServices.add(atsService);
+
+            OseeDslProvider dslProvider = new AtsAccessOseeDslProvider();
+            AccessModel accessModel = new OseeDslAccessModel(interpreter, dslProvider);
+
+            AtsBranchObjectManager atsBranchObjectManager =
+               new AtsBranchObjectManager(AtsUtil.getAtsBranchToken(), atsAccessServices);
+            cmService = new AtsCmAccessControl(accessModel, atsBranchObjectManager);
+            registration = context.registerService(CmAccessControl.class.getName(), cmService, null);
+
+            listener = new OseeDslProviderUpdateListener(dslProvider);
+            OseeEventManager.addListener(listener);
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
-   }
-
-   private void createAtsCmAccessService(BundleContext context, Branch atsBranch, AccessModelInterpreter interpreter, IAtsAccessControlService atsService) {
-      atsAccessServices.add(atsService);
-
-      OseeDslProvider dslProvider = new AtsAccessOseeDslProvider();
-      AccessModel accessModel = new OseeDslAccessModel(interpreter, dslProvider);
-
-      cmService = new AtsCmAccessControl(atsBranch, accessModel, atsAccessServices);
-      registration = context.registerService(CmAccessControl.class.getName(), cmService, null);
-
-      listener = new OseeDslProviderUpdateListener(dslProvider);
-      OseeEventManager.addListener(listener);
    }
 
    @Override
