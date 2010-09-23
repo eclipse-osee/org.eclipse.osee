@@ -10,9 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.dsl.ui.integration.operations;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.util.HashMap;
@@ -24,42 +21,33 @@ import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.dsl.ui.integration.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.core.util.HttpProcessor;
 import org.eclipse.osee.framework.core.util.HttpProcessor.AcquireResult;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
  * @author Roberto E. Escobar
  */
 public class OseeTypesExportOperation extends AbstractOperation {
-   private final File folder;
+   private final OutputStream outputStream;
 
-   public OseeTypesExportOperation(File folder) {
+   public OseeTypesExportOperation(OutputStream outputStream) {
       super("Export Osee Types Model", Activator.PLUGIN_ID);
-      this.folder = folder;
+      this.outputStream = outputStream;
    }
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
+      Conditions.checkNotNull(outputStream, "outputStream");
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("sessionId", ClientSessionManager.getSessionId());
 
       String url =
          HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.OSEE_MODEL_CONTEXT, parameters);
 
-      OutputStream outputStream = null;
-      try {
-         outputStream = new BufferedOutputStream(new FileOutputStream(new File(folder, getOseeFileName())));
-         AcquireResult results = HttpProcessor.acquire(new URL(url), outputStream);
-         if (!results.wasSuccessful()) {
-            throw new OseeCoreException("Error exporting osee types");
-         }
-      } finally {
-         Lib.close(outputStream);
+      AcquireResult results = HttpProcessor.acquire(new URL(url), outputStream);
+      if (!results.wasSuccessful()) {
+         throw new OseeCoreException("Error exporting osee types");
       }
-   }
-
-   private String getOseeFileName() {
-      return "OseeTypes_" + Lib.getDateTimeString() + ".osee";
    }
 }

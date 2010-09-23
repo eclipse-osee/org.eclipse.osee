@@ -10,11 +10,23 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.dsl.ui.integration.wizards;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.osee.framework.core.dsl.ui.integration.internal.Activator;
 import org.eclipse.osee.framework.core.dsl.ui.integration.operations.OseeTypesExportOperation;
+import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
 
@@ -35,8 +47,29 @@ public class OseeTypesExportWizard extends Wizard implements IImportWizard {
    @Override
    public boolean performFinish() {
       File folder = mainPage.getFile();
-      Operations.executeAsJob(new OseeTypesExportOperation(folder), true);
+
+      File file = new File(folder, getOseeFileName());
+      FileOutputStream fos = null;
+      try {
+         fos = new FileOutputStream(file);
+         final OutputStream outputStream = new BufferedOutputStream(fos);
+         IOperation op = new OseeTypesExportOperation(outputStream);
+         Operations.executeAsJob(op, true, Job.LONG, new JobChangeAdapter() {
+            @Override
+            public void done(IJobChangeEvent event) {
+               Lib.close(outputStream);
+            }
+         });
+      } catch (FileNotFoundException ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+      } finally {
+         Lib.close(fos);
+      }
       return true;
+   }
+
+   private String getOseeFileName() {
+      return "OseeTypes_" + Lib.getDateTimeString() + ".osee";
    }
 
    @Override
