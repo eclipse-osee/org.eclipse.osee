@@ -59,26 +59,35 @@ public class AtsBranchObjectManager implements AtsAccessContextIdResolver {
    public AccessContextId getContextId(Artifact artifact) {
       AccessContextId contextId = null;
       if (!atsBranch.equals(artifact.getBranch())) {
-         try {
-            // If artifact has a context id on it, use that
-            contextId = getFromArtifact(artifact);
-            if (contextId == null) {
-               // Else, get from associated artifact
-               Artifact assocArtifact = getAssociatedArtifact(artifact.getBranch());
-               ArtifactType assocArtType = assocArtifact.getArtifactType();
-               if (assocArtType.inheritsFrom(AtsArtifactTypes.TeamWorkflow)) {
-                  contextId = getFromWorkflow((TeamWorkFlowArtifact) assocArtifact);
-               } else if (assocArtifact.isOfType(AtsArtifactTypes.AtsArtifact)) {
-                  contextId = AtsBranchObjectContextId.DENY_CONTEXT;
-               } else {
-                  contextId = AtsBranchObjectContextId.DEFAULT_BRANCH_CONTEXT;
-               }
-            }
-         } catch (OseeCoreException ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, "Exception obtaining Branch Access Context Id; Deny returned",
-               ex);
-            contextId = AtsBranchObjectContextId.DENY_CONTEXT;
+         // If artifact has a context id on it, use that
+         contextId = getFromArtifact(artifact);
+         if (contextId == null) {
+            // Else, get from associated artifact
+            contextId = getContextId(artifact.getBranch());
          }
+      }
+      return contextId;
+   }
+
+   public AccessContextId getContextId(Branch branch) {
+      AccessContextId contextId = null;
+      try {
+         // don't access control common branch artifacts...yet
+         if (!atsBranch.equals(branch)) {
+            // Else, get from associated artifact
+            Artifact assocArtifact = getAssociatedArtifact(branch);
+            ArtifactType assocArtType = assocArtifact.getArtifactType();
+            if (assocArtType.inheritsFrom(AtsArtifactTypes.TeamWorkflow)) {
+               contextId = getFromWorkflow((TeamWorkFlowArtifact) assocArtifact);
+            } else if (assocArtifact.isOfType(AtsArtifactTypes.AtsArtifact)) {
+               contextId = AtsBranchObjectContextId.DENY_CONTEXT;
+            } else {
+               contextId = AtsBranchObjectContextId.DEFAULT_BRANCH_CONTEXT;
+            }
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, "Exception obtaining Branch Access Context Id; Deny returned", ex);
+         contextId = AtsBranchObjectContextId.DENY_CONTEXT;
       }
       return contextId;
    }

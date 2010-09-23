@@ -50,6 +50,7 @@ import org.eclipse.osee.ats.workflow.item.AtsStatePercentCompleteWeightRule;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.framework.core.data.AccessContextId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
@@ -1110,6 +1111,45 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
          return teamArt.getTeamName() + " " + getHumanReadableId();
       }
       return "";
+   }
+
+   public Map<String, String> getSMADetails() throws OseeCoreException {
+      Map<String, String> details = Artifacts.getDetailsKeyValues(this);
+      details.put("Workflow Definition", getWorkFlowDefinition().getName());
+      if (getParentActionArtifact() != null) {
+         details.put("Action Id", getParentActionArtifact().getHumanReadableId());
+      }
+      if (!(this instanceof TeamWorkFlowArtifact) && getParentTeamWorkflow() != null) {
+         details.put("Parent Team Workflow Id", getParentTeamWorkflow().getHumanReadableId());
+      }
+      if (this.isOfType(AtsArtifactTypes.TeamWorkflow)) {
+         String message = null;
+         CmAccessControl accessControl = getAccessControl();
+         if (accessControl != null) {
+            Branch workingBranch = ((TeamWorkFlowArtifact) this).getWorkingBranch();
+            if (workingBranch == null) {
+               message = "No working branch == no context id";
+            } else {
+               Collection<? extends AccessContextId> ids =
+                  accessControl.getContextId(UserManager.getUser(), workingBranch);
+               message = "Working branch context ids = " + ids.toString();
+            }
+         } else {
+            message = "AtsCmAccessControlService not started";
+         }
+         details.put("Access Context Id", message);
+      }
+      return details;
+   }
+
+   protected void addPriviledgedUsersUpTeamDefinitionTree(TeamDefinitionArtifact tda, Set<User> users) throws OseeCoreException {
+      users.addAll(tda.getLeads());
+      users.addAll(tda.getPrivilegedMembers());
+
+      // Walk up tree to get other editors
+      if (tda.getParent() != null && tda.getParent() instanceof TeamDefinitionArtifact) {
+         addPriviledgedUsersUpTeamDefinitionTree((TeamDefinitionArtifact) tda.getParent(), users);
+      }
    }
 
    @Override

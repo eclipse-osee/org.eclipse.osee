@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.access.AtsBranchObjectManager;
 import org.eclipse.osee.framework.core.data.AccessContextId;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.access.AccessModel;
 import org.eclipse.osee.framework.core.model.access.HasAccessModel;
@@ -40,10 +41,13 @@ public class AtsCmAccessControl implements CmAccessControl, HasAccessModel {
    @Override
    public boolean isApplicable(IBasicArtifact<?> user, Object object) {
       boolean result = false;
-      Artifact artifact = asCastedObject(object);
-      if (artifact != null) {
+      if (object != null) {
          try {
-            result = atsBranchObjectManager.isApplicable(artifact.getBranch());
+            if (object instanceof Artifact) {
+               result = atsBranchObjectManager.isApplicable(((Artifact) object).getBranch());
+            } else if (object instanceof Branch) {
+               result = atsBranchObjectManager.isApplicable((Branch) object);
+            }
          } catch (OseeCoreException ex) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, "Error determining access applicibility", ex);
          }
@@ -56,20 +60,15 @@ public class AtsCmAccessControl implements CmAccessControl, HasAccessModel {
       return accessModel;
    }
 
-   private Artifact asCastedObject(Object object) {
-      Artifact artifact = null;
-      if (object instanceof Artifact) {
-         artifact = (Artifact) object;
-      }
-      return artifact;
-   }
-
    @Override
    public Collection<? extends AccessContextId> getContextId(IBasicArtifact<?> user, Object object) {
       AccessContextId contextId = null;
-      Artifact artifact = asCastedObject(object);
-      if (artifact != null) {
-         contextId = atsBranchObjectManager.getContextId(artifact);
+      if (object != null) {
+         if (object instanceof Artifact) {
+            contextId = atsBranchObjectManager.getContextId((Artifact) object);
+         } else if (object instanceof Branch) {
+            contextId = atsBranchObjectManager.getContextId((Branch) object);
+         }
       }
       return contextId != null ? Collections.singletonList(contextId) : Collections.<AccessContextId> emptyList();
    }
