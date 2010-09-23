@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.access;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.data.AccessContextId;
@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
  */
 public final class AtsAccessContextIdFactory {
 
-   private static final Map<String, AccessContextId> guidToIds = new HashMap<String, AccessContextId>();
+   private static final Map<String, AccessContextId> guidToIds = new ConcurrentHashMap<String, AccessContextId>();
 
    private AtsAccessContextIdFactory() {
       // Static Factory Class
