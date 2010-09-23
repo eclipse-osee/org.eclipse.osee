@@ -86,9 +86,14 @@ public final class ArtifactDataAccessor implements ArtifactDataProvider {
       @Override
       public Collection<String> getHierarchy() {
          Collection<String> hierarchy = new HashSet<String>();
-         Artifact artifactPtr = artifact;
-         while (artifactPtr != null) {
-            hierarchy.add(artifactPtr.getGuid());
+         try {
+            Artifact artifactPtr = artifact;
+            while (artifactPtr != null) {
+               hierarchy.add(artifactPtr.getGuid());
+               artifactPtr = artifact.getParent();
+            }
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
          return hierarchy;
       }
