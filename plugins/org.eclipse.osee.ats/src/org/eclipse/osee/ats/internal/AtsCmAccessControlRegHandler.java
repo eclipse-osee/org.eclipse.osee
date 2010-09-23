@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.core.model.access.AccessModel;
 import org.eclipse.osee.framework.core.services.CmAccessControl;
 import org.eclipse.osee.framework.core.util.AbstractTrackingHandler;
 import org.eclipse.osee.framework.core.util.ServiceBindType;
+import org.eclipse.osee.framework.database.core.OseeInfo;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.listener.IEventListener;
@@ -69,20 +70,26 @@ public class AtsCmAccessControlRegHandler extends AbstractTrackingHandler {
       AccessModelInterpreter interpreter = getService(AccessModelInterpreter.class, services);
       IAtsAccessControlService atsService = getService(IAtsAccessControlService.class, services);
       try {
-         atsAccessServices.add(atsService);
-
-         OseeDslProvider dslProvider = new AtsAccessOseeDslProvider();
-         AccessModel accessModel = new OseeDslAccessModel(interpreter, dslProvider);
-
-         Branch atsBranch = AtsUtil.getAtsBranch();
-         cmService = new AtsCmAccessControl(atsBranch, accessModel, atsAccessServices);
-         registration = context.registerService(CmAccessControl.class.getName(), cmService, null);
-
-         listener = new OseeDslProviderUpdateListener(dslProvider);
-         OseeEventManager.addListener(listener);
+         if (OseeInfo.isEnabled("atsAccessEnabled")) {
+            Branch atsBranch = AtsUtil.getAtsBranch();
+            createAtsCmAccessService(context, atsBranch, interpreter, atsService);
+         }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
+   }
+
+   private void createAtsCmAccessService(BundleContext context, Branch atsBranch, AccessModelInterpreter interpreter, IAtsAccessControlService atsService) {
+      atsAccessServices.add(atsService);
+
+      OseeDslProvider dslProvider = new AtsAccessOseeDslProvider();
+      AccessModel accessModel = new OseeDslAccessModel(interpreter, dslProvider);
+
+      cmService = new AtsCmAccessControl(atsBranch, accessModel, atsAccessServices);
+      registration = context.registerService(CmAccessControl.class.getName(), cmService, null);
+
+      listener = new OseeDslProviderUpdateListener(dslProvider);
+      OseeEventManager.addListener(listener);
    }
 
    @Override
