@@ -146,8 +146,8 @@ public class OseeBranchService implements IOseeBranchService {
    @Override
    public IOperation purge(IProgressMonitor monitor, PurgeBranchRequest request) throws OseeCoreException {
       BranchCache branchCache = cachingService.getOseeCachingService().getBranchCache();
-      return new PurgeBranchOperation(branchCache.getById(request.getBranchId()), cachingService,
-         oseeDatabaseProvider.getOseeDatabaseService());
+      return new PurgeBranchOperation(branchCache.getById(request.getBranchId()),
+         cachingService.getOseeCachingService(), oseeDatabaseProvider.getOseeDatabaseService());
    }
 
    @Override

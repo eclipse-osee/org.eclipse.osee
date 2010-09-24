@@ -49,6 +49,10 @@ public class BranchManagementCommandProvider implements CommandProvider {
       branchCmds.stopBranchIntegrityCheck(ci);
    }
 
+   public void _purge_deleted_branches(CommandInterpreter ci) {
+      branchCmds.purgeDeletedBranches(ci);
+   }
+
    @Override
    public String getHelp() {
       StringBuilder sb = new StringBuilder();
@@ -58,7 +62,8 @@ public class BranchManagementCommandProvider implements CommandProvider {
       sb.append("        import_branch <exchangeFilePath> [-exclude_baseline_txs] [-allAsRootBranches] [-minTx <value>] [-maxTx <value>] [-clean] [<branchId>]+ - import a specific set of branches from an exchange zip file.\n");
       sb.append("        check_exchange <exchangeFilePath> - checks an exchange file to ensure data integrity\n");
       sb.append("        check_exchange_stop - stop exchange integrity check\n");
+      sb.append("        purge_deleted_branches - permenatly remove all branches that are both archived and deleted \n");
+
       return sb.toString();
    }
-
 }

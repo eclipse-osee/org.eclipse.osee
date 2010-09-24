@@ -10,7 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.server.admin.branch;
 
+import org.eclipse.osee.framework.branch.management.purge.PurgeDeletedBranches;
+import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.server.admin.internal.Activator;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 
 /**
@@ -109,5 +112,11 @@ public class BranchCommands {
       } else {
          ci.println("Branch Integrity Check is not running.");
       }
+   }
+
+   public void purgeDeletedBranches(CommandInterpreter ci) {
+      IOperation operation =
+         new PurgeDeletedBranches(Activator.getOseeCachingService(), Activator.getOseeDatabaseService());
+      Operations.executeAsJob(operation, false);
    }
 }
