@@ -68,27 +68,26 @@ public class SMAPromptChangeStatusTest {
 
       assertTrue(tasks.size() == 4);
 
-      SMAPromptChangeStatus promptChangeStatus = new SMAPromptChangeStatus(tasks);
-      assertTrue(promptChangeStatus.isValidToChangeStatus().isTrue());
+      assertTrue(SMAPromptChangeStatus.isValidToChangeStatus(tasks).isTrue());
 
       // Change two to 100, 1 hr split
-      promptChangeStatus.performChangeStatus(null, null, 1, 100, true, true);
+      SMAPromptChangeStatus.performChangeStatus(tasks, null, null, 1, 100, true, true);
       SMATestUtil.validateSMAs(tasks, TaskStates.Completed.name(), 100, 0.25);
 
       // Change two to 100, 1 hr split
       // hours should be added to inwork state; make sure completed state isn't statused
-      promptChangeStatus.performChangeStatus(null, null, 1, 100, true, true);
+      SMAPromptChangeStatus.performChangeStatus(tasks, null, null, 1, 100, true, true);
       SMATestUtil.validateSMAs(tasks, TaskStates.Completed.name(), 100, 0.50);
 
       // Change two to 99, 1 hr split
       // transitions to InWork and adds hours
       // make sure hours not added to completed state
-      promptChangeStatus.performChangeStatus(null, null, 1, 99, true, true);
+      SMAPromptChangeStatus.performChangeStatus(tasks, null, null, 1, 99, true, true);
       SMATestUtil.validateSMAs(tasks, TaskStates.InWork.name(), 99, 0.75);
 
       // Change two to 55, 0
       // no transition, no hours spent
-      promptChangeStatus.performChangeStatus(null, null, 0, 55, true, true);
+      SMAPromptChangeStatus.performChangeStatus(tasks, null, null, 0, 55, true, true);
       SMATestUtil.validateSMAs(tasks, TaskStates.InWork.name(), 55, 0.75);
 
    }
@@ -103,31 +102,30 @@ public class SMAPromptChangeStatusTest {
 
       assertTrue(tasks.size() == 4);
 
-      SMAPromptChangeStatus promptChangeStatus = new SMAPromptChangeStatus(tasks);
-      assertTrue(promptChangeStatus.isValidToChangeStatus().isTrue());
+      assertTrue(SMAPromptChangeStatus.isValidToChangeStatus(tasks).isTrue());
       SimpleTaskResolutionOptionsRule optionsRule = new SimpleTaskResolutionOptionsRule();
 
       // Change two to 100, 1 hr split
-      promptChangeStatus.performChangeStatus(optionsRule.getOptions(),
+      SMAPromptChangeStatus.performChangeStatus(tasks, optionsRule.getOptions(),
          SimpleTaskResolutionOptionsRule.States.Complete.name(), 1, 100, true, true);
       SMATestUtil.validateSMAs(tasks, TaskStates.Completed.name(), 100, 0.25);
 
       // Change two to 100, 1 hr split
       // hours should be added to inwork state; make sure completed state isn't statused
-      promptChangeStatus.performChangeStatus(optionsRule.getOptions(),
+      SMAPromptChangeStatus.performChangeStatus(tasks, optionsRule.getOptions(),
          SimpleTaskResolutionOptionsRule.States.Complete.name(), 1, 100, true, true);
       SMATestUtil.validateSMAs(tasks, TaskStates.Completed.name(), 100, 0.50);
 
       // Change two to 99, 1 hr split
       // transitions to InWork and adds hours
       // make sure hours not added to completed state
-      promptChangeStatus.performChangeStatus(optionsRule.getOptions(),
+      SMAPromptChangeStatus.performChangeStatus(tasks, optionsRule.getOptions(),
          SimpleTaskResolutionOptionsRule.States.In_Work.name(), 1, 99, true, true);
       SMATestUtil.validateSMAs(tasks, TaskStates.InWork.name(), 99, 0.75);
 
       // Change two to 55, 0
       // no transition, no hours spent
-      promptChangeStatus.performChangeStatus(optionsRule.getOptions(),
+      SMAPromptChangeStatus.performChangeStatus(tasks, optionsRule.getOptions(),
          SimpleTaskResolutionOptionsRule.States.In_Work.name(), 0, 55, true, true);
       SMATestUtil.validateSMAs(tasks, TaskStates.InWork.name(), 55, 0.75);
    }
@@ -146,8 +144,7 @@ public class SMAPromptChangeStatusTest {
       transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Prompt Change Status Test");
       cancelTask.transition(TaskStates.Cancelled.name(), (User) null, transaction, TransitionOption.Persist);
       transaction.execute();
-      SMAPromptChangeStatus promptChangeStatus = new SMAPromptChangeStatus(tasks);
-      Result result = promptChangeStatus.isValidToChangeStatus();
+      Result result = SMAPromptChangeStatus.isValidToChangeStatus(tasks);
       assertTrue(result.isFalse());
       assertTrue(result.getText().contains("Can not status a cancelled"));
 
@@ -167,8 +164,7 @@ public class SMAPromptChangeStatusTest {
       transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Prompt Change Status Test");
       taskArt.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, DefaultTeamState.Analyze.name());
       transaction.execute();
-      SMAPromptChangeStatus promptChangeStatus = new SMAPromptChangeStatus(tasks);
-      Result result = promptChangeStatus.isValidToChangeStatus();
+      Result result = SMAPromptChangeStatus.isValidToChangeStatus(tasks);
       assertTrue(result.isFalse());
       assertTrue(result.getText().contains("Task work must be done in"));
    }

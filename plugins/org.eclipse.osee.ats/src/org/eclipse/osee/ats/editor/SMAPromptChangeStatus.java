@@ -46,8 +46,8 @@ public class SMAPromptChangeStatus {
       return promptChangeStatus.promptChangeStatus(persist).isTrue();
    }
 
-   public Result isValidToChangeStatus() throws OseeCoreException {
-      // Don't allow statusing for any cancelled tasks
+   public static Result isValidToChangeStatus(Collection<? extends StateMachineArtifact> smas) throws OseeCoreException {
+      // Don't allow statusing for any canceled tasks
       for (StateMachineArtifact sma : smas) {
          if (sma.isCancelled()) {
             String error =
@@ -76,7 +76,7 @@ public class SMAPromptChangeStatus {
    }
 
    public Result promptChangeStatus(boolean persist) throws OseeCoreException {
-      Result result = isValidToChangeStatus();
+      Result result = isValidToChangeStatus(smas);
       if (result.isFalse()) {
          result.popup();
          return result;
@@ -95,14 +95,15 @@ public class SMAPromptChangeStatus {
             "Select resolution, enter percent complete and number of hours you spent since last status.", true,
             options, smas);
       if (tsd.open() == 0) {
-         performChangeStatus(options, tsd.getSelectedOptionDef() != null ? tsd.getSelectedOptionDef().getName() : null,
+         performChangeStatus(smas, options,
+            tsd.getSelectedOptionDef() != null ? tsd.getSelectedOptionDef().getName() : null,
             tsd.getHours().getFloat(), tsd.getPercent().getInt(), tsd.isSplitHours(), persist);
          return Result.TrueResult;
       }
       return Result.FalseResult;
    }
 
-   public void performChangeStatus(List<TaskResOptionDefinition> options, String selectedOption, double hours, int percent, boolean splitHours, boolean persist) throws OseeCoreException {
+   public static void performChangeStatus(Collection<? extends StateMachineArtifact> smas, List<TaskResOptionDefinition> options, String selectedOption, double hours, int percent, boolean splitHours, boolean persist) throws OseeCoreException {
       if (splitHours) {
          hours = hours / smas.size();
       }

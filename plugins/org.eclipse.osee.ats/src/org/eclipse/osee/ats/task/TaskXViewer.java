@@ -22,6 +22,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
+import org.eclipse.osee.ats.editor.SMAPromptChangeHoursSpent;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.PromptChangeUtil;
@@ -118,8 +119,8 @@ public class TaskXViewer extends WorldXViewer {
       return false;
    }
 
-   Action editTaskTitleAction, editTaskAssigneesAction, editTaskStatusAction, editTaskResolutionAction,
-      editTaskEstimateAction, editTaskRelatedStateAction, editTaskNotesAction;
+   Action editTaskTitleAction, editTaskAssigneesAction, editTaskStatusAction, editTaskHoursSpentAction,
+      editTaskResolutionAction, editTaskEstimateAction, editTaskRelatedStateAction, editTaskNotesAction;
    Action addNewTaskAction, deleteTasksAction;
    Action showRelatedAction;
 
@@ -163,6 +164,20 @@ public class TaskXViewer extends WorldXViewer {
          public void run() {
             try {
                if (SMAPromptChangeStatus.promptChangeStatus(getSelectedTaskArtifacts(), false)) {
+                  editor.onDirtied();
+                  update(getSelectedTaskArtifacts().toArray(), null);
+               }
+            } catch (Exception ex) {
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            }
+         }
+      };
+
+      editTaskHoursSpentAction = new Action("Edit Task Hours Spent", IAction.AS_PUSH_BUTTON) {
+         @Override
+         public void run() {
+            try {
+               if (SMAPromptChangeHoursSpent.promptChangeStatus(getSelectedTaskArtifacts(), false)) {
                   editor.onDirtied();
                   update(getSelectedTaskArtifacts().toArray(), null);
                }
@@ -274,6 +289,9 @@ public class TaskXViewer extends WorldXViewer {
       mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_EDIT, editTaskStatusAction);
       editTaskStatusAction.setEnabled(isTasksEditable() && getSelectedArtifacts().size() > 0);
 
+      mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_EDIT, editTaskHoursSpentAction);
+      editTaskHoursSpentAction.setEnabled(isTasksEditable() && getSelectedArtifacts().size() > 0);
+
       if (!isUsingTaskResolutionOptions()) {
          mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_EDIT, editTaskResolutionAction);
          editTaskResolutionAction.setEnabled(isTasksEditable() && getSelectedArtifacts().size() > 0 && isSelectedTaskArtifactsAreInWork());
@@ -306,8 +324,7 @@ public class TaskXViewer extends WorldXViewer {
 
    public boolean handleChangeResolution() throws OseeCoreException {
       // Ensure tasks are related to current state of workflow
-      SMAPromptChangeStatus promptChangeStatus = new SMAPromptChangeStatus(getSelectedTaskArtifacts());
-      Result result = promptChangeStatus.isValidToChangeStatus();
+      Result result = SMAPromptChangeStatus.isValidToChangeStatus(getSelectedTaskArtifacts());
       if (result.isFalse()) {
          return false;
       }
