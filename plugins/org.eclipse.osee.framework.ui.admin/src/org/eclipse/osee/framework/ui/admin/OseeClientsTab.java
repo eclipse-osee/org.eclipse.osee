@@ -191,7 +191,7 @@ public class OseeClientsTab {
             }
          }
       } catch (Exception ex) {
-         OseeLog.log(AdminPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return toReturn;
    }
@@ -264,8 +264,8 @@ public class OseeClientsTab {
          return false;
       }
 
+      @SuppressWarnings("rawtypes")
       @Override
-      @SuppressWarnings("unchecked")
       public Object[] getElements(Object inputElement) {
          return ((ArrayList) inputElement).toArray();
       }

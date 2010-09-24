@@ -17,7 +17,7 @@ public class DefinePlugin extends OseeUiActivator {
    public static final String PLUGIN_ID = "org.eclipse.osee.define";
 
    public DefinePlugin() {
-      super();
+      super(PLUGIN_ID);
       pluginInstance = this;
    }
 

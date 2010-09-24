@@ -54,6 +54,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.AbstractSelectionEnabledHandler;
 import org.eclipse.osee.framework.ui.plugin.util.Commands;
+import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
@@ -228,7 +229,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
          mergeXWidget.getXViewer());
 
       getSite().setSelectionProvider(mergeXWidget.getXViewer());
-      SkynetGuiPlugin.getInstance().setHelp(parent, HELP_CONTEXT_ID, "org.eclipse.osee.framework.help.ui");
+      HelpUtil.setHelp(parent, HELP_CONTEXT_ID, "org.eclipse.osee.framework.help.ui");
 
       OseeEventManager.addListener(this);
       OseeEventManager.addListener(this);

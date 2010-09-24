@@ -45,6 +45,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.OpenWithMenuListener;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
@@ -167,7 +168,7 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
       getSite().registerContextMenu(VIEW_ID, menuManager, xHistoryWidget.getXViewer());
 
       getSite().setSelectionProvider(xHistoryWidget.getXViewer());
-      SkynetGuiPlugin.getInstance().setHelp(parent, HELP_CONTEXT_ID, "org.eclipse.osee.framework.help.ui");
+      HelpUtil.setHelp(parent, HELP_CONTEXT_ID, "org.eclipse.osee.framework.help.ui");
       OseeStatusContributionItemFactory.addTo(this, true);
 
       setupMenus();

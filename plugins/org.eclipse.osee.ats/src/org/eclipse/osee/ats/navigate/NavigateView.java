@@ -46,6 +46,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
+import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.skynet.action.CollapseAllAction;
@@ -133,7 +134,7 @@ public class NavigateView extends ViewPart implements IActionable {
                   }
                   xNavComp = new AtsNavigateComposite(AtsNavigateViewItems.getInstance(), parent, SWT.NONE);
 
-                  AtsPlugin.getInstance().setHelp(xNavComp, HELP_CONTEXT_ID, "org.eclipse.osee.ats.help.ui");
+                  HelpUtil.setHelp(xNavComp, HELP_CONTEXT_ID, "org.eclipse.osee.ats.help.ui");
                   createToolBar();
 
                   // add search text box
@@ -241,7 +242,7 @@ public class NavigateView extends ViewPart implements IActionable {
       IMenuManager mm = bars.getMenuManager();
       mm.add(new NewAction());
       mm.add(new NewGoal());
-      mm.add(OseeUiActions.createBugAction(AtsPlugin.getInstance(), this, VIEW_ID, "ATS Navigator"));
+      mm.add(OseeUiActions.createBugAction(AtsPlugin.PLUGIN_ID, this, VIEW_ID, "ATS Navigator"));
 
       toolbarManager.update(true);
    }

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.admin;
 
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -27,12 +26,12 @@ public class ClientsStatsTab {
 
    private Text reportText;
 
-   public ClientsStatsTab(TabFolder tabFolder) throws OseeCoreException {
+   public ClientsStatsTab(TabFolder tabFolder) {
       super();
       createControl(tabFolder);
    }
 
-   private void createControl(TabFolder tabFolder) throws OseeCoreException {
+   private void createControl(TabFolder tabFolder) {
       Composite mainComposite = new Composite(tabFolder, SWT.NONE);
       mainComposite.setLayout(new GridLayout(2, false));
       mainComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));

@@ -39,7 +39,7 @@ import org.eclipse.gef.ui.parts.GraphicalViewerKeyHandler;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
-import org.eclipse.osee.framework.ui.branch.graph.BranchGraphActivator;
+import org.eclipse.osee.framework.ui.branch.graph.Activator;
 import org.eclipse.osee.framework.ui.branch.graph.model.GraphCache;
 import org.eclipse.osee.framework.ui.branch.graph.operation.LoadGraphOperation;
 import org.eclipse.osee.framework.ui.branch.graph.parts.GraphEditPartFactory;
@@ -85,7 +85,7 @@ public class BranchGraphEditor extends GraphicalEditorWithFlyoutPalette {
       setPartName(editorInput.getName() + " Graph");
       LoadGraphOperation task =
          new LoadGraphOperation(getSite().getPart(), getGraphicalViewer(), this, editorInput.getBranch());
-      Jobs.runInJob(task.getName(), task, BranchGraphActivator.class, BranchGraphActivator.PLUGIN_ID, true);
+      Jobs.runInJob(task.getName(), task, Activator.class, Activator.PLUGIN_ID, true);
    }
 
    @SuppressWarnings("unchecked")
@@ -189,7 +189,7 @@ public class BranchGraphEditor extends GraphicalEditorWithFlyoutPalette {
          PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
             "org.eclipse.ui.views.ContentOutline");
       } catch (PartInitException ex) {
-         OseeLog.log(BranchGraphActivator.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       //      viewer.setHelpContext(MAIN_HELP_CONTEXT);
    }

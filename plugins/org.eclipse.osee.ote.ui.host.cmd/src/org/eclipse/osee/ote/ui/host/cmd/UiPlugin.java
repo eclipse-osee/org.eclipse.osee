@@ -20,6 +20,7 @@ public class UiPlugin extends OseeUiActivator {
    private static UiPlugin plugin;
 
    public UiPlugin() {
+      super(PLUGIN_ID);
       plugin = this;
    }
 

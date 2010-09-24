@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
+import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.cellEditor.UniversalCellEditor;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
@@ -326,8 +327,7 @@ public class AttributesComposite extends Composite {
    }
 
    private void setHelpContexts() {
-      SkynetGuiPlugin.getInstance().setHelp(tableViewer.getControl(), "artifact_editor",
-         "org.eclipse.osee.framework.help.ui");
+      HelpUtil.setHelp(tableViewer.getControl(), "artifact_editor", "org.eclipse.osee.framework.help.ui");
    }
 
    /**

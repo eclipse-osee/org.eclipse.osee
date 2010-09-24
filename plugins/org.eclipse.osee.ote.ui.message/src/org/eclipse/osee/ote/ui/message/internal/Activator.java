@@ -16,15 +16,15 @@ import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
 
 public class Activator extends OseeUiActivator {
+
    private static Activator pluginInstance;
-
    public static final String PLUGIN_ID = "org.eclipse.osee.ote.ui.message";
-
    private ServiceTracker oteClientServiceTracker;
 
-   /**
-    * Returns the shared instance.
-    */
+   protected Activator() {
+      super(PLUGIN_ID);
+   }
+
    public static Activator getDefault() {
       return pluginInstance;
    }

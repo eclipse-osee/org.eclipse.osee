@@ -20,6 +20,10 @@ public class OteUiDefinePlugin extends OseeUiActivator {
 
    public static final String PLUGIN_ID = "org.eclipse.osee.ote.ui.define";
 
+   public OteUiDefinePlugin() {
+      super(PLUGIN_ID);
+   }
+
    private static OteUiDefinePlugin plugin;
 
    @Override

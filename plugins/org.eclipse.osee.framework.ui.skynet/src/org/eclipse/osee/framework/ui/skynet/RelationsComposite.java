@@ -42,6 +42,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.artifact.ISelectedArtifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSideSorter;
+import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.action.RevealInExplorerAction;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.relation.explorer.RelationExplorerWindow;
@@ -807,8 +808,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
    }
 
    private void setHelpContexts() {
-      SkynetGuiPlugin.getInstance().setHelp(treeViewer.getControl(), "relation_page_tree_viewer",
-         "org.eclipse.osee.framework.help.ui");
+      HelpUtil.setHelp(treeViewer.getControl(), "relation_page_tree_viewer", "org.eclipse.osee.framework.help.ui");
    }
 
    public ToolBar getToolBar() {

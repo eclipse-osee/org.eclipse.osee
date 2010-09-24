@@ -39,6 +39,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.AFile;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.plugin.core.PluginUtil;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -282,40 +283,34 @@ public class VectorCastImportTest {
     * Create dir structure for importer to read
     */
    private static void createVCastFileset() throws OseeCoreException, IOException {
+      PluginUtil helper = new PluginUtil(Activator.PLUGIN_ID);
       OseeData.getFolder("vcast.wrk").getLocation().toFile();
-      Lib.writeStringToFile(AFile.readFile(Activator.getInstance().getPluginFile("support/vcastData/vcast.vcp")),
+      Lib.writeStringToFile(AFile.readFile(helper.getPluginFile("support/vcastData/vcast.vcp")),
          OseeData.getFile("vcast.wrk/vcast.vcp"));
-      Lib.writeStringToFile(AFile.readFile(Activator.getInstance().getPluginFile("support/vcastData/CCAST_.CFG")),
+      Lib.writeStringToFile(AFile.readFile(helper.getPluginFile("support/vcastData/CCAST_.CFG")),
          OseeData.getFile("vcast.wrk/CCAST_.CFG"));
-      Lib.writeStringToFile(AFile.readFile(Activator.getInstance().getPluginFile("support/vcastData/CCAST_.CFG")),
+      Lib.writeStringToFile(AFile.readFile(helper.getPluginFile("support/vcastData/CCAST_.CFG")),
          OseeData.getFile("vcast.wrk/build_info.xml"));
 
       // create vcast dir and files within
       OseeData.getFolder("vcast.wrk/vcast").getLocation().toFile();
       Lib.writeStringToFile(
-         AFile.readFile(Activator.getInstance().getPluginFile("support/vcastData/vcast_aggregate_coverage_report.html")),
+         AFile.readFile(helper.getPluginFile("support/vcastData/vcast_aggregate_coverage_report.html")),
          OseeData.getFile("vcast.wrk/vcast/vcast_aggregate_coverage_report.html"));
-      Lib.writeStringToFile(
-         AFile.readFile(Activator.getInstance().getPluginFile("support/vcastData/vcast/test_main.2.LIS")),
+      Lib.writeStringToFile(AFile.readFile(helper.getPluginFile("support/vcastData/vcast/test_main.2.LIS")),
          OseeData.getFile("vcast.wrk/vcast/test_main.2.LIS"));
-      Lib.writeStringToFile(
-         AFile.readFile(Activator.getInstance().getPluginFile("support/vcastData/vcast/test_main.2.xml")),
+      Lib.writeStringToFile(AFile.readFile(helper.getPluginFile("support/vcastData/vcast/test_main.2.xml")),
          OseeData.getFile("vcast.wrk/vcast/test_main.2.xml"));
-      Lib.writeStringToFile(
-         AFile.readFile(Activator.getInstance().getPluginFile("support/vcastData/vcast/test_scheduler.2.LIS")),
+      Lib.writeStringToFile(AFile.readFile(helper.getPluginFile("support/vcastData/vcast/test_scheduler.2.LIS")),
          OseeData.getFile("vcast.wrk/vcast/test_scheduler.2.LIS"));
-      Lib.writeStringToFile(
-         AFile.readFile(Activator.getInstance().getPluginFile("support/vcastData/vcast/test_scheduler.2.xml")),
+      Lib.writeStringToFile(AFile.readFile(helper.getPluginFile("support/vcastData/vcast/test_scheduler.2.xml")),
          OseeData.getFile("vcast.wrk/vcast/test_scheduler.2.xml"));
       OseeData.getFolder("vcast.wrk/vcast/results").getLocation().toFile();
-      Lib.writeStringToFile(
-         AFile.readFile(Activator.getInstance().getPluginFile("support/vcastData/vcast/results/test_unit_1")),
+      Lib.writeStringToFile(AFile.readFile(helper.getPluginFile("support/vcastData/vcast/results/test_unit_1")),
          OseeData.getFile("vcast.wrk/vcast/results/test_unit_1"));
-      Lib.writeStringToFile(
-         AFile.readFile(Activator.getInstance().getPluginFile("support/vcastData/vcast/results/test_unit_2")),
+      Lib.writeStringToFile(AFile.readFile(helper.getPluginFile("support/vcastData/vcast/results/test_unit_2")),
          OseeData.getFile("vcast.wrk/vcast/results/test_unit_2"));
-      Lib.writeStringToFile(
-         AFile.readFile(Activator.getInstance().getPluginFile("support/vcastData/vcast/results/test_unit_3")),
+      Lib.writeStringToFile(AFile.readFile(helper.getPluginFile("support/vcastData/vcast/results/test_unit_3")),
          OseeData.getFile("vcast.wrk/vcast/results/test_unit_3"));
    }
 

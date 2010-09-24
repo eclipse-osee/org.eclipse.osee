@@ -73,6 +73,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.plugin.util.SelectionCountChangeListener;
 import org.eclipse.osee.framework.ui.skynet.access.PolicyDialog;
 import org.eclipse.osee.framework.ui.skynet.action.OpenAssociatedArtifactFromBranchProvider;
@@ -355,7 +356,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
 
          new ArtifactExplorerDragAndDrop(treeViewer, VIEW_ID, this);
 
-         OseeUiActions.addBugToViewToolbar(this, this, SkynetGuiPlugin.getInstance(), VIEW_ID, "Artifact Explorer");
+         OseeUiActions.addBugToViewToolbar(this, this, SkynetGuiPlugin.PLUGIN_ID, VIEW_ID, "Artifact Explorer");
 
          OseeStatusContributionItemFactory.addTo(this, false);
 
@@ -1280,8 +1281,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
    }
 
    private void setHelpContexts() {
-      SkynetGuiPlugin.getInstance().setHelp(treeViewer.getControl(), "artifact_explorer_tree_viewer",
-         "org.eclipse.osee.framework.help.ui");
+      HelpUtil.setHelp(treeViewer.getControl(), "artifact_explorer_tree_viewer", "org.eclipse.osee.framework.help.ui");
    }
 
    @Override

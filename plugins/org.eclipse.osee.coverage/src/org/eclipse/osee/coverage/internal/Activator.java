@@ -10,29 +10,23 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.internal;
 
-import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
 
 /**
  * @author Donald G. Dunne
  */
-public class Activator extends OseeUiActivator {
-   private static Activator pluginInstance; // The shared instance.
+public class Activator implements BundleActivator {
    public static final String PLUGIN_ID = "org.eclipse.osee.coverage";
 
-   public Activator() {
-      super();
-      pluginInstance = this;
+   @Override
+   public void start(BundleContext context) throws Exception {
+      // do nothing
    }
 
    @Override
-   protected String getPluginName() {
-      return PLUGIN_ID;
+   public void stop(BundleContext context) throws Exception {
+      // do nothing
    }
 
-   /**
-    * Returns the shared instance.
-    */
-   public static Activator getInstance() {
-      return pluginInstance;
-   }
 }

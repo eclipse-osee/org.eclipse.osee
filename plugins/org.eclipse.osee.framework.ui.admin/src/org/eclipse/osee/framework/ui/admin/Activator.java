@@ -8,37 +8,28 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.branch.graph;
+package org.eclipse.osee.framework.ui.admin;
 
-import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
+import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 /**
- * @author Roberto E. Escobar
+ * The main plugin class to be used in the desktop.
+ * 
+ * @author Jeff C. Phillips
  */
-public class BranchGraphActivator extends OseeUiActivator {
+public class Activator implements BundleActivator {
 
-   public static final String PLUGIN_ID = "org.eclipse.osee.framework.ui.branch.graph";
-
-   private static BranchGraphActivator plugin;
-
-   public BranchGraphActivator() {
-   }
+   public static String PLUGIN_ID = "org.eclipse.osee.framework.ui.admin";
 
    @Override
    public void start(BundleContext context) throws Exception {
-      super.start(context);
-      plugin = this;
+      // do nothing
    }
 
    @Override
    public void stop(BundleContext context) throws Exception {
-      plugin = null;
-      super.stop(context);
-   }
-
-   public static BranchGraphActivator getInstance() {
-      return plugin;
+      // do nothing
    }
 
 }

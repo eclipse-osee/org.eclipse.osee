@@ -34,6 +34,7 @@ import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
+import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
@@ -146,7 +147,7 @@ public class MessageView extends ViewPart implements IActionable, IMessageDictio
                   contextMenu.setLocation(p);
                   contextMenu.setVisible(true);
 
-                  Activator.getDefault().setHelp(contextMenu, "messageViewWatch", "org.eclipse.osee.framework.help.ui");
+                  HelpUtil.setHelp(contextMenu, "messageViewWatch", "org.eclipse.osee.framework.help.ui");
                }
             }
          }
@@ -227,9 +228,9 @@ public class MessageView extends ViewPart implements IActionable, IMessageDictio
    }
 
    private void setHelpContexts() {
-      Activator.getDefault().setHelp(parentComposite.getParent(), "messageView", "org.eclipse.osee.framework.help.ui");
-      Activator.getDefault().setHelp(searchButton, "messageViewSearch", "org.eclipse.osee.framework.help.ui");
-      Activator.getDefault().setHelp(searchText, "messageViewSearch", "org.eclipse.osee.framework.help.ui");
+      HelpUtil.setHelp(parentComposite.getParent(), "messageView", "org.eclipse.osee.framework.help.ui");
+      HelpUtil.setHelp(searchButton, "messageViewSearch", "org.eclipse.osee.framework.help.ui");
+      HelpUtil.setHelp(searchText, "messageViewSearch", "org.eclipse.osee.framework.help.ui");
    }
 
    /**
@@ -485,7 +486,7 @@ public class MessageView extends ViewPart implements IActionable, IMessageDictio
       refreshAction.setToolTipText("Reload Messages from JAR");
       refreshAction.setImageDescriptor(ImageManager.getImageDescriptor(OteMessageImage.REFRESH));
 
-      OseeUiActions.addBugToViewToolbar(this, this, Activator.getDefault(), VIEW_ID, "Message View");
+      OseeUiActions.addBugToViewToolbar(this, this, Activator.PLUGIN_ID, VIEW_ID, "Message View");
    }
 
    protected void createMenus() {

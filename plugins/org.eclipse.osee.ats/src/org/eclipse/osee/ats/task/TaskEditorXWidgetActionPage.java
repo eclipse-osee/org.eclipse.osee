@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction;
@@ -81,7 +82,7 @@ public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage implem
 
       resultsContainer = toolkit.createClientContainer(resultsSection, 1);
       taskComposite = new TaskComposite(taskEditor, resultsContainer, SWT.BORDER, null);
-      AtsPlugin.getInstance().setHelp(taskComposite, HELP_CONTEXT_ID, "org.eclipse.osee.ats.help.ui");
+      HelpUtil.setHelp(taskComposite, HELP_CONTEXT_ID, "org.eclipse.osee.ats.help.ui");
       return resultsSection;
    }
 
@@ -157,7 +158,7 @@ public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage implem
       toolBarManager.add(new RefreshAction(taskComposite));
       toolBarManager.add(new Separator());
       toolBarManager.add(new NewAction());
-      OseeUiActions.addButtonToEditorToolBar(taskEditor, taskEditor, AtsPlugin.getInstance(), toolBarManager,
+      OseeUiActions.addButtonToEditorToolBar(taskEditor, taskEditor, AtsPlugin.PLUGIN_ID, toolBarManager,
          TaskEditor.EDITOR_ID, "ATS Task Tab");
       toolBarManager.add(new Separator());
       createDropDownMenuActions();

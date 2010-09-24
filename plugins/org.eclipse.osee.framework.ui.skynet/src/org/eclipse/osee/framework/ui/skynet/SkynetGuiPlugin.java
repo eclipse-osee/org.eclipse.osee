@@ -64,7 +64,7 @@ public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEven
    private final Map<String, ServiceDependencyTracker> trackers = new HashMap<String, ServiceDependencyTracker>();
 
    public SkynetGuiPlugin() {
-      super();
+      super(PLUGIN_ID);
       pluginInstance = this;
    }
 

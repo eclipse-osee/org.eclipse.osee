@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
+import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.ote.service.ConnectionEvent;
@@ -102,7 +103,7 @@ public abstract class ScriptPage extends TestManagerPage {
       sashForm.setWeights(new int[] {8, 2});
       computeScrollSize();
 
-      TestManagerPlugin.getInstance().setHelp(this, "tm_scripts_page", "org.eclipse.osee.framework.help.ui");
+      HelpUtil.setHelp(this, "tm_scripts_page", "org.eclipse.osee.framework.help.ui");
    }
 
    public void loadStorageString() {

@@ -83,7 +83,7 @@ public class ChangeReportActionBarContributor implements IActionContributor {
       if (bugAction == null) {
          IEditorSite site = editor.getEditorSite();
          bugAction =
-            OseeUiActions.createBugAction(SkynetGuiPlugin.getInstance(), editor, site.getId(), site.getRegisteredName());
+            OseeUiActions.createBugAction(SkynetGuiPlugin.PLUGIN_ID, editor, site.getId(), site.getRegisteredName());
       }
       return bugAction;
    }

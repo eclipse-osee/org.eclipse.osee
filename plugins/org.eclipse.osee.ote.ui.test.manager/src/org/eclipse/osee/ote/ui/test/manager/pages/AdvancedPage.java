@@ -18,6 +18,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.type.IPropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
+import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.plugin.widgets.IPropertyStoreBasedControl;
 import org.eclipse.osee.framework.ui.plugin.widgets.PropertyStoreControlContributions;
 import org.eclipse.osee.ote.service.ConnectionEvent;
@@ -79,7 +80,7 @@ public class AdvancedPage extends TestManagerPage {
 
       createBlankArea(parent, 0, true);
       computeScrollSize();
-      TestManagerPlugin.getInstance().setHelp(this, "tm_advanced_page", "org.eclipse.osee.framework.help.ui");
+      HelpUtil.setHelp(this, "tm_advanced_page", "org.eclipse.osee.framework.help.ui");
    }
 
    @Override

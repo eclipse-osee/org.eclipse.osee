@@ -64,6 +64,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
@@ -119,7 +120,7 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
       ContextMenuProvider cmProvider = new AtsWorkflowConfigEditorContextMenuProvider(viewer, getActionRegistry());
       viewer.setContextMenu(cmProvider);
       getSite().registerContextMenu(cmProvider, viewer);
-      AtsPlugin.getInstance().setHelp(viewer.getControl(), "atsConfigureWorkflow", "org.eclipse.osee.ats.help.ui");
+      HelpUtil.setHelp(viewer.getControl(), "atsConfigureWorkflow", "org.eclipse.osee.ats.help.ui");
 
    }
 

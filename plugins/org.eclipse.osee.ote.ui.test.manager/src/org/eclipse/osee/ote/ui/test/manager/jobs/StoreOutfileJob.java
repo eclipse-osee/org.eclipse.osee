@@ -131,7 +131,7 @@ public class StoreOutfileJob extends Job {
             IFile file = AIFile.constructIFile(clientOutfilePath);
             if (file != null) {
                AIFile.writeToFile(file, new ByteArrayInputStream(outBytes));
-               MarkerPlugin.getDefault().addMarkers(file);
+               MarkerPlugin.addMarkers(file);
             } else {
                Lib.writeBytesToFile(outBytes, new File(clientOutfilePath));
             }

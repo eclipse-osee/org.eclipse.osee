@@ -124,7 +124,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
       toolBarManager.add(new RefreshAction(worldComposite));
       toolBarManager.add(new Separator());
       toolBarManager.add(new NewAction());
-      toolBarManager.add(OseeUiActions.createBugAction(AtsPlugin.getInstance(), worldEditor, WorldEditor.EDITOR_ID,
+      toolBarManager.add(OseeUiActions.createBugAction(AtsPlugin.PLUGIN_ID, worldEditor, WorldEditor.EDITOR_ID,
          "ATS World"));
       toolBarManager.add(new Separator());
 

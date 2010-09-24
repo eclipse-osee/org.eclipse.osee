@@ -17,8 +17,7 @@ import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.osee.framework.ui.branch.graph.BranchGraphActivator;
+import org.eclipse.osee.framework.ui.branch.graph.Activator;
 import org.eclipse.osee.framework.ui.branch.graph.parts.GraphEditPart;
 import org.eclipse.osee.framework.ui.branch.graph.utility.GraphOptions;
 import org.eclipse.osee.framework.ui.branch.graph.utility.GraphOptions.ConnectionFilter;
@@ -34,7 +33,6 @@ import org.eclipse.ui.IEditorPart;
  */
 public class BranchGraphActionBarContributor extends ActionBarContributor {
    private BranchGraphEditor editor;
-   private final IPreferenceStore store = BranchGraphActivator.getInstance().getPreferenceStore();
 
    private static ToggleFilterConnectionAction[] toggleFilterConnectionAction;
    private static ToggleTxFilterAction[] toggleTxFilterAction;
@@ -47,6 +45,7 @@ public class BranchGraphActionBarContributor extends ActionBarContributor {
 
    @Override
    protected void buildActions() {
+      // do nothing
    }
 
    @Override
@@ -84,13 +83,15 @@ public class BranchGraphActionBarContributor extends ActionBarContributor {
       public ToggleFilterConnectionAction(String text, ConnectionFilter show) {
          super(text, AS_RADIO_BUTTON);
          this.show = show;
-         setChecked(show.ordinal() == store.getInt(GraphOptions.FILTER_CONNECTIONS_PREFERENCE));
+         setChecked(show.ordinal() == Activator.getInstance().getPreferenceStore().getInt(
+            GraphOptions.FILTER_CONNECTIONS_PREFERENCE));
       }
 
       @Override
       public void run() {
          if (isChecked()) {
-            store.setValue(GraphOptions.FILTER_CONNECTIONS_PREFERENCE, show.ordinal());
+            Activator.getInstance().getPreferenceStore().setValue(GraphOptions.FILTER_CONNECTIONS_PREFERENCE,
+               show.ordinal());
             GraphEditPart graphEditPart = (GraphEditPart) editor.getViewer().getContents();
             graphEditPart.setConnectionVisibility();
          }
@@ -104,13 +105,14 @@ public class BranchGraphActionBarContributor extends ActionBarContributor {
       public ToggleTxFilterAction(String text, TxFilter show) {
          super(text, AS_RADIO_BUTTON);
          this.show = show;
-         setChecked(show.ordinal() == store.getInt(GraphOptions.TRANSACTION_FILTER));
+         setChecked(show.ordinal() == Activator.getInstance().getPreferenceStore().getInt(
+            GraphOptions.TRANSACTION_FILTER));
       }
 
       @Override
       public void run() {
          if (isChecked()) {
-            store.setValue(GraphOptions.TRANSACTION_FILTER, show.ordinal());
+            Activator.getInstance().getPreferenceStore().setValue(GraphOptions.TRANSACTION_FILTER, show.ordinal());
             GraphEditPart graphEditPart = (GraphEditPart) editor.getViewer().getContents();
             graphEditPart.setTxVisibility();
          }

@@ -226,8 +226,7 @@ public class DbTableViewer {
     * Create the TableViewer
     */
    private void createTableViewer() {
-      tableViewer = new TableViewer(table) {
-      };
+      tableViewer = new TableViewer(table);
       tableViewer.setUseHashlookup(true);
 
       if (dbItem.isWriteAccess()) {

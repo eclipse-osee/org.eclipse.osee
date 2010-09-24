@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.ui.admin.AdminPlugin;
+import org.eclipse.osee.framework.ui.admin.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.cellEditor.EnumeratedValue;
 import org.eclipse.osee.framework.ui.skynet.widgets.cellEditor.StringValue;
 import org.eclipse.swt.widgets.TableItem;
@@ -76,7 +76,7 @@ public class DbCellModifier implements ICellModifier {
                enumeratedValue.setValue(u.getName());
             }
          } catch (Exception ex) {
-            OseeLog.log(AdminPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
          return enumeratedValue;
       } else if (obj instanceof String) {
@@ -103,7 +103,7 @@ public class DbCellModifier implements ICellModifier {
       if (wasObj instanceof Long) {
          Long newLong = new Long((String) value);
          Long wasLong = (Long) wasObj;
-         if (newLong != null && !wasLong.equals(newLong)) {
+         if (!wasLong.equals(newLong)) {
             dbModel.setColumn(columnIndex, newLong);
             dbModel.setNeedSave(true);
             dbModel.setColumnChanged(property);
@@ -119,7 +119,7 @@ public class DbCellModifier implements ICellModifier {
                dbModel.setColumnChanged(property);
             }
          } catch (Exception ex) {
-            OseeLog.log(AdminPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
       } else if (wasObj instanceof String) {
          if (!((String) wasObj).equals(value)) {

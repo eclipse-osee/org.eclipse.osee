@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.AttributeTypeFilteredCheckTreeDialog;
@@ -320,7 +321,7 @@ public class QuickSearchOptionComposite extends Composite {
    private void setHelpContextForOption(String optionId, String helpContext) {
       Control control = getOrCreateOptionsButton(optionId);
       if (Widgets.isAccessible(control)) {
-         SkynetGuiPlugin.getInstance().setHelp(control, helpContext, "org.eclipse.osee.framework.help.ui");
+         HelpUtil.setHelp(control, helpContext, "org.eclipse.osee.framework.help.ui");
       }
    }
 

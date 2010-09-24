@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
@@ -151,7 +152,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IActio
          }
       });
 
-      OseeUiActions.addButtonToEditorToolBar(this, SkynetGuiPlugin.getInstance(), toolBar, EDITOR_ID,
+      OseeUiActions.addButtonToEditorToolBar(this, SkynetGuiPlugin.PLUGIN_ID, toolBar, EDITOR_ID,
          "Mass Artifact Editor");
    }
 
@@ -222,8 +223,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IActio
          setPartName(((MassArtifactEditorInput) editorInput).getName());
       }
 
-      SkynetGuiPlugin.getInstance().setHelp(getContainer(), "mass_artifact_editor",
-         "org.eclipse.osee.framework.help.ui");
+      HelpUtil.setHelp(getContainer(), "mass_artifact_editor", "org.eclipse.osee.framework.help.ui");
 
       Composite comp = new Composite(getContainer(), SWT.NONE);
       comp.setLayout(new GridLayout(1, true));

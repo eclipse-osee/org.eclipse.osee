@@ -102,7 +102,7 @@ public class OteNavigateView extends ViewPart implements IActionable {
       refreshAction.setImageDescriptor(ImageManager.getImageDescriptor(PluginUiImage.REFRESH));
       refreshAction.setToolTipText("Refresh");
 
-      OseeUiActions.addBugToViewToolbar(this, this, TestCoreGuiPlugin.getDefault(), VIEW_ID, "OTE Navigator");
+      OseeUiActions.addBugToViewToolbar(this, this, TestCoreGuiPlugin.PLUGIN_ID, VIEW_ID, "OTE Navigator");
 
    }
 

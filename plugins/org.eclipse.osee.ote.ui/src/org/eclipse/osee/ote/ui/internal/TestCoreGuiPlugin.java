@@ -44,7 +44,7 @@ public class TestCoreGuiPlugin extends OseeFormActivator {
    private RemoteConsoleLauncher tracker;
 
    public TestCoreGuiPlugin() {
-      super();
+      super(PLUGIN_ID);
       pluginInstance = this;
    }
 

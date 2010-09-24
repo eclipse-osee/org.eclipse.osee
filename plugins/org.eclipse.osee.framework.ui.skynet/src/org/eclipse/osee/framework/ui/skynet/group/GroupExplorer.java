@@ -303,7 +303,7 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
       IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
       toolbarManager.add(refreshAction);
 
-      OseeUiActions.addBugToViewToolbar(this, this, SkynetGuiPlugin.getInstance(), VIEW_ID, "Group Explorer");
+      OseeUiActions.addBugToViewToolbar(this, this, SkynetGuiPlugin.PLUGIN_ID, VIEW_ID, "Group Explorer");
    }
 
    private void handleNewGroup() {

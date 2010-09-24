@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.PluginUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
 
 /**
@@ -34,7 +35,7 @@ public class WorkAttrHelpResource implements IHelpResource {
    @Override
    public String getHref() {
       if (layoutData != null) {
-         File file = AtsPlugin.getInstance().getPluginStoreFile(layoutData.getStoreName() + ".html");
+         File file = (new PluginUtil(AtsPlugin.PLUGIN_ID)).getPluginStoreFile(layoutData.getStoreName() + ".html");
          String absFile = "file:\\/\\/" + file.getAbsolutePath();
          StringBuffer sb = new StringBuffer();
          sb.append(AHTML.heading(1, layoutData.getName()));

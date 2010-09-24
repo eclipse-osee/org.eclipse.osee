@@ -442,7 +442,7 @@ public class ScriptTableViewer {
                   //                  newTask.computeExists();
                   if (newTask.getScriptModel().getOutputModel() != null) {
                      if (newTask.getScriptModel().getOutputModel().getIFile() != null) {
-                        MarkerPlugin.getDefault().addMarkers(newTask.getScriptModel().getOutputModel().getIFile());
+                        MarkerPlugin.addMarkers(newTask.getScriptModel().getOutputModel().getIFile());
                      }
                   }
                   taskList.addTask(newTask);

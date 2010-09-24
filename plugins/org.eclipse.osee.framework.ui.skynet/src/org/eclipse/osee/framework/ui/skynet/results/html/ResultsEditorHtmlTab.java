@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
+import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.action.browser.BrowserPrintAction;
@@ -93,9 +94,8 @@ public class ResultsEditorHtmlTab implements IResultsEditorHtmlTab, IBrowserActi
       xResultsComposite.setLayoutData(gd);
       xResultsComposite.setHtmlText(xResultPage.getManipulatedHtml(Arrays.asList(Manipulations.NONE)));
 
-      SkynetGuiPlugin.getInstance().setHelp(xResultsComposite, HELP_CONTEXT_ID, "org.eclipse.osee.ats.help.ui");
-      SkynetGuiPlugin.getInstance().setHelp(xResultsComposite.getBrowser(), HELP_CONTEXT_ID,
-         "org.eclipse.osee.ats.help.ui");
+      HelpUtil.setHelp(xResultsComposite, HELP_CONTEXT_ID, "org.eclipse.osee.ats.help.ui");
+      HelpUtil.setHelp(xResultsComposite.getBrowser(), HELP_CONTEXT_ID, "org.eclipse.osee.ats.help.ui");
       return comp;
    }
 

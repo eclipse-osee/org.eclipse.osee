@@ -40,6 +40,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
+import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.search.filter.FilterModel;
 import org.eclipse.osee.framework.ui.skynet.search.filter.FilterModelList;
@@ -127,7 +128,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
          setControl(parent);
          aContainer.setPerformActionEnabled(false);
 
-         SkynetGuiPlugin.getInstance().setHelp(mainComposite, "artifact_search", "org.eclipse.osee.framework.help.ui");
+         HelpUtil.setHelp(mainComposite, "artifact_search", "org.eclipse.osee.framework.help.ui");
 
          updateWidgets();
 

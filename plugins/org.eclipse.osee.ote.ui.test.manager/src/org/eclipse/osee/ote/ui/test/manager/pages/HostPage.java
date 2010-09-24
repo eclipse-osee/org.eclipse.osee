@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.ui.test.manager.pages;
 
+import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.ote.service.ConnectionEvent;
 import org.eclipse.osee.ote.ui.test.manager.core.TestManagerEditor;
-import org.eclipse.osee.ote.ui.test.manager.internal.TestManagerPlugin;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -26,7 +26,7 @@ public class HostPage extends TestManagerPage {
    public HostPage(Composite parent, int style, TestManagerEditor parentTestManager) {
       super(parent, style, parentTestManager);
       createPage();
-      TestManagerPlugin.getInstance().setHelp(this, "tm_hosts_page", "org.eclipse.osee.framework.help.ui");
+      HelpUtil.setHelp(this, "tm_hosts_page", "org.eclipse.osee.framework.help.ui");
    }
 
    @Override

@@ -28,6 +28,7 @@ public class OseePluginUiActivator extends OseeUiActivator {
    private ServiceTracker tracker;
 
    public OseePluginUiActivator() {
+      super(PLUGIN_ID);
       plugin = this;
    }
 

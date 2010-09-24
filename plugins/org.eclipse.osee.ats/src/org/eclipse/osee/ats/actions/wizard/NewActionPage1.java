@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactNameSorter;
 import org.eclipse.osee.framework.ui.skynet.util.filteredTree.OSEECheckedFilteredTree;
@@ -159,7 +160,7 @@ public class NewActionPage1 extends WizardPage {
    }
 
    private void setHelpContexts() {
-      AtsPlugin.getInstance().setHelp(this.getControl(), "new_action_wizard_page_1", "org.eclipse.osee.ats.help.ui");
+      HelpUtil.setHelp(this.getControl(), "new_action_wizard_page_1", "org.eclipse.osee.ats.help.ui");
    }
 
    public Set<ActionableItemArtifact> getSelectedActionableItemArtifacts() {

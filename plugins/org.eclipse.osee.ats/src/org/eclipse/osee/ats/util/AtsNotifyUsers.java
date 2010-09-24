@@ -65,6 +65,10 @@ public class AtsNotifyUsers implements IArtifactEventListener {
       return instance;
    }
 
+   public static void start() {
+      getInstance();
+   }
+
    private AtsNotifyUsers(INotificationManager notificationManager) {
       if (DbUtil.isDbInit()) {
          return;

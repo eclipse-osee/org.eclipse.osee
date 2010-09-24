@@ -21,9 +21,6 @@ public class DbModel {
    private boolean needSave = false;
    private final ArrayList<String> changedColumns = new ArrayList<String>();
 
-   public DbModel() {
-   }
-
    public Object getColumn(int num) {
       if (columns.isEmpty() || num > columns.size()) {
          return "";

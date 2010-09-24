@@ -57,6 +57,7 @@ import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
+import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
@@ -392,7 +393,7 @@ public final class WatchView extends ViewPart implements IActionable, IMessageDi
       getSite().setSelectionProvider(treeViewer);
 
       treeViewer.addCustomizeToViewToolbar(this);
-      OseeUiActions.addBugToViewToolbar(this, this, Activator.getDefault(), VIEW_ID, "Message Watch");
+      OseeUiActions.addBugToViewToolbar(this, this, Activator.PLUGIN_ID, VIEW_ID, "Message Watch");
 
       createMenuActions();
 
@@ -564,7 +565,7 @@ public final class WatchView extends ViewPart implements IActionable, IMessageDi
    }
 
    private void setHelpContexts() {
-      Activator.getDefault().setHelp(parentComposite, "messageWatch", "org.eclipse.osee.framework.help.ui");
+      HelpUtil.setHelp(parentComposite, "messageWatch", "org.eclipse.osee.framework.help.ui");
    }
 
    @Override

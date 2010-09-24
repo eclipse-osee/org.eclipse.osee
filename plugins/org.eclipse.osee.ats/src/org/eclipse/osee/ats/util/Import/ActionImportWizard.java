@@ -10,11 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.Import;
 
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
+import org.osgi.framework.Bundle;
 
 /**
  * @author Donald G. Dunne
@@ -25,7 +27,7 @@ public class ActionImportWizard extends Wizard implements IImportWizard {
 
    public ActionImportWizard() {
       super();
-      setDialogSettings(AtsPlugin.getInstance().getDialogSettings());
+      Bundle bundle = Platform.getBundle(AtsPlugin.PLUGIN_ID);
       setWindowTitle("Action Import Wizard");
    }
 

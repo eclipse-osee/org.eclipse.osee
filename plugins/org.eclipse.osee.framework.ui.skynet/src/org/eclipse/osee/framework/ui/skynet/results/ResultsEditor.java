@@ -93,7 +93,7 @@ public class ResultsEditor extends AbstractArtifactEditor implements IActionable
    public ToolBar createToolBar(Composite parent) {
       ToolBar toolBar = ALayout.createCommonToolBar(parent);
 
-      OseeUiActions.addButtonToEditorToolBar(this, SkynetGuiPlugin.getInstance(), toolBar, getEditorId(),
+      OseeUiActions.addButtonToEditorToolBar(this, SkynetGuiPlugin.PLUGIN_ID, toolBar, getEditorId(),
          getActionableItemName());
 
       return toolBar;

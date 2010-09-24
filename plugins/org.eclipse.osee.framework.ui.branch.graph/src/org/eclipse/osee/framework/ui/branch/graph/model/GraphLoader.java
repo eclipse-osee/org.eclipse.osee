@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.JoinUtility.TransactionJoinQuery;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.ui.branch.graph.BranchGraphActivator;
+import org.eclipse.osee.framework.ui.branch.graph.Activator;
 import org.eclipse.osee.framework.ui.branch.graph.operation.IProgressListener;
 
 /**
@@ -97,7 +97,7 @@ public class GraphLoader {
             try {
                parentTxId = branchModel.getBranch().getSourceTransaction().getId();
             } catch (OseeCoreException ex) {
-               OseeLog.log(BranchGraphActivator.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
             if (parentTxId > 0) {
                TxModel txModel = branchModel.getFirstTx();
@@ -107,7 +107,7 @@ public class GraphLoader {
                      connect(source, txModel);
                   } else {
                      OseeLog.log(
-                        BranchGraphActivator.class,
+                        Activator.class,
                         Level.SEVERE,
                         String.format("Invalid parent transaction id of [%s] for branch [%s]", parentTxId,
                            branchModel.getBranch()));

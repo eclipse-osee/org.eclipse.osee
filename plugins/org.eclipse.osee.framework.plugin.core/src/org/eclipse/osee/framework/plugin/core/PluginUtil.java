@@ -16,25 +16,19 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import org.eclipse.core.runtime.Plugin;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.osgi.framework.BundleContext;
+import org.osgi.framework.Bundle;
 
 /**
  * @author Ryan D. Brooks
  */
-public class ActivatorHelper {
-   private static Map<String, Plugin> pluginIdToOseePlugin = new HashMap<String, Plugin>();
-   private final BundleContext context;
-   private final Plugin plugin;
+public class PluginUtil {
+   private final String pluginId;
 
-   public ActivatorHelper(BundleContext context, Plugin plugin) {
-      pluginIdToOseePlugin.put(plugin.getBundle().getSymbolicName(), plugin);
-      this.context = context;
-      this.plugin = plugin;
+   public PluginUtil(String pluginId) {
+      this.pluginId = pluginId;
    }
 
    /**
@@ -42,7 +36,8 @@ public class ActivatorHelper {
     * myworkspace/.metadata/.plugins/org.eclipse.pde.core/myPlugin/...
     */
    public File getPluginStoreFile(String path) {
-      return context.getDataFile(path);
+      Bundle bundle = Platform.getBundle(pluginId);
+      return bundle.getBundleContext().getDataFile(path);
    }
 
    /**
@@ -62,15 +57,18 @@ public class ActivatorHelper {
    }
 
    public InputStream getInputStream(String resource) throws IOException {
-      return plugin.getBundle().getEntry(resource).openStream();
+      Bundle bundle = Platform.getBundle(pluginId);
+      return bundle.getEntry(resource).openStream();
    }
 
-   public List<URL> getInputStreams(String directory, String pattern, boolean recurse) throws IOException {
-      Enumeration<?> enumeration = plugin.getBundle().findEntries(directory, pattern, recurse);
+   public List<URL> getInputStreams(String directory, String pattern, boolean recurse) {
+      Bundle bundle = Platform.getBundle(pluginId);
+      Enumeration<?> enumeration = bundle.findEntries(directory, pattern, recurse);
       List<URL> inputs = new ArrayList<URL>();
       while (enumeration.hasMoreElements()) {
          inputs.add(((URL) enumeration.nextElement()));
       }
       return inputs;
    }
+
 }

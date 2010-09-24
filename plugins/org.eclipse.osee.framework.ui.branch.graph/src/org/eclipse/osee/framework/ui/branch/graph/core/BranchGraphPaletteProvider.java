@@ -21,7 +21,7 @@ import org.eclipse.gef.palette.ToolEntry;
 import org.eclipse.gef.tools.AbstractTool;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.framework.ui.branch.graph.BranchGraphActivator;
+import org.eclipse.osee.framework.ui.branch.graph.Activator;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -84,7 +84,7 @@ public class BranchGraphPaletteProvider {
       toolbar.add(new MarqueeToolEntry());
 
       final Action action =
-         OseeUiActions.createBugAction(BranchGraphActivator.getInstance(), editor, BranchGraphEditor.EDITOR_ID,
+         OseeUiActions.createBugAction(Activator.PLUGIN_ID, editor, BranchGraphEditor.EDITOR_ID,
             "Branch Graph");
       final ImageDescriptor img = action.getImageDescriptor();
 

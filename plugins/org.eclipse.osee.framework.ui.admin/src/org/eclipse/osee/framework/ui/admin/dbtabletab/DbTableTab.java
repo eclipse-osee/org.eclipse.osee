@@ -15,7 +15,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.ui.admin.AdminPlugin;
+import org.eclipse.osee.framework.ui.admin.Activator;
 import org.eclipse.osee.framework.ui.admin.AdminView;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -76,7 +76,7 @@ public class DbTableTab {
             try {
                handleTableSelect();
             } catch (OseeCoreException ex) {
-               OseeLog.log(AdminPlugin.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
             AdminView.setSaveNeeded(false);
          }
@@ -107,6 +107,7 @@ public class DbTableTab {
 
          @Override
          public void mouseHover(MouseEvent e) {
+            // do nothing
          }
       });
 
@@ -132,6 +133,7 @@ public class DbTableTab {
 
          @Override
          public void mouseHover(MouseEvent e) {
+            // do nothing
          }
       });
 

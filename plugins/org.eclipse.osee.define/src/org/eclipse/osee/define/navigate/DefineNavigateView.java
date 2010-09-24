@@ -21,6 +21,7 @@ import org.eclipse.osee.define.DefinePlugin;
 import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
+import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
@@ -62,7 +63,7 @@ public class DefineNavigateView extends ViewPart implements IActionable {
       xNavComp = new XNavigateComposite(new DefineNavigateViewItems(), parent, SWT.NONE);
       xNavComp.getFilteredTree().getViewer().setSorter(new DefineNavigateViewerSorter());
 
-      DefinePlugin.getInstance().setHelp(xNavComp, HELP_CONTEXT_ID, "org.eclipse.osee.define.help.ui");
+      HelpUtil.setHelp(xNavComp, HELP_CONTEXT_ID, "org.eclipse.osee.define.help.ui");
       createActions();
       xNavComp.refresh();
       addExtensionPointListenerBecauseOfWorkspaceLoading();
@@ -105,7 +106,7 @@ public class DefineNavigateView extends ViewPart implements IActionable {
       refreshAction.setImageDescriptor(ImageManager.getImageDescriptor(PluginUiImage.REFRESH));
       refreshAction.setToolTipText("Refresh");
 
-      OseeUiActions.addBugToViewToolbar(this, this, DefinePlugin.getInstance(), VIEW_ID, "Define Navigator");
+      OseeUiActions.addBugToViewToolbar(this, this, DefinePlugin.PLUGIN_ID, VIEW_ID, "Define Navigator");
 
    }
 

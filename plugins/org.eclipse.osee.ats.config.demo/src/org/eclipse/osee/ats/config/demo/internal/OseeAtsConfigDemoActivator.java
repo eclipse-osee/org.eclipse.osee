@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.config.demo.internal;
 
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
-import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -25,22 +24,12 @@ public class OseeAtsConfigDemoActivator extends OseeUiActivator {
     * The constructor.
     */
    public OseeAtsConfigDemoActivator() {
-      super();
+      super(PLUGIN_ID);
       plugin = this;
    }
 
    public static OseeAtsConfigDemoActivator getInstance() {
       return plugin;
-   }
-
-   @Override
-   public void start(BundleContext context) throws Exception {
-      super.start(context);
-   }
-
-   @Override
-   public void stop(BundleContext context) throws Exception {
-      super.stop(context);
    }
 
 }

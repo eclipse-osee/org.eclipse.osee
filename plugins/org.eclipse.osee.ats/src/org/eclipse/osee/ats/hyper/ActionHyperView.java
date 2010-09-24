@@ -39,6 +39,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
@@ -83,9 +84,9 @@ public class ActionHyperView extends HyperView implements IActionable, IArtifact
       }
       AtsBulkLoad.loadConfig(false);
       super.createPartControl(top);
-      OseeUiActions.addBugToViewToolbar(this, this, AtsPlugin.getInstance(), VIEW_ID, "SkyWalker");
-      AtsPlugin.getInstance().setHelp(top, HELP_CONTEXT_ID, "org.eclipse.osee.ats.help.ui");
-      AtsPlugin.getInstance().setHelp(composite, HELP_CONTEXT_ID, "org.eclipse.osee.ats.help.ui");
+      OseeUiActions.addBugToViewToolbar(this, this, AtsPlugin.PLUGIN_ID, VIEW_ID, "SkyWalker");
+      HelpUtil.setHelp(top, HELP_CONTEXT_ID, "org.eclipse.osee.ats.help.ui");
+      HelpUtil.setHelp(composite, HELP_CONTEXT_ID, "org.eclipse.osee.ats.help.ui");
       OseeEventManager.addListener(this);
    }
 

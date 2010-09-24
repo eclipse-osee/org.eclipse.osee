@@ -18,7 +18,12 @@ import org.osgi.framework.BundleContext;
  * @author Ryan D. Brooks
  */
 public abstract class OseeFormActivator extends OseeUiActivator {
+
    private FormColors formColors;
+
+   protected OseeFormActivator(String pluginId) {
+      super(pluginId);
+   }
 
    /**
     * This method is called when the plug-in is stopped

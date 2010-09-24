@@ -45,7 +45,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.branch.graph.BranchGraphActivator;
+import org.eclipse.osee.framework.ui.branch.graph.Activator;
 import org.eclipse.osee.framework.ui.branch.graph.figure.BranchFigure;
 import org.eclipse.osee.framework.ui.branch.graph.figure.FigureFactory;
 import org.eclipse.osee.framework.ui.branch.graph.figure.TxFigure;
@@ -84,7 +84,7 @@ public class GraphEditPart extends AbstractGraphicalEditPart {
       this.txNumberToTxFigureMap = new HashMap<Long, TxFigure>();
       this.branchesByLevel = new HashCollection<Integer, BranchModel>();
       this.connectionMap = new HashCollection<ConnectionType, Connection>();
-      this.preferenceStore = BranchGraphActivator.getInstance().getPreferenceStore();
+      this.preferenceStore = Activator.getInstance().getPreferenceStore();
    }
 
    /*
@@ -175,7 +175,7 @@ public class GraphEditPart extends AbstractGraphicalEditPart {
             txNumberToTxModelMap.put(txNumber, model);
             txNumberToTxFigureMap.put(txNumber, FigureFactory.createTxFigure(model));
          } else {
-            OseeLog.log(BranchGraphActivator.class, Level.SEVERE,
+            OseeLog.log(Activator.class, Level.SEVERE,
                String.format("Orphan TxModel: [%s]", model.toString()));
          }
       }
@@ -281,7 +281,7 @@ public class GraphEditPart extends AbstractGraphicalEditPart {
          } else {
             TxModel txModel = branchModel.getFirstTx();
             if (txModel == null) {
-               OseeLog.log(BranchGraphActivator.class, Level.SEVERE,
+               OseeLog.log(Activator.class, Level.SEVERE,
                   String.format("Branch did not have a starting tx [%s]", branchModel));
             } else {
                if (txModel.getSourceTx() != null) {

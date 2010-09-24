@@ -15,11 +15,11 @@ import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.util.AtsNotifyUsers;
 import org.eclipse.osee.ats.util.AtsPreSaveCacheRemoteEventHandler;
 import org.eclipse.osee.framework.core.services.CmAccessControl;
+import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.core.util.ServiceDependencyTracker;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.plugin.core.IActionReportingService;
-import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.skynet.cm.IOseeCmService;
+import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
@@ -28,14 +28,12 @@ import org.osgi.framework.ServiceRegistration;
  * 
  * @author Donald G. Dunne
  */
-public class AtsPlugin extends OseeUiActivator {
+public class AtsPlugin implements BundleActivator {
    public static final String PLUGIN_ID = "org.eclipse.osee.ats";
 
    private static AtsPlugin pluginInstance;
-
    private ServiceRegistration service1;
    private ServiceRegistration service2;
-
    private ServiceDependencyTracker tracker;
    private AtsCmAccessControlRegHandler cmAccessHandler;
 
@@ -44,12 +42,11 @@ public class AtsPlugin extends OseeUiActivator {
       AtsPlugin.pluginInstance = this;
       AtsPreSaveCacheRemoteEventHandler.start();
       AtsCacheManager.start();
-      AtsNotifyUsers.getInstance();
+      AtsNotifyUsers.start();
    }
 
    @Override
    public void start(BundleContext context) throws Exception {
-      super.start(context);
       service1 =
          context.registerService(IActionReportingService.class.getName(), new AtsActionReportingServiceImpl(), null);
       service2 = context.registerService(IOseeCmService.class.getName(), new OseeAtsServiceImpl(), null);
@@ -64,21 +61,9 @@ public class AtsPlugin extends OseeUiActivator {
 
    @Override
    public void stop(BundleContext context) throws Exception {
-      if (tracker != null) {
-         Lib.close(tracker);
-      }
-      if (service1 != null) {
-         service1.unregister();
-      }
-      if (service2 != null) {
-         service2.unregister();
-      }
-      super.stop(context);
-   }
-
-   @Override
-   protected String getPluginName() {
-      return PLUGIN_ID;
+      OsgiUtil.close(tracker);
+      OsgiUtil.close(service1);
+      OsgiUtil.close(service2);
    }
 
    public static AtsPlugin getInstance() {
@@ -88,4 +73,5 @@ public class AtsPlugin extends OseeUiActivator {
    public CmAccessControl getCmService() {
       return cmAccessHandler.getCmService();
    }
+
 }

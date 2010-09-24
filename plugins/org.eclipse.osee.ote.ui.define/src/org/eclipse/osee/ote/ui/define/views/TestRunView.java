@@ -165,7 +165,7 @@ public class TestRunView extends ViewPart implements IActionable, IDataChangedLi
       menuManager.setParent(getViewSite().getActionBars().getMenuManager());
       fillMenu(menuManager);
       getSite().setSelectionProvider(viewer);
-      OseeUiActions.addBugToViewToolbar(this, this, OteUiDefinePlugin.getInstance(), VIEW_ID, "Test Run View");
+      OseeUiActions.addBugToViewToolbar(this, this, OteUiDefinePlugin.PLUGIN_ID, VIEW_ID, "Test Run View");
    }
 
    private void fillMenu(IMenuManager menuManager) {

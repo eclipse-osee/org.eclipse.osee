@@ -97,7 +97,7 @@ public class ArtifactHyperView extends HyperView implements IArtifactEventListen
          return;
       }
       super.createPartControl(top);
-      OseeUiActions.addBugToViewToolbar(this, this, AtsPlugin.getInstance(), VIEW_ID, "ATS Action View");
+      OseeUiActions.addBugToViewToolbar(this, this, AtsPlugin.PLUGIN_ID, VIEW_ID, "ATS Action View");
       OseeEventManager.addListener(this);
    }
 

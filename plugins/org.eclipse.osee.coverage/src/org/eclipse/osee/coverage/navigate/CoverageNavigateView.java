@@ -167,7 +167,7 @@ public class CoverageNavigateView extends ViewPart implements IActionable {
       refreshAction.setToolTipText("Refresh");
       getViewSite().getActionBars().getMenuManager().add(refreshAction);
 
-      OseeUiActions.addBugToViewToolbar(this, this, Activator.getInstance(), VIEW_ID, "Coverage Navigator");
+      OseeUiActions.addBugToViewToolbar(this, this, Activator.PLUGIN_ID, VIEW_ID, "Coverage Navigator");
 
    }
 

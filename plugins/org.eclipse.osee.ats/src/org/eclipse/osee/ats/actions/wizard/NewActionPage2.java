@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
@@ -105,7 +106,7 @@ public class NewActionPage2 extends WizardPage {
    }
 
    private void setHelpContexts() {
-      AtsPlugin.getInstance().setHelp(this.getControl(), "new_action_wizard_page_2", "org.eclipse.osee.ats.help.ui");
+      HelpUtil.setHelp(this.getControl(), "new_action_wizard_page_2", "org.eclipse.osee.ats.help.ui");
    }
 
    private void handlePopulateWithDebugInfo() {

@@ -40,7 +40,6 @@ import org.xml.sax.helpers.XMLReaderFactory;
 public class ProcessOutfileSax implements IExceptionableRunnable {
 
    private final IFile file;
-   private final MarkerPlugin plugin;
 
    private static final int _1_MB = 1048576;
    private static final int _20_MB = _1_MB * 20;
@@ -50,9 +49,8 @@ public class ProcessOutfileSax implements IExceptionableRunnable {
    private CheckPointData currentCheckPoint = null;
    protected StackTraceCollection currentStackTrace;
 
-   public ProcessOutfileSax(MarkerPlugin plugin, IFile file) {
+   public ProcessOutfileSax(IFile file) {
       this.file = file;
-      this.plugin = plugin;
    }
 
    @Override
@@ -75,7 +73,7 @@ public class ProcessOutfileSax implements IExceptionableRunnable {
       parseContents(contents);
 
       OteMarkerHelper helper = new OteMarkerHelper(this.testPointDatas);
-      plugin.updateMarkerInfo(file, helper.getMarkers());
+      MarkerPlugin.updateMarkerInfo(file, helper.getMarkers());
 
       return Status.OK_STATUS;
    }

@@ -100,8 +100,7 @@ public class ArtifactEditorActionBarContributor implements IActionContributor {
 
    private final Action createAtsBugAction() {
       IEditorSite site = editor.getEditorSite();
-      return OseeUiActions.createBugAction(SkynetGuiPlugin.getInstance(), editor, site.getId(),
-         site.getRegisteredName());
+      return OseeUiActions.createBugAction(SkynetGuiPlugin.PLUGIN_ID, editor, site.getId(), site.getRegisteredName());
    }
 
    private final class RevealBranchAction extends Action {

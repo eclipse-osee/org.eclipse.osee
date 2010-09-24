@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.plugin;
 
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IToolBarManager;
@@ -31,7 +32,7 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.part.ViewPart;
-import org.osgi.framework.Version;
+import org.osgi.framework.Bundle;
 
 public final class OseeUiActions {
    private static final String BUG_TITLE = "Generate Action Against This Tool";
@@ -62,21 +63,14 @@ public final class OseeUiActions {
       }
    }
 
-   public static void addButtonToEditorToolBar(final MultiPageEditorPart editorPart, IActionable actionableObject, final OseeUiActivator oseePlugin, IToolBarManager toolBar, final String editorId, final String actionableItem) {
+   public static void addButtonToEditorToolBar(final MultiPageEditorPart editorPart, final IActionable actionableObject, final String pluginId, IToolBarManager toolBar, final String editorId, final String actionableItem) {
       if (!isActionReportingServiceAvailable()) {
          return;
       }
       Action bugAction = new Action(BUG_TITLE, IAction.AS_PUSH_BUTTON) {
          @Override
          public void run() {
-            String version = (String) oseePlugin.getBundle().getHeaders().get("Bundle-Version");
-            String desc = String.format("Found in \"%s\" version %s.", editorId, version);
-            if (editorPart instanceof IActionable) {
-               String moreDesc = ((IActionable) editorPart).getActionDescription();
-               if (Strings.isValid(moreDesc)) {
-                  desc += "\n" + moreDesc;
-               }
-            }
+            String desc = getActionDescription(editorId, pluginId, actionableObject);
             reportLogException(actionableItem, desc);
          }
       };
@@ -85,15 +79,15 @@ public final class OseeUiActions {
       toolBar.add(bugAction);
    }
 
-   public static void addButtonToEditorToolBar(IActionable actionableObject, final OseeUiActivator oseePlugin, ToolBar toolBar, final String editorId, String actionableItem) {
-      addButtonToEditorToolBar(actionableObject, oseePlugin, toolBar, null, editorId, actionableItem);
+   public static void addButtonToEditorToolBar(IActionable actionableObject, final String pluginId, ToolBar toolBar, final String editorId, String actionableItem) {
+      addButtonToEditorToolBar(actionableObject, pluginId, toolBar, null, editorId, actionableItem);
    }
 
-   public static void addButtonToEditorToolBar(IActionable actionableObject, final OseeUiActivator oseePlugin, Composite comp, final String editorId, String actionableItem) {
-      addButtonToEditorToolBar(actionableObject, oseePlugin, null, comp, editorId, actionableItem);
+   public static void addButtonToEditorToolBar(IActionable actionableObject, final String pluginId, Composite comp, final String editorId, String actionableItem) {
+      addButtonToEditorToolBar(actionableObject, pluginId, null, comp, editorId, actionableItem);
    }
 
-   private static void addButtonToEditorToolBar(final IActionable actionableObject, final OseeUiActivator oseePlugin, ToolBar toolBar, Composite comp, final String editorId, final String actionableItem) {
+   private static void addButtonToEditorToolBar(final IActionable actionableObject, final String pluginId, ToolBar toolBar, Composite comp, final String editorId, final String actionableItem) {
       if (!isActionReportingServiceAvailable()) {
          return;
       }
@@ -115,12 +109,7 @@ public final class OseeUiActions {
          item.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-               String version = (String) oseePlugin.getBundle().getHeaders().get("Bundle-Version");
-               String desc = String.format("\n\nItem: %s\nVersion: %s", editorId, version);
-               String moreDesc = actionableObject.getActionDescription();
-               if (Strings.isValid(moreDesc)) {
-                  desc += "\n" + moreDesc;
-               }
+               String desc = getActionDescription(editorId, pluginId, actionableObject);
                reportLogException(actionableItem, desc);
             }
          });
@@ -132,12 +121,7 @@ public final class OseeUiActions {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-               String version = (String) oseePlugin.getBundle().getHeaders().get("Bundle-Version");
-               String desc = String.format("\n\nItem: %s\nVersion: %s", editorId, version);
-               String moreDesc = actionableObject.getActionDescription();
-               if (Strings.isValid(moreDesc)) {
-                  desc += "\n" + moreDesc;
-               }
+               String desc = getActionDescription(editorId, pluginId, actionableObject);
                reportLogException(actionableItem, desc);
             }
 
@@ -147,7 +131,29 @@ public final class OseeUiActions {
       }
    }
 
-   public static void addBugToViewToolbar(final ViewPart viewPart, final IActionable actionableObject, final OseeUiActivator oseePlugin, final String viewId, final String actionableItem) {
+   public static String getActionDescription(String itemId, String pluginId, IActionable actionable) {
+      String desc = "";
+      try {
+         Bundle bundle = Platform.getBundle(pluginId);
+         if (bundle != null) {
+            String version = (String) bundle.getHeaders().get("Bundle-Version");
+            desc = String.format("\n\nItem: %s\nVersion: %s", itemId, version);
+         }
+         String moreDesc = actionable.getActionDescription();
+         if (Strings.isValid(moreDesc)) {
+            if (Strings.isValid(desc)) {
+               desc += "\n" + moreDesc;
+            } else {
+               desc = moreDesc;
+            }
+         }
+      } catch (Exception ex) {
+         OseeLog.log(OseeUiActivator.class, Level.SEVERE, ex);
+      }
+      return desc;
+   }
+
+   public static void addBugToViewToolbar(final ViewPart viewPart, final IActionable actionableObject, final String pluginId, final String viewId, final String actionableItem) {
       if (!isActionReportingServiceAvailable()) {
          return;
       }
@@ -160,12 +166,7 @@ public final class OseeUiActions {
       Action bugAction = new Action("Generate Action Against This View") {
          @Override
          public void run() {
-            String version = (String) oseePlugin.getBundle().getHeaders().get("Bundle-Version");
-            String desc = String.format("\n\nItem: %s\nVersion: %s", viewId, version);
-            String moreDesc = actionableObject.getActionDescription();
-            if (!moreDesc.equals("")) {
-               desc += "\n" + moreDesc;
-            }
+            String desc = getActionDescription(viewId, pluginId, actionableObject);
             reportLogException(actionableItem, desc);
          }
       };
@@ -176,20 +177,20 @@ public final class OseeUiActions {
       toolbarManager.add(bugAction);
    }
 
-   public static Action createBugAction(OseeUiActivator oseePlugin, IAdaptable target, String itemId, String actionableItem) {
-      return new BugAction(oseePlugin, target, itemId, actionableItem);
+   public static Action createBugAction(String pluginId, IAdaptable target, String itemId, String actionableItem) {
+      return new BugAction(pluginId, target, itemId, actionableItem);
    }
 
    private static final class BugAction extends Action {
       private static String BUG_TITLE = "Generate Action Against This Tool";
-      private final OseeUiActivator oseePlugin;
+      private final String pluginId;
       private final String itemId;
       private final IAdaptable target;
       private final String actionableItem;
 
-      public BugAction(OseeUiActivator oseePlugin, IAdaptable target, String itemId, String actionableItem) {
+      public BugAction(String pluginId, IAdaptable target, String itemId, String actionableItem) {
          super(BUG_TITLE, IAction.AS_PUSH_BUTTON);
-         this.oseePlugin = oseePlugin;
+         this.pluginId = pluginId;
          this.itemId = itemId;
          this.target = target;
          this.actionableItem = actionableItem;
@@ -199,16 +200,8 @@ public final class OseeUiActions {
 
       @Override
       public void run() {
-         Version version =
-            new Version((String) oseePlugin.getBundle().getHeaders().get(org.osgi.framework.Constants.BUNDLE_VERSION));
-         String desc = String.format("Found in \"%s\" version %s.", itemId, version);
          IActionable actionable = (IActionable) target.getAdapter(IActionable.class);
-         if (actionable != null) {
-            String moreDesc = actionable.getActionDescription();
-            if (Strings.isValid(moreDesc)) {
-               desc += "\n" + moreDesc;
-            }
-         }
+         String desc = getActionDescription(itemId, pluginId, actionable);
          reportLogException(actionableItem, desc);
       }
    }

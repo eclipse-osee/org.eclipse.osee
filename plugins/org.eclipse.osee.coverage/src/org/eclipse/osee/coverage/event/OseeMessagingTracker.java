@@ -11,6 +11,7 @@
 package org.eclipse.osee.coverage.event;
 
 import java.util.logging.Level;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -27,7 +28,7 @@ public class OseeMessagingTracker extends ServiceTracker {
    private ConnectionNode connectionNode;
 
    public OseeMessagingTracker() {
-      super(Activator.getInstance().getBundle().getBundleContext(), MessageService.class.getName(), null);
+      super(Platform.getBundle(Activator.PLUGIN_ID).getBundleContext(), MessageService.class.getName(), null);
    }
 
    @Override

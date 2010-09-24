@@ -348,7 +348,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
    private ToolBar createToolBar(Composite parent) {
       ToolBar toolBar = AtsUtil.createCommonToolBar(parent);
 
-      OseeUiActions.addButtonToEditorToolBar(this, SkynetGuiPlugin.getInstance(), toolBar, EDITOR_ID, "ATS Editor");
+      OseeUiActions.addButtonToEditorToolBar(this, SkynetGuiPlugin.PLUGIN_ID, toolBar, EDITOR_ID, "ATS Editor");
       AtsUtil.actionToToolItem(toolBar, new ResourceHistoryAction(sma), FrameworkImage.EDIT_BLUE);
       AtsUtil.actionToToolItem(toolBar, new AccessControlAction(sma), FrameworkImage.AUTHENTICATED);
       AtsUtil.actionToToolItem(toolBar, new DirtyReportAction(sma), FrameworkImage.DIRTY);

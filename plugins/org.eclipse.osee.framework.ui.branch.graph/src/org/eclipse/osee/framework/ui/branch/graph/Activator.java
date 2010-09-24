@@ -8,47 +8,37 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.admin;
+package org.eclipse.osee.framework.ui.branch.graph;
 
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.osgi.framework.BundleContext;
 
 /**
- * The main plugin class to be used in the desktop.
- * 
- * @author Jeff C. Phillips
+ * @author Roberto E. Escobar
  */
-public class AdminPlugin extends OseeUiActivator {
+public class Activator extends OseeUiActivator {
 
-   // The shared instance.
-   private static AdminPlugin pluginInstance;
+   public static final String PLUGIN_ID = "org.eclipse.osee.framework.ui.branch.graph";
+   private static Activator plugin;
 
-   /**
-    * The constructor.
-    */
-   public AdminPlugin() {
-      pluginInstance = this;
+   protected Activator() {
+      super(PLUGIN_ID);
    }
 
-   /**
-    * This method is called upon plug-in activation
-    */
    @Override
    public void start(BundleContext context) throws Exception {
       super.start(context);
+      plugin = this;
    }
 
-   /**
-    * Returns the shared instance.
-    */
-   public static AdminPlugin getDefault() {
-      return pluginInstance;
+   @Override
+   public void stop(BundleContext context) throws Exception {
+      plugin = null;
+      super.stop(context);
    }
 
-   /**
-    * Returns the shared instance.
-    */
-   public static AdminPlugin getInstance() {
-      return pluginInstance;
+   public static Activator getInstance() {
+      return plugin;
    }
+
 }

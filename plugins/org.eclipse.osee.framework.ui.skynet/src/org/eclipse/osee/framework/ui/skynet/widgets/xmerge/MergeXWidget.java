@@ -179,7 +179,7 @@ public class MergeXWidget extends XWidget implements IAdaptable {
       manager.add(new ShowDestinationBranchChangeReportAction());
       manager.add(new Separator());
       manager.add(mergeXViewer.getCustomizeAction());
-      manager.add(OseeUiActions.createBugAction(SkynetGuiPlugin.getInstance(), this, MergeView.VIEW_ID, "Merge Manager"));
+      manager.add(OseeUiActions.createBugAction(SkynetGuiPlugin.PLUGIN_ID, this, MergeView.VIEW_ID, "Merge Manager"));
       manager.update(true);
    }
 

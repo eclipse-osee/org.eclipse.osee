@@ -57,7 +57,7 @@ public class TestManagerPlugin extends OseeUiActivator {
     * The constructor.
     */
    public TestManagerPlugin() {
-      super();
+      super(PLUGIN_ID);
       pluginInstance = this;
    }
 

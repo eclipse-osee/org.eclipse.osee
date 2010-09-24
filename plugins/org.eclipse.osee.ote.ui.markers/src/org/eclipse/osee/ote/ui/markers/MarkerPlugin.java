@@ -23,31 +23,19 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
-import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
+import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public class MarkerPlugin extends OseeUiActivator {
+public class MarkerPlugin implements BundleActivator {
 
-   private FileWatchList filesToWatch;
-   // The plug-in ID
+   private static FileWatchList filesToWatch;
    public static final String PLUGIN_ID = "org.eclipse.osee.ote.ui.markers";
-
-   // The shared instance
-   private static MarkerPlugin plugin;
-
-   /**
-    * The constructor
-    */
-   public MarkerPlugin() {
-   }
 
    @Override
    public void start(BundleContext context) throws Exception {
-      super.start(context);
-      plugin = this;
       filesToWatch = new FileWatchList();
       ResourcesPlugin.getWorkspace().addResourceChangeListener(new IResourceChangeListener() {
 
@@ -101,26 +89,15 @@ public class MarkerPlugin extends OseeUiActivator {
 
    @Override
    public void stop(BundleContext context) throws Exception {
-      plugin = null;
-      super.stop(context);
    }
 
-   /**
-    * Returns the shared instance
-    * 
-    * @return the shared instance
-    */
-   public static MarkerPlugin getDefault() {
-      return plugin;
-   }
-
-   public void addMarkers(IFile file) {
+   public static void addMarkers(IFile file) {
       removeMarkers(file);
-      Jobs.runInJob("OTE Marker Processing", new ProcessOutfileSax(this, file), MarkerPlugin.class,
-         MarkerPlugin.PLUGIN_ID, false);
+      Jobs.runInJob("OTE Marker Processing", new ProcessOutfileSax(file), MarkerPlugin.class, MarkerPlugin.PLUGIN_ID,
+         false);
    }
 
-   public void removeMarkers(IFile file) {
+   public static void removeMarkers(IFile file) {
       List<IMarker> markers = filesToWatch.get(file);
       if (markers != null) {
          for (IMarker marker : markers) {
@@ -132,7 +109,7 @@ public class MarkerPlugin extends OseeUiActivator {
       }
    }
 
-   synchronized void updateMarkerInfo(IFile file, List<IMarker> markers) {
+   static synchronized void updateMarkerInfo(IFile file, List<IMarker> markers) {
       List<IMarker> oldMarkers = filesToWatch.get(file);
       if (oldMarkers != null) {
          oldMarkers.addAll(markers);

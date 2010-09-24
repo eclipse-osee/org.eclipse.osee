@@ -26,10 +26,8 @@ public class ControlPlugin extends OseeUiActivator {
    private static ControlPlugin pluginInstance; // The shared instance.
    private ServiceTracker tracker;
 
-   /**
-    * The constructor.
-    */
    public ControlPlugin() {
+      super(PLUGIN_ID);
       pluginInstance = this;
    }
 

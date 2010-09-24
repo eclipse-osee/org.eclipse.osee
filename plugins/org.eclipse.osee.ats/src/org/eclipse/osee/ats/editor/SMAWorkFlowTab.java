@@ -54,6 +54,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
+import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
@@ -141,7 +142,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
 
          setLoading(true);
          if (sma.getHelpContext() != null) {
-            AtsPlugin.getInstance().setHelp(scrolledForm, sma.getHelpContext(), "org.eclipse.osee.ats.help.ui");
+            HelpUtil.setHelp(scrolledForm, sma.getHelpContext(), "org.eclipse.osee.ats.help.ui");
          }
 
          refreshData();
@@ -467,7 +468,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       toolBarMgr.add(new ResourceHistoryAction(sma));
       toolBarMgr.add(new ReloadAction(sma));
 
-      OseeUiActions.addButtonToEditorToolBar(sma.getEditor(), this, AtsPlugin.getInstance(),
+      OseeUiActions.addButtonToEditorToolBar(sma.getEditor(), this, AtsPlugin.PLUGIN_ID,
          scrolledForm.getToolBarManager(), SMAEditor.EDITOR_ID, "ATS Editor");
 
       scrolledForm.updateToolBar();

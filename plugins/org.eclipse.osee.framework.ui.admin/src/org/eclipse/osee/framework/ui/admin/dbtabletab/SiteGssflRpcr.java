@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.admin.AdminPlugin;
+import org.eclipse.osee.framework.ui.admin.Activator;
 
 public class SiteGssflRpcr extends DbItem {
 
@@ -50,7 +50,7 @@ public class SiteGssflRpcr extends DbItem {
          return ConnectionHandler.runPreparedQueryFetchInt(0,
             "SELECT count(1) FROM " + getTableName() + " WHERE PROGRAM = ?", returnTic(program)) > 0;
       } catch (OseeDataStoreException ex) {
-         OseeLog.log(AdminPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
          return false;
       }
    }
@@ -70,7 +70,7 @@ public class SiteGssflRpcr extends DbItem {
             ConnectionHandler.runPreparedUpdate(query, program, dir, programId);
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(AdminPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 

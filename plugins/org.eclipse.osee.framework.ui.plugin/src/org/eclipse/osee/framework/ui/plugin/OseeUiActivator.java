@@ -22,18 +22,13 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.ActivatorHelper;
+import org.eclipse.osee.framework.plugin.core.PluginUtil;
 import org.eclipse.osee.framework.ui.plugin.internal.OseePluginUiActivator;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.swt.program.Program;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -42,13 +37,12 @@ import org.osgi.framework.BundleContext;
  */
 public abstract class OseeUiActivator extends AbstractUIPlugin {
    private OseeUiActivator parentPlugin;
-   private ActivatorHelper helper;
+   private PluginUtil helper;
+   private final String pluginId;
 
-   /**
-    * The constructor.
-    */
-   protected OseeUiActivator() {
+   protected OseeUiActivator(String pluginId) {
       super();
+      this.pluginId = pluginId;
    }
 
    /**
@@ -91,8 +85,7 @@ public abstract class OseeUiActivator extends AbstractUIPlugin {
          parentPlugin = null;
       }
 
-      helper = new ActivatorHelper(context, this);
-
+      helper = new PluginUtil(pluginId);
    }
 
    /**
@@ -122,26 +115,6 @@ public abstract class OseeUiActivator extends AbstractUIPlugin {
          ex.printStackTrace();
       }
       return null;
-   }
-
-   public void setHelp(Control control, String name, String library) {
-      PlatformUI.getWorkbench().getHelpSystem().setHelp(control, library + "." + name);
-   }
-
-   public void setHelp(IAction action, String name, String library) {
-      PlatformUI.getWorkbench().getHelpSystem().setHelp(action, library + "." + name);
-   }
-
-   public void setHelp(Menu menu, String name, String library) {
-      PlatformUI.getWorkbench().getHelpSystem().setHelp(menu, library + "." + name);
-   }
-
-   public void setHelp(MenuItem menuItem, String name, String library) {
-      PlatformUI.getWorkbench().getHelpSystem().setHelp(menuItem, library + "." + name);
-   }
-
-   public void displayHelp(String name, String library) {
-      PlatformUI.getWorkbench().getHelpSystem().displayHelp(library + "." + name);
    }
 
    protected String getPluginName() {

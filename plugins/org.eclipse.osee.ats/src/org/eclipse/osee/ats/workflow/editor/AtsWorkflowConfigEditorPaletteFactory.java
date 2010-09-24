@@ -155,7 +155,7 @@ final class AtsWorkflowConfigEditorPaletteFactory {
       toolbar.add(new ValidateDiagramToolEntry());
 
       final Action action =
-         OseeUiActions.createBugAction(AtsPlugin.getInstance(), editor, AtsWorkflowConfigEditor.EDITOR_ID,
+         OseeUiActions.createBugAction(AtsPlugin.PLUGIN_ID, editor, AtsWorkflowConfigEditor.EDITOR_ID,
             "ATS Workflow Config Editor");
       final ImageDescriptor img = action.getImageDescriptor();
 

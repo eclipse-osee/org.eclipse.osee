@@ -153,7 +153,7 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IArtifac
          }
       });
 
-      if (AtsPlugin.getInstance() != null) {
+      if (SkynetGuiPlugin.getInstance().getOseeCmService() != null) {
          createBranchButton.setImage(ImageManager.getImage(FrameworkImage.BRANCH));
          deleteBranchButton.setImage(ImageManager.getImage(FrameworkImage.TRASH));
          favoriteBranchButton.setImage(ImageManager.getImage(AtsImage.FAVORITE));

@@ -19,7 +19,8 @@ import org.osgi.framework.BundleContext;
  * @author Ryan D. Brooks
  */
 public class OseeActivator extends Plugin {
-   private ActivatorHelper helper;
+   private PluginUtil helper;
+   public static String PLUGIN_ID = "PLUGIN_ID";
 
    /**
     * The constructor.
@@ -43,7 +44,7 @@ public class OseeActivator extends Plugin {
    @Override
    public void start(BundleContext context) throws Exception {
       super.start(context);
-      helper = new ActivatorHelper(context, this);
+      helper = new PluginUtil(PLUGIN_ID);
    }
 
 }

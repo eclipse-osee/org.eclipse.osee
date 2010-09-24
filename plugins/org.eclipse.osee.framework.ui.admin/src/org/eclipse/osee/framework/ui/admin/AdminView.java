@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.ui.admin.dbtabletab.DbItem;
 import org.eclipse.osee.framework.ui.admin.dbtabletab.DbTableTab;
 import org.eclipse.osee.framework.ui.admin.dbtabletab.SiteGssflRpcr;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
-import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -52,7 +51,6 @@ import org.eclipse.ui.part.ViewPart;
  */
 
 public class AdminView extends ViewPart implements IActionable {
-   public static final OseeUiActivator plugin = AdminPlugin.getInstance();
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.admin.AdminView";
    private static Action saveAction;
    private TabFolder tabFolder;
@@ -78,6 +76,7 @@ public class AdminView extends ViewPart implements IActionable {
 
    @Override
    public void setFocus() {
+      // do nothing
    }
 
    protected void createActions() throws OseeCoreException {
@@ -128,7 +127,7 @@ public class AdminView extends ViewPart implements IActionable {
       pingAction.setToolTipText("Ping OSEE Clients");
       pingAction.setEnabled(AccessControlManager.isOseeAdmin());
 
-      OseeUiActions.addBugToViewToolbar(this, this, AdminPlugin.getInstance(), VIEW_ID, "Admin");
+      OseeUiActions.addBugToViewToolbar(this, this, Activator.PLUGIN_ID, VIEW_ID, "Admin");
 
       IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
       toolbarManager.add(saveAction);
@@ -205,7 +204,7 @@ public class AdminView extends ViewPart implements IActionable {
 
          createActions();
       } catch (Exception ex) {
-         OseeLog.log(AdminPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 

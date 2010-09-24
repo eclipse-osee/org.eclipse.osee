@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.task;
 
 import java.util.logging.Level;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IAction;
@@ -38,6 +39,7 @@ import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -54,6 +56,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.Section;
+import org.osgi.framework.Bundle;
 
 /**
  * @author Donald G. Dunne
@@ -80,7 +83,7 @@ public class TaskTabXWidgetActionPage extends AtsXWidgetActionFormPage implement
 
       resultsContainer = toolkit.createClientContainer(resultsSection, 1);
       taskComposite = new TaskComposite(smaEditor, resultsContainer, SWT.BORDER, null);
-      AtsPlugin.getInstance().setHelp(taskComposite, HELP_CONTEXT_ID, "org.eclipse.osee.ats.help.ui");
+      HelpUtil.setHelp(taskComposite, HELP_CONTEXT_ID, "org.eclipse.osee.ats.help.ui");
       taskComposite.loadTable();
       return resultsSection;
    }
@@ -152,7 +155,8 @@ public class TaskTabXWidgetActionPage extends AtsXWidgetActionFormPage implement
       toolBarManager.add(new RefreshAction(taskComposite));
       toolBarManager.add(new Separator());
       toolBarManager.add(new NewAction());
-      OseeUiActions.addButtonToEditorToolBar(smaEditor, smaEditor, AtsPlugin.getInstance(), toolBarManager,
+      Bundle bundle = Platform.getBundle(AtsPlugin.PLUGIN_ID);
+      OseeUiActions.addButtonToEditorToolBar(smaEditor, smaEditor, AtsPlugin.PLUGIN_ID, toolBarManager,
          TaskEditor.EDITOR_ID, "ATS Task Tab");
       toolBarManager.add(new Separator());
       createDropDownMenuActions();

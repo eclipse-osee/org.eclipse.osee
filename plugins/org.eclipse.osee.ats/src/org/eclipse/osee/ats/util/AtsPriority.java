@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util;
 
-import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 
 /**
  * @author Donald G. Dunne
@@ -80,7 +80,7 @@ public class AtsPriority {
    };
 
    public static void openHelp() {
-      AtsPlugin.getInstance().displayHelp(PRIORITY_HELP_CONTEXT_ID, "org.eclipse.osee.ats.help.ui");
+      HelpUtil.displayHelp(PRIORITY_HELP_CONTEXT_ID, "org.eclipse.osee.ats.help.ui");
    }
 
 }

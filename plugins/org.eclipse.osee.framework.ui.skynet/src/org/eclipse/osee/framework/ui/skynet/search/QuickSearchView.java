@@ -206,7 +206,7 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener {
    }
 
    private void createActions() {
-      OseeUiActions.addBugToViewToolbar(this, this, SkynetGuiPlugin.getInstance(), VIEW_ID, "Quick Search");
+      OseeUiActions.addBugToViewToolbar(this, this, SkynetGuiPlugin.PLUGIN_ID, VIEW_ID, "Quick Search");
    }
 
    private void compositeEnablement(SearchComposite composite, boolean enable) {

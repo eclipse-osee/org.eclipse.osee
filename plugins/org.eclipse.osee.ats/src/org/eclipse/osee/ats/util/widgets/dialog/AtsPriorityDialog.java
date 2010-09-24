@@ -15,10 +15,10 @@ import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsPriority;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.swt.HyperLinkLabel;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -74,7 +74,7 @@ public class AtsPriorityDialog extends ListDialog {
          getTableViewer().setSelection(new StructuredSelection(sel.toArray(new Object[sel.size()])));
          getTableViewer().getTable().setFocus();
       }
-      AtsPlugin.getInstance().setHelp(getTableViewer().getControl(), AtsPriority.PRIORITY_HELP_CONTEXT_ID,
+      HelpUtil.setHelp(getTableViewer().getControl(), AtsPriority.PRIORITY_HELP_CONTEXT_ID,
          "org.eclipse.osee.ats.help.ui");
       return c;
    }

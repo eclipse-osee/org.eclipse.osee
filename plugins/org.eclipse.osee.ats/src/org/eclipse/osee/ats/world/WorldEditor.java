@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
@@ -156,7 +157,7 @@ public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableE
          setActivePage(mainPageIndex);
 
          // Until WorldEditor has different help, just use WorldView's help
-         AtsPlugin.getInstance().setHelp(worldXWidgetActionPage.getWorldComposite().getControl(), HELP_CONTEXT_ID,
+         HelpUtil.setHelp(worldXWidgetActionPage.getWorldComposite().getControl(), HELP_CONTEXT_ID,
             "org.eclipse.osee.ats.help.ui");
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);

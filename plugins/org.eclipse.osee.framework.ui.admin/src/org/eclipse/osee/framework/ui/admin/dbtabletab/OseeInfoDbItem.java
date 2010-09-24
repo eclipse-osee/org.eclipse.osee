@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.admin.AdminPlugin;
+import org.eclipse.osee.framework.ui.admin.Activator;
 
 public class OseeInfoDbItem extends DbItem {
 
@@ -51,7 +51,7 @@ public class OseeInfoDbItem extends DbItem {
          chStmt.runPreparedQuery(query);
          toReturn = chStmt.next();
       } catch (OseeCoreException ex) {
-         OseeLog.log(AdminPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       } finally {
          if (chStmt != null) {
             chStmt.close();
@@ -74,7 +74,7 @@ public class OseeInfoDbItem extends DbItem {
             ConnectionHandler.runPreparedUpdate(query, key, value);
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(AdminPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
