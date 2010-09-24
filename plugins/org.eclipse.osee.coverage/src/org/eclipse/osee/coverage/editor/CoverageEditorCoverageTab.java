@@ -199,7 +199,9 @@ public class CoverageEditorCoverageTab extends FormPage implements ISaveable, IR
 
    @Override
    public void refresh(Object element) {
-      xCoverageViewer.getXViewer().refresh(element);
+      if (xCoverageViewer != null && xCoverageViewer.getXViewer() != null && !xCoverageViewer.getXViewer().getTree().isDisposed()) {
+         xCoverageViewer.getXViewer().refresh(element);
+      }
    }
 
    @Override
@@ -212,4 +214,7 @@ public class CoverageEditorCoverageTab extends FormPage implements ISaveable, IR
       // do nothing
    }
 
+   public void refresh() {
+      xCoverageViewer.getXViewer().refresh();
+   }
 }

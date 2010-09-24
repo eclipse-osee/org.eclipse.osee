@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.cm;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
@@ -48,4 +49,8 @@ public interface IOseeCmService {
    Artifact createWorkTask(String name, String parentPcrGuid);
 
    Artifact createPcr(String title, String description, String changeType, String priority, Date needByDate, Collection<String> productNames);
+
+   IArtifactType getPcrArtifactType();
+
+   IArtifactType getPcrTaskArtifactType();
 }

@@ -20,7 +20,6 @@ import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.model.WorkProductAction;
-import org.eclipse.osee.coverage.store.CoverageArtifactTypes;
 import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.ISaveable;
@@ -119,7 +118,7 @@ public class CoverageEditorWorkProductTab extends FormPage implements ISaveable 
             super.performArtifactDrop(dropArtifacts);
             System.out.println("Dropped " + dropArtifacts);
             for (Artifact artifact : dropArtifacts) {
-               if (!artifact.isOfType(CoverageArtifactTypes.TeamWorkflow)) {
+               if (!artifact.isOfType(SkynetGuiPlugin.getInstance().getOseeCmService().getPcrArtifactType())) {
                   AWorkbench.popup("Related artifact must be a Team Workflow");
                   return;
                }

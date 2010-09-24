@@ -22,10 +22,12 @@ import org.eclipse.osee.ats.actions.wizard.NewActionJob;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorSimpleProvider;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -150,5 +152,15 @@ public class OseeAtsServiceImpl implements IOseeCmService {
          return AtsImage.TASK;
       }
       return AtsImage.ACTION;
+   }
+
+   @Override
+   public IArtifactType getPcrArtifactType() {
+      return AtsArtifactTypes.TeamWorkflow;
+   }
+
+   @Override
+   public IArtifactType getPcrTaskArtifactType() {
+      return AtsArtifactTypes.Task;
    }
 }
