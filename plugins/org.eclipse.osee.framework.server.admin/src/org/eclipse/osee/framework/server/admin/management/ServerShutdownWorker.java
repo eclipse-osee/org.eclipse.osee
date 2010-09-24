@@ -36,7 +36,7 @@ class ServerShutdownWorker extends BaseServerCommand {
 
    @Override
    protected void doCommandWork(IProgressMonitor monitor) throws Exception {
-      IApplicationServerManager manager = Activator.getInstance().getApplicationServerManager();
+      IApplicationServerManager manager = Activator.getApplicationServerManager();
 
       Bundle equinoxHttpBundle = Platform.getBundle("org.eclipse.equinox.http.jetty");
       equinoxHttpBundle.stop();

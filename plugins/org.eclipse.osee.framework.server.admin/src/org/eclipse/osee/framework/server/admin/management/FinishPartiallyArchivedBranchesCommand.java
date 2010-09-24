@@ -40,18 +40,18 @@ public class FinishPartiallyArchivedBranchesCommand extends BaseServerCommand {
          "select branch_id from osee_branch br where exists (select 1 from osee_txs txs where txs.branch_id = br.branch_id and br.archived = " + BranchArchivedState.ARCHIVED.getValue() + ")";
       IOseeStatement chStmt = null;
       try {
-         IOseeDatabaseService databaseService = Activator.getInstance().getOseeDatabaseService();
+         IOseeDatabaseService databaseService = Activator.getOseeDatabaseService();
          chStmt = databaseService.getStatement();
 
          List<Branch> branches = new ArrayList<Branch>(100);
          chStmt.runPreparedQuery(100, sql);
-         BranchCache branchCache = Activator.getInstance().getOseeCachingService().getBranchCache();
+         BranchCache branchCache = Activator.getOseeCachingService().getBranchCache();
          while (chStmt.next()) {
             branches.add(branchCache.getById(chStmt.getInt("branch_id")));
          }
          for (Branch branch : branches) {
-            Operations.executeWorkAndCheckStatus(new BranchMoveOperation(Activator.getInstance(), true, branch),
-               monitor);
+            Operations.executeWorkAndCheckStatus(new BranchMoveOperation(Activator.getOseeDatabaseService(), true,
+               branch), monitor);
          }
       } catch (OseeCoreException ex) {
          printStackTrace(ex);

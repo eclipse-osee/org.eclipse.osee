@@ -98,7 +98,8 @@ public class TransactionEventTest {
       Assert.assertEquals(1, OseeEventManager.getNumberOfListeners());
 
       // Delete it
-      IOperation operation = new PurgeTransactionOperation(Activator.getInstance(), false, transIdToDelete);
+      IOperation operation =
+         new PurgeTransactionOperation(Activator.getInstance().getOseeDatabaseService(), false, transIdToDelete);
       Operations.executeWork(operation);
 
       // Verify that all stuff reverted

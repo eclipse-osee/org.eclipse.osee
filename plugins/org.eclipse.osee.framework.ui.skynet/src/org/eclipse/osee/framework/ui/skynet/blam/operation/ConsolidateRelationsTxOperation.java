@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.AbstractDbTxOperation;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
@@ -76,8 +76,8 @@ public class ConsolidateRelationsTxOperation extends AbstractDbTxOperation {
    ModificationType netModType;
    TxChange netTxCurrent;
 
-   public ConsolidateRelationsTxOperation(IOseeDatabaseServiceProvider provider) {
-      super(provider, "Consolidate Relations", SkynetGuiPlugin.PLUGIN_ID);
+   public ConsolidateRelationsTxOperation(IOseeDatabaseService databaseService) {
+      super(databaseService, "Consolidate Relations", SkynetGuiPlugin.PLUGIN_ID);
    }
 
    private void init() throws OseeCoreException, IOException {

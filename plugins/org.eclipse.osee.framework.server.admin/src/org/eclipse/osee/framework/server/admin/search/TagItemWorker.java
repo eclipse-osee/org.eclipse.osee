@@ -63,7 +63,7 @@ public class TagItemWorker extends BaseServerCommand {
          joinQuery.store();
 
          tagListener = new TagListener();
-         Activator.getInstance().getSearchTagger().tagByQueueQueryId(tagListener, joinQuery.getQueryId());
+         Activator.getSearchTagger().tagByQueueQueryId(tagListener, joinQuery.getQueryId());
          synchronized (tagListener) {
             try {
                tagListener.wait();

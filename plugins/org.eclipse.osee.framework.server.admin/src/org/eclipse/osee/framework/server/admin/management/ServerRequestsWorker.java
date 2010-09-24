@@ -26,6 +26,6 @@ public class ServerRequestsWorker extends BaseServerCommand {
    @Override
    protected void doCommandWork(IProgressMonitor monitor) throws Exception {
       String value = getCommandInterpreter().nextArgument();
-      Activator.getInstance().getApplicationServerManager().setServletRequestsAllowed(new Boolean(value));
+      Activator.getApplicationServerManager().setServletRequestsAllowed(new Boolean(value));
    }
 }

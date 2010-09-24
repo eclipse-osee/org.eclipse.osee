@@ -125,14 +125,14 @@ class TaggerAllWorker extends BaseServerCommand {
             toStop[index] = item;
             index++;
          }
-         Activator.getInstance().getSearchTagger().stopTaggingByQueueQueryId(toStop);
+         Activator.getSearchTagger().stopTaggingByQueueQueryId(toStop);
       }
 
       public void storeAndAddQueryId(OseeConnection connection, TagQueueJoinQuery joinQuery) throws OseeCoreException {
          if (joinQuery.size() > 0) {
             joinQuery.store(connection);
             this.queryIdMap.put(joinQuery.getQueryId(), joinQuery);
-            Activator.getInstance().getSearchTagger().tagByQueueQueryId(this, joinQuery.getQueryId());
+            Activator.getSearchTagger().tagByQueueQueryId(this, joinQuery.getQueryId());
          }
       }
 

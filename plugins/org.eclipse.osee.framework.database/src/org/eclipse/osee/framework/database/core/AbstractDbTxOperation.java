@@ -15,26 +15,21 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
 
 /**
  * @author Roberto E. Escobar
  */
 public abstract class AbstractDbTxOperation extends AbstractOperation {
 
-   private final IOseeDatabaseServiceProvider provider;
+   private final IOseeDatabaseService databaseService;
 
-   public AbstractDbTxOperation(IOseeDatabaseServiceProvider provider, String operationName, String pluginId) {
+   public AbstractDbTxOperation(IOseeDatabaseService databaseService, String operationName, String pluginId) {
       super(operationName, pluginId);
-      this.provider = provider;
+      this.databaseService = databaseService;
    }
 
    protected IOseeDatabaseService getDatabaseService() throws OseeDataStoreException {
-      return provider.getOseeDatabaseService();
-   }
-
-   protected IOseeDatabaseServiceProvider getDatabaseServiceProvider() throws OseeDataStoreException {
-      return provider;
+      return databaseService;
    }
 
    @Override

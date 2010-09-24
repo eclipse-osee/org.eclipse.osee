@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.core.datastore.schema.data.SchemaData;
 import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
 
 /**
  * @author Roberto E. Escobar
@@ -39,13 +38,7 @@ public final class OperationFactory {
       List<IOperation> ops = new ArrayList<IOperation>();
       ops.add(new LoadUserSchemasOperation(userSpecifiedConfig, schemaProvider, options));
       ops.add(new ExtractDatabaseSchemaOperation(databaseService, userSpecifiedConfig.keySet(), currentDatabaseConfig));
-      ops.add(new CreateSchemaOperation(new IOseeDatabaseServiceProvider() {
-
-         @Override
-         public IOseeDatabaseService getOseeDatabaseService() {
-            return databaseService;
-         }
-      }, userSpecifiedConfig, currentDatabaseConfig));
+      ops.add(new CreateSchemaOperation(databaseService, userSpecifiedConfig, currentDatabaseConfig));
 
       return new CompositeOperation("Create OSEE Schema", Activator.PLUGIN_ID, ops);
    }

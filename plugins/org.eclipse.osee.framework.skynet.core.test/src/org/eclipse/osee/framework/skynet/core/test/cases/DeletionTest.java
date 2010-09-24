@@ -169,7 +169,8 @@ public class DeletionTest {
 
       if (DELETE_TRANSACTION_TEST) {
          IOseeDatabaseServiceProvider databaseProvider = Activator.getInstance();
-         PurgeTransactionOperation purgeOp = new PurgeTransactionOperation(databaseProvider, true, deletionTransaction);
+         PurgeTransactionOperation purgeOp =
+            new PurgeTransactionOperation(databaseProvider.getOseeDatabaseService(), true, deletionTransaction);
          Operations.executeWorkAndCheckStatus(purgeOp);
 
          if (DEBUG) {

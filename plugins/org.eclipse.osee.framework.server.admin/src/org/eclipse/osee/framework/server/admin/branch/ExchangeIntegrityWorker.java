@@ -63,7 +63,7 @@ public class ExchangeIntegrityWorker extends BaseServerCommand {
 
       for (File fileToImport : importFiles) {
          URI uri = new URI("exchange://" + fileToImport.toURI().toASCIIString());
-         Activator.getInstance().getBranchExchange().checkIntegrity(new ResourceLocator(uri));
+         Activator.getBranchExchange().checkIntegrity(new ResourceLocator(uri));
       }
    }
 }

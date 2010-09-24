@@ -14,12 +14,10 @@ import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.branch.management.IBranchExchange;
 import org.eclipse.osee.framework.core.enums.OseeServiceTrackerId;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.framework.search.engine.ISearchEngine;
@@ -28,7 +26,7 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
 
-public class Activator implements BundleActivator, IOseeDatabaseServiceProvider {
+public class Activator implements BundleActivator {
    public static final String PLUGIN_ID = "org.eclipse.osee.framework.server.admin";
    private static Activator instance;
 
@@ -63,8 +61,7 @@ public class Activator implements BundleActivator, IOseeDatabaseServiceProvider 
       instance = null;
    }
 
-   @Override
-   public IOseeDatabaseService getOseeDatabaseService() throws OseeDataStoreException {
+   public static IOseeDatabaseService getOseeDatabaseService() {
       return getTracker(OseeServiceTrackerId.OSEE_DATABASE_SERVICE, IOseeDatabaseService.class);
    }
 
@@ -74,45 +71,41 @@ public class Activator implements BundleActivator, IOseeDatabaseServiceProvider 
       mappedTrackers.put(trackerId, tracker);
    }
 
-   public IBranchExchange getBranchExchange() {
+   public static IBranchExchange getBranchExchange() {
       return getTracker(OseeServiceTrackerId.BRANCH_EXCHANGE, IBranchExchange.class);
    }
 
-   public IResourceManager getResourceManager() {
+   public static IResourceManager getResourceManager() {
       return getTracker(OseeServiceTrackerId.RESOURCE_MANAGER, IResourceManager.class);
    }
 
-   public IResourceLocatorManager getResourceLocatorManager() {
+   public static IResourceLocatorManager getResourceLocatorManager() {
       return getTracker(OseeServiceTrackerId.RESOURCE_LOCATOR, IResourceLocatorManager.class);
    }
 
-   public ISearchEngineTagger getSearchTagger() {
+   public static ISearchEngineTagger getSearchTagger() {
       return getTracker(OseeServiceTrackerId.SEARCH_TAGGER, ISearchEngineTagger.class);
    }
 
-   public ISearchEngine getSearchEngine() {
+   public static ISearchEngine getSearchEngine() {
       return getTracker(OseeServiceTrackerId.SEARCH_ENGINE, ISearchEngine.class);
    }
 
-   public IOseeCachingService getOseeCachingService() {
+   public static IOseeCachingService getOseeCachingService() {
       return getTracker(OseeServiceTrackerId.OSEE_CACHING_SERVICE, IOseeCachingService.class);
    }
 
-   public IApplicationServerManager getApplicationServerManager() {
+   public static IApplicationServerManager getApplicationServerManager() {
       return getTracker(OseeServiceTrackerId.APPLICATION_MANAGER, IApplicationServerManager.class);
    }
 
-   public ISessionManager getSessionManager() {
+   public static ISessionManager getSessionManager() {
       return getTracker(OseeServiceTrackerId.SESSION_MANAGER, ISessionManager.class);
    }
 
-   private <T> T getTracker(OseeServiceTrackerId trackerId, Class<T> clazz) {
-      ServiceTracker tracker = mappedTrackers.get(trackerId);
+   private static <T> T getTracker(OseeServiceTrackerId trackerId, Class<T> clazz) {
+      ServiceTracker tracker = instance.mappedTrackers.get(trackerId);
       Object service = tracker.getService();
       return clazz.cast(service);
-   }
-
-   public static Activator getInstance() {
-      return Activator.instance;
    }
 }

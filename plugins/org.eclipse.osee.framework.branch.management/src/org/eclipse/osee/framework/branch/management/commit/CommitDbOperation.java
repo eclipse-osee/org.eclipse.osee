@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
-import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.AbstractDbTxOperation;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
@@ -77,8 +77,8 @@ public class CommitDbOperation extends AbstractDbTxOperation {
    private OseeConnection connection;
    private boolean success;
 
-   public CommitDbOperation(IOseeDatabaseServiceProvider databaseProvider, BranchCache branchCache, int userArtId, Branch sourceBranch, Branch destinationBranch, Branch mergeBranch, List<ChangeItem> changes, BranchCommitResponse txHolder, IOseeModelFactoryServiceProvider modelFactory) {
-      super(databaseProvider, "Commit Database Operation", Activator.PLUGIN_ID);
+   public CommitDbOperation(IOseeDatabaseService databaseService, BranchCache branchCache, int userArtId, Branch sourceBranch, Branch destinationBranch, Branch mergeBranch, List<ChangeItem> changes, BranchCommitResponse txHolder, IOseeModelFactoryServiceProvider modelFactory) {
+      super(databaseService, "Commit Database Operation", Activator.PLUGIN_ID);
       this.savedBranchStates = new HashMap<Branch, BranchState>();
       this.branchCache = branchCache;
       this.userArtId = userArtId;

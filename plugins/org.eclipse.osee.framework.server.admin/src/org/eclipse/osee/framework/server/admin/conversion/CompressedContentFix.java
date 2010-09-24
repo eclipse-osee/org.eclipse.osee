@@ -82,8 +82,8 @@ public class CompressedContentFix {
 
       private Worker(CommandInterpreter cmdi) {
          ci = cmdi;
-         resourceManager = Activator.getInstance().getResourceManager();
-         locatorManager = Activator.getInstance().getResourceLocatorManager();
+         resourceManager = Activator.getResourceManager();
+         locatorManager = Activator.getResourceLocatorManager();
          nativeExtension = null;
          nameMap = null;
       }

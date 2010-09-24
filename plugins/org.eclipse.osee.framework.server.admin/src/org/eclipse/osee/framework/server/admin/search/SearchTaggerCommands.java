@@ -117,7 +117,7 @@ public class SearchTaggerCommands {
    }
 
    public void clearTaggerStats() {
-      Activator.getInstance().getSearchTagger().clearStatistics();
+      Activator.getSearchTagger().clearStatistics();
    }
 
    public void getSearchStatistics(CommandInterpreter ci) {
@@ -128,6 +128,6 @@ public class SearchTaggerCommands {
    }
 
    public void clearSearchStats() {
-      Activator.getInstance().getSearchEngine().clearStatistics();
+      Activator.getSearchEngine().clearStatistics();
    }
 }

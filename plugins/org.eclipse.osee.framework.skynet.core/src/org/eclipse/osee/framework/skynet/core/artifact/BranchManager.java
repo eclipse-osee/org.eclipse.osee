@@ -291,7 +291,8 @@ public class BranchManager {
     * Permanently removes transactions and any of their backing data that is not referenced by any other transactions.
     */
    public static Job purgeTransactions(IJobChangeListener jobChangeListener, boolean force, final int... transactionIdNumbers) {
-      IOperation op = new PurgeTransactionOperation(Activator.getInstance(), force, transactionIdNumbers);
+      IOperation op =
+         new PurgeTransactionOperation(Activator.getInstance().getOseeDatabaseService(), force, transactionIdNumbers);
       return Operations.executeAsJob(op, true, Job.LONG, jobChangeListener);
    }
 

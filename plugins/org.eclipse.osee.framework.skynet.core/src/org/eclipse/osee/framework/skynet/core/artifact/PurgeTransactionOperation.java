@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.AbstractDbTxOperation;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
@@ -83,15 +83,15 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
    private final boolean force;
    private int artifactJoinId;
 
-   public PurgeTransactionOperation(IOseeDatabaseServiceProvider serviceProvider, boolean force, int... txIdsToDelete) {
-      super(serviceProvider, String.format("Delete transactions: %s", Arrays.toString(txIdsToDelete)),
+   public PurgeTransactionOperation(IOseeDatabaseService databaseService, boolean force, int... txIdsToDelete) {
+      super(databaseService, String.format("Delete transactions: %s", Arrays.toString(txIdsToDelete)),
          Activator.PLUGIN_ID);
       this.txIdsToDelete = txIdsToDelete;
       this.force = force;
    }
 
-   public PurgeTransactionOperation(IOseeDatabaseServiceProvider serviceProvider, int... txIdsToDelete) {
-      this(serviceProvider, true, txIdsToDelete);
+   public PurgeTransactionOperation(IOseeDatabaseService databaseService, int... txIdsToDelete) {
+      this(databaseService, true, txIdsToDelete);
    }
 
    @Override

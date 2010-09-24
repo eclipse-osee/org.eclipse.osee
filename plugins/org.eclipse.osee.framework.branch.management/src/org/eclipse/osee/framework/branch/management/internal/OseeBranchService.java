@@ -91,8 +91,8 @@ public class OseeBranchService implements IOseeBranchService {
       List<IOperation> ops = new ArrayList<IOperation>();
       ops.add(new LoadDeltasBetweenBranches(oseeDatabaseProvider, txDelta, mergeTx, changes));
       ops.add(new ComputeNetChangeOperation(changes));
-      ops.add(new CommitDbOperation(oseeDatabaseProvider, branchCache, userId, sourceBranch, destinationBranch,
-         mergeBranch, changes, response, modelFactory));
+      ops.add(new CommitDbOperation(oseeDatabaseProvider.getOseeDatabaseService(), branchCache, userId, sourceBranch,
+         destinationBranch, mergeBranch, changes, response, modelFactory));
 
       String opName =
          String.format("Commit: [%s]->[%s]", sourceBranch.getShortName(), destinationBranch.getShortName());
@@ -110,7 +110,8 @@ public class OseeBranchService implements IOseeBranchService {
 
    @Override
    public IOperation createBranch(IProgressMonitor monitor, BranchCreationRequest request, BranchCreationResponse response) throws OseeCoreException {
-      return new CreateBranchOperation(oseeDatabaseProvider, modelFactory, cachingService, request, response);
+      return new CreateBranchOperation(oseeDatabaseProvider.getOseeDatabaseService(), modelFactory,
+         cachingService.getOseeCachingService(), request, response);
    }
 
    @Override
@@ -145,7 +146,8 @@ public class OseeBranchService implements IOseeBranchService {
    @Override
    public IOperation purge(IProgressMonitor monitor, PurgeBranchRequest request) throws OseeCoreException {
       BranchCache branchCache = cachingService.getOseeCachingService().getBranchCache();
-      return new PurgeBranchOperation(branchCache.getById(request.getBranchId()), cachingService, oseeDatabaseProvider);
+      return new PurgeBranchOperation(branchCache.getById(request.getBranchId()), cachingService,
+         oseeDatabaseProvider.getOseeDatabaseService());
    }
 
    @Override

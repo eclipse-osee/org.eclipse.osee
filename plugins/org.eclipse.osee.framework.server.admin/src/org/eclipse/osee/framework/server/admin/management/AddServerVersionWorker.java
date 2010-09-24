@@ -27,10 +27,10 @@ public class AddServerVersionWorker extends BaseServerCommand {
    @Override
    protected void doCommandWork(IProgressMonitor monitor) throws Exception {
       String versionToAdd = getCommandInterpreter().nextArgument();
-      Activator.getInstance().getApplicationServerManager().addSupportedVersion(versionToAdd);
+      Activator.getApplicationServerManager().addSupportedVersion(versionToAdd);
       StringBuffer buffer = new StringBuffer();
       buffer.append("Osee Application Server: ");
-      buffer.append(Arrays.deepToString(Activator.getInstance().getApplicationServerManager().getSupportedVersions()));
+      buffer.append(Arrays.deepToString(Activator.getApplicationServerManager().getSupportedVersions()));
       buffer.append("\n");
       println(buffer.toString());
    }

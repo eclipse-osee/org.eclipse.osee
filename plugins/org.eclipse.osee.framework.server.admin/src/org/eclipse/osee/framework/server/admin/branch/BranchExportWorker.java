@@ -92,6 +92,6 @@ public class BranchExportWorker extends BaseServerCommand {
       }
       println(String.format("Exporting: [%s] branches\n", branchIds.size()));
 
-      Activator.getInstance().getBranchExchange().exportBranch(exportFileName, options, branchIds);
+      Activator.getBranchExchange().exportBranch(exportFileName, options, branchIds);
    }
 }

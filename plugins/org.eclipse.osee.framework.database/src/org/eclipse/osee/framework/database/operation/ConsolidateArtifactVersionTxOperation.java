@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.operation.OperationReporter;
-import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.AbstractDbTxOperation;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.JoinUtility;
@@ -75,8 +75,8 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
    private int updateTxsCounter;
    private int deleteTxsCounter;
 
-   public ConsolidateArtifactVersionTxOperation(IOseeDatabaseServiceProvider provider, OperationReporter reporter) {
-      super(provider, "Consolidate Artifact Versions", Activator.PLUGIN_ID);
+   public ConsolidateArtifactVersionTxOperation(IOseeDatabaseService databaseService, OperationReporter reporter) {
+      super(databaseService, "Consolidate Artifact Versions", Activator.PLUGIN_ID);
       this.reporter = reporter;
    }
 

@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
-import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.AbstractDbTxOperation;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
@@ -45,8 +45,8 @@ public final class UnsubscribeTransaction extends AbstractDbTxOperation {
    private final IOseeCachingService cacheService;
    private String completionMethod;
 
-   public UnsubscribeTransaction(IOseeDatabaseServiceProvider provider, IOseeCachingService cacheService, UnsubscribeRequest unsubscribeData) {
-      super(provider, "Delete Relation", Activator.PLUGIN_ID);
+   public UnsubscribeTransaction(IOseeDatabaseService databaseService, IOseeCachingService cacheService, UnsubscribeRequest unsubscribeData) {
+      super(databaseService, "Delete Relation", Activator.PLUGIN_ID);
       this.unsubscribeData = unsubscribeData;
       this.cacheService = cacheService;
    }

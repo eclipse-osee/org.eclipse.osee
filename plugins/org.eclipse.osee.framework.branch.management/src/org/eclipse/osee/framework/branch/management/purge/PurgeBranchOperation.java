@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.services.IOseeCachingServiceProvider;
-import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.AbstractDbTxOperation;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
@@ -61,32 +61,28 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
    private IProgressMonitor monitor;
    private String sourceTableName;
    private final IOseeCachingServiceProvider cachingService;
-   private final IOseeDatabaseServiceProvider oseeDatabaseProvider;
+   private final IOseeDatabaseService databaseService;
 
-   public PurgeBranchOperation(Branch branch, IOseeCachingServiceProvider cachingService, IOseeDatabaseServiceProvider oseeDatabaseProvider) {
-      super(oseeDatabaseProvider, String.format("Purge Branch: [(%s)-%s]", branch.getId(), branch.getShortName()),
+   public PurgeBranchOperation(Branch branch, IOseeCachingServiceProvider cachingService, IOseeDatabaseService databaseService) {
+      super(databaseService, String.format("Purge Branch: [(%s)-%s]", branch.getId(), branch.getShortName()),
          Activator.PLUGIN_ID);
       this.branch = branch;
       this.sourceTableName = branch.getArchiveState().isArchived() ? "osee_txs_archived" : "osee_txs";
       this.cachingService = cachingService;
-      this.oseeDatabaseProvider = oseeDatabaseProvider;
+      this.databaseService = databaseService;
    }
 
    @Override
    protected void doTxWork(IProgressMonitor monitor, OseeConnection connection) throws OseeCoreException {
       this.connection = connection;
       this.monitor = monitor;
-      int numberOfChildren =
-         oseeDatabaseProvider.getOseeDatabaseService().runPreparedQueryFetchObject(0, COUNT_CHILD_BRANCHES,
-            branch.getId());
+      int numberOfChildren = databaseService.runPreparedQueryFetchObject(0, COUNT_CHILD_BRANCHES, branch.getId());
       if (numberOfChildren > 0) {
-         throw new OseeArgumentException("Unable to purge a branch containing children: branchId[%s]",
-            branch.getId());
+         throw new OseeArgumentException("Unable to purge a branch containing children: branchId[%s]", branch.getId());
       }
 
       boolean isAddressingArchived =
-         oseeDatabaseProvider.getOseeDatabaseService().runPreparedQueryFetchObject(0, TEST_TXS,
-            branch.getBaseTransaction().getId()) == 0;
+         databaseService.runPreparedQueryFetchObject(0, TEST_TXS, branch.getBaseTransaction().getId()) == 0;
       if (isAddressingArchived) {
          sourceTableName = "osee_txs_archived";
       } else {
@@ -118,7 +114,7 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
          monitor.setTaskName(String.format("Purge from %s", tableName));
          checkForCancelledStatus(monitor);
          String sql = String.format(PURGE_GAMMAS, tableName);
-         oseeDatabaseProvider.getOseeDatabaseService().runBatchUpdate(connection, sql, deleteableGammas);
+         databaseService.runBatchUpdate(connection, sql, deleteableGammas);
       }
       monitor.worked(calculateWork(percentage));
    }
@@ -126,12 +122,12 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
    private void purgeFromTable(String tableName, String sql, double percentage, Object... data) throws OseeCoreException {
       monitor.setTaskName(String.format("Purge from %s", tableName));
       checkForCancelledStatus(monitor);
-      oseeDatabaseProvider.getOseeDatabaseService().runPreparedUpdate(connection, sql, data);
+      databaseService.runPreparedUpdate(connection, sql, data);
       monitor.worked(calculateWork(percentage));
    }
 
    private void findDeleteableGammas(String sql, double percentage) throws OseeCoreException {
-      IOseeStatement chStmt = oseeDatabaseProvider.getOseeDatabaseService().getStatement(connection);
+      IOseeStatement chStmt = databaseService.getStatement(connection);
       try {
          chStmt.runPreparedQuery(10000, sql, branch.getId(), branch.getBaseTransaction().getId());
          while (chStmt.next()) {
@@ -145,7 +141,7 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
 
    private void purgeAddressing(double percentage) throws OseeCoreException {
       monitor.setTaskName("Purge txs addressing");
-      IOseeStatement chStmt = oseeDatabaseProvider.getOseeDatabaseService().getStatement(connection);
+      IOseeStatement chStmt = databaseService.getStatement(connection);
       List<Object[]> addressing = new ArrayList<Object[]>();
       String sql = String.format(SELECT_ADDRESSING_BY_BRANCH, sourceTableName);
 
@@ -159,7 +155,7 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
       }
 
       sql = String.format("delete from %s where transaction_id = ? and gamma_id = ?", sourceTableName);
-      oseeDatabaseProvider.getOseeDatabaseService().runBatchUpdate(connection, sql, addressing);
+      databaseService.runBatchUpdate(connection, sql, addressing);
       monitor.worked(calculateWork(percentage));
    }
 }

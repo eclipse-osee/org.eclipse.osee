@@ -14,7 +14,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.datastore.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.AbstractDbTxOperation;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 
@@ -30,8 +30,8 @@ public class BranchMoveOperation extends AbstractDbTxOperation {
    private final boolean archive;
    private final Branch branch;
 
-   public BranchMoveOperation(IOseeDatabaseServiceProvider provider, boolean archive, Branch branch) {
-      super(provider, "Branch Move", Activator.PLUGIN_ID);
+   public BranchMoveOperation(IOseeDatabaseService databaseService, boolean archive, Branch branch) {
+      super(databaseService, "Branch Move", Activator.PLUGIN_ID);
       this.archive = archive;
       this.branch = branch;
    }

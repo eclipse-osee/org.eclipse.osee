@@ -26,7 +26,7 @@ class SearchStats extends BaseServerCommand {
 
    @Override
    protected void doCommandWork(IProgressMonitor monitor) throws Exception {
-      ISearchStatistics stats = Activator.getInstance().getSearchEngine().getStatistics();
+      ISearchStatistics stats = Activator.getSearchEngine().getStatistics();
       StringBuffer buffer = new StringBuffer();
       buffer.append("\n----------------------------------------------\n");
       buffer.append("                  Search Stats                \n");

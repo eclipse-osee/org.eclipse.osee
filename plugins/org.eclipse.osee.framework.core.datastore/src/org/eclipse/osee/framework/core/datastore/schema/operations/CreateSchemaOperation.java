@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.core.datastore.schema.sql.SchemaSqlUtil;
 import org.eclipse.osee.framework.core.datastore.schema.sql.SqlFactory;
 import org.eclipse.osee.framework.core.datastore.schema.sql.SqlManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.AbstractDbTxOperation;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.SupportedDatabase;
@@ -32,8 +32,8 @@ public class CreateSchemaOperation extends AbstractDbTxOperation {
    private final Map<String, SchemaData> userSchema;
    private final Map<String, SchemaData> dbSchema;
 
-   public CreateSchemaOperation(IOseeDatabaseServiceProvider provider, Map<String, SchemaData> userSchema, Map<String, SchemaData> dbSchema) {
-      super(provider, "Create Schema", Activator.PLUGIN_ID);
+   public CreateSchemaOperation(IOseeDatabaseService databaseService, Map<String, SchemaData> userSchema, Map<String, SchemaData> dbSchema) {
+      super(databaseService, "Create Schema", Activator.PLUGIN_ID);
       this.userSchema = userSchema;
       this.dbSchema = dbSchema;
    }

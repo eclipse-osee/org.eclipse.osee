@@ -33,7 +33,7 @@ class TaggerStats extends BaseServerCommand {
 
    @Override
    protected void doCommandWork(IProgressMonitor monitor) throws Exception {
-      ISearchEngineTagger tagger = Activator.getInstance().getSearchTagger();
+      ISearchEngineTagger tagger = Activator.getSearchTagger();
 
       ITaggerStatistics stats = tagger.getStatistics();
 

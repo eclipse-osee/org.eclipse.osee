@@ -38,8 +38,8 @@ class ServerStats extends BaseServerCommand {
 
    @Override
    protected void doCommandWork(IProgressMonitor monitor) throws Exception {
-      IApplicationServerManager manager = Activator.getInstance().getApplicationServerManager();
-      ISessionManager sessionManager = Activator.getInstance().getSessionManager();
+      IApplicationServerManager manager = Activator.getApplicationServerManager();
+      ISessionManager sessionManager = Activator.getSessionManager();
 
       StringBuffer buffer = new StringBuffer();
       buffer.append("\n----------------------------------------------\n");

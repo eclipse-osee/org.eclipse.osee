@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.BranchField;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.AbstractDbTxOperation;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -45,8 +45,8 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
    private final IBranchUpdateEvent eventSender;
    private final Collection<Branch> branches;
 
-   public BranchStoreOperation(IOseeDatabaseServiceProvider provider, IBranchUpdateEvent eventSender, Collection<Branch> branches) {
-      super(provider, "Branch Archive Operation", Activator.PLUGIN_ID);
+   public BranchStoreOperation(IOseeDatabaseService databaseService, IBranchUpdateEvent eventSender, Collection<Branch> branches) {
+      super(databaseService, "Branch Archive Operation", Activator.PLUGIN_ID);
       this.eventSender = eventSender;
       this.branches = branches;
    }
@@ -115,7 +115,7 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
             }
          }
          if (branch.isFieldDirty(BranchField.BRANCH_ARCHIVED_STATE_FIELD_KEY)) {
-            Operations.executeAsJob(new BranchMoveOperation(getDatabaseServiceProvider(),
+            Operations.executeAsJob(new BranchMoveOperation(getDatabaseService(),
                branch.getArchiveState().isArchived(), branch), false);
          }
 

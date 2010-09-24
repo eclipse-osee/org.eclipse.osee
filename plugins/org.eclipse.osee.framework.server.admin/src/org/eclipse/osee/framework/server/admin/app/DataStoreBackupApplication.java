@@ -56,7 +56,7 @@ public class DataStoreBackupApplication implements IApplication {
       InputStream inputStream = null;
       OutputStream outputStream = null;
       try {
-         IResource resource = Activator.getInstance().getResourceManager().acquire(locator, new Options());
+         IResource resource = Activator.getResourceManager().acquire(locator, new Options());
          inputStream = resource.getContent();
 
          outputStream = new BufferedOutputStream(new FileOutputStream(new File(backupFolder, resource.getName())));
@@ -90,14 +90,12 @@ public class DataStoreBackupApplication implements IApplication {
          OseeLog.log(Activator.class, Level.INFO,
             String.format("Exporting [%s] branch%s", totalBranches, totalBranches == 1 ? "" : "es"));
 
-         IResourceLocator exportLocator =
-            Activator.getInstance().getBranchExchange().exportBranch(backupName, options, branchIds);
+         IResourceLocator exportLocator = Activator.getBranchExchange().exportBranch(backupName, options, branchIds);
 
          OseeLog.log(Activator.class, Level.INFO,
             String.format("Verifying export file integrity [%s]", exportLocator.getLocation()));
 
-         IResourceLocator exportCheckLocator =
-            Activator.getInstance().getBranchExchange().checkIntegrity(exportLocator);
+         IResourceLocator exportCheckLocator = Activator.getBranchExchange().checkIntegrity(exportLocator);
          OseeLog.log(Activator.class, Level.INFO, String.format("Verified [%s]", exportCheckLocator.getLocation()));
 
          OseeLog.log(Activator.class, Level.INFO,
@@ -113,8 +111,8 @@ public class DataStoreBackupApplication implements IApplication {
             transferToBackupLocation(exportLocator, backupFolder);
             transferToBackupLocation(exportCheckLocator, backupFolder);
 
-            Activator.getInstance().getResourceManager().delete(exportLocator);
-            Activator.getInstance().getResourceManager().delete(exportCheckLocator);
+            Activator.getResourceManager().delete(exportLocator);
+            Activator.getResourceManager().delete(exportCheckLocator);
          }
       } catch (Throwable ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

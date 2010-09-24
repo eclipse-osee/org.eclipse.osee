@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -100,8 +99,8 @@ public class PurgeTransactionTest {
    }
 
    private void purge(int transactionId, Map<String, Integer> dbCount) throws Exception {
-      IOseeDatabaseServiceProvider databaseProvider = Activator.getInstance();
-      PurgeTransactionOperation purgeOp = new PurgeTransactionOperation(databaseProvider, transactionId);
+      PurgeTransactionOperation purgeOp =
+         new PurgeTransactionOperation(Activator.getInstance().getOseeDatabaseService(), transactionId);
       Operations.executeWorkAndCheckStatus(purgeOp);
       DbUtil.getTableRowCounts(dbCount, tables);
    }

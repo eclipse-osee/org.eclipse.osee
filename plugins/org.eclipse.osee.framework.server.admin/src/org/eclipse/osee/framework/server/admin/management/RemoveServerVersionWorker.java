@@ -27,10 +27,10 @@ public class RemoveServerVersionWorker extends BaseServerCommand {
    @Override
    protected void doCommandWork(IProgressMonitor monitor) throws Exception {
       String versionToRemove = getCommandInterpreter().nextArgument();
-      Activator.getInstance().getApplicationServerManager().removeSupportedVersion(versionToRemove);
+      Activator.getApplicationServerManager().removeSupportedVersion(versionToRemove);
       StringBuffer buffer = new StringBuffer();
       buffer.append("Osee Application Server: ");
-      buffer.append(Arrays.deepToString(Activator.getInstance().getApplicationServerManager().getSupportedVersions()));
+      buffer.append(Arrays.deepToString(Activator.getApplicationServerManager().getSupportedVersions()));
       buffer.append("\n");
       println(buffer.toString());
    }

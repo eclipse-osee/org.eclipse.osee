@@ -32,7 +32,7 @@ public class ReloadCachesWorker extends BaseServerCommand {
 
    @Override
    protected void doCommandWork(IProgressMonitor monitor) throws Exception {
-      IOseeCachingService service = Activator.getInstance().getOseeCachingService();
+      IOseeCachingService service = Activator.getOseeCachingService();
       Collection<OseeCacheEnum> cacheIds = getSelectedCaches();
       if (cacheIds.isEmpty()) {
          service.reloadAll();

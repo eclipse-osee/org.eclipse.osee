@@ -33,9 +33,9 @@ import org.eclipse.osee.framework.core.model.MergeBranch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
-import org.eclipse.osee.framework.core.services.IOseeCachingServiceProvider;
+import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
-import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.AbstractDbTxOperation;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
@@ -74,16 +74,15 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
    private boolean wasSuccessful;
    private int systemUserId;
 
-   private final IOseeCachingServiceProvider cachingService;
+   private final IOseeCachingService cachingService;
    private final IOseeModelFactoryServiceProvider factoryService;
    private final BranchCreationRequest request;
    private final BranchCreationResponse response;
    private Branch branch;
 
-   public CreateBranchOperation(IOseeDatabaseServiceProvider provider, IOseeModelFactoryServiceProvider factoryService, IOseeCachingServiceProvider cachingService, BranchCreationRequest request, BranchCreationResponse response) {
-      super(provider,
-         String.format("Create Branch: [%s from %s]", request.getBranchName(), request.getParentBranchId()),
-         Activator.PLUGIN_ID);
+   public CreateBranchOperation(IOseeDatabaseService databaseService, IOseeModelFactoryServiceProvider factoryService, IOseeCachingService cachingService, BranchCreationRequest request, BranchCreationResponse response) {
+      super(databaseService, String.format("Create Branch: [%s from %s]", request.getBranchName(),
+         request.getParentBranchId()), Activator.PLUGIN_ID);
       this.cachingService = cachingService;
       this.factoryService = factoryService;
       this.request = request;
@@ -129,7 +128,7 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
    @SuppressWarnings("unchecked")
    @Override
    protected void doTxWork(IProgressMonitor monitor, OseeConnection connection) throws OseeCoreException {
-      BranchCache branchCache = cachingService.getOseeCachingService().getBranchCache();
+      BranchCache branchCache = cachingService.getBranchCache();
       Branch parentBranch = branchCache.getById(request.getParentBranchId());
       Branch destinationBranch = branchCache.getById(request.getDestinationBranchId());
 
@@ -137,7 +136,7 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
       checkPreconditions(monitor, parentBranch, destinationBranch);
       passedPreConditions = true;
 
-      TransactionCache txCache = cachingService.getOseeCachingService().getTransactionCache();
+      TransactionCache txCache = cachingService.getTransactionCache();
 
       String guid = request.getBranchGuid();
       if (!GUID.isValid(guid)) {
@@ -194,7 +193,7 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
    protected void handleTxException(IProgressMonitor monitor, Exception ex) {
       if (passedPreConditions) {
          try {
-            BranchCache branchCache = cachingService.getOseeCachingService().getBranchCache();
+            BranchCache branchCache = cachingService.getBranchCache();
             branch.setStorageState(StorageState.PURGED);
             branchCache.storeItems(branch);
          } catch (OseeCoreException ex1) {
@@ -206,7 +205,7 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
    @Override
    protected void handleTxFinally(IProgressMonitor monitor) throws OseeCoreException {
       if (wasSuccessful) {
-         BranchCache branchCache = cachingService.getOseeCachingService().getBranchCache();
+         BranchCache branchCache = cachingService.getBranchCache();
          branch.setBranchState(BranchState.CREATED);
          branchCache.storeItems(branch);
          response.setBranchId(branch.getId());

@@ -31,8 +31,9 @@ public class ConsolidateArtifactVersionsCommand extends BaseServerCommand {
    @Override
    protected void doCommandWork(IProgressMonitor monitor) throws Exception {
       try {
-         Operations.executeWorkAndCheckStatus(new ConsolidateArtifactVersionTxOperation(Activator.getInstance(),
-            new CommandInterpreterReporter(getCommandInterpreter())), monitor);
+         Operations.executeWorkAndCheckStatus(
+            new ConsolidateArtifactVersionTxOperation(Activator.getOseeDatabaseService(),
+               new CommandInterpreterReporter(getCommandInterpreter())), monitor);
       } catch (OseeCoreException ex) {
          printStackTrace(ex);
       }

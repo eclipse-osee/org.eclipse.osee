@@ -33,7 +33,6 @@ import org.eclipse.osee.framework.core.model.cache.IOseeCache;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
-import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -174,14 +173,6 @@ public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
 
    @Override
    public void store(Collection<Branch> branches) throws OseeCoreException {
-      IOseeDatabaseServiceProvider dbServiceProvider = new IOseeDatabaseServiceProvider() {
-
-         @Override
-         public IOseeDatabaseService getOseeDatabaseService() {
-            return getDatabaseService();
-         }
-      };
-      Operations.executeWorkAndCheckStatus(new BranchStoreOperation(dbServiceProvider, eventSender, branches));
+      Operations.executeWorkAndCheckStatus(new BranchStoreOperation(getDatabaseService(), eventSender, branches));
    }
-
 }

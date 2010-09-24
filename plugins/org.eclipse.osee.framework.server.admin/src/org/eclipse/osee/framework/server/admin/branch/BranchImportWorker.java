@@ -91,8 +91,7 @@ public class BranchImportWorker extends BaseServerCommand {
       for (File fileToImport : importFiles) {
          URI uri = new URI("exchange://" + fileToImport.toURI().toASCIIString());
          OperationReporter reporter = new CommandInterpreterReporter(getCommandInterpreter());
-         Activator.getInstance().getBranchExchange().importBranch(new ResourceLocator(uri), options, branchIds,
-            reporter);
+         Activator.getBranchExchange().importBranch(new ResourceLocator(uri), options, branchIds, reporter);
       }
    }
 }
