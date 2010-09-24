@@ -108,8 +108,8 @@ public class CoverageItemPersistTest {
       Assert.assertEquals(coverageGuid, coverageEvent.getPackage().getGuid());
       Assert.assertEquals(coverageName, coverageEvent.getPackage().getName());
       Assert.assertEquals(CoverageEventType.Modified, coverageEvent.getPackage().getEventType());
-      // 10 coverage items added and one coverage unit == 11
-      Assert.assertEquals(11, coverageEvent.getCoverages().size());
+      // 1 coverage item added and 1 coverage unit == 2
+      Assert.assertEquals(2, coverageEvent.getCoverages().size());
       Assert.assertEquals(CoverageEventType.Added, coverageEvent.getCoverages().iterator().next().getEventType());
 
       Assert.assertEquals(10, ci.getTestUnits().size());
@@ -149,7 +149,7 @@ public class CoverageItemPersistTest {
       artifact = new OseeCoverageUnitStore(parentCu, BranchManager.getCommonBranch()).getArtifact(false);
       Assert.assertNull(artifact);
       Assert.assertEquals(0, CoverageTestUtil.getAllCoverageArtifacts().size());
-      Assert.assertEquals(11, coverageEvent.getCoverages().size());
+      Assert.assertEquals(1, coverageEvent.getCoverages().size());
       Assert.assertEquals(CoverageEventType.Deleted, coverageEvent.getCoverages().iterator().next().getEventType());
    }
 

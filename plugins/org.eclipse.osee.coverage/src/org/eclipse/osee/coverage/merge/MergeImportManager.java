@@ -245,7 +245,7 @@ public class MergeImportManager {
          }
          // This is new item
          else if (MatchType.isNoMatch(matchItem.getMatchType())) {
-            System.err.println("NEW ITEM " + matchItem.getMatchType());
+            // System.err.println("NEW ITEM " + matchItem.getMatchType());
             // Check if parent item exists
             ICoverage parentImportItem = importItem.getParent();
             // If null, this is top level item, just add to package

@@ -205,8 +205,7 @@ public class VectorCastImportTest {
          OseeCoverageStore store = OseeCoveragePackageStore.get(coveragePackage, BranchManager.getCommonBranch());
          SkynetTransaction transaction =
             new SkynetTransaction(BranchManager.getCommonBranch(), "Coverage Package Save");
-         CoveragePackageEvent coverageEvent =
-            new CoveragePackageEvent(coveragePackage, CoverageEventType.Modified);
+         CoveragePackageEvent coverageEvent = new CoveragePackageEvent(coveragePackage, CoverageEventType.Modified);
          store.save(transaction, coverageEvent);
          transaction.execute();
 
@@ -290,7 +289,12 @@ public class VectorCastImportTest {
          OseeData.getFile("vcast.wrk/CCAST_.CFG"));
       Lib.writeStringToFile(AFile.readFile(Activator.getInstance().getPluginFile("support/vcastData/CCAST_.CFG")),
          OseeData.getFile("vcast.wrk/build_info.xml"));
+
+      // create vcast dir and files within
       OseeData.getFolder("vcast.wrk/vcast").getLocation().toFile();
+      Lib.writeStringToFile(
+         AFile.readFile(Activator.getInstance().getPluginFile("support/vcastData/vcast_aggregate_coverage_report.html")),
+         OseeData.getFile("vcast.wrk/vcast/vcast_aggregate_coverage_report.html"));
       Lib.writeStringToFile(
          AFile.readFile(Activator.getInstance().getPluginFile("support/vcastData/vcast/test_main.2.LIS")),
          OseeData.getFile("vcast.wrk/vcast/test_main.2.LIS"));

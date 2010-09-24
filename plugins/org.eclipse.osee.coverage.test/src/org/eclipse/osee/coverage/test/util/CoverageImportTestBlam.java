@@ -86,7 +86,7 @@ public class CoverageImportTestBlam extends AbstractCoverageBlam implements ICov
       coverageImport.setCoverageUnitFileContentsProvider(new SimpleCoverageUnitFileContentsProvider());
       try {
          for (String filename : fileList) {
-            System.err.println(String.format("Importing [%s]", PATH + filename));
+            // System.err.println(String.format("Importing [%s]", PATH + filename));
             URL url = CoverageImport1TestBlam.class.getResource(PATH + filename);
             CoverageUnit coverageUnit =
                SampleJavaFileParser.createCodeUnit(url, coverageImport.getCoverageUnitFileContentsProvider());
