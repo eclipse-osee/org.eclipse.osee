@@ -36,9 +36,10 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
    private final static String mergeCommand =
       "    baseDoc.Merge ver2, wdCompareTargetSelectedMerge, detectFormatChanges, wdFormattingFromCurrent, False\n    oWord.ActiveDocument.SaveAs diffPath, wdFormatXML, , , False\n\n";
 
-   private final static String tail = "    If visible Then\n        oWord.Visible = True\n     Else\n";
+   private final static String tail =
+      "    oWord.NormalTemplate.Saved = True\n    If visible Then\n        oWord.Visible = True\n     Else\n";
    private final static String tail2 =
-      "         oWord.Quit()\n        set oWord = Nothing\n    End If\n\nEnd Sub\n\nmain";
+      "        oWord.Quit()\n        set oWord = Nothing\n    End If\n\nEnd Sub\n\nmain";
 
    private StringBuilder builder;
    private boolean finalized;
