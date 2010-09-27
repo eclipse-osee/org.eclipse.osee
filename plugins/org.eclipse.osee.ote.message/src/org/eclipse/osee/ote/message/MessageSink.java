@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ote.service;
+package org.eclipse.osee.ote.message;
 
 /**
  * @author Ryan D. Brooks

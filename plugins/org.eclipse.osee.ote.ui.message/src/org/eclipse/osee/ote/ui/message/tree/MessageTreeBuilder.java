@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.ote.service.MessageSink;
+import org.eclipse.osee.ote.message.MessageSink;
 
 /**
  * Builds a simple tree out of messages. All nodes under the root are messages. Each node under each message is a

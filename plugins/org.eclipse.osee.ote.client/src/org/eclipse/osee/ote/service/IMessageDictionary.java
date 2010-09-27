@@ -12,6 +12,7 @@ package org.eclipse.osee.ote.service;
 
 import java.io.IOException;
 import org.eclipse.osee.ote.message.Message;
+import org.eclipse.osee.ote.message.MessageSink;
 
 /**
  * Allows the lookup of message definitions
