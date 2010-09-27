@@ -276,7 +276,9 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IBranchE
          public void run() {
             if (Widgets.isAccessible(extraInfoLabel)) {
                String currentString = extraInfoLabel.getText();
-               if (infoStr == null && currentString != null || infoStr != null && currentString == null || !infoStr.equals(currentString)) {
+               if ((infoStr == null && currentString != null) || //
+               (infoStr != null && currentString == null) || //
+               (infoStr != null && currentString != null && !infoStr.equals(currentString))) {
                   extraInfoLabel.setText("Double-click item to perform Action");
                }
                extraInfoLabel.setForeground(Displays.getSystemColor(color));

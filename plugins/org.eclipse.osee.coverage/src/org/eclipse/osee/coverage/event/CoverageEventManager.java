@@ -55,27 +55,21 @@ import org.eclipse.ui.PlatformUI;
  */
 public class CoverageEventManager implements IArtifactEventListener, OseeMessagingStatusCallback {
 
-   private static CoverageEventManager instance;
+   private static CoverageEventManager instance = new CoverageEventManager();
    private final List<CoverageEditor> editors = new ArrayList<CoverageEditor>();
    private ArtifactTypeEventFilter artifactTypeEventFilter;
    private ConnectionNode connectionNode;
    private OseeMessagingTracker oseeMessagingTracker;
 
    public static CoverageEventManager getInstance() {
-      if (instance == null) {
-         instance = new CoverageEventManager();
-      }
       return instance;
    }
 
    public static void dispose() {
-      if (instance != null) {
-         instance.stopListeneingForFrameworkEvents();
-         instance.stopListeningForRemoteCoverageEvents();
-         instance.editors.clear();
-         instance.oseeMessagingTracker.close();
-         instance = null;
-      }
+      instance.stopListeneingForFrameworkEvents();
+      instance.stopListeningForRemoteCoverageEvents();
+      instance.editors.clear();
+      instance.oseeMessagingTracker.close();
    }
 
    private void stopListeneingForFrameworkEvents() {

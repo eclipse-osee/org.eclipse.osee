@@ -40,20 +40,18 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 public class WorldXViewerEventManager implements IArtifactEventListener {
 
    List<IWorldViewerEventHandler> handlers = new ArrayList<IWorldViewerEventHandler>();
-   static WorldXViewerEventManager instance;
+   static WorldXViewerEventManager instance = new WorldXViewerEventManager();
+
+   public WorldXViewerEventManager() {
+      OseeEventManager.addListener(instance);
+   }
 
    public static void add(IWorldViewerEventHandler iWorldEventHandler) {
-      if (instance == null) {
-         instance = new WorldXViewerEventManager();
-         OseeEventManager.addListener(instance);
-      }
       instance.handlers.add(iWorldEventHandler);
    }
 
    public static void remove(IWorldViewerEventHandler iWorldEventHandler) {
-      if (instance != null) {
-         instance.handlers.remove(iWorldEventHandler);
-      }
+      instance.handlers.remove(iWorldEventHandler);
    }
 
    @Override

@@ -42,13 +42,13 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 public class SMAEditorArtifactEventManager implements IArtifactEventListener {
 
    List<ISMAEditorEventHandler> handlers = new ArrayList<ISMAEditorEventHandler>();
-   static SMAEditorArtifactEventManager instance;
+   static SMAEditorArtifactEventManager instance = new SMAEditorArtifactEventManager();
+
+   public SMAEditorArtifactEventManager() {
+      OseeEventManager.addListener(instance);
+   }
 
    public static void add(ISMAEditorEventHandler iWorldEventHandler) {
-      if (instance == null) {
-         instance = new SMAEditorArtifactEventManager();
-         OseeEventManager.addListener(instance);
-      }
       instance.handlers.add(iWorldEventHandler);
    }
 

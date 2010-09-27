@@ -26,37 +26,31 @@ import org.osgi.framework.Bundle;
  */
 public class AtsHealthCheck {
 
-   private static Set<IAtsHealthCheck> healthCheckItems = null;
-
    public static Set<IAtsHealthCheck> getAtsHealthCheckItems() {
-      if (healthCheckItems == null) {
-         healthCheckItems = new HashSet<IAtsHealthCheck>();
+      Set<IAtsHealthCheck> healthCheckItems = new HashSet<IAtsHealthCheck>();
 
-         IExtensionPoint point =
-            Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.ats.AtsHealthCheck");
-         if (point == null) {
-            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't access AtsHealthCheck extension point");
-            return healthCheckItems;
-         }
-         IExtension[] extensions = point.getExtensions();
-         for (IExtension extension : extensions) {
-            IConfigurationElement[] elements = extension.getConfigurationElements();
-            String classname = null;
-            String bundleName = null;
-            for (IConfigurationElement el : elements) {
-               if (el.getName().equals("AtsHealthCheck")) {
-                  classname = el.getAttribute("classname");
-                  bundleName = el.getContributor().getName();
-                  if (classname != null && bundleName != null) {
-                     Bundle bundle = Platform.getBundle(bundleName);
-                     try {
-                        Class<?> taskClass = bundle.loadClass(classname);
-                        Object obj = taskClass.newInstance();
-                        healthCheckItems.add((IAtsHealthCheck) obj);
-                     } catch (Exception ex) {
-                        OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Error loading AtsHealthCheck extension",
-                           ex);
-                     }
+      IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.ats.AtsHealthCheck");
+      if (point == null) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't access AtsHealthCheck extension point");
+         return healthCheckItems;
+      }
+      IExtension[] extensions = point.getExtensions();
+      for (IExtension extension : extensions) {
+         IConfigurationElement[] elements = extension.getConfigurationElements();
+         String classname = null;
+         String bundleName = null;
+         for (IConfigurationElement el : elements) {
+            if (el.getName().equals("AtsHealthCheck")) {
+               classname = el.getAttribute("classname");
+               bundleName = el.getContributor().getName();
+               if (classname != null && bundleName != null) {
+                  Bundle bundle = Platform.getBundle(bundleName);
+                  try {
+                     Class<?> taskClass = bundle.loadClass(classname);
+                     Object obj = taskClass.newInstance();
+                     healthCheckItems.add((IAtsHealthCheck) obj);
+                  } catch (Exception ex) {
+                     OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Error loading AtsHealthCheck extension", ex);
                   }
                }
             }

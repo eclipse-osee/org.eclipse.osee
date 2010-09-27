@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.task;
 
 import java.util.logging.Level;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IAction;
@@ -56,7 +55,6 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.Section;
-import org.osgi.framework.Bundle;
 
 /**
  * @author Donald G. Dunne
@@ -155,7 +153,6 @@ public class TaskTabXWidgetActionPage extends AtsXWidgetActionFormPage implement
       toolBarManager.add(new RefreshAction(taskComposite));
       toolBarManager.add(new Separator());
       toolBarManager.add(new NewAction());
-      Bundle bundle = Platform.getBundle(AtsPlugin.PLUGIN_ID);
       OseeUiActions.addButtonToEditorToolBar(smaEditor, smaEditor, AtsPlugin.PLUGIN_ID, toolBarManager,
          TaskEditor.EDITOR_ID, "ATS Task Tab");
       toolBarManager.add(new Separator());

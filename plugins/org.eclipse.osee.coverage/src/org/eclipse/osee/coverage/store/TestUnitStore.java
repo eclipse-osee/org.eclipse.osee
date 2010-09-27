@@ -30,7 +30,7 @@ public class TestUnitStore {
    final Map<Integer, String> idToName = new HashMap<Integer, String>(1000);
 
    private TestUnitStore() {
-      instance = this;
+      // private constructor
    }
 
    private int addTestUnitNameToDb(String name) throws OseeCoreException {

@@ -35,9 +35,9 @@ public class AtsFolderUtil {
       WorkRules("Work Rules", "Work Rules", CoreArtifactTypes.Folder),
       WorkWidgets("Work Widgets", "Work Widgets", CoreArtifactTypes.Folder),
       WorkPages("Work Pages", "Work Pages", CoreArtifactTypes.Folder);
-      protected final String displayName;
-      protected final String staticId;
-      protected final IArtifactType artifactType;
+      final String displayName;
+      final String staticId;
+      final IArtifactType artifactType;
 
       private AtsFolder(String displayName, String staticId, IArtifactType artifactType) {
          this.displayName = displayName;

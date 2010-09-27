@@ -102,7 +102,7 @@ public class ChangePointDialog extends ListDialog {
       super.okPressed();
    }
 
-   public class PointLabelProvider implements ILabelProvider {
+   private static class PointLabelProvider implements ILabelProvider {
 
       @Override
       public Image getImage(Object arg0) {

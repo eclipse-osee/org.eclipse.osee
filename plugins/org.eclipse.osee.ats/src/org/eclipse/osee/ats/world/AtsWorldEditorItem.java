@@ -27,7 +27,7 @@ public class AtsWorldEditorItem extends AtsWorldEditorItemBase {
 
    @Override
    public List<? extends Action> getWorldEditorMenuActions(IWorldEditorProvider worldEditorProvider, WorldEditor worldEditor) {
-      return Arrays.asList(new AtsExportManager(worldEditor), new ExportChangeReportsAction(worldEditor),
+      return Arrays.asList(new AtsExportManager(worldEditor), new ExportChangeReportsAction(worldEditor, false),
          new DuplicateWorkflowViaWorldEditorAction(worldEditor), new CompleteMultipleWorkflows(worldEditor),
          new CancelMultipleWorkflows(worldEditor));
    }

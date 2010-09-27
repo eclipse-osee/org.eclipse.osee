@@ -31,7 +31,7 @@ import org.osgi.framework.ServiceRegistration;
 public class AtsPlugin implements BundleActivator {
    public static final String PLUGIN_ID = "org.eclipse.osee.ats";
 
-   private static AtsPlugin pluginInstance;
+   private static AtsPlugin pluginInstance = new AtsPlugin();
    private ServiceRegistration service1;
    private ServiceRegistration service2;
    private ServiceDependencyTracker tracker;
@@ -39,7 +39,6 @@ public class AtsPlugin implements BundleActivator {
 
    public AtsPlugin() {
       super();
-      AtsPlugin.pluginInstance = this;
       AtsPreSaveCacheRemoteEventHandler.start();
       AtsCacheManager.start();
       AtsNotifyUsers.start();

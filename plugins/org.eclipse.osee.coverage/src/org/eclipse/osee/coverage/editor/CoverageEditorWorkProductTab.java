@@ -116,7 +116,6 @@ public class CoverageEditorWorkProductTab extends FormPage implements ISaveable 
          @Override
          public void performArtifactDrop(Artifact[] dropArtifacts) {
             super.performArtifactDrop(dropArtifacts);
-            System.out.println("Dropped " + dropArtifacts);
             for (Artifact artifact : dropArtifacts) {
                if (!artifact.isOfType(SkynetGuiPlugin.getInstance().getOseeCmService().getPcrArtifactType())) {
                   AWorkbench.popup("Related artifact must be a Team Workflow");

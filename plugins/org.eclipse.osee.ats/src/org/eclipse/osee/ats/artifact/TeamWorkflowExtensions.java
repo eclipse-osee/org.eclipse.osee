@@ -34,7 +34,7 @@ public class TeamWorkflowExtensions {
    private static Set<IAtsTeamWorkflow> teamWorkflowExtensionItems;
 
    private TeamWorkflowExtensions() {
-      instance = this;
+      // private contructor
    }
 
    public static TeamWorkflowExtensions getInstance() {

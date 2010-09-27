@@ -122,7 +122,6 @@ public class TaskXViewer extends WorldXViewer {
    Action editTaskTitleAction, editTaskAssigneesAction, editTaskStatusAction, editTaskHoursSpentAction,
       editTaskResolutionAction, editTaskEstimateAction, editTaskRelatedStateAction, editTaskNotesAction;
    Action addNewTaskAction, deleteTasksAction;
-   Action showRelatedAction;
 
    @Override
    public void createMenuActions() {

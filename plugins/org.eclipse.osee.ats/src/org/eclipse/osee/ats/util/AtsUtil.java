@@ -95,7 +95,7 @@ public final class AtsUtil {
    public final static String activeColor = "#EEEEEE";
    private static ArtifactTypeEventFilter atsObjectArtifactTypesFilter, reviewArtifactTypesFilter,
       teamWorkflowArtifactTypesFilter, workItemArtifactTypesFilter;
-   private static List<IEventFilter> atsObjectEventFilter;
+   private static List<IEventFilter> atsObjectEventFilter = new ArrayList<IEventFilter>(2);
 
    private AtsUtil() {
       super();
@@ -434,10 +434,9 @@ public final class AtsUtil {
       return results;
    }
 
-   public static List<IEventFilter> getAtsObjectEventFilters() {
+   public synchronized static List<IEventFilter> getAtsObjectEventFilters() {
       try {
-         if (atsObjectEventFilter == null) {
-            atsObjectEventFilter = new ArrayList<IEventFilter>(2);
+         if (atsObjectEventFilter.size() == 0) {
             atsObjectEventFilter.add(OseeEventManager.getCommonBranchFilter());
             atsObjectEventFilter.add(getAtsObjectArtifactTypeEventFilter());
          }

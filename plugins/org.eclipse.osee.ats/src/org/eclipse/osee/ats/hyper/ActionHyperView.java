@@ -62,8 +62,8 @@ public class ActionHyperView extends HyperView implements IActionable, IArtifact
 
    public static String VIEW_ID = "org.eclipse.osee.ats.hyper.ActionHyperView";
    private static String HELP_CONTEXT_ID = "atsActionView";
-   private static ActionHyperItem topAHI;
-   private static ATSArtifact currentArtifact;
+   private ActionHyperItem topAHI;
+   private ATSArtifact currentArtifact;
    private Cursor cursor;
 
    public ActionHyperView() {
@@ -117,15 +117,17 @@ public class ActionHyperView extends HyperView implements IActionable, IArtifact
 
    @Override
    public void handleItemDoubleClick(HyperViewItem hvi) {
-      Artifact art = ((ActionHyperItem) hvi).getArtifact();
-      if (art == null) {
-         ((ActionHyperItem) hvi).handleDoubleClick(hvi);
+      if (hvi instanceof ActionHyperItem) {
+         Artifact art = ((ActionHyperItem) hvi).getArtifact();
+         if (art == null) {
+            ((ActionHyperItem) hvi).handleDoubleClick(hvi);
 
-      } else if (art.isDeleted()) {
-         AWorkbench.popup("ERROR", "Artifact has been deleted");
-         return;
-      } else {
-         AtsUtil.openATSAction(art, AtsOpenOption.OpenOneOrPopupSelect);
+         } else if (art.isDeleted()) {
+            AWorkbench.popup("ERROR", "Artifact has been deleted");
+            return;
+         } else {
+            AtsUtil.openATSAction(art, AtsOpenOption.OpenOneOrPopupSelect);
+         }
       }
    }
 

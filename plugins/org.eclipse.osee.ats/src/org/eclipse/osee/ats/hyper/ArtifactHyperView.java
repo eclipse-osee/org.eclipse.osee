@@ -59,9 +59,8 @@ import org.eclipse.ui.PlatformUI;
 public class ArtifactHyperView extends HyperView implements IArtifactEventListener, IActionable, IPerspectiveListener2 {
 
    public static String VIEW_ID = "org.eclipse.osee.ats.hyper.ArtifactHyperView";
-   public static ArtifactHyperItem topAHI;
-   public static Artifact currentArtifact;
-   private Action pinAction;
+   public ArtifactHyperItem topAHI;
+   public Artifact currentArtifact;
 
    public ArtifactHyperView() {
       super();
@@ -103,7 +102,9 @@ public class ArtifactHyperView extends HyperView implements IArtifactEventListen
 
    @Override
    public void handleItemDoubleClick(HyperViewItem hvi) {
-      currentArtifact = ((ArtifactHyperItem) hvi).getArtifact();
+      if (hvi instanceof ArtifactHyperItem) {
+         currentArtifact = ((ArtifactHyperItem) hvi).getArtifact();
+      }
       display();
    }
 
@@ -193,9 +194,6 @@ public class ArtifactHyperView extends HyperView implements IArtifactEventListen
    }
 
    public void handleWindowChange() {
-      if (pinAction.isChecked()) {
-         return;
-      }
       if (!this.getSite().getPage().isPartVisible(this)) {
          return;
       }
@@ -282,7 +280,6 @@ public class ArtifactHyperView extends HyperView implements IArtifactEventListen
       tbm.add(new Separator());
       tbm.add(openByIdAction);
       tbm.add(openArtAction);
-      tbm.add(pinAction);
    }
 
    public void handleOpenArtifact() {

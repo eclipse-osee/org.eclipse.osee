@@ -27,7 +27,7 @@ public class ATSXWidgetOptionResolver extends DefaultXWidgetOptionResolver {
    public static String OPTIONS_FROM_ATTRIBUTE_VALIDITY = "OPTIONS_FROM_ATTRIBUTE_VALIDITY";
 
    private ATSXWidgetOptionResolver() {
-      instance = this;
+      // private constructor
    }
 
    @Override

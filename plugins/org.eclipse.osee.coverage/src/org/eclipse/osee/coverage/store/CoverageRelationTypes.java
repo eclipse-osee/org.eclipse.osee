@@ -38,4 +38,15 @@ public class CoverageRelationTypes extends NamedIdentity implements IRelationEnu
    public RelationSide getSide() {
       return relationSide;
    }
+
+   @Override
+   public int hashCode() {
+      return super.hashCode();
+   }
+
+   @Override
+   public boolean equals(Object obj) {
+      return super.equals(obj);
+   }
+
 }

@@ -127,4 +127,15 @@ public class CoverageImport extends CoveragePackageBase {
    public String getWorkProductTaskStr() {
       return "";
    }
+
+   @Override
+   public int hashCode() {
+      return super.hashCode();
+   }
+
+   @Override
+   public boolean equals(Object obj) {
+      return super.equals(obj);
+   }
+
 }

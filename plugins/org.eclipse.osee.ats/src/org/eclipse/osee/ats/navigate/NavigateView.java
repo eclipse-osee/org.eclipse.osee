@@ -79,7 +79,6 @@ public class NavigateView extends ViewPart implements IActionable {
    public static final String VIEW_ID = "org.eclipse.osee.ats.navigate.NavigateView";
    public static final String HELP_CONTEXT_ID = "atsNavigator";
    private AtsNavigateComposite xNavComp;
-   private final boolean includeCompleteCancelled = false;
    private Composite parent;
    private LoadingComposite loadingComposite;
 
@@ -209,10 +208,6 @@ public class NavigateView extends ViewPart implements IActionable {
             xNavComp.refresh();
          }
       }, "org.eclipse.osee.framework.ui.skynet.BlamOperation");
-   }
-
-   public boolean isIncludeCompleteCancelled() {
-      return includeCompleteCancelled;
    }
 
    private String getWhoAmI() {

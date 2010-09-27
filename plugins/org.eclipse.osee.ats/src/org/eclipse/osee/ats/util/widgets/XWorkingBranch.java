@@ -315,7 +315,9 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IArtifac
 
    @Override
    public void setArtifact(Artifact artifact) {
-      this.teamArt = (TeamWorkFlowArtifact) artifact;
+      if (artifact instanceof TeamWorkFlowArtifact) {
+         this.teamArt = (TeamWorkFlowArtifact) artifact;
+      }
       enablement = new XWorkingBranchEnablement(teamArt);
    }
 

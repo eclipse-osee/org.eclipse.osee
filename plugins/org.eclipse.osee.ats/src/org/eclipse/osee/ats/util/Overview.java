@@ -238,17 +238,17 @@ public class Overview {
 
    public void addTeams(Collection<TeamWorkFlowArtifact> teams) throws OseeCoreException {
       startBorderTable(TABLE_WIDTH, false, "Team Workflows");
-      String s = AHTML.beginMultiColumnTable(100, 1);
-      s += AHTML.addHeaderRowMultiColumnTable(new String[] {"Type", "State"}, new Integer[] {70, 150});
+      StringBuffer sb = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
+      sb.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Type", "State"}, new Integer[] {70, 150}));
       ArrayList<CellItem> cells = new ArrayList<CellItem>();
       for (TeamWorkFlowArtifact team : teams) {
          cells.add(new AHTML.CellItem(team.getHyperlinkHtml()));
          cells.add(new AHTML.CellItem(team.getStateMgr().getCurrentStateName()));
-         s += AHTML.addRowMultiColumnTable(cells);
+         sb.append(AHTML.addRowMultiColumnTable(cells));
          cells.clear();
       }
-      s += AHTML.endMultiColumnTable();
-      html.append(s);
+      sb.append(AHTML.endMultiColumnTable());
+      html.append(sb.toString());
 
       endBorderTable();
    }

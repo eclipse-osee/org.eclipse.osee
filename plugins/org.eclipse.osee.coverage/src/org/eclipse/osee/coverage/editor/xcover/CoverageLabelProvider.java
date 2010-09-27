@@ -146,7 +146,7 @@ public class CoverageLabelProvider extends XViewerLabelProvider {
          CoverageUnit coverageUnit = null;
          if (coverage instanceof CoverageUnit) {
             coverageUnit = (CoverageUnit) coverage;
-         } else {
+         } else if (coverage instanceof MergeItem) {
             coverageUnit = (CoverageUnit) ((MergeItem) coverage).getImportItem();
          }
          if (xCol.equals(CoverageXViewerFactory.Parent_Coverage_Unit)) {

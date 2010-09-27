@@ -58,7 +58,7 @@ public class NewActionPage1 extends WizardPage {
    private WorkPage page;
    private OSEECheckedFilteredTree treeViewer;
    private static PatternFilter patternFilter = new PatternFilter();
-   private static Text descriptionLabel;
+   private Text descriptionLabel;
 
    protected NewActionPage1(NewActionWizard actionWizard) {
       super("Create new ATS Action", "Create ATS Action", null);

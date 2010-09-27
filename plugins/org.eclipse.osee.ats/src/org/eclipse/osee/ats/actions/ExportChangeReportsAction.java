@@ -52,9 +52,10 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
  */
 public class ExportChangeReportsAction extends Action {
    private final WorldEditor worldEditor;
-   private final boolean reverse = false;
+   private final boolean reverse;
 
-   public ExportChangeReportsAction(WorldEditor worldEditor) {
+   public ExportChangeReportsAction(WorldEditor worldEditor, boolean reverse) {
+      this.reverse = reverse;
       setText("Export Change Report(s)");
       setImageDescriptor(getImageDescriptor());
       this.worldEditor = worldEditor;

@@ -10,8 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor;
 
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.logging.Level;
+import java.util.List;
 import org.eclipse.osee.ats.actions.AccessControlAction;
 import org.eclipse.osee.ats.actions.ConvertActionableItemsAction;
 import org.eclipse.osee.ats.actions.DeletePurgeAtsArtifactsAction;
@@ -56,7 +57,7 @@ import org.eclipse.ui.forms.widgets.Section;
 public class SMAOperationsSection extends SectionPart {
 
    protected final SMAEditor editor;
-   private ISMAOperationsSection advOperation = null;
+   private static List<ISMAOperationsSection> advOperations;
    private boolean sectionCreated = false;
 
    public SMAOperationsSection(SMAEditor editor, Composite parent, FormToolkit toolkit, int style) {
@@ -65,16 +66,14 @@ public class SMAOperationsSection extends SectionPart {
       registerAdvancedSectionsFromExtensionPoints();
    }
 
-   private void registerAdvancedSectionsFromExtensionPoints() {
-
-      ExtensionDefinedObjects<ISMAOperationsSection> extensions =
-         new ExtensionDefinedObjects<ISMAOperationsSection>(AtsPlugin.PLUGIN_ID + ".AtsAdvancedOperationAction",
-            "AtsAdvancedOperationAction", "classname");
-      for (ISMAOperationsSection item : extensions.getObjects()) {
-         try {
-            advOperation = item;
-         } catch (Exception ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+   private synchronized void registerAdvancedSectionsFromExtensionPoints() {
+      if (advOperations == null) {
+         advOperations = new ArrayList<ISMAOperationsSection>();
+         ExtensionDefinedObjects<ISMAOperationsSection> extensions =
+            new ExtensionDefinedObjects<ISMAOperationsSection>(AtsPlugin.PLUGIN_ID + ".AtsAdvancedOperationAction",
+               "AtsAdvancedOperationAction", "classname");
+         for (ISMAOperationsSection item : extensions.getObjects()) {
+            advOperations.add(item);
          }
       }
    }
@@ -113,12 +112,7 @@ public class SMAOperationsSection extends SectionPart {
       createViewsEditorsSection(sectionBody, toolkit);
       createNotificationsSection(sectionBody, toolkit);
 
-      if (advOperation != null && advOperation.isValid(editor)) {
-         advOperation.createAdvancedSection(editor, sectionBody, toolkit);
-      } else {
-         createAdvancedSection(sectionBody, toolkit);
-      }
-
+      createAdvancedSection(sectionBody, toolkit);
       createAdminSection(sectionBody, toolkit);
 
       section.setClient(sectionBody);
@@ -172,6 +166,13 @@ public class SMAOperationsSection extends SectionPart {
          new XButtonViaAction(new ReloadAction(editor.getSma())).createWidgets(sectionBody, 2);
          new XButtonViaAction(new ConvertActionableItemsAction(editor)).createWidgets(sectionBody, 2);
       }
+
+      for (ISMAOperationsSection operation : advOperations) {
+         if (operation.isValid(editor)) {
+            operation.createAdvancedSection(editor, sectionBody, toolkit);
+         }
+      }
+
       section.setClient(sectionBody);
    }
 

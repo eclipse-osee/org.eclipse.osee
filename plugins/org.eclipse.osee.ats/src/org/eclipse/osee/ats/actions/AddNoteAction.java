@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.NoteType;
 import org.eclipse.osee.ats.actions.wizard.NewNoteWizard;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -34,7 +35,6 @@ import org.eclipse.ui.PlatformUI;
  */
 public class AddNoteAction extends Action {
 
-   Action action;
    private final StateMachineArtifact sma;
 
    public AddNoteAction(StateMachineArtifact sma) {
@@ -73,7 +73,7 @@ public class AddNoteAction extends Action {
                noteWizard.mainPage.noteText.get(), UserManager.getUser());
             sma.getEditor().onDirtied();
          }
-      } catch (Exception ex) {
+      } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }

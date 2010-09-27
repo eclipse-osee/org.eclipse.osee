@@ -84,7 +84,9 @@ public class OseeAtsServiceImpl implements IOseeCmService {
    public boolean isCompleted(Artifact artifact) {
       if (isPcrArtifact(artifact)) {
          try {
-            return ((StateMachineArtifact) artifact).isCancelledOrCompleted();
+            if (artifact instanceof StateMachineArtifact) {
+               return ((StateMachineArtifact) artifact).isCancelledOrCompleted();
+            }
          } catch (OseeCoreException ex) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          }

@@ -111,9 +111,10 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    private SMAHistorySection smaHistorySection;
    private LoadingComposite loadingComposite;
    private static String PRIVILEGED_EDIT = "(Priviledged Edit Enabled)";
+   public static String ID = "ats.workflow.tab";
 
    public SMAWorkFlowTab(StateMachineArtifact sma) {
-      super(sma.getEditor(), "overview", "Workflow");
+      super(sma.getEditor(), ID, "Workflow");
       this.sma = sma;
       toolkit = sma.getEditor().getToolkit();
    }

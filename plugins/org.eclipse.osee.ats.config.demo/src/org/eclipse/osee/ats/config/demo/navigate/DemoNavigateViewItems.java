@@ -138,8 +138,6 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
       XNavigateItem demoItems = new XNavigateItem(adminItems, "Demo Data", PluginUiImage.ADMIN);
       new PopulateDemoActions(demoItems);
 
-      new DoesNotWorkItemDemo(adminItems);
-
       return items;
    }
 }

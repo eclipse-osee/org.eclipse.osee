@@ -306,17 +306,18 @@ public class ATSLog {
       addLog(item.getType(), item.getState(), item.getMsg(), item.getDate(), item.getUser());
    }
 
-   /**
-    * @param state name of state or null
-    */
    public void addLog(LogType type, String state, String msg, Date date, User user) throws OseeCoreException {
       if (!enabled) {
          return;
       }
-      LogItem logItem = new LogItem(type, date, user, state, msg, artifactRef.get().getHumanReadableId());
-      List<LogItem> logItems = getLogItems();
-      logItems.add(logItem);
-      putLogItems(logItems);
+      if (artifactRef.get() == null) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, "Artifact unexpectedly garbage collected");
+      } else {
+         LogItem logItem = new LogItem(type, date, user, state, msg, getArtifact().getHumanReadableId());
+         List<LogItem> logItems = getLogItems();
+         logItems.add(logItem);
+         putLogItems(logItems);
+      }
    }
 
    public void clearLog() {

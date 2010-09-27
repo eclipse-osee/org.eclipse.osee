@@ -83,7 +83,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IArtifact
    private IDirtiableEditor editor;
    private IReviewArtifact reviewArt;
    public final static String normalColor = "#EEEEEE";
-   private static ToolItem newDefectItem, deleteDefectItem;
+   private ToolItem newDefectItem, deleteDefectItem;
    private Label extraInfoLabel;
    private Composite parentComposite;
    private ToolBar toolBar;

@@ -113,8 +113,10 @@ public class GoalSearchItem extends WorldUISearchItem {
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
       getTeamDefs();
       Set<String> teamDefinitionGuids = new HashSet<String>(teamDefs != null ? teamDefs.size() : 0);
-      for (TeamDefinitionArtifact teamDef : teamDefs) {
-         teamDefinitionGuids.add(teamDef.getGuid());
+      if (teamDefs != null) {
+         for (TeamDefinitionArtifact teamDef : teamDefs) {
+            teamDefinitionGuids.add(teamDef.getGuid());
+         }
       }
       List<AbstractArtifactSearchCriteria> criteria = new ArrayList<AbstractArtifactSearchCriteria>();
       if (!teamDefinitionGuids.isEmpty()) {

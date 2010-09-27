@@ -227,16 +227,15 @@ public class GoalArtifact extends StateMachineArtifact {
     * change goal order for artifacts within given goal
     */
    public static GoalArtifact promptChangeGoalOrder(GoalArtifact goalArtifact, List<Artifact> artifacts) throws OseeCoreException {
-      String currentOrder = "Current Order: ";
+      StringBuilder currentOrder = new StringBuilder("Current Order: ");
       for (Artifact artifact : artifacts) {
          if (artifacts.size() == 1 && !isHasGoal(artifact) || goalArtifact == null) {
             AWorkbench.popup(String.format("No Goal set for artifact [%s]", artifact));
             return null;
          }
          String currIndexStr = getGoalOrder(goalArtifact, artifact);
-         currentOrder += currIndexStr + ", ";
+         currentOrder.append(currIndexStr + ", ");
       }
-      currentOrder = currentOrder.replaceFirst(", $", "");
 
       List<Artifact> members = goalArtifact.getMembers();
       EntryDialog ed =
@@ -244,7 +243,7 @@ public class GoalArtifact extends StateMachineArtifact {
             "Change Goal Order",
             String.format(
                "Goal: %s\n\n%s\n\nEnter New Order Number from 1..%d or %d for last\n\nNote: Goal will be placed before number entered.",
-               goalArtifact, currentOrder, members.size(), members.size() + 1));
+               goalArtifact, currentOrder.toString().replaceFirst(", $", ""), members.size(), members.size() + 1));
       ed.setNumberFormat(NumberFormat.getIntegerInstance());
 
       int result = ed.open();

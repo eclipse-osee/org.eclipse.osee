@@ -58,7 +58,7 @@ public class AtsNotificationNavigateItem extends XNavigateItemAction {
       }
    }
 
-   public class NotificationJob extends AbstractOperation {
+   private static class NotificationJob extends AbstractOperation {
 
       private final boolean sendNotifications;
       private final Collection<IAtsNotification> notifications;

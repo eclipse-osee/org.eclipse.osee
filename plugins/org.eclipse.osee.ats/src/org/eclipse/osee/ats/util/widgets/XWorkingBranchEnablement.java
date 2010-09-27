@@ -80,7 +80,7 @@ public class XWorkingBranchEnablement {
       return false;
    }
 
-   public void refresh() {
+   public synchronized void refresh() {
       populated = false;
    }
 

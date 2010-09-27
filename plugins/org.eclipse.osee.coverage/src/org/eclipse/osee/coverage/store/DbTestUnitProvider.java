@@ -39,7 +39,7 @@ public class DbTestUnitProvider implements ITestUnitProvider {
       new HashCollection<CoverageItem, Integer>(1000);
 
    private DbTestUnitProvider() {
-      instance = this;
+      // private constructor
    }
 
    public static DbTestUnitProvider instance() {

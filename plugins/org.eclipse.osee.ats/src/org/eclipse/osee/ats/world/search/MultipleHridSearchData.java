@@ -35,14 +35,6 @@ public class MultipleHridSearchData implements IWorldEditorConsumer {
       this.atsEditor = atsEditor;
    }
 
-   public MultipleHridSearchData(String name, AtsEditor atsEditor, String enteredIds, List<String> ids, boolean includeArtIds, Branch branch) {
-      this(name, atsEditor);
-      this.ids = ids;
-      this.includeArtIds = includeArtIds;
-      this.branch = branch;
-      name = enteredIds;
-   }
-
    public boolean hasValidInput() {
       return Strings.isValid(enteredIds);
    }

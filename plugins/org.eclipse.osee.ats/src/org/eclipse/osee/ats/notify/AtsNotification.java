@@ -30,7 +30,6 @@ public class AtsNotification {
    private static AtsNotification instance = new AtsNotification();
 
    private AtsNotification() {
-      instance = this;
 
       IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.ats.AtsNotification");
       if (point == null) {

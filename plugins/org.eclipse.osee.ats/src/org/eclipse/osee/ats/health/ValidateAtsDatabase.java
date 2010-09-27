@@ -528,16 +528,16 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                      artifact.getAttributesToString(attrType));
                Map<String, Attribute<?>> valuesAttrMap = new HashMap<String, Attribute<?>>();
                int latestGamma = 0;
-               String fixInfo = " - FIX AVAILABLE";
+               StringBuffer fixInfo = new StringBuffer(" - FIX AVAILABLE");
                for (Attribute<?> attr : artifact.getAttributes(attrType)) {
                   if (attr.getGammaId() > latestGamma) {
                      latestGamma = attr.getGammaId();
                   }
                   String info = String.format("[Gamma [%s] Value [%s]]", attr.getGammaId(), attr.getValue());
                   valuesAttrMap.put(info, attr);
-                  fixInfo += info;
+                  fixInfo.append(info);
                }
-               fixInfo += " - KEEP Gamma" + latestGamma;
+               fixInfo.append(" - KEEP Gamma" + latestGamma);
                if (latestGamma != 0) {
                   result += fixInfo;
                   if (fixAttributeValues) {

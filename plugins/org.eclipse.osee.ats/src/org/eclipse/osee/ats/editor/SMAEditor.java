@@ -89,8 +89,8 @@ import org.eclipse.ui.part.MultiPageEditorPart;
 public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEventHandler, ISelectedAtsArtifacts, IActionable, IAtsMetricsProvider, IXTaskViewer {
    public static final String EDITOR_ID = "org.eclipse.osee.ats.editor.SMAEditor";
    private StateMachineArtifact sma;
-   private int workFlowPageIndex, metricsPageIndex, attributesPageIndex;
    private SMAWorkFlowTab workFlowTab;
+   int attributesPageIndex;
    private AttributesComposite attributesComposite;
    private boolean priviledgedEditModeEnabled = false;
    private Action printAction;
@@ -140,7 +140,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
          createAttributesTab();
          createMetricsTab();
 
-         setActivePage(workFlowPageIndex);
+         setActivePage(SMAWorkFlowTab.ID);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -154,7 +154,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
    private void createWorkflowTab() {
       try {
          workFlowTab = new SMAWorkFlowTab(sma);
-         workFlowPageIndex = addPage(workFlowTab);
+         addPage(workFlowTab);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
@@ -301,7 +301,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
          Composite composite = AtsUtil.createCommonPageComposite(getContainer());
          createToolBar(composite);
          new AtsMetricsComposite(this, composite, SWT.NONE);
-         metricsPageIndex = addPage(composite);
+         int metricsPageIndex = addPage(composite);
          setPageText(metricsPageIndex, "Metrics");
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
@@ -375,7 +375,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
          sma.getEditor().onDirtied();
          updatePartName();
       } catch (Exception ex) {
-         // do nothing
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
    }
 

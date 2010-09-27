@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
  */
 public class OpenVersionArtifactAction extends Action {
 
-   Action action;
    private final StateMachineArtifact sma;
 
    public OpenVersionArtifactAction(StateMachineArtifact sma) {

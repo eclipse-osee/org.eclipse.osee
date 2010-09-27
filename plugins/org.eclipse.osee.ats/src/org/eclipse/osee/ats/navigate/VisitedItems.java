@@ -12,7 +12,9 @@ package org.eclipse.osee.ats.navigate;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.WorldEditor;
@@ -33,11 +35,13 @@ public class VisitedItems extends XNavigateItemAction {
 
    public static List<Artifact> getReverseVisited() throws OseeCoreException {
       // Search artifacts and hold on to references so don't get garbage collected
-      @SuppressWarnings("unused")
-      Collection<Artifact> artifacts = ArtifactQuery.getArtifactListFromIds(visitedGuids, AtsUtil.getAtsBranch());
+      Map<String, Artifact> artifacts = new HashMap<String, Artifact>();
+      for (Artifact art : ArtifactQuery.getArtifactListFromIds(visitedGuids, AtsUtil.getAtsBranch())) {
+         artifacts.put(art.getGuid(), art);
+      }
       List<Artifact> revArts = new ArrayList<Artifact>();
       for (int x = visitedGuids.size(); x <= 0; x--) {
-         Artifact art = ArtifactQuery.getArtifactFromId(visitedGuids.get(x), AtsUtil.getAtsBranch());
+         Artifact art = artifacts.get(visitedGuids.get(x));
          if (art != null) {
             revArts.add(art);
          }

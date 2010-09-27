@@ -76,7 +76,7 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IArtifa
    private IDirtiableEditor editor;
    private IReviewArtifact reviewArt;
    public final static String normalColor = "#EEEEEE";
-   private static ToolItem newUserRoleItem, deleteUserRoleItem;
+   private ToolItem newUserRoleItem, deleteUserRoleItem;
    private Label extraInfoLabel;
    private ToolBar toolBar;
    private static Map<IReviewArtifact, Integer> tableHeight = new HashMap<IReviewArtifact, Integer>();

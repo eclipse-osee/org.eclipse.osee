@@ -346,4 +346,14 @@ public class CoverageItem extends NamedIdentity implements ICoverage, IWorkProdu
       this.workProductTask = workProductTask;
    }
 
+   @Override
+   public int hashCode() {
+      return super.hashCode();
+   }
+
+   @Override
+   public boolean equals(Object obj) {
+      return super.equals(obj);
+   }
+
 }

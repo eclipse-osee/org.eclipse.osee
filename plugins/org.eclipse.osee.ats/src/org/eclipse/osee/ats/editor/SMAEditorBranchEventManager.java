@@ -37,14 +37,14 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 public class SMAEditorBranchEventManager implements IBranchEventListener {
 
    List<ISMAEditorEventHandler> handlers = new ArrayList<ISMAEditorEventHandler>();
-   static SMAEditorBranchEventManager instance;
+   static SMAEditorBranchEventManager instance = new SMAEditorBranchEventManager();
+
+   public SMAEditorBranchEventManager() {
+      OseeEventManager.addListener(instance);
+   }
 
    public static void add(ISMAEditorEventHandler iWorldEventHandler) {
-      if (instance == null) {
-         instance = new SMAEditorBranchEventManager();
-         OseeEventManager.addListener(instance);
-      }
-      instance.handlers.add(iWorldEventHandler);
+      OseeEventManager.addListener(instance);
    }
 
    public static void remove(ISMAEditorEventHandler iWorldEventHandler) {
