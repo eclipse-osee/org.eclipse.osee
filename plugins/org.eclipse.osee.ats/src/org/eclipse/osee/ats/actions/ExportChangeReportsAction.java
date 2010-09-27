@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -36,6 +37,7 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.change.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
@@ -169,6 +171,13 @@ public class ExportChangeReportsAction extends Action {
          }
          if (operation != null) {
             doSubWork(operation, monitor, 0.50);
+
+            Iterator<Change> iterator = changes.iterator();
+            while (iterator.hasNext()) {
+               if (!(iterator.next() instanceof ArtifactChange)) {
+                  iterator.remove();
+               }
+            }
 
             Collections.sort(changes);
          }
