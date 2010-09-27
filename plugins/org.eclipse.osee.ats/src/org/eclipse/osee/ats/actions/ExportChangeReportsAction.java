@@ -141,21 +141,8 @@ public class ExportChangeReportsAction extends Action {
          RenderingUtil.setPopupsAllowed(false);
 
          for (Artifact workflow : workflows) {
-            AtsBranchManager atsBranchMgr = ((TeamWorkFlowArtifact) workflow).getBranchMgr();
 
-            Collection<Change> changes = new ArrayList<Change>();
-            IOperation operation = null;
-            if (atsBranchMgr.isCommittedBranchExists()) {
-               operation = ChangeManager.comparedToPreviousTx(pickTransaction(workflow), changes);
-            } else {
-               Branch workingBranch = atsBranchMgr.getWorkingBranch();
-               if (workingBranch != null && !workingBranch.getBranchType().isBaselineBranch()) {
-                  operation = ChangeManager.comparedToParent(workingBranch, changes);
-               }
-            }
-            if (operation != null) {
-               doSubWork(operation, monitor, 0.50);
-            }
+            Collection<Change> changes = computeChanges(workflow, monitor);
             if (!changes.isEmpty() && changes.size() < 4000) {
                String folderName = workflow.getSoleAttributeValueAsString(AtsAttributeTypes.LegacyPcrId, null);
                IOperation subOp = new WordChangeReportOperation(changes, folderName);
@@ -165,6 +152,27 @@ public class ExportChangeReportsAction extends Action {
             }
          }
          RenderingUtil.setPopupsAllowed(true);
+      }
+
+      private Collection<Change> computeChanges(Artifact workflow, IProgressMonitor monitor) throws OseeCoreException {
+         AtsBranchManager atsBranchMgr = ((TeamWorkFlowArtifact) workflow).getBranchMgr();
+
+         List<Change> changes = new ArrayList<Change>();
+         IOperation operation = null;
+         if (atsBranchMgr.isCommittedBranchExists()) {
+            operation = ChangeManager.comparedToPreviousTx(pickTransaction(workflow), changes);
+         } else {
+            Branch workingBranch = atsBranchMgr.getWorkingBranch();
+            if (workingBranch != null && !workingBranch.getBranchType().isBaselineBranch()) {
+               operation = ChangeManager.comparedToParent(workingBranch, changes);
+            }
+         }
+         if (operation != null) {
+            doSubWork(operation, monitor, 0.50);
+
+            Collections.sort(changes);
+         }
+         return changes;
       }
    }
 }

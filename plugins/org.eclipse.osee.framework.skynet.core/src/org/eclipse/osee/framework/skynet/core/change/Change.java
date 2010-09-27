@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 /**
  * @author Jeff C. Phillips
  */
-public abstract class Change implements IAdaptable {
+public abstract class Change implements IAdaptable, Comparable<Change> {
    private final long sourceGamma;
    private final int artId;
    private final TransactionDelta txDelta;
@@ -148,5 +148,15 @@ public abstract class Change implements IAdaptable {
          return this;
       }
       return null;
+   }
+
+   @Override
+   public String toString() {
+      return getName();
+   }
+
+   @Override
+   public int compareTo(Change o) {
+      return getName().compareTo(o.getName());
    }
 }
