@@ -13,11 +13,11 @@ package org.eclipse.osee.ats.editor.widget;
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact.TransitionOption;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
-import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.TransitionOption;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -41,9 +41,9 @@ public class TaskInfoXWidget extends XLabelValueBase {
 
    private final String forStateName;
    private final IManagedForm managedForm;
-   private final TaskableStateMachineArtifact taskableArt;
+   private final AbstractTaskableArtifact taskableArt;
 
-   public TaskInfoXWidget(IManagedForm managedForm, final TaskableStateMachineArtifact taskableArt, final String forStateName, Composite composite, int horizontalSpan) {
+   public TaskInfoXWidget(IManagedForm managedForm, final AbstractTaskableArtifact taskableArt, final String forStateName, Composite composite, int horizontalSpan) {
       super("\"" + forStateName + "\" State Tasks");
       this.managedForm = managedForm;
       this.taskableArt = taskableArt;
@@ -70,7 +70,7 @@ public class TaskInfoXWidget extends XLabelValueBase {
       }
       try {
          if (taskableArt.getTaskArtifacts(forStateName).size() > 0) {
-            setValueText(taskableArt.getStatus(forStateName));
+            setValueText(getStatus(taskableArt, forStateName));
          } else {
             setValueText("No Tasks Created");
          }
@@ -88,6 +88,21 @@ public class TaskInfoXWidget extends XLabelValueBase {
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
+   }
+
+   private String getStatus(AbstractTaskableArtifact taskableArt, String stateName) throws OseeCoreException {
+      int completed = 0, cancelled = 0, inWork = 0;
+      for (TaskArtifact taskArt : taskableArt.getTaskArtifacts(stateName)) {
+         if (taskArt.isCompleted()) {
+            completed++;
+         } else if (taskArt.isCancelled()) {
+            cancelled++;
+         } else {
+            inWork++;
+         }
+      }
+      return String.format("Total: %d - InWork: %d - Completed: %d - Cancelled: %d",
+         taskableArt.getTaskArtifacts(stateName).size(), inWork, completed, cancelled);
    }
 
    public void addAdminRightClickOption() {

@@ -6,5 +6,5 @@
 package org.eclipse.osee.ats.access;
 
 public interface AtsAccessContextIdResolver {
-
+   // interface
 }

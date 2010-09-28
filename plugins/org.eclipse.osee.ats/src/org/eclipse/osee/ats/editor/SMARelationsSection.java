@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -63,7 +63,7 @@ public class SMARelationsSection extends RelationsFormSection {
 
    @Override
    protected void addDragAndDrop(Control dropArea) {
-      new SMADragAndDrop(dropArea, (StateMachineArtifact) getEditorInput().getArtifact(), SMAEditor.EDITOR_ID);
+      new SMADragAndDrop(dropArea, (AbstractWorkflowArtifact) getEditorInput().getArtifact(), SMAEditor.EDITOR_ID);
    }
 
    private static ViewerFilter userRelationsFilter = new ViewerFilter() {

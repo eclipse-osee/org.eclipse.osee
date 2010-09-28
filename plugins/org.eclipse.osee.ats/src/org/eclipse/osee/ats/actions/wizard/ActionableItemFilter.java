@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.actions.wizard;
 
+import java.util.Locale;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
@@ -25,6 +26,7 @@ public class ActionableItemFilter extends ViewerFilter {
    private final OSEEFilteredTree treeViewer;
 
    public ActionableItemFilter(OSEEFilteredTree treeViewer) {
+      super();
       this.treeViewer = treeViewer;
    }
 
@@ -38,7 +40,7 @@ public class ActionableItemFilter extends ViewerFilter {
 
    private boolean checkItemAndChildren(ActionableItemArtifact item) {
       try {
-         boolean show = item.getName().toLowerCase().contains(contains.toLowerCase());
+         boolean show = item.getName().toLowerCase().contains(contains.toLowerCase(Locale.US));
          if (show) {
             return true;
          }
@@ -59,7 +61,7 @@ public class ActionableItemFilter extends ViewerFilter {
     */
    public void setContains(String contains) {
       this.contains = contains;
-      if (contains.equals("")) {
+      if (contains.isEmpty()) {
          treeViewer.getViewer().collapseAll();
       } else {
          treeViewer.getViewer().expandAll();

@@ -27,12 +27,12 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.actions.NewAction;
 import org.eclipse.osee.ats.actions.OpenNewAtsWorldEditorAction;
 import org.eclipse.osee.ats.actions.OpenNewAtsWorldEditorSelectedAction;
+import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
-import org.eclipse.osee.ats.artifact.GoalArtifact;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
-import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.GoalManager;
 import org.eclipse.osee.ats.util.SMAMetrics;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
@@ -450,8 +450,8 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
                for (Artifact art : artifacts) {
                   if (art instanceof ActionArtifact) {
                      arts.add(art);
-                  } else if (art instanceof StateMachineArtifact) {
-                     Artifact parentArt = ((StateMachineArtifact) art).getParentActionArtifact();
+                  } else if (art instanceof AbstractWorkflowArtifact) {
+                     Artifact parentArt = ((AbstractWorkflowArtifact) art).getParentActionArtifact();
                      if (parentArt != null) {
                         arts.add(parentArt);
                      }
@@ -479,7 +479,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
          protected IStatus run(IProgressMonitor monitor) {
             try {
                final Set<Artifact> goals = new HashSet<Artifact>();
-               GoalArtifact.getGoals(artifacts, goals, true);
+               GoalManager.getGoals(artifacts, goals, true);
                Displays.ensureInDisplayThread(new Runnable() {
                   @Override
                   public void run() {
@@ -505,8 +505,8 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
                for (Artifact art : artifacts) {
                   if (art instanceof ActionArtifact) {
                      arts.addAll(((ActionArtifact) art).getTeamWorkFlowArtifacts());
-                  } else if (art instanceof StateMachineArtifact) {
-                     Artifact parentArt = ((StateMachineArtifact) art).getParentTeamWorkflow();
+                  } else if (art instanceof AbstractWorkflowArtifact) {
+                     Artifact parentArt = ((AbstractWorkflowArtifact) art).getParentTeamWorkflow();
                      if (parentArt != null) {
                         arts.add(parentArt);
                      }
@@ -539,8 +539,8 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
                      for (TeamWorkFlowArtifact team : ((ActionArtifact) art).getTeamWorkFlowArtifacts()) {
                         arts.addAll(team.getTaskArtifacts());
                      }
-                  } else if (art instanceof TaskableStateMachineArtifact) {
-                     arts.addAll(((TaskableStateMachineArtifact) art).getTaskArtifacts());
+                  } else if (art instanceof AbstractTaskableArtifact) {
+                     arts.addAll(((AbstractTaskableArtifact) art).getTaskArtifacts());
                   }
                }
                Displays.ensureInDisplayThread(new Runnable() {

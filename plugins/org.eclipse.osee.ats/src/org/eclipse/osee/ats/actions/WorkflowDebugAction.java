@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.actions;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
@@ -32,9 +32,9 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
  */
 public class WorkflowDebugAction extends Action {
 
-   private final StateMachineArtifact sma;
+   private final AbstractWorkflowArtifact sma;
 
-   public WorkflowDebugAction(StateMachineArtifact sma) {
+   public WorkflowDebugAction(AbstractWorkflowArtifact sma) {
       super("Show Workflow Debug Report");
       this.sma = sma;
       setToolTipText("Show workflow definition and all page, widgets and rules");

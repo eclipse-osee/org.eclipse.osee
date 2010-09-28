@@ -11,7 +11,7 @@
 
 package org.eclipse.osee.ats.artifact;
 
-import org.eclipse.osee.ats.artifact.StateMachineArtifact.TransitionOption;
+import org.eclipse.osee.ats.util.TransitionOption;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -23,7 +23,11 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
  * 
  * @author Donald G. Dunne
  */
-public class DecisionReviewWorkflowManager {
+public final class DecisionReviewWorkflowManager {
+
+   private DecisionReviewWorkflowManager() {
+      // private constructor
+   }
 
    /**
     * Quickly transition to a state with minimal metrics and data entered. Should only be used for automated
@@ -36,24 +40,16 @@ public class DecisionReviewWorkflowManager {
       // If in Prepare state, set data and transition to Decision
       if (reviewArt.getStateMgr().getCurrentStateName().equals(
          DecisionReviewArtifact.DecisionReviewState.Prepare.name())) {
-         result = setPrepareStateData(reviewArt, 100, 3, .2);
-
+         result = setPrepareStateData(popup, reviewArt, 100, 3, .2);
          if (result.isFalse()) {
-            if (popup) {
-               result.popup();
-            }
             return result;
          }
          result =
-            reviewArt.transition(DecisionReviewArtifact.DecisionReviewState.Decision.name(),
-               (user != null ? user : reviewArt.getStateMgr().getAssignees().iterator().next()), transaction,
-               TransitionOption.None);
-      }
-      if (result.isFalse()) {
-         if (popup) {
-            result.popup();
+            transitionToState(popup, DecisionReviewArtifact.DecisionReviewState.Decision.name(), reviewArt, user,
+               transaction);
+         if (result.isFalse()) {
+            return result;
          }
-         return result;
       }
       if (toState == DecisionReviewArtifact.DecisionReviewState.Decision) {
          return Result.TrueResult;
@@ -62,41 +58,51 @@ public class DecisionReviewWorkflowManager {
       // If desired to transition to follow-up, then decision is false
       boolean decision = toState != DecisionReviewArtifact.DecisionReviewState.Followup;
 
-      result = setDecisionStateData(reviewArt, decision, 100, .2);
+      result = setDecisionStateData(popup, reviewArt, decision, 100, .2);
       if (result.isFalse()) {
-         if (popup) {
-            result.popup();
-         }
          return result;
       }
 
-      result =
-         reviewArt.transition(toState.name(),
-            (user != null ? user : reviewArt.getStateMgr().getAssignees().iterator().next()), transaction,
-            TransitionOption.None);
+      result = transitionToState(popup, toState.name(), reviewArt, user, transaction);
       if (result.isFalse()) {
-         if (popup) {
-            result.popup();
-         }
          return result;
       }
       return Result.TrueResult;
    }
 
-   public static Result setPrepareStateData(DecisionReviewArtifact reviewArt, int statePercentComplete, double estimateHours, double stateHoursSpent) throws OseeCoreException {
+   public static Result setPrepareStateData(boolean popup, DecisionReviewArtifact reviewArt, int statePercentComplete, double estimateHours, double stateHoursSpent) throws OseeCoreException {
       if (!reviewArt.getStateMgr().getCurrentStateName().equals(
          DecisionReviewArtifact.DecisionReviewState.Prepare.name())) {
-         return new Result("Action not in Prepare state");
+         Result result = new Result("Action not in Prepare state");
+         if (result.isFalse() && popup) {
+            result.popup();
+            return result;
+         }
       }
       reviewArt.setSoleAttributeValue(AtsAttributeTypes.EstimatedHours, estimateHours);
       reviewArt.getStateMgr().updateMetrics(stateHoursSpent, statePercentComplete, true);
       return Result.TrueResult;
    }
 
-   public static Result setDecisionStateData(DecisionReviewArtifact reviewArt, boolean decision, int statePercentComplete, double stateHoursSpent) throws OseeCoreException {
+   public static Result transitionToState(boolean popup, String toState, DecisionReviewArtifact reviewArt, User user, SkynetTransaction transaction) throws OseeCoreException {
+      Result result =
+         reviewArt.transition(toState,
+            (user == null ? reviewArt.getStateMgr().getAssignees().iterator().next() : user), transaction,
+            TransitionOption.None);
+      if (result.isFalse() && popup) {
+         result.popup();
+      }
+      return result;
+   }
+
+   public static Result setDecisionStateData(boolean popup, DecisionReviewArtifact reviewArt, boolean decision, int statePercentComplete, double stateHoursSpent) throws OseeCoreException {
       if (!reviewArt.getStateMgr().getCurrentStateName().equals(
          DecisionReviewArtifact.DecisionReviewState.Decision.name())) {
-         return new Result("Action not in Decision state");
+         Result result = new Result("Action not in Decision state");
+         if (result.isFalse() && popup) {
+            result.popup();
+            return result;
+         }
       }
       reviewArt.setSoleAttributeValue(AtsAttributeTypes.Decision, decision ? "Yes" : "No");
       reviewArt.getStateMgr().updateMetrics(stateHoursSpent, statePercentComplete, true);

@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.IContentProvider;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -121,8 +121,8 @@ public class WorldXViewerEventManager {
                if (artifact instanceof IWorldViewArtifact) {
                   worldViewer.refresh(artifact);
                   // If parent is loaded and child changed, refresh parent
-                  if (artifact instanceof StateMachineArtifact) {
-                     StateMachineArtifact smaArt = (StateMachineArtifact) artifact;
+                  if (artifact instanceof AbstractWorkflowArtifact) {
+                     AbstractWorkflowArtifact smaArt = (AbstractWorkflowArtifact) artifact;
                      Artifact smaParent = smaArt.getParentAtsArtifact();
                      if (smaParent instanceof IWorldViewArtifact) {
                         worldViewer.refresh(smaParent);

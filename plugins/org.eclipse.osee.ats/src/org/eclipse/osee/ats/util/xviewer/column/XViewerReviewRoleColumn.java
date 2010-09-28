@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.util.xviewer.column;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.util.XViewerException;
-import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
+import org.eclipse.osee.ats.artifact.AbstractReviewArtifact;
 import org.eclipse.osee.ats.util.widgets.role.UserRole;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -49,8 +49,8 @@ public class XViewerReviewRoleColumn extends XViewerValueColumn {
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) throws XViewerException {
       try {
-         if (element instanceof ReviewSMArtifact) {
-            return getRolesStr((ReviewSMArtifact) element, user);
+         if (element instanceof AbstractReviewArtifact) {
+            return getRolesStr((AbstractReviewArtifact) element, user);
          }
          return "";
       } catch (OseeCoreException ex) {
@@ -58,7 +58,7 @@ public class XViewerReviewRoleColumn extends XViewerValueColumn {
       }
    }
 
-   private static String getRolesStr(ReviewSMArtifact reviewArt, User user) throws OseeCoreException {
+   private static String getRolesStr(AbstractReviewArtifact reviewArt, User user) throws OseeCoreException {
       StringBuilder builder = new StringBuilder();
       for (UserRole role : reviewArt.getUserRoleManager().getUserRoles()) {
          if (role.getUser().equals(user)) {

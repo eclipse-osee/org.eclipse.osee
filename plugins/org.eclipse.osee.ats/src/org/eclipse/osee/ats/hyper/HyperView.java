@@ -38,7 +38,7 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsOpenOption;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -822,7 +822,7 @@ public class HyperView extends ViewPart implements IPartListener {
    }
 
    public static void openActionEditor(Artifact artifact) {
-      if (artifact instanceof StateMachineArtifact) {
+      if (artifact instanceof AbstractWorkflowArtifact) {
          AtsUtil.openATSAction(artifact, AtsOpenOption.OpenOneOrPopupSelect);
       }
    }
@@ -874,8 +874,8 @@ public class HyperView extends ViewPart implements IPartListener {
                   dialogText.append("\n\n Are you sure you want to delete this artifact and its default-hierarchy children?");
                   if (MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
                      dialogTitle, dialogText.toString())) {
-                     if (art instanceof StateMachineArtifact) {
-                        SMAEditor.close(Collections.singleton((StateMachineArtifact) art), false);
+                     if (art instanceof AbstractWorkflowArtifact) {
+                        SMAEditor.close(Collections.singleton((AbstractWorkflowArtifact) art), false);
                      }
                      try {
                         art.deleteAndPersist();
@@ -891,7 +891,7 @@ public class HyperView extends ViewPart implements IPartListener {
 
          MenuItem previewItem = new MenuItem(popupMenu, SWT.CASCADE);
          previewItem.setText("Open in ATS");
-         previewItem.setEnabled(fHvi instanceof ArtifactHyperItem && ((ArtifactHyperItem) fHvi).getArtifact() instanceof StateMachineArtifact || fHvi instanceof ActionHyperItem && ((ActionHyperItem) fHvi).getArtifact() instanceof StateMachineArtifact);
+         previewItem.setEnabled(fHvi instanceof ArtifactHyperItem && ((ArtifactHyperItem) fHvi).getArtifact() instanceof AbstractWorkflowArtifact || fHvi instanceof ActionHyperItem && ((ActionHyperItem) fHvi).getArtifact() instanceof AbstractWorkflowArtifact);
          previewItem.addSelectionListener(new SelectionAdapter() {
 
             @Override

@@ -29,7 +29,7 @@ import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.goal.GoalXViewerFactory;
 import org.eclipse.osee.ats.goal.RemoveFromGoalAction;
 import org.eclipse.osee.ats.goal.SetGoalOrderAction;
@@ -394,7 +394,7 @@ public class SMAGoalMembersSection extends SectionPart implements ISelectedAtsAr
    public Set<Artifact> getSelectedSMAArtifacts() {
       Set<Artifact> artifacts = new HashSet<Artifact>();
       for (Artifact art : worldComposite.getSelectedArtifacts()) {
-         if (art instanceof StateMachineArtifact) {
+         if (art instanceof AbstractWorkflowArtifact) {
             artifacts.add(art);
          }
       }

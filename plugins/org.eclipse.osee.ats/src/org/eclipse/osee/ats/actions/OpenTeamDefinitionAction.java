@@ -15,7 +15,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsOpenOption;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -28,9 +28,10 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
  */
 public class OpenTeamDefinitionAction extends Action {
 
-   private final StateMachineArtifact sma;
+   private final AbstractWorkflowArtifact sma;
 
-   public OpenTeamDefinitionAction(StateMachineArtifact sma) {
+   public OpenTeamDefinitionAction(AbstractWorkflowArtifact sma) {
+      super();
       this.sma = sma;
       setText("Open Team Definition");
       setToolTipText(getText());

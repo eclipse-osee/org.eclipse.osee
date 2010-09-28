@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.actions;
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -27,9 +27,10 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
  */
 public class OpenVersionArtifactAction extends Action {
 
-   private final StateMachineArtifact sma;
+   private final AbstractWorkflowArtifact sma;
 
-   public OpenVersionArtifactAction(StateMachineArtifact sma) {
+   public OpenVersionArtifactAction(AbstractWorkflowArtifact sma) {
+      super();
       this.sma = sma;
       setText("Open Targeted for Version");
       setToolTipText(getText());

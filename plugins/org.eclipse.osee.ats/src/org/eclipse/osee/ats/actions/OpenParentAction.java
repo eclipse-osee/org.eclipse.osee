@@ -15,7 +15,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsOpenOption;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -27,9 +27,10 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
  */
 public class OpenParentAction extends Action {
 
-   private final StateMachineArtifact sma;
+   private final AbstractWorkflowArtifact sma;
 
-   public OpenParentAction(StateMachineArtifact sma) {
+   public OpenParentAction(AbstractWorkflowArtifact sma) {
+      super();
       this.sma = sma;
       setText("Open Parent");
       setToolTipText(getText());

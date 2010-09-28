@@ -16,8 +16,7 @@ import java.util.List;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.artifact.ISubscribableArtifact;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.SubscribeManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -34,6 +33,7 @@ public class SubscribedAction extends Action {
    private final ISelectedAtsArtifacts selectedAtsArtifacts;
 
    public SubscribedAction(ISelectedAtsArtifacts selectedAtsArtifacts) {
+      super();
       this.selectedAtsArtifacts = selectedAtsArtifacts;
       updateName();
    }
@@ -43,7 +43,7 @@ public class SubscribedAction extends Action {
       try {
          if (getSelectedSubscribableArts().size() == 1) {
             title =
-               getSelectedSubscribableArts().iterator().next().amISubscribed() ? "Remove Subscribed" : "Add as Subscribed";
+               SubscribeManager.amISubscribed(getSelectedSubscribableArts().iterator().next()) ? "Remove Subscribed" : "Add as Subscribed";
          } else {
             title = "Toggle Subscribed";
          }
@@ -54,11 +54,11 @@ public class SubscribedAction extends Action {
       setToolTipText(title);
    }
 
-   public Collection<ISubscribableArtifact> getSelectedSubscribableArts() throws OseeCoreException {
-      List<ISubscribableArtifact> favoritableArts = new ArrayList<ISubscribableArtifact>();
+   public Collection<AbstractWorkflowArtifact> getSelectedSubscribableArts() throws OseeCoreException {
+      List<AbstractWorkflowArtifact> favoritableArts = new ArrayList<AbstractWorkflowArtifact>();
       for (Artifact art : selectedAtsArtifacts.getSelectedSMAArtifacts()) {
-         if (art instanceof ISubscribableArtifact) {
-            favoritableArts.add((ISubscribableArtifact) art);
+         if (art instanceof AbstractWorkflowArtifact) {
+            favoritableArts.add((AbstractWorkflowArtifact) art);
          }
       }
       return favoritableArts;
@@ -67,9 +67,7 @@ public class SubscribedAction extends Action {
    @Override
    public void run() {
       try {
-         for (ISubscribableArtifact sma : getSelectedSubscribableArts()) {
-            new SubscribeManager((StateMachineArtifact) sma).toggleSubscribe();
-         }
+         new SubscribeManager(getSelectedSubscribableArts()).toggleSubscribe();
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }

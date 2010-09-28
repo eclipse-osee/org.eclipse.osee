@@ -109,15 +109,15 @@ public class NewActionPage1 extends WizardPage {
                getContainer().updateButtons();
             }
          });
-         GridData gd = new GridData(GridData.FILL_BOTH);
-         gd.heightHint = 400;
-         treeViewer.setLayoutData(gd);
+         GridData gridData1 = new GridData(GridData.FILL_BOTH);
+         gridData1.heightHint = 400;
+         treeViewer.setLayoutData(gridData1);
 
          new Label(aiComp, SWT.NONE).setText("Description of highlighted Actionable Item (if any):");
          descriptionLabel = new Text(aiComp, SWT.BORDER | SWT.WRAP);
-         gd = new GridData(GridData.FILL_BOTH);
-         gd.heightHint = 15;
-         descriptionLabel.setLayoutData(gd);
+         gridData1 = new GridData(GridData.FILL_BOTH);
+         gridData1.heightHint = 15;
+         descriptionLabel.setLayoutData(gridData1);
          descriptionLabel.setEnabled(false);
 
          treeViewer.getViewer().addSelectionChangedListener(new SelectionChangedListener());

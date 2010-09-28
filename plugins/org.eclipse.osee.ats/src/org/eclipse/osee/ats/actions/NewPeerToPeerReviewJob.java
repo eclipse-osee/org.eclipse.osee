@@ -30,7 +30,6 @@ public class NewPeerToPeerReviewJob extends Job {
 
    private final TeamWorkFlowArtifact teamParent;
    private final String againstState;
-   private PeerToPeerReviewArtifact peerToPeerReviewArtifact;
    private final String reviewTitle;
 
    public NewPeerToPeerReviewJob(TeamWorkFlowArtifact teamParent, String reviewTitle, String againstState) {
@@ -44,12 +43,12 @@ public class NewPeerToPeerReviewJob extends Job {
    public IStatus run(final IProgressMonitor monitor) {
       try {
          SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "New Peer To Peer Review");
-         peerToPeerReviewArtifact =
+         PeerToPeerReviewArtifact peerArt =
             ReviewManager.createNewPeerToPeerReview(teamParent, reviewTitle, againstState, transaction);
-         peerToPeerReviewArtifact.persist(transaction);
+         peerArt.persist(transaction);
          transaction.execute();
 
-         AtsUtil.openATSAction(peerToPeerReviewArtifact, AtsOpenOption.OpenOneOrPopupSelect);
+         AtsUtil.openATSAction(peerArt, AtsOpenOption.OpenOneOrPopupSelect);
       } catch (Exception ex) {
          monitor.done();
          return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, -1, "Error creating PeerToPeer Review", ex);

@@ -15,7 +15,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -33,9 +33,10 @@ import org.eclipse.swt.dnd.Transfer;
 public class CopyActionDetailsAction extends Action {
 
    private Clipboard clipboard;
-   private final StateMachineArtifact sma;
+   private final AbstractWorkflowArtifact sma;
 
-   public CopyActionDetailsAction(StateMachineArtifact sma) {
+   public CopyActionDetailsAction(AbstractWorkflowArtifact sma) {
+      super();
       this.sma = sma;
       String title = "Copy";
       title = "Copy " + sma.getArtifactTypeName() + " details to clipboard";

@@ -84,23 +84,23 @@ public class NewActionPage3 extends WizardPage {
    public void createPage(Composite comp) {
       try {
          if (page == null) {
-            StringBuffer sb = new StringBuffer();
-            sb.append("<WorkPage>");
+            StringBuffer stringBuffer = new StringBuffer(500);
+            stringBuffer.append("<WorkPage>");
             // sb.append("<XWidget displayName=\"Description\" height=\"80\" required=\"true\"
             // xwidgetType=\"XText\" fill=\"Vertically\" toolTip=\""
             // + ATSAttributes.DESCRIPTION_ATTRIBUTE.getDescription() + "\"/>");
             for (IAtsWizardItem item : wizardExtensionItems) {
                try {
                   if (item.hasWizardXWidgetExtensions(wizard.getSelectedActionableItemArtifacts())) {
-                     item.getWizardXWidgetExtensions(wizard.getSelectedActionableItemArtifacts(), sb);
+                     item.getWizardXWidgetExtensions(wizard.getSelectedActionableItemArtifacts(), stringBuffer);
                   }
                } catch (Exception ex) {
                   OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                }
             }
-            sb.append("</WorkPage>");
+            stringBuffer.append("</WorkPage>");
 
-            page = new WorkPage(sb.toString(), ATSXWidgetOptionResolver.getInstance());
+            page = new WorkPage(stringBuffer.toString(), ATSXWidgetOptionResolver.getInstance());
             page.createBody(null, comp, null, xModListener, true);
 
             comp.layout();
@@ -153,7 +153,7 @@ public class NewActionPage3 extends WizardPage {
    }
 
    private static void getWizardXWidgetExtensions() {
-      if (wizardExtensionItems.size() > 0) {
+      if (wizardExtensionItems.isEmpty()) {
          return;
       }
 
@@ -195,7 +195,7 @@ public class NewActionPage3 extends WizardPage {
                return true;
             }
          } catch (Exception ex) {
-            // DO NOTHING
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          }
       }
       return false;
@@ -212,7 +212,7 @@ public class NewActionPage3 extends WizardPage {
                }
             }
          } catch (Exception ex) {
-            // DO NOTHING
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          }
       }
       return Result.TrueResult;

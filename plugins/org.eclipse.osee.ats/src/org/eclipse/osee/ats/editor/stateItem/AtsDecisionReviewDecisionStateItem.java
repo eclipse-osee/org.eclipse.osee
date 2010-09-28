@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.util.widgets.DecisionOption;
 import org.eclipse.osee.ats.util.widgets.XDecisionOptions;
@@ -45,14 +45,14 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
       if (xWidget == null) {
          throw new OseeStateException("Can't retrieve decision review combo widget to set.");
       }
-      if (!(art instanceof StateMachineArtifact)) {
+      if (!(art instanceof AbstractWorkflowArtifact)) {
          throw new OseeCoreException(
             "AtsDecisionReviewDecisionStateItem.xWidgetCreating expected a StateMachineArtifact");
       }
       if (xWidget.getLabel().equals(AtsAttributeTypes.Decision.getUnqualifiedName())) {
          XComboDam decisionComboDam = (XComboDam) xWidget;
          List<String> options = new ArrayList<String>();
-         XDecisionOptions xDecOptions = new XDecisionOptions((StateMachineArtifact) art);
+         XDecisionOptions xDecOptions = new XDecisionOptions((AbstractWorkflowArtifact) art);
          for (DecisionOption opt : xDecOptions.getDecisionOptions()) {
             options.add(opt.getName());
          }

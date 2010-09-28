@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -45,7 +45,7 @@ public class TaskOptionStatusDialog extends SMAStatusDialog {
    private static String OPTION_MESSAGE =
       "Select resolution, enter percent complete and number of hours you spent since last status.";
 
-   public TaskOptionStatusDialog(Shell parentShell, String dialogTitle, String dialogMessage, boolean showPercent, List<TaskResOptionDefinition> options, Collection<? extends StateMachineArtifact> tasks) {
+   public TaskOptionStatusDialog(Shell parentShell, String dialogTitle, String dialogMessage, boolean showPercent, List<TaskResOptionDefinition> options, Collection<? extends AbstractWorkflowArtifact> tasks) {
       super(parentShell, dialogTitle, options == null ? MESSAGE : OPTION_MESSAGE, showPercent, tasks);
       this.options = options;
       if (options != null) {

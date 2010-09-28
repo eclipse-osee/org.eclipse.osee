@@ -16,9 +16,10 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
-import org.eclipse.osee.ats.artifact.ReviewSMArtifact.ReviewBlockType;
+import org.eclipse.osee.ats.artifact.AbstractReviewArtifact;
+import org.eclipse.osee.ats.artifact.AbstractReviewArtifact.ReviewBlockType;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.editor.stateItem.AtsStateItemManager;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
@@ -65,7 +66,7 @@ public class AtsBranchCommitJob extends Job {
          // Confirm that all blocking reviews are completed
          // Loop through this state's blocking reviews to confirm complete
          if (teamArt.isTeamWorkflow()) {
-            for (ReviewSMArtifact reviewArt : ReviewManager.getReviewsFromCurrentState(teamArt)) {
+            for (AbstractReviewArtifact reviewArt : ReviewManager.getReviewsFromCurrentState(teamArt)) {
                if (reviewArt.getReviewBlockType() == ReviewBlockType.Commit && !reviewArt.isCancelledOrCompleted()) {
                   return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID,
                      "Blocking Review must be completed before commit.");
@@ -76,7 +77,7 @@ public class AtsBranchCommitJob extends Job {
          if (!overrideStateValidation) {
             adminOverride = false;
             // Check extension points for valid commit
-            for (IAtsStateItem item : teamArt.getStateItems().getStateItems(teamArt.getWorkPageDefinition().getId())) {
+            for (IAtsStateItem item : AtsStateItemManager.getStateItems(teamArt.getWorkPageDefinition().getId())) {
                final Result tempResult = item.committing(teamArt);
                if (tempResult.isFalse()) {
                   // Allow Admin to override state validation

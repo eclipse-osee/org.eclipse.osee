@@ -18,16 +18,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.DefaultTeamState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -167,7 +167,7 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
 
       Set<Artifact> resultSet = new HashSet<Artifact>();
       for (Artifact art : artifacts) {
-         StateMachineArtifact sma = (StateMachineArtifact) art;
+         AbstractWorkflowArtifact sma = (AbstractWorkflowArtifact) art;
          // don't include if userArt specified and userArt not assignee
          if (userArt != null && !sma.getStateMgr().getAssignees().contains(userArt)) {
             continue;

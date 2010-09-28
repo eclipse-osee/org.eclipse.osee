@@ -29,7 +29,7 @@ public class TaskAddAction extends Action {
    }
 
    public static interface ITaskAddActionHandler {
-      public void taskAddActionHandler();
+      void taskAddActionHandler();
    }
 
    @Override

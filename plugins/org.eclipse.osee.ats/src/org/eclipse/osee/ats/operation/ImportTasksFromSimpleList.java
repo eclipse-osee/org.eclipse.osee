@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.AtsPlugin;
@@ -45,7 +45,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
    public static String ASSIGNEES = "Assignees";
    public static String TASK_IMPORT_TITLES = "Task Import Titles";
    public static String TEAM_WORKFLOW = "Team Workflow (drop here)";
-   private TaskableStateMachineArtifact taskableStateMachineArtifact;
+   private AbstractTaskableArtifact taskableStateMachineArtifact;
 
    @Override
    public String getName() {
@@ -132,14 +132,14 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
    /**
     * @return the TaskableStateMachineArtifact
     */
-   public TaskableStateMachineArtifact getTaskableStateMachineArtifact() {
+   public AbstractTaskableArtifact getTaskableStateMachineArtifact() {
       return taskableStateMachineArtifact;
    }
 
    /**
     * @param defaultTeamWorkflowArtifact the defaultTeamWorkflowArtifact to set
     */
-   public void setTaskableStateMachineArtifact(TaskableStateMachineArtifact taskableStateMachineArtifact) {
+   public void setTaskableStateMachineArtifact(AbstractTaskableArtifact taskableStateMachineArtifact) {
       this.taskableStateMachineArtifact = taskableStateMachineArtifact;
    }
 

@@ -30,15 +30,16 @@ public class OpenNewAtsTaskEditorAction extends Action {
    private final IOpenNewAtsTaskEditorHandler openNewAtsTaskEditorHandler;
 
    public OpenNewAtsTaskEditorAction(IOpenNewAtsTaskEditorHandler openNewAtsTaskEditorHandler) {
+      super();
       this.openNewAtsTaskEditorHandler = openNewAtsTaskEditorHandler;
       setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.TASK));
       setToolTipText("Open New ATS Task Editor");
    }
 
    public interface IOpenNewAtsTaskEditorHandler {
-      public ITaskEditorProvider getTaskEditorProviderCopy() throws OseeCoreException;
+      ITaskEditorProvider getTaskEditorProviderCopy() throws OseeCoreException;
 
-      public CustomizeData getCustomizeDataCopy() throws OseeCoreException;
+      CustomizeData getCustomizeDataCopy() throws OseeCoreException;
    }
 
    @Override

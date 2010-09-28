@@ -18,14 +18,14 @@ import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.actions.NewDecisionReviewJob;
 import org.eclipse.osee.ats.actions.NewPeerToPeerReviewJob;
+import org.eclipse.osee.ats.artifact.AbstractReviewArtifact;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
-import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact.TransitionOption;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.Overview;
+import org.eclipse.osee.ats.util.TransitionOption;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.ats.util.widgets.dialog.StateListAndTitleDialog;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -93,7 +93,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
 
       try {
          addAdminRightClickOption();
-         Collection<ReviewSMArtifact> revArts = ReviewManager.getReviews(teamArt, forStateName);
+         Collection<AbstractReviewArtifact> revArts = ReviewManager.getReviews(teamArt, forStateName);
          if (revArts.isEmpty()) {
             setValueText("No Reviews Created");
          }
@@ -183,7 +183,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
             gd.horizontalSpan = 4;
             workComp.setLayoutData(gd);
 
-            for (ReviewSMArtifact revArt : revArts) {
+            for (AbstractReviewArtifact revArt : revArts) {
                createReviewHyperlink(workComp, managedForm, toolkit, 2, revArt, forStateName);
             }
          }
@@ -211,7 +211,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
          html.append(AHTML.addSpace(1) + AHTML.getLabelStr(AHTML.LABEL_FONT, "\"" + forStateName + "\" State Reviews"));
          html.append(AHTML.startBorderTable(100, Overview.normalColor, ""));
          html.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Review Type", "Title", "ID"}));
-         for (ReviewSMArtifact art : ReviewManager.getReviews(teamArt, forStateName)) {
+         for (AbstractReviewArtifact art : ReviewManager.getReviews(teamArt, forStateName)) {
             html.append(AHTML.addRowMultiColumnTable(new String[] {
                art.getArtifactTypeName(),
                art.getName(),
@@ -229,7 +229,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
       return ReviewInfoXWidget.toHTML(teamArt, forStateName);
    }
 
-   private void createReviewHyperlink(Composite comp, IManagedForm managedForm, XFormToolkit toolkit, final int horizontalSpan, final ReviewSMArtifact revArt, String forStateName) throws OseeCoreException {
+   private void createReviewHyperlink(Composite comp, IManagedForm managedForm, XFormToolkit toolkit, final int horizontalSpan, final AbstractReviewArtifact revArt, String forStateName) throws OseeCoreException {
 
       Composite workComp = toolkit.createContainer(comp, 1);
       workComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING));
@@ -284,7 +284,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                   try {
                      SkynetTransaction transaction =
                         new SkynetTransaction(AtsUtil.getAtsBranch(), "ATS Auto Complete Reviews");
-                     for (ReviewSMArtifact revArt : ReviewManager.getReviewsFromCurrentState(teamArt)) {
+                     for (AbstractReviewArtifact revArt : ReviewManager.getReviewsFromCurrentState(teamArt)) {
                         if (!revArt.isCancelledOrCompleted()) {
                            if (revArt.getStateMgr().isUnAssigned()) {
                               revArt.getStateMgr().setAssignee(UserManager.getUser());

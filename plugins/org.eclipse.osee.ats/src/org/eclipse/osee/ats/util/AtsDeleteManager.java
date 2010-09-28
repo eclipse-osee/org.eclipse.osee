@@ -18,9 +18,9 @@ import java.util.Map;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
-import org.eclipse.osee.ats.artifact.ATSArtifact;
+import org.eclipse.osee.ats.artifact.AbstractAtsArtifact;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -52,7 +52,7 @@ public class AtsDeleteManager {
       StringBuilder artBuilder = new StringBuilder();
 
       for (Artifact art : selectedArts) {
-         if (art instanceof ATSArtifact) {
+         if (art instanceof AbstractAtsArtifact) {
             delArts.add(art);
             if (selectedArts.size() < 30) {
                artBuilder.append(String.format("Name: %s  Type: %s\n", art.getHumanReadableId(),
@@ -89,7 +89,7 @@ public class AtsDeleteManager {
          final Set<Artifact> relatedArts = new HashSet<Artifact>(30);
          delBuilder.append(String.format("\n<b>Selected</b>:[%s][%s][%s]", deleteArt.getArtifactTypeName(),
             deleteArt.getHumanReadableId(), deleteArt.getName()) + "\n");
-         ((ATSArtifact) deleteArt).atsDelete(relatedArts, ignoredArts);
+         ((AbstractAtsArtifact) deleteArt).atsDelete(relatedArts, ignoredArts);
          for (Artifact loopArt : relatedArts) {
             if (!loopArt.equals(deleteArt)) {
                delBuilder.append(String.format(AHTML.addSpace(4) + "<b>Related</b>:[%s][%s][%s]",
@@ -98,8 +98,8 @@ public class AtsDeleteManager {
          }
          // check that if all team workflows are deleted, delete action
          for (Artifact art : allDeleteArts) {
-            if (art instanceof StateMachineArtifact) {
-               ActionArtifact actionArt = ((StateMachineArtifact) art).getParentActionArtifact();
+            if (art instanceof AbstractWorkflowArtifact) {
+               ActionArtifact actionArt = ((AbstractWorkflowArtifact) art).getParentActionArtifact();
                if (actionArt != null && !allDeleteArts.contains(actionArt) && allDeleteArts.containsAll(actionArt.getTeamWorkFlowArtifacts())) {
                   relatedArts.add(actionArt);
                   delBuilder.append(String.format(AHTML.addSpace(4) + "<b>Related</b>:[%s][%s][%s]",

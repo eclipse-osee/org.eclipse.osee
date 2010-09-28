@@ -45,32 +45,25 @@ public class AtsArtifactFactory extends ArtifactFactory {
    public Artifact getArtifactInstance(String guid, String humandReadableId, Branch branch, ArtifactType artifactType) throws OseeCoreException {
       if (artifactType.equals(AtsArtifactTypes.Action)) {
          return new ActionArtifact(this, guid, humandReadableId, branch, artifactType);
-      }
-      if (artifactType.equals(AtsArtifactTypes.Task)) {
+      } else if (artifactType.equals(AtsArtifactTypes.Task)) {
          return new TaskArtifact(this, guid, humandReadableId, branch, artifactType);
-      }
-      if (artifactType.equals(AtsArtifactTypes.TeamWorkflow)) {
+      } else if (artifactType.equals(AtsArtifactTypes.TeamWorkflow)) {
          return new TeamWorkFlowArtifact(this, guid, humandReadableId, branch, artifactType);
-      }
-      if (artifactType.equals(AtsArtifactTypes.TeamDefinition)) {
+      } else if (artifactType.equals(AtsArtifactTypes.TeamDefinition)) {
          return new TeamDefinitionArtifact(this, guid, humandReadableId, branch, artifactType);
-      }
-      if (artifactType.equals(AtsArtifactTypes.Version)) {
+      } else if (artifactType.equals(AtsArtifactTypes.Version)) {
          return new VersionArtifact(this, guid, humandReadableId, branch, artifactType);
-      }
-      if (artifactType.equals(AtsArtifactTypes.ActionableItem)) {
+      } else if (artifactType.equals(AtsArtifactTypes.ActionableItem)) {
          return new ActionableItemArtifact(this, guid, humandReadableId, branch, artifactType);
-      }
-      if (artifactType.equals(AtsArtifactTypes.DecisionReview)) {
+      } else if (artifactType.equals(AtsArtifactTypes.DecisionReview)) {
          return new DecisionReviewArtifact(this, guid, humandReadableId, branch, artifactType);
-      }
-      if (artifactType.equals(AtsArtifactTypes.PeerToPeerReview)) {
+      } else if (artifactType.equals(AtsArtifactTypes.PeerToPeerReview)) {
          return new PeerToPeerReviewArtifact(this, guid, humandReadableId, branch, artifactType);
-      }
-      if (artifactType.equals(AtsArtifactTypes.Goal)) {
+      } else if (artifactType.equals(AtsArtifactTypes.Goal)) {
          return new GoalArtifact(this, guid, humandReadableId, branch, artifactType);
+      } else {
+         throw new OseeArgumentException("did not recognize the artifact type [%s]", artifactType);
       }
-      throw new OseeArgumentException("did not recognize the artifact type [%s]", artifactType);
    }
 
    @Override

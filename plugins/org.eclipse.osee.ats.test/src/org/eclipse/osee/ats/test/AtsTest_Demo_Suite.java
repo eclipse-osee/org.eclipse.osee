@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.test;
 
 import static org.junit.Assert.assertTrue;
+import org.eclipse.osee.ats.test.artifact.LogItemTest;
 import org.eclipse.osee.ats.test.config.AtsBranchConfigurationTest;
 import org.eclipse.osee.ats.test.editor.SMAPrintTest;
 import org.eclipse.osee.ats.test.health.AtsValidateAtsDatabaseTest;
@@ -30,6 +31,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+   LogItemTest.class,
    RendererManagerTest.class,
    SMAPrintTest.class,
    AtsImageTest.class,

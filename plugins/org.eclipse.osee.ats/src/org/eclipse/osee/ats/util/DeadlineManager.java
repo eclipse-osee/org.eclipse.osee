@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.util;
 
 import java.util.Date;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -24,9 +24,9 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
  */
 public class DeadlineManager {
 
-   private final StateMachineArtifact sma;
+   private final AbstractWorkflowArtifact sma;
 
-   public DeadlineManager(StateMachineArtifact sma) {
+   public DeadlineManager(AbstractWorkflowArtifact sma) {
       this.sma = sma;
    }
 

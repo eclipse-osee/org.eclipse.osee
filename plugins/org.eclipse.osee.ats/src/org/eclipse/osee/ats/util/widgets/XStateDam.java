@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.util.widgets;
 
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  */
 public class XStateDam extends XStateAssigneesDam {
 
-   public XStateDam(StateMachineArtifact sma) throws OseeCoreException {
+   public XStateDam(AbstractWorkflowArtifact sma) throws OseeCoreException {
       super(sma, AtsAttributeTypes.State);
    }
 

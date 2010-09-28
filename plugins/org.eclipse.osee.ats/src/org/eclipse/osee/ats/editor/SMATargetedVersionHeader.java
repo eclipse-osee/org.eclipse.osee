@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.editor;
 
 import java.util.logging.Level;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -38,7 +38,7 @@ public class SMATargetedVersionHeader extends Composite {
    private static String TARGET_VERSION = "Target Version:";
    Label valueLabel;
 
-   public SMATargetedVersionHeader(Composite parent, int style, final StateMachineArtifact sma, XFormToolkit toolkit) {
+   public SMATargetedVersionHeader(Composite parent, int style, final AbstractWorkflowArtifact sma, XFormToolkit toolkit) {
       super(parent, style);
       setLayoutData(new GridData());
       setLayout(ALayout.getZeroMarginLayout(2, false));
@@ -89,7 +89,7 @@ public class SMATargetedVersionHeader extends Composite {
 
    }
 
-   private void updateLabel(StateMachineArtifact sma) throws OseeCoreException {
+   private void updateLabel(AbstractWorkflowArtifact sma) throws OseeCoreException {
       String value = "Not Set";
       if (sma.getTargetedForVersion() != null) {
          value = sma.getTargetedForVersion().getName();

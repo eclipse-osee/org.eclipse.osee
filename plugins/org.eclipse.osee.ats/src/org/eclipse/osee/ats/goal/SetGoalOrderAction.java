@@ -11,6 +11,7 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.GoalManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -35,7 +36,7 @@ public class SetGoalOrderAction extends Action {
    @Override
    public void run() {
       try {
-         GoalArtifact.promptChangeGoalOrder(goalArt, this.selectedAtsArtifacts.getSelectedAtsArtifacts());
+         GoalManager.promptChangeGoalOrder(goalArt, this.selectedAtsArtifacts.getSelectedAtsArtifacts());
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }

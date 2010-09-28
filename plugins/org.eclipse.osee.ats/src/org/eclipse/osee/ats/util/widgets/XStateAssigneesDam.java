@@ -15,7 +15,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XTextDam;
  */
 public abstract class XStateAssigneesDam extends XTextDam {
 
-   public XStateAssigneesDam(StateMachineArtifact sma, IAttributeType attributeType) throws OseeCoreException {
+   public XStateAssigneesDam(AbstractWorkflowArtifact sma, IAttributeType attributeType) throws OseeCoreException {
       super(attributeType.getName(), true);
       setAttributeType(sma, attributeType);
    }
@@ -42,8 +42,8 @@ public abstract class XStateAssigneesDam extends XTextDam {
    }
 
    @Override
-   public StateMachineArtifact getArtifact() throws OseeCoreException {
-      return (StateMachineArtifact) super.getArtifact();
+   public AbstractWorkflowArtifact getArtifact() throws OseeCoreException {
+      return (AbstractWorkflowArtifact) super.getArtifact();
    }
 
    public SMAState getState(String stateName, boolean create) {
@@ -89,7 +89,7 @@ public abstract class XStateAssigneesDam extends XTextDam {
    }
 
    protected void logMetrics(String stateName) throws OseeCoreException {
-      StateMachineArtifact sma = getArtifact();
+      AbstractWorkflowArtifact sma = getArtifact();
       String hoursSpent = AtsUtil.doubleToI18nString(sma.getHoursSpentSMATotal());
       XCurrentStateDam.logMetrics(sma, sma.getPercentCompleteSMATotal() + "", hoursSpent, stateName,
          UserManager.getUser(), new Date());
@@ -115,7 +115,7 @@ public abstract class XStateAssigneesDam extends XTextDam {
 
    public void setState(SMAState state) throws OseeCoreException {
       // Update attribute if it already exists
-      StateMachineArtifact sma = getArtifact();
+      AbstractWorkflowArtifact sma = getArtifact();
       try {
          Collection<Attribute<String>> attrs = sma.getAttributes(getAttributeType());
          for (Attribute<String> attr : attrs) {

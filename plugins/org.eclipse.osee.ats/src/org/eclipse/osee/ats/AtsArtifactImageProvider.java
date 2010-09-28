@@ -10,10 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats;
 
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
+import org.eclipse.osee.ats.util.FavoritesManager;
+import org.eclipse.osee.ats.util.SubscribeManager;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -44,7 +46,7 @@ public class AtsArtifactImageProvider extends ArtifactImageProvider {
       ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.Task.getName());
       ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.PeerToPeerReview.getName());
       ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.DecisionReview.getName());
-      for (IArtifactType artifactType : TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactTypes()) {
+      for (IArtifactType artifactType : TeamWorkflowExtensions.getAllTeamWorkflowArtifactTypes()) {
          ArtifactImageManager.registerOverrideImageProvider(this, artifactType.getName());
       }
    }
@@ -64,13 +66,13 @@ public class AtsArtifactImageProvider extends ArtifactImageProvider {
          }
       }
 
-      if (artifact instanceof StateMachineArtifact) {
-         StateMachineArtifact stateMachine = (StateMachineArtifact) artifact;
-         if (stateMachine.isSubscribed(UserManager.getUser())) {
+      if (artifact instanceof AbstractWorkflowArtifact) {
+         AbstractWorkflowArtifact stateMachine = (AbstractWorkflowArtifact) artifact;
+         if (SubscribeManager.isSubscribed(stateMachine, UserManager.getUser())) {
             // was 8,6
             return ArtifactImageManager.setupImage(artifact, AtsImage.SUBSCRIBED_OVERLAY, Location.BOT_RIGHT);
          }
-         if (stateMachine.isFavorite(UserManager.getUser())) {
+         if (FavoritesManager.isFavorite(stateMachine, UserManager.getUser())) {
             // was 7,0
             return ArtifactImageManager.setupImage(artifact, AtsImage.FAVORITE_OVERLAY, Location.TOP_RIGHT);
          }

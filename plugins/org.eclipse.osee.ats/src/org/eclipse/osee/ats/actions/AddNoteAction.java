@@ -20,7 +20,7 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.NoteType;
 import org.eclipse.osee.ats.actions.wizard.NewNoteWizard;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -35,9 +35,10 @@ import org.eclipse.ui.PlatformUI;
  */
 public class AddNoteAction extends Action {
 
-   private final StateMachineArtifact sma;
+   private final AbstractWorkflowArtifact sma;
 
-   public AddNoteAction(StateMachineArtifact sma) {
+   public AddNoteAction(AbstractWorkflowArtifact sma) {
+      super();
       this.sma = sma;
       setText("Add Note");
       setToolTipText(getText());

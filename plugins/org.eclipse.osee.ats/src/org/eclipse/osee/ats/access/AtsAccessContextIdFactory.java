@@ -29,22 +29,22 @@ public final class AtsAccessContextIdFactory {
       // Static Factory Class
    }
 
-   public static AccessContextId createContextId(String guid, String name) {
+   public static AccessContextId createContextId(final String guid, final String name) {
       AccessContextId context = guidToIds.get(guid);
-      if (context != null) {
+      if (context == null) {
+         context = new AtsAccessContextId(guid, name);
+         guidToIds.put(guid, context);
+      } else {
          OseeLog.log(
             AtsPlugin.class,
             Level.SEVERE,
             String.format("Duplicate AtsAccessContextIds with guid [%s] named [%s] and [%s]", guid, name,
                context.getName()));
-      } else {
-         context = new AtsAccessContextId(guid, name);
-         guidToIds.put(guid, context);
       }
       return context;
    }
 
-   public static AccessContextId getOrCreate(String guid) {
+   public static AccessContextId getOrCreate(final String guid) {
       AccessContextId context = guidToIds.get(guid);
       if (context == null) {
          context = createContextId(guid, "name unknown");
@@ -54,7 +54,7 @@ public final class AtsAccessContextIdFactory {
 
    private final static class AtsAccessContextId extends NamedIdentity implements AccessContextId {
 
-      protected AtsAccessContextId(String guid, String name) {
+      protected AtsAccessContextId(final String guid, final String name) {
          super(guid, name);
       }
 

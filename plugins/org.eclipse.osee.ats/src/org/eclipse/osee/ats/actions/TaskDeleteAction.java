@@ -29,7 +29,7 @@ public class TaskDeleteAction extends Action {
    }
 
    public static interface ITaskDeleteActionHandler {
-      public void taskDeleteActionHandler();
+      void taskDeleteActionHandler();
    }
 
    @Override

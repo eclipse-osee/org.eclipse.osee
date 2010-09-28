@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorSelected.IOpenNewAtsTask
 import org.eclipse.osee.ats.actions.TaskAddAction.ITaskAddActionHandler;
 import org.eclipse.osee.ats.actions.TaskDeleteAction.ITaskDeleteActionHandler;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
-import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.config.AtsBulkLoad;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.AtsPlugin;
@@ -213,7 +213,7 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
             MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
       if (ed.open() == 0) {
          try {
-            taskArt = ((TaskableStateMachineArtifact) iXTaskViewer.getSma()).createNewTask(ed.getEntry());
+            taskArt = ((AbstractTaskableArtifact) iXTaskViewer.getSma()).createNewTask(ed.getEntry());
             iXTaskViewer.getEditor().onDirtied();
             add(Collections.singleton(taskArt));
          } catch (Exception ex) {

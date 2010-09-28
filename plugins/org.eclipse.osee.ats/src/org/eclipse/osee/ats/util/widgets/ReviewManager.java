@@ -16,17 +16,17 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
+import org.eclipse.osee.ats.artifact.AbstractReviewArtifact;
+import org.eclipse.osee.ats.artifact.AbstractReviewArtifact.ReviewBlockType;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
-import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
-import org.eclipse.osee.ats.artifact.ReviewSMArtifact.ReviewBlockType;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact.TransitionOption;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.TransitionOption;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -62,7 +62,7 @@ public class ReviewManager {
       }
       // If validate review already created for this state, return
       if (!force && getReviewsFromCurrentState(teamArt).size() > 0) {
-         for (ReviewSMArtifact rev : getReviewsFromCurrentState(teamArt)) {
+         for (AbstractReviewArtifact rev : getReviewsFromCurrentState(teamArt)) {
             if (rev.getName().equals(VALIDATE_REVIEW_TITLE)) {
                return null;
             }
@@ -144,7 +144,7 @@ public class ReviewManager {
     */
    public static double getRemainHours(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       double hours = 0;
-      for (ReviewSMArtifact reviewArt : getReviews(teamArt)) {
+      for (AbstractReviewArtifact reviewArt : getReviews(teamArt)) {
          hours += reviewArt.getRemainHoursFromArtifact();
       }
       return hours;
@@ -159,7 +159,7 @@ public class ReviewManager {
     */
    public static double getEstimatedHours(TeamWorkFlowArtifact teamArt, String relatedToStateName) throws OseeCoreException {
       double hours = 0;
-      for (ReviewSMArtifact revArt : getReviews(teamArt, relatedToStateName)) {
+      for (AbstractReviewArtifact revArt : getReviews(teamArt, relatedToStateName)) {
          hours += revArt.getEstimatedHoursTotal();
       }
       return hours;
@@ -172,7 +172,7 @@ public class ReviewManager {
     */
    public static double getEstimatedHours(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       double hours = 0;
-      for (ReviewSMArtifact revArt : getReviews(teamArt)) {
+      for (AbstractReviewArtifact revArt : getReviews(teamArt)) {
          hours += revArt.getEstimatedHoursTotal();
       }
       return hours;
@@ -199,17 +199,17 @@ public class ReviewManager {
 
    }
 
-   public static Collection<ReviewSMArtifact> getReviews(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
-      return teamArt.getRelatedArtifacts(AtsRelationTypes.TeamWorkflowToReview_Review, ReviewSMArtifact.class);
+   public static Collection<AbstractReviewArtifact> getReviews(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
+      return teamArt.getRelatedArtifacts(AtsRelationTypes.TeamWorkflowToReview_Review, AbstractReviewArtifact.class);
    }
 
-   public static Collection<ReviewSMArtifact> getReviewsFromCurrentState(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
+   public static Collection<AbstractReviewArtifact> getReviewsFromCurrentState(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       return getReviews(teamArt, teamArt.getStateMgr().getCurrentStateName());
    }
 
-   public static Collection<ReviewSMArtifact> getReviews(TeamWorkFlowArtifact teamArt, String stateName) throws OseeCoreException {
-      Set<ReviewSMArtifact> arts = new HashSet<ReviewSMArtifact>();
-      for (ReviewSMArtifact revArt : getReviews(teamArt)) {
+   public static Collection<AbstractReviewArtifact> getReviews(TeamWorkFlowArtifact teamArt, String stateName) throws OseeCoreException {
+      Set<AbstractReviewArtifact> arts = new HashSet<AbstractReviewArtifact>();
+      for (AbstractReviewArtifact revArt : getReviews(teamArt)) {
          if (revArt.getSoleAttributeValue(AtsAttributeTypes.RelatedToState, "").equals(stateName)) {
             arts.add(revArt);
          }
@@ -232,7 +232,7 @@ public class ReviewManager {
 
    public static Result areReviewsComplete(TeamWorkFlowArtifact teamArt, boolean popup) {
       try {
-         for (ReviewSMArtifact reviewArt : getReviews(teamArt)) {
+         for (AbstractReviewArtifact reviewArt : getReviews(teamArt)) {
             if (!reviewArt.isCompleted() && reviewArt.isCancelled()) {
                return new Result("Not Complete");
             }
@@ -251,7 +251,7 @@ public class ReviewManager {
     */
    public static double getHoursSpent(TeamWorkFlowArtifact teamArt, String relatedToStateName) throws OseeCoreException {
       double spent = 0;
-      for (ReviewSMArtifact reviewArt : getReviews(teamArt, relatedToStateName)) {
+      for (AbstractReviewArtifact reviewArt : getReviews(teamArt, relatedToStateName)) {
          spent += reviewArt.getHoursSpentSMATotal();
       }
       return spent;
@@ -265,8 +265,8 @@ public class ReviewManager {
     */
    public static int getPercentComplete(TeamWorkFlowArtifact teamArt, String relatedToStateName) throws OseeCoreException {
       int spent = 0;
-      Collection<ReviewSMArtifact> reviewArts = getReviews(teamArt, relatedToStateName);
-      for (ReviewSMArtifact reviewArt : reviewArts) {
+      Collection<AbstractReviewArtifact> reviewArts = getReviews(teamArt, relatedToStateName);
+      for (AbstractReviewArtifact reviewArt : reviewArts) {
          spent += reviewArt.getPercentCompleteSMATotal();
       }
       if (spent == 0) {

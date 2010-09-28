@@ -15,11 +15,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.artifact.ATSArtifact;
+import org.eclipse.osee.ats.artifact.AbstractAtsArtifact;
 import org.eclipse.osee.ats.artifact.ATSLog;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.artifact.LogItem;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
@@ -134,7 +134,7 @@ public class Overview {
       }
    }
 
-   public void addHeader(StateMachineArtifact sma, PreviewStyle... styles) throws OseeCoreException {
+   public void addHeader(AbstractWorkflowArtifact sma, PreviewStyle... styles) throws OseeCoreException {
       startBorderTable(100, false, "");
       addTable(getLabelValue("Title", sma.getName()));
       this.html.append(AHTML.multiColumnTable(new String[] {
@@ -156,7 +156,7 @@ public class Overview {
          addTable(getLabelValue("Cancellation Reason", item.getMsg()));
       }
       if (sma instanceof TaskArtifact) {
-         StateMachineArtifact parentArt = ((TaskArtifact) sma).getParentSMA();
+         AbstractWorkflowArtifact parentArt = ((TaskArtifact) sma).getParentSMA();
          if (parentArt != null) {
             this.html.append(AHTML.multiColumnTable(new String[] {AHTML.getLabelStr(labelFont, "Parent Workflow: ") + parentArt.getName()}));
             this.html.append(AHTML.multiColumnTable(new String[] {AHTML.getLabelStr(labelFont, "Parent State: ") + ((TaskArtifact) sma).getStateMgr().getCurrentStateName()}));
@@ -167,7 +167,7 @@ public class Overview {
       endBorderTable();
    }
 
-   public void addFooter(StateMachineArtifact sma, PreviewStyle... styles) {
+   public void addFooter(AbstractWorkflowArtifact sma, PreviewStyle... styles) {
       this.html.append(AHTML.newline());
 
       if (PreviewStyle.contains(styles, PreviewStyle.HYPEROPEN)) {
@@ -175,7 +175,7 @@ public class Overview {
       }
    }
 
-   public void addRelationsBlock(ATSArtifact artifact) {
+   public void addRelationsBlock(AbstractAtsArtifact artifact) {
       addRelationTable("Is Superceded By", CoreRelationTypes.Supercedes_Supercedes, artifact);
       addRelationTable("Supercedes", CoreRelationTypes.Supercedes_Superceded, artifact);
       addRelationTable("Supports", CoreRelationTypes.SupportingInfo_SupportedBy, artifact);
@@ -183,8 +183,8 @@ public class Overview {
    }
 
    public void addNotes(Artifact artifact) {
-      if (artifact instanceof StateMachineArtifact) {
-         String notesHtml = ((StateMachineArtifact) artifact).getNotes().getTable(null);
+      if (artifact instanceof AbstractWorkflowArtifact) {
+         String notesHtml = ((AbstractWorkflowArtifact) artifact).getNotes().getTable(null);
          if (notesHtml.equals("")) {
             return;
          }
@@ -275,14 +275,14 @@ public class Overview {
          XResultBrowserHyperCmd.getHyperCmdStr(XResultBrowserHyperCmd.openAction, art.getGuid()), name);
    }
 
-   public void addLog(StateMachineArtifact artifact) throws OseeCoreException {
+   public void addLog(AbstractWorkflowArtifact artifact) throws OseeCoreException {
       ATSLog artifactLog = artifact.getLog();
       if (artifactLog != null && artifactLog.getLogItems().size() > 0) {
          addTable(artifact.getLog().getTable());
       }
    }
 
-   public void startStateBorderTable(StateMachineArtifact sma, SMAState state) throws OseeCoreException {
+   public void startStateBorderTable(AbstractWorkflowArtifact sma, SMAState state) throws OseeCoreException {
       String caption = state.getName();
       String assgn = Artifacts.toString("; ", state.getAssignees());
       startStateBorderTable(sma.getStateMgr().getCurrentStateName().equals(state.getName()), caption, assgn);

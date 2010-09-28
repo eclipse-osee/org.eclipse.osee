@@ -10,15 +10,23 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.notify;
 
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.AtsNotifyUsers;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.osgi.framework.Bundle;
 
 /**
@@ -28,6 +36,8 @@ public class AtsNotification {
 
    private static Set<IAtsNotification> atsNotificationItems = new HashSet<IAtsNotification>();
    private static AtsNotification instance = new AtsNotification();
+   private static Map<String, Collection<User>> preSaveStateAssignees = new HashMap<String, Collection<User>>();
+   private static Map<String, User> preSaveOriginator = new HashMap<String, User>(500);
 
    private AtsNotification() {
 
@@ -64,7 +74,46 @@ public class AtsNotification {
       return instance;
    }
 
-   public Set<IAtsNotification> getAtsNotifications() {
+   public synchronized static void notifyNewAssigneesAndReset(AbstractWorkflowArtifact workflow, boolean resetOnly) throws OseeCoreException {
+      if (preSaveStateAssignees.get(workflow.getGuid()) == null || resetOnly) {
+         preSaveStateAssignees.put(workflow.getGuid(), workflow.getStateMgr().getAssignees());
+         return;
+      }
+      Set<User> newAssignees = new HashSet<User>();
+      for (User user : workflow.getStateMgr().getAssignees()) {
+         if (!preSaveStateAssignees.get(workflow.getGuid()).contains(user)) {
+            newAssignees.add(user);
+         }
+      }
+      preSaveStateAssignees.put(workflow.getGuid(), workflow.getStateMgr().getAssignees());
+      if (newAssignees.isEmpty()) {
+         return;
+      }
+      try {
+         // These will be processed upon save
+         AtsNotifyUsers.getInstance().notify(workflow, newAssignees, AtsNotifyUsers.NotifyType.Assigned);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+   }
+
+   public static void notifyOriginatorAndReset(AbstractWorkflowArtifact workflow, boolean resetOnly) throws OseeCoreException {
+      if (preSaveOriginator.get(workflow.getGuid()) == null || resetOnly) {
+         User orig = workflow.getOriginator();
+         if (orig == null) {
+            orig = UserManager.getUser();
+         }
+         preSaveOriginator.put(workflow.getGuid(), orig);
+         return;
+      }
+      if (preSaveOriginator.get(workflow.getGuid()) != null && workflow.getOriginator() != null && !workflow.getOriginator().equals(
+         preSaveOriginator)) {
+         AtsNotifyUsers.getInstance().notify(workflow, AtsNotifyUsers.NotifyType.Originator);
+      }
+      preSaveOriginator.put(workflow.getGuid(), workflow.getOriginator());
+   }
+
+   public static Set<IAtsNotification> getAtsNotificationItems() {
       return atsNotificationItems;
    }
 

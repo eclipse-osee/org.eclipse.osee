@@ -11,16 +11,16 @@
 
 package org.eclipse.osee.ats.util;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.LogItem;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.util.widgets.SMAState;
 import org.eclipse.osee.ats.util.widgets.XCurrentStateDam;
 import org.eclipse.osee.ats.util.widgets.XStateDam;
@@ -41,9 +41,9 @@ public class StateManager {
 
    private final XCurrentStateDam currentStateDam;
    private final XStateDam stateDam;
-   private final StateMachineArtifact sma;
+   private final AbstractWorkflowArtifact sma;
 
-   public StateManager(StateMachineArtifact sma) throws OseeCoreException {
+   public StateManager(AbstractWorkflowArtifact sma) throws OseeCoreException {
       super();
       this.sma = sma;
       currentStateDam = new XCurrentStateDam(sma);
@@ -124,8 +124,12 @@ public class StateManager {
       return getPercentComplete(getCurrentStateName());
    }
 
-   public String getCurrentStateName() throws OseeCoreException {
-      return currentStateDam.getState().getName();
+   public String getCurrentStateName() {
+      try {
+         return currentStateDam.getState().getName();
+      } catch (OseeCoreException ex) {
+         return ex.getLocalizedMessage();
+      }
    }
 
    public String getAssigneesStr() throws OseeCoreException {
@@ -146,10 +150,10 @@ public class StateManager {
 
    public Collection<User> getAssignees(String stateName) throws OseeCoreException {
       SMAState state = getSMAState(stateName, false);
-      if (state != null) {
-         return state.getAssignees();
-      } else {
+      if (state == null) {
          return Collections.emptyList();
+      } else {
+         return state.getAssignees();
       }
    }
 
@@ -251,13 +255,13 @@ public class StateManager {
 
       // Set XCurrentState; If been to this state, copy state info from prev state; else create new
       SMAState previousState = stateDam.getState(toStateName, false);
-      if (previousState != null) {
+      if (previousState == null) {
+         currentStateDam.setState(new SMAState(toStateName, toAssignees));
+      } else {
          if (toAssignees.size() > 0) {
             previousState.setAssignees(toAssignees);
          }
          currentStateDam.setState(previousState);
-      } else {
-         currentStateDam.setState(new SMAState(toStateName, toAssignees));
       }
    }
 
@@ -349,6 +353,18 @@ public class StateManager {
       }
       return assigned;
 
+   }
+
+   public static Collection<User> getImplementersByState(AbstractWorkflowArtifact workflow, String stateName) throws OseeCoreException {
+      if (workflow.isCancelled()) {
+         return Arrays.asList(workflow.getLog().getCancelledLogItem().getUser());
+      }
+      Collection<User> users = new HashSet<User>(workflow.getStateMgr().getAssignees(stateName));
+      LogItem item = workflow.getLog().getCompletedLogItem();
+      if (item != null) {
+         users.add(item.getUser());
+      }
+      return users;
    }
 
 }

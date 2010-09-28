@@ -30,15 +30,16 @@ public class OpenNewAtsWorldEditorAction extends Action {
    private final IOpenNewAtsWorldEditorHandler openNewAtsWorldEditorHandler;
 
    public OpenNewAtsWorldEditorAction(IOpenNewAtsWorldEditorHandler openNewAtsWorldEditorHandler) {
+      super();
       this.openNewAtsWorldEditorHandler = openNewAtsWorldEditorHandler;
       setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.GLOBE));
       setToolTipText("Open in ATS World Editor");
    }
 
    public interface IOpenNewAtsWorldEditorHandler {
-      public IWorldEditorProvider getWorldEditorProviderCopy() throws OseeCoreException;
+      IWorldEditorProvider getWorldEditorProviderCopy() throws OseeCoreException;
 
-      public CustomizeData getCustomizeDataCopy() throws OseeCoreException;
+      CustomizeData getCustomizeDataCopy() throws OseeCoreException;
    }
 
    @Override

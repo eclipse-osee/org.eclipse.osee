@@ -28,6 +28,7 @@ public class OpenInMassEditorAction extends Action {
    private final ISelectedAtsArtifacts selectedAtsArtifacts;
 
    public OpenInMassEditorAction(ISelectedAtsArtifacts selectedAtsArtifacts) {
+      super();
       this.selectedAtsArtifacts = selectedAtsArtifacts;
       setText("Open Mass Editor");
       setToolTipText(getText());

@@ -19,15 +19,15 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact.TransitionOption;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
-import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsNotifyUsers;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.TransitionOption;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
@@ -47,7 +47,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
  */
 public class ExcelAtsTaskArtifactExtractor {
 
-   private final StateMachineArtifact sma;
+   private final AbstractWorkflowArtifact sma;
    private final boolean emailPOCs;
    private final SkynetTransaction transaction;
 
@@ -98,11 +98,11 @@ public class ExcelAtsTaskArtifactExtractor {
       private String[] headerRow;
       private int rowNum;
       private final IProgressMonitor monitor;
-      private final StateMachineArtifact sma;
+      private final AbstractWorkflowArtifact sma;
       private final SkynetTransaction transaction;
       private final boolean emailPOCs;
 
-      protected InternalRowProcessor(IProgressMonitor monitor, SkynetTransaction transaction, StateMachineArtifact sma, boolean emailPOCs) {
+      protected InternalRowProcessor(IProgressMonitor monitor, SkynetTransaction transaction, AbstractWorkflowArtifact sma, boolean emailPOCs) {
          this.monitor = monitor;
          this.transaction = transaction;
          this.emailPOCs = emailPOCs;
@@ -144,7 +144,7 @@ public class ExcelAtsTaskArtifactExtractor {
          try {
             rowNum++;
             monitor.setTaskName("Processing Row " + rowNum);
-            TaskArtifact taskArt = ((TaskableStateMachineArtifact) sma).createNewTask("");
+            TaskArtifact taskArt = ((AbstractTaskableArtifact) sma).createNewTask("");
 
             monitor.subTask("Validating...");
             boolean fullRow = false;
@@ -234,8 +234,7 @@ public class ExcelAtsTaskArtifactExtractor {
                            percent = percent * 100;
                         }
                      } catch (Exception ex) {
-                        throw new OseeArgumentException("Invalid Percent Complete \"%s\" for row %d",
-                           str, rowNum);
+                        throw new OseeArgumentException("Invalid Percent Complete \"%s\" for row %d", str, rowNum);
                      }
                      int percentInt = percent.intValue();
                      sma.getStateMgr().updateMetrics(0, percentInt, true);
@@ -247,8 +246,7 @@ public class ExcelAtsTaskArtifactExtractor {
                      try {
                         hours = new Double(str);
                      } catch (Exception ex) {
-                        throw new OseeArgumentException("Invalid Hours Spent \"%s\" for row %d", str,
-                           rowNum);
+                        throw new OseeArgumentException("Invalid Hours Spent \"%s\" for row %d", str, rowNum);
                      }
                      sma.getStateMgr().updateMetrics(hours, sma.getStateMgr().getPercentComplete(), true);
                   }
@@ -259,8 +257,7 @@ public class ExcelAtsTaskArtifactExtractor {
                      try {
                         hours = new Double(str);
                      } catch (Exception ex) {
-                        throw new OseeArgumentException("Invalid Estimated Hours \"%s\" for row %d", str,
-                           rowNum);
+                        throw new OseeArgumentException("Invalid Estimated Hours \"%s\" for row %d", str, rowNum);
                      }
                      taskArt.setSoleAttributeValue(AtsAttributeTypes.EstimatedHours, hours);
                   }

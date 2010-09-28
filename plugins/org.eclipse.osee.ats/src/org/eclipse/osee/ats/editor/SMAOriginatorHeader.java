@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.editor;
 
 import java.util.logging.Level;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.PromptChangeUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -36,7 +36,7 @@ public class SMAOriginatorHeader extends Composite {
    private static String ORIGINATOR = "Originator:";
    private Label origLabel;
 
-   public SMAOriginatorHeader(Composite parent, int style, final StateMachineArtifact sma, XFormToolkit toolkit) {
+   public SMAOriginatorHeader(Composite parent, int style, final AbstractWorkflowArtifact sma, XFormToolkit toolkit) {
       super(parent, style);
       setLayoutData(new GridData());
       setLayout(ALayout.getZeroMarginLayout(2, false));

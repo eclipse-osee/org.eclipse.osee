@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
+import org.eclipse.osee.ats.artifact.AbstractReviewArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -50,7 +50,7 @@ public class MyWorldSearchItem extends UserSearchItem {
 
       List<Artifact> artifactsToReturn = new ArrayList<Artifact>(assigned.size());
       for (Artifact artifact : assigned) {
-         if (artifact instanceof TeamWorkFlowArtifact || artifact instanceof ReviewSMArtifact) {
+         if (artifact instanceof TeamWorkFlowArtifact || artifact instanceof AbstractReviewArtifact) {
             artifactsToReturn.add(artifact);
          }
          if (artifact instanceof TaskArtifact) {

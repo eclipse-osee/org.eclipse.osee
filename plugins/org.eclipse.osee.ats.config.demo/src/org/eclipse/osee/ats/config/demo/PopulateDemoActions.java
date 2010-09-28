@@ -17,11 +17,10 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.artifact.TeamWorkflowManager;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.config.demo.config.DemoDatabaseConfig;
@@ -40,6 +39,7 @@ import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.DefaultTeamState;
 import org.eclipse.osee.ats.util.FavoritesManager;
 import org.eclipse.osee.ats.util.SubscribeManager;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -177,14 +177,14 @@ public class PopulateDemoActions extends XNavigateItemAction {
          OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Add Favorites");
          for (Artifact art : ArtifactQuery.getArtifactListFromTypeAndName(DemoArtifactTypes.DemoCodeTeamWorkflow,
             "%Diagram View%", AtsUtil.getAtsBranch())) {
-            new FavoritesManager((StateMachineArtifact) art).toggleFavorite(false);
+            new FavoritesManager((AbstractWorkflowArtifact) art).toggleFavorite(false);
          }
 
          // Mark all Tools Team "Team Workflows" as Subscribed for "Joe Smith"
          OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Add Subscribed");
          for (Artifact art : ArtifactQuery.getArtifactListFromTypeAndName(DemoArtifactTypes.DemoCodeTeamWorkflow,
             "%Even%", AtsUtil.getAtsBranch())) {
-            new SubscribeManager((StateMachineArtifact) art).toggleSubscribe(false);
+            new SubscribeManager((AbstractWorkflowArtifact) art).toggleSubscribe(false);
          }
 
          // Create some tasks off sample workflows

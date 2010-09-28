@@ -20,4 +20,13 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 public interface IATSArtifact {
 
    public Artifact getParentAtsArtifact() throws OseeCoreException;
+
+   public String getGuid();
+
+   public String getName();
+
+   public String getArtifactTypeName();
+
+   public boolean isDeleted();
+
 }

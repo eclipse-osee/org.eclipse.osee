@@ -12,26 +12,31 @@ package org.eclipse.osee.ats.hyper;
 
 import java.util.ArrayList;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.artifact.ActionArtifact;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.swt.graphics.Image;
 
 public class ActionHyperItem extends HyperViewItem {
 
-   private final IHyperArtifact iHyperartifact;
+   private final IATSArtifact artifact;
 
-   public ActionHyperItem(IHyperArtifact iHyperartifact) {
-      super(iHyperartifact.getHyperName());
-      this.iHyperartifact = iHyperartifact;
-      setGuid(iHyperartifact.getGuid());
+   public ActionHyperItem(IATSArtifact artifact) {
+      super(artifact.getName());
+      this.artifact = artifact;
+      setGuid(artifact.getGuid());
    }
 
    @Override
    public String toString() {
-      return iHyperartifact.getHyperType() + " - " + iHyperartifact.getHyperName();
+      return artifact.getArtifactTypeName() + " - " + getTitle();
    }
 
    public void handleDoubleClick(HyperViewItem hyperViewItem) {
@@ -48,51 +53,79 @@ public class ActionHyperItem extends HyperViewItem {
    @SuppressWarnings("unused")
    @Override
    public Image getImage() throws OseeCoreException {
-      if (iHyperartifact.getHyperArtifact() == null) {
+      if (artifact.isDeleted()) {
          return null;
       }
-      if (iHyperartifact.isDeleted()) {
-         return null;
-      }
-      return ArtifactImageManager.getImage(iHyperartifact.getHyperArtifact());
+      return ArtifactImageManager.getImage((Artifact) artifact);
    }
 
    @Override
    public String getTitle() {
-      if (iHyperartifact.isDeleted()) {
+      if (artifact.isDeleted()) {
          return "Deleted";
       }
-      return iHyperartifact.getHyperName();
+      try {
+         if (artifact instanceof TeamWorkFlowArtifact) {
+            return ((TeamWorkFlowArtifact) artifact).getEditorTitle();
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      }
+      return artifact.getName();
    }
 
    @Override
    public String getToolTip() {
-      if (iHyperartifact.isDeleted()) {
+      if (artifact.isDeleted()) {
          return "";
       }
       StringBuilder builder = new StringBuilder();
-      builder.append("Name: " + iHyperartifact.getHyperName());
-      builder.append("\nType: " + iHyperartifact.getHyperType());
-      if (iHyperartifact.getHyperState() != null) {
-         builder.append("\nState: " + iHyperartifact.getHyperState());
+      builder.append("Name: " + getTitle());
+      builder.append("\nType: " + artifact.getArtifactTypeName());
+      if (artifact instanceof AbstractWorkflowArtifact) {
+         builder.append("\nState: " + ((AbstractWorkflowArtifact) artifact).getStateMgr().getCurrentStateName());
+         builder.append("\nAssignee: " + getAssignee());
+         builder.append("\nVersion: " + getTargetedVersion());
       }
-      if (iHyperartifact.getHyperAssignee() != null) {
-         builder.append("\nAssignee: " + iHyperartifact.getHyperAssignee());
-      }
-      if (iHyperartifact.getHyperTargetVersion() != null) {
-         builder.append("\nVersion: " + iHyperartifact.getHyperTargetVersion());
-      }
-
       return builder.toString();
+   }
+
+   public String getAssignee() {
+      try {
+         if (artifact instanceof AbstractWorkflowArtifact) {
+            return Artifacts.toString("; ", ((AbstractWorkflowArtifact) artifact).getStateMgr().getAssignees());
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         return ex.getLocalizedMessage();
+      }
+      return "";
+   }
+
+   private String getTargetedVersion() {
+      try {
+         if (artifact instanceof TeamWorkFlowArtifact) {
+            String str = ((TeamWorkFlowArtifact) artifact).getWorldViewTargetedVersionStr();
+            return str.isEmpty() ? "" : str;
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         return ex.getLocalizedMessage();
+      }
+      return "";
    }
 
    @Override
    public Image getMarkImage() {
-      if (iHyperartifact.isDeleted()) {
+      if (artifact.isDeleted()) {
          return null;
       }
       try {
-         return iHyperartifact.getHyperAssigneeImage();
+         if (artifact instanceof AbstractWorkflowArtifact) {
+            return ((AbstractWorkflowArtifact) artifact).getAssigneeImage();
+         } else if (artifact instanceof ActionArtifact) {
+            return ((ActionArtifact) artifact).getAssigneeImage();
+         }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
@@ -102,26 +135,30 @@ public class ActionHyperItem extends HyperViewItem {
    public ArrayList<ActionHyperItem> getChildren() {
       ArrayList<ActionHyperItem> children = new ArrayList<ActionHyperItem>();
       for (HyperViewItem item : getBottom()) {
-         children.add((ActionHyperItem) item);
+         if (item instanceof ActionHyperItem) {
+            children.add((ActionHyperItem) item);
+         }
       }
       for (HyperViewItem item : getTop()) {
-         children.add((ActionHyperItem) item);
+         if (item instanceof ActionHyperItem) {
+            children.add((ActionHyperItem) item);
+         }
       }
       for (HyperViewItem item : getRight()) {
-         children.add((ActionHyperItem) item);
+         if (item instanceof ActionHyperItem) {
+            children.add((ActionHyperItem) item);
+         }
       }
       for (HyperViewItem item : getLeft()) {
-         children.add((ActionHyperItem) item);
+         if (item instanceof ActionHyperItem) {
+            children.add((ActionHyperItem) item);
+         }
       }
       return children;
    }
 
-   public IHyperArtifact getHyperArtifact() {
-      return iHyperartifact;
-   }
-
    public Artifact getArtifact() {
-      return iHyperartifact.getHyperArtifact();
+      return (Artifact) artifact;
    }
 
 }

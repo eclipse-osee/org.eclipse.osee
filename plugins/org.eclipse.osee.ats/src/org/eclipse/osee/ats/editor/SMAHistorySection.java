@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.editor;
 
 import java.util.logging.Level;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -67,7 +67,7 @@ public class SMAHistorySection extends SectionPart {
          return;
       }
 
-      StateMachineArtifact sma = editor.getSma();
+      AbstractWorkflowArtifact sma = editor.getSma();
       final FormToolkit toolkit = getManagedForm().getToolkit();
       Composite composite = toolkit.createComposite(getSection(), toolkit.getBorderStyle() | SWT.WRAP);
       composite.setLayout(new GridLayout());
@@ -86,7 +86,7 @@ public class SMAHistorySection extends SectionPart {
 
       Label button = toolkit.createLabel(composite, "   ", SWT.NONE);
       button.setText("    ");
-      final StateMachineArtifact fSma = sma;
+      final AbstractWorkflowArtifact fSma = sma;
       button.addListener(SWT.MouseDoubleClick, new Listener() {
          @Override
          public void handleEvent(Event event) {

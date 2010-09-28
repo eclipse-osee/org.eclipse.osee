@@ -12,8 +12,8 @@
 package org.eclipse.osee.ats.editor;
 
 import org.eclipse.osee.ats.AtsOpenOption;
-import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractReviewArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -50,7 +50,7 @@ public class SMARelationsHyperlinkComposite extends Composite {
       CoreRelationTypes.SupportingInfo_SupportingInfo,
       CoreRelationTypes.Dependency__Artifact,
       CoreRelationTypes.Dependency__Dependency};
-   private StateMachineArtifact sma;
+   private AbstractWorkflowArtifact sma;
    private Label actionableItemsLabel;
 
    public SMARelationsHyperlinkComposite(Composite parent, XFormToolkit toolkit, int style) {
@@ -58,7 +58,7 @@ public class SMARelationsHyperlinkComposite extends Composite {
       this.toolkit = toolkit;
    }
 
-   public void create(StateMachineArtifact sma) throws OseeCoreException {
+   public void create(AbstractWorkflowArtifact sma) throws OseeCoreException {
       this.sma = sma;
       setLayout(ALayout.getZeroMarginLayout(2, false));
       GridData gd = new GridData(GridData.FILL_HORIZONTAL);
@@ -79,13 +79,13 @@ public class SMARelationsHyperlinkComposite extends Composite {
          CoreRelationTypes.SupportingInfo_SupportingInfo);
 
       // Create label for review's related actionable items (if any)
-      if (sma instanceof ReviewSMArtifact) {
-         processReviewArtifact((ReviewSMArtifact) sma);
+      if (sma instanceof AbstractReviewArtifact) {
+         processReviewArtifact((AbstractReviewArtifact) sma);
       }
 
    }
 
-   public static boolean relationExists(StateMachineArtifact smaArt) throws OseeCoreException {
+   public static boolean relationExists(AbstractWorkflowArtifact smaArt) throws OseeCoreException {
       for (IRelationEnumeration side : sides) {
          if (smaArt.getRelatedArtifacts(side).size() > 0) {
             return true;
@@ -94,16 +94,16 @@ public class SMARelationsHyperlinkComposite extends Composite {
             return true;
          }
       }
-      if (smaArt instanceof ReviewSMArtifact && ((ReviewSMArtifact) smaArt).getActionableItemsDam().getActionableItemGuids().size() > 0) {
+      if (smaArt instanceof AbstractReviewArtifact && ((AbstractReviewArtifact) smaArt).getActionableItemsDam().getActionableItemGuids().size() > 0) {
          return true;
       }
       return false;
    }
 
    private String getCompletedCancelledString(Artifact art) throws OseeCoreException {
-      if (art instanceof StateMachineArtifact) {
-         if (((StateMachineArtifact) art).isCancelledOrCompleted()) {
-            return " " + ((StateMachineArtifact) art).getStateMgr().getCurrentStateName() + " ";
+      if (art instanceof AbstractWorkflowArtifact) {
+         if (((AbstractWorkflowArtifact) art).isCancelledOrCompleted()) {
+            return " " + ((AbstractWorkflowArtifact) art).getStateMgr().getCurrentStateName() + " ";
          }
       }
       return "";
@@ -138,7 +138,7 @@ public class SMARelationsHyperlinkComposite extends Composite {
       }
    }
 
-   private void processReviewArtifact(final ReviewSMArtifact reviewArt) throws OseeCoreException {
+   private void processReviewArtifact(final AbstractReviewArtifact reviewArt) throws OseeCoreException {
       if (reviewArt.getActionableItemsDam().getActionableItemGuids().isEmpty()) {
          return;
       }
@@ -165,12 +165,12 @@ public class SMARelationsHyperlinkComposite extends Composite {
    }
 
    private void refreshActionableItemsLabel() throws OseeCoreException {
-      if (actionableItemsLabel != null && sma instanceof ReviewSMArtifact) {
-         actionableItemsLabel.setText("This \"" + ((ReviewSMArtifact) sma).getArtifactTypeName() +
+      if (actionableItemsLabel != null && sma instanceof AbstractReviewArtifact) {
+         actionableItemsLabel.setText("This \"" + ((AbstractReviewArtifact) sma).getArtifactTypeName() +
          //
          "\" is review of Actionable Items  \"" +
          //
-         ((ReviewSMArtifact) sma).getActionableItemsDam().getActionableItemsStr() + "\" ");
+         ((AbstractReviewArtifact) sma).getActionableItemsDam().getActionableItemsStr() + "\" ");
       }
    }
 
@@ -178,7 +178,7 @@ public class SMARelationsHyperlinkComposite extends Composite {
       refreshActionableItemsLabel();
    }
 
-   private void editRelatedActionableItems(final ReviewSMArtifact reviewArt) {
+   private void editRelatedActionableItems(final AbstractReviewArtifact reviewArt) {
       final AICheckTreeDialog diag =
          new AICheckTreeDialog("Edit Actionable Items", "Select Actionable Items for this review", Active.Active);
       try {

@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.GoalManager;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -251,7 +252,7 @@ public class WorldLabelProvider extends XViewerLabelProvider {
          }
          if (xCol.equals(WorldXViewerFactory.Goal_Order)) {
             if (parentGoalArtifact != null) {
-               return GoalArtifact.getGoalOrder(parentGoalArtifact, art);
+               return GoalManager.getGoalOrder(parentGoalArtifact, art);
             }
             return wva.getWorldViewGoalOrder();
          }

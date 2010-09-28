@@ -19,9 +19,9 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.actions.wizard.NewActionJob;
+import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
-import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -77,29 +77,23 @@ public class OseeAtsServiceImpl implements IOseeCmService {
 
    @Override
    public boolean isPcrArtifact(Artifact artifact) {
-      return artifact instanceof StateMachineArtifact;
+      return artifact instanceof AbstractWorkflowArtifact;
    }
 
    @Override
    public boolean isCompleted(Artifact artifact) {
-      if (isPcrArtifact(artifact)) {
-         try {
-            if (artifact instanceof StateMachineArtifact) {
-               return ((StateMachineArtifact) artifact).isCancelledOrCompleted();
-            }
-         } catch (OseeCoreException ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-         }
+      if (isPcrArtifact(artifact) && artifact instanceof AbstractWorkflowArtifact) {
+         return ((AbstractWorkflowArtifact) artifact).isCancelledOrCompleted();
       }
       return false;
    }
 
    @Override
    public List<Artifact> getTaskArtifacts(Artifact pcrArtifact) {
-      if (pcrArtifact instanceof TaskableStateMachineArtifact) {
+      if (pcrArtifact instanceof AbstractTaskableArtifact) {
          try {
             List<Artifact> arts = new ArrayList<Artifact>();
-            arts.addAll(((TaskableStateMachineArtifact) pcrArtifact).getTaskArtifacts());
+            arts.addAll(((AbstractTaskableArtifact) pcrArtifact).getTaskArtifacts());
             return arts;
          } catch (OseeCoreException ex) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
@@ -112,8 +106,8 @@ public class OseeAtsServiceImpl implements IOseeCmService {
    public Artifact createWorkTask(String name, String parentPcrGuid) {
       try {
          Artifact artifact = ArtifactQuery.getArtifactFromId(parentPcrGuid, AtsUtil.getAtsBranch());
-         if (artifact instanceof TaskableStateMachineArtifact) {
-            return ((TaskableStateMachineArtifact) artifact).createNewTask(name);
+         if (artifact instanceof AbstractTaskableArtifact) {
+            return ((AbstractTaskableArtifact) artifact).createNewTask(name);
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);

@@ -16,6 +16,7 @@ import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.config.AtsBulkLoad;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.GoalManager;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
@@ -37,10 +38,10 @@ public class NewGoal extends Action {
       super.run();
       AtsBulkLoad.loadConfig(true);
       try {
-         EntryDialog ed = new EntryDialog("New Goal", "Enter Title");
-         if (ed.open() == 0) {
-            String title = ed.getEntry();
-            GoalArtifact goalArt = GoalArtifact.createGoal(title);
+         EntryDialog dialog = new EntryDialog("New Goal", "Enter Title");
+         if (dialog.open() == 0) {
+            String title = dialog.getEntry();
+            GoalArtifact goalArt = GoalManager.createGoal(title);
             goalArt.persist();
             SMAEditor.editArtifact(goalArt);
          }

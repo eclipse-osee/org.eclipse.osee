@@ -17,8 +17,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.IReviewArtifact;
-import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractReviewArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Severity;
@@ -41,7 +41,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
  */
 public class UserRoleManager {
 
-   private final WeakReference<ReviewSMArtifact> artifactRef;
+   private final WeakReference<AbstractReviewArtifact> artifactRef;
    private boolean enabled = true;
    private static String ROLE_ITEM_TAG = "Role";
    private static final IAttributeType ATS_ROLE_STORAGE_TYPE = AtsAttributeTypes.Role;
@@ -49,8 +49,8 @@ public class UserRoleManager {
    private final Matcher roleMatcher = java.util.regex.Pattern.compile(
       "<" + ROLE_ITEM_TAG + ">(.*?)</" + ROLE_ITEM_TAG + ">", Pattern.DOTALL | Pattern.MULTILINE).matcher("");
 
-   public UserRoleManager(ReviewSMArtifact artifact) {
-      this.artifactRef = new WeakReference<ReviewSMArtifact>(artifact);
+   public UserRoleManager(AbstractReviewArtifact artifact) {
+      this.artifactRef = new WeakReference<AbstractReviewArtifact>(artifact);
    }
 
    public String getHtml() throws OseeCoreException {
@@ -63,7 +63,7 @@ public class UserRoleManager {
       return sb.toString();
    }
 
-   public ReviewSMArtifact getArtifact() throws OseeStateException {
+   public AbstractReviewArtifact getArtifact() throws OseeStateException {
       if (artifactRef.get() == null) {
          throw new OseeStateException("Artifact has been garbage collected");
       }
@@ -275,7 +275,7 @@ public class UserRoleManager {
       for (UserRole role : getUserRoles()) {
          hoursSpent += role.getHoursSpent() == null ? 0 : role.getHoursSpent();
       }
-      StateMachineArtifact sma = getArtifact();
+      AbstractWorkflowArtifact sma = getArtifact();
       sma.getStateMgr().setMetrics(hoursSpent, sma.getStateMgr().getPercentComplete(), true);
       if (persist) {
          getArtifact().persist(transaction);

@@ -11,19 +11,45 @@
 package org.eclipse.osee.ats.util;
 
 import java.util.ArrayList;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import java.util.List;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.util.Overview.PreviewStyle;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.ui.skynet.util.email.EmailGroup;
 import org.eclipse.osee.framework.ui.skynet.util.email.EmailWizard;
 
 public class ArtifactEmailWizard extends EmailWizard {
 
-   public ArtifactEmailWizard(StateMachineArtifact sma) throws OseeCoreException {
+   public ArtifactEmailWizard(AbstractWorkflowArtifact sma) throws OseeCoreException {
       this(sma, null);
    }
 
-   public ArtifactEmailWizard(StateMachineArtifact sma, ArrayList<Object> toAddress) throws OseeCoreException {
-      super(sma.getPreviewHtml(PreviewStyle.HYPEROPEN, PreviewStyle.NO_SUBSCRIBE_OR_FAVORITE),
-         " Regarding " + sma.getArtifactTypeName() + " - " + sma.getName(), sma.getEmailableGroups(), toAddress);
+   public ArtifactEmailWizard(AbstractWorkflowArtifact sma, ArrayList<Object> toAddress) throws OseeCoreException {
+      super(getPreviewHtml(sma, PreviewStyle.HYPEROPEN, PreviewStyle.NO_SUBSCRIBE_OR_FAVORITE),
+         " Regarding " + sma.getArtifactTypeName() + " - " + sma.getName(), getEmailableGroups(sma), toAddress);
    }
+
+   private static List<EmailGroup> getEmailableGroups(AbstractWorkflowArtifact workflow) throws OseeCoreException {
+      ArrayList<EmailGroup> groupNames = new ArrayList<EmailGroup>();
+      ArrayList<String> emails = new ArrayList<String>();
+      emails.add(workflow.getOriginator().getEmail());
+      groupNames.add(new EmailGroup("Originator", emails));
+      if (workflow.getStateMgr().getAssignees().size() > 0) {
+         emails = new ArrayList<String>();
+         for (User u : workflow.getStateMgr().getAssignees()) {
+            emails.add(u.getEmail());
+         }
+         groupNames.add(new EmailGroup("Assignees", emails));
+      }
+      return groupNames;
+   }
+
+   public static String getPreviewHtml(AbstractWorkflowArtifact workflow, PreviewStyle... styles) throws OseeCoreException {
+      Overview o = new Overview();
+      o.addHeader(workflow, styles);
+      o.addFooter(workflow, styles);
+      return o.getPage();
+   }
+
 }

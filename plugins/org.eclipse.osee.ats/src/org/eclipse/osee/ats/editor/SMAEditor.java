@@ -25,9 +25,9 @@ import org.eclipse.osee.ats.actions.AccessControlAction;
 import org.eclipse.osee.ats.actions.DirtyReportAction;
 import org.eclipse.osee.ats.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.actions.ResourceHistoryAction;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
-import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.navigate.VisitedItems;
@@ -88,7 +88,7 @@ import org.eclipse.ui.part.MultiPageEditorPart;
  */
 public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEventHandler, ISelectedAtsArtifacts, IActionable, IAtsMetricsProvider, IXTaskViewer {
    public static final String EDITOR_ID = "org.eclipse.osee.ats.editor.SMAEditor";
-   private StateMachineArtifact sma;
+   private AbstractWorkflowArtifact sma;
    private SMAWorkFlowTab workFlowTab;
    int attributesPageIndex;
    private AttributesComposite attributesComposite;
@@ -108,8 +108,8 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
          if (editorInput instanceof SMAEditorInput) {
             SMAEditorInput aei = (SMAEditorInput) editorInput;
             if (aei.getArtifact() != null) {
-               if (aei.getArtifact() instanceof StateMachineArtifact) {
-                  sma = (StateMachineArtifact) aei.getArtifact();
+               if (aei.getArtifact() instanceof AbstractWorkflowArtifact) {
+                  sma = (AbstractWorkflowArtifact) aei.getArtifact();
                } else {
                   throw new OseeArgumentException("SMAEditorInput artifact must be StateMachineArtifact");
                }
@@ -160,8 +160,8 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
       }
    }
 
-   private void createTaskTab() throws PartInitException, OseeCoreException {
-      if (sma.showTaskTab()) {
+   private void createTaskTab() throws PartInitException {
+      if (isTaskable()) {
          taskTabXWidgetActionPage = new TaskTabXWidgetActionPage(this);
          addPage(taskTabXWidgetActionPage);
       }
@@ -261,7 +261,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
          if (result.isTrue()) {
             return result;
          }
-         result = ((StateMachineArtifact) ((SMAEditorInput) getEditorInput()).getArtifact()).isSMAEditorDirty();
+         result = ((AbstractWorkflowArtifact) ((SMAEditorInput) getEditorInput()).getArtifact()).isSMAEditorDirty();
          if (result.isTrue()) {
             return result;
          }
@@ -387,14 +387,14 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
          AWorkbench.popup("ERROR", "Artifact has been deleted");
          return;
       }
-      if (artifact instanceof StateMachineArtifact) {
-         editArtifact((StateMachineArtifact) artifact);
+      if (artifact instanceof AbstractWorkflowArtifact) {
+         editArtifact((AbstractWorkflowArtifact) artifact);
       } else {
          RendererManager.open(artifact, PresentationType.GENERALIZED_EDIT);
       }
    }
 
-   public static void editArtifact(final StateMachineArtifact sma) {
+   public static void editArtifact(final AbstractWorkflowArtifact sma) {
       if (sma == null) {
          return;
       }
@@ -428,7 +428,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
       });
    }
 
-   public static void close(final Collection<? extends StateMachineArtifact> artifacts, boolean save) {
+   public static void close(final Collection<? extends AbstractWorkflowArtifact> artifacts, boolean save) {
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
@@ -446,7 +446,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
       });
    }
 
-   public static SMAEditor getSmaEditor(StateMachineArtifact artifact) {
+   public static SMAEditor getSmaEditor(AbstractWorkflowArtifact artifact) {
       IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
       IEditorReference editors[] = page.getEditorReferences();
       for (int j = 0; j < editors.length; j++) {
@@ -471,12 +471,12 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
    }
 
    @Override
-   public StateMachineArtifact getSma() {
+   public AbstractWorkflowArtifact getSma() {
       return sma;
    }
 
    @Override
-   public String getCurrentStateName() throws OseeCoreException {
+   public String getCurrentStateName() {
       return sma.getStateMgr().getCurrentStateName();
    }
 
@@ -492,24 +492,27 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
 
    @Override
    public Collection<TaskArtifact> getTaskArtifacts(String stateName) throws OseeCoreException {
-      if (sma instanceof TaskableStateMachineArtifact) {
+      if (sma instanceof AbstractTaskableArtifact) {
          if (!Strings.isValid(stateName)) {
-            return ((TaskableStateMachineArtifact) sma).getTaskArtifacts();
+            return ((AbstractTaskableArtifact) sma).getTaskArtifacts();
          } else {
-            return ((TaskableStateMachineArtifact) sma).getTaskArtifacts(stateName);
+            return ((AbstractTaskableArtifact) sma).getTaskArtifacts(stateName);
          }
       }
       return Collections.emptyList();
    }
 
    @Override
-   public boolean isTaskable() throws OseeCoreException {
-      return sma.isTaskable();
+   public boolean isTaskable() {
+      if (!(sma instanceof AbstractTaskableArtifact) || sma.isCancelledOrCompleted()) {
+         return false;
+      }
+      return true;
    }
 
    @Override
-   public boolean isTasksEditable() throws OseeCoreException {
-      return sma.isTaskable();
+   public boolean isTasksEditable() {
+      return isTaskable();
    }
 
    public boolean isPriviledgedEditModeEnabled() {

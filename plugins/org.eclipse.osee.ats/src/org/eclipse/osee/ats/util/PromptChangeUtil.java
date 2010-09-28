@@ -17,7 +17,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
@@ -58,13 +58,13 @@ public final class PromptChangeUtil {
       // Utility class
    }
 
-   public static boolean promptChangeGroups(StateMachineArtifact sma, boolean persist) throws OseeCoreException {
+   public static boolean promptChangeGroups(AbstractWorkflowArtifact sma, boolean persist) throws OseeCoreException {
       return promptChangeGroups(Arrays.asList(sma), persist);
    }
 
-   public static boolean promptChangeGroups(final Collection<? extends StateMachineArtifact> smas, boolean persist) throws OseeCoreException {
+   public static boolean promptChangeGroups(final Collection<? extends AbstractWorkflowArtifact> smas, boolean persist) throws OseeCoreException {
       Set<Artifact> selected = new HashSet<Artifact>();
-      for (StateMachineArtifact sma : smas) {
+      for (AbstractWorkflowArtifact sma : smas) {
          selected.addAll(sma.getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Group));
       }
       Collection<Artifact> allGroups = UniversalGroup.getGroupsNotRoot(AtsUtil.getAtsBranch());
@@ -73,7 +73,7 @@ public final class PromptChangeUtil {
       dialog.setInitialSelections(selected.toArray());
       if (dialog.open() == 0) {
          SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Set Groups");
-         for (StateMachineArtifact sma : smas) {
+         for (AbstractWorkflowArtifact sma : smas) {
             sma.setRelations(CoreRelationTypes.Universal_Grouping__Group, dialog.getSelection());
             sma.persist(transaction);
          }
@@ -109,12 +109,12 @@ public final class PromptChangeUtil {
       return false;
    }
 
-   public static boolean promptChangeAssignees(StateMachineArtifact sma, boolean persist) throws OseeCoreException {
+   public static boolean promptChangeAssignees(AbstractWorkflowArtifact sma, boolean persist) throws OseeCoreException {
       return promptChangeAssignees(Arrays.asList(sma), persist);
    }
 
-   public static boolean promptChangeAssignees(final Collection<? extends StateMachineArtifact> smas, boolean persist) throws OseeCoreException {
-      for (StateMachineArtifact sma : smas) {
+   public static boolean promptChangeAssignees(final Collection<? extends AbstractWorkflowArtifact> smas, boolean persist) throws OseeCoreException {
+      for (AbstractWorkflowArtifact sma : smas) {
          if (sma.isCompleted()) {
             AWorkbench.popup("ERROR",
                "Can't assign completed " + sma.getArtifactTypeName() + " (" + sma.getHumanReadableId() + ")");
@@ -146,7 +146,7 @@ public final class PromptChangeUtil {
       if (users.size() > 1) {
          users.remove(UserManager.getUser(SystemUser.UnAssigned));
       }
-      for (StateMachineArtifact sma : smas) {
+      for (AbstractWorkflowArtifact sma : smas) {
          sma.getStateMgr().setAssignees(users);
       }
       if (persist) {
@@ -155,16 +155,16 @@ public final class PromptChangeUtil {
       return true;
    }
 
-   public static boolean promptChangeOriginator(StateMachineArtifact sma) throws OseeCoreException {
+   public static boolean promptChangeOriginator(AbstractWorkflowArtifact sma) throws OseeCoreException {
       return promptChangeOriginator(Arrays.asList(sma));
    }
 
-   public static boolean promptChangeOriginator(final Collection<? extends StateMachineArtifact> smas) throws OseeCoreException {
+   public static boolean promptChangeOriginator(final Collection<? extends AbstractWorkflowArtifact> smas) throws OseeCoreException {
       UserListDialog ld = new UserListDialog(Displays.getActiveShell(), "Select New Originator", Active.Active);
       int result = ld.open();
       if (result == 0) {
          User selectedUser = ld.getSelection();
-         for (StateMachineArtifact sma : smas) {
+         for (AbstractWorkflowArtifact sma : smas) {
             sma.setOriginator(selectedUser);
          }
          return true;
@@ -172,7 +172,7 @@ public final class PromptChangeUtil {
       return false;
    }
 
-   public static boolean promptChangeVersion(StateMachineArtifact sma, VersionReleaseType versionReleaseType, boolean persist) throws OseeCoreException {
+   public static boolean promptChangeVersion(AbstractWorkflowArtifact sma, VersionReleaseType versionReleaseType, boolean persist) throws OseeCoreException {
       if (AtsUtil.isAtsAdmin() && !sma.isTeamWorkflow()) {
          AWorkbench.popup("ERROR ", "Cannot set version for: \n\n" + sma.getName());
          return false;
@@ -250,7 +250,7 @@ public final class PromptChangeUtil {
       return true;
    }
 
-   public static boolean promptChangeType(StateMachineArtifact sma, boolean persist) {
+   public static boolean promptChangeType(AbstractWorkflowArtifact sma, boolean persist) {
       if (sma.isTeamWorkflow()) {
          return promptChangeType(Arrays.asList((TeamWorkFlowArtifact) sma), persist);
       }
@@ -290,7 +290,7 @@ public final class PromptChangeUtil {
       }
    }
 
-   public static boolean promptChangePoints(StateMachineArtifact sma, boolean persist) {
+   public static boolean promptChangePoints(AbstractWorkflowArtifact sma, boolean persist) {
       if (sma.isTeamWorkflow()) {
          return promptChangePoints(Arrays.asList((TeamWorkFlowArtifact) sma), persist);
       }
@@ -327,7 +327,7 @@ public final class PromptChangeUtil {
       }
    }
 
-   public static boolean promptChangePriority(StateMachineArtifact sma, boolean persist) {
+   public static boolean promptChangePriority(AbstractWorkflowArtifact sma, boolean persist) {
       if (sma.isTeamWorkflow()) {
          return promptChangePriority(Arrays.asList((TeamWorkFlowArtifact) sma), persist);
       }
@@ -366,7 +366,7 @@ public final class PromptChangeUtil {
       }
    }
 
-   public static boolean promptChangePercentAttribute(StateMachineArtifact sma, IAttributeType attributeType, boolean persist) {
+   public static boolean promptChangePercentAttribute(AbstractWorkflowArtifact sma, IAttributeType attributeType, boolean persist) {
       try {
          return ArtifactPromptChange.promptChangeAttribute(attributeType, Arrays.asList(new Artifact[] {sma}), persist);
       } catch (Exception ex) {
@@ -375,7 +375,7 @@ public final class PromptChangeUtil {
       return false;
    }
 
-   public static boolean promptChangeAttribute(final Collection<? extends StateMachineArtifact> smas, IAttributeType attributeType, boolean persist, boolean multiLine) {
+   public static boolean promptChangeAttribute(final Collection<? extends AbstractWorkflowArtifact> smas, IAttributeType attributeType, boolean persist, boolean multiLine) {
       return ArtifactPromptChange.promptChangeAttribute(attributeType, smas, persist, multiLine);
    }
 
@@ -389,7 +389,7 @@ public final class PromptChangeUtil {
       return false;
    }
 
-   public static boolean promptChangeAttribute(StateMachineArtifact sma, IAttributeType attributeType, final boolean persist, boolean multiLine) {
+   public static boolean promptChangeAttribute(AbstractWorkflowArtifact sma, IAttributeType attributeType, final boolean persist, boolean multiLine) {
       try {
          return ArtifactPromptChange.promptChangeAttribute(attributeType, Arrays.asList(sma), persist, multiLine);
       } catch (Exception ex) {
@@ -398,7 +398,7 @@ public final class PromptChangeUtil {
       return false;
    }
 
-   public static boolean promptChangeDate(StateMachineArtifact sma, IAttributeType attributeType, boolean persist) {
+   public static boolean promptChangeDate(AbstractWorkflowArtifact sma, IAttributeType attributeType, boolean persist) {
       try {
          return ArtifactPromptChange.promptChangeAttribute(attributeType, java.util.Collections.singleton(sma), persist);
       } catch (Exception ex) {
@@ -408,7 +408,7 @@ public final class PromptChangeUtil {
       return false;
    }
 
-   public static boolean promptChangeReleaseDate(StateMachineArtifact sma) {
+   public static boolean promptChangeReleaseDate(AbstractWorkflowArtifact sma) {
       if (sma.isReleased() || sma.isVersionLocked()) {
          AWorkbench.popup("ERROR", "Team Workflow\n \"" + sma.getName() + "\"\n version is locked or already released.");
          return false;
@@ -450,7 +450,7 @@ public final class PromptChangeUtil {
       return false;
    }
 
-   public static boolean promptChangeEstimatedReleaseDate(StateMachineArtifact sma) {
+   public static boolean promptChangeEstimatedReleaseDate(AbstractWorkflowArtifact sma) {
       try {
          VersionArtifact verArt = sma.getTargetedForVersion();
          if (verArt != null) {

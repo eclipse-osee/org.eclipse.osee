@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.editor;
 
 import org.eclipse.jface.dialogs.IMessageProvider;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -40,12 +40,12 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
  */
 public class SMATargetVersionInfoComposite extends Composite {
 
-   private final StateMachineArtifact sma;
+   private final AbstractWorkflowArtifact sma;
    private Hyperlink link;
    private Label label;
    private final IManagedForm managedForm;
 
-   public SMATargetVersionInfoComposite(final StateMachineArtifact sma, Composite parent, IManagedForm managedForm, XFormToolkit toolkit) throws OseeCoreException {
+   public SMATargetVersionInfoComposite(final AbstractWorkflowArtifact sma, Composite parent, IManagedForm managedForm, XFormToolkit toolkit) throws OseeCoreException {
       super(parent, SWT.NONE);
       this.sma = sma;
       this.managedForm = managedForm;

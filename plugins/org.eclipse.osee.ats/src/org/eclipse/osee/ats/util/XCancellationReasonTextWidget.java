@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util;
 
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -24,9 +24,9 @@ import org.eclipse.osee.framework.ui.swt.Widgets;
  */
 public class XCancellationReasonTextWidget extends XText implements IArtifactWidget {
 
-   private StateMachineArtifact sma;
+   private AbstractWorkflowArtifact sma;
 
-   public XCancellationReasonTextWidget(StateMachineArtifact sma) throws OseeCoreException {
+   public XCancellationReasonTextWidget(AbstractWorkflowArtifact sma) throws OseeCoreException {
       super("Cancallation Reason");
       setArtifact(sma);
    }
@@ -56,14 +56,14 @@ public class XCancellationReasonTextWidget extends XText implements IArtifactWid
 
    @Override
    public void setArtifact(Artifact artifact) throws OseeCoreException {
-      if (artifact instanceof StateMachineArtifact) {
-         this.sma = (StateMachineArtifact) artifact;
+      if (artifact instanceof AbstractWorkflowArtifact) {
+         this.sma = (AbstractWorkflowArtifact) artifact;
          setText(sma.getLog().getCancellationReason());
       }
    }
 
    @Override
-   public StateMachineArtifact getArtifact() {
+   public AbstractWorkflowArtifact getArtifact() {
       return sma;
    }
 

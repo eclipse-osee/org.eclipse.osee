@@ -15,7 +15,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -28,11 +28,11 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
  */
 public class XDecisionOptions {
 
-   private final WeakReference<StateMachineArtifact> smaRef;
+   private final WeakReference<AbstractWorkflowArtifact> smaRef;
    private final IAttributeType attributeType;
 
-   public XDecisionOptions(StateMachineArtifact sma) {
-      this.smaRef = new WeakReference<StateMachineArtifact>(sma);
+   public XDecisionOptions(AbstractWorkflowArtifact sma) {
+      this.smaRef = new WeakReference<AbstractWorkflowArtifact>(sma);
       this.attributeType = AtsAttributeTypes.DecisionReviewOptions;
    }
 
@@ -45,7 +45,7 @@ public class XDecisionOptions {
       return getDecisionOptions(decString);
    }
 
-   public StateMachineArtifact getSma() throws OseeStateException {
+   public AbstractWorkflowArtifact getSma() throws OseeStateException {
       if (smaRef.get() == null) {
          throw new OseeStateException("Artifact has been garbage collected");
       }

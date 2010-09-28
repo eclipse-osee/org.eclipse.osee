@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -49,7 +49,6 @@ import org.eclipse.ui.part.MultiPageEditorPart;
  */
 public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableEditor, IAtsMetricsProvider, IActionable {
    public static final String EDITOR_ID = "org.eclipse.osee.ats.world.WorldEditor";
-   private int mainPageIndex, metricsPageIndex;
    private WorldXWidgetActionPage worldXWidgetActionPage;
    public static final String HELP_CONTEXT_ID = "atsWorldView";
    public static int TITLE_MAX_LENGTH = 80;
@@ -152,9 +151,9 @@ public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableE
 
          createMainTab();
          createMetricsTab();
+         setActivePage(0);
 
          setPartName(provider.getSelectedName(SearchType.Search));
-         setActivePage(mainPageIndex);
 
          // Until WorldEditor has different help, just use WorldView's help
          HelpUtil.setHelp(worldXWidgetActionPage.getWorldComposite().getControl(), HELP_CONTEXT_ID,
@@ -199,14 +198,14 @@ public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableE
 
    private void createMainTab() throws PartInitException {
       worldXWidgetActionPage = new WorldXWidgetActionPage(this);
-      mainPageIndex = addPage(worldXWidgetActionPage);
+      addPage(worldXWidgetActionPage);
    }
 
    private void createMetricsTab() {
       Composite comp = AtsUtil.createCommonPageComposite(getContainer());
       AtsUtil.createCommonToolBar(comp);
       new AtsMetricsComposite(this, comp, SWT.NONE);
-      metricsPageIndex = addPage(comp);
+      int metricsPageIndex = addPage(comp);
       setPageText(metricsPageIndex, "Metrics");
    }
 
@@ -226,9 +225,9 @@ public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableE
          return verArt;
       }
       for (Artifact artifact : getLoadedArtifacts()) {
-         if (artifact instanceof StateMachineArtifact) {
-            if (((StateMachineArtifact) artifact).getWorldViewTargetedVersion() != null) {
-               return ((StateMachineArtifact) artifact).getWorldViewTargetedVersion();
+         if (artifact instanceof AbstractWorkflowArtifact) {
+            if (((AbstractWorkflowArtifact) artifact).getWorldViewTargetedVersion() != null) {
+               return ((AbstractWorkflowArtifact) artifact).getWorldViewTargetedVersion();
             }
          }
       }

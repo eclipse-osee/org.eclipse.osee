@@ -13,21 +13,18 @@ package org.eclipse.osee.ats.artifact;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.DefaultTeamState;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -44,8 +41,8 @@ public class ATSLog {
 
    private final WeakReference<Artifact> artifactRef;
    private boolean enabled = true;
-   private static String ATS_LOG_TAG = "AtsLog";
-   private static String LOG_ITEM_TAG = "Item";
+   private final static String ATS_LOG_TAG = "AtsLog";
+   private final static String LOG_ITEM_TAG = "Item";
    private LogItem cancelledLogItem;
    private LogItem completedLogItem;
    public static enum LogType {
@@ -110,36 +107,9 @@ public class ATSLog {
       return artifactRef.get();
    }
 
-   private static Pattern LOG_ITEM_PATTERN =
-      Pattern.compile("<Item date=\"(.*?)\" msg=\"(.*?)\" state=\"(.*?)\" type=\"(.*?)\" userId=\"(.*?)\"/>");
-
-   private static Pattern LOG_ITEM_TAG_PATTERN = Pattern.compile("<Item ");
-
    public List<LogItem> getLogItems() throws OseeCoreException {
-      //      System.out.println("getLogItems " + artifact.getHumanReadableId());
-      List<LogItem> logItems = new ArrayList<LogItem>();
       String xml = getArtifact().getSoleAttributeValue(AtsAttributeTypes.Log, "");
-      if (!xml.equals("")) {
-         Matcher m = LOG_ITEM_PATTERN.matcher(xml);
-         while (m.find()) {
-            LogItem item =
-               new LogItem(m.group(4), m.group(1), Strings.intern(m.group(5)), Strings.intern(m.group(3)),
-                  AXml.xmlToText(m.group(2)), getArtifact().getHumanReadableId());
-            logItems.add(item);
-         }
-
-         Matcher m2 = LOG_ITEM_TAG_PATTERN.matcher(xml);
-         int openTagsFound = 0;
-         while (m2.find()) {
-            openTagsFound++;
-         }
-         if (logItems.size() != openTagsFound) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, String.format(
-               "ATS Log: open tags found %d doesn't match log items parsed %d for %s", openTagsFound, logItems.size(),
-               getArtifact().getHumanReadableId()));
-         }
-      }
-      return logItems;
+      return LogItem.getLogItems(xml, getArtifact().getHumanReadableId());
    }
 
    public Date getLastStatusedDate() throws OseeCoreException {
@@ -158,7 +128,7 @@ public class ATSLog {
          for (LogItem item : items) {
             Element element = doc.createElement(LOG_ITEM_TAG);
             element.setAttribute("type", item.getType().name());
-            element.setAttribute("date", item.getDate().getTime() + "");
+            element.setAttribute("date", String.valueOf(item.getDate().getTime()));
             element.setAttribute("userId", item.getUser().getUserId());
             element.setAttribute("state", item.getState());
             element.setAttribute("msg", item.getMsg());
@@ -327,24 +297,21 @@ public class ATSLog {
    public String getTable() throws OseeCoreException {
       StringBuilder builder = new StringBuilder();
       List<LogItem> logItems = getLogItems();
-      builder.append("<TABLE BORDER=\"1\" cellspacing=\"1\" cellpadding=\"3%\" width=\"100%\"><THEAD><TR><TH>Event</TH>" + "<TH>State</TH><TH>Message</TH><TH>User</TH><TH>Date</TH></THEAD></TR>");
+      builder.append(AHTML.beginMultiColumnTable(100, 1));
+      builder.append(AHTML.addHeaderRowMultiColumnTable(Arrays.asList("Event", "State", "Message", "User", "Date")));
       for (LogItem item : logItems) {
          User user = item.getUser();
-         if (user != null) {
-            builder.append("<TR>");
-            builder.append("<TD>" + item.getType() + "</TD>");
-            builder.append("<TD>" + (item.getState().equals("") ? "." : item.getState()) + "</TD>");
-            builder.append("<TD>" + (item.getMsg().equals("") ? "." : item.getMsg()) + "</TD>");
-            if (user.equals(UserManager.getUser())) {
-               builder.append("<TD bgcolor=\"#CCCCCC\">" + user.getName() + "</TD>");
-            } else {
-               builder.append("<TD>" + user.getName() + "</TD>");
-            }
-            builder.append("<TD>" + item.getDate(DateUtil.MMDDYYHHMM) + "</TD>");
-            builder.append("</TR>");
+         String userStr = null;
+         if (user == null) {
+            userStr = item.getUserId();
+         } else {
+            userStr = user.getName();
          }
+         builder.append(AHTML.addRowMultiColumnTable(String.valueOf(item.getType()),
+            (item.getState().equals("") ? "." : item.getState()), (item.getMsg().equals("") ? "." : item.getMsg()),
+            userStr, item.getDate(DateUtil.MMDDYYHHMM)));
       }
-      builder.append("</TABLE>");
+      builder.append(AHTML.endMultiColumnTable());
       return builder.toString();
    }
 

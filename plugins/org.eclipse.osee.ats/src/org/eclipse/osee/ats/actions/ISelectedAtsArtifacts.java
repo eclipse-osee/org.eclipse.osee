@@ -20,8 +20,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public interface ISelectedAtsArtifacts {
 
-   public Set<? extends Artifact> getSelectedSMAArtifacts() throws OseeCoreException;
+   Set<? extends Artifact> getSelectedSMAArtifacts() throws OseeCoreException;
 
-   public List<Artifact> getSelectedAtsArtifacts() throws OseeCoreException;
+   List<Artifact> getSelectedAtsArtifacts() throws OseeCoreException;
 
 }

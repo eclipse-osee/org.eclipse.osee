@@ -12,15 +12,31 @@ package org.eclipse.osee.ats.util;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.ats.actions.wizard.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
+import org.eclipse.osee.ats.artifact.ActionArtifact.CreateTeamOption;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
+import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
+import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 
 /**
@@ -37,8 +53,7 @@ public class ActionManager {
       }
       ActionArtifact actionArt =
          (ActionArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Action, AtsUtil.getAtsBranch());
-      ActionArtifact.setArtifactIdentifyData(actionArt, title, desc, changeType, priority, validationRequired,
-         needByDate);
+      setArtifactIdentifyData(actionArt, title, desc, changeType, priority, validationRequired, needByDate);
 
       // Retrieve Team Definitions corresponding to selected Actionable Items
       if (monitor != null) {
@@ -55,11 +70,134 @@ public class ActionManager {
 
       // Create team workflow artifacts
       for (TeamDefinitionArtifact teamDef : teams) {
-         actionArt.createTeamWorkflow(teamDef, actionableItems, teamDef.getLeads(actionableItems), transaction);
+         createTeamWorkflow(actionArt, teamDef, actionableItems, teamDef.getLeads(actionableItems), transaction);
       }
       actionArt.persist(transaction);
       return actionArt;
 
+   }
+
+   public static TeamWorkFlowArtifact createTeamWorkflow(ActionArtifact actionArt, TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems, Collection<User> assignees, SkynetTransaction transaction, CreateTeamOption... createTeamOption) throws OseeCoreException {
+      String teamWorkflowArtifactName = AtsArtifactTypes.TeamWorkflow.getName();
+      IAtsTeamWorkflow teamExt = null;
+
+      // Check if any plugins want to create the team workflow themselves
+      for (IAtsTeamWorkflow teamExtension : TeamWorkflowExtensions.getAtsTeamWorkflowExtensions()) {
+         boolean isResponsible = false;
+         try {
+            isResponsible = teamExtension.isResponsibleForTeamWorkflowCreation(teamDef, actionableItems);
+         } catch (Exception ex) {
+            OseeLog.log(AtsPlugin.class, Level.WARNING, ex);
+         }
+         if (isResponsible) {
+            teamWorkflowArtifactName = teamExtension.getTeamWorkflowArtifactName(teamDef, actionableItems);
+            teamExt = teamExtension;
+         }
+      }
+
+      // NOTE: The persist of the workflow will auto-email the assignees
+      TeamWorkFlowArtifact teamArt =
+         createTeamWorkflow(actionArt, teamDef, actionableItems, assignees,
+            ArtifactTypeManager.getType(teamWorkflowArtifactName), transaction, createTeamOption);
+      // Notify extension that workflow was created
+      if (teamExt != null) {
+         teamExt.teamWorkflowCreated(teamArt);
+      }
+      return teamArt;
+   }
+
+   public static TeamWorkFlowArtifact createTeamWorkflow(ActionArtifact actionArt, TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems, Collection<User> assignees, IArtifactType artifactType, SkynetTransaction transaction, CreateTeamOption... createTeamOption) throws OseeCoreException {
+      return createTeamWorkflow(actionArt, teamDef, actionableItems, assignees, null, null, artifactType, transaction,
+         createTeamOption);
+   }
+
+   public static TeamWorkFlowArtifact createTeamWorkflow(ActionArtifact actionArt, TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems, Collection<User> assignees, String guid, String hrid, IArtifactType artifactType, SkynetTransaction transaction, CreateTeamOption... createTeamOption) throws OseeCoreException {
+
+      if (!Collections.getAggregate(createTeamOption).contains(CreateTeamOption.Duplicate_If_Exists)) {
+         // Make sure team doesn't already exist
+         for (TeamWorkFlowArtifact teamArt : actionArt.getTeamWorkFlowArtifacts()) {
+            if (teamArt.getTeamDefinition().equals(teamDef)) {
+               AWorkbench.popup("ERROR", "Team already exist");
+               throw new OseeArgumentException("Team [%s] already exists for Action [%s]", teamDef,
+                  actionArt.getHumanReadableId());
+            }
+         }
+      }
+
+      TeamWorkFlowArtifact teamArt = null;
+      if (guid == null) {
+         teamArt = (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactType, AtsUtil.getAtsBranch());
+      } else {
+         teamArt =
+            (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactType, AtsUtil.getAtsBranch(), guid, hrid);
+      }
+      setArtifactIdentifyData(actionArt, teamArt);
+
+      teamArt.getLog().addLog(LogType.Originated, "", "");
+
+      // Relate Workflow to ActionableItems (by guid) if team is responsible
+      // for that AI
+      for (ActionableItemArtifact aia : actionableItems) {
+         if (aia.getImpactedTeamDefs().contains(teamDef)) {
+            teamArt.getActionableItemsDam().addActionableItem(aia);
+         }
+      }
+
+      // Relate WorkFlow to Team Definition (by guid due to relation loading
+      // issues)
+      teamArt.setTeamDefinition(teamDef);
+
+      // Initialize state machine
+      String startState = teamArt.getWorkFlowDefinition().getStartPage().getPageName();
+      teamArt.getStateMgr().initializeStateMachine(startState, assignees);
+      teamArt.getLog().addLog(LogType.StateEntered, startState, "");
+
+      // Relate Action to WorkFlow
+      actionArt.addRelation(AtsRelationTypes.ActionToWorkflow_WorkFlow, teamArt);
+
+      teamArt.persist(transaction);
+
+      return teamArt;
+   }
+
+   /**
+    * Set Team Workflow attributes off given action artifact
+    */
+   public static void setArtifactIdentifyData(ActionArtifact fromAction, TeamWorkFlowArtifact toTeam) throws OseeCoreException {
+      String priorityStr = fromAction.getSoleAttributeValue(AtsAttributeTypes.PriorityType, "");
+      PriorityType priType = null;
+      if (Strings.isValid(priorityStr)) {
+         priType = PriorityType.getPriority(priorityStr);
+      } else {
+         throw new OseeArgumentException("Invalid priority [%s]", priorityStr);
+      }
+      setArtifactIdentifyData(toTeam, fromAction.getName(),
+         fromAction.getSoleAttributeValue(AtsAttributeTypes.Description, ""),
+         ChangeType.getChangeType(fromAction.getSoleAttributeValue(AtsAttributeTypes.ChangeType, "")), priType,
+         //            fromAction.getAttributesToStringList(AtsAttributeTypes.ATS_USER_COMMUNITY),
+         fromAction.getSoleAttributeValue(AtsAttributeTypes.ValidationRequired, false),
+         fromAction.getSoleAttributeValue(AtsAttributeTypes.NeedBy, (Date) null));
+   }
+
+   /**
+    * Since there is no shared attribute yet, action and workflow arts are all populate with identify data
+    */
+   public static void setArtifactIdentifyData(Artifact art, String title, String desc, ChangeType changeType, PriorityType priority, Boolean validationRequired, Date needByDate) throws OseeCoreException {
+      art.setName(title);
+      if (!desc.equals("")) {
+         art.setSoleAttributeValue(AtsAttributeTypes.Description, desc);
+      }
+      art.setSoleAttributeValue(AtsAttributeTypes.ChangeType, changeType.name());
+      //      art.setAttributeValues(ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getStoreName(), userComms);
+      if (priority != null && priority != PriorityType.None) {
+         art.setSoleAttributeValue(AtsAttributeTypes.PriorityType, priority.getShortName());
+      }
+      if (needByDate != null) {
+         art.setSoleAttributeValue(AtsAttributeTypes.NeedBy, needByDate);
+      }
+      if (validationRequired) {
+         art.setSoleAttributeValue(AtsAttributeTypes.ValidationRequired, true);
+      }
    }
 
 }

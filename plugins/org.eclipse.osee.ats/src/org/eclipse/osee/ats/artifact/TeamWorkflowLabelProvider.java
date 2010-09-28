@@ -21,18 +21,14 @@ import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
  */
 public class TeamWorkflowLabelProvider extends ArtifactLabelProvider {
 
-   public TeamWorkflowLabelProvider() {
-      super();
-   }
-
    @Override
    public String getText(Object element) {
       TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) element;
       try {
-         if (teamWf.getWorldViewTargetedVersion() != null) {
-            return "[" + teamWf.getTeamName() + "][" + teamWf.getWorldViewTargetedVersionStr() + "] - " + teamWf.getName();
-         } else {
+         if (teamWf.getWorldViewTargetedVersion() == null) {
             return "[" + teamWf.getTeamName() + "] - " + teamWf.getName();
+         } else {
+            return "[" + teamWf.getTeamName() + "][" + teamWf.getWorldViewTargetedVersionStr() + "] - " + teamWf.getName();
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);

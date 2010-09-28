@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskOptionStatusDialog;
@@ -31,24 +31,24 @@ import org.eclipse.ui.PlatformUI;
  */
 public class SMAPromptChangeStatus {
 
-   private final Collection<? extends StateMachineArtifact> smas;
+   private final Collection<? extends AbstractWorkflowArtifact> smas;
 
-   public SMAPromptChangeStatus(StateMachineArtifact sma) {
+   public SMAPromptChangeStatus(AbstractWorkflowArtifact sma) {
       this(Arrays.asList(sma));
    }
 
-   public SMAPromptChangeStatus(final Collection<? extends StateMachineArtifact> smas) {
+   public SMAPromptChangeStatus(final Collection<? extends AbstractWorkflowArtifact> smas) {
       this.smas = smas;
    }
 
-   public static boolean promptChangeStatus(Collection<? extends StateMachineArtifact> smas, boolean persist) throws OseeCoreException {
+   public static boolean promptChangeStatus(Collection<? extends AbstractWorkflowArtifact> smas, boolean persist) throws OseeCoreException {
       SMAPromptChangeStatus promptChangeStatus = new SMAPromptChangeStatus(smas);
       return promptChangeStatus.promptChangeStatus(persist).isTrue();
    }
 
-   public static Result isValidToChangeStatus(Collection<? extends StateMachineArtifact> smas) throws OseeCoreException {
+   public static Result isValidToChangeStatus(Collection<? extends AbstractWorkflowArtifact> smas) throws OseeCoreException {
       // Don't allow statusing for any canceled tasks
-      for (StateMachineArtifact sma : smas) {
+      for (AbstractWorkflowArtifact sma : smas) {
          if (sma.isCancelled()) {
             String error =
                "Can not status a cancelled " + sma.getArtifactTypeName() + ".\n\nTransition out of cancelled first.";
@@ -56,7 +56,7 @@ public class SMAPromptChangeStatus {
          }
       }
       // If task status is being changed, make sure tasks belong to current state
-      for (StateMachineArtifact sma : smas) {
+      for (AbstractWorkflowArtifact sma : smas) {
          if (sma instanceof TaskArtifact) {
             TaskArtifact taskArt = (TaskArtifact) sma;
             if (!taskArt.isRelatedToParentWorkflowCurrentState()) {
@@ -103,7 +103,7 @@ public class SMAPromptChangeStatus {
       return Result.FalseResult;
    }
 
-   public static void performChangeStatus(Collection<? extends StateMachineArtifact> smas, List<TaskResOptionDefinition> options, String selectedOption, double hours, int percent, boolean splitHours, boolean persist) throws OseeCoreException {
+   public static void performChangeStatus(Collection<? extends AbstractWorkflowArtifact> smas, List<TaskResOptionDefinition> options, String selectedOption, double hours, int percent, boolean splitHours, boolean persist) throws OseeCoreException {
       if (splitHours) {
          hours = hours / smas.size();
       }
@@ -111,7 +111,7 @@ public class SMAPromptChangeStatus {
       if (persist) {
          transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "ATS Prompt Change Status");
       }
-      for (StateMachineArtifact sma : smas) {
+      for (AbstractWorkflowArtifact sma : smas) {
          if (sma.getStateMgr().isUnAssigned()) {
             sma.getStateMgr().removeAssignee(UserManager.getUser(SystemUser.UnAssigned));
             sma.getStateMgr().addAssignee(UserManager.getUser());

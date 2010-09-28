@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.editor.stateItem;
 
 import java.util.Collection;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
@@ -32,7 +32,7 @@ public class AtsForceAssigneesToTeamLeadsStateItem extends AtsStateItem {
    }
 
    @Override
-   public void transitioned(StateMachineArtifact sma, String fromState, String toState, Collection<User> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
+   public void transitioned(AbstractWorkflowArtifact sma, String fromState, String toState, Collection<User> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
       super.transitioned(sma, fromState, toState, toAssignees, transaction);
       if (sma.isTeamWorkflow() && AtsWorkDefinitions.isForceAssigneesToTeamLeads(sma.getWorkPageDefinitionByName(toState))) {
          // Set Assignees to all user roles users

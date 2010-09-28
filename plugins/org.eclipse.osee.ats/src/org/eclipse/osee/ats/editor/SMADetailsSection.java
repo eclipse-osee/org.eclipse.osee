@@ -10,7 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor;
 
+import java.util.Collection;
+import java.util.Map;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
+import org.eclipse.osee.framework.core.data.AccessContextId;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.services.CmAccessControl;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
@@ -77,12 +86,35 @@ public class SMADetailsSection extends SectionPart {
 
       if (Widgets.isAccessible(formText)) {
          try {
-            formText.setText(Artifacts.getDetailsFormText(editor.getSma().getSMADetails()), true, true);
+            formText.setText(Artifacts.getDetailsFormText(getSMADetails(editor.getSma())), true, true);
          } catch (Exception ex) {
             formText.setText(Lib.exceptionToString(ex), false, false);
          }
          getManagedForm().reflow(true);
       }
+   }
+
+   private Map<String, String> getSMADetails(AbstractWorkflowArtifact workflow) throws OseeCoreException {
+      Map<String, String> details = Artifacts.getDetailsKeyValues(workflow);
+      details.put("Workflow Definition", workflow.getWorkFlowDefinition().getName());
+      if (workflow.getParentActionArtifact() != null) {
+         details.put("Action Id", workflow.getParentActionArtifact().getHumanReadableId());
+      }
+      if (!(workflow instanceof TeamWorkFlowArtifact) && workflow.getParentTeamWorkflow() != null) {
+         details.put("Parent Team Workflow Id", workflow.getParentTeamWorkflow().getHumanReadableId());
+      }
+      if (workflow.isOfType(AtsArtifactTypes.TeamWorkflow)) {
+         String message = null;
+         CmAccessControl accessControl = workflow.getAccessControl();
+         if (accessControl == null) {
+            message = "AtsCmAccessControlService not started";
+         } else {
+            Collection<? extends AccessContextId> ids = accessControl.getContextId(UserManager.getUser(), this);
+            message = ids.toString();
+         }
+         details.put("Access Context Id", message);
+      }
+      return details;
    }
 
    @Override

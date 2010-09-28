@@ -30,6 +30,7 @@ public class OpenInAtsWorkflowEditor extends Action {
    private final ISelectedAtsArtifacts selectedAtsArtifacts;
 
    public OpenInAtsWorkflowEditor(String name, ISelectedAtsArtifacts selectedAtsArtifacts) {
+      super();
       this.selectedAtsArtifacts = selectedAtsArtifacts;
       setText(name);
    }

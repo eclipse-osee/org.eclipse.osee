@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.workflow.item.AtsAddDecisionReviewRule;
 import org.eclipse.osee.ats.workflow.item.AtsAddDecisionReviewRule.DecisionParameter;
@@ -38,7 +38,7 @@ public class AtsHandleAddReviewRuleStateItem extends AtsStateItem {
    }
 
    @Override
-   public void transitioned(StateMachineArtifact sma, String fromState, String toState, Collection<User> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
+   public void transitioned(AbstractWorkflowArtifact sma, String fromState, String toState, Collection<User> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
       super.transitioned(sma, fromState, toState, toAssignees, transaction);
 
       // Create any decision or peerToPeer reviews for transitionTo and transitionFrom
@@ -47,7 +47,7 @@ public class AtsHandleAddReviewRuleStateItem extends AtsStateItem {
       }
    }
 
-   public static void runRule(StateMachineArtifact sma, String toState, String ruleId, SkynetTransaction transaction) throws OseeCoreException {
+   public static void runRule(AbstractWorkflowArtifact sma, String toState, String ruleId, SkynetTransaction transaction) throws OseeCoreException {
       for (WorkRuleDefinition workRuleDef : sma.getWorkRulesStartsWith(ruleId)) {
          if (!sma.isTeamWorkflow()) {
             continue;

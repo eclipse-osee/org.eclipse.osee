@@ -14,7 +14,7 @@ import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.ArtifactEmailWizard;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -32,6 +32,7 @@ public class EmailActionAction extends Action {
    private final ISelectedAtsArtifacts selectedAtsArtifacts;
 
    public EmailActionAction(ISelectedAtsArtifacts selectedAtsArtifacts) {
+      super();
       this.selectedAtsArtifacts = selectedAtsArtifacts;
       try {
          updateName();
@@ -42,10 +43,10 @@ public class EmailActionAction extends Action {
    }
 
    private void performEmail() throws OseeCoreException {
-      ArtifactEmailWizard ew =
+      ArtifactEmailWizard wizard =
          new ArtifactEmailWizard(
-            ((StateMachineArtifact) selectedAtsArtifacts.getSelectedSMAArtifacts().iterator().next()));
-      WizardDialog dialog = new WizardDialog(Displays.getActiveShell(), ew);
+            ((AbstractWorkflowArtifact) selectedAtsArtifacts.getSelectedSMAArtifacts().iterator().next()));
+      WizardDialog dialog = new WizardDialog(Displays.getActiveShell(), wizard);
       dialog.create();
       dialog.open();
    }

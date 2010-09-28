@@ -29,6 +29,7 @@ public class DeletePurgeAtsArtifactsAction extends Action {
    private final ISelectedAtsArtifacts selectedAtsArtifacts;
 
    public DeletePurgeAtsArtifactsAction(ISelectedAtsArtifacts selectedAtsArtifacts) {
+      super();
       this.selectedAtsArtifacts = selectedAtsArtifacts;
       setText("Delete/Purge Ats Artifact(s)");
       setToolTipText(getText());

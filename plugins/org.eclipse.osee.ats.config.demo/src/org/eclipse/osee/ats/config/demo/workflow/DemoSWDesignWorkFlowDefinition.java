@@ -11,8 +11,8 @@
 package org.eclipse.osee.ats.config.demo.workflow;
 
 import java.util.Arrays;
-import org.eclipse.osee.ats.artifact.ReviewSMArtifact.ReviewBlockType;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
+import org.eclipse.osee.ats.artifact.AbstractReviewArtifact.ReviewBlockType;
+import org.eclipse.osee.ats.util.DefaultTeamState;
 import org.eclipse.osee.ats.workflow.flow.TeamWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.item.AtsStatePercentCompleteWeightDefaultWorkflowRule;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;

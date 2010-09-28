@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.config.demo.workflow;
 
 import java.util.logging.Level;
-import org.eclipse.osee.ats.artifact.ReviewSMArtifact.ReviewBlockType;
+import org.eclipse.osee.ats.artifact.AbstractReviewArtifact.ReviewBlockType;
 import org.eclipse.osee.ats.config.demo.internal.OseeAtsConfigDemoActivator;
 import org.eclipse.osee.ats.workflow.item.AtsAddDecisionReviewRule;
 import org.eclipse.osee.ats.workflow.item.StateEventType;

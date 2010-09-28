@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
@@ -336,7 +336,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IActionable, I
    }
 
    @Override
-   public StateMachineArtifact getSma() {
+   public AbstractWorkflowArtifact getSma() {
       return null;
    }
 
@@ -373,7 +373,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IActionable, I
    @Override
    public double getManHoursPerDayPreference() throws OseeCoreException {
       if (tasks.isEmpty()) {
-         return StateMachineArtifact.DEFAULT_HOURS_PER_WORK_DAY;
+         return AtsUtil.DEFAULT_HOURS_PER_WORK_DAY;
       }
       return tasks.iterator().next().getManHrsPerDayPreference();
    }

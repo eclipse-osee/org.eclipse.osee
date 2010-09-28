@@ -12,14 +12,15 @@ package org.eclipse.osee.ats.artifact;
 
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
+import org.eclipse.osee.ats.util.DefaultTeamState;
+import org.eclipse.osee.ats.util.StateManager;
+import org.eclipse.osee.ats.util.TransitionOption;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResolutionOptionRule;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -41,7 +42,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 /**
  * @author Donald G. Dunne
  */
-public class TaskArtifact extends StateMachineArtifact implements IATSStateMachineArtifact {
+public class TaskArtifact extends AbstractWorkflowArtifact implements IATSStateMachineArtifact {
 
    public static enum TaskStates {
       InWork,
@@ -55,50 +56,6 @@ public class TaskArtifact extends StateMachineArtifact implements IATSStateMachi
 
    public boolean isRelatedToParentWorkflowCurrentState() throws OseeCoreException {
       return getWorldViewRelatedToState().equals(getParentSMA().getStateMgr().getCurrentStateName());
-   }
-
-   @Override
-   public void onInitializationComplete() throws OseeCoreException {
-      super.onInitializationComplete();
-   }
-
-   /**
-    * Allow parent SMA's assignees and all privileged users up Team tree
-    */
-   @Override
-   public Set<User> getPrivilegedUsers() throws OseeCoreException {
-      Set<User> users = new HashSet<User>();
-      StateMachineArtifact parentSma = getParentSMA();
-      if (parentSma.isTeamWorkflow()) {
-         users.addAll(((TeamWorkFlowArtifact) parentSma).getPrivilegedUsers());
-      }
-      users.addAll(parentSma.getStateMgr().getAssignees());
-      return users;
-   }
-
-   /**
-    * Can only un-cancel task when it's related to an active state
-    */
-   @Override
-   public boolean isUnCancellable() {
-      try {
-         StateMachineArtifact parentSMA = getParentSMA();
-         boolean unCancellable =
-            parentSMA.getStateMgr().getCurrentStateName().equals(
-               getSoleAttributeValue(AtsAttributeTypes.RelatedToState, ""));
-         if (!unCancellable) {
-            return false;
-         }
-         return super.isUnCancellable();
-      } catch (Exception ex) {
-         // Do Nothing
-      }
-      return false;
-   }
-
-   @Override
-   public boolean isTaskable() {
-      return false;
    }
 
    public boolean isUsingTaskResolutionOptions() throws OseeCoreException {
@@ -190,11 +147,11 @@ public class TaskArtifact extends StateMachineArtifact implements IATSStateMachi
       return getParentSMA().getWorldViewEstimatedReleaseDate();
    }
 
-   public Boolean isInWork() throws OseeCoreException {
+   public Boolean isInWork() {
       return getStateMgr().getCurrentStateName().equals(TaskStates.InWork.name());
    }
 
-   public void transitionToCompleted(double additionalHours, SkynetTransaction transaction, TransitionOption... transitionOption) throws OseeCoreException {
+   public void transitionToCompleted(double additionalHours, SkynetTransaction transaction, TransitionOption... transitionOption) {
       if (getStateMgr().getCurrentStateName().equals(DefaultTeamState.Completed.name())) {
          return;
       }
@@ -299,17 +256,16 @@ public class TaskArtifact extends StateMachineArtifact implements IATSStateMachi
       if (percent == 0) {
          return getWorldViewEstimatedHours();
       }
-      double remain = getWorldViewEstimatedHours() - est * percent / 100.0;
-      return remain;
+      return getWorldViewEstimatedHours() - est * percent / 100.0;
    }
 
    @Override
-   public StateMachineArtifact getParentSMA() throws OseeCoreException {
+   public AbstractWorkflowArtifact getParentSMA() throws OseeCoreException {
       if (parentSma != null) {
          return parentSma;
       }
-      Collection<StateMachineArtifact> smas =
-         getRelatedArtifacts(AtsRelationTypes.SmaToTask_Sma, StateMachineArtifact.class);
+      Collection<AbstractWorkflowArtifact> smas =
+         getRelatedArtifacts(AtsRelationTypes.SmaToTask_Sma, AbstractWorkflowArtifact.class);
       if (smas.isEmpty()) {
          throw new OseeStateException("Task has no parent [%s]", getHumanReadableId());
       }
@@ -331,7 +287,7 @@ public class TaskArtifact extends StateMachineArtifact implements IATSStateMachi
       if (parentTeamArt != null) {
          return parentTeamArt;
       }
-      StateMachineArtifact sma = getParentSMA();
+      AbstractWorkflowArtifact sma = getParentSMA();
       if (sma.isTeamWorkflow()) {
          parentTeamArt = (TeamWorkFlowArtifact) sma;
       }
@@ -340,7 +296,7 @@ public class TaskArtifact extends StateMachineArtifact implements IATSStateMachi
 
    @Override
    public Collection<User> getImplementers() throws OseeCoreException {
-      return getImplementersByState(TaskStates.InWork.name());
+      return StateManager.getImplementersByState(this, TaskStates.InWork.name());
    }
 
    @Override
@@ -365,7 +321,7 @@ public class TaskArtifact extends StateMachineArtifact implements IATSStateMachi
 
    @Override
    public String getWorldViewLegacyPCR() throws OseeCoreException {
-      StateMachineArtifact sma = getParentSMA();
+      AbstractWorkflowArtifact sma = getParentSMA();
       if (sma != null) {
          return sma.getWorldViewLegacyPCR();
       }
@@ -373,13 +329,8 @@ public class TaskArtifact extends StateMachineArtifact implements IATSStateMachi
    }
 
    @Override
-   public String getHyperTargetVersion() {
-      return null;
-   }
-
-   @Override
    public String getWorldViewSWEnhancement() throws OseeCoreException {
-      StateMachineArtifact sma = getParentSMA();
+      AbstractWorkflowArtifact sma = getParentSMA();
       if (sma != null) {
          return sma.getWorldViewSWEnhancement();
       }
@@ -389,11 +340,6 @@ public class TaskArtifact extends StateMachineArtifact implements IATSStateMachi
    @Override
    public String getWorldViewParentID() throws OseeCoreException {
       return getParentTeamWorkflow().getHumanReadableId();
-   }
-
-   @Override
-   public boolean hasAtsWorldChildren() {
-      return false;
    }
 
 }

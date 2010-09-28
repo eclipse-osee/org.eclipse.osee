@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.util.email;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -53,19 +54,19 @@ import org.eclipse.swt.widgets.Text;
  */
 public class EmailWizardPage extends WizardPage {
    private Text text;
-   private final ArrayList<Object> initialAddress;
+   private final List<Object> initialAddress;
    private OSEEFilteredTree namesList;
    private ListViewer toList;
    private ListViewer ccList;
    private ListViewer bccList;
 
    private final static String separator = "===============";
-   private final ArrayList<EmailGroup> groups;
+   private final List<EmailGroup> groups;
 
    /**
     * @param initialAddress User, EmailGroup or String
     */
-   protected EmailWizardPage(String pageName, ArrayList<EmailGroup> groups, ArrayList<Object> initialAddress) {
+   protected EmailWizardPage(String pageName, List<EmailGroup> groups, List<Object> initialAddress) {
       super(pageName);
       this.groups = groups;
       this.initialAddress = initialAddress;

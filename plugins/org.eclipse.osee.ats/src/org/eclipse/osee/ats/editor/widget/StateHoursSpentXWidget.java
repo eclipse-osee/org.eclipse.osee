@@ -12,8 +12,8 @@ package org.eclipse.osee.ats.editor.widget;
 
 import java.util.Collections;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
-import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
 import org.eclipse.osee.ats.internal.AtsPlugin;
@@ -31,11 +31,11 @@ import org.eclipse.ui.forms.IManagedForm;
  */
 public class StateHoursSpentXWidget extends XHyperlinkLabelValueSelection {
 
-   private final StateMachineArtifact sma;
+   private final AbstractWorkflowArtifact sma;
    private final AtsWorkPage page;
    private final boolean isCurrentState;
 
-   public StateHoursSpentXWidget(IManagedForm managedForm, AtsWorkPage page, final StateMachineArtifact sma, Composite composite, int horizontalSpan, XModifiedListener xModListener, boolean isCurrentState) {
+   public StateHoursSpentXWidget(IManagedForm managedForm, AtsWorkPage page, final AbstractWorkflowArtifact sma, Composite composite, int horizontalSpan, XModifiedListener xModListener, boolean isCurrentState) {
       super("\"" + page.getName() + "\"" + " State Hours Spent");
       this.page = page;
       this.sma = sma;
@@ -80,10 +80,10 @@ public class StateHoursSpentXWidget extends XHyperlinkLabelValueSelection {
                sma.getStateMgr().getHoursSpent(page.getName())));
          setEditable(isCurrentState && !sma.isReadOnly());
          boolean breakoutNeeded = false;
-         if (sma instanceof TaskableStateMachineArtifact) {
-            if (((TaskableStateMachineArtifact) sma).hasTaskArtifacts()) {
+         if (sma instanceof AbstractTaskableArtifact) {
+            if (((AbstractTaskableArtifact) sma).hasTaskArtifacts()) {
                sb.append(String.format("\n        Task  Hours: %5.2f",
-                  ((TaskableStateMachineArtifact) sma).getHoursSpentFromTasks(page.getName())));
+                  ((AbstractTaskableArtifact) sma).getHoursSpentFromTasks(page.getName())));
                breakoutNeeded = true;
             }
          }

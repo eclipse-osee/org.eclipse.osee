@@ -14,16 +14,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.ats.artifact.AbstractReviewArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.DefaultTeamState;
 import org.eclipse.osee.ats.util.SMAUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -60,8 +60,8 @@ public class UserWorldSearchItem {
       this.options = Collections.getAggregate(userSearchOption);
    }
 
-   public Collection<StateMachineArtifact> performSearch() throws OseeCoreException {
-      Set<StateMachineArtifact> searchArts = new HashSet<StateMachineArtifact>();
+   public Collection<AbstractWorkflowArtifact> performSearch() throws OseeCoreException {
+      Set<AbstractWorkflowArtifact> searchArts = new HashSet<AbstractWorkflowArtifact>();
       if (options.contains(UserSearchOption.Originator)) {
          searchArts.addAll(getOriginatorArtifacts());
       } else if (options.contains(UserSearchOption.Subscribed)) {
@@ -69,7 +69,7 @@ public class UserWorldSearchItem {
       } else if (options.contains(UserSearchOption.Favorites)) {
          searchArts.addAll(getFavoritesArtifacts());
       } else if (options.contains(UserSearchOption.Assignee)) {
-         searchArts.addAll(Collections.castMatching(StateMachineArtifact.class, AtsUtil.getAssigned(user)));
+         searchArts.addAll(Collections.castMatching(AbstractWorkflowArtifact.class, AtsUtil.getAssigned(user)));
          // If include cancelled or completed, need to perform extra search
          // Note: Don't need to do this for Originator, Subscribed or Favorites, cause it does completed canceled in it's own searches
          if (options.contains(UserSearchOption.IncludeCancelled) || options.contains(UserSearchOption.IncludeCompleted)) {
@@ -80,7 +80,7 @@ public class UserWorldSearchItem {
 
       Collection<Class<?>> filterClasses = new ArrayList<Class<?>>();
       if (!options.contains(UserSearchOption.IncludeReviews)) {
-         filterClasses.add(ReviewSMArtifact.class);
+         filterClasses.add(AbstractReviewArtifact.class);
       }
       if (!options.contains(UserSearchOption.IncludeTeamWorkflows)) {
          filterClasses.add(TeamWorkFlowArtifact.class);
@@ -89,7 +89,7 @@ public class UserWorldSearchItem {
          filterClasses.add(TaskArtifact.class);
       }
 
-      Collection<StateMachineArtifact> filteredArts = SMAUtil.filterOutTypes(searchArts, filterClasses);
+      Collection<AbstractWorkflowArtifact> filteredArts = SMAUtil.filterOutTypes(searchArts, filterClasses);
 
       if (teamDefs != null && teamDefs.size() > 0) {
          filteredArts = SMAUtil.getTeamDefinitionWorkflows(filteredArts, teamDefs);
@@ -117,13 +117,13 @@ public class UserWorldSearchItem {
       return filteredArts;
    }
 
-   private Collection<StateMachineArtifact> getOriginatorArtifacts() throws OseeCoreException {
-      Collection<StateMachineArtifact> originators = new ArrayList<StateMachineArtifact>();
-      Collection<StateMachineArtifact> artifacts =
+   private Collection<AbstractWorkflowArtifact> getOriginatorArtifacts() throws OseeCoreException {
+      Collection<AbstractWorkflowArtifact> originators = new ArrayList<AbstractWorkflowArtifact>();
+      Collection<AbstractWorkflowArtifact> artifacts =
          Collections.castAll(ArtifactQuery.getArtifactListFromAttribute(AtsAttributeTypes.Log,
             "%type=\"Originated\" userId=\"" + user.getUserId() + "\"%", AtsUtil.getAtsBranch()));
       // omit historical originators; list current originators
-      for (StateMachineArtifact art : artifacts) {
+      for (AbstractWorkflowArtifact art : artifacts) {
          if (art.getWorldViewOriginator().equals(user.getName())) {
             originators.add(art);
          }
@@ -131,12 +131,12 @@ public class UserWorldSearchItem {
       return originators;
    }
 
-   private Collection<StateMachineArtifact> getSubscribedArtifacts() throws OseeCoreException {
-      return user.getRelatedArtifactsOfType(AtsRelationTypes.SubscribedUser_Artifact, StateMachineArtifact.class);
+   private Collection<AbstractWorkflowArtifact> getSubscribedArtifacts() throws OseeCoreException {
+      return user.getRelatedArtifactsOfType(AtsRelationTypes.SubscribedUser_Artifact, AbstractWorkflowArtifact.class);
    }
 
-   private Collection<StateMachineArtifact> getFavoritesArtifacts() throws OseeCoreException {
-      return user.getRelatedArtifactsOfType(AtsRelationTypes.FavoriteUser_Artifact, StateMachineArtifact.class);
+   private Collection<AbstractWorkflowArtifact> getFavoritesArtifacts() throws OseeCoreException {
+      return user.getRelatedArtifactsOfType(AtsRelationTypes.FavoriteUser_Artifact, AbstractWorkflowArtifact.class);
    }
 
 }

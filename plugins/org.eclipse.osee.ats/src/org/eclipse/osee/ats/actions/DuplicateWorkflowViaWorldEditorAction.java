@@ -30,6 +30,7 @@ public class DuplicateWorkflowViaWorldEditorAction extends Action {
    private final WorldEditor worldEditor;
 
    public DuplicateWorkflowViaWorldEditorAction(WorldEditor worldEditor) {
+      super();
       this.worldEditor = worldEditor;
       setText("Duplicate Team Workflow");
    }

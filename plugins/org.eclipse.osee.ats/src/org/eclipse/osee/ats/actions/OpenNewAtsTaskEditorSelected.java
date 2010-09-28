@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.actions;
 
-import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.jface.action.Action;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.ats.AtsImage;
@@ -32,16 +32,16 @@ public class OpenNewAtsTaskEditorSelected extends Action {
    private final IOpenNewAtsTaskEditorSelectedHandler openNewAtsTaskEditorSelectedHandler;
 
    public OpenNewAtsTaskEditorSelected(IOpenNewAtsTaskEditorSelectedHandler openNewAtsTaskEditorSelectedHandler) {
+      super();
       this.openNewAtsTaskEditorSelectedHandler = openNewAtsTaskEditorSelectedHandler;
       setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.TASK_SELECTED));
       setToolTipText("Open Selected in ATS Task Editor");
    }
 
    public interface IOpenNewAtsTaskEditorSelectedHandler {
-      public CustomizeData getCustomizeDataCopy() throws OseeCoreException;
+      CustomizeData getCustomizeDataCopy() throws OseeCoreException;
 
-      public ArrayList<? extends Artifact> getSelectedArtifacts() throws OseeCoreException;
-
+      List<? extends Artifact> getSelectedArtifacts() throws OseeCoreException;
    }
 
    @Override

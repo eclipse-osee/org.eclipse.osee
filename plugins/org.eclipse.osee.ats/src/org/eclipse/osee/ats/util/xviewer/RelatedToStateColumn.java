@@ -11,7 +11,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 
 public class RelatedToStateColumn {
 
-   public static boolean promptChangeRelatedToState(StateMachineArtifact sma, boolean persist) {
+   public static boolean promptChangeRelatedToState(AbstractWorkflowArtifact sma, boolean persist) {
       if (sma.isTask()) {
          return promptChangeRelatedToState(Arrays.asList((TaskArtifact) sma), persist);
       } else {

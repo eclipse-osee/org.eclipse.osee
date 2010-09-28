@@ -68,7 +68,7 @@ public class XCheckBoxDam extends XCheckBox implements IAttributeWidget {
    public IStatus isValid() {
       IStatus status = super.isValid();
       if (status.isOK()) {
-         status = OseeValidator.getInstance().validate(IOseeValidator.SHORT, artifact, attributeType, get());
+         status = OseeValidator.getInstance().validate(IOseeValidator.SHORT, artifact, attributeType, isChecked());
       }
       return status;
    }

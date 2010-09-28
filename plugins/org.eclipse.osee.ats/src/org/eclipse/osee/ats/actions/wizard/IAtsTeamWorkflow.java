@@ -30,7 +30,7 @@ public interface IAtsTeamWorkflow {
     * @param actionableItems that were selected for the creation
     * @return true if responsible, false if not
     */
-   public boolean isResponsibleForTeamWorkflowCreation(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems) throws OseeCoreException;
+   boolean isResponsibleForTeamWorkflowCreation(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems) throws OseeCoreException;
 
    /**
     * Return the artifact type name for the given parameters. This method will only be called if
@@ -40,19 +40,19 @@ public interface IAtsTeamWorkflow {
     * @param actionableItems that were selected for the creation
     * @return string artifact type name
     */
-   public String getTeamWorkflowArtifactName(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems) throws OseeCoreException;
+   String getTeamWorkflowArtifactName(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems) throws OseeCoreException;
 
    /**
     * Notification that a teamWorkflow is being duplicated. This allows the extension to do necessary changes to
     * duplicated workflow.
     */
-   public void teamWorkflowDuplicating(TeamWorkFlowArtifact teamArt, TeamWorkFlowArtifact dupTeamArt) throws OseeCoreException;
+   void teamWorkflowDuplicating(TeamWorkFlowArtifact teamArt, TeamWorkFlowArtifact dupTeamArt) throws OseeCoreException;
 
    /**
     * Notification that a teamWorkflow was created. This allows the extension to do necessary initial tasks after the
     * team workflow artifact is created. All changes made to dupTeamArt will be persisted after this call.
     */
-   public void teamWorkflowCreated(TeamWorkFlowArtifact teamArt);
+   void teamWorkflowCreated(TeamWorkFlowArtifact teamArt);
 
    /**
     * Return a collection of all team workflow artifact type names. These are used by ATS when searching is performed
@@ -60,5 +60,5 @@ public interface IAtsTeamWorkflow {
     * 
     * @return collection of all team workflow artifact type names
     */
-   public Collection<? extends IArtifactType> getTeamWorkflowArtifactNames() throws OseeCoreException;
+   Collection<? extends IArtifactType> getTeamWorkflowArtifactNames() throws OseeCoreException;
 }

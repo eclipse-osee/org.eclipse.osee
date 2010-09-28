@@ -23,9 +23,9 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.actions.NewAction;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowLabelProvider;
 import org.eclipse.osee.ats.config.AtsBulkLoad;
@@ -96,6 +96,7 @@ public final class AtsUtil {
    private static ArtifactTypeEventFilter atsObjectArtifactTypesFilter, reviewArtifactTypesFilter,
       teamWorkflowArtifactTypesFilter, workItemArtifactTypesFilter;
    private static List<IEventFilter> atsObjectEventFilter = new ArrayList<IEventFilter>(2);
+   public final static double DEFAULT_HOURS_PER_WORK_DAY = 8;
 
    private AtsUtil() {
       super();
@@ -202,7 +203,7 @@ public final class AtsUtil {
    }
 
    public static void editActionableItems(ActionArtifact actionArt) throws OseeCoreException {
-      Result result = actionArt.editActionableItems();
+      Result result = ActionableItemManager.editActionableItems(actionArt);
       if (result.isFalse() && result.getText().equals("")) {
          return;
       }
@@ -212,7 +213,7 @@ public final class AtsUtil {
    }
 
    public static void editActionableItems(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
-      Result result = teamArt.editActionableItems();
+      Result result = ActionableItemManager.editActionableItems(teamArt);
       if (result.isFalse() && result.getText().equals("")) {
          return;
       }
@@ -246,7 +247,7 @@ public final class AtsUtil {
 
       try {
          if (editor == OseeCmEditor.CmPcrEditor) {
-            if (artifact instanceof StateMachineArtifact || artifact instanceof ActionArtifact) {
+            if (artifact instanceof AbstractWorkflowArtifact || artifact instanceof ActionArtifact) {
                openATSAction(artifact, AtsOpenOption.OpenOneOrPopupSelect);
             } else {
                RendererManager.open(artifact, PresentationType.GENERALIZED_EDIT);

@@ -20,11 +20,12 @@ import org.eclipse.osee.ats.actions.wizard.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.artifact.ActionArtifact.CreateTeamOption;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
-import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -126,7 +127,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
             assignees.add(UserManager.getUser());
          }
          TeamWorkFlowArtifact newTeamArt =
-            teamArt.getParentActionArtifact().createTeamWorkflow(teamArt.getTeamDefinition(),
+            ActionManager.createTeamWorkflow(teamArt.getParentActionArtifact(), teamArt.getTeamDefinition(),
                teamArt.getActionableItemsDam().getActionableItems(), assignees, transaction,
                CreateTeamOption.Duplicate_If_Exists);
          if (Strings.isValid(title)) {
@@ -163,7 +164,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
          dupArt.persist(transaction);
          // Notify all extension points that workflow is being duplicated in case they need to add, remove
          // attributes or relations
-         for (IAtsTeamWorkflow teamExtension : TeamWorkflowExtensions.getInstance().getAtsTeamWorkflowExtensions()) {
+         for (IAtsTeamWorkflow teamExtension : TeamWorkflowExtensions.getAtsTeamWorkflowExtensions()) {
             teamExtension.teamWorkflowDuplicating(teamArt, dupArt);
          }
       }
@@ -220,7 +221,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
    /**
     * @return the defaultTeamWorkflows
     */
-   public Collection<? extends TaskableStateMachineArtifact> getDefaultTeamWorkflows() {
+   public Collection<? extends AbstractTaskableArtifact> getDefaultTeamWorkflows() {
       return defaultTeamWorkflows;
    }
 

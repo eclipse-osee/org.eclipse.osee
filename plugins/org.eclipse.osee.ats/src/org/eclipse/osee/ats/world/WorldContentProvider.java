@@ -20,15 +20,16 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.osee.ats.artifact.AbstractReviewArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
-import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
+import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -90,8 +91,8 @@ public class WorldContentProvider implements ITreeContentProvider {
                relatedArts.addAll(arts);
                return arts.toArray();
             }
-            if (artifact instanceof ReviewSMArtifact) {
-               ReviewSMArtifact reviewArt = (ReviewSMArtifact) artifact;
+            if (artifact instanceof AbstractReviewArtifact) {
+               AbstractReviewArtifact reviewArt = (AbstractReviewArtifact) artifact;
                List<Artifact> arts = new ArrayList<Artifact>();
                arts.addAll(reviewArt.getTaskArtifactsSorted());
                relatedArts.addAll(arts);
@@ -118,8 +119,8 @@ public class WorldContentProvider implements ITreeContentProvider {
             if (artifact instanceof TaskArtifact) {
                return ((TaskArtifact) artifact).getParentSMA();
             }
-            if (artifact instanceof ReviewSMArtifact) {
-               return ((ReviewSMArtifact) artifact).getParentSMA();
+            if (artifact instanceof AbstractReviewArtifact) {
+               return ((AbstractReviewArtifact) artifact).getParentSMA();
             }
             if (artifact instanceof GoalArtifact) {
                return ((GoalArtifact) artifact).getParentSMA();
@@ -145,14 +146,26 @@ public class WorldContentProvider implements ITreeContentProvider {
       if (element instanceof ActionArtifact) {
          return true;
       }
-      if (element instanceof StateMachineArtifact) {
+      if (element instanceof AbstractWorkflowArtifact) {
          try {
-            return ((StateMachineArtifact) element).hasAtsWorldChildren();
+            return hasAtsWorldChildren((AbstractWorkflowArtifact) element);
          } catch (Exception ex) {
             // do nothing
          }
       }
       return true;
+   }
+
+   private boolean hasAtsWorldChildren(AbstractWorkflowArtifact workflow) throws OseeCoreException {
+      if (workflow instanceof TaskArtifact) {
+         return false;
+      }
+      for (IRelationEnumeration iRelationEnumeration : workflow.getAtsWorldRelations()) {
+         if (workflow.getRelatedArtifactsCount(iRelationEnumeration) > 0) {
+            return true;
+         }
+      }
+      return false;
    }
 
    @Override

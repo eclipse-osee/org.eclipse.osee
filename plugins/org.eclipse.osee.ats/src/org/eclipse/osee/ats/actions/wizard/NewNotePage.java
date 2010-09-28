@@ -62,49 +62,49 @@ public class NewNotePage extends WizardPage {
 
       Composite topC = new Composite(composite, SWT.NONE);
       topC.setLayout(ALayout.getZeroMarginLayout(2, false));
-      GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-      topC.setLayoutData(gd);
+      GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
+      topC.setLayoutData(gridData);
 
       Composite topCLeft = new Composite(topC, SWT.NONE);
       topCLeft.setLayout(new GridLayout());
-      gd = new GridData(GridData.FILL_HORIZONTAL);
-      topCLeft.setLayoutData(gd);
+      gridData = new GridData(GridData.FILL_HORIZONTAL);
+      topCLeft.setLayoutData(gridData);
 
       typeList.createWidgets(topCLeft, 2);
       typeList.addSelectionListener(new SelectionAdapter() {
 
          @Override
-         public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
+         public void widgetSelected(org.eclipse.swt.events.SelectionEvent event) {
             update();
          };
       });
 
       Composite topCRight = new Composite(topC, SWT.NONE);
       topCRight.setLayout(new GridLayout());
-      gd = new GridData(GridData.FILL_HORIZONTAL);
-      topCRight.setLayoutData(gd);
+      gridData = new GridData(GridData.FILL_HORIZONTAL);
+      topCRight.setLayoutData(gridData);
 
       artifactList.createWidgets(topCRight, 2);
       artifactList.addSelectionListener(new SelectionAdapter() {
 
          @Override
-         public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
+         public void widgetSelected(org.eclipse.swt.events.SelectionEvent event) {
             update();
          };
       });
-      gd = new GridData(GridData.FILL_HORIZONTAL);
-      gd.widthHint = 300;
-      artifactList.getList().setLayoutData(gd);
+      gridData = new GridData(GridData.FILL_HORIZONTAL);
+      gridData.widthHint = 300;
+      artifactList.getList().setLayoutData(gridData);
 
       Composite bottomC = new Composite(composite, SWT.NONE);
       bottomC.setLayout(new GridLayout());
-      gd = new GridData(GridData.FILL_BOTH);
-      bottomC.setLayoutData(gd);
+      gridData = new GridData(GridData.FILL_BOTH);
+      bottomC.setLayoutData(gridData);
 
       noteText.createWidgets(bottomC, 2);
       noteText.addModifyListener(new ModifyListener() {
          @Override
-         public void modifyText(org.eclipse.swt.events.ModifyEvent e) {
+         public void modifyText(org.eclipse.swt.events.ModifyEvent event) {
             update();
          };
       });

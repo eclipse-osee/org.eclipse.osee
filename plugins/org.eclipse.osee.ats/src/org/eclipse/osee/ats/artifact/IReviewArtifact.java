@@ -21,14 +21,14 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public interface IReviewArtifact {
 
-   public boolean isBlocking() throws OseeCoreException;
+   boolean isBlocking() throws OseeCoreException;
 
-   public DefectManager getDefectManager();
+   DefectManager getDefectManager();
 
-   public UserRoleManager getUserRoleManager();
+   UserRoleManager getUserRoleManager();
 
-   public Artifact getArtifact();
+   Artifact getArtifact();
 
-   public IStatus isUserRoleValid(String namespace) throws OseeCoreException;
+   IStatus isUserRoleValid(String namespace) throws OseeCoreException;
 
 }

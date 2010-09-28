@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.util.email;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import javax.mail.Message;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.Wizard;
@@ -28,13 +29,13 @@ public class EmailWizard extends Wizard {
    private EmailWizardPage wizardPage;
    private String htmlMessage = null;
    private String subject = null;
-   private ArrayList<EmailGroup> emailableGroups;
-   private ArrayList<Object> initialAddress = null;
+   private List<EmailGroup> emailableGroups;
+   private List<Object> initialAddress = null;
 
    /**
     * @param initialAddress - User, AtsEmailGroup or String
     */
-   public EmailWizard(String htmlMessage, String subject, ArrayList<EmailGroup> emailableGroups, ArrayList<Object> initialAddress) {
+   public EmailWizard(String htmlMessage, String subject, List<EmailGroup> emailableGroups, List<Object> initialAddress) {
       this.htmlMessage = htmlMessage;
       this.subject = subject;
       this.emailableGroups = emailableGroups;
@@ -94,7 +95,7 @@ public class EmailWizard extends Wizard {
       this.subject = subject;
    }
 
-   public ArrayList<Object> getInitialAddress() {
+   public List<Object> getInitialAddress() {
       return initialAddress;
    }
 

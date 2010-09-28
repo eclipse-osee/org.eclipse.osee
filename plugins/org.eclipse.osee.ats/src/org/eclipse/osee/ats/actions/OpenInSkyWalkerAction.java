@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.actions;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerView;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -22,9 +22,10 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
  */
 public class OpenInSkyWalkerAction extends Action {
 
-   private final StateMachineArtifact sma;
+   private final AbstractWorkflowArtifact sma;
 
-   public OpenInSkyWalkerAction(StateMachineArtifact sma) {
+   public OpenInSkyWalkerAction(AbstractWorkflowArtifact sma) {
+      super();
       this.sma = sma;
       setText("Open Sky Walker");
       setToolTipText(getText());

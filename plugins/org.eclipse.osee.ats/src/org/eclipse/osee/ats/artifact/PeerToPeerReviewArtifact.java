@@ -14,6 +14,7 @@ import java.util.Collection;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.StateManager;
 import org.eclipse.osee.ats.util.widgets.defect.DefectManager;
 import org.eclipse.osee.ats.util.widgets.role.UserRole;
 import org.eclipse.osee.ats.util.widgets.role.UserRole.Role;
@@ -28,7 +29,7 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 /**
  * @author Donald G. Dunne
  */
-public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IReviewArtifact, IATSStateMachineArtifact {
+public class PeerToPeerReviewArtifact extends AbstractReviewArtifact implements IReviewArtifact, IATSStateMachineArtifact {
 
    public static enum PeerToPeerReviewState {
       Prepare,
@@ -57,7 +58,7 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
       if (getStateMgr().getCurrentStateName().equals(PeerToPeerReviewArtifact.PeerToPeerReviewState.Review.name())) {
          for (UserRole uRole : userRoleManager.getUserRoles()) {
             if (uRole.getHoursSpent() == null) {
-               new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, "Hours spent must be entered for each role.");
+               return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, "Hours spent must be entered for each role.");
             }
          }
       }
@@ -67,11 +68,6 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
    @Override
    public String getHelpContext() {
       return "peerToPeerReview";
-   }
-
-   @Override
-   public String getHyperName() {
-      return getName();
    }
 
    @Override
@@ -89,7 +85,7 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
 
    @Override
    public Collection<User> getImplementers() throws OseeCoreException {
-      Collection<User> users = getImplementersByState(PeerToPeerReviewState.Review.name());
+      Collection<User> users = StateManager.getImplementersByState(this, PeerToPeerReviewState.Review.name());
       for (UserRole role : userRoleManager.getUserRoles()) {
          users.add(role.getUser());
       }

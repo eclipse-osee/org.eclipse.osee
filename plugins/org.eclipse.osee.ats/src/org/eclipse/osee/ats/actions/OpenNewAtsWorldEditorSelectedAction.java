@@ -33,16 +33,16 @@ public class OpenNewAtsWorldEditorSelectedAction extends Action {
    private final IOpenNewAtsWorldEditorSelectedHandler openNewAtsWorldEditorSelectedHandler;
 
    public OpenNewAtsWorldEditorSelectedAction(IOpenNewAtsWorldEditorSelectedHandler openNewAtsWorldEditorSelectedHandler) {
+      super();
       this.openNewAtsWorldEditorSelectedHandler = openNewAtsWorldEditorSelectedHandler;
       setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.GLOBE_SELECT));
       setToolTipText("Open Selected in ATS World Editor");
    }
 
    public interface IOpenNewAtsWorldEditorSelectedHandler {
-      public CustomizeData getCustomizeDataCopy() throws OseeCoreException;
+      CustomizeData getCustomizeDataCopy() throws OseeCoreException;
 
-      public ArrayList<Artifact> getSelectedArtifacts() throws OseeCoreException;
-
+      ArrayList<Artifact> getSelectedArtifacts() throws OseeCoreException;
    }
 
    @Override

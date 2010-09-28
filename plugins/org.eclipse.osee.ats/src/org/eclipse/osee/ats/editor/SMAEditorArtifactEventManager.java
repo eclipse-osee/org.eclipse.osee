@@ -16,10 +16,10 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
-import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractReviewArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
-import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -44,7 +44,7 @@ public class SMAEditorArtifactEventManager implements IArtifactEventListener {
    List<ISMAEditorEventHandler> handlers = new ArrayList<ISMAEditorEventHandler>();
    static SMAEditorArtifactEventManager instance = new SMAEditorArtifactEventManager();
 
-   public SMAEditorArtifactEventManager() {
+   private SMAEditorArtifactEventManager() {
       OseeEventManager.addListener(this);
    }
 
@@ -87,7 +87,7 @@ public class SMAEditorArtifactEventManager implements IArtifactEventListener {
    }
 
    private void safelyProcessHandler(final ArtifactEvent artifactEvent, final ISMAEditorEventHandler handler) {
-      final StateMachineArtifact sma = handler.getSMAEditor().getSma();
+      final AbstractWorkflowArtifact sma = handler.getSMAEditor().getSma();
       ActionArtifact actionArt = null;
       boolean refreshed = false;
       try {
@@ -123,7 +123,7 @@ public class SMAEditorArtifactEventManager implements IArtifactEventListener {
       if (!refreshed && sma.isTeamWorkflow() && ReviewManager.hasReviews((TeamWorkFlowArtifact) sma)) {
          try {
             // If related review has made a change, redraw
-            for (ReviewSMArtifact reviewArt : ReviewManager.getReviews((TeamWorkFlowArtifact) sma)) {
+            for (AbstractReviewArtifact reviewArt : ReviewManager.getReviews((TeamWorkFlowArtifact) sma)) {
                if (artifactEvent.isHasEvent(reviewArt)) {
                   refreshed = true;
                   Displays.ensureInDisplayThread(new Runnable() {
@@ -184,20 +184,20 @@ public class SMAEditorArtifactEventManager implements IArtifactEventListener {
 
    }
 
-   private boolean isReloaded(ArtifactEvent artifactEvent, StateMachineArtifact sma) {
+   private boolean isReloaded(ArtifactEvent artifactEvent, AbstractWorkflowArtifact sma) {
       try {
          if (artifactEvent.isReloaded(sma)) {
             return true;
          }
-         if (sma instanceof TaskableStateMachineArtifact) {
-            for (TaskArtifact taskArt : ((TaskableStateMachineArtifact) sma).getTaskArtifacts()) {
+         if (sma instanceof AbstractTaskableArtifact) {
+            for (TaskArtifact taskArt : ((AbstractTaskableArtifact) sma).getTaskArtifacts()) {
                if (artifactEvent.isReloaded(taskArt)) {
                   return true;
                }
             }
          }
          if (sma.isTeamWorkflow()) {
-            for (ReviewSMArtifact reviewArt : ReviewManager.getReviews((TeamWorkFlowArtifact) sma)) {
+            for (AbstractReviewArtifact reviewArt : ReviewManager.getReviews((TeamWorkFlowArtifact) sma)) {
                if (artifactEvent.isReloaded(reviewArt)) {
                   return true;
                }

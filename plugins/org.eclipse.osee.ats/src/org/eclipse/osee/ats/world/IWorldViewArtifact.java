@@ -21,177 +21,177 @@ import org.eclipse.swt.graphics.Image;
 
 public interface IWorldViewArtifact {
 
-   public Image getAssigneeImage() throws OseeCoreException;
+   Image getAssigneeImage() throws OseeCoreException;
 
-   public String getWorldViewActionableItems() throws OseeCoreException;
+   String getWorldViewActionableItems() throws OseeCoreException;
 
-   public String getWorldViewActivePoc() throws OseeCoreException;
+   String getWorldViewActivePoc() throws OseeCoreException;
 
-   public double getWorldViewAnnualCostAvoidance() throws OseeCoreException;
+   double getWorldViewAnnualCostAvoidance() throws OseeCoreException;
 
-   public String getWorldViewBranchStatus() throws OseeCoreException;
+   String getWorldViewBranchStatus() throws OseeCoreException;
 
-   public String getWorldViewOriginatingWorkflowStr() throws OseeCoreException;
+   String getWorldViewOriginatingWorkflowStr() throws OseeCoreException;
 
-   public Collection<TeamWorkFlowArtifact> getWorldViewOriginatingWorkflows() throws OseeCoreException;
+   Collection<TeamWorkFlowArtifact> getWorldViewOriginatingWorkflows() throws OseeCoreException;
 
-   public Date getWorldViewCancelledDate() throws OseeCoreException;
+   Date getWorldViewCancelledDate() throws OseeCoreException;
 
-   public String getWorldViewCancelledDateStr() throws OseeCoreException;
+   String getWorldViewCancelledDateStr() throws OseeCoreException;
 
-   public String getWorldViewPoint() throws OseeCoreException;
+   String getWorldViewPoint() throws OseeCoreException;
 
-   public String getWorldViewNumeric1() throws OseeCoreException;
+   String getWorldViewNumeric1() throws OseeCoreException;
 
-   public String getWorldViewNumeric2() throws OseeCoreException;
+   String getWorldViewNumeric2() throws OseeCoreException;
 
-   public String getWorldViewGoalOrderVote() throws OseeCoreException;
+   String getWorldViewGoalOrderVote() throws OseeCoreException;
 
-   public String getWorldViewGoalOrder() throws OseeCoreException;
+   String getWorldViewGoalOrder() throws OseeCoreException;
 
-   public String getWorldViewCategory() throws OseeCoreException;
+   String getWorldViewCategory() throws OseeCoreException;
 
-   public String getWorldViewCategory2() throws OseeCoreException;
+   String getWorldViewCategory2() throws OseeCoreException;
 
-   public String getWorldViewCategory3() throws OseeCoreException;
+   String getWorldViewCategory3() throws OseeCoreException;
 
-   public ChangeType getWorldViewChangeType() throws OseeCoreException;
+   ChangeType getWorldViewChangeType() throws OseeCoreException;
 
-   public String getWorldViewChangeTypeStr() throws OseeCoreException;
+   String getWorldViewChangeTypeStr() throws OseeCoreException;
 
-   public Date getWorldViewCompletedDate() throws OseeCoreException;
+   Date getWorldViewCompletedDate() throws OseeCoreException;
 
-   public String getWorldViewCompletedDateStr() throws OseeCoreException;
+   String getWorldViewCompletedDateStr() throws OseeCoreException;
 
-   public Date getWorldViewCreatedDate() throws OseeCoreException;
+   Date getWorldViewCreatedDate() throws OseeCoreException;
 
-   public String getWorldViewCreatedDateStr() throws OseeCoreException;
+   String getWorldViewCreatedDateStr() throws OseeCoreException;
 
-   public Date getWorldViewDeadlineDate() throws OseeCoreException;
+   Date getWorldViewDeadlineDate() throws OseeCoreException;
 
-   public String getWorldViewDeadlineDateStr() throws OseeCoreException;
+   String getWorldViewDeadlineDateStr() throws OseeCoreException;
 
-   public String getWorldViewDecision() throws OseeCoreException;
+   String getWorldViewDecision() throws OseeCoreException;
 
-   public String getWorldViewDescription() throws OseeCoreException;
+   String getWorldViewDescription() throws OseeCoreException;
 
    /**
     * @return estimated hours from workflow attribute, tasks and reviews
     */
-   public double getWorldViewEstimatedHours() throws OseeCoreException;
+   double getWorldViewEstimatedHours() throws OseeCoreException;
 
-   public Date getWorldViewEstimatedReleaseDate() throws OseeCoreException;
+   Date getWorldViewEstimatedReleaseDate() throws OseeCoreException;
 
-   public String getWorldViewEstimatedReleaseDateStr() throws OseeCoreException;
+   String getWorldViewEstimatedReleaseDateStr() throws OseeCoreException;
 
-   public Date getWorldViewEstimatedCompletionDate() throws OseeCoreException;
+   Date getWorldViewEstimatedCompletionDate() throws OseeCoreException;
 
-   public String getWorldViewEstimatedCompletionDateStr() throws OseeCoreException;
+   String getWorldViewEstimatedCompletionDateStr() throws OseeCoreException;
 
-   public double getWorldViewHoursSpentState() throws OseeCoreException;
+   double getWorldViewHoursSpentState() throws OseeCoreException;
 
-   public double getWorldViewHoursSpentStateReview() throws OseeCoreException;
+   double getWorldViewHoursSpentStateReview() throws OseeCoreException;
 
-   public double getWorldViewHoursSpentStateTask() throws OseeCoreException;
+   double getWorldViewHoursSpentStateTask() throws OseeCoreException;
 
-   public double getWorldViewHoursSpentStateTotal() throws OseeCoreException;
+   double getWorldViewHoursSpentStateTotal() throws OseeCoreException;
 
-   public double getWorldViewHoursSpentTotal() throws OseeCoreException;
+   double getWorldViewHoursSpentTotal() throws OseeCoreException;
 
-   public String getWorldViewID() throws OseeCoreException;
+   String getWorldViewID() throws OseeCoreException;
 
-   public String getWorldViewParentID() throws OseeCoreException;
+   String getWorldViewParentID() throws OseeCoreException;
 
-   public String getWorldViewParentState() throws OseeCoreException;
+   String getWorldViewParentState() throws OseeCoreException;
 
-   public String getWorldViewDaysInCurrentState() throws OseeCoreException;
+   String getWorldViewDaysInCurrentState() throws OseeCoreException;
 
-   public String getWorldViewImplementer() throws OseeCoreException;
+   String getWorldViewImplementer() throws OseeCoreException;
 
-   public String getWorldViewLegacyPCR() throws OseeCoreException;
+   String getWorldViewLegacyPCR() throws OseeCoreException;
 
-   public double getWorldViewManDaysNeeded() throws OseeCoreException;
+   double getWorldViewManDaysNeeded() throws OseeCoreException;
 
-   public String getWorldViewNotes() throws OseeCoreException;
+   String getWorldViewNotes() throws OseeCoreException;
 
-   public String getWorldViewNumberOfTasks() throws OseeCoreException;
+   String getWorldViewNumberOfTasks() throws OseeCoreException;
 
-   public String getWorldViewNumberOfTasksRemaining() throws OseeCoreException;
+   String getWorldViewNumberOfTasksRemaining() throws OseeCoreException;
 
-   public String getWorldViewLastStatused() throws OseeCoreException;
+   String getWorldViewLastStatused() throws OseeCoreException;
 
-   public String getWorldViewOriginator() throws OseeCoreException;
+   String getWorldViewOriginator() throws OseeCoreException;
 
-   public int getWorldViewPercentCompleteState() throws OseeCoreException;
+   int getWorldViewPercentCompleteState() throws OseeCoreException;
 
-   public int getWorldViewPercentCompleteStateReview() throws OseeCoreException;
+   int getWorldViewPercentCompleteStateReview() throws OseeCoreException;
 
-   public int getWorldViewPercentCompleteStateTask() throws OseeCoreException;
+   int getWorldViewPercentCompleteStateTask() throws OseeCoreException;
 
-   public int getWorldViewPercentCompleteTotal() throws OseeCoreException;
+   int getWorldViewPercentCompleteTotal() throws OseeCoreException;
 
-   public int getWorldViewPercentRework() throws OseeCoreException;
+   int getWorldViewPercentRework() throws OseeCoreException;
 
-   public String getWorldViewPercentReworkStr() throws OseeCoreException;
+   String getWorldViewPercentReworkStr() throws OseeCoreException;
 
-   public String getWorldViewPriority() throws OseeCoreException;
+   String getWorldViewPriority() throws OseeCoreException;
 
-   public String getWorldViewRelatedToState() throws OseeCoreException;
+   String getWorldViewRelatedToState() throws OseeCoreException;
 
-   public Date getWorldViewReleaseDate() throws OseeCoreException;
+   Date getWorldViewReleaseDate() throws OseeCoreException;
 
-   public String getWorldViewReleaseDateStr() throws OseeCoreException;
+   String getWorldViewReleaseDateStr() throws OseeCoreException;
 
-   public double getWorldViewRemainHours() throws OseeCoreException;
+   double getWorldViewRemainHours() throws OseeCoreException;
 
-   public String getWorldViewResolution() throws OseeCoreException;
+   String getWorldViewResolution() throws OseeCoreException;
 
-   public String getWorldViewGroups() throws OseeCoreException;
+   String getWorldViewGroups() throws OseeCoreException;
 
-   public String getWorldViewGoals() throws OseeCoreException;
+   String getWorldViewGoals() throws OseeCoreException;
 
-   public String getWorldViewReviewAuthor() throws OseeCoreException;
+   String getWorldViewReviewAuthor() throws OseeCoreException;
 
-   public String getWorldViewReviewDecider() throws OseeCoreException;
+   String getWorldViewReviewDecider() throws OseeCoreException;
 
-   public String getWorldViewReviewModerator() throws OseeCoreException;
+   String getWorldViewReviewModerator() throws OseeCoreException;
 
-   public String getWorldViewReviewReviewer() throws OseeCoreException;
+   String getWorldViewReviewReviewer() throws OseeCoreException;
 
-   public String getWorldViewState() throws OseeCoreException;
+   String getWorldViewState() throws OseeCoreException;
 
-   public String getWorldViewTeam() throws OseeCoreException;
+   String getWorldViewTeam() throws OseeCoreException;
 
-   public String getWorldViewTitle() throws OseeCoreException;
+   String getWorldViewTitle() throws OseeCoreException;
 
-   public String getWorldViewType() throws OseeCoreException;
+   String getWorldViewType() throws OseeCoreException;
 
-   public String getWorldViewUserCommunity() throws OseeCoreException;
+   String getWorldViewUserCommunity() throws OseeCoreException;
 
-   public String getWorldViewValidationRequiredStr() throws OseeCoreException;
+   String getWorldViewValidationRequiredStr() throws OseeCoreException;
 
-   public String getWorldViewTargetedVersionStr() throws OseeCoreException;
+   String getWorldViewTargetedVersionStr() throws OseeCoreException;
 
-   public VersionArtifact getWorldViewTargetedVersion() throws OseeCoreException;
+   VersionArtifact getWorldViewTargetedVersion() throws OseeCoreException;
 
-   public double getWorldViewWeeklyBenefit() throws OseeCoreException;
+   double getWorldViewWeeklyBenefit() throws OseeCoreException;
 
-   public String getWorldViewWorkPackage() throws OseeCoreException;
+   String getWorldViewWorkPackage() throws OseeCoreException;
 
-   public Result isWorldViewAnnualCostAvoidanceValid() throws OseeCoreException;
+   Result isWorldViewAnnualCostAvoidanceValid() throws OseeCoreException;
 
-   public Result isWorldViewDeadlineAlerting() throws OseeCoreException;
+   Result isWorldViewDeadlineAlerting() throws OseeCoreException;
 
-   public Result isWorldViewManDaysNeededValid() throws OseeCoreException;
+   Result isWorldViewManDaysNeededValid() throws OseeCoreException;
 
-   public Result isWorldViewRemainHoursValid() throws OseeCoreException;
+   Result isWorldViewRemainHoursValid() throws OseeCoreException;
 
-   public String getWorldViewNumberOfReviewIssueDefects() throws OseeCoreException;
+   String getWorldViewNumberOfReviewIssueDefects() throws OseeCoreException;
 
-   public String getWorldViewNumberOfReviewMajorDefects() throws OseeCoreException;
+   String getWorldViewNumberOfReviewMajorDefects() throws OseeCoreException;
 
-   public String getWorldViewNumberOfReviewMinorDefects() throws OseeCoreException;
+   String getWorldViewNumberOfReviewMinorDefects() throws OseeCoreException;
 
-   public String getWorldViewActionsIntiatingWorkflow() throws OseeCoreException;
+   String getWorldViewActionsIntiatingWorkflow() throws OseeCoreException;
 
 }

@@ -14,8 +14,8 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
-import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
@@ -32,9 +32,10 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
  */
 public class ReloadAction extends Action {
 
-   private final StateMachineArtifact sma;
+   private final AbstractWorkflowArtifact sma;
 
-   public ReloadAction(StateMachineArtifact sma) {
+   public ReloadAction(AbstractWorkflowArtifact sma) {
+      super();
       String title = "Reload \"" + sma.getArtifactTypeName() + "\"";
       setText(title);
       setToolTipText(getText());
@@ -49,8 +50,8 @@ public class ReloadAction extends Action {
          if (sma.isTeamWorkflow()) {
             relatedArts.addAll(ReviewManager.getReviews((TeamWorkFlowArtifact) sma));
          }
-         if (sma instanceof TaskableStateMachineArtifact) {
-            relatedArts.addAll(((TaskableStateMachineArtifact) sma).getTaskArtifacts());
+         if (sma instanceof AbstractTaskableArtifact) {
+            relatedArts.addAll(((AbstractTaskableArtifact) sma).getTaskArtifacts());
          }
          ArtifactQuery.reloadArtifacts(relatedArts);
          // Don't need to re-open editor cause event handler will do that

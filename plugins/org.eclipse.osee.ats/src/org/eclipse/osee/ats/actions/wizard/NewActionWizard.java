@@ -44,10 +44,6 @@ public class NewActionWizard extends Wizard implements INewWizard {
    private Collection<ActionableItemArtifact> initialAias;
    private String initialDescription;
 
-   public NewActionWizard() {
-      super();
-   }
-
    @Override
    public boolean performFinish() {
       try {
@@ -122,7 +118,7 @@ public class NewActionWizard extends Wizard implements INewWizard {
    }
 
    public boolean getValidation() throws OseeCoreException {
-      return ((XCheckBox) page2.getXWidget("Validation Required")).get();
+      return ((XCheckBox) page2.getXWidget("Validation Required")).isChecked();
    }
 
    public Date getNeedBy() throws OseeCoreException {

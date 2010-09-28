@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -39,7 +39,7 @@ public class SMAEditorBranchEventManager implements IBranchEventListener {
    List<ISMAEditorEventHandler> handlers = new ArrayList<ISMAEditorEventHandler>();
    static SMAEditorBranchEventManager instance = new SMAEditorBranchEventManager();
 
-   public SMAEditorBranchEventManager() {
+   private SMAEditorBranchEventManager() {
       OseeEventManager.addListener(this);
    }
 
@@ -81,7 +81,7 @@ public class SMAEditorBranchEventManager implements IBranchEventListener {
          if (handler.isDisposed()) {
             System.out.println("Unexpected handler disposed but not unregistered.");
          }
-         final StateMachineArtifact sma = handler.getSMAEditor().getSma();
+         final AbstractWorkflowArtifact sma = handler.getSMAEditor().getSma();
          try {
             if (!sma.isTeamWorkflow()) {
                return;

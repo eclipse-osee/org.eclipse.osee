@@ -114,7 +114,7 @@ public class XCheckBox extends XWidget {
 
    @Override
    public String getXmlData() {
-      if (get()) {
+      if (isChecked()) {
          return "true";
       } else {
          return "false";
@@ -139,7 +139,7 @@ public class XCheckBox extends XWidget {
       checkButton.addSelectionListener(selectionListener);
    }
 
-   public boolean get() {
+   public boolean isChecked() {
       if (checkButton == null || checkButton.isDisposed()) {
          return selected;
       } else {

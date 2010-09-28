@@ -15,7 +15,7 @@ import java.util.Set;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.LogItem;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.skynet.core.User;
  */
 public class XCurrentStateDam extends XStateAssigneesDam {
 
-   public XCurrentStateDam(StateMachineArtifact sma) throws OseeCoreException {
+   public XCurrentStateDam(AbstractWorkflowArtifact sma) throws OseeCoreException {
       super(sma, AtsAttributeTypes.CurrentState);
    }
 
@@ -45,7 +45,7 @@ public class XCurrentStateDam extends XStateAssigneesDam {
 
    @Override
    public void setState(SMAState state) throws OseeCoreException {
-      StateMachineArtifact sma = getArtifact();
+      AbstractWorkflowArtifact sma = getArtifact();
       sma.setSoleAttributeValue(getAttributeType(), state.toXml());
    }
 
@@ -73,7 +73,7 @@ public class XCurrentStateDam extends XStateAssigneesDam {
       logMetrics("");
    }
 
-   public static void logMetrics(StateMachineArtifact sma, String percent, String hours, String stateName, User user, Date date) throws OseeCoreException {
+   public static void logMetrics(AbstractWorkflowArtifact sma, String percent, String hours, String stateName, User user, Date date) throws OseeCoreException {
       LogItem logItem =
          new LogItem(LogType.Metrics, date, user, stateName, String.format("Percent %s Hours %s", percent, hours),
             sma.getHumanReadableId());

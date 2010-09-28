@@ -12,10 +12,11 @@
 package org.eclipse.osee.ats.workflow;
 
 import org.eclipse.osee.ats.artifact.ATSAttributes;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.editor.stateItem.AtsStateItemManager;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.DefaultTeamState;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResolutionOptionRule;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -41,7 +42,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 public class AtsWorkPage extends WorkPage {
 
    protected TaskResolutionOptionRule taskResolutionOptions;
-   private StateMachineArtifact sma;
+   private AbstractWorkflowArtifact sma;
 
    public AtsWorkPage(WorkFlowDefinition workFlowDefinition, WorkPageDefinition workPageDefinition, String xWidgetsXml, IXWidgetOptionResolver optionResolver) {
       super(workFlowDefinition, workPageDefinition, xWidgetsXml, optionResolver, null);
@@ -51,11 +52,11 @@ public class AtsWorkPage extends WorkPage {
       this(null, null, null, optionResolver);
    }
 
-   public boolean isCurrentState(StateMachineArtifact sma) throws OseeCoreException {
+   public boolean isCurrentState(AbstractWorkflowArtifact sma) throws OseeCoreException {
       return sma.isCurrentState(getName());
    }
 
-   public boolean isCurrentNonCompleteCancelledState(StateMachineArtifact sma) throws OseeCoreException {
+   public boolean isCurrentNonCompleteCancelledState(AbstractWorkflowArtifact sma) throws OseeCoreException {
       return sma.isCurrentState(getName()) && !isCompleteCancelledState();
    }
 
@@ -68,7 +69,7 @@ public class AtsWorkPage extends WorkPage {
       super.widgetCreated(xWidget, toolkit, art, page, xModListener, isEditable);
       // Check extenstion points for page creation
       if (sma != null) {
-         for (IAtsStateItem item : sma.getStateItems().getStateItems(page.getId())) {
+         for (IAtsStateItem item : AtsStateItemManager.getStateItems(page.getId())) {
             item.xWidgetCreated(xWidget, toolkit, (AtsWorkPage) page, art, xModListener, isEditable);
          }
       }
@@ -98,7 +99,7 @@ public class AtsWorkPage extends WorkPage {
       super.widgetCreating(xWidget, toolkit, art, page, xModListener, isEditable);
       // Check extenstion points for page creation
       if (sma != null) {
-         for (IAtsStateItem item : sma.getStateItems().getStateItems(page.getId())) {
+         for (IAtsStateItem item : AtsStateItemManager.getStateItems(page.getId())) {
             Result result = item.xWidgetCreating(xWidget, toolkit, (AtsWorkPage) page, art, xModListener, isEditable);
             if (result.isFalse()) {
                OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Error in page creation => " + result.getText());
@@ -135,7 +136,7 @@ public class AtsWorkPage extends WorkPage {
       return workFlowDefinition.getStartPage().getId().equals(getId());
    }
 
-   public void generateLayoutDatas(StateMachineArtifact sma) throws OseeCoreException {
+   public void generateLayoutDatas(AbstractWorkflowArtifact sma) throws OseeCoreException {
       this.sma = sma;
       // Add static layoutDatas to atsWorkPage
       for (WorkItemDefinition workItemDefinition : getWorkPageDefinition().getWorkItems(true)) {
@@ -148,11 +149,11 @@ public class AtsWorkPage extends WorkPage {
       }
    }
 
-   public StateMachineArtifact getSma() {
+   public AbstractWorkflowArtifact getSma() {
       return sma;
    }
 
-   public void setsma(StateMachineArtifact sma) {
+   public void setsma(AbstractWorkflowArtifact sma) {
       this.sma = sma;
    }
 

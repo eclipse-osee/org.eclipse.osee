@@ -17,8 +17,8 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractReviewArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -67,8 +67,8 @@ public class MyReviewWorkflowItem extends UserSearchItem {
 
       List<Artifact> artifactsToReturn = new ArrayList<Artifact>(artifacts.size());
       for (Artifact artifact : artifacts) {
-         if (artifact instanceof ReviewSMArtifact) {
-            if (reviewState == ReviewState.All || reviewState == ReviewState.InWork && !((StateMachineArtifact) artifact).isCancelledOrCompleted()) {
+         if (artifact instanceof AbstractReviewArtifact) {
+            if (reviewState == ReviewState.All || reviewState == ReviewState.InWork && !((AbstractWorkflowArtifact) artifact).isCancelledOrCompleted()) {
                artifactsToReturn.add(artifact);
             }
          }

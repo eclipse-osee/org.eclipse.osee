@@ -16,9 +16,10 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.PriviledgedUserManager;
 import org.eclipse.osee.ats.util.ReadOnlyHyperlinkListener;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -33,9 +34,10 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
  */
 public class PrivilegedEditAction extends Action {
 
-   private final StateMachineArtifact sma;
+   private final AbstractWorkflowArtifact sma;
 
-   public PrivilegedEditAction(StateMachineArtifact sma) {
+   public PrivilegedEditAction(AbstractWorkflowArtifact sma) {
+      super();
       this.sma = sma;
       setText("Privileged Edit");
       setToolTipText(getText());
@@ -57,13 +59,13 @@ public class PrivilegedEditAction extends Action {
                sma.getEditor().setPriviledgedEditMode(false);
             }
          } else {
-            Set<User> users = sma.getPrivilegedUsers();
+            Set<User> users = PriviledgedUserManager.getPrivilegedUsers(sma);
             if (AtsUtil.isAtsAdmin()) {
                users.add(UserManager.getUser());
             }
-            StringBuffer sb = new StringBuffer();
+            StringBuffer stringBuffer = new StringBuffer();
             for (User user : users) {
-               sb.append(user.getName() + "\n");
+               stringBuffer.append(user.getName() + "\n");
             }
             String buttons[];
             boolean iAmPrivileged = users.contains(UserManager.getUser());
@@ -72,14 +74,14 @@ public class PrivilegedEditAction extends Action {
             } else {
                buttons = new String[] {"Cancel"};
             }
-            MessageDialog ed =
+            MessageDialog dialog =
                new MessageDialog(
                   Displays.getActiveShell(),
                   "Privileged Edit",
                   null,
-                  "The following users have the ability to edit this " + sma.getArtifactTypeName() + " in case of emergency.\n\n" + sb.toString(),
+                  "The following users have the ability to edit this " + sma.getArtifactTypeName() + " in case of emergency.\n\n" + stringBuffer.toString(),
                   MessageDialog.QUESTION, buttons, 0);
-            int result = ed.open();
+            int result = dialog.open();
             if (iAmPrivileged && result == 0) {
                sma.getEditor().setPriviledgedEditMode(true);
             }

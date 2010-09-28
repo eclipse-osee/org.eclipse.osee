@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayou
 /**
  * @author Donald G. Dunne
  */
-public class ATSXWidgetOptionResolver extends DefaultXWidgetOptionResolver {
+public final class ATSXWidgetOptionResolver extends DefaultXWidgetOptionResolver {
 
    private static ATSXWidgetOptionResolver instance = new ATSXWidgetOptionResolver();
    public static String OPTIONS_FROM_ATTRIBUTE_VALIDITY = "OPTIONS_FROM_ATTRIBUTE_VALIDITY";

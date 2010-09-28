@@ -10,9 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.artifact;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.config.AtsCacheManager;
@@ -25,6 +27,7 @@ import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -47,7 +50,7 @@ public class VersionArtifact extends Artifact implements ICommitConfigArtifact {
 
    @Override
    public Result isCreateBranchAllowed() throws OseeCoreException {
-      if (getSoleAttributeValue(AtsAttributeTypes.AllowCreateBranch, false) == false) {
+      if (!getSoleAttributeValue(AtsAttributeTypes.AllowCreateBranch, false)) {
          return new Result(false, "Branch creation disabled for Version [" + this + "]");
       }
       if (getParentBranch() == null) {
@@ -58,7 +61,7 @@ public class VersionArtifact extends Artifact implements ICommitConfigArtifact {
 
    @Override
    public Result isCommitBranchAllowed() throws OseeCoreException {
-      if (getSoleAttributeValue(AtsAttributeTypes.AllowCommitBranch, false) == false) {
+      if (!getSoleAttributeValue(AtsAttributeTypes.AllowCommitBranch, false)) {
          return new Result(false, "Version [" + this + "] not configured to allow branch commit.");
       }
       if (getParentBranch() == null) {
@@ -138,26 +141,18 @@ public class VersionArtifact extends Artifact implements ICommitConfigArtifact {
 
    @Override
    public String getFullDisplayName() throws OseeCoreException {
-      String str = "";
+      List<String> strs = new ArrayList<String>();
       if (!getName().equals(Artifact.UNNAMED)) {
-         str += getName();
+         strs.add(getName());
       }
-      if (!getFullName().equals("")) {
-         if (str.equals("")) {
-            str = getFullName();
-         } else {
-            str += " - " + getFullName();
-         }
+      if (Strings.isValid(getFullName())) {
+         strs.add(getFullName());
       }
       String description = getSoleAttributeValue(AtsAttributeTypes.Description, "");
       if (Strings.isValid(description)) {
-         if (str.equals("")) {
-            str = description;
-         } else {
-            str += " - " + description;
-         }
+         strs.add(description);
       }
-      return str;
+      return Collections.toString(" - ", strs);
    }
 
    public TeamDefinitionArtifact getTeamDefinitionArtifact() throws OseeCoreException {

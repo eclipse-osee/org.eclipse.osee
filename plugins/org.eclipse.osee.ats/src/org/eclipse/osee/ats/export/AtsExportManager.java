@@ -24,7 +24,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.editor.SMAPrint;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.world.WorldEditor;
@@ -72,11 +72,11 @@ public class AtsExportManager extends Action {
 
    };
 
-   public static Collection<StateMachineArtifact> getSmaArts(Collection<? extends Artifact> artifacts) throws OseeCoreException {
-      Set<StateMachineArtifact> smaArts = new HashSet<StateMachineArtifact>();
+   public static Collection<AbstractWorkflowArtifact> getSmaArts(Collection<? extends Artifact> artifacts) throws OseeCoreException {
+      Set<AbstractWorkflowArtifact> smaArts = new HashSet<AbstractWorkflowArtifact>();
       for (Artifact artifact : artifacts) {
-         if (artifact instanceof StateMachineArtifact) {
-            smaArts.add((StateMachineArtifact) artifact);
+         if (artifact instanceof AbstractWorkflowArtifact) {
+            smaArts.add((AbstractWorkflowArtifact) artifact);
          } else if (artifact instanceof ActionArtifact) {
             smaArts.addAll(((ActionArtifact) artifact).getTeamWorkFlowArtifacts());
          }
@@ -84,8 +84,8 @@ public class AtsExportManager extends Action {
       return smaArts;
    }
 
-   public static Collection<StateMachineArtifact> getSmaArts(ISelection selection) throws OseeCoreException {
-      Set<StateMachineArtifact> smaArts = new HashSet<StateMachineArtifact>();
+   public static Collection<AbstractWorkflowArtifact> getSmaArts(ISelection selection) throws OseeCoreException {
+      Set<AbstractWorkflowArtifact> smaArts = new HashSet<AbstractWorkflowArtifact>();
       if (selection != null) {
          Iterator<?> selectionIterator = ((IStructuredSelection) selection).iterator();
          while (selectionIterator.hasNext()) {
@@ -97,8 +97,8 @@ public class AtsExportManager extends Action {
                selectedObject = ((IAdaptable) selectedObject).getAdapter(Artifact.class);
             }
 
-            if (selectedObject instanceof StateMachineArtifact) {
-               smaArts.add((StateMachineArtifact) selectedObject);
+            if (selectedObject instanceof AbstractWorkflowArtifact) {
+               smaArts.add((AbstractWorkflowArtifact) selectedObject);
             } else if (selectedObject instanceof ActionArtifact) {
                smaArts.addAll(((ActionArtifact) selectedObject).getTeamWorkFlowArtifacts());
             } else {
@@ -129,8 +129,8 @@ public class AtsExportManager extends Action {
             if (asHtmlToFile || asHtmlToResultEditor) {
                StringBuffer singleSb = new StringBuffer();
                for (Artifact artifact : artifacts) {
-                  if (artifact instanceof StateMachineArtifact) {
-                     SMAPrint smaPrint = new SMAPrint(((StateMachineArtifact) artifact));
+                  if (artifact instanceof AbstractWorkflowArtifact) {
+                     SMAPrint smaPrint = new SMAPrint(((AbstractWorkflowArtifact) artifact));
                      smaPrint.setIncludeTaskList(includeTaskList);
                      String html = smaPrint.getResultData().getReport("").getManipulatedHtml();
                      if (multipleFile) {

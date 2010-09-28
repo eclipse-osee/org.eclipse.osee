@@ -44,7 +44,7 @@ public class AtsNotificationCheckTreeDialog extends CheckedTreeSelectionDialog {
       setTitle("Select ATS Notifications");
       setMessage("Select Desired ATS Notifications");
       try {
-         setInput(AtsNotification.getInstance().getAtsNotifications());
+         setInput(AtsNotification.getAtsNotificationItems());
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }

@@ -67,7 +67,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
 
    @Override
    public Result isCreateBranchAllowed() throws OseeCoreException {
-      if (getSoleAttributeValue(AtsAttributeTypes.AllowCreateBranch, false) == false) {
+      if (!getSoleAttributeValue(AtsAttributeTypes.AllowCreateBranch, false)) {
          return new Result(false, "Branch creation disabled for Team Definition [" + this + "]");
       }
       if (getParentBranch() == null) {
@@ -78,7 +78,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
 
    @Override
    public Result isCommitBranchAllowed() throws OseeCoreException {
-      if (getSoleAttributeValue(AtsAttributeTypes.AllowCommitBranch, false) == false) {
+      if (!getSoleAttributeValue(AtsAttributeTypes.AllowCommitBranch, false)) {
          return new Result(false, "Team Definition [" + this + "] not configured to allow branch commit.");
       }
       if (getParentBranch() == null) {
@@ -346,10 +346,10 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
          if (manDaysHrs != null && manDaysHrs != 0) {
             return manDaysHrs;
          }
-         if (teamDef.getParent() != null && teamDef.getParent() instanceof TeamDefinitionArtifact) {
+         if (teamDef.getParent() instanceof TeamDefinitionArtifact) {
             return teamDef.getHoursPerWorkDayFromItemAndChildren((TeamDefinitionArtifact) teamDef.getParent());
          }
-         return StateMachineArtifact.DEFAULT_HOURS_PER_WORK_DAY;
+         return AtsUtil.DEFAULT_HOURS_PER_WORK_DAY;
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
@@ -433,18 +433,12 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
    public Collection<VersionArtifact> getVersionsArtifacts(VersionReleaseType releaseType) throws OseeCoreException {
       ArrayList<VersionArtifact> versions = new ArrayList<VersionArtifact>();
       for (VersionArtifact version : getVersionsArtifacts()) {
-         if (version.isReleased()) {
-            if (releaseType == VersionReleaseType.Released || releaseType == VersionReleaseType.Both) {
-               versions.add(version);
-            }
-         } else if (version.isVersionLocked()) {
-            if (releaseType == VersionReleaseType.VersionLocked || releaseType == VersionReleaseType.Both) {
-               versions.add(version);
-            }
-         } else {
-            if (releaseType == VersionReleaseType.UnReleased || releaseType == VersionReleaseType.Both) {
-               versions.add(version);
-            }
+         if (version.isReleased() && (releaseType == VersionReleaseType.Released || releaseType == VersionReleaseType.Both)) {
+            versions.add(version);
+         } else if (version.isVersionLocked() && (releaseType == VersionReleaseType.VersionLocked || releaseType == VersionReleaseType.Both)) {
+            versions.add(version);
+         } else if (releaseType == VersionReleaseType.UnReleased || releaseType == VersionReleaseType.Both) {
+            versions.add(version);
          }
       }
       return versions;

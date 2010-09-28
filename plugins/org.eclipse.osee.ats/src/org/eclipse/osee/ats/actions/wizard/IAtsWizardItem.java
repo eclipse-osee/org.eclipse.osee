@@ -28,12 +28,12 @@ public interface IAtsWizardItem {
     * determine what (if any) widgets should be added. eg. <XWidget displayName=\"Description\" height=\"80\"
     * required=\"true\" xwidgetType=\"XText\" fill=\"Vertically\" \"/>");
     */
-   public void getWizardXWidgetExtensions(Collection<ActionableItemArtifact> aias, StringBuffer sb) throws Exception;
+   void getWizardXWidgetExtensions(Collection<ActionableItemArtifact> aias, StringBuffer stringBuffer) throws Exception;
 
    /**
     * @return true if widgets will be added based on selected aias
     */
-   public boolean hasWizardXWidgetExtensions(Collection<ActionableItemArtifact> aias) throws Exception;
+   boolean hasWizardXWidgetExtensions(Collection<ActionableItemArtifact> aias) throws Exception;
 
    /**
     * Determine if Action is valid to create based on wizard data entered. hasWizardXWidgetExtenstions will be called to
@@ -42,13 +42,13 @@ public interface IAtsWizardItem {
     * @return result of validation. if true, action will be created; if not, error will popup and action will not be
     * created
     */
-   public Result isActionValidToCreate(Collection<ActionableItemArtifact> aias, NewActionWizard wizard);
+   Result isActionValidToCreate(Collection<ActionableItemArtifact> aias, NewActionWizard wizard);
 
    /**
     * Callback with created action upon completion and creation of the action and it's workflows.
     * hasWizardXWidgetExtenstions will be called to determine if this method should be called.
     */
-   public void wizardCompleted(ActionArtifact actionArt, NewActionWizard wizard, SkynetTransaction transaction) throws Exception;
+   void wizardCompleted(ActionArtifact actionArt, NewActionWizard wizard, SkynetTransaction transaction) throws Exception;
 
    /**
     * Validation that the data entered is valid and the wizard can be finished. This will be called after every
@@ -58,6 +58,6 @@ public interface IAtsWizardItem {
     * 
     * @return true if widget data entered is valid
     */
-   public Result isWizardXWidgetsComplete(NewActionWizard wizard);
+   Result isWizardXWidgetsComplete(NewActionWizard wizard);
 
 }

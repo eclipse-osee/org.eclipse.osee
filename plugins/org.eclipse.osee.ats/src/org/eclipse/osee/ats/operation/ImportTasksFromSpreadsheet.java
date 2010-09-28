@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.AtsPlugin;
@@ -48,7 +48,7 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
    public static String TASK_IMPORT_SPREADSHEET = "Task Import Spreadsheet";
    public static String TEAM_WORKFLOW = "Taskable Workflow (drop here)";
    public static String EMAIL_POCS = "Email POCs";
-   private TaskableStateMachineArtifact taskableStateMachineArtifact;
+   private AbstractTaskableArtifact taskableStateMachineArtifact;
 
    @Override
    public String getName() {
@@ -82,14 +82,14 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
    /**
     * @return the TaskableStateMachineArtifact
     */
-   public TaskableStateMachineArtifact getTaskableStateMachineArtifact() {
+   public AbstractTaskableArtifact getTaskableStateMachineArtifact() {
       return taskableStateMachineArtifact;
    }
 
    /**
     * @param taskableStateMachineArtifact the TaskableStateMachineArtifact to set
     */
-   public void setTaskableStateMachineArtifact(TaskableStateMachineArtifact taskableStateMachineArtifact) {
+   public void setTaskableStateMachineArtifact(AbstractTaskableArtifact taskableStateMachineArtifact) {
       this.taskableStateMachineArtifact = taskableStateMachineArtifact;
    }
 

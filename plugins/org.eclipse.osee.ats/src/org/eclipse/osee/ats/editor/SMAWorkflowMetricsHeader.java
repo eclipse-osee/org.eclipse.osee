@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.editor;
 
 import java.util.logging.Level;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
@@ -30,10 +30,10 @@ import org.eclipse.swt.widgets.Label;
  */
 public class SMAWorkflowMetricsHeader extends Composite {
 
-   private final StateMachineArtifact sma;
+   private final AbstractWorkflowArtifact sma;
    private Label percentLabel, estHoursLabel, hoursSpentLabel, remainHoursLabel;
 
-   public SMAWorkflowMetricsHeader(Composite parent, XFormToolkit toolkit, StateMachineArtifact sma) {
+   public SMAWorkflowMetricsHeader(Composite parent, XFormToolkit toolkit, AbstractWorkflowArtifact sma) {
       super(parent, SWT.NONE);
       this.sma = sma;
       try {

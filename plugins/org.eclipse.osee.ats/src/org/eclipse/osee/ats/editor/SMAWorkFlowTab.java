@@ -40,7 +40,7 @@ import org.eclipse.osee.ats.actions.ShowMergeManagerAction;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.artifact.NoteItem;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.config.AtsBulkLoad;
 import org.eclipse.osee.ats.internal.AtsPlugin;
@@ -91,7 +91,7 @@ import org.eclipse.ui.progress.UIJob;
  * @author Donald G. Dunne
  */
 public class SMAWorkFlowTab extends FormPage implements IActionable {
-   private final StateMachineArtifact sma;
+   private final AbstractWorkflowArtifact sma;
    private final ArrayList<SMAWorkFlowSection> sections = new ArrayList<SMAWorkFlowSection>();
    private final XFormToolkit toolkit;
    private final List<AtsWorkPage> atsWorkPages = new ArrayList<AtsWorkPage>();
@@ -113,7 +113,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    private static String PRIVILEGED_EDIT = "(Priviledged Edit Enabled)";
    public static String ID = "ats.workflow.tab";
 
-   public SMAWorkFlowTab(StateMachineArtifact sma) {
+   public SMAWorkFlowTab(AbstractWorkflowArtifact sma) {
       super(sma.getEditor(), ID, "Workflow");
       this.sma = sma;
       toolkit = sma.getEditor().getToolkit();
@@ -633,7 +633,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       }
    }
 
-   public static void createSMANotesHeader(Composite comp, XFormToolkit toolkit, StateMachineArtifact sma, int horizontalSpan) throws OseeCoreException {
+   public static void createSMANotesHeader(Composite comp, XFormToolkit toolkit, AbstractWorkflowArtifact sma, int horizontalSpan) throws OseeCoreException {
       // Display SMA Note
       String note = sma.getSoleAttributeValue(AtsAttributeTypes.SmaNote, "");
       if (!note.equals("")) {
@@ -641,7 +641,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       }
    }
 
-   public static void createStateNotesHeader(Composite comp, XFormToolkit toolkit, StateMachineArtifact sma, int horizontalSpan, String forStateName) {
+   public static void createStateNotesHeader(Composite comp, XFormToolkit toolkit, AbstractWorkflowArtifact sma, int horizontalSpan, String forStateName) {
       // Display global Notes
       for (NoteItem noteItem : sma.getNotes().getNoteItems()) {
          if (forStateName == null || noteItem.getState().equals(forStateName)) {

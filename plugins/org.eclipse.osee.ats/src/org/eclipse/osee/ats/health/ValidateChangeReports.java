@@ -126,7 +126,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
          StringBuffer sbFull = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
          String[] columnHeaders = new String[] {"HRID", "PCR", "Results"};
          sbFull.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
-         for (IArtifactType artifactType : TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactTypes()) {
+         for (IArtifactType artifactType : TeamWorkflowExtensions.getAllTeamWorkflowArtifactTypes()) {
             sbFull.append(AHTML.addRowSpanMultiColumnTable(artifactType.getName(), columnHeaders.length));
 
             try {

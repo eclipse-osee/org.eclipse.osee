@@ -11,10 +11,8 @@
 package org.eclipse.osee.ats.actions;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
@@ -26,7 +24,6 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.world.WorldEditor;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -36,7 +33,6 @@ import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
@@ -52,49 +48,51 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
  */
 public class ExportChangeReportsAction extends Action {
    private final WorldEditor worldEditor;
-   private final boolean reverse;
+
+   //   private final boolean reverse;
 
    public ExportChangeReportsAction(WorldEditor worldEditor, boolean reverse) {
-      this.reverse = reverse;
+      super();
+      //      this.reverse = reverse;
       setText("Export Change Report(s)");
-      setImageDescriptor(getImageDescriptor());
+      setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.EXPORT_DATA));
       this.worldEditor = worldEditor;
    }
 
    @SuppressWarnings("unused")
    public Collection<TeamWorkFlowArtifact> getWorkflows() throws OseeCoreException {
-      if (true) {
-         Collection<String> dontCreate = Arrays.asList(new String[] {});
-         Collection<String> legacyIds = Arrays.asList(new String[] {"12442"});
-
-         List<TeamWorkFlowArtifact> workflows = new ArrayList<TeamWorkFlowArtifact>();
-         if (workflows.isEmpty()) {
-            List<Artifact> artifacts =
-               ArtifactQuery.getArtifactListFromAttributeValues(AtsAttributeTypes.LegacyPcrId, legacyIds,
-                  CoreBranches.COMMON, legacyIds.size());
-            for (Artifact artifact : artifacts) {
-               if (artifact.getArtifactType().getGuid().equals("AAMFDjZ1UVAQTXHk2GgA")) {
-                  TeamWorkFlowArtifact teamWorkflow = (TeamWorkFlowArtifact) artifact;
-                  String legacyId = teamWorkflow.getWorldViewLegacyPCR();
-                  if (!dontCreate.contains(legacyId)) {
-                     workflows.add(teamWorkflow);
-                  }
-               }
-            }
-            Collections.sort(workflows, new Comparator<TeamWorkFlowArtifact>() {
-               @Override
-               public int compare(TeamWorkFlowArtifact workflow1, TeamWorkFlowArtifact workflow2) {
-                  try {
-                     int compare = workflow1.getWorldViewLegacyPCR().compareTo(workflow2.getWorldViewLegacyPCR());
-                     return reverse ? -1 * compare : compare;
-                  } catch (OseeCoreException ex) {
-                     return -1;
-                  }
-               }
-            });
-         }
-         return workflows;
-      }
+      //      if (true) {
+      //         Collection<String> dontCreate = Arrays.asList(new String[] {});
+      //         Collection<String> legacyIds = Arrays.asList(new String[] {"12442"});
+      //
+      //         List<TeamWorkFlowArtifact> workflows = new ArrayList<TeamWorkFlowArtifact>();
+      //         if (workflows.isEmpty()) {
+      //            List<Artifact> artifacts =
+      //               ArtifactQuery.getArtifactListFromAttributeValues(AtsAttributeTypes.LegacyPcrId, legacyIds,
+      //                  CoreBranches.COMMON, legacyIds.size());
+      //            for (Artifact artifact : artifacts) {
+      //               if (artifact.getArtifactType().getGuid().equals("AAMFDjZ1UVAQTXHk2GgA")) {
+      //                  TeamWorkFlowArtifact teamWorkflow = (TeamWorkFlowArtifact) artifact;
+      //                  String legacyId = teamWorkflow.getWorldViewLegacyPCR();
+      //                  if (!dontCreate.contains(legacyId)) {
+      //                     workflows.add(teamWorkflow);
+      //                  }
+      //               }
+      //            }
+      //            Collections.sort(workflows, new Comparator<TeamWorkFlowArtifact>() {
+      //               @Override
+      //               public int compare(TeamWorkFlowArtifact workflow1, TeamWorkFlowArtifact workflow2) {
+      //                  try {
+      //                     int compare = workflow1.getWorldViewLegacyPCR().compareTo(workflow2.getWorldViewLegacyPCR());
+      //                     return reverse ? -1 * compare : compare;
+      //                  } catch (OseeCoreException ex) {
+      //                     return -1;
+      //                  }
+      //               }
+      //            });
+      //         }
+      //         return workflows;
+      //      }
 
       return worldEditor.getWorldComposite().getXViewer().getSelectedTeamWorkflowArtifacts();
    }
@@ -148,8 +146,7 @@ public class ExportChangeReportsAction extends Action {
             Collection<Change> changes = computeChanges(workflow, monitor);
             if (!changes.isEmpty() && changes.size() < 4000) {
                String folderName = workflow.getSoleAttributeValueAsString(AtsAttributeTypes.LegacyPcrId, null);
-               IOperation subOp = new WordChangeReportOperation(changes, folderName);
-               doSubWork(subOp, monitor, 0.50);
+               doSubWork(new WordChangeReportOperation(changes, folderName), monitor, 0.50);
             } else {
                monitor.worked(calculateWork(0.50));
             }

@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
-import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
@@ -62,8 +62,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkWidgetDefinitio
  */
 public class AtsCacheManager implements IArtifactEventListener {
 
-   private static Map<TaskableStateMachineArtifact, Collection<TaskArtifact>> teamTasksCache =
-      new HashMap<TaskableStateMachineArtifact, Collection<TaskArtifact>>();
+   private static Map<AbstractTaskableArtifact, Collection<TaskArtifact>> teamTasksCache =
+      new HashMap<AbstractTaskableArtifact, Collection<TaskArtifact>>();
 
    public static void start() {
       new AtsCacheManager();
@@ -73,11 +73,11 @@ public class AtsCacheManager implements IArtifactEventListener {
       OseeEventManager.addPriorityListener(this);
    }
 
-   public static synchronized void decacheTaskArtifacts(TaskableStateMachineArtifact sma) {
+   public static synchronized void decacheTaskArtifacts(AbstractTaskableArtifact sma) {
       teamTasksCache.remove(sma);
    }
 
-   public static synchronized Collection<TaskArtifact> getTaskArtifacts(TaskableStateMachineArtifact sma) throws OseeCoreException {
+   public static synchronized Collection<TaskArtifact> getTaskArtifacts(AbstractTaskableArtifact sma) throws OseeCoreException {
       if (!teamTasksCache.containsKey(sma)) {
          Collection<TaskArtifact> taskArtifacts =
             sma.getRelatedArtifacts(AtsRelationTypes.SmaToTask_Task, TaskArtifact.class);
@@ -139,7 +139,7 @@ public class AtsCacheManager implements IArtifactEventListener {
                      }
                   }
                   Artifact artifact = ArtifactCache.getActive(guidArt);
-                  if (artifact != null && artifact instanceof TaskableStateMachineArtifact) {
+                  if (artifact != null && artifact instanceof AbstractTaskableArtifact) {
                      teamTasksCache.remove(artifact);
                   }
                }
@@ -170,7 +170,7 @@ public class AtsCacheManager implements IArtifactEventListener {
                      if (artifact instanceof TaskArtifact) {
                         teamTasksCache.remove(artifact.getParent());
                      }
-                     if (artifact instanceof TaskableStateMachineArtifact) {
+                     if (artifact instanceof AbstractTaskableArtifact) {
                         teamTasksCache.remove(artifact);
                      }
                   }
@@ -186,7 +186,7 @@ public class AtsCacheManager implements IArtifactEventListener {
                      teamTasksCache.remove(taskArt.getParent());
                   }
                   for (Artifact artifact : ArtifactCache.getActive(guidRel)) {
-                     if (artifact instanceof TaskableStateMachineArtifact) {
+                     if (artifact instanceof AbstractTaskableArtifact) {
                         teamTasksCache.remove(artifact);
                      }
                   }

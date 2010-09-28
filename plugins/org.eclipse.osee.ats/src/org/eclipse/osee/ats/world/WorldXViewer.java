@@ -40,13 +40,12 @@ import org.eclipse.osee.ats.actions.OpenInArtifactEditorAction;
 import org.eclipse.osee.ats.actions.OpenInAtsWorkflowEditor;
 import org.eclipse.osee.ats.actions.OpenInMassEditorAction;
 import org.eclipse.osee.ats.actions.SubscribedAction;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
 import org.eclipse.osee.ats.goal.GoalXViewerFactory;
@@ -57,6 +56,8 @@ import org.eclipse.osee.ats.task.TaskXViewer;
 import org.eclipse.osee.ats.util.ArtifactEmailWizard;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.DefaultTeamState;
+import org.eclipse.osee.ats.util.GoalManager;
 import org.eclipse.osee.ats.util.PromptChangeUtil;
 import org.eclipse.osee.ats.util.xviewer.RelatedToStateColumn;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeColumn;
@@ -223,7 +224,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts {
          @Override
          public void run() {
             try {
-               Set<StateMachineArtifact> artifacts = getSelectedSMAArtifacts();
+               Set<AbstractWorkflowArtifact> artifacts = getSelectedSMAArtifacts();
                if (PromptChangeUtil.promptChangeAssignees(artifacts, false)) {
                   Artifacts.persistInTransaction(artifacts);
                   update(getSelectedArtifactItems().toArray(), null);
@@ -332,11 +333,11 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts {
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems, final boolean persist) {
       if (treeColumn.getData().equals(WorldXViewerFactory.Groups_Col)) {
          try {
-            Set<StateMachineArtifact> smas = new HashSet<StateMachineArtifact>();
+            Set<AbstractWorkflowArtifact> smas = new HashSet<AbstractWorkflowArtifact>();
             for (TreeItem item : treeItems) {
                Artifact art = (Artifact) item.getData();
                if (art instanceof TeamWorkFlowArtifact) {
-                  smas.add((StateMachineArtifact) art);
+                  smas.add((AbstractWorkflowArtifact) art);
                }
             }
             PromptChangeUtil.promptChangeGroups(smas, true);
@@ -346,11 +347,11 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts {
          }
       } else if (treeColumn.getData().equals(WorldXViewerFactory.Goals_Col)) {
          try {
-            Set<StateMachineArtifact> smas = new HashSet<StateMachineArtifact>();
+            Set<AbstractWorkflowArtifact> smas = new HashSet<AbstractWorkflowArtifact>();
             for (TreeItem item : treeItems) {
                Artifact art = (Artifact) item.getData();
-               if (art instanceof StateMachineArtifact) {
-                  smas.add((StateMachineArtifact) art);
+               if (art instanceof AbstractWorkflowArtifact) {
+                  smas.add((AbstractWorkflowArtifact) art);
                }
             }
             PromptChangeUtil.promptChangeGoals(smas, true);
@@ -490,20 +491,20 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts {
          }
       }
       if (art != null) {
-         ArtifactEmailWizard ew = new ArtifactEmailWizard((StateMachineArtifact) art);
+         ArtifactEmailWizard ew = new ArtifactEmailWizard((AbstractWorkflowArtifact) art);
          WizardDialog dialog = new WizardDialog(Displays.getActiveShell(), ew);
          dialog.create();
          dialog.open();
       }
    }
 
-   public StateMachineArtifact getSelectedSMA() {
+   public AbstractWorkflowArtifact getSelectedSMA() {
       Object obj = null;
       if (getSelectedArtifactItems().isEmpty()) {
          return null;
       }
       obj = getTree().getSelection()[0].getData();
-      return obj != null && obj instanceof StateMachineArtifact ? (StateMachineArtifact) obj : null;
+      return obj != null && obj instanceof AbstractWorkflowArtifact ? (AbstractWorkflowArtifact) obj : null;
    }
 
    public void updateEditMenuActions() {
@@ -713,14 +714,14 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts {
     * @return all selected Workflow and any workflow that have Actions with single workflow
     */
    @Override
-   public Set<StateMachineArtifact> getSelectedSMAArtifacts() {
-      Set<StateMachineArtifact> smaArts = new HashSet<StateMachineArtifact>();
+   public Set<AbstractWorkflowArtifact> getSelectedSMAArtifacts() {
+      Set<AbstractWorkflowArtifact> smaArts = new HashSet<AbstractWorkflowArtifact>();
       try {
          Iterator<?> i = ((IStructuredSelection) getSelection()).iterator();
          while (i.hasNext()) {
             Object obj = i.next();
-            if (obj instanceof StateMachineArtifact) {
-               smaArts.add((StateMachineArtifact) obj);
+            if (obj instanceof AbstractWorkflowArtifact) {
+               smaArts.add((AbstractWorkflowArtifact) obj);
             } else if (obj instanceof ActionArtifact) {
                smaArts.addAll(((ActionArtifact) obj).getTeamWorkFlowArtifacts());
             }
@@ -852,7 +853,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts {
                return false;
             }
          }
-         StateMachineArtifact sma = (StateMachineArtifact) useArt;
+         AbstractWorkflowArtifact sma = (AbstractWorkflowArtifact) useArt;
          boolean modified = false;
          if (xCol.equals(WorldXViewerFactory.Version_Target_Col)) {
             modified =
@@ -931,9 +932,9 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts {
       }
       GoalArtifact changedGoal = null;
       if (parentGoalArtifact != null) {
-         changedGoal = GoalArtifact.promptChangeGoalOrder(parentGoalArtifact, (Artifact) treeItem.getData());
+         changedGoal = GoalManager.promptChangeGoalOrder(parentGoalArtifact, (Artifact) treeItem.getData());
       } else {
-         changedGoal = GoalArtifact.promptChangeGoalOrder((Artifact) treeItem.getData());
+         changedGoal = GoalManager.promptChangeGoalOrder((Artifact) treeItem.getData());
       }
       if (changedGoal != null) {
          refresh(changedGoal);
@@ -981,8 +982,8 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts {
       Iterator<?> i = ((IStructuredSelection) getSelection()).iterator();
       while (i.hasNext()) {
          Object obj = i.next();
-         if (obj instanceof StateMachineArtifact) {
-            artifacts.add((StateMachineArtifact) obj);
+         if (obj instanceof AbstractWorkflowArtifact) {
+            artifacts.add((AbstractWorkflowArtifact) obj);
          }
       }
       return artifacts;

@@ -30,6 +30,7 @@ public class OpenInArtifactEditorAction extends Action {
    private final ISelectedAtsArtifacts selectedAtsArtifacts;
 
    public OpenInArtifactEditorAction(ISelectedAtsArtifacts selectedAtsArtifacts) {
+      super();
       this.selectedAtsArtifacts = selectedAtsArtifacts;
       setText("Open Artifact Editor");
       setToolTipText(getText());

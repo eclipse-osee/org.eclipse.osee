@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorAction;
 import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorSelected;
 import org.eclipse.osee.ats.actions.TaskAddAction;
 import org.eclipse.osee.ats.actions.TaskDeleteAction;
-import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.export.AtsExportManager;
 import org.eclipse.osee.ats.internal.AtsPlugin;
@@ -186,9 +186,9 @@ public class TaskTabXWidgetActionPage extends AtsXWidgetActionFormPage implement
          try {
             if (taskComposite.getIXTaskViewer().isTaskable()) {
                addActionToMenu(fMenu, new ImportTasksViaSpreadsheet(
-                  (TaskableStateMachineArtifact) taskComposite.getIXTaskViewer().getSma(), null));
+                  (AbstractTaskableArtifact) taskComposite.getIXTaskViewer().getSma(), null));
                addActionToMenu(fMenu, new ImportTasksViaSimpleList(
-                  (TaskableStateMachineArtifact) taskComposite.getIXTaskViewer().getSma(), null));
+                  (AbstractTaskableArtifact) taskComposite.getIXTaskViewer().getSma(), null));
 
             }
          } catch (OseeCoreException ex) {

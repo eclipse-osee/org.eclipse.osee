@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.GoalManager;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorSimpleProvider;
@@ -54,11 +55,11 @@ public class CreateGoalTestArtifacts extends XNavigateItemAction {
          return;
       }
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), getName());
-      GoalArtifact oteGoal = GoalArtifact.createGoal("OTE");
-      GoalArtifact atsGoal = GoalArtifact.createGoal("ATS");
-      GoalArtifact defineGoal = GoalArtifact.createGoal("Define");
-      GoalArtifact msaGoal = GoalArtifact.createGoal("MSA Tools");
-      GoalArtifact cdbGoal = GoalArtifact.createGoal("Integrate CDB signal diff into OSEE");
+      GoalArtifact oteGoal = GoalManager.createGoal("OTE");
+      GoalArtifact atsGoal = GoalManager.createGoal("ATS");
+      GoalArtifact defineGoal = GoalManager.createGoal("Define");
+      GoalArtifact msaGoal = GoalManager.createGoal("MSA Tools");
+      GoalArtifact cdbGoal = GoalManager.createGoal("Integrate CDB signal diff into OSEE");
       ActionArtifact action =
          ActionManager.createAction(null, "Fix this model", "Description", ChangeType.Problem, PriorityType.Priority_2,
             false, null, ActionableItemArtifact.getActionableItems(Arrays.asList("OTE_SW")), transaction);

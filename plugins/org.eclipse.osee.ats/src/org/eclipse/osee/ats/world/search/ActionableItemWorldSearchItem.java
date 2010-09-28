@@ -17,14 +17,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.DefaultTeamState;
 import org.eclipse.osee.ats.util.widgets.dialog.ActionActionableItemListDialog;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -152,8 +152,8 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
          for (Artifact art : artifacts) {
             if (art instanceof ActionArtifact) {
                arts.add(art);
-            } else if (art instanceof StateMachineArtifact) {
-               Artifact parentArt = ((StateMachineArtifact) art).getParentActionArtifact();
+            } else if (art instanceof AbstractWorkflowArtifact) {
+               Artifact parentArt = ((AbstractWorkflowArtifact) art).getParentActionArtifact();
                if (parentArt != null) {
                   arts.add(parentArt);
                }

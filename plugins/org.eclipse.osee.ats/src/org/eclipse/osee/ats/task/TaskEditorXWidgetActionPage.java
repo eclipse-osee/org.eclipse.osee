@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.actions.ImportTasksViaSpreadsheet;
 import org.eclipse.osee.ats.actions.NewAction;
 import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorAction;
 import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorSelected;
-import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.export.AtsExportManager;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.SMAMetrics;
@@ -190,7 +190,7 @@ public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage implem
          try {
             if (taskComposite.getIXTaskViewer().isTaskable()) {
                addActionToMenu(fMenu, new ImportTasksViaSpreadsheet(
-                  (TaskableStateMachineArtifact) taskComposite.getIXTaskViewer().getSma(), new Listener() {
+                  (AbstractTaskableArtifact) taskComposite.getIXTaskViewer().getSma(), new Listener() {
                      @Override
                      public void handleEvent(Event event) {
                         try {
@@ -201,7 +201,7 @@ public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage implem
                      }
                   }));
                addActionToMenu(fMenu, new ImportTasksViaSimpleList(
-                  (TaskableStateMachineArtifact) taskComposite.getIXTaskViewer().getSma(), new Listener() {
+                  (AbstractTaskableArtifact) taskComposite.getIXTaskViewer().getSma(), new Listener() {
                      @Override
                      public void handleEvent(Event event) {
                         try {

@@ -62,7 +62,7 @@ public class NewActionJob extends Job {
    public IStatus run(final IProgressMonitor monitor) {
       try {
          SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Create New Action");
-         if (title.equals("tt")) {
+         if ("tt".equals(title)) {
             title += " " + AtsUtil.getAtsDeveloperIncrementingNum();
          }
          actionArt =

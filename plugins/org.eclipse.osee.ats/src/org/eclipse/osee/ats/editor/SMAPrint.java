@@ -14,11 +14,11 @@ package org.eclipse.osee.ats.editor;
 import java.util.Arrays;
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
+import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.NoteItem;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
-import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.widget.ReviewInfoXWidget;
 import org.eclipse.osee.ats.internal.AtsPlugin;
@@ -40,10 +40,10 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPage;
  */
 public class SMAPrint extends Action {
 
-   private final StateMachineArtifact sma;
+   private final AbstractWorkflowArtifact sma;
    boolean includeTaskList = true;
 
-   public SMAPrint(StateMachineArtifact sma) {
+   public SMAPrint(AbstractWorkflowArtifact sma) {
       super();
       this.sma = sma;
    }
@@ -115,7 +115,7 @@ public class SMAPrint extends Action {
    }
 
    private void getTaskHtml(XResultData rd) throws OseeCoreException {
-      if (!sma.isTaskable()) {
+      if (!(sma instanceof AbstractTaskableArtifact)) {
          return;
       }
       try {
@@ -129,7 +129,7 @@ public class SMAPrint extends Action {
             "Hrs",
             "Resolution",
             "ID"}));
-         for (TaskArtifact art : ((TaskableStateMachineArtifact) sma).getTaskArtifacts()) {
+         for (TaskArtifact art : ((AbstractTaskableArtifact) sma).getTaskArtifacts()) {
             rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {
                art.getName(),
                art.getStateMgr().getCurrentStateName().replaceAll("(Task|State)", ""),
@@ -174,7 +174,7 @@ public class SMAPrint extends Action {
       }
    }
 
-   private String getReviewData(StateMachineArtifact sma, AtsWorkPage page) throws OseeCoreException {
+   private String getReviewData(AbstractWorkflowArtifact sma, AtsWorkPage page) throws OseeCoreException {
       if (sma instanceof TeamWorkFlowArtifact) {
          return ReviewInfoXWidget.toHTML((TeamWorkFlowArtifact) sma, page.getName());
       }

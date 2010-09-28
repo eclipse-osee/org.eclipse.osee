@@ -12,8 +12,7 @@
 package org.eclipse.osee.ats.artifact;
 
 import java.util.Collection;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact.TransitionOption;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
+import org.eclipse.osee.ats.util.TransitionOption;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem;
 import org.eclipse.osee.ats.util.widgets.role.UserRole;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -27,7 +26,11 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
  * 
  * @author Donald G. Dunne
  */
-public class PeerToPeerReviewWorkflowManager {
+public final class PeerToPeerReviewWorkflowManager {
+
+   private PeerToPeerReviewWorkflowManager() {
+      // private constructor
+   }
 
    /**
     * Quickly transition to a state with minimal metrics and data entered. Should only be used for automated transition
@@ -36,51 +39,51 @@ public class PeerToPeerReviewWorkflowManager {
     * @param user User to transition to OR null if should use user of current state
     */
    public static Result transitionTo(PeerToPeerReviewArtifact reviewArt, PeerToPeerReviewArtifact.PeerToPeerReviewState toState, Collection<UserRole> roles, Collection<DefectItem> defects, User user, boolean popup, SkynetTransaction transaction) throws OseeCoreException {
-      Result result = setPrepareStateData(reviewArt, roles, "DoThis.java", 100, .2, transaction);
+      Result result = setPrepareStateData(popup, reviewArt, roles, "DoThis.java", 100, .2, transaction);
       if (result.isFalse()) {
-         if (popup) {
-            result.popup();
-         }
          return result;
       }
       result =
-         reviewArt.transition(PeerToPeerReviewArtifact.PeerToPeerReviewState.Review.name(),
-            (user != null ? user : reviewArt.getStateMgr().getAssignees().iterator().next()), transaction,
-            TransitionOption.None);
+         transitionToState(popup, reviewArt, PeerToPeerReviewArtifact.PeerToPeerReviewState.Review.name(), transaction);
       if (result.isFalse()) {
-         if (popup) {
-            result.popup();
-         }
          return result;
       }
       if (toState == PeerToPeerReviewArtifact.PeerToPeerReviewState.Review) {
          return Result.TrueResult;
       }
 
-      result = setReviewStateData(reviewArt, roles, defects, 100, .2, transaction);
+      result = setReviewStateData(popup, reviewArt, roles, defects, 100, .2, transaction);
       if (result.isFalse()) {
-         if (popup) {
-            result.popup();
-         }
          return result;
       }
 
       result =
-         reviewArt.transition(DefaultTeamState.Completed.name(),
-            (user != null ? user : reviewArt.getStateMgr().getAssignees().iterator().next()), transaction,
-            TransitionOption.None);
+         transitionToState(popup, reviewArt, PeerToPeerReviewArtifact.PeerToPeerReviewState.Completed.name(),
+            transaction);
       if (result.isFalse()) {
-         if (popup) {
-            result.popup();
-         }
          return result;
       }
       return Result.TrueResult;
    }
 
-   public static Result setPrepareStateData(PeerToPeerReviewArtifact reviewArt, Collection<UserRole> roles, String reviewMaterials, int statePercentComplete, double stateHoursSpent, SkynetTransaction transaction) throws OseeCoreException {
+   private static Result transitionToState(boolean popup, PeerToPeerReviewArtifact teamArt, String toState, SkynetTransaction transaction) throws OseeCoreException {
+      Result result =
+         teamArt.transition(toState, teamArt.getStateMgr().getAssignees().iterator().next(), transaction,
+            TransitionOption.None);
+      if (result.isFalse() && popup) {
+         result.popup();
+      }
+      return result;
+   }
+
+   public static Result setPrepareStateData(boolean popup, PeerToPeerReviewArtifact reviewArt, Collection<UserRole> roles, String reviewMaterials, int statePercentComplete, double stateHoursSpent, SkynetTransaction transaction) throws OseeCoreException {
       if (!reviewArt.getStateMgr().getCurrentStateName().equals("Prepare")) {
-         return new Result("Action not in Prepare state");
+         Result result = new Result("Action not in Prepare state");
+         if (result.isFalse() && popup) {
+            result.popup();
+            return result;
+         }
+
       }
       if (roles != null) {
          for (UserRole role : roles) {
@@ -92,7 +95,7 @@ public class PeerToPeerReviewWorkflowManager {
       return Result.TrueResult;
    }
 
-   public static Result setReviewStateData(PeerToPeerReviewArtifact reviewArt, Collection<UserRole> roles, Collection<DefectItem> defects, int statePercentComplete, double stateHoursSpent, SkynetTransaction transaction) throws OseeCoreException {
+   public static Result setReviewStateData(boolean popup, PeerToPeerReviewArtifact reviewArt, Collection<UserRole> roles, Collection<DefectItem> defects, int statePercentComplete, double stateHoursSpent, SkynetTransaction transaction) throws OseeCoreException {
       if (roles != null) {
          for (UserRole role : roles) {
             reviewArt.getUserRoleManager().addOrUpdateUserRole(role, false, transaction);

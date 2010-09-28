@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -35,13 +35,13 @@ public abstract class AtsStateItem implements IAtsStateItem {
 
    @SuppressWarnings("unused")
    @Override
-   public Result committing(StateMachineArtifact sma) throws OseeCoreException {
+   public Result committing(AbstractWorkflowArtifact sma) throws OseeCoreException {
       return Result.TrueResult;
    }
 
    @SuppressWarnings("unused")
    @Override
-   public String getBranchShortName(StateMachineArtifact sma) throws OseeCoreException {
+   public String getBranchShortName(AbstractWorkflowArtifact sma) throws OseeCoreException {
       return null;
    }
 
@@ -72,31 +72,31 @@ public abstract class AtsStateItem implements IAtsStateItem {
 
    @SuppressWarnings("unused")
    @Override
-   public List<XWidget> getDynamicXWidgetsPostBody(StateMachineArtifact sma) throws OseeCoreException {
+   public List<XWidget> getDynamicXWidgetsPostBody(AbstractWorkflowArtifact sma) throws OseeCoreException {
       return Collections.emptyList();
    }
 
    @SuppressWarnings("unused")
    @Override
-   public List<XWidget> getDynamicXWidgetsPreBody(StateMachineArtifact sma) throws OseeCoreException {
+   public List<XWidget> getDynamicXWidgetsPreBody(AbstractWorkflowArtifact sma) throws OseeCoreException {
       return Collections.emptyList();
    }
 
    @SuppressWarnings("unused")
    @Override
-   public Result pageCreated(FormToolkit toolkit, AtsWorkPage page, StateMachineArtifact sma, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
+   public Result pageCreated(FormToolkit toolkit, AtsWorkPage page, AbstractWorkflowArtifact sma, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
       return Result.TrueResult;
    }
 
    @SuppressWarnings("unused")
    @Override
-   public void transitioned(StateMachineArtifact sma, String fromState, String toState, Collection<User> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
+   public void transitioned(AbstractWorkflowArtifact sma, String fromState, String toState, Collection<User> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
       // provided for subclass implementation
    }
 
    @SuppressWarnings("unused")
    @Override
-   public Result transitioning(StateMachineArtifact sma, String fromState, String toState, Collection<User> toAssignees) throws OseeCoreException {
+   public Result transitioning(AbstractWorkflowArtifact sma, String fromState, String toState, Collection<User> toAssignees) throws OseeCoreException {
       return Result.TrueResult;
    }
 

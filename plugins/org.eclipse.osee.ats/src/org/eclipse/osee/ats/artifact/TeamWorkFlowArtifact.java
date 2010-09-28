@@ -11,26 +11,21 @@
 
 package org.eclipse.osee.ats.artifact;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.DefaultTeamState;
+import org.eclipse.osee.ats.util.StateManager;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.ats.util.widgets.XActionableItemsDam;
-import org.eclipse.osee.ats.util.widgets.dialog.AICheckTreeDialog;
-import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions.RuleWorkItemId;
-import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -41,34 +36,22 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
-import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
  * @author Donald G. Dunne
  */
-public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implements IBranchArtifact, IATSStateMachineArtifact {
+public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IBranchArtifact, IATSStateMachineArtifact {
 
    private XActionableItemsDam actionableItemsDam;
    private boolean targetedErrorLogged = false;
    private final AtsBranchManager branchMgr;
-   public static enum DefaultTeamState {
-      Endorse,
-      Analyze,
-      Authorize,
-      Implement,
-      Completed,
-      Cancelled
-   }
 
    public TeamWorkFlowArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeCoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
@@ -77,7 +60,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
    }
 
    @Override
-   public void getSmaArtifactsOneLevel(StateMachineArtifact smaArtifact, Set<Artifact> artifacts) throws OseeCoreException {
+   public void getSmaArtifactsOneLevel(AbstractWorkflowArtifact smaArtifact, Set<Artifact> artifacts) throws OseeCoreException {
       super.getSmaArtifactsOneLevel(smaArtifact, artifacts);
       try {
          if (getTargetedForVersion() != null) {
@@ -124,43 +107,6 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
    }
 
    @Override
-   public Set<User> getPrivilegedUsers() {
-      Set<User> users = new HashSet<User>();
-      try {
-         addPriviledgedUsersUpTeamDefinitionTree(getTeamDefinition(), users);
-
-         WorkPageDefinition workPageDefinition = getWorkPageDefinition();
-
-         // Add user if allowing privileged edit to all users
-         if (!users.contains(UserManager.getUser()) && (workPageDefinition.hasWorkRule(RuleWorkItemId.atsAllowPriviledgedEditToAll.name()) || getTeamDefinition().hasWorkRule(
-            RuleWorkItemId.atsAllowPriviledgedEditToAll.name()))) {
-            users.add(UserManager.getUser());
-         }
-
-         // Add user if user is team member and rule exists
-         if (!users.contains(UserManager.getUser()) && (workPageDefinition.hasWorkRule(RuleWorkItemId.atsAllowPriviledgedEditToTeamMember.name()) || getTeamDefinition().hasWorkRule(
-            RuleWorkItemId.atsAllowPriviledgedEditToTeamMember.name()))) {
-            if (getTeamDefinition().getMembers().contains(UserManager.getUser())) {
-               users.add(UserManager.getUser());
-            }
-         }
-
-         // Add user if team member is originator and rule exists
-         if (!users.contains(UserManager.getUser()) && (workPageDefinition.hasWorkRule(RuleWorkItemId.atsAllowPriviledgedEditToTeamMemberAndOriginator.name()) || getTeamDefinition().hasWorkRule(
-            RuleWorkItemId.atsAllowPriviledgedEditToTeamMemberAndOriginator.name()))) {
-            if (getOriginator().equals(UserManager.getUser()) && getTeamDefinition().getMembers().contains(
-               UserManager.getUser())) {
-               users.add(UserManager.getUser());
-            }
-         }
-
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      }
-      return users;
-   }
-
-   @Override
    public String getEditorTitle() throws OseeCoreException {
       try {
          if (getWorldViewTargetedVersion() != null) {
@@ -200,9 +146,6 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
       setSoleAttributeValue(AtsAttributeTypes.PriorityType, type.getShortName());
    }
 
-   /**
-    * @return Returns the actionableItemsDam.
-    */
    public XActionableItemsDam getActionableItemsDam() {
       return actionableItemsDam;
    }
@@ -256,7 +199,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
    @Override
    public void atsDelete(Set<Artifact> deleteArts, Map<Artifact, Object> allRelated) throws OseeCoreException {
       super.atsDelete(deleteArts, allRelated);
-      for (ReviewSMArtifact reviewArt : ReviewManager.getReviews(this)) {
+      for (AbstractReviewArtifact reviewArt : ReviewManager.getReviews(this)) {
          reviewArt.atsDelete(deleteArts, allRelated);
       }
    }
@@ -294,7 +237,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
    }
 
    @Override
-   public StateMachineArtifact getParentSMA() {
+   public AbstractWorkflowArtifact getParentSMA() {
       return null;
    }
 
@@ -333,26 +276,6 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
    }
 
    @Override
-   public String getHyperName() {
-      try {
-         return getEditorTitle();
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      }
-      return getTeamName();
-   }
-
-   @Override
-   public String getHyperTargetVersion() {
-      try {
-         return getWorldViewTargetedVersionStr().equals("") ? null : getWorldViewTargetedVersionStr();
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-      }
-      return null;
-   }
-
-   @Override
    public double getManHrsPerDayPreference() throws OseeCoreException {
       try {
          return getTeamDefinition().getManDayHrsFromItemAndChildren();
@@ -360,76 +283,6 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
       return super.getManHrsPerDayPreference();
-   }
-
-   public Result editActionableItems() throws OseeCoreException {
-      return getParentActionArtifact().editActionableItems();
-   }
-
-   public Result convertActionableItems() throws OseeCoreException {
-      Result toReturn = Result.FalseResult;
-      AICheckTreeDialog diag =
-         new AICheckTreeDialog("Convert Impacted Actionable Items",
-            "NOTE: This should NOT be the normal path to changing actionable items.\n\nIf a team has " +
-            //
-            "determined " + "that there is NO impact and that another actionable items IS impacted:\n" +
-            //
-            "   1) Cancel this operation\n" + "   2) Select \"Edit Actionable Items\" to add/remove " +
-            //
-            "impacted items \n" + "      which will create new teams as needed.\n" +
-            //
-            "   3) Then cancel the team that has no impacts.\n   Doing this will show that the original " +
-            //
-            "team analyzed the impact\n" + "   and determined that there was no change.\n\n" + "However, " +
-            //
-            "there are some cases where an impacted item was incorrectly chosen\n" + "and the original team " +
-            //
-            "does not need to do anything, this dialog will purge the\n" + "team from the DB as if it was " +
-            //
-            "never chosen.\n\n" + "Current Actionable Item(s): " + getWorldViewActionableItems() + "\n" +
-            //
-            "Current Team: " + getTeamDefinition().getName() + "\n" +
-            //
-            "Select SINGLE Actionable Item below to convert this workflow to.\n\n" +
-            //
-            "You will be prompted to confirm this conversion.", Active.Both);
-
-      diag.setInput(ActionableItemArtifact.getTopLevelActionableItems(Active.Both));
-      if (diag.open() != 0) {
-         return Result.FalseResult;
-      }
-      if (diag.getChecked().isEmpty()) {
-         return new Result("At least one actionable item must must be selected.");
-      }
-      if (diag.getChecked().size() > 1) {
-         return new Result("Only ONE actionable item can be selected for converts");
-      }
-      ActionableItemArtifact selectedAia = diag.getChecked().iterator().next();
-      Collection<TeamDefinitionArtifact> teamDefs =
-         ActionableItemArtifact.getImpactedTeamDefs(Arrays.asList(selectedAia));
-      if (teamDefs.size() != 1) {
-         toReturn = new Result("Single team can not retrieved for " + selectedAia.getName());
-      } else {
-         TeamDefinitionArtifact newTeamDef = teamDefs.iterator().next();
-         if (newTeamDef.equals(getTeamDefinition())) {
-            toReturn =
-               new Result(
-                  "Actionable Item selected belongs to same team as currently selected team.\n" + "Use \"Edit Actionable Items\" instaed.");
-         } else {
-            StringBuffer sb = new StringBuffer();
-            sb.append("Converting...");
-            sb.append("\nActionable Item(s): " + getWorldViewActionableItems());
-            sb.append("\nTeam: " + getTeamDefinition().getName());
-            sb.append("\nto\nActionable Item(s): " + selectedAia);
-            sb.append("\nTeam: " + newTeamDef.getName());
-            if (MessageDialog.openConfirm(Displays.getActiveShell(), "Confirm Convert", sb.toString())) {
-               Set<ActionableItemArtifact> toProcess = new HashSet<ActionableItemArtifact>();
-               toProcess.add(selectedAia);
-               toReturn = actionableItemsTx(AtsUtil.getAtsBranch(), toProcess, newTeamDef);
-            }
-         }
-      }
-      return toReturn;
    }
 
    @Override
@@ -446,13 +299,13 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
       Collection<VersionArtifact> vers =
          getRelatedArtifacts(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, VersionArtifact.class);
       Date date = null;
-      if (vers.size() > 0) {
+      if (vers.isEmpty()) {
+         date = getSoleAttributeValue(AtsAttributeTypes.EstimatedReleaseDate, null);
+      } else {
          date = vers.iterator().next().getEstimatedReleaseDate();
          if (date == null) {
             date = getSoleAttributeValue(AtsAttributeTypes.EstimatedReleaseDate, null);
          }
-      } else {
-         date = getSoleAttributeValue(AtsAttributeTypes.EstimatedReleaseDate, null);
       }
       return date;
    }
@@ -466,20 +319,20 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
       Collection<VersionArtifact> vers =
          getRelatedArtifacts(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, VersionArtifact.class);
       Date date = null;
-      if (vers.size() > 0) {
+      if (vers.isEmpty()) {
+         date = getSoleAttributeValue(AtsAttributeTypes.ReleaseDate, null);
+      } else {
          date = vers.iterator().next().getReleaseDate();
          if (date == null) {
             date = getSoleAttributeValue(AtsAttributeTypes.ReleaseDate, null);
          }
-      } else {
-         date = getSoleAttributeValue(AtsAttributeTypes.ReleaseDate, null);
       }
       return date;
    }
 
    @Override
    public Collection<User> getImplementers() throws OseeCoreException {
-      return getImplementersByState(DefaultTeamState.Implement.name());
+      return StateManager.getImplementersByState(this, DefaultTeamState.Implement.name());
    }
 
    @Override
@@ -513,20 +366,6 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
       double benefit = getWorldViewWeeklyBenefit();
       double remainHrs = getRemainHoursTotal();
       return benefit * 52 - remainHrs;
-   }
-
-   private Result actionableItemsTx(Branch branch, Set<ActionableItemArtifact> selectedAlias, TeamDefinitionArtifact teamDefinition) throws OseeCoreException {
-      Result workResult = actionableItemsDam.setActionableItems(selectedAlias);
-      if (workResult.isTrue()) {
-         if (teamDefinition != null) {
-            setTeamDefinition(teamDefinition);
-         }
-         SkynetTransaction transaction = new SkynetTransaction(branch, "Converate Actionable Item");
-         getParentActionArtifact().resetAttributesOffChildren(transaction);
-         persist(transaction);
-         transaction.execute();
-      }
-      return workResult;
    }
 
    @Override

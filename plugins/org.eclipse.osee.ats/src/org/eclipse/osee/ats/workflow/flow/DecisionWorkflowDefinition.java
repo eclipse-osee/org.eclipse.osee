@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.workflow.flow;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
+import org.eclipse.osee.ats.util.DefaultTeamState;
 import org.eclipse.osee.ats.workflow.item.AtsStatePercentCompleteWeightDecisionReviewRule;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.ats.workflow.page.AtsCancelledWorkPageDefinition;

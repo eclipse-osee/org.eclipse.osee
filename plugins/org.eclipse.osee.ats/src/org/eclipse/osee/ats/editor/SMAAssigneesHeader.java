@@ -10,8 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor;
 
-import java.util.logging.Level;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.PromptChangeUtil;
 import org.eclipse.osee.framework.core.data.SystemUser;
@@ -23,7 +22,6 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.swt.ALayout;
-import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -40,64 +38,57 @@ public class SMAAssigneesHeader extends Composite {
    private static String TARGET_VERSION = "Assignee(s):";
    Label valueLabel;
 
-   public SMAAssigneesHeader(Composite parent, int style, final StateMachineArtifact sma, XFormToolkit toolkit, final boolean isEditable) {
+   public SMAAssigneesHeader(Composite parent, int style, final AbstractWorkflowArtifact sma, XFormToolkit toolkit, final boolean isEditable) {
       super(parent, style);
       setLayoutData(new GridData());
       setLayout(ALayout.getZeroMarginLayout(2, false));
       toolkit.adapt(this);
 
-      try {
-         if (!sma.isCancelled() && !sma.isCompleted()) {
-            Hyperlink link = toolkit.createHyperlink(this, TARGET_VERSION, SWT.NONE);
-            link.addHyperlinkListener(new IHyperlinkListener() {
+      if (!sma.isCancelled() && !sma.isCompleted()) {
+         Hyperlink link = toolkit.createHyperlink(this, TARGET_VERSION, SWT.NONE);
+         link.addHyperlinkListener(new IHyperlinkListener() {
 
-               @Override
-               public void linkEntered(HyperlinkEvent e) {
-                  // do nothing
-               }
+            @Override
+            public void linkEntered(HyperlinkEvent e) {
+               // do nothing
+            }
 
-               @Override
-               public void linkExited(HyperlinkEvent e) {
-                  // do nothing
-               }
+            @Override
+            public void linkExited(HyperlinkEvent e) {
+               // do nothing
+            }
 
-               @Override
-               public void linkActivated(HyperlinkEvent e) {
-                  try {
-                     if (!isEditable && !sma.getStateMgr().getAssignees().contains(
-                        UserManager.getUser(SystemUser.UnAssigned)) && !sma.getStateMgr().getAssignees().contains(
-                        UserManager.getUser())) {
-                        AWorkbench.popup(
-                           "ERROR",
-                           "You must be assigned to modify assignees.\nContact current Assignee or Select Priviledged Edit for Authorized Overriders.");
-                        return;
-                     }
-                     if (PromptChangeUtil.promptChangeAssignees(sma, false)) {
-                        sma.getEditor().doSave(null);
-                     }
-                  } catch (Exception ex) {
-                     OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            @Override
+            public void linkActivated(HyperlinkEvent e) {
+               try {
+                  if (!isEditable && !sma.getStateMgr().getAssignees().contains(
+                     UserManager.getUser(SystemUser.UnAssigned)) && !sma.getStateMgr().getAssignees().contains(
+                     UserManager.getUser())) {
+                     AWorkbench.popup(
+                        "ERROR",
+                        "You must be assigned to modify assignees.\nContact current Assignee or Select Priviledged Edit for Authorized Overriders.");
+                     return;
                   }
+                  if (PromptChangeUtil.promptChangeAssignees(sma, false)) {
+                     sma.getEditor().doSave(null);
+                  }
+               } catch (Exception ex) {
+                  OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                }
-            });
-         } else {
-            Label origLabel = toolkit.createLabel(this, TARGET_VERSION);
-            origLabel.setLayoutData(new GridData());
-         }
-
-         valueLabel = toolkit.createLabel(this, "Not Set");
-         valueLabel.setLayoutData(new GridData());
-         updateLabel(sma);
-
-      } catch (OseeCoreException ex) {
-         Label errorLabel = toolkit.createLabel(this, "Error: " + ex.getLocalizedMessage());
-         errorLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            }
+         });
+      } else {
+         Label origLabel = toolkit.createLabel(this, TARGET_VERSION);
+         origLabel.setLayoutData(new GridData());
       }
+
+      valueLabel = toolkit.createLabel(this, "Not Set");
+      valueLabel.setLayoutData(new GridData());
+      updateLabel(sma);
 
    }
 
-   private void updateLabel(StateMachineArtifact sma) {
+   private void updateLabel(AbstractWorkflowArtifact sma) {
       String value = "";
       try {
          if (sma.getStateMgr().getAssignees().isEmpty()) {

@@ -14,7 +14,7 @@ import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.IWorldEditorConsumer;
@@ -68,8 +68,8 @@ public class AtsQuickSearchOperation extends AbstractOperation implements IWorld
       for (Artifact art : ArtifactQuery.getArtifactListFromAttributeKeywords(AtsUtil.getAtsBranch(),
          data.getSearchStr(), false, EXCLUDE_DELETED, false)) {
          // only ATS Artifacts
-         if (art instanceof StateMachineArtifact) {
-            StateMachineArtifact sma = (StateMachineArtifact) art;
+         if (art instanceof AbstractWorkflowArtifact) {
+            AbstractWorkflowArtifact sma = (AbstractWorkflowArtifact) art;
             // default excludes canceled/completed
             if (data.isIncludeCompleteCancelled() == false) {
                if (!sma.isCancelledOrCompleted()) {

@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.osee.ats.artifact.ATSArtifact;
+import org.eclipse.osee.ats.artifact.AbstractAtsArtifact;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
@@ -94,7 +94,7 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAc
 
    @Override
    public void explore(Artifact artifact) {
-      if (artifact == null || artifact.isDeleted() || !(artifact instanceof ATSArtifact)) {
+      if (artifact == null || artifact.isDeleted() || !(artifact instanceof AbstractAtsArtifact)) {
          clear();
       }
       try {
@@ -102,8 +102,8 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAc
          getOptions().setLayout(getOptions().getLayout(SkyWalkerOptions.RADIAL_DOWN_LAYOUT));
          if (artifact instanceof User) {
             super.explore(artifact);
-         } else if (artifact instanceof ATSArtifact) {
-            super.explore(getTopArtifact((ATSArtifact) artifact));
+         } else if (artifact instanceof AbstractAtsArtifact) {
+            super.explore(getTopArtifact((AbstractAtsArtifact) artifact));
          } else {
             throw new OseeCoreException("Unexpected artifact subclass");
          }
@@ -113,8 +113,8 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAc
       }
    }
 
-   public ATSArtifact getTopArtifact(ATSArtifact art) throws OseeCoreException {
-      ATSArtifact artifact = null;
+   public AbstractAtsArtifact getTopArtifact(AbstractAtsArtifact art) throws OseeCoreException {
+      AbstractAtsArtifact artifact = null;
       if (art instanceof ActionArtifact) {
          artifact = art;
       } else if (art instanceof TeamWorkFlowArtifact) {

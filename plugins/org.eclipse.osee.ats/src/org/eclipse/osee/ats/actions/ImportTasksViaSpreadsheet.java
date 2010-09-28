@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.actions;
 
 import org.eclipse.jface.action.Action;
-import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.operation.ImportTasksFromSpreadsheet;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -26,10 +26,11 @@ import org.eclipse.swt.widgets.Listener;
  */
 public class ImportTasksViaSpreadsheet extends Action {
 
-   private final TaskableStateMachineArtifact taskableArt;
+   private final AbstractTaskableArtifact taskableArt;
    private final Listener listener;
 
-   public ImportTasksViaSpreadsheet(TaskableStateMachineArtifact taskableArt, Listener listener) {
+   public ImportTasksViaSpreadsheet(AbstractTaskableArtifact taskableArt, Listener listener) {
+      super();
       this.taskableArt = taskableArt;
       this.listener = listener;
       setText("Import Tasks via spreadsheet");
@@ -43,7 +44,7 @@ public class ImportTasksViaSpreadsheet extends Action {
          blamOperation.setTaskableStateMachineArtifact(taskableArt);
          BlamEditor.edit(blamOperation);
          if (listener != null) {
-            listener.notify();
+            listener.notifyAll();
          }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);

@@ -28,16 +28,15 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.artifact.ATSLog;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
+import org.eclipse.osee.ats.artifact.AbstractReviewArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.LogItem;
-import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.task.TaskEditor;
@@ -46,6 +45,7 @@ import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.DefaultTeamState;
 import org.eclipse.osee.ats.util.widgets.SMAState;
 import org.eclipse.osee.ats.util.widgets.XCurrentStateDam;
 import org.eclipse.osee.ats.util.widgets.XStateDam;
@@ -245,7 +245,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          for (User user : UserManager.getUsers()) {
             Set<Artifact> smasToRemove = new HashSet<Artifact>();
             for (Artifact art : user.getRelatedArtifacts(CoreRelationTypes.Users_Artifact)) {
-               if (art instanceof StateMachineArtifact) {
+               if (art instanceof AbstractWorkflowArtifact) {
                   if (!AccessControlManager.hasPermission(art, PermissionEnum.FULLACCESS)) {
                      String errStr = String.format("No permission to remove relations for [%s]", art);
                      System.err.println(errStr);
@@ -455,14 +455,14 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                   }
                }
 
-               if (artifact instanceof StateMachineArtifact) {
+               if (artifact instanceof AbstractWorkflowArtifact) {
                   checkAndResolveDuplicateAttributesForAttributeNameContains("ats", artifact, fixAttributeValues,
                      testNameToResultsMap, transaction);
                }
 
                // Test for ats.State Completed;;;<num> or Cancelled;;;<num> and cleanup
-               if (artifact instanceof StateMachineArtifact) {
-                  XStateDam stateDam = new XStateDam((StateMachineArtifact) artifact);
+               if (artifact instanceof AbstractWorkflowArtifact) {
+                  XStateDam stateDam = new XStateDam((AbstractWorkflowArtifact) artifact);
                   for (SMAState state : stateDam.getStates()) {
                      if (state.getName().equals(DefaultTeamState.Completed.name()) || state.getName().equals(
                         DefaultTeamState.Cancelled.name())) {
@@ -482,8 +482,8 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                }
 
                // Test for ats.CurrentState Completed;;;<num> or Cancelled;;;<num> and cleanup
-               if (artifact instanceof StateMachineArtifact) {
-                  XCurrentStateDam currentStateDam = new XCurrentStateDam((StateMachineArtifact) artifact);
+               if (artifact instanceof AbstractWorkflowArtifact) {
+                  XCurrentStateDam currentStateDam = new XCurrentStateDam((AbstractWorkflowArtifact) artifact);
                   SMAState state = currentStateDam.getState();
                   if (state.getName().equals(DefaultTeamState.Completed.name()) || state.getName().equals(
                      DefaultTeamState.Cancelled.name())) {
@@ -706,8 +706,8 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
 
    private void testReviewsHaveValidDefectAndRoleXml(Collection<Artifact> artifacts) {
       for (Artifact artifact : artifacts) {
-         if (artifact instanceof ReviewSMArtifact) {
-            ReviewSMArtifact reviewArtifact = (ReviewSMArtifact) artifact;
+         if (artifact instanceof AbstractReviewArtifact) {
+            AbstractReviewArtifact reviewArtifact = (AbstractReviewArtifact) artifact;
             try {
                if (reviewArtifact.getAttributes(AtsAttributeTypes.ReviewDefect).size() > 0 && reviewArtifact.getDefectManager().getDefectItems().isEmpty()) {
                   testNameToResultsMap.put(
@@ -731,8 +731,8 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    private void testReviewsHaveParentWorkflowOrActionableItems(Collection<Artifact> artifacts) {
       for (Artifact artifact : artifacts) {
          try {
-            if (artifact instanceof ReviewSMArtifact) {
-               ReviewSMArtifact reviewArtifact = (ReviewSMArtifact) artifact;
+            if (artifact instanceof AbstractReviewArtifact) {
+               AbstractReviewArtifact reviewArtifact = (AbstractReviewArtifact) artifact;
                if (reviewArtifact.getRelatedArtifacts(AtsRelationTypes.TeamWorkflowToReview_Team).isEmpty() && reviewArtifact.getActionableItemsDam().getActionableItemGuids().isEmpty()) {
                   testNameToResultsMap.put(
                      "testReviewsHaveParentWorkflowOrActionableItems",
@@ -748,8 +748,8 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
 
    private void testAtsLogs(Collection<Artifact> artifacts) {
       for (Artifact art : artifacts) {
-         if (art instanceof StateMachineArtifact) {
-            StateMachineArtifact sma = (StateMachineArtifact) art;
+         if (art instanceof AbstractWorkflowArtifact) {
+            AbstractWorkflowArtifact sma = (AbstractWorkflowArtifact) art;
             try {
                ATSLog log = sma.getLog();
                if (log.getOriginator() == null) {
@@ -826,9 +826,9 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          }
       }
       for (Artifact art : artifacts) {
-         if (art instanceof StateMachineArtifact) {
+         if (art instanceof AbstractWorkflowArtifact) {
             try {
-               StateMachineArtifact sma = (StateMachineArtifact) art;
+               AbstractWorkflowArtifact sma = (AbstractWorkflowArtifact) art;
                if ((sma.isCompleted() || sma.isCancelled()) && sma.getStateMgr().getAssignees().size() > 0) {
                   testNameToResultsMap.put(
                      "testStateMachineAssignees",

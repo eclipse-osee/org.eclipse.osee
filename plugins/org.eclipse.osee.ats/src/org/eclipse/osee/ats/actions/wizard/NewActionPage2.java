@@ -39,6 +39,7 @@ public class NewActionPage2 extends WizardPage {
    private WorkPage page;
    private final NewActionWizard wizard;
    private boolean debugPopulated = false;
+   private static String DESCRIPTION = "Description";
 
    protected NewActionPage2(NewActionWizard wizard) {
       super("Create new ATS Action", "Create ATS Action", null);
@@ -50,14 +51,14 @@ public class NewActionPage2 extends WizardPage {
    public void setVisible(boolean visible) {
       super.setVisible(visible);
       try {
-         if (wizard.getInitialDescription() != null && ((XText) getXWidget("Description")).get().equals("")) {
-            ((XText) getXWidget("Description")).set(wizard.getInitialDescription());
+         if (wizard.getInitialDescription() != null && ((XText) getXWidget(DESCRIPTION)).get().equals("")) {
+            ((XText) getXWidget(DESCRIPTION)).set(wizard.getInitialDescription());
          }
          if (wizard.isTTAction()) {
             handlePopulateWithDebugInfo();
          }
          wizard.createPage3IfNecessary();
-         ((XText) getXWidget("Description")).getStyledText().setFocus();
+         ((XText) getXWidget(DESCRIPTION)).getStyledText().setFocus();
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -74,22 +75,23 @@ public class NewActionPage2 extends WizardPage {
    public void createControl(Composite parent) {
 
       try {
-         StringBuffer sb = new StringBuffer("<WorkPage>");
-         sb.append("<XWidget displayName=\"Description\" height=\"80\" required=\"true\" xwidgetType=\"XText\" fill=\"Vertically\" toolTip=\"" + AtsAttributeTypes.Description.getDescription() + "\"/>");
-         sb.append("<XWidget displayName=\"Change Type\" storageName=\"ats.Change Type\" xwidgetType=\"XCombo(" + ATSXWidgetOptionResolver.OPTIONS_FROM_ATTRIBUTE_VALIDITY + ")\" required=\"true\" horizontalLabel=\"true\" toolTip=\"" + AtsAttributeTypes.ChangeType.getDescription() + "\"/>");
-         sb.append("<XWidget displayName=\"Priority\" storageName=\"ats.Priority\" xwidgetType=\"XCombo(" + ATSXWidgetOptionResolver.OPTIONS_FROM_ATTRIBUTE_VALIDITY + ")\" required=\"true\" horizontalLabel=\"true\"/>");
-         sb.append("<XWidget displayName=\"Deadline\" xwidgetType=\"XDate\" horizontalLabel=\"true\" toolTip=\"" + AtsAttributeTypes.NeedBy.getDescription() + "\"/>");
-         sb.append("<XWidget displayName=\"Validation Required\" xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" toolTip=\"" + AtsAttributeTypes.ValidationRequired.getDescription() + "\"/>");
-         sb.append("</WorkPage>");
+         StringBuffer stringBuffer = new StringBuffer(800);
+         stringBuffer.append("<WorkPage>");
+         stringBuffer.append("<XWidget displayName=\"Description\" height=\"80\" required=\"true\" xwidgetType=\"XText\" fill=\"Vertically\" toolTip=\"" + AtsAttributeTypes.Description.getDescription() + "\"/>");
+         stringBuffer.append("<XWidget displayName=\"Change Type\" storageName=\"ats.Change Type\" xwidgetType=\"XCombo(" + ATSXWidgetOptionResolver.OPTIONS_FROM_ATTRIBUTE_VALIDITY + ")\" required=\"true\" horizontalLabel=\"true\" toolTip=\"" + AtsAttributeTypes.ChangeType.getDescription() + "\"/>");
+         stringBuffer.append("<XWidget displayName=\"Priority\" storageName=\"ats.Priority\" xwidgetType=\"XCombo(" + ATSXWidgetOptionResolver.OPTIONS_FROM_ATTRIBUTE_VALIDITY + ")\" required=\"true\" horizontalLabel=\"true\"/>");
+         stringBuffer.append("<XWidget displayName=\"Deadline\" xwidgetType=\"XDate\" horizontalLabel=\"true\" toolTip=\"" + AtsAttributeTypes.NeedBy.getDescription() + "\"/>");
+         stringBuffer.append("<XWidget displayName=\"Validation Required\" xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" toolTip=\"" + AtsAttributeTypes.ValidationRequired.getDescription() + "\"/>");
+         stringBuffer.append("</WorkPage>");
 
          Composite comp = new Composite(parent, SWT.NONE);
          comp.setLayout(new GridLayout(2, false));
          comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-         page = new WorkPage(sb.toString(), ATSXWidgetOptionResolver.getInstance());
+         page = new WorkPage(stringBuffer.toString(), ATSXWidgetOptionResolver.getInstance());
          page.createBody(null, comp, null, xModListener, true);
 
-         ((XText) getXWidget("Description")).getLabelWidget().addListener(SWT.MouseUp, new Listener() {
+         ((XText) getXWidget(DESCRIPTION)).getLabelWidget().addListener(SWT.MouseUp, new Listener() {
             @Override
             public void handleEvent(Event event) {
                if (event.button == 3) {
@@ -114,7 +116,7 @@ public class NewActionPage2 extends WizardPage {
          return;
       }
       try {
-         ((XText) getXWidget("Description")).set("See title");
+         ((XText) getXWidget(DESCRIPTION)).set("See title");
          // Must use skynet attribute name cause these widget uses the OPTIONS_FROM_ATTRIBUTE_VALIDITY
          ((XCombo) getXWidget("ats.Priority")).set("4");
          ((XCombo) getXWidget("ats.Change Type")).set("Improvement");

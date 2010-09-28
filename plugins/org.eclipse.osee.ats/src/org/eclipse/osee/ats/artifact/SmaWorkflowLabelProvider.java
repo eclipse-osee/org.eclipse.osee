@@ -15,10 +15,6 @@ package org.eclipse.osee.ats.artifact;
  */
 public class SmaWorkflowLabelProvider extends TeamWorkflowLabelProvider {
 
-   public SmaWorkflowLabelProvider() {
-      super();
-   }
-
    @Override
    public String getText(Object element) {
       if (element instanceof TeamWorkFlowArtifact) {

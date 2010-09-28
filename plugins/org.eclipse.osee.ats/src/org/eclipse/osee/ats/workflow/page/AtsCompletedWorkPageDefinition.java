@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.workflow.page;
 
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
+import org.eclipse.osee.ats.util.DefaultTeamState;
 import org.eclipse.osee.ats.workflow.flow.TeamWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions.RuleWorkItemId;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;

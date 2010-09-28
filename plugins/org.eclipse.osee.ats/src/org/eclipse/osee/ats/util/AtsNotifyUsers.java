@@ -15,10 +15,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
+import org.eclipse.osee.ats.artifact.AbstractReviewArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.LogItem;
-import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.role.UserRole;
@@ -82,14 +82,14 @@ public class AtsNotifyUsers implements IArtifactEventListener {
       OseeEventManager.removeListener(this);
    }
 
-   public void notify(StateMachineArtifact sma, NotifyType... notifyTypes) throws OseeCoreException {
+   public void notify(AbstractWorkflowArtifact sma, NotifyType... notifyTypes) throws OseeCoreException {
       notify(sma, null, notifyTypes);
    }
 
    /**
     * @param notifyUsers only valid for assignees notifyType. if null or any other type, the users will be computed
     */
-   public void notify(StateMachineArtifact sma, Collection<User> notifyUsers, NotifyType... notifyTypes) throws OseeCoreException {
+   public void notify(AbstractWorkflowArtifact sma, Collection<User> notifyUsers, NotifyType... notifyTypes) throws OseeCoreException {
       if (!isInTest() && (!AtsUtil.isEmailEnabled() || !AtsUtil.isProductionDb() || sma.getName().startsWith("tt "))) {
          return;
       }
@@ -119,7 +119,7 @@ public class AtsNotifyUsers implements IArtifactEventListener {
          }
       }
       if (types.contains(NotifyType.Subscribed)) {
-         Collection<User> subscribed = sma.getSubscribed();
+         Collection<User> subscribed = SubscribeManager.getSubscribed(sma);
          subscribed = EmailUtil.getValidEmailUsers(subscribed);
          if (subscribed.size() > 0) {
             notificationManager.addNotificationEvent(new OseeNotificationEvent(subscribed, getIdString(sma),
@@ -129,7 +129,7 @@ public class AtsNotifyUsers implements IArtifactEventListener {
          }
       }
       if (types.contains(NotifyType.Cancelled) || types.contains(NotifyType.Completed)) {
-         if ((sma.isTeamWorkflow() || sma instanceof ReviewSMArtifact) && (sma.isCompleted() || sma.isCancelled())) {
+         if ((sma.isTeamWorkflow() || sma instanceof AbstractReviewArtifact) && (sma.isCompleted() || sma.isCancelled())) {
             User originator = sma.getOriginator();
             if (!EmailUtil.isEmailValid(originator)) {
                OseeLog.log(AtsPlugin.class, Level.INFO,
@@ -152,13 +152,13 @@ public class AtsNotifyUsers implements IArtifactEventListener {
          }
       }
       if (types.contains(NotifyType.Reviewed)) {
-         if (sma instanceof ReviewSMArtifact) {
-            if (((ReviewSMArtifact) sma).getUserRoleManager() != null) {
+         if (sma instanceof AbstractReviewArtifact) {
+            if (((AbstractReviewArtifact) sma).getUserRoleManager() != null) {
                Collection<User> authorModerator =
-                  ((ReviewSMArtifact) sma).getUserRoleManager().getRoleUsersAuthorModerator();
+                  ((AbstractReviewArtifact) sma).getUserRoleManager().getRoleUsersAuthorModerator();
                authorModerator = EmailUtil.getValidEmailUsers(authorModerator);
                if (authorModerator.size() > 0) {
-                  for (UserRole role : ((ReviewSMArtifact) sma).getUserRoleManager().getRoleUsersReviewComplete()) {
+                  for (UserRole role : ((AbstractReviewArtifact) sma).getUserRoleManager().getRoleUsersReviewComplete()) {
                      notificationManager.addNotificationEvent(new OseeNotificationEvent(authorModerator,
                         getIdString(sma), NotifyType.Reviewed.name(), String.format(
                            "[%s] titled [%s] has been Reviewed by [%s]", sma.getArtifactTypeName(), sma.getName(),
@@ -170,7 +170,7 @@ public class AtsNotifyUsers implements IArtifactEventListener {
       }
    }
 
-   private static String getIdString(StateMachineArtifact sma) {
+   private static String getIdString(AbstractWorkflowArtifact sma) {
       try {
          String legacyPcrId = sma.getWorldViewLegacyPCR();
          if (!legacyPcrId.equals("")) {

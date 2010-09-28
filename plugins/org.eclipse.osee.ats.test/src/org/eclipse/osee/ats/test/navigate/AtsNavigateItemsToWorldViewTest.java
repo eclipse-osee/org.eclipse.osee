@@ -27,7 +27,7 @@ import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
@@ -103,7 +103,7 @@ public class AtsNavigateItemsToWorldViewTest {
 
    @org.junit.Test
    public void testMyWorld() throws Exception {
-      runGeneralLoadingTest("My World", StateMachineArtifact.class, 11, null);
+      runGeneralLoadingTest("My World", AbstractWorkflowArtifact.class, 11, null);
       runGeneralXColTest(28, false);
    }
 
@@ -258,7 +258,7 @@ public class AtsNavigateItemsToWorldViewTest {
       OseeLog.log(AtsPlugin.class, Level.INFO,
          "Testing User's items relating to " + DemoTestUtil.getDemoUser(DemoUsers.Kay_Jones));
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItems("User's World").iterator().next();
-      runGeneralLoadingTest(item, StateMachineArtifact.class, 8, DemoTestUtil.getDemoUser(DemoUsers.Kay_Jones));
+      runGeneralLoadingTest(item, AbstractWorkflowArtifact.class, 8, DemoTestUtil.getDemoUser(DemoUsers.Kay_Jones));
    }
 
    @org.junit.Test

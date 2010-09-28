@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.artifact.LogItem;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
@@ -32,9 +32,9 @@ import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
  */
 public class SMAUtil {
 
-   public static Collection<StateMachineArtifact> getCompletedCancelled(Collection<StateMachineArtifact> smas) throws OseeCoreException {
-      List<StateMachineArtifact> artifactsToReturn = new ArrayList<StateMachineArtifact>(smas.size());
-      for (StateMachineArtifact sma : smas) {
+   public static Collection<AbstractWorkflowArtifact> getCompletedCancelled(Collection<AbstractWorkflowArtifact> smas) throws OseeCoreException {
+      List<AbstractWorkflowArtifact> artifactsToReturn = new ArrayList<AbstractWorkflowArtifact>(smas.size());
+      for (AbstractWorkflowArtifact sma : smas) {
          if (sma.isCancelledOrCompleted()) {
             artifactsToReturn.add(sma);
          }
@@ -42,9 +42,9 @@ public class SMAUtil {
       return artifactsToReturn;
    }
 
-   public static Collection<StateMachineArtifact> getInWork(Collection<StateMachineArtifact> smas) throws OseeCoreException {
-      List<StateMachineArtifact> artifactsToReturn = new ArrayList<StateMachineArtifact>(smas.size());
-      for (StateMachineArtifact sma : smas) {
+   public static Collection<AbstractWorkflowArtifact> getInWork(Collection<AbstractWorkflowArtifact> smas) throws OseeCoreException {
+      List<AbstractWorkflowArtifact> artifactsToReturn = new ArrayList<AbstractWorkflowArtifact>(smas.size());
+      for (AbstractWorkflowArtifact sma : smas) {
          if (!sma.isCancelledOrCompleted()) {
             artifactsToReturn.add(sma);
          }
@@ -52,9 +52,9 @@ public class SMAUtil {
       return artifactsToReturn;
    }
 
-   public static Collection<StateMachineArtifact> filterOutState(Collection<StateMachineArtifact> smas, Collection<String> stateNames) throws OseeCoreException {
-      List<StateMachineArtifact> artifactsToReturn = new ArrayList<StateMachineArtifact>(smas.size());
-      for (StateMachineArtifact sma : smas) {
+   public static Collection<AbstractWorkflowArtifact> filterOutState(Collection<AbstractWorkflowArtifact> smas, Collection<String> stateNames) throws OseeCoreException {
+      List<AbstractWorkflowArtifact> artifactsToReturn = new ArrayList<AbstractWorkflowArtifact>(smas.size());
+      for (AbstractWorkflowArtifact sma : smas) {
          if (!stateNames.contains(sma.getStateMgr().getCurrentStateName())) {
             artifactsToReturn.add(sma);
          }
@@ -62,9 +62,9 @@ public class SMAUtil {
       return artifactsToReturn;
    }
 
-   public static Collection<StateMachineArtifact> filterOutTypes(Collection<StateMachineArtifact> smas, Collection<Class<?>> classes) {
-      List<StateMachineArtifact> artifactsToReturn = new ArrayList<StateMachineArtifact>(smas.size());
-      for (StateMachineArtifact sma : smas) {
+   public static Collection<AbstractWorkflowArtifact> filterOutTypes(Collection<AbstractWorkflowArtifact> smas, Collection<Class<?>> classes) {
+      List<AbstractWorkflowArtifact> artifactsToReturn = new ArrayList<AbstractWorkflowArtifact>(smas.size());
+      for (AbstractWorkflowArtifact sma : smas) {
          boolean found = false;
          for (Class<?> clazz : classes) {
             if (clazz.isInstance(sma)) {
@@ -78,9 +78,9 @@ public class SMAUtil {
       return artifactsToReturn;
    }
 
-   public static Collection<StateMachineArtifact> getOpenAtDate(Date date, Collection<StateMachineArtifact> artifacts) throws OseeCoreException {
-      List<StateMachineArtifact> smas = new ArrayList<StateMachineArtifact>();
-      for (StateMachineArtifact sma : artifacts) {
+   public static Collection<AbstractWorkflowArtifact> getOpenAtDate(Date date, Collection<AbstractWorkflowArtifact> artifacts) throws OseeCoreException {
+      List<AbstractWorkflowArtifact> smas = new ArrayList<AbstractWorkflowArtifact>();
+      for (AbstractWorkflowArtifact sma : artifacts) {
          Date createDate = sma.getWorldViewCreatedDate();
          Date completedCancelDate = null;
          if (sma.isCancelledOrCompleted()) {
@@ -97,9 +97,9 @@ public class SMAUtil {
       return smas;
    }
 
-   public static Collection<StateMachineArtifact> getCompletedCancelledBetweenDate(Date startDate, Date endDate, Collection<StateMachineArtifact> artifacts) throws OseeCoreException {
-      List<StateMachineArtifact> smas = new ArrayList<StateMachineArtifact>();
-      for (StateMachineArtifact sma : artifacts) {
+   public static Collection<AbstractWorkflowArtifact> getCompletedCancelledBetweenDate(Date startDate, Date endDate, Collection<AbstractWorkflowArtifact> artifacts) throws OseeCoreException {
+      List<AbstractWorkflowArtifact> smas = new ArrayList<AbstractWorkflowArtifact>();
+      for (AbstractWorkflowArtifact sma : artifacts) {
          Date completedCancelDate = null;
          if (sma.isCancelledOrCompleted()) {
             if (sma.isCancelled()) {
@@ -118,17 +118,17 @@ public class SMAUtil {
       return smas;
    }
 
-   public static Double getHoursSpent(Collection<StateMachineArtifact> artifacts) throws OseeCoreException {
+   public static Double getHoursSpent(Collection<AbstractWorkflowArtifact> artifacts) throws OseeCoreException {
       Double hoursSpent = 0.0;
-      for (StateMachineArtifact sma : artifacts) {
+      for (AbstractWorkflowArtifact sma : artifacts) {
          hoursSpent += sma.getWorldViewHoursSpentTotal();
       }
       return hoursSpent;
    }
 
-   public static Collection<StateMachineArtifact> getStateAtDate(Date date, Collection<String> states, Collection<StateMachineArtifact> artifacts) throws OseeCoreException {
-      List<StateMachineArtifact> smas = new ArrayList<StateMachineArtifact>();
-      for (StateMachineArtifact sma : artifacts) {
+   public static Collection<AbstractWorkflowArtifact> getStateAtDate(Date date, Collection<String> states, Collection<AbstractWorkflowArtifact> artifacts) throws OseeCoreException {
+      List<AbstractWorkflowArtifact> smas = new ArrayList<AbstractWorkflowArtifact>();
+      for (AbstractWorkflowArtifact sma : artifacts) {
          Date createDate = sma.getWorldViewCreatedDate();
          if (createDate.after(date)) {
             continue;
@@ -150,9 +150,9 @@ public class SMAUtil {
    /**
     * Returns sma if change type, or parent team workflow's change type is in specified set
     */
-   public static Collection<StateMachineArtifact> getChangeType(Collection<ChangeType> changeTypes, Collection<StateMachineArtifact> artifacts) throws OseeCoreException {
-      List<StateMachineArtifact> smas = new ArrayList<StateMachineArtifact>();
-      for (StateMachineArtifact sma : artifacts) {
+   public static Collection<AbstractWorkflowArtifact> getChangeType(Collection<ChangeType> changeTypes, Collection<AbstractWorkflowArtifact> artifacts) throws OseeCoreException {
+      List<AbstractWorkflowArtifact> smas = new ArrayList<AbstractWorkflowArtifact>();
+      for (AbstractWorkflowArtifact sma : artifacts) {
          TeamWorkFlowArtifact teamArt = sma.getParentTeamWorkflow();
          if (changeTypes.contains(teamArt.getChangeType())) {
             smas.add(sma);
@@ -165,9 +165,9 @@ public class SMAUtil {
    /**
     * Returns sma if priority type, or parent team workflow's priority type is in specified set
     */
-   public static Collection<StateMachineArtifact> getPriorityType(Collection<PriorityType> priorityTypes, Collection<StateMachineArtifact> artifacts) throws OseeCoreException {
-      List<StateMachineArtifact> smas = new ArrayList<StateMachineArtifact>();
-      for (StateMachineArtifact sma : artifacts) {
+   public static Collection<AbstractWorkflowArtifact> getPriorityType(Collection<PriorityType> priorityTypes, Collection<AbstractWorkflowArtifact> artifacts) throws OseeCoreException {
+      List<AbstractWorkflowArtifact> smas = new ArrayList<AbstractWorkflowArtifact>();
+      for (AbstractWorkflowArtifact sma : artifacts) {
          TeamWorkFlowArtifact teamArt = sma.getParentTeamWorkflow();
          if (priorityTypes.contains(teamArt.getPriority())) {
             smas.add(sma);
@@ -177,9 +177,9 @@ public class SMAUtil {
 
    }
 
-   public static Collection<StateMachineArtifact> getTeamDefinitionWorkflows(Collection<? extends Artifact> artifacts, Collection<TeamDefinitionArtifact> teamDefs) throws OseeCoreException {
-      List<StateMachineArtifact> returnSmas = new ArrayList<StateMachineArtifact>();
-      for (StateMachineArtifact sma : getSMAs(artifacts)) {
+   public static Collection<AbstractWorkflowArtifact> getTeamDefinitionWorkflows(Collection<? extends Artifact> artifacts, Collection<TeamDefinitionArtifact> teamDefs) throws OseeCoreException {
+      List<AbstractWorkflowArtifact> returnSmas = new ArrayList<AbstractWorkflowArtifact>();
+      for (AbstractWorkflowArtifact sma : getSMAs(artifacts)) {
          if (sma.getParentTeamWorkflow() == null) {
             continue;
          }
@@ -190,9 +190,9 @@ public class SMAUtil {
       return returnSmas;
    }
 
-   public static Collection<StateMachineArtifact> getVersionWorkflows(Collection<? extends Artifact> artifacts, Collection<VersionArtifact> versionArts) throws OseeCoreException {
-      List<StateMachineArtifact> returnSmas = new ArrayList<StateMachineArtifact>();
-      for (StateMachineArtifact sma : getSMAs(artifacts)) {
+   public static Collection<AbstractWorkflowArtifact> getVersionWorkflows(Collection<? extends Artifact> artifacts, Collection<VersionArtifact> versionArts) throws OseeCoreException {
+      List<AbstractWorkflowArtifact> returnSmas = new ArrayList<AbstractWorkflowArtifact>();
+      for (AbstractWorkflowArtifact sma : getSMAs(artifacts)) {
          if (sma.getParentTeamWorkflow() == null) {
             continue;
          }
@@ -206,8 +206,8 @@ public class SMAUtil {
       return returnSmas;
    }
 
-   public static Collection<StateMachineArtifact> getSMAs(Collection<? extends Artifact> artifacts) {
-      return Collections.castMatching(StateMachineArtifact.class, artifacts);
+   public static Collection<AbstractWorkflowArtifact> getSMAs(Collection<? extends Artifact> artifacts) {
+      return Collections.castMatching(AbstractWorkflowArtifact.class, artifacts);
    }
 
 }

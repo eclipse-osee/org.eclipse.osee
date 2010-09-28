@@ -16,8 +16,7 @@ import java.util.List;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.artifact.IFavoriteableArtifact;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.FavoritesManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -34,6 +33,7 @@ public class FavoriteAction extends Action {
    private final ISelectedAtsArtifacts selectedAtsArtifacts;
 
    public FavoriteAction(ISelectedAtsArtifacts selectedAtsArtifacts) {
+      super();
       this.selectedAtsArtifacts = selectedAtsArtifacts;
       updateName();
    }
@@ -43,7 +43,7 @@ public class FavoriteAction extends Action {
       try {
          if (getSelectedFavoritableArts().size() == 1) {
             title =
-               getSelectedFavoritableArts().iterator().next().amIFavorite() ? "Remove Favorite" : "Add as Favorite";
+               FavoritesManager.amIFavorite(getSelectedFavoritableArts().iterator().next()) ? "Remove Favorite" : "Add as Favorite";
          } else {
             title = "Toggle Favorites";
          }
@@ -54,11 +54,11 @@ public class FavoriteAction extends Action {
       setToolTipText(title);
    }
 
-   public Collection<IFavoriteableArtifact> getSelectedFavoritableArts() throws OseeCoreException {
-      List<IFavoriteableArtifact> favoritableArts = new ArrayList<IFavoriteableArtifact>();
+   public Collection<AbstractWorkflowArtifact> getSelectedFavoritableArts() throws OseeCoreException {
+      List<AbstractWorkflowArtifact> favoritableArts = new ArrayList<AbstractWorkflowArtifact>();
       for (Artifact art : selectedAtsArtifacts.getSelectedSMAArtifacts()) {
-         if (art instanceof IFavoriteableArtifact) {
-            favoritableArts.add((IFavoriteableArtifact) art);
+         if (art instanceof AbstractWorkflowArtifact) {
+            favoritableArts.add((AbstractWorkflowArtifact) art);
          }
       }
       return favoritableArts;
@@ -67,9 +67,7 @@ public class FavoriteAction extends Action {
    @Override
    public void run() {
       try {
-         for (IFavoriteableArtifact sma : getSelectedFavoritableArts()) {
-            new FavoritesManager((StateMachineArtifact) sma).toggleFavorite();
-         }
+         new FavoritesManager(getSelectedFavoritableArts()).toggleFavorite();
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }

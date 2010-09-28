@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
@@ -276,7 +276,7 @@ public class AtsMetricsComposite extends ScrolledComposite {
             if (sMet.getUserToAssignedSmas().getValues(user) != null) {
                for (Artifact sma : sMet.getUserToAssignedSmas().getValues(user)) {
                   if (!processedArts.contains(sma) && !sMet.getUserToCompletedSmas().containsValue(sma)) {
-                     cummulativePercentComplete += ((StateMachineArtifact) sma).getWorldViewPercentCompleteTotal();
+                     cummulativePercentComplete += ((AbstractWorkflowArtifact) sma).getWorldViewPercentCompleteTotal();
                      processedArts.add(sma);
                   }
                }

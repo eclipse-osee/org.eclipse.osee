@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
-import org.eclipse.osee.ats.artifact.ReviewSMArtifact.ReviewBlockType;
+import org.eclipse.osee.ats.artifact.AbstractReviewArtifact.ReviewBlockType;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.skynet.core.User;
  */
 public class NewDecisionReviewJob extends Job {
    private final TeamWorkFlowArtifact teamParent;
-   private DecisionReviewArtifact decisionReviewArtifact;
    private final ReviewBlockType reviewBlockType;
    private final String reviewTitle;
    private final String againstState;
@@ -52,11 +51,11 @@ public class NewDecisionReviewJob extends Job {
    @Override
    public IStatus run(final IProgressMonitor monitor) {
       try {
-         decisionReviewArtifact =
+         DecisionReviewArtifact decArt =
             ReviewManager.createNewDecisionReview(teamParent, reviewBlockType, reviewTitle, againstState, description,
                options, assignees);
-         decisionReviewArtifact.persist();
-         AtsUtil.openATSAction(decisionReviewArtifact, AtsOpenOption.OpenOneOrPopupSelect);
+         decArt.persist();
+         AtsUtil.openATSAction(decArt, AtsOpenOption.OpenOneOrPopupSelect);
       } catch (Exception ex) {
          monitor.done();
          return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, -1, "Error creating Decision Review", ex);

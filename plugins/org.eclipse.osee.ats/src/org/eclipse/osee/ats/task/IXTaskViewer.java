@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.task;
 
 import java.util.Collection;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.plugin.core.IActionable;
@@ -30,9 +30,9 @@ public interface IXTaskViewer {
 
    public boolean isTaskable() throws OseeCoreException;
 
-   public String getCurrentStateName() throws OseeCoreException;
+   public String getCurrentStateName();
 
-   public StateMachineArtifact getSma() throws OseeCoreException;
+   public AbstractWorkflowArtifact getSma() throws OseeCoreException;
 
    /**
     * Overriding flag to denote if tasks are allowed to be edited. If false, task viewer will disable all right-click

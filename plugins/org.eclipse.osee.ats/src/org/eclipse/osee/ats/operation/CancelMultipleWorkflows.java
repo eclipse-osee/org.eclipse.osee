@@ -13,11 +13,11 @@ package org.eclipse.osee.ats.operation;
 import java.util.Collection;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact.TransitionOption;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.DefaultTeamState;
+import org.eclipse.osee.ats.util.TransitionOption;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -44,12 +44,13 @@ public class CancelMultipleWorkflows extends Action {
    @Override
    public void run() {
       try {
-         Collection<StateMachineArtifact> smas = worldEditor.getWorldComposite().getXViewer().getSelectedSMAArtifacts();
+         Collection<AbstractWorkflowArtifact> smas =
+            worldEditor.getWorldComposite().getXViewer().getSelectedSMAArtifacts();
          if (smas.isEmpty()) {
             AWorkbench.popup("ERROR", "Must select one or more workflows");
             return;
          }
-         for (StateMachineArtifact sma : smas) {
+         for (AbstractWorkflowArtifact sma : smas) {
             Result result = sma.isTransitionValid(DefaultTeamState.Cancelled.name(), null, TransitionOption.None);
             if (result.isFalse()) {
                result.popup();
@@ -59,7 +60,7 @@ public class CancelMultipleWorkflows extends Action {
          EntryDialog ed = new EntryDialog("Cancel Workflows", "Enter Cancellation Reason");
          if (ed.open() == 0) {
             SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Cancel Multiple Workflows");
-            for (StateMachineArtifact sma : smas) {
+            for (AbstractWorkflowArtifact sma : smas) {
                Result result = sma.transitionToCancelled(ed.getEntry(), transaction, TransitionOption.Persist);
                if (result.isFalse()) {
                   result.popup();

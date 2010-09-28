@@ -19,8 +19,8 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
-import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractReviewArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
@@ -49,8 +49,8 @@ public class SMAMetrics {
    Set<TeamWorkFlowArtifact> teamArts = new HashSet<TeamWorkFlowArtifact>();
    Set<ActionArtifact> actionArts = new HashSet<ActionArtifact>();
    Set<TaskArtifact> taskArts = new HashSet<TaskArtifact>();
-   Set<ReviewSMArtifact> reviewArts = new HashSet<ReviewSMArtifact>();
-   Set<StateMachineArtifact> smas = new HashSet<StateMachineArtifact>();
+   Set<AbstractReviewArtifact> reviewArts = new HashSet<AbstractReviewArtifact>();
+   Set<AbstractWorkflowArtifact> smas = new HashSet<AbstractWorkflowArtifact>();
    Set<User> assignees = new HashSet<User>();
    Set<User> assigneesAssignedOrCompleted = new HashSet<User>();
 
@@ -84,19 +84,19 @@ public class SMAMetrics {
             teamArts.add((TeamWorkFlowArtifact) art);
          } else if (art instanceof TaskArtifact) {
             taskArts.add((TaskArtifact) art);
-         } else if (art instanceof ReviewSMArtifact) {
-            reviewArts.add((ReviewSMArtifact) art);
+         } else if (art instanceof AbstractReviewArtifact) {
+            reviewArts.add((AbstractReviewArtifact) art);
          }
-         if (art instanceof StateMachineArtifact) {
-            smas.add((StateMachineArtifact) art);
-            Collection<User> users = ((StateMachineArtifact) art).getStateMgr().getAssignees();
+         if (art instanceof AbstractWorkflowArtifact) {
+            smas.add((AbstractWorkflowArtifact) art);
+            Collection<User> users = ((AbstractWorkflowArtifact) art).getStateMgr().getAssignees();
             assignees.addAll(users);
             assigneesAssignedOrCompleted.addAll(users);
             for (User user : users) {
                userToAssignedSmas.put(user, art);
             }
-            if (((StateMachineArtifact) art).isCompleted()) {
-               Collection<User> implementers = ((StateMachineArtifact) art).getImplementers();
+            if (((AbstractWorkflowArtifact) art).isCompleted()) {
+               Collection<User> implementers = ((AbstractWorkflowArtifact) art).getImplementers();
                assigneesAssignedOrCompleted.addAll(implementers);
                for (User user : implementers) {
                   userToCompletedSmas.put(user, art);
@@ -110,7 +110,7 @@ public class SMAMetrics {
       manDaysNeeded = 0;
       cummulativeWorkflowPercentComplete = 0;
       manDaysNeeded = 0;
-      for (StateMachineArtifact team : smas) {
+      for (AbstractWorkflowArtifact team : smas) {
          hrsRemainFromEstimates += team.getWorldViewRemainHours();
          estHours += team.getWorldViewEstimatedHours();
          hrsSpent += team.getWorldViewHoursSpentTotal();
@@ -156,12 +156,12 @@ public class SMAMetrics {
       return userToCompletedSmas;
    }
 
-   public <A extends StateMachineArtifact> Collection<A> getUserToCompletedSmas(User user) {
+   public <A extends AbstractWorkflowArtifact> Collection<A> getUserToCompletedSmas(User user) {
       return getUserToCompletedSmas(user, null);
    }
 
    @SuppressWarnings("unchecked")
-   public <A extends StateMachineArtifact> Collection<A> getUserToCompletedSmas(User user, Class<A> clazz) {
+   public <A extends AbstractWorkflowArtifact> Collection<A> getUserToCompletedSmas(User user, Class<A> clazz) {
       if (!userToCompletedSmas.containsKey(user)) {
          return Collections.emptyList();
       }
@@ -175,7 +175,7 @@ public class SMAMetrics {
    }
 
    @SuppressWarnings("unchecked")
-   public <A extends StateMachineArtifact> Collection<A> getUserToAssignedSmas(User user, Class<A> clazz) {
+   public <A extends AbstractWorkflowArtifact> Collection<A> getUserToAssignedSmas(User user, Class<A> clazz) {
       if (!userToAssignedSmas.containsKey(user)) {
          return Collections.emptyList();
       }
@@ -198,9 +198,9 @@ public class SMAMetrics {
       return teams;
    }
 
-   public Collection<StateMachineArtifact> getCompletedWorkflows() throws OseeCoreException {
-      Set<StateMachineArtifact> completed = new HashSet<StateMachineArtifact>();
-      for (StateMachineArtifact sma : smas) {
+   public Collection<AbstractWorkflowArtifact> getCompletedWorkflows() throws OseeCoreException {
+      Set<AbstractWorkflowArtifact> completed = new HashSet<AbstractWorkflowArtifact>();
+      for (AbstractWorkflowArtifact sma : smas) {
          if (sma.isCancelledOrCompleted()) {
             completed.add(sma);
          }
@@ -367,7 +367,7 @@ public class SMAMetrics {
 
    public int getNumNotEstimated() throws OseeCoreException {
       int count = 0;
-      for (StateMachineArtifact sma : smas) {
+      for (AbstractWorkflowArtifact sma : smas) {
          if (sma.getWorldViewEstimatedHours() == 0) {
             count++;
          }
@@ -469,7 +469,7 @@ public class SMAMetrics {
    /**
     * @return the reviewArts
     */
-   public Set<ReviewSMArtifact> getReviewArts() {
+   public Set<AbstractReviewArtifact> getReviewArts() {
       return reviewArts;
    }
 
@@ -482,7 +482,7 @@ public class SMAMetrics {
       return userToAssignedSmas;
    }
 
-   public <A extends StateMachineArtifact> Collection<A> getUserToAssignedSmas(User user) {
+   public <A extends AbstractWorkflowArtifact> Collection<A> getUserToAssignedSmas(User user) {
       return getUserToAssignedSmas(user, null);
    }
 

@@ -73,7 +73,7 @@ public class EmailGroupsBlam extends AbstractBlam implements XModifiedListener {
          public void run() {
             data.setSubject(subjectTextBox.get());
             data.setBody(bodyTextBox.get());
-            data.setBodyIsHtml(isBodyHtmlCheckbox.get());
+            data.setBodyIsHtml(isBodyHtmlCheckbox.isChecked());
             Collection<Artifact> groups = groupsList.getSelectedArtifacts();
             data.getGroups().addAll(groups);
          }

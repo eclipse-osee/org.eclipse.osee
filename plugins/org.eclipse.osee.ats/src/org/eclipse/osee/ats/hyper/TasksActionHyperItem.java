@@ -11,44 +11,23 @@
 package org.eclipse.osee.ats.hyper;
 
 import java.util.Collection;
+import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
-import org.eclipse.osee.ats.world.WorldEditor;
-import org.eclipse.osee.ats.world.WorldEditorSimpleProvider;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Donald G. Dunne
  */
-public class TasksActionHyperItem extends ActionHyperItem {
+public class TasksActionHyperItem extends HyperViewItem {
 
-   private final Collection<TaskArtifact> taskArtifacts;
-
-   public TasksActionHyperItem(Collection<TaskArtifact> taskArtifacts) {
-      super(new TasksHyperViewArtifact(taskArtifacts));
-      this.taskArtifacts = taskArtifacts;
-      setRelationToolTip("Task");
+   public TasksActionHyperItem(Collection<TaskArtifact> taskArts) {
+      super(taskArts.size() + " Tasks");
    }
 
    @Override
-   public void handleDoubleClick(HyperViewItem hyperViewItem) {
-      super.handleDoubleClick(hyperViewItem);
-      WorldEditor.open(new WorldEditorSimpleProvider("Tasks", taskArtifacts));
-   }
-
-   @Override
-   public void calculateCurrent(Artifact currentArtifact) {
-      setCurrent(taskArtifacts.contains(currentArtifact));
-   }
-
-   @Override
-   public Image getImage() throws OseeCoreException {
-      return ArtifactImageManager.getImage(ArtifactTypeManager.getType(AtsArtifactTypes.Task));
-
+   public Image getImage() {
+      return ImageManager.getImage(AtsImage.TASK);
    }
 
 }

@@ -13,22 +13,22 @@ package org.eclipse.osee.ats.test.util;
 import java.util.Arrays;
 import java.util.Collection;
 import junit.framework.Assert;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
+import org.eclipse.osee.ats.util.DefaultTeamState;
 
 /**
  * @author Donald G. Dunne
  */
 public class SMATestUtil {
 
-   public static void validateSMA(StateMachineArtifact sma, String stateName, int totalPercent, double hoursSpent) throws Exception {
+   public static void validateSMA(AbstractWorkflowArtifact sma, String stateName, int totalPercent, double hoursSpent) throws Exception {
       validateSMAs(Arrays.asList(sma), stateName, totalPercent, hoursSpent);
 
    }
 
-   public static void validateSMAs(Collection<? extends StateMachineArtifact> smas, String stateName, int totalPercent, double hoursSpent) throws Exception {
-      for (StateMachineArtifact sma : smas) {
+   public static void validateSMAs(Collection<? extends AbstractWorkflowArtifact> smas, String stateName, int totalPercent, double hoursSpent) throws Exception {
+      for (AbstractWorkflowArtifact sma : smas) {
          Assert.assertEquals("Current State wrong for " + sma.getHumanReadableId(),
             sma.getStateMgr().getCurrentStateName(), stateName);
          if (sma.isCancelledOrCompleted()) {

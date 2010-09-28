@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.core.data.AccessContextId;
 /**
  * @author Donald G. Dunne
  */
-public class AtsBranchObjectContextId {
+public final class AtsBranchObjectContextId {
 
    public static final AccessContextId DEFAULT_BRANCH_CONTEXT = AtsAccessContextIdFactory.createContextId(
       "AFRkIhi2m2cdanu3i2AA", "ats.branchobject.default.context");

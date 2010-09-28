@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.editor;
 
 import java.util.logging.Level;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -37,9 +37,9 @@ public class SMAActionableItemHeader extends Composite {
    private static String ACTION_ACTIONABLE_ITEMS = "Actionable Items: ";
    private Hyperlink link;
    private Label label;
-   private final StateMachineArtifact sma;
+   private final AbstractWorkflowArtifact sma;
 
-   public SMAActionableItemHeader(Composite parent, XFormToolkit toolkit, StateMachineArtifact sma) {
+   public SMAActionableItemHeader(Composite parent, XFormToolkit toolkit, AbstractWorkflowArtifact sma) {
       super(parent, SWT.NONE);
       this.sma = sma;
       try {

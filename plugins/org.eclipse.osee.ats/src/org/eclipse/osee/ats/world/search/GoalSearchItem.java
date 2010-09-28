@@ -18,14 +18,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.GoalArtifact;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.DefaultTeamState;
+import org.eclipse.osee.ats.util.GoalManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -136,8 +136,8 @@ public class GoalSearchItem extends WorldUISearchItem {
       Set<Artifact> resultGoalArtifacts = new HashSet<Artifact>();
       for (Artifact art : artifacts) {
 
-         for (Artifact goalArt : GoalArtifact.getGoals(art, true)) {
-            StateMachineArtifact sma = (StateMachineArtifact) goalArt;
+         for (Artifact goalArt : GoalManager.getGoals(art, true)) {
+            AbstractWorkflowArtifact sma = (AbstractWorkflowArtifact) goalArt;
             // don't include if userArt specified and userArt not assignee
             if (userArt != null && !sma.getStateMgr().getAssignees().contains(userArt)) {
                continue;

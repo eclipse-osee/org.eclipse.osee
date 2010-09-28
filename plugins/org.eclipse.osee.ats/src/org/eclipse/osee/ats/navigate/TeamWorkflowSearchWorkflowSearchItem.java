@@ -15,7 +15,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
@@ -113,8 +113,8 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
       }
       Set<Artifact> results = new HashSet<Artifact>(artifacts);
       for (Artifact artifact : artifacts) {
-         if (artifact instanceof TaskableStateMachineArtifact) {
-            results.addAll(((TaskableStateMachineArtifact) artifact).getTaskArtifacts());
+         if (artifact instanceof AbstractTaskableArtifact) {
+            results.addAll(((AbstractTaskableArtifact) artifact).getTaskArtifacts());
          }
          if (artifact instanceof TeamWorkFlowArtifact) {
             results.addAll(ReviewManager.getReviews((TeamWorkFlowArtifact) artifact));

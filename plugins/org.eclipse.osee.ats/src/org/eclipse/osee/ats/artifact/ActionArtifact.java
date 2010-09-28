@@ -8,48 +8,35 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-
 package org.eclipse.osee.ats.artifact;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
-import org.eclipse.osee.ats.actions.wizard.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
-import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.widgets.dialog.AICheckTreeDialog;
+import org.eclipse.osee.ats.util.GoalManager;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
-import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.swt.graphics.Image;
@@ -57,7 +44,7 @@ import org.eclipse.swt.graphics.Image;
 /**
  * @author Donald G. Dunne
  */
-public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
+public class ActionArtifact extends AbstractAtsArtifact implements IWorldViewArtifact {
 
    public static enum CreateTeamOption {
       Duplicate_If_Exists; // If option exists, then duplication of workflow of same team definition is allowed
@@ -95,7 +82,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    private void resetTitleOffChildren() throws OseeCoreException {
       String title = "";
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         if (title.equals("")) {
+         if (title.isEmpty()) {
             title = team.getName();
          } else if (!title.equals(team.getName())) {
             return;
@@ -125,7 +112,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    private void resetDescriptionOffChildren() throws OseeCoreException {
       String desc = "";
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         if (desc.equals("")) {
+         if (desc.isEmpty()) {
             desc = team.getSoleAttributeValue(AtsAttributeTypes.Description, "");
          } else if (!desc.equals(team.getSoleAttributeValue(AtsAttributeTypes.Description, ""))) {
             return;
@@ -134,7 +121,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       if (!desc.equals(getSoleAttributeValue(AtsAttributeTypes.Description, ""))) {
          setSoleAttributeValue(AtsAttributeTypes.Description, desc);
       }
-      if (desc.equals("")) {
+      if (desc.isEmpty()) {
          deleteSoleAttribute(AtsAttributeTypes.Description);
       }
    }
@@ -158,7 +145,6 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       if (changeType != null && getChangeType() != changeType) {
          setChangeType(changeType);
       }
-      return;
    }
 
    private void resetPriorityOffChildren() throws OseeCoreException {
@@ -180,7 +166,6 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       if (priorityType != null && getPriority() != priorityType) {
          setPriority(priorityType);
       }
-      return;
    }
 
    private void resetUserCommunityOffChildren() throws OseeCoreException {
@@ -230,46 +215,46 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
 
    @Override
    public String getWorldViewBranchStatus() throws OseeCoreException {
-      StringBuffer sb = new StringBuffer();
+      Set<String> strs = new HashSet<String>();
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
          if (!team.getWorldViewBranchStatus().equals("")) {
-            sb.append(team.getWorldViewBranchStatus() + ", ");
+            strs.add(team.getWorldViewBranchStatus());
          }
       }
-      return sb.toString().replaceFirst(", $", "");
+      return Collections.toString(", ", strs);
    }
 
    @Override
    public String getWorldViewPoint() throws OseeCoreException {
-      StringBuffer sb = new StringBuffer();
+      Set<String> strs = new HashSet<String>();
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
          if (!team.getWorldViewPoint().equals("")) {
-            sb.append(team.getWorldViewPoint() + ", ");
+            strs.add(team.getWorldViewPoint());
          }
       }
-      return sb.toString().replaceFirst(", $", "");
+      return Collections.toString(", ", strs);
    }
 
    @Override
    public String getWorldViewNumberOfTasks() throws OseeCoreException {
-      StringBuffer sb = new StringBuffer();
+      Set<String> strs = new HashSet<String>();
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
          if (!team.getWorldViewNumberOfTasks().equals("")) {
-            sb.append(team.getWorldViewNumberOfTasks() + ", ");
+            strs.add(team.getWorldViewNumberOfTasks());
          }
       }
-      return sb.toString().replaceFirst(", $", "");
+      return Collections.toString(", ", strs);
    }
 
    @Override
    public String getWorldViewNumberOfTasksRemaining() throws OseeCoreException {
-      StringBuffer sb = new StringBuffer();
+      Set<String> strs = new HashSet<String>();
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
          if (!team.getWorldViewNumberOfTasksRemaining().equals("")) {
-            sb.append(team.getWorldViewNumberOfTasksRemaining() + ", ");
+            strs.add(team.getWorldViewNumberOfTasksRemaining());
          }
       }
-      return sb.toString().replaceFirst(", $", "");
+      return Collections.toString(", ", strs);
    }
 
    @Override
@@ -301,7 +286,8 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
             pocs.addAll(team.getStateMgr().getAssignees());
          }
       }
-      return Artifacts.toString("; ", pocs) + (implementers.size() > 0 ? "(" + Artifacts.toString("; ", implementers) + ")" : "");
+      return Artifacts.toString("; ", pocs) + (implementers.isEmpty() ? "" : "(" + Artifacts.toString("; ",
+         implementers) + ")");
    }
 
    @Override
@@ -574,268 +560,6 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    }
 
    @Override
-   public String getHyperName() {
-      return getName();
-   }
-
-   @Override
-   public String getHyperType() {
-      try {
-         return getArtifactTypeName();
-      } catch (Exception ex) {
-         return ex.getLocalizedMessage();
-      }
-   }
-
-   @Override
-   public String getHyperState() {
-      try {
-         if (getTeamWorkFlowArtifacts().size() == 1) {
-            return getTeamWorkFlowArtifacts().iterator().next().getHyperState();
-         }
-      } catch (Exception ex) {
-         return XViewerCells.getCellExceptionString(ex);
-      }
-      return "";
-   }
-
-   @Override
-   public String getHyperTargetVersion() {
-      return null;
-   }
-
-   @Override
-   public String getHyperAssignee() {
-      try {
-         if (getTeamWorkFlowArtifacts().size() == 1) {
-            return getTeamWorkFlowArtifacts().iterator().next().getHyperAssignee();
-         }
-      } catch (Exception ex) {
-         return XViewerCells.getCellExceptionString(ex);
-      }
-      return "";
-   }
-
-   @Override
-   public Image getHyperAssigneeImage() throws OseeCoreException {
-      if (getTeamWorkFlowArtifacts().size() == 1) {
-         return getTeamWorkFlowArtifacts().iterator().next().getHyperAssigneeImage();
-      }
-      return null;
-   }
-
-   @Override
-   public Artifact getHyperArtifact() {
-      return this;
-   }
-
-   public Result editActionableItems() throws OseeCoreException {
-      final AICheckTreeDialog diag =
-         new AICheckTreeDialog(
-            "Add Impacted Actionable Items",
-            "Select New Impacted Actionable Items\n\n" + "Note: Un-selecting existing items will NOT remove the impact.\n" + "Team Workflow with no impact should be transitioned to Cancelled.",
-            Active.Active);
-
-      diag.setInitialAias(getActionableItems());
-      if (diag.open() != 0) {
-         return Result.FalseResult;
-      }
-
-      // ensure that at least one actionable item exists for each team after aias added/removed
-      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         Set<ActionableItemArtifact> currentAias = team.getActionableItemsDam().getActionableItems();
-         Collection<ActionableItemArtifact> checkedAias = diag.getChecked();
-         for (ActionableItemArtifact aia : new CopyOnWriteArrayList<ActionableItemArtifact>(currentAias)) {
-            if (!checkedAias.contains(aia)) {
-               currentAias.remove(aia);
-            }
-         }
-         if (currentAias.isEmpty()) {
-            return new Result("Can not remove all actionable items for a team.\n\nActionable Items will go to 0 for [" +
-            //
-            team.getTeamName() + "][" + team.getHumanReadableId() + "]\n\nCancel team workflow instead.");
-         }
-      }
-
-      final StringBuffer sb = new StringBuffer();
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Edit Actionable Items");
-
-      // Add new aias
-      for (ActionableItemArtifact aia : diag.getChecked()) {
-         Result result = addActionableItemToTeamsOrAddTeams(aia, UserManager.getUser(), transaction);
-         sb.append(result.getText());
-      }
-      // Remove unchecked aias
-      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         for (ActionableItemArtifact aia : team.getActionableItemsDam().getActionableItems()) {
-            if (!diag.getChecked().contains(aia)) {
-               team.getActionableItemsDam().removeActionableItem(aia);
-            }
-         }
-         team.persist(transaction);
-      }
-
-      transaction.execute();
-      return new Result(true, sb.toString());
-   }
-
-   public Result addActionableItemToTeamsOrAddTeams(ActionableItemArtifact aia, User originator, SkynetTransaction transaction) throws OseeCoreException {
-      StringBuffer sb = new StringBuffer();
-      for (TeamDefinitionArtifact tda : TeamDefinitionArtifact.getImpactedTeamDefs(Arrays.asList(aia))) {
-         boolean teamExists = false;
-         // Look for team workflow that is associated with this tda
-         for (TeamWorkFlowArtifact teamArt : getTeamWorkFlowArtifacts()) {
-            // If found
-            if (teamArt.getTeamDefinition().equals(tda)) {
-               // And workflow doesn't already have this actionable item,
-               // ADD it
-               if (!teamArt.getActionableItemsDam().getActionableItems().contains(aia)) {
-                  teamArt.getActionableItemsDam().addActionableItem(aia);
-                  teamArt.saveSMA(transaction);
-                  sb.append(aia.getName() + " => added to existing team workflow \"" + tda.getName() + "\"\n");
-                  teamExists = true;
-               } else {
-                  sb.append(aia.getName() + " => already exists in team workflow \"" + tda.getName() + "\"\n");
-                  teamExists = true;
-               }
-            }
-         }
-         if (!teamExists) {
-            TeamWorkFlowArtifact teamArt = createTeamWorkflow(tda, Arrays.asList(aia), tda.getLeads(), transaction);
-            if (originator != null) {
-               teamArt.getLog().setOriginator(originator);
-            }
-            teamArt.persist(transaction);
-            sb.append(aia.getName() + " => added team workflow \"" + tda.getName() + "\"\n");
-         }
-      }
-      return new Result(true, sb.toString());
-   }
-
-   public TeamWorkFlowArtifact createTeamWorkflow(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems, Collection<User> assignees, SkynetTransaction transaction, CreateTeamOption... createTeamOption) throws OseeCoreException {
-      String teamWorkflowArtifactName = AtsArtifactTypes.TeamWorkflow.getName();
-      IAtsTeamWorkflow teamExt = null;
-
-      // Check if any plugins want to create the team workflow themselves
-      for (IAtsTeamWorkflow teamExtension : TeamWorkflowExtensions.getInstance().getAtsTeamWorkflowExtensions()) {
-         boolean isResponsible = false;
-         try {
-            isResponsible = teamExtension.isResponsibleForTeamWorkflowCreation(teamDef, actionableItems);
-         } catch (Exception ex) {
-            OseeLog.log(AtsPlugin.class, Level.WARNING, ex);
-         }
-         if (isResponsible) {
-            teamWorkflowArtifactName = teamExtension.getTeamWorkflowArtifactName(teamDef, actionableItems);
-            teamExt = teamExtension;
-         }
-      }
-
-      // NOTE: The persist of the workflow will auto-email the assignees
-      TeamWorkFlowArtifact teamArt =
-         createTeamWorkflow(teamDef, actionableItems, assignees, ArtifactTypeManager.getType(teamWorkflowArtifactName),
-            transaction, createTeamOption);
-      // Notify extension that workflow was created
-      if (teamExt != null) {
-         teamExt.teamWorkflowCreated(teamArt);
-      }
-      return teamArt;
-   }
-
-   public TeamWorkFlowArtifact createTeamWorkflow(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems, Collection<User> assignees, IArtifactType artifactType, SkynetTransaction transaction, CreateTeamOption... createTeamOption) throws OseeCoreException {
-      return createTeamWorkflow(teamDef, actionableItems, assignees, null, null, artifactType, transaction,
-         createTeamOption);
-   }
-
-   public TeamWorkFlowArtifact createTeamWorkflow(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems, Collection<User> assignees, String guid, String hrid, IArtifactType artifactType, SkynetTransaction transaction, CreateTeamOption... createTeamOption) throws OseeCoreException {
-
-      if (!Collections.getAggregate(createTeamOption).contains(CreateTeamOption.Duplicate_If_Exists)) {
-         // Make sure team doesn't already exist
-         for (TeamWorkFlowArtifact teamArt : getTeamWorkFlowArtifacts()) {
-            if (teamArt.getTeamDefinition().equals(teamDef)) {
-               AWorkbench.popup("ERROR", "Team already exist");
-               throw new OseeArgumentException("Team [%s] already exists for Action [%s]", teamDef,
-                  getHumanReadableId());
-            }
-         }
-      }
-
-      TeamWorkFlowArtifact teamArt = null;
-      if (guid == null) {
-         teamArt = (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactType, AtsUtil.getAtsBranch());
-      } else {
-         teamArt =
-            (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactType, AtsUtil.getAtsBranch(), guid, hrid);
-      }
-      setArtifactIdentifyData(this, teamArt);
-
-      teamArt.getLog().addLog(LogType.Originated, "", "");
-
-      // Relate Workflow to ActionableItems (by guid) if team is responsible
-      // for that AI
-      for (ActionableItemArtifact aia : actionableItems) {
-         if (aia.getImpactedTeamDefs().contains(teamDef)) {
-            teamArt.getActionableItemsDam().addActionableItem(aia);
-         }
-      }
-
-      // Relate WorkFlow to Team Definition (by guid due to relation loading
-      // issues)
-      teamArt.setTeamDefinition(teamDef);
-
-      // Initialize state machine
-      String startState = teamArt.getWorkFlowDefinition().getStartPage().getPageName();
-      teamArt.getStateMgr().initializeStateMachine(startState, assignees);
-      teamArt.getLog().addLog(LogType.StateEntered, startState, "");
-
-      // Relate Action to WorkFlow
-      addRelation(AtsRelationTypes.ActionToWorkflow_WorkFlow, teamArt);
-
-      teamArt.persist(transaction);
-
-      return teamArt;
-   }
-
-   /**
-    * Set Team Workflow attributes off given action artifact
-    */
-   public static void setArtifactIdentifyData(ActionArtifact fromAction, TeamWorkFlowArtifact toTeam) throws OseeCoreException {
-      String priorityStr = fromAction.getSoleAttributeValue(AtsAttributeTypes.PriorityType, "");
-      PriorityType priType = null;
-      if (Strings.isValid(priorityStr)) {
-         priType = PriorityType.getPriority(priorityStr);
-      } else {
-         throw new OseeArgumentException("Invalid priority [%s]", priorityStr);
-      }
-      setArtifactIdentifyData(toTeam, fromAction.getName(),
-         fromAction.getSoleAttributeValue(AtsAttributeTypes.Description, ""),
-         ChangeType.getChangeType(fromAction.getSoleAttributeValue(AtsAttributeTypes.ChangeType, "")), priType,
-         //            fromAction.getAttributesToStringList(AtsAttributeTypes.ATS_USER_COMMUNITY),
-         fromAction.getSoleAttributeValue(AtsAttributeTypes.ValidationRequired, false),
-         fromAction.getSoleAttributeValue(AtsAttributeTypes.NeedBy, (Date) null));
-   }
-
-   /**
-    * Since there is no shared attribute yet, action and workflow arts are all populate with identify data
-    */
-   public static void setArtifactIdentifyData(Artifact art, String title, String desc, ChangeType changeType, PriorityType priority, Boolean validationRequired, Date needByDate) throws OseeCoreException {
-      art.setName(title);
-      if (!desc.equals("")) {
-         art.setSoleAttributeValue(AtsAttributeTypes.Description, desc);
-      }
-      art.setSoleAttributeValue(AtsAttributeTypes.ChangeType, changeType.name());
-      //      art.setAttributeValues(ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getStoreName(), userComms);
-      if (priority != null && priority != PriorityType.None) {
-         art.setSoleAttributeValue(AtsAttributeTypes.PriorityType, priority.getShortName());
-      }
-      if (needByDate != null) {
-         art.setSoleAttributeValue(AtsAttributeTypes.NeedBy, needByDate);
-      }
-      if (validationRequired) {
-         art.setSoleAttributeValue(AtsAttributeTypes.ValidationRequired, true);
-      }
-   }
-
-   @Override
    public String getWorldViewDecision() {
       return "";
    }
@@ -924,7 +648,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
             }
          }
       } catch (OseeCoreException ex) {
-         // Do nothing
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
       return Result.TrueResult;
    }
@@ -1254,7 +978,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
 
    @Override
    public String getWorldViewGoalOrder() throws OseeCoreException {
-      return GoalArtifact.getGoalOrder(this);
+      return GoalManager.getGoalOrder(this);
    }
 
 }

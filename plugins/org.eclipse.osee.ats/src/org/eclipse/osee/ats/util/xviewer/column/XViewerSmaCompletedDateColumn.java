@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.util.xviewer.column;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.util.XViewerException;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.swt.SWT;
@@ -49,8 +49,8 @@ public class XViewerSmaCompletedDateColumn extends XViewerValueColumn {
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) throws XViewerException {
       try {
-         if (element instanceof StateMachineArtifact) {
-            return ((StateMachineArtifact) element).getWorldViewCompletedDateStr();
+         if (element instanceof AbstractWorkflowArtifact) {
+            return ((AbstractWorkflowArtifact) element).getWorldViewCompletedDateStr();
          }
          return super.getColumnText(element, column, columnIndex);
       } catch (OseeCoreException ex) {

@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
@@ -132,7 +132,7 @@ public class ExtendedStatusReportJob extends Job {
       return sb.toString();
    }
 
-   private static void addTableRow(StringBuilder sb, StateMachineArtifact sma) throws OseeCoreException {
+   private static void addTableRow(StringBuilder sb, AbstractWorkflowArtifact sma) throws OseeCoreException {
       List<String> values = new ArrayList<String>();
       for (Columns col : Columns.values()) {
          // System.out.println("col *" + col + "*");

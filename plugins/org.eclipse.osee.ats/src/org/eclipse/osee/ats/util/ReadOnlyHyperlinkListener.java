@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util;
 
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.events.IHyperlinkListener;
@@ -20,9 +20,9 @@ import org.eclipse.ui.forms.events.IHyperlinkListener;
  */
 public class ReadOnlyHyperlinkListener implements IHyperlinkListener {
 
-   private final StateMachineArtifact sma;
+   private final AbstractWorkflowArtifact sma;
 
-   public ReadOnlyHyperlinkListener(StateMachineArtifact sma) {
+   public ReadOnlyHyperlinkListener(AbstractWorkflowArtifact sma) {
       this.sma = sma;
    }
 

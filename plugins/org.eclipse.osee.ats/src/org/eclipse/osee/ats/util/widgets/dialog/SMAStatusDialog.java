@@ -14,7 +14,7 @@ import java.util.Collection;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -44,13 +44,13 @@ public class SMAStatusDialog extends MessageDialog {
    protected XRadioButton eachRadio = new XRadioButton("Apply Hours Spent to each Task");
    private Button okButton;
    private final boolean showPercent;
-   protected final Collection<? extends StateMachineArtifact> smas;
+   protected final Collection<? extends AbstractWorkflowArtifact> smas;
 
-   public SMAStatusDialog(Shell parentShell, String dialogTitle, String dialogMessage, Collection<? extends StateMachineArtifact> smas) {
+   public SMAStatusDialog(Shell parentShell, String dialogTitle, String dialogMessage, Collection<? extends AbstractWorkflowArtifact> smas) {
       this(parentShell, dialogTitle, dialogMessage, true, smas);
    }
 
-   public SMAStatusDialog(Shell parentShell, String dialogTitle, String dialogMessage, boolean showPercent, Collection<? extends StateMachineArtifact> smas) {
+   public SMAStatusDialog(Shell parentShell, String dialogTitle, String dialogMessage, boolean showPercent, Collection<? extends AbstractWorkflowArtifact> smas) {
       super(parentShell, dialogTitle, null, dialogMessage, MessageDialog.NONE, new String[] {"OK", "Cancel"}, 0);
       this.showPercent = showPercent;
       this.smas = smas;
@@ -64,7 +64,7 @@ public class SMAStatusDialog extends MessageDialog {
    protected Control createCustomArea(Composite parent) {
 
       boolean hasTask = false;
-      for (StateMachineArtifact sma : smas) {
+      for (AbstractWorkflowArtifact sma : smas) {
          if (sma instanceof TaskArtifact) {
             hasTask = true;
          }

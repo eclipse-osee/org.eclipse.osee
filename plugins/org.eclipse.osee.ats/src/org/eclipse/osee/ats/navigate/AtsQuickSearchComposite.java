@@ -107,7 +107,7 @@ public class AtsQuickSearchComposite extends Composite {
          return;
       }
       AtsQuickSearchData data =
-         new AtsQuickSearchData("ATS Quick Search", searchArea.getText(), completeCancelledCheck.get());
+         new AtsQuickSearchData("ATS Quick Search", searchArea.getText(), completeCancelledCheck.isChecked());
       WorldEditor.open(new WorldEditorOperationProvider(new AtsQuickSearchOperation(data)));
    }
 }

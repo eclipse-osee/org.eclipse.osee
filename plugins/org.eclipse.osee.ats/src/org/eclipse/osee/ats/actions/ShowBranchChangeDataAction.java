@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.actions;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -30,9 +30,9 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
  */
 public class ShowBranchChangeDataAction extends Action {
 
-   private final StateMachineArtifact sma;
+   private final AbstractWorkflowArtifact sma;
 
-   public ShowBranchChangeDataAction(StateMachineArtifact sma) {
+   public ShowBranchChangeDataAction(AbstractWorkflowArtifact sma) {
       super("Show Branch Change Data Report");
       this.sma = sma;
       setToolTipText("Show computed change data from Branch; should be same as what's shown in change report");
@@ -50,13 +50,13 @@ public class ShowBranchChangeDataAction extends Action {
             AWorkbench.popup("Working branch never created or committed.");
             return;
          }
-         XResultData rd = new XResultData();
+         XResultData result = new XResultData();
          ChangeData changeData = teamArt.getBranchMgr().getChangeDataFromEarliestTransactionId();
-         rd.log("Number of changes " + changeData.getChanges().size() + "\n");
+         result.log("Number of changes " + changeData.getChanges().size() + "\n");
          for (Change change : changeData.getChanges()) {
-            rd.log(String.format("Change [%s]", change));
+            result.log(String.format("Change [%s]", change));
          }
-         rd.report(String.format("Branch Change Data Report [%s]", sma));
+         result.report(String.format("Branch Change Data Report [%s]", sma));
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -67,7 +67,7 @@ public class ShowBranchChangeDataAction extends Action {
       return ImageManager.getImageDescriptor(AtsImage.WORKFLOW_CONFIG);
    }
 
-   public static boolean isApplicable(StateMachineArtifact sma) {
+   public static boolean isApplicable(AbstractWorkflowArtifact sma) {
       return sma instanceof TeamWorkFlowArtifact;
    }
 }

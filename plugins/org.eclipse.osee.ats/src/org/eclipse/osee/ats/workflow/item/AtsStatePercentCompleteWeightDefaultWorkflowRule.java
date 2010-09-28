@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.workflow.item;
 
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
+import org.eclipse.osee.ats.util.DefaultTeamState;
 
 /**
  * @author Donald G. Dunne

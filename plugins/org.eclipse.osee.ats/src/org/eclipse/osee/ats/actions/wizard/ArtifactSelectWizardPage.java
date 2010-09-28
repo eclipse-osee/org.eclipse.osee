@@ -40,7 +40,6 @@ import org.eclipse.swt.widgets.Listener;
 
 public class ArtifactSelectWizardPage extends WizardPage {
 
-   private ListViewer artTypeList;
    private ListViewer artList;
    private Artifact selectedArtifact;
    private boolean showArtData = false;
@@ -54,29 +53,29 @@ public class ArtifactSelectWizardPage extends WizardPage {
       setTitle("Select an Artifact");
 
       Composite composite = new Composite(parent, SWT.NONE);
-      GridLayout gl = new GridLayout();
-      gl.numColumns = 2;
-      composite.setLayout(gl);
-      GridData gd = new GridData(GridData.FILL, GridData.FILL, true, true);
-      composite.setLayoutData(gd);
+      GridLayout gridLayout = new GridLayout();
+      gridLayout.numColumns = 2;
+      composite.setLayout(gridLayout);
+      GridData gridData1 = new GridData(GridData.FILL, GridData.FILL, true, true);
+      composite.setLayoutData(gridData1);
 
       Composite leftComp = new Composite(composite, SWT.NONE);
 
       leftComp.setLayout(new GridLayout());
-      gd = new GridData(GridData.FILL, GridData.FILL, true, true);
-      leftComp.setLayoutData(gd);
+      gridData1 = new GridData(GridData.FILL, GridData.FILL, true, true);
+      leftComp.setLayoutData(gridData1);
 
       new Label(leftComp, SWT.NONE).setText("Artifact Type");
 
       try {
-         artTypeList = new ListViewer(leftComp, SWT.BORDER | SWT.SINGLE | SWT.V_SCROLL | SWT.H_SCROLL);
+         ListViewer artTypeList = new ListViewer(leftComp, SWT.BORDER | SWT.SINGLE | SWT.V_SCROLL | SWT.H_SCROLL);
          artTypeList.setContentProvider(new ArrayContentProvider());
          artTypeList.setLabelProvider(new ArtTypeLabelProvider());
 
-         gd = new GridData(GridData.FILL, GridData.FILL, true, true);
-         gd.heightHint = 300;
-         gd.widthHint = 200;
-         artTypeList.getControl().setLayoutData(gd);
+         gridData1 = new GridData(GridData.FILL, GridData.FILL, true, true);
+         gridData1.heightHint = 300;
+         gridData1.widthHint = 200;
+         artTypeList.getControl().setLayoutData(gridData1);
          artTypeList.setInput(ArtifactTypeManager.getValidArtifactTypes(AtsUtil.getAtsBranch()));
          artTypeList.addSelectionChangedListener(new ISelectionChangedListener() {
             @Override
@@ -101,8 +100,8 @@ public class ArtifactSelectWizardPage extends WizardPage {
          Composite rightComp = new Composite(composite, SWT.NONE);
 
          rightComp.setLayout(new GridLayout());
-         gd = new GridData(GridData.FILL, GridData.FILL, true, true);
-         rightComp.setLayoutData(gd);
+         gridData1 = new GridData(GridData.FILL, GridData.FILL, true, true);
+         rightComp.setLayoutData(gridData1);
 
          Label lab = new Label(rightComp, SWT.NONE);
          lab.setText("Artifact (click here for artifact data)");
@@ -110,7 +109,7 @@ public class ArtifactSelectWizardPage extends WizardPage {
          lab.addListener(SWT.MouseUp, new Listener() {
             @Override
             public void handleEvent(Event event) {
-               showArtData = !showArtData;
+               showArtData ^= true;
                artList.refresh();
             }
          });
@@ -126,10 +125,10 @@ public class ArtifactSelectWizardPage extends WizardPage {
                return getComparator().compare(((Artifact) e1).getName(), ((Artifact) e2).getName());
             }
          });
-         gd = new GridData(GridData.FILL, GridData.FILL, true, true);
-         gd.heightHint = 300;
-         gd.widthHint = 200;
-         artList.getControl().setLayoutData(gd);
+         gridData1 = new GridData(GridData.FILL, GridData.FILL, true, true);
+         gridData1.heightHint = 300;
+         gridData1.widthHint = 200;
+         artList.getControl().setLayoutData(gridData1);
          artList.addSelectionChangedListener(new ISelectionChangedListener() {
             @Override
             public void selectionChanged(SelectionChangedEvent event) {

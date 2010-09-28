@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.actions;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -26,9 +26,9 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
  */
 public class ResourceHistoryAction extends Action {
 
-   private final StateMachineArtifact sma;
+   private final AbstractWorkflowArtifact sma;
 
-   public ResourceHistoryAction(StateMachineArtifact sma) {
+   public ResourceHistoryAction(AbstractWorkflowArtifact sma) {
       super("Resource History");
       setToolTipText(getText());
       this.sma = sma;

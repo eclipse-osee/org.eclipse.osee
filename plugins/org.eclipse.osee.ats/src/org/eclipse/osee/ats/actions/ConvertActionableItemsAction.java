@@ -16,6 +16,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.ActionableItemManager;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -46,7 +47,7 @@ public class ConvertActionableItemsAction extends Action {
          }
 
          TeamWorkFlowArtifact teamArt = teamArts.iterator().next();
-         Result result = teamArt.convertActionableItems();
+         Result result = ActionableItemManager.convertActionableItems(teamArt);
          if (result.isFalse() && !result.getText().equals("")) {
             result.popup();
          }

@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.editor;
 
 import java.util.Arrays;
 import java.util.Collection;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskOptionStatusDialog;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -23,17 +23,17 @@ import org.eclipse.ui.PlatformUI;
  */
 public class SMAPromptChangeHoursSpent {
 
-   private final Collection<? extends StateMachineArtifact> smas;
+   private final Collection<? extends AbstractWorkflowArtifact> smas;
 
-   public SMAPromptChangeHoursSpent(StateMachineArtifact sma) {
+   public SMAPromptChangeHoursSpent(AbstractWorkflowArtifact sma) {
       this(Arrays.asList(sma));
    }
 
-   public SMAPromptChangeHoursSpent(final Collection<? extends StateMachineArtifact> smas) {
+   public SMAPromptChangeHoursSpent(final Collection<? extends AbstractWorkflowArtifact> smas) {
       this.smas = smas;
    }
 
-   public static boolean promptChangeStatus(Collection<? extends StateMachineArtifact> smas, boolean persist) throws OseeCoreException {
+   public static boolean promptChangeStatus(Collection<? extends AbstractWorkflowArtifact> smas, boolean persist) throws OseeCoreException {
       SMAPromptChangeHoursSpent promptChangeStatus = new SMAPromptChangeHoursSpent(smas);
       return promptChangeStatus.promptChangeStatus(persist).isTrue();
    }
