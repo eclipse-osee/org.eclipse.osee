@@ -392,7 +392,7 @@ public class RelationManager {
    }
 
    private static Artifact getRelatedArtifact(Artifact artifact, RelationType relationType, RelationSide relationSide) throws OseeCoreException {
-      List<Artifact> artifacts = getRelatedArtifacts(artifact, relationType, relationSide);
+      List<Artifact> artifacts = getRelatedArtifactsUnSorted(artifact, relationType, relationSide);
 
       if (artifacts.isEmpty()) {
          throw new ArtifactDoesNotExist("There is no artifact related to [%s] by a relation of type [%s]", artifact,
@@ -768,4 +768,5 @@ public class RelationManager {
    public static void deCache(Artifact artifact) {
       relationsByType.removeValues(new ArtifactKey(artifact));
    }
+
 }

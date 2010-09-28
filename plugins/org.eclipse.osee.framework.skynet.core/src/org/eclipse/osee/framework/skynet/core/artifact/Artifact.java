@@ -320,10 +320,15 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, Co
     * hasParent() to safely determine whether
     */
    public Artifact getParent() throws OseeCoreException {
-      if (hasParent()) {
-         return RelationManager.getRelatedArtifact(this, CoreRelationTypes.Default_Hierarchical__Parent);
+      Artifact toReturn = null;
+      List<Artifact> artifacts = getRelatedArtifactsUnSorted(CoreRelationTypes.Default_Hierarchical__Parent);
+      int parentCount = artifacts.size();
+      if (parentCount == 1) {
+         toReturn = artifacts.iterator().next();
+      } else if (parentCount > 1) {
+         throw new MultipleArtifactsExist("artifact [%s] has %d parents", humanReadableId, parentCount);
       }
-      return null;
+      return toReturn;
    }
 
    public Attribute<?> getAttributeById(int attrId, boolean includeDeleted) throws OseeCoreException {
@@ -344,7 +349,6 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, Co
       if (parentCount > 1) {
          throw new MultipleArtifactsExist("artifact [%s] has %d parents", humanReadableId, parentCount);
       }
-
       return parentCount == 1;
    }
 
