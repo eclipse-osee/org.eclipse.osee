@@ -40,7 +40,7 @@ public class SMAEditorBranchEventManager implements IBranchEventListener {
    static SMAEditorBranchEventManager instance = new SMAEditorBranchEventManager();
 
    public SMAEditorBranchEventManager() {
-      OseeEventManager.addListener(instance);
+      OseeEventManager.addListener(this);
    }
 
    public static void add(ISMAEditorEventHandler iWorldEventHandler) {

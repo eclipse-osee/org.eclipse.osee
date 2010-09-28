@@ -45,7 +45,7 @@ public class SMAEditorArtifactEventManager implements IArtifactEventListener {
    static SMAEditorArtifactEventManager instance = new SMAEditorArtifactEventManager();
 
    public SMAEditorArtifactEventManager() {
-      OseeEventManager.addListener(instance);
+      OseeEventManager.addListener(this);
    }
 
    public static void add(ISMAEditorEventHandler iWorldEventHandler) {

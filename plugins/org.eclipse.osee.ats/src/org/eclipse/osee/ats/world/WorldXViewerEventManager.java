@@ -43,7 +43,7 @@ public class WorldXViewerEventManager implements IArtifactEventListener {
    static WorldXViewerEventManager instance = new WorldXViewerEventManager();
 
    public WorldXViewerEventManager() {
-      OseeEventManager.addListener(instance);
+      OseeEventManager.addListener(this);
    }
 
    public static void add(IWorldViewerEventHandler iWorldEventHandler) {
