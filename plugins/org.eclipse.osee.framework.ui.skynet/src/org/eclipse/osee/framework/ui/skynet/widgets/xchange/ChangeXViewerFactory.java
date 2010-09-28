@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerArtifactTypeColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerGuidColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerHierarchyIndex;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerHridColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerLastModifiedByColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerLastModifiedDateColumn;
@@ -48,6 +49,7 @@ public class ChangeXViewerFactory extends SkynetXViewerFactory {
    public ChangeXViewerFactory() {
       super(NAMESPACE);
       registerColumns(Name, Item_Type, Item_Kind, Change_Type, Is_Value, Was_Value, paraNumber);
+      registerColumns(new XViewerHierarchyIndex(false));
       registerColumns(new XViewerHridColumn());
       registerColumns(new XViewerGuidColumn(false));
       registerColumns(new XViewerArtifactTypeColumn("framework.change.artifactType", "Artifact Type", true));
