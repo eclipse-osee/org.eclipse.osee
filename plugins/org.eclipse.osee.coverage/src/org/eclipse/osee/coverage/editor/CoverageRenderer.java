@@ -14,6 +14,7 @@ import static org.eclipse.osee.coverage.store.CoverageArtifactTypes.CoverageFold
 import static org.eclipse.osee.coverage.store.CoverageArtifactTypes.CoveragePackage;
 import static org.eclipse.osee.coverage.store.CoverageArtifactTypes.CoverageUnit;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERALIZED_EDIT;
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.PRODUCE_ATTRIBUTE;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.coverage.store.CoverageArtifactTypes;
@@ -73,8 +74,8 @@ public class CoverageRenderer extends DefaultArtifactRenderer {
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
-      if (presentationType != GENERALIZED_EDIT && !artifact.isHistorical()) {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
+      if (!presentationType.matches(GENERALIZED_EDIT, PRODUCE_ATTRIBUTE) && !artifact.isHistorical()) {
          if (artifact.isOfType(CoveragePackage, CoverageFolder, CoverageUnit)) {
             return PRESENTATION_SUBTYPE_MATCH;
          }

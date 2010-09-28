@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.editor;
 
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERALIZED_EDIT;
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.PRODUCE_ATTRIBUTE;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.AtsImage;
@@ -40,8 +41,9 @@ public class AtsTaskEditorRenderer extends DefaultArtifactRenderer {
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
-      if (artifact instanceof TaskArtifact && !artifact.isHistorical() && presentationType != GENERALIZED_EDIT) {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
+      if (artifact instanceof TaskArtifact && !artifact.isHistorical() && !presentationType.matches(GENERALIZED_EDIT,
+         PRODUCE_ATTRIBUTE)) {
          return PRESENTATION_SUBTYPE_MATCH;
       }
       return NO_MATCH;

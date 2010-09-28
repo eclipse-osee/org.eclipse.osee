@@ -24,6 +24,7 @@ import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENER
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.MERGE;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.MERGE_EDIT;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.PREVIEW;
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.PRODUCE_ATTRIBUTE;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.SPECIALIZED_EDIT;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -114,6 +115,7 @@ public class RendererManagerTest {
       data.add(new Object[] {SoftwareRequirement, MERGE_EDIT, WordTemplateRenderer.class, Both});
       data.add(new Object[] {SoftwareRequirement, DEFAULT_OPEN, WordTemplateRenderer.class, Off});
       data.add(new Object[] {SoftwareRequirement, DEFAULT_OPEN, DefaultArtifactRenderer.class, On});
+      data.add(new Object[] {SoftwareRequirement, PRODUCE_ATTRIBUTE, WordTemplateRenderer.class, Both});
 
       data.add(new Object[] {Action, GENERALIZED_EDIT, DefaultArtifactRenderer.class, Both});
       data.add(new Object[] {Action, SPECIALIZED_EDIT, AtsWorkflowRenderer.class, Both});
@@ -123,6 +125,7 @@ public class RendererManagerTest {
       data.add(new Object[] {Action, MERGE_EDIT, AtsWorkflowRenderer.class, Both});
       data.add(new Object[] {Action, DEFAULT_OPEN, AtsWorkflowRenderer.class, Off});
       data.add(new Object[] {Action, DEFAULT_OPEN, AtsWorkflowRenderer.class, On});
+      data.add(new Object[] {Action, PRODUCE_ATTRIBUTE, DefaultArtifactRenderer.class, Both});
 
       data.add(new Object[] {TestProcedureWML, GENERALIZED_EDIT, DefaultArtifactRenderer.class, Both});
       data.add(new Object[] {TestProcedureWML, SPECIALIZED_EDIT, WholeWordRenderer.class, Both});
@@ -132,6 +135,7 @@ public class RendererManagerTest {
       data.add(new Object[] {TestProcedureWML, MERGE_EDIT, WholeWordRenderer.class, Both});
       data.add(new Object[] {TestProcedureWML, DEFAULT_OPEN, WholeWordRenderer.class, Off});
       data.add(new Object[] {TestProcedureWML, DEFAULT_OPEN, DefaultArtifactRenderer.class, On});
+      data.add(new Object[] {TestProcedureWML, PRODUCE_ATTRIBUTE, DefaultArtifactRenderer.class, Both});
 
       data.add(new Object[] {GeneralDocument, GENERALIZED_EDIT, DefaultArtifactRenderer.class, Both});
       data.add(new Object[] {GeneralDocument, SPECIALIZED_EDIT, NativeRenderer.class, Both});
@@ -141,6 +145,7 @@ public class RendererManagerTest {
       data.add(new Object[] {GeneralDocument, MERGE_EDIT, null, Both});
       data.add(new Object[] {GeneralDocument, DEFAULT_OPEN, NativeRenderer.class, Off});
       data.add(new Object[] {GeneralDocument, DEFAULT_OPEN, DefaultArtifactRenderer.class, On});
+      data.add(new Object[] {GeneralDocument, PRODUCE_ATTRIBUTE, DefaultArtifactRenderer.class, Both});
 
       data.add(new Object[] {TestInformationSheet, GENERALIZED_EDIT, DefaultArtifactRenderer.class, Both});
       data.add(new Object[] {TestInformationSheet, SPECIALIZED_EDIT, WordTemplateRenderer.class, Both});
@@ -150,6 +155,7 @@ public class RendererManagerTest {
       data.add(new Object[] {TestInformationSheet, MERGE_EDIT, WordTemplateRenderer.class, Both});
       data.add(new Object[] {TestInformationSheet, DEFAULT_OPEN, TisRenderer.class, Off});
       data.add(new Object[] {TestInformationSheet, DEFAULT_OPEN, DefaultArtifactRenderer.class, On});
+      data.add(new Object[] {TestInformationSheet, PRODUCE_ATTRIBUTE, WordTemplateRenderer.class, Both});
 
       return data;
    }

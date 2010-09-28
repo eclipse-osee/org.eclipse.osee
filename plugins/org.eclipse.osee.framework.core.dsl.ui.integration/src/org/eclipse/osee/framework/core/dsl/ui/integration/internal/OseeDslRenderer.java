@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.core.dsl.ui.integration.internal;
 
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.DEFAULT_OPEN;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERALIZED_EDIT;
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.PRODUCE_ATTRIBUTE;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.SPECIALIZED_EDIT;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -74,8 +75,8 @@ public final class OseeDslRenderer extends FileSystemRenderer {
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
-      if (presentationType != GENERALIZED_EDIT && !artifact.isHistorical()) {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
+      if (!presentationType.matches(GENERALIZED_EDIT, PRODUCE_ATTRIBUTE) && !artifact.isHistorical()) {
          if (artifact.isOfType(CoreArtifactTypes.AccessControlModel)) {
             return ARTIFACT_TYPE_MATCH;
          }

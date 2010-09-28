@@ -11,12 +11,14 @@
 package org.eclipse.osee.ats.workflow.editor;
 
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERALIZED_EDIT;
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.PRODUCE_ATTRIBUTE;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -52,8 +54,9 @@ public class AtsWorkflowConfigRenderer extends DefaultArtifactRenderer {
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
-      if (artifact.isOfType(CoreArtifactTypes.WorkFlowDefinition) && presentationType != GENERALIZED_EDIT) {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
+      if (artifact.isOfType(CoreArtifactTypes.WorkFlowDefinition) && !presentationType.matches(GENERALIZED_EDIT,
+         PRODUCE_ATTRIBUTE)) {
          return PRESENTATION_SUBTYPE_MATCH;
       }
       return NO_MATCH;

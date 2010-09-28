@@ -142,7 +142,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
          if (artifact.isAttributeTypeValid(CoreAttributeTypes.WordTemplateContent)) {
             return PRESENTATION_SUBTYPE_MATCH;
          }
-         if (presentationType != SPECIALIZED_EDIT && !artifact.isAttributeTypeValid(CoreAttributeTypes.NativeContent) && !artifact.isAttributeTypeValid(CoreAttributeTypes.WholeWordContent)) {
+         if (!presentationType.matches(SPECIALIZED_EDIT, PresentationType.PRODUCE_ATTRIBUTE) && !artifact.isAttributeTypeValid(CoreAttributeTypes.NativeContent) && !artifact.isAttributeTypeValid(CoreAttributeTypes.WholeWordContent)) {
             return PRESENTATION_TYPE;
          }
       }
