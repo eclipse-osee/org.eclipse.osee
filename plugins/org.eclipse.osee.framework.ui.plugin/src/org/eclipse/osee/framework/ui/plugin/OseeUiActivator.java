@@ -40,6 +40,12 @@ public abstract class OseeUiActivator extends AbstractUIPlugin {
    private PluginUtil helper;
    private final String pluginId;
 
+   @Deprecated
+   protected OseeUiActivator() {
+      super();
+      this.pluginId = "org.eclipse.osee.framework.ui.plugin";
+   }
+
    protected OseeUiActivator(String pluginId) {
       super();
       this.pluginId = pluginId;
