@@ -41,6 +41,11 @@ public class RecordMap<T extends RecordElement> extends RecordElement {
 
    @Override
    public T get(int index) {
+      if (index >= NUMBER_OF_RECORDS) {
+         throw new IllegalArgumentException(
+            "index(zero-based):" + index + " is greater than NUMBER_OF_RECORDS:" + NUMBER_OF_RECORDS);
+      }
+
       T val = records.get(index);
       if (val == null) {
          val = (T) factory.create(index);
