@@ -26,18 +26,18 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsOpenOption;
-import org.eclipse.osee.ats.artifact.ATSLog;
-import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.artifact.AbstractReviewArtifact;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.LogItem;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.ats.artifact.log.AtsLog;
+import org.eclipse.osee.ats.artifact.log.LogItem;
+import org.eclipse.osee.ats.artifact.log.LogType;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.task.TaskEditorSimpleProvider;
@@ -751,7 +751,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          if (art instanceof AbstractWorkflowArtifact) {
             AbstractWorkflowArtifact sma = (AbstractWorkflowArtifact) art;
             try {
-               ATSLog log = sma.getLog();
+               AtsLog log = sma.getLog();
                if (log.getOriginator() == null) {
                   try {
                      testNameToResultsMap.put(

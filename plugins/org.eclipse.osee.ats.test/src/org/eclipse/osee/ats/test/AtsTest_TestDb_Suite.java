@@ -10,14 +10,23 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.test;
 
-import org.eclipse.osee.ats.test.artifact.LogItemTest;
+import org.eclipse.osee.ats.test.artifact.log.AtsLogTest;
+import org.eclipse.osee.ats.test.artifact.log.LogItemTest;
+import org.eclipse.osee.ats.test.artifact.note.AtsNoteTest;
+import org.eclipse.osee.ats.test.artifact.note.NoteItemTest;
 import org.eclipse.osee.ats.test.config.AtsBranchConfigurationTest;
 import org.eclipse.osee.ats.test.util.AtsImageTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({LogItemTest.class, AtsImageTest.class, AtsBranchConfigurationTest.class})
+@Suite.SuiteClasses({
+   LogItemTest.class,
+   AtsLogTest.class,
+   NoteItemTest.class,
+   AtsNoteTest.class,
+   AtsImageTest.class,
+   AtsBranchConfigurationTest.class})
 /**
  * @author Donald G. Dunne
  */

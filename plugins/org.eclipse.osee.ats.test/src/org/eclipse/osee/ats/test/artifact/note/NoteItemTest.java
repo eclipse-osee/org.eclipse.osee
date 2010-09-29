@@ -3,15 +3,16 @@
  *
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
-package org.eclipse.osee.ats.test.artifact;
+package org.eclipse.osee.ats.test.artifact.note;
 
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import junit.framework.Assert;
 import org.eclipse.osee.ats.NoteType;
-import org.eclipse.osee.ats.artifact.NoteItem;
+import org.eclipse.osee.ats.artifact.note.NoteItem;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.junit.Test;
 
@@ -25,14 +26,14 @@ public class NoteItemTest {
       validate(item, date);
    }
 
-   private void validate(NoteItem item, Date date) throws OseeCoreException {
+   public static void validate(NoteItem item, Date date) throws OseeCoreException {
       Assert.assertEquals(NoteType.Comment, item.getType());
       Assert.assertEquals("Implement", item.getState());
       Assert.assertEquals(UserManager.getUser(), item.getUser());
       Assert.assertEquals("my msg", item.getMsg());
    }
 
-   private NoteItem getTestNoteItem(Date date) throws OseeCoreException {
+   public static NoteItem getTestNoteItem(Date date) throws OseeCoreException {
       return new NoteItem(NoteType.Comment, "Implement", String.valueOf(date.getTime()), UserManager.getUser(),
          "my msg");
    }
@@ -51,7 +52,9 @@ public class NoteItemTest {
       Date date = new Date();
       NoteItem item = getTestNoteItem(date);
 
-      Assert.assertEquals("asdf", item.toString());
+      Assert.assertEquals(
+         "Note: Comment from Dunne, Donald G for \"Implement\" on " + DateUtil.getMMDDYYHHMM(date) + " - my msg",
+         item.toString());
    }
 
    @Test
@@ -63,7 +66,11 @@ public class NoteItemTest {
             "another message");
 
       String xml = NoteItem.toXml(Arrays.asList(item, item2));
-      Assert.assertEquals("asdf", xml);
+      Assert.assertEquals(
+         "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><AtsNote>" + //
+         "<Item date=\"" + date.getTime() + "\" msg=\"my msg\" state=\"Implement\" type=\"Comment\" userId=\"" + UserManager.getUser().getUserId() + "\"/>" + //
+         "<Item date=\"" + date.getTime() + "\" msg=\"another message\" state=\"Analyze\" type=\"Question\" userId=\"" + UserManager.getUser().getUserId() + "\"/></AtsNote>",
+         xml);
 
       List<NoteItem> items = NoteItem.fromXml(xml, "ASDF4");
       validate(items.iterator().next(), date);
@@ -81,7 +88,9 @@ public class NoteItemTest {
       Date date = new Date();
       NoteItem item = getTestNoteItem(date);
 
-      Assert.assertEquals("asdf", item.toHTML());
+      Assert.assertEquals(
+         "<b>Note:</b>Comment from Dunne, Donald G for \"Implement\" on " + DateUtil.getMMDDYYHHMM(date) + " - my msg",
+         item.toHTML());
    }
 
 }

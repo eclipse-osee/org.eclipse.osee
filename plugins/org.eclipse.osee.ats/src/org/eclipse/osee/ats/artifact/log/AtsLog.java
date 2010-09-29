@@ -9,67 +9,48 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.ats.artifact;
+package org.eclipse.osee.ats.artifact.log;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.DefaultTeamState;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
  * @author Donald G. Dunne
  */
-public class ATSLog {
+public class AtsLog {
 
-   private final WeakReference<Artifact> artifactRef;
    private boolean enabled = true;
    private final static String ATS_LOG_TAG = "AtsLog";
    private final static String LOG_ITEM_TAG = "Item";
    private LogItem cancelledLogItem;
    private LogItem completedLogItem;
-   public static enum LogType {
-      None,
-      Originated,
-      StateComplete,
-      StateCancelled,
-      StateEntered,
-      Released,
-      Error,
-      Assign,
-      Note,
-      Metrics;
+   private final ILogStorageProvider storeProvider;
+   private final static Pattern LOG_ITEM_PATTERN =
+      Pattern.compile("<Item date=\"(.*?)\" msg=\"(.*?)\" state=\"(.*?)\" type=\"(.*?)\" userId=\"(.*?)\"/>");
+   private final static Pattern LOG_ITEM_TAG_PATTERN = Pattern.compile("<Item ");
 
-      public static LogType getType(String type) throws OseeArgumentException {
-         for (Enum<LogType> e : LogType.values()) {
-            if (e.name().equals(type)) {
-               return (LogType) e;
-            }
-         }
-         throw new OseeArgumentException("Unhandled LogType: [%s]", type);
-      }
-
-   };
-
-   public ATSLog(Artifact artifact) {
-      this.artifactRef = new WeakReference<Artifact>(artifact);
+   public AtsLog(ILogStorageProvider storeProvider) {
+      this.storeProvider = storeProvider;
    }
 
    @Override
@@ -92,24 +73,39 @@ public class ATSLog {
       }
       StringBuffer sb = new StringBuffer();
       if (showLog) {
-         sb.append(AHTML.addSpace(1) + AHTML.getLabelStr(
-            AHTML.LABEL_FONT,
-            "History for \"" + getArtifact().getArtifactTypeName() + "\" - " + getArtifact().getHumanReadableId() + " - titled \"" + getArtifact().getName() + "\""));
+         sb.append(AHTML.addSpace(1) + AHTML.getLabelStr(AHTML.LABEL_FONT, storeProvider.getLogTitle()));
       }
       sb.append(getTable());
       return sb.toString();
    }
 
-   public Artifact getArtifact() throws OseeStateException {
-      if (artifactRef.get() == null) {
-         throw new OseeStateException("Artifact has been garbage collected");
-      }
-      return artifactRef.get();
+   public List<LogItem> getLogItems() throws OseeCoreException {
+      String xml = storeProvider.getLogXml();
+      return getLogItems(xml, storeProvider.getLogId());
    }
 
-   public List<LogItem> getLogItems() throws OseeCoreException {
-      String xml = getArtifact().getSoleAttributeValue(AtsAttributeTypes.Log, "");
-      return LogItem.getLogItems(xml, getArtifact().getHumanReadableId());
+   private List<LogItem> getLogItems(String xml, String id) throws OseeCoreException {
+      List<LogItem> logItems = new ArrayList<LogItem>();
+      if (!xml.isEmpty()) {
+         Matcher m = LOG_ITEM_PATTERN.matcher(xml);
+         while (m.find()) {
+            LogItem item = new LogItem(m.group(4), m.group(1), Strings.intern(m.group(5)), Strings.intern(m.group(3)), // NOPMD by b0727536 on 9/29/10 8:52 AM
+               AXml.xmlToText(m.group(2)), id);
+            logItems.add(item);
+         }
+
+         Matcher m2 = LOG_ITEM_TAG_PATTERN.matcher(xml);
+         int openTagsFound = 0;
+         while (m2.find()) {
+            openTagsFound++;
+         }
+         if (logItems.size() != openTagsFound) {
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, String.format(
+               "ATS Log: open tags found %d doesn't match log items parsed %d for %s", openTagsFound, logItems.size(),
+               id));
+         }
+      }
+      return logItems;
    }
 
    public Date getLastStatusedDate() throws OseeCoreException {
@@ -134,7 +130,7 @@ public class ATSLog {
             element.setAttribute("msg", item.getMsg());
             rootElement.appendChild(element);
          }
-         getArtifact().setSoleAttributeValue(AtsAttributeTypes.Log, Jaxp.getDocumentXml(doc));
+         storeProvider.saveLogXml(Jaxp.getDocumentXml(doc));
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't create ats log document", ex);
       }
@@ -280,14 +276,10 @@ public class ATSLog {
       if (!enabled) {
          return;
       }
-      if (artifactRef.get() == null) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, "Artifact unexpectedly garbage collected");
-      } else {
-         LogItem logItem = new LogItem(type, date, user, state, msg, getArtifact().getHumanReadableId());
-         List<LogItem> logItems = getLogItems();
-         logItems.add(logItem);
-         putLogItems(logItems);
-      }
+      LogItem logItem = new LogItem(type, date, user, state, msg, storeProvider.getLogId());
+      List<LogItem> logItems = getLogItems();
+      logItems.add(logItem);
+      putLogItems(logItems);
    }
 
    public void clearLog() {

@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.workflow.item;
 
-import org.eclipse.osee.ats.artifact.ATSLog.LogType;
-import org.eclipse.osee.ats.artifact.LogItem;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.artifact.log.LogItem;
+import org.eclipse.osee.ats.artifact.log.LogType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;

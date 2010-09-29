@@ -9,7 +9,7 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.ats.artifact;
+package org.eclipse.osee.ats.artifact.note;
 
 import java.util.ArrayList;
 import java.util.Date;

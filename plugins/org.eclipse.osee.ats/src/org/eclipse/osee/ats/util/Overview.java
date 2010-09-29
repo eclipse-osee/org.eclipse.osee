@@ -16,12 +16,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.AbstractAtsArtifact;
-import org.eclipse.osee.ats.artifact.ATSLog;
-import org.eclipse.osee.ats.artifact.ATSLog.LogType;
-import org.eclipse.osee.ats.artifact.LogItem;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.artifact.log.AtsLog;
+import org.eclipse.osee.ats.artifact.log.LogItem;
+import org.eclipse.osee.ats.artifact.log.LogType;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.SMAState;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -276,7 +276,7 @@ public class Overview {
    }
 
    public void addLog(AbstractWorkflowArtifact artifact) throws OseeCoreException {
-      ATSLog artifactLog = artifact.getLog();
+      AtsLog artifactLog = artifact.getLog();
       if (artifactLog != null && artifactLog.getLogItems().size() > 0) {
          addTable(artifact.getLog().getTable());
       }

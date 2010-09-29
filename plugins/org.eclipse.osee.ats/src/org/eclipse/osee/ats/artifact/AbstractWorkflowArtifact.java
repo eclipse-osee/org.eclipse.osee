@@ -22,7 +22,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
-import org.eclipse.osee.ats.artifact.ATSLog.LogType;
+import org.eclipse.osee.ats.artifact.log.ArtifactLog;
+import org.eclipse.osee.ats.artifact.log.AtsLog;
+import org.eclipse.osee.ats.artifact.log.LogItem;
+import org.eclipse.osee.ats.artifact.log.LogType;
+import org.eclipse.osee.ats.artifact.note.ArtifactNote;
+import org.eclipse.osee.ats.artifact.note.AtsNote;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.editor.stateItem.AtsStateItemManager;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
@@ -93,8 +98,8 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    private StateManager stateMgr;
    private DeadlineManager deadlineMgr;
    private SMAEditor editor;
-   private ATSLog atsLog;
-   private ATSNote atsNote;
+   private AtsLog atsLog;
+   private AtsNote atsNote;
    private boolean inTransition = false;
 
    public AbstractWorkflowArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeCoreException {
@@ -128,8 +133,8 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       try {
          deadlineMgr = new DeadlineManager(this);
          stateMgr = new StateManager(this);
-         atsLog = new ATSLog(this);
-         atsNote = new ATSNote(this);
+         atsLog = new AtsLog(new ArtifactLog(this));
+         atsNote = new AtsNote(new ArtifactNote(this));
          AtsNotification.notifyNewAssigneesAndReset(this, true);
          AtsNotification.notifyOriginatorAndReset(this, true);
       } catch (Exception ex) {
@@ -1183,11 +1188,11 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       SMAEditor.close(java.util.Collections.singleton(this), save);
    }
 
-   public ATSLog getLog() {
+   public AtsLog getLog() {
       return atsLog;
    }
 
-   public ATSNote getNotes() {
+   public AtsNote getNotes() {
       return atsNote;
    }
 

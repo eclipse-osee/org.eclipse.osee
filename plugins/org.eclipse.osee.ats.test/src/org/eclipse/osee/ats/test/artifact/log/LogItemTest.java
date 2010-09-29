@@ -3,15 +3,15 @@
  *
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
-package org.eclipse.osee.ats.test.artifact;
+package org.eclipse.osee.ats.test.artifact.log;
 
 import java.util.Date;
-import java.util.List;
 import junit.framework.Assert;
-import org.eclipse.osee.ats.artifact.ATSLog.LogType;
-import org.eclipse.osee.ats.artifact.LogItem;
+import org.eclipse.osee.ats.artifact.log.LogItem;
+import org.eclipse.osee.ats.artifact.log.LogType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.junit.Test;
 
@@ -25,7 +25,7 @@ public class LogItemTest {
       validateItem(item, date);
    }
 
-   private void validateItem(LogItem item, Date date) throws OseeCoreException {
+   public static void validateItem(LogItem item, Date date) throws OseeCoreException {
       Assert.assertEquals(LogType.Error, item.getType());
       Assert.assertEquals(date, item.getDate());
       Assert.assertEquals(UserManager.getUser(), item.getUser());
@@ -54,19 +54,7 @@ public class LogItemTest {
       validateItem(item, date);
    }
 
-   @Test
-   public void testToXml() throws OseeCoreException {
-      Date date = new Date();
-      LogItem item = getTestLogItem(date);
-
-      String xml = item.toXml();
-      List<LogItem> items = LogItem.getLogItems(xml, "ASDF4");
-      Assert.assertEquals(1, items.size());
-      LogItem loadItem = items.iterator().next();
-      validateItem(loadItem, date);
-   }
-
-   private LogItem getTestLogItem(Date date) throws OseeCoreException {
+   public static LogItem getTestLogItem(Date date) throws OseeCoreException {
       return new LogItem(LogType.Error, date, UserManager.getUser(), "Analyze", "my msg", "ASDF4");
    }
 
@@ -75,7 +63,8 @@ public class LogItemTest {
       Date date = new Date();
       LogItem item = getTestLogItem(date);
 
-      Assert.assertEquals("asdf", item.toString());
+      Assert.assertEquals("my msg (Error)from Analyze by Dunne, Donald G on " + DateUtil.getMMDDYYHHMM(date),
+         item.toString());
    }
 
    @Test
@@ -83,7 +72,7 @@ public class LogItemTest {
       Date date = new Date();
       LogItem item = getTestLogItem(date);
 
-      Assert.assertEquals("asdf", item.toHTML(AHTML.LABEL_FONT));
+      Assert.assertEquals("NOTE (Error): my msg (Dunne, Donald G)", item.toHTML(AHTML.LABEL_FONT));
    }
 
 }

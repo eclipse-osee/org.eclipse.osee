@@ -8,25 +8,18 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.artifact;
+package org.eclipse.osee.ats.artifact.log;
 
 import static org.eclipse.osee.framework.jdk.core.util.Strings.intern;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
-import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -42,34 +35,6 @@ public class LogItem {
    private User user;
    private LogType type = LogType.None;
    private final String userId;
-   private final static Pattern LOG_ITEM_PATTERN =
-      Pattern.compile("<Item date=\"(.*?)\" msg=\"(.*?)\" state=\"(.*?)\" type=\"(.*?)\" userId=\"(.*?)\"/>");
-   private final static Pattern LOG_ITEM_TAG_PATTERN = Pattern.compile("<Item ");
-
-   public static List<LogItem> getLogItems(String xml, String id) throws OseeCoreException {
-      List<LogItem> logItems = new ArrayList<LogItem>();
-      if (!xml.isEmpty()) {
-         Matcher m = LOG_ITEM_PATTERN.matcher(xml);
-         while (m.find()) {
-            LogItem item =
-               new LogItem(m.group(4), m.group(1), Strings.intern(m.group(5)), Strings.intern(m.group(3)), // NOPMD by b0727536 on 9/29/10 8:52 AM
-                  AXml.xmlToText(m.group(2)), id);
-            logItems.add(item);
-         }
-
-         Matcher m2 = LOG_ITEM_TAG_PATTERN.matcher(xml);
-         int openTagsFound = 0;
-         while (m2.find()) {
-            openTagsFound++;
-         }
-         if (logItems.size() != openTagsFound) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, String.format(
-               "ATS Log: open tags found %d doesn't match log items parsed %d for %s", openTagsFound, logItems.size(),
-               id));
-         }
-      }
-      return logItems;
-   }
 
    public LogItem(LogType type, Date date, User user, String state, String msg, String hrid) throws OseeCoreException {
       this(type.name(), String.valueOf(date.getTime()), user.getUserId(), state, msg, hrid);
@@ -93,10 +58,6 @@ public class LogItem {
 
    public LogItem(String type, String date, String userId, String state, String msg, String hrid) throws OseeCoreException {
       this(LogType.getType(type), date, userId, state, msg, hrid);
-   }
-
-   public String toXml() throws OseeCoreException {
-      return "<type>" + type.name() + "</type><date>" + date.getTime() + "</date><user>" + user.getUserId() + "</user><state>" + (state == null ? "" : state) + "</state><msg>" + (msg == null ? "" : msg) + "</msg>";
    }
 
    public Date getDate() {

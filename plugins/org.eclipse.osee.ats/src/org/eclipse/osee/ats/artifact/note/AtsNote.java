@@ -8,9 +8,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.artifact;
+package org.eclipse.osee.ats.artifact.note;
 
-import java.lang.ref.WeakReference;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -19,34 +18,23 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.logging.Level;
 import org.eclipse.osee.ats.NoteType;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Donald G. Dunne
  */
-public class ATSNote {
-   private final WeakReference<Artifact> artifactRef;
+public class AtsNote {
    private boolean enabled = true;
+   private final INoteStorageProvider storeProvder;
 
-   public ATSNote(Artifact artifact) {
-      this.artifactRef = new WeakReference<Artifact>(artifact);
-   }
-
-   public Artifact getArtifact() throws OseeStateException {
-      if (artifactRef.get() == null) {
-         throw new OseeStateException("Artifact has been garbage collected");
-      }
-      return artifactRef.get();
+   public AtsNote(INoteStorageProvider storeProvder) {
+      this.storeProvder = storeProvder;
    }
 
    public void addNote(NoteType type, String state, String msg, User user) {
@@ -73,9 +61,9 @@ public class ATSNote {
 
    public List<NoteItem> getNoteItems() {
       try {
-         String xml = getArtifact().getSoleAttributeValue(AtsAttributeTypes.StateNotes, "");
+         String xml = storeProvder.getNoteXml();
          if (Strings.isValid(xml)) {
-            return NoteItem.fromXml(xml, getArtifact().getHumanReadableId());
+            return NoteItem.fromXml(xml, storeProvder.getNoteId());
          }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -86,22 +74,10 @@ public class ATSNote {
    public void saveNoteItems(List<NoteItem> items) {
       try {
          String xml = NoteItem.toXml(items);
-         getArtifact().setSoleAttributeValue(AtsAttributeTypes.StateNotes, xml);
+         storeProvder.saveNoteXml(xml);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't create ats note document", ex);
       }
-   }
-
-   private boolean hasStateNotesAttribute() {
-      try {
-         if (getArtifact().getAttributes(AtsAttributeTypes.StateNotes).isEmpty()) {
-            return false;
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-         return false;
-      }
-      return true;
    }
 
    /**
@@ -109,7 +85,7 @@ public class ATSNote {
     * state
     */
    public String getTable(String state) {
-      if (!hasStateNotesAttribute()) {
+      if (!storeProvder.isNoteable()) {
          return "";
       }
       ArrayList<NoteItem> showNotes = new ArrayList<NoteItem>();
