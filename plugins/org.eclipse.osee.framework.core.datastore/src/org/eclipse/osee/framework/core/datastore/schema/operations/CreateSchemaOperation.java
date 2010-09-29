@@ -41,18 +41,20 @@ public class CreateSchemaOperation extends AbstractDbTxOperation {
    @Override
    protected void doTxWork(IProgressMonitor monitor, OseeConnection connection) throws OseeCoreException {
       DatabaseMetaData metaData = connection.getMetaData();
+      SupportedDatabase dbType = SupportedDatabase.getDatabaseType(metaData);
       SqlManager sqlManager = SqlFactory.getSqlManager(metaData);
       SchemaSqlUtil dbInit = new SchemaSqlUtil(sqlManager);
 
       Set<String> schemas = userSchema.keySet();
+
       dbInit.dropIndices(schemas, userSchema, dbSchema);
       dbInit.dropTables(schemas, userSchema, dbSchema);
-      if (SupportedDatabase.isDatabaseType(metaData, SupportedDatabase.postgresql)) {
+
+      if (dbType == SupportedDatabase.postgresql || dbType == SupportedDatabase.h2) {
          dbInit.dropSchema(schemas);
          dbInit.createSchema(schemas);
       }
       dbInit.addTables(schemas, userSchema);
       dbInit.addIndices(schemas, userSchema);
    }
-
 }

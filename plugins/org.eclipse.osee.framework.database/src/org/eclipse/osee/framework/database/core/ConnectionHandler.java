@@ -155,11 +155,19 @@ public final class ConnectionHandler {
     * Cause constraint checking to be deferred until the end of the current transaction.
     */
    public static void deferConstraintChecking(OseeConnection connection) throws OseeCoreException {
-      if (SupportedDatabase.getDatabaseType(connection.getMetaData()) == SupportedDatabase.derby) {
-         return;
+      SupportedDatabase dbType = SupportedDatabase.getDatabaseType(connection.getMetaData());
+      switch (dbType) {
+         case derby:
+            // Derby Does not support deferring constraints
+            break;
+         case h2:
+            runPreparedUpdate(connection, "SET REFERENTIAL_INTEGRITY = FALSE");
+            break;
+         default:
+            // NOTE: this must be a PreparedStatement to play correctly with DB Transactions.
+            runPreparedUpdate(connection, "SET CONSTRAINTS ALL DEFERRED");
+            break;
       }
-      // NOTE: this must be a PreparedStatement to play correctly with DB Transactions.
-      runPreparedUpdate(connection, "SET CONSTRAINTS ALL DEFERRED");
    }
 
    public static DatabaseMetaData getMetaData() throws OseeCoreException {

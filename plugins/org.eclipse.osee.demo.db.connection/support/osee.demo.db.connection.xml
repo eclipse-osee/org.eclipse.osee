@@ -1,19 +1,19 @@
 <DbConnection>
 
 	<DatabaseInfo id="h2.db.info">
-		<DatabaseHome key="#DBHOME#" value="~/h2/"/>
+		<DatabaseHome key="#DBHOME#" value="~/h2/" />
 		<DatabaseName key="#DBNAME#" value="osee.h2.db" />
 		<DatabaseType key="#TYPE#" value="h2" />
 		<Prefix key="#PREFIX#" value="jdbc:h2" />
-		<UserName key="#USERNAME#" value="OSEE" />
-		<Password key="#PASSWORD#" value="OSEE" />
+		<UserName key="#USERNAME#" value="osee" />
+		<Password key="#PASSWORD#" value="oseeadmin" />
 		<Host key="#HOST#" value="@AvailableDbServices.hostAddress" />
 		<Port key="#PORT#" value="@AvailableDbServices.port" />
 	</DatabaseInfo>
 
 	<ConnectionDescription id="h2.db.connection">
 		<Driver>org.h2.Driver</Driver>
-		<Url>#PREFIX#:tcp://#HOST#:#PORT#/#DBHOME##DBNAME#;MODE=PostgreSQL;IGNORECASE=TRUE</Url>
+		<Url>#PREFIX#:tcp://#HOST#:#PORT#/#DBHOME##DBNAME#;IGNORECASE=TRUE;SCHEMA_SEARCH_PATH=OSEE, PUBLIC</Url>
 	</ConnectionDescription>
 
 	<DatabaseInfo id="DerbyServer">
@@ -40,7 +40,7 @@
 
 	<ConnectionDescription id="postgresql">
 		<Driver>org.postgresql.Driver</Driver>
-		<Url>#PREFIX#://#HOST#:#PORT#/#DBHOME##DBNAME#</Url>		
+		<Url>#PREFIX#://#HOST#:#PORT#/#DBHOME##DBNAME#</Url>
 	</ConnectionDescription>
 
 	<ConnectionDescription id="NetDerbyClient">
@@ -52,10 +52,12 @@
 	</ConnectionDescription>
 
 	<AvailableDbServices>
-	
-		<Server id="h2" dbInfo="h2.db.info" hostAddress="127.0.0.1" port="1621" connectsWith="h2.db.connection" />
 
-		<Server id="derby" dbInfo="DerbyServer" hostAddress="127.0.0.1" port="1621" connectsWith="NetDerbyClient" />
+		<Server id="h2" dbInfo="h2.db.info" hostAddress="127.0.0.1"
+			port="1621" connectsWith="h2.db.connection" />
+
+		<Server id="derby" dbInfo="DerbyServer" hostAddress="127.0.0.1"
+			port="1621" connectsWith="NetDerbyClient" />
 
 		<Server id="osee.microdoc" dbInfo="postgresqlInfo" hostAddress="78.46.71.230"
 			port="5432" connectsWith="postgresql" applicationServer="http://osee.microdoc.com:8089/" />

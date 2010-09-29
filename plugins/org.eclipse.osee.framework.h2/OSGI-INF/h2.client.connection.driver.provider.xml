@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<component name="h2.client.connection.driver.provider">
+	<implementation class="org.eclipse.osee.framework.h2.H2ClientConnection"/>
+	<service>
+		<provide interface="org.eclipse.osee.framework.database.core.IConnectionFactory"/>
+	</service>	
+</component>

@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 
 public enum SupportedDatabase {
+   h2,
    oracle,
    derby,
    foxpro,
@@ -28,7 +29,9 @@ public enum SupportedDatabase {
       try {
          String dbName = metaData.getDatabaseProductName();
          String lowerCaseName = dbName.toLowerCase();
-         if (lowerCaseName.contains(SupportedDatabase.derby.toString())) {
+         if (lowerCaseName.contains(SupportedDatabase.h2.toString())) {
+            toReturn = SupportedDatabase.h2;
+         } else if (lowerCaseName.contains(SupportedDatabase.derby.toString())) {
             toReturn = SupportedDatabase.derby;
          } else if (lowerCaseName.contains(SupportedDatabase.oracle.toString())) {
             toReturn = SupportedDatabase.oracle;

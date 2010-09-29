@@ -45,6 +45,9 @@ public class SqlFactory {
          case postgresql:
             instance = new PostgreSqlManager(new PostgresqlDataType());
             break;
+         case h2:
+            instance = new H2SqlManager(new H2DataType());
+            break;
          default:
             break;
       }
