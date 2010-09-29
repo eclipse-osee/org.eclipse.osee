@@ -18,6 +18,7 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.data.IOseeUserInfo;
 import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.data.OseeSessionGrant;
+import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
@@ -62,6 +63,12 @@ public final class SessionManagerImpl implements ISessionManager {
             sessionFactory.create(GUID.create(), oseeUserInfo.getUserID(), creationDate, managedByServerId,
                credential.getVersion(), credential.getClientMachineName(), credential.getClientAddress(),
                credential.getPort(), creationDate, StorageState.CREATED.name().toLowerCase());
+
+         if (credential.getUserName().equals(SystemUser.BootStrap.getName())) {
+            sessionCache.setIgnoreEnsurePopulateException(true);
+         } else {
+            sessionCache.setIgnoreEnsurePopulateException(false);
+         }
          sessionCache.cache(session);
          sessionGrant = sessionFactory.createSessionGrant(session, oseeUserInfo);
       }

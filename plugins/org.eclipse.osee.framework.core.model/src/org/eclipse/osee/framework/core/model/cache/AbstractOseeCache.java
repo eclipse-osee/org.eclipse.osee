@@ -45,11 +45,13 @@ public abstract class AbstractOseeCache<T extends AbstractOseeType> implements I
    private final boolean uniqueName;
    private boolean ensurePopulatedRanOnce;
    private long lastLoaded;
+   private boolean ignoreEnsurePopulateException;
 
    protected AbstractOseeCache(OseeCacheEnum cacheId, IOseeDataAccessor<T> dataAccessor, boolean uniqueName) {
       this.lastLoaded = 0;
       this.cacheId = cacheId;
       this.ensurePopulatedRanOnce = false;
+      this.ignoreEnsurePopulateException = false;
       this.dataAccessor = dataAccessor;
       this.uniqueName = uniqueName;
    }
@@ -65,6 +67,14 @@ public abstract class AbstractOseeCache<T extends AbstractOseeType> implements I
 
    protected void clearAdditionalData() {
 
+   }
+
+   public void setIgnoreEnsurePopulateException(boolean isIgnored) {
+      this.ignoreEnsurePopulateException = isIgnored;
+   }
+
+   public boolean isEnsurePopulateExceptionIgnored() {
+      return ignoreEnsurePopulateException;
    }
 
    @Override
@@ -254,7 +264,13 @@ public abstract class AbstractOseeCache<T extends AbstractOseeType> implements I
    public synchronized void ensurePopulated() throws OseeCoreException {
       if (!ensurePopulatedRanOnce) {
          ensurePopulatedRanOnce = true;
-         reloadCache();
+         try {
+            reloadCache();
+         } catch (OseeCoreException ex) {
+            if (!isEnsurePopulateExceptionIgnored()) {
+               throw ex;
+            }
+         }
       }
    }
 
