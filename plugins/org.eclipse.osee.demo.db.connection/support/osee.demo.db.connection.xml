@@ -1,5 +1,21 @@
 <DbConnection>
 
+	<DatabaseInfo id="h2.db.info">
+		<DatabaseHome key="#DBHOME#" value="~/h2/"/>
+		<DatabaseName key="#DBNAME#" value="osee.h2.db" />
+		<DatabaseType key="#TYPE#" value="h2" />
+		<Prefix key="#PREFIX#" value="jdbc:h2" />
+		<UserName key="#USERNAME#" value="OSEE" />
+		<Password key="#PASSWORD#" value="OSEE" />
+		<Host key="#HOST#" value="@AvailableDbServices.hostAddress" />
+		<Port key="#PORT#" value="@AvailableDbServices.port" />
+	</DatabaseInfo>
+
+	<ConnectionDescription id="h2.db.connection">
+		<Driver>org.h2.Driver</Driver>
+		<Url>#PREFIX#:tcp://#HOST#:#PORT#/#DBHOME##DBNAME#;MODE=PostgreSQL;IGNORECASE=TRUE</Url>
+	</ConnectionDescription>
+
 	<DatabaseInfo id="DerbyServer">
 		<DatabaseHome key="#DBHOME#" />
 		<DatabaseName key="#DBNAME#" value="DerbyDatabase" />
@@ -36,6 +52,8 @@
 	</ConnectionDescription>
 
 	<AvailableDbServices>
+	
+		<Server id="h2" dbInfo="h2.db.info" hostAddress="127.0.0.1" port="1621" connectsWith="h2.db.connection" />
 
 		<Server id="derby" dbInfo="DerbyServer" hostAddress="127.0.0.1" port="1621" connectsWith="NetDerbyClient" />
 
