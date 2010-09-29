@@ -48,38 +48,34 @@ public final class TeamWorkflowExtensions {
    /*
     * due to lazy initialization, this function is non-reentrant therefore, the synchronized keyword is necessary
     */
-   public static Set<IAtsTeamWorkflow> getAtsTeamWorkflowExtensions() {
-      synchronized (teamWorkflowExtensionItems) {
-         if (teamWorkflowExtensionItems != null) {
-            return teamWorkflowExtensionItems;
-         }
-         teamWorkflowExtensionItems = new HashSet<IAtsTeamWorkflow>();
+   public synchronized static Set<IAtsTeamWorkflow> getAtsTeamWorkflowExtensions() {
+      if (teamWorkflowExtensionItems != null) {
+         return teamWorkflowExtensionItems;
+      }
+      teamWorkflowExtensionItems = new HashSet<IAtsTeamWorkflow>();
 
-         IExtensionPoint point =
-            Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.ats.AtsTeamWorkflow");
-         if (point == null) {
-            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't access AtsTeamWorkflow extension point");
-            return teamWorkflowExtensionItems;
-         }
-         IExtension[] extensions = point.getExtensions();
-         for (IExtension extension : extensions) {
-            IConfigurationElement[] elements = extension.getConfigurationElements();
-            String classname = null;
-            String bundleName = null;
-            for (IConfigurationElement el : elements) {
-               if (el.getName().equals("AtsTeamWorkflow")) {
-                  classname = el.getAttribute("classname");
-                  bundleName = el.getContributor().getName();
-                  if (classname != null && bundleName != null) {
-                     Bundle bundle = Platform.getBundle(bundleName);
-                     try {
-                        Class<?> taskClass = bundle.loadClass(classname);
-                        Object obj = taskClass.newInstance();
-                        teamWorkflowExtensionItems.add((IAtsTeamWorkflow) obj);
-                     } catch (Exception ex) {
-                        OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Error loading AtsTeamWorkflow extension",
-                           ex);
-                     }
+      IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.ats.AtsTeamWorkflow");
+      if (point == null) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't access AtsTeamWorkflow extension point");
+         return teamWorkflowExtensionItems;
+      }
+      IExtension[] extensions = point.getExtensions();
+      for (IExtension extension : extensions) {
+         IConfigurationElement[] elements = extension.getConfigurationElements();
+         String classname = null;
+         String bundleName = null;
+         for (IConfigurationElement el : elements) {
+            if (el.getName().equals("AtsTeamWorkflow")) {
+               classname = el.getAttribute("classname");
+               bundleName = el.getContributor().getName();
+               if (classname != null && bundleName != null) {
+                  Bundle bundle = Platform.getBundle(bundleName);
+                  try {
+                     Class<?> taskClass = bundle.loadClass(classname);
+                     Object obj = taskClass.newInstance();
+                     teamWorkflowExtensionItems.add((IAtsTeamWorkflow) obj);
+                  } catch (Exception ex) {
+                     OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Error loading AtsTeamWorkflow extension", ex);
                   }
                }
             }
