@@ -19,8 +19,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.data.OseeSessionGrant;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
 import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.core.server.UnsecuredOseeHttpServlet;
@@ -105,54 +103,32 @@ public class SessionManagementServlet extends UnsecuredOseeHttpServlet {
       }
    }
 
-   private void createSession(HttpServletRequest request, HttpServletResponse response) throws OseeCoreException {
-      try {
-         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-         Lib.inputStreamToOutputStream(request.getInputStream(), outputStream);
-         byte[] bytes = outputStream.toByteArray();
-         // TODO Decrypt credential info
+   private void createSession(HttpServletRequest request, HttpServletResponse response) throws Exception {
+      ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      Lib.inputStreamToOutputStream(request.getInputStream(), outputStream);
+      byte[] bytes = outputStream.toByteArray();
 
-         OseeCredential credential = OseeCredential.fromXml(new ByteArrayInputStream(bytes));
-         OseeSessionGrant oseeSessionGrant = sessionManager.createSession(credential);
+      // TODO Decrypt credential info
+      OseeCredential credential = OseeCredential.fromXml(new ByteArrayInputStream(bytes));
+      OseeSessionGrant oseeSessionGrant = sessionManager.createSession(credential);
 
-         response.setStatus(HttpServletResponse.SC_ACCEPTED);
-         ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
-         oseeSessionGrant.write(byteOutputStream);
+      response.setStatus(HttpServletResponse.SC_ACCEPTED);
+      ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
+      oseeSessionGrant.write(byteOutputStream);
 
-         // TODO after encrypted these will need to change
-         response.setContentType("application/xml");
-         response.setCharacterEncoding("UTF-8");
-         response.setContentLength(byteOutputStream.size());
-         Lib.inputStreamToOutputStream(new ByteArrayInputStream(byteOutputStream.toByteArray()),
-            response.getOutputStream());
-
-      } catch (IOException ex) {
-         OseeExceptions.wrapAndThrow(ex);
-      } finally {
-         try {
-            response.getOutputStream().flush();
-         } catch (IOException ex) {
-            OseeExceptions.wrapAndThrow(ex);
-         }
-      }
+      // TODO after encrypted these will need to change
+      response.setContentType("application/xml");
+      response.setCharacterEncoding("UTF-8");
+      response.setContentLength(byteOutputStream.size());
+      Lib.inputStreamToOutputStream(new ByteArrayInputStream(byteOutputStream.toByteArray()),
+         response.getOutputStream());
    }
 
-   private void releaseSession(HttpServletRequest request, HttpServletResponse response) throws OseeCoreException {
-      try {
-         String sessionId = request.getParameter("sessionId");
-         sessionManager.releaseSession(sessionId);
-         response.setStatus(HttpServletResponse.SC_ACCEPTED);
-         response.setContentType("text/plain");
-         response.getWriter().write(String.format("Session [%s] released.", sessionId));
-      } catch (IOException ex) {
-         OseeExceptions.wrapAndThrow(ex);
-      } finally {
-         try {
-            response.getWriter().flush();
-            response.getWriter().close();
-         } catch (IOException ex) {
-            OseeExceptions.wrapAndThrow(ex);
-         }
-      }
+   private void releaseSession(HttpServletRequest request, HttpServletResponse response) throws Exception {
+      String sessionId = request.getParameter("sessionId");
+      sessionManager.releaseSession(sessionId);
+      response.setStatus(HttpServletResponse.SC_ACCEPTED);
+      response.setContentType("text/plain");
+      response.getWriter().write(String.format("Session [%s] released.", sessionId));
    }
 }
