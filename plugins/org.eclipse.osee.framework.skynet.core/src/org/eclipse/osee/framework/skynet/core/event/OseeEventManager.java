@@ -44,6 +44,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.systems.EventManagerData;
 import org.eclipse.osee.framework.skynet.core.event.systems.InternalEventManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 
 /**
  * Front end to OSEE events. Provides ability to add and remove different event listeners as well as the ability to kick
@@ -156,7 +157,9 @@ public class OseeEventManager {
       if (isDisableEvents()) {
          return;
       }
-      getEventManager().kickLocalRemEvent(createSender(source), remoteEventServiceEventType);
+      if (!DbUtil.isDbInit()) {
+         getEventManager().kickLocalRemEvent(createSender(source), remoteEventServiceEventType);
+      }
    }
 
    // Kick LOCAL and REMOTE broadcast event
