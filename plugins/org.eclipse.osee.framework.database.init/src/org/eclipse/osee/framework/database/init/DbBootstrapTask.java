@@ -33,7 +33,6 @@ import org.eclipse.osee.framework.core.util.HttpProcessor.AcquireResult;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.init.internal.DatabaseInitActivator;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -49,7 +48,7 @@ public class DbBootstrapTask implements IDbInitializationTask {
    public void run() throws OseeCoreException {
       Conditions.checkNotNull(configuration, "DbInitConfiguration Info");
 
-      DbUtil.setDbInit(true);
+      OseeClientProperties.setInDbInit(true);
 
       createOseeDatastore();
 

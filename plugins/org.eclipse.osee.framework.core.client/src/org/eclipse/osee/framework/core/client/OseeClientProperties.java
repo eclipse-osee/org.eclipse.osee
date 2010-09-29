@@ -48,6 +48,8 @@ public class OseeClientProperties extends OseeProperties {
    private static final String OSEE_PROMPT_ON_DB_INIT = "osee.prompt.on.db.init";
    private static final String OSEE_CHOICE_ON_DB_INIT = "osee.choice.on.db.init";
 
+   private static final String OSEE_IS_IN_DB_INIT = "osee.is.in.db.init";
+
    private enum InitializerFlag {
       overwrite_settings,
       client_defaults;
@@ -75,6 +77,14 @@ public class OseeClientProperties extends OseeProperties {
       this.defaultProperties = new Properties();
       this.overwriteProperties = new Properties();
       initialize();
+   }
+
+   public static boolean isInDbInit() {
+      return Boolean.valueOf(getProperty(OSEE_IS_IN_DB_INIT));
+   }
+
+   public static void setInDbInit(boolean value) {
+      System.setProperty(OSEE_IS_IN_DB_INIT, Boolean.toString(value));
    }
 
    //   /**

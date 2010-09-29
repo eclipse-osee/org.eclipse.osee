@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.utility;
 
 import java.util.Collection;
 import java.util.Map;
+import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 
@@ -19,7 +20,6 @@ import org.eclipse.osee.framework.database.core.ConnectionHandler;
  * @author Donald G. Dunne
  */
 public final class DbUtil {
-   private static boolean isInDbInit;
 
    private DbUtil() {
       // Utility Class - class should only have static methods
@@ -36,10 +36,7 @@ public final class DbUtil {
    }
 
    public static boolean isDbInit() {
-      return isInDbInit;
+      return OseeClientProperties.isInDbInit();
    }
 
-   public static void setDbInit(boolean isInDbInit) {
-      DbUtil.isInDbInit = isInDbInit;
-   }
 }
