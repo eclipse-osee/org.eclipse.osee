@@ -6,6 +6,7 @@ plugin@org.apache.commons.lang,2.4.0=GET,http://download.eclipse.org/tools/orbit
 plugin@org.apache.commons.logging,1.1.1=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.apache.commons.logging_1.1.1.v201005080502.jar
 plugin@org.apache.commons.net,2.0.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.apache.commons.net_2.0.0.v200905272248.jar
 
+plugin@org.h2,1.1.117=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.h2_1.1.117.v20091003-1000.jar
 plugin@org.apache.derby,10.5.1=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.apache.derby_10.5.1.1_201005192117.jar
 plugin@org.apache.oro,2.0.8=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.apache.oro_2.0.8.v201005080400.jar
 plugin@org.apache.xerces,2.9.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20100519200754/bundles/org.apache.xerces_2.9.0.v201005080400.jar
