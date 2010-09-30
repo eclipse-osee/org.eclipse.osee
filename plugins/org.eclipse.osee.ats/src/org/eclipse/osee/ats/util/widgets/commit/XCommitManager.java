@@ -400,6 +400,9 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IBranchE
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
+            if (xCommitManager == null || !Widgets.isAccessible(xCommitManager.getTree())) {
+               return;
+            }
             if (branchEvent.getEventType() == BranchEventType.MergeConflictResolved) {
                xCommitManager.refresh();
                refresh();
