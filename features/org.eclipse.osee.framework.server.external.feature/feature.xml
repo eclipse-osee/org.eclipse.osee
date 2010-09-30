@@ -37,6 +37,7 @@
       <import plugin="com.google.inject" version="2.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.emf.ecore" version="2.5.0" match="greaterOrEqual"/>
       <import plugin="org.antlr.runtime" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.h2" version="1.1.117" match="greaterOrEqual" />
    </requires>
 
    <plugin

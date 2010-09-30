@@ -10,8 +10,6 @@ Import-Package:
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.logging,
  org.h2,
- org.h2.jdbc,
- org.h2.server,
  org.h2.tools,
  org.h2.util,
  org.osgi.framework
