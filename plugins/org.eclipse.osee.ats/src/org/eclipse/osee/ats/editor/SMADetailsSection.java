@@ -12,13 +12,16 @@ package org.eclipse.osee.ats.editor;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.framework.core.data.AccessContextId;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.services.CmAccessControl;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.swt.Widgets;
@@ -104,7 +107,14 @@ public class SMADetailsSection extends SectionPart {
          details.put("Parent Team Workflow Id", workflow.getParentTeamWorkflow().getHumanReadableId());
       }
       if (workflow.isOfType(AtsArtifactTypes.TeamWorkflow)) {
-         String message = null;
+         details.put("Access Context Id", getAccessContextId(workflow));
+      }
+      return details;
+   }
+
+   private String getAccessContextId(AbstractWorkflowArtifact workflow) {
+      String message = null;
+      try {
          CmAccessControl accessControl = workflow.getAccessControl();
          if (accessControl == null) {
             message = "AtsCmAccessControlService not started";
@@ -112,9 +122,11 @@ public class SMADetailsSection extends SectionPart {
             Collection<? extends AccessContextId> ids = accessControl.getContextId(UserManager.getUser(), this);
             message = ids.toString();
          }
-         details.put("Access Context Id", message);
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         message = String.format("Error getting context id [%s]", ex.getMessage());
       }
-      return details;
+      return message;
    }
 
    @Override

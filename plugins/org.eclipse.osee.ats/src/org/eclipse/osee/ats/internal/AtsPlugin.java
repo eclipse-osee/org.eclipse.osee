@@ -70,6 +70,9 @@ public class AtsPlugin implements BundleActivator {
    }
 
    public CmAccessControl getCmService() {
+      if (cmAccessHandler == null) {
+         return null;
+      }
       return cmAccessHandler.getCmService();
    }
 
