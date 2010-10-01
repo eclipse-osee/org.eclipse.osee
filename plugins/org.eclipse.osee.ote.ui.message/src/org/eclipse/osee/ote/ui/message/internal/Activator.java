@@ -21,7 +21,7 @@ public class Activator extends OseeUiActivator {
    public static final String PLUGIN_ID = "org.eclipse.osee.ote.ui.message";
    private ServiceTracker oteClientServiceTracker;
 
-   protected Activator() {
+   public Activator() {
       super(PLUGIN_ID);
    }
 
