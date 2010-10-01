@@ -53,7 +53,7 @@ public class NoteItemTest {
       NoteItem item = getTestNoteItem(date);
 
       Assert.assertEquals(
-         "Note: Comment from Dunne, Donald G for \"Implement\" on " + DateUtil.getMMDDYYHHMM(date) + " - my msg",
+         "Note: Comment from " + UserManager.getUser().getName() + " for \"Implement\" on " + DateUtil.getMMDDYYHHMM(date) + " - my msg",
          item.toString());
    }
 
@@ -89,7 +89,7 @@ public class NoteItemTest {
       NoteItem item = getTestNoteItem(date);
 
       Assert.assertEquals(
-         "<b>Note:</b>Comment from Dunne, Donald G for \"Implement\" on " + DateUtil.getMMDDYYHHMM(date) + " - my msg",
+         "<b>Note:</b>Comment from " + UserManager.getUser().getName() + " for \"Implement\" on " + DateUtil.getMMDDYYHHMM(date) + " - my msg",
          item.toHTML());
    }
 

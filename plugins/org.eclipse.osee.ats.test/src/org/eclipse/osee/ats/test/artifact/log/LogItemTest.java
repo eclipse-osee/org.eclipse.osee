@@ -63,7 +63,8 @@ public class LogItemTest {
       Date date = new Date();
       LogItem item = getTestLogItem(date);
 
-      Assert.assertEquals("my msg (Error)from Analyze by Dunne, Donald G on " + DateUtil.getMMDDYYHHMM(date),
+      Assert.assertEquals(
+         "my msg (Error)from Analyze by " + UserManager.getUser().getName() + " on " + DateUtil.getMMDDYYHHMM(date),
          item.toString());
    }
 
@@ -72,7 +73,8 @@ public class LogItemTest {
       Date date = new Date();
       LogItem item = getTestLogItem(date);
 
-      Assert.assertEquals("NOTE (Error): my msg (Dunne, Donald G)", item.toHTML(AHTML.LABEL_FONT));
+      Assert.assertEquals("NOTE (Error): my msg (" + UserManager.getUser().getName() + ")",
+         item.toHTML(AHTML.LABEL_FONT));
    }
 
 }
