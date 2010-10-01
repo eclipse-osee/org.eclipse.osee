@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -66,9 +67,8 @@ public class RelationOrderMergeUtility {
 
    private static List<String> mergeTypeSideOrder(Artifact left, Artifact right, IRelationEnumeration rts) throws OseeCoreException {
       RelationOrderMerger<String> merger = new RelationOrderMerger<String>();
-      boolean includeDeleted = false;
-      List<String> leftRelatives = getGuidList(left.getRelatedArtifacts(rts, includeDeleted));
-      List<String> rightRelatives = getGuidList(right.getRelatedArtifacts(rts, includeDeleted));
+      List<String> leftRelatives = getGuidList(left.getRelatedArtifacts(rts, DeletionFlag.EXCLUDE_DELETED));
+      List<String> rightRelatives = getGuidList(right.getRelatedArtifacts(rts, DeletionFlag.EXCLUDE_DELETED));
       Collection<String> mergedSet = getMergedSet(left, right, rts);
 
       return merger.computeMergedOrder(leftRelatives, rightRelatives, mergedSet);
@@ -77,9 +77,10 @@ public class RelationOrderMergeUtility {
    private static Collection<String> getMergedSet(Artifact left, Artifact right, IRelationEnumeration relationTypeSide) throws OseeCoreException {
       Collection<String> mergedSet = new HashSet<String>();
       Collection<String> deleted = new HashSet<String>();
-      boolean includeDeleted = false;
-      List<String> leftRelatives = getGuidList(left.getRelatedArtifacts(relationTypeSide, includeDeleted));
-      List<String> rightRelatives = getGuidList(right.getRelatedArtifacts(relationTypeSide, includeDeleted));
+      List<String> leftRelatives =
+         getGuidList(left.getRelatedArtifacts(relationTypeSide, DeletionFlag.EXCLUDE_DELETED));
+      List<String> rightRelatives =
+         getGuidList(right.getRelatedArtifacts(relationTypeSide, DeletionFlag.EXCLUDE_DELETED));
 
       deleted.addAll(getDeleted(left, relationTypeSide));
       deleted.addAll(getDeleted(right, relationTypeSide));
@@ -101,9 +102,8 @@ public class RelationOrderMergeUtility {
    private static Collection<String> getDeleted(Artifact art, IRelationEnumeration rts) throws OseeCoreException {
       Collection<String> toReturn = new HashSet<String>();
       RelationType type = RelationTypeManager.getType(rts);
-      final boolean includeDeleted = true;
 
-      for (RelationLink link : art.getRelationsAll(includeDeleted)) {
+      for (RelationLink link : art.getRelationsAll(DeletionFlag.INCLUDE_DELETED)) {
          if (link.isOfType(type) && link.isDeleted()) {
             if (link.getOppositeSide(art).equals(rts.getSide())) {
                toReturn.add(link.getArtifactOnOtherSide(art).getGuid());
@@ -111,7 +111,7 @@ public class RelationOrderMergeUtility {
          }
       }
 
-      for (Artifact relative : art.getRelatedArtifacts(rts, includeDeleted)) {
+      for (Artifact relative : art.getRelatedArtifacts(rts, DeletionFlag.INCLUDE_DELETED)) {
          if (relative.isDeleted()) {
             toReturn.add(relative.getGuid());
          }

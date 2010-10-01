@@ -19,14 +19,15 @@ import java.util.List;
 import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
+import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidRelationReorder;
 import org.eclipse.osee.framework.core.model.event.RelationOrderModType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
@@ -71,7 +72,7 @@ public class RelationOrderData {
       return entries;
    }
 
-   public List<String> getOrderList(RelationType type, RelationSide side) throws OseeCoreException {
+   public List<String> getOrderList(IRelationType type, RelationSide side) throws OseeCoreException {
       Pair<String, List<String>> currentOrder = getTypeSideEntry(type, side);
       return currentOrder != null ? currentOrder.getSecond() : new ArrayList<String>();
    }
@@ -81,17 +82,13 @@ public class RelationOrderData {
       return currentOrder != null ? currentOrder.getFirst() : type.getDefaultOrderTypeGuid();
    }
 
-   private Pair<String, List<String>> getTypeSideEntry(RelationType type, RelationSide side) throws OseeCoreException {
-      if (type == null) {
-         throw new OseeArgumentException("Relation Type cannot be null");
-      }
-      if (side == null) {
-         throw new OseeArgumentException("Relation Type cannot be null");
-      }
+   private Pair<String, List<String>> getTypeSideEntry(IRelationType type, RelationSide side) throws OseeCoreException {
+      Conditions.checkNotNull(type, "relationType");
+      Conditions.checkNotNull(side, "relationSide");
       return lists.get(type.getName(), side.name());
    }
 
-   public void addOrderList(RelationType type, RelationSide side, IRelationSorterId sorterId, List<String> guidList) {
+   public void addOrderList(IRelationType type, RelationSide side, IRelationSorterId sorterId, List<String> guidList) {
       addOrderList(type.getName(), side.name(), sorterId.getGuid(), guidList);
    }
 
@@ -99,13 +96,9 @@ public class RelationOrderData {
       lists.put(relationType, relationSide, new Pair<String, List<String>>(sorterGuid, guidList));
    }
 
-   public void removeOrderList(RelationType type, RelationSide side) throws OseeCoreException {
-      if (type == null) {
-         throw new OseeArgumentException("Relation Type cannot be null");
-      }
-      if (side == null) {
-         throw new OseeArgumentException("Relation Type cannot be null");
-      }
+   public void removeOrderList(IRelationType type, RelationSide side) throws OseeCoreException {
+      Conditions.checkNotNull(type, "relationType");
+      Conditions.checkNotNull(side, "relationSide");
       lists.remove(type.getName(), side.name());
    }
 
@@ -151,7 +144,7 @@ public class RelationOrderData {
       return sorterId.getGuid().equals(defaultOrderGuid) && isDifferentSorterId(type, side, sorterId);
    }
 
-   protected boolean isRelativeOrderChange(RelationType type, RelationSide side, IRelationSorterId sorterId, List<String> relativeSequence) throws OseeCoreException {
+   protected boolean isRelativeOrderChange(IRelationType type, RelationSide side, IRelationSorterId sorterId, List<String> relativeSequence) throws OseeCoreException {
       return sorterId.equals(RelationOrderBaseTypes.USER_DEFINED) && !relativeSequence.equals(getOrderList(type, side));
    }
 

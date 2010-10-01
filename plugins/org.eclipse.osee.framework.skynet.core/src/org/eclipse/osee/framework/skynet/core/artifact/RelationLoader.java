@@ -21,14 +21,15 @@ import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeSql;
-import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
+import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 
 /**
  * @author Ryan Schmitt
  */
 class RelationLoader {
-   static void loadRelationData(int queryId, Collection<Artifact> artifacts, boolean historical, LoadLevel loadLevel) throws OseeCoreException {
+
+   public static void loadRelationData(int joinQueryId, Collection<Artifact> artifacts, boolean historical, LoadLevel loadLevel) throws OseeCoreException {
       if (loadLevel == SHALLOW || loadLevel == ATTRIBUTE) {
          return;
       }
@@ -38,20 +39,21 @@ class RelationLoader {
       }
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
-         chStmt.runPreparedQuery(artifacts.size() * 8, ClientSessionManager.getSql(OseeSql.LOAD_RELATIONS), queryId);
+         String sqlQuery = ClientSessionManager.getSql(OseeSql.LOAD_RELATIONS);
+         chStmt.runPreparedQuery(artifacts.size() * 8, sqlQuery, joinQueryId);
          while (chStmt.next()) {
             int relationId = chStmt.getInt("rel_link_id");
             int aArtifactId = chStmt.getInt("a_art_id");
             int bArtifactId = chStmt.getInt("b_art_id");
-            Branch aBranch = BranchManager.getBranch(chStmt.getInt("branch_id"));
-            Branch bBranch = aBranch; // TODO these branch ids need to come from the relation link table
+            Branch branch = BranchManager.getBranch(chStmt.getInt("branch_id"));
             RelationType relationType = RelationTypeManager.getType(chStmt.getInt("rel_link_type_id"));
 
             int gammaId = chStmt.getInt("gamma_id");
             String rationale = chStmt.getString("rationale");
+            ModificationType modificationType = ModificationType.getMod(chStmt.getInt("mod_type"));
 
-            RelationLink.getOrCreate(aArtifactId, bArtifactId, aBranch, bBranch, relationType, relationId, gammaId,
-               rationale, ModificationType.getMod(chStmt.getInt("mod_type")));
+            RelationManager.getOrCreate(aArtifactId, bArtifactId, branch, relationType, relationId, gammaId, rationale,
+               modificationType);
          }
       } finally {
          chStmt.close();

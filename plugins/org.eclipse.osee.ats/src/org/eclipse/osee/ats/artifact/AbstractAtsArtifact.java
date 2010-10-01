@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.ats.util.Overview;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
@@ -46,7 +47,7 @@ public abstract class AbstractAtsArtifact extends Artifact implements IATSArtifa
 
    private List<Artifact> getBSideArtifacts() throws OseeCoreException {
       List<Artifact> sideBArtifacts = new ArrayList<Artifact>();
-      List<RelationLink> relatives = getRelationsAll(false);
+      List<RelationLink> relatives = getRelationsAll(DeletionFlag.EXCLUDE_DELETED);
       for (RelationLink link : relatives) {
          Artifact sideB = link.getArtifactB();
          if (!sideB.equals(this)) {

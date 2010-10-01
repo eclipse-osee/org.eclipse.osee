@@ -264,8 +264,9 @@ public final class SkynetTransaction extends AbstractOperation {
       ModificationType modificationType;
       RelationEventType relationEventType; // needed until persist undeleted modtypes and modified == rational only change
 
-      Artifact aArtifact = ArtifactCache.getActive(link.getAArtifactId(), link.getABranch());
-      Artifact bArtifact = ArtifactCache.getActive(link.getBArtifactId(), link.getBBranch());
+      Branch branch = link.getBranch();
+      Artifact aArtifact = ArtifactCache.getActive(link.getAArtifactId(), branch);
+      Artifact bArtifact = ArtifactCache.getActive(link.getBArtifactId(), branch);
       if (link.isInDb()) {
          if (link.isUnDeleted()) {
             modificationType = ModificationType.MODIFIED; // Temporary until UNDELETED persisted to DB

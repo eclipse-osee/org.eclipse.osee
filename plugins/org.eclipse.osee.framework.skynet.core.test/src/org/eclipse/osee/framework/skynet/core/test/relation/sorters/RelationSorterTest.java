@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Random;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
@@ -24,7 +23,7 @@ import org.eclipse.osee.framework.skynet.core.relation.sorters.LexicographicalRe
 import org.eclipse.osee.framework.skynet.core.relation.sorters.LexicographicalRelationSorter.SortMode;
 import org.eclipse.osee.framework.skynet.core.relation.sorters.UnorderedRelationSorter;
 import org.eclipse.osee.framework.skynet.core.relation.sorters.UserDefinedRelationSorter;
-import org.eclipse.osee.framework.skynet.core.test.types.MockIArtifact;
+import org.eclipse.osee.framework.skynet.core.test.mocks.DataFactory;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.junit.Test;
@@ -37,7 +36,6 @@ import org.junit.runners.Parameterized.Parameters;
  */
 @RunWith(Parameterized.class)
 public class RelationSorterTest {
-   private final static Random randomGenerator = new Random();
 
    private final String message;
    private final IRelationSorter sorter;
@@ -93,10 +91,10 @@ public class RelationSorterTest {
    }
 
    private static Object[] createUnorderedSortTest(String... names) {
-      IArtifact art1 = createArtifact(names[0], GUID.create());
-      IArtifact art2 = createArtifact(names[1], GUID.create());
-      IArtifact art3 = createArtifact(names[2], GUID.create());
-      IArtifact art4 = createArtifact(names[3], GUID.create());
+      IArtifact art1 = DataFactory.createArtifact(names[0], GUID.create());
+      IArtifact art2 = DataFactory.createArtifact(names[1], GUID.create());
+      IArtifact art3 = DataFactory.createArtifact(names[2], GUID.create());
+      IArtifact art4 = DataFactory.createArtifact(names[3], GUID.create());
 
       List<IArtifact> artifacts = Arrays.asList(art1, art2, art3, art4);
       return new Object[] {
@@ -109,10 +107,10 @@ public class RelationSorterTest {
    }
 
    private static Object[] createLexicographicalTest(SortMode mode, String... names) {
-      IArtifact art1 = createArtifact(names[0], GUID.create());
-      IArtifact art2 = createArtifact(names[1], GUID.create());
-      IArtifact art3 = createArtifact(names[2], GUID.create());
-      IArtifact art4 = createArtifact(names[3], GUID.create());
+      IArtifact art1 = DataFactory.createArtifact(names[0], GUID.create());
+      IArtifact art2 = DataFactory.createArtifact(names[1], GUID.create());
+      IArtifact art3 = DataFactory.createArtifact(names[2], GUID.create());
+      IArtifact art4 = DataFactory.createArtifact(names[3], GUID.create());
 
       IRelationSorterId orderId =
          mode == SortMode.ASCENDING ? RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC : RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC;
@@ -129,10 +127,10 @@ public class RelationSorterTest {
    }
 
    private static Object[] getTestUserDefined(String... names) {
-      IArtifact art1 = createArtifact(names[0], GUID.create());
-      IArtifact art2 = createArtifact(names[1], GUID.create());
-      IArtifact art3 = createArtifact(names[2], GUID.create());
-      IArtifact art4 = createArtifact(names[3], GUID.create());
+      IArtifact art1 = DataFactory.createArtifact(names[0], GUID.create());
+      IArtifact art2 = DataFactory.createArtifact(names[1], GUID.create());
+      IArtifact art3 = DataFactory.createArtifact(names[2], GUID.create());
+      IArtifact art4 = DataFactory.createArtifact(names[3], GUID.create());
 
       List<IArtifact> itemsToOrder = Arrays.asList(art2, art1, art3, art4);
       List<IArtifact> expectedOrder = Arrays.asList(art1, art2, art3, art4);
@@ -146,8 +144,4 @@ public class RelationSorterTest {
          expectedOrder};
    }
 
-   private static IArtifact createArtifact(String name, String guid) {
-      int uniqueId = randomGenerator.nextInt();
-      return new MockIArtifact(uniqueId, name, guid, null, null);
-   }
 }

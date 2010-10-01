@@ -14,7 +14,9 @@ import java.util.logging.Level;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSideSorter;
 import org.eclipse.swt.widgets.Item;
@@ -48,15 +50,8 @@ public class RelationCellModifier implements ICellModifier {
    @Override
    public Object getValue(Object element, String property) {
       WrapperForRelationLink relLink = (WrapperForRelationLink) element;
-      String rationale = "";
-      try {
-         rationale =
-            RelationManager.getRelationRationale(relLink.getArtifactA(), relLink.getArtifactB(),
-               relLink.getRelationType());
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-      }
-      return rationale;
+      RelationLink link = getRelationLink(relLink);
+      return link != null ? link.getRationale() : Strings.emptyString();
    }
 
    @Override
@@ -66,12 +61,20 @@ public class RelationCellModifier implements ICellModifier {
          element = ((Item) element).getData();
       }
       WrapperForRelationLink relLink = (WrapperForRelationLink) element;
+      RelationLink link = getRelationLink(relLink);
+      if (link != null) {
+         link.setRationale(value.toString());
+      }
+      treeViewer.update(element, null);
+   }
+
+   private RelationLink getRelationLink(WrapperForRelationLink relLink) {
       try {
-         RelationManager.setRelationRationale(relLink.getArtifactA(), relLink.getArtifactB(),
-            relLink.getRelationType(), value.toString());
+         return RelationManager.getRelationLink(relLink.getArtifactA(), relLink.getArtifactB(),
+            relLink.getRelationType());
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
-      treeViewer.update(element, null);
+      return null;
    }
 }

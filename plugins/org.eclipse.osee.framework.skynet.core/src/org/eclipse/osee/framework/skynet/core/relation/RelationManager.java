@@ -12,6 +12,8 @@ package org.eclipse.osee.framework.skynet.core.relation;
 
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
+import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_A;
+import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_B;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -21,6 +23,7 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
+import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -32,17 +35,17 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.RelationType;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactKey;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.relation.RelationLink.ArtifactLinker;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderFactory;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationSorterProvider;
@@ -53,129 +56,22 @@ import org.eclipse.osee.framework.skynet.core.types.IArtifact;
  * @author Ryan D. Brooks
  */
 public class RelationManager {
-   // Indexed by ArtifactKey so that map does not hold strong reference to artifact which allows it to be garbage collected
-   // the branch is accounted for because artifact key includes the branch id
-   private static final CompositeKeyHashMap<ArtifactKey, RelationType, List<RelationLink>> relationsByType =
-      new CompositeKeyHashMap<ArtifactKey, RelationType, List<RelationLink>>(1024, true);
 
    private static final String GET_DELETED_ARTIFACT =
       "SELECT DISTINCT %s_art_id, txs.branch_id FROM osee_txs txs, osee_relation_link rel WHERE txs.branch_id = ? AND txs.gamma_id = rel.gamma_id AND rel.rel_link_type_id = ? AND %s_art_id = ? AND txs.tx_current in (2,3)";
 
-   private static RelationSorterProvider relationSorterProvider = new RelationSorterProvider();
-   private static RelationOrderFactory relationOrderFactory = new RelationOrderFactory();
+   private static final RelationSorterProvider relationSorterProvider = new RelationSorterProvider();
+   private static final RelationOrderFactory relationOrderFactory = new RelationOrderFactory();
 
-   private static final ThreadLocal<ArtifactKey> threadLocalKey = new ThreadLocal<ArtifactKey>() {
-
-      @Override
-      protected ArtifactKey initialValue() {
-         return new ArtifactKey(0, 0);
-      }
-   };
-
-   private static RelationLink getLoadedRelation(Artifact artifact, int aArtifactId, int bArtifactId, RelationType relationType, boolean includeDeleted) {
-      List<RelationLink> selectedRelations =
-         getLoadedRelations(artifact.getArtId(), artifact.getBranch().getId(), relationType, includeDeleted);
-      Set<RelationLink> relations = new HashSet<RelationLink>();
-      if (selectedRelations != null) {
-         for (RelationLink relation : selectedRelations) {
-            if ((includeDeleted || !relation.isDeleted()) && relation.getAArtifactId() == aArtifactId && relation.getBArtifactId() == bArtifactId) {
-               relations.add(relation);
-            }
-         }
-      }
-      if (relations.isEmpty()) {
-         return null;
-      }
-      if (relations.size() > 1) {
-         OseeLog.log(
-            Activator.class,
-            Level.SEVERE,
-            String.format("Artifact A [%s] has [%d] relations of same type [%s] to Artifact B [%s]",
-               artifact.getArtId(), relations.size(), relationType, bArtifactId));
-      }
-      return relations.iterator().next();
-   }
-
-   private static List<RelationLink> getLoadedRelations(int artifactId, int branchId, RelationType relationType, boolean includeDeleted) {
-      List<RelationLink> selectedRelations =
-         relationsByType.get(threadLocalKey.get().getKey(artifactId, branchId), relationType);
-      List<RelationLink> relations = new ArrayList<RelationLink>();
-      if (selectedRelations != null) {
-         for (RelationLink relation : selectedRelations) {
-            if ((includeDeleted || !relation.isDeleted()) && (relation.getAArtifactId() == artifactId || relation.getBArtifactId() == artifactId)) {
-               relations.add(relation);
-            }
-         }
-      }
-      return relations;
-   }
-
-   /**
-    * @return Returns all cached relations including deleted relations
-    */
-   private static RelationLink getLoadedRelation(Artifact artifact, int aArtifactId, int bArtifactId, RelationType relationType) throws OseeArgumentException {
-      RelationLink relationLink = getLoadedRelation(artifact, aArtifactId, bArtifactId, relationType, false);
-
-      if (relationLink == null) {
-         throw new OseeArgumentException(
-            "A relation link of type [%s] does exist in the cache between a artifact %d and b artifact %d",
-            relationType, aArtifactId, bArtifactId);
-      }
-
-      return relationLink;
-   }
-
-   public static RelationLink getLoadedRelationById(int relLinkId, int aArtifactId, int bArtifactId, Branch aBranch, Branch bBranch) {
-      RelationLink relation = null;
-      for (RelationLink link : getRelationsAll(aArtifactId, aBranch.getId(), true)) {
-         if (link.getId() == relLinkId) {
-            relation = link;
-            break;
-         }
-      }
-      for (RelationLink link : getRelationsAll(bArtifactId, bBranch.getId(), true)) {
-         if (link.getId() == relLinkId) {
-            relation = link;
-            break;
-         }
-      }
-      return relation;
-   }
-
-   public static RelationLink getLoadedRelation(RelationType relationType, int aArtifactId, int bArtifactId, Branch aBranch, Branch bBranch) {
-      RelationLink relation = null;
-      List<RelationLink> relations = getLoadedRelations(aArtifactId, aBranch.getId(), relationType, true);
-      for (RelationLink rel : relations) {
-         if (rel.getBArtifactId() == bArtifactId) {
-            relation = rel;
-            break;
-         }
-      }
-
-      if (relation == null) {
-         relations = getLoadedRelations(bArtifactId, bBranch.getId(), relationType, true);
-         for (RelationLink rel : relations) {
-            if (rel.getAArtifactId() == aArtifactId) {
-               relation = rel;
-               break;
-            }
-         }
-      }
-      return relation;
-   }
+   private static final RelationCache relationCache = new RelationCache();
 
    /**
     * Store the newly instantiated relation from the perspective of relationSide in its appropriate order
     */
    public static void manageRelation(RelationLink newRelation, RelationSide relationSide) {
-      if (RelationLink.isRelationUnderTest() && newRelation.getId() == RelationLink.RELATION_ID_UNDER_TEST) {
-         System.out.println("RelationManager.manageRelation relationId == " + RelationLink.RELATION_ID_UNDER_TEST + " for side " + relationSide);
-      }
-      Artifact artifact =
-         ArtifactCache.getActive(newRelation.getArtifactId(relationSide), newRelation.getBranch(relationSide));
+      Artifact artifact = ArtifactCache.getActive(newRelation.getArtifactId(relationSide), newRelation.getBranch());
       if (artifact != null) {
-         List<RelationLink> artifactsRelations =
-            getFlattenedList(relationsByType.getValues(threadLocalKey.get().getKey(artifact)));
+         List<RelationLink> artifactsRelations = relationCache.getAll(artifact);
          if (artifactsRelations == null) {
             artifactsRelations = new CopyOnWriteArrayList<RelationLink>();
          }
@@ -199,54 +95,28 @@ public class RelationManager {
          }
 
          artifactsRelations.add(newRelation);
-
-         List<RelationLink> selectedRelations =
-            relationsByType.get(threadLocalKey.get().getKey(artifact), newRelation.getRelationType());
-         if (selectedRelations == null) {
-            selectedRelations = new CopyOnWriteArrayList<RelationLink>();
-            relationsByType.put(new ArtifactKey(artifact), newRelation.getRelationType(), selectedRelations);
-         }
-         if (selectedRelations.contains(newRelation)) {
-            OseeLog.log(Activator.class, Level.SEVERE, String.format(
-               "Duplicate relationByType objects for same relation for Relation [%s] Artifact (%s)[%s]", newRelation,
-               artifact.getArtId(), artifact.getName()));
-         }
-         selectedRelations.add(newRelation);
+         relationCache.cache(artifact, newRelation);
       }
    }
 
-   private static List<RelationLink> getFlattenedList(List<List<RelationLink>> values) {
-      if (values == null) {
-         return Collections.emptyList();
-      }
-      List<RelationLink> links = new ArrayList<RelationLink>();
-
-      for (List<RelationLink> valueLinks : values) {
-         for (RelationLink link : valueLinks) {
-            links.add(link);
-         }
-      }
-      return links;
-   }
-
-   private static List<Artifact> getRelatedArtifactsUnSorted(Artifact artifact, RelationType relationType, RelationSide relationSide) throws OseeCoreException {
+   private static List<Artifact> getRelatedArtifactsUnSorted(Artifact artifact, IRelationType relationType, RelationSide relationSide) throws OseeCoreException {
       return getRelatedArtifacts(artifact, relationType, relationSide, false);
    }
 
-   private static List<Artifact> getRelatedArtifacts(Artifact artifact, RelationType relationType, RelationSide relationSide) throws OseeCoreException {
+   private static List<Artifact> getRelatedArtifacts(Artifact artifact, IRelationType relationType, RelationSide relationSide) throws OseeCoreException {
       return getRelatedArtifacts(artifact, relationType, relationSide, true);
    }
 
    @SuppressWarnings("unused")
-   private static List<Artifact> getRelatedArtifacts(Artifact artifact, RelationType relationType, RelationSide relationSide, boolean sort) throws OseeCoreException {
+   private static List<Artifact> getRelatedArtifacts(Artifact artifact, IRelationType relationTypeToken, RelationSide relationSide, boolean sort) throws OseeCoreException {
       if (relationSide == null) {
          throw new OseeArgumentException("RelationSide cannot be null");
       }
       List<RelationLink> selectedRelations = null;
-      if (relationType == null) {
-         selectedRelations = getFlattenedList(relationsByType.getValues(threadLocalKey.get().getKey(artifact)));
+      if (relationTypeToken == null) {
+         selectedRelations = relationCache.getAll(artifact);
       } else {
-         selectedRelations = relationsByType.get(threadLocalKey.get().getKey(artifact), relationType);
+         selectedRelations = relationCache.getAllByType(artifact, relationTypeToken);
       }
 
       if (selectedRelations == null) {
@@ -272,6 +142,7 @@ public class RelationManager {
          }
       }
       if (sort) {
+         RelationType relationType = RelationTypeManager.getType(relationTypeToken);
          sort(artifact, relationType, relationSide, relatedArtifacts);
       }
       return relatedArtifacts;
@@ -312,7 +183,8 @@ public class RelationManager {
                 * since getting relations by type will return the link between this artifact and it's parent, make sure
                 * not to put it in the list of selected relations
                 */
-               for (RelationLink rel : getFlattenedList(relationsByType.getValues(threadLocalKey.get().getKey(artifact)))) {
+               List<RelationLink> relations = relationCache.getAll(artifact);
+               for (RelationLink rel : relations) {
                   if (!rel.getArtifactA().equals(artifact)) {
                      selectedRelations.add(rel);
                   }
@@ -321,8 +193,7 @@ public class RelationManager {
             } else {
                for (IRelationEnumeration relationEnum : relationEnums) {
                   Collection<RelationLink> links =
-                     relationsByType.get(threadLocalKey.get().getKey(artifact),
-                        RelationTypeManager.getType(relationEnum));
+                     relationCache.getAllByType(artifact, RelationTypeManager.getType(relationEnum));
                   if (links != null) {
                      for (RelationLink rel : links) {
                         /**
@@ -350,12 +221,12 @@ public class RelationManager {
       return relatedArtifacts;
    }
 
-   public static List<Artifact> getRelatedArtifacts(Artifact artifact, IRelationEnumeration relationEnum, boolean includeDeleted) throws OseeCoreException {
+   public static List<Artifact> getRelatedArtifacts(Artifact artifact, IRelationEnumeration relationEnum, DeletionFlag deletionFlag) throws OseeCoreException {
       RelationType relationType = RelationTypeManager.getType(relationEnum);
       List<Artifact> artifacts = getRelatedArtifacts(artifact, relationType, relationEnum.getSide());
       Collection<Integer> artIds = new ArrayList<Integer>();
 
-      if (includeDeleted) {
+      if (deletionFlag.areDeletedAllowed()) {
          Object[] formatArgs = relationEnum.getSide().isSideA() ? new Object[] {"a", "b"} : new Object[] {"b", "a"};
          IOseeStatement chStmt = ConnectionHandler.getStatement();
          try {
@@ -416,8 +287,8 @@ public class RelationManager {
          relationTypeEnum.getSide());
    }
 
-   public static int getRelatedArtifactsCount(Artifact artifact, RelationType relationType, RelationSide relationSide) {
-      List<RelationLink> selectedRelations = relationsByType.get(threadLocalKey.get().getKey(artifact), relationType);
+   public static int getRelatedArtifactsCount(Artifact artifact, IRelationType relationType, RelationSide relationSide) {
+      List<RelationLink> selectedRelations = relationCache.getAllByType(artifact, relationType);
 
       int artifactCount = 0;
       if (selectedRelations != null) {
@@ -443,16 +314,12 @@ public class RelationManager {
       // weakness:  references held to links by other applications will continue to exist.
       //We do not want to drop relation links for historical artifacts because the relation manager will clobber the current artifacts relations.
       if (!artifact.isHistorical()) {
-         relationsByType.removeValues(threadLocalKey.get().getKey(artifact));
+         relationCache.deCache(artifact);
       }
    }
 
    public static boolean hasDirtyLinks(Artifact artifact) {
-      List<RelationLink> selectedRelations =
-         getFlattenedList(relationsByType.getValues(threadLocalKey.get().getKey(artifact)));
-      if (selectedRelations == null) {
-         return false;
-      }
+      List<RelationLink> selectedRelations = relationCache.getAll(artifact);
       for (RelationLink relation : selectedRelations) {
          if (relation.isDirty()) {
             return true;
@@ -465,8 +332,7 @@ public class RelationManager {
     * Return what relation is dirty otherwise null
     */
    public static String reportHasDirtyLinks(Artifact artifact) {
-      List<RelationLink> selectedRelations =
-         getFlattenedList(relationsByType.getValues(threadLocalKey.get().getKey(artifact)));
+      List<RelationLink> selectedRelations = relationCache.getAll(artifact);
       if (selectedRelations != null) {
          for (RelationLink relation : selectedRelations) {
             if (relation.isDirty()) {
@@ -488,9 +354,9 @@ public class RelationManager {
    public static void persistRelationsFor(SkynetTransaction transaction, Artifact artifact, RelationType relationType) throws OseeCoreException {
       List<RelationLink> selectedRelations;
       if (relationType == null) {
-         selectedRelations = getFlattenedList(relationsByType.getValues(threadLocalKey.get().getKey(artifact)));
+         selectedRelations = relationCache.getAll(artifact);
       } else {
-         selectedRelations = relationsByType.get(threadLocalKey.get().getKey(artifact), relationType);
+         selectedRelations = relationCache.getAllByType(artifact, relationType);
       }
 
       if (selectedRelations != null) {
@@ -501,7 +367,7 @@ public class RelationManager {
                try {
                   Artifact artifactOnOtherSide = relation.getArtifactOnOtherSide(artifact);
                   List<RelationLink> otherSideRelations =
-                     relationsByType.get(threadLocalKey.get().getKey(artifactOnOtherSide), relation.getRelationType());
+                     relationCache.getAllByType(artifactOnOtherSide, relation.getRelationType());
                   for (int i = 0; i < otherSideRelations.size(); i++) {
                      if (relation.equals(otherSideRelations.get(i))) {
                         if (i + 1 < otherSideRelations.size()) {
@@ -525,25 +391,8 @@ public class RelationManager {
       }
    }
 
-   public static List<RelationLink> getRelationsAll(int artId, int branchId, boolean includeDeleted) {
-      List<RelationLink> selectedRelations =
-         getFlattenedList(relationsByType.getValues(threadLocalKey.get().getKey(artId, branchId)));
-
-      if (selectedRelations == null) {
-         return Collections.emptyList();
-      }
-
-      List<RelationLink> relations = new ArrayList<RelationLink>(selectedRelations.size());
-      for (RelationLink relation : selectedRelations) {
-         if (!relation.isDeleted() || includeDeleted) {
-            relations.add(relation);
-         }
-      }
-      return relations;
-   }
-
    public static List<RelationLink> getRelations(Artifact artifact, RelationType relationType, RelationSide relationSide) {
-      List<RelationLink> selectedRelations = relationsByType.get(threadLocalKey.get().getKey(artifact), relationType);
+      List<RelationLink> selectedRelations = relationCache.getAllByType(artifact, relationType);
       if (selectedRelations == null) {
          return Collections.emptyList();
       }
@@ -606,7 +455,12 @@ public class RelationManager {
    }
 
    public static void deleteRelation(RelationType relationType, Artifact artifactA, Artifact artifactB) throws OseeCoreException {
-      RelationLink relation = getLoadedRelation(artifactA, artifactA.getArtId(), artifactB.getArtId(), relationType);
+      RelationLink relation =
+         relationCache.getLoadedRelation(artifactA, artifactA.getArtId(), artifactB.getArtId(), relationType,
+            DeletionFlag.EXCLUDE_DELETED);
+      Conditions.checkNotNull(relation, "relationLink",
+         "A relation link of type [%s] does exist in the cache between a artifact %d and b artifact %d", relationType,
+         artifactA.getArtId(), artifactB.getArtId());
       relation.delete(true);
 
       updateOrderListOnDelete(artifactA, relationType, RelationSide.SIDE_B,
@@ -616,8 +470,7 @@ public class RelationManager {
    }
 
    public static void deleteRelationsAll(Artifact artifact, boolean reorderRelations) throws OseeCoreException {
-      List<RelationLink> selectedRelations =
-         getFlattenedList(relationsByType.getValues(threadLocalKey.get().getKey(artifact)));
+      List<RelationLink> selectedRelations = relationCache.getAll(artifact);
       Set<Pair<RelationType, RelationSide>> typesToUpdate = new HashSet<Pair<RelationType, RelationSide>>();
       if (selectedRelations != null) {
          for (RelationLink relation : selectedRelations) {
@@ -634,7 +487,7 @@ public class RelationManager {
    }
 
    public static void deleteRelations(Artifact artifact, RelationType relationType, RelationSide relationSide) throws OseeCoreException {
-      List<RelationLink> selectedRelations = relationsByType.get(threadLocalKey.get().getKey(artifact), relationType);
+      List<RelationLink> selectedRelations = relationCache.getAllByType(artifact, relationType);
       if (selectedRelations != null) {
          for (RelationLink relation : selectedRelations) {
             if (relation.getSide(artifact) != relationSide) {
@@ -652,7 +505,7 @@ public class RelationManager {
     * maintain order.
     */
    public static void revertRelations(Artifact artifact, RelationType relationType, RelationSide relationSide) throws OseeCoreException {
-      List<RelationLink> selectedRelations = relationsByType.get(threadLocalKey.get().getKey(artifact), relationType);
+      List<RelationLink> selectedRelations = relationCache.getAllByType(artifact, relationType);
       if (selectedRelations != null) {
          for (RelationLink relation : selectedRelations) {
             if (relationSide == null) {
@@ -670,8 +523,7 @@ public class RelationManager {
     * Remove all relations stored in the list awaiting to be deleted.
     */
    public static void purgeRelationsFor(Artifact artifact) throws OseeCoreException {
-      Collection<RelationLink> links =
-         getFlattenedList(relationsByType.getValues(threadLocalKey.get().getKey(artifact)));
+      Collection<RelationLink> links = relationCache.getAll(artifact);
       if (!links.isEmpty()) {
          List<Object[]> batchArgs = new ArrayList<Object[]>(links.size());
          String PURGE_RELATION = "delete from osee_relation_link WHERE rel_link_id = ?";
@@ -683,21 +535,23 @@ public class RelationManager {
       }
    }
 
-   public static void addRelation(RelationType relationType, Artifact artifactA, Artifact artifactB, String rationale) throws OseeCoreException {
+   public static void addRelation(IRelationType relationType, Artifact artifactA, Artifact artifactB, String rationale) throws OseeCoreException {
       addRelation(null, relationType, artifactA, artifactB, rationale);
    }
 
-   public static void addRelation(IRelationSorterId sorterId, RelationType relationType, Artifact artifactA, Artifact artifactB, String rationale) throws OseeCoreException {
-      if (artifactA.equals(artifactB)) {
-         throw new OseeArgumentException("Not valid to relate artifact [%s] to itself", artifactA);
-      }
+   public static void addRelation(IRelationSorterId sorterId, IRelationType relationTypeToken, Artifact artifactA, Artifact artifactB, String rationale) throws OseeCoreException {
+      Conditions.checkExpressionFailOnTrue(artifactA.equals(artifactB), "Not valid to relate artifact [%s] to itself",
+         artifactA);
       RelationLink relation =
-         getLoadedRelation(artifactA, artifactA.getArtId(), artifactB.getArtId(), relationType, true);
+         relationCache.getLoadedRelation(artifactA, artifactA.getArtId(), artifactB.getArtId(), relationTypeToken,
+            INCLUDE_DELETED);
 
+      RelationType relationType = RelationTypeManager.getType(relationTypeToken);
       if (relation == null) {
          ensureRelationCanBeAdded(relationType, artifactA, artifactB);
-
-         relation = RelationLink.getOrCreate(artifactA, artifactB, relationType, rationale, ModificationType.NEW);
+         relation =
+            getOrCreate(artifactA.getArtId(), artifactB.getArtId(), artifactA.getBranch(), relationType, 0, 0,
+               rationale, ModificationType.NEW);
          relation.setDirty();
 
          RelationTypeSideSorter sorter = createTypeSideSorter(artifactA, relationType, RelationSide.SIDE_B);
@@ -710,18 +564,8 @@ public class RelationManager {
       }
    }
 
-   public static void setRelationRationale(Artifact artifactA, Artifact artifactB, RelationType relationType, String rationale) throws OseeCoreException {
-      RelationLink relation = getRelationLink(artifactA, artifactB, relationType);
-      relation.setRationale(rationale);
-   }
-
-   public static String getRelationRationale(Artifact artifactA, Artifact artifactB, RelationType relationType) throws OseeCoreException {
-      RelationLink relation = getRelationLink(artifactA, artifactB, relationType);
-      return relation.getRationale();
-   }
-
-   private static RelationLink getRelationLink(Artifact artifactA, Artifact artifactB, RelationType relationType) throws OseeCoreException {
-      List<RelationLink> relationLinks = relationsByType.get(threadLocalKey.get().getKey(artifactA), relationType);
+   public static RelationLink getRelationLink(Artifact artifactA, Artifact artifactB, IRelationType relationType) throws OseeCoreException {
+      List<RelationLink> relationLinks = relationCache.getAllByType(artifactA, relationType);
       for (RelationLink relation : relationLinks) {
          if (relation.getArtifactB().equals(artifactB)) {
             return relation;
@@ -766,7 +610,74 @@ public class RelationManager {
    }
 
    public static void deCache(Artifact artifact) {
-      relationsByType.removeValues(new ArtifactKey(artifact));
+      relationCache.deCache(artifact);
    }
 
+   /**
+    * Return existing RelationLink or create new one. This needs to be synchronized so two threads don't create the same
+    * link object twice.
+    * 
+    * @param relationId 0 or relationId if already created
+    */
+   public static synchronized RelationLink getOrCreate(int aArtifactId, int bArtifactId, Branch branch, RelationType relationType, int relationId, int gammaId, String rationale, ModificationType modificationType) {
+      RelationLink relation = null;
+      if (relationId != 0) {
+         relation = getLoadedRelationById(relationId, aArtifactId, bArtifactId, branch);
+      } else {
+         relation = getLoadedRelation(relationType, aArtifactId, bArtifactId, branch);
+      }
+      if (relation == null) {
+         relation =
+            new RelationLink(new RelationArtifactLinker(), aArtifactId, bArtifactId, branch, relationType, relationId,
+               gammaId, rationale, modificationType);
+      }
+      manageRelation(relation, RelationSide.SIDE_A);
+      manageRelation(relation, RelationSide.SIDE_B);
+
+      return relation;
+   }
+
+   public static RelationLink getLoadedRelation(IRelationType relationType, int aArtifactId, int bArtifactId, Branch branch) {
+      return relationCache.getLoadedRelation(relationType, aArtifactId, bArtifactId, branch);
+   }
+
+   public static RelationLink getLoadedRelationById(int relLinkId, int aArtifactId, int bArtifactId, Branch branch) {
+      return relationCache.getByRelIdOnArtifact(relLinkId, aArtifactId, bArtifactId, branch);
+   }
+
+   public static List<RelationLink> getRelationsAll(Artifact artifact, DeletionFlag deletionFlag) {
+      return relationCache.getRelations(artifact, deletionFlag);
+   }
+
+   private static final class RelationArtifactLinker implements ArtifactLinker {
+
+      @Override
+      public Artifact getArtifact(int artifactId, Branch branch) throws OseeCoreException {
+         Artifact relatedArtifact = ArtifactCache.getActive(artifactId, branch);
+         if (relatedArtifact == null) {
+            return ArtifactQuery.getArtifactFromId(artifactId, branch);
+         }
+         return relatedArtifact;
+      }
+
+      @Override
+      public String getLazyArtifactName(int artifactId, Branch branch) {
+         Artifact artifact = ArtifactCache.getActive(artifactId, branch);
+         return artifact != null ? artifact.getName() : "Unloaded";
+      }
+
+      @Override
+      public void deleteFromRelationOrder(Artifact aArtifact, Artifact bArtifact, RelationType relationType) throws OseeCoreException {
+         RelationTypeSideSorter aSorter = RelationManager.createTypeSideSorter(aArtifact, relationType, SIDE_B);
+         aSorter.removeItem(null, bArtifact);
+
+         RelationTypeSideSorter bSorter = RelationManager.createTypeSideSorter(bArtifact, relationType, SIDE_A);
+         bSorter.removeItem(null, aArtifact);
+      }
+
+      @Override
+      public void updateCachedArtifact(int artId, Branch branch) {
+         ArtifactCache.updateCachedArtifact(artId, branch.getId());
+      }
+   }
 }

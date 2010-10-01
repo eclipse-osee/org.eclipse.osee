@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.world.search.GoalSearchItem;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
@@ -77,7 +78,7 @@ public class GoalArtifact extends AbstractWorkflowArtifact {
    }
 
    public List<Artifact> getMembers() throws OseeCoreException {
-      return getRelatedArtifacts(AtsRelationTypes.Goal_Member, false);
+      return getRelatedArtifacts(AtsRelationTypes.Goal_Member, DeletionFlag.EXCLUDE_DELETED);
    }
 
    public void addMember(Artifact artifact) throws OseeCoreException {

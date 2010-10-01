@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.actions.wizard.ArtifactSelectWizard;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
@@ -122,7 +123,7 @@ public class ArtifactHyperView extends HyperView implements IArtifactEventListen
          topAHI = new ArtifactHyperItem(currentArtifact);
          // System.out.println("Artifact "+currentArtifact.getArtifactTypeNameShort());
          int x = 0;
-         for (RelationLink link : currentArtifact.getRelationsAll(false)) {
+         for (RelationLink link : currentArtifact.getRelationsAll(DeletionFlag.EXCLUDE_DELETED)) {
 
             // Don't process link if onlyShowRel is populated and doesn't contain link name
             if (onlyShowRelations.size() > 0) {

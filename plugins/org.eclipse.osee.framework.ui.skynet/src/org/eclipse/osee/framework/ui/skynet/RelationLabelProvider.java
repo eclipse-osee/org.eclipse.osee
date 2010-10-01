@@ -99,9 +99,10 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
          } else if (columnIndex == 1) {
             String rationale = "";
             try {
-               rationale =
-                  RelationManager.getRelationRationale(wrapper.getArtifactA(), wrapper.getArtifactB(),
+               RelationLink link =
+                  RelationManager.getRelationLink(wrapper.getArtifactA(), wrapper.getArtifactB(),
                      wrapper.getRelationType());
+               rationale = link.getRationale();
             } catch (OseeCoreException ex) {
                OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }

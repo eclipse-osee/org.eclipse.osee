@@ -8,26 +8,23 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.test.relation;
+package org.eclipse.osee.framework.skynet.core.test.relation.order;
 
-import org.eclipse.osee.framework.skynet.core.test.relation.order.RelationOrderDataTest;
-import org.eclipse.osee.framework.skynet.core.test.relation.order.RelationOrderMergerTest;
-import org.eclipse.osee.framework.skynet.core.test.relation.order.RelationOrderParserTest;
-import org.eclipse.osee.framework.skynet.core.test.relation.order.RelationSorterProviderTest;
-import org.eclipse.osee.framework.skynet.core.test.relation.sorters.RelationSorterTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-   RelationOrderParserTest.class,
-   RelationSorterProviderTest.class,
    RelationOrderDataTest.class,
-   RelationSorterTest.class,
-   RelationOrderMergerTest.class})
+   RelationOrderMergerTest.class,
+   RelationOrderMergeUtilityTest.class,
+   RelationOrderParserTest.class,
+   RelationSorterProviderTest.class
+
+})
 /**
  * @author Roberto E. Escobar
  */
 public class RelationOrderTestSuite {
-   // do nothing
+   // Test Suite
 }

@@ -14,6 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import java.util.List;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.RelationType;
@@ -52,14 +53,14 @@ public class LoadDeletedRelationTest {
    public void loadDeletedRelationTest() throws OseeCoreException {
       RelationManager.addRelation(type, left, right, "");
       left.persist();
-      RelationLink loaded = RelationManager.getLoadedRelation(type, left.getArtId(), right.getArtId(), branch, branch);
+      RelationLink loaded = RelationManager.getLoadedRelation(type, left.getArtId(), right.getArtId(), branch);
       int oldGammaId = loaded.getGammaId();
       RelationManager.deleteRelation(type, left, right);
       left.persist();
       RelationManager.addRelation(type, left, right, "");
       left.persist();
 
-      List<RelationLink> links = RelationManager.getRelationsAll(left.getArtId(), branch.getId(), true);
+      List<RelationLink> links = RelationManager.getRelationsAll(left, DeletionFlag.INCLUDE_DELETED);
       int linkCount = 0;
       for (RelationLink link : links) {
          if (link.getRelationType().getName().equals("Requirement Trace")) {

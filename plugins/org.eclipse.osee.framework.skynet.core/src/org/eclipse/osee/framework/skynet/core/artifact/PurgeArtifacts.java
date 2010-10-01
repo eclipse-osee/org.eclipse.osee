@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
@@ -163,7 +164,7 @@ public class PurgeArtifacts extends DbTransaction {
             artifactChanges.add(new EventBasicGuidArtifact(EventModType.Purged, artifact));
             ArtifactCache.deCache(artifact);
             artifact.internalSetDeleted();
-            for (RelationLink rel : artifact.getRelationsAll(false)) {
+            for (RelationLink rel : artifact.getRelationsAll(DeletionFlag.EXCLUDE_DELETED)) {
                rel.markAsPurged();
             }
             for (Attribute<?> attr : artifact.internalGetAttributes()) {

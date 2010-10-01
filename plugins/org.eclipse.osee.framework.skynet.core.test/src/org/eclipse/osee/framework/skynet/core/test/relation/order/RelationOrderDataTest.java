@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.relation.order.IRelationOrderAccessor;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
-import org.eclipse.osee.framework.skynet.core.test.types.MockIArtifact;
+import org.eclipse.osee.framework.skynet.core.test.mocks.MockIArtifact;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.junit.After;
 import org.junit.Assert;

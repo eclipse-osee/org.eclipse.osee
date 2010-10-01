@@ -231,26 +231,25 @@ public final class FrameworkEventToRemoteEventListener implements IFrameworkEven
                if (eventType == RelationEventType.Added) {
                   RelationLink relation =
                      RelationManager.getLoadedRelationById(guidArt.getRelationId(), guidArt.getArtAId(),
-                        guidArt.getArtBId(), branch, branch);
+                        guidArt.getArtBId(), branch);
 
                   if (relation == null || relation.getModificationType() == ModificationType.DELETED || relation.getModificationType() == ModificationType.ARTIFACT_DELETED) {
                      relation =
-                        RelationLink.getOrCreate(guidArt.getArtAId(), guidArt.getArtBId(), branch, branch,
-                           relationType, guidArt.getRelationId(), guidArt.getGammaId(), guidArt.getRationale(),
-                           ModificationType.NEW);
+                        RelationManager.getOrCreate(guidArt.getArtAId(), guidArt.getArtBId(), branch, relationType,
+                           guidArt.getRelationId(), guidArt.getGammaId(), guidArt.getRationale(), ModificationType.NEW);
 
                   }
                } else if (eventType == RelationEventType.Deleted || eventType == RelationEventType.Purged) {
                   RelationLink relation =
                      RelationManager.getLoadedRelationById(guidArt.getRelationId(), guidArt.getArtAId(),
-                        guidArt.getArtBId(), branch, branch);
+                        guidArt.getArtBId(), branch);
                   if (relation != null) {
                      relation.internalRemoteEventDelete();
                   }
                } else if (eventType == RelationEventType.ModifiedRationale) {
                   RelationLink relation =
                      RelationManager.getLoadedRelationById(guidArt.getRelationId(), guidArt.getArtAId(),
-                        guidArt.getArtBId(), branch, branch);
+                        guidArt.getArtBId(), branch);
                   if (relation != null) {
                      relation.internalSetRationale(guidArt.getRationale());
                      relation.setNotDirty();
@@ -258,7 +257,7 @@ public final class FrameworkEventToRemoteEventListener implements IFrameworkEven
                } else if (eventType == RelationEventType.Undeleted) {
                   RelationLink relation =
                      RelationManager.getLoadedRelationById(guidArt.getRelationId(), guidArt.getArtAId(),
-                        guidArt.getArtBId(), branch, branch);
+                        guidArt.getArtBId(), branch);
                   if (relation != null) {
                      relation.undelete();
                      relation.setNotDirty();

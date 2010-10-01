@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.test.types;
+package org.eclipse.osee.framework.skynet.core.test.mocks;
 
 import java.util.Collections;
 import java.util.List;

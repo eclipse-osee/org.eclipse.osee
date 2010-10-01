@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -224,11 +225,11 @@ public class ConflictTestManager {
          }
          if (DEBUG) {
             DeletionTest.dumpArtifact(sourceArtifacts[i]);
-            for (RelationLink link : sourceArtifacts[i].getRelationsAll(false)) {
+            for (RelationLink link : sourceArtifacts[i].getRelationsAll(DeletionFlag.EXCLUDE_DELETED)) {
                DeletionTest.dumpRelation(link, sourceArtifacts[i]);
             }
             DeletionTest.dumpArtifact(destArtifacts[i]);
-            for (RelationLink link : destArtifacts[i].getRelationsAll(false)) {
+            for (RelationLink link : destArtifacts[i].getRelationsAll(DeletionFlag.EXCLUDE_DELETED)) {
                DeletionTest.dumpRelation(link, destArtifacts[i]);
             }
             System.out.println(" ");

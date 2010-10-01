@@ -18,6 +18,7 @@ import java.util.LinkedList;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
@@ -98,7 +99,7 @@ public class DeletionTest {
             for (Attribute<?> attribute : artifact.getAttributes()) {
                dumpAttribute(attribute);
             }
-            for (RelationLink relation : artifact.getRelationsAll(true)) {
+            for (RelationLink relation : artifact.getRelationsAll(DeletionFlag.INCLUDE_DELETED)) {
                dumpRelation(relation, artifact);
             }
          }
@@ -156,7 +157,7 @@ public class DeletionTest {
             }
          }
          //Check that relations are deleted.
-         for (RelationLink relation : artifact.getRelationsAll(true)) {
+         for (RelationLink relation : artifact.getRelationsAll(DeletionFlag.INCLUDE_DELETED)) {
             if (DEBUG) {
                dumpRelation(relation, artifact);
             } else {
@@ -222,7 +223,7 @@ public class DeletionTest {
                   }
                }
             }
-            for (RelationLink relation : artifact.getRelationsAll(true)) {
+            for (RelationLink relation : artifact.getRelationsAll(DeletionFlag.INCLUDE_DELETED)) {
                if (DEBUG) {
                   dumpRelation(relation, artifact);
                } else {

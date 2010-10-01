@@ -42,7 +42,7 @@ import org.eclipse.osee.framework.skynet.core.relation.order.IRelationOrderAcces
 import org.eclipse.osee.framework.skynet.core.relation.order.IRelationSorter;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationSorterProvider;
-import org.eclipse.osee.framework.skynet.core.test.types.MockIArtifact;
+import org.eclipse.osee.framework.skynet.core.test.mocks.MockIArtifact;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.junit.Test;

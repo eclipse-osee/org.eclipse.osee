@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.core.data.NamedIdentity;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.EditState;
 import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -185,20 +186,24 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, Co
       return RelationManager.getRelatedArtifacts(this, relationEnum);
    }
 
-   public List<Artifact> getRelatedArtifacts(IRelationEnumeration relationEnum, boolean includeDeleted) throws OseeCoreException {
-      return RelationManager.getRelatedArtifacts(this, relationEnum, includeDeleted);
+   public List<Artifact> getRelatedArtifacts(IRelationEnumeration relationEnum, DeletionFlag deletionFlag) throws OseeCoreException {
+      return RelationManager.getRelatedArtifacts(this, relationEnum, deletionFlag);
    }
 
    public String getRelationRationale(Artifact artifact, IRelationEnumeration relationTypeSide) throws OseeCoreException {
       Pair<Artifact, Artifact> sides = determineArtifactSides(artifact, relationTypeSide);
-      return RelationManager.getRelationRationale(sides.getFirst(), sides.getSecond(),
-         RelationTypeManager.getType(relationTypeSide));
+      RelationLink link =
+         RelationManager.getRelationLink(sides.getFirst(), sides.getSecond(),
+            RelationTypeManager.getType(relationTypeSide));
+      return link.getRationale();
    }
 
    public void setRelationRationale(Artifact artifact, IRelationEnumeration relationTypeSide, String rationale) throws OseeCoreException {
       Pair<Artifact, Artifact> sides = determineArtifactSides(artifact, relationTypeSide);
-      RelationManager.setRelationRationale(sides.getFirst(), sides.getSecond(),
-         RelationTypeManager.getType(relationTypeSide), rationale);
+      RelationLink link =
+         RelationManager.getRelationLink(sides.getFirst(), sides.getSecond(),
+            RelationTypeManager.getType(relationTypeSide));
+      link.setRationale(rationale);
    }
 
    private Pair<Artifact, Artifact> determineArtifactSides(Artifact artifact, IRelationEnumeration relationSide) {
@@ -399,8 +404,8 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, Co
    /**
     * @return set of the direct children of this artifact
     */
-   public List<Artifact> getChildren(boolean includeDeleted) throws OseeCoreException {
-      return getRelatedArtifacts(Default_Hierarchical__Child, includeDeleted);
+   public List<Artifact> getChildren(DeletionFlag deletionFlag) throws OseeCoreException {
+      return getRelatedArtifacts(Default_Hierarchical__Child, deletionFlag);
    }
 
    /**
@@ -1630,7 +1635,7 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, Co
     */
    public ArrayList<RelationLink> internalGetRelations(Artifact artifact) throws OseeCoreException {
       ArrayList<RelationLink> relations = new ArrayList<RelationLink>();
-      for (RelationLink relation : getRelationsAll(false)) {
+      for (RelationLink relation : getRelationsAll(DeletionFlag.EXCLUDE_DELETED)) {
          try {
             if (relation.getArtifactOnOtherSide(this).equals(artifact)) {
                relations.add(relation);
@@ -1672,8 +1677,8 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, Co
       return RelationManager.getRelations(this, relationType, null);
    }
 
-   public List<RelationLink> getRelationsAll(boolean includeDeleted) {
-      return RelationManager.getRelationsAll(getArtId(), getBranch().getId(), includeDeleted);
+   public List<RelationLink> getRelationsAll(DeletionFlag deletionFlag) {
+      return RelationManager.getRelationsAll(this, deletionFlag);
    }
 
    /**

@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -78,7 +79,8 @@ public class WorldContentProvider implements ITreeContentProvider {
                return ((ActionArtifact) artifact).getTeamWorkFlowArtifacts().toArray();
             }
             if (artifact instanceof GoalArtifact) {
-               List<Artifact> arts = artifact.getRelatedArtifacts(AtsRelationTypes.Goal_Member, false);
+               List<Artifact> arts =
+                  artifact.getRelatedArtifacts(AtsRelationTypes.Goal_Member, DeletionFlag.EXCLUDE_DELETED);
                relatedArts.addAll(arts);
                return arts.toArray(new Artifact[artifact.getRelatedArtifactsCount(AtsRelationTypes.Goal_Member)]);
             }

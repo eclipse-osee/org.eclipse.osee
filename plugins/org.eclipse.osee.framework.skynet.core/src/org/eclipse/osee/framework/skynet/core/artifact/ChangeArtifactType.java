@@ -20,6 +20,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
@@ -143,7 +144,7 @@ public class ChangeArtifactType {
    private static void processRelations(Artifact artifact, ArtifactType artifactType) throws OseeCoreException {
       relationsToDelete = new LinkedList<RelationLink>();
 
-      for (RelationLink link : artifact.getRelationsAll(false)) {
+      for (RelationLink link : artifact.getRelationsAll(DeletionFlag.EXCLUDE_DELETED)) {
          if (RelationTypeManager.getRelationSideMax(link.getRelationType(), artifactType, link.getSide(artifact)) == 0) {
             relationsToDelete.add(link);
          }

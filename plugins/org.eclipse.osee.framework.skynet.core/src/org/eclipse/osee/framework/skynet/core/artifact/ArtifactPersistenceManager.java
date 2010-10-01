@@ -19,6 +19,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -182,8 +183,7 @@ public class ArtifactPersistenceManager {
    private static void bulkLoadRelatives(List<Artifact> artifacts) throws OseeCoreException {
       Collection<Integer> artIds = new HashSet<Integer>();
       for (Artifact artifact : artifacts) {
-         boolean includeDeleted = false;
-         for (RelationLink link : artifact.getRelationsAll(includeDeleted)) {
+         for (RelationLink link : artifact.getRelationsAll(DeletionFlag.EXCLUDE_DELETED)) {
             artIds.add(link.getAArtifactId());
             artIds.add(link.getBArtifactId());
          }
@@ -248,8 +248,7 @@ public class ArtifactPersistenceManager {
       // Only reverts relation links that don't span multiple branches. Need
       // to revisit if additional functionality is needed.
       if (!link.getArtifactA().getBranch().equals(link.getArtifactB().getBranch())) {
-         throw new OseeArgumentException("Cannot revert Relation %d. Relation spans multiple branches",
-            link.getId());
+         throw new OseeArgumentException("Cannot revert Relation %d. Relation spans multiple branches", link.getId());
       }
       long totalTime = System.currentTimeMillis();
       Branch branch = link.getArtifactA().getBranch();
@@ -292,7 +291,7 @@ public class ArtifactPersistenceManager {
    }
 
    public static boolean isRelationNewOnBranch(RelationLink relation) throws OseeCoreException {
-      Branch branch = relation.getABranch();
+      Branch branch = relation.getBranch();
       return ConnectionHandler.runPreparedQueryFetchInt(-1, RELATION_NEW_ON_BRANCH, relation.getAArtifactId(),
          relation.getBArtifactId(), relation.getRelationType().getId(), branch.getId(),
          branch.getBaseTransaction().getId()) == 0;
