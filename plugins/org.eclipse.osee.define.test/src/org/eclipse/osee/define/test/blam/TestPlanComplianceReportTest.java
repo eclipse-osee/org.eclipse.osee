@@ -87,7 +87,6 @@ public final class TestPlanComplianceReportTest {
          resultBuffer.toString().contains(EXPECTED_OSEE_ERROR_STYLE));
       Assert.assertTrue("No \"OseeBoldStyle\" string found.",
          resultBuffer.toString().contains(EXPECTED_OSEE_BOLD_STYLE));
-      System.out.println(resultBuffer.toString());
       new PurgeArtifacts(dummyArtifactList).execute();
 
       buildTest(1, TestStatusEnum.COMPLETED_WITH_ISSUES_CODE, 0);
@@ -95,7 +94,6 @@ public final class TestPlanComplianceReportTest {
          resultBuffer.toString().contains(EXPECTED_OSEE_ERROR_STYLE));
       Assert.assertTrue("No \"OseeBoldStyle\" string found.",
          resultBuffer.toString().contains(EXPECTED_OSEE_BOLD_STYLE));
-      System.out.println(resultBuffer.toString());
       new PurgeArtifacts(dummyArtifactList).execute();
 
       buildTest(1, TestStatusEnum.COMPLETED_WITH_ISSUES_RESOLVED_CODE, 0);
@@ -103,7 +101,6 @@ public final class TestPlanComplianceReportTest {
          resultBuffer.toString().contains(EXPECTED_OSEE_ERROR_STYLE));
       Assert.assertTrue("No \"OseeBoldStyle\" string found.",
          resultBuffer.toString().contains(EXPECTED_OSEE_BOLD_STYLE));
-      System.out.println(resultBuffer.toString());
       new PurgeArtifacts(dummyArtifactList).execute();
    }
 
