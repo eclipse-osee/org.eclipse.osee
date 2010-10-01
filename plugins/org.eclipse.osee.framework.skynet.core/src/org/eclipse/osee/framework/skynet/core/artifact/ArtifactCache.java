@@ -87,7 +87,7 @@ public final class ArtifactCache {
     * This method is called by attributes and relations when their dirty state changes. This way, when an artifact is
     * dirty we can hold onto a strong reference and when it is not dirty we can have a weak reference.
     */
-   public static void updateCachedArtifact(int artId, int branchId) throws OseeCoreException {
+   public static void updateCachedArtifact(int artId, int branchId) {
       ACTIVE_CACHE.updateReferenceType(artId, branchId);
    }
 
@@ -112,8 +112,7 @@ public final class ArtifactCache {
 
    public static void cacheByStaticId(String staticId, Artifact artifact) throws OseeCoreException {
       if (artifact.isHistorical()) {
-         throw new OseeArgumentException("historical artifact cannot be cached by staticId [%s]",
-            staticId);
+         throw new OseeArgumentException("historical artifact cannot be cached by staticId [%s]", staticId);
       }
       ACTIVE_CACHE.cacheByStaticId(staticId, artifact);
    }

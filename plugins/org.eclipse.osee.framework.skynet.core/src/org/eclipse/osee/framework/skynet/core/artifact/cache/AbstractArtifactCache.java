@@ -14,7 +14,6 @@ import java.lang.ref.WeakReference;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map.Entry;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -114,7 +113,7 @@ public abstract class AbstractArtifactCache {
    }
 
    @SuppressWarnings("unchecked")
-   public void updateReferenceType(int artId, int branchId) throws OseeCoreException {
+   public void updateReferenceType(int artId, int branchId) {
       Object obj = idCache.get(artId, branchId);
       if (obj != null) {
          if (obj instanceof Artifact) {
