@@ -188,7 +188,7 @@ public class SMAMetrics {
       return smas;
    }
 
-   public Collection<TeamWorkFlowArtifact> getCompletedTeamWorkflows() throws OseeCoreException {
+   public Collection<TeamWorkFlowArtifact> getCompletedTeamWorkflows() {
       Set<TeamWorkFlowArtifact> teams = new HashSet<TeamWorkFlowArtifact>();
       for (TeamWorkFlowArtifact team : getTeamArts()) {
          if (team.isCancelledOrCompleted()) {
@@ -198,7 +198,7 @@ public class SMAMetrics {
       return teams;
    }
 
-   public Collection<AbstractWorkflowArtifact> getCompletedWorkflows() throws OseeCoreException {
+   public Collection<AbstractWorkflowArtifact> getCompletedWorkflows() {
       Set<AbstractWorkflowArtifact> completed = new HashSet<AbstractWorkflowArtifact>();
       for (AbstractWorkflowArtifact sma : smas) {
          if (sma.isCancelledOrCompleted()) {
@@ -208,7 +208,7 @@ public class SMAMetrics {
       return completed;
    }
 
-   public double getPercentCompleteByTeamWorkflow() throws OseeCoreException {
+   public double getPercentCompleteByTeamWorkflow() {
       if (getTeamArts().isEmpty()) {
          return 0;
       }
@@ -219,7 +219,7 @@ public class SMAMetrics {
       return completed / getTeamArts().size() * 100;
    }
 
-   public double getPercentCompleteByWorkflow() throws OseeCoreException {
+   public double getPercentCompleteByWorkflow() {
       if (smas.isEmpty()) {
          return 0;
       }
@@ -230,7 +230,7 @@ public class SMAMetrics {
       return completed / smas.size() * 100;
    }
 
-   public Collection<TaskArtifact> getCompletedTaskWorkflows() throws OseeCoreException {
+   public Collection<TaskArtifact> getCompletedTaskWorkflows() {
       Set<TaskArtifact> tasks = new HashSet<TaskArtifact>();
       for (TaskArtifact team : getTaskArts()) {
          if (team.isCancelledOrCompleted()) {
@@ -240,7 +240,7 @@ public class SMAMetrics {
       return tasks;
    }
 
-   public double getPercentCompleteByTaskWorkflow() throws OseeCoreException {
+   public double getPercentCompleteByTaskWorkflow() {
       if (getTaskArts().isEmpty()) {
          return 0;
       }

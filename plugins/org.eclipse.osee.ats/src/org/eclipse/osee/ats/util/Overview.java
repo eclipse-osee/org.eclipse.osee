@@ -236,7 +236,7 @@ public class Overview {
       }
    }
 
-   public void addTeams(Collection<TeamWorkFlowArtifact> teams) throws OseeCoreException {
+   public void addTeams(Collection<TeamWorkFlowArtifact> teams) {
       startBorderTable(TABLE_WIDTH, false, "Team Workflows");
       StringBuffer sb = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
       sb.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Type", "State"}, new Integer[] {70, 150}));
@@ -282,7 +282,7 @@ public class Overview {
       }
    }
 
-   public void startStateBorderTable(AbstractWorkflowArtifact sma, SMAState state) throws OseeCoreException {
+   public void startStateBorderTable(AbstractWorkflowArtifact sma, SMAState state) {
       String caption = state.getName();
       String assgn = Artifacts.toString("; ", state.getAssignees());
       startStateBorderTable(sma.getStateMgr().getCurrentStateName().equals(state.getName()), caption, assgn);

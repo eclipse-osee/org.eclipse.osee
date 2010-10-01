@@ -52,11 +52,11 @@ public class AtsWorkPage extends WorkPage {
       this(null, null, null, optionResolver);
    }
 
-   public boolean isCurrentState(AbstractWorkflowArtifact sma) throws OseeCoreException {
+   public boolean isCurrentState(AbstractWorkflowArtifact sma) {
       return sma.isCurrentState(getName());
    }
 
-   public boolean isCurrentNonCompleteCancelledState(AbstractWorkflowArtifact sma) throws OseeCoreException {
+   public boolean isCurrentNonCompleteCancelledState(AbstractWorkflowArtifact sma) {
       return sma.isCurrentState(getName()) && !isCompleteCancelledState();
    }
 

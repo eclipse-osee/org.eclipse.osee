@@ -109,7 +109,7 @@ public class AtsAddPeerToPeerReviewRule extends WorkRuleDefinition {
       return peerArt;
    }
 
-   private static String getValueOrDefault(TeamWorkFlowArtifact teamArt, WorkRuleDefinition workRuleDefinition, PeerToPeerParameter peerToPeerParameter) throws OseeCoreException {
+   private static String getValueOrDefault(TeamWorkFlowArtifact teamArt, WorkRuleDefinition workRuleDefinition, PeerToPeerParameter peerToPeerParameter) {
       String value = getPeerToPeerParameterValue(workRuleDefinition, peerToPeerParameter);
       if (!Strings.isValid(value)) {
          if (peerToPeerParameter == PeerToPeerParameter.title) {

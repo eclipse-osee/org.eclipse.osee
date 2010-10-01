@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
  */
 public class SMAUtil {
 
-   public static Collection<AbstractWorkflowArtifact> getCompletedCancelled(Collection<AbstractWorkflowArtifact> smas) throws OseeCoreException {
+   public static Collection<AbstractWorkflowArtifact> getCompletedCancelled(Collection<AbstractWorkflowArtifact> smas) {
       List<AbstractWorkflowArtifact> artifactsToReturn = new ArrayList<AbstractWorkflowArtifact>(smas.size());
       for (AbstractWorkflowArtifact sma : smas) {
          if (sma.isCancelledOrCompleted()) {
@@ -42,7 +42,7 @@ public class SMAUtil {
       return artifactsToReturn;
    }
 
-   public static Collection<AbstractWorkflowArtifact> getInWork(Collection<AbstractWorkflowArtifact> smas) throws OseeCoreException {
+   public static Collection<AbstractWorkflowArtifact> getInWork(Collection<AbstractWorkflowArtifact> smas) {
       List<AbstractWorkflowArtifact> artifactsToReturn = new ArrayList<AbstractWorkflowArtifact>(smas.size());
       for (AbstractWorkflowArtifact sma : smas) {
          if (!sma.isCancelledOrCompleted()) {
@@ -52,7 +52,7 @@ public class SMAUtil {
       return artifactsToReturn;
    }
 
-   public static Collection<AbstractWorkflowArtifact> filterOutState(Collection<AbstractWorkflowArtifact> smas, Collection<String> stateNames) throws OseeCoreException {
+   public static Collection<AbstractWorkflowArtifact> filterOutState(Collection<AbstractWorkflowArtifact> smas, Collection<String> stateNames) {
       List<AbstractWorkflowArtifact> artifactsToReturn = new ArrayList<AbstractWorkflowArtifact>(smas.size());
       for (AbstractWorkflowArtifact sma : smas) {
          if (!stateNames.contains(sma.getStateMgr().getCurrentStateName())) {

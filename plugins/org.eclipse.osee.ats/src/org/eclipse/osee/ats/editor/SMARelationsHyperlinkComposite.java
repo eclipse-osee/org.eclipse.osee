@@ -100,7 +100,7 @@ public class SMARelationsHyperlinkComposite extends Composite {
       return false;
    }
 
-   private String getCompletedCancelledString(Artifact art) throws OseeCoreException {
+   private String getCompletedCancelledString(Artifact art) {
       if (art instanceof AbstractWorkflowArtifact) {
          if (((AbstractWorkflowArtifact) art).isCancelledOrCompleted()) {
             return " " + ((AbstractWorkflowArtifact) art).getStateMgr().getCurrentStateName() + " ";

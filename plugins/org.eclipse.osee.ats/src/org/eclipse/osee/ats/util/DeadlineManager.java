@@ -15,7 +15,6 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 
@@ -56,7 +55,7 @@ public class DeadlineManager {
       return getEcdDate() != null;
    }
 
-   public Result isDeadlineDateOverdue() throws OseeCoreException {
+   public Result isDeadlineDateOverdue() {
       if (sma.isCompleted() || sma.isCancelled()) {
          return Result.FalseResult;
       }
@@ -66,7 +65,7 @@ public class DeadlineManager {
       return Result.FalseResult;
    }
 
-   public Result isEcdDateOverdue() throws OseeCoreException {
+   public Result isEcdDateOverdue() {
       if (sma.isCompleted() || sma.isCancelled()) {
          return Result.FalseResult;
       }
@@ -107,7 +106,7 @@ public class DeadlineManager {
       return Result.FalseResult;
    }
 
-   public Result isDeadlineDateAlerting() throws OseeCoreException {
+   public Result isDeadlineDateAlerting() {
       if (!isDeadlineDateSet()) {
          return Result.FalseResult;
       }
@@ -122,7 +121,7 @@ public class DeadlineManager {
       return Result.FalseResult;
    }
 
-   public Result isEcdDateAlerting() throws OseeCoreException {
+   public Result isEcdDateAlerting() {
       if (!isEcdDateSet()) {
          return Result.FalseResult;
       }

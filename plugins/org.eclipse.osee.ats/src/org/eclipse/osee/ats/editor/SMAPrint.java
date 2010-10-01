@@ -114,7 +114,7 @@ public class SMAPrint extends Action {
       return rd;
    }
 
-   private void getTaskHtml(XResultData rd) throws OseeCoreException {
+   private void getTaskHtml(XResultData rd) {
       if (!(sma instanceof AbstractTaskableArtifact)) {
          return;
       }

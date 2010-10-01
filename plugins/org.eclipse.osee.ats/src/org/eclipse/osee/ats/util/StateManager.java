@@ -245,7 +245,7 @@ public class StateManager {
       putState(state);
    }
 
-   public boolean isStateVisited(String name) throws OseeCoreException {
+   public boolean isStateVisited(String name) {
       return getVisitedStateNames().contains(name);
    }
 
@@ -297,7 +297,7 @@ public class StateManager {
       }
    }
 
-   public Collection<String> getVisitedStateNames() throws OseeCoreException {
+   public Collection<String> getVisitedStateNames() {
       Set<String> names = new HashSet<String>();
       for (SMAState state : stateDam.getStates()) {
          names.add(state.getName());

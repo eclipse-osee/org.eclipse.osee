@@ -163,7 +163,7 @@ public class SMAWorkFlowSection extends SectionPart {
    /**
     * Override to apply different algorithm to current section expansion.
     */
-   public boolean isCurrentSectionExpanded(String stateName) throws OseeCoreException {
+   public boolean isCurrentSectionExpanded(String stateName) {
       return sma.getStateMgr().getCurrentStateName().equals(stateName);
    }
 
@@ -306,7 +306,7 @@ public class SMAWorkFlowSection extends SectionPart {
       }
    }
 
-   private void createTaskFooter(Composite parent, String forStateName) throws OseeCoreException {
+   private void createTaskFooter(Composite parent, String forStateName) {
       if (sma instanceof AbstractTaskableArtifact) {
          Composite comp = new Composite(parent, SWT.None);
          GridLayout layout = new GridLayout(6, false);

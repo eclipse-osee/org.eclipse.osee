@@ -11,11 +11,7 @@
 package org.eclipse.osee.ats.util;
 
 import java.util.Set;
-import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.ArtifactAnnotation;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.IArtifactAnnotation;
@@ -28,20 +24,16 @@ public class AtsArtifactAnnotations implements IArtifactAnnotation {
 
    @Override
    public void getAnnotations(Artifact artifact, Set<ArtifactAnnotation> annotations) {
-      try {
-         if (artifact instanceof AbstractWorkflowArtifact) {
-            AbstractWorkflowArtifact sma = (AbstractWorkflowArtifact) artifact;
-            Result result = sma.getDeadlineMgr().isDeadlineDateAlerting();
-            if (result.isTrue()) {
-               annotations.add(ArtifactAnnotation.getWarning("org.eclipse.osee.ats.deadline", result.getText()));
-            }
-            result = sma.getDeadlineMgr().isEcdDateAlerting();
-            if (result.isTrue()) {
-               annotations.add(ArtifactAnnotation.getWarning("org.eclipse.osee.ats.ecd", result.getText()));
-            }
+      if (artifact instanceof AbstractWorkflowArtifact) {
+         AbstractWorkflowArtifact sma = (AbstractWorkflowArtifact) artifact;
+         Result result = sma.getDeadlineMgr().isDeadlineDateAlerting();
+         if (result.isTrue()) {
+            annotations.add(ArtifactAnnotation.getWarning("org.eclipse.osee.ats.deadline", result.getText()));
          }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         result = sma.getDeadlineMgr().isEcdDateAlerting();
+         if (result.isTrue()) {
+            annotations.add(ArtifactAnnotation.getWarning("org.eclipse.osee.ats.ecd", result.getText()));
+         }
       }
    }
 
