@@ -1568,6 +1568,10 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return this instanceof TaskArtifact;
    }
 
+   public boolean isReview() {
+      return this instanceof AbstractReviewArtifact;
+   }
+
    @Override
    public String getWorldViewGoalOrder() throws OseeCoreException {
       return GoalManager.getGoalOrder(this);

@@ -37,9 +37,9 @@ import org.eclipse.osee.ats.actions.ReloadAction;
 import org.eclipse.osee.ats.actions.ResourceHistoryAction;
 import org.eclipse.osee.ats.actions.ShowChangeReportAction;
 import org.eclipse.osee.ats.actions.ShowMergeManagerAction;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.note.NoteItem;
 import org.eclipse.osee.ats.config.AtsBulkLoad;
@@ -603,10 +603,17 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
 
       new SMAOriginatorHeader(topLineComp, SWT.NONE, sma, toolkit);
 
-      if (sma.isTeamWorkflow()) {
-         FormsUtil.createLabelText(toolkit, topLineComp, "Team: ", ((TeamWorkFlowArtifact) sma).getTeamName());
+      try {
+         if (sma.isTeamWorkflow()) {
+            FormsUtil.createLabelText(toolkit, topLineComp, "Team: ", ((TeamWorkFlowArtifact) sma).getTeamName());
+         } else if ((sma.isTask() || sma.isReview()) && sma.getParentSMA() != null) {
+            FormsUtil.createLabelText(toolkit, topLineComp, "Parent Id: ", sma.getParentSMA().getPcrId());
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
-      FormsUtil.createLabelText(toolkit, topLineComp, sma.getArtifactSuperTypeName() + "Id: ", sma.getHumanReadableId());
+      FormsUtil.createLabelText(toolkit, topLineComp, sma.getArtifactSuperTypeName() + " Id: ",
+         sma.getHumanReadableId());
 
       try {
          if (Strings.isValid(sma.getPcrId())) {
