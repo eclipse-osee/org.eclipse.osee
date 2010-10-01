@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.world;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Donald G. Dunne
@@ -20,6 +21,8 @@ public interface IWorldViewerEventHandler {
    public WorldXViewer getWorldXViewer();
 
    public void removeItems(Collection<? extends Object> objects);
+
+   public void relationsModifed(Collection<Artifact> relModifiedArts);
 
    public boolean isDisposed();
 

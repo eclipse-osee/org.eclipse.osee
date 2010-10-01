@@ -272,4 +272,8 @@ public class WorldComposite extends ScrolledComposite implements IWorldViewerEve
       return worldXViewer;
    }
 
+   @Override
+   public void relationsModifed(Collection<Artifact> relModifiedArts) {
+   }
+
 }

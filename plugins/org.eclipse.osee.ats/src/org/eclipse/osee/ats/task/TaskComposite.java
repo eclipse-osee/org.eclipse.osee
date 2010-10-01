@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
@@ -24,8 +25,8 @@ import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorAction.IOpenNewAtsTaskEd
 import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorSelected.IOpenNewAtsTaskEditorSelectedHandler;
 import org.eclipse.osee.ats.actions.TaskAddAction.ITaskAddActionHandler;
 import org.eclipse.osee.ats.actions.TaskDeleteAction.ITaskDeleteActionHandler;
-import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
+import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.config.AtsBulkLoad;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.AtsPlugin;
@@ -371,5 +372,14 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
    @Override
    public void removeItems(Collection<? extends Object> objects) {
       taskArts.removeAll(objects);
+   }
+
+   @Override
+   public void relationsModifed(Collection<Artifact> relModifiedArts) {
+      try {
+         loadTable();
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      }
    }
 }
