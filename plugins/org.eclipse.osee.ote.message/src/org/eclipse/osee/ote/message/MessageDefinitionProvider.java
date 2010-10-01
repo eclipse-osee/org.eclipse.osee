@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.message;
 
-import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -28,5 +26,5 @@ public interface MessageDefinitionProvider {
 
    String minorVersion();
 
-   InputStream getMetaInfo(String id) throws IOException;
+   void generateMessageIndex(MessageSink sink) throws Exception;
 }
