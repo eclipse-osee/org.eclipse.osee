@@ -34,7 +34,6 @@
       <import plugin="org.apache.log4j" version="1.2.15" match="greaterOrEqual"/>
       <import plugin="org.eclipse.emf.compare.diff" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.emf.compare.match" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.h2" version="1.1.117" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -128,11 +127,11 @@
          version="0.0.0"
          unpack="false"/>
 
-   <plugin
+  <!-- <plugin
          id="org.eclipse.osee.framework.h2"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>
+         unpack="false"/> -->
 
 </feature>
