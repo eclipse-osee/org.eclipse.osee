@@ -18,9 +18,9 @@ import org.eclipse.osee.ats.util.StateManager;
 import org.eclipse.osee.ats.util.widgets.defect.DefectManager;
 import org.eclipse.osee.ats.util.widgets.role.UserRole;
 import org.eclipse.osee.ats.util.widgets.role.UserRole.Role;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
@@ -37,7 +37,7 @@ public class PeerToPeerReviewArtifact extends AbstractReviewArtifact implements 
       Completed
    };
 
-   public PeerToPeerReviewArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeCoreException {
+   public PeerToPeerReviewArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
       defectManager = new DefectManager(this);
    }

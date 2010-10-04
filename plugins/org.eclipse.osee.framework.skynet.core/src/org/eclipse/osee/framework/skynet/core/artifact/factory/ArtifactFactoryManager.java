@@ -15,7 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
@@ -34,19 +34,21 @@ public final class ArtifactFactoryManager {
       new ExtensionDefinedObjects<ArtifactFactory>(EXTENSION_ID, ARTIFACT_FACTORY_EXTENSION, CLASSNAME_ATTRIBUTE);
 
    private static final DefaultArtifactFactory defaultArtifactFactory = new DefaultArtifactFactory();
-   private static Set<ArtifactType> eternalArtifactTypes = null;
+   private static Set<IArtifactType> eternalArtifactTypes = null;
 
-   public ArtifactFactory getFactory(String artifactTypeName) {
+   public ArtifactFactory getFactory(IArtifactType artifactType) {
       ArtifactFactory responsibleFactory = null;
       for (ArtifactFactory factory : getFactories()) {
-         if (factory.isResponsibleFor(artifactTypeName)) {
+         if (factory.isResponsibleFor(artifactType)) {
             if (responsibleFactory == null) {
                responsibleFactory = factory;
             } else {
                OseeLog.log(
                   Activator.class,
                   Level.SEVERE,
-                  "Multiple ArtifactFactories [" + responsibleFactory + "][" + factory + "]responsible for same artifact type [" + artifactTypeName + "].  Defaulting to DefaultArtifactFactory.");
+                  String.format(
+                     "Multiple ArtifactFactories [%s] [%s]responsible for same artifact type [%s].  Defaulting to DefaultArtifactFactory.",
+                     responsibleFactory, factory, artifactType));
                return getDefaultArtifactFactory();
             }
          }
@@ -57,9 +59,9 @@ public final class ArtifactFactoryManager {
       return getDefaultArtifactFactory();
    }
 
-   public static synchronized Collection<ArtifactType> getEternalArtifactTypes() {
+   public static synchronized Collection<IArtifactType> getEternalArtifactTypes() {
       if (eternalArtifactTypes == null) {
-         eternalArtifactTypes = new HashSet<ArtifactType>();
+         eternalArtifactTypes = new HashSet<IArtifactType>();
          for (ArtifactFactory factory : getFactories()) {
             eternalArtifactTypes.addAll(factory.getEternalArtifactTypes());
          }

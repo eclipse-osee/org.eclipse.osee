@@ -26,11 +26,11 @@ import org.eclipse.osee.ats.util.DefaultTeamState;
 import org.eclipse.osee.ats.util.StateManager;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.ats.util.widgets.XActionableItemsDam;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -53,7 +53,7 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IB
    private boolean targetedErrorLogged = false;
    private final AtsBranchManager branchMgr;
 
-   public TeamWorkFlowArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeCoreException {
+   public TeamWorkFlowArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
       registerAtsWorldRelation(AtsRelationTypes.TeamWorkflowToReview_Review);
       branchMgr = new AtsBranchManager(this);

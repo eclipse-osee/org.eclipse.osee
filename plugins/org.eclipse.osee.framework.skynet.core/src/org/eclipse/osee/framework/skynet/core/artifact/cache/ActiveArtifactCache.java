@@ -18,7 +18,6 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -119,7 +118,7 @@ public class ActiveArtifactCache extends AbstractArtifactCache {
       return asArtifact(getByGuid(artGuid, branch.getId()));
    }
 
-   public List<Artifact> getByType(ArtifactType artifactType) {
+   public List<Artifact> getByType(IArtifactType artifactType) {
       List<Artifact> items = new ArrayList<Artifact>();
       Collection<Object> cachedItems = byArtifactTypeCache.getValues(artifactType);
       if (cachedItems != null) {

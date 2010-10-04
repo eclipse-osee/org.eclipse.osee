@@ -69,9 +69,6 @@ public class OteClasspathContainer implements IClasspathContainer {
       this(oteClasspathContainer.containerPath, oteClasspathContainer.javaProject);
    }
 
-   /**
-    * @return
-    */
    private File recursivelyFindProjectFile(File file) {
 
       if (file == null) {
@@ -85,9 +82,6 @@ public class OteClasspathContainer implements IClasspathContainer {
       }
    }
 
-   /**
-    * @return
-    */
    private boolean fileIsDirectoryWithBin(File file) {
       if (file.isDirectory()) {
          File binChildFile = new File(file.getAbsoluteFile() + "/bin");
@@ -140,9 +134,6 @@ public class OteClasspathContainer implements IClasspathContainer {
       }
    }
 
-   /**
-    * @return
-    */
    private boolean projectMatchesClasspathFile(File projectFilePath) {
       String projectBeingResolvedName = javaProject.getPath().toString();
       String classpathFilePath = projectFilePath.getName();

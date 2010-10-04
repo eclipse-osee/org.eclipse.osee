@@ -42,15 +42,11 @@ public class AtsBranchObjectManager implements AtsAccessContextIdResolver {
       this.atsAccessServices = atsAccessServices;
    }
 
-   private ArtifactType getAssociatedArtifactType(Branch objectBranch) throws OseeCoreException {
-      Artifact assocArtifact = ArtifactQuery.getArtifactFromId(objectBranch.getAssociatedArtifactId(), atsBranch);
-      return assocArtifact.getArtifactType();
-   }
-
    public boolean isApplicable(Branch objectBranch) throws OseeCoreException {
       boolean result = false;
       if (!atsBranch.equals(objectBranch)) {
-         ArtifactType assocArtType = getAssociatedArtifactType(objectBranch);
+         ArtifactType assocArtType =
+            ArtifactQuery.getArtifactFromId(objectBranch.getAssociatedArtifactId(), atsBranch).getArtifactType();
          if (assocArtType != null) {
             result = assocArtType.inheritsFrom(AtsArtifactTypes.TeamWorkflow);
          }

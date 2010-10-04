@@ -218,7 +218,6 @@ public class Collections {
     * Cast objects to clazz
     * 
     * @param castOption if ALL, cast all and throw exception if cast fails; if MATCHING, only cast those of type clazz
-    * @return
     */
    private static <A extends Object> List<A> cast(Class<A> clazz, Collection<? extends Object> objects, CastOption castOption) {
       List<A> results = new ArrayList<A>(objects.size());

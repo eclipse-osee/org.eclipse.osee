@@ -167,7 +167,6 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
     * Since transitions can be defined by full ids or just page name (eg "Endorse"), check if pageId has namespace
     * characters and thus it's full name or add id to given pageId
     * 
-    * @return
     */
    private String getFullPageId(String pageId) {
       return pageId.contains(".") ? pageId : getId() + "." + pageId;

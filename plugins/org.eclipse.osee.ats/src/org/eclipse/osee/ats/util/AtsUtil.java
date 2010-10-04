@@ -50,7 +50,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.OseeGroup;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -265,8 +264,7 @@ public final class AtsUtil {
    public static void createATSAction(String initialDescription, String actionableItemName) {
       // Ensure actionable item is configured for ATS before continuing
       try {
-         AtsCacheManager.getSoleArtifactByName(ArtifactTypeManager.getType(AtsArtifactTypes.ActionableItem),
-            actionableItemName);
+         AtsCacheManager.getSoleArtifactByName(AtsArtifactTypes.ActionableItem, actionableItemName);
       } catch (ArtifactDoesNotExist ex) {
          AWorkbench.popup(
             "Configuration Error",

@@ -27,9 +27,6 @@ public final class ImageManager {
 
    public static final KeyedImage MISSING = new DefaultImage();
 
-   private ImageManager() {
-   }
-
    private static ImageRegistry getImageRegistry() {
       return Activator.getDefault().getImageRegistry();
    }

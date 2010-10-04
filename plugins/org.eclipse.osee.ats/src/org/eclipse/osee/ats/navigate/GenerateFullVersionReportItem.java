@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
@@ -87,8 +86,8 @@ public class GenerateFullVersionReportItem extends XNavigateItemAction {
       if (Strings.isValid(teamDefName)) {
          try {
             TeamDefinitionArtifact teamDef =
-               (TeamDefinitionArtifact) AtsCacheManager.getSoleArtifactByName(
-                  ArtifactTypeManager.getType(AtsArtifactTypes.TeamDefinition), teamDefName);
+               (TeamDefinitionArtifact) AtsCacheManager.getSoleArtifactByName(AtsArtifactTypes.TeamDefinition,
+                  teamDefName);
 
             if (teamDef != null) {
                return teamDef;

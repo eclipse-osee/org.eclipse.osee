@@ -17,8 +17,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -45,7 +45,7 @@ public final class UpdateArtifactTypeImage extends AbstractBlam {
    @Override
    public void runOperation(final VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       String filename = variableMap.getString(SELECT_IMAGE);
-      final ArtifactType artifactSubtypeDescriptor = variableMap.getArtifactType("Select Artifact Type");
+      final IArtifactType artifactSubtypeDescriptor = variableMap.getArtifactType("Select Artifact Type");
       if (Strings.isValid(filename)) {
          File imageFile = new File(filename);
          if (!imageFile.exists()) {

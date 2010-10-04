@@ -15,7 +15,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
@@ -26,21 +25,19 @@ public class FrameworkArtifactImageProvider extends ArtifactImageProvider {
 
    @Override
    public void init() throws OseeCoreException {
-      ArtifactImageManager.registerBaseImage("Root Artifact", FrameworkImage.ROOT_HIERARCHY, this);
-      ArtifactImageManager.registerBaseImage("Heading", FrameworkImage.HEADING, this);
-      ArtifactImageManager.registerBaseImage("Narrative", FrameworkImage.NARRITIVE, this);
-      ArtifactImageManager.registerBaseImage("Blam Workflow", FrameworkImage.BLAM, this);
+      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.RootArtifact, FrameworkImage.ROOT_HIERARCHY, this);
+      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.Heading, FrameworkImage.HEADING, this);
       ArtifactImageManager.registerBaseImage(CoreArtifactTypes.Folder, PluginUiImage.FOLDER, this);
       ArtifactImageManager.registerBaseImage(CoreArtifactTypes.User, FrameworkImage.USER, this);
-      ArtifactImageManager.registerBaseImage("Global Preferences", FrameworkImage.GEAR, this);
-      ArtifactImageManager.registerBaseImage("User Group", FrameworkImage.USERS, this);
-      ArtifactImageManager.registerBaseImage("Work Flow Definition", FrameworkImage.WORKFLOW, this);
-      ArtifactImageManager.registerBaseImage("Work Page Definition", FrameworkImage.PAGE, this);
-      ArtifactImageManager.registerBaseImage("Work Rule Definition", FrameworkImage.RULE, this);
-      ArtifactImageManager.registerBaseImage("Work Widget Definition", FrameworkImage.WIDGET, this);
-      ArtifactImageManager.registerBaseImage("Universal Group", FrameworkImage.GROUP, this);
+      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.GlobalPreferences, FrameworkImage.GEAR, this);
+      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.UserGroup, FrameworkImage.USERS, this);
+      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.WorkFlowDefinition, FrameworkImage.WORKFLOW, this);
+      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.WorkPageDefinition, FrameworkImage.PAGE, this);
+      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.WorkRuleDefinition, FrameworkImage.RULE, this);
+      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.WorkWidgetDefinition, FrameworkImage.WIDGET, this);
+      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.UniversalGroup, FrameworkImage.GROUP, this);
 
-      ArtifactImageManager.registerOverrideImageProvider(this, "User");
+      ArtifactImageManager.registerOverrideImageProvider(this, CoreArtifactTypes.User);
    }
 
    @Override
@@ -67,7 +64,7 @@ public class FrameworkArtifactImageProvider extends ArtifactImageProvider {
          } else if (UserManager.isUserCurrentUser(users)) {
             return ImageManager.getImage(FrameworkImage.USER_RED);
          } else {
-            return ArtifactImageManager.getImage(ArtifactTypeManager.getType("User"));
+            return ArtifactImageManager.getImage(CoreArtifactTypes.User);
          }
       }
       return null;

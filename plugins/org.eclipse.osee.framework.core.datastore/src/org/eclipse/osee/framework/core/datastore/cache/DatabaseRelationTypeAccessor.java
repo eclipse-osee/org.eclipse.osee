@@ -14,13 +14,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.datastore.internal.Activator;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.model.cache.IOseeCache;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.core.model.type.RelationTypeFactory;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
@@ -62,8 +62,8 @@ public class DatabaseRelationTypeAccessor extends AbstractDatabaseAccessor<Relat
             int bArtTypeId = chStmt.getInt("b_art_type_id");
             int multiplicityValue = chStmt.getInt("multiplicity");
             try {
-               ArtifactType artifactTypeSideA = artifactCache.getById(aArtTypeId);
-               ArtifactType artifactTypeSideB = artifactCache.getById(bArtTypeId);
+               IArtifactType artifactTypeSideA = artifactCache.getById(aArtTypeId);
+               IArtifactType artifactTypeSideB = artifactCache.getById(bArtTypeId);
                RelationTypeMultiplicity multiplicity =
                   RelationTypeMultiplicity.getRelationMultiplicity(multiplicityValue);
                String sideAName = chStmt.getString("a_name");

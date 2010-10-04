@@ -12,12 +12,13 @@ package org.eclipse.osee.framework.skynet.core.test.cases;
 
 import java.util.Collection;
 import java.util.HashSet;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.skynet.core.test.cases.ConflictTestManager.AttributeValue;
 
 class ConflictDefinition {
    final Collection<AttributeValue> values = new HashSet<AttributeValue>();
    final Collection<AttributeValue> newAttributes = new HashSet<AttributeValue>();
-   String artifactType;
+   IArtifactType artifactType;
    boolean sourceDelete;
    boolean destDelete;
    int rootArtifact;
@@ -26,7 +27,7 @@ class ConflictDefinition {
    boolean sourceModified = false;
    boolean destModified = false;
 
-   protected void setValues(String artifactType, boolean sourceDelete, boolean destDelete, int rootArtifact, int queryNumber) {
+   protected void setValues(IArtifactType artifactType, boolean sourceDelete, boolean destDelete, int rootArtifact, int queryNumber) {
       this.artifactType = artifactType;
       this.sourceDelete = sourceDelete;
       this.destDelete = destDelete;

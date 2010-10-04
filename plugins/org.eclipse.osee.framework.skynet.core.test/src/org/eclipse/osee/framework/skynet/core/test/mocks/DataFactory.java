@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.test.mocks.MockDataFactory;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
@@ -33,16 +34,16 @@ public final class DataFactory {
       // Utility Class
    }
 
-   public static IArtifact createArtifact(String name, String guid) {
+   public static IArtifact createArtifact(String name, String guid) throws OseeCoreException {
       int uniqueId = randomGenerator.nextInt();
       return createArtifact(uniqueId, name, guid, null, null);
    }
 
-   public static IArtifact createArtifact(int uniqueId, String name, String guid, Branch branch, ArtifactType artifactType) {
+   public static IArtifact createArtifact(int uniqueId, String name, String guid, Branch branch, ArtifactType artifactType) throws OseeCoreException {
       return new MockIArtifact(uniqueId, name, guid, branch, artifactType);
    }
 
-   public static IArtifact createArtifact(int uniqueId, String name, String guid, Branch branch) {
+   public static IArtifact createArtifact(int uniqueId, String name, String guid, Branch branch) throws OseeCoreException {
       return new MockIArtifact(uniqueId, name, guid, branch, null);
    }
 

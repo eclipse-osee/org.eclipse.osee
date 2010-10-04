@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -21,6 +20,7 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
@@ -92,10 +92,6 @@ public class ArtifactTypeManager {
       return getCache().getAll();
    }
 
-   public static boolean typeExists(String name) throws OseeCoreException {
-      return !getCache().getByName(name).isEmpty();
-   }
-
    public static ArtifactType getType(DefaultBasicGuidArtifact guidArt) throws OseeCoreException {
       return getTypeByGuid(guidArt.getArtTypeGuid());
    }
@@ -136,21 +132,6 @@ public class ArtifactTypeManager {
    }
 
    /**
-    * Get Artifact Types by type names.
-    * 
-    * @return Returns the types with a particular name
-    * @param artifactTypeNames names to get
-    * @throws OseeTypeDoesNotExist if any name in the artifactTypeNames does not match
-    */
-   public static List<IArtifactType> getTypes(Iterable<String> artifactTypeNames) throws OseeCoreException {
-      List<IArtifactType> artifactTypes = new ArrayList<IArtifactType>();
-      for (String artifactTypeName : artifactTypeNames) {
-         artifactTypes.add(getType(artifactTypeName));
-      }
-      return artifactTypes;
-   }
-
-   /**
     * @return Returns the descriptor with a particular name, null if it does not exist.
     */
    public static ArtifactType getType(int artTypeId) throws OseeCoreException {
@@ -161,18 +142,22 @@ public class ArtifactTypeManager {
       return artifactType;
    }
 
+   public static boolean inheritsFrom(IArtifactType artifactType, IArtifactType... parentTypes) throws OseeCoreException {
+      return getType(artifactType).inheritsFrom(parentTypes);
+   }
+
    /**
     * Get a new instance of type artifactTypeName
     */
    public static Artifact addArtifact(IArtifactType artifactType, IOseeBranch branch) throws OseeCoreException {
-      return makeNewArtifact(getType(artifactType), branch);
+      return makeNewArtifact(artifactType, branch);
    }
 
    /**
     * Get a new instance of type artifactTypeName and set it's name.
     */
    public static Artifact addArtifact(IArtifactType artifactType, IOseeBranch branch, String name) throws OseeCoreException {
-      Artifact artifact = makeNewArtifact(getType(artifactType), branch);
+      Artifact artifact = makeNewArtifact(artifactType, branch);
       artifact.setName(name);
       return artifact;
    }
@@ -183,10 +168,10 @@ public class ArtifactTypeManager {
     * 
     * @param branch branch on which artifact will be created
     * @return Return artifact reference
-    * @see ArtifactFactory#makeNewArtifact(Branch, ArtifactType, String, String, ArtifactProcessor)
+    * @see ArtifactFactory#makeNewArtifact(Branch, IArtifactType, String, String, ArtifactProcessor)
     */
    public static Artifact addArtifact(IArtifactType artifactType, Branch branch, String guid, String humandReadableId) throws OseeCoreException {
-      return makeNewArtifact(ArtifactTypeManager.getType(artifactType), branch, guid, humandReadableId);
+      return makeNewArtifact(artifactType, branch, guid, humandReadableId);
    }
 
    private static final String DELETE_VALID_ATTRIBUTE =
@@ -195,9 +180,9 @@ public class ArtifactTypeManager {
       "select count(1) from (select DISTINCT(art_id) FROM osee_artifact where art_type_id = ?) t1";
    private static final String DELETE_ARIFACT_TYPE = "delete from osee_artifact_type where art_type_id = ?";
 
-   public static void purgeArtifactType(final ArtifactType artifactType) throws OseeCoreException {
-      int artifactCount =
-         ConnectionHandler.runPreparedQueryFetchInt(0, COUNT_ARTIFACT_OCCURRENCE, artifactType.getId());
+   public static void purgeArtifactType(IArtifactType artifactType) throws OseeCoreException {
+      final int artifactTypeId = getTypeId(artifactType);
+      int artifactCount = ConnectionHandler.runPreparedQueryFetchInt(0, COUNT_ARTIFACT_OCCURRENCE, artifactTypeId);
 
       if (artifactCount != 0) {
          throw new OseeArgumentException(
@@ -208,9 +193,8 @@ public class ArtifactTypeManager {
 
          @Override
          protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
-            int artTypeId = artifactType.getId();
-            ConnectionHandler.runPreparedUpdate(connection, DELETE_VALID_ATTRIBUTE, artTypeId);
-            ConnectionHandler.runPreparedUpdate(connection, DELETE_ARIFACT_TYPE, artTypeId);
+            ConnectionHandler.runPreparedUpdate(connection, DELETE_VALID_ATTRIBUTE, artifactTypeId);
+            ConnectionHandler.runPreparedUpdate(connection, DELETE_ARIFACT_TYPE, artifactTypeId);
          }
 
       }.execute();
@@ -223,10 +207,11 @@ public class ArtifactTypeManager {
     * @param purgeArtifactTypes types to be converted and purged
     * @param newArtifactType new type to convert any existing artifacts of the old type
     */
-   public static void purgeArtifactTypesWithCheck(Collection<ArtifactType> purgeArtifactTypes, ArtifactType newArtifactType) throws OseeCoreException {
-      for (ArtifactType purgeArtifactType : purgeArtifactTypes) {
+   public static void purgeArtifactTypesWithCheck(Collection<? extends IArtifactType> purgeArtifactTypes, IArtifactType newArtifactType) throws OseeCoreException {
+      for (IArtifactType purgeArtifactType : purgeArtifactTypes) {
          // find all artifact of this type on all branches and make a unique list for type change (since it is not by branch)
-         List<Artifact> artifacts = ArtifactQuery.getArtifactListFromType(purgeArtifactType, INCLUDE_DELETED);
+         List<Artifact> artifacts =
+            ArtifactQuery.getArtifactListFromType(purgeArtifactType, DeletionFlag.INCLUDE_DELETED);
          if (artifacts.size() > 0) {
             HashMap<Integer, Artifact> artifactMap = new HashMap<Integer, Artifact>();
             for (Artifact artifact : artifacts) {
@@ -251,11 +236,12 @@ public class ArtifactTypeManager {
     * Run code that will be run during purge with convert and report on what relations, attributes will be deleted as
     * part of the conversion.
     */
-   public static void purgeArtifactTypesWithConversionReportOnly(StringBuffer results, Collection<ArtifactType> purgeArtifactTypes, ArtifactType newArtifactType) throws OseeCoreException {
+   public static void purgeArtifactTypesWithConversionReportOnly(StringBuffer results, Collection<IArtifactType> purgeArtifactTypes, IArtifactType newArtifactType) throws OseeCoreException {
       try {
-         for (ArtifactType purgeArtifactType : purgeArtifactTypes) {
+         for (IArtifactType purgeArtifactType : purgeArtifactTypes) {
             // find all artifact of this type on all branches and make a unique list for type change (since it is not by branch)
-            List<Artifact> artifacts = ArtifactQuery.getArtifactListFromType(purgeArtifactType, INCLUDE_DELETED);
+            List<Artifact> artifacts =
+               ArtifactQuery.getArtifactListFromType(purgeArtifactType, DeletionFlag.INCLUDE_DELETED);
             if (artifacts.size() > 0) {
                HashMap<Integer, Artifact> artifactMap = new HashMap<Integer, Artifact>();
                for (Artifact artifact : artifacts) {
@@ -279,16 +265,11 @@ public class ArtifactTypeManager {
     * branch.
     * 
     * @return Return artifact reference
-    * @see ArtifactFactory#makeNewArtifact(Branch, ArtifactType)
+    * @see ArtifactFactory#makeNewArtifact(IArtifactType, IOseeBranch)
     * @use {@link ArtifactTypeManager}.addArtifact
     */
-   public static Artifact makeNewArtifact(ArtifactType artifactType, IOseeBranch branch) throws OseeCoreException {
-      return getFactory(artifactType).makeNewArtifact(branch, artifactType, null, null, null);
-   }
-
    public static Artifact makeNewArtifact(IArtifactType artifactType, IOseeBranch branch) throws OseeCoreException {
-      return getFactory(artifactType).makeNewArtifact(branch, ArtifactTypeManager.getType(artifactType), null, null,
-         null);
+      return getFactory(artifactType).makeNewArtifact(branch, artifactType, null, null, null);
    }
 
    /**
@@ -298,10 +279,10 @@ public class ArtifactTypeManager {
     * 
     * @param branch branch on which artifact will be created
     * @return Return artifact reference
-    * @see ArtifactFactory#makeNewArtifact(Branch, ArtifactType, String, String, ArtifactProcessor)
+    * @see ArtifactFactory#makeNewArtifact(Branch, IArtifactType, String, String, ArtifactProcessor)
     * @use {@link ArtifactTypeManager}.addArtifact
     */
-   public static Artifact makeNewArtifact(ArtifactType artifactType, Branch branch, String guid, String humandReadableId) throws OseeCoreException {
+   public static Artifact makeNewArtifact(IArtifactType artifactType, Branch branch, String guid, String humandReadableId) throws OseeCoreException {
       return getFactory(artifactType).makeNewArtifact(branch, artifactType, guid, humandReadableId, null);
    }
 
@@ -312,6 +293,6 @@ public class ArtifactTypeManager {
       if (artifactType == null) {
          throw new OseeArgumentException("Artifact Type cannot be null");
       }
-      return factoryManager.getFactory(artifactType.getName());
+      return factoryManager.getFactory(artifactType);
    }
 }

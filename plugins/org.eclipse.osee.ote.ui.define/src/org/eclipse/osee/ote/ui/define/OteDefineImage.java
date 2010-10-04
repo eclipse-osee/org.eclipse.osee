@@ -37,7 +37,6 @@ public enum OteDefineImage implements KeyedImage {
    REMOVE_ALL("removeAll.gif"),
    SWITCHED("switched.gif"),
    TEST_CASE("file.gif"),
-   TEST_CONFIG("config.gif"),
    TEST_PROCEDURE("procedure.gif"),
    TEST_RUN("testrun.gif"),
    TEST_RUN_VIEW("testRunView.gif"),

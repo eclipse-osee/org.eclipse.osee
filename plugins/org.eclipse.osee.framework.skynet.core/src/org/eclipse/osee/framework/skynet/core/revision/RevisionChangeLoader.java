@@ -95,7 +95,6 @@ public final class RevisionChangeLoader {
     * Not Part of Change Report Acquires artifact, relation and attribute changes from a source branch since its
     * creation.
     * 
-    * @return
     */
    private Collection<Change> getChanges(Branch sourceBranch, TransactionRecord transactionId, IProgressMonitor monitor, Artifact specificArtifact) throws OseeCoreException {
       @SuppressWarnings("unused")

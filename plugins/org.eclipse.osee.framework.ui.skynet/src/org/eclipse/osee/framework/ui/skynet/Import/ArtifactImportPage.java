@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
@@ -29,6 +30,7 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.importing.ArtifactExtractorContributionManager;
@@ -83,11 +85,11 @@ public class ArtifactImportPage extends WizardDataTransferPage {
    private final RoughArtifactCollector collector;
    private final ArtifactExtractorContributionManager importContributionManager;
    private final SelectionLatch selectionLatch;
-   private final Collection<ArtifactType> selectedArtifactTypes;
+   private final Collection<IArtifactType> selectedArtifactTypes;
 
    protected ArtifactImportPage() {
       super(PAGE_NAME);
-      selectedArtifactTypes = new ArrayList<ArtifactType>();
+      selectedArtifactTypes = new ArrayList<IArtifactType>();
       selectionLatch = new SelectionLatch();
       collector = new RoughArtifactCollector(new RoughArtifact(RoughArtifactKind.PRIMARY));
       artifactSelectPanel = new ArtifactSelectPanel();
@@ -314,7 +316,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
       return artifactSelectPanel.getSelected();
    }
 
-   public ArtifactType getArtifactType() {
+   public IArtifactType getArtifactType() {
       return artifactTypeSelectPanel.getSelected();
    }
 
@@ -381,8 +383,8 @@ public class ArtifactImportPage extends WizardDataTransferPage {
          deleteUnmatchedArtifacts.setEnabled(toUpdate);
          if (toUpdate) {
             try {
-               attributeTypeSelectPanel.setAllowedAttributeTypes(getArtifactType().getAttributeTypes(
-                  getDestinationArtifact().getBranch()));
+               ArtifactType artType = ArtifactTypeManager.getType(getArtifactType());
+               attributeTypeSelectPanel.setAllowedAttributeTypes(artType.getAttributeTypes(getDestinationArtifact().getBranch()));
             } catch (OseeCoreException ex) {
                OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
@@ -439,8 +441,8 @@ public class ArtifactImportPage extends WizardDataTransferPage {
             artifactTypeSelectPanel.setAllowedArtifactTypes(selectedArtifactTypes);
             try {
                if (getArtifactType() != null) {
-                  attributeTypeSelectPanel.setAllowedAttributeTypes(getArtifactType().getAttributeTypes(
-                     getDestinationArtifact().getBranch()));
+                  ArtifactType specificArtifactType = ArtifactTypeManager.getType(getArtifactType());
+                  attributeTypeSelectPanel.setAllowedAttributeTypes(specificArtifactType.getAttributeTypes(getDestinationArtifact().getBranch()));
                }
             } catch (Exception ex) {
                OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);

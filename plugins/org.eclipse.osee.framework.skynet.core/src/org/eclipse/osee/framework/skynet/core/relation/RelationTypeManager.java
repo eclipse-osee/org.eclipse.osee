@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.relation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -33,7 +34,11 @@ public class RelationTypeManager {
       return Activator.getInstance().getOseeCacheService().getRelationTypeCache();
    }
 
-   public static List<RelationType> getValidTypes(ArtifactType artifactType, IOseeBranch branch) throws OseeCoreException {
+   public static AbstractOseeCache<ArtifactType> getArtifactTypeCache() {
+      return Activator.getInstance().getOseeCacheService().getArtifactTypeCache();
+   }
+
+   public static List<RelationType> getValidTypes(IArtifactType artifactType, IOseeBranch branch) throws OseeCoreException {
       Collection<RelationType> relationTypes = getAllTypes();
       List<RelationType> validRelationTypes = new ArrayList<RelationType>();
       for (RelationType relationType : relationTypes) {
@@ -48,9 +53,10 @@ public class RelationTypeManager {
       return validRelationTypes;
    }
 
-   public static int getRelationSideMax(RelationType relationType, ArtifactType artifactType, RelationSide relationSide) throws OseeCoreException {
+   public static int getRelationSideMax(RelationType relationType, IArtifactType artifactType, RelationSide relationSide) throws OseeCoreException {
       int toReturn = 0;
-      if (relationType.isArtifactTypeAllowed(relationSide, artifactType)) {
+      ArtifactType type = getArtifactTypeCache().get(artifactType);
+      if (relationType.isArtifactTypeAllowed(relationSide, type)) {
          toReturn = relationType.getMultiplicity().getLimit(relationSide);
       }
       return toReturn;

@@ -12,9 +12,9 @@ package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 
 import java.util.Collection;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -45,7 +45,7 @@ public class ArtifactTypeFilteredTreeEntryDialog extends ArtifactTypeFilteredTre
    }
 
    @Override
-   public void setInput(Collection<ArtifactType> input) {
+   public void setInput(Collection<? extends IArtifactType> input) {
       ArtifactTypeAccessProvder artifactTypeAccessProvder = new ArtifactTypeAccessProvder(accessService, branch, input);
       try {
          input = artifactTypeAccessProvder.getWritableTypes();

@@ -12,20 +12,14 @@ package org.eclipse.osee.framework.ui.skynet.Import;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -130,18 +124,8 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
    }
 
    private IArtifactImportResolver getResolver() {
-      ArtifactType primaryArtifactType = mainPage.getArtifactType();
-      Collection<AttributeType> nonChangingAttributes = mainPage.getNonChangingAttributes();
       MatchingStrategy strategy = mainPage.getMatchingStrategy();
-      try {
-         IArtifactImportResolver resolver =
-            strategy.getResolver(primaryArtifactType, nonChangingAttributes, true, mainPage.isDeleteUnmatchedSelected());
-         return resolver;
-      } catch (OseeCoreException ex) {
-         String msg = "getResolver() could not retrieve artifact type \"Heading\"";
-         ErrorDialog.openError(getContainer().getShell(), "Artifact Import", null, new Status(IStatus.ERROR,
-            SkynetGuiPlugin.PLUGIN_ID, msg, ex));
-         return null;
-      }
+      return strategy.getResolver(mainPage.getArtifactType(), mainPage.getNonChangingAttributes(), true,
+         mainPage.isDeleteUnmatchedSelected());
    }
 }

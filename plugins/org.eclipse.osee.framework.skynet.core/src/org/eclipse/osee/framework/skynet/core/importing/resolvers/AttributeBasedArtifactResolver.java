@@ -16,9 +16,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -33,7 +33,7 @@ public class AttributeBasedArtifactResolver extends NewArtifactImportResolver {
    private final Collection<AttributeType> nonChangingAttributes;
    private final boolean createNewIfNotExist;
 
-   public AttributeBasedArtifactResolver(ArtifactType primaryArtifactType, ArtifactType secondaryArtifactType, Collection<AttributeType> nonChangingAttributes, boolean createNewIfNotExist, boolean deleteUnmatchedArtifacts) {
+   public AttributeBasedArtifactResolver(IArtifactType primaryArtifactType, IArtifactType secondaryArtifactType, Collection<AttributeType> nonChangingAttributes, boolean createNewIfNotExist, boolean deleteUnmatchedArtifacts) {
       super(primaryArtifactType, secondaryArtifactType);
       this.nonChangingAttributes = nonChangingAttributes;
       this.createNewIfNotExist = createNewIfNotExist;

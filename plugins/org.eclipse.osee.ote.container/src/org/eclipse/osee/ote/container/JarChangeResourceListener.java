@@ -137,9 +137,6 @@ public class JarChangeResourceListener<T extends JarCollectionNature> implements
       }
    }
 
-   /**
-    * @return
-    */
    protected String generateEventString(int type) {
       switch (type) {
          case IResourceChangeEvent.POST_BUILD:

@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
@@ -192,8 +193,8 @@ public class RelationOrderRendererTest {
 
    private final static void addRelationTypeData(AbstractOseeCache<RelationType> cache) throws OseeCoreException {
       ArtifactTypeCache artCache = new ArtifactTypeCache(new MockOseeDataAccessor<ArtifactType>());
-      ArtifactType artifactType1 = createArtifactType(artCache, "Artifact 2");
-      ArtifactType artifactType2 = createArtifactType(artCache, "Artifact 1");
+      IArtifactType artifactType1 = createArtifactType(artCache, "Artifact 2");
+      IArtifactType artifactType2 = createArtifactType(artCache, "Artifact 1");
 
       createRelationType(cache, "Relation 1", artifactType1, artifactType2);
       createRelationType(cache, "Relation 2", artifactType1, artifactType2);
@@ -206,7 +207,7 @@ public class RelationOrderRendererTest {
       return artifactType;
    }
 
-   private final static void createRelationType(AbstractOseeCache<RelationType> cache, String name, ArtifactType artifactType1, ArtifactType artifactType2) throws OseeCoreException {
+   private final static void createRelationType(AbstractOseeCache<RelationType> cache, String name, IArtifactType artifactType1, IArtifactType artifactType2) throws OseeCoreException {
       RelationType type =
          new RelationType(GUID.create(), name, name + "_A", name + "_B", artifactType1, artifactType2,
             RelationTypeMultiplicity.MANY_TO_MANY, "");

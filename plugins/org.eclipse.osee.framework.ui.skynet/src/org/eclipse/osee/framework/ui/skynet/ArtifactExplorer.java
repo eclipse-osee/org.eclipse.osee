@@ -11,8 +11,6 @@
 
 package org.eclipse.osee.framework.ui.skynet;
 
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.RootArtifact;
-import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -39,10 +37,12 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -563,7 +563,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
                Artifact parent = getParent();
 
                if (dialog.open() == Window.OK) {
-                  ArtifactType type = dialog.getSelection();
+                  IArtifactType type = dialog.getSelection();
                   String name = dialog.getEntryValue();
 
                   SkynetTransaction transaction =
@@ -582,11 +582,10 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
          }
 
          private ArtifactTypeFilteredTreeEntryDialog getDialog() throws OseeCoreException {
-            Collection<ArtifactType> artifactTypes =
+            Collection<? extends IArtifactType> artifactTypes =
                ArtifactTypeManager.getConcreteArtifactTypes(branchSelect.getData());
 
-            ArtifactType rootArtifactType = ArtifactTypeManager.getType(RootArtifact);
-            artifactTypes.remove(rootArtifactType);
+            artifactTypes.remove(CoreArtifactTypes.RootArtifact);
 
             ArtifactTypeFilteredTreeEntryDialog dialog =
                new ArtifactTypeFilteredTreeEntryDialog(SkynetGuiPlugin.getInstance().getPolicyHandlerService(), branch,
@@ -1397,7 +1396,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
          } else {
             if (artifact.isHistorical()) {
                artifactData.setArtifact(ArtifactQuery.getArtifactFromId(artifact.getArtId(), artifact.getBranch(),
-                  EXCLUDE_DELETED));
+                  DeletionFlag.EXCLUDE_DELETED));
             }
 
             Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(artifact.getBranch());

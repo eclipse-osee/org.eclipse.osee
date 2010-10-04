@@ -21,9 +21,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 import junit.framework.Assert;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
@@ -238,16 +240,15 @@ public class RelationTypeSideSorterTest {
       return data;
    }
 
-   private static IArtifact createArtifact(String name, String guid) {
+   private static IArtifact createArtifact(String name, String guid) throws OseeCoreException {
       int uniqueId = randomGenerator.nextInt();
       Branch branch = new Branch(GUID.create(), name + " - branch", BranchType.WORKING, BranchState.MODIFIED, false);
-      ArtifactType artType = new ArtifactType(GUID.create(), name + " - art_type", false);
-      return new MockArtifactWithRelations(uniqueId, name, guid, branch, artType);
+      return new MockArtifactWithRelations(uniqueId, name, guid, branch, CoreArtifactTypes.Artifact);
    }
 
    private static RelationType createRelationType(RelationTypeCache cache, String name, String delationRelationOrderGuid) throws OseeCoreException {
-      ArtifactType type1 = new ArtifactType(GUID.create(), "1", false);
-      ArtifactType type2 = new ArtifactType(GUID.create(), "2", false);
+      IArtifactType type1 = new ArtifactType(GUID.create(), "1", false);
+      IArtifactType type2 = new ArtifactType(GUID.create(), "2", false);
       RelationType relationType =
          new RelationType(GUID.create(), name, name + "_A", name + "_B", type1, type2,
             RelationTypeMultiplicity.MANY_TO_MANY, delationRelationOrderGuid);
@@ -295,7 +296,7 @@ public class RelationTypeSideSorterTest {
    private static final class MockArtifactWithRelations extends MockIArtifact {
       private final Map<RelationType, List<? extends IArtifact>> relatedItemsMap;
 
-      public MockArtifactWithRelations(int uniqueId, String name, String guid, Branch branch, ArtifactType artifactType) {
+      public MockArtifactWithRelations(int uniqueId, String name, String guid, Branch branch, IArtifactType artifactType) throws OseeCoreException {
          super(uniqueId, name, guid, branch, artifactType);
          this.relatedItemsMap = new HashMap<RelationType, List<? extends IArtifact>>();
       }

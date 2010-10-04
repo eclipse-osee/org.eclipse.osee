@@ -14,21 +14,23 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.eclipse.osee.framework.core.data.IArtifactType;
+
 /**
  * @author Roberto E. Escobar
  */
 public class TraceUnit {
-   private final String traceUnitType;
+   private final IArtifactType traceUnitType;
    private final String name;
    private final Collection<TraceMark> traceMarks;
 
-   public TraceUnit(String traceUnitType, String name) {
+   public TraceUnit(IArtifactType traceUnitType, String name) {
       this.name = name;
       this.traceUnitType = traceUnitType;
       this.traceMarks = new HashSet<TraceMark>();
    }
 
-   public String getTraceUnitType() {
+   public IArtifactType getTraceUnitType() {
       return traceUnitType;
    }
 

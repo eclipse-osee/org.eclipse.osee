@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.internal.accessors;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.RelationTypeCacheUpdateResponse;
@@ -56,8 +57,8 @@ public class ClientRelationTypeAccessor extends AbstractClientDataAccessor<Relat
 
       RelationTypeFactory factory = getFactory();
       for (RelationTypeRow row : response.getRelationTypeRows()) {
-         ArtifactType aSideType = artCache.getById(row.getArtifactTypeSideA());
-         ArtifactType bSideType = artCache.getById(row.getArtifactTypeSideB());
+         IArtifactType aSideType = artCache.getById(row.getArtifactTypeSideA());
+         IArtifactType bSideType = artCache.getById(row.getArtifactTypeSideB());
 
          RelationType type =
             factory.createOrUpdate(cache, row.getId(), row.getStorageState(), row.getGuid(), row.getName(),

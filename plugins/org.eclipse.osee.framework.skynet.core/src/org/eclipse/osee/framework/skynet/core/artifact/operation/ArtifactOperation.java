@@ -12,9 +12,9 @@ package org.eclipse.osee.framework.skynet.core.artifact.operation;
 
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 
@@ -22,10 +22,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
  * @author Ryan D. Brooks
  */
 public abstract class ArtifactOperation extends Artifact implements WorkflowStep {
-   public static final String PROVIDES_ACCEPTABLE_INPUT = "Provides Acceptable Input";
-   public static final String ARTIFACT_NAME = "Artifact Operation";
-
-   public ArtifactOperation(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeCoreException {
+   public ArtifactOperation(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
 
@@ -37,14 +34,6 @@ public abstract class ArtifactOperation extends Artifact implements WorkflowStep
     * @return may return null because the engine will use an empty list in this case
     */
    public abstract List<Artifact> applyToArtifacts(List<Artifact> artifacts, IProgressMonitor monitor) throws IllegalArgumentException, Exception;
-
-   /**
-    * @return returns PROVIDES_ACCEPTABLE_INPUT if this operation can run after, i.e. accept input from, the given
-    * operation, otherwise returns a human readable reason why the input can not be accepted
-    */
-   public String canAcceptInputFrom(ArtifactOperation operation) {
-      return PROVIDES_ACCEPTABLE_INPUT;
-   }
 
    @Override
    public List<Artifact> perform(List<Artifact> artifacts, IProgressMonitor monitor) throws IllegalArgumentException, Exception {

@@ -12,19 +12,14 @@
 package org.eclipse.osee.framework.ui.skynet.skywalker.arttype;
 
 import java.util.Iterator;
-import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactTypeLabelProvider;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -68,8 +63,8 @@ public class ArtifactTypeWalker extends ViewPart {
             Iterator<?> itemsIter = selection.iterator();
             while (itemsIter.hasNext()) {
                Object obj = itemsIter.next();
-               if (obj instanceof ArtifactType) {
-                  explore((ArtifactType) obj);
+               if (obj instanceof IArtifactType) {
+                  explore((IArtifactType) obj);
                }
             }
          }
@@ -79,7 +74,7 @@ public class ArtifactTypeWalker extends ViewPart {
       refresh();
    }
 
-   private void explore(ArtifactType artifactType) {
+   private void explore(IArtifactType artifactType) {
       viewer.setInput(artifactType);
       GraphItem item = viewer.findGraphItem(artifactType);
       if (item != null && item instanceof GraphNode) {
@@ -109,11 +104,7 @@ public class ArtifactTypeWalker extends ViewPart {
    }
 
    public void refresh() {
-      try {
-         explore(ArtifactTypeManager.getType(CoreArtifactTypes.Artifact));
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-      }
+      explore(CoreArtifactTypes.Artifact);
    }
 
    @Override

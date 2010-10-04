@@ -349,7 +349,7 @@ public class RelationCacheTest {
       }
    }
 
-   private static IArtifact createArtifact(int id, Branch branch) {
+   private static IArtifact createArtifact(int id, Branch branch) throws OseeCoreException {
       return DataFactory.createArtifact(id, "Art-" + id, GUID.create(), branch);
    }
 

@@ -28,9 +28,9 @@ import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -184,7 +184,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       artifactTypeList.setSorter(new SearchSorter());
 
       try {
-         for (ArtifactType descriptor : ArtifactTypeManager.getValidArtifactTypes(getSelectedBranch())) {
+         for (IArtifactType descriptor : ArtifactTypeManager.getValidArtifactTypes(getSelectedBranch())) {
             artifactTypeList.add(descriptor.getName());
             artifactTypeList.setData(descriptor.getName(), descriptor);
          }

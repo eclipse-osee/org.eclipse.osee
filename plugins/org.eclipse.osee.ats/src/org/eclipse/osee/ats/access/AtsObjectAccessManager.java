@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * This class will return access context ids for ATS Objects stored on Common branch
@@ -38,7 +39,8 @@ public class AtsObjectAccessManager implements AtsAccessContextIdResolver {
    /**
     * Return context id for editing ATS Objects on common branch
     */
-   public AccessContextId getContextId(ArtifactType artifactType, boolean isAdmin) {
+   public AccessContextId getContextId(Artifact artifact, boolean isAdmin) {
+      ArtifactType artifactType = artifact.getArtifactType();
       AccessContextId toReturn = null;
       try {
          if (artifactType.inheritsFrom(CoreArtifactTypes.WorkItemDefinition)) {

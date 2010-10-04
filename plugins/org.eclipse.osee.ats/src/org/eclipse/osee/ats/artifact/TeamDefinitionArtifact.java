@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.commit.ICommitConfigArtifact;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions.RuleWorkItemId;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -35,7 +36,6 @@ import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -61,7 +61,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
       RequireTargetedVersion
    };
 
-   public TeamDefinitionArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeCoreException {
+   public TeamDefinitionArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
 
@@ -200,8 +200,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
    }
 
    public static List<TeamDefinitionArtifact> getTeamDefinitions(Active active) throws OseeCoreException {
-      return Collections.castAll(AtsCacheManager.getArtifactsByActive(
-         ArtifactTypeManager.getType(AtsArtifactTypes.TeamDefinition), active));
+      return Collections.castAll(AtsCacheManager.getArtifactsByActive(AtsArtifactTypes.TeamDefinition, active));
    }
 
    public static List<TeamDefinitionArtifact> getTeamTopLevelDefinitions(Active active) throws OseeCoreException {
@@ -495,8 +494,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
    public static Set<TeamDefinitionArtifact> getTeamDefinitions(Collection<String> teamDefNames) throws OseeCoreException {
       Set<TeamDefinitionArtifact> teamDefs = new HashSet<TeamDefinitionArtifact>();
       for (String teamDefName : teamDefNames) {
-         for (Artifact artifact : AtsCacheManager.getArtifactsByName(
-            ArtifactTypeManager.getType(AtsArtifactTypes.TeamDefinition), teamDefName)) {
+         for (Artifact artifact : AtsCacheManager.getArtifactsByName(AtsArtifactTypes.TeamDefinition, teamDefName)) {
             teamDefs.add((TeamDefinitionArtifact) artifact);
          }
       }

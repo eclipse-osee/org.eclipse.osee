@@ -11,9 +11,9 @@
 package org.eclipse.osee.framework.skynet.core.importing.resolvers;
 
 import java.util.List;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 
@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 public class GuidBasedArtifactResolver extends NewArtifactImportResolver {
    private final boolean createNewIfNotExist;
 
-   public GuidBasedArtifactResolver(ArtifactType primaryArtifactType, ArtifactType secondaryArtifactType, boolean createNewIfNotExist, boolean deleteUnmatchedArtifacts) {
+   public GuidBasedArtifactResolver(IArtifactType primaryArtifactType, IArtifactType secondaryArtifactType, boolean createNewIfNotExist, boolean deleteUnmatchedArtifacts) {
       super(primaryArtifactType, secondaryArtifactType);
       this.createNewIfNotExist = createNewIfNotExist;
    }

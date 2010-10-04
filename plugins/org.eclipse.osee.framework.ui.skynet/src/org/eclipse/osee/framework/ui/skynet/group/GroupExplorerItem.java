@@ -54,9 +54,6 @@ public class GroupExplorerItem implements IAdaptable {
       return false;
    }
 
-   /**
-    * @return
-    */
    private List<GroupExplorerItem> getGroupItemsCached() {
       return groupItems;
    }

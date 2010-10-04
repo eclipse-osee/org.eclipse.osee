@@ -15,7 +15,7 @@ import java.util.Collection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
@@ -34,8 +34,8 @@ import org.eclipse.ui.dialogs.PatternFilter;
 /**
  * @author Donald G. Dunne
  */
-public class ArtifactTypeFilteredTreeDialog extends OSEEFilteredTreeDialog<Collection<ArtifactType>> {
-   private ArtifactType selection;
+public class ArtifactTypeFilteredTreeDialog extends OSEEFilteredTreeDialog<Collection<? extends IArtifactType>> {
+   private IArtifactType selection;
 
    public ArtifactTypeFilteredTreeDialog(String title, String message) {
       super(title, message, new ArtifactTypeLabelProvider(), new ArrayTreeContentProvider(), new PatternFilter());
@@ -56,7 +56,7 @@ public class ArtifactTypeFilteredTreeDialog extends OSEEFilteredTreeDialog<Colle
                   selection = null;
                } else {
                   selection =
-                     (ArtifactType) ((IStructuredSelection) getTreeViewer().getViewer().getSelection()).getFirstElement();
+                     (IArtifactType) ((IStructuredSelection) getTreeViewer().getViewer().getSelection()).getFirstElement();
                }
             }
          });
@@ -91,7 +91,7 @@ public class ArtifactTypeFilteredTreeDialog extends OSEEFilteredTreeDialog<Colle
    /**
     * @return the selection
     */
-   public ArtifactType getSelection() {
+   public IArtifactType getSelection() {
       return selection;
    }
 }

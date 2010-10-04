@@ -19,6 +19,7 @@ import java.nio.CharBuffer;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
+
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
@@ -185,7 +186,7 @@ public class UriResourceContentFinder {
       return toReturn;
    }
 
-   private void notifyListeners(final IResourceLocator locator, final URI uriPath, final String fileName, final CharBuffer fileBuffer) {
+   private void notifyListeners(final IResourceLocator locator, final URI uriPath, final String fileName, final CharBuffer fileBuffer) throws OseeCoreException {
       for (IResourceHandler handler : locatorMap.getValues(locator)) {
          handler.onResourceFound(uriPath, fileName, fileBuffer);
       }

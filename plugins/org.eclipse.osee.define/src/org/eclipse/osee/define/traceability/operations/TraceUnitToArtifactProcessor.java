@@ -27,13 +27,13 @@ import org.eclipse.osee.define.traceability.data.RequirementData;
 import org.eclipse.osee.define.traceability.data.TestUnitData;
 import org.eclipse.osee.define.traceability.data.TraceMark;
 import org.eclipse.osee.define.traceability.data.TraceUnit;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.plugin.core.util.IExceptionableRunnable;
@@ -102,9 +102,8 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
       }
    }
 
-   private Artifact getArtifactFromCache(IProgressMonitor monitor, String artifactTypeName, String name) throws OseeCoreException {
-      ArtifactType typeValue = ArtifactTypeManager.getType(artifactTypeName);
-      if (typeValue.inheritsFrom(CoreArtifactTypes.TestUnit)) {
+   private Artifact getArtifactFromCache(IProgressMonitor monitor, IArtifactType artifactType, String name) {
+      if (artifactType.equals(CoreArtifactTypes.TestUnit)) {
          if (testUnitData == null) {
             testUnitData = new TestUnitData(importIntoBranch);
             if (!monitor.isCanceled()) {
@@ -112,7 +111,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
             }
          }
          return testUnitData.getTestUnitByName(name);
-      } else if (typeValue.inheritsFrom(CoreArtifactTypes.CodeUnit)) {
+      } else if (artifactType.equals(CoreArtifactTypes.CodeUnit)) {
          if (codeUnitData == null) {
             codeUnitData = new CodeUnitData(importIntoBranch);
             if (!monitor.isCanceled()) {
@@ -132,13 +131,10 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
       boolean hasChange = false;
       boolean artifactWasCreated = false;
       boolean wasRelated = false;
-      String traceUnitType = traceUnit.getTraceUnitType();
-
-      Artifact traceUnitArtifact = getArtifactFromCache(monitor, traceUnitType, traceUnit.getName());
+      Artifact traceUnitArtifact = getArtifactFromCache(monitor, traceUnit.getTraceUnitType(), traceUnit.getName());
       if (traceUnitArtifact == null) {
          traceUnitArtifact =
-            ArtifactTypeManager.addArtifact(ArtifactTypeManager.getType(traceUnit.getTraceUnitType()),
-               transaction.getBranch(), traceUnit.getName());
+            ArtifactTypeManager.addArtifact(traceUnit.getTraceUnitType(), transaction.getBranch(), traceUnit.getName());
          artifactWasCreated = true;
       }
 
@@ -183,7 +179,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
       return traceType.equalsIgnoreCase("USES");
    }
 
-   private IRelationEnumeration getRelationFromTraceType(Artifact traceUnitArtifact, String traceType) throws OseeCoreException {
+   private IRelationEnumeration getRelationFromTraceType(Artifact traceUnitArtifact, String traceType) {
       if (traceUnitArtifact.isOfType(CoreArtifactTypes.TestUnit)) {
          if (isUsesTraceType(traceType)) {
             return CoreRelationTypes.Uses__TestUnit;
@@ -324,7 +320,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
    private final class ResultEditorProvider implements IResultsEditorProvider {
 
       @Override
-      public String getEditorName() throws OseeCoreException {
+      public String getEditorName() {
          return "Trace Units To Artifacts Report";
       }
 
@@ -358,7 +354,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
                for (TraceMark traceMark : traceMarks) {
                   rows.add(new ResultsXViewerRow(new String[] {
                      unit.getName(),
-                     unit.getTraceUnitType(),
+                     unit.getTraceUnitType().getName(),
                      traceMark.getTraceType(),
                      traceMark.getRawTraceMark()}));
                }
@@ -382,7 +378,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
       }
 
       @Override
-      public List<IResultsEditorTab> getResultsEditorTabs() throws OseeCoreException {
+      public List<IResultsEditorTab> getResultsEditorTabs() {
          List<IResultsEditorTab> toReturn = new ArrayList<IResultsEditorTab>();
          addTraceNotFoundTab(toReturn);
          addUnRelatedTraceUnit(toReturn);

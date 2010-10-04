@@ -66,18 +66,12 @@ public class OteClasspathContainer implements IClasspathContainer, IUserLibListe
 
    }
 
-   /**
-    * @return
-    */
    private String findProjectRoot(String path) {
       File fileForPath = new File(path);
       File projectFile = recursivelyFindProjectFile(fileForPath);
       return projectFile.getAbsolutePath();
    }
 
-   /**
-    * @return
-    */
    private File recursivelyFindProjectFile(File file) {
 
       if (file == null) {
@@ -91,9 +85,6 @@ public class OteClasspathContainer implements IClasspathContainer, IUserLibListe
       }
    }
 
-   /**
-    * @return
-    */
    private boolean fileIsDirectoryWithBin(File file) {
       if (file.isDirectory()) {
          File binChildFile = new File(file.getAbsoluteFile() + "/bin");
@@ -104,9 +95,6 @@ public class OteClasspathContainer implements IClasspathContainer, IUserLibListe
       return false;
    }
 
-   /**
-    * @return
-    */
    private String getWorkspaceRelativePath(String absolutePath) {
       return absolutePath;
    }

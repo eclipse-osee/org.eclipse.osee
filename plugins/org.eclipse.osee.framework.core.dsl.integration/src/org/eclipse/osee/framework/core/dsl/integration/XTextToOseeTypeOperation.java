@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.dsl.integration.internal.Activator;
 import org.eclipse.osee.framework.core.dsl.integration.util.OseeUtil;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AddEnum;
@@ -160,7 +161,7 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
    private void translateXArtifactType(XArtifactType xArtifactType) throws OseeCoreException {
       String artifactTypeName = Strings.unquote(xArtifactType.getName());
 
-      ArtifactType oseeArtifactType =
+      IArtifactType oseeArtifactType =
          provider.getArtifactTypeFactory().createOrUpdate(typeCache.getArtifactTypeCache(),
             xArtifactType.getTypeGuid(), xArtifactType.isAbstract(), artifactTypeName);
       xArtifactType.setTypeGuid(oseeArtifactType.getGuid());
@@ -256,8 +257,8 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
       String sideATypeName = Strings.unquote(xRelationType.getSideAArtifactType().getName());
       String sideBTypeName = Strings.unquote(xRelationType.getSideBArtifactType().getName());
 
-      ArtifactType sideAType = typeCache.getArtifactTypeCache().getUniqueByName(sideATypeName);
-      ArtifactType sideBType = typeCache.getArtifactTypeCache().getUniqueByName(sideBTypeName);
+      IArtifactType sideAType = typeCache.getArtifactTypeCache().getUniqueByName(sideATypeName);
+      IArtifactType sideBType = typeCache.getArtifactTypeCache().getUniqueByName(sideBTypeName);
 
       RelationType oseeRelationType =
          provider.getRelationTypeFactory().createOrUpdate(typeCache.getRelationTypeCache(), //

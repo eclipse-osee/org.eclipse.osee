@@ -96,9 +96,6 @@ public class JarChangeResourceListener<T extends JarCollectionNature> implements
       }
    }
 
-   /**
-    * @return
-    */
    private boolean isModifyingChange(IResourceDelta pluginDelta) {
       boolean synch = (pluginDelta.getFlags() & IResourceDelta.SYNC) != 0;
       //		boolean content = (pluginDelta.getFlags() & IResourceDelta.CONTENT) != 0;
@@ -158,9 +155,6 @@ public class JarChangeResourceListener<T extends JarCollectionNature> implements
       }
    }
 
-   /**
-    * @return
-    */
    protected String generateEventString(int type) {
       switch (type) {
          case IResourceChangeEvent.POST_BUILD:

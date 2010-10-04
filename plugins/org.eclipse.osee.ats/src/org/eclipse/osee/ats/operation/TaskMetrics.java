@@ -26,9 +26,9 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.SMAState;
 import org.eclipse.osee.ats.util.widgets.XCurrentStateDam;
 import org.eclipse.osee.ats.util.widgets.XStateDam;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.jdk.core.type.MutableInteger;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
@@ -69,7 +69,7 @@ public class TaskMetrics extends AbstractBlam {
          monitor.beginTask("TaskMetrics", 5);
          metrics.clear();
 
-         ArtifactType artifctType = variableMap.getArtifactType("Artifact Type");
+         IArtifactType artifctType = variableMap.getArtifactType("Artifact Type");
 
          List<Artifact> artifacts = ArtifactQuery.getArtifactListFromType(artifctType, AtsUtil.getAtsBranch());
          Set<Artifact> tasks = RelationManager.getRelatedArtifacts(artifacts, 1, AtsRelationTypes.SmaToTask_Task);

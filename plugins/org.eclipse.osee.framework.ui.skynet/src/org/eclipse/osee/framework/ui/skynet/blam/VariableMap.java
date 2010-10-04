@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
@@ -45,7 +46,7 @@ public class VariableMap {
       variableMap.put(variableName, value);
    }
 
-   public ArtifactType getArtifactType(String parameterName) throws OseeArgumentException {
+   public IArtifactType getArtifactType(String parameterName) throws OseeArgumentException {
       return getSingleCollectionValue(ArtifactType.class, parameterName);
    }
 

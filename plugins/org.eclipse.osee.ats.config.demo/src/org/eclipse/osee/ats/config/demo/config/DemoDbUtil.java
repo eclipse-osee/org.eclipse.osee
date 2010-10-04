@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.config.demo.artifact.DemoCodeTeamWorkflowArtifact;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.config.demo.internal.OseeAtsConfigDemoActivator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.support.test.util.DemoArtifactTypes;
 import org.eclipse.osee.support.test.util.DemoUsers;
 
 /**
@@ -37,20 +38,18 @@ import org.eclipse.osee.support.test.util.DemoUsers;
 public class DemoDbUtil {
 
    public static String INTERFACE_INITIALIZATION = "Interface Initialization";
-   private static List<DemoCodeTeamWorkflowArtifact> codeArts;
+   private static List<TeamWorkFlowArtifact> codeArts;
 
-   public static List<DemoCodeTeamWorkflowArtifact> getSampleCodeWorkflows() throws OseeCoreException {
+   public static List<TeamWorkFlowArtifact> getSampleCodeWorkflows() throws OseeCoreException {
       if (codeArts == null) {
-         codeArts = new ArrayList<DemoCodeTeamWorkflowArtifact>();
+         codeArts = new ArrayList<TeamWorkFlowArtifact>();
          for (String actionName : new String[] {
             "SAW (committed) Reqt Changes for Diagram View",
             "SAW (uncommitted) More Reqt Changes for Diagram View"}) {
-            DemoCodeTeamWorkflowArtifact codeArt = null;
             for (Artifact art : ArtifactQuery.getArtifactListFromName(actionName, AtsUtil.getAtsBranch(),
                EXCLUDE_DELETED)) {
-               if (art instanceof DemoCodeTeamWorkflowArtifact) {
-                  codeArt = (DemoCodeTeamWorkflowArtifact) art;
-                  codeArts.add(codeArt);
+               if (art.isOfType(DemoArtifactTypes.DemoCodeTeamWorkflow)) {
+                  codeArts.add((TeamWorkFlowArtifact) art);
                }
             }
          }

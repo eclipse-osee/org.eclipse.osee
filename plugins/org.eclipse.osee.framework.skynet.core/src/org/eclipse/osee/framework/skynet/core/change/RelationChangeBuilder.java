@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.change;
 
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
@@ -28,7 +28,7 @@ public class RelationChangeBuilder extends ChangeBuilder {
    private final String rationale;
    private final RelationType relationType;
 
-   public RelationChangeBuilder(Branch branch, ArtifactType artifactType, int sourceGamma, int artId, TransactionDelta txDelta, ModificationType modType, int bArtId, int relLinkId, String rationale, RelationType relationType, boolean isHistorical) {
+   public RelationChangeBuilder(Branch branch, IArtifactType artifactType, int sourceGamma, int artId, TransactionDelta txDelta, ModificationType modType, int bArtId, int relLinkId, String rationale, RelationType relationType, boolean isHistorical) {
       super(branch, artifactType, sourceGamma, artId, txDelta, modType, isHistorical);
       this.bArtId = bArtId;
       this.relLinkId = relLinkId;

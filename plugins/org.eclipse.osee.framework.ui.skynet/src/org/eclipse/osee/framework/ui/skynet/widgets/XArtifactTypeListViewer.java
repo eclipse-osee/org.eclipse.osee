@@ -11,11 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.util.ArrayList;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 
 /**
  * @author Jeff C. Phillips
@@ -23,7 +19,11 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 public class XArtifactTypeListViewer extends XTypeListViewer {
    private static final String NAME = "XArtifactTypeListViewer";
 
-   public XArtifactTypeListViewer(String keyedBranchName, String defaultValue) {
+   public XArtifactTypeListViewer(String keyedBranchName) {
+      this(keyedBranchName, null);
+   }
+
+   public XArtifactTypeListViewer(String keyedBranchName, IArtifactType artifactType) {
       super(NAME);
 
       setContentProvider(new DefaultBranchContentProvider(new ArtifactTypeContentProvider(),
@@ -33,13 +33,8 @@ public class XArtifactTypeListViewer extends XTypeListViewer {
 
       setInput(input);
 
-      if (defaultValue != null) {
-         try {
-            ArtifactType artifactType = ArtifactTypeManager.getType(defaultValue);
-            setDefaultSelected(artifactType);
-         } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-         }
+      if (artifactType != null) {
+         setDefaultSelected(artifactType);
       }
    }
 }

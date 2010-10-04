@@ -19,9 +19,7 @@ import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -37,9 +35,6 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
  */
 public class OseeDataTypeDatastore {
    private static final String SELECT_ATTRIBUTE_VALIDITY = "SELECT * FROM osee_artifact_type_attributes";
-
-   private OseeDataTypeDatastore() {
-   }
 
    public static List<AttributeDataType> getAttributeTypes() throws OseeCoreException {
       List<AttributeDataType> attributeDataTypes = new ArrayList<AttributeDataType>();
@@ -93,31 +88,6 @@ public class OseeDataTypeDatastore {
       } finally {
          chStmt.close();
       }
-      return toReturn;
-   }
-
-   public static CompositeKeyHashMap<String, String, Pair<Integer, Integer>> getArtifactToRelationEntries() throws OseeCoreException {
-      CompositeKeyHashMap<String, String, Pair<Integer, Integer>> toReturn =
-         new CompositeKeyHashMap<String, String, Pair<Integer, Integer>>();
-      //      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
-      //      try {
-      //         chStmt.runPreparedQuery(2000, SELECT_RELATION_VALIDITY);
-      //         while (chStmt.next()) {
-      //            try {
-      //               Pair<String, String> key =
-      //                     new Pair<String, String>(chStmt.getString("art_type_id"), chStmt.getString("rel_link_type_id"));
-      //
-      //               Pair<Integer, Integer> multiplicity =
-      //                     new Pair<Integer, Integer>(chStmt.getInt("side_a_max"), chStmt.getInt("side_b_max"));
-      //
-      //               toReturn.put(key, multiplicity);
-      //            } catch (OseeCoreException ex) {
-      //               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-      //            }
-      //         }
-      //      } finally {
-      //         chStmt.close();
-      //      }
       return toReturn;
    }
 

@@ -134,9 +134,6 @@ public class JarCollectionNature implements IProjectNature {
       return paths;
    }
 
-   /**
-    * @return
-    */
    private Manifest getManifestFile() {
       try {
          File manifestFile = project.getLocation().append("META-INF").append("MANIFEST.MF").toFile();

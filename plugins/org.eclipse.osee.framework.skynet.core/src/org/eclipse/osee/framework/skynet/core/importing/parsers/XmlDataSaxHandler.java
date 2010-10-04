@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.importing.parsers;
 
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
@@ -24,9 +24,9 @@ public class XmlDataSaxHandler extends AbstractSaxHandler {
    private int level = 0;
    private RoughArtifact roughArtifact;
    private final RoughArtifactCollector collector;
-   private final ArtifactType primaryArtifactType;
+   private final IArtifactType primaryArtifactType;
 
-   public XmlDataSaxHandler(RoughArtifactCollector collector, ArtifactType primaryArtifactType) {
+   public XmlDataSaxHandler(RoughArtifactCollector collector, IArtifactType primaryArtifactType) {
       super();
       this.collector = collector;
       this.primaryArtifactType = primaryArtifactType;

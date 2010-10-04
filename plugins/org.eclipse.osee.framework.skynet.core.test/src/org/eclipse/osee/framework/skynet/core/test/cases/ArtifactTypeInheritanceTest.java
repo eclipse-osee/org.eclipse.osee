@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import junit.framework.Assert;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -31,23 +32,21 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 public class ArtifactTypeInheritanceTest {
    @org.junit.Test
    public void testIsOfTypeWithNull() throws OseeCoreException {
-      ArtifactType baseArtifactType = ArtifactTypeManager.getType("Artifact");
+      ArtifactType baseArtifactType = ArtifactTypeManager.getType(CoreArtifactTypes.Artifact);
       Assert.assertFalse(baseArtifactType.inheritsFrom((ArtifactType) null));
    }
 
    @org.junit.Test
    public void testAllArtifactTypesInheritFromArtifactWithIsOfType() throws OseeCoreException {
-      ArtifactType baseArtifactType = ArtifactTypeManager.getType("Artifact");
       for (ArtifactType artifactType : ArtifactTypeManager.getAllTypes()) {
-         Assert.assertTrue(
-            String.format("[%s] was not of type [%s]", artifactType.getName(), baseArtifactType.getName()),
-            artifactType.inheritsFrom(baseArtifactType));
+         Assert.assertTrue(String.format("[%s] was not of type [%s]", artifactType, CoreArtifactTypes.Artifact),
+            artifactType.inheritsFrom(CoreArtifactTypes.Artifact));
       }
    }
 
    @org.junit.Test
    public void testAttributeTypesOfDescendants() throws OseeCoreException {
-      ArtifactType baseArtifactType = ArtifactTypeManager.getType("Artifact");
+      ArtifactType baseArtifactType = ArtifactTypeManager.getType(CoreArtifactTypes.Artifact);
       Set<ArtifactType> allTypes = new HashSet<ArtifactType>(ArtifactTypeManager.getAllTypes());
       allTypes.remove(baseArtifactType);
 

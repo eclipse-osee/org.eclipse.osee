@@ -26,9 +26,9 @@ import org.eclipse.osee.ats.util.widgets.defect.DefectManager;
 import org.eclipse.osee.ats.util.widgets.role.UserRole;
 import org.eclipse.osee.ats.util.widgets.role.UserRole.Role;
 import org.eclipse.osee.ats.util.widgets.role.UserRoleManager;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
@@ -50,7 +50,7 @@ public abstract class AbstractReviewArtifact extends AbstractTaskableArtifact {
       Commit
    };
 
-   public AbstractReviewArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeCoreException {
+   public AbstractReviewArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
 
@@ -146,7 +146,8 @@ public abstract class AbstractReviewArtifact extends AbstractTaskableArtifact {
       return userRoleManager;
    }
 
-   @SuppressWarnings("unused") // NOPMD by b0727536 on 9/29/10 8:50 AM
+   @SuppressWarnings("unused")
+   // NOPMD by b0727536 on 9/29/10 8:50 AM
    public IStatus isUserRoleValid(String namespace) throws OseeCoreException {
       // Need this cause it removes all error items of this namespace
       return new Status(IStatus.OK, namespace, "");

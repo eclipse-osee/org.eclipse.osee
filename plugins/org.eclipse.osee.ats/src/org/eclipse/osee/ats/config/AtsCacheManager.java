@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
@@ -104,7 +103,7 @@ public class AtsCacheManager implements IArtifactEventListener {
       return (TeamDefinitionArtifact) ArtifactCache.getActive(guid, AtsUtil.getAtsBranch().getId());
    }
 
-   public static List<Artifact> getArtifactsByActive(ArtifactType artifactType, Active active) throws OseeCoreException {
+   public static List<Artifact> getArtifactsByActive(IArtifactType artifactType, Active active) throws OseeCoreException {
       AtsBulkLoad.loadConfig(true);
       return AtsUtil.getActive(ArtifactCache.getArtifactsByType(artifactType), active, null);
    }

@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -26,6 +27,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
@@ -282,8 +284,12 @@ public final class XWidgetFactory {
       } else if (xWidgetName.startsWith("XListDropViewer")) {
          xWidget = new XListDropViewer(name);
       } else if (xWidgetName.equals("XArtifactTypeListViewer")) {
-         xWidget =
-            new XArtifactTypeListViewer(xWidgetLayoutData.getKeyedBranchName(), xWidgetLayoutData.getDefaultValue());
+         IArtifactType artifactType = null;
+         String artifactTypeString = xWidgetLayoutData.getDefaultValue();
+         if (artifactTypeString != null) {
+            artifactType = ArtifactTypeManager.getType(artifactTypeString);
+         }
+         xWidget = new XArtifactTypeListViewer(xWidgetLayoutData.getKeyedBranchName(), artifactType);
          ((XArtifactTypeListViewer) xWidget).setMultiSelect(xWidgetLayoutData.getXOptionHandler().contains(
             XOption.MULTI_SELECT));
       } else if (xWidgetName.equals("XAttributeTypeListViewer")) {

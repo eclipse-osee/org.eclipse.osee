@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.config.demo.artifact.DemoCodeTeamWorkflowArtifact;
 import org.eclipse.osee.ats.config.demo.internal.OseeAtsConfigDemoActivator;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -36,7 +35,7 @@ public class DemoDbGroups {
       List<TeamWorkFlowArtifact> codeWorkflows = new ArrayList<TeamWorkFlowArtifact>();
       OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Create Groups and add objects");
       Artifact groupArt = UniversalGroup.addGroup(TEST_GROUP_NAME, AtsUtil.getAtsBranch());
-      for (DemoCodeTeamWorkflowArtifact codeArt : DemoDbUtil.getSampleCodeWorkflows()) {
+      for (TeamWorkFlowArtifact codeArt : DemoDbUtil.getSampleCodeWorkflows()) {
 
          // Add Action to Universal Group
          groupArt.addRelation(CoreRelationTypes.Universal_Grouping__Members, codeArt.getParentActionArtifact());

@@ -11,8 +11,8 @@
 package org.eclipse.osee.framework.ui.skynet.search;
 
 import org.eclipse.jface.viewers.ListViewer;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -39,9 +39,9 @@ public class OrphanSearchFilter extends SearchFilter {
       try {
          for (String typeName : searchTypeList.getList().getSelection()) {
 
-            ArtifactType artifactType = ArtifactTypeManager.getType(typeName);
-
+            IArtifactType artifactType = ArtifactTypeManager.getType(typeName);
             ISearchPrimitive primitive = new OrphanArtifactSearch(artifactType);
+
             if (not) {
                primitive = new NotSearch(primitive);
             }

@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import junit.framework.Assert;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -134,8 +135,8 @@ public class ModelAsserts {
    }
 
    public static RelationType createRelationType(AbstractOseeCache<ArtifactType> artCache, String guid, String name, String aGUID, String bGUID, RelationTypeMultiplicity multiplicity) throws OseeCoreException {
-      ArtifactType type1 = artCache.getByGuid(aGUID);
-      ArtifactType type2 = artCache.getByGuid(bGUID);
+      IArtifactType type1 = artCache.getByGuid(aGUID);
+      IArtifactType type2 = artCache.getByGuid(bGUID);
       RelationType relationType =
          new RelationType(guid, name, name + "_A", name + "_B", type1, type2, multiplicity, "");
       Assert.assertNotNull(relationType);

@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
@@ -78,8 +77,8 @@ public class PublishFullVersionReportItem extends XNavigateItemAction {
       if (useTeamDef == null && teamDefName != null) {
          try {
             useTeamDef =
-               (TeamDefinitionArtifact) AtsCacheManager.getSoleArtifactByName(
-                  ArtifactTypeManager.getType(AtsArtifactTypes.TeamDefinition), teamDefName);
+               (TeamDefinitionArtifact) AtsCacheManager.getSoleArtifactByName(AtsArtifactTypes.TeamDefinition,
+                  teamDefName);
          } catch (ArtifactDoesNotExist ex) {
             // do nothing, going to get team below
          }

@@ -55,8 +55,8 @@ public final class TraceUnitReportProcessor implements ITraceUnitProcessor {
                if (monitor.isCanceled()) {
                   break;
                }
-               resultData.addRaw(AHTML.addRowMultiColumnTable(testUnit.getTraceUnitType(), testUnit.getName(),
-                  traceMark.getTraceType(), traceMark.getRawTraceMark()));
+               resultData.addRaw(AHTML.addRowMultiColumnTable(testUnit.getTraceUnitType().getName(),
+                  testUnit.getName(), traceMark.getTraceType(), traceMark.getRawTraceMark()));
             }
          }
       }

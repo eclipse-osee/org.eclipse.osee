@@ -59,9 +59,6 @@ public class ChildElementNodeContentProvider implements ITreeContentProvider {
       return new Object[0];
    }
 
-   /**
-    * @return
-    */
    private boolean recordHasChildrenNotListening(RecordElement element) {
       if (element instanceof RecordMap<?>) {
          RecordMap<?> recordMap = (RecordMap<?>) element;

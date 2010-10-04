@@ -13,10 +13,13 @@ package org.eclipse.osee.define.utility;
 import java.net.URI;
 import java.nio.CharBuffer;
 
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+
 /**
  * @author Roberto E. Escobar
  */
 public interface IResourceHandler {
 
-   void onResourceFound(URI uriPath, String name, CharBuffer fileBuffer);
+   void onResourceFound(URI uriPath, String name, CharBuffer fileBuffer) throws OseeCoreException;
+
 }

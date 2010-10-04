@@ -18,11 +18,10 @@ import org.eclipse.osee.ats.editor.SMAPrint;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
-import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
+import org.eclipse.osee.support.test.util.DemoArtifactTypes;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.Assert;
 import org.junit.Test;
@@ -39,10 +38,9 @@ public class SMAPrintTest {
    @Test
    public void testSMAPrint() throws Exception {
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
-      IArtifactType DemoCodeTeamWorkflow = new ArtifactType("ABRNqDKnpGEKAyUm49gA", "Demo Code Team Workflow", false);
 
       TeamWorkFlowArtifact teamArt =
-         (TeamWorkFlowArtifact) ArtifactQuery.getArtifactFromTypeAndName(DemoCodeTeamWorkflow,
+         (TeamWorkFlowArtifact) ArtifactQuery.getArtifactFromTypeAndName(DemoArtifactTypes.DemoCodeTeamWorkflow,
             "SAW (uncommitted) More Reqt Changes for Diagram View", AtsUtil.getAtsBranch());
       Assert.assertNotNull(teamArt);
 

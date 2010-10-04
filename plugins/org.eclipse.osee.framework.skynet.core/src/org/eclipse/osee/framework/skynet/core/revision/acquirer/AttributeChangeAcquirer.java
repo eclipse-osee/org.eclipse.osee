@@ -20,13 +20,13 @@ import java.util.Map;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
@@ -142,7 +142,7 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
                if (modificationType == ModificationType.MODIFIED && artModType != ModificationType.INTRODUCED) {
                   modificationType = ModificationType.NEW;
                }
-               ArtifactType artifactType = ArtifactTypeManager.getType(artTypeId);
+               IArtifactType artifactType = ArtifactTypeManager.getType(artTypeId);
                AttributeType attributeType = AttributeTypeManager.getType(attrTypeId);
                attributeChangeBuilder =
                   new AttributeChangeBuilder(sourceBranch, artifactType, sourceGamma, artId, txDelta, modificationType,

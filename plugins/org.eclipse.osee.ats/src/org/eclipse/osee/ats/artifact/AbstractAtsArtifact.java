@@ -16,9 +16,9 @@ import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.ats.util.Overview;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 
 public abstract class AbstractAtsArtifact extends Artifact implements IATSArtifact {
 
-   public AbstractAtsArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeCoreException {
+   public AbstractAtsArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
 

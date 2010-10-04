@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -30,7 +31,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
@@ -317,7 +317,7 @@ public final class ArtifactLoader {
       }
 
       if (artifact == null) {
-         ArtifactType artifactType = ArtifactTypeManager.getType(chStmt.getInt("art_type_id"));
+         IArtifactType artifactType = ArtifactTypeManager.getType(chStmt.getInt("art_type_id"));
          ArtifactFactory factory = ArtifactTypeManager.getFactory(artifactType);
 
          artifact =

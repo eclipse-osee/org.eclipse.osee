@@ -132,7 +132,7 @@ public final class ArtifactCache {
    }
 
    public static List<Artifact> getArtifactsByType(IArtifactType artifactType) throws OseeCoreException {
-      return ACTIVE_CACHE.getByType(ArtifactTypeManager.getType(artifactType));
+      return ACTIVE_CACHE.getByType(artifactType);
    }
 
    public static Artifact getHistorical(Integer artId, Integer transactionNumber) {

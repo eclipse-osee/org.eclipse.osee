@@ -132,7 +132,6 @@ public enum FrameworkImage implements KeyedImage {
    MERGE_NOT_RESOLVEABLE("red_light.gif"),
    MERGE_SUCCESS("icon_success.gif"),
    MERGE_CAUTION("icon_warning.gif"),
-   NARRITIVE("narrative.gif"),
    OPEN("open.gif"),
    OUTGOING_ARTIFACT_DELETED("OUTGOING_Deleted.gif"),
    OUTGOING_DELETED("OUTGOING_Deleted.gif"),

@@ -42,7 +42,6 @@ public class AbstractRemotePrompt implements IPromptHandle {
    /**
     * returns a reference to the specified remote interface whose remote methods will be bound to this prompt object
     * 
-    * @return
     */
    protected final <U extends IPromptHandle> U createRemoteReference(Class<U> remoteInterface) throws ExportException {
       return remoteInterface.cast(connector.export(this));

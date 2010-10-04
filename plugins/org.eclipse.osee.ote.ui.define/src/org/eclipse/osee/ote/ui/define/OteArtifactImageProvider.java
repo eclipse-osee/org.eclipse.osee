@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.ui.define;
 
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageProvider;
@@ -21,10 +22,9 @@ public class OteArtifactImageProvider extends ArtifactImageProvider {
 
    @Override
    public void init() throws OseeCoreException {
-      ArtifactImageManager.registerBaseImage("Test Procedure", OteDefineImage.TEST_PROCEDURE, this);
-      ArtifactImageManager.registerBaseImage("Test Configuration", OteDefineImage.TEST_CONFIG, this);
-      ArtifactImageManager.registerBaseImage("Test Run", OteDefineImage.TEST_RUN, this);
-      ArtifactImageManager.registerBaseImage("Test Case", OteDefineImage.TEST_CASE, this);
-      ArtifactImageManager.registerBaseImage("Test Support", OteDefineImage.TEST_SUPPORT, this);
+      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.TestProcedure, OteDefineImage.TEST_PROCEDURE, this);
+      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.TestRun, OteDefineImage.TEST_RUN, this);
+      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.TestCase, OteDefineImage.TEST_CASE, this);
+      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.TestSupport, OteDefineImage.TEST_SUPPORT, this);
    }
 }

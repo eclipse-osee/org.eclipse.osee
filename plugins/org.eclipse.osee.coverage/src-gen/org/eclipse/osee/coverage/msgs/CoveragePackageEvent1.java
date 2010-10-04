@@ -55,7 +55,6 @@ public class CoveragePackageEvent1 {
     /**
      * Gets the value of the package property.
      * 
-     * @return
      *     possible object is
      *     {@link CoverageChange1 }
      *     
@@ -67,7 +66,6 @@ public class CoveragePackageEvent1 {
     /**
      * Sets the value of the package property.
      * 
-     * @param value
      *     allowed object is
      *     {@link CoverageChange1 }
      *     
@@ -108,7 +106,6 @@ public class CoveragePackageEvent1 {
     /**
      * Gets the value of the sessionId property.
      * 
-     * @return
      *     possible object is
      *     {@link String }
      *     
@@ -120,7 +117,6 @@ public class CoveragePackageEvent1 {
     /**
      * Sets the value of the sessionId property.
      * 
-     * @param value
      *     allowed object is
      *     {@link String }
      *     

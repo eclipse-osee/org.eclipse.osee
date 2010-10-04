@@ -127,11 +127,10 @@ public final class MockDataFactory {
    }
 
    public static ArtifactType createBaseArtifactType() {
-      IArtifactType baseType = CoreArtifactTypes.Artifact;
-      return new ArtifactType(baseType.getGuid(), baseType.getName(), true);
+      return new ArtifactType(CoreArtifactTypes.Artifact.getGuid(), CoreArtifactTypes.Artifact.getName(), true);
    }
 
-   public static RelationType createRelationType(int index, ArtifactType artTypeA, ArtifactType artTypeB) {
+   public static RelationType createRelationType(int index, IArtifactType artTypeA, IArtifactType artTypeB) {
       RelationTypeMultiplicity multiplicity =
          RelationTypeMultiplicity.values()[Math.abs(index % RelationTypeMultiplicity.values().length)];
       String order = RelationOrderBaseTypes.values[index % RelationTypeMultiplicity.values().length].getGuid();

@@ -488,8 +488,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
 
       File file = OseeAtsConfigDemoActivator.getInstance().getPluginFile(filename);
       IArtifactImportResolver artifactResolver =
-         new NewArtifactImportResolver(ArtifactTypeManager.getType(requirementType),
-            ArtifactTypeManager.getType(CoreArtifactTypes.Heading));
+         new NewArtifactImportResolver(requirementType, CoreArtifactTypes.Heading);
       IArtifactExtractor extractor = new WordOutlineExtractor();
       extractor.setDelegate(new WordOutlineExtractorDelegate());
 

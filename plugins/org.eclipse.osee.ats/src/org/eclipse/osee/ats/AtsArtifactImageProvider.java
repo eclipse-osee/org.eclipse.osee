@@ -32,22 +32,22 @@ public class AtsArtifactImageProvider extends ArtifactImageProvider {
 
    @Override
    public void init() throws OseeCoreException {
-      ArtifactImageManager.registerBaseImage(AtsArtifactTypes.DecisionReview.getName(), AtsImage.REVIEW, this);
-      ArtifactImageManager.registerBaseImage("Action", AtsImage.ACTION, this);
-      ArtifactImageManager.registerBaseImage("Version", FrameworkImage.VERSION, this);
-      ArtifactImageManager.registerBaseImage("Task", AtsImage.TASK, this);
-      ArtifactImageManager.registerBaseImage("Actionable Item", AtsImage.ACTIONABLE_ITEM, this);
-      ArtifactImageManager.registerBaseImage("Team Workflow", AtsImage.TEAM_WORKFLOW, this);
-      ArtifactImageManager.registerBaseImage("Team Definition", AtsImage.TEAM_DEFINITION, this);
-      ArtifactImageManager.registerBaseImage("Goal", AtsImage.GOAL, this);
-      ArtifactImageManager.registerBaseImage("PeerToPeer Review", AtsImage.REVIEW, this);
+      ArtifactImageManager.registerBaseImage(AtsArtifactTypes.DecisionReview, AtsImage.REVIEW, this);
+      ArtifactImageManager.registerBaseImage(AtsArtifactTypes.Action, AtsImage.ACTION, this);
+      ArtifactImageManager.registerBaseImage(AtsArtifactTypes.Version, FrameworkImage.VERSION, this);
+      ArtifactImageManager.registerBaseImage(AtsArtifactTypes.Task, AtsImage.TASK, this);
+      ArtifactImageManager.registerBaseImage(AtsArtifactTypes.ActionableItem, AtsImage.ACTIONABLE_ITEM, this);
+      ArtifactImageManager.registerBaseImage(AtsArtifactTypes.TeamWorkflow, AtsImage.TEAM_WORKFLOW, this);
+      ArtifactImageManager.registerBaseImage(AtsArtifactTypes.TeamDefinition, AtsImage.TEAM_DEFINITION, this);
+      ArtifactImageManager.registerBaseImage(AtsArtifactTypes.Goal, AtsImage.GOAL, this);
+      ArtifactImageManager.registerBaseImage(AtsArtifactTypes.PeerToPeerReview, AtsImage.REVIEW, this);
 
-      ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.Version.getName());
-      ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.Task.getName());
-      ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.PeerToPeerReview.getName());
-      ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.DecisionReview.getName());
+      ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.Version);
+      ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.Task);
+      ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.PeerToPeerReview);
+      ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.DecisionReview);
       for (IArtifactType artifactType : TeamWorkflowExtensions.getAllTeamWorkflowArtifactTypes()) {
-         ArtifactImageManager.registerOverrideImageProvider(this, artifactType.getName());
+         ArtifactImageManager.registerOverrideImageProvider(this, artifactType);
       }
    }
 

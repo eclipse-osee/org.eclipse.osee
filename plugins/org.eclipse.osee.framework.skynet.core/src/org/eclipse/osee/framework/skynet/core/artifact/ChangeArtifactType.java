@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
@@ -50,11 +51,12 @@ public class ChangeArtifactType {
    /**
     * Changes the descriptor of the artifacts to the provided artifact descriptor
     */
-   public static void changeArtifactType(Collection<? extends Artifact> artifacts, ArtifactType artifactType) throws OseeCoreException {
+   public static void changeArtifactType(Collection<? extends Artifact> artifacts, IArtifactType artifactTypeToken) throws OseeCoreException {
       if (artifacts.isEmpty()) {
          throw new OseeArgumentException("The artifact list can not be empty");
       }
 
+      ArtifactType artifactType = ArtifactTypeManager.getType(artifactTypeToken);
       List<Artifact> artifactsUserAccepted = new ArrayList<Artifact>();
       Set<EventBasicGuidArtifact> artifactChanges = new HashSet<EventBasicGuidArtifact>();
       for (Artifact artifact : artifacts) {
@@ -95,7 +97,7 @@ public class ChangeArtifactType {
       }
    }
 
-   public static void changeArtifactTypeReportOnly(StringBuffer results, Collection<Artifact> artifacts, ArtifactType artifactType) throws OseeCoreException {
+   public static void changeArtifactTypeReportOnly(StringBuffer results, Collection<Artifact> artifacts, IArtifactType artifactType) throws OseeCoreException {
       if (artifacts.isEmpty()) {
          throw new OseeArgumentException("The artifact list can not be empty");
       }
@@ -110,7 +112,7 @@ public class ChangeArtifactType {
       }
    }
 
-   private static void getConflictString(StringBuffer results, Artifact artifact, ArtifactType artifactType) {
+   private static void getConflictString(StringBuffer results, Artifact artifact, IArtifactType artifactType) {
       results.append("There has been a conflict in changing artifact " + artifact.getGuid() + " - \"" + artifact.getName() + "\"" +
       //
       " to \"" + artifactType.getName() + "\" type. \n" + "The following data will need to be purged ");
@@ -127,11 +129,12 @@ public class ChangeArtifactType {
     * Splits the attributes of the current artifact into two groups. The attributes that are compatible for the new type
     * and the attributes that will need to be purged.
     */
-   private static void processAttributes(Artifact artifact, ArtifactType artifactType) throws OseeCoreException {
+   private static void processAttributes(Artifact artifact, IArtifactType artifactType) throws OseeCoreException {
       attributesToPurge = new LinkedList<Attribute<?>>();
 
       for (AttributeType attributeType : artifact.getAttributeTypes()) {
-         if (!artifactType.isValidAttributeType(attributeType, artifact.getBranch())) {
+         ArtifactType aType = ArtifactTypeManager.getType(artifactType);
+         if (!aType.isValidAttributeType(attributeType, artifact.getBranch())) {
             attributesToPurge.addAll(artifact.getAttributes(attributeType));
          }
       }
@@ -141,7 +144,7 @@ public class ChangeArtifactType {
     * Splits the relationLinks of the current artifact into Two groups. The links that are compatible for the new type
     * and the links that will need to be purged.
     */
-   private static void processRelations(Artifact artifact, ArtifactType artifactType) throws OseeCoreException {
+   private static void processRelations(Artifact artifact, IArtifactType artifactType) throws OseeCoreException {
       relationsToDelete = new LinkedList<RelationLink>();
 
       for (RelationLink link : artifact.getRelationsAll(DeletionFlag.EXCLUDE_DELETED)) {

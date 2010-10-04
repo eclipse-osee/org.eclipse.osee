@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.osee.define.traceability.ITraceParser;
@@ -28,9 +29,9 @@ import org.eclipse.osee.define.traceability.data.TraceMark;
 import org.eclipse.osee.define.traceability.data.TraceUnit;
 import org.eclipse.osee.define.utility.IResourceHandler;
 import org.eclipse.osee.define.utility.UriResourceContentFinder;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Roberto E. Escobar
@@ -127,18 +128,18 @@ public class ResourceToTraceUnit {
    }
 
    private void processCollector(IProgressMonitor monitor, TraceUnitCollector testUnitCollector) throws OseeCoreException {
-      for (String testUnitType : testUnitCollector.getTraceUnitTypes()) {
+      for (IArtifactType testUnitType : testUnitCollector.getTraceUnitTypes()) {
          if (monitor.isCanceled()) {
             break;
          }
-         Map<String, TraceUnit> unitToTrace = testUnitCollector.getUnitsToTraceMarks(testUnitType);
+         Map<IArtifactType, TraceUnit> unitToTrace = testUnitCollector.getUnitsToTraceMarks(testUnitType);
          if (unitToTrace != null) {
-            for (String testUnitName : unitToTrace.keySet()) {
-               monitor.subTask(String.format("Processing [%s - %s]", testUnitType, testUnitName));
+            for (IArtifactType tUnit : unitToTrace.keySet()) {
+               monitor.subTask(String.format("Processing [%s - %s]", testUnitType, tUnit.getName()));
                if (monitor.isCanceled()) {
                   break;
                }
-               TraceUnit testUnit = unitToTrace.get(testUnitName);
+               TraceUnit testUnit = unitToTrace.get(tUnit);
                if (testUnit != null) {
                   notifyOnProcess(monitor, testUnit);
                }
@@ -175,29 +176,29 @@ public class ResourceToTraceUnit {
 
       private final ITraceParser traceParser;
       private final ITraceUnitResourceLocator traceUnitLocator;
-      private final Map<String, Map<String, TraceUnit>> traceUnitToTraceMarks;
+      private final Map<IArtifactType, Map<IArtifactType, TraceUnit>> traceUnitToTraceMarks;
 
       public TraceUnitCollector(ITraceUnitResourceLocator traceUnitLocator, ITraceParser traceParser) {
          this.traceParser = traceParser;
          this.traceUnitLocator = traceUnitLocator;
-         this.traceUnitToTraceMarks = new HashMap<String, Map<String, TraceUnit>>();
+         this.traceUnitToTraceMarks = new HashMap<IArtifactType, Map<IArtifactType, TraceUnit>>();
       }
 
       @Override
-      public void onResourceFound(URI uriPath, String name, CharBuffer fileBuffer) {
-         String traceUnitType = traceUnitLocator.getTraceUnitType(name, fileBuffer);
-         if (Strings.isValid(traceUnitType) && !traceUnitType.equalsIgnoreCase(ITraceUnitResourceLocator.UNIT_TYPE_UNKNOWN)) {
+      public void onResourceFound(URI uriPath, String name, CharBuffer fileBuffer) throws OseeCoreException {
+         IArtifactType traceUnitType = traceUnitLocator.getTraceUnitType(name, fileBuffer);
+         if (!traceUnitType.equals(ITraceUnitResourceLocator.UNIT_TYPE_UNKNOWN)) {
             Collection<TraceMark> traceMarks = traceParser.getTraceMarks(fileBuffer);
             if (traceMarks != null && !traceMarks.isEmpty()) {
-               Map<String, TraceUnit> traceUnits = traceUnitToTraceMarks.get(traceUnitType);
+               Map<IArtifactType, TraceUnit> traceUnits = traceUnitToTraceMarks.get(traceUnitType);
                if (traceUnits == null) {
-                  traceUnits = new HashMap<String, TraceUnit>();
+                  traceUnits = new HashMap<IArtifactType, TraceUnit>();
                   traceUnitToTraceMarks.put(traceUnitType, traceUnits);
                }
                TraceUnit unit = traceUnits.get(name);
                if (unit == null) {
                   unit = new TraceUnit(traceUnitType, name);
-                  traceUnits.put(name, unit);
+                  traceUnits.put(traceUnitType, unit);
                }
                unit.addAllTraceMarks(traceMarks);
             }
@@ -208,11 +209,11 @@ public class ResourceToTraceUnit {
          return traceUnitToTraceMarks.isEmpty();
       }
 
-      public Set<String> getTraceUnitTypes() {
+      public Set<IArtifactType> getTraceUnitTypes() {
          return traceUnitToTraceMarks.keySet();
       }
 
-      public Map<String, TraceUnit> getUnitsToTraceMarks(String unitType) {
+      public Map<IArtifactType, TraceUnit> getUnitsToTraceMarks(IArtifactType unitType) {
          return traceUnitToTraceMarks.get(unitType);
       }
    }

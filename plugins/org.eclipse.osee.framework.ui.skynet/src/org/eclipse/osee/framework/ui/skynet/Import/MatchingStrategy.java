@@ -11,10 +11,9 @@
 package org.eclipse.osee.framework.ui.skynet.Import;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
+import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.AttributeBasedArtifactResolver;
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.GuidBasedArtifactResolver;
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.IArtifactImportResolver;
@@ -25,16 +24,16 @@ public enum MatchingStrategy {
    GUID(),
    NONE();
 
-   public IArtifactImportResolver getResolver(ArtifactType primaryArtifactType, Collection<AttributeType> nonChangingAttributes, boolean createNewIfNotExist, boolean deleteUnmatchedArtifacts) throws OseeCoreException {
-      ArtifactType secondaryArtifactType = ArtifactTypeManager.getType("Heading");
-      if (this == ATTRIBUTE) {
-         return new AttributeBasedArtifactResolver(primaryArtifactType, secondaryArtifactType, nonChangingAttributes,
-            createNewIfNotExist, deleteUnmatchedArtifacts);
-      } else if (this == GUID) {
-         return new GuidBasedArtifactResolver(primaryArtifactType, secondaryArtifactType, createNewIfNotExist,
-            deleteUnmatchedArtifacts);
-      } else {
-         return new NewArtifactImportResolver(primaryArtifactType, secondaryArtifactType);
+   public IArtifactImportResolver getResolver(IArtifactType primaryArtifactType, Collection<AttributeType> nonChangingAttributes, boolean createNewIfNotExist, boolean deleteUnmatchedArtifacts) {
+      switch (this) {
+         case ATTRIBUTE:
+            return new AttributeBasedArtifactResolver(primaryArtifactType, CoreArtifactTypes.Heading,
+               nonChangingAttributes, createNewIfNotExist, deleteUnmatchedArtifacts);
+         case GUID:
+            return new GuidBasedArtifactResolver(primaryArtifactType, CoreArtifactTypes.Heading, createNewIfNotExist,
+               deleteUnmatchedArtifacts);
+         default:
+            return new NewArtifactImportResolver(primaryArtifactType, CoreArtifactTypes.Heading);
       }
    }
 }

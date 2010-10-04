@@ -206,9 +206,6 @@ public class SafeWorkspaceTracker extends ServiceTracker implements OteBundleLoc
       return libs;
    }
 
-   /**
-    * @return
-    */
    private String getBundleNameFromJar(URL url) throws IOException {
       File file;
       try {

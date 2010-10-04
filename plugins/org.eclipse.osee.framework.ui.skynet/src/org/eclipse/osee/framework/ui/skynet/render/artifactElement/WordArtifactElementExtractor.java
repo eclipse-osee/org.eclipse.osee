@@ -108,9 +108,6 @@ public class WordArtifactElementExtractor implements IElementExtractor {
       return artifactElements;
    }
 
-   /**
-    * @return
-    */
    private boolean elementHasGrandChildren(Node element) {
       return element.getChildNodes().getLength() > 0 && element.getChildNodes().item(0).getChildNodes().getLength() > 0;
    }
@@ -129,7 +126,6 @@ public class WordArtifactElementExtractor implements IElementExtractor {
 
    /**
     * @param keepSide TODO
-    * @return
     */
    private Node cloneWithoutArtifactEditTag(Element element, Side keepSide) {
       Collection<Node> removals = new LinkedList<Node>();
@@ -157,9 +153,6 @@ public class WordArtifactElementExtractor implements IElementExtractor {
       return clonedElement;
    }
 
-   /**
-    * @return
-    */
    private boolean isEditLink(Node element) {
       String HLINK_ELEMENT_NAME = WordUtil.elementNameFor("hlink");
 
@@ -186,9 +179,6 @@ public class WordArtifactElementExtractor implements IElementExtractor {
       newArtifactElement.setAttribute("guid", linkParser.getGuid());
    }
 
-   /**
-    * @return
-    */
    private boolean isArtifactEditTag(Element element) {
       if (!properLevelChild(element)) {
          return false;
@@ -204,9 +194,6 @@ public class WordArtifactElementExtractor implements IElementExtractor {
       return false;
    }
 
-   /**
-    * @return
-    */
    private boolean properLevelChild(Element element) {
       return properLevelChildWord2003(element) || properLevelChildWord2007(element);
    }
@@ -251,9 +238,6 @@ public class WordArtifactElementExtractor implements IElementExtractor {
       return name;
    }
 
-   /**
-    * @return
-    */
    private boolean properLevelChildWord2003(Element element) {
       String grandParentName = getAncestorName(element, 2);
       String parentName = getAncestorName(element, 1);
@@ -268,9 +252,6 @@ public class WordArtifactElementExtractor implements IElementExtractor {
       return nonSubsectionBodyChild || sectionChild || subsectionChild;
    }
 
-   /**
-    * @return
-    */
    private boolean properLevelChildWord2007(Element element) {
       String parentName = getAncestorName(element, 1);
       String myName = element.getNodeName();

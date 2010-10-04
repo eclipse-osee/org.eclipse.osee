@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet;
 
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -34,7 +34,7 @@ public abstract class ArtifactImageProvider {
    }
 
    @SuppressWarnings("unused")
-   public String setupImage(ArtifactType artifactType) throws OseeCoreException {
+   public String setupImage(IArtifactType artifactType) throws OseeCoreException {
       return ArtifactImageManager.setupImage(BaseImage.getBaseImageEnum(artifactType));
    }
 

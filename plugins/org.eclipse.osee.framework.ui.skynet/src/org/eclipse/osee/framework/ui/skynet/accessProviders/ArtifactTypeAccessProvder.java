@@ -14,10 +14,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.ui.skynet.artifact.IAccessPolicyHandlerService;
 
 /**
@@ -25,11 +25,11 @@ import org.eclipse.osee.framework.ui.skynet.artifact.IAccessPolicyHandlerService
  */
 public class ArtifactTypeAccessProvder {
 
-   private final Collection<ArtifactType> artifactTypes;
+   private final Collection<? extends IArtifactType> artifactTypes;
    private final Branch branch;
    private final IAccessPolicyHandlerService accessService;
 
-   public ArtifactTypeAccessProvder(IAccessPolicyHandlerService accessService, Branch branch, Collection<ArtifactType> artifactTypes) {
+   public ArtifactTypeAccessProvder(IAccessPolicyHandlerService accessService, Branch branch, Collection<? extends IArtifactType> artifactTypes) {
       super();
       this.artifactTypes = artifactTypes;
       this.branch = branch;
@@ -39,8 +39,8 @@ public class ArtifactTypeAccessProvder {
    /**
     * @return Returns artifact types that a user has write permissions for on a specific branch
     */
-   public Collection<ArtifactType> getWritableTypes() throws OseeCoreException {
-      Iterator<ArtifactType> artTypeIterator = artifactTypes.iterator();
+   public Collection<? extends IArtifactType> getWritableTypes() throws OseeCoreException {
+      Iterator<? extends IArtifactType> artTypeIterator = artifactTypes.iterator();
 
       // Remove ArtifactTypes that do not have write permissions.
       while (artTypeIterator.hasNext()) {

@@ -13,18 +13,14 @@ package org.eclipse.osee.framework.skynet.core.artifact.factory;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
  * @author Donald G. Dunne
@@ -32,11 +28,11 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
 public class UserArtifactFactory extends ArtifactFactory {
 
    public UserArtifactFactory() {
-      super(CoreArtifactTypes.User.getName());
+      super(CoreArtifactTypes.User);
    }
 
    public @Override
-   Artifact getArtifactInstance(String guid, String humandReadableId, Branch branch, ArtifactType artifactType) throws OseeCoreException {
+   Artifact getArtifactInstance(String guid, String humandReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
       if (artifactType.getGuid().equals(CoreArtifactTypes.User.getGuid())) {
          return new User(this, guid, humandReadableId, branch, artifactType);
       }
@@ -44,13 +40,9 @@ public class UserArtifactFactory extends ArtifactFactory {
    }
 
    @Override
-   public Collection<ArtifactType> getEternalArtifactTypes() {
-      List<ArtifactType> artifactTypes = new ArrayList<ArtifactType>();
-      try {
-         artifactTypes.add(ArtifactTypeManager.getTypeByGuid(CoreArtifactTypes.User.getGuid()));
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
+   public Collection<IArtifactType> getEternalArtifactTypes() {
+      List<IArtifactType> artifactTypes = new ArrayList<IArtifactType>();
+      artifactTypes.add(CoreArtifactTypes.User);
       return artifactTypes;
    }
 

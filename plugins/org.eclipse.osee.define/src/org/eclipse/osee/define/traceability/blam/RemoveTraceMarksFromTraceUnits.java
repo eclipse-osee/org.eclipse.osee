@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -33,6 +34,7 @@ import org.eclipse.osee.define.traceability.TraceUnitExtensionManager;
 import org.eclipse.osee.define.traceability.TraceUnitExtensionManager.TraceHandler;
 import org.eclipse.osee.define.utility.IResourceHandler;
 import org.eclipse.osee.define.utility.UriResourceContentFinder;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
@@ -215,9 +217,9 @@ public class RemoveTraceMarksFromTraceUnits extends AbstractBlam {
       }
 
       @Override
-      public void onResourceFound(URI uriPath, String name, CharBuffer fileBuffer) {
-         String traceUnitType = traceUnitLocator.getTraceUnitType(name, fileBuffer);
-         if (Strings.isValid(traceUnitType) && !traceUnitType.equalsIgnoreCase(ITraceUnitResourceLocator.UNIT_TYPE_UNKNOWN)) {
+      public void onResourceFound(URI uriPath, String name, CharBuffer fileBuffer) throws OseeCoreException {
+         IArtifactType traceUnitType = traceUnitLocator.getTraceUnitType(name, fileBuffer);
+         if (!traceUnitType.equals(ITraceUnitResourceLocator.UNIT_TYPE_UNKNOWN)) {
             if (traceParser.isTraceRemovalAllowed()) {
                CharBuffer modifiedBuffer = traceParser.removeTraceMarks(fileBuffer);
                if (modifiedBuffer != null) {

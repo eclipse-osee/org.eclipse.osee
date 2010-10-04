@@ -57,7 +57,6 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.services.CmAccessControl;
 import org.eclipse.osee.framework.core.services.HasCmAccessControl;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -102,7 +101,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    private AtsNote atsNote;
    private boolean inTransition = false;
 
-   public AbstractWorkflowArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeCoreException {
+   public AbstractWorkflowArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
 

@@ -13,8 +13,8 @@ package org.eclipse.osee.framework.ui.skynet;
 import java.io.ByteArrayInputStream;
 import java.util.logging.Level;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -26,10 +26,10 @@ import org.eclipse.swt.graphics.ImageData;
  * @author Ryan D. Brooks
  */
 public class BaseImage implements KeyedImage {
-   private final ArtifactType artifactType;
+   private final IArtifactType artifactType;
    private final byte[] imageData;
 
-   private BaseImage(ArtifactType artifactType, byte[] imageData) {
+   private BaseImage(IArtifactType artifactType, byte[] imageData) {
       this.artifactType = artifactType;
       this.imageData = imageData;
    }
@@ -44,19 +44,19 @@ public class BaseImage implements KeyedImage {
       return SkynetGuiPlugin.PLUGIN_ID + ".artifact_type." + artifactType.getName();
    }
 
-   public static KeyedImage getBaseImageEnum(ArtifactType artifactType, byte[] imageData) {
+   public static KeyedImage getBaseImageEnum(IArtifactType artifactType, byte[] imageData) {
       if (ArtifactImageManager.getOverrideImageEnum() != null) {
          return ArtifactImageManager.getOverrideImageEnum();
       }
       return new BaseImage(artifactType, imageData);
    }
 
-   public static KeyedImage getBaseImageEnum(ArtifactType artifactType) {
+   public static KeyedImage getBaseImageEnum(IArtifactType artifactType) {
       if (ArtifactImageManager.getOverrideImageEnum() != null) {
          return ArtifactImageManager.getOverrideImageEnum();
       }
       // Check extensions
-      KeyedImage oseeImage = ArtifactImageManager.getArtifactTypeImage(artifactType.getName());
+      KeyedImage oseeImage = ArtifactImageManager.getArtifactTypeImage(artifactType);
       if (oseeImage != null) {
          return oseeImage;
       }

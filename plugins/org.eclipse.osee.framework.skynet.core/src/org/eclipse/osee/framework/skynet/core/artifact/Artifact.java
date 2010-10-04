@@ -95,6 +95,10 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.osgi.framework.Bundle;
 
+/**
+ * Test: @link ArtifactTest
+ */
+
 public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, Comparable<Artifact>, IBasicGuidArtifact {
    public static final String UNNAMED = "Unnamed";
    public static final String BEFORE_GUID_STRING = "/BeforeGUID/PrePend";
@@ -119,7 +123,7 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, Co
    private ModificationType lastValidModType;
    private EditState objectEditState;
 
-   public Artifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeCoreException {
+   public Artifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
       super(guid, "");
       objectEditState = EditState.NO_CHANGE;
       modType = ModificationType.NEW;
@@ -132,7 +136,7 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, Co
 
       this.parentFactory = parentFactory;
       this.branch = branch;
-      this.artifactType = artifactType;
+      this.artifactType = ArtifactTypeManager.getType(artifactType);
    }
 
    public boolean isInDb() {
@@ -432,7 +436,7 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, Co
       addRelation(sorterId, Default_Hierarchical__Child, artifact);
    }
 
-   public Artifact addNewChild(IRelationSorterId sorterId, ArtifactType artifactType, String name) throws OseeCoreException {
+   public Artifact addNewChild(IRelationSorterId sorterId, IArtifactType artifactType, String name) throws OseeCoreException {
       Artifact child = ArtifactTypeManager.makeNewArtifact(artifactType, branch);
       child.setName(name);
       addChild(sorterId, child);
@@ -1260,6 +1264,10 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, Co
       return artifactType;
    }
 
+   public IArtifactType getArtifactTypeToken() {
+      return artifactType;
+   }
+
    public String getVersionedName() {
       String name = getName();
 
@@ -1309,7 +1317,7 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, Co
    /**
     * Creates a new artifact and duplicates all of its attribute data.
     */
-   public Artifact duplicate(Branch branch) throws OseeCoreException {
+   public Artifact duplicate(IOseeBranch branch) throws OseeCoreException {
       Artifact newArtifact = ArtifactTypeManager.makeNewArtifact(artifactType, branch);
       // we do this because attributes were added on creation to meet the
       // minimum attribute requirements
@@ -1446,9 +1454,9 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, Co
    /**
     * Changes the artifact type.
     */
-   public void setArtifactType(ArtifactType artifactType) {
+   public void setArtifactType(IArtifactType artifactType) throws OseeCoreException {
       if (!this.artifactType.equals(artifactType)) {
-         this.artifactType = artifactType;
+         this.artifactType = ArtifactTypeManager.getType(artifactType);
          objectEditState = EditState.ARTIFACT_TYPE_MODIFIED;
          if (isInDb()) {
             lastValidModType = modType;

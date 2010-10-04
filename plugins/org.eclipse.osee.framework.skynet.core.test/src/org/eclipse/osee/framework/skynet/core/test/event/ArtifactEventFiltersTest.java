@@ -13,14 +13,14 @@ package org.eclipse.osee.framework.skynet.core.test.event;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import junit.framework.Assert;
+
 import org.eclipse.osee.framework.core.data.OseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkSender;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactTypeEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.filter.BranchGuidEventFilter;
@@ -139,16 +139,16 @@ public class ArtifactEventFiltersTest {
    private void testArtifactEventFilters__branchFilterArtifactType() throws Exception {
       // Create dummy artifact event
       String branchGuid = GUID.create();
-      ArtifactType generalDocArtType = ArtifactTypeManager.getType(CoreArtifactTypes.GeneralDocument);
       ArtifactEvent testArtifactEvent = new ArtifactEvent(new OseeBranch("test branch 2", branchGuid));
       testArtifactEvent.setNetworkSender(getDummyRemoteNetworkSender());
       testArtifactEvent.getArtifacts().add(
-         new EventBasicGuidArtifact(EventModType.Added, branchGuid, generalDocArtType.getGuid(), GUID.create()));
+	new EventBasicGuidArtifact(EventModType.Added, branchGuid, CoreArtifactTypes.GeneralDocument.getGuid(),
+           GUID.create()));
 
       // Reset event filters only allow events from this branch
       eventFilters = new ArrayList<IEventFilter>();
       eventFilters.add(new BranchGuidEventFilter(new OseeBranch("Test Branch", branchGuid)));
-      eventFilters.add(new ArtifactTypeEventFilter(generalDocArtType));
+      eventFilters.add(new ArtifactTypeEventFilter(CoreArtifactTypes.GeneralDocument));
       resultArtifactEvent = null;
       resultSender = null;
 
@@ -163,7 +163,7 @@ public class ArtifactEventFiltersTest {
       // Reset event filters to only send other artifact type of this branch
       eventFilters = new ArrayList<IEventFilter>();
       eventFilters.add(new BranchGuidEventFilter(new OseeBranch("Test Branch", branchGuid)));
-      eventFilters.add(new ArtifactTypeEventFilter(ArtifactTypeManager.getType(CoreArtifactTypes.Folder)));
+      eventFilters.add(new ArtifactTypeEventFilter(CoreArtifactTypes.Folder));
       resultArtifactEvent = null;
       resultSender = null;
 
@@ -176,7 +176,7 @@ public class ArtifactEventFiltersTest {
       // Reset event filters to only send OTHER branch events
       eventFilters = new ArrayList<IEventFilter>();
       eventFilters.add(new BranchGuidEventFilter(new OseeBranch("Other Test Branch", GUID.create())));
-      eventFilters.add(new ArtifactTypeEventFilter(generalDocArtType));
+      eventFilters.add(new ArtifactTypeEventFilter(CoreArtifactTypes.GeneralDocument));
       resultArtifactEvent = null;
       resultSender = null;
 

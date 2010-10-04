@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.importing.resolvers;
 
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactProcessor;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -24,17 +24,17 @@ import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
  * @author Ryan D. Brooks
  */
 public class NewArtifactImportResolver implements IArtifactImportResolver {
-   private final ArtifactType primaryArtifactType;
-   private final ArtifactType secondaryArtifactType;
+   private final IArtifactType primaryArtifactType;
+   private final IArtifactType secondaryArtifactType;
 
-   public NewArtifactImportResolver(ArtifactType primaryArtifactType, ArtifactType secondaryArtifactType) {
+   public NewArtifactImportResolver(IArtifactType primaryArtifactType, IArtifactType secondaryArtifactType) {
       this.primaryArtifactType = primaryArtifactType;
       this.secondaryArtifactType = secondaryArtifactType;
    }
 
    @Override
    public Artifact resolve(final RoughArtifact roughArtifact, final Branch branch, Artifact realParent, Artifact root) throws OseeCoreException {
-      ArtifactType artifactType = getArtifactType(roughArtifact.getRoughArtifactKind());
+      IArtifactType artifactType = getArtifactType(roughArtifact.getRoughArtifactKind());
 
       Artifact realArtifact =
          ArtifactTypeManager.getFactory(artifactType).makeNewArtifact(branch, artifactType, roughArtifact.getGuid(),
@@ -48,15 +48,16 @@ public class NewArtifactImportResolver implements IArtifactImportResolver {
       return realArtifact;
    }
 
-   private ArtifactType getArtifactType(RoughArtifactKind kind) throws OseeCoreException {
-      if (kind == RoughArtifactKind.PRIMARY) {
-         return primaryArtifactType;
-      } else if (kind == RoughArtifactKind.SECONDARY) {
-         return secondaryArtifactType;
-      } else if (kind == RoughArtifactKind.CONTAINER) {
-         return ArtifactTypeManager.getType(CoreArtifactTypes.Folder);
-      } else {
-         throw new OseeCoreException("Unknown Artifact Kind [%s]", kind);
+   private IArtifactType getArtifactType(RoughArtifactKind kind) throws OseeCoreException {
+      switch (kind) {
+         case PRIMARY:
+            return primaryArtifactType;
+         case SECONDARY:
+            return secondaryArtifactType;
+         case CONTAINER:
+            return CoreArtifactTypes.Folder;
+         default:
+            throw new OseeCoreException("Unknown Artifact Kind " + kind);
       }
    }
 

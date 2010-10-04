@@ -32,10 +32,8 @@ import org.eclipse.osee.ats.editor.AtsWorkflowRenderer;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
@@ -64,13 +62,13 @@ public class RendererManagerTest {
       Both
    };
 
-   private final ArtifactType artifactType;
+   private final IArtifactType artifactType;
    private final PresentationType presentationType;
    private final Class<? extends IRenderer> clazz;
    private final DefaultOption defaultOption;
 
    public RendererManagerTest(IArtifactType artifactType, PresentationType presentationType, Class<? extends IRenderer> clazz, DefaultOption defaultOption) throws OseeCoreException {
-      this.artifactType = ArtifactTypeManager.getType(artifactType);
+      this.artifactType = artifactType;
       this.presentationType = presentationType;
       this.clazz = clazz;
       this.defaultOption = defaultOption;

@@ -32,17 +32,15 @@ public class DemoTeamWorkflows implements IAtsTeamWorkflow {
    private static List<? extends IArtifactType> workflowArtifactTypes;
 
    @Override
-   public String getTeamWorkflowArtifactName(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems) {
+   public IArtifactType getTeamWorkflowArtifactType(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems) {
       if (teamDef.getName().contains("Code")) {
-         return DemoArtifactTypes.DemoCodeTeamWorkflow.getName();
+         return DemoArtifactTypes.DemoCodeTeamWorkflow;
       } else if (teamDef.getName().contains("Test")) {
-         return DemoTestTeamWorkflowArtifact.ARTIFACT_NAME;
-      } else if (teamDef.getName().contains("Requirements")) {
-         return DemoReqTeamWorkflowArtifact.ARTIFACT_NAME;
-      } else if (teamDef.getName().contains("SAW HW")) {
-         return DemoReqTeamWorkflowArtifact.ARTIFACT_NAME;
+         return DemoArtifactTypes.DemoTestTeamWorkflow;
+      } else if (teamDef.getName().contains("Requirements") || teamDef.getName().contains("SAW HW")) {
+         return DemoArtifactTypes.DemoReqTeamWorkflow;
       }
-      return AtsArtifactTypes.TeamWorkflow.getName();
+      return AtsArtifactTypes.TeamWorkflow;
    }
 
    @Override
@@ -73,5 +71,4 @@ public class DemoTeamWorkflows implements IAtsTeamWorkflow {
    public void teamWorkflowDuplicating(TeamWorkFlowArtifact teamArt, TeamWorkFlowArtifact dupTeamArt) {
       // do nothing
    }
-
 }

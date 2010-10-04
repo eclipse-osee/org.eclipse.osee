@@ -29,7 +29,6 @@ import org.eclipse.osee.ats.util.widgets.dialog.ActionActionableItemListDialog;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AbstractArtifactSearchCriteria;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeCriteria;
@@ -101,8 +100,8 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
          actionItems = new HashSet<ActionableItemArtifact>();
          for (String actionItemName : actionItemNames) {
             ActionableItemArtifact aia =
-               (ActionableItemArtifact) AtsCacheManager.getSoleArtifactByName(
-                  ArtifactTypeManager.getType(AtsArtifactTypes.ActionableItem), actionItemName);
+               (ActionableItemArtifact) AtsCacheManager.getSoleArtifactByName(AtsArtifactTypes.ActionableItem,
+                  actionItemName);
             if (aia != null) {
                actionItems.add(aia);
             }

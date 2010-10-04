@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.access.AccessModel;
 import org.eclipse.osee.framework.core.model.access.HasAccessModel;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.services.CmAccessControl;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -80,8 +79,7 @@ public class AtsCmAccessControl implements CmAccessControl, HasAccessModel {
       Artifact artifact = asCastedObject(object);
       if (artifact != null) {
          if (atsBranch.equals(artifact.getBranch())) {
-            ArtifactType artifactType = artifact.getArtifactType();
-            contextId = atsObjectAccessManager.getContextId(artifactType, AtsUtil.isAtsAdmin());
+            contextId = atsObjectAccessManager.getContextId(artifact, AtsUtil.isAtsAdmin());
          } else {
             contextId = atsBranchObjectManager.getContextId(artifact);
          }

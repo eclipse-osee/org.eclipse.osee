@@ -35,7 +35,6 @@ import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
@@ -73,8 +72,7 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
       TeamDefinitionArtifact useTeamDef = teamDef;
       if (useTeamDef == null && teamDefName != null) {
          useTeamDef =
-            (TeamDefinitionArtifact) AtsCacheManager.getSoleArtifactByName(
-               ArtifactTypeManager.getType(AtsArtifactTypes.TeamDefinition), teamDefName);
+            (TeamDefinitionArtifact) AtsCacheManager.getSoleArtifactByName(AtsArtifactTypes.TeamDefinition, teamDefName);
       }
       if (useTeamDef == null) {
          TeamDefinitionDialog ld = new TeamDefinitionDialog("Select Team", "Select Team");

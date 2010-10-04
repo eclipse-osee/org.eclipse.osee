@@ -15,10 +15,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
+
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -41,7 +42,7 @@ public class RoughArtifact {
    private RoughArtifactKind roughArtifactKind;
    private final RoughAttributeSet attributes;
    private final Collection<RoughArtifact> children;
-   private ArtifactType primaryArtifactType;
+   private IArtifactType primaryArtifactType;
 
    public RoughArtifact(RoughArtifactKind roughArtifactKind) {
 
@@ -203,11 +204,11 @@ public class RoughArtifact {
       return attributes.getSoleAttributeValue(attributeName);
    }
 
-   public ArtifactType getPrimaryArtifactType() {
+   public IArtifactType getPrimaryArtifactType() {
       return primaryArtifactType;
    }
 
-   public void setPrimaryArtifactType(ArtifactType primaryArtifactType) {
+   public void setPrimaryArtifactType(IArtifactType primaryArtifactType) {
       this.primaryArtifactType = primaryArtifactType;
    }
 

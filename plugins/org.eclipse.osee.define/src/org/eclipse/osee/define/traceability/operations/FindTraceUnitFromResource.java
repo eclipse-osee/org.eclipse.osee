@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
+
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IResource;
@@ -24,13 +25,13 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.define.DefinePlugin;
 import org.eclipse.osee.define.traceability.ITraceUnitResourceLocator;
 import org.eclipse.osee.define.traceability.TraceUnitExtensionManager;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
@@ -40,28 +41,30 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 /**
  * @author Roberto E. Escobar
  */
-public class FindTraceUnitFromResource {
+public final class FindTraceUnitFromResource {
 
    private FindTraceUnitFromResource() {
+      //
    }
 
-   private static HashCollection<String, String> toIdentifiers(IResource... resources) {
-      HashCollection<String, String> toReturn = new HashCollection<String, String>(false, HashSet.class);
+   private static HashCollection<IArtifactType, String> toIdentifiers(IResource... resources) {
+      HashCollection<IArtifactType, String> returnCollection =
+         new HashCollection<IArtifactType, String>(false, HashSet.class);
       if (resources != null && resources.length > 0) {
          try {
             Collection<ITraceUnitResourceLocator> locators =
                TraceUnitExtensionManager.getInstance().getAllTraceUnitLocators();
             for (IResource resource : resources) {
-               resourceToId(toReturn, resource, locators);
+               resourceToId(returnCollection, resource, locators);
             }
          } catch (Exception ex) {
             OseeLog.log(DefinePlugin.class, Level.SEVERE, ex);
          }
       }
-      return toReturn;
+      return returnCollection;
    }
 
-   private static void resourceToId(HashCollection<String, String> idStore, IResource resource, Collection<ITraceUnitResourceLocator> locators) {
+   private static void resourceToId(HashCollection<IArtifactType, String> idStore, IResource resource, Collection<ITraceUnitResourceLocator> locators) {
       try {
          IFileStore fileStore = EFS.getStore(resource.getLocationURI());
          for (ITraceUnitResourceLocator locator : locators) {
@@ -71,7 +74,7 @@ public class FindTraceUnitFromResource {
                   inputStream = fileStore.openInputStream(EFS.NONE, new NullProgressMonitor());
                   CharBuffer buffer = Lib.inputStreamToCharBuffer(inputStream);
                   String identifier = locator.getIdentifier(fileStore, buffer);
-                  String traceType = locator.getTraceUnitType(identifier, buffer);
+                  IArtifactType traceType = locator.getTraceUnitType(identifier, buffer);
                   idStore.put(traceType, identifier);
                } catch (Exception ex) {
                   OseeLog.log(DefinePlugin.class, Level.SEVERE, ex);
@@ -92,16 +95,15 @@ public class FindTraceUnitFromResource {
    }
 
    public static void search(Branch branch, IResource... resources) {
-      HashCollection<String, String> typeAndIds = toIdentifiers(resources);
+      HashCollection<IArtifactType, String> typeAndIds = toIdentifiers(resources);
       if (!typeAndIds.isEmpty()) {
          Set<Artifact> artifacts = new HashSet<Artifact>();
-         for (String artifactTypeName : typeAndIds.keySet()) {
-            Collection<String> items = typeAndIds.getValues(artifactTypeName);
+         for (IArtifactType artifactType : typeAndIds.keySet()) {
+            Collection<String> items = typeAndIds.getValues(artifactType);
             if (items != null) {
                for (String artifactName : items) {
                   try {
-                     artifacts.addAll(ArtifactQuery.getArtifactListFromTypeAndName(
-                        ArtifactTypeManager.getType(artifactTypeName), artifactName, branch));
+                     artifacts.addAll(ArtifactQuery.getArtifactListFromTypeAndName(artifactType, artifactName, branch));
                   } catch (OseeCoreException ex) {
                      OseeLog.log(DefinePlugin.class, Level.SEVERE, ex);
                   }

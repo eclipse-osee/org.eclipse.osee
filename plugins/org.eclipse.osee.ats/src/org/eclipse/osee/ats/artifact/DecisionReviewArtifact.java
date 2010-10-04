@@ -13,9 +13,9 @@ package org.eclipse.osee.ats.artifact;
 import java.util.Collection;
 import org.eclipse.osee.ats.util.StateManager;
 import org.eclipse.osee.ats.util.widgets.XDecisionOptions;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
@@ -34,7 +34,7 @@ public class DecisionReviewArtifact extends AbstractReviewArtifact implements IR
       Completed
    };
 
-   public DecisionReviewArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeCoreException {
+   public DecisionReviewArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
       decisionOptions = new XDecisionOptions(this);
    }

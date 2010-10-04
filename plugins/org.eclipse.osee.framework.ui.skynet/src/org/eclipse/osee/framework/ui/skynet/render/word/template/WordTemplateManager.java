@@ -209,9 +209,6 @@ public class WordTemplateManager {
       }
    }
 
-   /**
-    * @return
-    */
    private List<Artifact> recurseArtifactChildren(List<Artifact> artifacts) throws OseeCoreException {
       List<Artifact> arts = new ArrayList<Artifact>();
       for (Artifact art : artifacts) {
@@ -230,7 +227,6 @@ public class WordTemplateManager {
    /**
     * This method expands wildcard(*) attribute names into all of the attribute types of a particular artifact.
     * 
-    * @return
     */
    private List<ITemplateTask> preProcessTemplateTasks(List<ITemplateTask> tasks, Artifact artifact) throws OseeCoreException {
       List<ITemplateTask> newTasks = new ArrayList<ITemplateTask>();

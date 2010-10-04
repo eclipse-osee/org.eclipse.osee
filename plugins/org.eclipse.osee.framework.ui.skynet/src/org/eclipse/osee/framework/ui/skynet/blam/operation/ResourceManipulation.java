@@ -253,9 +253,6 @@ public class ResourceManipulation extends AbstractBlam {
       rd.report("Fix bad data", Manipulations.RAW_HTML);
    }
 
-   /**
-    * @return
-    */
    private byte[] fixBytes(int startByte, int initialByte, byte[] goodBytes, byte[] finalVersion, byte[] originalData) {
       byte[] fixed = new byte[initialByte - startByte + goodBytes.length + finalVersion.length];
       int count = 0;
@@ -274,9 +271,6 @@ public class ResourceManipulation extends AbstractBlam {
       return fixed;
    }
 
-   /**
-    * @return
-    */
    private byte[] addTail(int startByte, byte[] finalVersion, byte[] originalData) {
       byte[] fixed = new byte[originalData.length - startByte + finalVersion.length];
       int count = 0;

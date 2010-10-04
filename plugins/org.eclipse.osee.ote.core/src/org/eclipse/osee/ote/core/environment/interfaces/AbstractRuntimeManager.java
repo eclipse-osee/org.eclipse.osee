@@ -255,9 +255,6 @@ public class AbstractRuntimeManager implements IRuntimeLibraryManager {
       transitionInstalledBundles();
    }
 
-   /**
-    * @return
-    */
    private InputStream getBundleInputStream(BundleDescription bundleDescription) throws IOException {
       if (bundleDescription.isSystemLibrary()) {
          return acquireSystemLibraryStream(bundleDescription);
@@ -266,16 +263,10 @@ public class AbstractRuntimeManager implements IRuntimeLibraryManager {
       }
    }
 
-   /**
-    * @return
-    */
    private InputStream acquireUserLibraryStream(BundleDescription bundleDescription) throws IOException {
       return bundleDescription.getBundleData();
    }
 
-   /**
-    * @return
-    */
    private InputStream acquireSystemLibraryStream(BundleDescription bundleDescription) throws IOException {
       try {
          File dir = getJarCache();

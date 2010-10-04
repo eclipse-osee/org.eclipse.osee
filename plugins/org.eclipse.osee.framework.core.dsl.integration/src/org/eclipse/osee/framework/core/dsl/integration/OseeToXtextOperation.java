@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.dsl.integration.internal.Activator;
 import org.eclipse.osee.framework.core.dsl.integration.util.OseeUtil;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl;
@@ -153,8 +154,8 @@ public class OseeToXtextOperation extends AbstractOperation {
 
    private void populateArtifactTypes(IProgressMonitor monitor, double workPercentage) throws OseeCoreException {
       monitor.setTaskName("Artifact Types");
-      Collection<ArtifactType> artifactTypes = cache.getArtifactTypeCache().getAll();
-      for (ArtifactType artifactType : artifactTypes) {
+      Collection<? extends IArtifactType> artifactTypes = cache.getArtifactTypeCache().getAll();
+      for (IArtifactType artifactType : artifactTypes) {
          checkForCancelledStatus(monitor);
          XArtifactType modelType = getFactory().createXArtifactType();
 

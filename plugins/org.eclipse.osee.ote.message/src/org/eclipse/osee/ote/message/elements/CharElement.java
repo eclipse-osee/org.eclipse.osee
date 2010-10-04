@@ -221,9 +221,6 @@ public class CharElement extends DiscreteElement<Character> {
       return passFail.isPass();
    }
 
-   /**
-    * @return
-    */
    private boolean compareString(String string, String value) {
       return string.equals(value);
    }

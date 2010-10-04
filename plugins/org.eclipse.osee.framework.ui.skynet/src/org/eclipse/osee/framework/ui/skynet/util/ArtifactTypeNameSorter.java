@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.util;
 
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 
 /**
  * Default sorter for artifacts. Sorts on descriptive name
@@ -30,7 +30,7 @@ public class ArtifactTypeNameSorter extends ViewerSorter {
    @SuppressWarnings("unchecked")
    public int compare(Viewer viewer, Object o1, Object o2) {
 
-      return getComparator().compare(((ArtifactType) o1).getName(), ((ArtifactType) o2).getName());
+      return getComparator().compare(((IArtifactType) o1).getName(), ((IArtifactType) o2).getName());
    }
 
 }

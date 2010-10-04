@@ -10,18 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.change;
 
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 
 /**
  * @author Jeff C. Phillips
  */
 public class ArtifactChangeBuilder extends ChangeBuilder {
 
-   public ArtifactChangeBuilder(Branch branch, ArtifactType artifactType, int sourceGamma, int artId, TransactionDelta txDelta, ModificationType modType, boolean isHistorical) {
+   public ArtifactChangeBuilder(Branch branch, IArtifactType artifactType, int sourceGamma, int artId, TransactionDelta txDelta, ModificationType modType, boolean isHistorical) {
       super(branch, artifactType, sourceGamma, artId, txDelta, modType, isHistorical);
    }
 

@@ -150,9 +150,6 @@ public class ModelManager implements IModelManager, DestroyableService {
       }
    }
 
-   /**
-    * @return
-    */
    private boolean collectionContainsListener(List<IModelListener> collection, IModelListener listener) {
       try {
          for (IModelListener current : collection) {

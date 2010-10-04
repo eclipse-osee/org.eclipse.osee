@@ -22,15 +22,14 @@ import org.eclipse.osee.ats.util.AtsFolderUtil;
 import org.eclipse.osee.ats.util.AtsFolderUtil.AtsFolder;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 
 /**
@@ -38,13 +37,12 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
  */
 public class ActionableItemArtifact extends Artifact {
 
-   public ActionableItemArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeCoreException {
+   public ActionableItemArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
 
    public static List<ActionableItemArtifact> getActionableItems(Active active) throws OseeCoreException {
-      return Collections.castAll(AtsCacheManager.getArtifactsByActive(
-         ArtifactTypeManager.getType(AtsArtifactTypes.ActionableItem), active));
+      return Collections.castAll(AtsCacheManager.getArtifactsByActive(AtsArtifactTypes.ActionableItem, active));
    }
 
    public static String getNotActionableItemError(Artifact aia) {
@@ -70,8 +68,7 @@ public class ActionableItemArtifact extends Artifact {
    }
 
    public static List<ActionableItemArtifact> getActionableItems() throws OseeCoreException {
-      return Collections.castAll(AtsCacheManager.getArtifactsByActive(
-         ArtifactTypeManager.getType(AtsArtifactTypes.ActionableItem), Active.Both));
+      return Collections.castAll(AtsCacheManager.getArtifactsByActive(AtsArtifactTypes.ActionableItem, Active.Both));
    }
 
    public boolean isActionable() throws OseeCoreException {
@@ -81,8 +78,8 @@ public class ActionableItemArtifact extends Artifact {
    public static Set<ActionableItemArtifact> getActionableItems(Collection<String> actionableItemNames) throws OseeCoreException {
       Set<ActionableItemArtifact> aias = new HashSet<ActionableItemArtifact>();
       for (String actionableItemName : actionableItemNames) {
-         for (Artifact artifact : AtsCacheManager.getArtifactsByName(
-            ArtifactTypeManager.getType(AtsArtifactTypes.ActionableItem), actionableItemName)) {
+         for (Artifact artifact : AtsCacheManager.getArtifactsByName(AtsArtifactTypes.ActionableItem,
+            actionableItemName)) {
             aias.add((ActionableItemArtifact) artifact);
          }
       }

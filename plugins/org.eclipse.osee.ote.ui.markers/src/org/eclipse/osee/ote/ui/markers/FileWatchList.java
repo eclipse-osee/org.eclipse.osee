@@ -82,9 +82,6 @@ public class FileWatchList {
       }
    }
 
-   /**
-    * @return
-    */
    private boolean isListTooBig() {
       return fileWatchItems.size() > 20;
    }
@@ -98,9 +95,6 @@ public class FileWatchList {
       }
    }
 
-   /**
-    * @return
-    */
    private FileWatchItem findWatchItem(IFile file) {
       for (FileWatchItem item : fileWatchItems) {
          if (item.file.equals(file)) {

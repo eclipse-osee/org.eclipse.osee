@@ -19,11 +19,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.RelationTypeSide;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
@@ -55,8 +56,8 @@ public final class SkyWalkerOptions {
    private static Map<AbstractLayoutAlgorithm, String> layouts;
    private AbstractLayoutAlgorithm layout;
    protected AbstractLayoutAlgorithm defaultLayout;
-   private Map<ArtifactType, Boolean> artTypes;
-   private Map<AttributeType, Boolean> showAttributes;
+   private Map<IArtifactType, Boolean> artTypes;
+   private Map<IAttributeType, Boolean> showAttributes;
    // RelationLinkDescriptor and RelationLinkDescriptorSide
    private Map<Object, Boolean> relTypes;
    private boolean filterEnabled = true;
@@ -88,7 +89,7 @@ public final class SkyWalkerOptions {
          return "";
       } else {
          StringBuffer sb = new StringBuffer();
-         for (AttributeType attributeType : getSelectedShowAttributeTypes()) {
+         for (IAttributeType attributeType : getSelectedShowAttributeTypes()) {
             if (artifact.getAttributeCount(attributeType) > 0) {
                sb.append("\n");
                sb.append(artifact.getAttributesToString(attributeType));
@@ -100,9 +101,9 @@ public final class SkyWalkerOptions {
 
    private void loadArtTypes() {
       if (artTypes == null) {
-         artTypes = new HashMap<ArtifactType, Boolean>();
+         artTypes = new HashMap<IArtifactType, Boolean>();
          try {
-            for (ArtifactType descriptor : ArtifactTypeManager.getValidArtifactTypes(artifact.getBranch())) {
+            for (IArtifactType descriptor : ArtifactTypeManager.getValidArtifactTypes(artifact.getBranch())) {
                artTypes.put(descriptor, true);
             }
          } catch (Exception ex) {
@@ -113,7 +114,7 @@ public final class SkyWalkerOptions {
 
    private void loadAttributeTypes() {
       if (showAttributes == null) {
-         showAttributes = new HashMap<AttributeType, Boolean>();
+         showAttributes = new HashMap<IAttributeType, Boolean>();
          try {
             for (AttributeType descriptor : AttributeTypeManager.getValidAttributeTypes(artifact.getBranch())) {
                showAttributes.put(descriptor, false);
@@ -171,11 +172,11 @@ public final class SkyWalkerOptions {
       }
       String artTypeStr = AXml.getTagData(xml, "artTypes");
       if (Strings.isValid(artTypeStr)) {
-         for (Entry<ArtifactType, Boolean> desc : artTypes.entrySet()) {
+         for (Entry<IArtifactType, Boolean> desc : artTypes.entrySet()) {
             desc.setValue(false);
          }
          for (String name : artTypeStr.split(",")) {
-            for (Entry<ArtifactType, Boolean> desc : artTypes.entrySet()) {
+            for (Entry<IArtifactType, Boolean> desc : artTypes.entrySet()) {
                if (desc.getKey().getName().equals(name)) {
                   desc.setValue(true);
                   break;
@@ -199,11 +200,11 @@ public final class SkyWalkerOptions {
       }
       String showAttrString = AXml.getTagData(xml, "showAttributes");
       if (Strings.isValid(showAttrString)) {
-         for (Entry<AttributeType, Boolean> desc : showAttributes.entrySet()) {
+         for (Entry<IAttributeType, Boolean> desc : showAttributes.entrySet()) {
             desc.setValue(false);
          }
          for (String name : showAttrString.split(",")) {
-            for (Entry<AttributeType, Boolean> desc : showAttributes.entrySet()) {
+            for (Entry<IAttributeType, Boolean> desc : showAttributes.entrySet()) {
                if (desc.getKey().getName().equals(name)) {
                   desc.setValue(true);
                   break;
@@ -301,7 +302,7 @@ public final class SkyWalkerOptions {
       notifyListeners(ModType.Artifact);
    }
 
-   public boolean isValidArtifactType(ArtifactType type) {
+   public boolean isValidArtifactType(IArtifactType type) {
       if (!isFilterEnabled()) {
          return true;
       }
@@ -380,25 +381,25 @@ public final class SkyWalkerOptions {
       for (Object obj : selected) {
          selList.add(obj);
       }
-      for (Entry<AttributeType, Boolean> entry : showAttributes.entrySet()) {
+      for (Entry<IAttributeType, Boolean> entry : showAttributes.entrySet()) {
          entry.setValue(selList.contains(entry.getKey()));
       }
       notifyListeners(ModType.Show_Attribute);
    }
 
-   public void setSelectedArtTypes(Collection<ArtifactType> selected) {
-      for (Entry<ArtifactType, Boolean> entry : artTypes.entrySet()) {
+   public void setSelectedArtTypes(Collection<IArtifactType> selected) {
+      for (Entry<IArtifactType, Boolean> entry : artTypes.entrySet()) {
          entry.setValue(selected.contains(entry.getKey()));
       }
       notifyListeners(ModType.ArtType);
    }
 
-   public Set<ArtifactType> getSelectedArtTypes() {
-      Set<ArtifactType> selected = new HashSet<ArtifactType>();
+   public Set<IArtifactType> getSelectedArtTypes() {
+      Set<IArtifactType> selected = new HashSet<IArtifactType>();
       if (artTypes == null) {
          return selected;
       }
-      for (ArtifactType desc : artTypes.keySet()) {
+      for (IArtifactType desc : artTypes.keySet()) {
          if (artTypes.get(desc)) {
             selected.add(desc);
          }
@@ -419,12 +420,12 @@ public final class SkyWalkerOptions {
       return selected;
    }
 
-   public Set<AttributeType> getSelectedShowAttributeTypes() {
-      Set<AttributeType> selected = new HashSet<AttributeType>();
+   public Set<IAttributeType> getSelectedShowAttributeTypes() {
+      Set<IAttributeType> selected = new HashSet<IAttributeType>();
       if (showAttributes == null) {
          return selected;
       }
-      for (AttributeType desc : showAttributes.keySet()) {
+      for (IAttributeType desc : showAttributes.keySet()) {
          if (showAttributes.get(desc)) {
             selected.add(desc);
          }
@@ -432,9 +433,9 @@ public final class SkyWalkerOptions {
       return selected;
    }
 
-   public Set<ArtifactType> getAllArtTypes() {
+   public Set<IArtifactType> getAllArtTypes() {
       if (artTypes == null) {
-         return new HashSet<ArtifactType>();
+         return new HashSet<IArtifactType>();
       }
       return artTypes.keySet();
    }
@@ -446,9 +447,9 @@ public final class SkyWalkerOptions {
       return relTypes.keySet();
    }
 
-   public Set<AttributeType> getAllShowAttributes() {
+   public Set<IAttributeType> getAllShowAttributes() {
       if (showAttributes == null) {
-         return new HashSet<AttributeType>();
+         return new HashSet<IAttributeType>();
       }
       return showAttributes.keySet();
    }

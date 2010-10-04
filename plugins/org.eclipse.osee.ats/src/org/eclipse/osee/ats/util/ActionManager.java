@@ -78,7 +78,7 @@ public class ActionManager {
    }
 
    public static TeamWorkFlowArtifact createTeamWorkflow(ActionArtifact actionArt, TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems, Collection<User> assignees, SkynetTransaction transaction, CreateTeamOption... createTeamOption) throws OseeCoreException {
-      String teamWorkflowArtifactName = AtsArtifactTypes.TeamWorkflow.getName();
+      IArtifactType teamWorkflowArtifact = AtsArtifactTypes.TeamWorkflow;
       IAtsTeamWorkflow teamExt = null;
 
       // Check if any plugins want to create the team workflow themselves
@@ -90,15 +90,15 @@ public class ActionManager {
             OseeLog.log(AtsPlugin.class, Level.WARNING, ex);
          }
          if (isResponsible) {
-            teamWorkflowArtifactName = teamExtension.getTeamWorkflowArtifactName(teamDef, actionableItems);
+            teamWorkflowArtifact = teamExtension.getTeamWorkflowArtifactType(teamDef, actionableItems);
             teamExt = teamExtension;
          }
       }
 
       // NOTE: The persist of the workflow will auto-email the assignees
       TeamWorkFlowArtifact teamArt =
-         createTeamWorkflow(actionArt, teamDef, actionableItems, assignees,
-            ArtifactTypeManager.getType(teamWorkflowArtifactName), transaction, createTeamOption);
+         createTeamWorkflow(actionArt, teamDef, actionableItems, assignees, teamWorkflowArtifact, transaction,
+            createTeamOption);
       // Notify extension that workflow was created
       if (teamExt != null) {
          teamExt.teamWorkflowCreated(teamArt);

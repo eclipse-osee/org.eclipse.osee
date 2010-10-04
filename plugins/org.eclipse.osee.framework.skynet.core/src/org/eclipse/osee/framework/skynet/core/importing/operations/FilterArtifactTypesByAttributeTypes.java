@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
@@ -32,10 +33,10 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
 public class FilterArtifactTypesByAttributeTypes extends AbstractOperation {
 
    private final IOseeBranch branch;
-   private final Collection<ArtifactType> selectedArtifactTypes;
+   private final Collection<IArtifactType> selectedArtifactTypes;
    private final RoughArtifactCollector collector;
 
-   public FilterArtifactTypesByAttributeTypes(IOseeBranch branch, RoughArtifactCollector collector, Collection<ArtifactType> selectedArtifactTypes) {
+   public FilterArtifactTypesByAttributeTypes(IOseeBranch branch, RoughArtifactCollector collector, Collection<IArtifactType> selectedArtifactTypes) {
       super("Filter Artifact Types", Activator.PLUGIN_ID);
       this.branch = branch;
       this.selectedArtifactTypes = selectedArtifactTypes;

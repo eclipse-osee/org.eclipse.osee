@@ -20,7 +20,6 @@ import org.eclipse.osee.ats.artifact.DecisionReviewWorkflowManager;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewWorkflowManager;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.config.demo.artifact.DemoTestTeamWorkflowArtifact;
 import org.eclipse.osee.ats.config.demo.internal.OseeAtsConfigDemoActivator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
@@ -36,6 +35,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.support.test.util.DemoArtifactTypes;
 import org.eclipse.osee.support.test.util.DemoUsers;
 
 /**
@@ -85,18 +85,16 @@ public class DemoDbReviews {
 
    }
 
-   private static List<DemoTestTeamWorkflowArtifact> reviewTestArts;
+   private static List<TeamWorkFlowArtifact> reviewTestArts;
 
-   private static List<DemoTestTeamWorkflowArtifact> getSampleReviewTestWorkflows() throws Exception {
+   private static List<TeamWorkFlowArtifact> getSampleReviewTestWorkflows() throws Exception {
       if (reviewTestArts == null) {
-         reviewTestArts = new ArrayList<DemoTestTeamWorkflowArtifact>();
+         reviewTestArts = new ArrayList<TeamWorkFlowArtifact>();
          for (String actionName : new String[] {"Button W doesn't work on%", "%Diagram Tree"}) {
-            DemoTestTeamWorkflowArtifact testArt = null;
             for (Artifact art : ArtifactQuery.getArtifactListFromName(actionName, AtsUtil.getAtsBranch(),
                EXCLUDE_DELETED)) {
-               if (art instanceof DemoTestTeamWorkflowArtifact) {
-                  testArt = (DemoTestTeamWorkflowArtifact) art;
-                  reviewTestArts.add(testArt);
+               if (art.isOfType(DemoArtifactTypes.DemoTestTeamWorkflow)) {
+                  reviewTestArts.add((TeamWorkFlowArtifact) art);
                }
             }
          }

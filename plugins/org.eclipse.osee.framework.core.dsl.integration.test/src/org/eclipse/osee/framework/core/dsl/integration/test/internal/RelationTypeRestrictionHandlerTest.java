@@ -205,10 +205,8 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
    }
 
    private static RelationType getTestRelationType(IRelationType relationType, IArtifactType aArtTypeToken, IArtifactType bArtTypeToken) {
-      ArtifactType aArtArtType = new ArtifactType(aArtTypeToken.getGuid(), aArtTypeToken.getName(), false);
-      ArtifactType bArtArtType = new ArtifactType(bArtTypeToken.getGuid(), bArtTypeToken.getName(), false);
-      return new RelationType(relationType.getGuid(), relationType.getName(), "sideA_" + aArtArtType.getName(),
-         "sideB_" + bArtArtType.getName(), aArtArtType, bArtArtType, RelationTypeMultiplicity.MANY_TO_MANY,
+      return new RelationType(relationType.getGuid(), relationType.getName(), "sideA_" + aArtTypeToken.getName(),
+         "sideB_" + bArtTypeToken.getName(), aArtTypeToken, bArtTypeToken, RelationTypeMultiplicity.MANY_TO_MANY,
          RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC.getGuid());
    }
 }

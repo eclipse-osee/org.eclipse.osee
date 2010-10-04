@@ -169,8 +169,7 @@ public class AccessControlService implements IAccessControlService {
             objectToSubjectCache.put(branchAccessObject, subjectId);
 
             ArtifactType subjectArtifactType = getArtifactTypeCache().getById(subjectArtifactTypeId);
-            ArtifactType toCheck = getArtifactTypeCache().get(CoreArtifactTypes.UserGroup);
-            if (subjectArtifactType.inheritsFrom(toCheck)) {
+            if (subjectArtifactType.inheritsFrom(CoreArtifactTypes.UserGroup)) {
                populateGroupMembers(subjectId);
             }
          }
@@ -199,8 +198,7 @@ public class AccessControlService implements IAccessControlService {
                cacheAccessObject(objectId, subjectId, permission, accessObject);
 
                ArtifactType subjectArtifactType = getArtifactTypeCache().getById(subjectArtifactTypeId);
-               ArtifactType toCheck = getArtifactTypeCache().get(CoreArtifactTypes.UserGroup);
-               if (subjectArtifactType.inheritsFrom(toCheck)) {
+               if (subjectArtifactType.inheritsFrom(CoreArtifactTypes.UserGroup)) {
                   populateGroupMembers(subjectId);
                }
             }

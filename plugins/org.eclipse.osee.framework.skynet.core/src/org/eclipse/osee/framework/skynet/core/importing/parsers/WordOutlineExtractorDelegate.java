@@ -197,7 +197,6 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
     * Gets content and attempts to extract outline number and title, if it fails with regular regex, it tries
     * specializedOutlineNumberTitleExtract()
     * 
-    * @return
     */
    private boolean processOutlineNumberAndName(String content, StringBuilder outlineNumber, StringBuilder outlineName) throws OseeCoreException {
       Matcher listItemMatcher = LIST_ITEM_REGEX.matcher(content);

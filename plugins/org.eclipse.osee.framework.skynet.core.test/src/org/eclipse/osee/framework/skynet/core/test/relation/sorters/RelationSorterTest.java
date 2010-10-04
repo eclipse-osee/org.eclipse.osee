@@ -17,6 +17,7 @@ import java.util.List;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.relation.order.IRelationSorter;
 import org.eclipse.osee.framework.skynet.core.relation.sorters.LexicographicalRelationSorter;
@@ -74,7 +75,7 @@ public class RelationSorterTest {
    }
 
    @Parameters
-   public static Collection<Object[]> data() {
+   public static Collection<Object[]> data() throws OseeCoreException {
       Collection<Object[]> data = new ArrayList<Object[]>();
       data.add(createUnorderedSortTest("4", "2", "1", "5"));
       data.add(createUnorderedSortTest("$", "a", "!", "2"));
@@ -90,7 +91,7 @@ public class RelationSorterTest {
       return data;
    }
 
-   private static Object[] createUnorderedSortTest(String... names) {
+   private static Object[] createUnorderedSortTest(String... names) throws OseeCoreException {
       IArtifact art1 = DataFactory.createArtifact(names[0], GUID.create());
       IArtifact art2 = DataFactory.createArtifact(names[1], GUID.create());
       IArtifact art3 = DataFactory.createArtifact(names[2], GUID.create());
@@ -106,7 +107,7 @@ public class RelationSorterTest {
          artifacts};
    }
 
-   private static Object[] createLexicographicalTest(SortMode mode, String... names) {
+   private static Object[] createLexicographicalTest(SortMode mode, String... names) throws OseeCoreException {
       IArtifact art1 = DataFactory.createArtifact(names[0], GUID.create());
       IArtifact art2 = DataFactory.createArtifact(names[1], GUID.create());
       IArtifact art3 = DataFactory.createArtifact(names[2], GUID.create());
@@ -126,7 +127,7 @@ public class RelationSorterTest {
          expectedOrder};
    }
 
-   private static Object[] getTestUserDefined(String... names) {
+   private static Object[] getTestUserDefined(String... names) throws OseeCoreException {
       IArtifact art1 = DataFactory.createArtifact(names[0], GUID.create());
       IArtifact art2 = DataFactory.createArtifact(names[1], GUID.create());
       IArtifact art3 = DataFactory.createArtifact(names[2], GUID.create());

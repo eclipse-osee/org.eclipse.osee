@@ -11,12 +11,14 @@
 package org.eclipse.osee.framework.ui.skynet.relation.explorer;
 
 import java.util.ArrayList;
+
 import org.eclipse.jface.viewers.StructuredViewer;
+import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.RelationTypeSide;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -65,7 +67,7 @@ public class RelationExplorerWindow {
 
    private Shell shell;
 
-   private ArtifactType descriptor = null;
+   private IArtifactType descriptor = null;
 
    private final StructuredViewer viewer;
 
@@ -114,18 +116,18 @@ public class RelationExplorerWindow {
       needWindow = true;
    }
 
-   public void createArtifactInformationBox() throws OseeCoreException {
+   public void createArtifactInformationBox() {
       drawWindow();
    }
 
-   private void drawWindow() throws OseeCoreException {
+   private void drawWindow() {
       shell = new Shell(SWT.ON_TOP | SWT.APPLICATION_MODAL | SWT.TITLE | SWT.MIN | SWT.MAX | SWT.RESIZE);
 
       // Setup Title
       shell.setText("Artifact Information");
 
       // Setup Icon
-      Image image = ArtifactImageManager.getImage(ArtifactTypeManager.getType("Artifact"));
+      Image image = ArtifactImageManager.getImage(CoreArtifactTypes.Artifact);
       shell.setImage(image);
 
       // Setup Form Layout

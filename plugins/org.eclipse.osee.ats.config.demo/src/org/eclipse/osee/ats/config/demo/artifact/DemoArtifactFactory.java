@@ -10,11 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.config.demo.artifact;
 
-import java.util.Arrays;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.support.test.util.DemoArtifactTypes;
@@ -26,22 +25,12 @@ import org.eclipse.osee.support.test.util.DemoArtifactTypes;
  */
 public class DemoArtifactFactory extends ArtifactFactory {
    public DemoArtifactFactory() {
-      super(Arrays.asList(DemoArtifactTypes.DemoCodeTeamWorkflow.getName(), DemoTestTeamWorkflowArtifact.ARTIFACT_NAME,
-         DemoReqTeamWorkflowArtifact.ARTIFACT_NAME));
+      super(DemoArtifactTypes.DemoCodeTeamWorkflow, DemoArtifactTypes.DemoTestTeamWorkflow,
+         DemoArtifactTypes.DemoReqTeamWorkflow);
    }
 
    @Override
-   public Artifact getArtifactInstance(String guid, String humandReadableId, Branch branch, ArtifactType artifactType) throws OseeCoreException {
-      if (artifactType.equals(DemoArtifactTypes.DemoCodeTeamWorkflow)) {
-         return new DemoCodeTeamWorkflowArtifact(this, guid, humandReadableId, branch, artifactType);
-      }
-      if (artifactType.getName().equals(DemoTestTeamWorkflowArtifact.ARTIFACT_NAME)) {
-         return new DemoTestTeamWorkflowArtifact(this, guid, humandReadableId, branch, artifactType);
-      }
-      if (artifactType.getName().equals(DemoReqTeamWorkflowArtifact.ARTIFACT_NAME)) {
-         return new DemoReqTeamWorkflowArtifact(this, guid, humandReadableId, branch, artifactType);
-      }
-      throw new OseeArgumentException("did not recognize the artifact type [%s]", artifactType);
+   protected Artifact getArtifactInstance(String guid, String humandReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
+      return new TeamWorkFlowArtifact(this, guid, humandReadableId, branch, artifactType);
    }
-
 }

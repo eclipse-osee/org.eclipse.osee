@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model.type;
 
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -31,7 +32,7 @@ public final class RelationType extends AbstractOseeType implements IRelationTyp
       "osee.relation.type.default.order.type.guid.field";
    private static final String RELATION_MULTIPLICITY_FIELD_KEY = "osee.relation.type.multiplicity.field";
 
-   public RelationType(String guid, String relationTypeName, String sideAName, String sideBName, ArtifactType artifactTypeSideA, ArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, String defaultOrderTypeGuid) {
+   public RelationType(String guid, String relationTypeName, String sideAName, String sideBName, IArtifactType artifactTypeSideA, IArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, String defaultOrderTypeGuid) {
       super(guid, relationTypeName);
       initializeFields();
       setFields(relationTypeName, sideAName, sideBName, artifactTypeSideA, artifactTypeSideB, multiplicity,
@@ -47,7 +48,7 @@ public final class RelationType extends AbstractOseeType implements IRelationTyp
       addField(RELATION_MULTIPLICITY_FIELD_KEY, new OseeField<RelationTypeMultiplicity>());
    }
 
-   public void setFields(String relationTypeName, String sideAName, String sideBName, ArtifactType artifactTypeSideA, ArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, String defaultOrderTypeGuid) {
+   public void setFields(String relationTypeName, String sideAName, String sideBName, IArtifactType artifactTypeSideA, IArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, String defaultOrderTypeGuid) {
       setName(relationTypeName);
       setFieldLogException(RELATION_SIDE_A_NAME_FIELD_KEY, sideAName);
       setFieldLogException(RELATION_SIDE_B_NAME_FIELD_KEY, sideBName);

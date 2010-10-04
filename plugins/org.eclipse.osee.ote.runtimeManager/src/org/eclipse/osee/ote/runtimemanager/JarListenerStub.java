@@ -123,9 +123,6 @@ public class JarListenerStub<T extends JarCollectionNature> implements IJarChang
       return duplicateAndClear(removedBundles);
    }
 
-   /**
-    * @return
-    */
    private String getBundleNameFromJar(URL url) throws IOException {
       File file;
       try {

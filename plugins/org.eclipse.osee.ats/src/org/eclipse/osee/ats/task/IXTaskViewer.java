@@ -39,7 +39,6 @@ public interface IXTaskViewer {
     * and alt-left-click editing functionality.
     * 
     * @return false if tasks are readonly from the TaskViewer
-    * @throws
     */
    public boolean isTasksEditable() throws OseeCoreException;
 

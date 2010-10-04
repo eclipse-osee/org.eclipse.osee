@@ -78,7 +78,6 @@ public class WordUtil {
    /**
     * @return - Returns the content with the ending bookmark IDs being reassigned to a unique number. This is done to
     * ensure all versions of MS Word will function correctly.
-    * @throws OseeCoreException
     */
 
    public static String reassignBookMarkID(String content) throws OseeCoreException {

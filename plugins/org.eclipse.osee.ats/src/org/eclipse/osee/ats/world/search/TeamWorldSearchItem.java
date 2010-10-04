@@ -31,7 +31,6 @@ import org.eclipse.osee.ats.util.DefaultTeamState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AbstractArtifactSearchCriteria;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeCriteria;
@@ -124,8 +123,8 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
          teamDefs = new HashSet<TeamDefinitionArtifact>();
          for (String teamDefName : teamDefNames) {
             TeamDefinitionArtifact aia =
-               (TeamDefinitionArtifact) AtsCacheManager.getSoleArtifactByName(
-                  ArtifactTypeManager.getType(AtsArtifactTypes.TeamDefinition), teamDefName);
+               (TeamDefinitionArtifact) AtsCacheManager.getSoleArtifactByName(AtsArtifactTypes.TeamDefinition,
+                  teamDefName);
             if (aia != null) {
                teamDefs.add(aia);
             }

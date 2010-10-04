@@ -109,7 +109,6 @@ public class HyperViewItem {
       return rights;
    }
 
-   @SuppressWarnings("unused")
    public Image getImage() throws OseeCoreException {
       return image;
    }

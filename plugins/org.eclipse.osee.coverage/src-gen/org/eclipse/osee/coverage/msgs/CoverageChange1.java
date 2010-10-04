@@ -53,7 +53,6 @@ public class CoverageChange1 {
     /**
      * Gets the value of the name property.
      * 
-     * @return
      *     possible object is
      *     {@link String }
      *     
@@ -65,7 +64,6 @@ public class CoverageChange1 {
     /**
      * Sets the value of the name property.
      * 
-     * @param value
      *     allowed object is
      *     {@link String }
      *     
@@ -77,7 +75,6 @@ public class CoverageChange1 {
     /**
      * Gets the value of the guid property.
      * 
-     * @return
      *     possible object is
      *     {@link String }
      *     
@@ -89,7 +86,6 @@ public class CoverageChange1 {
     /**
      * Sets the value of the guid property.
      * 
-     * @param value
      *     allowed object is
      *     {@link String }
      *     
@@ -101,7 +97,6 @@ public class CoverageChange1 {
     /**
      * Gets the value of the modTypeGuid property.
      * 
-     * @return
      *     possible object is
      *     {@link String }
      *     
@@ -113,7 +108,6 @@ public class CoverageChange1 {
     /**
      * Sets the value of the modTypeGuid property.
      * 
-     * @param value
      *     allowed object is
      *     {@link String }
      *     

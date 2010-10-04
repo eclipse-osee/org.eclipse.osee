@@ -206,7 +206,6 @@ public class HttpRequest {
     * Process old format: http://127.0.0.1:<port>/get/guid/<guid>/<ats,Define> TODO old format should be removed once
     * all legacy references are change to new format
     * 
-    * @return
     */
    private boolean parseOldSchoolStyleLinks(String entry) throws Exception {
       boolean handled = false;
