@@ -22,16 +22,24 @@
 			<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Artifact_Type_.2F_Relation_Type_Mapping_Table" label="Artifact Type / Relation Type Mapping Table"></topic>
 		</topic>
 		<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Importing_an_OSEE_Data_Model" label="Importing an OSEE Data Model"></topic>
+		<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Workspace_Setup" label="Workspace Setup"></topic>
+		<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Downloading_and_Configuring_Eclipse" label="Downloading and Configuring Eclipse"></topic>
+		<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Working_with_GIT" label="Working with GIT"></topic>
+		<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Location_of_OSEE_Bundles" label="Location of OSEE Bundles"></topic>
 		<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Migrating_Branches_to_Another_OSEE_Database_.28including_from_previous_OSEE_version.29" label="Migrating Branches to Another OSEE Database (including from previous OSEE version)"></topic>
 		<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Configuring_ATS_for_Change_Tracking" label="Configuring ATS for Change Tracking"></topic>
 		<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Custom_OSEE_Operations_using_BLAM" label="Custom OSEE Operations using BLAM"></topic>
 		<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Event_Handling" label="Event Handling">
 			<topic href="\OSEE\Developers_Guide/Developers-Guide.html#General_Design_Considerations" label="General Design Considerations"></topic>
-		</topic>
-		<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Requirements" label="Requirements">
+			<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Requirements" label="Requirements"></topic>
+			<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Event_Handling_Revelations" label="Event Handling Revelations"></topic>
+			<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Event_Handling_Ideas_.2F_Goals" label="Event Handling Ideas / Goals"></topic>
 			<topic href="\OSEE\Developers_Guide/Developers-Guide.html#OSEE_Event_Handling_-_Current" label="OSEE Event Handling - Current"></topic>
 			<topic href="\OSEE\Developers_Guide/Developers-Guide.html#OSEE_Event_Handling_-_New" label="OSEE Event Handling - New"></topic>
-			<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Event_Model" label="Event Model"></topic>
+			<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Event_Model" label="Event Model">
+				<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Remote_Events" label="Remote Events"></topic>
+				<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Framework_Events_.2F_Listeners" label="Framework Events / Listeners"></topic>
+			</topic>
 		</topic>
 		<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Use_Cases" label="Use Cases"></topic>
 		<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Building_OSEE_using_PDE_Build" label="Building OSEE using PDE Build">

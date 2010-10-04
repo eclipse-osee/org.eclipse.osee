@@ -71,20 +71,6 @@
 				<topic href="\OSEE\Users_Guide\Features/Features.html#Toolbar_Drop-Down_2" label="Toolbar Drop-Down"></topic>
 				<topic href="\OSEE\Users_Guide\Features/Features.html#Pop-up_Menu_3" label="Pop-up Menu"></topic>
 			</topic>
-			<topic href="\OSEE\Users_Guide\Features/Features.html#Query_Log" label="Query Log">
-				<topic href="\OSEE\Users_Guide\Features/Features.html#Query_Log_View" label="Query Log View">
-					<topic href="\OSEE\Users_Guide\Features/Features.html#Purpose" label="Purpose"></topic>
-					<topic href="\OSEE\Users_Guide\Features/Features.html#Shortcuts" label="Shortcuts"></topic>
-				</topic>
-				<topic href="\OSEE\Users_Guide\Features/Features.html#Delete_Query_Log" label="Delete Query Log">
-					<topic href="\OSEE\Users_Guide\Features/Features.html#Purpose_2" label="Purpose"></topic>
-					<topic href="\OSEE\Users_Guide\Features/Features.html#How_to_do_it" label="How to do it"></topic>
-				</topic>
-				<topic href="\OSEE\Users_Guide\Features/Features.html#Refresh_Query_Log" label="Refresh Query Log">
-					<topic href="\OSEE\Users_Guide\Features/Features.html#Purpose_3" label="Purpose"></topic>
-					<topic href="\OSEE\Users_Guide\Features/Features.html#How_to_do_it_2" label="How to do it"></topic>
-				</topic>
-			</topic>
 		</topic>
 		<topic href="\OSEE\Users_Guide\Features/Features.html#Services" label="Services">
 			<topic href="\OSEE\Users_Guide\Features/Features.html#Event_Service" label="Event Service"></topic>
