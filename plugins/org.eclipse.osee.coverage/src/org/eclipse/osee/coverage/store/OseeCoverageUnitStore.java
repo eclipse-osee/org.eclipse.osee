@@ -100,7 +100,7 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
          coverageUnit.setNotes(artifact.getSoleAttributeValueAsString(CoverageAttributeTypes.Notes, ""));
          coverageUnit.setFolder(artifact.isOfType(CoverageArtifactTypes.CoverageFolder));
          coverageUnit.setAssignees(artifact.getSoleAttributeValueAsString(CoverageAttributeTypes.Assignees, ""));
-         coverageUnit.setWorkProductGuid(artifact.getSoleAttributeValueAsString(CoverageAttributeTypes.WorkProductGuid,
+         coverageUnit.setWorkProductTaskGuid(artifact.getSoleAttributeValueAsString(CoverageAttributeTypes.WorkProductTaskGuid,
             ""));
          coverageUnit.setNamespace(artifact.getSoleAttributeValueAsString(CoverageAttributeTypes.Namespace, ""));
          coverageUnit.setOrderNumber(artifact.getSoleAttributeValueAsString(CoverageAttributeTypes.Order, ""));
@@ -177,8 +177,8 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
       if (Strings.isValid(coverageUnit.getNamespace())) {
          artifact.setSoleAttributeFromString(CoverageAttributeTypes.Namespace, coverageUnit.getNamespace());
       }
-      if (Strings.isValid(coverageUnit.getWorkProductGuid())) {
-         artifact.setSoleAttributeFromString(CoverageAttributeTypes.WorkProductGuid, coverageUnit.getWorkProductGuid());
+      if (Strings.isValid(coverageUnit.getWorkProductTaskGuid())) {
+         artifact.setSoleAttributeFromString(CoverageAttributeTypes.WorkProductTaskGuid, coverageUnit.getWorkProductTaskGuid());
       }
       if (coverageUnit.getFileContentsProvider() != null && coverageUnit.getFileContentsProvider() != OseeCoverageUnitFileContentsProvider.getInstance(branch)) {
          String fileContents = coverageUnit.getFileContents();

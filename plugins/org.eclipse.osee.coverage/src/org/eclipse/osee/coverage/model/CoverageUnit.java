@@ -39,7 +39,7 @@ public class CoverageUnit extends NamedIdentity implements IWorkProductRelatable
    final List<CoverageItem> coverageItems = new ArrayList<CoverageItem>();
    String location;
    String orderNumber = "";
-   String workProductGuid;
+   String workProductTaskGuid;
    WorkProductTask workProductTask;
    final List<CoverageUnit> coverageUnits = new ArrayList<CoverageUnit>();
    ICoverage parent;
@@ -293,7 +293,7 @@ public class CoverageUnit extends NamedIdentity implements IWorkProductRelatable
       coverageUnit.setOrderNumber(orderNumber);
       coverageUnit.setFolder(folder);
       coverageUnit.setAssignees(assignees);
-      coverageUnit.setWorkProductGuid(workProductGuid);
+      coverageUnit.setWorkProductTaskGuid(workProductTaskGuid);
       coverageUnit.setLocation(location);
       if (includeItems) {
          for (CoverageItem coverageItem : coverageItems) {
@@ -362,20 +362,20 @@ public class CoverageUnit extends NamedIdentity implements IWorkProductRelatable
       if (getWorkProductTask() != null) {
          return getWorkProductTask().toString();
       }
-      if (Strings.isValid(workProductGuid)) {
-         return "Task Not Found: " + workProductGuid;
+      if (Strings.isValid(workProductTaskGuid)) {
+         return "Task Not Found: " + workProductTaskGuid;
       }
       return "";
    }
 
    @Override
-   public String getWorkProductGuid() {
-      return workProductGuid;
+   public String getWorkProductTaskGuid() {
+      return workProductTaskGuid;
    }
 
    @Override
-   public void setWorkProductGuid(String workProductGuid) {
-      this.workProductGuid = workProductGuid;
+   public void setWorkProductTaskGuid(String workProductTaskGuid) {
+      this.workProductTaskGuid = workProductTaskGuid;
    }
 
    @Override

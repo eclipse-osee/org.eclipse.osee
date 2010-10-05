@@ -88,7 +88,7 @@ public class CoverageItem extends NamedIdentity implements ICoverage, IWorkProdu
       toItem.setOrderNumber(fromItem.getOrderNumber());
       toItem.setRationale(fromItem.getRationale());
       toItem.setTestUnitProvider(fromItem.getTestUnitProvider());
-      toItem.setWorkProductGuid(fromItem.getWorkProductGuid());
+      toItem.setWorkProductTaskGuid(fromItem.getWorkProductTaskGuid());
       toItem.setWorkProductTask(fromItem.getWorkProductTask());
    }
 
@@ -265,8 +265,8 @@ public class CoverageItem extends NamedIdentity implements ICoverage, IWorkProdu
       if (Strings.isValid(store.get("rationale"))) {
          setRationale(store.get("rationale"));
       }
-      if (Strings.isValid(store.get("workProductGuid"))) {
-         setWorkProductGuid(store.get("workProductGuid"));
+      if (Strings.isValid(store.get("workProductTaskGuid"))) {
+         setWorkProductTaskGuid(store.get("workProductTaskGuid"));
       }
       if (testUnitProvider == null) {
          testUnitProvider = new SimpleTestUnitProvider();
@@ -291,7 +291,7 @@ public class CoverageItem extends NamedIdentity implements ICoverage, IWorkProdu
          store.put("order", orderNumber);
       }
       if (Strings.isValid(workProductGuid)) {
-         store.put("workProductGuid", workProductGuid);
+         store.put("workProductTaskGuid", workProductGuid);
       }
       store.put("methodType", coverageMethod.getName());
       if (testUnitProvider != null) {
@@ -327,12 +327,12 @@ public class CoverageItem extends NamedIdentity implements ICoverage, IWorkProdu
    }
 
    @Override
-   public String getWorkProductGuid() {
+   public String getWorkProductTaskGuid() {
       return workProductGuid;
    }
 
    @Override
-   public void setWorkProductGuid(String workProductGuid) {
+   public void setWorkProductTaskGuid(String workProductGuid) {
       this.workProductGuid = workProductGuid;
    }
 

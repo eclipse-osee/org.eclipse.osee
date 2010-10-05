@@ -11,6 +11,8 @@ package org.eclipse.osee.coverage.editor;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.osee.coverage.action.OpenMultipleWorkProductsAction;
@@ -24,7 +26,6 @@ import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.coverage.util.WorkProductActionLabelProvider;
-import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -116,23 +117,21 @@ public class CoverageEditorWorkProductTab extends FormPage implements ISaveable 
          @Override
          public void performArtifactDrop(Artifact[] dropArtifacts) {
             super.performArtifactDrop(dropArtifacts);
+            Set<WorkProductAction> workProductActions = new HashSet<WorkProductAction>();
             for (Artifact artifact : dropArtifacts) {
                if (!artifact.isOfType(SkynetGuiPlugin.getInstance().getOseeCmService().getPcrArtifactType())) {
                   AWorkbench.popup("Related artifact must be a Team Workflow");
                   return;
                }
+               // set completed to false; will be reloaded on save anyway
+               workProductActions.add(new WorkProductAction(artifact, false));
             }
             try {
                if (coverageEditor.getBranch() == null) {
                   AWorkbench.popup("Coverage Package must have imports before work package applied");
                   return;
                }
-               OseeCoveragePackageStore store =
-                  OseeCoveragePackageStore.get(coveragePackage, coverageEditor.getBranch());
-               for (Artifact artifact : dropArtifacts) {
-                  store.getArtifact(false).addRelation(CoreRelationTypes.SupportingInfo_SupportingInfo, artifact);
-               }
-               store.getArtifact(false).persist("Relate Coverage work product Actions");
+               coveragePackage.getWorkProductTaskProvider().addWorkProductAction(workProductActions);
 
                refresh();
             } catch (OseeCoreException ex) {

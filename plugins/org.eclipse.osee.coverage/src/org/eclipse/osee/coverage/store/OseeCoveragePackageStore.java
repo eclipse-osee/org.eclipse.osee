@@ -100,9 +100,9 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
       this.coveragePackage.getWorkProductTaskProvider().reload();
       for (ICoverage coverage : coverages) {
          if (coverage instanceof IWorkProductRelatable) {
-            if (Strings.isValid(((IWorkProductRelatable) coverage).getWorkProductGuid())) {
+            if (Strings.isValid(((IWorkProductRelatable) coverage).getWorkProductTaskGuid())) {
                ((IWorkProductRelatable) coverage).setWorkProductTask(this.coveragePackage.getWorkProductTaskProvider().getWorkProductTask(
-                  ((IWorkProductRelatable) coverage).getWorkProductGuid()));
+                  ((IWorkProductRelatable) coverage).getWorkProductTaskGuid()));
             }
          }
          if (coverage instanceof ICoverageUnitProvider) {

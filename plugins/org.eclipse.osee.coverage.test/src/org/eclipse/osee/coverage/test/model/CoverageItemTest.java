@@ -97,8 +97,8 @@ public class CoverageItemTest {
    @Test
    public void testSetGetWorkProductGuid() {
       String guid = GUID.create();
-      ci1.setWorkProductGuid(guid);
-      Assert.assertEquals(guid, ci1.getWorkProductGuid());
+      ci1.setWorkProductTaskGuid(guid);
+      Assert.assertEquals(guid, ci1.getWorkProductTaskGuid());
    }
 
    /**
@@ -232,7 +232,7 @@ public class CoverageItemTest {
       Assert.assertEquals(ci1.getCoverageMethod(), ci.getCoverageMethod());
       Assert.assertEquals(ci1.getFileContents(), ci.getFileContents());
       Assert.assertEquals(ci1.getRationale(), ci.getRationale());
-      Assert.assertEquals(ci1.getWorkProductGuid(), ci.getWorkProductGuid());
+      Assert.assertEquals(ci1.getWorkProductTaskGuid(), ci.getWorkProductTaskGuid());
    }
 
    /**

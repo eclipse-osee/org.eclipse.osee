@@ -6,6 +6,7 @@
 package org.eclipse.osee.coverage.store;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,12 +16,13 @@ import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.IWorkProductTaskProvider;
 import org.eclipse.osee.coverage.model.WorkProductAction;
 import org.eclipse.osee.coverage.model.WorkProductTask;
-import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.cm.IOseeCmService;
 
@@ -49,10 +51,14 @@ public class DbWorkProductTaskProvider implements IWorkProductTaskProvider {
          IOseeCmService cm = SkynetGuiPlugin.getInstance().getOseeCmService();
          Artifact packageArt = store.getArtifact(false);
          if (packageArt != null) {
-            for (Artifact pcrArt : packageArt.getRelatedArtifacts(CoreRelationTypes.SupportingInfo_SupportingInfo)) {
+            List<String> relatedActionGuids =
+               packageArt.getAttributesToStringList(CoverageAttributeTypes.WorkProductPcrGuid);
+            List<Artifact> relatedArtifacts =
+               ArtifactQuery.getArtifactListFromIds(relatedActionGuids, BranchManager.getCommonBranch());
+            checkForErrorCase(relatedActionGuids, relatedArtifacts, store.getBranch());
+            for (Artifact pcrArt : relatedArtifacts) {
                if (cm.isPcrArtifact(pcrArt)) {
-                  WorkProductAction action =
-                     new WorkProductAction(pcrArt.getGuid(), pcrArt.getName(), cm.isCompleted(pcrArt));
+                  WorkProductAction action = new WorkProductAction(pcrArt, cm.isCompleted(pcrArt));
                   actions.add(action);
                   for (Artifact taskArt : cm.getTaskArtifacts(pcrArt)) {
                      action.getTasks().add(
@@ -66,15 +72,32 @@ public class DbWorkProductTaskProvider implements IWorkProductTaskProvider {
       }
    }
 
+   private void checkForErrorCase(List<String> relatedActionGuids, List<Artifact> relatedArtifacts, Branch branch) {
+      boolean found = false;
+      for (String guid : relatedActionGuids) {
+         for (Artifact art : relatedArtifacts) {
+            if (art.getGuid().equals(guid)) {
+               found = true;
+               break;
+            }
+         }
+         if (!found) {
+            OseeLog.format(Activator.class, Level.SEVERE,
+               "Invalid related WorkProductPcrGuid [%s] for Coverage Package [%s] on branch [%s]; ignoring.", guid,
+               coveragePackage.getName(), branch.getName());
+         }
+      }
+   }
+
    @Override
    public void removeWorkProductAction(WorkProductAction action) {
       try {
          OseeCoveragePackageStore store = OseeCoveragePackageStore.get(coveragePackage, branch);
-         for (Artifact artifact : store.getArtifact(false).getRelatedArtifacts(
-            CoreRelationTypes.SupportingInfo_SupportingInfo)) {
-            if (artifact.getGuid().equals(action.getGuid())) {
-               store.getArtifact(false).deleteRelation(CoreRelationTypes.SupportingInfo_SupportingInfo, artifact);
-            }
+         Artifact artifact = store.getArtifact(false);
+         List<String> relatedActionGuids =
+            artifact.getAttributesToStringList(CoverageAttributeTypes.WorkProductPcrGuid);
+         if (relatedActionGuids.contains(action.getGuid())) {
+            store.getArtifact(false).deleteAttribute(CoverageAttributeTypes.WorkProductPcrGuid, action.getGuid());
          }
          store.getArtifact(false).persist("Un-Relate Coverage work product Actions");
          reload();
@@ -84,8 +107,23 @@ public class DbWorkProductTaskProvider implements IWorkProductTaskProvider {
    }
 
    @Override
-   public void addWorkProductAction(WorkProductAction action) {
-      reload();
+   public void addWorkProductAction(Collection<WorkProductAction> actions) {
+      try {
+         OseeCoveragePackageStore store = OseeCoveragePackageStore.get(coveragePackage, branch);
+         Artifact artifact = store.getArtifact(false);
+         List<String> relatedActionGuids =
+            artifact.getAttributesToStringList(CoverageAttributeTypes.WorkProductPcrGuid);
+         for (WorkProductAction action : actions) {
+            if (!relatedActionGuids.contains(action.getGuid())) {
+               artifact.addAttribute(CoverageAttributeTypes.WorkProductPcrGuid, action.getGuid());
+               relatedActionGuids.add(action.getGuid());
+            }
+         }
+         artifact.persist("Relate Coverage work product Actions");
+         reload();
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+      }
    }
 
    @Override

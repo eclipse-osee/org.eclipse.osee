@@ -10,14 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.test.navigate;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import org.eclipse.osee.coverage.editor.CoverageEditor;
 import org.eclipse.osee.coverage.editor.CoverageEditorInput;
+import org.eclipse.osee.coverage.model.CoveragePackage;
+import org.eclipse.osee.coverage.model.WorkProductAction;
 import org.eclipse.osee.coverage.store.CoverageRelationTypes;
 import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.dialog.CoveragePackageArtifactListDialog;
-import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -60,6 +63,8 @@ public class CreateWorkProductAction extends XNavigateItemAction {
       if (dialog.open() == 0) {
          Artifact coveragePackageArtifact = (Artifact) dialog.getResult()[0];
          OseeCoveragePackageStore store = new OseeCoveragePackageStore(coveragePackageArtifact);
+         CoveragePackage coveragePackage = store.getCoveragePackage();
+         List<WorkProductAction> workProductActions = new ArrayList<WorkProductAction>();
 
          SkynetTransaction transaction = new SkynetTransaction(branch, getName());
          Artifact actionArt =
@@ -69,8 +74,7 @@ public class CreateWorkProductAction extends XNavigateItemAction {
          Artifact reqTeamArt = actionArt.getRelatedArtifact(CoverageRelationTypes.ActionToWorkflow_WorkFlow);
          reqTeamArt.persist(transaction);
 
-         coveragePackageArtifact.addRelation(CoreRelationTypes.SupportingInfo_SupportingInfo, reqTeamArt);
-         coveragePackageArtifact.persist(transaction);
+         workProductActions.add(new WorkProductAction(reqTeamArt, false));
 
          actionArt =
             cmService.createPcr("Code PCR 1001", "Do code for PCR 33201", "Improvement", "1", null,
@@ -79,8 +83,7 @@ public class CreateWorkProductAction extends XNavigateItemAction {
          Artifact codeTeamArt = actionArt.getRelatedArtifact(CoverageRelationTypes.ActionToWorkflow_WorkFlow);
          codeTeamArt.persist(transaction);
 
-         coveragePackageArtifact.addRelation(CoreRelationTypes.SupportingInfo_SupportingInfo, codeTeamArt);
-         coveragePackageArtifact.persist(transaction);
+         workProductActions.add(new WorkProductAction(codeTeamArt, false));
 
          actionArt =
             cmService.createPcr("Test PCR 1001", "Do test for PCR 33201", "Improvement", "1", null,
@@ -89,10 +92,13 @@ public class CreateWorkProductAction extends XNavigateItemAction {
          Artifact testTeamArt = actionArt.getRelatedArtifact(CoverageRelationTypes.ActionToWorkflow_WorkFlow);
          testTeamArt.persist(transaction);
 
-         coveragePackageArtifact.addRelation(CoreRelationTypes.SupportingInfo_SupportingInfo, testTeamArt);
+         workProductActions.add(new WorkProductAction(testTeamArt, false));
+
          coveragePackageArtifact.persist(transaction);
 
          transaction.execute();
+
+         coveragePackage.getWorkProductTaskProvider().addWorkProductAction(workProductActions);
 
          CoverageEditor.open(new CoverageEditorInput(coveragePackageArtifact.getName(), coveragePackageArtifact, null,
             false));

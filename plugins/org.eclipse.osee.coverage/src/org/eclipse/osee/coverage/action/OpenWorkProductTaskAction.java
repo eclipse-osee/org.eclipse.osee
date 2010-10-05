@@ -68,8 +68,8 @@ public class OpenWorkProductTaskAction extends Action {
 
       final List<String> workProductGuids = new ArrayList<String>();
       for (ICoverage coverage : selectedCoverageEditorItem.getSelectedCoverageEditorItems()) {
-         if (coverage instanceof IWorkProductRelatable && Strings.isValid(((IWorkProductRelatable) coverage).getWorkProductGuid())) {
-            workProductGuids.add(((IWorkProductRelatable) coverage).getWorkProductGuid());
+         if (coverage instanceof IWorkProductRelatable && Strings.isValid(((IWorkProductRelatable) coverage).getWorkProductTaskGuid())) {
+            workProductGuids.add(((IWorkProductRelatable) coverage).getWorkProductTaskGuid());
          }
       }
       if (workProductGuids.isEmpty()) {

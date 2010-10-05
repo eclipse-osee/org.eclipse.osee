@@ -116,7 +116,7 @@ public class CreateWorkProductTaskAction extends Action {
 
          for (ICoverage coverage : relateableCoverageItems) {
             if (coverage instanceof IWorkProductRelatable) {
-               ((IWorkProductRelatable) coverage).setWorkProductGuid(newTaskArt.getGuid());
+               ((IWorkProductRelatable) coverage).setWorkProductTaskGuid(newTaskArt.getGuid());
             }
          }
          newTaskArt.persist(getText());

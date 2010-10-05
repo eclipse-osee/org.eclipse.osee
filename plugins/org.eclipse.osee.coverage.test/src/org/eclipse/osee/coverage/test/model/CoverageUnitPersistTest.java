@@ -196,7 +196,7 @@ public class CoverageUnitPersistTest {
       TestUnitStore.clearStore();
       String cuName = DbTestUnitProviderTest.class.getSimpleName() + "-" + GUID.create();
       CoverageUnit unit = new CoverageUnit(null, cuName, "location", new SimpleCoverageUnitFileContentsProvider());
-      unit.setWorkProductGuid(GUID.create());
+      unit.setWorkProductTaskGuid(GUID.create());
       CoverageItem item = new CoverageItem(unit, CoverageOptionManager.Test_Unit, "1");
       item.setTestUnitProvider(new SimpleTestUnitProvider());
       for (int x = 0; x < 10; x++) {
@@ -224,8 +224,8 @@ public class CoverageUnitPersistTest {
       Assert.assertEquals(10, dbItem.getTestUnits().size());
       Assert.assertTrue(dbItem.getTestUnits().iterator().next().startsWith("Test Unit "));
       Assert.assertEquals(10, TestUnitStore.getTestUnitCount());
-      Assert.assertTrue(Strings.isValid(dbUnit.getWorkProductGuid()));
-      Assert.assertEquals(unit.getWorkProductGuid(), dbUnit.getWorkProductGuid());
+      Assert.assertTrue(Strings.isValid(dbUnit.getWorkProductTaskGuid()));
+      Assert.assertEquals(unit.getWorkProductTaskGuid(), dbUnit.getWorkProductTaskGuid());
       TestUnitStore.clearStore();
    }
 }

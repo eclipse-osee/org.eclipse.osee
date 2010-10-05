@@ -119,6 +119,9 @@ public class CoverageEditorInput implements IEditorInput {
       } else if (!coveragePackageArtifact.equals(other.coveragePackageArtifact)) {
          return false;
       }
+      if (coveragePackageArtifact.equals(other.getCoveragePackageArtifact())) {
+         return true;
+      }
       if (coveragePackageBase == null) {
          if (other.coveragePackageBase != null) {
             return false;

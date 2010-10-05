@@ -21,6 +21,7 @@ artifactType "Coverage Package" extends "General Data" {
    guid "AARFcyA9zyD3uEK8akgA"
    attribute "Active"
    attribute "coverage.Coverage Options"
+   attribute "coverage.WorkProductPcrGuid"
 }
 
 attributeType "coverage.File Contents" extends StringAttribute {
@@ -31,11 +32,19 @@ attributeType "coverage.File Contents" extends StringAttribute {
    fileExtension "txt"
 }
 
-attributeType "coverage.WorkProductGuid" extends StringAttribute {
+attributeType "coverage.WorkProductTaskGuid" extends StringAttribute {
    guid "A+m7Y2sV2z83QUlkzIAA"
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
+   fileExtension "txt"
+}
+
+attributeType "coverage.WorkProductPcrGuid" extends StringAttribute {
+   guid "AWuQmRuq1gwrejEWRgAA"
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max unlimited
    fileExtension "txt"
 }
 
@@ -96,4 +105,5 @@ artifactType "Coverage Folder" extends "Abstract Coverage Unit" {
 
 artifactType "Coverage Unit" extends "Abstract Coverage Unit" {
    guid "ALZS3MQdCCIUvEYlZeAA"
+   attribute "coverage.WorkProductTaskGuid"
 }

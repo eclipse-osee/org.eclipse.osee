@@ -64,7 +64,7 @@ public class RemoveWorkProductTaskAction extends Action {
 
       List<ICoverage> relatedCoverageItems = new ArrayList<ICoverage>();
       for (ICoverage coverage : selectedCoverageEditorItem.getSelectedCoverageEditorItems()) {
-         if (coverage instanceof IWorkProductRelatable && Strings.isValid(((IWorkProductRelatable) coverage).getWorkProductGuid())) {
+         if (coverage instanceof IWorkProductRelatable && Strings.isValid(((IWorkProductRelatable) coverage).getWorkProductTaskGuid())) {
             relatedCoverageItems.add(coverage);
          }
       }
@@ -78,7 +78,7 @@ public class RemoveWorkProductTaskAction extends Action {
          try {
             for (ICoverage coverage : relatedCoverageItems) {
                if (coverage instanceof IWorkProductRelatable) {
-                  ((IWorkProductRelatable) coverage).setWorkProductGuid("");
+                  ((IWorkProductRelatable) coverage).setWorkProductTaskGuid("");
                }
             }
             saveable.save(relatedCoverageItems);

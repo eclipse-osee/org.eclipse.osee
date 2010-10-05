@@ -148,8 +148,8 @@ public class CoverageUnitTest {
    @Test
    public void testSetGetWorkProductGuid() {
       String guid = GUID.create();
-      cu.setWorkProductGuid(guid);
-      Assert.assertEquals(guid, cu.getWorkProductGuid());
+      cu.setWorkProductTaskGuid(guid);
+      Assert.assertEquals(guid, cu.getWorkProductTaskGuid());
    }
 
    /**

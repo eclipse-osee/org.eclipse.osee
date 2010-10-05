@@ -7,9 +7,9 @@ package org.eclipse.osee.coverage.model;
 
 public interface IWorkProductRelatable {
 
-   public String getWorkProductGuid();
+   public String getWorkProductTaskGuid();
 
-   public void setWorkProductGuid(String workProductGuid);
+   public void setWorkProductTaskGuid(String workProductGuid);
 
    public WorkProductTask getWorkProductTask();
 

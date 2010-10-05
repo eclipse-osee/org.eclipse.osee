@@ -6,6 +6,7 @@
 package org.eclipse.osee.coverage.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class SimpleWorkProductTaskProvider implements IWorkProductTaskProvider {
@@ -24,8 +25,8 @@ public class SimpleWorkProductTaskProvider implements IWorkProductTaskProvider {
    }
 
    @Override
-   public void addWorkProductAction(WorkProductAction action) {
-      actions.add(action);
+   public void addWorkProductAction(Collection<WorkProductAction> actions) {
+      actions.addAll(actions);
    }
 
    @Override

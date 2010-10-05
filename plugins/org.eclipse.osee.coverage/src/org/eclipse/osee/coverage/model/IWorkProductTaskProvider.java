@@ -5,6 +5,7 @@
  */
 package org.eclipse.osee.coverage.model;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface IWorkProductTaskProvider {
@@ -13,7 +14,7 @@ public interface IWorkProductTaskProvider {
 
    public void removeWorkProductAction(WorkProductAction action);
 
-   public void addWorkProductAction(WorkProductAction action);
+   public void addWorkProductAction(Collection<WorkProductAction> actions);
 
    public List<WorkProductTask> getWorkProductTasks();
 

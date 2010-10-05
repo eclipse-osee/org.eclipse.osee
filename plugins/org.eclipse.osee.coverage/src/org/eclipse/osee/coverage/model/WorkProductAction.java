@@ -7,6 +7,7 @@ package org.eclipse.osee.coverage.model;
 
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 public class WorkProductAction {
 
@@ -14,6 +15,10 @@ public class WorkProductAction {
    String name;
    boolean completed;
    Set<WorkProductTask> tasks = new HashSet<WorkProductTask>();
+
+   public WorkProductAction(Artifact artifact, boolean completed) {
+      this(artifact.getGuid(), artifact.getName(), completed);
+   }
 
    public WorkProductAction(String guid, String name, boolean completed) {
       super();
