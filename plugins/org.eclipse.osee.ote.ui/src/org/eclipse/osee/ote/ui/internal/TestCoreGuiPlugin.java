@@ -24,7 +24,6 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.tracker.ServiceTracker;
-import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
 /**
  * The main plugin class to be used in the desktop.
@@ -41,7 +40,6 @@ public class TestCoreGuiPlugin extends OseeFormActivator {
    private ServiceTracker workspaceStartTracker;
    private OteConsoleServiceImpl oteConsoleService;
 
-   private RemoteConsoleLauncher tracker;
 
    public TestCoreGuiPlugin() {
       super(PLUGIN_ID);
@@ -53,8 +51,9 @@ public class TestCoreGuiPlugin extends OseeFormActivator {
       super.start(context);
 
       workspaceStartTracker =
-         new ServiceTracker(context, SafeWorkspaceAccess.class.getName(), new ServiceTrackerCustomizer() {
-
+         new ServiceTracker(context, SafeWorkspaceAccess.class.getName(), null) {
+        	   private RemoteConsoleLauncher tracker;
+        	   
             @Override
             public void removedService(ServiceReference reference, Object service) {
                if (oteConsoleService != null) {
@@ -62,31 +61,46 @@ public class TestCoreGuiPlugin extends OseeFormActivator {
                   oteConsoleService.close();
                   oteConsoleService = null;
                }
+               if (tracker != null) {
+            	   tracker.close();
+               }
+               super.removedService(reference, service);
             }
-
+      
             @Override
+			public void close() {
+				if (tracker != null) {
+					tracker.close();
+				}
+				super.close();
+			}
+
+
+			@Override
             public void modifiedService(ServiceReference reference, Object service) {
                // TODO Auto-generated method stub
 
             }
+
 
             @Override
             public Object addingService(ServiceReference reference) {
                oteConsoleService = new OteConsoleServiceImpl();
                oteConsoleServiceRegistration =
                   context.registerService(IOteConsoleService.class.getName(), oteConsoleService, null);
-               return context.getService(reference);
+               if (System.getProperty("NO_OTE_REMOTE_CONSOLE") == null) {
+                   tracker = new RemoteConsoleLauncher(oteConsoleService);
+                   tracker.open(true);
+                }
+               return super.addingService(reference);
             }
-         });
+         };
       workspaceStartTracker.open(true);
 
       workbenchUserServiceTracker = new ServiceTracker(context, IWorkbenchUserService.class.getName(), null);
       workbenchUserServiceTracker.open();
 
-      if (System.getProperty("NO_OTE_REMOTE_CONSOLE") == null) {
-         tracker = new RemoteConsoleLauncher();
-         tracker.open(true);
-      }
+
 
       if (System.getProperty("NO_OTE_ARTIFACT_BULK_LOAD") == null) {
          startOTEArtifactBulkLoad();
@@ -105,9 +119,7 @@ public class TestCoreGuiPlugin extends OseeFormActivator {
       }
       workspaceStartTracker.close();
       pluginInstance = null;
-      if (tracker != null) {
-         tracker.close();
-      }
+
       super.stop(context);
    }
 

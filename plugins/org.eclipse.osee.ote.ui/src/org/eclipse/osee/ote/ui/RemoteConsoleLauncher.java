@@ -19,15 +19,16 @@ public class RemoteConsoleLauncher extends ServiceTracker {
 
    private OteRemoteConsole remoteConsole;
 
-   public RemoteConsoleLauncher() {
+   private final IOteConsoleService oteConsoleService;
+   public RemoteConsoleLauncher(IOteConsoleService oteConsoleService) {
       super(TestCoreGuiPlugin.getDefault().getBundle().getBundleContext(), IOteClientService.class.getName(), null);
-
+      this.oteConsoleService = oteConsoleService;
    }
 
    @Override
    public Object addingService(ServiceReference reference) {
       IOteClientService clientService = (IOteClientService) super.addingService(reference);
-      remoteConsole = new OteRemoteConsole();
+      remoteConsole = new OteRemoteConsole(oteConsoleService);
       clientService.addConnectionListener(remoteConsole);
       return clientService;
    }
@@ -44,6 +45,7 @@ public class RemoteConsoleLauncher extends ServiceTracker {
    public void removedService(ServiceReference reference, Object service) {
       if (remoteConsole != null) {
          remoteConsole.close();
+         remoteConsole = null;
       }
       super.removedService(reference, service);
    }

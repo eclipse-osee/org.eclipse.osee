@@ -12,6 +12,7 @@ package org.eclipse.osee.ote.ui;
 
 import java.rmi.RemoteException;
 import java.util.logging.Level;
+
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.framework.jdk.core.util.IConsoleInputListener;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -25,27 +26,20 @@ public class OteRemoteConsole implements IConsoleInputListener, ITestConnectionL
 
    private IRemoteCommandConsole remoteConsole;
    private ITestEnvironment env;
-
-   public OteRemoteConsole() {
-   }
-
-   private boolean isOteConsoleServiceAvailable() {
-      TestCoreGuiPlugin instance = TestCoreGuiPlugin.getDefault();
-      return instance != null && instance.getOteConsoleService() != null;
-   }
-
-   private IOteConsoleService getOteConsole() {
-      return TestCoreGuiPlugin.getDefault().getOteConsoleService();
+   private final IOteConsoleService oteConsoleService;
+   
+   public OteRemoteConsole(IOteConsoleService oteConsoleService) {
+	   this.oteConsoleService = oteConsoleService;
    }
 
    @Override
    public void lineRead(String line) {
       try {
          String result = remoteConsole.doCommand(line);
-         getOteConsole().write(result);
+         oteConsoleService.write(result);
       } catch (RemoteException e) {
          OseeLog.log(TestCoreGuiPlugin.class, Level.SEVERE, "exception executing command " + line, e);
-         getOteConsole().writeError("Exception during executing of command. See Error Log");
+         oteConsoleService.writeError("Exception during executing of command. See Error Log");
       }
    }
 
@@ -57,21 +51,16 @@ public class OteRemoteConsole implements IConsoleInputListener, ITestConnectionL
             OseeLog.log(TestCoreGuiPlugin.class, Level.INFO, "failed to close remote terminal", e);
          }
       }
-      if (isOteConsoleServiceAvailable()) {
-         getOteConsole().removeInputListener(this);
-      } else {
-         OseeLog.log(TestCoreGuiPlugin.class, Level.INFO, "OteRemoteConsole is null");
-      }
+
+      oteConsoleService.removeInputListener(this);
+
       env = null;
    }
 
    @Override
    public void onConnectionLost(IServiceConnector connector) {
-      if (isOteConsoleServiceAvailable()) {
-         getOteConsole().removeInputListener(this);
-      } else {
-         OseeLog.log(TestCoreGuiPlugin.class, Level.INFO, "OteRemoteConsole is null");
-      }
+	   oteConsoleService.removeInputListener(this);
+
       env = null;
    }
 
@@ -80,9 +69,7 @@ public class OteRemoteConsole implements IConsoleInputListener, ITestConnectionL
       try {
          env = event.getEnvironment();
          remoteConsole = env.getCommandConsole();
-         if (isOteConsoleServiceAvailable()) {
-            getOteConsole().addInputListener(this);
-         }
+         oteConsoleService.addInputListener(this);
       } catch (RemoteException e) {
          OseeLog.log(TestCoreGuiPlugin.class, Level.SEVERE, "exception acquiring remote console", e);
       }
