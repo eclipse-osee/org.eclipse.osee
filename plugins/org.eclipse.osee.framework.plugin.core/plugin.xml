@@ -7,4 +7,16 @@
             class="org.eclipse.osee.framework.plugin.core.internal.CorePreferenceInitializer">
       </initializer>
    </extension>
+   <extension
+         id="org.eclipse.osee.framework.plugin.core.operation"
+         point="org.eclipse.core.runtime.applications">
+      <application
+            cardinality="singleton-global"
+            thread="main"
+            visible="true">
+         <run
+               class="org.eclipse.osee.framework.plugin.core.OperationApplication">
+         </run>
+      </application>
+   </extension>
 </plugin>
