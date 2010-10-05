@@ -38,10 +38,10 @@ public final class ResMessagingConnectionListener implements ConnectionListener,
    public void connected(ConnectionNode node) {
       connectionStatus = preferences.isOseeEventBrokerValid();
       try {
-         OseeEventManager.kickLocalRemEvent(this, RemoteEventServiceEventType.Rem2_Connected);
-         OseeLog.log(Activator.class, Level.INFO, "RES2 Connected");
+         OseeEventManager.kickLocalRemEvent(this, RemoteEventServiceEventType.Rem_Connected);
+         OseeLog.log(Activator.class, Level.INFO, "Remote Event Service - Connected");
       } catch (OseeCoreException ex) {
-         EventUtil.eventLog("REM2: ResConnectionListener", ex);
+         EventUtil.eventLog("REM: ResConnectionListener", ex);
       }
    }
 
@@ -49,10 +49,10 @@ public final class ResMessagingConnectionListener implements ConnectionListener,
    public void notConnected(ConnectionNode node) {
       connectionStatus = false;
       try {
-         OseeEventManager.kickLocalRemEvent(this, RemoteEventServiceEventType.Rem2_DisConnected);
-         OseeLog.log(Activator.class, Level.INFO, "RES2 Dis-Connected");
+         OseeEventManager.kickLocalRemEvent(this, RemoteEventServiceEventType.Rem_DisConnected);
+         OseeLog.log(Activator.class, Level.INFO, "Remote Event Service - Dis-Connected");
       } catch (OseeCoreException ex) {
-         EventUtil.eventLog("REM2: ResConnectionListener", ex);
+         EventUtil.eventLog("REM: ResConnectionListener", ex);
       }
    }
 

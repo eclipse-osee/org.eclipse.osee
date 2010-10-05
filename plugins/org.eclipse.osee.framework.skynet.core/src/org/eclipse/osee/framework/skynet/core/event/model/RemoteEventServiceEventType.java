@@ -14,10 +14,8 @@ package org.eclipse.osee.framework.skynet.core.event.model;
  * @author Donald G. Dunne
  */
 public enum RemoteEventServiceEventType {
-   Rem1_Connected(EventType.LocalOnly),
-   Rem1_DisConnected(EventType.LocalOnly),
-   Rem2_Connected(EventType.LocalOnly),
-   Rem2_DisConnected(EventType.LocalOnly);
+   Rem_Connected(EventType.LocalOnly),
+   Rem_DisConnected(EventType.LocalOnly);
 
    private final EventType eventType;
 

@@ -70,13 +70,13 @@ public class OseeEventSystemServiceRegHandler extends AbstractTrackingHandler {
          coreModelEventService.addConnectionListener(connectionStatusListener);
          eventManager.start();
          try {
-            OseeEventManager.kickLocalRemEvent(eventManager, RemoteEventServiceEventType.Rem2_Connected);
+            OseeEventManager.kickLocalRemEvent(eventManager, RemoteEventServiceEventType.Rem_Connected);
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.INFO, ex);
          }
-         OseeLog.log(Activator.class, Level.INFO, "REM2: Enabled");
+         OseeLog.log(Activator.class, Level.INFO, "Remote Event Service - Enabled");
       } else {
-         OseeLog.log(Activator.class, Level.INFO, "REM2: Disabled");
+         OseeLog.log(Activator.class, Level.INFO, "Remote Event Service - Disabled");
       }
 
       addCoreListeners();
@@ -105,7 +105,7 @@ public class OseeEventSystemServiceRegHandler extends AbstractTrackingHandler {
       if (eventManager != null) {
          coreModelEventService.removeConnectionListener(connectionStatusListener);
          eventManager.stop();
-         //         OseeEventManager.kickLocalRemEvent(eventManager, RemoteEventServiceEventType.Rem2_DisConnected);
+         //         OseeEventManager.kickLocalRemEvent(eventManager, RemoteEventServiceEventType.Rem_DisConnected);
          eventManagerData.setMessageEventManager(null);
       }
    }

@@ -541,7 +541,7 @@ public class InternalEventManager {
     */
    private void sendRemoteEvent(final RemoteEvent remoteEvent) {
       if (isConnected()) {
-         EventUtil.eventLog(String.format("REM2: kick - [%s]", remoteEvent));
+         EventUtil.eventLog(String.format("IEM: kick - [%s]", remoteEvent));
          Job job =
             new Job(String.format("[%s] - sending [%s]", getClass().getSimpleName(),
                remoteEvent.getClass().getSimpleName())) {
@@ -550,7 +550,7 @@ public class InternalEventManager {
                   try {
                      coreModelEventService.sendRemoteEvent(remoteEvent);
                   } catch (Exception ex) {
-                     EventUtil.eventLog("REM2: kick", ex);
+                     EventUtil.eventLog("IEM: kick", ex);
                      return new Status(IStatus.ERROR, Activator.PLUGIN_ID, -1, ex.getLocalizedMessage(), ex);
                   }
                   return Status.OK_STATUS;
@@ -561,13 +561,13 @@ public class InternalEventManager {
       }
 
       if (preferences.isEnableRemoteEventLoopback()) {
-         EventUtil.eventLog("REM2: Loopback enabled - Returning events as Remote event.");
+         EventUtil.eventLog("IEM: Loopback enabled - Returning events as Remote event.");
          String newSessionId = GUID.create();
          remoteEvent.getNetworkSender().setSessionId(newSessionId);
          try {
             frameworkListener.onEvent(remoteEvent);
          } catch (RemoteException ex) {
-            EventUtil.eventLog("REM2: RemoteEvent - onEvent", ex);
+            EventUtil.eventLog("IEM: RemoteEvent - onEvent", ex);
          }
       }
    }

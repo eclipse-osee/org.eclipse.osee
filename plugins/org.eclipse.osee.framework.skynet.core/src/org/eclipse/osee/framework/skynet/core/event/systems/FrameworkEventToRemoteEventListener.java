@@ -91,10 +91,10 @@ public final class FrameworkEventToRemoteEventListener implements IFrameworkEven
                   PurgeTransactionOperation.handleRemotePurgeTransactionEvent(transEvent);
                   eventManager.kickTransactionEvent(sender, transEvent);
                } else {
-                  EventUtil.eventLog("REM2: handleTransactionEvent - unhandled mod type " + transEvent.getEventType());
+                  EventUtil.eventLog("REM: handleTransactionEvent - unhandled mod type " + transEvent.getEventType());
                }
             } catch (Exception ex) {
-               EventUtil.eventLog("REM2: handleTransactionEvent", ex);
+               EventUtil.eventLog("REM: handleTransactionEvent", ex);
             }
          }
 
@@ -115,7 +115,7 @@ public final class FrameworkEventToRemoteEventListener implements IFrameworkEven
                   updateRelations(sender, transEvent);
                   eventManager.kickArtifactEvent(sender, transEvent);
                } catch (Exception ex) {
-                  EventUtil.eventLog("REM2: RemoteTransactionEvent1", ex);
+                  EventUtil.eventLog("REM: RemoteTransactionEvent1", ex);
                }
             } else if (remoteEvent instanceof RemoteBranchEvent1) {
                try {
@@ -123,7 +123,7 @@ public final class FrameworkEventToRemoteEventListener implements IFrameworkEven
                   updateBranches(sender, branchEvent);
                   eventManager.kickBranchEvent(sender, branchEvent);
                } catch (Exception ex) {
-                  EventUtil.eventLog("REM2: RemoteBranchEvent1", ex);
+                  EventUtil.eventLog("REM: RemoteBranchEvent1", ex);
                }
             } else if (remoteEvent instanceof RemoteTransactionEvent1) {
                try {
@@ -131,7 +131,7 @@ public final class FrameworkEventToRemoteEventListener implements IFrameworkEven
                      FrameworkEventUtil.getTransactionEvent((RemoteTransactionEvent1) remoteEvent);
                   handleTransactionEvent(sender, transEvent);
                } catch (Exception ex) {
-                  EventUtil.eventLog("REM2: RemoteBranchEvent1", ex);
+                  EventUtil.eventLog("REM: RemoteBranchEvent1", ex);
                }
             }
          }
@@ -170,7 +170,7 @@ public final class FrameworkEventToRemoteEventListener implements IFrameworkEven
    private void updateArtifacts(Sender sender, ArtifactEvent transEvent) {
       // Don't crash on any one artifact update problem (no update method throughs exceptions)
       for (EventBasicGuidArtifact guidArt : transEvent.getArtifacts()) {
-         EventUtil.eventLog(String.format("REM2: updateArtifact -> [%s]", guidArt));
+         EventUtil.eventLog(String.format("REM: updateArtifact -> [%s]", guidArt));
          // Handle Added Artifacts
          // Nothing to do for added cause they're not in cache yet.  Apps will load if they need them.
          if (guidArt.getModType() == EventModType.Added) {
@@ -190,7 +190,7 @@ public final class FrameworkEventToRemoteEventListener implements IFrameworkEven
          }
          // Unknown mod type
          else {
-            EventUtil.eventLog(String.format("REM2: updateArtifacts - Unhandled mod type [%s]", guidArt.getModType()));
+            EventUtil.eventLog(String.format("REM: updateArtifacts - Unhandled mod type [%s]", guidArt.getModType()));
          }
       }
    }
@@ -206,7 +206,7 @@ public final class FrameworkEventToRemoteEventListener implements IFrameworkEven
          }
          BranchManager.refreshBranches();
       } catch (Exception ex) {
-         EventUtil.eventLog("REM2: updateBranches", ex);
+         EventUtil.eventLog("REM: updateBranches", ex);
       }
    }
 
@@ -214,7 +214,7 @@ public final class FrameworkEventToRemoteEventListener implements IFrameworkEven
       for (EventBasicGuidRelation guidArt : transEvent.getRelations()) {
          // Don't crash on any one relation update problem
          try {
-            EventUtil.eventLog(String.format("REM2: updateRelation -> [%s]", guidArt));
+            EventUtil.eventLog(String.format("REM: updateRelation -> [%s]", guidArt));
             RelationEventType eventType = guidArt.getModType();
             Branch branch = BranchManager.getBranch(guidArt.getArtA());
             RelationType relationType = RelationTypeManager.getTypeByGuid(guidArt.getRelTypeGuid());
@@ -263,11 +263,11 @@ public final class FrameworkEventToRemoteEventListener implements IFrameworkEven
                      relation.setNotDirty();
                   }
                } else {
-                  EventUtil.eventLog(String.format("REM2: updateRelations - Unhandled mod type [%s]", eventType));
+                  EventUtil.eventLog(String.format("REM: updateRelations - Unhandled mod type [%s]", eventType));
                }
             }
          } catch (OseeCoreException ex) {
-            EventUtil.eventLog("REM2: updateRelations", ex);
+            EventUtil.eventLog("REM: updateRelations", ex);
          }
       }
    }
@@ -281,7 +281,7 @@ public final class FrameworkEventToRemoteEventListener implements IFrameworkEven
             artifact.internalSetDeletedFromRemoteEvent();
          }
       } catch (OseeCoreException ex) {
-         EventUtil.eventLog("REM2: updateDeletedArtifact", ex);
+         EventUtil.eventLog("REM: updateDeletedArtifact", ex);
       }
    }
 
@@ -308,7 +308,7 @@ public final class FrameworkEventToRemoteEventListener implements IFrameworkEven
                         try {
                            if (modificationType == null) {
                               EventUtil.eventLog(String.format(
-                                 "REM2: updateModifiedArtifact - Can't get mod type for %s's attribute %d.",
+                                 "REM: updateModifiedArtifact - Can't get mod type for %s's attribute %d.",
                                  artifact.getArtifactTypeName(), attrChange.getAttributeId()));
                               continue;
                            }
@@ -322,7 +322,7 @@ public final class FrameworkEventToRemoteEventListener implements IFrameworkEven
                            attribute.setNotDirty();
                         } catch (OseeCoreException ex) {
                            EventUtil.eventLog(
-                              String.format("REM2: Exception updating %s's attribute %d [/n%s/n].",
+                              String.format("REM: Exception updating %s's attribute %d [/n%s/n].",
                                  artifact.getSafeName(), attribute.getId(), attribute.toString()), ex);
                         }
                      }
@@ -330,7 +330,7 @@ public final class FrameworkEventToRemoteEventListener implements IFrameworkEven
                      // Process NEW attribute
                      else {
                         if (modificationType == null) {
-                           EventUtil.eventLog(String.format("REM2: Can't get mod type for %s's attribute %d.",
+                           EventUtil.eventLog(String.format("REM: Can't get mod type for %s's attribute %d.",
                               artifact.getArtifactTypeName(), attrChange.getAttributeId()));
                            continue;
                         }
@@ -339,15 +339,15 @@ public final class FrameworkEventToRemoteEventListener implements IFrameworkEven
                            attrChange.getData().toArray(new Object[attrChange.getData().size()]));
                      }
                   } catch (OseeCoreException ex) {
-                     EventUtil.eventLog(String.format(
-                        "REM2: Exception updating %s's attribute change for attributeTypeId %d.",
-                        artifact.getSafeName(), attributeType.getId()), ex);
+                     EventUtil.eventLog(
+                        String.format("REM: Exception updating %s's attribute change for attributeTypeId %d.",
+                           artifact.getSafeName(), attributeType.getId()), ex);
                   }
                }
             }
          }
       } catch (OseeCoreException ex) {
-         EventUtil.eventLog("REM2: updateModifiedArtifact", ex);
+         EventUtil.eventLog("REM: updateModifiedArtifact", ex);
       }
    }
 }
