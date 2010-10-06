@@ -103,7 +103,7 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
          taskXViewer =
             new TaskXViewer(this, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, iXTaskViewer.getEditor(), this);
          taskXViewer.setTasksEditable(iXTaskViewer.isTasksEditable());
-         taskXViewer.setNewTaskSelectionEnabled(iXTaskViewer.isTaskable());
+         taskXViewer.setNewTaskSelectionEnabled(iXTaskViewer.isTasksEditable());
          taskXViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
 
          taskXViewer.setContentProvider(new WorldContentProvider(taskXViewer));

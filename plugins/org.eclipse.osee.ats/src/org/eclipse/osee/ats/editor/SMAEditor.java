@@ -504,15 +504,15 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
 
    @Override
    public boolean isTaskable() {
-      if (!(sma instanceof AbstractTaskableArtifact) || sma.isCancelledOrCompleted()) {
-         return false;
-      }
-      return true;
+      return sma instanceof AbstractTaskableArtifact;
    }
 
    @Override
    public boolean isTasksEditable() {
-      return isTaskable();
+      if (!(sma instanceof AbstractTaskableArtifact) || sma.isCancelledOrCompleted()) {
+         return false;
+      }
+      return true;
    }
 
    public boolean isPriviledgedEditModeEnabled() {

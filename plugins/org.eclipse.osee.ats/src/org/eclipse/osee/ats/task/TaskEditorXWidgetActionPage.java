@@ -188,7 +188,7 @@ public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage implem
          new MenuItem(fMenu, SWT.SEPARATOR);
          addActionToMenu(fMenu, new AtsExportManager(taskComposite.getTaskXViewer()));
          try {
-            if (taskComposite.getIXTaskViewer().isTaskable()) {
+            if (taskComposite.getIXTaskViewer().isTasksEditable()) {
                addActionToMenu(fMenu, new ImportTasksViaSpreadsheet(
                   (AbstractTaskableArtifact) taskComposite.getIXTaskViewer().getSma(), new Listener() {
                      @Override

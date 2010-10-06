@@ -28,6 +28,12 @@ public interface IXTaskViewer {
 
    public IDirtiableEditor getEditor() throws OseeCoreException;
 
+   /**
+    * Denotes whether tasks are available to this object. Doesn't imply whether editable, use isTaskEditable().<br>
+    * Example: This will show the task tab or not.
+    * 
+    * @return true if view of tasks is allowed
+    */
    public boolean isTaskable() throws OseeCoreException;
 
    public String getCurrentStateName();
@@ -38,7 +44,7 @@ public interface IXTaskViewer {
     * Overriding flag to denote if tasks are allowed to be edited. If false, task viewer will disable all right-click
     * and alt-left-click editing functionality.
     * 
-    * @return false if tasks are readonly from the TaskViewer
+    * @return false if tasks can be created, deleted, edited
     */
    public boolean isTasksEditable() throws OseeCoreException;
 

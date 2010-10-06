@@ -137,7 +137,7 @@ public class TaskTabXWidgetActionPage extends AtsXWidgetActionFormPage implement
       super.createToolBar(toolBarManager);
 
       try {
-         if (taskComposite.getIXTaskViewer().isTaskable()) {
+         if (taskComposite.getIXTaskViewer().isTasksEditable()) {
             toolBarManager.add(new TaskAddAction(taskComposite));
             toolBarManager.add(new TaskDeleteAction(taskComposite));
          }
@@ -184,7 +184,7 @@ public class TaskTabXWidgetActionPage extends AtsXWidgetActionFormPage implement
          new MenuItem(fMenu, SWT.SEPARATOR);
          addActionToMenu(fMenu, new AtsExportManager(taskComposite.getTaskXViewer()));
          try {
-            if (taskComposite.getIXTaskViewer().isTaskable()) {
+            if (taskComposite.getIXTaskViewer().isTasksEditable()) {
                addActionToMenu(fMenu, new ImportTasksViaSpreadsheet(
                   (AbstractTaskableArtifact) taskComposite.getIXTaskViewer().getSma(), null));
                addActionToMenu(fMenu, new ImportTasksViaSimpleList(
