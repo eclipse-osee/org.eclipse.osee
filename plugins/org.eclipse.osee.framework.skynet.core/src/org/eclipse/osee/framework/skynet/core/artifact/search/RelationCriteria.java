@@ -10,17 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
+import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 
 /**
  * @author Ryan D. Brooks
  */
 public class RelationCriteria extends AbstractArtifactSearchCriteria {
-   private final RelationType relationType;
+   private final IRelationType relationType;
    private final RelationSide relationSide;
    private String txsAlias;
    private String relAlias;
@@ -31,15 +31,15 @@ public class RelationCriteria extends AbstractArtifactSearchCriteria {
     * 
     * @param relationEnum the side to start following the link from
     */
-   public RelationCriteria(IRelationEnumeration relationEnum) throws OseeCoreException {
-      this(RelationTypeManager.getType(relationEnum), relationEnum.getSide());
+   public RelationCriteria(IRelationEnumeration relationEnum) {
+      this(relationEnum, relationEnum.getSide());
    }
 
-   public RelationCriteria(RelationType relationType, RelationSide relationSide) {
+   public RelationCriteria(IRelationType relationType, RelationSide relationSide) {
       this(0, relationType, relationSide);
    }
 
-   public RelationCriteria(int artifactId, RelationType relationType, RelationSide relationSide) {
+   public RelationCriteria(int artifactId, IRelationType relationType, RelationSide relationSide) {
       this.artifactId = artifactId;
       this.relationType = relationType;
       this.relationSide = relationSide;
@@ -62,7 +62,7 @@ public class RelationCriteria extends AbstractArtifactSearchCriteria {
       if (relationType != null) {
          builder.append(relAlias);
          builder.append(".rel_link_type_id=? AND ");
-         builder.addParameter(relationType.getId());
+         builder.addParameter(RelationTypeManager.getTypeId(relationType));
       }
 
       builder.append(relAlias);

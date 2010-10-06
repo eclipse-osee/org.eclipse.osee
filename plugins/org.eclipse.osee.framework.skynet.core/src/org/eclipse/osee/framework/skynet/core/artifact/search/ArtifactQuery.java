@@ -23,6 +23,7 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -35,7 +36,6 @@ import org.eclipse.osee.framework.core.message.SearchRequest;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
@@ -351,7 +351,7 @@ public class ArtifactQuery {
     * 
     * @return a collection of the artifacts found or an empty collection if none are found
     */
-   public static List<Artifact> getRelatedArtifactList(Artifact artifact, RelationType relationType, RelationSide relationSide) throws OseeCoreException {
+   public static List<Artifact> getRelatedArtifactList(Artifact artifact, IRelationType relationType, RelationSide relationSide) throws OseeCoreException {
       return new ArtifactQueryBuilder(artifact.getBranch(), FULL, EXCLUDE_DELETED, new RelationCriteria(
          artifact.getArtId(), relationType, relationSide)).getArtifacts(1000, null);
    }
@@ -361,7 +361,7 @@ public class ArtifactQuery {
     * 
     * @return a collection of the artifacts found or an empty collection if none are found
     */
-   public static List<Artifact> getArtifactListFromRelation(RelationType relationType, RelationSide relationSide, IOseeBranch branch) throws OseeCoreException {
+   public static List<Artifact> getArtifactListFromRelation(IRelationType relationType, RelationSide relationSide, IOseeBranch branch) throws OseeCoreException {
       return new ArtifactQueryBuilder(branch, FULL, EXCLUDE_DELETED, new RelationCriteria(relationType, relationSide)).getArtifacts(
          1000, null);
    }
