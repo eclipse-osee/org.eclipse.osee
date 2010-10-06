@@ -22,11 +22,11 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.RelationTypeSide;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderFactory;
@@ -108,7 +108,7 @@ public class RelationOrderRepairBlam extends AbstractBlam {
 
          if (sorterGuid.equals(RelationOrderBaseTypes.USER_DEFINED.getGuid())) {
             List<String> orderList = currentData.getOrderList(type, side);
-            List<String> actualOrder = Artifacts.toGuids(art.getRelatedArtifacts(new RelationTypeSide(type, side)));
+            List<String> actualOrder = Artifacts.toGuids(RelationManager.getRelatedArtifacts(art, type, side));
             if (!orderList.equals(actualOrder)) {
                getOutput().append(String.format("Incorrect order on %s (%s %s)\n", art.getName(), type, side));
                currentData.storeFromGuids(type, side, RelationOrderBaseTypes.USER_DEFINED, actualOrder);

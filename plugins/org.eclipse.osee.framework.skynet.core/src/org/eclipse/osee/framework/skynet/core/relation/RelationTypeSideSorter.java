@@ -30,11 +30,13 @@ import org.eclipse.osee.framework.skynet.core.types.IArtifact;
  * @author Ryan Schmitt
  */
 public class RelationTypeSideSorter extends RelationTypeSide {
+   private final RelationType relationType;
    private final RelationOrderData orderData;
    private final RelationSorterProvider sorterProvider;
 
-   public RelationTypeSideSorter(RelationType type, RelationSide side, RelationSorterProvider sorterProvider, RelationOrderData orderData) {
-      super(type, side);
+   public RelationTypeSideSorter(RelationType relationType, RelationSide side, RelationSorterProvider sorterProvider, RelationOrderData orderData) {
+      super(relationType, side);
+      this.relationType = relationType;
       this.sorterProvider = sorterProvider;
       this.orderData = orderData;
    }
@@ -74,8 +76,12 @@ public class RelationTypeSideSorter extends RelationTypeSide {
       return hashCode;
    }
 
+   public RelationType getRelationTypeHard() {
+      return relationType;
+   }
+
    private IRelationSorter getSorter() throws OseeCoreException {
-      String guid = orderData.getCurrentSorterGuid(getRelationType(), getSide());
+      String guid = orderData.getCurrentSorterGuid(getRelationTypeHard(), getSide());
       return sorterProvider.getRelationOrder(guid);
    }
 
@@ -130,11 +136,11 @@ public class RelationTypeSideSorter extends RelationTypeSide {
    }
 
    public void setOrder(List<? extends IArtifact> relatives, IRelationSorterId sorterId) throws OseeCoreException {
-      orderData.store(getRelationType(), getSide(), sorterId, relatives);
+      orderData.store(getRelationTypeHard(), getSide(), sorterId, relatives);
    }
 
    public String getSideName() {
-      return getRelationType().getSideName(getSide());
+      return getRelationTypeHard().getSideName(getSide());
    }
 
    @Override
@@ -145,7 +151,7 @@ public class RelationTypeSideSorter extends RelationTypeSide {
       } catch (Exception ex) {
          // Do Nothing;
       }
-      return String.format("Relation Sorter {relationType=%s, relationSide=[%s,%s], artifact=%s, sorterId=%s}",
-         getRelationType(), getSide(), getSideName(), getIArtifact(), sorterId);
+      return String.format("Relation Sorter {relationType=%s, relationSide=[%s], artifact=%s, sorterId=%s}",
+         getRelationType(), getSide(), getIArtifact(), sorterId);
    }
 }

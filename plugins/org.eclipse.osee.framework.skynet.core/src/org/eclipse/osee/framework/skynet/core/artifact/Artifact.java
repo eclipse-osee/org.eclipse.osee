@@ -173,6 +173,8 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, Co
     * All the artifacts related to this artifact by relations of type relationType are returned in a list order based on
     * the stored relation order
     */
+   @Deprecated
+   // use getRelatedArtifacts(Artifact artifact, IRelationEnumeration relationEnum)  instead (or similar variant)
    public List<? extends IArtifact> getRelatedArtifacts(RelationType relationType) throws OseeCoreException {
       return RelationManager.getRelatedArtifacts(this, new RelationTypeSide(relationType, RelationSide.SIDE_B));
    }

@@ -23,6 +23,7 @@ import java.util.Random;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
+import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -204,11 +205,11 @@ public class RelationTypeSideSorterTest {
    public void testToString() throws OseeCoreException {
       String artGuid = sorter.getIArtifact().getGuid();
       String sorterGuid = orderData.getCurrentSorterGuid(relationType, relationSide);
-      IRelationSorterId expected = sorterProvider.getRelationOrder(sorterGuid).getSorterId();
-      Assert.assertEquals(
-         "Relation Sorter {relationType=" + relationType.toString() + ", relationSide=[" + relationSide.toString() + //
-         "," + relationType.getSideName(relationSide) + "], artifact=[" + artGuid + "], sorterId=" + expected + "}",
-         sorter.toString());
+      IRelationSorterId expectedId = sorterProvider.getRelationOrder(sorterGuid).getSorterId();
+      String expectedToString =
+         String.format("Relation Sorter {relationType=%s, relationSide=[%s], artifact=[%s], sorterId=%s}",
+            relationType, relationSide, artGuid, expectedId);
+      Assert.assertEquals(expectedToString, sorter.toString());
    }
 
    @Parameters
@@ -294,11 +295,11 @@ public class RelationTypeSideSorterTest {
    }
 
    private static final class MockArtifactWithRelations extends MockIArtifact {
-      private final Map<RelationType, List<? extends IArtifact>> relatedItemsMap;
+      private final Map<IRelationType, List<? extends IArtifact>> relatedItemsMap;
 
       public MockArtifactWithRelations(int uniqueId, String name, String guid, Branch branch, IArtifactType artifactType) throws OseeCoreException {
          super(uniqueId, name, guid, branch, artifactType);
-         this.relatedItemsMap = new HashMap<RelationType, List<? extends IArtifact>>();
+         this.relatedItemsMap = new HashMap<IRelationType, List<? extends IArtifact>>();
       }
 
       @Override
@@ -310,7 +311,7 @@ public class RelationTypeSideSorterTest {
          return related;
       }
 
-      public void setRelatedArtifacts(RelationType relationType, List<? extends IArtifact> relatedItems) {
+      public void setRelatedArtifacts(IRelationType relationType, List<? extends IArtifact> relatedItems) {
          relatedItemsMap.put(relationType, relatedItems);
       }
    }

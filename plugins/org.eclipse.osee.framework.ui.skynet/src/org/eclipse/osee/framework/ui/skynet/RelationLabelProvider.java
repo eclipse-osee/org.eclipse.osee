@@ -49,7 +49,7 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
       } else if (element instanceof RelationTypeSideSorter && columnIndex == 0) {
          try {
             RelationTypeSideSorter sorter = (RelationTypeSideSorter) element;
-            String multiplicity = sorter.getRelationType().getMultiplicity().asLimitLabel(sorter.getSide());
+            String multiplicity = sorter.getRelationTypeHard().getMultiplicity().asLimitLabel(sorter.getSide());
             RelationSide side = sorter.getSide();
             if (side == RelationSide.SIDE_A) {
                if (multiplicity.equals("1")) {

@@ -11,14 +11,12 @@
 package org.eclipse.osee.framework.ui.skynet.relation.explorer;
 
 import java.util.ArrayList;
-
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.RelationTypeSide;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -306,9 +304,7 @@ public class RelationExplorerWindow {
 
             if (artifact != null) {
                try {
-                  RelationTypeSide relationToInsert =
-                     new RelationTypeSide(relationGroup.getRelationType(), relationGroup.getSide());
-                  relationGroup.getArtifact().addRelation(relationToInsert, artifact);
+                  relationGroup.getArtifact().addRelation(relationGroup, artifact);
                } catch (OseeCoreException ex) {
                   OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                }

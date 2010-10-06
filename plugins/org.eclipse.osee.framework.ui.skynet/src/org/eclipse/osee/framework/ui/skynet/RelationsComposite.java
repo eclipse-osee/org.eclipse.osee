@@ -30,7 +30,6 @@ import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
 import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
-import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.RelationTypeSide;
 import org.eclipse.osee.framework.core.model.type.RelationType;
@@ -614,8 +613,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
          if (object instanceof WrapperForRelationLink) {
             WrapperForRelationLink wrapper = (WrapperForRelationLink) object;
             try {
-               wrapper.getArtifactA().deleteRelation(
-                  new RelationTypeSide(wrapper.getRelationType(), RelationSide.SIDE_B), wrapper.getArtifactB());
+               RelationManager.deleteRelation(wrapper.getRelationType(), wrapper.getArtifactA(), wrapper.getArtifactB());
                Object parent = ((ITreeContentProvider) treeViewer.getContentProvider()).getParent(object);
                if (parent != null) {
                   treeViewer.refresh(parent);

@@ -103,7 +103,7 @@ public class RelationManager {
       return getRelatedArtifacts(artifact, relationType, relationSide, false);
    }
 
-   private static List<Artifact> getRelatedArtifacts(Artifact artifact, IRelationType relationType, RelationSide relationSide) throws OseeCoreException {
+   public static List<Artifact> getRelatedArtifacts(Artifact artifact, IRelationType relationType, RelationSide relationSide) throws OseeCoreException {
       return getRelatedArtifacts(artifact, relationType, relationSide, true);
    }
 
@@ -116,7 +116,7 @@ public class RelationManager {
       if (relationType == null) {
          selectedRelations = relationCache.getAll(artifact);
       } else {
-         selectedRelations = relationCache.getAllByType(artifact, relationType);
+         selectedRelations = relationCache.getAllByType(artifact, RelationTypeManager.getType(relationType));
       }
 
       if (selectedRelations == null) {
@@ -252,8 +252,7 @@ public class RelationManager {
    }
 
    public static List<Artifact> getRelatedArtifactsUnSorted(Artifact artifact, IRelationEnumeration relationEnum) throws OseeCoreException {
-      RelationType relationType = RelationTypeManager.getType(relationEnum);
-      return getRelatedArtifactsUnSorted(artifact, relationType, relationEnum.getSide());
+      return getRelatedArtifactsUnSorted(artifact, relationEnum, relationEnum.getSide());
    }
 
    public static List<Artifact> getRelatedArtifacts(Artifact artifact, IRelationEnumeration relationEnum) throws OseeCoreException {
@@ -413,7 +412,7 @@ public class RelationManager {
       return relations;
    }
 
-   public static void ensureRelationCanBeAdded(RelationType relationType, Artifact artifactA, Artifact artifactB) throws OseeCoreException {
+   public static void ensureRelationCanBeAdded(IRelationType relationType, Artifact artifactA, Artifact artifactB) throws OseeCoreException {
       // For now, relations can not be cross branch.  Ensure that both artifacts are on same branch
       ensureSameBranch(artifactA, artifactB);
       ensureSideWillSupport(artifactA, relationType, RelationSide.SIDE_A, 1);
@@ -430,7 +429,8 @@ public class RelationManager {
     * Check whether artifactCount number of additional artifacts of type artifactType can be related to the artifact on
     * side relationSide for relations of type relationType
     */
-   private static void ensureSideWillSupport(Artifact artifact, RelationType relationType, RelationSide relationSide, int artifactCount) throws OseeCoreException {
+   private static void ensureSideWillSupport(Artifact artifact, IRelationType relationTypeToken, RelationSide relationSide, int artifactCount) throws OseeCoreException {
+      RelationType relationType = RelationTypeManager.getType(relationTypeToken);
       if (!relationType.isArtifactTypeAllowed(relationSide, artifact.getArtifactType())) {
          throw new OseeArgumentException(
             String.format(
@@ -546,7 +546,7 @@ public class RelationManager {
 
       RelationType relationType = RelationTypeManager.getType(relationTypeToken);
       if (relation == null) {
-         ensureRelationCanBeAdded(relationType, artifactA, artifactB);
+         ensureRelationCanBeAdded(relationTypeToken, artifactA, artifactB);
          relation =
             getOrCreate(artifactA.getArtId(), artifactB.getArtId(), artifactA.getBranch(), relationType, 0, 0,
                rationale, ModificationType.NEW);

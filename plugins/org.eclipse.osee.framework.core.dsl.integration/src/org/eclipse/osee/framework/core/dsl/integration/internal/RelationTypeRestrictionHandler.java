@@ -50,7 +50,7 @@ public class RelationTypeRestrictionHandler implements RestrictionHandler<Relati
          XRelationSideEnum restrictedSide = restriction.getRestrictedToSide();
 
          IRelationType typeToMatch = OseeUtil.toToken(relationTypeRef);
-         RelationType relationType = getRelationTypes(typeToMatch, artifactData);
+         RelationType relationType = getRelationType(typeToMatch, artifactData);
          if (relationType != null) {
             ArtifactType artifactType = artifactData.getArtifactType();
             for (RelationSide relationSide : RelationSide.values()) {
@@ -68,7 +68,7 @@ public class RelationTypeRestrictionHandler implements RestrictionHandler<Relati
       }
    }
 
-   private RelationType getRelationTypes(IRelationType typeToMatch, ArtifactData artifact) throws OseeCoreException {
+   private RelationType getRelationType(IRelationType typeToMatch, ArtifactData artifact) throws OseeCoreException {
       RelationType toReturn = null;
       Collection<RelationType> relationTypes = artifact.getValidRelationTypes();
       for (RelationType relationType : relationTypes) {

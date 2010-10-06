@@ -14,18 +14,17 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -68,7 +67,7 @@ public class ArtifactDragDropSupport {
    }
 
    private static void ensureLinkValidity(RelationTypeSideSorter group, Artifact artifact) throws OseeCoreException {
-      RelationType relationType = group.getRelationType();
+      IRelationType relationType = group.getRelationType();
       Artifact otherArtifact = group.getArtifact();
 
       Artifact artifactA = group.getSide() == RelationSide.SIDE_A ? artifact : otherArtifact;
@@ -79,7 +78,7 @@ public class ArtifactDragDropSupport {
    private static void addArtifacts(Artifact[] artifacts, RelationExplorerWindow window) throws OseeCoreException {
       RelationTypeSideSorter group = window.getRelationGroup();
       RelationSide relationSide = group.getSide();
-      RelationType relationType = group.getRelationType();
+      IRelationType relationType = group.getRelationType();
 
       try {
          for (Artifact artifact : artifacts) {
