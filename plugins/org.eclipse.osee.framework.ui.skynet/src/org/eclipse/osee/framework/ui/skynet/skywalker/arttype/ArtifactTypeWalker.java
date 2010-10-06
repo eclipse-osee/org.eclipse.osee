@@ -12,6 +12,7 @@
 package org.eclipse.osee.framework.ui.skynet.skywalker.arttype;
 
 import java.util.Iterator;
+import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -19,7 +20,12 @@ import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.type.ArtifactType;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactTypeLabelProvider;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -64,7 +70,11 @@ public class ArtifactTypeWalker extends ViewPart {
             while (itemsIter.hasNext()) {
                Object obj = itemsIter.next();
                if (obj instanceof IArtifactType) {
-                  explore((IArtifactType) obj);
+                  try {
+                     explore(ArtifactTypeManager.getType((IArtifactType) obj));
+                  } catch (OseeCoreException ex) {
+                     OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+                  }
                }
             }
          }
@@ -74,13 +84,25 @@ public class ArtifactTypeWalker extends ViewPart {
       refresh();
    }
 
-   private void explore(IArtifactType artifactType) {
+   private void explore(ArtifactType artifactType) {
       viewer.setInput(artifactType);
       GraphItem item = viewer.findGraphItem(artifactType);
       if (item != null && item instanceof GraphNode) {
          GraphNode node = (GraphNode) item;
          node.setBackgroundColor(Displays.getSystemColor(SWT.COLOR_CYAN));
          viewer.update(node, null);
+      }
+      try {
+         for (ArtifactType childType : artifactType.getFirstLevelDescendantTypes()) {
+            GraphItem childItem = viewer.findGraphItem(childType);
+            if (childItem != null && childItem instanceof GraphNode) {
+               GraphNode node = (GraphNode) childItem;
+               node.setBackgroundColor(Displays.getSystemColor(SWT.COLOR_GREEN));
+               viewer.update(node, null);
+            }
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
       setPartName("Artifact Type Walker (" + artifactType.getName() + ")");
    }
@@ -104,7 +126,11 @@ public class ArtifactTypeWalker extends ViewPart {
    }
 
    public void refresh() {
-      explore(CoreArtifactTypes.Artifact);
+      try {
+         explore(ArtifactTypeManager.getType(CoreArtifactTypes.Artifact));
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+      }
    }
 
    @Override
