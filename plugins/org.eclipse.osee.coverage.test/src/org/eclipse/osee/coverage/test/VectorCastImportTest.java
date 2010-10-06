@@ -42,7 +42,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.PluginUtil;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -75,7 +74,7 @@ public class VectorCastImportTest {
 
    public static void testCleanup() throws OseeCoreException {
       if (testWithDb) {
-         CoverageUtil.setNavigatorSelectedBranch(BranchManager.getCommonBranch());
+         CoverageUtil.setNavigatorSelectedBranch(CoverageTestUtil.getTestBranch());
          CoverageTestUtil.cleanupCoverageTests();
       } else {
          System.err.println("Test with Db Disabled...re-inenable");
@@ -166,8 +165,8 @@ public class VectorCastImportTest {
          }
 
          @Override
-         public Branch getBranch() throws OseeCoreException {
-            return BranchManager.getCommonBranch();
+         public Branch getBranch() {
+            return CoverageTestUtil.getTestBranch();
          }
 
       }, mergeManager.getMergeItems());
@@ -203,16 +202,16 @@ public class VectorCastImportTest {
       CoveragePackage loadedCp = null;
       if (testWithDb) {
          // Test Persist of CoveragePackage
-         OseeCoverageStore store = OseeCoveragePackageStore.get(coveragePackage, BranchManager.getCommonBranch());
+         OseeCoverageStore store = OseeCoveragePackageStore.get(coveragePackage, CoverageTestUtil.getTestBranch());
          SkynetTransaction transaction =
-            new SkynetTransaction(BranchManager.getCommonBranch(), "Coverage Package Save");
+            new SkynetTransaction(CoverageTestUtil.getTestBranch(), "Coverage Package Save");
          CoveragePackageEvent coverageEvent = new CoveragePackageEvent(coveragePackage, CoverageEventType.Modified);
          store.save(transaction, coverageEvent);
          transaction.execute();
 
          // Test Load of Coverage Package
          Artifact artifact =
-            ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), BranchManager.getCommonBranch());
+            ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), CoverageTestUtil.getTestBranch());
          CoverageTestUtil.registerAsTestArtifact(artifact);
          artifact.persist();
 
@@ -259,13 +258,14 @@ public class VectorCastImportTest {
          });
       coverageImport = vectorCastImporter.run(null);
 
-      OseeCoveragePackageStore store = OseeCoveragePackageStore.get(coveragePackage, BranchManager.getCommonBranch());
-      SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch(), "Save Import Record");
+      OseeCoveragePackageStore store = OseeCoveragePackageStore.get(coveragePackage, CoverageTestUtil.getTestBranch());
+      SkynetTransaction transaction = new SkynetTransaction(CoverageTestUtil.getTestBranch(), "Save Import Record");
       Result result = store.saveImportRecord(transaction, coverageImport);
       Assert.assertTrue(result.isTrue());
       transaction.execute();
 
-      Artifact packageArt = ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), BranchManager.getCommonBranch());
+      Artifact packageArt =
+         ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), CoverageTestUtil.getTestBranch());
       Artifact foundRecordArt = null;
       for (Artifact artifact : packageArt.getChildren()) {
          if (artifact.getName().equals(OseeCoveragePackageStore.IMPORT_RECORD_NAME)) {

@@ -13,6 +13,8 @@ package org.eclipse.osee.coverage.test.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
+import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageOption;
 import org.eclipse.osee.coverage.model.CoveragePackageBase;
@@ -22,10 +24,13 @@ import org.eclipse.osee.coverage.store.CoverageArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
+import org.eclipse.osee.support.test.util.DemoSawBuilds;
 
 /**
  * @author Donald G. Dunne
@@ -81,22 +86,31 @@ public class CoverageTestUtil {
 
    public static Collection<Artifact> getCoverageUnitArtifacts() throws OseeCoreException {
       return StaticIdManager.getArtifactsFromArtifactQuery(CoverageArtifactTypes.CoverageUnit, COVERAGE_STATIC_ID,
-         BranchManager.getCommonBranch());
+         CoverageTestUtil.getTestBranch());
    }
 
    public static Collection<Artifact> getCoveragePackageArtifacts() throws OseeCoreException {
       return StaticIdManager.getArtifactsFromArtifactQuery(CoverageArtifactTypes.CoveragePackage, COVERAGE_STATIC_ID,
-         BranchManager.getCommonBranch());
+         CoverageTestUtil.getTestBranch());
    }
 
    public static Collection<Artifact> getCoverageRecordArtifacts() throws OseeCoreException {
       return StaticIdManager.getArtifactsFromArtifactQuery(CoreArtifactTypes.GeneralDocument, COVERAGE_STATIC_ID,
-         BranchManager.getCommonBranch());
+         CoverageTestUtil.getTestBranch());
    }
 
    public static void setAllCoverageMethod(CoverageUnit coverageUnit, CoverageOption CoverageOption, boolean recurse) {
       for (CoverageItem item : coverageUnit.getCoverageItems(recurse)) {
          item.setCoverageMethod(CoverageOption);
       }
+   }
+
+   public static Branch getTestBranch() {
+      try {
+         return BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1.getName());
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+      return null;
    }
 }

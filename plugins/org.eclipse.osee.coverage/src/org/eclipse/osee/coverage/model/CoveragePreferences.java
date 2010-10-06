@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.KeyValueArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -46,9 +45,7 @@ public class CoveragePreferences {
          }
       }
       if (artifact == null) {
-         artifact =
-            ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, BranchManager.getCommonBranch(),
-               ARTIFACT_NAME);
+         artifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, branch, ARTIFACT_NAME);
          artifact.persist("Coverage Preferences - creation");
       }
       return artifact;

@@ -12,11 +12,11 @@ package org.eclipse.osee.coverage.test.model;
 
 import org.eclipse.osee.coverage.model.CoverageOptionManagerDefault;
 import org.eclipse.osee.coverage.model.CoveragePreferences;
+import org.eclipse.osee.coverage.test.util.CoverageTestUtil;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.junit.Assert;
@@ -30,9 +30,9 @@ public class CoveragePreferencesTest {
 
    @BeforeClass
    public static void setUp() throws OseeCoreException {
-      SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch(), "delete");
+      SkynetTransaction transaction = new SkynetTransaction(CoverageTestUtil.getTestBranch(), "delete");
       for (Artifact artifact : ArtifactQuery.getArtifactListFromTypeAndName(CoreArtifactTypes.GeneralData,
-         "Coverage Preferences", BranchManager.getCommonBranch())) {
+         "Coverage Preferences", CoverageTestUtil.getTestBranch())) {
          artifact.deleteAndPersist(transaction);
       }
       transaction.execute();
@@ -42,7 +42,7 @@ public class CoveragePreferencesTest {
       try {
          Artifact artifact =
             ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.GeneralData, "Coverage Preferences",
-               BranchManager.getCommonBranch());
+               CoverageTestUtil.getTestBranch());
          return artifact;
       } catch (ArtifactDoesNotExist ex) {
          // do nothing
@@ -53,7 +53,7 @@ public class CoveragePreferencesTest {
    @Test
    public void testCoveragePreferences() throws OseeCoreException {
       Assert.assertNull(getCoveragePrefArt());
-      CoveragePreferences prefs = new CoveragePreferences(BranchManager.getCommonBranch());
+      CoveragePreferences prefs = new CoveragePreferences(CoverageTestUtil.getTestBranch());
       Assert.assertNotNull(prefs);
       Assert.assertNull(prefs.getCoverageOptions());
       prefs.setCoverageOptions(CoverageOptionManagerDefault.instance().toXml());
