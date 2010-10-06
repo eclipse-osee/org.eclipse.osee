@@ -253,4 +253,9 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
    public Collection<String> getCategories() {
       return Arrays.asList("Define.Publish");
    }
+
+   @Override
+   public String getDescriptionUsage() {
+      return "The Low Level Requirement artifacts will be filtered based on the type(s) selected.  E.g. if you want all kinds of software requirements included, then select \"Abstract Software Requirement\".";
+   }
 }
