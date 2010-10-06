@@ -10,9 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.relation.order;
 
+import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.type.RelationType;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSideSorter;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 
@@ -21,9 +22,9 @@ import org.eclipse.osee.framework.skynet.core.types.IArtifact;
  */
 public class RelationOrderFactory {
 
-   public RelationTypeSideSorter createTypeSideSorter(RelationSorterProvider sorterProvider, IArtifact artifact, RelationType type, RelationSide side) throws OseeCoreException {
+   public RelationTypeSideSorter createTypeSideSorter(RelationSorterProvider sorterProvider, IArtifact artifact, IRelationType type, RelationSide side) throws OseeCoreException {
       RelationOrderData data = createRelationOrderData(artifact);
-      return new RelationTypeSideSorter(type, side, sorterProvider, data);
+      return new RelationTypeSideSorter(RelationTypeManager.getType(type), side, sorterProvider, data);
    }
 
    public RelationOrderData createRelationOrderData(IArtifact artifact) throws OseeCoreException {

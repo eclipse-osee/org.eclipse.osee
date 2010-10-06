@@ -36,7 +36,7 @@ public class RelationLink {
 
       public String getLazyArtifactName(int aArtifactId, Branch branch);
 
-      public void deleteFromRelationOrder(Artifact aArtifact, Artifact bArtifact, RelationType relationType) throws OseeCoreException;
+      public void deleteFromRelationOrder(Artifact aArtifact, Artifact bArtifact, IRelationType relationType) throws OseeCoreException;
    }
 
    private int relationId;

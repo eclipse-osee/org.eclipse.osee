@@ -1140,8 +1140,8 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, Co
    }
 
    public void setRelationOrder(IRelationEnumeration relationSide, List<Artifact> artifactsInNewOrder) throws OseeCoreException {
-      RelationManager.setRelationOrder(this, RelationTypeManager.getType(relationSide), relationSide.getSide(),
-         RelationOrderBaseTypes.USER_DEFINED, artifactsInNewOrder);
+      RelationManager.setRelationOrder(this, relationSide, relationSide.getSide(), RelationOrderBaseTypes.USER_DEFINED,
+         artifactsInNewOrder);
    }
 
    public void setRelationOrder(IRelationEnumeration relationEnumeration, IRelationSorterId orderId) throws OseeCoreException {
@@ -1149,8 +1149,7 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, Co
          setRelationOrder(relationEnumeration, getRelatedArtifacts(relationEnumeration));
       } else {
          List<Artifact> empty = java.util.Collections.emptyList();
-         RelationManager.setRelationOrder(this, RelationTypeManager.getType(relationEnumeration),
-            relationEnumeration.getSide(), orderId, empty);
+         RelationManager.setRelationOrder(this, relationEnumeration, relationEnumeration.getSide(), orderId, empty);
       }
    }
 
@@ -1168,13 +1167,13 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, Co
          throw new OseeStateException("Could not set Relation Order");
       }
 
-      RelationManager.setRelationOrder(this, RelationTypeManager.getType(relationEnumeration),
-         relationEnumeration.getSide(), RelationOrderBaseTypes.USER_DEFINED, currentOrder);
+      RelationManager.setRelationOrder(this, relationEnumeration, relationEnumeration.getSide(),
+         RelationOrderBaseTypes.USER_DEFINED, currentOrder);
    }
 
    public void deleteRelation(IRelationEnumeration relationTypeSide, Artifact artifact) throws OseeCoreException {
       Pair<Artifact, Artifact> sides = determineArtifactSides(artifact, relationTypeSide);
-      RelationManager.deleteRelation(RelationTypeManager.getType(relationTypeSide), sides.getFirst(), sides.getSecond());
+      RelationManager.deleteRelation(relationTypeSide, sides.getFirst(), sides.getSecond());
    }
 
    public void deleteRelations(IRelationEnumeration relationSide) throws OseeCoreException {
@@ -1213,8 +1212,7 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, Co
     * Creates new relations that don't already exist and removes relations to artifacts that are not in collection
     */
    public void setRelationsOfTypeUseCurrentOrder(IRelationEnumeration relationSide, Collection<? extends Artifact> artifacts, Class<?> clazz) throws OseeCoreException {
-      RelationTypeSideSorter sorter =
-         RelationManager.createTypeSideSorter(this, RelationTypeManager.getType(relationSide), relationSide.getSide());
+      RelationTypeSideSorter sorter = RelationManager.createTypeSideSorter(this, relationSide, relationSide.getSide());
       Collection<Artifact> currentlyRelated = getRelatedArtifacts(relationSide, Artifact.class);
       // Add new relations if don't exist
       for (Artifact artifact : artifacts) {

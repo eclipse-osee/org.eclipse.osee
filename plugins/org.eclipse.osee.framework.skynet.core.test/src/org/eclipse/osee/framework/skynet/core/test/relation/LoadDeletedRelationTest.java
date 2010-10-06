@@ -13,16 +13,16 @@ package org.eclipse.osee.framework.skynet.core.test.relation;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.test.util.FrameworkTestUtil;
 import org.junit.After;
 import org.junit.Before;
@@ -35,7 +35,7 @@ import org.junit.Test;
 public class LoadDeletedRelationTest {
    Branch branch;
    Artifact left, right;
-   RelationType type;
+   IRelationType type;
 
    @Before
    public void setUp() throws OseeCoreException {
@@ -44,7 +44,7 @@ public class LoadDeletedRelationTest {
       right = FrameworkTestUtil.createSimpleArtifact(CoreArtifactTypes.Requirement, "Right", branch);
       left.persist();
       right.persist();
-      type = RelationTypeManager.getType("Requirement Trace");
+      type = CoreRelationTypes.Requirement_Trace__Higher_Level;
    }
 
    @Ignore

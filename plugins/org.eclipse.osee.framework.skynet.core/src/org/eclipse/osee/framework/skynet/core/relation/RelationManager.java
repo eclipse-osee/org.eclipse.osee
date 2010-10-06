@@ -108,15 +108,15 @@ public class RelationManager {
    }
 
    @SuppressWarnings("unused")
-   private static List<Artifact> getRelatedArtifacts(Artifact artifact, IRelationType relationTypeToken, RelationSide relationSide, boolean sort) throws OseeCoreException {
+   private static List<Artifact> getRelatedArtifacts(Artifact artifact, IRelationType relationType, RelationSide relationSide, boolean sort) throws OseeCoreException {
       if (relationSide == null) {
          throw new OseeArgumentException("RelationSide cannot be null");
       }
       List<RelationLink> selectedRelations = null;
-      if (relationTypeToken == null) {
+      if (relationType == null) {
          selectedRelations = relationCache.getAll(artifact);
       } else {
-         selectedRelations = relationCache.getAllByType(artifact, relationTypeToken);
+         selectedRelations = relationCache.getAllByType(artifact, relationType);
       }
 
       if (selectedRelations == null) {
@@ -142,7 +142,6 @@ public class RelationManager {
          }
       }
       if (sort) {
-         RelationType relationType = RelationTypeManager.getType(relationTypeToken);
          sort(artifact, relationType, relationSide, relatedArtifacts);
       }
       return relatedArtifacts;
@@ -453,7 +452,7 @@ public class RelationManager {
       }
    }
 
-   public static void deleteRelation(RelationType relationType, Artifact artifactA, Artifact artifactB) throws OseeCoreException {
+   public static void deleteRelation(IRelationType relationType, Artifact artifactA, Artifact artifactB) throws OseeCoreException {
       RelationLink relation =
          relationCache.getLoadedRelation(artifactA, artifactA.getArtId(), artifactB.getArtId(), relationType,
             DeletionFlag.EXCLUDE_DELETED);
@@ -470,22 +469,22 @@ public class RelationManager {
 
    public static void deleteRelationsAll(Artifact artifact, boolean reorderRelations) throws OseeCoreException {
       List<RelationLink> selectedRelations = relationCache.getAll(artifact);
-      Set<Pair<RelationType, RelationSide>> typesToUpdate = new HashSet<Pair<RelationType, RelationSide>>();
+      Set<Pair<IRelationType, RelationSide>> typesToUpdate = new HashSet<Pair<IRelationType, RelationSide>>();
       if (selectedRelations != null) {
          for (RelationLink relation : selectedRelations) {
-            typesToUpdate.add(new Pair<RelationType, RelationSide>(relation.getRelationType(),
+            typesToUpdate.add(new Pair<IRelationType, RelationSide>(relation.getRelationType(),
                relation.getOppositeSide(artifact)));
             relation.delete(reorderRelations);
          }
       }
 
-      for (Pair<RelationType, RelationSide> type : typesToUpdate) {
+      for (Pair<IRelationType, RelationSide> type : typesToUpdate) {
          updateOrderListOnDelete(artifact, type.getFirst(), type.getSecond(),
             getRelatedArtifacts(artifact, type.getFirst(), type.getSecond()));
       }
    }
 
-   public static void deleteRelations(Artifact artifact, RelationType relationType, RelationSide relationSide) throws OseeCoreException {
+   public static void deleteRelations(Artifact artifact, IRelationType relationType, RelationSide relationSide) throws OseeCoreException {
       List<RelationLink> selectedRelations = relationCache.getAllByType(artifact, relationType);
       if (selectedRelations != null) {
          for (RelationLink relation : selectedRelations) {
@@ -553,12 +552,12 @@ public class RelationManager {
                rationale, ModificationType.NEW);
          relation.setDirty();
 
-         RelationTypeSideSorter sorter = createTypeSideSorter(artifactA, relationType, RelationSide.SIDE_B);
+         RelationTypeSideSorter sorter = createTypeSideSorter(artifactA, relationTypeToken, RelationSide.SIDE_B);
          sorter.addItem(sorterId, artifactB);
 
       } else if (relation.isDeleted()) {
          relation.undelete();
-         RelationTypeSideSorter sorter = createTypeSideSorter(artifactA, relationType, RelationSide.SIDE_B);
+         RelationTypeSideSorter sorter = createTypeSideSorter(artifactA, relationTypeToken, RelationSide.SIDE_B);
          sorter.addItem(sorterId, artifactB);
       }
    }
@@ -582,7 +581,7 @@ public class RelationManager {
       return relationSorterProvider.getAllRelationOrderIds();
    }
 
-   public static RelationTypeSideSorter createTypeSideSorter(IArtifact artifact, RelationType relationType, RelationSide side) throws OseeCoreException {
+   public static RelationTypeSideSorter createTypeSideSorter(IArtifact artifact, IRelationType relationType, RelationSide side) throws OseeCoreException {
       return relationOrderFactory.createTypeSideSorter(relationSorterProvider, artifact, relationType, side);
    }
 
@@ -590,12 +589,12 @@ public class RelationManager {
       return relationOrderFactory.createRelationOrderData(artifact);
    }
 
-   public static void setRelationOrder(IArtifact artifact, RelationType relationType, RelationSide side, IRelationSorterId orderId, List<Artifact> relatives) throws OseeCoreException {
+   public static void setRelationOrder(IArtifact artifact, IRelationType relationType, RelationSide side, IRelationSorterId orderId, List<Artifact> relatives) throws OseeCoreException {
       RelationTypeSideSorter sorter = createTypeSideSorter(artifact, relationType, side);
       sorter.setOrder(relatives, orderId);
    }
 
-   private static void sort(IArtifact artifact, RelationType type, RelationSide side, List<Artifact> listToOrder) throws OseeCoreException {
+   private static void sort(IArtifact artifact, IRelationType type, RelationSide side, List<Artifact> listToOrder) throws OseeCoreException {
       if (type == null || side == null || listToOrder.size() <= 1) {
          return;
       }
@@ -603,7 +602,7 @@ public class RelationManager {
       sorter.sort(listToOrder);
    }
 
-   private static void updateOrderListOnDelete(Artifact artifact, RelationType relationType, RelationSide relationSide, List<Artifact> relatives) throws OseeCoreException {
+   private static void updateOrderListOnDelete(Artifact artifact, IRelationType relationType, RelationSide relationSide, List<Artifact> relatives) throws OseeCoreException {
       RelationTypeSideSorter sorter = createTypeSideSorter(artifact, relationType, relationSide);
       sorter.setOrder(relatives, sorter.getSorterId());
    }
@@ -666,7 +665,7 @@ public class RelationManager {
       }
 
       @Override
-      public void deleteFromRelationOrder(Artifact aArtifact, Artifact bArtifact, RelationType relationType) throws OseeCoreException {
+      public void deleteFromRelationOrder(Artifact aArtifact, Artifact bArtifact, IRelationType relationType) throws OseeCoreException {
          RelationTypeSideSorter aSorter = RelationManager.createTypeSideSorter(aArtifact, relationType, SIDE_B);
          aSorter.removeItem(null, bArtifact);
 
