@@ -19,13 +19,18 @@ import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.AICheckTreeDialog;
 import org.eclipse.osee.framework.core.enums.Active;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
+import org.eclipse.osee.framework.skynet.core.relation.crossbranch.CrossBranchLinkManager;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
+import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -97,6 +102,9 @@ public class SMARelationsHyperlinkComposite extends Composite {
       if (smaArt instanceof AbstractReviewArtifact && ((AbstractReviewArtifact) smaArt).getActionableItemsDam().getActionableItemGuids().size() > 0) {
          return true;
       }
+      if (smaArt.getAttributeCount(CoreAttributeTypes.CrossBranchLink) > 0) {
+         return true;
+      }
       return false;
    }
 
@@ -109,33 +117,50 @@ public class SMARelationsHyperlinkComposite extends Composite {
       return "";
    }
 
-   private void createArtifactRelationHyperlinks(String prefix, Artifact thisArt, String action, IRelationEnumeration side) throws OseeCoreException {
-      for (final Artifact art : thisArt.getRelatedArtifacts(side)) {
-         toolkit.createLabel(
-            this,
-            prefix + " \"" + thisArt.getArtifactTypeName() + "\" " + action + getCompletedCancelledString(art) + " \"" + art.getArtifactTypeName() + "\" ");
-         Hyperlink link =
-            toolkit.createHyperlink(this, String.format("\"%s\" - %s",
-               art.getName().length() < 60 ? art.getName() : art.getName().substring(0, 60), art.getHumanReadableId()),
-               SWT.NONE);
-         link.addHyperlinkListener(new IHyperlinkListener() {
-
-            @Override
-            public void linkEntered(HyperlinkEvent e) {
-               // do nothing
-            }
-
-            @Override
-            public void linkExited(HyperlinkEvent e) {
-               // do nothing
-            }
-
-            @Override
-            public void linkActivated(HyperlinkEvent e) {
-               AtsUtil.openATSAction(art, AtsOpenOption.OpenOneOrPopupSelect);
-            }
-         });
+   private void createArtifactRelationHyperlinks(String prefix, Artifact thisArt, String action, IRelationEnumeration relationEnum) throws OseeCoreException {
+      for (final Artifact art : thisArt.getRelatedArtifacts(relationEnum)) {
+         createLink(art, prefix, action, thisArt);
       }
+      for (final Artifact art : CrossBranchLinkManager.getRelatedArtifacts(thisArt, relationEnum)) {
+         createLink(art, prefix, action, thisArt);
+
+      }
+   }
+
+   private void createLink(final Artifact art, String prefix, String action, Artifact thisArt) {
+      toolkit.createLabel(
+         this,
+         prefix + " \"" + thisArt.getArtifactTypeName() + "\" " + action + getCompletedCancelledString(art) + " \"" + art.getArtifactTypeName() + "\" ");
+      Hyperlink link =
+         toolkit.createHyperlink(this, String.format("\"%s\" - %s",
+            art.getName().length() < 60 ? art.getName() : art.getName().substring(0, 60), art.getHumanReadableId()),
+            SWT.NONE);
+      link.addHyperlinkListener(new IHyperlinkListener() {
+
+         @Override
+         public void linkEntered(HyperlinkEvent e) {
+            // do nothing
+         }
+
+         @Override
+         public void linkExited(HyperlinkEvent e) {
+            // do nothing
+         }
+
+         @Override
+         public void linkActivated(HyperlinkEvent e) {
+            if (art instanceof IATSArtifact) {
+               AtsUtil.openATSAction(art, AtsOpenOption.OpenOneOrPopupSelect);
+            } else {
+               try {
+                  RendererManager.open(art, PresentationType.DEFAULT_OPEN);
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               }
+            }
+         }
+      });
+
    }
 
    private void processReviewArtifact(final AbstractReviewArtifact reviewArt) throws OseeCoreException {
