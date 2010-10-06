@@ -32,6 +32,7 @@ public final class CoreAttributeTypes extends NamedIdentity implements IAttribut
    public static final IAttributeType ContentUrl = new CoreAttributeTypes("AAMFEcIP+U+ML_gzH7AA", "Content URL");
    public static final IAttributeType Country = new CoreAttributeTypes("AAMFEbsk1xGUlmXk8zgA", "Country");
    public static final IAttributeType CrewInterfaceRequirement = new CoreAttributeTypes("AAMFEQrZMEwBcq2pQTgA", "Crew Interface Requirement");
+   public static final IAttributeType CrossBranchLink = new CoreAttributeTypes("AXUR3KcbcVPqyNCdQmAA", "Cross Branch Link");
    public static final IAttributeType Csci = new CoreAttributeTypes("AAMFEXPEnnkY_07EbRgA", "CSCI");
    public static final IAttributeType DefaultMailServer = new CoreAttributeTypes("ABMuIC3FejpGilonfAgA", "osee.config.Default Mail Server");
    public static final IAttributeType Description = new CoreAttributeTypes("AAMFEcK+kyOhG8GYvPgA", "Description");

@@ -130,6 +130,7 @@ artifactType "Team Workflow" extends "ats.State Machine", "Abstract Access Contr
    attribute "ats.Proposed Resolution"
    attribute "ats.Team Definition"
    attribute "ats.User Community"
+   attribute "Cross Branch Link"
 }
 
 artifactType "Task" extends "ats.State Machine" {

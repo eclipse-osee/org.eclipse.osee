@@ -16,6 +16,13 @@ artifactType "Global Preferences" extends "Artifact" {
    attribute "osee.config.Default Mail Server"
 }
 
+attributeType "Cross Branch Link" extends StringAttribute {
+   guid "AXUR3KcbcVPqyNCdQmAA"
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max unlimited
+}
+
 attributeType "osee.config.Default Mail Server" extends StringAttribute {
    guid "ABMuIC3FejpGilonfAgA"
    dataProvider DefaultAttributeDataProvider
