@@ -1677,14 +1677,6 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, Co
       return relations;
    }
 
-   /**
-    * @return a list of relations from a specific relation type
-    */
-   @Deprecated
-   public List<RelationLink> getRelations(RelationType relationType) {
-      return RelationManager.getRelations(this, relationType, null);
-   }
-
    public List<RelationLink> getRelationsAll(DeletionFlag deletionFlag) {
       return RelationManager.getRelationsAll(this, deletionFlag);
    }
