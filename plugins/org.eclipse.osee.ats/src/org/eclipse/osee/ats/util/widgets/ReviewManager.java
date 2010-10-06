@@ -218,12 +218,7 @@ public class ReviewManager {
    }
 
    public static boolean hasReviews(TeamWorkFlowArtifact teamArt) {
-      try {
-         return teamArt.getRelatedArtifactsCount(AtsRelationTypes.TeamWorkflowToReview_Review) > 0;
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-         return false;
-      }
+      return teamArt.getRelatedArtifactsCount(AtsRelationTypes.TeamWorkflowToReview_Review) > 0;
    }
 
    public static Result areReviewsComplete(TeamWorkFlowArtifact teamArt) {

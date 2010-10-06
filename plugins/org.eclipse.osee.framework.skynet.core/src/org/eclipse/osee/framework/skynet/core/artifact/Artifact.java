@@ -196,17 +196,13 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, Co
 
    public String getRelationRationale(Artifact artifact, IRelationEnumeration relationTypeSide) throws OseeCoreException {
       Pair<Artifact, Artifact> sides = determineArtifactSides(artifact, relationTypeSide);
-      RelationLink link =
-         RelationManager.getRelationLink(sides.getFirst(), sides.getSecond(),
-            RelationTypeManager.getType(relationTypeSide));
+      RelationLink link = RelationManager.getRelationLink(sides.getFirst(), sides.getSecond(), relationTypeSide);
       return link.getRationale();
    }
 
    public void setRelationRationale(Artifact artifact, IRelationEnumeration relationTypeSide, String rationale) throws OseeCoreException {
       Pair<Artifact, Artifact> sides = determineArtifactSides(artifact, relationTypeSide);
-      RelationLink link =
-         RelationManager.getRelationLink(sides.getFirst(), sides.getSecond(),
-            RelationTypeManager.getType(relationTypeSide));
+      RelationLink link = RelationManager.getRelationLink(sides.getFirst(), sides.getSecond(), relationTypeSide);
       link.setRationale(rationale);
    }
 
@@ -233,9 +229,8 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, Co
       return RelationManager.getRelatedArtifact(this, relationEnum);
    }
 
-   public int getRelatedArtifactsCount(IRelationEnumeration relationEnum) throws OseeCoreException {
-      return RelationManager.getRelatedArtifactsCount(this, RelationTypeManager.getType(relationEnum),
-         relationEnum.getSide());
+   public int getRelatedArtifactsCount(IRelationEnumeration relationEnum) {
+      return RelationManager.getRelatedArtifactsCount(this, relationEnum, relationEnum.getSide());
    }
 
    public int getRelatedArtifactsCount(RelationTypeSideSorter relationSorter) throws OseeCoreException {
@@ -1124,8 +1119,7 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, Co
 
    public void addRelation(IRelationSorterId sorterId, IRelationEnumeration relationTypeSide, Artifact artifact, String rationale) throws OseeCoreException {
       Pair<Artifact, Artifact> sides = determineArtifactSides(artifact, relationTypeSide);
-      RelationManager.addRelation(sorterId, RelationTypeManager.getType(relationTypeSide), sides.getFirst(),
-         sides.getSecond(), rationale);
+      RelationManager.addRelation(sorterId, relationTypeSide, sides.getFirst(), sides.getSecond(), rationale);
    }
 
    public void addRelation(IRelationEnumeration relationSide, Artifact artifact) throws OseeCoreException {
@@ -1141,8 +1135,7 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, Co
       Artifact artifactA = sideA ? itemToAdd : this;
       Artifact artifactB = sideA ? this : itemToAdd;
 
-      RelationManager.addRelation(sorterId, RelationTypeManager.getType(relationEnumeration), artifactA, artifactB,
-         rationale);
+      RelationManager.addRelation(sorterId, relationEnumeration, artifactA, artifactB, rationale);
       setRelationOrder(relationEnumeration, targetArtifact, insertAfterTarget, itemToAdd);
    }
 
@@ -1656,7 +1649,7 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, Co
    }
 
    public List<RelationLink> getRelations(IRelationEnumeration relationEnum) throws OseeCoreException {
-      return RelationManager.getRelations(this, RelationTypeManager.getType(relationEnum), relationEnum.getSide());
+      return RelationManager.getRelations(this, relationEnum, relationEnum.getSide());
    }
 
    /**

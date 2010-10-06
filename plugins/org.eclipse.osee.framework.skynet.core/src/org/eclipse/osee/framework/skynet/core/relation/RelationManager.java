@@ -192,8 +192,7 @@ public class RelationManager {
                relatedArtIds.addAll(getRelatedArtifactIds(selectedRelations, RelationSide.SIDE_B, allowDeleted));
             } else {
                for (IRelationEnumeration relationEnum : relationEnums) {
-                  Collection<RelationLink> links =
-                     relationCache.getAllByType(artifact, RelationTypeManager.getType(relationEnum));
+                  Collection<RelationLink> links = relationCache.getAllByType(artifact, relationEnum);
                   if (links != null) {
                      for (RelationLink rel : links) {
                         /**
@@ -222,8 +221,7 @@ public class RelationManager {
    }
 
    public static List<Artifact> getRelatedArtifacts(Artifact artifact, IRelationEnumeration relationEnum, DeletionFlag deletionFlag) throws OseeCoreException {
-      RelationType relationType = RelationTypeManager.getType(relationEnum);
-      List<Artifact> artifacts = getRelatedArtifacts(artifact, relationType, relationEnum.getSide());
+      List<Artifact> artifacts = getRelatedArtifacts(artifact, relationEnum, relationEnum.getSide());
       Collection<Integer> artIds = new ArrayList<Integer>();
 
       if (deletionFlag.areDeletedAllowed()) {
@@ -231,7 +229,8 @@ public class RelationManager {
          IOseeStatement chStmt = ConnectionHandler.getStatement();
          try {
             String sql = String.format(GET_DELETED_ARTIFACT, formatArgs);
-            chStmt.runPreparedQuery(sql, artifact.getBranch().getId(), relationType.getId(), artifact.getArtId());
+            chStmt.runPreparedQuery(sql, artifact.getBranch().getId(), RelationTypeManager.getTypeId(relationEnum),
+               artifact.getArtId());
             while (chStmt.next()) {
                int artId = chStmt.getInt(formatArgs[0] + "_art_id");
                artIds.add(artId);
@@ -259,10 +258,10 @@ public class RelationManager {
    }
 
    public static List<Artifact> getRelatedArtifacts(Artifact artifact, IRelationEnumeration relationEnum) throws OseeCoreException {
-      return getRelatedArtifacts(artifact, RelationTypeManager.getType(relationEnum), relationEnum.getSide());
+      return getRelatedArtifacts(artifact, relationEnum, relationEnum.getSide());
    }
 
-   private static Artifact getRelatedArtifact(Artifact artifact, RelationType relationType, RelationSide relationSide) throws OseeCoreException {
+   private static Artifact getRelatedArtifact(Artifact artifact, IRelationType relationType, RelationSide relationSide) throws OseeCoreException {
       List<Artifact> artifacts = getRelatedArtifactsUnSorted(artifact, relationType, relationSide);
 
       if (artifacts.isEmpty()) {
@@ -279,12 +278,11 @@ public class RelationManager {
    }
 
    public static Artifact getRelatedArtifact(Artifact artifact, IRelationEnumeration relationEnum) throws OseeCoreException {
-      return getRelatedArtifact(artifact, RelationTypeManager.getType(relationEnum), relationEnum.getSide());
+      return getRelatedArtifact(artifact, relationEnum, relationEnum.getSide());
    }
 
    public static int getRelatedArtifactsCount(Artifact artifact, IRelationEnumeration relationTypeEnum) throws OseeCoreException {
-      return getRelatedArtifactsCount(artifact, RelationTypeManager.getType(relationTypeEnum),
-         relationTypeEnum.getSide());
+      return getRelatedArtifactsCount(artifact, relationTypeEnum, relationTypeEnum.getSide());
    }
 
    public static int getRelatedArtifactsCount(Artifact artifact, IRelationType relationType, RelationSide relationSide) {
@@ -391,8 +389,9 @@ public class RelationManager {
       }
    }
 
-   public static List<RelationLink> getRelations(Artifact artifact, RelationType relationType, RelationSide relationSide) {
-      List<RelationLink> selectedRelations = relationCache.getAllByType(artifact, relationType);
+   public static List<RelationLink> getRelations(Artifact artifact, IRelationType relationType, RelationSide relationSide) throws OseeCoreException {
+      List<RelationLink> selectedRelations =
+         relationCache.getAllByType(artifact, RelationTypeManager.getType(relationType));
       if (selectedRelations == null) {
          return Collections.emptyList();
       }

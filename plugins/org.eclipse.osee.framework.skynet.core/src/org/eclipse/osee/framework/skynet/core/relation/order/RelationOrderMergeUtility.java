@@ -99,19 +99,18 @@ public class RelationOrderMergeUtility {
       return toReturn;
    }
 
-   private static Collection<String> getDeleted(Artifact art, IRelationEnumeration rts) throws OseeCoreException {
+   private static Collection<String> getDeleted(Artifact art, IRelationEnumeration relationType) throws OseeCoreException {
       Collection<String> toReturn = new HashSet<String>();
-      RelationType type = RelationTypeManager.getType(rts);
 
       for (RelationLink link : art.getRelationsAll(DeletionFlag.INCLUDE_DELETED)) {
-         if (link.isOfType(type) && link.isDeleted()) {
-            if (link.getOppositeSide(art).equals(rts.getSide())) {
+         if (link.isOfType(relationType) && link.isDeleted()) {
+            if (link.getOppositeSide(art).equals(relationType.getSide())) {
                toReturn.add(link.getArtifactOnOtherSide(art).getGuid());
             }
          }
       }
 
-      for (Artifact relative : art.getRelatedArtifacts(rts, DeletionFlag.INCLUDE_DELETED)) {
+      for (Artifact relative : art.getRelatedArtifacts(relationType, DeletionFlag.INCLUDE_DELETED)) {
          if (relative.isDeleted()) {
             toReturn.add(relative.getGuid());
          }

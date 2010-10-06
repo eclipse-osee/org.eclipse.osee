@@ -29,7 +29,6 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -124,12 +123,7 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
    }
 
    public boolean hasTaskArtifacts() {
-      try {
-         return getRelatedArtifactsCount(AtsRelationTypes.SmaToTask_Task) > 0;
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-         return false;
-      }
+      return getRelatedArtifactsCount(AtsRelationTypes.SmaToTask_Task) > 0;
    }
 
    public TaskArtifact createNewTask(String title) throws OseeCoreException {
