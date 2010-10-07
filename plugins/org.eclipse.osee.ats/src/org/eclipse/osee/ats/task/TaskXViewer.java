@@ -213,9 +213,7 @@ public class TaskXViewer extends WorldXViewer {
          @Override
          public void run() {
             try {
-               boolean success =
-                  PromptChangeUtil.promptChangeAttribute(getSelectedTaskArtifacts(), AtsAttributeTypes.RelatedToState,
-                     false, true);
+               boolean success = RelatedToStateColumn.promptChangeRelatedToState(getSelectedTaskArtifacts(), false);
                if (success) {
                   editor.onDirtied();
                   update(getSelectedTaskArtifacts().toArray(), null);
