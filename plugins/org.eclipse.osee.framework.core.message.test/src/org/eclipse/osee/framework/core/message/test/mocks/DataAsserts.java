@@ -35,7 +35,6 @@ import org.eclipse.osee.framework.core.model.AbstractOseeType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -77,12 +76,6 @@ public final class DataAsserts {
       Assert.assertEquals(expected.getMinOccurrences(), actual.getMinOccurrences());
       Assert.assertEquals(expected.getTaggerId(), actual.getTaggerId());
       Assert.assertEquals(expected.getOseeEnumType(), actual.getOseeEnumType());
-   }
-
-   public static void assertEquals(ArtifactType expected, ArtifactType actual) {
-      Assert.assertEquals(expected.getId(), actual.getId());
-      Assert.assertEquals(expected.getName(), actual.getName());
-      Assert.assertEquals(expected.isAbstract(), actual.isAbstract());
    }
 
    public static void assertEquals(Branch expected, Branch actual) throws OseeCoreException {
@@ -163,8 +156,8 @@ public final class DataAsserts {
          Assert.assertEquals(expected.getSideBName(), actual.getSideBName());
          Assert.assertEquals(expected.getMultiplicity(), actual.getMultiplicity());
          Assert.assertEquals(expected.getDefaultOrderTypeGuid(), actual.getDefaultOrderTypeGuid());
-         assertEquals(expected.getArtifactTypeSideA(), actual.getArtifactTypeSideA());
-         assertEquals(expected.getArtifactTypeSideB(), actual.getArtifactTypeSideB());
+         Assert.assertEquals(expected.getArtifactTypeSideA(), actual.getArtifactTypeSideA());
+         Assert.assertEquals(expected.getArtifactTypeSideB(), actual.getArtifactTypeSideB());
       }
    }
 

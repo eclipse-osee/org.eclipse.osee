@@ -241,7 +241,7 @@ public class OseeCacheServlet extends UnsecuredOseeHttpServlet {
             transalatorId = CoreTranslatorId.OSEE_ENUM_TYPE_CACHE_UPDATE_RESPONSE;
             break;
          case RELATION_TYPE_CACHE:
-            response = RelationTypeCacheUpdateResponse.fromCache(caching.getRelationTypeCache().getAll());
+            response = RelationTypeCacheUpdateResponse.fromCache(caching);
             transalatorId = CoreTranslatorId.RELATION_TYPE_CACHE_UPDATE_RESPONSE;
             break;
          default:

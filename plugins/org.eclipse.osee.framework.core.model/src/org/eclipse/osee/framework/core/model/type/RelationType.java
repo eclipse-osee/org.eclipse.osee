@@ -62,15 +62,15 @@ public final class RelationType extends AbstractOseeType implements IRelationTyp
       return getFieldValueLogException(null, RELATION_MULTIPLICITY_FIELD_KEY);
    }
 
-   public ArtifactType getArtifactTypeSideA() {
+   public IArtifactType getArtifactTypeSideA() {
       return getFieldValueLogException(null, RELATION_SIDE_A_ART_TYPE_FIELD_KEY);
    }
 
-   public ArtifactType getArtifactTypeSideB() {
+   public IArtifactType getArtifactTypeSideB() {
       return getFieldValueLogException(null, RELATION_SIDE_B_ART_TYPE_FIELD_KEY);
    }
 
-   public ArtifactType getArtifactType(RelationSide relationSide) {
+   public IArtifactType getArtifactType(RelationSide relationSide) {
       return relationSide == RelationSide.SIDE_A ? getArtifactTypeSideA() : getArtifactTypeSideB();
    }
 
@@ -79,7 +79,7 @@ public final class RelationType extends AbstractOseeType implements IRelationTyp
    }
 
    public boolean isArtifactTypeAllowed(RelationSide relationSide, ArtifactType artifactType) {
-      ArtifactType allowedType = getArtifactType(relationSide);
+      IArtifactType allowedType = getArtifactType(relationSide);
       return artifactType.inheritsFrom(allowedType);
    }
 

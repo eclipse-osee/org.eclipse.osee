@@ -38,18 +38,18 @@ public class DatabaseRelationTypeAccessor extends AbstractDatabaseAccessor<Relat
    private static final String UPDATE_RELATION_TYPE =
       "update osee_relation_link_type SET type_name=?, a_name=?, b_name=?, a_art_type_id=?, b_art_type_id=?, multiplicity=?, default_order_type_guid=? where rel_link_type_id = ?";
 
-   private final ArtifactTypeCache artifactCache;
+   private final ArtifactTypeCache artifactTypeCache;
    private final RelationTypeFactory factory;
 
    public DatabaseRelationTypeAccessor(IOseeDatabaseService databaseService, ArtifactTypeCache artifactCache, RelationTypeFactory factory) {
       super(databaseService);
-      this.artifactCache = artifactCache;
+      this.artifactTypeCache = artifactCache;
       this.factory = factory;
    }
 
    @Override
    public void load(IOseeCache<RelationType> cache) throws OseeCoreException {
-      artifactCache.ensurePopulated();
+      artifactTypeCache.ensurePopulated();
       IOseeStatement chStmt = getDatabaseService().getStatement();
 
       try {
@@ -62,8 +62,8 @@ public class DatabaseRelationTypeAccessor extends AbstractDatabaseAccessor<Relat
             int bArtTypeId = chStmt.getInt("b_art_type_id");
             int multiplicityValue = chStmt.getInt("multiplicity");
             try {
-               IArtifactType artifactTypeSideA = artifactCache.getById(aArtTypeId);
-               IArtifactType artifactTypeSideB = artifactCache.getById(bArtTypeId);
+               IArtifactType artifactTypeSideA = artifactTypeCache.getById(aArtTypeId);
+               IArtifactType artifactTypeSideB = artifactTypeCache.getById(bArtTypeId);
                RelationTypeMultiplicity multiplicity =
                   RelationTypeMultiplicity.getRelationMultiplicity(multiplicityValue);
                String sideAName = chStmt.getString("a_name");
@@ -119,26 +119,26 @@ public class DatabaseRelationTypeAccessor extends AbstractDatabaseAccessor<Relat
       }
    }
 
-   private Object[] toInsertValues(RelationType type) {
+   private Object[] toInsertValues(RelationType type) throws OseeCoreException {
       return new Object[] {
          type.getId(),
          type.getGuid(),
          type.getName(),
          type.getSideAName(),
          type.getSideBName(),
-         type.getArtifactTypeSideA().getId(),
-         type.getArtifactTypeSideB().getId(),
+         artifactTypeCache.get(type.getArtifactTypeSideA()).getId(),
+         artifactTypeCache.get(type.getArtifactTypeSideB()).getId(),
          type.getMultiplicity().getValue(),
          type.getDefaultOrderTypeGuid()};
    }
 
-   private Object[] toUpdateValues(RelationType type) {
+   private Object[] toUpdateValues(RelationType type) throws OseeCoreException {
       return new Object[] {
          type.getName(),
          type.getSideAName(),
          type.getSideBName(),
-         type.getArtifactTypeSideA().getId(),
-         type.getArtifactTypeSideB().getId(),
+         artifactTypeCache.get(type.getArtifactTypeSideA()).getId(),
+         artifactTypeCache.get(type.getArtifactTypeSideB()).getId(),
          type.getMultiplicity().getValue(),
          type.getDefaultOrderTypeGuid(),
          type.getId()};
