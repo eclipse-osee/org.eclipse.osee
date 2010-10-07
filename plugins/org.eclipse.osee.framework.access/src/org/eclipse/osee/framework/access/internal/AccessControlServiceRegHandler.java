@@ -48,7 +48,7 @@ public final class AccessControlServiceRegHandler extends AbstractTrackingHandle
       serviceRegistration = context.registerService(IAccessControlService.class.getName(), accessService, null);
 
       accessEventListener = new AccessEventListener(accessService);
-      OseeEventManager.addListener(accessEventListener);
+      OseeEventManager.addPriorityListener(accessEventListener);
    }
 
    @Override

@@ -22,8 +22,10 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
+import org.eclipse.osee.framework.skynet.core.event.listener.IAccessControlEventListener;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
 import org.eclipse.osee.framework.skynet.core.event.listener.IBranchEventListener;
+import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
@@ -34,7 +36,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 /**
  * @author Donald G. Dunne
  */
-public final class AccessEventListener implements IBranchEventListener, IArtifactEventListener {
+public final class AccessEventListener implements IBranchEventListener, IAccessControlEventListener, IArtifactEventListener {
 
    private final AccessControlService service;
 
@@ -93,6 +95,18 @@ public final class AccessEventListener implements IBranchEventListener, IArtifac
       List<AccessControlData> acl = service.generateAccessControlList(accessObject);
       for (AccessControlData accessControlData : acl) {
          service.removeAccessControlDataIf(sender.isLocal(), accessControlData);
+      }
+   }
+
+   @Override
+   public void handleAccessControlArtifactsEvent(Sender sender, AccessControlEvent accessControlEvent) {
+      try {
+         // local is handled by operations against cache
+         if (sender.isRemote()) {
+            service.reloadCache();
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 }

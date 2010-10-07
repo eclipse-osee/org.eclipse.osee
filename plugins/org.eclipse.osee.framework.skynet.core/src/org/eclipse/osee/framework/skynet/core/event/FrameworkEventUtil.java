@@ -78,6 +78,7 @@ public class FrameworkEventUtil {
          for (RemoteBasicGuidArtifact1 remGuidArt : remEvent.getArtifacts()) {
             accessControlEvent.getArtifacts().add(getBasicGuidArtifact(remGuidArt));
          }
+         accessControlEvent.setEventType(AccessControlEventType.getByGuid(remEvent.getEventTypeGuid()));
          return accessControlEvent;
       } else {
          OseeLog.log(Activator.class, Level.WARNING,

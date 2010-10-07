@@ -14,6 +14,7 @@ package org.eclipse.osee.framework.skynet.core.event.model;
  * @author Donald G. Dunne
  */
 public enum AccessControlEventType {
+   BranchAccessControlModified(EventType.LocalAndRemote, "ADTfjBxPSRAM5raZwywA"),
    ArtifactsLocked(EventType.LocalAndRemote, "AAn_QHnJpWky8xcyKEgA"),
    ArtifactsUnlocked(EventType.LocalAndRemote, "AFRkIPF_y3ExB4XCyPgA"),
    UserAuthenticated(EventType.LocalOnly, "AFRkIhbm0BbIGKALcKQA");

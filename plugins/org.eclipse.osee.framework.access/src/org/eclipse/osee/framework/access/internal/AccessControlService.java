@@ -94,13 +94,16 @@ public class AccessControlService implements IAccessControlService {
    private final String USER_GROUP_MEMBERS =
       "SELECT b_art_id FROM osee_relation_link WHERE a_art_id =? AND rel_link_type_id =? ORDER BY b_art_id";
 
-   private DoubleKeyHashMap<Integer, AccessObject, PermissionEnum> accessControlListCache;
-   private HashCollection<AccessObject, Integer> objectToSubjectCache; // <subjectId, groupId>
-   private HashCollection<Integer, Integer> subjectToGroupCache; // <groupId, subjectId>
-   private HashCollection<Integer, Integer> groupToSubjectsCache; // <artId, branchId>
-   private Map<Integer, Integer> objectToBranchLockCache; // object, subject
-   private Map<Integer, Integer> lockedObjectToSubject; // subject, permission
-   private HashCollection<Integer, PermissionEnum> subjectToPermissionCache;
+   private final DoubleKeyHashMap<Integer, AccessObject, PermissionEnum> accessControlListCache =
+      new DoubleKeyHashMap<Integer, AccessObject, PermissionEnum>();
+   private final HashCollection<AccessObject, Integer> objectToSubjectCache =
+      new HashCollection<AccessObject, Integer>(true); // <subjectId, groupId>
+   private final HashCollection<Integer, Integer> subjectToGroupCache = new HashCollection<Integer, Integer>(true); // <groupId, subjectId>
+   private final HashCollection<Integer, Integer> groupToSubjectsCache = new HashCollection<Integer, Integer>(true); // <artId, branchId>
+   private final Map<Integer, Integer> objectToBranchLockCache = new HashMap<Integer, Integer>(); // object, subject
+   private final Map<Integer, Integer> lockedObjectToSubject = new HashMap<Integer, Integer>(); // subject, permission
+   private final HashCollection<Integer, PermissionEnum> subjectToPermissionCache =
+      new HashCollection<Integer, PermissionEnum>(true);
 
    private final IOseeCachingService cachingService;
    private final IOseeDatabaseService databaseService;
@@ -138,13 +141,13 @@ public class AccessControlService implements IAccessControlService {
    }
 
    private void initializeCaches() {
-      accessControlListCache = new DoubleKeyHashMap<Integer, AccessObject, PermissionEnum>();
-      objectToSubjectCache = new HashCollection<AccessObject, Integer>();
-      subjectToGroupCache = new HashCollection<Integer, Integer>();
-      groupToSubjectsCache = new HashCollection<Integer, Integer>();
-      objectToBranchLockCache = new HashMap<Integer, Integer>();
-      lockedObjectToSubject = new HashMap<Integer, Integer>();
-      subjectToPermissionCache = new HashCollection<Integer, PermissionEnum>();
+      accessControlListCache.clear();
+      objectToSubjectCache.clear();
+      subjectToGroupCache.clear();
+      groupToSubjectsCache.clear();
+      objectToBranchLockCache.clear();
+      lockedObjectToSubject.clear();
+      subjectToPermissionCache.clear();
    }
 
    private void populateAccessControlLists() throws OseeCoreException {
@@ -542,6 +545,7 @@ public class AccessControlService implements IAccessControlService {
             subjectToGroupCache.removeValue(member, subjectId);
          }
       }
+      groupToSubjectsCache.removeValues(subjectId);
       if (!objectToSubjectCache.containsKey(accessObject)) {
          accessObject.removeFromCache();
       }
@@ -657,7 +661,13 @@ public class AccessControlService implements IAccessControlService {
       return hasAccess;
    }
 
+   private static Boolean isOseeAdmin = null;
+
    public boolean isOseeAdmin() throws OseeCoreException {
-      return SystemGroup.OseeAdmin.isCurrentUserMember();
+      if (isOseeAdmin == null) {
+         isOseeAdmin = SystemGroup.OseeAdmin.isCurrentUserMember();
+      }
+      return isOseeAdmin;
    }
+
 }

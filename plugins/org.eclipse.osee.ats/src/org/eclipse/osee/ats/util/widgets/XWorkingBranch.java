@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.widgets;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
@@ -19,17 +20,24 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.framework.access.AccessControlData;
+import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.SystemGroup;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
+import org.eclipse.osee.framework.skynet.core.event.listener.IAccessControlEventListener;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
 import org.eclipse.osee.framework.skynet.core.event.listener.IBranchEventListener;
+import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
@@ -59,7 +67,7 @@ import org.eclipse.swt.widgets.Listener;
  * @author Megumi Telles
  * @author Donald G. Dunne
  */
-public class XWorkingBranch extends XWidget implements IArtifactWidget, IArtifactEventListener, IBranchEventListener {
+public class XWorkingBranch extends XWidget implements IArtifactWidget, IAccessControlEventListener, IArtifactEventListener, IBranchEventListener {
 
    private TeamWorkFlowArtifact teamArt;
    private Button createBranchButton;
@@ -67,6 +75,7 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IArtifac
    private Button showChangeReport;
    private Button deleteBranchButton;
    private Button favoriteBranchButton;
+   private Button lockBranchButton;
    private XWorkingBranchEnablement enablement;
 
    public static enum BranchStatus {
@@ -96,7 +105,7 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IArtifac
       }
 
       Composite bComp = new Composite(parent, SWT.NONE);
-      bComp.setLayout(new GridLayout(5, false));
+      bComp.setLayout(new GridLayout(6, false));
       bComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       if (toolkit != null) {
          toolkit.adapt(bComp);
@@ -152,6 +161,15 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IArtifac
          }
       });
 
+      lockBranchButton = createNewButton(bComp);
+      lockBranchButton.setToolTipText("Toggle Working Branch Access Control");
+      lockBranchButton.addListener(SWT.Selection, new Listener() {
+         @Override
+         public void handleEvent(Event e) {
+            toggleWorkingBranchLock();
+         }
+      });
+
       if (SkynetGuiPlugin.getInstance().getOseeCmService() != null) {
          createBranchButton.setImage(ImageManager.getImage(FrameworkImage.BRANCH));
          deleteBranchButton.setImage(ImageManager.getImage(FrameworkImage.TRASH));
@@ -161,8 +179,30 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IArtifac
          showArtifactExplorer.setImage(ImageManager.getImage(FrameworkImage.ARTIFACT_EXPLORER));
          showChangeReport.setImage(ImageManager.getImage(FrameworkImage.BRANCH_CHANGE));
       }
+      refreshLockImage();
       refreshLabel();
       refreshEnablement();
+   }
+
+   private void refreshLockImage() {
+      if (SkynetGuiPlugin.getInstance() != null) {
+         boolean noBranch = false, someAccessControlSet = false;
+         Branch branch = null;
+         try {
+            branch = teamArt.getWorkingBranch();
+         } catch (OseeCoreException ex) {
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         }
+         // just show normal icon if no branch yet
+         if (branch == null) {
+            noBranch = true;
+         } else {
+            someAccessControlSet = !AccessControlManager.getAccessControlList(branch).isEmpty();
+         }
+         lockBranchButton.setImage(ImageManager.getImage((noBranch || someAccessControlSet) ? FrameworkImage.LOCK_LOCKED : FrameworkImage.LOCK_UNLOCKED));
+         lockBranchButton.redraw();
+         lockBranchButton.getParent().redraw();
+      }
    }
 
    private void markWorkingBranchAsFavorite() {
@@ -185,6 +225,50 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IArtifac
             user.toggleFavoriteBranch(branch);
             OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.FavoritesUpdated, branch.getGuid()),
                branch.getId());
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      }
+   }
+
+   private void toggleWorkingBranchLock() {
+      try {
+         Branch branch = teamArt.getWorkingBranch();
+         if (branch == null) {
+            AWorkbench.popup("Working branch doesn't exist");
+            return;
+         }
+         boolean isLocked = false, manuallyLocked = false;
+         Collection<AccessControlData> datas = AccessControlManager.getAccessControlList(branch);
+         if (datas.size() > 1) {
+            manuallyLocked = true;
+         } else if (datas.size() == 0) {
+            isLocked = false;
+         } else {
+            AccessControlData data = datas.iterator().next();
+            if (data.getSubject().equals(SystemGroup.Everyone.getArtifact()) && data.getBranchPermission() == PermissionEnum.READ) {
+               isLocked = true;
+            } else {
+               manuallyLocked = true;
+            }
+         }
+         if (manuallyLocked) {
+            AWorkbench.popup("Manual access control applied to branch.  Can't override.\n\nUse Access Control option of Branch Manager");
+            return;
+         }
+         String message =
+            String.format("Working branch is currently [%s]\n\n%s the Branch?", isLocked ? "Locked" : "NOT Locked",
+               isLocked ? "UnLock" : "Lock");
+         if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Toggle Branch Lock", message)) {
+            if (isLocked) {
+               AccessControlManager.removeAccessControlDataIf(true, datas.iterator().next());
+            } else {
+               AccessControlManager.setPermission(SystemGroup.Everyone.getArtifact(), branch, PermissionEnum.READ);
+            }
+            AccessControlEvent event = new AccessControlEvent();
+            event.setEventType(AccessControlEventType.BranchAccessControlModified);
+            OseeEventManager.kickAccessControlArtifactsEvent(this, event);
+            AWorkbench.popup(String.format("Branch set to [%s]", !isLocked ? "Locked" : "NOT Locked"));
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
@@ -217,6 +301,7 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IArtifac
       showChangeReport.setEnabled(enablement.isShowChangeReportButtonEnabled());
       deleteBranchButton.setEnabled(enablement.isDeleteBranchButtonEnabled());
       favoriteBranchButton.setEnabled(enablement.isFavoriteBranchButtonEnabled());
+      lockBranchButton.setEnabled(enablement.isDeleteBranchButtonEnabled());
    }
 
    public static boolean isPurgeBranchButtonEnabled(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
@@ -278,6 +363,7 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IArtifac
                   if (Widgets.isAccessible(createBranchButton)) {
                      refreshLabel();
                      refreshEnablement();
+                     refreshLockImage();
                   }
                }
             });
@@ -338,6 +424,13 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IArtifac
    @Override
    public void handleBranchEvent(Sender sender, BranchEvent branchEvent) {
       refreshOnBranchEvent();
+   }
+
+   @Override
+   public void handleAccessControlArtifactsEvent(Sender sender, AccessControlEvent accessControlEvent) {
+      if (accessControlEvent.getEventType() == AccessControlEventType.BranchAccessControlModified) {
+         refreshOnBranchEvent();
+      }
    }
 
 }

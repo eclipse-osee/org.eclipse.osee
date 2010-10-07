@@ -28,6 +28,7 @@ Import-Package: org.eclipse.core.runtime,
  org.osgi.util.tracker
 Bundle-ActivationPolicy: lazy
 Eclipse-ExtensibleAPI: true
-Export-Package: org.eclipse.osee.framework.access
+Export-Package: org.eclipse.osee.framework.access,
+ org.eclipse.osee.framework.access.internal.data
 Require-Bundle: org.eclipse.osee.framework.skynet.core;bundle-version="0.9.5",
  org.eclipse.osee.framework.core.model

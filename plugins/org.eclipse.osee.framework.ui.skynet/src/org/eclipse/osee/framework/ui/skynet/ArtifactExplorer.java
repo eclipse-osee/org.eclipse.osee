@@ -1051,13 +1051,14 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
          explore(Arrays.asList(artifact));
          return;
       }
+
+      explorerRoot = artifact;
+      branch = artifact.getBranch();
       try {
          checkBranchReadable();
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
-      explorerRoot = artifact;
-      branch = artifact.getBranch();
 
       initializeSelectionBox();
 

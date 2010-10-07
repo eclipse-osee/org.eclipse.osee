@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.res.AttributeEventModificationType;
 import org.eclipse.osee.framework.messaging.event.res.IFrameworkEventListener;
 import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
+import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteAccessControlEvent1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBranchEvent1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemotePersistEvent1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteTransactionEvent1;
@@ -39,6 +40,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.event.EventUtil;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkEventUtil;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
@@ -132,6 +134,14 @@ public final class FrameworkEventToRemoteEventListener implements IFrameworkEven
                   handleTransactionEvent(sender, transEvent);
                } catch (Exception ex) {
                   EventUtil.eventLog("REM: RemoteBranchEvent1", ex);
+               }
+            } else if (remoteEvent instanceof RemoteAccessControlEvent1) {
+               try {
+                  AccessControlEvent accessEvent =
+                     FrameworkEventUtil.getAccessControlEvent((RemoteAccessControlEvent1) remoteEvent);
+                  eventManager.kickAccessControlArtifactsEvent(sender, accessEvent);
+               } catch (Exception ex) {
+                  EventUtil.eventLog("REM: RemoteAccessControlEvent1", ex);
                }
             }
          }

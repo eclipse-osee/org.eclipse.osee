@@ -122,11 +122,16 @@ public class AccessDataQuery {
       for (AccessDetail<?> data : accessList) {
          Object object = data.getAccessObject();
          if (itemToMatch.equals(object)) {
-            boolean matches = data.getPermission().matches(permissionToMatch);
-            if (!matches) {
-               status.setReason(data.getReason());
+            if (data.getPermission() == null) {
+               status.setMatches(false);
+               status.setReason("null permission");
+            } else {
+               boolean matches = data.getPermission().matches(permissionToMatch);
+               if (!matches) {
+                  status.setReason(data.getReason());
+               }
+               status.setMatches(matches);
             }
-            status.setMatches(matches);
             break;
          }
       }

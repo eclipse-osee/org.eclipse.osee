@@ -317,7 +317,7 @@ public class InternalEventManager {
                boolean normalOperation = !preferences.isEnableRemoteEventLoopback();
                boolean loopbackTestEnabledAndRemoteEventReturned =
                   preferences.isEnableRemoteEventLoopback() && sender.isRemote();
-               if (normalOperation && sender.isLocal() || loopbackTestEnabledAndRemoteEventReturned) {
+               if (normalOperation || loopbackTestEnabledAndRemoteEventReturned) {
                   processAccessControlEvent(sender, accessControlEvent);
                }
                // Kick REMOTE
