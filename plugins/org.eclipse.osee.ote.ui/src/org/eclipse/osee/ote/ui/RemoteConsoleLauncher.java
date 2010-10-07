@@ -36,6 +36,8 @@ public class RemoteConsoleLauncher extends ServiceTracker {
    @Override
    public void close() {
       if (remoteConsole != null) {
+    	  IOteClientService service = (IOteClientService) getService();
+    	  service.removeConnectionListener(remoteConsole);
          remoteConsole.close();
       }
       super.close();
