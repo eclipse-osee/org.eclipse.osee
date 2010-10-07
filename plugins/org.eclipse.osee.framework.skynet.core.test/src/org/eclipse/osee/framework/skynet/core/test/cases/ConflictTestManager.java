@@ -133,20 +133,23 @@ public class ConflictTestManager {
       }
 
       protected ArtifactModification(Type itemToChange, Modification modificationToPerform, Object object, String name, Class<?> clas, String value) throws OseeCoreException {
-         this(itemToChange, modificationToPerform, -1, null, null, name);
          if (!itemToChange.equals(Type.ATTRIBUTE)) {
             throw new OseeCoreException("This is the Attribute Constructor");
          }
+         this.itemToChange = itemToChange;
+         this.modificationToPerform = modificationToPerform;
          this.object = object;
          this.clas = clas;
          this.value = value;
+         this.name = name;
       }
 
       protected ArtifactModification(Type itemToChange, Modification modificationToPerform, Object object, Object object2) throws OseeCoreException {
-         this(itemToChange, modificationToPerform, object, null, null, null);
          if (!itemToChange.equals(Type.RELATION)) {
             throw new OseeCoreException("This is the Relation Constructor");
          }
+         this.itemToChange = itemToChange;
+         this.modificationToPerform = modificationToPerform;
          this.object = object;
          this.object2 = object2;
       }

@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
+import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -36,15 +38,15 @@ public final class DataFactory {
 
    public static IArtifact createArtifact(String name, String guid) throws OseeCoreException {
       int uniqueId = randomGenerator.nextInt();
-      return createArtifact(uniqueId, name, guid, null, null);
+      return createArtifact(uniqueId, name, guid, null, CoreArtifactTypes.Artifact);
    }
 
-   public static IArtifact createArtifact(int uniqueId, String name, String guid, Branch branch, ArtifactType artifactType) throws OseeCoreException {
+   public static IArtifact createArtifact(int uniqueId, String name, String guid, Branch branch, IArtifactType artifactType) throws OseeCoreException {
       return new MockIArtifact(uniqueId, name, guid, branch, artifactType);
    }
 
    public static IArtifact createArtifact(int uniqueId, String name, String guid, Branch branch) throws OseeCoreException {
-      return new MockIArtifact(uniqueId, name, guid, branch, null);
+      return new MockIArtifact(uniqueId, name, guid, branch, CoreArtifactTypes.Artifact);
    }
 
    public static RelationLink createRelationLink(int relationId, int artA, int artB, Branch branch, RelationType relationType) {
