@@ -52,10 +52,7 @@ import org.w3c.dom.Element;
  * @author Jeff C. Phillips
  */
 public class WordTemplateRenderer extends WordRenderer implements ITemplateRenderer {
-   public static final String RENDERER_EXTENSION = "org.eclipse.osee.framework.ui.skynet.word";
    public static final String DEFAULT_SET_NAME = "Default";
-   public static final String ARTIFACT_NAME = "Word Renderer";
-   public static final String TEMPLATE_ATTRIBUTE = "Word Template";
    public static final String ARTIFACT_SCHEMA = "http://eclipse.org/artifact.xsd";
    private static final String EMBEDDED_OBJECT_NO = "w:embeddedObjPresent=\"no\"";
    private static final String EMBEDDED_OBJECT_YES = "w:embeddedObjPresent=\"yes\"";
