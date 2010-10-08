@@ -10,21 +10,27 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.ui.host.cmd;
 
-import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
 
 /**
  * The main plugin class to be used in the desktop.
  */
-public class UiPlugin extends OseeUiActivator {
+public class UiPlugin implements BundleActivator {
    public static final String PLUGIN_ID = "org.eclipse.osee.ote.ui.host.cmd";
    private static UiPlugin plugin;
 
-   public UiPlugin() {
-      super(PLUGIN_ID);
+   public static UiPlugin getInstance() {
+      return plugin;
+   }
+
+   @Override
+   public void start(BundleContext context) {
       plugin = this;
    }
 
-   public static UiPlugin getInstance() {
-      return plugin;
+   @Override
+   public void stop(BundleContext context) {
+      // method overridden only to satisfy its defining interface
    }
 }

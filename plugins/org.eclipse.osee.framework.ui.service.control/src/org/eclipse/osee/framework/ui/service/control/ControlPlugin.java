@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.ui.service.control;
 
 import org.eclipse.osee.framework.plugin.core.IWorkbenchUserService;
-import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
+import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
 
@@ -20,22 +20,16 @@ import org.osgi.util.tracker.ServiceTracker;
  * 
  * @author Roberto E. Escobar
  */
-public class ControlPlugin extends OseeUiActivator {
-
+public class ControlPlugin implements BundleActivator {
    public static final String PLUGIN_ID = "org.eclipse.osee.framework.ui.service.control";
-   private static ControlPlugin pluginInstance; // The shared instance.
+   private static ControlPlugin pluginInstance;
    private ServiceTracker tracker;
-
-   public ControlPlugin() {
-      super(PLUGIN_ID);
-      pluginInstance = this;
-   }
 
    @Override
    public void start(BundleContext context) throws Exception {
-      super.start(context);
       tracker = new ServiceTracker(context, IWorkbenchUserService.class.getName(), null);
       tracker.open();
+      pluginInstance = this;
    }
 
    @Override
@@ -43,7 +37,6 @@ public class ControlPlugin extends OseeUiActivator {
       if (tracker != null) {
          tracker.close();
       }
-      super.stop(context);
    }
 
    /**

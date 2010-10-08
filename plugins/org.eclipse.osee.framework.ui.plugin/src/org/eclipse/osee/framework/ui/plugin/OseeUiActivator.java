@@ -26,7 +26,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.PluginUtil;
-import org.eclipse.osee.framework.ui.plugin.internal.OseePluginUiActivator;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.swt.program.Program;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -36,15 +35,8 @@ import org.osgi.framework.BundleContext;
  * @author Ryan D. Brooks
  */
 public abstract class OseeUiActivator extends AbstractUIPlugin {
-   private OseeUiActivator parentPlugin;
    private PluginUtil helper;
    private final String pluginId;
-
-   @Deprecated
-   protected OseeUiActivator() {
-      super();
-      this.pluginId = "org.eclipse.osee.framework.ui.plugin";
-   }
 
    protected OseeUiActivator(String pluginId) {
       super();
@@ -82,15 +74,6 @@ public abstract class OseeUiActivator extends AbstractUIPlugin {
    @Override
    public void start(BundleContext context) throws Exception {
       super.start(context);
-
-      parentPlugin = OseePluginUiActivator.getInstance();
-      /*
-       * parentPlugin will be the CorePlugin except in the case of CorePlugin itself when parentPlugin will be null
-       */
-      if (parentPlugin == this) {
-         parentPlugin = null;
-      }
-
       helper = new PluginUtil(pluginId);
    }
 

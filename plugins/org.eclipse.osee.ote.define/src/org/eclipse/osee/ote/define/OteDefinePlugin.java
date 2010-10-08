@@ -10,16 +10,20 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.define;
 
-import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public class OteDefinePlugin extends OseeUiActivator {
+public class OteDefinePlugin implements BundleActivator {
    public static final String PLUGIN_ID = "org.eclipse.osee.ote.define";
 
-   public OteDefinePlugin() {
-      super(PLUGIN_ID);
+   @Override
+   public void start(BundleContext context) throws Exception {
    }
 
+   @Override
+   public void stop(BundleContext context) throws Exception {
+   }
 }

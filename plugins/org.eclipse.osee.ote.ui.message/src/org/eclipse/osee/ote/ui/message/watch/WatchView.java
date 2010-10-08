@@ -56,7 +56,6 @@ import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
-import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -120,9 +119,6 @@ import org.osgi.framework.Bundle;
  * @author Ken J. Aguilar
  */
 public final class WatchView extends ViewPart implements IActionable, IMessageDictionaryListener, ITestConnectionListener, IOteMessageClientView {
-
-   protected static final OseeUiActivator plugin = Activator.getDefault();
-
    private MessageXViewer treeViewer;
 
    private final ClientMessageServiceTracker msgServiceTracker;

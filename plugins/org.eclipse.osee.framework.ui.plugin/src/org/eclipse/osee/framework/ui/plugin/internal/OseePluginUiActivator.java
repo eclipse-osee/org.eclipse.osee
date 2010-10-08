@@ -13,74 +13,29 @@ package org.eclipse.osee.framework.ui.plugin.internal;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.plugin.core.IActionReportingService;
-import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
+import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * a The activator class controls the plug-in life cycle
  */
-public class OseePluginUiActivator extends OseeUiActivator {
+public class OseePluginUiActivator implements BundleActivator {
 
    public static final String PLUGIN_ID = "org.eclipse.osee.framework.ui.plugin";
 
    private static OseePluginUiActivator plugin;
    private ServiceTracker tracker;
 
-   public OseePluginUiActivator() {
-      super(PLUGIN_ID);
+   @Override
+   public void start(BundleContext context) throws Exception {
+      tracker = new ServiceTracker(context, IActionReportingService.class.getName(), null);
+      tracker.open();
       plugin = this;
    }
 
    @Override
-   public void start(BundleContext context) throws Exception {
-      super.start(context);
-
-      tracker = new ServiceTracker(context, IActionReportingService.class.getName(), null);
-      tracker.open();
-
-      // TODO: This isn't needed anymore
-      //      if (PlatformUI.isWorkbenchRunning()) {
-      //         IWorkbench workbench = PlatformUI.getWorkbench();
-      //         workbench.addWorkbenchListener(new IWorkbenchListener() {
-      //
-      //            @Override
-      //            public void postShutdown(IWorkbench workbench) {
-      //            }
-      //
-      //            @Override
-      //            public boolean preShutdown(IWorkbench workbench, boolean forced) {
-      //               try {
-      //                  if (Lib.isWindows()) {
-      //                     String clearCache = OseeInfo.getValue("clear_cache");
-      //                     if (Boolean.parseBoolean(clearCache)) {
-      //                        Location location = Platform.getInstallLocation();
-      //                        URL url = FileLocator.toFileURL(location.getURL());
-      //                        File file = new File(url.getFile());
-      //                        File cache =
-      //                              new File(new File(new File(file, "p2"), "org.eclipse.equinox.p2.metadata.repository"),
-      //                                    "cache");
-      //                        File[] files = cache.listFiles();
-      //                        for (File toDelete : files) {
-      //                           toDelete.delete();
-      //                        }
-      //
-      //                        Lib.deleteContents(new File(new File(file, "configuration"), "org.eclipse.osgi"));
-      //                     }
-      //                  }
-      //               } catch (Throwable th) {
-      //
-      //               }
-      //               return true;
-      //            }
-      //
-      //         });
-      //      }
-   }
-
-   @Override
    public void stop(BundleContext context) throws Exception {
-      super.stop(context);
       if (tracker != null) {
          tracker.close();
       }
