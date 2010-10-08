@@ -259,7 +259,7 @@ public final class ArtifactImageManager {
    private synchronized static String setupImage(IArtifact artifact) {
       try {
          Artifact castedArtifact = artifact.getFullArtifact();
-         ArtifactImageProvider imageProvider = providersOverrideImageMap.get(artifact.getArtifactType().getName());
+         ArtifactImageProvider imageProvider = providersOverrideImageMap.get(artifact.getArtifactType());
          if (imageProvider != null) {
             return imageProvider.setupImage(castedArtifact);
          }
