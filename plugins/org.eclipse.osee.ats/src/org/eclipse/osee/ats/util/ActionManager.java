@@ -143,8 +143,7 @@ public class ActionManager {
          }
       }
 
-      // Relate WorkFlow to Team Definition (by guid due to relation loading
-      // issues)
+      // Relate WorkFlow to Team Definition (by guid due to relation loading issues)
       teamArt.setTeamDefinition(teamDef);
 
       // Initialize state machine
