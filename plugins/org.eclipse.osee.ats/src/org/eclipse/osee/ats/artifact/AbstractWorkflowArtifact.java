@@ -1382,7 +1382,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    public String getTransitionAssigneesStr() throws OseeCoreException {
-      return org.eclipse.osee.framework.jdk.core.util.Collections.toString(";", getTransitionAssignees());
+      return Artifacts.toTextList(getTransitionAssignees(), ";");
    }
 
    public Result transitionToCancelled(String reason, SkynetTransaction transaction, TransitionOption... transitionOption) {
