@@ -142,11 +142,6 @@ public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEven
       return pluginInstance;
    }
 
-   @Override
-   protected String getPluginName() {
-      return PLUGIN_ID;
-   }
-
    public PackageAdmin getPackageAdmin() {
       return (PackageAdmin) this.packageAdminTracker.getService();
    }

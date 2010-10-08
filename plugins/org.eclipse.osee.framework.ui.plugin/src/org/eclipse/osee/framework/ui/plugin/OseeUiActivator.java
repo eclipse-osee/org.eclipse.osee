@@ -64,7 +64,7 @@ public abstract class OseeUiActivator extends AbstractUIPlugin {
       return helper.getInputStream(resource);
    }
 
-   public List<URL> getInputStreams(String directory, String pattern, boolean recurse) throws IOException {
+   public List<URL> getInputStreams(String directory, String pattern, boolean recurse) {
       return helper.getInputStreams(directory, pattern, recurse);
    }
 
@@ -104,10 +104,6 @@ public abstract class OseeUiActivator extends AbstractUIPlugin {
          ex.printStackTrace();
       }
       return null;
-   }
-
-   protected String getPluginName() {
-      throw new UnsupportedOperationException();
    }
 
    public static File getBasePluginInstallDirectory() {

@@ -37,11 +37,6 @@ public class TestManagerPlugin extends OseeUiActivator {
       return pluginInstance;
    }
 
-   @Override
-   public String getPluginName() {
-      return pluginInstance.toString();
-   }
-
    public static String getUsername() {
       if (username == null) {
          username = java.lang.System.getProperty("user.name");

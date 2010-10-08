@@ -13,17 +13,12 @@ package org.eclipse.osee.define;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 
 public class DefinePlugin extends OseeUiActivator {
-   private static DefinePlugin pluginInstance; // The shared instance.
+   private static DefinePlugin pluginInstance;
    public static final String PLUGIN_ID = "org.eclipse.osee.define";
 
    public DefinePlugin() {
       super(PLUGIN_ID);
       pluginInstance = this;
-   }
-
-   @Override
-   protected String getPluginName() {
-      return PLUGIN_ID;
    }
 
    /**
