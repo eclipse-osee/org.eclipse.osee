@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.artifact;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -270,7 +271,15 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IB
    @Override
    public VersionArtifact getWorldViewTargetedVersion() throws OseeCoreException {
       if (getRelatedArtifactsCount(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version) > 0) {
-         return (VersionArtifact) getRelatedArtifact(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
+         List<Artifact> verArts = getRelatedArtifacts(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
+         if (verArts.size() > 1) {
+            //            System.out.println("put back in");
+            OseeLog.log(AtsPlugin.class, Level.SEVERE,
+               String.format("Team Workflow %s has multiple targeted versions %s", toStringWithId(), verArts));
+            return (VersionArtifact) verArts.iterator().next();
+         } else {
+            return (VersionArtifact) verArts.iterator().next();
+         }
       }
       return null;
    }

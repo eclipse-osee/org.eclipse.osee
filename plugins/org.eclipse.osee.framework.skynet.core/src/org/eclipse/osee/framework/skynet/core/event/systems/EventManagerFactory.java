@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.skynet.core.event.systems.InternalEventManager
 public class EventManagerFactory {
 
    public InternalEventManager createNewEventManager(IOseeCoreModelEventService coreModelEventService, EventSystemPreferences preferences, Collection<IEventListener> listeners, Collection<IEventListener> priorityListeners, ConnectionStatus connectionStatus) {
-      ExecutorService executorService = createExecutor("Osee Events2");
+      ExecutorService executorService = createExecutor("Osee Client Events");
       InternalEventManager eventManager =
          new InternalEventManager(coreModelEventService, listeners, priorityListeners, executorService, preferences,
             connectionStatus);

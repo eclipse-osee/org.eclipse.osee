@@ -10,12 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.event.systems;
 
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.logging.Level;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.ISchedulingRule;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -65,112 +61,114 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
  */
 public final class FrameworkEventToRemoteEventListener implements IFrameworkEventListener {
 
-   private final ISchedulingRule mutexRule;
-   private InternalEventManager eventManager;
+   private final InternalEventManager eventManager;
+   private final ArrayBlockingQueue<RemoteEvent> queue = new ArrayBlockingQueue<RemoteEvent>(100, true);
+   private RemoteEventProcessorThread processorThread;
 
    public FrameworkEventToRemoteEventListener(InternalEventManager eventManager) {
       this.eventManager = eventManager;
-      this.mutexRule = new ISchedulingRule() {
+   }
 
-         @Override
-         public boolean contains(ISchedulingRule rule) {
-            return rule == this;
+   private synchronized void startProcessing() {
+      if (OseeEventManager.getPreferences().isPendRunning()) {
+         processRemoteEvents();
+      } else {
+         if (processorThread == null || !processorThread.isAlive()) {
+            processorThread = new RemoteEventProcessorThread();
+            processorThread.start();
          }
-
-         @Override
-         public boolean isConflicting(ISchedulingRule rule) {
-            return rule == this;
-         }
-      };
+      }
    }
 
    @Override
    public void onEvent(final RemoteEvent remoteEvent) {
-      final Runnable runnable = new Runnable() {
-         private void handleTransactionEvent(Sender sender, TransactionEvent transEvent) {
+      // Add to queue; remote events must be processed in order and not multi-threaded
+      queue.add(remoteEvent);
+      //      System.out.println("adding to queue -> " + queue.size());
+      startProcessing();
+   }
+
+   public class RemoteEventProcessorThread extends Thread {
+
+      public RemoteEventProcessorThread() {
+         super("OSEE Remote Events");
+      }
+
+      @Override
+      public void run() {
+         try {
+            while (true) {
+               processRemoteEvents();
+               Thread.sleep(1000);
+            }
+         } catch (Exception ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         }
+      }
+   }
+
+   private void processRemoteEvents() {
+      while (!queue.isEmpty()) {
+         //         System.out.println("processing queue -> " + queue.size());
+         RemoteEvent remoteEvent = queue.poll();
+         if (remoteEvent == null) {
+            return;
+         }
+         Sender sender = new Sender(remoteEvent.getNetworkSender());
+         // If the sender's sessionId is the same as this client, then this event was
+         // created in this client and returned by remote event manager; ignore and continue
+         if (sender.isLocal()) {
+            return;
+         }
+         // Handles TransactionEvents, ArtifactChangeTypeEvents, ArtifactPurgeEvents
+         if (remoteEvent instanceof RemotePersistEvent1) {
             try {
-               if (transEvent.getEventType() == TransactionEventType.Purged) {
-                  PurgeTransactionOperation.handleRemotePurgeTransactionEvent(transEvent);
-                  eventManager.kickTransactionEvent(sender, transEvent);
-               } else {
-                  EventUtil.eventLog("REM: handleTransactionEvent - unhandled mod type " + transEvent.getEventType());
-               }
+               RemotePersistEvent1 event1 = (RemotePersistEvent1) remoteEvent;
+               ArtifactEvent transEvent = FrameworkEventUtil.getPersistEvent(event1);
+               updateArtifacts(sender, transEvent);
+               updateRelations(sender, transEvent);
+               eventManager.kickArtifactEvent(sender, transEvent);
             } catch (Exception ex) {
-               EventUtil.eventLog("REM: handleTransactionEvent", ex);
+               EventUtil.eventLog("REM: RemoteTransactionEvent1", ex);
+            }
+         } else if (remoteEvent instanceof RemoteBranchEvent1) {
+            try {
+               BranchEvent branchEvent = FrameworkEventUtil.getBranchEvent((RemoteBranchEvent1) remoteEvent);
+               updateBranches(sender, branchEvent);
+               eventManager.kickBranchEvent(sender, branchEvent);
+            } catch (Exception ex) {
+               EventUtil.eventLog("REM: RemoteBranchEvent1", ex);
+            }
+         } else if (remoteEvent instanceof RemoteTransactionEvent1) {
+            try {
+               TransactionEvent transEvent =
+                  FrameworkEventUtil.getTransactionEvent((RemoteTransactionEvent1) remoteEvent);
+               handleTransactionEvent(sender, transEvent);
+            } catch (Exception ex) {
+               EventUtil.eventLog("REM: RemoteBranchEvent1", ex);
+            }
+         } else if (remoteEvent instanceof RemoteAccessControlEvent1) {
+            try {
+               AccessControlEvent accessEvent =
+                  FrameworkEventUtil.getAccessControlEvent((RemoteAccessControlEvent1) remoteEvent);
+               eventManager.kickAccessControlArtifactsEvent(sender, accessEvent);
+            } catch (Exception ex) {
+               EventUtil.eventLog("REM: RemoteAccessControlEvent1", ex);
             }
          }
+      }
+   }
 
-         @Override
-         public void run() {
-            Sender sender = new Sender(remoteEvent.getNetworkSender());
-            // If the sender's sessionId is the same as this client, then this event was
-            // created in this client and returned by remote event manager; ignore and continue
-            if (sender.isLocal()) {
-               return;
-            }
-            // Handles TransactionEvents, ArtifactChangeTypeEvents, ArtifactPurgeEvents
-            if (remoteEvent instanceof RemotePersistEvent1) {
-               try {
-                  RemotePersistEvent1 event1 = (RemotePersistEvent1) remoteEvent;
-                  ArtifactEvent transEvent = FrameworkEventUtil.getPersistEvent(event1);
-                  updateArtifacts(sender, transEvent);
-                  updateRelations(sender, transEvent);
-                  eventManager.kickArtifactEvent(sender, transEvent);
-               } catch (Exception ex) {
-                  EventUtil.eventLog("REM: RemoteTransactionEvent1", ex);
-               }
-            } else if (remoteEvent instanceof RemoteBranchEvent1) {
-               try {
-                  BranchEvent branchEvent = FrameworkEventUtil.getBranchEvent((RemoteBranchEvent1) remoteEvent);
-                  updateBranches(sender, branchEvent);
-                  eventManager.kickBranchEvent(sender, branchEvent);
-               } catch (Exception ex) {
-                  EventUtil.eventLog("REM: RemoteBranchEvent1", ex);
-               }
-            } else if (remoteEvent instanceof RemoteTransactionEvent1) {
-               try {
-                  TransactionEvent transEvent =
-                     FrameworkEventUtil.getTransactionEvent((RemoteTransactionEvent1) remoteEvent);
-                  handleTransactionEvent(sender, transEvent);
-               } catch (Exception ex) {
-                  EventUtil.eventLog("REM: RemoteBranchEvent1", ex);
-               }
-            } else if (remoteEvent instanceof RemoteAccessControlEvent1) {
-               try {
-                  AccessControlEvent accessEvent =
-                     FrameworkEventUtil.getAccessControlEvent((RemoteAccessControlEvent1) remoteEvent);
-                  eventManager.kickAccessControlArtifactsEvent(sender, accessEvent);
-               } catch (Exception ex) {
-                  EventUtil.eventLog("REM: RemoteAccessControlEvent1", ex);
-               }
-            }
+   private void handleTransactionEvent(Sender sender, TransactionEvent transEvent) {
+      try {
+         if (transEvent.getEventType() == TransactionEventType.Purged) {
+            PurgeTransactionOperation.handleRemotePurgeTransactionEvent(transEvent);
+            eventManager.kickTransactionEvent(sender, transEvent);
+         } else {
+            EventUtil.eventLog("REM: handleTransactionEvent - unhandled mod type " + transEvent.getEventType());
          }
-      };
-
-      if (OseeEventManager.getPreferences().isPendRunning()) {
-         runnable.run();
-      } else {
-         Job job =
-            new Job(String.format("[%s] - receiving [%s]", getClass().getSimpleName(),
-               remoteEvent.getClass().getSimpleName())) {
-
-               @Override
-               protected IStatus run(IProgressMonitor monitor) {
-
-                  try {
-                     runnable.run();
-                  } catch (Exception ex) {
-                     // don't want exceptions poping up; just log and return nicely
-                     OseeLog.log(Activator.class, Level.SEVERE, "REM2 Receive Event Exception", ex);
-                  }
-                  monitor.done();
-                  return Status.OK_STATUS;
-               }
-            };
-         job.setSystem(true);
-         job.setRule(mutexRule);
-         job.setUser(false);
-         job.schedule();
+      } catch (Exception ex) {
+         EventUtil.eventLog("REM: handleTransactionEvent", ex);
       }
    }
 
@@ -234,6 +232,7 @@ public final class FrameworkEventToRemoteEventListener implements IFrameworkEven
             if (aArtifact == null && bArtifact == null) {
                return;
             }
+            //            System.out.println(String.format("[%s - %s <-> %s - %s]", eventType, aArtifact, bArtifact, relationType));
             boolean aArtifactLoaded = aArtifact != null;
             boolean bArtifactLoaded = bArtifact != null;
 
