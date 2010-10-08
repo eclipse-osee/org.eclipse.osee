@@ -16,7 +16,6 @@ import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.IWorkProductTaskProvider;
 import org.eclipse.osee.coverage.model.WorkProductAction;
 import org.eclipse.osee.coverage.model.WorkProductTask;
-import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -24,8 +23,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.relation.crossbranch.CrossBranchLinkManager;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.cm.IOseeCmService;
 
@@ -97,20 +94,12 @@ public class DbWorkProductTaskProvider implements IWorkProductTaskProvider {
       try {
          OseeCoveragePackageStore store = OseeCoveragePackageStore.get(coveragePackage, branch);
          Artifact artifact = store.getArtifact(false);
-         SkynetTransaction transaction = new SkynetTransaction(branch, "Un-Relate Coverage work product Actions");
          List<String> relatedActionGuids =
             artifact.getAttributesToStringList(CoverageAttributeTypes.WorkProductPcrGuid);
          if (relatedActionGuids.contains(action.getGuid())) {
-            artifact.deleteAttribute(CoverageAttributeTypes.WorkProductPcrGuid, action.getGuid());
-
-            // remove links from Action to coverage package
-            Artifact actionArt = ArtifactQuery.getArtifactFromId(action.getGuid(), BranchManager.getCommonBranch());
-            CrossBranchLinkManager.deleteRelation(actionArt, CoreRelationTypes.SupportingInfo_SupportingInfo, artifact);
-            actionArt.persist(transaction);
-
+            store.getArtifact(false).deleteAttribute(CoverageAttributeTypes.WorkProductPcrGuid, action.getGuid());
          }
-         artifact.persist(transaction);
-         transaction.execute();
+         store.getArtifact(false).persist("Un-Relate Coverage work product Actions");
          reload();
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -121,25 +110,16 @@ public class DbWorkProductTaskProvider implements IWorkProductTaskProvider {
    public void addWorkProductAction(Collection<WorkProductAction> actions) {
       try {
          OseeCoveragePackageStore store = OseeCoveragePackageStore.get(coveragePackage, branch);
-         SkynetTransaction transaction = new SkynetTransaction(branch, "Relate Coverage work product Actions");
          Artifact artifact = store.getArtifact(false);
-         // create links from coverage package to Actions
          List<String> relatedActionGuids =
             artifact.getAttributesToStringList(CoverageAttributeTypes.WorkProductPcrGuid);
          for (WorkProductAction action : actions) {
             if (!relatedActionGuids.contains(action.getGuid())) {
                artifact.addAttribute(CoverageAttributeTypes.WorkProductPcrGuid, action.getGuid());
                relatedActionGuids.add(action.getGuid());
-
-               // create links from Action to coverage package
-               Artifact actionArt = ArtifactQuery.getArtifactFromId(action.getGuid(), BranchManager.getCommonBranch());
-               CrossBranchLinkManager.addRelation(actionArt, CoreRelationTypes.SupportingInfo_SupportingInfo, artifact);
-               actionArt.persist(transaction);
             }
          }
-
-         artifact.persist(transaction);
-         transaction.execute();
+         artifact.persist("Relate Coverage work product Actions");
          reload();
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
