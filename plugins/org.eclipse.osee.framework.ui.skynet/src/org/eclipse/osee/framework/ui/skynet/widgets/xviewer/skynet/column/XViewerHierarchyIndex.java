@@ -5,15 +5,19 @@
  */
 package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.swt.SWT;
 
 public class XViewerHierarchyIndex extends XViewerValueColumn {
+   private final Set<Artifact> strongArtifactRefs = new HashSet<Artifact>();
 
    public XViewerHierarchyIndex(boolean show) {
       this("framework.hierarchy.index", "Hierarchy Index", 50, SWT.LEFT, show, SortDataType.Paragraph_Number, false,
@@ -42,53 +46,34 @@ public class XViewerHierarchyIndex extends XViewerValueColumn {
       } else if (element instanceof Change) {
          artifact = ((Change) element).getChangeArtifact();
       }
-      String toReturn;
+
       try {
-         toReturn = computeHierarchyIndex(artifact);
+         return computeHierarchyIndex(artifact);
       } catch (OseeCoreException ex) {
-         toReturn = "-1";
+         return "-1";
       }
-      return toReturn;
    }
 
    private String computeHierarchyIndex(Artifact artifact) throws OseeCoreException {
-      int position = 0;
       StringBuilder builder = new StringBuilder();
-      int depth = getHierarchyDepth(artifact);
-      if (depth != -1) {
-         position = getPosition(artifact);
-      }
-      builder.append(depth);
-      if (position > 0) {
-         builder.append(".");
-         builder.append(position);
-      }
-      return builder.toString();
-   }
+      Artifact artifactCursor = artifact;
+      Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(artifact.getBranch());
 
-   private int getHierarchyDepth(Artifact artifact) throws OseeCoreException {
-      int depth = -1;
-      if (artifact != null) {
-         Artifact artifactPtr = artifact;
-         while (artifactPtr != null) {
-            artifactPtr = artifactPtr.getParent();
-            depth++;
-         }
+      while (!artifactCursor.equals(root)) {
+         builder.insert(0, getPosition(artifactCursor) + ".");
+         artifactCursor = artifactCursor.getParent();
       }
-      return depth;
+      return builder.substring(0, builder.length() - 1);
    }
 
    private int getPosition(Artifact artifact) throws OseeCoreException {
-      if (artifact != null) {
-         Artifact parent = artifact.getParent();
-         if (parent != null) {
-            List<Artifact> artifacts = parent.getChildren();
-            for (int index = 0; index < artifacts.size(); index++) {
-               Artifact child = artifacts.get(index);
-               if (artifact.equals(child)) {
-                  return index + 1;
-               }
-            }
+      Artifact parent = artifact.getParent();
+      List<Artifact> children = parent.getChildren();
+      strongArtifactRefs.addAll(children);
+      for (int index = 0; index < children.size(); index++) {
+         Artifact child = children.get(index);
+         if (artifact.equals(child)) {
+            return index + 1;
          }
       }
       return 0;
