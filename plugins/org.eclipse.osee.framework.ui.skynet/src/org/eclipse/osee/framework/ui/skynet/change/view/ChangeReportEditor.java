@@ -32,9 +32,7 @@ import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeReportActionBarContributor;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeReportEditorInput;
-import org.eclipse.osee.framework.ui.skynet.change.ChangeReportEditorPreferences;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiData;
-import org.eclipse.osee.framework.ui.skynet.change.IChangeReportPreferences;
 import org.eclipse.osee.framework.ui.skynet.change.IChangeReportView;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.editor.FormEditor;
@@ -45,16 +43,10 @@ public class ChangeReportEditor extends FormEditor implements IChangeReportView 
    private ChangeReportPage changeReportPage;
    private ChangeReportActionBarContributor actionBarContributor;
    private final EventRelay eventRelay;
-   private final ChangeReportEditorPreferences preferences;
 
    public ChangeReportEditor() {
       super();
       this.eventRelay = new EventRelay();
-      this.preferences = new ChangeReportEditorPreferences(EDITOR_ID);
-   }
-
-   public IChangeReportPreferences getPreferences() {
-      return preferences;
    }
 
    public ChangeReportActionBarContributor getActionBarContributor() {
@@ -123,12 +115,12 @@ public class ChangeReportEditor extends FormEditor implements IChangeReportView 
 
    @Override
    public void doSave(IProgressMonitor monitor) {
-      // do nothing
+      // method overridden only to satisfy its defining interface
    }
 
    @Override
    public void doSaveAs() {
-      // do nothing
+      // method overridden only to satisfy its defining interface
    }
 
    @Override
@@ -139,7 +131,6 @@ public class ChangeReportEditor extends FormEditor implements IChangeReportView 
    @Override
    public void dispose() {
       OseeEventManager.removeListener(eventRelay);
-      getPreferences().saveState();
       super.dispose();
    }
 

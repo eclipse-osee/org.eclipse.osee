@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
-import org.eclipse.nebula.widgets.xviewer.XViewerTextFilter;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.change.ViewWordChangeReportHandler;
@@ -31,8 +30,6 @@ import org.eclipse.swt.widgets.TreeItem;
  * @author Jeff C. Phillips
  */
 public class ChangeXViewer extends XViewer {
-
-   private XChangeTextFilter xChangeTextFilter;
 
    public ChangeXViewer(Composite parent, int style, IXViewerFactory factory) {
       super(parent, style, factory);
@@ -71,7 +68,7 @@ public class ChangeXViewer extends XViewer {
       }
    }
 
-   public ArrayList<Change> getSelectedChanges() {
+   private ArrayList<Change> getSelectedChanges() {
       ArrayList<Change> arts = new ArrayList<Change>();
       TreeItem items[] = getTree().getSelection();
 
@@ -89,38 +86,7 @@ public class ChangeXViewer extends XViewer {
    }
 
    @Override
-   public String getStatusString() {
-      if (isShowDocumentOrderFilter()) {
-         return "[Show Document Order]";
-      }
-      return "";
-   }
-
-   @Override
-   public XViewerTextFilter getXViewerTextFilter() {
-      if (xChangeTextFilter == null) {
-         xChangeTextFilter = new XChangeTextFilter(this);
-      }
-      return xChangeTextFilter;
-   }
-
-   public boolean isShowDocumentOrderFilter() {
-      if (xChangeTextFilter == null) {
-         xChangeTextFilter = new XChangeTextFilter(this);
-      }
-      return xChangeTextFilter.isShowDocumentOrderFilter();
-   }
-
-   public void setShowDocumentOrderFilter(boolean showDocumentOrderFilter) {
-      if (xChangeTextFilter == null) {
-         xChangeTextFilter = new XChangeTextFilter(this);
-      }
-      xChangeTextFilter.setShowDocumentOrderFilter(showDocumentOrderFilter);
-   }
-
-   @Override
    public boolean isRemoveItemsMenuOptionEnabled() {
       return false;
    }
-
 }

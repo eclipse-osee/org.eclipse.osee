@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.IActionContributor;
 import org.eclipse.osee.framework.ui.skynet.change.actions.OpenAssociatedArtifact;
 import org.eclipse.osee.framework.ui.skynet.change.actions.OpenQuickSearchAction;
 import org.eclipse.osee.framework.ui.skynet.change.actions.ReloadChangeReportAction;
-import org.eclipse.osee.framework.ui.skynet.change.actions.ShowDocumentOrderAction;
 import org.eclipse.osee.framework.ui.skynet.change.view.ChangeReportEditor;
 import org.eclipse.ui.IEditorSite;
 
@@ -44,8 +43,6 @@ public class ChangeReportActionBarContributor implements IActionContributor {
       manager.add(getReloadAction());
       manager.add(new Separator());
       //      manager.add(createCompareMenu());
-      manager.add(new ShowDocumentOrderAction(editor.getPreferences()));
-      manager.add(new Separator());
       manager.add(getOpenAssociatedArtifactAction());
       manager.add(new OpenQuickSearchAction(new UiSelectBetweenDeltasBranchProvider(uiData)));
       manager.add(new Separator());

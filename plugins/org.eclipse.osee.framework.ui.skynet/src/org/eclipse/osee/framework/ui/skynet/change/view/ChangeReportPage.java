@@ -34,7 +34,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeReportEditorInput;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiData;
-import org.eclipse.osee.framework.ui.skynet.change.IChangeReportPreferences;
 import org.eclipse.osee.framework.ui.skynet.change.operations.LoadAssociatedArtifactOperation;
 import org.eclipse.osee.framework.ui.skynet.change.operations.LoadChangesOperation;
 import org.eclipse.osee.framework.ui.skynet.change.operations.UpdateChangeUiData;
@@ -60,7 +59,7 @@ import org.eclipse.ui.progress.UIJob;
 /**
  * @author Ryan D. Brooks
  */
-public class ChangeReportPage extends FormPage implements IChangeReportPreferences.Listener {
+public class ChangeReportPage extends FormPage {
    private static String HELP_CONTEXT_ID = "ChangeView";
 
    private ChangeReportTable changeReportTable;
@@ -116,7 +115,6 @@ public class ChangeReportPage extends FormPage implements IChangeReportPreferenc
          "org.eclipse.osee.framework.help.ui." + HELP_CONTEXT_ID);
       bindMenu();
 
-      getEditor().getPreferences().addListener(this);
       recomputeChangeReport(uiData.isLoadOnOpenEnabled());
    }
 
@@ -199,14 +197,6 @@ public class ChangeReportPage extends FormPage implements IChangeReportPreferenc
       sForm.getBody().layout(true);
       sForm.reflow(true);
       getManagedForm().refresh();
-   }
-
-   @Override
-   public void onDocumentOrderChange(boolean value) {
-      if (changeReportTable != null) {
-         changeReportTable.getXViewer().setShowDocumentOrderFilter(value);
-         changeReportTable.getXViewer().refresh();
-      }
    }
 
    public void recomputeChangeReport(boolean isReloadAllowed) {
