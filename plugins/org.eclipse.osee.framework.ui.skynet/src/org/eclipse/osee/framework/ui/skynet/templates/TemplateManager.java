@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -38,7 +39,7 @@ public class TemplateManager {
       templateProviders = extensionDefinedObjects.getObjects();
    }
 
-   public static Artifact getTemplate(IRenderer renderer, Artifact artifact, String presentationType, String option) throws OseeCoreException {
+   public static Artifact getTemplate(IRenderer renderer, Artifact artifact, PresentationType presentationType, String option) throws OseeCoreException {
       ITemplateProvider bestTemplateProvider = null;
       int highestRating = 0;
       for (ITemplateProvider templateProvider : instance.templateProviders) {

@@ -229,7 +229,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
 
    protected String getTemplate(Artifact artifact, PresentationType presentationType) throws OseeCoreException {
       Artifact templateArtifact =
-         TemplateManager.getTemplate(this, artifact, presentationType.name(), getStringOption(TEMPLATE_OPTION));
+         TemplateManager.getTemplate(this, artifact, presentationType, getStringOption(TEMPLATE_OPTION));
       return templateArtifact.getSoleAttributeValue(CoreAttributeTypes.WholeWordContent);
    }
 

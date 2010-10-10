@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 
 /**
  * This provider gets all of its templates from the common branch based on a name created from concatenating the
@@ -71,7 +72,7 @@ public class ArtifactTemplateProvider implements ITemplateProvider {
    }
 
    @Override
-   public Artifact getTemplate(IRenderer renderer, Artifact artifact, String presentationType, String option) throws OseeCoreException {
+   public Artifact getTemplate(IRenderer renderer, Artifact artifact, PresentationType presentationType, String option) throws OseeCoreException {
       ensureTemplateCachePopulated();
 
       Artifact template = getArtifactFromOptionName(option);
@@ -108,10 +109,10 @@ public class ArtifactTemplateProvider implements ITemplateProvider {
       return toReturn;
    }
 
-   private List<String> getPossibleTemplateNamesOrderedBySpecialization(IRenderer renderer, Artifact artifact, String presentationType, String option) throws OseeArgumentException {
+   private List<String> getPossibleTemplateNamesOrderedBySpecialization(IRenderer renderer, Artifact artifact, PresentationType presentationType, String option) throws OseeArgumentException {
       if (renderer == null || presentationType == null) {
-         throw new OseeArgumentException("Invalid renderer[%s] or presentationType[%s]",
-            renderer.toString(), presentationType.toString());
+         throw new OseeArgumentException("Invalid renderer[%s] or presentationType[%s]", renderer.toString(),
+            presentationType.toString());
       }
       List<String> list = new ArrayList<String>();
 
@@ -131,7 +132,7 @@ public class ArtifactTemplateProvider implements ITemplateProvider {
    }
 
    @Override
-   public int getApplicabilityRating(IRenderer rendererId, Artifact artifact, String presentationType, String option) {
+   public int getApplicabilityRating(IRenderer rendererId, Artifact artifact, PresentationType presentationType, String option) {
       return ITemplateProvider.DEFAULT_MATCH;
    }
 
