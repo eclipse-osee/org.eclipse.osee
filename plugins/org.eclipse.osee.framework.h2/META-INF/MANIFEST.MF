@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: H2 Db Connector Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.framework.h2;singleton:=true
-Bundle-Version: 0.9.6.qualifier
+Bundle-Version: 0.9.7.qualifier
 Bundle-ActivationPolicy: lazy
 Import-Package: 
  org.eclipse.osee.framework.database.core,

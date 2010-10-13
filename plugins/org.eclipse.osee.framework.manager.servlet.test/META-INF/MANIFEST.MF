@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Manager Servlet Test
 Bundle-SymbolicName: org.eclipse.osee.framework.manager.servlet.test
-Bundle-Version: 0.9.6.qualifier
+Bundle-Version: 0.9.7.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Fragment-Host: org.eclipse.osee.framework.manager.servlet;bundle-version="0.4.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

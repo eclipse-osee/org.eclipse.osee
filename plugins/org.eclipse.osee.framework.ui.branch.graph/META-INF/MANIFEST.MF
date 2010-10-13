@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OSEE Branch Graph Plug-in
 Bundle-SymbolicName: org.eclipse.osee.framework.ui.branch.graph;singleton:=true
-Bundle-Version: 0.9.6.qualifier
+Bundle-Version: 0.9.7.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.eclipse.ui,
