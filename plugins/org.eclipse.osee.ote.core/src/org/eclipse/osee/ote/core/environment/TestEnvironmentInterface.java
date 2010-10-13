@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
+
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.ote.core.IUserSession;
 import org.eclipse.osee.ote.core.OSEEPerson1_4;
@@ -98,8 +99,6 @@ public interface TestEnvironmentInterface {
    public void shutdown();
 
    public IUserSession getActiveUser();
-
-   public File getClientResource(String workspacePath) throws Exception, IOException;
 
    public void setActiveUser(UserTestSessionKey key);
 

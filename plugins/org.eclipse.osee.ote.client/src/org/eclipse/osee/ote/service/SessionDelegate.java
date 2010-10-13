@@ -40,5 +40,4 @@ public interface SessionDelegate {
 
    long getFileDate(String path) throws Exception;
 
-   String getFileVersion(String path) throws Exception;
 }

@@ -37,6 +37,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
+
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.connection.service.LocalConnector;
@@ -485,37 +486,6 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
    @Override
    public IUserSession getActiveUser() {
       return activeUser;
-   }
-
-   @Override
-   public File getClientResource(String workspacePath) throws Exception, IOException {
-      if (activeUser == null) {
-         throw new IllegalStateException("No active user");
-      }
-      String version = activeUser.getFileVersion(workspacePath);
-      File resource = getResourceFile(workspacePath, version);
-      if (!resource.exists()) {
-         byte[] bytes = activeUser.getFile(workspacePath);
-         if (bytes != null) {
-            Lib.writeBytesToFile(bytes, resource);
-         }
-      }
-      return resource;
-   }
-
-   private File getResourceDir() {
-      File file =
-         new File(
-            System.getProperty("java.io.tmpdir") + File.separator + System.getProperty("user.name") + File.separator + "oseeresources");
-      file.mkdirs();
-      return file;
-   }
-
-   private File getResourceFile(String workspacePath, String version) {
-      String filename = workspacePath.replace("/", "_");
-      int extension = filename.lastIndexOf('.');
-      filename = filename.substring(0, extension - 1) + version.toUpperCase() + filename.substring(extension);
-      return new File(getResourceDir(), filename);
    }
 
    @Override

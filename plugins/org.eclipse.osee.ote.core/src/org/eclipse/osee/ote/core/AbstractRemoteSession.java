@@ -35,9 +35,6 @@ public abstract class AbstractRemoteSession implements IRemoteUserSession {
    public abstract long getFileDate(String workspacePath) throws RemoteException;
 
    @Override
-   public abstract String getFileVersion(String workspacePath) throws RemoteException;
-
-   @Override
    public abstract boolean isAlive() throws RemoteException;
 
 }

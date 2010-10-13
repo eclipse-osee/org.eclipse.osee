@@ -12,6 +12,7 @@ package org.eclipse.osee.ote.core;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+
 import org.eclipse.osee.framework.messaging.Message;
 import org.eclipse.osee.ote.core.framework.prompt.IPassFailPromptResponse;
 import org.eclipse.osee.ote.core.framework.prompt.IResumeResponse;
@@ -32,9 +33,6 @@ public interface IRemoteUserSession extends Remote, IUserSession {
 
    @Override
    public long getFileDate(String workspacePath) throws RemoteException;
-
-   @Override
-   public String getFileVersion(String workspacePath) throws RemoteException;
 
    @Override
    public void initiatePassFailPrompt(IPassFailPromptResponse prompt) throws RemoteException;

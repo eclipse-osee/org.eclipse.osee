@@ -30,8 +30,6 @@ public interface IUserSession {
 
    public long getFileDate(String workspacePath) throws Exception;
 
-   public String getFileVersion(String workspacePath) throws Exception;
-
    public void initiateInformationalPrompt(String message) throws Exception;
 
    public void initiatePassFailPrompt(IPassFailPromptResponse prompt) throws Exception;

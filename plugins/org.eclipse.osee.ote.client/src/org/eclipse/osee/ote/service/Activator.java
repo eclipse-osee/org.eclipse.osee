@@ -11,17 +11,15 @@
 package org.eclipse.osee.ote.service;
 
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.service.core.ConnectionServiceTracker;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
 
 public class Activator implements BundleActivator {
 
-   private ServiceRegistration registration;
    private ConnectionServiceTracker connectionServiceTracker;
-   private MessagingGatewayBindTracker messagingGatewayTracker;
    private ExportClassLoaderCreationTracker exportClassLoaderCreationTracker;
 
    @Override

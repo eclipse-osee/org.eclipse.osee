@@ -15,6 +15,7 @@ import java.rmi.RemoteException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
+
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -75,18 +76,6 @@ public class ClientSession extends AbstractRemoteSession {
             return sessionDelegate.getFileDate(workspacePath);
          } catch (Exception ex) {
             throw new RemoteException("failed to get the file date" + workspacePath, ex);
-         }
-      }
-      throw new IllegalStateException("session delegate not set");
-   }
-
-   @Override
-   public String getFileVersion(String workspacePath) throws RemoteException {
-      if (sessionDelegate != null) {
-         try {
-            return sessionDelegate.getFileVersion(workspacePath);
-         } catch (Exception ex) {
-            throw new RemoteException("failed to get the file version" + workspacePath, ex);
          }
       }
       throw new IllegalStateException("session delegate not set");
