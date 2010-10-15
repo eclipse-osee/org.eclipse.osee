@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.actions.TaskDeleteAction.ITaskDeleteActionHandler;
 import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.config.AtsBulkLoad;
+import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
@@ -193,6 +194,8 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
                }
             }
             transaction.execute();
+
+            AtsCacheManager.decacheTaskArtifacts((AbstractTaskableArtifact) iXTaskViewer.getSma());
             taskXViewer.remove(items.toArray(new Object[items.size()]));
             taskArts.removeAll(items);
 
@@ -217,6 +220,7 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
             taskArt = ((AbstractTaskableArtifact) iXTaskViewer.getSma()).createNewTask(ed.getEntry());
             iXTaskViewer.getEditor().onDirtied();
             add(Collections.singleton(taskArt));
+            AtsCacheManager.decacheTaskArtifacts((AbstractTaskableArtifact) iXTaskViewer.getSma());
          } catch (Exception ex) {
             OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
