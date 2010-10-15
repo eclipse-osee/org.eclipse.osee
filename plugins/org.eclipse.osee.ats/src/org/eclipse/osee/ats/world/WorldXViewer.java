@@ -46,6 +46,7 @@ import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.artifact.VersionArtifact.VersionLockedType;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
 import org.eclipse.osee.ats.goal.GoalXViewerFactory;
@@ -211,7 +212,8 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts {
          public void run() {
             try {
                if (PromptChangeUtil.promptChangeVersion(getSelectedTeamWorkflowArtifacts(),
-                  (AtsUtil.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased), true)) {
+                  (AtsUtil.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased),
+                  (AtsUtil.isAtsAdmin() ? VersionLockedType.Both : VersionLockedType.UnLocked), true)) {
                   update(getSelectedArtifactItems().toArray(), null);
                }
             } catch (Exception ex) {
@@ -858,7 +860,8 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts {
          if (xCol.equals(WorldXViewerFactory.Version_Target_Col)) {
             modified =
                PromptChangeUtil.promptChangeVersion(sma,
-                  AtsUtil.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased, true);
+                  AtsUtil.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased,
+                  AtsUtil.isAtsAdmin() ? VersionLockedType.Both : VersionLockedType.UnLocked, true);
          } else if (xCol.equals(WorldXViewerFactory.Notes_Col)) {
             modified = PromptChangeUtil.promptChangeAttribute(sma, AtsAttributeTypes.SmaNote, persist, true);
          } else if (xCol.equals(WorldXViewerFactory.Percent_Rework_Col)) {

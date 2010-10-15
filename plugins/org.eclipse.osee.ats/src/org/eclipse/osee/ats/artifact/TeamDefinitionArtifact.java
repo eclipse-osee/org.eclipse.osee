@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.artifact.VersionArtifact.VersionLockedType;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.internal.AtsPlugin;
@@ -191,12 +192,12 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
       return null;
    }
 
-   public Collection<VersionArtifact> getVersionsFromTeamDefHoldingVersions(VersionReleaseType releaseType) throws OseeCoreException {
+   public Collection<VersionArtifact> getVersionsFromTeamDefHoldingVersions(VersionReleaseType releaseType, VersionLockedType lockedType) throws OseeCoreException {
       TeamDefinitionArtifact teamDef = getTeamDefinitionHoldingVersions();
       if (teamDef == null) {
          return new ArrayList<VersionArtifact>();
       }
-      return teamDef.getVersionsArtifacts(releaseType);
+      return teamDef.getVersionsArtifacts(releaseType, lockedType);
    }
 
    public static List<TeamDefinitionArtifact> getTeamDefinitions(Active active) throws OseeCoreException {
@@ -429,14 +430,28 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
       return getRelatedArtifacts(AtsRelationTypes.TeamDefinitionToVersion_Version, VersionArtifact.class);
    }
 
-   public Collection<VersionArtifact> getVersionsArtifacts(VersionReleaseType releaseType) throws OseeCoreException {
+   public Collection<VersionArtifact> getVersionsArtifacts(VersionReleaseType releaseType, VersionLockedType lockType) throws OseeCoreException {
+      return Collections.setIntersection(getVersionsArtifacts(releaseType), getVersionsArtifacts(lockType));
+   }
+
+   private Collection<VersionArtifact> getVersionsArtifacts(VersionReleaseType releaseType) throws OseeCoreException {
       ArrayList<VersionArtifact> versions = new ArrayList<VersionArtifact>();
       for (VersionArtifact version : getVersionsArtifacts()) {
          if (version.isReleased() && (releaseType == VersionReleaseType.Released || releaseType == VersionReleaseType.Both)) {
             versions.add(version);
-         } else if (version.isVersionLocked() && (releaseType == VersionReleaseType.VersionLocked || releaseType == VersionReleaseType.Both)) {
+         } else if ((!version.isReleased() && releaseType == VersionReleaseType.UnReleased) || releaseType == VersionReleaseType.Both) {
             versions.add(version);
-         } else if (releaseType == VersionReleaseType.UnReleased || releaseType == VersionReleaseType.Both) {
+         }
+      }
+      return versions;
+   }
+
+   private Collection<VersionArtifact> getVersionsArtifacts(VersionLockedType lockType) throws OseeCoreException {
+      ArrayList<VersionArtifact> versions = new ArrayList<VersionArtifact>();
+      for (VersionArtifact version : getVersionsArtifacts()) {
+         if (version.isVersionLocked() && (lockType == VersionLockedType.Locked || lockType == VersionLockedType.Both)) {
+            versions.add(version);
+         } else if ((!version.isVersionLocked() && lockType == VersionLockedType.UnLocked) || lockType == VersionLockedType.Both) {
             versions.add(version);
          }
       }

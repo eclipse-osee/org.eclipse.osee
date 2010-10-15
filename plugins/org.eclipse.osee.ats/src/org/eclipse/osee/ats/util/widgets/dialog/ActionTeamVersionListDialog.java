@@ -19,6 +19,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.ats.artifact.VersionArtifact.VersionLockedType;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -59,7 +60,8 @@ public class ActionTeamVersionListDialog extends ActionTeamListDialog {
                   return;
                }
                IStructuredSelection sel = (IStructuredSelection) getTableViewer().getSelection();
-               for (Artifact art : ((TeamDefinitionArtifact) sel.iterator().next()).getVersionsFromTeamDefHoldingVersions(VersionReleaseType.Both)) {
+               for (Artifact art : ((TeamDefinitionArtifact) sel.iterator().next()).getVersionsFromTeamDefHoldingVersions(
+                  VersionReleaseType.Both, VersionLockedType.Both)) {
                   objs.add(art);
                }
                versionList.setInput(objs);

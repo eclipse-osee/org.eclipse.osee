@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.ats.artifact.VersionArtifact.VersionLockedType;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.XHyperlabelTeamDefinitionSelection;
@@ -230,7 +231,8 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
                         return;
                      }
                      Collection<String> names =
-                        Artifacts.artNames(teamDefHoldingVersions.getVersionsArtifacts(VersionReleaseType.Both));
+                        Artifacts.artNames(teamDefHoldingVersions.getVersionsArtifacts(VersionReleaseType.Both,
+                           VersionLockedType.Both));
                      if (names.isEmpty()) {
                         versionCombo.setDataStrings(new String[] {});
                         return;
@@ -371,7 +373,8 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
          if (teamDefHoldingVersions == null) {
             return null;
          }
-         for (VersionArtifact versionArtifact : teamDefHoldingVersions.getVersionsArtifacts(VersionReleaseType.Both)) {
+         for (VersionArtifact versionArtifact : teamDefHoldingVersions.getVersionsArtifacts(VersionReleaseType.Both,
+            VersionLockedType.Both)) {
             if (versionArtifact.getName().equals(versionStr)) {
                return versionArtifact;
             }

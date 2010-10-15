@@ -16,11 +16,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
-import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
+import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.ats.artifact.VersionArtifact.VersionLockedType;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.task.ITaskEditorProvider;
@@ -265,7 +266,8 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
                         return;
                      }
                      Collection<String> names =
-                        Artifacts.artNames(teamDefHoldingVersions.getVersionsArtifacts(VersionReleaseType.Both));
+                        Artifacts.artNames(teamDefHoldingVersions.getVersionsArtifacts(VersionReleaseType.Both,
+                           VersionLockedType.Both));
                      if (names.isEmpty()) {
                         versionCombo.setDataStrings(new String[] {});
                         return;
@@ -320,7 +322,8 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
          if (teamDefHoldingVersions == null) {
             return null;
          }
-         for (VersionArtifact versionArtifact : teamDefHoldingVersions.getVersionsArtifacts(VersionReleaseType.Both)) {
+         for (VersionArtifact versionArtifact : teamDefHoldingVersions.getVersionsArtifacts(VersionReleaseType.Both,
+            VersionLockedType.Both)) {
             if (versionArtifact.getName().equals(versionStr)) {
                return versionArtifact;
             }

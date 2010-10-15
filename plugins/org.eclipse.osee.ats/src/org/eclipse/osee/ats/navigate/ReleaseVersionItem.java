@@ -17,6 +17,8 @@ import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.ats.artifact.VersionArtifact.VersionLockedType;
+import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
@@ -60,7 +62,7 @@ public class ReleaseVersionItem extends XNavigateItemAction {
       try {
          VersionListDialog ld =
             new VersionListDialog("Select Version", "Select Version to Release",
-               teamDefHoldingVersions.getVersionsArtifacts());
+               teamDefHoldingVersions.getVersionsArtifacts(VersionReleaseType.UnReleased, VersionLockedType.Both));
          int result = ld.open();
          if (result == 0) {
             VersionArtifact verArt = (VersionArtifact) ld.getResult()[0];

@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.ats.artifact.VersionArtifact.VersionLockedType;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.dialog.AtsPriorityDialog;
@@ -172,15 +173,16 @@ public final class PromptChangeUtil {
       return false;
    }
 
-   public static boolean promptChangeVersion(AbstractWorkflowArtifact sma, VersionReleaseType versionReleaseType, boolean persist) throws OseeCoreException {
+   public static boolean promptChangeVersion(AbstractWorkflowArtifact sma, VersionReleaseType versionReleaseType, VersionLockedType versionLockType, boolean persist) throws OseeCoreException {
       if (AtsUtil.isAtsAdmin() && !sma.isTeamWorkflow()) {
          AWorkbench.popup("ERROR ", "Cannot set version for: \n\n" + sma.getName());
          return false;
       }
-      return promptChangeVersion(Arrays.asList((TeamWorkFlowArtifact) sma), versionReleaseType, persist);
+      return promptChangeVersion(Arrays.asList((TeamWorkFlowArtifact) sma), versionReleaseType, versionLockType,
+         persist);
    }
 
-   public static boolean promptChangeVersion(final Collection<? extends TeamWorkFlowArtifact> smas, VersionReleaseType versionReleaseType, final boolean persist) throws OseeCoreException {
+   public static boolean promptChangeVersion(final Collection<? extends TeamWorkFlowArtifact> smas, VersionReleaseType versionReleaseType, VersionLockedType versionLockType, final boolean persist) throws OseeCoreException {
       TeamDefinitionArtifact teamDefHoldingVersions = null;
       for (TeamWorkFlowArtifact teamArt : smas) {
          if (!teamArt.getTeamDefinition().isTeamUsesVersions()) {
@@ -212,8 +214,8 @@ public final class PromptChangeUtil {
          return false;
       }
       final VersionListDialog vld =
-         new VersionListDialog("Select Version", "Select Version",
-            teamDefHoldingVersions.getVersionsArtifacts(versionReleaseType));
+         new VersionListDialog("Select Version", "Select Version", teamDefHoldingVersions.getVersionsArtifacts(
+            versionReleaseType, versionLockType));
       if (smas.size() == 1 && smas.iterator().next().getWorldViewTargetedVersion() != null) {
          Object[] objs = new Object[1];
          objs[0] = smas.iterator().next().getWorldViewTargetedVersion();

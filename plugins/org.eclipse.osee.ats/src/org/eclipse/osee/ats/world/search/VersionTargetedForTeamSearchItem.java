@@ -16,6 +16,7 @@ import java.util.Collection;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.ats.artifact.VersionArtifact.VersionLockedType;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
@@ -116,8 +117,8 @@ public class VersionTargetedForTeamSearchItem extends WorldUISearchItem {
          }
          if (versionArt == null && selectedTeamDef != null) {
             final VersionListDialog vld =
-               new VersionListDialog("Select Version", "Select Version",
-                  selectedTeamDef.getVersionsArtifacts(VersionReleaseType.Both));
+               new VersionListDialog("Select Version", "Select Version", selectedTeamDef.getVersionsArtifacts(
+                  VersionReleaseType.Both, VersionLockedType.Both));
             if (vld.open() == 0) {
                selectedVersionArt = (VersionArtifact) vld.getResult()[0];
                return;

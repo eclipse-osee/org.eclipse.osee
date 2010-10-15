@@ -19,7 +19,6 @@ import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
-import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.ats.util.widgets.XHyperlabelTeamDefinitionSelection;
@@ -184,8 +183,7 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
                         versionCombo.setDataStrings(new String[] {});
                         return;
                      }
-                     Collection<String> names =
-                        Artifacts.artNames(teamDefHoldingVersions.getVersionsArtifacts(VersionReleaseType.Both));
+                     Collection<String> names = Artifacts.artNames(teamDefHoldingVersions.getVersionsArtifacts());
                      if (names.isEmpty()) {
                         versionCombo.setDataStrings(new String[] {});
                         return;
@@ -253,7 +251,7 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
          if (teamDefHoldingVersions == null) {
             return null;
          }
-         for (VersionArtifact versionArtifact : teamDefHoldingVersions.getVersionsArtifacts(VersionReleaseType.Both)) {
+         for (VersionArtifact versionArtifact : teamDefHoldingVersions.getVersionsArtifacts()) {
             if (versionArtifact.getName().equals(versionStr)) {
                return versionArtifact;
             }

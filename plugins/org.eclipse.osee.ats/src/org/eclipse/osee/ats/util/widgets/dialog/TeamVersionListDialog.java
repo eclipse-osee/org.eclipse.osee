@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.ats.artifact.VersionArtifact.VersionLockedType;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -96,7 +97,8 @@ public class TeamVersionListDialog extends SelectionDialog {
                ArrayList<Object> objs = new ArrayList<Object>();
                try {
                   selectedTeamDef = (TeamDefinitionArtifact) teamCombo.getSelected();
-                  for (Artifact pda : selectedTeamDef.getVersionsArtifacts(VersionReleaseType.Both)) {
+                  for (Artifact pda : selectedTeamDef.getVersionsArtifacts(VersionReleaseType.Both,
+                     VersionLockedType.Both)) {
                      objs.add(pda);
                   }
                   versionCombo.setInput(objs);
@@ -129,7 +131,7 @@ public class TeamVersionListDialog extends SelectionDialog {
       if (teamDef != null) {
          objs = new ArrayList<Object>();
          try {
-            for (Artifact pda : teamDef.getVersionsArtifacts(VersionReleaseType.Both)) {
+            for (Artifact pda : teamDef.getVersionsArtifacts(VersionReleaseType.Both, VersionLockedType.Both)) {
                objs.add(pda);
             }
             versionCombo.setInput(objs);

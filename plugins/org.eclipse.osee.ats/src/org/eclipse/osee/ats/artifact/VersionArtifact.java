@@ -40,8 +40,12 @@ public class VersionArtifact extends Artifact implements ICommitConfigArtifact {
    public static enum VersionReleaseType {
       Released,
       UnReleased,
-      Both,
-      VersionLocked
+      Both
+   };
+   public static enum VersionLockedType {
+      Locked,
+      UnLocked,
+      Both
    };
 
    public VersionArtifact(ArtifactFactory parentFactory, String guid, String humandReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
