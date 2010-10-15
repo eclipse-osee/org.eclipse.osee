@@ -71,4 +71,4 @@ inside test case use an annotation like "@Interesting 1" and "@InterestingEnd 1"
 
 fitnesse ochem@adacore.com
 
-AdaCore is a major sponsor of this event and Franco Gasperoni will be giving a talk entitled “Open-DO: A Call to Action for DO-178B and other Safety-Critical Software”
+AdaCore is a major sponsor of this event and Franco Gasperoni will be giving a talk entitled "Open-DO: A Call to Action for DO-178B and other Safety-Critical Software"

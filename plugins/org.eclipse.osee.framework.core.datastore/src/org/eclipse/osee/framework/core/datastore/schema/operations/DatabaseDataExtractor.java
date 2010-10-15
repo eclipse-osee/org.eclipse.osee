@@ -226,7 +226,7 @@ public class DatabaseDataExtractor extends AbstractOperation {
 
    private String handleSpecialCharacters(String value) {
       // \0 An ASCII 0 (NUL) character.
-      // '' A single quote (ï¿½'ï¿½) character.
+      // '' A single quote character.
       // \b A backspace character.
       // \n A newline (linefeed) character.
       // \r A carriage return character.
