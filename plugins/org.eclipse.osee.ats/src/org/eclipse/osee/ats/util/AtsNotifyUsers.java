@@ -97,20 +97,23 @@ public class AtsNotifyUsers implements IArtifactEventListener {
 
       if (types.contains(NotifyType.Originator)) {
          User originator = sma.getOriginator();
-         if (!EmailUtil.isEmailValid(originator)) {
-            OseeLog.log(AtsPlugin.class, Level.INFO,
-               String.format("Email [%s] invalid for user [%s]", originator.getEmail(), originator.getName()));
-         } else if (!UserManager.getUser().equals(originator)) {
-            notificationManager.addNotificationEvent(new OseeNotificationEvent(Arrays.asList(originator),
-               getIdString(sma), NotifyType.Originator.name(), String.format(
-                  "You have been set as the originator of [%s] state [%s] titled [%s]", sma.getArtifactTypeName(),
-                  sma.getStateMgr().getCurrentStateName(), sma.getName())));
+         if (originator.isActive()) {
+            if (!EmailUtil.isEmailValid(originator)) {
+               OseeLog.log(AtsPlugin.class, Level.INFO,
+                  String.format("Email [%s] invalid for user [%s]", originator.getEmail(), originator.getName()));
+            } else if (!UserManager.getUser().equals(originator)) {
+               notificationManager.addNotificationEvent(new OseeNotificationEvent(Arrays.asList(originator),
+                  getIdString(sma), NotifyType.Originator.name(), String.format(
+                     "You have been set as the originator of [%s] state [%s] titled [%s]", sma.getArtifactTypeName(),
+                     sma.getStateMgr().getCurrentStateName(), sma.getName())));
+            }
          }
       }
       if (types.contains(NotifyType.Assigned)) {
          Collection<User> assignees = notifyUsers != null ? notifyUsers : sma.getStateMgr().getAssignees();
          assignees.remove(UserManager.getUser());
          assignees = EmailUtil.getValidEmailUsers(assignees);
+         assignees = EmailUtil.getActiveEmailUsers(assignees);
          if (assignees.size() > 0) {
             notificationManager.addNotificationEvent(new OseeNotificationEvent(assignees, getIdString(sma),
                NotifyType.Assigned.name(), String.format(
@@ -121,6 +124,7 @@ public class AtsNotifyUsers implements IArtifactEventListener {
       if (types.contains(NotifyType.Subscribed)) {
          Collection<User> subscribed = SubscribeManager.getSubscribed(sma);
          subscribed = EmailUtil.getValidEmailUsers(subscribed);
+         subscribed = EmailUtil.getActiveEmailUsers(subscribed);
          if (subscribed.size() > 0) {
             notificationManager.addNotificationEvent(new OseeNotificationEvent(subscribed, getIdString(sma),
                NotifyType.Subscribed.name(), String.format(
@@ -131,22 +135,24 @@ public class AtsNotifyUsers implements IArtifactEventListener {
       if (types.contains(NotifyType.Cancelled) || types.contains(NotifyType.Completed)) {
          if ((sma.isTeamWorkflow() || sma instanceof AbstractReviewArtifact) && (sma.isCompleted() || sma.isCancelled())) {
             User originator = sma.getOriginator();
-            if (!EmailUtil.isEmailValid(originator)) {
-               OseeLog.log(AtsPlugin.class, Level.INFO,
-                  String.format("Email [%s] invalid for user [%s]", originator.getEmail(), originator.getName()));
-            } else if (!UserManager.getUser().equals(originator)) {
-               if (sma.isCompleted()) {
-                  notificationManager.addNotificationEvent(new OseeNotificationEvent(Arrays.asList(originator),
-                     getIdString(sma), NotifyType.Completed.name(), String.format("[%s] titled [%s] is Completed",
-                        sma.getArtifactTypeName(), sma.getName())));
-               }
-               if (sma.isCancelled()) {
-                  LogItem cancelledItem = sma.getLog().getStateEvent(LogType.StateCancelled);
-                  notificationManager.addNotificationEvent(new OseeNotificationEvent(Arrays.asList(originator),
-                     getIdString(sma), NotifyType.Cancelled.name(), String.format(
-                        "[%s] titled [%s] was cancelled from the [%s] state on [%s].<br>Reason: [%s]",
-                        sma.getArtifactTypeName(), sma.getName(), cancelledItem.getState(),
-                        cancelledItem.getDate(DateUtil.MMDDYYHHMM), cancelledItem.getMsg())));
+            if (originator.isActive()) {
+               if (!EmailUtil.isEmailValid(originator)) {
+                  OseeLog.log(AtsPlugin.class, Level.INFO,
+                     String.format("Email [%s] invalid for user [%s]", originator.getEmail(), originator.getName()));
+               } else if (!UserManager.getUser().equals(originator)) {
+                  if (sma.isCompleted()) {
+                     notificationManager.addNotificationEvent(new OseeNotificationEvent(Arrays.asList(originator),
+                        getIdString(sma), NotifyType.Completed.name(), String.format("[%s] titled [%s] is Completed",
+                           sma.getArtifactTypeName(), sma.getName())));
+                  }
+                  if (sma.isCancelled()) {
+                     LogItem cancelledItem = sma.getLog().getStateEvent(LogType.StateCancelled);
+                     notificationManager.addNotificationEvent(new OseeNotificationEvent(Arrays.asList(originator),
+                        getIdString(sma), NotifyType.Cancelled.name(), String.format(
+                           "[%s] titled [%s] was cancelled from the [%s] state on [%s].<br>Reason: [%s]",
+                           sma.getArtifactTypeName(), sma.getName(), cancelledItem.getState(),
+                           cancelledItem.getDate(DateUtil.MMDDYYHHMM), cancelledItem.getMsg())));
+                  }
                }
             }
          }
@@ -157,6 +163,7 @@ public class AtsNotifyUsers implements IArtifactEventListener {
                Collection<User> authorModerator =
                   ((AbstractReviewArtifact) sma).getUserRoleManager().getRoleUsersAuthorModerator();
                authorModerator = EmailUtil.getValidEmailUsers(authorModerator);
+               authorModerator = EmailUtil.getActiveEmailUsers(authorModerator);
                if (authorModerator.size() > 0) {
                   for (UserRole role : ((AbstractReviewArtifact) sma).getUserRoleManager().getRoleUsersReviewComplete()) {
                      notificationManager.addNotificationEvent(new OseeNotificationEvent(authorModerator,

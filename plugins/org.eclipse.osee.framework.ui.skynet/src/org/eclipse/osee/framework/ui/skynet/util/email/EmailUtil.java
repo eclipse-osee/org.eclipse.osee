@@ -52,6 +52,20 @@ public class EmailUtil {
       return validUsers;
    }
 
+   public static Collection<User> getActiveEmailUsers(Collection<User> users) {
+      Set<User> activeUsers = new HashSet<User>();
+      for (User user : users) {
+         try {
+            if (user.isActive()) {
+               activeUsers.add(user);
+            }
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         }
+      }
+      return activeUsers;
+   }
+
    public static void emailHtml(Collection<String> emails, String subject, String htmlBody) throws OseeCoreException {
       OseeEmail emailMessage =
          new OseeEmail(emails, UserManager.getUser().getEmail(), UserManager.getUser().getEmail(), subject, htmlBody,

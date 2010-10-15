@@ -30,7 +30,8 @@ public enum DemoUsers implements IOseeUserInfo {
    Joe_Smith("Joe Smith", "Joe Smith", "Joe Smith", true),
    Kay_Jones("Kay Jones", "Kay Jones", "Kay Jones", true),
    Jason_Michael("Jason Michael", "Jason Michael", "Jason Michael", true),
-   Alex_Kay("Alex Kay", "Alex Kay", "Alex Kay", true);
+   Alex_Kay("Alex Kay", "Alex Kay", "Alex Kay", true),
+   Inactive_Steve("Inactive Steve", "Inactive Steve", "Inactive Steve", false);
    private final String name;
    private final String email;
    private final String userID;

@@ -62,6 +62,8 @@ public class AtsNotifyUsersTest {
       kay_ValidEmail.setEmail("this@boeing.com");
       User joeSmith_CurrentUser = UserManager.getUser(DemoUsers.Joe_Smith);
       joeSmith_CurrentUser.setEmail("this@boeing.com");
+      User inactiveSteve = UserManager.getUser(DemoUsers.Inactive_Steve);
+      inactiveSteve.setEmail("goodEmail@boeing.com");
 
       TestNotificationManager notifyManager = new TestNotificationManager();
       AtsNotifyUsers atsNotifyUsers = AtsNotifyUsers.getInstance();
@@ -70,7 +72,8 @@ public class AtsNotifyUsersTest {
 
       TeamWorkFlowArtifact teamArt = DemoTestUtil.createSimpleAction(AtsNotifyUsersTest.class.getSimpleName(), null);
       teamArt.setOriginator(kay_ValidEmail);
-      List<User> assignees = Arrays.asList(alex_NoValidEmail, jason_ValidEmail, kay_ValidEmail, joeSmith_CurrentUser);
+      List<User> assignees =
+         Arrays.asList(inactiveSteve, alex_NoValidEmail, jason_ValidEmail, kay_ValidEmail, joeSmith_CurrentUser);
       teamArt.getStateMgr().setAssignees(assignees);
       teamArt.persist();
 
@@ -83,6 +86,14 @@ public class AtsNotifyUsersTest {
       Assert.assertEquals(
          "You have been set as the originator of [Demo Code Team Workflow] state [Endorse] titled [AtsNotifyUsersTest]",
          event.getDescription());
+
+      notifyManager.clear();
+      teamArt.setOriginator(inactiveSteve);
+      teamArt.persist();
+      AtsNotifyUsers.getInstance().notify(teamArt, NotifyType.Originator);
+      Assert.assertEquals(0, notifyManager.getNotificationEvents().size());
+      teamArt.setOriginator(kay_ValidEmail);
+      teamArt.persist();
 
       notifyManager.clear();
       AtsNotifyUsers.getInstance().notify(teamArt, NotifyType.Assigned);
@@ -110,6 +121,10 @@ public class AtsNotifyUsersTest {
 
       notifyManager.clear();
       new SubscribeManager(teamArt).toggleSubscribe(false);
+      SkynetTransaction transaction =
+         new SkynetTransaction(AtsUtil.getAtsBranch(), "AtsNotifyUsersTests.toggle.subscribed");
+      SubscribeManager.addSubscribed(teamArt, inactiveSteve, transaction);
+      transaction.execute();
       AtsNotifyUsers.getInstance().notify(teamArt, NotifyType.Subscribed);
       Assert.assertEquals(1, notifyManager.getNotificationEvents().size());
       event = notifyManager.getNotificationEvents().get(0);
@@ -131,6 +146,15 @@ public class AtsNotifyUsersTest {
       Assert.assertEquals(NotifyType.Completed.name(), event.getType());
       Assert.assertEquals(kay_ValidEmail, event.getUsers().iterator().next());
       Assert.assertEquals("[Demo Code Team Workflow] titled [AtsNotifyUsersTest] is Completed", event.getDescription());
+
+      notifyManager.clear();
+      teamArt.setOriginator(inactiveSteve);
+      teamArt.persist();
+      teamArt.getStateMgr().initializeStateMachine(DefaultTeamState.Completed.name());
+      AtsNotifyUsers.getInstance().notify(teamArt, NotifyType.Completed);
+      Assert.assertEquals(0, notifyManager.getNotificationEvents().size());
+      teamArt.setOriginator(kay_ValidEmail);
+      teamArt.persist();
 
       notifyManager.clear();
       teamArt.getLog().addLog(LogType.StateCancelled, "Endorse", "this is the reason");

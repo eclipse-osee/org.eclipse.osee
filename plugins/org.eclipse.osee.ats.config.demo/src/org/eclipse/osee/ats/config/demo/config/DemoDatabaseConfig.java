@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.database.core.OseeInfo;
 import org.eclipse.osee.framework.database.init.IDbInitializationTask;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -52,6 +53,11 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
 
    @Override
    public void run() throws OseeCoreException {
+
+      SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch(), "Create Steve");
+      // note, all other users are created through ATS Team/AI VUE import
+      UserManager.createUser(DemoUsers.Inactive_Steve, transaction);
+      transaction.execute();
 
       new DemoCodeWorkFlowDefinition().config(WriteType.New, null);
       new DemoTestWorkFlowDefinition().config(WriteType.New, null);
@@ -74,7 +80,7 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
       populateProgramBranch(DemoCISBuilds.CIS_Bld_1);
 
       // Map team definitions versions to their related branches
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Demo Database Config");
+      transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Demo Database Config");
       mapTeamVersionToBranch(DemoTeams.getInstance().getTeamDef(Team.SAW_SW), DemoSawBuilds.SAW_Bld_1.getName(),
          DemoSawBuilds.SAW_Bld_1.getName(), transaction);
       mapTeamVersionToBranch(DemoTeams.getInstance().getTeamDef(Team.CIS_SW), DemoCISBuilds.CIS_Bld_1.getName(),
