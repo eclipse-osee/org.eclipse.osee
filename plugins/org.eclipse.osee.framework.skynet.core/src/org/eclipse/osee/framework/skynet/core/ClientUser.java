@@ -57,6 +57,12 @@ final class ClientUser {
       return instance.currentUser;
    }
 
+   static synchronized void releaseUser() {
+      if (ClientSessionManager.isSessionValid() && instance.currentUser != null) {
+         instance.currentUser = null;
+      }
+   }
+
    private void populateCurrentUser() throws OseeCoreException {
       ClientSessionManager.ensureSessionCreated();
       if (ClientSessionManager.isSessionValid()) {

@@ -35,6 +35,11 @@ public class AtsLoadConfigArtifactsOperation extends AbstractOperation {
       super("ATS Loading Configuration", AtsPlugin.PLUGIN_ID);
    }
 
+   public void forceReload() throws OseeCoreException {
+      loaded = false;
+      ensureLoaded();
+   }
+
    public synchronized void ensureLoaded() throws OseeCoreException {
       if (!loaded) {
          loaded = true;

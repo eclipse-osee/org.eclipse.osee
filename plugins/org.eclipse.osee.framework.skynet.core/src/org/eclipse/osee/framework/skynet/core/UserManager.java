@@ -63,6 +63,10 @@ public final class UserManager {
       return ClientUser.getMainUser();
    }
 
+   public static void releaseUser() {
+      ClientUser.releaseUser();
+   }
+
    /**
     * @return shallow copy of ArrayList of all active users in the datastore sorted by user name
     */

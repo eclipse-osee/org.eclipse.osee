@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowManager;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.ats.config.AtsBulkLoad;
 import org.eclipse.osee.ats.config.demo.config.DemoDatabaseConfig;
 import org.eclipse.osee.ats.config.demo.config.DemoDbActionData;
 import org.eclipse.osee.ats.config.demo.config.DemoDbActionData.CreateReview;
@@ -78,6 +79,7 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportOperationFactory;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.support.test.util.DemoArtifactTypes;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
@@ -126,6 +128,9 @@ public class PopulateDemoActions extends XNavigateItemAction {
       }
       if (DbUtil.isDbInit() || !prompt || prompt && MessageDialog.openConfirm(Displays.getActiveShell(), getName(),
          getName())) {
+
+         AtsBulkLoad.reloadConfig(true);
+         WorkItemDefinitionFactory.loadDefinitions(true);
 
          SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
 

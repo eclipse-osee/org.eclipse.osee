@@ -12,19 +12,26 @@ package org.eclipse.osee.client.integration.tests.suite;
 
 import static org.junit.Assert.assertTrue;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.config.demo.PopulateDemoActions;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
+import org.eclipse.osee.framework.core.client.OseeClientSession;
 import org.eclipse.osee.framework.database.init.DatabaseInitializationOperation;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
+import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.support.test.util.DemoUsers;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 
 /**
  * @author Donald G. Dunne
  */
 public class MasterTestSuite_DemoDbInit {
+   private static boolean wasDbInitSuccessful = false;
 
    @BeforeClass
    public static void setup() throws Exception {
@@ -37,7 +44,6 @@ public class MasterTestSuite_DemoDbInit {
    public void testDemoDbInit() throws Exception {
       OseeLog.log(DatabaseInitializationOperation.class, Level.INFO, "Begin database initialization...");
 
-      boolean wasSuccessful = false;
       String lastAuthenticationProtocol = OseeClientProperties.getAuthenticationProtocol();
       try {
          SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
@@ -47,15 +53,37 @@ public class MasterTestSuite_DemoDbInit {
 
          TestUtil.severeLoggingEnd(monitorLog);
          OseeLog.log(DatabaseInitializationOperation.class, Level.INFO, "Completed database initialization");
-         wasSuccessful = true;
+         wasDbInitSuccessful = true;
       } finally {
          OseeClientProperties.setAuthenticationProtocol(lastAuthenticationProtocol);
       }
 
-      if (wasSuccessful) {
+      if (wasDbInitSuccessful) {
          ClientSessionManager.releaseSession();
          // Re-authenticate so we can continue
          ClientSessionManager.getSession();
+      }
+      OseeClientProperties.setInDbInit(false);
+
+   }
+
+   @org.junit.Test
+   public void testPopulateDemoDb() {
+      Assert.assertTrue("DbInit must be successful to continue", wasDbInitSuccessful);
+      try {
+         ClientSessionManager.releaseSession();
+         // Re-authenticate so we can continue
+         OseeClientSession session = ClientSessionManager.getSession();
+         UserManager.releaseUser();
+
+         Assert.assertEquals("Must run populate as Joe Smith", DemoUsers.Joe_Smith.getUserID(), session.getUserId());
+         Assert.assertEquals("Must run populate as Joe Smith", DemoUsers.Joe_Smith.getUserID(),
+            UserManager.getUser().getUserId());
+
+         PopulateDemoActions populateDemoActions = new PopulateDemoActions(null);
+         populateDemoActions.run(false);
+      } catch (Exception ex) {
+         Assert.fail(Lib.exceptionToString(ex));
       }
    }
 

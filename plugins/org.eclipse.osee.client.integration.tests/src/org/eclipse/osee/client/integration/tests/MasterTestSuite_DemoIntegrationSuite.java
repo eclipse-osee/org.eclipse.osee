@@ -12,7 +12,6 @@ package org.eclipse.osee.client.integration.tests;
 
 import java.util.logging.Level;
 import org.eclipse.osee.client.integration.tests.suite.MasterTestSuite_DemoDbInit;
-import org.eclipse.osee.client.integration.tests.suite.MasterTestSuite_DemoDbPopulate;
 import org.eclipse.osee.client.integration.tests.suite.MasterTestSuite_DemoDbTests;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.junit.BeforeClass;
@@ -22,7 +21,6 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({//
 MasterTestSuite_DemoDbInit.class, //
-   MasterTestSuite_DemoDbPopulate.class, //
    MasterTestSuite_DemoDbTests.class, //
 })
 /**

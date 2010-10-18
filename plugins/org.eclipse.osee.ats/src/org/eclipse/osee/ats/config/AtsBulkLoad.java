@@ -36,15 +36,19 @@ public class AtsBulkLoad {
       return new EmptyOperation("ATS Bulk Loading", AtsPlugin.PLUGIN_ID);
    }
 
-   public static void loadConfig(boolean pend) {
-      if (AtsLoadConfigArtifactsOperation.isLoaded()) {
-         return;
-      }
+   public static void reloadConfig(boolean pend) {
       if (pend) {
          Operations.executeWork(new AtsLoadConfigArtifactsOperation());
       } else {
          Operations.executeAsJob(new AtsLoadConfigArtifactsOperation(), false);
       }
+   }
+
+   public static void loadConfig(boolean pend) {
+      if (AtsLoadConfigArtifactsOperation.isLoaded()) {
+         return;
+      }
+      reloadConfig(pend);
    }
 
    public static Set<Artifact> loadFromActions(Collection<? extends Artifact> actions) throws OseeCoreException {

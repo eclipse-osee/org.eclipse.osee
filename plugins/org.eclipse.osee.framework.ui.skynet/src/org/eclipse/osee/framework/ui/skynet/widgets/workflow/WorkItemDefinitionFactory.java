@@ -70,7 +70,11 @@ public class WorkItemDefinitionFactory {
    }
 
    public synchronized static void loadDefinitions() throws OseeCoreException {
-      if (itemIdToDefinition == null) {
+      loadDefinitions(false);
+   }
+
+   public synchronized static void loadDefinitions(boolean force) throws OseeCoreException {
+      if (itemIdToDefinition == null || force) {
          OseeLog.log(SkynetGuiPlugin.class, Level.INFO, "Loading Work Item Definitions");
          itemIdToDefinition = new HashMap<String, WorkItemDefinition>();
          itemIdToWidArtifact = new HashMap<String, Artifact>();
