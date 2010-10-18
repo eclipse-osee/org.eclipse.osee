@@ -53,6 +53,7 @@ Export-Package: org.eclipse.osee.framework.skynet.core,
  org.eclipse.osee.framework.skynet.core.word
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Import-Package: org.apache.commons.lang;version="2.4.0",
+ org.apache.xml.serialize;version="2.9.0",
  org.eclipse.debug.core,
  org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.core.client.server,
