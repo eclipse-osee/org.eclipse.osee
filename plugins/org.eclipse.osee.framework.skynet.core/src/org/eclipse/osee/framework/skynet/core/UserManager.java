@@ -205,7 +205,7 @@ public final class UserManager {
             User cachedUser = cacheByUserId(user);
             if (cachedUser != null) { // if duplicate user id found
                OseeCoreException ex =
-                  new UserInDatabaseMultipleTimes("User of userId \"%d\" in datastore more than once", user.getUserId());
+                  new UserInDatabaseMultipleTimes("User of userId \"%s\" in datastore more than once", user.getUserId());
 
                // exception if I am the duplicate user otherwise just log
                if (user.getUserId().equals(ClientSessionManager.getSession().getId())) {
