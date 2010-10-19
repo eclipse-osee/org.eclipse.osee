@@ -25,7 +25,8 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.junit.Test;
 
 /**
- * Tests ability of this rule to make new paragraphs, i.e. injecting <w:p> at specific points in the file.
+ * Tests ability of this WordMLNewLineMakerRule to make new paragraphs by injecting <w:p> at specific points in the
+ * file.
  * 
  * @link:WordMLNewLineMaker
  * @author Karol M. Wilk

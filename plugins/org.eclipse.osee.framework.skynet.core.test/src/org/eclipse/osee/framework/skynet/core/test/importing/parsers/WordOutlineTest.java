@@ -36,7 +36,8 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public final class WordOutlineTest {
 
-   private static final Pattern PARAGRAPH_REGEX = Pattern.compile("<w:p[ >].*?</w:p>");
+   private static final Pattern PARAGRAPH_REGEX = Pattern.compile("<w:p[ >].*?</w:p>",
+      Pattern.DOTALL | Pattern.MULTILINE);
    private static final Pattern OUTLINE_NUMBER_PATTERN = Pattern.compile("((?>\\d+\\.)+\\d*)\\s*");
 
    private static final String OUTLINE_WITH_NUMBER = "outlineNameWithNumber.xml";

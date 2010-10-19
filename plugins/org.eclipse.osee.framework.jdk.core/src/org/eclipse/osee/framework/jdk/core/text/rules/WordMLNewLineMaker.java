@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.jdk.core.text.Rule;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 
 /**
- * @link:WordMLNewLineMakerTest
+ * Test: @link:WordMLNewLineMakerTest
  * @author Karol M. Wilk
  */
 
