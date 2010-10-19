@@ -52,6 +52,7 @@
       <import plugin="org.eclipse.osee.framework.ui.service.control"/>
       <import plugin="org.eclipse.ui" version="3.4.2" match="greaterOrEqual"/>
       <import feature="org.eclipse.osee.core.runtime.feature" version="0.9.7.qualifier" match="greaterOrEqual"/>
+      <import feature="org.eclipse.osee.core.runtime.feature.source" version="0.9.7.qualifier" match="greaterOrEqual"/>
       <import plugin="javax.xml"/>
       <import plugin="org.eclipse.osee.framework.ui.ws"/>
       <import plugin="jms.libraries"/>
