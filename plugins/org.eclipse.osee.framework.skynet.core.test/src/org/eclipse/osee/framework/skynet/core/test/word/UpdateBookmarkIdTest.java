@@ -24,12 +24,12 @@ public class UpdateBookmarkIdTest {
    public void testBookMarkIdFix() throws OseeCoreException {
       UpdateBookmarkIds bookMarkIds = new UpdateBookmarkIds(1000);
       String bookmark =
-         "<aml:annotation aml:id=\"133334\" w:type=\"Word.Bookmark.Start\"/><aml:annotation aml:id=\"133334\" w:type=\"Word.Bookmark.End\" />";
+         "<aml:annotation aml:id=\"133334\" w:type=\"Word.Bookmark.Start\"/><aml:annotation aml:id=\"133334\" w:type=\"Word.Bookmark.End\"/>";
       String modifiedContent = bookMarkIds.fixTags(bookmark);
 
       Assert.assertEquals(
          "The bookmark IDs have been reset",
-         "<aml:annotation aml:id=\"1001\" w:type=\"Word.Bookmark.Start\"></aml:annotation><aml:annotation aml:id=\"1001\" w:type=\"Word.Bookmark.End\"></aml:annotation>",
+         "<aml:annotation aml:id=\"1001\" w:type=\"Word.Bookmark.Start\"/><aml:annotation aml:id=\"1001\" w:type=\"Word.Bookmark.End\"/>",
          modifiedContent);
    }
 
