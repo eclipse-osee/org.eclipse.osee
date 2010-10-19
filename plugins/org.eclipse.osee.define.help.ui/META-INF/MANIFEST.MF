@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: OSEE Define Help
-Bundle-SymbolicName: org.eclipse.osee.define.help.ui;singleton:=true
-Bundle-Version: 0.9.7.qualifier
-Bundle-Vendor: Eclipse Open System Engineering Environment
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Bundle-ActivationPolicy: lazy
-Require-Bundle: org.eclipse.help

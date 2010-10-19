@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8' ?>
-<toc topic="\OSEE\Developers_Guide/Developers-Guide.html" label="OSEE User's Guide">
+<toc topic="\OSEE\Developers_Guide/Developers-Guide.html" label="OSEE Developer&apos;s Guide">
 	<topic href="\OSEE\Developers_Guide/Developers-Guide.html" label="Developers' Guide">
 		<topic href="\OSEE\Developers_Guide/Developers-Guide.html" label="Architecture">
 			<topic href="\OSEE\Developers_Guide/Developers-Guide.html#Client_Architecture" label="Client Architecture"></topic>

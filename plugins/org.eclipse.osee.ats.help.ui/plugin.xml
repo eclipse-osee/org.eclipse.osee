@@ -3,35 +3,12 @@
 <plugin>
 	<extension
          id="org.eclipse.osee.ats.help.ui.docs"
-         name="OSEE ATS"
+         name="OSEE ATS User&apos;s Guide"
          point="org.eclipse.help.toc">
       <toc
+            category="OSEE"
             file="toc.xml"
             primary="true">
-      </toc>
-      <toc
-            file="userguide/OSEE ATS Intro-toc.xml"
-            primary="false">
-      </toc>
-      <toc
-            file="userguide/OSEE ATS Views-toc.xml"
-            primary="false">
-      </toc>
-      <toc
-            file="userguide/OSEE ATS Usage-toc.xml"
-            primary="false">
-      </toc>
-      <toc
-            file="userguide/OSEE ATS Tips-toc.xml"
-            primary="false">
-      </toc>
-      <toc
-            file="userguide/OSEE ATS New-toc.xml"
-            primary="false">
-      </toc>
-      <toc
-            file="userguide/OSEE Update-toc.xml"
-            primary="false">
       </toc>
    </extension>
  <extension

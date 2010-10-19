@@ -36,13 +36,11 @@
 			<topic href="\OSEE\Users_Guide\Features/Features.html#Define_-_Requirements_Management" label="Define - Requirements Management"></topic>
 			<topic href="\OSEE\Users_Guide\Features/Features.html#Action_Tracking_System" label="Action Tracking System"></topic>
 			<topic href="\OSEE\Users_Guide\Features/Features.html#Open_Test_Environment" label="Open Test Environment"></topic>
-			<topic href="\OSEE\Users_Guide\Features/Features.html#BLAM" label="BLAM">
-				<topic href="\OSEE\Users_Guide\Features/Features.html#Program.2FProject_Management" label="Program/Project Management"></topic>
-			</topic>
+			<topic href="\OSEE\Users_Guide\Features/Features.html#BLAM" label="BLAM"></topic>
+			<topic href="\OSEE\Users_Guide\Features/Features.html#Program.2FProject_Management" label="Program/Project Management"></topic>
 			<topic href="\OSEE\Users_Guide\Features/Features.html#Discovery_and_Learning" label="Discovery and Learning"></topic>
-			<topic href="\OSEE\Users_Guide\Features/Features.html#Application_Development" label="Application Development">
-				<topic href="\OSEE\Users_Guide\Features/Features.html#Design_and_Modeling" label="Design and Modeling"></topic>
-			</topic>
+			<topic href="\OSEE\Users_Guide\Features/Features.html#Application_Development" label="Application Development"></topic>
+			<topic href="\OSEE\Users_Guide\Features/Features.html#Design_and_Modeling" label="Design and Modeling"></topic>			
 		</topic>
 		<topic href="\OSEE\Users_Guide\Features/Features.html#Views_and_Editors" label="Views and Editors">
 			<topic href="\OSEE\Users_Guide\Features/Features.html#Branch_Manager_View" label="Branch Manager View">
@@ -71,6 +69,11 @@
 				<topic href="\OSEE\Users_Guide\Features/Features.html#Toolbar_Drop-Down_2" label="Toolbar Drop-Down"></topic>
 				<topic href="\OSEE\Users_Guide\Features/Features.html#Pop-up_Menu_3" label="Pop-up Menu"></topic>
 			</topic>
+			<topic href="\OSEE\Users_Guide\Features/Features.html#Define_Navigator" label="Define Navigator"></topic>
+			<topic href="\OSEE\Users_Guide\Features/Features.html#Merge_Manager" label="Merge Manager"></topic>
+		</topic>
+		<topic href="\OSEE\Users_Guide\Features/Features.html#Wizards" label="Wizards">
+			<topic href="\OSEE\Users_Guide\Features/Features.html#Artifact_Import_Wizard" label="Artifact Import Wizard"></topic>
 		</topic>
 		<topic href="\OSEE\Users_Guide\Features/Features.html#Services" label="Services">
 			<topic href="\OSEE\Users_Guide\Features/Features.html#Event_Service" label="Event Service"></topic>
@@ -128,7 +131,8 @@
 			</topic>
 			<topic href="\OSEE\Users_Guide\Tips/Tips.html#Make_tracked_changes_in_Word_appear_inline_instead_of_in_balloons" label="Make tracked changes in Word appear inline instead of in balloons"></topic>
 			<topic href="\OSEE\Users_Guide\Tips/Tips.html#Keep_MS_Word_from_prompting_to_save_Normal.doc" label="Keep MS Word from prompting to save Normal.doc"></topic>
-		</topic>
+			<topic href="\OSEE\Users_Guide\Tips/Tips.html#What_do_I_do_when_I_am_seeing_some_characters_(such_as_smart_quotes_and_!=_signs)_show_up_as_a_little_black_rectangle_instead?" label="What do I do when I am seeing some characters (such as smart quotes and != signs) show up as a little black rectangle instead?"></topic> 
+		</topic>		
 		<topic href="\OSEE\Users_Guide\Tips/Tips.html#Updating_This_Document" label="Updating This Document"></topic>
 	</topic>
 	<topic href="\OSEE\Users_Guide\New/New.html" label="New">

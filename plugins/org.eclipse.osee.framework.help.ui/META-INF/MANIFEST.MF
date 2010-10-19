@@ -6,3 +6,4 @@ Bundle-Version: 0.9.7.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.apache.ant;bundle-version="1.7.1"
+Bundle-ActivationPolicy: lazy

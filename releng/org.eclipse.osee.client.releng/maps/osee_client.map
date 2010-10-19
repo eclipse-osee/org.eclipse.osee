@@ -32,7 +32,6 @@ feature@org.eclipse.osee.define.feature=SVN,,http://dev.eclipse.org/svnroot/tech
 plugin@org.eclipse.osee.coverage=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.coverage
 plugin@org.eclipse.osee.coverage.help.ui=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.coverage.help.ui
 plugin@org.eclipse.osee.define=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.define
-plugin@org.eclipse.osee.define.help.ui=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.define.help.ui
 
 feature@org.eclipse.osee.ats.feature=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,features/org.eclipse.osee.ats.feature
 plugin@org.eclipse.osee.ats=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.ats

@@ -3,9 +3,10 @@
 <plugin>
 	<extension
          id="org.eclipse.osee.coverage.help.ui.docs"
-         name="OSEE Coverage"
+         name="OSEE Coverage User&apos;s Guide"
          point="org.eclipse.help.toc">
       <toc
+            category="OSEE"
             file="toc.xml"
             primary="true">
       </toc>

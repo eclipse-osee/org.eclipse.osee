@@ -3,11 +3,12 @@
 <plugin>
 	<extension
 	         id="org.eclipse.osee.framework.dev.help.ui.docs"
-	         name="OSEE Developers' Help"
+	         name="OSEE Developers&apos; Guide"
 	         point="org.eclipse.help.toc">
 	      <toc
-	            file="toc.xml"
-	            primary="true">
+             category="OSEE"
+             file="toc.xml"
+             primary="true">
 	      </toc>
 	</extension>
 </plugin>

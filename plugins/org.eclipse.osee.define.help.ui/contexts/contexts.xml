@@ -1,6 +1,0 @@
-<contexts>
-	<context id="defineNavigator" title="Define Navigator View">
-		<description>Perform Define navigation capabilities.</description>
-		<topic href="userguide/OSEE Define Concepts.html" label="Define Navigator View"/>
-	</context>
-</contexts>

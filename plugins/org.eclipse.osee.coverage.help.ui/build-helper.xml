@@ -21,7 +21,7 @@
 			<mediawiki-to-eclipse-help wikiBaseUrl="${osee.help.doc.url.base}"
 				validate="true" failonvalidationerror="true" prependImagePrefix="images"
 				formatoutput="true" defaultAbsoluteLinkTarget="osee_external" dest="${basedir}"
-				navigationimages="true" title="OSEE User's Guide"
+				navigationimages="true" title="OSEE Coverage User's Guide"
 				generateUnifiedToc="true">
 				<path name="OSEE/Coverage/Users_Guide/Intro" title="Getting Started" />
 				<path name="OSEE/Coverage/Users_Guide/Views" title="Views and Editors" />
