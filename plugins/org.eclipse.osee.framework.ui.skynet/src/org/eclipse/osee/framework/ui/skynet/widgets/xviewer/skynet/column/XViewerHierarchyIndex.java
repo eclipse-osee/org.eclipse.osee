@@ -16,11 +16,16 @@ import java.util.Set;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.swt.SWT;
 
+/**
+ * @author Roberto E. Escobar
+ * @author Ryan D. Brooks
+ */
 public class XViewerHierarchyIndex extends XViewerValueColumn {
    private final Set<Artifact> strongArtifactRefs = new HashSet<Artifact>();
 
@@ -50,12 +55,17 @@ public class XViewerHierarchyIndex extends XViewerValueColumn {
          artifact = (Artifact) element;
       } else if (element instanceof Change) {
          artifact = ((Change) element).getChangeArtifact();
+      } else {
+         return "unexpected type: " + element;
       }
 
       try {
+         if (artifact.isDeleted()) {
+            return "deleted";
+         }
          return computeHierarchyIndex(artifact);
       } catch (OseeCoreException ex) {
-         return "-1";
+         return ex.toString();
       }
    }
 
@@ -65,8 +75,12 @@ public class XViewerHierarchyIndex extends XViewerValueColumn {
       Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(artifact.getBranch());
 
       while (!artifactCursor.equals(root)) {
+         Artifact parent = artifactCursor.getParent();
+         if (parent == null) {
+            return "not connected to root";
+         }
          builder.insert(0, getPosition(artifactCursor) + ".");
-         artifactCursor = artifactCursor.getParent();
+         artifactCursor = parent;
       }
       return builder.substring(0, builder.length() - 1);
    }
@@ -75,12 +89,13 @@ public class XViewerHierarchyIndex extends XViewerValueColumn {
       Artifact parent = artifact.getParent();
       List<Artifact> children = parent.getChildren();
       strongArtifactRefs.addAll(children);
+
       for (int index = 0; index < children.size(); index++) {
          Artifact child = children.get(index);
          if (artifact.equals(child)) {
             return index + 1;
          }
       }
-      return 0;
+      throw new OseeStateException("[%s] is expected to be a child of [%s]", artifact, parent);
    }
 }
