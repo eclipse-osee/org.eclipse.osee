@@ -43,9 +43,5 @@
 
    <includes
          id="org.eclipse.osee.core.plugin.feature.source"
-         version="0.0.0"/>  
-                
-   <includes
-         id="org.eclipse.osee.core.runtime.feature.source"
-         version="0.0.0"/>           
+         version="0.0.0"/>
 </feature>

@@ -59,7 +59,6 @@
 
    <requires>
       <import feature="org.eclipse.osee.core.runtime.feature" version="0.9.7.qualifier" match="greaterOrEqual"/>
-      <import feature="org.eclipse.osee.core.runtime.feature.source" version="0.9.7.qualifier" match="greaterOrEqual"/>
    </requires>
 
 </feature>
