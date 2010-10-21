@@ -235,11 +235,6 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, Co
       return RelationManager.getRelatedArtifactsCount(this, relationEnum, relationEnum.getSide());
    }
 
-   public int getRelatedArtifactsCount(RelationTypeSideSorter relationSorter) throws OseeCoreException {
-      return RelationManager.getRelatedArtifactsCount(relationSorter.getArtifact(), relationSorter.getRelationType(),
-         relationSorter.getSide());
-   }
-
    public <A extends Artifact> List<A> getRelatedArtifactsUnSorted(IRelationEnumeration side, Class<A> clazz) throws OseeCoreException {
       return Collections.castAll(getRelatedArtifactsUnSorted(side));
    }

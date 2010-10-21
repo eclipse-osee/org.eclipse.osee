@@ -151,7 +151,9 @@ public class RelationContentProvider implements ITreeContentProvider {
    public boolean hasChildren(Object element) {
       if (element instanceof RelationTypeSideSorter) {
          try {
-            return artifact.getArtifact().getRelatedArtifactsCount((RelationTypeSideSorter) element) > 0;
+            RelationTypeSideSorter sorter = (RelationTypeSideSorter) element;
+            return RelationManager.getRelatedArtifactsCount(sorter.getArtifact(), sorter.getRelationType(),
+               sorter.getSide()) > 0;
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             return false;
