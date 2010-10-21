@@ -8,11 +8,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.artifact;
+package org.eclipse.osee.framework.skynet.core.httpRequests;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
@@ -22,11 +21,12 @@ import org.eclipse.osee.framework.core.message.BranchCommitRequest;
 import org.eclipse.osee.framework.core.message.BranchCommitResponse;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.core.services.IAccessControlService;
+import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.HttpClientMessage;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
@@ -36,13 +36,27 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
  * @author Megumi Telles
+ * @author Ryan D. Brooks
  */
-public class HttpCommitDataRequester {
+public final class CommitBranchHttpRequestOperation extends AbstractOperation {
+   private final User user;
+   private final Branch sourceBranch;
+   private final Branch destinationBranch;
+   private final boolean isArchiveAllowed;
 
    private static final String ARTIFACT_CHANGES =
       "SELECT av.art_id, txs1.branch_id FROM osee_txs txs1, osee_artifact av WHERE txs1.branch_id = ? AND txs1.transaction_id = ? AND txs1.gamma_id = av.gamma_id " + "UNION ALL " + "SELECT art.art_id, txs2.branch_id FROM osee_txs txs2, osee_relation_link rel, osee_artifact art WHERE txs2.branch_id = ? and txs2.transaction_id = ? AND txs2.gamma_id = rel.gamma_id AND (rel.a_art_id = art.art_id OR rel.b_art_id = art.art_id) " + "UNION ALL " + "SELECT att.art_id, txs3.branch_id FROM osee_txs txs3, osee_attribute att WHERE txs3.branch_id = ? AND txs3.transaction_id = ? AND txs3.gamma_id = att.gamma_id";
 
-   public static void commitBranch(IProgressMonitor monitor, User user, Branch sourceBranch, Branch destinationBranch, boolean isArchiveAllowed) throws OseeCoreException {
+   public CommitBranchHttpRequestOperation(User user, Branch sourceBranch, Branch destinationBranch, boolean isArchiveAllowed) {
+      super("Commit " + sourceBranch, Activator.PLUGIN_ID);
+      this.user = user;
+      this.sourceBranch = sourceBranch;
+      this.destinationBranch = destinationBranch;
+      this.isArchiveAllowed = isArchiveAllowed;
+   }
+
+   @Override
+   protected void doWork(IProgressMonitor monitor) throws OseeCoreException {
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("function", Function.BRANCH_COMMIT.name());
 
@@ -58,13 +72,9 @@ public class HttpCommitDataRequester {
       }
    }
 
-   private static IAccessControlService getAccessControlService() {
-      return Activator.getInstance().getAccessControlService();
-   }
-
-   private static void handleResponse(BranchCommitResponse response, Branch sourceBranch) throws OseeCoreException {
+   private void handleResponse(BranchCommitResponse response, Branch sourceBranch) throws OseeCoreException {
       TransactionRecord newTransaction = response.getTransaction();
-      getAccessControlService().removePermissions(sourceBranch);
+      Activator.getInstance().getAccessControlService().removePermissions(sourceBranch);
       // Update commit artifact cache with new information
       if (sourceBranch.getAssociatedArtifactId() > 0) {
          TransactionManager.cacheCommittedArtifactTransaction(BranchManager.getAssociatedArtifact(sourceBranch),
@@ -73,10 +83,12 @@ public class HttpCommitDataRequester {
       BranchManager.getCache().reloadCache();
 
       reloadCommittedArtifacts(newTransaction);
-      kickCommitEvent(sourceBranch);
+
+      OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.Committed, sourceBranch.getGuid()),
+         sourceBranch.getId());
    }
 
-   private static void reloadCommittedArtifacts(TransactionRecord newTransaction) throws OseeCoreException {
+   private void reloadCommittedArtifacts(TransactionRecord newTransaction) throws OseeCoreException {
       Branch txBranch = BranchManager.getBranch(newTransaction.getBranchId());
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
@@ -95,16 +107,6 @@ public class HttpCommitDataRequester {
          }
       } finally {
          chStmt.close();
-      }
-
-   }
-
-   private static void kickCommitEvent(Branch sourceBranch) {
-      try {
-         OseeEventManager.kickBranchEvent(HttpCommitDataRequester.class, new BranchEvent(BranchEventType.Committed,
-            sourceBranch.getGuid()), sourceBranch.getId());
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 }

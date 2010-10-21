@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleBranchesExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.MergeBranch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -50,11 +49,16 @@ import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.operation.FinishUpdateBranchOperation;
 import org.eclipse.osee.framework.skynet.core.artifact.operation.UpdateBranchOperation;
-import org.eclipse.osee.framework.skynet.core.artifact.requester.HttpPurgeBranchRequester;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.update.ConflictResolverOperation;
 import org.eclipse.osee.framework.skynet.core.commit.actions.CommitAction;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
+import org.eclipse.osee.framework.skynet.core.httpRequests.CommitBranchHttpRequestOperation;
+import org.eclipse.osee.framework.skynet.core.httpRequests.CreateBranchHttpRequestOperation;
+import org.eclipse.osee.framework.skynet.core.httpRequests.PurgeBranchHttpRequestOperation;
+import org.eclipse.osee.framework.skynet.core.httpRequests.UpdateBranchArchivedStateHttpRequestOperation;
+import org.eclipse.osee.framework.skynet.core.httpRequests.UpdateBranchStateHttpRequestOperation;
+import org.eclipse.osee.framework.skynet.core.httpRequests.UpdateBranchTypeHttpRequestOperation;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
@@ -218,23 +222,22 @@ public class BranchManager {
    }
 
    public static void purgeBranch(final Branch branch) throws OseeCoreException {
-      try {
-         HttpPurgeBranchRequester.purge(branch);
-      } catch (RuntimeException ex) {
-         OseeExceptions.wrapAndThrow(ex);
-      }
+      Operations.executeWorkAndCheckStatus(new PurgeBranchHttpRequestOperation(branch));
    }
 
    public static void updateBranchType(IProgressMonitor monitor, final int branchId, String branchGuid, final BranchType type) throws OseeCoreException {
-      HttpUpdateBranchTypeRequester.updateBranchType(monitor, branchId, branchGuid, type);
+      IOperation operation = new UpdateBranchTypeHttpRequestOperation(branchId, branchGuid, type);
+      Operations.executeWorkAndCheckStatus(operation, monitor);
    }
 
    public static void updateBranchState(IProgressMonitor monitor, final int branchId, String branchGuid, final BranchState state) throws OseeCoreException {
-      HttpUpdateBranchStateRequester.updateBranchState(monitor, branchId, branchGuid, state);
+      IOperation operation = new UpdateBranchStateHttpRequestOperation(branchId, branchGuid, state);
+      Operations.executeWorkAndCheckStatus(operation, monitor);
    }
 
    public static void updateBranchArchivedState(IProgressMonitor monitor, final int branchId, String branchGuid, final BranchArchivedState state) throws OseeCoreException {
-      HttpUpdateBranchArchivedStateRequester.updateBranchArchivedState(monitor, branchId, branchGuid, state);
+      IOperation operation = new UpdateBranchArchivedStateHttpRequestOperation(branchId, branchGuid, state);
+      Operations.executeWorkAndCheckStatus(operation, monitor);
    }
 
    /**
@@ -260,8 +263,11 @@ public class BranchManager {
          throw new OseeCoreException("Commit failed - unable to commit into a non-editable branch");
       }
       runCommitExtPointActions(conflictManager);
-      HttpCommitDataRequester.commitBranch(monitor, UserManager.getUser(), conflictManager.getSourceBranch(),
-         conflictManager.getDestinationBranch(), archiveSourceBranch);
+
+      IOperation operation =
+         new CommitBranchHttpRequestOperation(UserManager.getUser(), conflictManager.getSourceBranch(),
+            conflictManager.getDestinationBranch(), archiveSourceBranch);
+      Operations.executeWorkAndCheckStatus(operation, monitor);
    }
 
    private static void runCommitExtPointActions(ConflictManagerExternal conflictManager) throws OseeCoreException {
@@ -333,9 +339,8 @@ public class BranchManager {
                destBranch.getName());
          String branchName = "Merge " + sourceBranch.getShortName() + " <=> " + destBranch.getShortName();
          mergeBranch =
-            (MergeBranch) HttpBranchCreation.createBranch(BranchType.MERGE, parentTxId, sourceBranch.getId(),
-               branchName, null, UserManager.getUser(), creationComment, populateBaseTxFromAddressingQueryId,
-               destBranch.getId());
+            (MergeBranch) createBranch(BranchType.MERGE, sourceBranch.getBaseTransaction(), branchName, null,
+               UserManager.getUser(), creationComment, populateBaseTxFromAddressingQueryId, destBranch.getId());
          mergeBranch.setSourceBranch(sourceBranch);
          mergeBranch.setDestinationBranch(destBranch);
       } finally {
@@ -348,15 +353,12 @@ public class BranchManager {
     * Creates a new Branch based on the transaction number selected and the parent branch.
     */
    public static Branch createWorkingBranch(TransactionRecord parentTransactionId, String childBranchName, String childBranchGuid, Artifact associatedArtifact) throws OseeCoreException {
-      int parentBranchId = parentTransactionId.getBranchId();
-      int parentTransactionNumber = parentTransactionId.getId();
-
-      Branch parentBranch = BranchManager.getBranch(parentBranchId);
-      String creationComment = "New Branch from " + parentBranch.getName() + "(" + parentTransactionNumber + ")";
+      String creationComment =
+         "New Branch from " + parentTransactionId.getBranch().getName() + "(" + parentTransactionId.getId() + ")";
 
       final String truncatedName = Strings.truncate(childBranchName, 195, true);
-      return HttpBranchCreation.createBranch(BranchType.WORKING, parentTransactionNumber, parentBranchId,
-         truncatedName, childBranchGuid, associatedArtifact, creationComment, -1, -1);
+      return createBranch(BranchType.WORKING, parentTransactionId, truncatedName, childBranchGuid, associatedArtifact,
+         creationComment, -1, -1);
    }
 
    /**
@@ -378,9 +380,16 @@ public class BranchManager {
    public static Branch createBaselineBranch(IOseeBranch parentBranch, IOseeBranch childBranch, Artifact associatedArtifact) throws OseeCoreException {
       TransactionRecord parentTransactionId = TransactionManager.getHeadTransaction(parentBranch);
       String creationComment = String.format("Branch Creation for %s", childBranch.getName());
-      return HttpBranchCreation.createBranch(BranchType.BASELINE, parentTransactionId.getId(),
-         parentTransactionId.getBranch().getId(), childBranch.getName(), childBranch.getGuid(), associatedArtifact,
-         creationComment, -1, -1);
+      return createBranch(BranchType.BASELINE, parentTransactionId, childBranch.getName(), childBranch.getGuid(),
+         associatedArtifact, creationComment, -1, -1);
+   }
+
+   private static Branch createBranch(BranchType branchType, TransactionRecord parentTransaction, String branchName, String branchGuid, Artifact associatedArtifact, String creationComment, int populateBaseTxFromAddressingQueryId, int destinationBranchId) throws OseeCoreException {
+      CreateBranchHttpRequestOperation operation =
+         new CreateBranchHttpRequestOperation(branchType, parentTransaction, branchName, branchGuid,
+	    associatedArtifact, creationComment, populateBaseTxFromAddressingQueryId, destinationBranchId);
+      Operations.executeWorkAndCheckStatus(operation);
+      return operation.getNewBranch();
    }
 
    /**
