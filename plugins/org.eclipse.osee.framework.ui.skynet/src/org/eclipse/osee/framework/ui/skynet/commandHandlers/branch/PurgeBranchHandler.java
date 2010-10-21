@@ -18,12 +18,10 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.skynet.core.httpRequests.PurgeBranchHttpRequestOperation;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
@@ -44,12 +42,7 @@ public class PurgeBranchHandler extends CommandHandler {
             new String[] {IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL}, 1);
 
       if (dialog.open() == 0) {
-         try {
-            BranchManager.purgeBranch(selectedBranch);
-         } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            return null;
-         }
+         Operations.executeAsJob(new PurgeBranchHttpRequestOperation(selectedBranch), true);
       }
 
       return null;
