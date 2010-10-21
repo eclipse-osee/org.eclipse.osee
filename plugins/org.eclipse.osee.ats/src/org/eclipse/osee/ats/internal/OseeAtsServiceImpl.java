@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
-import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorSimpleProvider;
@@ -122,15 +121,11 @@ public class OseeAtsServiceImpl implements IOseeCmService {
          if (cType == null) {
             cType = ChangeType.Improvement;
          }
-         PriorityType pType = PriorityType.getPriority(priority);
-         if (pType == null) {
-            pType = PriorityType.None;
-         }
          Set<ActionableItemArtifact> aias = ActionableItemArtifact.getActionableItems(productNames);
          if (aias.size() == 0) {
             throw new OseeArgumentException("Can not resolve productNames to Actionable Items");
          }
-         NewActionJob job = new NewActionJob(title, description, cType, pType, needByDate, false, aias, null);
+         NewActionJob job = new NewActionJob(title, description, cType, priority, needByDate, false, aias, null);
          job.schedule();
          job.join();
          return job.getActionArt();

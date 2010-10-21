@@ -22,7 +22,6 @@ import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
-import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
@@ -69,7 +68,7 @@ public class AtsPurgeTest {
             getClass().getSimpleName(),
             "description",
             ChangeType.Improvement,
-            PriorityType.Priority_2,
+            "2",
             false,
             null,
             org.eclipse.osee.framework.jdk.core.util.Collections.castAll(

@@ -29,7 +29,6 @@ import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
-import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.DefaultTeamState;
@@ -156,7 +155,7 @@ public class AtsBranchConfigurationTest {
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
       ActionArtifact actionArt =
          ActionManager.createAction(null, AtsTestBranches.BranchViaVersions.getName() + " Req Changes", "description",
-            ChangeType.Problem, PriorityType.Priority_1, false, null, selectedActionableItems, transaction);
+            ChangeType.Problem, "1", false, null, selectedActionableItems, transaction);
       actionArt.getTeamWorkFlowArtifacts().iterator().next().addRelation(
          AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, verArtToTarget);
       actionArt.getTeamWorkFlowArtifacts().iterator().next().persist(transaction);
@@ -253,8 +252,8 @@ public class AtsBranchConfigurationTest {
          new SkynetTransaction(AtsUtil.getAtsBranch(), "Test branch via team definition: create action");
       String actionTitle = AtsTestBranches.BranchViaTeamDef.getName() + " Req Changes";
       ActionArtifact actionArt =
-         ActionManager.createAction(null, actionTitle, "description", ChangeType.Problem, PriorityType.Priority_1,
-            false, null, selectedActionableItems, transaction);
+         ActionManager.createAction(null, actionTitle, "description", ChangeType.Problem, "1", false, null,
+            selectedActionableItems, transaction);
       transaction.execute();
 
       final TeamWorkFlowArtifact teamWf = actionArt.getTeamWorkFlowArtifacts().iterator().next();

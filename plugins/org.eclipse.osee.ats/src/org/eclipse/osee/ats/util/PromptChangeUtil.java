@@ -348,14 +348,14 @@ public final class PromptChangeUtil {
       final AtsPriorityDialog ald = new AtsPriorityDialog(Displays.getActiveShell());
       try {
          if (teams.size() == 1) {
-            ald.setSelected(teams.iterator().next().getPriority());
+            ald.setSelected(teams.iterator().next().getWorldViewPriority());
          }
          if (ald.open() == 0) {
 
             SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "ATS Prompt Change Priority");
             for (TeamWorkFlowArtifact team : teams) {
-               if (team.getPriority() != ald.getSelection()) {
-                  team.setPriority(ald.getSelection());
+               if (!team.getWorldViewPriority().equals(ald.getSelection())) {
+                  team.setSoleAttributeValue(AtsAttributeTypes.PriorityType, ald.getSelection());
                   team.saveSMA(transaction);
                }
             }

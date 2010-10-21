@@ -24,7 +24,6 @@ import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsNotifyUsers;
-import org.eclipse.osee.ats.util.AtsPriority;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -120,8 +119,8 @@ public class ExcelAtsActionArtifactExtractor {
          for (ActionData aData : actionDatas) {
             ActionArtifact actionArt =
                ActionManager.createAction(null, aData.title, aData.desc, ChangeType.getChangeType(aData.changeType),
-                  AtsPriority.PriorityType.getPriority(aData.priorityStr), false, null,
-                  ActionableItemArtifact.getActionableItems(aData.actionableItems), transaction);
+                  aData.priorityStr, false, null, ActionableItemArtifact.getActionableItems(aData.actionableItems),
+                  transaction);
             actionArts.add(actionArt);
             if (!aData.version.equals("")) {
                Artifact verArt = AtsCacheManager.getSoleArtifactByName(AtsArtifactTypes.Version, aData.version);

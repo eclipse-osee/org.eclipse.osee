@@ -21,7 +21,6 @@ import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.util.ActionManager;
-import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.GoalManager;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
@@ -61,8 +60,8 @@ public class CreateGoalTestArtifacts extends XNavigateItemAction {
       GoalArtifact msaGoal = GoalManager.createGoal("MSA Tools");
       GoalArtifact cdbGoal = GoalManager.createGoal("Integrate CDB signal diff into OSEE");
       ActionArtifact action =
-         ActionManager.createAction(null, "Fix this model", "Description", ChangeType.Problem, PriorityType.Priority_2,
-            false, null, ActionableItemArtifact.getActionableItems(Arrays.asList("OTE_SW")), transaction);
+         ActionManager.createAction(null, "Fix this model", "Description", ChangeType.Problem, "2", false, null,
+            ActionableItemArtifact.getActionableItems(Arrays.asList("OTE_SW")), transaction);
       action.persist(transaction);
       oteGoal.addMember(action.getTeamWorkFlowArtifacts().iterator().next());
       TeamWorkFlowArtifact teamArt = action.getTeamWorkFlowArtifacts().iterator().next();
@@ -73,7 +72,7 @@ public class CreateGoalTestArtifacts extends XNavigateItemAction {
 
       action =
          ActionManager.createAction(null, "Add CDB Check Signals", "Description", ChangeType.Problem,
-            PriorityType.Priority_4, false, null,
+            "4", false, null,
             ActionableItemArtifact.getActionableItems(Arrays.asList("OTE_SW", "CDB")), transaction);
       action.persist(transaction);
       oteGoal.addMember(action.getTeamWorkFlowArtifacts().iterator().next());
@@ -84,7 +83,7 @@ public class CreateGoalTestArtifacts extends XNavigateItemAction {
 
       action =
          ActionManager.createAction(null, "Remove Workflow button", "Description", ChangeType.Problem,
-            PriorityType.Priority_4, false, null,
+            "4", false, null,
             ActionableItemArtifact.getActionableItems(Arrays.asList("ATS", "CDB")), transaction);
       action.persist(transaction);
       atsGoal.addMember(action.getTeamWorkFlowArtifacts().iterator().next());
@@ -94,7 +93,7 @@ public class CreateGoalTestArtifacts extends XNavigateItemAction {
       for (String msaTool : Arrays.asList("TRAX", "REQ", "RCS")) {
          action =
             ActionManager.createAction(null, "Fix " + msaTool + " button", "Description", ChangeType.Problem,
-               PriorityType.Priority_4, false, null, ActionableItemArtifact.getActionableItems(Arrays.asList(msaTool)),
+               "4", false, null, ActionableItemArtifact.getActionableItems(Arrays.asList(msaTool)),
                transaction);
          action.persist(transaction);
          msaGoal.addMember(action.getTeamWorkFlowArtifacts().iterator().next());
@@ -109,7 +108,7 @@ public class CreateGoalTestArtifacts extends XNavigateItemAction {
 
       action =
          ActionManager.createAction(null, "Add the Improvement", "Description", ChangeType.Improvement,
-            PriorityType.Priority_4, false, null, ActionableItemArtifact.getActionableItems(Arrays.asList("REQ")),
+            "4", false, null, ActionableItemArtifact.getActionableItems(Arrays.asList("REQ")),
             transaction);
       action.persist(transaction);
       msaGoal.addMember(action);

@@ -21,7 +21,6 @@ import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
-import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.GoalManager;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
@@ -31,6 +30,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -148,23 +148,23 @@ public class ActionArtifact extends AbstractAtsArtifact implements IWorldViewArt
    }
 
    private void resetPriorityOffChildren() throws OseeCoreException {
-      PriorityType priorityType = null;
+      String priorityType = null;
       Collection<TeamWorkFlowArtifact> teamArts = getTeamWorkFlowArtifacts();
       if (teamArts.size() == 1) {
-         priorityType = teamArts.iterator().next().getPriority();
+         priorityType = teamArts.iterator().next().getWorldViewPriority();
       } else {
          for (TeamWorkFlowArtifact team : teamArts) {
             if (!team.isCancelled()) {
                if (priorityType == null) {
-                  priorityType = team.getPriority();
-               } else if (priorityType != team.getPriority()) {
+                  priorityType = team.getWorldViewPriority();
+               } else if (priorityType != team.getWorldViewPriority()) {
                   return;
                }
             }
          }
       }
-      if (priorityType != null && getPriority() != priorityType) {
-         setPriority(priorityType);
+      if (Strings.isValid(priorityType)) {
+         setSoleAttributeValue(AtsAttributeTypes.PriorityType, priorityType);
       }
    }
 
@@ -184,14 +184,6 @@ public class ActionArtifact extends AbstractAtsArtifact implements IWorldViewArt
 
    public ChangeType getChangeType() throws OseeCoreException {
       return ChangeType.getChangeType(getSoleAttributeValue(AtsAttributeTypes.ChangeType, ""));
-   }
-
-   public PriorityType getPriority() throws OseeCoreException {
-      return PriorityType.getPriority(getSoleAttributeValue(AtsAttributeTypes.PriorityType, ""));
-   }
-
-   public void setPriority(PriorityType type) throws OseeCoreException {
-      setSoleAttributeValue(AtsAttributeTypes.PriorityType, type.getShortName());
    }
 
    public Collection<TeamWorkFlowArtifact> getTeamWorkFlowArtifacts() throws OseeCoreException {
@@ -316,7 +308,7 @@ public class ActionArtifact extends AbstractAtsArtifact implements IWorldViewArt
 
    @Override
    public String getWorldViewPriority() throws OseeCoreException {
-      return PriorityType.getPriority(getSoleAttributeValue(AtsAttributeTypes.PriorityType, "")).getShortName();
+      return getSoleAttributeValue(AtsAttributeTypes.PriorityType, "");
    }
 
    @Override

@@ -25,7 +25,6 @@ import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsDeleteManager;
 import org.eclipse.osee.ats.util.AtsDeleteManager.DeleteOption;
-import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.DefaultTeamState;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
@@ -231,8 +230,8 @@ public class AtsDeleteManagerTest {
 
    private TeamWorkFlowArtifact createAction(TestNames testName, Collection<ActionableItemArtifact> actionableItems, SkynetTransaction transaction) throws OseeCoreException {
       ActionArtifact actionArt =
-         ActionManager.createAction(null, testName.name(), "Description", ChangeType.Improvement,
-            PriorityType.Priority_2, false, null, actionableItems, transaction);
+         ActionManager.createAction(null, testName.name(), "Description", ChangeType.Improvement, "2", false, null,
+            actionableItems, transaction);
 
       TeamWorkFlowArtifact teamArt = null;
       for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts()) {

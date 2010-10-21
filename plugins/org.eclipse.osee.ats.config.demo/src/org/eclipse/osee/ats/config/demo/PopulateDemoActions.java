@@ -37,7 +37,6 @@ import org.eclipse.osee.ats.config.demo.util.DemoTeams;
 import org.eclipse.osee.ats.config.demo.util.DemoTeams.Team;
 import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
-import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.DefaultTeamState;
@@ -443,7 +442,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
          for (String prefixTitle : aData.prefixTitles) {
             ActionArtifact actionArt =
                ActionManager.createAction(null, prefixTitle + " " + aData.postFixTitle,
-                  TITLE_PREFIX[x] + " " + aData.postFixTitle, CHANGE_TYPE[x], PriorityType.Priority_1, false, null,
+                  TITLE_PREFIX[x] + " " + aData.postFixTitle, CHANGE_TYPE[x], "1", false, null,
                   aData.getActionableItems(), transaction);
             actionArts.add(actionArt);
             for (TeamWorkFlowArtifact teamWf : actionArt.getTeamWorkFlowArtifacts()) {

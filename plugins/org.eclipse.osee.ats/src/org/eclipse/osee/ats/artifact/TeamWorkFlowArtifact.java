@@ -21,7 +21,6 @@ import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsBranchManager;
-import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.DefaultTeamState;
 import org.eclipse.osee.ats.util.StateManager;
@@ -139,14 +138,6 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IB
       setSoleAttributeValue(AtsAttributeTypes.ChangeType, type.name());
    }
 
-   public PriorityType getPriority() throws OseeCoreException {
-      return PriorityType.getPriority(getSoleAttributeValue(AtsAttributeTypes.PriorityType, ""));
-   }
-
-   public void setPriority(PriorityType type) throws OseeCoreException {
-      setSoleAttributeValue(AtsAttributeTypes.PriorityType, type.getShortName());
-   }
-
    public XActionableItemsDam getActionableItemsDam() {
       return actionableItemsDam;
    }
@@ -184,7 +175,7 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IB
 
    @Override
    public String getWorldViewPriority() throws OseeCoreException {
-      return PriorityType.getPriority(getSoleAttributeValue(AtsAttributeTypes.PriorityType, "")).getShortName();
+      return getSoleAttributeValue(AtsAttributeTypes.PriorityType, "");
    }
 
    @Override

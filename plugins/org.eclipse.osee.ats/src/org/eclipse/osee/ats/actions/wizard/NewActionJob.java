@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.ActionManager;
-import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -39,14 +38,14 @@ public class NewActionJob extends Job {
    private String title;
    private final String desc;
    private final ChangeType changeType;
-   private final PriorityType priority;
+   private final String priority;
    private final Date needByDate;
    private final boolean validationRequired;
    private ActionArtifact actionArt;
    private final Set<ActionableItemArtifact> actionableItems;
    private final NewActionWizard wizard;
 
-   public NewActionJob(String title, String desc, ChangeType changeType, PriorityType priority, Date needByDate, boolean validationRequired, Set<ActionableItemArtifact> actionableItems, NewActionWizard wizard) {
+   public NewActionJob(String title, String desc, ChangeType changeType, String priority, Date needByDate, boolean validationRequired, Set<ActionableItemArtifact> actionableItems, NewActionWizard wizard) {
       super("Creating New Action");
       this.title = title;
       this.desc = desc;

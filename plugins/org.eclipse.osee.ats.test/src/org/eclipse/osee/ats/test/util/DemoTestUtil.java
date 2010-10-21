@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.ActionManager;
-import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationException;
@@ -84,8 +83,8 @@ public class DemoTestUtil {
     */
    public static TeamWorkFlowArtifact createSimpleAction(String title, SkynetTransaction transaction) throws OseeCoreException {
       ActionArtifact actionArt =
-         ActionManager.createAction(null, title, "Description", ChangeType.Improvement, PriorityType.Priority_2, false,
-            null, ActionableItemArtifact.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName())),
+         ActionManager.createAction(null, title, "Description", ChangeType.Improvement, "2", false, null,
+            ActionableItemArtifact.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName())),
             transaction);
 
       TeamWorkFlowArtifact teamArt = null;

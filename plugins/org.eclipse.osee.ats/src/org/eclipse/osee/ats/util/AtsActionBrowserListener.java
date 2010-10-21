@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util;
 
-import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
-import org.eclipse.osee.framework.ui.skynet.results.html.XResultBrowserHyperCmd;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultBrowserListener;
 import org.eclipse.swt.browser.LocationEvent;
 
@@ -28,11 +26,6 @@ public class AtsActionBrowserListener extends XResultBrowserListener {
       }
       String cmdStr = location.replaceFirst("about:blank", "");
       cmdStr = cmdStr.replaceFirst("blank", "");
-      XResultBrowserHyperCmd xResultBrowserHyperCmd = XResultBrowserHyperCmd.getCmdStrHyperCmd(cmdStr);
-      if (xResultBrowserHyperCmd == XResultBrowserHyperCmd.openPriorityHelp) {
-         event.doit = false;
-         HelpUtil.displayHelp(AtsPriority.PRIORITY_HELP_CONTEXT_ID);
-      }
       super.changing(event);
    }
 }

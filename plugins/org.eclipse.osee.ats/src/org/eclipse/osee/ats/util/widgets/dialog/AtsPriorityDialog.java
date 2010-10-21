@@ -12,21 +12,18 @@ package org.eclipse.osee.ats.util.widgets.dialog;
 
 import java.util.ArrayList;
 import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.osee.ats.util.AtsPriority;
-import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
+import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
-import org.eclipse.osee.framework.ui.swt.HyperLinkLabel;
+import org.eclipse.osee.framework.ui.plugin.util.StringLabelProvider;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.ListDialog;
 
@@ -35,33 +32,24 @@ import org.eclipse.ui.dialogs.ListDialog;
  */
 public class AtsPriorityDialog extends ListDialog {
 
-   PriorityType selected = null;
+   String selected = null;
 
    public AtsPriorityDialog(Shell parent) {
       super(parent);
       setContentProvider(new ArrayContentProvider());
-      setLabelProvider(new PriorityLabelProvider());
-      setInput(AtsPriority.PriorityType.values());
+      setLabelProvider(new StringLabelProvider());
+      try {
+         setInput(AttributeTypeManager.getEnumerationValues(AtsAttributeTypes.PriorityType));
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
       setShellStyle(getShellStyle() | SWT.RESIZE);
       setTitle("Select Priority");
       setMessage("Select Priority - Click for Help");
    }
 
-   public AtsPriority.PriorityType getSelection() {
-      return (AtsPriority.PriorityType) getResult()[0];
-   }
-
-   @Override
-   protected Label createMessageArea(Composite composite) {
-      Label label = super.createMessageArea(composite);
-      label.addListener(SWT.MouseUp, new Listener() {
-         @Override
-         public void handleEvent(Event event) {
-            AtsPriority.openHelp();
-         }
-      });
-      HyperLinkLabel.adapt(label);
-      return label;
+   public String getSelection() {
+      return (String) getResult()[0];
    }
 
    @Override
@@ -74,8 +62,6 @@ public class AtsPriorityDialog extends ListDialog {
          getTableViewer().setSelection(new StructuredSelection(sel.toArray(new Object[sel.size()])));
          getTableViewer().getTable().setFocus();
       }
-      HelpUtil.setHelp(getTableViewer().getControl(), AtsPriority.PRIORITY_HELP_CONTEXT_ID,
-         "org.eclipse.osee.ats.help.ui");
       return c;
    }
 
@@ -88,45 +74,7 @@ public class AtsPriorityDialog extends ListDialog {
       super.okPressed();
    }
 
-   public static class PriorityLabelProvider implements ILabelProvider {
-
-      @Override
-      public Image getImage(Object arg0) {
-         return null;
-      }
-
-      @Override
-      public String getText(Object arg0) {
-         PriorityType type = (PriorityType) arg0;
-         if (type == PriorityType.None) {
-            return type.name();
-         }
-         return type.getShortName();
-      }
-
-      @Override
-      public void addListener(ILabelProviderListener arg0) {
-         // do nothing
-      }
-
-      @Override
-      public void dispose() {
-         // do nothing
-      }
-
-      @Override
-      public boolean isLabelProperty(Object arg0, String arg1) {
-         return false;
-      }
-
-      @Override
-      public void removeListener(ILabelProviderListener arg0) {
-         // do nothing
-      }
-
-   }
-
-   public void setSelected(PriorityType selected) {
+   public void setSelected(String selected) {
       this.selected = selected;
    }
 

@@ -19,7 +19,6 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -107,9 +106,9 @@ public class NewActionWizard extends Wizard implements INewWizard {
       return ((XText) page2.getXWidget("Description")).get();
    }
 
-   public PriorityType getPriority() throws OseeCoreException {
+   public String getPriority() throws OseeCoreException {
       // Must use skynet attribute name cause this widget uses the OPTIONS_FROM_ATTRIBUTE_VALIDITY
-      return PriorityType.getPriority(((XCombo) page2.getXWidget("ats.Priority")).get());
+      return ((XCombo) page2.getXWidget("ats.Priority")).get();
    }
 
    public ChangeType getChangeType() throws OseeCoreException {

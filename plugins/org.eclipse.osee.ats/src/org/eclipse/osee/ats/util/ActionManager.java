@@ -24,7 +24,6 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
 import org.eclipse.osee.ats.artifact.log.LogType;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -44,7 +43,7 @@ import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
  */
 public class ActionManager {
 
-   public static ActionArtifact createAction(IProgressMonitor monitor, String title, String desc, ChangeType changeType, PriorityType priority, boolean validationRequired, Date needByDate, Collection<ActionableItemArtifact> actionableItems, SkynetTransaction transaction) throws OseeCoreException {
+   public static ActionArtifact createAction(IProgressMonitor monitor, String title, String desc, ChangeType changeType, String priority, boolean validationRequired, Date needByDate, Collection<ActionableItemArtifact> actionableItems, SkynetTransaction transaction) throws OseeCoreException {
       // if "tt" is title, this is an action created for development. To
       // make it easier, all fields are automatically filled in for ATS developer
 
@@ -163,16 +162,10 @@ public class ActionManager {
     * Set Team Workflow attributes off given action artifact
     */
    public static void setArtifactIdentifyData(ActionArtifact fromAction, TeamWorkFlowArtifact toTeam) throws OseeCoreException {
-      String priorityStr = fromAction.getSoleAttributeValue(AtsAttributeTypes.PriorityType, "");
-      PriorityType priType = null;
-      if (Strings.isValid(priorityStr)) {
-         priType = PriorityType.getPriority(priorityStr);
-      } else {
-         throw new OseeArgumentException("Invalid priority [%s]", priorityStr);
-      }
       setArtifactIdentifyData(toTeam, fromAction.getName(),
          fromAction.getSoleAttributeValue(AtsAttributeTypes.Description, ""),
-         ChangeType.getChangeType(fromAction.getSoleAttributeValue(AtsAttributeTypes.ChangeType, "")), priType,
+         ChangeType.getChangeType(fromAction.getSoleAttributeValue(AtsAttributeTypes.ChangeType, "")),
+         fromAction.getSoleAttributeValue(AtsAttributeTypes.PriorityType, ""),
          //            fromAction.getAttributesToStringList(AtsAttributeTypes.ATS_USER_COMMUNITY),
          fromAction.getSoleAttributeValue(AtsAttributeTypes.ValidationRequired, false),
          fromAction.getSoleAttributeValue(AtsAttributeTypes.NeedBy, (Date) null));
@@ -181,15 +174,15 @@ public class ActionManager {
    /**
     * Since there is no shared attribute yet, action and workflow arts are all populate with identify data
     */
-   public static void setArtifactIdentifyData(Artifact art, String title, String desc, ChangeType changeType, PriorityType priority, Boolean validationRequired, Date needByDate) throws OseeCoreException {
+   public static void setArtifactIdentifyData(Artifact art, String title, String desc, ChangeType changeType, String priority, Boolean validationRequired, Date needByDate) throws OseeCoreException {
       art.setName(title);
       if (!desc.equals("")) {
          art.setSoleAttributeValue(AtsAttributeTypes.Description, desc);
       }
       art.setSoleAttributeValue(AtsAttributeTypes.ChangeType, changeType.name());
       //      art.setAttributeValues(ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getStoreName(), userComms);
-      if (priority != null && priority != PriorityType.None) {
-         art.setSoleAttributeValue(AtsAttributeTypes.PriorityType, priority.getShortName());
+      if (Strings.isValid(priority)) {
+         art.setSoleAttributeValue(AtsAttributeTypes.PriorityType, priority);
       }
       if (needByDate != null) {
          art.setSoleAttributeValue(AtsAttributeTypes.NeedBy, needByDate);
