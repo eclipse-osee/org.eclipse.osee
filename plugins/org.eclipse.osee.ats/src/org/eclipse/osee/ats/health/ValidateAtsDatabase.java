@@ -44,7 +44,6 @@ import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.DefaultTeamState;
 import org.eclipse.osee.ats.util.widgets.SMAState;
 import org.eclipse.osee.ats.util.widgets.XCurrentStateDam;
 import org.eclipse.osee.ats.util.widgets.XStateDam;
@@ -444,13 +443,11 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                if (artifact instanceof AbstractWorkflowArtifact) {
                   XStateDam stateDam = new XStateDam((AbstractWorkflowArtifact) artifact);
                   for (SMAState state : stateDam.getStates()) {
-                     if (state.getName().equals(DefaultTeamState.Completed.name()) || state.getName().equals(
-                        DefaultTeamState.Cancelled.name()) && state.getHoursSpent() != 0.0 || state.getPercentComplete() != 0) {
+                     if (state.isCompletedOrCancelled() && state.getPercentComplete() != 0) {
                         testNameToResultsMap.put(
                            "testAtsAttributeValues",
-                           "Error: ats.State error for SMA: " + XResultData.getHyperlink(artifact) + " State: " + state.getName() + " Hours Spent: " + state.getHoursSpentStr() + " Percent: " + state.getPercentComplete());
+                           "Error: ats.State error for SMA: " + XResultData.getHyperlink(artifact) + " State: " + state.getName() + " Percent: " + state.getPercentComplete());
                         if (fixAttributeValues) {
-                           state.setHoursSpent(0);
                            state.setPercentComplete(0);
                            stateDam.setState(state);
                            testNameToResultsMap.put("testAtsAttributeValues", "Fixed");
@@ -463,13 +460,11 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                if (artifact instanceof AbstractWorkflowArtifact) {
                   XCurrentStateDam currentStateDam = new XCurrentStateDam((AbstractWorkflowArtifact) artifact);
                   SMAState state = currentStateDam.getState();
-                  if (state.getName().equals(DefaultTeamState.Completed.name()) || state.getName().equals(
-                     DefaultTeamState.Cancelled.name()) && state.getHoursSpent() != 0.0 || state.getPercentComplete() != 0) {
+                  if (state.isCompletedOrCancelled() && state.getPercentComplete() != 0) {
                      testNameToResultsMap.put(
                         "testAtsAttributeValues",
-                        "Error: ats.CurrentState error for SMA: " + XResultData.getHyperlink(artifact) + " State: " + state.getName() + " Hours Spent: " + state.getHoursSpentStr() + " Percent: " + state.getPercentComplete());
+                        "Error: ats.CurrentState error for SMA: " + XResultData.getHyperlink(artifact) + " State: " + state.getName() + " Percent: " + state.getPercentComplete());
                      if (fixAttributeValues) {
-                        state.setHoursSpent(0);
                         state.setPercentComplete(0);
                         currentStateDam.setState(state);
                         testNameToResultsMap.put("testAtsAttributeValues", "Fixed");
@@ -750,8 +745,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                               "Error: " + sma.getArtifactTypeName() + " " + XResultData.getHyperlink(sma) + " exception accessing logItem: " + ex.getLocalizedMessage());
 
                         }
-                     }
-                     if (logItem.getDate() == null) {
+                     } else if (logItem.getDate() == null) {
                         try {
                            testNameToResultsMap.put(
                               "testAtsLogs",

@@ -212,4 +212,16 @@ public class SMAState {
    public void setPercentComplete(int percentComplete) {
       this.percentComplete = percentComplete;
    }
+
+   public boolean isCompleted() {
+      return getName().equals(DefaultTeamState.Completed.name());
+   }
+
+   public boolean isCancelled() {
+      return getName().equals(DefaultTeamState.Cancelled.name());
+   }
+
+   public boolean isCompletedOrCancelled() {
+      return isCompleted() || isCancelled();
+   }
 }
