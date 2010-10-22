@@ -237,11 +237,6 @@ public abstract class AbstractReviewArtifact extends AbstractTaskableArtifact {
    }
 
    @Override
-   public Date getWorldViewDeadlineDate() {
-      return null;
-   }
-
-   @Override
    public String getWorldViewCategory() {
       return "";
    }
@@ -305,11 +300,6 @@ public abstract class AbstractReviewArtifact extends AbstractTaskableArtifact {
 
    @Override
    public String getWorldViewCategory3() {
-      return "";
-   }
-
-   @Override
-   public String getWorldViewDeadlineDateStr() {
       return "";
    }
 

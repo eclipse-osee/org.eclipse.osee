@@ -149,15 +149,24 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return getArtifactTypeName();
    }
 
-   @SuppressWarnings("unused")
    @Override
    public Date getWorldViewDeadlineDate() throws OseeCoreException {
-      return null;
+      Date result = getSoleAttributeValue(AtsAttributeTypes.NeedBy, null);
+      if (result == null && !(this instanceof TeamWorkFlowArtifact)) {
+         AbstractWorkflowArtifact art = getParentTeamWorkflow();
+         if (art != null) {
+            return art.getWorldViewDeadlineDate();
+         }
+      }
+      return result;
    }
 
-   @SuppressWarnings("unused")
    @Override
    public String getWorldViewDeadlineDateStr() throws OseeCoreException {
+      Date date = getWorldViewDeadlineDate();
+      if (date != null) {
+         return DateUtil.getMMDDYY(date);
+      }
       return "";
    }
 

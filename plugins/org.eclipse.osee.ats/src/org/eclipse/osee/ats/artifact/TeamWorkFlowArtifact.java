@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -333,20 +332,6 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IB
    @Override
    public Collection<User> getImplementers() throws OseeCoreException {
       return StateManager.getImplementersByState(this, DefaultTeamState.Implement.name());
-   }
-
-   @Override
-   public String getWorldViewDeadlineDateStr() throws OseeCoreException {
-      Date date = getWorldViewDeadlineDate();
-      if (date != null) {
-         return DateUtil.getMMDDYY(date);
-      }
-      return "";
-   }
-
-   @Override
-   public Date getWorldViewDeadlineDate() throws OseeCoreException {
-      return getSoleAttributeValue(AtsAttributeTypes.NeedBy, null);
    }
 
    @Override

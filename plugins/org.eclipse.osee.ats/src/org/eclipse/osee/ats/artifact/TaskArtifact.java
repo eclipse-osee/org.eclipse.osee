@@ -300,16 +300,6 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IATSStateM
    }
 
    @Override
-   public Date getWorldViewDeadlineDate() {
-      return null;
-   }
-
-   @Override
-   public String getWorldViewDeadlineDateStr() {
-      return "";
-   }
-
-   @Override
    public double getWorldViewWeeklyBenefit() {
       return 0;
    }
