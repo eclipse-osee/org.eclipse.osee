@@ -20,7 +20,7 @@ import org.eclipse.swt.SWT;
  */
 public class UserRoleXViewerFactory extends SkynetXViewerFactory {
 
-   private static String NAMESPACE = "osee.ats.UserRoleXViewer";
+   private final static String NAMESPACE = "osee.ats.UserRoleXViewer";
    public static XViewerColumn Role_Col = new XViewerColumn("osee.userRole.role", "Role", 100, SWT.LEFT, true,
       SortDataType.String, false, null);
    public static XViewerColumn User_Col = new XViewerColumn("osee.userRole.user", "User", 150, SWT.LEFT, true,

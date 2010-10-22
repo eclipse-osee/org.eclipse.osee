@@ -160,7 +160,8 @@ public class SMAPrint extends Action {
             StringBuffer notesSb = new StringBuffer();
             for (NoteItem note : sma.getNotes().getNoteItems()) {
                if (note.getState().equals(atsWorkPage.getName())) {
-                  notesSb.append(note.toHTML() + AHTML.newline());
+                  notesSb.append(note.toHTML());
+                  notesSb.append(AHTML.newline());
                }
             }
             if (sma.isCurrentState(atsWorkPage.getName()) || sma.getStateMgr().isStateVisited(atsWorkPage.getName()) && sma.isTeamWorkflow()) {

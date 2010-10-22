@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.workflow.vue;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
 import org.eclipse.osee.ats.workflow.vue.DiagramNode.PageType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -53,7 +52,7 @@ public class VueNode {
    public VueNode(String vueXml) throws OseeCoreException {
       super();
       this.vueXml = vueXml;
-      workPage = new DiagramNode(ATSXWidgetOptionResolver.getInstance());
+      workPage = new DiagramNode();
       processVueXml(vueXml);
    }
 

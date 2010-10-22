@@ -92,28 +92,7 @@ public class WorkflowDiagram extends ModelElement {
          }
 
          // Validate transitions
-         workFlowDefinition.clearTransitions();
-         for (Connection connection : getConnections()) {
-            if (TransitionConnection.class.isAssignableFrom(connection.getClass())) {
-               TransitionConnection transConn = (TransitionConnection) connection;
-               if (transConn instanceof DefaultTransitionConnection) {
-                  workFlowDefinition.addPageTransition(
-                     ((WorkPageShape) transConn.getSource()).getWorkPageDefinition().getPageName(),
-                     ((WorkPageShape) transConn.getTarget()).getWorkPageDefinition().getPageName(),
-                     TransitionType.ToPageAsDefault);
-               } else if (transConn instanceof ReturnTransitionConnection) {
-                  workFlowDefinition.addPageTransition(
-                     ((WorkPageShape) transConn.getSource()).getWorkPageDefinition().getPageName(),
-                     ((WorkPageShape) transConn.getTarget()).getWorkPageDefinition().getPageName(),
-                     TransitionType.ToPageAsReturn);
-               } else {
-                  workFlowDefinition.addPageTransition(
-                     ((WorkPageShape) transConn.getSource()).getWorkPageDefinition().getPageName(),
-                     ((WorkPageShape) transConn.getTarget()).getWorkPageDefinition().getPageName(),
-                     TransitionType.ToPage);
-               }
-            }
-         }
+         validateTransitions();
          workFlowDefinition.loadPageData(true);
 
          Artifact artifact = workFlowDefinition.toArtifact(WriteType.Update);
@@ -142,6 +121,31 @@ public class WorkflowDiagram extends ModelElement {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return Result.TrueResult;
+   }
+
+   private void validateTransitions() {
+      workFlowDefinition.clearTransitions();
+      for (Relation connection : getConnections()) {
+         if (TransitionConnection.class.isAssignableFrom(connection.getClass())) {
+            TransitionConnection transConn = (TransitionConnection) connection;
+            if (transConn instanceof DefaultTransitionConnection) {
+               workFlowDefinition.addPageTransition(
+                  ((WorkPageShape) transConn.getSource()).getWorkPageDefinition().getPageName(),
+                  ((WorkPageShape) transConn.getTarget()).getWorkPageDefinition().getPageName(),
+                  TransitionType.ToPageAsDefault);
+            } else if (transConn instanceof ReturnTransitionConnection) {
+               workFlowDefinition.addPageTransition(
+                  ((WorkPageShape) transConn.getSource()).getWorkPageDefinition().getPageName(),
+                  ((WorkPageShape) transConn.getTarget()).getWorkPageDefinition().getPageName(),
+                  TransitionType.ToPageAsReturn);
+            } else {
+               workFlowDefinition.addPageTransition(
+                  ((WorkPageShape) transConn.getSource()).getWorkPageDefinition().getPageName(),
+                  ((WorkPageShape) transConn.getTarget()).getWorkPageDefinition().getPageName(),
+                  TransitionType.ToPage);
+            }
+         }
+      }
    }
 
    @Override
@@ -177,16 +181,14 @@ public class WorkflowDiagram extends ModelElement {
       // Validate # other states
       num = 0;
       for (Shape shape : getChildren()) {
-         if (WorkPageShape.class.isAssignableFrom(shape.getClass())) {
-            if (((WorkPageShape) shape).isStartPage()) {
-               if (((WorkPageShape) shape).isCancelledState()) {
-                  return new Result("Cancelled state can not be start page");
-               }
-               if (((WorkPageShape) shape).isCompletedState()) {
-                  return new Result("Completed state can not be start page");
-               }
-               num++;
+         if (WorkPageShape.class.isAssignableFrom(shape.getClass()) && ((WorkPageShape) shape).isStartPage()) {
+            if (((WorkPageShape) shape).isCancelledState()) {
+               return new Result("Cancelled state can not be start page");
             }
+            if (((WorkPageShape) shape).isCompletedState()) {
+               return new Result("Completed state can not be start page");
+            }
+            num++;
          }
       }
       if (num > 1 || num == 0) {
@@ -208,10 +210,8 @@ public class WorkflowDiagram extends ModelElement {
 
       // Validate transitions (each state must have a transition to or from
       for (Shape shape : getChildren()) {
-         if (WorkPageShape.class.isAssignableFrom(shape.getClass())) {
-            if (shape.getSourceConnections().isEmpty() && shape.getTargetConnections().isEmpty()) {
-               return new Result("States must have at least one transition to or from.  None found for " + shape);
-            }
+         if (WorkPageShape.class.isAssignableFrom(shape.getClass()) && shape.getSourceConnections().isEmpty() && shape.getTargetConnections().isEmpty()) {
+            return new Result("States must have at least one transition to or from.  None found for " + shape);
          }
       }
 
@@ -261,8 +261,8 @@ public class WorkflowDiagram extends ModelElement {
       return shapes;
    }
 
-   public Set<Connection> getConnections() {
-      Set<Connection> connections = new HashSet<Connection>();
+   public Set<Relation> getConnections() {
+      Set<Relation> connections = new HashSet<Relation>();
       for (Shape shape : getChildren()) {
          connections.addAll(shape.getSourceConnections());
          connections.addAll(shape.getTargetConnections());

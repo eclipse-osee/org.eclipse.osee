@@ -12,7 +12,6 @@
 package org.eclipse.osee.ats.world.search;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -59,15 +58,11 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
    private final User userArt;
    private final ReleasedOption releasedOption;
 
-   public TeamWorldSearchItem(String displayName, String[] teamDefNames, boolean showFinished, boolean showAction, boolean recurseChildren, ChangeType changeType, VersionArtifact versionArt, User userArt, ReleasedOption releasedOption) {
+   public TeamWorldSearchItem(String displayName, List<String> teamDefNames, boolean showFinished, boolean showAction, boolean recurseChildren, ChangeType changeType, VersionArtifact versionArt, User userArt, ReleasedOption releasedOption) {
       super(displayName, AtsImage.TEAM_WORKFLOW);
       this.versionArt = versionArt;
       this.userArt = userArt;
-      if (teamDefNames != null) {
-         this.teamDefNames = Arrays.asList(teamDefNames);
-      } else {
-         this.teamDefNames = null;
-      }
+      this.teamDefNames = teamDefNames;
       this.showFinished = showFinished;
       this.releasedOption = releasedOption;
       this.showAction = showAction;

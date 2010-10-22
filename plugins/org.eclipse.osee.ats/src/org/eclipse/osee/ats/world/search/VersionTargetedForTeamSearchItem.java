@@ -37,7 +37,6 @@ public class VersionTargetedForTeamSearchItem extends WorldUISearchItem {
    private VersionArtifact selectedVersionArt;
    private final boolean returnAction;
    private final TeamDefinitionArtifact teamDef;
-   private TeamDefinitionArtifact selectedTeamDef;
 
    public VersionTargetedForTeamSearchItem(TeamDefinitionArtifact teamDef, VersionArtifact versionArt, boolean returnAction, LoadView loadView) {
       this(null, teamDef, versionArt, returnAction, loadView);
@@ -104,7 +103,7 @@ public class VersionTargetedForTeamSearchItem extends WorldUISearchItem {
          return;
       }
       try {
-         selectedTeamDef = teamDef;
+         TeamDefinitionArtifact selectedTeamDef = teamDef;
          if (versionArt == null && selectedTeamDef == null) {
             TeamDefinitionDialog ld = new TeamDefinitionDialog("Select Team", "Select Team");
             ld.setInput(TeamDefinitionArtifact.getTeamReleaseableDefinitions(Active.Both));

@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.editor;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
-import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.widgets.Control;
 
 /**
@@ -31,11 +30,6 @@ public class SMADragAndDrop extends SkynetDragAndDrop {
    @Override
    public Artifact[] getArtifacts() {
       return new Artifact[] {sma};
-   }
-
-   @Override
-   public void artifactTransferDragSetData(DragSourceEvent event) {
-      super.artifactTransferDragSetData(event);
    }
 
 }

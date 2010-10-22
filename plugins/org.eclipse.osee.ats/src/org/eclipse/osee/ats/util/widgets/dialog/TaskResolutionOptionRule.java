@@ -31,9 +31,10 @@ import org.w3c.dom.NodeList;
 public class TaskResolutionOptionRule extends WorkRuleDefinition {
 
    private final List<TaskResOptionDefinition> options = new ArrayList<TaskResOptionDefinition>();
-   public static String ATS_TASK_OPTIONS_TAG = "AtsTaskOptions";
-   public static String WORK_TYPE = "AtsTaskResolutionOptions";
-   public static List<TaskResOptionDefinition> EMPTY_TASK_RESOLUTION_OPTIONS = new ArrayList<TaskResOptionDefinition>();
+   public final static String ATS_TASK_OPTIONS_TAG = "AtsTaskOptions";
+   public final static String WORK_TYPE = "AtsTaskResolutionOptions";
+   public final static List<TaskResOptionDefinition> EMPTY_TASK_RESOLUTION_OPTIONS =
+      new ArrayList<TaskResOptionDefinition>();
 
    public TaskResolutionOptionRule(String name, String id, String value) {
       super(name, id, null, WORK_TYPE);
@@ -92,9 +93,12 @@ public class TaskResolutionOptionRule extends WorkRuleDefinition {
       StringBuffer sb = new StringBuffer();
       sb.append("<" + TaskResOptionDefinition.ATS_TASK_OPTION_TAG + ">\n");
       for (TaskResOptionDefinition def : options) {
-         sb.append(def.toXml() + "\n");
+         sb.append(def.toXml());
+         sb.append("\n");
       }
-      sb.append("</" + TaskResOptionDefinition.ATS_TASK_OPTION_TAG + ">\n");
+      sb.append("</");
+      sb.append(TaskResOptionDefinition.ATS_TASK_OPTION_TAG);
+      sb.append(">\n");
       return sb.toString();
    }
 

@@ -88,13 +88,14 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
    /** This is the root of the editor's model. */
    private WorkflowDiagram diagram;
    /** Palette component, holding the tools and shapes. */
-   private static PaletteRoot PALETTE_MODEL;
-   public static String EDITOR_ID = "org.eclipse.osee.ats.workflow.editor.AtsWorkflowConfigEditor";
+   private static PaletteRoot palletteModel;
+   public final static String EDITOR_ID = "org.eclipse.osee.ats.workflow.editor.AtsWorkflowConfigEditor";
 
    /** Create a new ShapesEditor instance. This is called by the Workspace. */
    public AtsWorkflowConfigEditor() {
       setEditDomain(new DefaultEditDomain(this));
       OseeEventManager.addListener(this);
+      palletteModel = AtsWorkflowConfigEditorPaletteFactory.createPalette(this);
    }
 
    /**
@@ -199,10 +200,7 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
 
    @Override
    protected PaletteRoot getPaletteRoot() {
-      if (PALETTE_MODEL == null) {
-         PALETTE_MODEL = AtsWorkflowConfigEditorPaletteFactory.createPalette(this);
-      }
-      return PALETTE_MODEL;
+      return palletteModel;
    }
 
    /**
@@ -277,35 +275,7 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
             }
 
             // Create transitions
-            for (WorkPageDefinition workPageDefinition : workflowDef.getPagesOrdered()) {
-               WorkPageShape pageShape = getWorkPageShape(workPageDefinition);
-               AtsWorkPage atsWorkPage =
-                  new AtsWorkPage(workflowDef, workPageDefinition, null, ATSXWidgetOptionResolver.getInstance());
-               // Handle to pages
-               Set<WorkPageDefinition> toPages = new HashSet<WorkPageDefinition>();
-               toPages.addAll(atsWorkPage.getToPages());
-               List<WorkPageDefinition> returnPages = atsWorkPage.getReturnPages();
-               for (WorkPageDefinition toPageDef : toPages) {
-                  // Don't want to show return pages twice
-                  if (returnPages.contains(toPageDef)) {
-                     continue;
-                  }
-                  WorkPageShape toPageShape = getWorkPageShape(toPageDef);
-                  if (toPageDef.equals(atsWorkPage.getDefaultToPage())) {
-                     new DefaultTransitionConnection(pageShape, toPageShape);
-                     //                  System.out.println("Default: " + atsWorkPage.getName() + " -> " + toPageShape.getName());
-                  } else {
-                     new TransitionConnection(pageShape, toPageShape);
-                     //                  System.out.println("To: " + atsWorkPage.getName() + " -> " + toPageShape.getName());
-                  }
-               }
-               // Handle return pages
-               for (WorkPageDefinition toPageDef : returnPages) {
-                  WorkPageShape toPageShape = getWorkPageShape(toPageDef);
-                  new ReturnTransitionConnection(pageShape, toPageShape);
-                  //               System.out.println("Return: " + atsWorkPage.getName() + " -> " + toPageShape.getName());
-               }
-            }
+            createTransitions(workflowDef);
          } catch (OseeCoreException ex) {
             OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
@@ -316,13 +286,43 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
 
    }
 
+   private void createTransitions(WorkFlowDefinition workflowDef) throws OseeCoreException {
+      for (WorkPageDefinition workPageDefinition : workflowDef.getPagesOrdered()) {
+         WorkPageShape pageShape = getWorkPageShape(workPageDefinition);
+         AtsWorkPage atsWorkPage =
+            new AtsWorkPage(workflowDef, workPageDefinition, null, ATSXWidgetOptionResolver.getInstance());
+         // Handle to pages
+         Set<WorkPageDefinition> toPages = new HashSet<WorkPageDefinition>();
+         toPages.addAll(atsWorkPage.getToPages());
+         List<WorkPageDefinition> returnPages = atsWorkPage.getReturnPages();
+         for (WorkPageDefinition toPageDef : toPages) {
+            // Don't want to show return pages twice
+            if (returnPages.contains(toPageDef)) {
+               continue;
+            }
+            WorkPageShape toPageShape = getWorkPageShape(toPageDef);
+            if (toPageDef.equals(atsWorkPage.getDefaultToPage())) {
+               new DefaultTransitionConnection(pageShape, toPageShape);
+               //                  System.out.println("Default: " + atsWorkPage.getName() + " -> " + toPageShape.getName());
+            } else {
+               new TransitionConnection(pageShape, toPageShape);
+               //                  System.out.println("To: " + atsWorkPage.getName() + " -> " + toPageShape.getName());
+            }
+         }
+         // Handle return pages
+         for (WorkPageDefinition toPageDef : returnPages) {
+            WorkPageShape toPageShape = getWorkPageShape(toPageDef);
+            new ReturnTransitionConnection(pageShape, toPageShape);
+            //               System.out.println("Return: " + atsWorkPage.getName() + " -> " + toPageShape.getName());
+         }
+      }
+   }
+
    private WorkPageShape getWorkPageShape(WorkPageDefinition page) {
       for (Object object : getModel().getChildren()) {
-         if (object instanceof WorkPageShape) {
-            if (((WorkPageShape) object).getId().equals(page.getId()) || page.getParentId() != null && ((WorkPageShape) object).getId().equals(
-               page.getParentId())) {
-               return (WorkPageShape) object;
-            }
+         if (object instanceof WorkPageShape && (((WorkPageShape) object).getId().equals(page.getId()) || page.getParentId() != null && ((WorkPageShape) object).getId().equals(
+            page.getParentId()))) {
+            return (WorkPageShape) object;
          }
       }
       return null;
@@ -411,13 +411,10 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
    @Override
    public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
       for (Artifact delArt : artifactEvent.getCacheArtifacts(EventModType.Deleted)) {
-         if (delArt.isOfType(CoreArtifactTypes.WorkFlowDefinition)) {
-            if (delArt.getName().equals(getPartName())) {
-               closeEditor();
-            }
+         if (delArt.isOfType(CoreArtifactTypes.WorkFlowDefinition) && delArt.getName().equals(getPartName())) {
+            closeEditor();
          }
       }
-      System.out.println("Add refresh of editor if workflow mod");
    }
 
 }

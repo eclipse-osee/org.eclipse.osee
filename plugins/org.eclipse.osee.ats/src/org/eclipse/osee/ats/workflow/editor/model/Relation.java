@@ -23,14 +23,14 @@ import org.eclipse.swt.graphics.Color;
  * 
  * @author Donald G. Dunne
  */
-public class Connection extends ModelElement {
+public class Relation extends ModelElement {
 
    /** True, if the connection is attached to its endpoints. */
    private boolean isConnected;
    private int lineStyle = Graphics.LINE_SOLID;
-   /** Connection's source endpoint. */
+   /** Relation's source endpoint. */
    private Shape source;
-   /** Connection's target endpoint. */
+   /** Relation's target endpoint. */
    private Shape target;
 
    /**
@@ -41,7 +41,7 @@ public class Connection extends ModelElement {
     * @throws IllegalArgumentException if any of the parameters are null or source == target
     * @see #setLineStyle(int)
     */
-   public Connection(Shape source, Shape target) {
+   public Relation(Shape source, Shape target) {
       reconnect(source, target);
    }
 
@@ -51,7 +51,7 @@ public class Connection extends ModelElement {
 
    @Override
    public String toString() {
-      return "Connection";
+      return "Relation";
    }
 
    /**
@@ -77,7 +77,6 @@ public class Connection extends ModelElement {
    @SuppressWarnings("unused")
    @Override
    public Result validForSave() throws OseeCoreException {
-      System.err.println("Add Connection validations.");
       return Result.TrueResult;
    }
 
@@ -119,7 +118,7 @@ public class Connection extends ModelElement {
     * @throws IllegalArgumentException if any of the paramers are null or newSource == newTarget
     */
    public void reconnect(Shape newSource, Shape newTarget) {
-      if (newSource == null || newTarget == null || newSource == newTarget) {
+      if (newSource == null || newTarget == null || newSource.equals(newTarget)) {
          throw new IllegalArgumentException();
       }
       disconnect();
@@ -147,7 +146,7 @@ public class Connection extends ModelElement {
     * @return the label
     */
    public String getLabel() {
-      return "Connection";
+      return "Relation";
    }
 
    /**

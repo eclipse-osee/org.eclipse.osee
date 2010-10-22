@@ -15,8 +15,8 @@ package org.eclipse.osee.ats.health.change;
  */
 public class ArtifactChangeReportComparer extends DataChangeReportComparer {
    private int artId;
-   public static String ART_START_TAG = "<artId>";
-   public static String ART_END_TAG = "</artId>";
+   public final static String ART_START_TAG = "<artId>";
+   public final static String ART_END_TAG = "</artId>";
 
    public ArtifactChangeReportComparer(String content) {
       super(content);
@@ -41,16 +41,6 @@ public class ArtifactChangeReportComparer extends DataChangeReportComparer {
          }
       }
       return compareResult;
-   }
-
-   @Override
-   public boolean equals(Object obj) {
-      return super.equals(obj);
-   }
-
-   @Override
-   public int hashCode() {
-      return super.hashCode();
    }
 
 }

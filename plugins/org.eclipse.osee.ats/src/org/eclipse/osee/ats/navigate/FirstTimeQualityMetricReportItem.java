@@ -125,7 +125,7 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
       }
    }
 
-   private static String[] HEADER_STRINGS = new String[] {
+   private final static String[] HEADER_STRINGS = new String[] {
       "Version",
       "StartDate",
       "RelDate",

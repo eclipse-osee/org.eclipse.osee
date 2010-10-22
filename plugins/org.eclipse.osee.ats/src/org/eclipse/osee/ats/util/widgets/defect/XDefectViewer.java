@@ -402,8 +402,8 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IArtifact
    }
 
    @SuppressWarnings("rawtypes")
-   public ArrayList<DefectItem> getSelectedDefectItems() {
-      ArrayList<DefectItem> items = new ArrayList<DefectItem>();
+   public List<DefectItem> getSelectedDefectItems() {
+      List<DefectItem> items = new ArrayList<DefectItem>();
       if (xViewer == null) {
          return items;
       }

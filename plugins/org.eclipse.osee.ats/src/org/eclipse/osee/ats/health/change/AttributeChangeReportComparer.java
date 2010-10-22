@@ -14,8 +14,8 @@ package org.eclipse.osee.ats.health.change;
  * @author Jeff C. Phillips
  */
 public class AttributeChangeReportComparer extends DataChangeReportComparer {
-   private static String ATTR_START_TAG = "<attrId>";
-   private static String ATTR_END_TAG = "</attrId>";
+   private final static String ATTR_START_TAG = "<attrId>";
+   private final static String ATTR_END_TAG = "</attrId>";
    private int artId;
    private int attrId;
 
@@ -53,16 +53,6 @@ public class AttributeChangeReportComparer extends DataChangeReportComparer {
          }
       }
       return compareResults;
-   }
-
-   @Override
-   public boolean equals(Object obj) {
-      return super.equals(obj);
-   }
-
-   @Override
-   public int hashCode() {
-      return super.hashCode();
    }
 
 }

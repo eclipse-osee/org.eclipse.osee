@@ -39,7 +39,7 @@ import org.eclipse.swt.SWT;
 public class WorldXViewerFactory extends SkynetXViewerFactory {
 
    public GoalArtifact soleGoalArtifact;
-   public static String COLUMN_NAMESPACE = "ats.column";
+   public static final String COLUMN_NAMESPACE = "ats.column";
    public static final XViewerColumn Type_Col = new XViewerColumn("ats.column.type", "Type", 150, SWT.LEFT, true,
       SortDataType.String, false, null);
    public static final XViewerColumn State_Col = new XViewerColumn("ats.column.state", "State", 75, SWT.LEFT, true,
@@ -310,7 +310,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       Numeric1_Col,
       Numeric2_Col,
       new XViewerGuidColumn(false)};
-   private static String NAMESPACE = "org.eclipse.osee.ats.WorldXViewer";
+   private final static String NAMESPACE = "org.eclipse.osee.ats.WorldXViewer";
 
    public WorldXViewerFactory() {
       super(NAMESPACE);

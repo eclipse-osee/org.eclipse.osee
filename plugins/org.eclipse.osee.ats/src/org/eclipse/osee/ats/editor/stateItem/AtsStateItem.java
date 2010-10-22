@@ -31,7 +31,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  */
 public abstract class AtsStateItem implements IAtsStateItem {
 
-   public static String ALL_STATE_IDS = "ALL";
+   public final static String ALL_STATE_IDS = "ALL";
 
    @SuppressWarnings("unused")
    @Override

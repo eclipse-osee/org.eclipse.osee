@@ -72,7 +72,6 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IBranchE
    private static final int paddedTableHeightHint = 2;
    private Label extraInfoLabel;
    public final static String WIDGET_ID = ATSAttributes.COMMIT_MANAGER_WIDGET.getWorkItemId();
-   private ToolBar toolBar;
 
    public XCommitManager() {
       super("Commit Manager");
@@ -136,7 +135,7 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IBranchE
             xCommitManager = new CommitXManager(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this);
             xCommitManager.getTree().setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-            xCommitManager.setContentProvider(new XCommitContentProvider(xCommitManager));
+            xCommitManager.setContentProvider(new XCommitContentProvider());
             xCommitManager.setLabelProvider(new XCommitLabelProvider(xCommitManager));
 
             if (toolkit != null && xCommitManager.getStatusLabel() != null) {
@@ -190,7 +189,7 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IBranchE
       rightComp.setLayout(new GridLayout());
       rightComp.setLayoutData(new GridData(GridData.END));
 
-      toolBar = new ToolBar(rightComp, SWT.FLAT | SWT.RIGHT);
+      ToolBar toolBar = new ToolBar(rightComp, SWT.FLAT | SWT.RIGHT);
       GridData gd = new GridData(GridData.FILL_HORIZONTAL);
       toolBar.setLayoutData(gd);
       ToolItem item = null;
@@ -222,8 +221,8 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IBranchE
    }
 
    @SuppressWarnings("rawtypes")
-   public ArrayList<Branch> getSelectedBranches() {
-      ArrayList<Branch> items = new ArrayList<Branch>();
+   public List<Branch> getSelectedBranches() {
+      List<Branch> items = new ArrayList<Branch>();
       if (xCommitManager == null) {
          return items;
       }

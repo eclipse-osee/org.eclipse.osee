@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
  */
 public class AtsEndorseWorkPageDefinition extends WorkPageDefinition {
 
-   public static String ID = TeamWorkflowDefinition.ID + "." + DefaultTeamState.Endorse.name();
+   public final static String ID = TeamWorkflowDefinition.ID + "." + DefaultTeamState.Endorse.name();
 
    public AtsEndorseWorkPageDefinition() {
       this(DefaultTeamState.Endorse.name(), ID, null);

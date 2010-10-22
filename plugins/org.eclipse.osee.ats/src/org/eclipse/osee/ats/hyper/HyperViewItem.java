@@ -11,16 +11,17 @@
 package org.eclipse.osee.ats.hyper;
 
 import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.swt.graphics.Image;
 
 public class HyperViewItem {
 
-   private final ArrayList<HyperViewItem> bottoms = new ArrayList<HyperViewItem>(); // bottom
-   private final ArrayList<HyperViewItem> tops = new ArrayList<HyperViewItem>(); // top
-   private final ArrayList<HyperViewItem> lefts = new ArrayList<HyperViewItem>(); // left
-   private final ArrayList<HyperViewItem> rights = new ArrayList<HyperViewItem>(); // right
+   private final List<HyperViewItem> bottoms = new ArrayList<HyperViewItem>(); // bottom
+   private final List<HyperViewItem> tops = new ArrayList<HyperViewItem>(); // top
+   private final List<HyperViewItem> lefts = new ArrayList<HyperViewItem>(); // left
+   private final List<HyperViewItem> rights = new ArrayList<HyperViewItem>(); // right
    private String guid;
    private final String title;
    private Image image;
@@ -81,34 +82,23 @@ public class HyperViewItem {
       rights.add(si);
    }
 
-   /**
-    * @return ArrayList of HyperViewItems
-    */
-   public ArrayList<HyperViewItem> getBottom() {
+   public List<HyperViewItem> getBottom() {
       return bottoms;
    }
 
-   /**
-    * @return ArrayList of HyperViewItems
-    */
-   public ArrayList<HyperViewItem> getTop() {
+   public List<HyperViewItem> getTop() {
       return tops;
    }
 
-   /**
-    * @return ArrayList of HyperViewItems
-    */
-   public ArrayList<HyperViewItem> getLeft() {
+   public List<HyperViewItem> getLeft() {
       return lefts;
    }
 
-   /**
-    * @return ArrayList of HyperViewItems
-    */
-   public ArrayList<HyperViewItem> getRight() {
+   public List<HyperViewItem> getRight() {
       return rights;
    }
 
+   @SuppressWarnings("unused")
    public Image getImage() throws OseeCoreException {
       return image;
    }

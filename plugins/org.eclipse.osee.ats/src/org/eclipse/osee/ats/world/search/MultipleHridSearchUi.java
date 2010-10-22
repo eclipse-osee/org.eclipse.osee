@@ -48,10 +48,8 @@ public class MultipleHridSearchUi {
             data.getIds().add(str);
          }
          // allow for lower case hrids
-         if (str.length() == 5) {
-            if (!data.getIds().contains(str.toUpperCase())) {
-               data.getIds().add(str.toUpperCase());
-            }
+         if (str.length() == 5 && !data.getIds().contains(str.toUpperCase())) {
+            data.getIds().add(str.toUpperCase());
          }
       }
    }

@@ -61,9 +61,8 @@ import org.eclipse.ui.PlatformUI;
  */
 public class ActionHyperView extends HyperView implements IActionable, IArtifactEventListener, IPerspectiveListener2 {
 
-   public static String VIEW_ID = "org.eclipse.osee.ats.hyper.ActionHyperView";
-   private static String HELP_CONTEXT_ID = "atsActionView";
-   private ActionHyperItem topAHI;
+   public final static String VIEW_ID = "org.eclipse.osee.ats.hyper.ActionHyperView";
+   private final static String HELP_CONTEXT_ID = "atsActionView";
    private AbstractAtsArtifact currentArtifact;
    private Cursor cursor;
 
@@ -132,7 +131,6 @@ public class ActionHyperView extends HyperView implements IActionable, IArtifact
       }
    }
 
-   private boolean reviewsCreated = false;
    private boolean tasksReviewsCreated = false;
 
    @Override
@@ -145,13 +143,13 @@ public class ActionHyperView extends HyperView implements IActionable, IArtifact
          if (currentArtifact == null || currentArtifact.isDeleted()) {
             return;
          }
-         reviewsCreated = false;
+         boolean reviewsCreated = false;
          tasksReviewsCreated = false;
          AbstractAtsArtifact topArt = getTopArtifact(currentArtifact);
          if (topArt == null || topArt.isDeleted()) {
             return;
          }
-         topAHI = new ActionHyperItem(topArt);
+         ActionHyperItem topAHI = new ActionHyperItem(topArt);
          if (topArt instanceof ActionArtifact) {
             for (TeamWorkFlowArtifact team : ((ActionArtifact) topArt).getTeamWorkFlowArtifacts()) {
                ActionHyperItem teamAHI = new ActionHyperItem(team);
@@ -219,10 +217,8 @@ public class ActionHyperView extends HyperView implements IActionable, IArtifact
       if (artifact instanceof TeamWorkFlowArtifact) {
          artifact = ((TeamWorkFlowArtifact) artifact).getParentActionArtifact();
       }
-      if (artifact instanceof AbstractReviewArtifact) {
-         if (((AbstractReviewArtifact) artifact).getParentActionArtifact() != null) {
-            artifact = ((AbstractReviewArtifact) artifact).getParentActionArtifact();
-         }
+      if (artifact instanceof AbstractReviewArtifact && ((AbstractReviewArtifact) artifact).getParentActionArtifact() != null) {
+         artifact = ((AbstractReviewArtifact) artifact).getParentActionArtifact();
       }
       if (artifact == null) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, "Unknown parent " + art.getHumanReadableId());
@@ -235,9 +231,7 @@ public class ActionHyperView extends HyperView implements IActionable, IArtifact
       if (page == null) {
          return false;
       }
-      IEditorPart editorPart = page.getActiveEditor();
-      boolean result = editorPart != null && editorPart instanceof SMAEditor;
-      return result;
+      return page.getActiveEditor() instanceof SMAEditor;
    }
 
    public void processWindowActivated() {
@@ -247,7 +241,7 @@ public class ActionHyperView extends HyperView implements IActionable, IArtifact
       IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
       if (page != null) {
          IEditorPart editor = page.getActiveEditor();
-         if (editor != null && editor instanceof SMAEditor) {
+         if (editor instanceof SMAEditor) {
             currentArtifact = ((SMAEditor) editor).getSma();
             display();
          } else if (currentArtifact != null && currentArtifact.isDeleted()) {
@@ -295,11 +289,6 @@ public class ActionHyperView extends HyperView implements IActionable, IArtifact
          return String.format("Current Artifact - %s - %s", currentArtifact.getGuid(), currentArtifact.getName());
       }
       return "";
-   }
-
-   @Override
-   protected void clear() {
-      super.clear();
    }
 
    @Override

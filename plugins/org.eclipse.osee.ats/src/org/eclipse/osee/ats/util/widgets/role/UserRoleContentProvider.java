@@ -15,13 +15,13 @@ import java.util.Collection;
 import java.util.HashSet;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
 public class UserRoleContentProvider implements ITreeContentProvider {
 
    protected Collection<UserRole> rootSet = new HashSet<UserRole>();
    private final UserRoleXViewer xViewer;
-   private static Object[] EMPTY_ARRAY = new Object[0];
 
    public UserRoleContentProvider(UserRoleXViewer WorldXViewer) {
       super();
@@ -80,7 +80,7 @@ public class UserRoleContentProvider implements ITreeContentProvider {
       if (parentElement instanceof Collection) {
          return ((Collection) parentElement).toArray();
       }
-      return EMPTY_ARRAY;
+      return Collections.EMPTY_ARRAY;
    }
 
    @Override

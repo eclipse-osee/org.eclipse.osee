@@ -137,13 +137,16 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
       StringBuffer sb = new StringBuffer();
       Collection<TeamDefinitionArtifact> teamDefs = getSelectedTeamDefinitions();
       if (teamDefs.size() > 0) {
-         sb.append(" - Teams: " + org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", teamDefs));
+         sb.append(" - Teams: ");
+         sb.append(org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", teamDefs));
       }
       if (getSelectedVersionArtifact() != null) {
-         sb.append(" - Version: " + getSelectedVersionArtifact());
+         sb.append(" - Version: ");
+         sb.append(getSelectedVersionArtifact());
       }
       if (getSelectedUser() != null) {
-         sb.append(" - User: " + getSelectedUser());
+         sb.append(" - User: ");
+         sb.append(getSelectedUser());
       }
       if (isIncludeCancelledCheckbox()) {
          sb.append(" - Include Cancelled");
@@ -384,11 +387,8 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
    }
 
    public void setVersion(String versionStr) {
-      if (versionCombo != null && versionCombo.getInDataStrings() != null) {
-         // should check if the version combo was populated
-         if (versionCombo.getInDataStrings().length > 0) {
-            versionCombo.set(versionStr);
-         }
+      if (versionCombo != null && versionCombo.getInDataStrings() != null && versionCombo.getInDataStrings().length > 0) {
+         versionCombo.set(versionStr);
       }
    }
 

@@ -109,10 +109,8 @@ public class SMARelationsHyperlinkComposite extends Composite {
    }
 
    private String getCompletedCancelledString(Artifact art) {
-      if (art instanceof AbstractWorkflowArtifact) {
-         if (((AbstractWorkflowArtifact) art).isCancelledOrCompleted()) {
-            return " " + ((AbstractWorkflowArtifact) art).getStateMgr().getCurrentStateName() + " ";
-         }
+      if (art instanceof AbstractWorkflowArtifact && ((AbstractWorkflowArtifact) art).isCancelledOrCompleted()) {
+         return " " + ((AbstractWorkflowArtifact) art).getStateMgr().getCurrentStateName() + " ";
       }
       return "";
    }

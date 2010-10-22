@@ -142,10 +142,8 @@ public abstract class UserSearchItem extends WorldUISearchItem {
          } catch (OseeCoreException ex) {
             return false;
          }
-         if (getDefaultUser() != null && wsi.getDefaultUser() != null) {
-            if (!wsi.getDefaultUser().equals(getDefaultUser())) {
-               return false;
-            }
+         if (getDefaultUser() != null && wsi.getDefaultUser() != null && !wsi.getDefaultUser().equals(getDefaultUser())) {
+            return false;
          }
          return true;
       }

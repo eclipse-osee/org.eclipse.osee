@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.artifact.DecisionReviewArtifact.DecisionReviewState;
  */
 public class AtsStatePercentCompleteWeightDecisionReviewRule extends AtsStatePercentCompleteWeightRule {
 
-   public static String ID = "atsStatePercentCompleteWeight.DecisionReview";
+   public final static String ID = "atsStatePercentCompleteWeight.DecisionReview";
 
    public AtsStatePercentCompleteWeightDecisionReviewRule() {
       super(ID, ID);

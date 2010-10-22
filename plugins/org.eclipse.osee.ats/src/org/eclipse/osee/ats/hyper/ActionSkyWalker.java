@@ -94,9 +94,6 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAc
 
    @Override
    public void explore(Artifact artifact) {
-      if (artifact == null || artifact.isDeleted() || !(artifact instanceof AbstractAtsArtifact)) {
-         clear();
-      }
       try {
          getOptions().setArtifact(artifact);
          getOptions().setLayout(getOptions().getLayout(SkyWalkerOptions.RADIAL_DOWN_LAYOUT));
@@ -109,7 +106,6 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAc
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-         clear();
       }
    }
 
@@ -135,9 +131,7 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAc
       if (page == null) {
          return false;
       }
-      IEditorPart editorPart = page.getActiveEditor();
-      boolean result = editorPart != null && editorPart instanceof SMAEditor;
-      return result;
+      return page.getActiveEditor() instanceof SMAEditor;
    }
 
    public void processWindowActivated() {
@@ -147,10 +141,9 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAc
       IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
       if (page != null) {
          IEditorPart editor = page.getActiveEditor();
-         if (editor != null && editor instanceof SMAEditor) {
+         if (editor instanceof SMAEditor) {
             explore(((SMAEditor) editor).getSma());
          }
-         clear();
       }
    }
 
@@ -196,10 +189,6 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAc
       return "";
    }
 
-   public void clear() {
-      System.out.println("clear viewer here");
-   }
-
    @Override
    public void perspectiveActivated(IWorkbenchPage page, IPerspectiveDescriptor perspective) {
       processWindowActivated();
@@ -227,14 +216,6 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAc
       }
       if (getOptions().getArtifact() == null) {
          return;
-      }
-      if (artifactEvent.isDeletedPurged(getOptions().getArtifact())) {
-         Displays.ensureInDisplayThread(new Runnable() {
-            @Override
-            public void run() {
-               clear();
-            }
-         });
       }
       if (artifactEvent.isModifiedReloaded(getOptions().getArtifact()) ||
       //

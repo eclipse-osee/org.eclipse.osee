@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
  */
 public class AtsDecisionCompletedWorkPageDefinition extends WorkPageDefinition {
 
-   public static String ID = DecisionWorkflowDefinition.ID + "." + DefaultTeamState.Completed.name();
+   public final static String ID = DecisionWorkflowDefinition.ID + "." + DefaultTeamState.Completed.name();
 
    public AtsDecisionCompletedWorkPageDefinition() {
       this(DefaultTeamState.Completed.name(), ID, null);

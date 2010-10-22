@@ -62,20 +62,25 @@ public class PriviledgedUserManager {
          }
 
          // Add user if user is team member and rule exists
-         if (!users.contains(UserManager.getUser()) && (workPageDefinition.hasWorkRule(RuleWorkItemId.atsAllowPriviledgedEditToTeamMember.name()) || teamArt.getTeamDefinition().hasWorkRule(
-            RuleWorkItemId.atsAllowPriviledgedEditToTeamMember.name()))) {
-            if (teamArt.getTeamDefinition().getMembers().contains(UserManager.getUser())) {
-               users.add(UserManager.getUser());
-            }
+         boolean workPageToTeamMember =
+            workPageDefinition.hasWorkRule(RuleWorkItemId.atsAllowPriviledgedEditToTeamMember.name());
+         boolean teamDefToTeamMember =
+            teamArt.getTeamDefinition().hasWorkRule(RuleWorkItemId.atsAllowPriviledgedEditToTeamMember.name());
+         if (!users.contains(UserManager.getUser()) && (workPageToTeamMember || teamDefToTeamMember) && //
+         teamArt.getTeamDefinition().getMembers().contains(UserManager.getUser())) {
+            users.add(UserManager.getUser());
          }
 
          // Add user if team member is originator and rule exists
-         if (!users.contains(UserManager.getUser()) && (workPageDefinition.hasWorkRule(RuleWorkItemId.atsAllowPriviledgedEditToTeamMemberAndOriginator.name()) || teamArt.getTeamDefinition().hasWorkRule(
-            RuleWorkItemId.atsAllowPriviledgedEditToTeamMemberAndOriginator.name()))) {
-            if (teamArt.getOriginator().equals(UserManager.getUser()) && teamArt.getTeamDefinition().getMembers().contains(
-               UserManager.getUser())) {
-               users.add(UserManager.getUser());
-            }
+         boolean workPageToMemberAndOriginator =
+            workPageDefinition.hasWorkRule(RuleWorkItemId.atsAllowPriviledgedEditToTeamMemberAndOriginator.name());
+         boolean teamDefToMemberAndOriginator =
+            teamArt.getTeamDefinition().hasWorkRule(
+               RuleWorkItemId.atsAllowPriviledgedEditToTeamMemberAndOriginator.name());
+         if (!users.contains(UserManager.getUser()) && (workPageToMemberAndOriginator || teamDefToMemberAndOriginator) && //
+         teamArt.getOriginator().equals(UserManager.getUser()) && teamArt.getTeamDefinition().getMembers().contains(
+            UserManager.getUser())) {
+            users.add(UserManager.getUser());
          }
 
       } catch (Exception ex) {

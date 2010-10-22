@@ -185,7 +185,7 @@ public class SMAState {
             hoursSpent = new Float(m.group(3)).doubleValue();
          }
          if (!m.group(4).equals("")) {
-            percentComplete = new Integer(m.group(4)).intValue();
+            percentComplete = Integer.valueOf(m.group(4)).intValue();
          }
          assignees = UsersByIds.getUsers(m.group(2));
       } else {

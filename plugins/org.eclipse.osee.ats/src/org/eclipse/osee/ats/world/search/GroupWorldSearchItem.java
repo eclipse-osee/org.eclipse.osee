@@ -47,7 +47,7 @@ public class GroupWorldSearchItem extends WorldUISearchItem {
       this("Group Search", null, branch);
    }
 
-   public GroupWorldSearchItem(GroupWorldSearchItem groupWorldSearchItem, int toDifferentiateFromBranch) {
+   public GroupWorldSearchItem(GroupWorldSearchItem groupWorldSearchItem) {
       super(groupWorldSearchItem, FrameworkImage.GROUP);
       this.group = groupWorldSearchItem.group;
       this.groupName = groupWorldSearchItem.groupName;
@@ -138,7 +138,7 @@ public class GroupWorldSearchItem extends WorldUISearchItem {
 
    @Override
    public WorldUISearchItem copy() {
-      return new GroupWorldSearchItem(this, 0);
+      return new GroupWorldSearchItem(this);
    }
 
 }

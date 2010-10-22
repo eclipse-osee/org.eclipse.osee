@@ -119,7 +119,7 @@ public class BarChartExample extends XNavigateItemAction {
       yAxisPrimary.getLabel().getCaption().getFont().setRotation(90);
 
       // initialize a collection with the X-series data
-      java.util.Vector<String> vs = new java.util.Vector<String>();
+      List<String> vs = new ArrayList<String>();
       vs.add("zero");
       vs.add("one");
       vs.add("two");

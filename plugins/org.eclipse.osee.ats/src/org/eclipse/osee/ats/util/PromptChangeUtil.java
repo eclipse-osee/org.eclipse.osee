@@ -199,11 +199,9 @@ public final class PromptChangeUtil {
                AWorkbench.popup("ERROR", error);
             }
          }
-         if (teamDefHoldingVersions != null) {
-            if (teamDefHoldingVersions != teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions()) {
-               AWorkbench.popup("ERROR", "Can't change version on Workflows that have different release version sets.");
-               return false;
-            }
+         if (teamDefHoldingVersions != null && teamDefHoldingVersions != teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions()) {
+            AWorkbench.popup("ERROR", "Can't change version on Workflows that have different release version sets.");
+            return false;
          }
          if (teamDefHoldingVersions == null) {
             teamDefHoldingVersions = teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions();

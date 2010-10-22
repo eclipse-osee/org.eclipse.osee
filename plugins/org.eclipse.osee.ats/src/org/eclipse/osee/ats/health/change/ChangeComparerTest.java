@@ -10,6 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.health.change;
 
+import java.util.logging.Level;
+import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.framework.logging.OseeLog;
+
 /**
  * @author Jeff C. Phillips
  */
@@ -17,7 +21,11 @@ public class ChangeComparerTest {
 
    public static void main(String[] args) {
       String content = "<artId>12535</artId>";
-      System.out.println(Integer.parseInt(content.substring(content.indexOf("<artId>") + 7, content.indexOf("</artId>"))));
+      OseeLog.log(
+         AtsPlugin.class,
+         Level.SEVERE,
+         Integer.valueOf(
+            Integer.parseInt(content.substring(content.indexOf("<artId>") + 7, content.indexOf("</artId>")))).toString());
    }
 
 }

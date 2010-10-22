@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
  */
 public class AtsImplementWorkPageDefinition extends WorkPageDefinition {
 
-   public static String ID = TeamWorkflowDefinition.ID + "." + DefaultTeamState.Implement.name();
+   public final static String ID = TeamWorkflowDefinition.ID + "." + DefaultTeamState.Implement.name();
 
    public AtsImplementWorkPageDefinition() {
       this(DefaultTeamState.Implement.name(), ID, null);

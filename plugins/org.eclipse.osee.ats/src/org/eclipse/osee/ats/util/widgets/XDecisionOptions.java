@@ -14,8 +14,8 @@ import java.lang.ref.WeakReference;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -93,7 +93,8 @@ public class XDecisionOptions {
    public String toXml(Set<DecisionOption> opts) throws OseeCoreException {
       StringBuffer sb = new StringBuffer();
       for (DecisionOption opt : opts) {
-         sb.append(opt.toXml() + "\n");
+         sb.append(opt.toXml());
+         sb.append("\n");
       }
       return sb.toString().replaceFirst("\n$", "");
    }

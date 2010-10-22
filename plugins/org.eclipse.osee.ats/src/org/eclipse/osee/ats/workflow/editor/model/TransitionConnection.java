@@ -23,7 +23,7 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
  * 
  * @author Donald G. Dunne
  */
-public class TransitionConnection extends Connection {
+public class TransitionConnection extends Relation {
 
    /** Property ID to use when the line style of this connection is modified. */
    public static final String TYPE_PROP = "Type";
@@ -49,7 +49,7 @@ public class TransitionConnection extends Connection {
 
    @Override
    public Result validForSave() {
-      System.err.println("Add Connection validations.");
+      // TODO Add Relation validations
       return Result.TrueResult;
    }
 

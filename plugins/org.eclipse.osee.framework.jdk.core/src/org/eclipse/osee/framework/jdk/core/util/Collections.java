@@ -22,6 +22,7 @@ import java.util.Set;
  * @author David Diepenbrock
  */
 public class Collections {
+   public static Object[] EMPTY_ARRAY = new Object[0];
 
    public static Collection<String> fromString(String string, String seperator) {
       return Arrays.asList(string.split(seperator));
@@ -219,6 +220,7 @@ public class Collections {
     * 
     * @param castOption if ALL, cast all and throw exception if cast fails; if MATCHING, only cast those of type clazz
     */
+   @SuppressWarnings("unchecked")
    private static <A extends Object> List<A> cast(Class<A> clazz, Collection<? extends Object> objects, CastOption castOption) {
       List<A> results = new ArrayList<A>(objects.size());
       for (Object object : objects) {
@@ -232,6 +234,7 @@ public class Collections {
    /**
     * Cast objects to clazz
     */
+   @SuppressWarnings("unchecked")
    public static <A> List<A> castAll(Collection<?> objects) {
       List<A> results = new ArrayList<A>(objects.size());
       for (Object object : objects) {

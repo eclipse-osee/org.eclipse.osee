@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
  */
 public class AtsSimpleInWorkWorkPageDefinition extends WorkPageDefinition {
 
-   public static String ID = SimpleWorkflowDefinition.ID + "." + SimpleState.InWork.name();
+   public final static String ID = SimpleWorkflowDefinition.ID + "." + SimpleState.InWork.name();
 
    public AtsSimpleInWorkWorkPageDefinition() {
       this(SimpleState.InWork.name(), ID, null);

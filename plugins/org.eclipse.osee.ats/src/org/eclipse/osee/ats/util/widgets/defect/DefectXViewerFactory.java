@@ -39,7 +39,7 @@ public class DefectXViewerFactory extends SkynetXViewerFactory {
    public static XViewerColumn Resolution_Col = new XViewerColumn("osee.defect.resolution", "Resolution", 200,
       SWT.LEFT, true, SortDataType.String_MultiLine, false, null);
 
-   private static String NAMESPACE = "osee.ats.DefectXViewer";
+   private final static String NAMESPACE = "osee.ats.DefectXViewer";
 
    public DefectXViewerFactory() {
       super(NAMESPACE);

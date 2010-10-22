@@ -63,7 +63,7 @@ public class TaskTabXWidgetActionPage extends AtsXWidgetActionFormPage implement
 
    private final SMAEditor smaEditor;
    private TaskComposite taskComposite;
-   private static String HELP_CONTEXT_ID = "atsWorkflowEditorTaskTab";
+   private final static String HELP_CONTEXT_ID = "atsWorkflowEditorTaskTab";
    private final WorldCompletedFilter worldCompletedFilter = new WorldCompletedFilter();
    private WorldAssigneeFilter worldAssigneeFilter = null;
    private Action filterCompletedAction, filterMyAssigneeAction;
@@ -80,7 +80,7 @@ public class TaskTabXWidgetActionPage extends AtsXWidgetActionFormPage implement
       resultsSection.setLayoutData(new GridData(GridData.FILL_BOTH));
 
       resultsContainer = toolkit.createClientContainer(resultsSection, 1);
-      taskComposite = new TaskComposite(smaEditor, resultsContainer, SWT.BORDER, null);
+      taskComposite = new TaskComposite(smaEditor, resultsContainer, SWT.BORDER);
       HelpUtil.setHelp(taskComposite, HELP_CONTEXT_ID, "org.eclipse.osee.ats.help.ui");
       taskComposite.loadTable();
       return resultsSection;
@@ -102,7 +102,7 @@ public class TaskTabXWidgetActionPage extends AtsXWidgetActionFormPage implement
 
       Result result = OseeUiActivator.areOSEEServicesAvailable();
       if (result.isFalse()) {
-         AWorkbench.popup("ERROR", "DB Connection Unavailable");
+         AWorkbench.popup("ERROR", "DB Relation Unavailable");
          return;
       }
    }

@@ -18,9 +18,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
@@ -41,9 +41,9 @@ import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulatio
  * @author Donald G. Dunne
  */
 public class ExtendedStatusReportJob extends Job {
-   private final ArrayList<Artifact> arts;
+   private final List<Artifact> arts;
 
-   public ExtendedStatusReportJob(String title, ArrayList<Artifact> arts) {
+   public ExtendedStatusReportJob(String title, List<Artifact> arts) {
       super("Creating " + title);
       this.arts = arts;
    }
@@ -75,7 +75,7 @@ public class ExtendedStatusReportJob extends Job {
    private static String getStatusReport(IProgressMonitor monitor, String title, Collection<? extends Artifact> teamArts) throws OseeCoreException {
       StringBuilder sb = new StringBuilder();
       sb.append(AHTML.heading(3, title));
-      sb.append(getStatusReportBody(monitor, title, teamArts));
+      sb.append(getStatusReportBody(monitor, teamArts));
       return sb.toString();
    }
 
@@ -109,7 +109,7 @@ public class ExtendedStatusReportJob extends Job {
       }
    };
 
-   private static String getStatusReportBody(IProgressMonitor monitor, String title, Collection<? extends Artifact> arts) throws OseeCoreException {
+   private static String getStatusReportBody(IProgressMonitor monitor, Collection<? extends Artifact> arts) throws OseeCoreException {
       StringBuilder sb = new StringBuilder();
       sb.append(AHTML.beginMultiColumnTable(100, 1));
       sb.append(AHTML.addHeaderRowMultiColumnTable(Columns.getColumnNames()));
@@ -118,7 +118,6 @@ public class ExtendedStatusReportJob extends Job {
          if (art instanceof ActionArtifact) {
             ActionArtifact actionArt = (ActionArtifact) art;
             String str = String.format("Processing %s/%s \"%s\"", x++ + "", arts.size(), actionArt.getName());
-            System.out.println(str);
             monitor.subTask(str);
             for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts()) {
                addTableRow(sb, team);
@@ -139,23 +138,11 @@ public class ExtendedStatusReportJob extends Job {
          if (col == Columns.ActionId) {
             values.add(sma.getParentActionArtifact().getHumanReadableId());
          } else if (col == Columns.TeamId) {
-            if (sma.isTeamWorkflow()) {
-               values.add(sma.getHumanReadableId());
-            } else {
-               values.add(".");
-            }
+            handleTeamIdColumn(sma, values);
          } else if (col == Columns.TaskId) {
-            if (sma instanceof TaskArtifact) {
-               values.add(((TaskArtifact) sma).getHumanReadableId());
-            } else {
-               values.add(".");
-            }
+            handleTaskIdColumn(sma, values);
          } else if (col == Columns.Team) {
-            if (sma.isTeamWorkflow()) {
-               values.add(((TeamWorkFlowArtifact) sma).getTeamName());
-            } else {
-               values.add(".");
-            }
+            handleTeamColumn(sma, values);
          } else if (col == Columns.Type) {
             values.add(sma.getArtifactTypeName());
          } else if (col == Columns.Priority) {
@@ -165,24 +152,9 @@ public class ExtendedStatusReportJob extends Job {
          } else if (col == Columns.Title) {
             values.add(sma.getName());
          } else if (col == Columns.Analysis) {
-            String desc = sma.getDescription();
-            if (sma instanceof TaskArtifact) {
-               TaskArtifact taskArt = (TaskArtifact) sma;
-               desc = taskArt.getDescription() + " " + taskArt.getSoleAttributeValue(AtsAttributeTypes.Resolution, "");
-            }
-            if (desc.matches("^ *$")) {
-               values.add(".");
-            } else {
-               values.add(desc);
-            }
+            handleAnalysisColumn(sma, values);
          } else if (col == Columns.Originator) {
-            if (sma.getOriginator() == null) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP,
-                  "Can't retrieve orig for " + sma.getHumanReadableId());
-               values.add(".");
-            } else {
-               values.add(sma.getOriginator().getName());
-            }
+            handleOriginatorColumn(sma, values);
          } else if (col == Columns.Assignees) {
             values.add(Artifacts.toString("; ", sma.getStateMgr().getAssignees()));
          } else if (col == Columns.Status_State) {
@@ -194,6 +166,53 @@ public class ExtendedStatusReportJob extends Job {
          }
       }
       sb.append(AHTML.addRowMultiColumnTable(values.toArray(new String[values.size()])));
+   }
+
+   private static void handleTeamColumn(AbstractWorkflowArtifact sma, List<String> values) {
+      if (sma.isTeamWorkflow()) {
+         values.add(((TeamWorkFlowArtifact) sma).getTeamName());
+      } else {
+         values.add(".");
+      }
+   }
+
+   private static void handleTaskIdColumn(AbstractWorkflowArtifact sma, List<String> values) {
+      if (sma instanceof TaskArtifact) {
+         values.add(((TaskArtifact) sma).getHumanReadableId());
+      } else {
+         values.add(".");
+      }
+   }
+
+   private static void handleTeamIdColumn(AbstractWorkflowArtifact sma, List<String> values) {
+      if (sma.isTeamWorkflow()) {
+         values.add(sma.getHumanReadableId());
+      } else {
+         values.add(".");
+      }
+   }
+
+   private static void handleOriginatorColumn(AbstractWorkflowArtifact sma, List<String> values) throws OseeCoreException {
+      if (sma.getOriginator() == null) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP,
+            "Can't retrieve orig for " + sma.getHumanReadableId());
+         values.add(".");
+      } else {
+         values.add(sma.getOriginator().getName());
+      }
+   }
+
+   private static void handleAnalysisColumn(AbstractWorkflowArtifact sma, List<String> values) throws OseeCoreException {
+      String desc = sma.getDescription();
+      if (sma instanceof TaskArtifact) {
+         TaskArtifact taskArt = (TaskArtifact) sma;
+         desc = taskArt.getDescription() + " " + taskArt.getSoleAttributeValue(AtsAttributeTypes.Resolution, "");
+      }
+      if (desc.matches("^ *$")) {
+         values.add(".");
+      } else {
+         values.add(desc);
+      }
    }
 
 }

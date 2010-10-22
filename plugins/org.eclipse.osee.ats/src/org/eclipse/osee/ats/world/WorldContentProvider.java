@@ -41,7 +41,6 @@ public class WorldContentProvider implements ITreeContentProvider {
    // Store off relatedArts as they are discovered so they're not garbage collected
    protected Set<Artifact> relatedArts = new HashSet<Artifact>();
    private final WorldXViewer xViewer;
-   private static Object[] EMPTY_ARRAY = new Object[0];
 
    public WorldContentProvider(WorldXViewer WorldXViewer) {
       super();
@@ -104,7 +103,7 @@ public class WorldContentProvider implements ITreeContentProvider {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          }
       }
-      return EMPTY_ARRAY;
+      return org.eclipse.osee.framework.jdk.core.util.Collections.EMPTY_ARRAY;
    }
 
    @Override

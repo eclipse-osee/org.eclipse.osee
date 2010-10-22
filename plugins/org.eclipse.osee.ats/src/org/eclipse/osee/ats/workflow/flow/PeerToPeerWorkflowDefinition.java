@@ -32,9 +32,9 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
  */
 public class PeerToPeerWorkflowDefinition extends WorkFlowDefinition {
 
-   public static String ID = "osee.ats.peerToPeerReview";
-   public static String PEER_REVIEW_COMPLETED_STATE_ID = ID + "." + DefaultTeamState.Completed.name();
-   public static String PEER_REVIEW_CANCELLED_STATE_ID = ID + "." + DefaultTeamState.Cancelled.name();
+   public final static String ID = "osee.ats.peerToPeerReview";
+   public final static String PEER_REVIEW_COMPLETED_STATE_ID = ID + "." + DefaultTeamState.Completed.name();
+   public final static String PEER_REVIEW_CANCELLED_STATE_ID = ID + "." + DefaultTeamState.Cancelled.name();
 
    public PeerToPeerWorkflowDefinition() {
       super(ID, ID, null);

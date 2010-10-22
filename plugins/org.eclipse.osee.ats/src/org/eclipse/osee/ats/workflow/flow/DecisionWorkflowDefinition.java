@@ -33,8 +33,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
  */
 public class DecisionWorkflowDefinition extends WorkFlowDefinition {
 
-   public static String ID = "osee.ats.decisionReview";
-   public static String DECISION_CANCELLED_STATE_ID = ID + "." + DefaultTeamState.Cancelled.name();
+   public final static String ID = "osee.ats.decisionReview";
+   public final static String DECISION_CANCELLED_STATE_ID = ID + "." + DefaultTeamState.Cancelled.name();
 
    public DecisionWorkflowDefinition() {
       super(ID, ID, null);

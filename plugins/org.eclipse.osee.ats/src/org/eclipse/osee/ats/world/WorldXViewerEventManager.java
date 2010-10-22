@@ -117,16 +117,14 @@ public class WorldXViewerEventManager {
       private void processArtifact(WorldXViewer worldViewer, Artifact artifact) {
          try {
             // Don't refresh deleted artifacts
-            if (!artifact.isDeleted()) {
-               if (artifact instanceof IWorldViewArtifact) {
-                  worldViewer.refresh(artifact);
-                  // If parent is loaded and child changed, refresh parent
-                  if (artifact instanceof AbstractWorkflowArtifact) {
-                     AbstractWorkflowArtifact smaArt = (AbstractWorkflowArtifact) artifact;
-                     Artifact smaParent = smaArt.getParentAtsArtifact();
-                     if (smaParent instanceof IWorldViewArtifact) {
-                        worldViewer.refresh(smaParent);
-                     }
+            if (!artifact.isDeleted() && artifact instanceof IWorldViewArtifact) {
+               worldViewer.refresh(artifact);
+               // If parent is loaded and child changed, refresh parent
+               if (artifact instanceof AbstractWorkflowArtifact) {
+                  AbstractWorkflowArtifact smaArt = (AbstractWorkflowArtifact) artifact;
+                  Artifact smaParent = smaArt.getParentAtsArtifact();
+                  if (smaParent instanceof IWorldViewArtifact) {
+                     worldViewer.refresh(smaParent);
                   }
                }
             }

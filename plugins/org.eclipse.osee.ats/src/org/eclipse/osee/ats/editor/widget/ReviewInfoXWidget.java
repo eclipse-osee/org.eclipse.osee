@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.editor.widget;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.IMessageProvider;
@@ -59,7 +60,7 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 public class ReviewInfoXWidget extends XLabelValueBase {
 
    private final String forStateName;
-   private final ArrayList<Label> labelWidgets = new ArrayList<Label>();
+   private final List<Label> labelWidgets = new ArrayList<Label>();
    private Composite destroyableComposite = null;
    private final Composite composite;
    private final IManagedForm managedForm;
@@ -184,7 +185,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
             workComp.setLayoutData(gd);
 
             for (AbstractReviewArtifact revArt : revArts) {
-               createReviewHyperlink(workComp, managedForm, toolkit, 2, revArt, forStateName);
+               createReviewHyperlink(workComp, managedForm, toolkit, revArt, forStateName);
             }
          }
 
@@ -229,7 +230,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
       return ReviewInfoXWidget.toHTML(teamArt, forStateName);
    }
 
-   private void createReviewHyperlink(Composite comp, IManagedForm managedForm, XFormToolkit toolkit, final int horizontalSpan, final AbstractReviewArtifact revArt, String forStateName) throws OseeCoreException {
+   private void createReviewHyperlink(Composite comp, IManagedForm managedForm, XFormToolkit toolkit, final AbstractReviewArtifact revArt, String forStateName) throws OseeCoreException {
 
       Composite workComp = toolkit.createContainer(comp, 1);
       workComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING));

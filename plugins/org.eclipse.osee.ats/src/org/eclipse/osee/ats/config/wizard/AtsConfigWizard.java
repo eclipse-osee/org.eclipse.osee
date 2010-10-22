@@ -41,7 +41,7 @@ public class AtsConfigWizard extends Wizard implements INewWizard {
    @Override
    public void init(IWorkbench workbench, IStructuredSelection selection) {
       // create pages for this wizard
-      page1 = new AtsConfigWizardPage1(this);
+      page1 = new AtsConfigWizardPage1();
    }
 
    @Override

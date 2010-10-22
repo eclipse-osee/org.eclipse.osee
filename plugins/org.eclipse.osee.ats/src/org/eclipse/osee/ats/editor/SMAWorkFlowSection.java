@@ -97,7 +97,6 @@ import org.eclipse.ui.forms.widgets.Section;
 public class SMAWorkFlowSection extends SectionPart {
 
    private XComboViewer transitionToStateCombo;
-   private Button transitionButton;
    private Label transitionAssigneesLabel;
    protected final AbstractWorkflowArtifact sma;
    private final AtsWorkPage atsWorkPage;
@@ -374,7 +373,8 @@ public class SMAWorkFlowSection extends SectionPart {
          if (item.getState().equals(atsWorkPage.getName())) {
             sb.append(" - Cancelled");
             if (!item.getMsg().equals("")) {
-               sb.append(" - Reason: " + item.getMsg());
+               sb.append(" - Reason: ");
+               sb.append(item.getMsg());
             }
          }
       }
@@ -383,12 +383,14 @@ public class SMAWorkFlowSection extends SectionPart {
             sb.append(" - ");
             sb.append(sma.getWorldViewCompletedDateStr());
             LogItem item = sma.getLog().getStateEvent(LogType.StateEntered, atsWorkPage.getName());
-            sb.append(" by " + item.getUser().getName());
+            sb.append(" by ");
+            sb.append(item.getUser().getName());
          } else if (sma.isCancelled()) {
             sb.append(" - ");
             sb.append(sma.getWorldViewCancelledDateStr());
             LogItem item = sma.getLog().getStateEvent(LogType.StateEntered, atsWorkPage.getName());
-            sb.append(" by " + item.getUser().getName());
+            sb.append(" by ");
+            sb.append(item.getUser().getName());
          }
          if (sma.getStateMgr().getAssignees().size() > 0) {
             sb.append(" assigned to ");
@@ -397,8 +399,10 @@ public class SMAWorkFlowSection extends SectionPart {
       } else {
          LogItem item = sma.getLog().getStateEvent(LogType.StateComplete, atsWorkPage.getName());
          if (item != null) {
-            sb.append(" - State Completed " + item.getDate(DateUtil.MMDDYYHHMM));
-            sb.append(" by " + item.getUser().getName());
+            sb.append(" - State Completed ");
+            sb.append(item.getDate(DateUtil.MMDDYYHHMM));
+            sb.append(" by ");
+            sb.append(item.getUser().getName());
          }
       }
       return sb.toString();
@@ -498,7 +502,7 @@ public class SMAWorkFlowSection extends SectionPart {
       comp.setLayout(new GridLayout(5, false));
       comp.setBackground(AtsUtil.ACTIVE_COLOR);
 
-      transitionButton = toolkit.createButton(comp, "Transition", SWT.PUSH);
+      Button transitionButton = toolkit.createButton(comp, "Transition", SWT.PUSH);
       transitionButton.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
@@ -638,7 +642,6 @@ public class SMAWorkFlowSection extends SectionPart {
    }
 
    private void handleTransition() {
-
       try {
 
          if (!isEditable && !sma.getStateMgr().getAssignees().contains(UserManager.getUser(SystemUser.UnAssigned))) {
@@ -652,25 +655,8 @@ public class SMAWorkFlowSection extends SectionPart {
             sma.getStateMgr().removeAssignee(UserManager.getUser(SystemUser.UnAssigned));
             sma.getStateMgr().addAssignee(UserManager.getUser());
          }
-         if (sma.isTeamWorkflow() && ((TeamWorkFlowArtifact) sma).getBranchMgr().isWorkingBranchInWork()) {
-
-            if (((WorkPageDefinition) transitionToStateCombo.getSelected()).getPageName().equals(
-               DefaultTeamState.Cancelled.name())) {
-               AWorkbench.popup("Transition Blocked",
-                  "Working Branch exists.\n\nPlease delete working branch before transition to cancel.");
-               return;
-            }
-            if (((TeamWorkFlowArtifact) sma).getBranchMgr().isBranchInCommit()) {
-               AWorkbench.popup("Transition Blocked",
-                  "Working Branch is being Committed.\n\nPlease wait till commit completes to transition.");
-               return;
-            }
-            if (!atsWorkPage.isAllowTransitionWithWorkingBranch()) {
-               AWorkbench.popup("Transition Blocked",
-                  "Working Branch exists.\n\nPlease commit or delete working branch before transition.");
-               return;
-            }
-
+         if (!isWorkingBranchTransitionable()) {
+            return;
          }
 
          sma.setInTransition(true);
@@ -684,20 +670,7 @@ public class SMAWorkFlowSection extends SectionPart {
             return;
          }
          if (toWorkPageDefinition.getPageName().equals(DefaultTeamState.Cancelled.name())) {
-            EntryDialog cancelDialog = new EntryDialog("Cancellation Reason", "Enter cancellation reason.");
-            if (cancelDialog.open() != 0) {
-               return;
-            }
-            SkynetTransaction transaction =
-               new SkynetTransaction(AtsUtil.getAtsBranch(), "ATS Transition to Cancelled");
-            Result result = sma.transitionToCancelled(cancelDialog.getEntry(), transaction, TransitionOption.Persist);
-            transaction.execute();
-            if (result.isFalse()) {
-               result.popup();
-               return;
-            }
-            sma.setInTransition(false);
-            sma.getEditor().refreshPages();
+            handleTransitionToCancelled();
             return;
          }
 
@@ -719,66 +692,8 @@ public class SMAWorkFlowSection extends SectionPart {
          }
 
          // If this is a return transition, don't require page/tasks to be complete
-         if (!sma.isReturnPage(toWorkPageDefinition)) {
-
-            // Validate XWidgets for transition
-            Result result = atsWorkPage.isPageComplete();
-            if (result.isFalse()) {
-               result.popup();
-               return;
-            }
-
-            // Loop through this state's tasks to confirm complete
-            if (sma instanceof AbstractTaskableArtifact && !sma.isCancelledOrCompleted()) {
-               for (TaskArtifact taskArt : ((AbstractTaskableArtifact) sma).getTaskArtifactsFromCurrentState()) {
-                  if (taskArt.isInWork()) {
-                     AWorkbench.popup(
-                        "Transition Blocked",
-                        "Task Not Complete\n\nTitle: " + taskArt.getName() + "\n\nHRID: " + taskArt.getHumanReadableId());
-                     return;
-                  }
-               }
-            }
-
-            // Don't transition without targeted version if so configured
-            if (sma.teamDefHasWorkRule(AtsWorkDefinitions.RuleWorkItemId.atsRequireTargetedVersion.name()) || sma.getWorkPageDefinition().hasWorkRule(
-               AtsWorkDefinitions.RuleWorkItemId.atsRequireTargetedVersion.name())) {
-               if (sma.getWorldViewTargetedVersion() == null && !toWorkPageDefinition.isCancelledPage()) {
-                  AWorkbench.popup("Transition Blocked",
-                     "Actions must be targeted for a Version.\nPlease set \"Target Version\" before transition.");
-                  return;
-               }
-            }
-
-            // Loop through this state's blocking reviews to confirm complete
-            if (sma.isTeamWorkflow()) {
-               for (AbstractReviewArtifact reviewArt : ReviewManager.getReviewsFromCurrentState((TeamWorkFlowArtifact) sma)) {
-                  if (reviewArt.getReviewBlockType() == ReviewBlockType.Transition && !reviewArt.isCancelledOrCompleted()) {
-                     AWorkbench.popup("Transition Blocked", "All Blocking Reviews must be completed before transition.");
-                     return;
-                  }
-               }
-            }
-
-            // Check extension points for valid transition
-            for (IAtsStateItem item : AtsStateItemManager.getStateItems(atsWorkPage.getId())) {
-               try {
-                  result =
-                     item.transitioning(sma, sma.getStateMgr().getCurrentStateName(),
-                        toWorkPageDefinition.getPageName(), toAssignees);
-                  if (result.isFalse()) {
-                     result.popup();
-                     return;
-                  }
-               } catch (Exception ex) {
-                  OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-               }
-            }
-
-            // Ask for metrics for this page (store in state versus task?)
-            if (!handlePopulateStateMetrics()) {
-               return;
-            }
+         if (!sma.isReturnPage(toWorkPageDefinition) && !isWorkPageTransitionable(toWorkPageDefinition, toAssignees)) {
+            return;
          }
 
          // Persist must be done prior and separate from transition
@@ -798,6 +713,110 @@ public class SMAWorkFlowSection extends SectionPart {
       } finally {
          sma.setInTransition(false);
       }
+   }
+
+   private boolean isWorkPageTransitionable(WorkPageDefinition toWorkPageDefinition, Collection<User> toAssignees) throws OseeCoreException {
+      // Validate XWidgets for transition
+      Result result = atsWorkPage.isPageComplete();
+      if (result.isFalse()) {
+         result.popup();
+         return false;
+      }
+
+      // Loop through this state's tasks to confirm complete
+      if (sma instanceof AbstractTaskableArtifact && !sma.isCancelledOrCompleted()) {
+         for (TaskArtifact taskArt : ((AbstractTaskableArtifact) sma).getTaskArtifactsFromCurrentState()) {
+            if (taskArt.isInWork()) {
+               AWorkbench.popup("Transition Blocked",
+                  "Task Not Complete\n\nTitle: " + taskArt.getName() + "\n\nHRID: " + taskArt.getHumanReadableId());
+               return false;
+            }
+         }
+      }
+
+      // Don't transition without targeted version if so configured
+      boolean teamDefRequiresTargetedVersion =
+         sma.teamDefHasWorkRule(AtsWorkDefinitions.RuleWorkItemId.atsRequireTargetedVersion.name());
+      boolean pageRequiresTargetedVersion =
+         sma.getWorkPageDefinition().hasWorkRule(AtsWorkDefinitions.RuleWorkItemId.atsRequireTargetedVersion.name());
+
+      if ((teamDefRequiresTargetedVersion || pageRequiresTargetedVersion) && //
+      sma.getWorldViewTargetedVersion() == null && //
+      !toWorkPageDefinition.isCancelledPage()) {
+         AWorkbench.popup("Transition Blocked",
+            "Actions must be targeted for a Version.\nPlease set \"Target Version\" before transition.");
+         return false;
+      }
+
+      // Loop through this state's blocking reviews to confirm complete
+      if (sma.isTeamWorkflow()) {
+         for (AbstractReviewArtifact reviewArt : ReviewManager.getReviewsFromCurrentState((TeamWorkFlowArtifact) sma)) {
+            if (reviewArt.getReviewBlockType() == ReviewBlockType.Transition && !reviewArt.isCancelledOrCompleted()) {
+               AWorkbench.popup("Transition Blocked", "All Blocking Reviews must be completed before transition.");
+               return false;
+            }
+         }
+      }
+
+      // Check extension points for valid transition
+      for (IAtsStateItem item : AtsStateItemManager.getStateItems(atsWorkPage.getId())) {
+         try {
+            result =
+               item.transitioning(sma, sma.getStateMgr().getCurrentStateName(), toWorkPageDefinition.getPageName(),
+                  toAssignees);
+            if (result.isFalse()) {
+               result.popup();
+               return false;
+            }
+         } catch (Exception ex) {
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         }
+      }
+
+      // Ask for metrics for this page (store in state versus task?)
+      if (!handlePopulateStateMetrics()) {
+         return false;
+      }
+      return true;
+   }
+
+   private void handleTransitionToCancelled() throws OseeCoreException {
+      EntryDialog cancelDialog = new EntryDialog("Cancellation Reason", "Enter cancellation reason.");
+      if (cancelDialog.open() != 0) {
+         return;
+      }
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "ATS Transition to Cancelled");
+      Result result = sma.transitionToCancelled(cancelDialog.getEntry(), transaction, TransitionOption.Persist);
+      transaction.execute();
+      if (result.isFalse()) {
+         result.popup();
+         return;
+      }
+      sma.setInTransition(false);
+      sma.getEditor().refreshPages();
+   }
+
+   private boolean isWorkingBranchTransitionable() throws OseeCoreException {
+      if (sma.isTeamWorkflow() && ((TeamWorkFlowArtifact) sma).getBranchMgr().isWorkingBranchInWork()) {
+
+         if (((WorkPageDefinition) transitionToStateCombo.getSelected()).getPageName().equals(
+            DefaultTeamState.Cancelled.name())) {
+            AWorkbench.popup("Transition Blocked",
+               "Working Branch exists.\n\nPlease delete working branch before transition to cancel.");
+            return false;
+         }
+         if (((TeamWorkFlowArtifact) sma).getBranchMgr().isBranchInCommit()) {
+            AWorkbench.popup("Transition Blocked",
+               "Working Branch is being Committed.\n\nPlease wait till commit completes to transition.");
+            return false;
+         }
+         if (!atsWorkPage.isAllowTransitionWithWorkingBranch()) {
+            AWorkbench.popup("Transition Blocked",
+               "Working Branch exists.\n\nPlease commit or delete working branch before transition.");
+            return false;
+         }
+      }
+      return true;
    }
 
    public boolean isCurrentState() {

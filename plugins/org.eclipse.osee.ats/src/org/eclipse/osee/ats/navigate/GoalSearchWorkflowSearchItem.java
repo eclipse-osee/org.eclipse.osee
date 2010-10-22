@@ -90,10 +90,12 @@ public class GoalSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
       StringBuffer sb = new StringBuffer();
       Collection<TeamDefinitionArtifact> teamDefs = getSelectedTeamDefinitions();
       if (teamDefs.size() > 0) {
-         sb.append(" - Teams: " + org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", teamDefs));
+         sb.append(" - Teams: ");
+         sb.append(org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", teamDefs));
       }
       if (getSelectedUser() != null) {
-         sb.append(" - Assignee: " + getSelectedUser());
+         sb.append(" - Assignee: ");
+         sb.append(getSelectedUser());
       }
       if (isIncludeCompletedCancelledCheckbox()) {
          sb.append(" - Include Completed/Cancelled");

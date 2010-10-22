@@ -33,7 +33,7 @@ import org.eclipse.gef.editpolicies.GraphicalNodeEditPolicy;
 import org.eclipse.gef.requests.CreateConnectionRequest;
 import org.eclipse.gef.requests.ReconnectRequest;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.workflow.editor.model.Connection;
+import org.eclipse.osee.ats.workflow.editor.model.Relation;
 import org.eclipse.osee.ats.workflow.editor.model.EllipticalShape;
 import org.eclipse.osee.ats.workflow.editor.model.ModelElement;
 import org.eclipse.osee.ats.workflow.editor.model.RectangleShape;
@@ -93,7 +93,7 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 
          @Override
          protected Command getReconnectSourceCommand(ReconnectRequest request) {
-            Connection conn = (Connection) request.getConnectionEditPart().getModel();
+            Relation conn = (Relation) request.getConnectionEditPart().getModel();
             Shape newSource = (Shape) getHost().getModel();
             ConnectionReconnectCommand cmd = new ConnectionReconnectCommand(conn);
             cmd.setNewSource(newSource);
@@ -102,7 +102,7 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
 
          @Override
          protected Command getReconnectTargetCommand(ReconnectRequest request) {
-            Connection conn = (Connection) request.getConnectionEditPart().getModel();
+            Relation conn = (Relation) request.getConnectionEditPart().getModel();
             Shape newTarget = (Shape) getHost().getModel();
             ConnectionReconnectCommand cmd = new ConnectionReconnectCommand(conn);
             cmd.setNewTarget(newTarget);

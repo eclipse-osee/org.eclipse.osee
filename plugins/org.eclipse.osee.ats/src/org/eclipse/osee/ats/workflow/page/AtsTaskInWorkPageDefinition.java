@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
  */
 public class AtsTaskInWorkPageDefinition extends WorkPageDefinition {
 
-   public static String ID = TaskWorkflowDefinition.ID + "." + TaskStates.InWork.name();
+   public final static String ID = TaskWorkflowDefinition.ID + "." + TaskStates.InWork.name();
 
    public AtsTaskInWorkPageDefinition() {
       this(TaskStates.InWork.name(), ID, null);

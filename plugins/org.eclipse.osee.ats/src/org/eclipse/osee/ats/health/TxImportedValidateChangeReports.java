@@ -154,15 +154,11 @@ public class TxImportedValidateChangeReports extends AbstractBlam {
             String name = artifact.getName();
             try {
                String dataDbGuid = getDataDbGuid(data);
-               if (Strings.isValid(dataDbGuid) || shouldIncludeItemsWithoutDbId) {
-                  if (databaseTargetId.equals(dataDbGuid) || shouldIncludeItemsWithoutDbId) {
-                     if (!currentDbGuid.equals(dataDbGuid)) {
-                        String modified = translateImportedData(data);
-                        modified = updateSourceGuid(currentDbGuid, modified);
-                        artifact.setSoleAttributeValue(CoreAttributeTypes.GeneralStringData, modified);
-                        artifact.persist(transaction);
-                     }
-                  }
+               if (Strings.isValid(dataDbGuid) || shouldIncludeItemsWithoutDbId && databaseTargetId.equals(dataDbGuid) || shouldIncludeItemsWithoutDbId && !currentDbGuid.equals(dataDbGuid)) {
+                  String modified = translateImportedData(data);
+                  modified = updateSourceGuid(currentDbGuid, modified);
+                  artifact.setSoleAttributeValue(CoreAttributeTypes.GeneralStringData, modified);
+                  artifact.persist(transaction);
                }
             } catch (Exception ex) {
                throw new OseeCoreException(String.format("Error processing [%s]", name), ex);

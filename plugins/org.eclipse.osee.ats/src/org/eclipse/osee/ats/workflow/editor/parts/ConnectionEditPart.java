@@ -22,13 +22,13 @@ import org.eclipse.gef.editparts.AbstractConnectionEditPart;
 import org.eclipse.gef.editpolicies.ConnectionEditPolicy;
 import org.eclipse.gef.editpolicies.ConnectionEndpointEditPolicy;
 import org.eclipse.gef.requests.GroupRequest;
-import org.eclipse.osee.ats.workflow.editor.model.Connection;
+import org.eclipse.osee.ats.workflow.editor.model.Relation;
 import org.eclipse.osee.ats.workflow.editor.model.ModelElement;
 import org.eclipse.osee.ats.workflow.editor.model.TransitionConnection;
 import org.eclipse.osee.ats.workflow.editor.model.commands.ConnectionDeleteCommand;
 
 /**
- * Edit part for Connection model elements.
+ * Edit part for Relation model elements.
  * <p>
  * This edit part must implement the PropertyChangeListener interface, so it can be notified of property changes in the
  * corresponding model element.
@@ -87,8 +87,8 @@ class ConnectionEditPart extends AbstractConnectionEditPart implements PropertyC
       }
    }
 
-   private Connection getCastedModel() {
-      return (Connection) getModel();
+   private Relation getCastedModel() {
+      return (Relation) getModel();
    }
 
    @Override

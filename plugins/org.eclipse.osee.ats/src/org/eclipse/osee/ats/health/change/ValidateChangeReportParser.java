@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.health.change;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,7 +28,7 @@ public class ValidateChangeReportParser {
     * @return Returns Three ArrayLists. 0 index for artifact changes, 1 index for attribute changes and 2 index for
     * relation changes.
     */
-   public ArrayList<ArrayList<DataChangeReportComparer>> parse(String changeReportString) {
+   public List<ArrayList<DataChangeReportComparer>> parse(String changeReportString) {
       ArrayList<ArrayList<DataChangeReportComparer>> changeLists =
          new ArrayList<ArrayList<DataChangeReportComparer>>(3);
       ArrayList<DataChangeReportComparer> artifactChanges = new ArrayList<DataChangeReportComparer>();

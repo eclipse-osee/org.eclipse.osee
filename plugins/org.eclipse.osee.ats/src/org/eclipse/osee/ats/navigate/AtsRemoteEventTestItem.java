@@ -118,56 +118,13 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
          return;
       }
 
-      // Make changes and persist
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Remote Event Test");
-      teamArt.setSoleAttributeFromString(AtsAttributeTypes.Description, "description 2");
-      teamArt.setSoleAttributeFromString(AtsAttributeTypes.ChangeType, ChangeType.Problem.name());
-      teamArt.setSoleAttributeFromString(AtsAttributeTypes.PriorityType, "2");
-      teamArt.setSoleAttributeFromString(AtsAttributeTypes.ValidationRequired, "yes");
-      teamArt.addRelation(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, getVersion256());
-      teamArt.persist(transaction);
-      transaction.execute();
-
-      // Make changes and persist
-      teamArt.setSoleAttributeFromString(AtsAttributeTypes.Description, "description 3");
-      teamArt.setSoleAttributeFromString(AtsAttributeTypes.ProposedResolution, "this is resolution");
-      teamArt.persist();
-
-      // Make changes and persist
-      teamArt.deleteRelation(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, getVersion256());
-      teamArt.addRelation(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, getVersion257());
-      teamArt.setSoleAttributeFromString(AtsAttributeTypes.ValidationRequired, "no");
-      teamArt.persist();
-
-      // Make changes and persist
-      transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Remote Event Test");
-      teamArt.deleteAttributes(AtsAttributeTypes.ValidationRequired);
-      teamArt.deleteAttributes(AtsAttributeTypes.Resolution);
-      teamArt.setSoleAttributeFromString(AtsAttributeTypes.Description, "description 4");
-      teamArt.setSoleAttributeFromString(AtsAttributeTypes.ChangeType, ChangeType.Support.name());
-      teamArt.setSoleAttributeFromString(AtsAttributeTypes.PriorityType, "3");
-      teamArt.setRelations(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version,
-         Collections.singleton(getVersion258()));
-      teamArt.persist(transaction);
-      transaction.execute();
-
-      // Make changes and persist
-      teamArt.setSoleAttributeFromString(AtsAttributeTypes.ValidationRequired, "yes");
-      teamArt.persist();
-
-      // Make changes and transition
-      transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Remote Event Test");
-      teamArt.setRelations(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version,
-         Collections.singleton(getVersion257()));
-      teamArt.setSoleAttributeFromString(AtsAttributeTypes.ValidationRequired, "no");
-      teamArt.persist(transaction);
-      transaction.execute();
-
-      transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Remote Event Test");
-      teamArt.transition(DefaultTeamState.Analyze.name(), Collections.singleton(UserManager.getUser()), transaction,
-         TransitionOption.Persist);
-      teamArt.persist(transaction);
-      transaction.execute();
+      makeChanges1(teamArt);
+      makeChanges2(teamArt);
+      makeChanges3(teamArt);
+      makeChanges4(teamArt);
+      makeChanges5(teamArt);
+      makeChanges6(teamArt);
+      makeChanges7(teamArt);
 
       validateActionAtEnd(actionArt);
 
@@ -180,6 +137,71 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       }
 
       resultData.report(title);
+   }
+
+   private void makeChanges7(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Remote Event Test");
+      teamArt.transition(DefaultTeamState.Analyze.name(), Collections.singleton(UserManager.getUser()), transaction,
+         TransitionOption.Persist);
+      teamArt.persist(transaction);
+      transaction.execute();
+   }
+
+   private void makeChanges6(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
+      // Make changes and transition
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Remote Event Test");
+      teamArt.setRelations(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version,
+         Collections.singleton(getVersion257()));
+      teamArt.setSoleAttributeFromString(AtsAttributeTypes.ValidationRequired, "no");
+      teamArt.persist(transaction);
+      transaction.execute();
+   }
+
+   private void makeChanges5(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
+      // Make changes and persist
+      teamArt.setSoleAttributeFromString(AtsAttributeTypes.ValidationRequired, "yes");
+      teamArt.persist();
+   }
+
+   private void makeChanges4(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
+      // Make changes and persist
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Remote Event Test");
+      teamArt.deleteAttributes(AtsAttributeTypes.ValidationRequired);
+      teamArt.deleteAttributes(AtsAttributeTypes.Resolution);
+      teamArt.setSoleAttributeFromString(AtsAttributeTypes.Description, "description 4");
+      teamArt.setSoleAttributeFromString(AtsAttributeTypes.ChangeType, ChangeType.Support.name());
+      teamArt.setSoleAttributeFromString(AtsAttributeTypes.PriorityType, "3");
+      teamArt.setRelations(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version,
+         Collections.singleton(getVersion258()));
+      teamArt.persist(transaction);
+      transaction.execute();
+   }
+
+   private void makeChanges3(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
+      // Make changes and persist
+      teamArt.deleteRelation(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, getVersion256());
+      teamArt.addRelation(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, getVersion257());
+      teamArt.setSoleAttributeFromString(AtsAttributeTypes.ValidationRequired, "no");
+      teamArt.persist();
+   }
+
+   private void makeChanges2(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
+      // Make changes and persist
+      teamArt.setSoleAttributeFromString(AtsAttributeTypes.Description, "description 3");
+      teamArt.setSoleAttributeFromString(AtsAttributeTypes.ProposedResolution, "this is resolution");
+      teamArt.persist();
+   }
+
+   private void makeChanges1(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
+      // Make changes and persist
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Remote Event Test");
+      teamArt.setSoleAttributeFromString(AtsAttributeTypes.Description, "description 2");
+      teamArt.setSoleAttributeFromString(AtsAttributeTypes.ChangeType, ChangeType.Problem.name());
+      teamArt.setSoleAttributeFromString(AtsAttributeTypes.PriorityType, "2");
+      teamArt.setSoleAttributeFromString(AtsAttributeTypes.ValidationRequired, "yes");
+      teamArt.addRelation(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, getVersion256());
+      teamArt.persist(transaction);
+      transaction.execute();
    }
 
    private VersionArtifact getVersion256() throws OseeCoreException {

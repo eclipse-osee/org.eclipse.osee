@@ -92,7 +92,7 @@ import org.eclipse.ui.progress.UIJob;
  */
 public class SMAWorkFlowTab extends FormPage implements IActionable {
    private final AbstractWorkflowArtifact sma;
-   private final ArrayList<SMAWorkFlowSection> sections = new ArrayList<SMAWorkFlowSection>();
+   private final List<SMAWorkFlowSection> sections = new ArrayList<SMAWorkFlowSection>();
    private final List<AtsWorkPage> atsWorkPages = new ArrayList<AtsWorkPage>();
    private static Map<String, Integer> guidToScrollLocation = new HashMap<String, Integer>();
    private SMARelationsHyperlinkComposite smaRelationsComposite;
@@ -103,11 +103,10 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    private SMAWorkflowMetricsHeader workflowMetricsHeader;
    private SMADetailsSection smaDetailsSection;
    private SMARelationsSection smaRelationsSection;
-   private SMAOperationsSection smaOperationsSection;
    private SMAGoalMembersSection smaGoalMembersSection;
    private SMAHistorySection smaHistorySection;
    private LoadingComposite loadingComposite;
-   public static String ID = "ats.workflow.tab";
+   public final static String ID = "ats.workflow.tab";
 
    public SMAWorkFlowTab(AbstractWorkflowArtifact sma) {
       super(sma.getEditor(), ID, "Workflow");
@@ -175,16 +174,6 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       private ReloadJobChangeAdapter(IDirtiableEditor editor) {
          this.editor = editor;
          showBusy(true);
-      }
-
-      @Override
-      public void scheduled(IJobChangeEvent event) {
-         super.scheduled(event);
-      }
-
-      @Override
-      public void aboutToRun(IJobChangeEvent event) {
-         super.aboutToRun(event);
       }
 
       @Override
@@ -274,7 +263,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
 
    private void createOperationsSection() {
       try {
-         smaOperationsSection =
+         SMAOperationsSection smaOperationsSection =
             new SMAOperationsSection(sma.getEditor(), atsBody, sma.getEditor().getToolkit(), SWT.NONE);
          managedForm.addPart(smaOperationsSection);
       } catch (Exception ex) {

@@ -54,7 +54,7 @@ public class NextVersionSearchItem extends WorldUISearchItem {
    @Override
    public String getSelectedName(SearchType searchType) throws OseeCoreException {
       String name = super.getName();
-      TeamDefinitionArtifact teamDef = getTeamDefinition(searchType);
+      TeamDefinitionArtifact teamDef = getTeamDefinition();
       try {
          if (teamDef != null) {
             name += " - " + teamDef.getName();
@@ -68,7 +68,7 @@ public class NextVersionSearchItem extends WorldUISearchItem {
       return name;
    }
 
-   private TeamDefinitionArtifact getTeamDefinition(SearchType searchType) {
+   private TeamDefinitionArtifact getTeamDefinition() {
       if (teamDefHoldingVersions != null) {
          return teamDefHoldingVersions;
       }
@@ -80,12 +80,12 @@ public class NextVersionSearchItem extends WorldUISearchItem {
       if (isCancelled()) {
          return EMPTY_SET;
       }
-      if (getTeamDefinition(searchType).getNextReleaseVersion() == null) {
-         AWorkbench.popup("ERROR", "No version marked as Next Release for \"" + getTeamDefinition(searchType) + "\"");
+      if (getTeamDefinition().getNextReleaseVersion() == null) {
+         AWorkbench.popup("ERROR", "No version marked as Next Release for \"" + getTeamDefinition() + "\"");
          return EMPTY_SET;
       }
       List<Artifact> arts =
-         getTeamDefinition(searchType).getNextReleaseVersion().getRelatedArtifacts(
+         getTeamDefinition().getNextReleaseVersion().getRelatedArtifacts(
             AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow);
       if (isCancelled()) {
          return EMPTY_SET;

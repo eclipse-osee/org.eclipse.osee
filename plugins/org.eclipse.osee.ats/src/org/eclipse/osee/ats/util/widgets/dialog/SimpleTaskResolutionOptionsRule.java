@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionF
  */
 public class SimpleTaskResolutionOptionsRule extends TaskResolutionOptionRule {
 
-   public static String ID = "ats.simpleTaskResolutionOptions";
+   public final static String ID = "ats.simpleTaskResolutionOptions";
    public static enum States {
       None,
       In_Work,

@@ -1471,7 +1471,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    public Result transition(String toStateName, Collection<User> toAssignees, SkynetTransaction transaction, TransitionOption... transitionOption) {
-      return transition(toStateName, toAssignees, null, transaction, transitionOption);
+      return transition(toStateName, toAssignees, (String) null, transaction, transitionOption);
    }
 
    private Result transition(final String toStateName, final Collection<User> toAssignees, final String completeOrCancelReason, SkynetTransaction transaction, TransitionOption... transitionOption) {

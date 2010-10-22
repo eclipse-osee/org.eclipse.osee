@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.health;
 
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -174,31 +173,14 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          monitor.beginTask(getName(), artIdLists.size());
       }
       testNameToResultsMap = new HashCollection<String, String>();
-      boolean testingTest = false;
-      int y = 0, artSetNum = 1;
+      int artSetNum = 1;
       for (Collection<Integer> artIdList : artIdLists) {
          // Don't process all lists if just trying to test this report
-         if (y++ > 5 && testingTest) {
-            break;
-         }
          elapsedTime =
             new ElapsedTime(String.format("ValidateAtsDatabase - load Artifact set %d/%d", artSetNum++,
                artIdLists.size()));
-         Collection<Artifact> artifactsTemp = ArtifactQuery.getArtifactListFromIds(artIdList, AtsUtil.getAtsBranch());
+         Collection<Artifact> artifacts = ArtifactQuery.getArtifactListFromIds(artIdList, AtsUtil.getAtsBranch());
          elapsedTime.end();
-         Collection<Artifact> artifacts = new ArrayList<Artifact>();
-         // Don't process all artifacts if just trying to test this report
-         if (testingTest) {
-            int x = 0;
-            for (Artifact art : artifactsTemp) {
-               artifacts.add(art);
-               if (x++ > 20) {
-                  break;
-               }
-            }
-         } else {
-            artifacts.addAll(artifactsTemp);
-         }
          count += artifacts.size();
          testArtifactIds(artifacts);
          testAtsAttributeValues(artifacts);
@@ -247,9 +229,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             for (Artifact art : user.getRelatedArtifacts(CoreRelationTypes.Users_Artifact)) {
                if (art instanceof AbstractWorkflowArtifact) {
                   if (!AccessControlManager.hasPermission(art, PermissionEnum.FULLACCESS)) {
-                     String errStr = String.format("No permission to remove relations for [%s]", art);
-                     System.err.println(errStr);
-                     rd.logError(errStr);
+                     rd.logError(String.format("No permission to remove relations for [%s]", art));
                   } else {
                      user.deleteRelation(CoreRelationTypes.Users_Artifact, art);
                      smasToRemove.add(art);
@@ -465,17 +445,15 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                   XStateDam stateDam = new XStateDam((AbstractWorkflowArtifact) artifact);
                   for (SMAState state : stateDam.getStates()) {
                      if (state.getName().equals(DefaultTeamState.Completed.name()) || state.getName().equals(
-                        DefaultTeamState.Cancelled.name())) {
-                        if (state.getHoursSpent() != 0.0 || state.getPercentComplete() != 0) {
-                           testNameToResultsMap.put(
-                              "testAtsAttributeValues",
-                              "Error: ats.State error for SMA: " + XResultData.getHyperlink(artifact) + " State: " + state.getName() + " Hours Spent: " + state.getHoursSpentStr() + " Percent: " + state.getPercentComplete());
-                           if (fixAttributeValues) {
-                              state.setHoursSpent(0);
-                              state.setPercentComplete(0);
-                              stateDam.setState(state);
-                              testNameToResultsMap.put("testAtsAttributeValues", "Fixed");
-                           }
+                        DefaultTeamState.Cancelled.name()) && state.getHoursSpent() != 0.0 || state.getPercentComplete() != 0) {
+                        testNameToResultsMap.put(
+                           "testAtsAttributeValues",
+                           "Error: ats.State error for SMA: " + XResultData.getHyperlink(artifact) + " State: " + state.getName() + " Hours Spent: " + state.getHoursSpentStr() + " Percent: " + state.getPercentComplete());
+                        if (fixAttributeValues) {
+                           state.setHoursSpent(0);
+                           state.setPercentComplete(0);
+                           stateDam.setState(state);
+                           testNameToResultsMap.put("testAtsAttributeValues", "Fixed");
                         }
                      }
                   }
@@ -486,17 +464,15 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                   XCurrentStateDam currentStateDam = new XCurrentStateDam((AbstractWorkflowArtifact) artifact);
                   SMAState state = currentStateDam.getState();
                   if (state.getName().equals(DefaultTeamState.Completed.name()) || state.getName().equals(
-                     DefaultTeamState.Cancelled.name())) {
-                     if (state.getHoursSpent() != 0.0 || state.getPercentComplete() != 0) {
-                        testNameToResultsMap.put(
-                           "testAtsAttributeValues",
-                           "Error: ats.CurrentState error for SMA: " + XResultData.getHyperlink(artifact) + " State: " + state.getName() + " Hours Spent: " + state.getHoursSpentStr() + " Percent: " + state.getPercentComplete());
-                        if (fixAttributeValues) {
-                           state.setHoursSpent(0);
-                           state.setPercentComplete(0);
-                           currentStateDam.setState(state);
-                           testNameToResultsMap.put("testAtsAttributeValues", "Fixed");
-                        }
+                     DefaultTeamState.Cancelled.name()) && state.getHoursSpent() != 0.0 || state.getPercentComplete() != 0) {
+                     testNameToResultsMap.put(
+                        "testAtsAttributeValues",
+                        "Error: ats.CurrentState error for SMA: " + XResultData.getHyperlink(artifact) + " State: " + state.getName() + " Hours Spent: " + state.getHoursSpentStr() + " Percent: " + state.getPercentComplete());
+                     if (fixAttributeValues) {
+                        state.setHoursSpent(0);
+                        state.setPercentComplete(0);
+                        currentStateDam.setState(state);
+                        testNameToResultsMap.put("testAtsAttributeValues", "Fixed");
                      }
                   }
                }
@@ -537,7 +513,8 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                   valuesAttrMap.put(info, attr);
                   fixInfo.append(info);
                }
-               fixInfo.append(" - KEEP Gamma" + latestGamma);
+               fixInfo.append(" - KEEP Gamma");
+               fixInfo.append(latestGamma);
                if (latestGamma != 0) {
                   result += fixInfo;
                   if (fixAttributeValues) {
@@ -559,11 +536,9 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    private void testAtsActionsHaveTeamWorkflow(Collection<Artifact> artifacts) {
       for (Artifact artifact : artifacts) {
          try {
-            if (artifact instanceof ActionArtifact) {
-               if (((ActionArtifact) artifact).getTeamWorkFlowArtifacts().isEmpty()) {
-                  testNameToResultsMap.put("testAtsActionsHaveTeamWorkflow",
-                     "Error: Action " + XResultData.getHyperlink(artifact) + " has no Team Workflows\n");
-               }
+            if (artifact instanceof ActionArtifact && ((ActionArtifact) artifact).getTeamWorkFlowArtifacts().isEmpty()) {
+               testNameToResultsMap.put("testAtsActionsHaveTeamWorkflow",
+                  "Error: Action " + XResultData.getHyperlink(artifact) + " has no Team Workflows\n");
             }
          } catch (OseeCoreException ex) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
@@ -670,12 +645,10 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          try {
             if (artifact instanceof ActionableItemArtifact) {
                ActionableItemArtifact aia = (ActionableItemArtifact) artifact;
-               if (aia.isActionable()) {
-                  if (TeamDefinitionArtifact.getImpactedTeamDefs(Arrays.asList(aia)).isEmpty()) {
-                     testNameToResultsMap.put(
-                        "testActionableItemToTeamDefinition",
-                        "Error: ActionableItem " + XResultData.getHyperlink(artifact.getName(), artifact) + " has to related TeamDefinition and is set to Actionable");
-                  }
+               if (aia.isActionable() && TeamDefinitionArtifact.getImpactedTeamDefs(Arrays.asList(aia)).isEmpty()) {
+                  testNameToResultsMap.put(
+                     "testActionableItemToTeamDefinition",
+                     "Error: ActionableItem " + XResultData.getHyperlink(artifact.getName(), artifact) + " has to related TeamDefinition and is set to Actionable");
                }
             }
          } catch (OseeCoreException ex) {

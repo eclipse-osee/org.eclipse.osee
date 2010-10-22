@@ -59,7 +59,7 @@ import org.eclipse.ui.PlatformUI;
  */
 public class ArtifactHyperView extends HyperView implements IArtifactEventListener, IActionable, IPerspectiveListener2 {
 
-   public static String VIEW_ID = "org.eclipse.osee.ats.hyper.ArtifactHyperView";
+   public final static String VIEW_ID = "org.eclipse.osee.ats.hyper.ArtifactHyperView";
    public ArtifactHyperItem topAHI;
    public Artifact currentArtifact;
 
@@ -184,7 +184,7 @@ public class ArtifactHyperView extends HyperView implements IArtifactEventListen
    }
 
    @Override
-   protected void handleRefreshButton() {
+   public void handleRefreshButton() {
       display();
    }
 
@@ -201,7 +201,7 @@ public class ArtifactHyperView extends HyperView implements IArtifactEventListen
       IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
       if (page != null) {
          IEditorPart editor = page.getActiveEditor();
-         if (editor != null && editor instanceof SMAEditor) {
+         if (editor instanceof SMAEditor) {
             currentArtifact = ((SMAEditor) editor).getSma();
             load(currentArtifact);
          }

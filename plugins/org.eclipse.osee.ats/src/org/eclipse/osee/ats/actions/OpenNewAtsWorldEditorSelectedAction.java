@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.actions;
 
-import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.jface.action.Action;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.ats.AtsImage;
@@ -42,7 +42,7 @@ public class OpenNewAtsWorldEditorSelectedAction extends Action {
    public interface IOpenNewAtsWorldEditorSelectedHandler {
       CustomizeData getCustomizeDataCopy() throws OseeCoreException;
 
-      ArrayList<Artifact> getSelectedArtifacts() throws OseeCoreException;
+      List<Artifact> getSelectedArtifacts() throws OseeCoreException;
    }
 
    @Override

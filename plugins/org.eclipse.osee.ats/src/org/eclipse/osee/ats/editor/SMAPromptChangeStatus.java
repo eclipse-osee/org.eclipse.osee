@@ -13,8 +13,8 @@ package org.eclipse.osee.ats.editor;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskOptionStatusDialog;
@@ -84,16 +84,14 @@ public class SMAPromptChangeStatus {
 
       // Access resolution options if object is task
       List<TaskResOptionDefinition> options = null;
-      if (smas.iterator().next() instanceof TaskArtifact) {
-         if (((TaskArtifact) smas.iterator().next()).isUsingTaskResolutionOptions()) {
-            options = ((TaskArtifact) smas.iterator().next()).getTaskResolutionOptionDefintions();
-         }
+      if (smas.iterator().next() instanceof TaskArtifact && ((TaskArtifact) smas.iterator().next()).isUsingTaskResolutionOptions()) {
+         options = ((TaskArtifact) smas.iterator().next()).getTaskResolutionOptionDefintions();
       }
       TaskOptionStatusDialog tsd =
          new TaskOptionStatusDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
             "Enter State Status",
-            "Select resolution, enter percent complete and number of hours you spent since last status.", true,
-            options, smas);
+            true, options,
+            smas);
       if (tsd.open() == 0) {
          performChangeStatus(smas, options,
             tsd.getSelectedOptionDef() != null ? tsd.getSelectedOptionDef().getName() : null,

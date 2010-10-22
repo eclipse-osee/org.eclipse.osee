@@ -34,8 +34,6 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
  */
 public class SMAActionableItemHeader extends Composite {
 
-   private static String ACTION_ACTIONABLE_ITEMS = "Actionable Items: ";
-   private Hyperlink link;
    private Label label;
    private final AbstractWorkflowArtifact sma;
 
@@ -51,7 +49,7 @@ public class SMAActionableItemHeader extends Composite {
          gd.horizontalSpan = 4;
          setLayoutData(gd);
 
-         link = toolkit.createHyperlink(this, ACTION_ACTIONABLE_ITEMS, SWT.NONE);
+         Hyperlink link = toolkit.createHyperlink(this, "Actionable Items: ", SWT.NONE);
          link.setToolTipText("Edit Actionable Items for the parent Action (this may add Team Workflows)");
          link.addHyperlinkListener(new IHyperlinkListener() {
 
@@ -98,7 +96,8 @@ public class SMAActionableItemHeader extends Composite {
                sb.append("         Other: ");
                for (TeamWorkFlowArtifact workflow : teamWf.getParentActionArtifact().getTeamWorkFlowArtifacts()) {
                   if (!workflow.equals(teamWf)) {
-                     sb.append(workflow.getActionableItemsDam().getActionableItemsStr() + ", ");
+                     sb.append(workflow.getActionableItemsDam().getActionableItemsStr());
+                     sb.append(", ");
                   }
                }
             }

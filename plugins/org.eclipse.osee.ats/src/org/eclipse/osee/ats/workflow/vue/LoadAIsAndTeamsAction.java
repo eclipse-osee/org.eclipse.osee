@@ -120,15 +120,13 @@ public class LoadAIsAndTeamsAction {
             if (el.getName().equals("AtsAIandTeamConfig")) {
                vueFilename = el.getAttribute("vueFilename");
                bundleName = el.getContributor().getName();
-               if (bundleId == null || bundleId.equals(bundleName)) {
-                  if (vueFilename != null && bundleName != null) {
-                     Bundle bundle = Platform.getBundle(bundleName);
-                     try {
-                        URL url = bundle.getEntry(vueFilename);
-                        resources.put(bundleName + "/" + vueFilename, Lib.inputStreamToString(url.openStream()));
-                     } catch (Exception ex) {
-                        OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Error loading AtsStateItem extension", ex);
-                     }
+               if ((bundleId == null || bundleId.equals(bundleName)) && vueFilename != null && bundleName != null) {
+                  Bundle bundle = Platform.getBundle(bundleName);
+                  try {
+                     URL url = bundle.getEntry(vueFilename);
+                     resources.put(bundleName + "/" + vueFilename, Lib.inputStreamToString(url.openStream()));
+                  } catch (Exception ex) {
+                     OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Error loading AtsStateItem extension", ex);
                   }
                }
             }
@@ -200,13 +198,9 @@ public class LoadAIsAndTeamsAction {
                } else if (line.contains(TeamDefinitionOptions.RequireTargetedVersion.name())) {
                   teamDefinitionOptions.add(TeamDefinitionOptions.RequireTargetedVersion);
                } else if (line.startsWith(LEAD)) {
-                  String name = line.replaceFirst(LEAD, "");
-                  User u = getUserByName(name, allowUserCreation, transaction);
-                  leads.add(u);
+                  processLeads(transaction, leads, line);
                } else if (line.startsWith(MEMBER)) {
-                  String name = line.replaceFirst(MEMBER, "");
-                  User u = getUserByName(name, allowUserCreation, transaction);
-                  members.add(u);
+                  processMembers(transaction, members, line);
                } else {
                   throw new OseeArgumentException("Unhandled AtsConfig Line [%s] in diagram page [%s]", line,
                      page.getName());
@@ -215,70 +209,94 @@ public class LoadAIsAndTeamsAction {
          }
 
          ArrayList<ActionableItemArtifact> actionableItems = new ArrayList<ActionableItemArtifact>();
-         for (DiagramNode childPage : page.getToPages()) {
-            if (childPage.getPageType() == PageType.ActionableItem) {
-               // Relate this Team Definition to the Actionable Item
-               ActionableItemArtifact actItem = idToActionItem.get(childPage.getId());
-               if (actItem != null) {
-                  actionableItems.add(actItem);
-               } else {
-                  throw new OseeArgumentException("Can't retrieve Actionable Item [%s] with id [%s]",
-                     childPage.getName(), childPage.getId());
-               }
-            }
-         }
+         createActionableItems(page, actionableItems);
 
-         if (getOrCreate) {
-            teamDefArt =
-               (TeamDefinitionArtifact) OseeSystemArtifacts.getOrCreateArtifact(AtsArtifactTypes.TeamDefinition,
-                  page.getName(), AtsUtil.getAtsBranch());
-         } else {
-            teamDefArt =
-               (TeamDefinitionArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.TeamDefinition,
-                  AtsUtil.getAtsBranch(), page.getName());
-         }
-         if (!teamDefArt.isInDb()) {
-            teamDefArt.initialize(fullName, desc, leads, members, actionableItems,
-               teamDefinitionOptions.toArray(new TeamDefinitionOptions[teamDefinitionOptions.size()]));
-            if (parent == null) {
-               // Relate to team heading
-               parent = AtsFolderUtil.getFolder(AtsFolder.Teams);
-            }
-            parent.addChild(teamDefArt);
-            parent.persist(transaction);
-
-            for (Artifact actionableItem : actionableItems) {
-               teamDefArt.addRelation(AtsRelationTypes.TeamActionableItem_ActionableItem, actionableItem);
-            }
-            for (String staticId : staticIds) {
-               StaticIdManager.setSingletonAttributeValue(teamDefArt, staticId);
-            }
-            teamDefArt.setSoleAttributeValue(AtsAttributeTypes.Actionable, actionable);
-         }
-         if (!workflowId.equals("")) {
-            try {
-               Artifact workflowArt =
-                  ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.WorkFlowDefinition, workflowId,
-                     AtsUtil.getAtsBranch());
-               if (workflowArt != null) {
-                  teamDefArt.addRelation(CoreRelationTypes.WorkItem__Child, workflowArt);
-               } else {
-                  System.err.println("Can't find workflow with id \"" + workflowId + "\"");
-               }
-            } catch (Exception ex) {
-               System.err.println(ex.getLocalizedMessage());
-            }
-         }
+         teamDefArt =
+            createTeamDefinition(parent, page, transaction, leads, members, staticIds, desc, getOrCreate, actionable,
+               fullName, workflowId, teamDefinitionOptions, actionableItems);
          teamDefArt.persist(transaction);
       }
 
+      processChildren(page, transaction, teamDefArt);
+      return teamDefArt;
+   }
+
+   private void processMembers(SkynetTransaction transaction, List<User> members, String line) throws OseeCoreException {
+      String name = line.replaceFirst(MEMBER, "");
+      User u = getUserByName(name, allowUserCreation, transaction);
+      members.add(u);
+   }
+
+   private void processLeads(SkynetTransaction transaction, List<User> leads, String line) throws OseeCoreException {
+      String name = line.replaceFirst(LEAD, "");
+      User u = getUserByName(name, allowUserCreation, transaction);
+      leads.add(u);
+   }
+
+   private void processChildren(DiagramNode page, SkynetTransaction transaction, TeamDefinitionArtifact teamDefArt) throws OseeCoreException {
       // Handle all team children
       for (DiagramNode childPage : page.getToPages()) {
          if (childPage.getPageType() == PageType.Team) {
             addTeam(teamDefArt, childPage, transaction);
          }
       }
+   }
+
+   private TeamDefinitionArtifact createTeamDefinition(Artifact parent, DiagramNode page, SkynetTransaction transaction, List<User> leads, List<User> members, java.util.Set<String> staticIds, String desc, boolean getOrCreate, boolean actionable, String fullName, String workflowId, List<TeamDefinitionOptions> teamDefinitionOptions, List<ActionableItemArtifact> actionableItems) throws OseeCoreException, OseeArgumentException {
+      TeamDefinitionArtifact teamDefArt;
+      if (getOrCreate) {
+         teamDefArt =
+            (TeamDefinitionArtifact) OseeSystemArtifacts.getOrCreateArtifact(AtsArtifactTypes.TeamDefinition,
+               page.getName(), AtsUtil.getAtsBranch());
+      } else {
+         teamDefArt =
+            (TeamDefinitionArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.TeamDefinition,
+               AtsUtil.getAtsBranch(), page.getName());
+      }
+      if (!teamDefArt.isInDb()) {
+         teamDefArt.initialize(fullName, desc, leads, members, actionableItems,
+            teamDefinitionOptions.toArray(new TeamDefinitionOptions[teamDefinitionOptions.size()]));
+         if (parent == null) {
+            // Relate to team heading
+            parent = AtsFolderUtil.getFolder(AtsFolder.Teams);
+         }
+         parent.addChild(teamDefArt);
+         parent.persist(transaction);
+
+         for (Artifact actionableItem : actionableItems) {
+            teamDefArt.addRelation(AtsRelationTypes.TeamActionableItem_ActionableItem, actionableItem);
+         }
+         for (String staticId : staticIds) {
+            StaticIdManager.setSingletonAttributeValue(teamDefArt, staticId);
+         }
+         teamDefArt.setSoleAttributeValue(AtsAttributeTypes.Actionable, actionable);
+      }
+      if (!workflowId.equals("")) {
+         Artifact workflowArt =
+            ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.WorkFlowDefinition, workflowId,
+               AtsUtil.getAtsBranch());
+         if (workflowArt != null) {
+            teamDefArt.addRelation(CoreRelationTypes.WorkItem__Child, workflowArt);
+         } else {
+            throw new OseeArgumentException("Can't find workflow with id \"" + workflowId + "\"");
+         }
+      }
       return teamDefArt;
+   }
+
+   private void createActionableItems(DiagramNode page, List<ActionableItemArtifact> actionableItems) throws OseeArgumentException {
+      for (DiagramNode childPage : page.getToPages()) {
+         if (childPage.getPageType() == PageType.ActionableItem) {
+            // Relate this Team Definition to the Actionable Item
+            ActionableItemArtifact actItem = idToActionItem.get(childPage.getId());
+            if (actItem != null) {
+               actionableItems.add(actItem);
+            } else {
+               throw new OseeArgumentException("Can't retrieve Actionable Item [%s] with id [%s]", childPage.getName(),
+                  childPage.getId());
+            }
+         }
+      }
    }
 
    private ActionableItemArtifact addActionableItem(Artifact parent, DiagramNode page, SkynetTransaction transaction) throws OseeCoreException {

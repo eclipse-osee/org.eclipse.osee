@@ -19,7 +19,6 @@ import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.model.type.RelationType;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.BaseArtifactEditorInput;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.RelationsFormSection;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -40,11 +39,6 @@ public class SMARelationsSection extends RelationsFormSection {
    @Override
    public SMAEditor getEditor() {
       return (SMAEditor) super.getEditor();
-   }
-
-   @Override
-   public BaseArtifactEditorInput getEditorInput() {
-      return super.getEditorInput();
    }
 
    @Override

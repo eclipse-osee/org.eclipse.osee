@@ -10,14 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.workflow.editor.parts;
 
+import java.util.logging.Level;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartFactory;
+import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.workflow.editor.model.CancelledWorkPageShape;
 import org.eclipse.osee.ats.workflow.editor.model.CompletedWorkPageShape;
-import org.eclipse.osee.ats.workflow.editor.model.Connection;
+import org.eclipse.osee.ats.workflow.editor.model.Relation;
 import org.eclipse.osee.ats.workflow.editor.model.Shape;
 import org.eclipse.osee.ats.workflow.editor.model.WorkPageShape;
 import org.eclipse.osee.ats.workflow.editor.model.WorkflowDiagram;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * Factory that maps model elements to edit parts.
@@ -29,9 +33,14 @@ public class ShapesEditPartFactory implements EditPartFactory {
    @Override
    public EditPart createEditPart(EditPart context, Object modelElement) {
       // get EditPart for model element
-      EditPart part = getPartForElement(modelElement);
-      // store model element in EditPart
-      part.setModel(modelElement);
+      EditPart part = null;
+      try {
+         part = getPartForElement(modelElement);
+         // store model element in EditPart
+         part.setModel(modelElement);
+      } catch (OseeStateException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      }
       return part;
    }
 
@@ -40,7 +49,7 @@ public class ShapesEditPartFactory implements EditPartFactory {
     * 
     * @throws RuntimeException if no match was found (programming error)
     */
-   private EditPart getPartForElement(Object modelElement) {
+   private EditPart getPartForElement(Object modelElement) throws OseeStateException {
       if (modelElement instanceof WorkflowDiagram) {
          return new DiagramEditPart();
       }
@@ -56,10 +65,10 @@ public class ShapesEditPartFactory implements EditPartFactory {
       if (modelElement instanceof Shape) {
          return new ShapeEditPart();
       }
-      if (modelElement instanceof Connection) {
+      if (modelElement instanceof Relation) {
          return new ConnectionEditPart();
       }
-      throw new RuntimeException(
+      throw new OseeStateException(
          "Can't create part for model element: " + (modelElement != null ? modelElement.getClass().getName() : "null"));
    }
 

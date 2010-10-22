@@ -19,10 +19,10 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
-import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsNotifyUsers;
@@ -147,15 +147,8 @@ public class ExcelAtsTaskArtifactExtractor {
             TaskArtifact taskArt = ((AbstractTaskableArtifact) sma).createNewTask("");
 
             monitor.subTask("Validating...");
-            boolean fullRow = false;
-            for (int i = 0; i < row.length; i++) {
-               if (Strings.isValid(row[i])) {
-                  fullRow = true;
-                  break;
-               }
-            }
-            if (!fullRow) {
-               OseeLog.log(AtsPlugin.class, Level.SEVERE, "Empty Row Found => " + rowNum + " skipping...");
+            boolean valid = validateRow(row);
+            if (!valid) {
                return;
             }
             AtsUtil.setEmailEnabled(false);
@@ -163,104 +156,25 @@ public class ExcelAtsTaskArtifactExtractor {
                if (headerRow[i] == null) {
                   OseeLog.log(AtsPlugin.class, Level.SEVERE, "Null header column => " + i);
                } else if (headerRow[i].equalsIgnoreCase("Originator")) {
-                  String userName = row[i];
-                  User u = null;
-                  if (!Strings.isValid(userName)) {
-                     u = UserManager.getUser();
-                  } else {
-                     u = UserManager.getUserByName(userName);
-                  }
-                  if (u == null) {
-                     OseeLog.log(AtsPlugin.class, Level.SEVERE, String.format(
-                        "Invalid Originator \"%s\" for row %d\nSetting to current user.", userName, rowNum));
-                  }
-                  taskArt.getLog().setOriginator(u);
+                  processOriginator(row, taskArt, i);
                } else if (headerRow[i].equalsIgnoreCase("Assignees")) {
-                  Set<User> assignees = new HashSet<User>();
-                  for (String userName : row[i].split(";")) {
-                     userName = userName.replaceAll("^\\s+", "");
-                     userName = userName.replaceAll("\\+$", "");
-                     User user = null;
-                     if (!Strings.isValid(userName)) {
-                        user = UserManager.getUser();
-                     } else {
-                        try {
-                           user = UserManager.getUserByName(userName);
-                        } catch (OseeCoreException ex) {
-                           OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-                        }
-                     }
-                     if (user == null) {
-                        OseeLog.log(AtsPlugin.class, Level.SEVERE,
-                           String.format("Invalid Assignee \"%s\" for row %d.  Using current user.", userName, rowNum));
-                        user = UserManager.getUser();
-                     }
-                     assignees.add(user);
-                  }
-                  taskArt.getStateMgr().setAssignees(assignees);
+                  processAssignees(row, taskArt, i);
                } else if (headerRow[i].equalsIgnoreCase("Resolution")) {
-                  String str = row[i];
-                  if (Strings.isValid(str)) {
-                     taskArt.setSoleAttributeValue(AtsAttributeTypes.Resolution, str);
-                  }
+                  processResolution(row, taskArt, i);
                } else if (headerRow[i].equalsIgnoreCase("Description")) {
-                  String str = row[i];
-                  if (Strings.isValid(str)) {
-                     taskArt.setSoleAttributeValue(AtsAttributeTypes.Description, str);
-                  }
+                  processDescription(row, taskArt, i);
                } else if (headerRow[i].equalsIgnoreCase("Related to State")) {
-                  String str = row[i];
-                  if (Strings.isValid(str)) {
-                     taskArt.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, str);
-                  }
+                  processRelatedToState(row, taskArt, i);
                } else if (headerRow[i].equalsIgnoreCase("Notes")) {
-                  String str = row[i];
-                  if (Strings.isValid(str)) {
-                     taskArt.setSoleAttributeValue(AtsAttributeTypes.SmaNote, str);
-                  }
+                  processNotes(row, taskArt, i);
                } else if (headerRow[i].equalsIgnoreCase("Title")) {
-                  String str = row[i];
-                  if (Strings.isValid(str)) {
-                     monitor.subTask(String.format("Title \"%s\"", str));
-                     taskArt.setName(str);
-                  }
+                  processTitle(row, taskArt, i);
                } else if (headerRow[i].equalsIgnoreCase("Percent Complete")) {
-                  String str = row[i];
-                  Double percent;
-                  if (Strings.isValid(str)) {
-                     try {
-                        percent = new Double(str);
-                        if (percent < 1) {
-                           percent = percent * 100;
-                        }
-                     } catch (Exception ex) {
-                        throw new OseeArgumentException("Invalid Percent Complete \"%s\" for row %d", str, rowNum);
-                     }
-                     int percentInt = percent.intValue();
-                     sma.getStateMgr().updateMetrics(0, percentInt, true);
-                  }
+                  processPercentComplete(row, i);
                } else if (headerRow[i].equalsIgnoreCase("Hours Spent")) {
-                  String str = row[i];
-                  double hours = 0;
-                  if (Strings.isValid(str)) {
-                     try {
-                        hours = new Double(str);
-                     } catch (Exception ex) {
-                        throw new OseeArgumentException("Invalid Hours Spent \"%s\" for row %d", str, rowNum);
-                     }
-                     sma.getStateMgr().updateMetrics(hours, sma.getStateMgr().getPercentComplete(), true);
-                  }
+                  processHoursSpent(row, i);
                } else if (headerRow[i].equalsIgnoreCase("Estimated Hours")) {
-                  String str = row[i];
-                  double hours = 0;
-                  if (Strings.isValid(str)) {
-                     try {
-                        hours = new Double(str);
-                     } catch (Exception ex) {
-                        throw new OseeArgumentException("Invalid Estimated Hours \"%s\" for row %d", str, rowNum);
-                     }
-                     taskArt.setSoleAttributeValue(AtsAttributeTypes.EstimatedHours, hours);
-                  }
+                  processEstimatedHours(row, taskArt, i);
                } else {
                   OseeLog.log(AtsPlugin.class, Level.SEVERE, "Unhandled column => " + headerRow[i]);
                }
@@ -277,6 +191,139 @@ public class ExcelAtsTaskArtifactExtractor {
          } catch (OseeCoreException ex) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          }
+      }
+
+      private boolean validateRow(String[] row) {
+         boolean fullRow = false;
+         for (int i = 0; i < row.length; i++) {
+            if (Strings.isValid(row[i])) {
+               fullRow = true;
+               break;
+            }
+         }
+         if (!fullRow) {
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, "Empty Row Found => " + rowNum + " skipping...");
+         }
+         return fullRow;
+      }
+
+      private void processTitle(String[] row, TaskArtifact taskArt, int i) throws OseeCoreException {
+         String str = row[i];
+         if (Strings.isValid(str)) {
+            monitor.subTask(String.format("Title \"%s\"", str));
+            taskArt.setName(str);
+         }
+      }
+
+      private void processNotes(String[] row, TaskArtifact taskArt, int i) throws OseeCoreException {
+         String str = row[i];
+         if (Strings.isValid(str)) {
+            taskArt.setSoleAttributeValue(AtsAttributeTypes.SmaNote, str);
+         }
+      }
+
+      private void processRelatedToState(String[] row, TaskArtifact taskArt, int i) throws OseeCoreException {
+         String str = row[i];
+         if (Strings.isValid(str)) {
+            taskArt.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, str);
+         }
+      }
+
+      private void processDescription(String[] row, TaskArtifact taskArt, int i) throws OseeCoreException {
+         String str = row[i];
+         if (Strings.isValid(str)) {
+            taskArt.setSoleAttributeValue(AtsAttributeTypes.Description, str);
+         }
+      }
+
+      private void processResolution(String[] row, TaskArtifact taskArt, int i) throws OseeCoreException {
+         String str = row[i];
+         if (Strings.isValid(str)) {
+            taskArt.setSoleAttributeValue(AtsAttributeTypes.Resolution, str);
+         }
+      }
+
+      private void processEstimatedHours(String[] row, TaskArtifact taskArt, int i) throws OseeArgumentException, OseeCoreException {
+         String str = row[i];
+         double hours = 0;
+         if (Strings.isValid(str)) {
+            try {
+               hours = new Double(str);
+            } catch (Exception ex) {
+               throw new OseeArgumentException("Invalid Estimated Hours \"%s\" for row %d", str, rowNum);
+            }
+            taskArt.setSoleAttributeValue(AtsAttributeTypes.EstimatedHours, hours);
+         }
+      }
+
+      private void processHoursSpent(String[] row, int i) throws OseeArgumentException, OseeCoreException {
+         String str = row[i];
+         double hours = 0;
+         if (Strings.isValid(str)) {
+            try {
+               hours = new Double(str);
+            } catch (Exception ex) {
+               throw new OseeArgumentException("Invalid Hours Spent \"%s\" for row %d", str, rowNum);
+            }
+            sma.getStateMgr().updateMetrics(hours, sma.getStateMgr().getPercentComplete(), true);
+         }
+      }
+
+      private void processPercentComplete(String[] row, int i) throws OseeArgumentException, OseeCoreException {
+         String str = row[i];
+         Double percent;
+         if (Strings.isValid(str)) {
+            try {
+               percent = new Double(str);
+               if (percent < 1) {
+                  percent = percent * 100;
+               }
+            } catch (Exception ex) {
+               throw new OseeArgumentException("Invalid Percent Complete \"%s\" for row %d", str, rowNum);
+            }
+            int percentInt = percent.intValue();
+            sma.getStateMgr().updateMetrics(0, percentInt, true);
+         }
+      }
+
+      private void processAssignees(String[] row, TaskArtifact taskArt, int i) throws OseeCoreException {
+         Set<User> assignees = new HashSet<User>();
+         for (String userName : row[i].split(";")) {
+            userName = userName.replaceAll("^\\s+", "");
+            userName = userName.replaceAll("\\+$", "");
+            User user = null;
+            if (!Strings.isValid(userName)) {
+               user = UserManager.getUser();
+            } else {
+               try {
+                  user = UserManager.getUserByName(userName);
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+               }
+            }
+            if (user == null) {
+               OseeLog.log(AtsPlugin.class, Level.SEVERE,
+                  String.format("Invalid Assignee \"%s\" for row %d.  Using current user.", userName, rowNum));
+               user = UserManager.getUser();
+            }
+            assignees.add(user);
+         }
+         taskArt.getStateMgr().setAssignees(assignees);
+      }
+
+      private void processOriginator(String[] row, TaskArtifact taskArt, int i) throws OseeCoreException {
+         String userName = row[i];
+         User u = null;
+         if (!Strings.isValid(userName)) {
+            u = UserManager.getUser();
+         } else {
+            u = UserManager.getUserByName(userName);
+         }
+         if (u == null) {
+            OseeLog.log(AtsPlugin.class, Level.SEVERE,
+               String.format("Invalid Originator \"%s\" for row %d\nSetting to current user.", userName, rowNum));
+         }
+         taskArt.getLog().setOriginator(u);
       }
    }
 }

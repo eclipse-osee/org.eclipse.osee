@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
  */
 public class AtsAddPeerToPeerReviewRule extends WorkRuleDefinition {
 
-   public static String ID = "atsAddPeerToPeerReview";
+   public final static String ID = "atsAddPeerToPeerReview";
    public static enum PeerToPeerParameter {
       title,
       forState,

@@ -13,9 +13,9 @@ package org.eclipse.osee.ats.editor.stateItem;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.util.widgets.DecisionOption;
 import org.eclipse.osee.ats.util.widgets.XDecisionOptions;
@@ -95,8 +95,7 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
          return null;
       }
       DecisionReviewArtifact decArt = (DecisionReviewArtifact) section.getSma();
-      DecisionOption decisionOption = decArt.decisionOptions.getDecisionOption(decision);
-      return decisionOption;
+      return decArt.decisionOptions.getDecisionOption(decision);
    }
 
    @Override

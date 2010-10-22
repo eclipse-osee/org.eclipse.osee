@@ -94,11 +94,17 @@ public class VersionReportJob extends Job {
          VersionArtifact verArt = dateToVerArt.get(dateSort[x]);
          if (verArt.isNextVersion() || verArt.isReleased()) {
             sb.append(AHTML.getHyperlink("#" + verArt.getName(),
-               verArt.getName() + VersionReportJob.getReleasedString(verArt)) + AHTML.newline());
+               verArt.getName() + VersionReportJob.getReleasedString(verArt)));
+            sb.append(AHTML.newline());
          } else if (verArt.getEstimatedReleaseDate() != null) {
-            sb.append(verArt.getName() + " - Un-Released - Estimated Release Date: " + getDateString(verArt.getEstimatedReleaseDate()) + AHTML.newline());
+            sb.append(verArt.getName());
+            sb.append(" - Un-Released - Estimated Release Date: ");
+            sb.append(getDateString(verArt.getEstimatedReleaseDate()));
+            sb.append(AHTML.newline());
          } else {
-            sb.append(verArt.getName() + " - Un-Released - No Estimated Release Date" + AHTML.newline());
+            sb.append(verArt.getName());
+            sb.append(" - Un-Released - No Estimated Release Date");
+            sb.append(AHTML.newline());
          }
       }
       sb.append(AHTML.addSpace(5));
@@ -154,7 +160,6 @@ public class VersionReportJob extends Job {
                if (monitor != null) {
                   monitor.subTask(str);
                }
-               System.out.println(str);
                sb.append(AHTML.addRowMultiColumnTable(
                   new String[] {
                      "Action",

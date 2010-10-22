@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.workflow.editor.model.commands;
 
 import org.eclipse.gef.commands.Command;
-import org.eclipse.osee.ats.workflow.editor.model.Connection;
+import org.eclipse.osee.ats.workflow.editor.model.Relation;
 
 /**
  * A command to disconnect (remove) a connection from its endpoints. The command can be undone or redone.
@@ -20,8 +20,8 @@ import org.eclipse.osee.ats.workflow.editor.model.Connection;
  */
 public class ConnectionDeleteCommand extends Command {
 
-   /** Connection instance to disconnect. */
-   private final Connection connection;
+   /** Relation instance to disconnect. */
+   private final Relation connection;
 
    /**
     * Create a command that will disconnect a connection from its endpoints.
@@ -29,7 +29,7 @@ public class ConnectionDeleteCommand extends Command {
     * @param conn the connection instance to disconnect (non-null)
     * @throws IllegalArgumentException if conn is null
     */
-   public ConnectionDeleteCommand(Connection conn) {
+   public ConnectionDeleteCommand(Relation conn) {
       if (conn == null) {
          throw new IllegalArgumentException();
       }

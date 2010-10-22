@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.workflow.editor.model.commands;
 
 import java.util.Iterator;
 import org.eclipse.gef.commands.Command;
-import org.eclipse.osee.ats.workflow.editor.model.Connection;
+import org.eclipse.osee.ats.workflow.editor.model.Relation;
 import org.eclipse.osee.ats.workflow.editor.model.DefaultTransitionConnection;
 import org.eclipse.osee.ats.workflow.editor.model.ReturnTransitionConnection;
 import org.eclipse.osee.ats.workflow.editor.model.Shape;
@@ -39,7 +39,7 @@ import org.eclipse.osee.ats.workflow.editor.model.TransitionConnection;
  */
 public class ConnectionCreateCommand extends Command {
    /** The connection instance. */
-   private Connection connection;
+   private Relation connection;
 
    /** Start endpoint for the connection. */
    private final Shape source;
@@ -51,9 +51,9 @@ public class ConnectionCreateCommand extends Command {
     * Instantiate a command that can create a connection between two shapes.
     * 
     * @param source the source endpoint (a non-null Shape instance)
-    * @param lineStyle the desired line style. See Connection#setLineStyle(int) for details
+    * @param lineStyle the desired line style. See Relation#setLineStyle(int) for details
     * @throws IllegalArgumentException if source is null
-    * @see Connection#setLineStyle(int)
+    * @see Relation#setLineStyle(int)
     */
    @SuppressWarnings("rawtypes")
    public ConnectionCreateCommand(Shape source, Class clazz) {
@@ -73,7 +73,7 @@ public class ConnectionCreateCommand extends Command {
       }
       // return false, if the source -> target connection exists already
       for (Iterator<?> iter = source.getSourceConnections().iterator(); iter.hasNext();) {
-         Connection conn = (Connection) iter.next();
+         Relation conn = (Relation) iter.next();
          if (conn.getTarget().equals(target)) {
             return false;
          }

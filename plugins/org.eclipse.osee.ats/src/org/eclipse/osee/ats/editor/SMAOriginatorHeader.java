@@ -33,7 +33,7 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
  */
 public class SMAOriginatorHeader extends Composite {
 
-   private static String ORIGINATOR = "Originator:";
+   private final static String ORIGINATOR = "Originator:";
    private Label origLabel;
 
    public SMAOriginatorHeader(Composite parent, int style, final AbstractWorkflowArtifact sma, XFormToolkit toolkit) {

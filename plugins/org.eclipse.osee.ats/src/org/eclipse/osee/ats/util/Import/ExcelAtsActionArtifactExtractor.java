@@ -59,7 +59,6 @@ public class ExcelAtsActionArtifactExtractor {
    }
 
    public boolean dataIsValid() throws OseeCoreException {
-      System.out.println("Validating...");
       XResultData rd = new XResultData();
       int rowNum = 1; // Header is row 1
       for (ActionData aData : actionDatas) {
@@ -113,7 +112,6 @@ public class ExcelAtsActionArtifactExtractor {
 
    public void createArtifactsAndNotify(SkynetTransaction transaction) {
       AtsUtil.setEmailEnabled(false);
-      System.out.println("Creating...");
       Set<TeamWorkFlowArtifact> teamWfs = new HashSet<TeamWorkFlowArtifact>();
       try {
          for (ActionData aData : actionDatas) {
@@ -247,7 +245,6 @@ public class ExcelAtsActionArtifactExtractor {
       @Override
       public void processRow(String[] cols) {
          rowNum++;
-         System.out.println("Processing Row " + rowNum);
 
          boolean fullRow = false;
          for (int i = 0; i < cols.length; i++) {
@@ -261,7 +258,6 @@ public class ExcelAtsActionArtifactExtractor {
             return;
          }
 
-         System.out.println("Reading rows...");
          ActionData aData = new ActionData();
          for (int i = 0; i < cols.length; i++) {
             if (headerRow[i] == null) {
@@ -280,30 +276,42 @@ public class ExcelAtsActionArtifactExtractor {
             } else if (headerRow[i].equalsIgnoreCase(Columns.Description.name())) {
                aData.desc = cols[i] == null ? "" : cols[i];
             } else if (headerRow[i].equalsIgnoreCase(Columns.UserCommunity.name())) {
-               for (String str : cols[i].split(";")) {
-                  if (!str.equals("")) {
-                     aData.userComms.add(str);
-                  }
-               }
+               processUserCommunities(cols, aData, i);
             } else if (headerRow[i].equalsIgnoreCase(Columns.ActionableItems.name())) {
-               for (String str : cols[i].split(";")) {
-                  if (!str.equals("")) {
-                     aData.actionableItems.add(str);
-                  }
-               }
+               processActionableItems(cols, aData, i);
             } else if (headerRow[i].equalsIgnoreCase(Columns.Assignees.name())) {
-               if (cols[i] != null) {
-                  for (String str : cols[i].split(";")) {
-                     if (!str.equals("")) {
-                        aData.assigneeStrs.add(str);
-                     }
-                  }
-               }
+               processAssignees(cols, aData, i);
             } else {
                OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Unhandled column => " + headerRow[i]);
             }
          }
          actionDatas.add(aData);
+      }
+
+      private void processUserCommunities(String[] cols, ActionData aData, int i) {
+         for (String str : cols[i].split(";")) {
+            if (!str.equals("")) {
+               aData.userComms.add(str);
+            }
+         }
+      }
+
+      private void processActionableItems(String[] cols, ActionData aData, int i) {
+         for (String str : cols[i].split(";")) {
+            if (!str.equals("")) {
+               aData.actionableItems.add(str);
+            }
+         }
+      }
+
+      private void processAssignees(String[] cols, ActionData aData, int i) {
+         if (cols[i] != null) {
+            for (String str : cols[i].split(";")) {
+               if (!str.equals("")) {
+                  aData.assigneeStrs.add(str);
+               }
+            }
+         }
       }
    }
 }

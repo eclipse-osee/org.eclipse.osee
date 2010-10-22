@@ -86,10 +86,10 @@ import org.eclipse.ui.dialogs.ListDialog;
 public final class AtsUtil {
 
    private static boolean emailEnabled = true;
-   public static Color ACTIVE_COLOR = new Color(null, 206, 212, 239);
+   public final static Color ACTIVE_COLOR = new Color(null, 206, 212, 239);
    private static OseeGroup atsAdminGroup = null;
    private static final Date today = new Date();
-   public static int MILLISECS_PER_DAY = 1000 * 60 * 60 * 24;
+   public final static int MILLISECS_PER_DAY = 1000 * 60 * 60 * 24;
    public final static String normalColor = "#FFFFFF";
    public final static String activeColor = "#EEEEEE";
    private static ArtifactTypeEventFilter atsObjectArtifactTypesFilter, reviewArtifactTypesFilter,
@@ -139,7 +139,7 @@ public final class AtsUtil {
 
    public static void setEmailEnabled(boolean enabled) {
       if (!DbUtil.isDbInit()) {
-         System.out.println("Email " + (enabled ? "Enabled" : "Disabled"));
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, "Email " + (enabled ? "Enabled" : "Disabled"));
       }
       emailEnabled = enabled;
    }

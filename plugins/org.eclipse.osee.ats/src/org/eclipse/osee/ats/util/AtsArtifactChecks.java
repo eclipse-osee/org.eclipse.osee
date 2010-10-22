@@ -101,26 +101,23 @@ public class AtsArtifactChecks extends ArtifactCheck {
 
    private String checkAtsWorkflows(Collection<Artifact> artifacts) throws OseeCoreException {
       for (Artifact art : artifacts) {
-         if (art.isOfType(CoreArtifactTypes.WorkFlowDefinition)) {
-            if (art.getRelatedArtifacts(CoreRelationTypes.WorkItem__Parent).size() > 0) {
-               return String.format(
-                  "ATS WorkFlowDefinition  [%s] selected to delete has related Team Definition(s) via WorkItem__Parent; Re-assign Team Definitions to new WorkFlowDefinition first.",
-                  art);
-            }
+         if (art.isOfType(CoreArtifactTypes.WorkFlowDefinition) && art.getRelatedArtifacts(
+            CoreRelationTypes.WorkItem__Parent).size() > 0) {
+            return String.format(
+               "ATS WorkFlowDefinition  [%s] selected to delete has related Team Definition(s) via WorkItem__Parent; Re-assign Team Definitions to new WorkFlowDefinition first.",
+               art);
          }
-         if (art.isOfType(CoreArtifactTypes.WorkRuleDefinition)) {
-            if (art.getRelatedArtifacts(CoreRelationTypes.WorkItem__Parent).size() > 0) {
-               return String.format(
-                  "ATS WorkRuleDefinition [%s] selected to delete has related Work Items via WorkItem__Parent that must be removed first.",
-                  art);
-            }
+         if (art.isOfType(CoreArtifactTypes.WorkRuleDefinition) && art.getRelatedArtifacts(
+            CoreRelationTypes.WorkItem__Parent).size() > 0) {
+            return String.format(
+               "ATS WorkRuleDefinition [%s] selected to delete has related Work Items via WorkItem__Parent that must be removed first.",
+               art);
          }
-         if (art.isOfType(CoreArtifactTypes.WorkWidgetDefinition)) {
-            if (art.getRelatedArtifacts(CoreRelationTypes.WorkItem__Parent).size() > 0) {
-               return String.format(
-                  "ATS WorkWidgetDefinition [%s] selected to delete has related Work Items via WorkItem__Parent that must be removed first.",
-                  art);
-            }
+         if (art.isOfType(CoreArtifactTypes.WorkWidgetDefinition) && art.getRelatedArtifacts(
+            CoreRelationTypes.WorkItem__Parent).size() > 0) {
+            return String.format(
+               "ATS WorkWidgetDefinition [%s] selected to delete has related Work Items via WorkItem__Parent that must be removed first.",
+               art);
          }
       }
       return null;

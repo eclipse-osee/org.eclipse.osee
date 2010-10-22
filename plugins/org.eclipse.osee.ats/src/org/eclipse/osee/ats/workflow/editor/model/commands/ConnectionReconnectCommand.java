@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.workflow.editor.model.commands;
 
 import java.util.Iterator;
 import org.eclipse.gef.commands.Command;
-import org.eclipse.osee.ats.workflow.editor.model.Connection;
+import org.eclipse.osee.ats.workflow.editor.model.Relation;
 import org.eclipse.osee.ats.workflow.editor.model.Shape;
 
 /**
@@ -23,10 +23,10 @@ import org.eclipse.osee.ats.workflow.editor.model.Shape;
  * </p>
  * <ol>
  * <li>Create a subclass of GraphicalNodeEditPolicy.</li>
- * <li>Override the <tt>getReconnectSourceCommand(...)</tt> method. Here you need to obtain the Connection model element
+ * <li>Override the <tt>getReconnectSourceCommand(...)</tt> method. Here you need to obtain the Relation model element
  * from the ReconnectRequest, create a new ConnectionReconnectCommand, set the new connection <i>source</i> by calling
  * the <tt>setNewSource(Shape)</tt> method and return the command instance.
- * <li>Override the <tt>getReconnectTargetCommand(...)</tt> method.</li> Here again you need to obtain the Connection
+ * <li>Override the <tt>getReconnectTargetCommand(...)</tt> method.</li> Here again you need to obtain the Relation
  * model element from the ReconnectRequest, create a new ConnectionReconnectCommand, set the new connection
  * <i>target</i> by calling the <tt>setNewTarget(Shape)</tt> method and return the command instance.</li>
  * </ol>
@@ -41,7 +41,7 @@ import org.eclipse.osee.ats.workflow.editor.model.Shape;
 public class ConnectionReconnectCommand extends Command {
 
    /** The connection instance to reconnect. */
-   private final Connection connection;
+   private final Relation connection;
    /** The new source endpoint. */
    private Shape newSource;
    /** The new target endpoint. */
@@ -52,12 +52,12 @@ public class ConnectionReconnectCommand extends Command {
    private final Shape oldTarget;
 
    /**
-    * Instantiate a command that can reconnect a Connection instance to a different source or target endpoint.
+    * Instantiate a command that can reconnect a Relation instance to a different source or target endpoint.
     * 
     * @param conn the connection instance to reconnect (non-null)
     * @throws IllegalArgumentException if conn is null
     */
-   public ConnectionReconnectCommand(Connection conn) {
+   public ConnectionReconnectCommand(Relation conn) {
       if (conn == null) {
          throw new IllegalArgumentException();
       }
@@ -86,7 +86,7 @@ public class ConnectionReconnectCommand extends Command {
       }
       // return false, if the connection exists already
       for (Iterator<?> iter = newSource.getSourceConnections().iterator(); iter.hasNext();) {
-         Connection conn = (Connection) iter.next();
+         Relation conn = (Relation) iter.next();
          // return false if a newSource -> oldTarget connection exists already
          // and it is a different instance than the connection-field
          if (conn.getTarget().equals(oldTarget) && !conn.equals(connection)) {
@@ -106,7 +106,7 @@ public class ConnectionReconnectCommand extends Command {
       }
       // return false, if the connection exists already
       for (Iterator<?> iter = newTarget.getTargetConnections().iterator(); iter.hasNext();) {
-         Connection conn = (Connection) iter.next();
+         Relation conn = (Relation) iter.next();
          // return false if a oldSource -> newTarget connection exists already
          // and it is a differenct instance that the connection-field
          if (conn.getSource().equals(oldSource) && !conn.equals(connection)) {

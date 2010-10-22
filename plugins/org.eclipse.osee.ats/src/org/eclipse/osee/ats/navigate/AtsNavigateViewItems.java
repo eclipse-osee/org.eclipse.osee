@@ -58,6 +58,7 @@ import org.eclipse.osee.ats.world.search.UserCommunitySearchItem;
 import org.eclipse.osee.ats.world.search.UserRelatedToAtsObjectSearch;
 import org.eclipse.osee.ats.world.search.VersionTargetedForTeamSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.LoadView;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -157,90 +158,103 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
 
          items.add(new ArtifactImpactToActionSearchItem(null));
 
-         XNavigateItem reportItems = new XNavigateItem(null, "Reports", AtsImage.REPORT);
-         new FirstTimeQualityMetricReportItem(reportItems);
-         new XNavigateItem(reportItems, "ATS World Reports - Input from Actions in ATS World", AtsImage.REPORT);
-         new BarChartExample(reportItems);
-         new ResultsEditorExample(reportItems);
-         new CompareEditorExample(reportItems);
-         new XViewerExample(reportItems);
-         new XResultDataExample(reportItems);
-         //      new ExtendedStatusReportItem(atsReportItems, "ATS World Extended Status Report");
+         createReportItems(items);
 
-         XNavigateItem emailItems = new XNavigateItem(null, "Email & Notifications", FrameworkImage.EMAIL);
-         new EmailTeamsItem(emailItems, null, MemberType.Both);
-         new EmailTeamsItem(emailItems, null, MemberType.Leads);
-         new EmailTeamsItem(emailItems, null, MemberType.Members);
-         new EmailUserGroups(emailItems);
-         new SubscribeByActionableItem(emailItems);
-         new SubscribeByTeamDefinition(emailItems);
-         items.add(emailItems);
-
-         items.add(reportItems);
-
-         XNavigateItem utilItems = new XNavigateItem(null, "Util", FrameworkImage.GEAR);
-         new ImportActionsViaSpreadsheet(utilItems);
-         new XNavigateItemAction(utilItems, new CompareTwoStringsAction(), FrameworkImage.EDIT);
-         new GenerateGuid(utilItems);
-         new XNavigateItemOperation(utilItems, FrameworkImage.GEAR, MassEditDirtyArtifactOperation.NAME,
-            new MassEditDirtyArtifactOperation());
-
-         items.add(utilItems);
+         createUtilItems(items);
 
          BlamContributionManager.addBlamOperationsToNavigator(items);
 
-         if (AtsUtil.isAtsAdmin()) {
-            XNavigateItem adminItems = new XNavigateItem(null, "Admin", PluginUiImage.ADMIN);
+         createAdminItems(items);
 
-            new AtsNotificationNavigateItem(adminItems);
-            new AtsNotificationNavigateItem(adminItems, true);
-            new UpdateAtsWorkItemDefinitions(adminItems);
-            new DisplayCurrentOseeEventListeners(adminItems);
-            new AtsRemoteEventTestItem(adminItems);
-
-            new SearchNavigateItem(adminItems, new UserRelatedToAtsObjectSearch(
-               "User's All Related Objects - Admin Only", null, false, LoadView.WorldEditor));
-            new SearchNavigateItem(adminItems, new UserRelatedToAtsObjectSearch(
-               "User's All Active Related Objects - Admin Only", null, true, LoadView.WorldEditor));
-
-            new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all Actions", AtsArtifactTypes.Action));
-            new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all Decision Review",
-               AtsArtifactTypes.DecisionReview));
-            new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all PeerToPeer Review",
-               AtsArtifactTypes.PeerToPeerReview));
-            new SearchNavigateItem(adminItems, new ArtifactTypeWithInheritenceSearchItem("Show all Team Workflows",
-               AtsArtifactTypes.TeamWorkflow));
-            new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all Tasks", AtsArtifactTypes.Task));
-            new CreateGoalTestArtifacts(adminItems);
-
-            new DoesNotWorkItemAts(adminItems);
-
-            XNavigateItem healthItems = new XNavigateItemFolder(adminItems, "Health");
-            new ValidateAtsDatabase(healthItems);
-            new ValidateChangeReports(healthItems);
-            new ValidateChangeReportByHrid(healthItems);
-
-            // new ActionNavigateItem(adminItems, new XViewerViewAction());
-            // new ActionNavigateItem(adminItems, new OpenEditorAction());
-            // new CreateBugFixesItem(adminItems);
-
-            XNavigateItem extra = new XNavigateItemFolder(adminItems, "Other");
-            Set<XNavigateExtensionPointData> extraItems =
-               XNavigateContributionManager.getNavigateItems(NavigateView.VIEW_ID);
-            for (XNavigateExtensionPointData extraItem : extraItems) {
-               for (XNavigateItem navigateItem : extraItem.getNavigateItems()) {
-                  extra.addChild(navigateItem);
-               }
-            }
-
-            items.add(adminItems);
-         }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          return items;
       }
 
       return items;
+   }
+
+   private void createAdminItems(List<XNavigateItem> items) throws OseeCoreException, OseeArgumentException {
+      if (AtsUtil.isAtsAdmin()) {
+         XNavigateItem adminItems = new XNavigateItem(null, "Admin", PluginUiImage.ADMIN);
+
+         new AtsNotificationNavigateItem(adminItems);
+         new AtsNotificationNavigateItem(adminItems, true);
+         new UpdateAtsWorkItemDefinitions(adminItems);
+         new DisplayCurrentOseeEventListeners(adminItems);
+         new AtsRemoteEventTestItem(adminItems);
+
+         new SearchNavigateItem(adminItems, new UserRelatedToAtsObjectSearch("User's All Related Objects - Admin Only",
+            null, false, LoadView.WorldEditor));
+         new SearchNavigateItem(adminItems, new UserRelatedToAtsObjectSearch(
+            "User's All Active Related Objects - Admin Only", null, true, LoadView.WorldEditor));
+
+         new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all Actions", AtsArtifactTypes.Action));
+         new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all Decision Review",
+            AtsArtifactTypes.DecisionReview));
+         new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all PeerToPeer Review",
+            AtsArtifactTypes.PeerToPeerReview));
+         new SearchNavigateItem(adminItems, new ArtifactTypeWithInheritenceSearchItem("Show all Team Workflows",
+            AtsArtifactTypes.TeamWorkflow));
+         new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all Tasks", AtsArtifactTypes.Task));
+         new CreateGoalTestArtifacts(adminItems);
+
+         new DoesNotWorkItemAts(adminItems);
+
+         XNavigateItem healthItems = new XNavigateItemFolder(adminItems, "Health");
+         new ValidateAtsDatabase(healthItems);
+         new ValidateChangeReports(healthItems);
+         new ValidateChangeReportByHrid(healthItems);
+
+         // new ActionNavigateItem(adminItems, new XViewerViewAction());
+         // new ActionNavigateItem(adminItems, new OpenEditorAction());
+         // new CreateBugFixesItem(adminItems);
+
+         XNavigateItem extra = new XNavigateItemFolder(adminItems, "Other");
+         Set<XNavigateExtensionPointData> extraItems =
+            XNavigateContributionManager.getNavigateItems(NavigateView.VIEW_ID);
+         for (XNavigateExtensionPointData extraItem : extraItems) {
+            for (XNavigateItem navigateItem : extraItem.getNavigateItems()) {
+               extra.addChild(navigateItem);
+            }
+         }
+
+         items.add(adminItems);
+      }
+   }
+
+   private void createUtilItems(List<XNavigateItem> items) {
+      XNavigateItem utilItems = new XNavigateItem(null, "Util", FrameworkImage.GEAR);
+      new ImportActionsViaSpreadsheet(utilItems);
+      new XNavigateItemAction(utilItems, new CompareTwoStringsAction(), FrameworkImage.EDIT);
+      new GenerateGuid(utilItems);
+      new XNavigateItemOperation(utilItems, FrameworkImage.GEAR, MassEditDirtyArtifactOperation.NAME,
+         new MassEditDirtyArtifactOperation());
+
+      items.add(utilItems);
+   }
+
+   private void createReportItems(List<XNavigateItem> items) {
+      XNavigateItem reportItems = new XNavigateItem(null, "Reports", AtsImage.REPORT);
+      new FirstTimeQualityMetricReportItem(reportItems);
+      new XNavigateItem(reportItems, "ATS World Reports - Input from Actions in ATS World", AtsImage.REPORT);
+      new BarChartExample(reportItems);
+      new ResultsEditorExample(reportItems);
+      new CompareEditorExample(reportItems);
+      new XViewerExample(reportItems);
+      new XResultDataExample(reportItems);
+      //      new ExtendedStatusReportItem(atsReportItems, "ATS World Extended Status Report");
+
+      XNavigateItem emailItems = new XNavigateItem(null, "Email & Notifications", FrameworkImage.EMAIL);
+      new EmailTeamsItem(emailItems, null, MemberType.Both);
+      new EmailTeamsItem(emailItems, null, MemberType.Leads);
+      new EmailTeamsItem(emailItems, null, MemberType.Members);
+      new EmailUserGroups(emailItems);
+      new SubscribeByActionableItem(emailItems);
+      new SubscribeByTeamDefinition(emailItems);
+      items.add(emailItems);
+
+      items.add(reportItems);
    }
 
    public void createReviewsSection(List<XNavigateItem> items) {

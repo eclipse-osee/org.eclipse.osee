@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats;
 
 import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 
 /**
@@ -31,8 +32,8 @@ public enum NoteType {
       throw new OseeArgumentException("Unhandled NoteType");
    }
 
-   public static ArrayList<String> getNames() {
-      ArrayList<String> names = new ArrayList<String>();
+   public static List<String> getNames() {
+      List<String> names = new ArrayList<String>();
       for (NoteType e : NoteType.values()) {
          names.add(e.name());
       }

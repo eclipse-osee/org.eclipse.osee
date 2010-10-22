@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.health;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.health.change.DataChangeReportComparer;
 import org.eclipse.osee.ats.health.change.ValidateChangeReportParser;
@@ -18,7 +19,7 @@ import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
- * Compares two change reports to see if the match.
+ * Compares two change reports to see if they match.
  * 
  * @author Jeff C. Phillips
  */
@@ -33,8 +34,8 @@ public class ChangeReportComparer {
    public boolean compare(String currentData, String storedData) {
       boolean success = true;
       ValidateChangeReportParser parser = new ValidateChangeReportParser();
-      ArrayList<ArrayList<DataChangeReportComparer>> currentList = parser.parse(currentData);
-      ArrayList<ArrayList<DataChangeReportComparer>> storedList = parser.parse(storedData);
+      List<ArrayList<DataChangeReportComparer>> currentList = parser.parse(currentData);
+      List<ArrayList<DataChangeReportComparer>> storedList = parser.parse(storedData);
 
       if (currentList.size() != storedList.size() || currentList.get(0).size() != storedList.get(0).size() || currentList.get(
          1).size() != storedList.get(1).size() || currentList.get(2).size() != storedList.get(2).size()) {
@@ -45,9 +46,11 @@ public class ChangeReportComparer {
          for (int j = 0; j < currentList.get(i).size(); j++) {
             if (!currentList.get(i).get(j).getContent().equals(storedList.get(i).get(j).getContent())) {
                success = false;
-               System.err.println(currentList.get(i).get(j).getContent());
-               System.err.println(storedList.get(i).get(j).getContent());
-               System.err.println("---------------------------------------------------");
+               StringBuffer sb = new StringBuffer();
+               sb.append(currentList.get(i).get(j).getContent());
+               sb.append(storedList.get(i).get(j).getContent());
+               sb.append("---------------------------------------------------");
+               OseeLog.log(AtsPlugin.class, Level.SEVERE, sb.toString());
             }
          }
       }

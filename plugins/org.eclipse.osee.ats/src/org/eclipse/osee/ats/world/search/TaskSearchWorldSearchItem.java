@@ -204,16 +204,20 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
       StringBuffer sb = new StringBuffer();
       Collection<TeamDefinitionArtifact> teamDefs = getSelectedTeamDefinitions();
       if (teamDefs.size() > 0) {
-         sb.append(" - Teams: " + org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", teamDefs));
+         sb.append(" - Teams: ");
+         sb.append(org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", teamDefs));
       }
       if (getSelectedVersionArtifact() != null) {
-         sb.append(" - Version: " + getSelectedVersionArtifact());
+         sb.append(" - Version: ");
+         sb.append(getSelectedVersionArtifact());
       }
       if (getSelectedGroups().size() > 0) {
-         sb.append(" - Groups: " + Collections.toString(",", getSelectedGroups()));
+         sb.append(" - Groups: ");
+         sb.append(Collections.toString(",", getSelectedGroups()));
       }
       if (getSelectedUser() != null) {
-         sb.append(" - Assignee: " + getSelectedUser());
+         sb.append(" - Assignee: ");
+         sb.append(getSelectedUser());
       }
       if (isIncludeCompletedCancelledCheckbox()) {
          sb.append(" - Include Completed/Cancelled");
@@ -333,11 +337,8 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
    }
 
    public void setVersion(String versionStr) {
-      if (versionCombo != null && versionCombo.getInDataStrings() != null) {
-         // should check if the version combo was populated
-         if (versionCombo.getInDataStrings().length > 0) {
-            versionCombo.set(versionStr);
-         }
+      if (versionCombo != null && versionCombo.getInDataStrings() != null && versionCombo.getInDataStrings().length > 0) {
+         versionCombo.set(versionStr);
       }
    }
 

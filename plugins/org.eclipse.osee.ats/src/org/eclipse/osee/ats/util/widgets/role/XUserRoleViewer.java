@@ -320,8 +320,8 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IArtifa
    }
 
    @SuppressWarnings("rawtypes")
-   public ArrayList<UserRole> getSelectedUserRoleItems() {
-      ArrayList<UserRole> items = new ArrayList<UserRole>();
+   public List<UserRole> getSelectedUserRoleItems() {
+      List<UserRole> items = new ArrayList<UserRole>();
       if (xViewer == null) {
          return items;
       }

@@ -39,7 +39,7 @@ import org.eclipse.swt.widgets.Composite;
 public class AtsConfigWizardPage1 extends WizardPage {
    private WorkPage page;
 
-   public AtsConfigWizardPage1(AtsConfigWizard actionWizard) {
+   public AtsConfigWizardPage1() {
       super("Create New ATS Configuration", "Create ATS Configuration", null);
       setMessage("Enter configuration information.");
    }
@@ -87,11 +87,11 @@ public class AtsConfigWizardPage1 extends WizardPage {
       return (String) getXWidget(WORKFLOW_ID).getData();
    }
 
-   private static String CONFIG_NAMESPACE = "Configuration Namespace";
-   private static String TEAMDEF_NAME = "Team Definition Name";
-   private static String ACTIONABLE_ITEMS = "Actionable Item(s) (comma delim)";
-   private static String VERSIONS = "Versions (comma delim)";
-   private static String WORKFLOW_ID = "Workflow Id (blank to create default)";
+   private final static String CONFIG_NAMESPACE = "Configuration Namespace";
+   private final static String TEAMDEF_NAME = "Team Definition Name";
+   private final static String ACTIONABLE_ITEMS = "Actionable Item(s) (comma delim)";
+   private final static String VERSIONS = "Versions (comma delim)";
+   private final static String WORKFLOW_ID = "Workflow Id (blank to create default)";
 
    @Override
    public void createControl(Composite parent) {

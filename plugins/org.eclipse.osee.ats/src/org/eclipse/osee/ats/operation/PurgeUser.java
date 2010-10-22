@@ -36,8 +36,8 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  */
 public class PurgeUser extends AbstractBlam {
 
-   public static String FROM_USER = "From User";
-   public static String TO_USER = "To User";
+   public final static String FROM_USER = "From User";
+   public final static String TO_USER = "To User";
    private static int numOfAuthoredTransactions = 0;
    private static int numOfASideRelations = 0;
    private static int numOfBSideRelations = 0;
@@ -61,7 +61,6 @@ public class PurgeUser extends AbstractBlam {
 
    @Override
    public void runOperation(final VariableMap variableMap, IProgressMonitor monitor) {
-      final IProgressMonitor mon = monitor;
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
@@ -90,7 +89,7 @@ public class PurgeUser extends AbstractBlam {
                // confirm deletion of artifact
                confirmDeletionOfArtifact(fromUser);
                // output results
-               displayReport(mon, toUser, fromUser);
+               displayReport(toUser, fromUser);
             } catch (Exception ex) {
                OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             } finally {
@@ -152,7 +151,7 @@ public class PurgeUser extends AbstractBlam {
       art.purgeFromBranch();
    }
 
-   private void displayReport(IProgressMonitor monitor, User toUser, User fromUser) {
+   private void displayReport(User toUser, User fromUser) {
       XResultData rd = new XResultData();
       try {
          String[] columnHeaders =

@@ -14,8 +14,8 @@ package org.eclipse.osee.ats.health.change;
  * @author Jeff C. Phillips
  */
 public class RelationChangeReportComparer extends DataChangeReportComparer {
-   private static String REL_TAG_START_ID = "<relId>";
-   private static String REL_TAG_END_ID = "</relId>";
+   private final static String REL_TAG_START_ID = "<relId>";
+   private final static String REL_TAG_END_ID = "</relId>";
    private int relId;
 
    public RelationChangeReportComparer(String content) {
@@ -42,16 +42,6 @@ public class RelationChangeReportComparer extends DataChangeReportComparer {
          }
       }
       return compareResults;
-   }
-
-   @Override
-   public boolean equals(Object obj) {
-      return super.equals(obj);
-   }
-
-   @Override
-   public int hashCode() {
-      return super.hashCode();
    }
 
 }

@@ -100,25 +100,7 @@ public final class AtsWorkDefinitions implements IWorkDefinitionProvider {
    public static List<WorkItemDefinition> getAtsWorkDefinitions() {
       List<WorkItemDefinition> workItems = new ArrayList<WorkItemDefinition>();
 
-      // Create rule work items
-      workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsRequireStateHourSpentPrompt.name()));
-      workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsAddDecisionValidateBlockingReview.name()));
-      workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsAddDecisionValidateNonBlockingReview.name()));
-      workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsAllowTransitionWithWorkingBranch.name()));
-      workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsForceAssigneesToTeamLeads.name()));
-      workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsRequireTargetedVersion.name()));
-      workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsAllowPriviledgedEditToTeamMember.name()));
-      workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsAllowPriviledgedEditToTeamMemberAndOriginator.name()));
-      workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsAllowPriviledgedEditToAll.name()));
-      workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsAllowEditToAll.name()));
-      workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsAllowAssigneeToAll.name()));
-      workItems.add(new AtsAddDecisionReviewRule());
-      workItems.add(new AtsAddPeerToPeerReviewRule());
-      workItems.add(new AtsStatePercentCompleteWeightRule());
-      workItems.add(new AtsStatePercentCompleteWeightDefaultWorkflowRule());
-      workItems.add(new AtsStatePercentCompleteWeightSimpleWorkflowRule());
-      workItems.add(new AtsStatePercentCompleteWeightDecisionReviewRule());
-      workItems.add(new AtsStatePercentCompleteWeightPeerToPeerReviewRule());
+      getWorkItemRules(workItems);
 
       // Create XWidget work items
       workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.Location, "XTextDam", XOption.REQUIRED,
@@ -183,6 +165,28 @@ public final class AtsWorkDefinitions implements IWorkDefinitionProvider {
       workItems.add(new AtsAttributeReviewRolesXWidgetWorkItem(AtsAttributeTypes.Role));
 
       return workItems;
+   }
+
+   private static void getWorkItemRules(List<WorkItemDefinition> workItems) {
+      // Create rule work items
+      workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsRequireStateHourSpentPrompt.name()));
+      workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsAddDecisionValidateBlockingReview.name()));
+      workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsAddDecisionValidateNonBlockingReview.name()));
+      workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsAllowTransitionWithWorkingBranch.name()));
+      workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsForceAssigneesToTeamLeads.name()));
+      workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsRequireTargetedVersion.name()));
+      workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsAllowPriviledgedEditToTeamMember.name()));
+      workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsAllowPriviledgedEditToTeamMemberAndOriginator.name()));
+      workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsAllowPriviledgedEditToAll.name()));
+      workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsAllowEditToAll.name()));
+      workItems.add(new WorkRuleDefinition(RuleWorkItemId.atsAllowAssigneeToAll.name()));
+      workItems.add(new AtsAddDecisionReviewRule());
+      workItems.add(new AtsAddPeerToPeerReviewRule());
+      workItems.add(new AtsStatePercentCompleteWeightRule());
+      workItems.add(new AtsStatePercentCompleteWeightDefaultWorkflowRule());
+      workItems.add(new AtsStatePercentCompleteWeightSimpleWorkflowRule());
+      workItems.add(new AtsStatePercentCompleteWeightDecisionReviewRule());
+      workItems.add(new AtsStatePercentCompleteWeightPeerToPeerReviewRule());
    }
 
    @Override

@@ -144,7 +144,6 @@ public class WorldLabelProvider extends XViewerLabelProvider {
          if (xCol.equals(WorldXViewerFactory.Notes_Col)) {
             return wva.getWorldViewNotes();
          }
-
          if (xCol.equals(WorldXViewerFactory.Resolution_Col)) {
             return wva.getWorldViewResolution();
          }

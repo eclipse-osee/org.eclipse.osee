@@ -28,7 +28,7 @@ import org.eclipse.swt.graphics.Image;
 public abstract class WorldSearchItem {
 
    private final String name;
-   protected static Set<Artifact> EMPTY_SET = new HashSet<Artifact>();
+   protected static final Set<Artifact> EMPTY_SET = new HashSet<Artifact>();
    protected boolean cancelled = false;
    private LoadView loadView;
    private final Image image;

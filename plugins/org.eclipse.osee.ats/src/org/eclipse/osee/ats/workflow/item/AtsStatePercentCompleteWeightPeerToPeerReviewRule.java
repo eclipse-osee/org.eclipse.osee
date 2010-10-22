@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact.PeerToPeerReviewSt
  */
 public class AtsStatePercentCompleteWeightPeerToPeerReviewRule extends AtsStatePercentCompleteWeightRule {
 
-   public static String ID = "atsStatePercentCompleteWeight.PeerToPeerReview";
+   public final static String ID = "atsStatePercentCompleteWeight.PeerToPeerReview";
 
    public AtsStatePercentCompleteWeightPeerToPeerReviewRule() {
       super(ID, ID);

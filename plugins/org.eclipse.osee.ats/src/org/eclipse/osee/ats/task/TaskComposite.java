@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -66,7 +67,6 @@ import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.PlatformUI;
 
@@ -81,10 +81,6 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
    private final Set<TaskArtifact> taskArts = new HashSet<TaskArtifact>(200);
 
    public TaskComposite(IXTaskViewer iXTaskViewer, Composite parent, int style) {
-      this(iXTaskViewer, parent, style, null);
-   }
-
-   public TaskComposite(IXTaskViewer iXTaskViewer, Composite parent, int style, ToolBar toolBar) {
       super(parent, style);
       this.iXTaskViewer = iXTaskViewer;
       AtsBulkLoad.loadConfig(false);
@@ -153,7 +149,7 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
    }
 
    public void handleDeleteTask() {
-      final ArrayList<TaskArtifact> items = getSelectedTaskArtifactItems();
+      final List<TaskArtifact> items = getSelectedTaskArtifactItems();
       if (items.isEmpty()) {
          AWorkbench.popup("ERROR", "No Tasks Selected");
          return;
@@ -228,7 +224,7 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
       return taskArt;
    }
 
-   public ArrayList<TaskArtifact> getSelectedTaskArtifactItems() {
+   public List<TaskArtifact> getSelectedTaskArtifactItems() {
       Iterator<?> i = ((IStructuredSelection) taskXViewer.getSelection()).iterator();
       ArrayList<TaskArtifact> items = new ArrayList<TaskArtifact>();
       while (i.hasNext()) {
@@ -354,7 +350,7 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
    }
 
    @Override
-   public ArrayList<? extends Artifact> getSelectedArtifacts() {
+   public List<? extends Artifact> getSelectedArtifacts() {
       return getSelectedTaskArtifactItems();
    }
 

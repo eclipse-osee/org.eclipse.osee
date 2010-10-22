@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -79,7 +80,7 @@ public class SMAEditorBranchEventManager implements IBranchEventListener {
    private void safelyProcessHandler(BranchEventType branchModType, Branch branch) {
       for (final ISMAEditorEventHandler handler : handlers) {
          if (handler.isDisposed()) {
-            System.out.println("Unexpected handler disposed but not unregistered.");
+            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, "Unexpected handler disposed but not unregistered.");
          }
          final AbstractWorkflowArtifact sma = handler.getSMAEditor().getSma();
          try {

@@ -17,8 +17,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
@@ -53,7 +53,6 @@ import org.eclipse.swt.widgets.Label;
  */
 public class AtsMetricsComposite extends ScrolledComposite {
 
-   private Composite toolBarComposite;
    private Composite metricsComposite;
    private final IAtsMetricsProvider iAtsMetricsProvider;
    private final Color BACKGROUND_COLOR = Displays.getSystemColor(SWT.COLOR_WHITE);
@@ -88,7 +87,7 @@ public class AtsMetricsComposite extends ScrolledComposite {
    }
 
    private void creatToolBar(Composite composite) {
-      toolBarComposite = new Composite(composite, SWT.NONE);
+      Composite toolBarComposite = new Composite(composite, SWT.NONE);
       toolBarComposite.setLayoutData(new GridData(SWT.NONE, SWT.NONE, true, false, 1, 1));
       toolBarComposite.setLayout(new GridLayout(4, false));
       adapt(toolBarComposite);
@@ -164,10 +163,8 @@ public class AtsMetricsComposite extends ScrolledComposite {
       for (Artifact art : iAtsMetricsProvider.getMetricsArtifacts()) {
          if (art instanceof TeamWorkFlowArtifact) {
             VersionArtifact verArt = ((TeamWorkFlowArtifact) art).getWorldViewTargetedVersion();
-            if (verArt != null) {
-               if (verArt.getEstimatedReleaseDate() != null) {
-                  return verArt.getEstimatedReleaseDate();
-               }
+            if (verArt != null && verArt.getEstimatedReleaseDate() != null) {
+               return verArt.getEstimatedReleaseDate();
             }
          }
       }

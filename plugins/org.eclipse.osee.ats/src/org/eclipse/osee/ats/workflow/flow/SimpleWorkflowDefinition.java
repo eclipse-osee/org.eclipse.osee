@@ -32,17 +32,17 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
  */
 public class SimpleWorkflowDefinition extends WorkFlowDefinition {
 
-   public static String ID = "osee.ats.simpleTeamWorkflow";
+   public final static String ID = "osee.ats.simpleTeamWorkflow";
    public static enum SimpleState {
       Endorse,
       InWork,
       Completed,
       Cancelled
    };
-   public static String ENDORSE_STATE_ID = ID + "." + SimpleState.Endorse.name();
-   public static String INWORK_STATE_ID = ID + "." + SimpleState.InWork.name();
-   public static String COMPLETED_STATE_ID = ID + "." + SimpleState.Completed.name();
-   public static String CANCELLED_STATE_ID = ID + "." + SimpleState.Cancelled.name();
+   public final static String ENDORSE_STATE_ID = ID + "." + SimpleState.Endorse.name();
+   public final static String INWORK_STATE_ID = ID + "." + SimpleState.InWork.name();
+   public final static String COMPLETED_STATE_ID = ID + "." + SimpleState.Completed.name();
+   public final static String CANCELLED_STATE_ID = ID + "." + SimpleState.Cancelled.name();
 
    public SimpleWorkflowDefinition(Artifact artifact) throws OseeCoreException {
       super(artifact);

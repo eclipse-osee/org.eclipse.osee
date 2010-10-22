@@ -102,47 +102,64 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       } else if (xCol.equals(CommitXManagerFactory.Configuring_Object_Col)) {
          return ((Artifact) element).getArtifactTypeName();
       } else if (xCol.equals(CommitXManagerFactory.Commit_Date)) {
-         TransactionRecord transactionRecord =
-            commitXManager.getXCommitViewer().getTeamArt().getBranchMgr().getCommitTransactionRecord(configArt);
-         if (transactionRecord != null) {
-            new DateUtil();
-            return DateUtil.getMMDDYYHHMM(transactionRecord.getTimeStamp());
-         }
-         return "Not Committed";
+         return handleCommitDateColumn(configArt);
       } else if (xCol.equals(CommitXManagerFactory.Commit_Comment)) {
-         TransactionRecord transactionRecord =
-            commitXManager.getXCommitViewer().getTeamArt().getBranchMgr().getCommitTransactionRecord(configArt);
-         if (transactionRecord != null) {
-            return transactionRecord.getComment();
-         }
-         return "Not Committed";
+         return handleCommitCommentColumn(configArt);
       } else if (xCol.equals(CommitXManagerFactory.Dest_Branch_Col)) {
-         if (element instanceof VersionArtifact) {
-            return branch == null ? "Parent Branch Not Configured for Version [" + element + "]" : branch.getShortName();
-         } else if (element instanceof TeamDefinitionArtifact) {
-            return branch == null ? "Parent Branch Not Configured for Team Definition [" + element + "]" : branch.getShortName();
-         }
+         return handleDestBranchColumn(element, branch);
       } else if (xCol.equals(CommitXManagerFactory.Action_Col)) {
-         CommitStatus commitStatus =
-            commitXManager.getXCommitViewer().getTeamArt().getBranchMgr().getCommitStatus(configArt);
-         if (commitStatus == CommitStatus.Branch_Not_Configured) {
-            return "Configure Branch";
-         } else if (commitStatus == CommitStatus.Branch_Commit_Disabled) {
-            return "Enable Branch Commit";
-         } else if (commitStatus == CommitStatus.Commit_Needed) {
-            return "Start Commit";
-         } else if (commitStatus == CommitStatus.Merge_In_Progress) {
-            return "Merge Conflicts and Commit";
-         } else if (commitStatus == CommitStatus.Committed) {
-            return "Show Change Report";
-         } else if (commitStatus == CommitStatus.Committed_With_Merge) {
-            return "Show Change/Merge Report";
-         } else if (commitStatus == CommitStatus.Working_Branch_Not_Created) {
-            return "Working Branch Not Created";
-         }
-         return "Error: Need to handle this";
+         return handleActionColumn(configArt);
       }
       return "unhandled column";
+   }
+
+   private String handleCommitDateColumn(ICommitConfigArtifact configArt) throws OseeCoreException {
+      TransactionRecord transactionRecord =
+         commitXManager.getXCommitViewer().getTeamArt().getBranchMgr().getCommitTransactionRecord(configArt);
+      if (transactionRecord != null) {
+         new DateUtil();
+         return DateUtil.getMMDDYYHHMM(transactionRecord.getTimeStamp());
+      }
+      return "Not Committed";
+   }
+
+   private String handleCommitCommentColumn(ICommitConfigArtifact configArt) throws OseeCoreException {
+      TransactionRecord transactionRecord =
+         commitXManager.getXCommitViewer().getTeamArt().getBranchMgr().getCommitTransactionRecord(configArt);
+      if (transactionRecord != null) {
+         return transactionRecord.getComment();
+      }
+      return "Not Committed";
+   }
+
+   private String handleDestBranchColumn(Object element, Branch branch) {
+      if (element instanceof VersionArtifact) {
+         return branch == null ? "Parent Branch Not Configured for Version [" + element + "]" : branch.getShortName();
+      } else if (element instanceof TeamDefinitionArtifact) {
+         return branch == null ? "Parent Branch Not Configured for Team Definition [" + element + "]" : branch.getShortName();
+      }
+      return "";
+   }
+
+   private String handleActionColumn(ICommitConfigArtifact configArt) throws OseeCoreException {
+      CommitStatus commitStatus =
+         commitXManager.getXCommitViewer().getTeamArt().getBranchMgr().getCommitStatus(configArt);
+      if (commitStatus == CommitStatus.Branch_Not_Configured) {
+         return "Configure Branch";
+      } else if (commitStatus == CommitStatus.Branch_Commit_Disabled) {
+         return "Enable Branch Commit";
+      } else if (commitStatus == CommitStatus.Commit_Needed) {
+         return "Start Commit";
+      } else if (commitStatus == CommitStatus.Merge_In_Progress) {
+         return "Merge Conflicts and Commit";
+      } else if (commitStatus == CommitStatus.Committed) {
+         return "Show Change Report";
+      } else if (commitStatus == CommitStatus.Committed_With_Merge) {
+         return "Show Change/Merge Report";
+      } else if (commitStatus == CommitStatus.Working_Branch_Not_Created) {
+         return "Working Branch Not Created";
+      }
+      return "Error: Need to handle this";
    }
 
    @Override

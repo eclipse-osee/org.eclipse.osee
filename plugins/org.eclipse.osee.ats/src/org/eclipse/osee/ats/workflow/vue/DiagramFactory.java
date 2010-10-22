@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.jdk.core.util.AFile;
 public class DiagramFactory {
 
    private static DiagramFactory instance = new DiagramFactory();
-   public static String GENERAL_DOCUMENT_ARTIFACT_NAME = "General Document";
+   public final static String GENERAL_DOCUMENT_ARTIFACT_NAME = "General Document";
    private static Map<Object, String> objToAtsWorkFlowXml = new HashMap<Object, String>();
 
    private DiagramFactory() {

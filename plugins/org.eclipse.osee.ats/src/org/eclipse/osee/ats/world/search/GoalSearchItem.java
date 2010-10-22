@@ -12,7 +12,6 @@
 package org.eclipse.osee.ats.world.search;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -46,14 +45,10 @@ public class GoalSearchItem extends WorldUISearchItem {
    private final Collection<String> teamDefNames;
    private final User userArt;
 
-   public GoalSearchItem(String displayName, String[] teamDefNames, boolean showFinished, User userArt) {
+   public GoalSearchItem(String displayName, Set<String> teamDefNames, boolean showFinished, User userArt) {
       super(displayName, AtsImage.GOAL);
       this.userArt = userArt;
-      if (teamDefNames != null) {
-         this.teamDefNames = Arrays.asList(teamDefNames);
-      } else {
-         this.teamDefNames = null;
-      }
+      this.teamDefNames = teamDefNames;
       this.showFinished = showFinished;
    }
 

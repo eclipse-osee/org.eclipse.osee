@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.hyper;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
@@ -132,8 +133,8 @@ public class ActionHyperItem extends HyperViewItem {
       return super.getMarkImage();
    }
 
-   public ArrayList<ActionHyperItem> getChildren() {
-      ArrayList<ActionHyperItem> children = new ArrayList<ActionHyperItem>();
+   public List<ActionHyperItem> getChildren() {
+      List<ActionHyperItem> children = new ArrayList<ActionHyperItem>();
       for (HyperViewItem item : getBottom()) {
          if (item instanceof ActionHyperItem) {
             children.add((ActionHyperItem) item);

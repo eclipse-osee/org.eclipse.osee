@@ -106,16 +106,6 @@ public class NavigateView extends ViewPart implements IActionable {
       }
 
       @Override
-      public void scheduled(IJobChangeEvent event) {
-         super.scheduled(event);
-      }
-
-      @Override
-      public void aboutToRun(IJobChangeEvent event) {
-         super.aboutToRun(event);
-      }
-
-      @Override
       public void done(IJobChangeEvent event) {
          super.done(event);
          Job job = new UIJob("Load ATS Navigator") {

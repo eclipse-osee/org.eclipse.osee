@@ -40,7 +40,7 @@ import org.eclipse.swt.SWT;
 public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider implements IWorldEditorParameterProvider {
 
    private final WorldEditorParameterSearchItem worldParameterSearchItem;
-   public static String ENTER_OPTIONS_AND_SELECT_SEARCH = "Enter options and select \"Search\"";
+   public final static String ENTER_OPTIONS_AND_SELECT_SEARCH = "Enter options and select \"Search\"";
    private boolean firstTime = true;
    private boolean loading = false;
    private WorldEditor worldEditor;
@@ -118,7 +118,7 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
          this.worldEditor = worldEditor;
          this.worldParameterSearchItem = worldParameterSearchItem;
          this.searchType = searchType;
-         this.tableLoadOptions = tableLoadOptions;
+         this.tableLoadOptions = tableLoadOptions.clone();
          this.forcePend = forcePend;
       }
 

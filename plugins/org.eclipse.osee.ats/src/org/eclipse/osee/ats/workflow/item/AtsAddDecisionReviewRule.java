@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
  */
 public class AtsAddDecisionReviewRule extends WorkRuleDefinition {
 
-   public static String ID = "atsAddDecisionReview";
+   public final static String ID = "atsAddDecisionReview";
    public static enum DecisionParameter {
       title,
       forState,

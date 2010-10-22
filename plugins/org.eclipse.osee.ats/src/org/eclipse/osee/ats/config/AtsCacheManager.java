@@ -124,95 +124,106 @@ public class AtsCacheManager implements IArtifactEventListener {
          return;
       }
       try {
-         for (EventBasicGuidArtifact guidArt : artifactEvent.getArtifacts()) {
-            try {
-               if (guidArt.is(EventModType.Deleted, EventModType.Purged)) {
-                  if (guidArt.is(CoreArtifactTypes.WorkRuleDefinition, CoreArtifactTypes.WorkPageDefinition,
-                     CoreArtifactTypes.WorkFlowDefinition, CoreArtifactTypes.WorkWidgetDefinition)) {
-                     WorkItemDefinitionFactory.deCache(guidArt);
-                  }
-                  if (guidArt.is(AtsArtifactTypes.Task) && guidArt.is(EventModType.Deleted)) {
-                     Artifact artifact = ArtifactCache.getActive(guidArt);
-                     if (artifact != null) {
-                        teamTasksCache.remove(artifact.getParent());
-                     }
-                  }
-                  Artifact artifact = ArtifactCache.getActive(guidArt);
-                  if (artifact != null && artifact instanceof AbstractTaskableArtifact) {
+         processArtifacts(artifactEvent);
+         processRelations(artifactEvent);
+         processArtifactsInRelations(artifactEvent);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      }
+   }
+
+   private void processArtifactsInRelations(ArtifactEvent artifactEvent) throws OseeCoreException {
+      for (Artifact artifact : artifactEvent.getArtifactsInRelations(CoreRelationTypes.WorkItem__Child,
+         RelationEventType.Added, RelationEventType.Undeleted)) {
+         if (artifact.isOfType(CoreArtifactTypes.WorkRuleDefinition)) {
+            WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update,
+               new WorkRuleDefinition(artifact), artifact);
+         } else if (artifact.isOfType(CoreArtifactTypes.WorkPageDefinition)) {
+            WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update,
+               new WorkPageDefinition(artifact), artifact);
+         } else if (artifact.isOfType(CoreArtifactTypes.WorkWidgetDefinition)) {
+            WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update, new WorkWidgetDefinition(
+               artifact), artifact);
+         } else if (artifact.isOfType(CoreArtifactTypes.WorkFlowDefinition)) {
+            WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update,
+               new WorkFlowDefinition(artifact), artifact);
+         }
+      }
+   }
+
+   private void processRelations(ArtifactEvent artifactEvent) {
+      for (EventBasicGuidRelation guidRel : artifactEvent.getRelations()) {
+         try {
+            if (guidRel.is(AtsRelationTypes.SmaToTask_Task)) {
+               for (TaskArtifact taskArt : ArtifactCache.getActive(guidRel, TaskArtifact.class)) {
+                  teamTasksCache.remove(taskArt.getParent());
+               }
+               for (Artifact artifact : ArtifactCache.getActive(guidRel)) {
+                  if (artifact instanceof AbstractTaskableArtifact) {
                      teamTasksCache.remove(artifact);
                   }
                }
-               if (guidArt.is(EventModType.Added, EventModType.Modified)) {
-                  if (guidArt.is(CoreArtifactTypes.WorkRuleDefinition, CoreArtifactTypes.WorkPageDefinition,
-                     CoreArtifactTypes.WorkFlowDefinition, CoreArtifactTypes.WorkWidgetDefinition)) {
-                     // Must load these cause they are config artifacts
-                     Artifact artifact = ArtifactQuery.getArtifactFromToken(guidArt);
-                     if (artifact != null) {
-                        if (guidArt.is(CoreArtifactTypes.WorkRuleDefinition)) {
-                           WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update,
-                              new WorkRuleDefinition(artifact), artifact);
-                        } else if (artifact.isOfType(CoreArtifactTypes.WorkPageDefinition)) {
-                           WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update,
-                              new WorkPageDefinition(artifact), artifact);
-                        } else if (artifact.isOfType(CoreArtifactTypes.WorkWidgetDefinition)) {
-                           WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update,
-                              new WorkWidgetDefinition(artifact), artifact);
-                        } else if (artifact.isOfType(CoreArtifactTypes.WorkFlowDefinition)) {
-                           WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update,
-                              new WorkFlowDefinition(artifact), artifact);
-                        }
-                     }
-                  }
-                  // Only process if in cache
-                  Artifact artifact = ArtifactCache.getActive(guidArt);
-                  if (artifact != null && guidArt.is(EventModType.Added)) {
-                     if (artifact instanceof TaskArtifact) {
-                        teamTasksCache.remove(artifact.getParent());
-                     }
-                     if (artifact instanceof AbstractTaskableArtifact) {
-                        teamTasksCache.remove(artifact);
-                     }
-                  }
-               }
-            } catch (OseeCoreException ex) {
-               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
             }
+         } catch (OseeCoreException ex) {
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          }
-         for (EventBasicGuidRelation guidRel : artifactEvent.getRelations()) {
-            try {
-               if (guidRel.is(AtsRelationTypes.SmaToTask_Task)) {
-                  for (TaskArtifact taskArt : ArtifactCache.getActive(guidRel, TaskArtifact.class)) {
-                     teamTasksCache.remove(taskArt.getParent());
-                  }
-                  for (Artifact artifact : ArtifactCache.getActive(guidRel)) {
-                     if (artifact instanceof AbstractTaskableArtifact) {
-                        teamTasksCache.remove(artifact);
-                     }
-                  }
-               }
-            } catch (OseeCoreException ex) {
-               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-            }
-         }
-         for (Artifact artifact : artifactEvent.getArtifactsInRelations(CoreRelationTypes.WorkItem__Child,
-            RelationEventType.Added, RelationEventType.Undeleted)) {
-            if (artifact.isOfType(CoreArtifactTypes.WorkRuleDefinition)) {
-               WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update, new WorkRuleDefinition(
-                  artifact), artifact);
-            } else if (artifact.isOfType(CoreArtifactTypes.WorkPageDefinition)) {
-               WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update, new WorkPageDefinition(
-                  artifact), artifact);
-            } else if (artifact.isOfType(CoreArtifactTypes.WorkWidgetDefinition)) {
-               WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update, new WorkWidgetDefinition(
-                  artifact), artifact);
-            } else if (artifact.isOfType(CoreArtifactTypes.WorkFlowDefinition)) {
-               WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update, new WorkFlowDefinition(
-                  artifact), artifact);
-            }
-         }
+      }
+   }
 
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+   private void processArtifacts(ArtifactEvent artifactEvent) {
+      for (EventBasicGuidArtifact guidArt : artifactEvent.getArtifacts()) {
+         try {
+            if (guidArt.is(EventModType.Deleted, EventModType.Purged)) {
+               if (guidArt.is(CoreArtifactTypes.WorkRuleDefinition, CoreArtifactTypes.WorkPageDefinition,
+                  CoreArtifactTypes.WorkFlowDefinition, CoreArtifactTypes.WorkWidgetDefinition)) {
+                  WorkItemDefinitionFactory.deCache(guidArt);
+               }
+               if (guidArt.is(AtsArtifactTypes.Task) && guidArt.is(EventModType.Deleted)) {
+                  Artifact artifact = ArtifactCache.getActive(guidArt);
+                  if (artifact != null) {
+                     teamTasksCache.remove(artifact.getParent());
+                  }
+               }
+               Artifact artifact = ArtifactCache.getActive(guidArt);
+               if (artifact instanceof AbstractTaskableArtifact) {
+                  teamTasksCache.remove(artifact);
+               }
+            }
+            if (guidArt.is(EventModType.Added, EventModType.Modified)) {
+               if (guidArt.is(CoreArtifactTypes.WorkRuleDefinition, CoreArtifactTypes.WorkPageDefinition,
+                  CoreArtifactTypes.WorkFlowDefinition, CoreArtifactTypes.WorkWidgetDefinition)) {
+                  // Must load these cause they are config artifacts
+                  Artifact artifact = ArtifactQuery.getArtifactFromToken(guidArt);
+                  if (artifact != null) {
+                     if (guidArt.is(CoreArtifactTypes.WorkRuleDefinition)) {
+                        WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update,
+                           new WorkRuleDefinition(artifact), artifact);
+                     } else if (artifact.isOfType(CoreArtifactTypes.WorkPageDefinition)) {
+                        WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update,
+                           new WorkPageDefinition(artifact), artifact);
+                     } else if (artifact.isOfType(CoreArtifactTypes.WorkWidgetDefinition)) {
+                        WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update,
+                           new WorkWidgetDefinition(artifact), artifact);
+                     } else if (artifact.isOfType(CoreArtifactTypes.WorkFlowDefinition)) {
+                        WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update,
+                           new WorkFlowDefinition(artifact), artifact);
+                     }
+                  }
+               }
+               // Only process if in cache
+               Artifact artifact = ArtifactCache.getActive(guidArt);
+               if (artifact != null && guidArt.is(EventModType.Added)) {
+                  if (artifact instanceof TaskArtifact) {
+                     teamTasksCache.remove(artifact.getParent());
+                  }
+                  if (artifact instanceof AbstractTaskableArtifact) {
+                     teamTasksCache.remove(artifact);
+                  }
+               }
+            }
+         } catch (OseeCoreException ex) {
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         }
       }
    }
 

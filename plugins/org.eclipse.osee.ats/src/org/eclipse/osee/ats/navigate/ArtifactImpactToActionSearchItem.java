@@ -47,7 +47,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  */
 public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
 
-   private static String TITLE = "Search Artifact Impact to Action";
+   private final static String TITLE = "Search Artifact Impact to Action";
 
    public ArtifactImpactToActionSearchItem(XNavigateItem parent) {
       super(parent, TITLE, FrameworkImage.FLASHLIGHT);
@@ -121,7 +121,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
          HashCollection<Artifact, Branch> branchMap = ChangeManager.getModifingBranches(processArts);
          for (Artifact srchArt : processArts) {
             String str = String.format("Processing %d/%d - %s ", x++, processArts.size(), srchArt.getName());
-            System.out.println(str);
+            // System.out.println(str);
             rd.log("\n" + AHTML.bold(srchArt.getName()));
             monitor.subTask(str);
             int y = 1;
@@ -156,7 +156,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
             if (transactions != null) {
                for (TransactionRecord transactionId : transactions) {
                   String transStr = String.format("Tranaction %d/%d", y++, transactions.size());
-                  System.out.println(transStr);
+                  // System.out.println(transStr);
                   monitor.subTask(transStr);
                   if (transactionId.getCommit() > 0) {
                      Artifact assocArt =

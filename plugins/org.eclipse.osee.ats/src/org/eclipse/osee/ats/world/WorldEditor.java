@@ -51,7 +51,7 @@ public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableE
    public static final String EDITOR_ID = "org.eclipse.osee.ats.world.WorldEditor";
    private WorldXWidgetActionPage worldXWidgetActionPage;
    public static final String HELP_CONTEXT_ID = "atsWorldView";
-   public static int TITLE_MAX_LENGTH = 80;
+   public static final int TITLE_MAX_LENGTH = 80;
 
    @Override
    public void doSave(IProgressMonitor monitor) {
@@ -209,7 +209,7 @@ public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableE
       setPageText(metricsPageIndex, "Metrics");
    }
 
-   public ArrayList<Artifact> getLoadedArtifacts() {
+   public List<Artifact> getLoadedArtifacts() {
       return worldXWidgetActionPage.getWorldComposite().getLoadedArtifacts();
    }
 
@@ -225,10 +225,8 @@ public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableE
          return verArt;
       }
       for (Artifact artifact : getLoadedArtifacts()) {
-         if (artifact instanceof AbstractWorkflowArtifact) {
-            if (((AbstractWorkflowArtifact) artifact).getWorldViewTargetedVersion() != null) {
-               return ((AbstractWorkflowArtifact) artifact).getWorldViewTargetedVersion();
-            }
+         if (artifact instanceof AbstractWorkflowArtifact && ((AbstractWorkflowArtifact) artifact).getWorldViewTargetedVersion() != null) {
+            return ((AbstractWorkflowArtifact) artifact).getWorldViewTargetedVersion();
          }
       }
       return null;

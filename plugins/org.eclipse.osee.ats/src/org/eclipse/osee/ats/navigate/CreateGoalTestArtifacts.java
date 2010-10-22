@@ -59,60 +59,16 @@ public class CreateGoalTestArtifacts extends XNavigateItemAction {
       GoalArtifact defineGoal = GoalManager.createGoal("Define");
       GoalArtifact msaGoal = GoalManager.createGoal("MSA Tools");
       GoalArtifact cdbGoal = GoalManager.createGoal("Integrate CDB signal diff into OSEE");
-      ActionArtifact action =
-         ActionManager.createAction(null, "Fix this model", "Description", ChangeType.Problem, "2", false, null,
-            ActionableItemArtifact.getActionableItems(Arrays.asList("OTE_SW")), transaction);
-      action.persist(transaction);
-      oteGoal.addMember(action.getTeamWorkFlowArtifacts().iterator().next());
-      TeamWorkFlowArtifact teamArt = action.getTeamWorkFlowArtifacts().iterator().next();
-      PeerToPeerReviewArtifact peerReviewArt =
-         ReviewManager.createNewPeerToPeerReview(teamArt, "New Review", "Implement", transaction);
-      oteGoal.addMember(peerReviewArt);
-      teamArt.persist(transaction);
 
-      action =
-         ActionManager.createAction(null, "Add CDB Check Signals", "Description", ChangeType.Problem,
-            "4", false, null,
-            ActionableItemArtifact.getActionableItems(Arrays.asList("OTE_SW", "CDB")), transaction);
-      action.persist(transaction);
-      oteGoal.addMember(action.getTeamWorkFlowArtifacts().iterator().next());
-      cdbGoal.addMember(action.getTeamWorkFlowArtifacts().iterator().next());
-      for (TeamWorkFlowArtifact teamArt2 : action.getTeamWorkFlowArtifacts()) {
-         teamArt2.persist(transaction);
-      }
+      TeamWorkFlowArtifact teamArt = createAction1(transaction, oteGoal);
 
-      action =
-         ActionManager.createAction(null, "Remove Workflow button", "Description", ChangeType.Problem,
-            "4", false, null,
-            ActionableItemArtifact.getActionableItems(Arrays.asList("ATS", "CDB")), transaction);
-      action.persist(transaction);
-      atsGoal.addMember(action.getTeamWorkFlowArtifacts().iterator().next());
-      cdbGoal.addMember(action.getTeamWorkFlowArtifacts().iterator().next());
-      action.getTeamWorkFlowArtifacts().iterator().next().persist(transaction);
+      createAction2(transaction, oteGoal, cdbGoal);
 
-      for (String msaTool : Arrays.asList("TRAX", "REQ", "RCS")) {
-         action =
-            ActionManager.createAction(null, "Fix " + msaTool + " button", "Description", ChangeType.Problem,
-               "4", false, null, ActionableItemArtifact.getActionableItems(Arrays.asList(msaTool)),
-               transaction);
-         action.persist(transaction);
-         msaGoal.addMember(action.getTeamWorkFlowArtifacts().iterator().next());
-         teamArt = action.getTeamWorkFlowArtifacts().iterator().next();
-         TaskArtifact taskArt = teamArt.createNewTask("Task 1");
-         oteGoal.addMember(taskArt);
-         taskArt.persist(transaction);
-         taskArt = teamArt.createNewTask("Task 2");
-         msaGoal.addMember(taskArt);
-         taskArt.persist(transaction);
-      }
+      createAction3(transaction, atsGoal, cdbGoal);
 
-      action =
-         ActionManager.createAction(null, "Add the Improvement", "Description", ChangeType.Improvement,
-            "4", false, null, ActionableItemArtifact.getActionableItems(Arrays.asList("REQ")),
-            transaction);
-      action.persist(transaction);
-      msaGoal.addMember(action);
-      msaGoal.persist(transaction);
+      teamArt = createAction456(transaction, oteGoal, msaGoal, teamArt);
+
+      createAction7(transaction, msaGoal);
 
       for (String name : Arrays.asList("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P",
          "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "AA", "BB", "CC", "DD", "EE", "FF", "GG", "HH", "II", "JJ",
@@ -128,5 +84,68 @@ public class CreateGoalTestArtifacts extends XNavigateItemAction {
       WorldEditor.open(new WorldEditorSimpleProvider("Goals", Arrays.asList(oteGoal, atsGoal, defineGoal, msaGoal,
          cdbGoal)));
 
+   }
+
+   private void createAction7(SkynetTransaction transaction, GoalArtifact msaGoal) throws OseeCoreException {
+      ActionArtifact action =
+         ActionManager.createAction(null, "Add the Improvement", "Description", ChangeType.Improvement, "4", false,
+            null, ActionableItemArtifact.getActionableItems(Arrays.asList("REQ")), transaction);
+      action.persist(transaction);
+      msaGoal.addMember(action);
+      msaGoal.persist(transaction);
+   }
+
+   private TeamWorkFlowArtifact createAction456(SkynetTransaction transaction, GoalArtifact oteGoal, GoalArtifact msaGoal, TeamWorkFlowArtifact teamArt) throws OseeCoreException {
+      for (String msaTool : Arrays.asList("TRAX", "REQ", "RCS")) {
+         ActionArtifact action =
+            ActionManager.createAction(null, "Fix " + msaTool + " button", "Description", ChangeType.Problem, "4",
+               false, null, ActionableItemArtifact.getActionableItems(Arrays.asList(msaTool)), transaction);
+         action.persist(transaction);
+         msaGoal.addMember(action.getTeamWorkFlowArtifacts().iterator().next());
+         teamArt = action.getTeamWorkFlowArtifacts().iterator().next();
+         TaskArtifact taskArt = teamArt.createNewTask("Task 1");
+         oteGoal.addMember(taskArt);
+         taskArt.persist(transaction);
+         taskArt = teamArt.createNewTask("Task 2");
+         msaGoal.addMember(taskArt);
+         taskArt.persist(transaction);
+      }
+      return teamArt;
+   }
+
+   private void createAction3(SkynetTransaction transaction, GoalArtifact atsGoal, GoalArtifact cdbGoal) throws OseeCoreException {
+      ActionArtifact action =
+         ActionManager.createAction(null, "Remove Workflow button", "Description", ChangeType.Problem, "4", false,
+            null, ActionableItemArtifact.getActionableItems(Arrays.asList("ATS", "CDB")), transaction);
+      action.persist(transaction);
+      atsGoal.addMember(action.getTeamWorkFlowArtifacts().iterator().next());
+      cdbGoal.addMember(action.getTeamWorkFlowArtifacts().iterator().next());
+      action.getTeamWorkFlowArtifacts().iterator().next().persist(transaction);
+   }
+
+   private void createAction2(SkynetTransaction transaction, GoalArtifact oteGoal, GoalArtifact cdbGoal) throws OseeCoreException {
+      ActionArtifact action =
+         ActionManager.createAction(null, "Add CDB Check Signals", "Description", ChangeType.Problem, "4", false, null,
+            ActionableItemArtifact.getActionableItems(Arrays.asList("OTE_SW", "CDB")), transaction);
+      action.persist(transaction);
+      oteGoal.addMember(action.getTeamWorkFlowArtifacts().iterator().next());
+      cdbGoal.addMember(action.getTeamWorkFlowArtifacts().iterator().next());
+      for (TeamWorkFlowArtifact teamArt2 : action.getTeamWorkFlowArtifacts()) {
+         teamArt2.persist(transaction);
+      }
+   }
+
+   private TeamWorkFlowArtifact createAction1(SkynetTransaction transaction, GoalArtifact oteGoal) throws OseeCoreException {
+      ActionArtifact action =
+         ActionManager.createAction(null, "Fix this model", "Description", ChangeType.Problem, "2", false, null,
+            ActionableItemArtifact.getActionableItems(Arrays.asList("OTE_SW")), transaction);
+      action.persist(transaction);
+      oteGoal.addMember(action.getTeamWorkFlowArtifacts().iterator().next());
+      TeamWorkFlowArtifact teamArt = action.getTeamWorkFlowArtifacts().iterator().next();
+      PeerToPeerReviewArtifact peerReviewArt =
+         ReviewManager.createNewPeerToPeerReview(teamArt, "New Review", "Implement", transaction);
+      oteGoal.addMember(peerReviewArt);
+      teamArt.persist(transaction);
+      return teamArt;
    }
 }

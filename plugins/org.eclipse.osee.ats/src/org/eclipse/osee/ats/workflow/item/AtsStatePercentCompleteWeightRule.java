@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
  */
 public class AtsStatePercentCompleteWeightRule extends WorkRuleDefinition {
 
-   public static String ID = "atsStatePercentCompleteWeight";
+   public final static String ID = "atsStatePercentCompleteWeight";
 
    public AtsStatePercentCompleteWeightRule() {
       this(ID, ID);

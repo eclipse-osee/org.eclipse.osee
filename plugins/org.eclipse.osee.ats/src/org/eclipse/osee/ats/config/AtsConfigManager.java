@@ -105,14 +105,13 @@ public class AtsConfigManager extends AbstractOperation {
 
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Configure ATS for Default Team");
 
-      TeamDefinitionArtifact teamDefinition = createTeamDefinition(monitor, 0.10, transaction);
+      TeamDefinitionArtifact teamDefinition = createTeamDefinition(transaction);
 
-      Collection<ActionableItemArtifact> actionableItems =
-         createActionableItems(monitor, 0.10, transaction, teamDefinition);
+      Collection<ActionableItemArtifact> actionableItems = createActionableItems(transaction, teamDefinition);
 
-      createVersions(monitor, 0.10, transaction, teamDefinition);
+      createVersions(transaction, teamDefinition);
 
-      WorkFlowDefinition workFlowDefinition = createWorkflow(monitor, 0.20, transaction, teamDefinition);
+      WorkFlowDefinition workFlowDefinition = createWorkflow(transaction, teamDefinition);
 
       transaction.execute();
       monitor.worked(calculateWork(0.30));
@@ -121,7 +120,7 @@ public class AtsConfigManager extends AbstractOperation {
       monitor.worked(calculateWork(0.10));
    }
 
-   private TeamDefinitionArtifact createTeamDefinition(IProgressMonitor monitor, double workAmount, SkynetTransaction transaction) throws OseeCoreException {
+   private TeamDefinitionArtifact createTeamDefinition(SkynetTransaction transaction) throws OseeCoreException {
       TeamDefinitionArtifact teamDefinition =
          (TeamDefinitionArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.TeamDefinition,
             AtsUtil.getAtsBranch(), teamDefName);
@@ -135,7 +134,7 @@ public class AtsConfigManager extends AbstractOperation {
       return teamDefinition;
    }
 
-   private Collection<ActionableItemArtifact> createActionableItems(IProgressMonitor monitor, double workAmount, SkynetTransaction transaction, TeamDefinitionArtifact teamDefinition) throws OseeCoreException {
+   private Collection<ActionableItemArtifact> createActionableItems(SkynetTransaction transaction, TeamDefinitionArtifact teamDefinition) throws OseeCoreException {
       Collection<ActionableItemArtifact> aias = new ArrayList<ActionableItemArtifact>();
 
       // Create top actionable item
@@ -164,7 +163,7 @@ public class AtsConfigManager extends AbstractOperation {
       return aias;
    }
 
-   private void createVersions(IProgressMonitor monitor, double workAmount, SkynetTransaction transaction, TeamDefinitionArtifact teamDefinition) throws OseeCoreException {
+   private void createVersions(SkynetTransaction transaction, TeamDefinitionArtifact teamDefinition) throws OseeCoreException {
       List<VersionArtifact> versions = new ArrayList<VersionArtifact>();
       if (versionNames != null) {
          for (String name : versionNames) {
@@ -177,7 +176,7 @@ public class AtsConfigManager extends AbstractOperation {
       }
    }
 
-   private WorkFlowDefinition createWorkflow(IProgressMonitor monitor, double workAmount, SkynetTransaction transaction, TeamDefinitionArtifact teamDefinition) throws OseeCoreException {
+   private WorkFlowDefinition createWorkflow(SkynetTransaction transaction, TeamDefinitionArtifact teamDefinition) throws OseeCoreException {
       Artifact workflowArt =
          ArtifactQuery.checkArtifactFromTypeAndName(CoreArtifactTypes.WorkFlowDefinition, workflowId,
             AtsUtil.getAtsBranch());

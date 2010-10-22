@@ -12,8 +12,8 @@ package org.eclipse.osee.ats.editor.widget;
 
 import java.util.Collections;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
 import org.eclipse.osee.ats.internal.AtsPlugin;
@@ -61,7 +61,7 @@ public class StatePercentCompleteXWidget extends XHyperlinkLabelValueSelection {
       return false;
    }
 
-   public static String TOOLTIP = "Calculation: \n     State Percent: amount entered by user\n" +
+   public final static String TOOLTIP = "Calculation: \n     State Percent: amount entered by user\n" +
    //
    "     Task Percent: total percent of all tasks related to state / number of tasks related to state\n" +
    //
@@ -80,19 +80,15 @@ public class StatePercentCompleteXWidget extends XHyperlinkLabelValueSelection {
             new StringBuffer(String.format("        State Percent: %d",
                sma.getStateMgr().getPercentComplete(page.getName())));
          boolean breakoutNeeded = false;
-         if (sma instanceof AbstractTaskableArtifact) {
-            if (((AbstractTaskableArtifact) sma).hasTaskArtifacts()) {
-               sb.append(String.format("\n        Task  Percent: %d",
-                  ((AbstractTaskableArtifact) sma).getPercentCompleteFromTasks(page.getName())));
-               breakoutNeeded = true;
-            }
+         if (sma instanceof AbstractTaskableArtifact && ((AbstractTaskableArtifact) sma).hasTaskArtifacts()) {
+            sb.append(String.format("\n        Task  Percent: %d",
+               ((AbstractTaskableArtifact) sma).getPercentCompleteFromTasks(page.getName())));
+            breakoutNeeded = true;
          }
-         if (sma.isTeamWorkflow()) {
-            if (ReviewManager.hasReviews((TeamWorkFlowArtifact) sma)) {
-               sb.append(String.format("\n     Review Percent: %d",
-                  ReviewManager.getPercentComplete((TeamWorkFlowArtifact) sma, page.getName())));
-               breakoutNeeded = true;
-            }
+         if (sma.isTeamWorkflow() && ReviewManager.hasReviews((TeamWorkFlowArtifact) sma)) {
+            sb.append(String.format("\n     Review Percent: %d",
+               ReviewManager.getPercentComplete((TeamWorkFlowArtifact) sma, page.getName())));
+            breakoutNeeded = true;
          }
          if (breakoutNeeded) {
             if (!getControl().isDisposed()) {

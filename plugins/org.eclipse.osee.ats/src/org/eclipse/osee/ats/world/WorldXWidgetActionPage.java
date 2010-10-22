@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world;
 
-import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -100,7 +100,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
 
       Result result = OseeUiActivator.areOSEEServicesAvailable();
       if (result.isFalse()) {
-         AWorkbench.popup("ERROR", "DB Connection Unavailable");
+         AWorkbench.popup("ERROR", "DB Relation Unavailable");
          return;
       }
 
@@ -441,7 +441,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
    }
 
    public void redisplayAsAction() {
-      final ArrayList<Artifact> artifacts = worldComposite.getXViewer().getLoadedArtifacts();
+      final List<Artifact> artifacts = worldComposite.getXViewer().getLoadedArtifacts();
       Job job = new Job("Re-display as Actions") {
          @Override
          protected IStatus run(IProgressMonitor monitor) {
@@ -473,7 +473,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
    }
 
    public void redisplayAsGoals() {
-      final ArrayList<Artifact> artifacts = worldComposite.getXViewer().getLoadedArtifacts();
+      final List<Artifact> artifacts = worldComposite.getXViewer().getLoadedArtifacts();
       Job job = new Job("Re-display as Goals") {
          @Override
          protected IStatus run(IProgressMonitor monitor) {
@@ -496,7 +496,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
    }
 
    public void redisplayAsWorkFlow() {
-      final ArrayList<Artifact> artifacts = worldComposite.getXViewer().getLoadedArtifacts();
+      final List<Artifact> artifacts = worldComposite.getXViewer().getLoadedArtifacts();
       Job job = new Job("Re-display as Workflows") {
          @Override
          protected IStatus run(IProgressMonitor monitor) {
@@ -528,7 +528,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
    }
 
    public void redisplayAsTask() {
-      final ArrayList<Artifact> artifacts = worldComposite.getXViewer().getLoadedArtifacts();
+      final List<Artifact> artifacts = worldComposite.getXViewer().getLoadedArtifacts();
       Job job = new Job("Re-display as Tasks") {
          @Override
          protected IStatus run(IProgressMonitor monitor) {
@@ -559,7 +559,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
    }
 
    public void redisplayAsReviews() {
-      final ArrayList<Artifact> artifacts = worldComposite.getXViewer().getLoadedArtifacts();
+      final List<Artifact> artifacts = worldComposite.getXViewer().getLoadedArtifacts();
       Job job = new Job("Re-display as Reviews") {
          @Override
          protected IStatus run(IProgressMonitor monitor) {

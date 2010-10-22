@@ -36,7 +36,7 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
  */
 public class SMATargetedVersionHeader extends Composite {
 
-   private static String TARGET_VERSION = "Target Version:";
+   private final static String TARGET_VERSION = "Target Version:";
    Label valueLabel;
 
    public SMATargetedVersionHeader(Composite parent, int style, final AbstractWorkflowArtifact sma, XFormToolkit toolkit) {

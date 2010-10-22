@@ -67,9 +67,9 @@ public abstract class Shape extends ModelElement {
    /** Size of this shape. */
    private final Dimension size = new Dimension(50, 50);
    /** List of outgoing Connections. */
-   private final List<Connection> sourceConnections = new ArrayList<Connection>();
+   private final List<Relation> sourceConnections = new ArrayList<Relation>();
    /** List of incoming Connections. */
-   private final List<Connection> targetConnections = new ArrayList<Connection>();
+   private final List<Relation> targetConnections = new ArrayList<Relation>();
    private WorkflowDiagram workflowDiagram;
 
    /**
@@ -78,7 +78,7 @@ public abstract class Shape extends ModelElement {
     * @param conn a non-null connection instance
     * @throws IllegalArgumentException if the connection is null or has not distinct endpoints
     */
-   void addConnection(Connection conn) {
+   void addConnection(Relation conn) {
       if (conn == null || conn.getSource() == conn.getTarget()) {
          throw new IllegalArgumentException();
       }
@@ -189,15 +189,15 @@ public abstract class Shape extends ModelElement {
    /**
     * Return a List of outgoing Connections.
     */
-   public List<Connection> getSourceConnections() {
-      return new ArrayList<Connection>(sourceConnections);
+   public List<Relation> getSourceConnections() {
+      return new ArrayList<Relation>(sourceConnections);
    }
 
    /**
     * Return a List of incoming Connections.
     */
-   public List<Connection> getTargetConnections() {
-      return new ArrayList<Connection>(targetConnections);
+   public List<Relation> getTargetConnections() {
+      return new ArrayList<Relation>(targetConnections);
    }
 
    /**
@@ -206,7 +206,7 @@ public abstract class Shape extends ModelElement {
     * @param conn a non-null connection instance
     * @throws IllegalArgumentException if the parameter is null
     */
-   void removeConnection(Connection conn) {
+   void removeConnection(Relation conn) {
       if (conn == null) {
          throw new IllegalArgumentException();
       }

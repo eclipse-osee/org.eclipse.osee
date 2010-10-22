@@ -45,7 +45,7 @@ public class WorkPageShape extends RectangleShape {
 
    private final WorkPageDefinition workPageDefinition;
 
-   public static String START_PAGE = "Start Page";
+   public final static String START_PAGE = "Start Page";
    private Artifact artifact;
    public static enum StartPageEnum {
       Yes,
@@ -141,10 +141,8 @@ public class WorkPageShape extends RectangleShape {
             return new Result(CoreAttributeTypes.WorkId.getName() + " can not be null");
          }
          String parentPageId = (String) getPropertyValue(CoreAttributeTypes.WorkParentId.getName());
-         if (Strings.isValid(parentPageId)) {
-            if (WorkItemDefinitionFactory.getWorkItemDefinition(parentPageId) == null) {
-               return new Result("Parent Id " + parentPageId + " Work Page Definition must exist and does not.");
-            }
+         if (Strings.isValid(parentPageId) && WorkItemDefinitionFactory.getWorkItemDefinition(parentPageId) == null) {
+            return new Result("Parent Id " + parentPageId + " Work Page Definition must exist and does not.");
          }
       } catch (OseeCoreException ex) {
          return new Result("Exception in validation " + ex.getLocalizedMessage());

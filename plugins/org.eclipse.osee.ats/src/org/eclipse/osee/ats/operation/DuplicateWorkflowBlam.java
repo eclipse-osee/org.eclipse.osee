@@ -52,14 +52,14 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  */
 public class DuplicateWorkflowBlam extends AbstractBlam {
 
-   private static String TEAM_WORKFLOW = "Team Workflow (drop here)";
-   private static String DUPLICATE_WORKFLOW =
+   private final static String TEAM_WORKFLOW = "Team Workflow (drop here)";
+   private final static String DUPLICATE_WORKFLOW =
       "Duplicate Workflow - creates carbon copy with all fields and assignees intact.";
-   private static String CREATE_NEW_WORFLOW_IN_START_STATE =
+   private final static String CREATE_NEW_WORFLOW_IN_START_STATE =
       "Create new Workflow - creates new workflow in start state with current assignees.";
-   private static String DUPLICATE_TASKS = "Duplicate Tasks - only valid for Duplicate Workflow";
-   private static String DUPLICATE_METHOD = "Duplicate Method";
-   private static String TITLE = "New Title (blank for same title)";
+   private final static String DUPLICATE_TASKS = "Duplicate Tasks - only valid for Duplicate Workflow";
+   private final static String DUPLICATE_METHOD = "Duplicate Method";
+   private final static String TITLE = "New Title (blank for same title)";
    private Collection<? extends TeamWorkFlowArtifact> defaultTeamWorkflows;
 
    public DuplicateWorkflowBlam() {

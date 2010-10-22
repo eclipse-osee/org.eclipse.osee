@@ -61,7 +61,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IActionable, I
    private TaskEditorXWidgetActionPage taskActionPage;
    private final Collection<TaskArtifact> tasks = new HashSet<TaskArtifact>();
    private boolean loading = false;
-   public static int TITLE_MAX_LENGTH = WorldEditor.TITLE_MAX_LENGTH;
+   public final static int TITLE_MAX_LENGTH = WorldEditor.TITLE_MAX_LENGTH;
 
    @Override
    public void doSave(IProgressMonitor monitor) {
@@ -77,7 +77,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IActionable, I
       onDirtied();
    }
 
-   public ArrayList<Artifact> getLoadedArtifacts() {
+   public List<Artifact> getLoadedArtifacts() {
       return taskActionPage.getTaskComposite().getTaskXViewer().getLoadedArtifacts();
    }
 

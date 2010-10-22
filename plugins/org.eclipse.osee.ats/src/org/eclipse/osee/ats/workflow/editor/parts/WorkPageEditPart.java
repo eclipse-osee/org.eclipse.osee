@@ -71,7 +71,6 @@ public class WorkPageEditPart extends ShapeEditPart {
    @Override
    public void performRequest(Request req) {
       super.performRequest(req);
-      System.out.println(req);
       if (req instanceof SelectionRequest) {
          new EditAction().run();
       }
@@ -94,12 +93,6 @@ public class WorkPageEditPart extends ShapeEditPart {
    }
 
    @Override
-   public ConnectionAnchor getTargetConnectionAnchor(Request request) {
-      // TODO implement sending back returnAnchor if appropriate
-      return super.getTargetConnectionAnchor(request);
-   }
-
-   @Override
    public ConnectionAnchor getTargetConnectionAnchor(ConnectionEditPart connection) {
       if (connection.getModel() instanceof ReturnTransitionConnection) {
          if (returnAnchor == null) {
@@ -119,12 +112,6 @@ public class WorkPageEditPart extends ShapeEditPart {
          return returnAnchor;
       }
       return super.getTargetConnectionAnchor(connection);
-   }
-
-   @Override
-   public ConnectionAnchor getSourceConnectionAnchor(Request request) {
-      // TODO implement sending back returnAnchor if appropriate
-      return super.getSourceConnectionAnchor(request);
    }
 
 }

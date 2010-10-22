@@ -47,7 +47,7 @@ public class SMAPromptChangeHoursSpent {
 
       TaskOptionStatusDialog tsd =
          new TaskOptionStatusDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-            "Enter State Hours Spend", "Enter number of hours you spent since last status.", false, null, smas);
+            "Enter State Hours Spend", false, null, smas);
       if (tsd.open() == 0) {
          SMAPromptChangeStatus.performChangeStatus(smas, null,
             tsd.getSelectedOptionDef() != null ? tsd.getSelectedOptionDef().getName() : null,

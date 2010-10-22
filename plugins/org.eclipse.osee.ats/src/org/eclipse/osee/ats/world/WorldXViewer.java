@@ -334,52 +334,16 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts {
 
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems, final boolean persist) {
       if (treeColumn.getData().equals(WorldXViewerFactory.Groups_Col)) {
-         try {
-            Set<AbstractWorkflowArtifact> smas = new HashSet<AbstractWorkflowArtifact>();
-            for (TreeItem item : treeItems) {
-               Artifact art = (Artifact) item.getData();
-               if (art instanceof TeamWorkFlowArtifact) {
-                  smas.add((AbstractWorkflowArtifact) art);
-               }
-            }
-            PromptChangeUtil.promptChangeGroups(smas, true);
-            return;
-         } catch (OseeCoreException ex) {
-            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-         }
+         processGroupsColumn(treeItems);
+         return;
       } else if (treeColumn.getData().equals(WorldXViewerFactory.Goals_Col)) {
-         try {
-            Set<AbstractWorkflowArtifact> smas = new HashSet<AbstractWorkflowArtifact>();
-            for (TreeItem item : treeItems) {
-               Artifact art = (Artifact) item.getData();
-               if (art instanceof AbstractWorkflowArtifact) {
-                  smas.add((AbstractWorkflowArtifact) art);
-               }
-            }
-            PromptChangeUtil.promptChangeGoals(smas, true);
-            return;
-         } catch (OseeCoreException ex) {
-            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-         }
+         processGoalsColumn(treeItems);
+         return;
       } else if (treeColumn.getData().equals(WorldXViewerFactory.Related_To_State_Col)) {
-         Set<TaskArtifact> tasks = new HashSet<TaskArtifact>();
-         for (TreeItem item : treeItems) {
-            Artifact art = (Artifact) item.getData();
-            if (art instanceof TaskArtifact) {
-               tasks.add((TaskArtifact) art);
-            }
-         }
-         RelatedToStateColumn.promptChangeRelatedToState(tasks, true);
+         processRelatedToStateColumn(treeItems);
          return;
       } else if (treeColumn.getData().equals(WorldXViewerFactory.Points_Col)) {
-         Set<TeamWorkFlowArtifact> smas = new HashSet<TeamWorkFlowArtifact>();
-         for (TreeItem item : treeItems) {
-            Artifact art = (Artifact) item.getData();
-            if (art instanceof TeamWorkFlowArtifact) {
-               smas.add((TeamWorkFlowArtifact) art);
-            }
-         }
-         PromptChangeUtil.promptChangePoints(smas, true);
+         processPointsColumn(treeItems);
          return;
       }
       if (!(treeColumn.getData() instanceof XViewerAttributeColumn) && !(treeColumn.getData() instanceof XViewerAtsAttributeColumn)) {
@@ -425,6 +389,59 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts {
             ArtifactPromptChange.promptChangeAttribute(attributeType, useArts, persist);
          }
       } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+   }
+
+   private void processPointsColumn(Collection<TreeItem> treeItems) {
+      Set<TeamWorkFlowArtifact> smas = new HashSet<TeamWorkFlowArtifact>();
+      for (TreeItem item : treeItems) {
+         Artifact art = (Artifact) item.getData();
+         if (art instanceof TeamWorkFlowArtifact) {
+            smas.add((TeamWorkFlowArtifact) art);
+         }
+      }
+      PromptChangeUtil.promptChangePoints(smas, true);
+   }
+
+   private void processRelatedToStateColumn(Collection<TreeItem> treeItems) {
+      Set<TaskArtifact> tasks = new HashSet<TaskArtifact>();
+      for (TreeItem item : treeItems) {
+         Artifact art = (Artifact) item.getData();
+         if (art instanceof TaskArtifact) {
+            tasks.add((TaskArtifact) art);
+         }
+      }
+      RelatedToStateColumn.promptChangeRelatedToState(tasks, true);
+   }
+
+   private void processGoalsColumn(Collection<TreeItem> treeItems) {
+      try {
+         Set<AbstractWorkflowArtifact> smas = new HashSet<AbstractWorkflowArtifact>();
+         for (TreeItem item : treeItems) {
+            Artifact art = (Artifact) item.getData();
+            if (art instanceof AbstractWorkflowArtifact) {
+               smas.add((AbstractWorkflowArtifact) art);
+            }
+         }
+         PromptChangeUtil.promptChangeGoals(smas, true);
+         return;
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+   }
+
+   private void processGroupsColumn(Collection<TreeItem> treeItems) {
+      try {
+         Set<AbstractWorkflowArtifact> smas = new HashSet<AbstractWorkflowArtifact>();
+         for (TreeItem item : treeItems) {
+            Artifact art = (Artifact) item.getData();
+            if (art instanceof TeamWorkFlowArtifact) {
+               smas.add((AbstractWorkflowArtifact) art);
+            }
+         }
+         PromptChangeUtil.promptChangeGroups(smas, true);
+      } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
@@ -613,8 +630,8 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts {
       AtsUtil.openATSAction(art, AtsOpenOption.OpenOneOrPopupSelect);
    }
 
-   public ArrayList<Artifact> getLoadedArtifacts() {
-      ArrayList<Artifact> arts = new ArrayList<Artifact>();
+   public List<Artifact> getLoadedArtifacts() {
+      List<Artifact> arts = new ArrayList<Artifact>();
       if (getRoot() != null) {
          for (Object artifact : (Collection<?>) getRoot()) {
             if (artifact instanceof Artifact) {
@@ -640,8 +657,8 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts {
       super.dispose();
    }
 
-   public ArrayList<Artifact> getSelectedArtifacts() {
-      ArrayList<Artifact> arts = new ArrayList<Artifact>();
+   public List<Artifact> getSelectedArtifacts() {
+      List<Artifact> arts = new ArrayList<Artifact>();
       TreeItem items[] = getTree().getSelection();
       if (items.length > 0) {
          for (TreeItem item : items) {
@@ -651,8 +668,8 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts {
       return arts;
    }
 
-   public ArrayList<TaskArtifact> getSelectedTaskArtifacts() {
-      ArrayList<TaskArtifact> arts = new ArrayList<TaskArtifact>();
+   public List<TaskArtifact> getSelectedTaskArtifacts() {
+      List<TaskArtifact> arts = new ArrayList<TaskArtifact>();
       TreeItem items[] = getTree().getSelection();
       if (items.length > 0) {
          for (TreeItem item : items) {
@@ -781,8 +798,8 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts {
       setInput(arts);
    }
 
-   public ArrayList<Artifact> getSelectedArtifactItems() {
-      ArrayList<Artifact> arts = new ArrayList<Artifact>();
+   public List<Artifact> getSelectedArtifactItems() {
+      List<Artifact> arts = new ArrayList<Artifact>();
       TreeItem items[] = getTree().getSelection();
       if (items.length > 0) {
          for (TreeItem item : items) {

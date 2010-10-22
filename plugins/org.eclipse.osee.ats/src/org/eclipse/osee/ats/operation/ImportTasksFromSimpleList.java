@@ -42,9 +42,9 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  */
 public class ImportTasksFromSimpleList extends AbstractBlam {
 
-   public static String ASSIGNEES = "Assignees";
-   public static String TASK_IMPORT_TITLES = "Task Import Titles";
-   public static String TEAM_WORKFLOW = "Team Workflow (drop here)";
+   public final static String ASSIGNEES = "Assignees";
+   public final static String TASK_IMPORT_TITLES = "Task Import Titles";
+   public final static String TEAM_WORKFLOW = "Team Workflow (drop here)";
    private AbstractTaskableArtifact taskableStateMachineArtifact;
 
    @Override

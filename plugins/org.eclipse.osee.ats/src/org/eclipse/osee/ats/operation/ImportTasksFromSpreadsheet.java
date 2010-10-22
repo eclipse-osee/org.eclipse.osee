@@ -45,9 +45,9 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  */
 public class ImportTasksFromSpreadsheet extends AbstractBlam {
 
-   public static String TASK_IMPORT_SPREADSHEET = "Task Import Spreadsheet";
-   public static String TEAM_WORKFLOW = "Taskable Workflow (drop here)";
-   public static String EMAIL_POCS = "Email POCs";
+   public final static String TASK_IMPORT_SPREADSHEET = "Task Import Spreadsheet";
+   public final static String TEAM_WORKFLOW = "Taskable Workflow (drop here)";
+   public final static String EMAIL_POCS = "Email POCs";
    private AbstractTaskableArtifact taskableStateMachineArtifact;
 
    @Override

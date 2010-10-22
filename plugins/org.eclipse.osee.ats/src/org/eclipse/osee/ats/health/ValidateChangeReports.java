@@ -81,6 +81,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
 
    static final String VCR_ROOT_ELEMENT_TAG = "ValidateChangeReport";
    static final String VCR_DB_GUID = "dbGuid";
+   boolean debug = false;
 
    public ValidateChangeReports(XNavigateItem parent) {
       super(parent, "Validate Change Reports", PluginUiImage.ADMIN);
@@ -115,10 +116,9 @@ public class ValidateChangeReports extends XNavigateItemAction {
       }
    }
 
-   @SuppressWarnings("unused")
    private void runIt(IProgressMonitor monitor, XResultData xResultData) throws OseeCoreException {
       String currentDbGuid = OseeInfo.getDatabaseGuid();
-      if (true) {
+      if (debug) {
          validateSome(xResultData, currentDbGuid);
       } else {
          SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
@@ -273,7 +273,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
                   });
 
                } catch (Exception ex) {
-                  System.err.println(ex.getLocalizedMessage());
+                  OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
                }
             }
             return new Result("FAIL: Was/Is Change Report different");
@@ -303,7 +303,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
    private static String GetComparableString(String changeReportString) {
       StringBuffer comparableString = new StringBuffer();
       ValidateChangeReportParser parser = new ValidateChangeReportParser();
-      ArrayList<ArrayList<DataChangeReportComparer>> changeReport = parser.parse(changeReportString);
+      List<ArrayList<DataChangeReportComparer>> changeReport = parser.parse(changeReportString);
 
       for (int i = 0; i < changeReport.size(); i++) {
          for (int j = 0; j < changeReport.get(i).size(); j++) {

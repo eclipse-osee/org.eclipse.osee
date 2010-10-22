@@ -18,6 +18,7 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -35,7 +36,6 @@ import org.eclipse.ui.dialogs.CheckedTreeSelectionDialog;
  * @author Donald G. Dunne
  */
 public class AtsNotificationCheckTreeDialog extends CheckedTreeSelectionDialog {
-   private static Object[] EMPTY_ARRAY = new Object[0];
    private Button sendNotificationsButton;
    private boolean sendNotifications;
 
@@ -128,7 +128,7 @@ public class AtsNotificationCheckTreeDialog extends CheckedTreeSelectionDialog {
          if (inputElement instanceof Collection) {
             return ((Collection) inputElement).toArray();
          }
-         return EMPTY_ARRAY;
+         return Collections.EMPTY_ARRAY;
       };
 
       @Override
@@ -137,7 +137,7 @@ public class AtsNotificationCheckTreeDialog extends CheckedTreeSelectionDialog {
          if (parentElement instanceof Collection) {
             return ((Collection) parentElement).toArray();
          }
-         return EMPTY_ARRAY;
+         return Collections.EMPTY_ARRAY;
       };
 
       @Override

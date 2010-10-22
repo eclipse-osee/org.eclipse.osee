@@ -15,10 +15,10 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.IReviewArtifact;
 import org.eclipse.osee.ats.artifact.AbstractReviewArtifact;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
+import org.eclipse.osee.ats.artifact.IReviewArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Severity;
@@ -43,7 +43,7 @@ public class UserRoleManager {
 
    private final WeakReference<AbstractReviewArtifact> artifactRef;
    private boolean enabled = true;
-   private static String ROLE_ITEM_TAG = "Role";
+   private final static String ROLE_ITEM_TAG = "Role";
    private static final IAttributeType ATS_ROLE_STORAGE_TYPE = AtsAttributeTypes.Role;
 
    private final Matcher roleMatcher = java.util.regex.Pattern.compile(

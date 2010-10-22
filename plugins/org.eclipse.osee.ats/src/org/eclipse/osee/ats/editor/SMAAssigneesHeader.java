@@ -35,7 +35,7 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
  */
 public class SMAAssigneesHeader extends Composite {
 
-   private static String TARGET_VERSION = "Assignee(s):";
+   private final static String TARGET_VERSION = "Assignee(s):";
    Label valueLabel;
 
    public SMAAssigneesHeader(Composite parent, int style, final AbstractWorkflowArtifact sma, XFormToolkit toolkit, final boolean isEditable) {

@@ -12,8 +12,8 @@ package org.eclipse.osee.ats.editor.widget;
 
 import java.util.Collections;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
 import org.eclipse.osee.ats.internal.AtsPlugin;
@@ -61,7 +61,7 @@ public class StateHoursSpentXWidget extends XHyperlinkLabelValueSelection {
       return false;
    }
 
-   public static String TOOLTIP = "Calculation: \n     State Hours Spent: amount entered by user\n" +
+   public final static String TOOLTIP = "Calculation: \n     State Hours Spent: amount entered by user\n" +
    //
    "     Task Hours Spent: total hours spent of all tasks related to state\n" +
    //
@@ -80,12 +80,10 @@ public class StateHoursSpentXWidget extends XHyperlinkLabelValueSelection {
                sma.getStateMgr().getHoursSpent(page.getName())));
          setEditable(isCurrentState && !sma.isReadOnly());
          boolean breakoutNeeded = false;
-         if (sma instanceof AbstractTaskableArtifact) {
-            if (((AbstractTaskableArtifact) sma).hasTaskArtifacts()) {
-               sb.append(String.format("\n        Task  Hours: %5.2f",
-                  ((AbstractTaskableArtifact) sma).getHoursSpentFromTasks(page.getName())));
-               breakoutNeeded = true;
-            }
+         if (sma instanceof AbstractTaskableArtifact && ((AbstractTaskableArtifact) sma).hasTaskArtifacts()) {
+            sb.append(String.format("\n        Task  Hours: %5.2f",
+               ((AbstractTaskableArtifact) sma).getHoursSpentFromTasks(page.getName())));
+            breakoutNeeded = true;
          }
          if (sma.isTeamWorkflow() && ReviewManager.hasReviews((TeamWorkFlowArtifact) sma)) {
             sb.append(String.format("\n     Review Hours: %5.2f",

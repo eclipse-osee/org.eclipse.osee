@@ -39,7 +39,7 @@ public class DefectManager {
 
    private final WeakReference<Artifact> artifactRef;
    private boolean enabled = true;
-   private static String DEFECT_ITEM_TAG = "Item";
+   private final static String DEFECT_ITEM_TAG = "Item";
    private static final IAttributeType REVIEW_STORAGE_TYPE = AtsAttributeTypes.ReviewDefect;
 
    private final Matcher defectMatcher = java.util.regex.Pattern.compile(

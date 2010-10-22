@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
  */
 public class AtsLogWorkPage extends AtsWorkPage {
 
-   public static String PAGE_ID = "ats.Log";
+   public final static String PAGE_ID = "ats.Log";
 
    public static class EmptyWorkFlowDefinition extends WorkFlowDefinition {
 

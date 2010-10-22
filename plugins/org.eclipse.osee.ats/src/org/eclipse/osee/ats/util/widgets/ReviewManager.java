@@ -44,7 +44,7 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
  */
 public class ReviewManager {
 
-   private static String VALIDATE_REVIEW_TITLE = "Is the resolution of this Action valid?";
+   private final static String VALIDATE_REVIEW_TITLE = "Is the resolution of this Action valid?";
 
    public ReviewManager() {
       super();

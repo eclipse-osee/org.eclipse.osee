@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.world;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -58,7 +59,6 @@ public class WorldComposite extends ScrolledComposite implements IWorldViewerEve
    private final Set<Artifact> worldArts = new HashSet<Artifact>(200);
    private final Set<Artifact> otherArts = new HashSet<Artifact>(200);
    private final IWorldEditor iWorldEditor;
-   private final Composite mainComp;
 
    public WorldComposite(IWorldEditor worldEditor, Composite parent, int style) {
       this(worldEditor, null, parent, style);
@@ -71,7 +71,7 @@ public class WorldComposite extends ScrolledComposite implements IWorldViewerEve
       setLayout(new GridLayout(1, true));
       setLayoutData(new GridData(GridData.FILL_BOTH));
 
-      mainComp = new Composite(this, SWT.NONE);
+      Composite mainComp = new Composite(this, SWT.NONE);
       mainComp.setLayout(ALayout.getZeroMarginLayout());
       mainComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
@@ -145,11 +145,10 @@ public class WorldComposite extends ScrolledComposite implements IWorldViewerEve
             }
             worldXViewer.setInput(worldArts);
             worldXViewer.updateStatusLabel();
-            if (otherArts.size() > 0) {
-               if (MessageDialog.openConfirm(Displays.getActiveShell(), "Open in Artifact Editor?",
-                  otherArts.size() + " Non-WorldView Artifacts were returned from request.\n\nOpen in Artifact Editor?")) {
-                  RendererManager.openInJob(otherArts, PresentationType.GENERALIZED_EDIT);
-               }
+            if (otherArts.size() > 0 && MessageDialog.openConfirm(Displays.getActiveShell(),
+               "Open in Artifact Editor?",
+               otherArts.size() + " Non-WorldView Artifacts were returned from request.\n\nOpen in Artifact Editor?")) {
+               RendererManager.openInJob(otherArts, PresentationType.GENERALIZED_EDIT);
             }
             worldXViewer.getTree().setFocus();
          }
@@ -222,7 +221,7 @@ public class WorldComposite extends ScrolledComposite implements IWorldViewerEve
       });
    }
 
-   public ArrayList<Artifact> getLoadedArtifacts() {
+   public List<Artifact> getLoadedArtifacts() {
       return getXViewer().getLoadedArtifacts();
    }
 
@@ -257,7 +256,7 @@ public class WorldComposite extends ScrolledComposite implements IWorldViewerEve
    }
 
    @Override
-   public ArrayList<Artifact> getSelectedArtifacts() {
+   public List<Artifact> getSelectedArtifacts() {
       return worldXViewer.getSelectedArtifacts();
    }
 
@@ -274,6 +273,7 @@ public class WorldComposite extends ScrolledComposite implements IWorldViewerEve
 
    @Override
    public void relationsModifed(Collection<Artifact> relModifiedArts) {
+      // provided for subclass implementation
    }
 
 }

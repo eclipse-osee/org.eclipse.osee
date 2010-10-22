@@ -11,9 +11,9 @@
 package org.eclipse.osee.ats.workflow.vue;
 
 import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IXWidgetOptionResolver;
 
 /**
  * @author Donald G. Dunne
@@ -22,9 +22,9 @@ public class DiagramNode {
 
    private String id = GUID.create();
    private String name;
-   private final ArrayList<DiagramNode> fromPages = new ArrayList<DiagramNode>();
-   private final ArrayList<DiagramNode> toPages = new ArrayList<DiagramNode>();
-   private final ArrayList<DiagramNode> returnPages = new ArrayList<DiagramNode>();
+   private final List<DiagramNode> fromPages = new ArrayList<DiagramNode>();
+   private final List<DiagramNode> toPages = new ArrayList<DiagramNode>();
+   private final List<DiagramNode> returnPages = new ArrayList<DiagramNode>();
    private DiagramNode defaultToPage;
    private String instructionStr;
 
@@ -42,10 +42,7 @@ public class DiagramNode {
    };
    private PageType pageType;
 
-   /**
-    * @param instructionLines input lines of WorkAttribute declarations
-    */
-   public DiagramNode(String name, String id, String xWidgetsXml, IXWidgetOptionResolver optionResolver) {
+   public DiagramNode(String name, String id) {
       super();
       this.name = name;
       if (Strings.isValid(id)) {
@@ -53,38 +50,22 @@ public class DiagramNode {
       }
    }
 
-   public DiagramNode(String xWidgetsXml, IXWidgetOptionResolver optionResolver) {
-      this("", "", xWidgetsXml, optionResolver);
+   public DiagramNode() {
+      this("", "");
    }
 
-   public DiagramNode(IXWidgetOptionResolver optionResolver) {
-      this("", "", null, optionResolver);
-   }
-
-   /**
-    * @return the instructionStr
-    */
    public String getInstructionStr() {
       return instructionStr;
    }
 
-   /**
-    * @param instructionStr the instructionStr to set
-    */
    public void setInstructionStr(String instructionStr) {
       this.instructionStr = instructionStr;
    }
 
-   /**
-    * @return Returns the pageType.
-    */
    public PageType getPageType() {
       return pageType;
    }
 
-   /**
-    * @param pageType The pageType to set.
-    */
    public void setPageType(PageType pageType) {
       this.pageType = pageType;
    }
@@ -128,17 +109,11 @@ public class DiagramNode {
       return id;
    }
 
-   /**
-    * @return Returns the fromPages.
-    */
-   public ArrayList<DiagramNode> getFromPages() {
+   public List<DiagramNode> getFromPages() {
       return fromPages;
    }
 
-   /**
-    * @return Returns the toPages.
-    */
-   public ArrayList<DiagramNode> getToPages() {
+   public List<DiagramNode> getToPages() {
       return toPages;
    }
 
@@ -146,38 +121,23 @@ public class DiagramNode {
       return returnPages.contains(page);
    }
 
-   /**
-    * @return Returns the defaultToPage.
-    */
    public DiagramNode getDefaultToPage() {
       return defaultToPage;
    }
 
-   /**
-    * @param defaultToPage The defaultToPage to set.
-    */
    public void setDefaultToPage(DiagramNode defaultToPage) {
       this.defaultToPage = defaultToPage;
    }
 
-   /**
-    * @param id The id to set.
-    */
    public void setId(String id) {
       this.id = id;
    }
 
-   /**
-    * @param name The name to set.
-    */
    public void setName(String name) {
       this.name = name;
    }
 
-   /**
-    * @return the returnPages
-    */
-   public ArrayList<DiagramNode> getReturnPages() {
+   public List<DiagramNode> getReturnPages() {
       return returnPages;
    }
 

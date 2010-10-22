@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.util.DefaultTeamState;
  */
 public class AtsStatePercentCompleteWeightDefaultWorkflowRule extends AtsStatePercentCompleteWeightRule {
 
-   public static String ID = "atsStatePercentCompleteWeight.DefaultWorkflow";
+   public final static String ID = "atsStatePercentCompleteWeight.DefaultWorkflow";
 
    public AtsStatePercentCompleteWeightDefaultWorkflowRule() {
       super(ID, ID);

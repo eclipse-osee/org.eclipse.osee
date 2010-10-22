@@ -59,7 +59,7 @@ public class AtsWorkflowConfigCreationWizard extends Wizard implements INewWizar
    @Override
    public void init(IWorkbench workbench, IStructuredSelection selection) {
       // create pages for this wizard
-      page1 = new NewWorkflowConfigPage1(this);
+      page1 = new NewWorkflowConfigPage1();
    }
 
    @Override

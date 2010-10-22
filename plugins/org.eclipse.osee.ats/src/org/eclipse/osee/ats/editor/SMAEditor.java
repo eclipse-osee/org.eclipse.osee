@@ -436,10 +436,8 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
             IEditorReference editors[] = page.getEditorReferences();
             for (int j = 0; j < editors.length; j++) {
                IEditorReference editor = editors[j];
-               if (editor.getPart(false) instanceof SMAEditor) {
-                  if (artifacts.contains(((SMAEditor) editor.getPart(false)).getSma())) {
-                     ((SMAEditor) editor.getPart(false)).closeEditor();
-                  }
+               if (editor.getPart(false) instanceof SMAEditor && artifacts.contains(((SMAEditor) editor.getPart(false)).getSma())) {
+                  ((SMAEditor) editor.getPart(false)).closeEditor();
                }
             }
          }
@@ -451,10 +449,8 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
       IEditorReference editors[] = page.getEditorReferences();
       for (int j = 0; j < editors.length; j++) {
          IEditorReference editor = editors[j];
-         if (editor.getPart(false) instanceof SMAEditor) {
-            if (((SMAEditor) editor.getPart(false)).getSma().equals(artifact)) {
-               return (SMAEditor) editor.getPart(false);
-            }
+         if (editor.getPart(false) instanceof SMAEditor && ((SMAEditor) editor.getPart(false)).getSma().equals(artifact)) {
+            return (SMAEditor) editor.getPart(false);
          }
       }
       return null;

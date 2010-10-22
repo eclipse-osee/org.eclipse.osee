@@ -26,8 +26,7 @@ public class ArtifactHyperItem extends HyperViewItem {
 
    @Override
    public String getToolTip() {
-      String tt = "Type: " + artifact.getArtifactTypeName() + "\n\n" + "Title: " + artifact.getName();
-      return tt;
+      return "Type: " + artifact.getArtifactTypeName() + "\n\n" + "Title: " + artifact.getName();
    }
 
    @Override
@@ -46,8 +45,7 @@ public class ArtifactHyperItem extends HyperViewItem {
 
    @Override
    public String getShortTitle() {
-      String title = getTitle().replaceFirst("State", "");
-      return title;
+      return getTitle().replaceFirst("State", "");
    }
 
 }

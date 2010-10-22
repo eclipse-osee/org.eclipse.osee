@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.util.widgets.commit;
 
 import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -39,11 +40,6 @@ public class CommitXManager extends XViewer {
    }
 
    @Override
-   protected void createSupportWidgets(Composite parent) {
-      super.createSupportWidgets(parent);
-   }
-
-   @Override
    public void updateMenuActionsForTable() {
       MenuManager mm = getMenuManager();
 
@@ -58,8 +54,8 @@ public class CommitXManager extends XViewer {
       getLabelProvider().dispose();
    }
 
-   public ArrayList<ICommitConfigArtifact> getSelectedConfigArtifacts() {
-      ArrayList<ICommitConfigArtifact> arts = new ArrayList<ICommitConfigArtifact>();
+   public List<ICommitConfigArtifact> getSelectedConfigArtifacts() {
+      List<ICommitConfigArtifact> arts = new ArrayList<ICommitConfigArtifact>();
       TreeItem items[] = getTree().getSelection();
       if (items.length > 0) {
          for (TreeItem item : items) {

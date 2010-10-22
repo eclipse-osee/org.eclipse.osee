@@ -41,11 +41,11 @@ public class TaskOptionStatusDialog extends SMAStatusDialog {
    private final List<TaskResOptionDefinition> options;
    private final Map<String, TaskResOptionDefinition> nameToResDef = new HashMap<String, TaskResOptionDefinition>();
    private TaskResOptionDefinition selectedOption;
-   private static String MESSAGE = "Enter percent complete and number of hours you spent since last status.";
-   private static String OPTION_MESSAGE =
+   private final static String MESSAGE = "Enter percent complete and number of hours you spent since last status.";
+   private final static String OPTION_MESSAGE =
       "Select resolution, enter percent complete and number of hours you spent since last status.";
 
-   public TaskOptionStatusDialog(Shell parentShell, String dialogTitle, String dialogMessage, boolean showPercent, List<TaskResOptionDefinition> options, Collection<? extends AbstractWorkflowArtifact> tasks) {
+   public TaskOptionStatusDialog(Shell parentShell, String dialogTitle, boolean showPercent, List<TaskResOptionDefinition> options, Collection<? extends AbstractWorkflowArtifact> tasks) {
       super(parentShell, dialogTitle, options == null ? MESSAGE : OPTION_MESSAGE, showPercent, tasks);
       this.options = options;
       if (options != null) {
@@ -108,7 +108,7 @@ public class TaskOptionStatusDialog extends SMAStatusDialog {
             public void widgetSelected(SelectionEvent e) {
                selectedOption = (TaskResOptionDefinition) resolutionCombo.getSelected();
                if (selectedOption != null && !selectedOption.getPercent().equals("")) {
-                  int newPercent = new Integer(selectedOption.getPercent()).intValue();
+                  int newPercent = Integer.valueOf(selectedOption.getPercent()).intValue();
                   percent.set(newPercent + "");
                   updateStatusLabel();
                }

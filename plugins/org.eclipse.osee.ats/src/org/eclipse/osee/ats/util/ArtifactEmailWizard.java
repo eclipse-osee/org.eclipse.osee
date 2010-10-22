@@ -25,7 +25,7 @@ public class ArtifactEmailWizard extends EmailWizard {
       this(sma, null);
    }
 
-   public ArtifactEmailWizard(AbstractWorkflowArtifact sma, ArrayList<Object> toAddress) throws OseeCoreException {
+   public ArtifactEmailWizard(AbstractWorkflowArtifact sma, List<Object> toAddress) throws OseeCoreException {
       super(getPreviewHtml(sma, PreviewStyle.HYPEROPEN, PreviewStyle.NO_SUBSCRIBE_OR_FAVORITE),
          " Regarding " + sma.getArtifactTypeName() + " - " + sma.getName(), getEmailableGroups(sma), toAddress);
    }

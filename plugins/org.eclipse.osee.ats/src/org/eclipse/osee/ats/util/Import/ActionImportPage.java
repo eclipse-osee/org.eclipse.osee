@@ -42,7 +42,6 @@ public class ActionImportPage extends WizardDataTransferPage {
 
    private IResource currentResourceSelection;
    private FileSelector fileSelector;
-   private Label actionLabel;
    private Button emailPocs;
 
    public ActionImportPage(String pageName, IStructuredSelection selection) {
@@ -94,7 +93,7 @@ public class ActionImportPage extends WizardDataTransferPage {
       Composite comp = new Composite(parent, SWT.NONE);
       comp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
       comp.setLayout(new GridLayout());
-      actionLabel = new Label(comp, SWT.NONE);
+      Label actionLabel = new Label(comp, SWT.NONE);
       actionLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
 
    }

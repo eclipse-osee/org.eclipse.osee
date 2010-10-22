@@ -13,12 +13,11 @@ package org.eclipse.osee.ats.util.widgets.commit;
 import java.util.Collection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 
 public class XCommitContentProvider implements ITreeContentProvider {
 
-   private static Object[] EMPTY_ARRAY = new Object[0];
-
-   public XCommitContentProvider(CommitXManager commitXManager) {
+   public XCommitContentProvider() {
       super();
    }
 
@@ -31,7 +30,7 @@ public class XCommitContentProvider implements ITreeContentProvider {
       if (parentElement instanceof Collection) {
          return ((Collection) parentElement).toArray();
       }
-      return EMPTY_ARRAY;
+      return Collections.EMPTY_ARRAY;
    }
 
    @Override

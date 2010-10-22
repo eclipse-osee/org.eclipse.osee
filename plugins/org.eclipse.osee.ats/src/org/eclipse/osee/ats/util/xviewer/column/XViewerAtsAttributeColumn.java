@@ -60,14 +60,4 @@ public class XViewerAtsAttributeColumn extends XViewerColumn {
       return attributeType;
    }
 
-   @Override
-   public boolean equals(Object obj) {
-      return super.equals(obj);
-   }
-
-   @Override
-   public int hashCode() {
-      return super.hashCode();
-   }
-
 }

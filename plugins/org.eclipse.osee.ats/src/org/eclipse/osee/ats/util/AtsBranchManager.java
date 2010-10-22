@@ -476,9 +476,6 @@ public class AtsBranchManager {
       if (now - workingBranchCacheUpdated > 1000) {
          workingBranchCache = getWorkingBranchExcludeStates(BranchState.REBASELINED, BranchState.DELETED);
          workingBranchCacheUpdated = now;
-         //         System.out.println("updating cache");
-      } else {
-         //         System.out.println("returning cache");
       }
       return workingBranchCache;
    }
@@ -668,7 +665,7 @@ public class AtsBranchManager {
       for (String ruleId : Arrays.asList(AtsAddDecisionReviewRule.ID, AtsAddPeerToPeerReviewRule.ID)) {
          for (WorkRuleDefinition workRuleDef : teamArt.getWorkRulesStartsWith(ruleId)) {
             StateEventType eventType = AtsAddDecisionReviewRule.getStateEventType(teamArt, workRuleDef);
-            if (eventType != null && eventType == stateEventType) {
+            if (eventType != null && eventType.equals(stateEventType)) {
                if (ruleId.equals(AtsAddDecisionReviewRule.ID)) {
                   DecisionReviewArtifact decArt =
                      AtsAddDecisionReviewRule.createNewDecisionReview(workRuleDef, transaction, teamArt,

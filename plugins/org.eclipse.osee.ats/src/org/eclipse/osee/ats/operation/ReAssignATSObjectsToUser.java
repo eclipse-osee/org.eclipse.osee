@@ -36,8 +36,8 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  */
 public class ReAssignATSObjectsToUser extends AbstractBlam {
 
-   public static String FROM_ASSIGNEE = "From Assignee";
-   public static String TO_ASSIGNEE = "To Assignee";
+   public final static String FROM_ASSIGNEE = "From Assignee";
+   public final static String TO_ASSIGNEE = "To Assignee";
 
    @Override
    public String getName() {

@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
  */
 public class EditAction extends Action {
 
-   public static String ID = "osee.ats.workflowConfigEdit.edit";
+   public final static String ID = "osee.ats.workflowConfigEdit.edit";
 
    public EditAction() {
       super("Edit");
@@ -57,37 +57,33 @@ public class EditAction extends Action {
             Iterator<?> i = structuredSelection.iterator();
             while (i.hasNext()) {
                Object obj = i.next();
-               if (obj instanceof DiagramEditPart) {
-                  if (((DiagramEditPart) obj).getModel() instanceof WorkflowDiagram) {
-                     WorkflowDiagram diagram = (WorkflowDiagram) ((DiagramEditPart) obj).getModel();
-                     Artifact artifact = null;
-                     if (diagram.getWorkFlowDefinition() != null) {
-                        WorkFlowDefinition def = diagram.getWorkFlowDefinition();
-                        artifact = WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(def.getId());
-                     }
-                     if (artifact != null) {
-                        RendererManager.open(artifact, PresentationType.GENERALIZED_EDIT);
-                        return;
-                     }
+               if (obj instanceof DiagramEditPart && ((DiagramEditPart) obj).getModel() instanceof WorkflowDiagram) {
+                  WorkflowDiagram diagram = (WorkflowDiagram) ((DiagramEditPart) obj).getModel();
+                  Artifact artifact = null;
+                  if (diagram.getWorkFlowDefinition() != null) {
+                     WorkFlowDefinition def = diagram.getWorkFlowDefinition();
+                     artifact = WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(def.getId());
+                  }
+                  if (artifact != null) {
+                     RendererManager.open(artifact, PresentationType.GENERALIZED_EDIT);
+                     return;
                   }
                }
-               if (obj instanceof WorkPageEditPart) {
-                  if (((WorkPageEditPart) obj).getModel() instanceof WorkPageShape) {
-                     WorkPageShape shape = (WorkPageShape) ((WorkPageEditPart) obj).getModel();
-                     Artifact artifact = null;
-                     if (shape.getWorkPageDefinition() != null) {
-                        WorkPageDefinition def = shape.getWorkPageDefinition();
-                        artifact = WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(def.getId());
-                     } else {
-                        String id = shape.getId();
-                        artifact = WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(id);
-                        RendererManager.open(artifact, PresentationType.GENERALIZED_EDIT);
-                        return;
-                     }
-                     if (artifact != null) {
-                        RendererManager.open(artifact, PresentationType.GENERALIZED_EDIT);
-                        return;
-                     }
+               if (obj instanceof WorkPageEditPart && ((WorkPageEditPart) obj).getModel() instanceof WorkPageShape) {
+                  WorkPageShape shape = (WorkPageShape) ((WorkPageEditPart) obj).getModel();
+                  Artifact artifact = null;
+                  if (shape.getWorkPageDefinition() != null) {
+                     WorkPageDefinition def = shape.getWorkPageDefinition();
+                     artifact = WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(def.getId());
+                  } else {
+                     String id = shape.getId();
+                     artifact = WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(id);
+                     RendererManager.open(artifact, PresentationType.GENERALIZED_EDIT);
+                     return;
+                  }
+                  if (artifact != null) {
+                     RendererManager.open(artifact, PresentationType.GENERALIZED_EDIT);
+                     return;
                   }
                }
             }

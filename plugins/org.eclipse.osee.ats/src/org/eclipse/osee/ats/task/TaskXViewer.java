@@ -105,10 +105,8 @@ public class TaskXViewer extends WorldXViewer {
       Iterator<?> i = ((IStructuredSelection) getSelection()).iterator();
       while (i.hasNext()) {
          Object obj = i.next();
-         if (obj instanceof TaskArtifact) {
-            if (!((TaskArtifact) obj).isInWork()) {
-               return false;
-            }
+         if (obj instanceof TaskArtifact && !((TaskArtifact) obj).isInWork()) {
+            return false;
          }
       }
       return true;

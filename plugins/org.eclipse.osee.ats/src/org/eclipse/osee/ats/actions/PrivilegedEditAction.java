@@ -65,7 +65,8 @@ public class PrivilegedEditAction extends Action {
             }
             StringBuffer stringBuffer = new StringBuffer();
             for (User user : users) {
-               stringBuffer.append(user.getName() + "\n");
+               stringBuffer.append(user.getName());
+               stringBuffer.append("\n");
             }
             String buttons[];
             boolean iAmPrivileged = users.contains(UserManager.getUser());

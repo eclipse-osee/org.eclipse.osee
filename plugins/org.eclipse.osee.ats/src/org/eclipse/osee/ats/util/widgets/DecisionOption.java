@@ -134,13 +134,14 @@ public class DecisionOption {
    public Result setFromXml(String xml) {
       Matcher m = Pattern.compile("^(.*?);(.*?);(.*)$").matcher(xml);
       if (m.find()) {
+         String toState = m.group(2).toLowerCase();
          name = m.group(1);
          if (name.equals("")) {
             return new Result("Invalid name");
          }
-         if (m.group(2).toLowerCase().equals("followup")) {
+         if (toState.equals("followup")) {
             followupRequired = true;
-         } else if (m.group(2).toLowerCase().equals("completed")) {
+         } else if (toState.equals("completed")) {
             followupRequired = false;
          } else {
             return new Result("Invalid followup string \"" + m.group(2) + "\"\nShould be followup or completed");

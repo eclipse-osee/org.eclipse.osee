@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
  */
 public class AtsAuthorizeWorkPageDefinition extends WorkPageDefinition {
 
-   public static String ID = TeamWorkflowDefinition.ID + "." + DefaultTeamState.Authorize.name();
+   public final static String ID = TeamWorkflowDefinition.ID + "." + DefaultTeamState.Authorize.name();
 
    public AtsAuthorizeWorkPageDefinition() {
       this(DefaultTeamState.Authorize.name(), ID, null);

@@ -113,10 +113,8 @@ public class MultipleHridSearchOperation extends AbstractOperation implements IW
                   }
                }
             }
-            if (artifact instanceof TeamWorkFlowArtifact) {
-               if (((TeamWorkFlowArtifact) artifact).getBranchMgr().isCommittedBranchExists() || ((TeamWorkFlowArtifact) artifact).getBranchMgr().isWorkingBranchInWork()) {
-                  addedArts.add(artifact);
-               }
+            if (artifact instanceof TeamWorkFlowArtifact && (((TeamWorkFlowArtifact) artifact).getBranchMgr().isCommittedBranchExists() || ((TeamWorkFlowArtifact) artifact).getBranchMgr().isWorkingBranchInWork())) {
+               addedArts.add(artifact);
             }
          }
          if (addedArts.size() == 1) {

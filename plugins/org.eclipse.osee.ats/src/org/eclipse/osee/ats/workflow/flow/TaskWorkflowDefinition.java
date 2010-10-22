@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
  */
 public class TaskWorkflowDefinition extends WorkFlowDefinition {
 
-   public static String ID = "osee.ats.taskWorkflow";
+   public final static String ID = "osee.ats.taskWorkflow";
 
    public TaskWorkflowDefinition() {
       this(ID, ID);

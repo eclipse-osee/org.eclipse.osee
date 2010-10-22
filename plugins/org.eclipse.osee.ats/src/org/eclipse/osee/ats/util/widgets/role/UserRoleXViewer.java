@@ -115,8 +115,8 @@ public class UserRoleXViewer extends XViewer {
       getLabelProvider().dispose();
    }
 
-   public ArrayList<UserRole> getSelectedUserRoleItems() {
-      ArrayList<UserRole> arts = new ArrayList<UserRole>();
+   public List<UserRole> getSelectedUserRoleItems() {
+      List<UserRole> arts = new ArrayList<UserRole>();
       TreeItem items[] = getTree().getSelection();
       if (items.length > 0) {
          for (TreeItem item : items) {
@@ -247,10 +247,8 @@ public class UserRoleXViewer extends XViewer {
             EnumStringSingleSelectionDialog enumDialog =
                XPromptChange.promptChangeSingleSelectEnumeration(xCol.getName(), Role.strValues(),
                   (columnMultiEdit ? null : userRole.getRole().name()));
-            if (enumDialog != null) {
-               if (enumDialog.getResult()[0] != null) {
-                  modified = setRole(userRoles, (String) enumDialog.getResult()[0]);
-               }
+            if (enumDialog != null && enumDialog.getResult()[0] != null) {
+               modified = setRole(userRoles, (String) enumDialog.getResult()[0]);
             }
          }
          if (modified) {

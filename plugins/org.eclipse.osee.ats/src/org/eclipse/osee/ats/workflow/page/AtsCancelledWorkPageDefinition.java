@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
  */
 public class AtsCancelledWorkPageDefinition extends WorkPageDefinition {
 
-   public static String ID = TeamWorkflowDefinition.ID + "." + DefaultTeamState.Cancelled.name();
+   public final static String ID = TeamWorkflowDefinition.ID + "." + DefaultTeamState.Cancelled.name();
 
    public AtsCancelledWorkPageDefinition() {
       this(DefaultTeamState.Cancelled.name(), ID, null);

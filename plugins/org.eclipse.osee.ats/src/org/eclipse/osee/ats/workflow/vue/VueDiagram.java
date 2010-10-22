@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.workflow.vue;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -21,8 +22,8 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  */
 public class VueDiagram {
 
-   private final ArrayList<VueLink> links = new ArrayList<VueLink>();
-   private final ArrayList<VueNode> vuePages = new ArrayList<VueNode>();
+   private final List<VueLink> links = new ArrayList<VueLink>();
+   private final List<VueNode> vuePages = new ArrayList<VueNode>();
    private final Diagram workflow;
    private static Pattern childPattern = Pattern.compile("<child(.*?)>(.*?)</child>",
       Pattern.DOTALL | Pattern.MULTILINE);

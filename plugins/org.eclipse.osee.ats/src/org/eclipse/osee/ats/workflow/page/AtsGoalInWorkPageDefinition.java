@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
  */
 public class AtsGoalInWorkPageDefinition extends WorkPageDefinition {
 
-   public static String ID = GoalWorkflowDefinition.ID + "." + GoalState.InWork.name();
+   public final static String ID = GoalWorkflowDefinition.ID + "." + GoalState.InWork.name();
 
    public AtsGoalInWorkPageDefinition() {
       this(GoalState.InWork.name(), ID, null);

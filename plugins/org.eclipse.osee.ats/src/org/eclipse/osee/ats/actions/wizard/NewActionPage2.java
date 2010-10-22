@@ -39,7 +39,7 @@ public class NewActionPage2 extends WizardPage {
    private WorkPage page;
    private final NewActionWizard wizard;
    private boolean debugPopulated = false;
-   private static String DESCRIPTION = "Description";
+   private final static String DESCRIPTION = "Description";
 
    protected NewActionPage2(NewActionWizard wizard) {
       super("Create new ATS Action", "Create ATS Action", null);

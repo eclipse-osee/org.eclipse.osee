@@ -15,13 +15,13 @@ import java.util.Collection;
 import java.util.HashSet;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
 public class DefectContentProvider implements ITreeContentProvider {
 
    protected Collection<DefectItem> rootSet = new HashSet<DefectItem>();
    private final DefectXViewer xViewer;
-   private static Object[] EMPTY_ARRAY = new Object[0];
 
    public DefectContentProvider(DefectXViewer WorldXViewer) {
       super();
@@ -80,7 +80,7 @@ public class DefectContentProvider implements ITreeContentProvider {
       if (parentElement instanceof Collection) {
          return ((Collection) parentElement).toArray();
       }
-      return EMPTY_ARRAY;
+      return Collections.EMPTY_ARRAY;
    }
 
    @Override

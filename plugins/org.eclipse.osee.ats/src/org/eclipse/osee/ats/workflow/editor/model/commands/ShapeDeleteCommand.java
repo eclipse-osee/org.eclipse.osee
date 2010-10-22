@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.workflow.editor.model.commands;
 import java.util.Iterator;
 import java.util.List;
 import org.eclipse.gef.commands.Command;
-import org.eclipse.osee.ats.workflow.editor.model.Connection;
+import org.eclipse.osee.ats.workflow.editor.model.Relation;
 import org.eclipse.osee.ats.workflow.editor.model.Shape;
 import org.eclipse.osee.ats.workflow.editor.model.WorkflowDiagram;
 
@@ -29,9 +29,9 @@ public class ShapeDeleteCommand extends Command {
    /** ShapeDiagram to remove from. */
    private final WorkflowDiagram parent;
    /** Holds a copy of the outgoing connections of child. */
-   private List<Connection> sourceConnections;
+   private List<Relation> sourceConnections;
    /** Holds a copy of the incoming connections of child. */
-   private List<Connection> targetConnections;
+   private List<Relation> targetConnections;
    /** True, if child was removed from its parent. */
    private boolean wasRemoved;
 
@@ -56,9 +56,9 @@ public class ShapeDeleteCommand extends Command {
     * 
     * @param connections a non-null List of connections
     */
-   private void addConnections(List<Connection> connections) {
-      for (Iterator<Connection> iter = connections.iterator(); iter.hasNext();) {
-         Connection conn = iter.next();
+   private void addConnections(List<Relation> connections) {
+      for (Iterator<Relation> iter = connections.iterator(); iter.hasNext();) {
+         Relation conn = iter.next();
          conn.reconnect();
       }
    }
@@ -91,9 +91,9 @@ public class ShapeDeleteCommand extends Command {
     * 
     * @param connections a non-null List of connections
     */
-   private void removeConnections(List<Connection> connections) {
-      for (Iterator<Connection> iter = connections.iterator(); iter.hasNext();) {
-         Connection conn = iter.next();
+   private void removeConnections(List<Relation> connections) {
+      for (Iterator<Relation> iter = connections.iterator(); iter.hasNext();) {
+         Relation conn = iter.next();
          conn.disconnect();
       }
    }

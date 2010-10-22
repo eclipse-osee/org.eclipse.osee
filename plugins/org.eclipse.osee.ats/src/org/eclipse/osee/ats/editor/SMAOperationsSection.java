@@ -250,9 +250,4 @@ public class SMAOperationsSection extends SectionPart {
       section.setClient(sectionBody);
    }
 
-   @Override
-   public void dispose() {
-      super.dispose();
-   }
-
 }

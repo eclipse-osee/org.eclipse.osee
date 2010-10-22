@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.hyper;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Vector;
+import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.draw2d.ChopboxAnchor;
 import org.eclipse.draw2d.ColorConstants;
@@ -31,15 +31,20 @@ import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.editor.SMAEditor;
+import org.eclipse.osee.ats.hyper.action.HyperBackAction;
+import org.eclipse.osee.ats.hyper.action.HyperCenterAction;
+import org.eclipse.osee.ats.hyper.action.HyperExpandTitleAction;
+import org.eclipse.osee.ats.hyper.action.HyperForwardAction;
+import org.eclipse.osee.ats.hyper.action.HyperRefreshAction;
+import org.eclipse.osee.ats.hyper.action.HyperZoomInAction;
+import org.eclipse.osee.ats.hyper.action.HyperZoomOutAction;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -47,12 +52,10 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.swt.Displays;
-import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -67,7 +70,6 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IPartListener;
-import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
@@ -75,21 +77,20 @@ import org.eclipse.ui.part.ViewPart;
 public class HyperView extends ViewPart implements IPartListener {
 
    private static final boolean debugOn = false;
-   public static String VIEW_ID = "org.eclipse.osee.ats.hyper.HyperView";
-   private LightweightSystem lws;
+   public final static String VIEW_ID = "org.eclipse.osee.ats.hyper.HyperView";
    private HyperViewItem centerSearchItem;
    private NodeFigure centerFigure;
    protected Composite composite;
    private Figure container; // main container Figure to hold others
    private XYLayout contentsLayout;
-   private final Vector<PolylineConnection> connectors = new Vector<PolylineConnection>(); // PolylineConnection
-   private final Vector<HyperViewItem> backList = new Vector<HyperViewItem>();
+   private final List<PolylineConnection> connectors = new ArrayList<PolylineConnection>(); // PolylineConnection
+   private final List<HyperViewItem> backList = new ArrayList<HyperViewItem>();
    // List of SearchItems visited
-   private int backListIndex = 0; // Index we are on in backList
-   private HyperViewItem homeSearchItem = null;
+   public int backListIndex = 0; // Index we are on in backList
+   public HyperViewItem homeSearchItem = null;
    // private static Canvas canvas;
    private FigureCanvas canvas;
-   private final Cursor hCursor = null;
+   private static final Cursor hCursor = null;
    private Menu popupMenu;
    private Menu connectPopupMenu;
    /* Full circle is (2*Math.PI) */
@@ -110,23 +111,23 @@ public class HyperView extends ViewPart implements IPartListener {
    private ScrollBar vsb;
    private ScrollBar hsb;
    private Action titleAction, backAction, forwardAction;
-   private Zoom zoom;
+   public Zoom zoom;
    protected Zoom defaultZoom = new Zoom();
    private int verticalSelection = 40;
-   protected ArrayList<String> onlyShowRelations = new ArrayList<String>();
+   protected List<String> onlyShowRelations = new ArrayList<String>();
 
    public static class Zoom {
 
-      int pcRadius = 50;
-      int pcRadiusFactor = 5;
-      int uuRadius = 60;
-      int uuRadiusFactor = 20;
-      int uuRadiusSeparation = 13; // left/right
-      int pcRadiusSeparation = 13; // top/bottom
-      int xSeparation = 27;
-      int xSeparationFactor = 20;
-      int ySeparation = 5;
-      Point dragCenter = null;
+      public int pcRadius = 50;
+      public int pcRadiusFactor = 5;
+      public int uuRadius = 60;
+      public int uuRadiusFactor = 20;
+      public int uuRadiusSeparation = 13; // left/right
+      public int pcRadiusSeparation = 13; // top/bottom
+      public int xSeparation = 27;
+      public int xSeparationFactor = 20;
+      public int ySeparation = 5;
+      public Point dragCenter = null;
 
       @Override
       public String toString() {
@@ -204,7 +205,7 @@ public class HyperView extends ViewPart implements IPartListener {
 
    private void gridLoad(HyperViewItem hvi) {
       if (HyperView.debugOn) {
-         System.out.println("gridLoad");
+         OseeLog.log(AtsPlugin.class, Level.INFO, "gridLoad");
       }
       /*
        * If grid already loaded and it was a collection, remove old home and all links associated with it.
@@ -226,7 +227,7 @@ public class HyperView extends ViewPart implements IPartListener {
    @Override
    public void createPartControl(Composite parent) {
       if (HyperView.debugOn) {
-         System.out.println("createPartControl");
+         OseeLog.log(AtsPlugin.class, Level.INFO, "createPartControl");
       }
       OseeStatusContributionItemFactory.addTo(this, true);
 
@@ -240,9 +241,9 @@ public class HyperView extends ViewPart implements IPartListener {
          @Override
          public void handleEvent(Event event) {
             refresh();
-            // System.out.println("vScroll " + event);
+            // OseeLog.log(AtsPlugin.class, Level.INFO, "vScroll " + event);
             // int v = canvas.getVerticalBar().getSelection();
-            // System.out.println("v *" + v + "*");
+            // OseeLog.log(AtsPlugin.class, Level.INFO, "v *" + v + "*");
          }
       });
       hsb = canvas.getHorizontalBar();
@@ -253,15 +254,15 @@ public class HyperView extends ViewPart implements IPartListener {
          @Override
          public void handleEvent(Event event) {
             refresh();
-            // System.out.println("hScroll " + event);
+            // OseeLog.log(AtsPlugin.class, Level.INFO, "hScroll " + event);
             // int h = canvas.getVerticalBar().getSelection();
-            // System.out.println("h *" + h + "*");
+            // OseeLog.log(AtsPlugin.class, Level.INFO, "h *" + h + "*");
          }
       });
       // canvas = new Canvas(top, SWT.NONE);
       composite = parent;
       canvas.setBackground(composite.getDisplay().getSystemColor(SWT.COLOR_WHITE));
-      lws = new LightweightSystem(canvas);
+      LightweightSystem lws = new LightweightSystem(canvas);
       container = new Figure();
       setContainerMouseListener(container);
       setMouseListener(container);
@@ -283,7 +284,7 @@ public class HyperView extends ViewPart implements IPartListener {
 
    }
 
-   private void printBackList(String inStr) {
+   public void printBackList(String inStr) {
       final boolean debug = false;
       if (debug) {
          StringBuilder builder = new StringBuilder();
@@ -292,7 +293,7 @@ public class HyperView extends ViewPart implements IPartListener {
             builder.append(i + " ");
          }
          builder.append("] index: " + backListIndex);
-         System.err.println(builder.toString());
+         OseeLog.log(AtsPlugin.class, Level.INFO, builder.toString());
       }
    }
 
@@ -310,21 +311,14 @@ public class HyperView extends ViewPart implements IPartListener {
       // invalid and should be removed
       printBackList("pre backListAddSearchItem");
       backListClearToIndex();
-      if (backList.size() > 0) {
-         if (backList.get(backList.size() - 1).equals(hvi)) {
-            // System.out.println("same as last; skip");
-            return;
-         }
+      if (backList.size() > 0 && backList.get(backList.size() - 1).equals(hvi)) {
+         // OseeLog.log(AtsPlugin.class, Level.INFO, "same as last; skip");
+         return;
       }
       backList.add(hvi);
       backListIndex = backList.size() - 1;
       printBackList("post backListAddSearchItem");
    }
-
-   // private void backListClear() {
-   // backList.clear();
-   // backListIndex = 0;
-   // }
 
    public void refresh() {
       gridDrawCenterItem();
@@ -332,7 +326,7 @@ public class HyperView extends ViewPart implements IPartListener {
 
    protected void clear() {
       if (HyperView.debugOn) {
-         System.out.println("gridClear");
+         OseeLog.log(AtsPlugin.class, Level.INFO, "gridClear");
       }
       if (connectors != null) {
          for (int i = 0; i < connectors.size(); i++) {
@@ -348,21 +342,21 @@ public class HyperView extends ViewPart implements IPartListener {
    private void gridDrawCenterItem() {
       clear();
       Rectangle grid = container.getClientArea();
-      // System.out.println("grid w: " + grid.width + " h:" + grid.height);
+      // OseeLog.log(AtsPlugin.class, Level.INFO, "grid w: " + grid.width + " h:" + grid.height);
       gridDraw(centerSearchItem, new Point(grid.width / 2, grid.height / 2));
    }
 
    private void gridDraw(HyperViewItem hvi, Point center) {
       if (HyperView.debugOn) {
-         System.out.println("zoom *" + zoom + "*");
+         OseeLog.log(AtsPlugin.class, Level.INFO, "zoom *" + zoom + "*");
       }
       // Draw center node
       if (hvi != null) {
          if (HyperView.debugOn) {
-            System.out.println("center x: " + center.x + " y:" + center.y);
+            OseeLog.log(AtsPlugin.class, Level.INFO, "center x: " + center.x + " y:" + center.y);
          }
          if (HyperView.debugOn) {
-            System.out.println("centerFigure *" + hvi.getTitle() + "*");
+            OseeLog.log(AtsPlugin.class, Level.INFO, "centerFigure *" + hvi.getTitle() + "*");
          }
          Point useCenter;
          if (zoom.dragCenter != null) {
@@ -377,26 +371,26 @@ public class HyperView extends ViewPart implements IPartListener {
          if (hsb != null) {
             useCenter.x -= (hsb.getSelection() - 40) * 10;
          }
-         // System.out.println("zoom.dragCenter *" + zoom.dragCenter + "*");
-         // System.out.println("center *" + center + "*");
-         // System.out.println("vsb.getSelection() *" + vsb.getSelection() +
+         // OseeLog.log(AtsPlugin.class, Level.INFO, "zoom.dragCenter *" + zoom.dragCenter + "*");
+         // OseeLog.log(AtsPlugin.class, Level.INFO, "center *" + center + "*");
+         // OseeLog.log(AtsPlugin.class, Level.INFO, "vsb.getSelection() *" + vsb.getSelection() +
          // "*");
-         // System.out.println("hsb.getSelection() *" + hsb.getSelection() +
+         // OseeLog.log(AtsPlugin.class, Level.INFO, "hsb.getSelection() *" + hsb.getSelection() +
          // "*");
          Point nwPoint;
          Point cPoint;
          centerFigure = createFigure(centerSearchItem, true);
          Dimension dim = centerFigure.getPreferredSize();
          if (HyperView.debugOn) {
-            System.out.println("dim center w: " + dim.width + " h:" + dim.height);
+            OseeLog.log(AtsPlugin.class, Level.INFO, "dim center w: " + dim.width + " h:" + dim.height);
          }
          nwPoint = new Point((useCenter.x - dim.width / 2), (useCenter.y - dim.height / 2));
          cPoint = new Point((nwPoint.x + dim.width / 2), (nwPoint.y + dim.height / 2));
          if (HyperView.debugOn) {
-            System.out.println("nwPoint *" + nwPoint + "*");
+            OseeLog.log(AtsPlugin.class, Level.INFO, "nwPoint *" + nwPoint + "*");
          }
          if (HyperView.debugOn) {
-            System.out.println("cPoint *" + cPoint + "*");
+            OseeLog.log(AtsPlugin.class, Level.INFO, "cPoint *" + cPoint + "*");
          }
          contentsLayout.setConstraint(centerFigure, new Rectangle(nwPoint.x, nwPoint.y, -1, -1));
          // centerFigure.repaint();
@@ -428,9 +422,9 @@ public class HyperView extends ViewPart implements IPartListener {
     * @param hvis - HyperViewItems to show.
     * @param offsetPoint - x,y to offset figures
     */
-   private void drawNodes(RelationEnum relType, ArrayList<HyperViewItem> hvis, Point offsetPoint, ChopboxAnchor sourceAnchor) {
+   private void drawNodes(RelationEnum relType, List<HyperViewItem> hvis, Point offsetPoint, ChopboxAnchor sourceAnchor) {
       if (HyperView.debugOn) {
-         System.out.println("drawNodes");
+         OseeLog.log(AtsPlugin.class, Level.INFO, "drawNodes");
       }
       if (hvis.isEmpty()) {
          return;
@@ -440,7 +434,7 @@ public class HyperView extends ViewPart implements IPartListener {
       final boolean isBottom = relType == RelationEnum.BOTTOM;
       final boolean isTop = relType == RelationEnum.TOP;
       if (HyperView.debugOn) {
-         System.out.println("offsetPoint *" + offsetPoint + "*");
+         OseeLog.log(AtsPlugin.class, Level.INFO, "offsetPoint *" + offsetPoint + "*");
       }
       double startDegree = 0;
       if (isRight) {
@@ -452,12 +446,11 @@ public class HyperView extends ViewPart implements IPartListener {
       } else if (isBottom) {
          startDegree = HyperView.bottomQuadrantStart;
       }
-      double degree = 0;
       Point cPoint = new Point(); // center of figure
       Point nwPoint = new Point();
       ArrayList<HyperViewItem> orderedHvis = new ArrayList<HyperViewItem>();
 
-      // if bottomren, reverse order of figures
+      // if bottom, reverse order of figures
       if (isBottom) {
          for (int i = hvis.size() - 1; i >= 0; i--) {
             HyperViewItem hvi = hvis.get(i);
@@ -474,13 +467,13 @@ public class HyperView extends ViewPart implements IPartListener {
       }
       final double degreeDiff = quadrant / (orderedHvis.size() + 1);
       if (HyperView.debugOn) {
-         System.out.println("quadrant *" + quadrant + "*");
+         OseeLog.log(AtsPlugin.class, Level.INFO, "quadrant *" + quadrant + "*");
       }
       if (HyperView.debugOn) {
-         System.out.println("orderedHvis size *" + orderedHvis.size() + "*");
+         OseeLog.log(AtsPlugin.class, Level.INFO, "orderedHvis size *" + orderedHvis.size() + "*");
       }
       if (HyperView.debugOn) {
-         System.out.println("degreeDiff *" + degreeDiff + "*");
+         OseeLog.log(AtsPlugin.class, Level.INFO, "degreeDiff *" + degreeDiff + "*");
       }
 
       // what is sent into constraint as the nw corner
@@ -490,34 +483,20 @@ public class HyperView extends ViewPart implements IPartListener {
       } else {
          myRadius = zoom.uuRadius;
       }
+      myRadius =
+         drawNodeChildren(relType, offsetPoint, sourceAnchor, isRight, isLeft, isBottom, isTop, startDegree, cPoint,
+            nwPoint, orderedHvis, degreeDiff, myRadius);
+   }
+
+   private int drawNodeChildren(RelationEnum relType, Point offsetPoint, ChopboxAnchor sourceAnchor, final boolean isRight, final boolean isLeft, final boolean isBottom, final boolean isTop, double startDegree, Point cPoint, Point nwPoint, List<HyperViewItem> orderedHvis, final double degreeDiff, int myRadius) {
+      double degree;
       for (int i = 0; i < orderedHvis.size(); i++) {
          HyperViewItem hvi = orderedHvis.get(i);
-         if (HyperView.debugOn) {
-            System.out.println("\n");
-         }
-         if (HyperView.debugOn) {
-            System.out.println("HIV " + hvi.getShortTitle());
-         }
          degree = startDegree + degreeDiff + degreeDiff * i;
-         if (HyperView.debugOn) {
-            System.out.println("startDegree *" + startDegree + "*");
-         }
-         if (HyperView.debugOn) {
-            System.out.println("degree *" + degree + "*");
-         }
          NodeFigure figure = createFigure(hvi, false);
          cPoint.x = offsetPoint.x + (int) Math.round((myRadius * Math.cos(degree)));
          cPoint.y = offsetPoint.y + (int) Math.round((myRadius * Math.sin(degree)));
-         if (HyperView.debugOn) {
-            drawX(offsetPoint.x, offsetPoint.y - 5, "o");
-         }
-         if (HyperView.debugOn) {
-            drawX(cPoint.x, cPoint.y - 5, "c");
-         }
          Dimension dim = figure.getPreferredSize();
-         if (HyperView.debugOn) {
-            System.out.println("dim " + relType + " w: " + dim.width + " h:" + dim.height);
-         }
          if (isLeft) {
             nwPoint.x = cPoint.x - dim.width;
             nwPoint.y = cPoint.y - dim.height / 2;
@@ -532,31 +511,10 @@ public class HyperView extends ViewPart implements IPartListener {
             nwPoint.y = cPoint.y - dim.height;
          }
          if (orderedHvis.size() > 1 && (isTop || isBottom)) {
-            if (i < orderedHvis.size() / 2) {
-               myRadius += zoom.pcRadiusSeparation;
-               if (isBottom) {
-                  nwPoint.x += zoom.xSeparation;
-               }
-               if (isTop) {
-                  nwPoint.x -= zoom.xSeparation;
-               }
-            } else if (i > orderedHvis.size() / 2) {
-               myRadius -= zoom.pcRadiusSeparation;
-               if (isBottom) {
-                  nwPoint.x -= zoom.xSeparation;
-               }
-               if (isTop) {
-                  nwPoint.x += zoom.xSeparation;
-               }
-            }
+            myRadius = drawNodeTopOrBottom(isBottom, isTop, nwPoint, orderedHvis, myRadius, i);
          }
          if (orderedHvis.size() > 1 && (isLeft || isRight)) {
-            // int half = orderedFigures.size() / 2;
-            if (i < orderedHvis.size() / 2) {
-               myRadius += zoom.uuRadiusSeparation;
-            } else {
-               myRadius -= zoom.uuRadiusSeparation;
-            }
+            myRadius = drawNodeLeftOrRight(orderedHvis, myRadius, i);
          }
          contentsLayout.setConstraint(figure, new Rectangle(nwPoint.x, nwPoint.y, -1, -1));
          setMouseListener(figure);
@@ -568,29 +526,58 @@ public class HyperView extends ViewPart implements IPartListener {
          // figure).getHvi().getRelationDirty());
 
          if (HyperView.debugOn) {
-            System.out.println("cPoint *" + cPoint + "*");
-         }
-         if (HyperView.debugOn) {
-            System.out.println("nwPoint *" + nwPoint + "*");
-         }
-         if (HyperView.debugOn) {
-            System.out.println("offsetPoint *" + offsetPoint + "*");
+            OseeLog.log(AtsPlugin.class, Level.INFO, "\n");
+            OseeLog.log(AtsPlugin.class, Level.INFO, "HIV " + hvi.getShortTitle());
+            OseeLog.log(AtsPlugin.class, Level.INFO, "startDegree *" + startDegree + "*");
+            OseeLog.log(AtsPlugin.class, Level.INFO, "degree *" + degree + "*");
+
+            drawX(offsetPoint.x, offsetPoint.y - 5, "o");
+            drawX(cPoint.x, cPoint.y - 5, "c");
+            OseeLog.log(AtsPlugin.class, Level.INFO, "dim " + relType + " w: " + dim.width + " h:" + dim.height);
+
+            OseeLog.log(AtsPlugin.class, Level.INFO, "cPoint *" + cPoint + "*");
+            OseeLog.log(AtsPlugin.class, Level.INFO, "nwPoint *" + nwPoint + "*");
+            OseeLog.log(AtsPlugin.class, Level.INFO, "offsetPoint *" + offsetPoint + "*");
          }
          ChopboxAnchor thisAnchor = new ChopboxAnchor(figure);
-         if (hvi.getTop().size() > 0) {
-            drawNodes(RelationEnum.TOP, hvi.getTop(), cPoint, thisAnchor);
+         drawNodes(RelationEnum.TOP, hvi.getTop(), cPoint, thisAnchor);
+         drawNodes(RelationEnum.BOTTOM, hvi.getBottom(), new Point((nwPoint.x + dim.width / 2),
+            (nwPoint.y + dim.height / 2)), thisAnchor);
+         drawNodes(RelationEnum.LEFT, hvi.getLeft(), cPoint, thisAnchor);
+         drawNodes(RelationEnum.RIGHT, hvi.getRight(), cPoint, thisAnchor);
+      }
+      return myRadius;
+   }
+
+   private int drawNodeLeftOrRight(List<HyperViewItem> orderedHvis, int myRadius, int i) {
+      // int half = orderedFigures.size() / 2;
+      if (i < orderedHvis.size() / 2) {
+         myRadius += zoom.uuRadiusSeparation;
+      } else {
+         myRadius -= zoom.uuRadiusSeparation;
+      }
+      return myRadius;
+   }
+
+   private int drawNodeTopOrBottom(final boolean isBottom, final boolean isTop, Point nwPoint, List<HyperViewItem> orderedHvis, int myRadius, int i) {
+      if (i < orderedHvis.size() / 2) {
+         myRadius += zoom.pcRadiusSeparation;
+         if (isBottom) {
+            nwPoint.x += zoom.xSeparation;
          }
-         if (hvi.getBottom().size() > 0) {
-            drawNodes(RelationEnum.BOTTOM, hvi.getBottom(), new Point((nwPoint.x + dim.width / 2),
-               (nwPoint.y + dim.height / 2)), thisAnchor);
+         if (isTop) {
+            nwPoint.x -= zoom.xSeparation;
          }
-         if (hvi.getLeft().size() > 0) {
-            drawNodes(RelationEnum.LEFT, hvi.getLeft(), cPoint, thisAnchor);
+      } else if (i > orderedHvis.size() / 2) {
+         myRadius -= zoom.pcRadiusSeparation;
+         if (isBottom) {
+            nwPoint.x -= zoom.xSeparation;
          }
-         if (hvi.getRight().size() > 0) {
-            drawNodes(RelationEnum.RIGHT, hvi.getRight(), cPoint, thisAnchor);
+         if (isTop) {
+            nwPoint.x += zoom.xSeparation;
          }
       }
+      return myRadius;
    }
 
    /*
@@ -649,33 +636,31 @@ public class HyperView extends ViewPart implements IPartListener {
    }
 
    private void createConnectionMenuBar(final HyperViewItem hvi) {
-      if (AtsUtil.isAtsAdmin()) {
-         if (connectPopupMenu == null || !connectPopupMenu.isVisible()) {
-            // final PolylineConnection c = connection;
-            connectPopupMenu = new Menu(canvas.getShell(), SWT.POP_UP);
-            MenuItem editItem = new MenuItem(connectPopupMenu, SWT.CASCADE);
-            editItem.setText("Delete Link");
-            editItem.addSelectionListener(new SelectionAdapter() {
+      if (AtsUtil.isAtsAdmin() && (connectPopupMenu == null || !connectPopupMenu.isVisible())) {
+         // final PolylineConnection c = connection;
+         connectPopupMenu = new Menu(canvas.getShell(), SWT.POP_UP);
+         MenuItem editItem = new MenuItem(connectPopupMenu, SWT.CASCADE);
+         editItem.setText("Delete Link");
+         editItem.addSelectionListener(new SelectionAdapter() {
 
-               @Override
-               public void widgetSelected(SelectionEvent e) {
-                  try {
-                     if (MessageDialog.openQuestion(Displays.getActiveShell(), "Delete Link",
-                        "Delete Link\n\n" + hvi.getLink().toString() + "\n\nAre you sure?")) {
-                        Artifact artA = hvi.getLink().getArtifactA();
-                        hvi.getLink().delete(true);
-                        artA.persist();
-                        connectPopupMenu.dispose();
-                        connectPopupMenu = null;
-                        display();
-                     }
-                  } catch (OseeCoreException ex) {
-                     OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+               try {
+                  if (MessageDialog.openQuestion(Displays.getActiveShell(), "Delete Link",
+                     "Delete Link\n\n" + hvi.getLink().toString() + "\n\nAre you sure?")) {
+                     Artifact artA = hvi.getLink().getArtifactA();
+                     hvi.getLink().delete(true);
+                     artA.persist();
+                     connectPopupMenu.dispose();
+                     connectPopupMenu = null;
+                     display();
                   }
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
                }
-            });
-            connectPopupMenu.setVisible(true);
-         }
+            }
+         });
+         connectPopupMenu.setVisible(true);
       }
    }
 
@@ -685,21 +670,21 @@ public class HyperView extends ViewPart implements IPartListener {
          @Override
          public void mouseDoubleClicked(MouseEvent e) {
             if (HyperView.debugOn) {
-               System.out.println("DoubleClick");
+               OseeLog.log(AtsPlugin.class, Level.INFO, "DoubleClick");
             }
          }
 
          @Override
          public void mousePressed(MouseEvent e) {
             if (HyperView.debugOn) {
-               System.out.println("mousePressed");
+               OseeLog.log(AtsPlugin.class, Level.INFO, "mousePressed");
             }
          }
 
          @Override
          public void mouseReleased(MouseEvent e) {
             if (HyperView.debugOn) {
-               System.out.println("mouseReleased");
+               OseeLog.log(AtsPlugin.class, Level.INFO, "mouseReleased");
             }
             if (e.button == 3) {
                if (e.getSource() instanceof PolylineConnection) {
@@ -716,10 +701,8 @@ public class HyperView extends ViewPart implements IPartListener {
    private NodeFigure createFigure(HyperViewItem hvi, boolean center) {
       Label infoLabel = null;
       String title = hvi.getShortTitle();
-      if (!titleAction.isChecked()) {
-         if (title.length() > 30) {
-            title = title.substring(0, 30);
-         }
+      if (!titleAction.isChecked() && title.length() > 30) {
+         title = title.substring(0, 30);
       }
       Label nameLabel = null;
       try {
@@ -755,20 +738,18 @@ public class HyperView extends ViewPart implements IPartListener {
 
          @Override
          public void mouseReleased(MouseEvent e) {
-            if (e.button == 1) {
-               if (dragCenter) {
-                  if (zoom.dragCenter == null) {
-                     zoom.dragCenter = new Point();
-                  }
-                  zoom.dragCenter.x = e.x;
-                  zoom.dragCenter.y = e.y;
-                  refresh();
-                  dragCenter = false;
-                  if (hCursor != null) {
-                     container.setCursor(null);
-                     centerFigure.setCursor(null);
-                     hCursor.dispose();
-                  }
+            if (e.button == 1 && dragCenter) {
+               if (zoom.dragCenter == null) {
+                  zoom.dragCenter = new Point();
+               }
+               zoom.dragCenter.x = e.x;
+               zoom.dragCenter.y = e.y;
+               refresh();
+               dragCenter = false;
+               if (hCursor != null) {
+                  container.setCursor(null);
+                  centerFigure.setCursor(null);
+                  hCursor.dispose();
                }
             }
          }
@@ -795,7 +776,7 @@ public class HyperView extends ViewPart implements IPartListener {
 
          @Override
          public void mouseReleased(MouseEvent e) {
-            // System.out.println("mouseReleased");
+            // OseeLog.log(AtsPlugin.class, Level.INFO, "mouseReleased");
             if (hCursor != null) {
                container.setCursor(null);
                centerFigure.setCursor(null);
@@ -805,7 +786,7 @@ public class HyperView extends ViewPart implements IPartListener {
                NodeFigure nf = (NodeFigure) e.getSource();
                HyperViewItem si = nf.getSearchItem();
                if (HyperView.debugOn) {
-                  System.out.println("Click: " + si.getTitle());
+                  OseeLog.log(AtsPlugin.class, Level.INFO, "Click: " + si.getTitle());
                }
                if (e.button == 3) {
                   createMenuBar(si);
@@ -919,7 +900,7 @@ public class HyperView extends ViewPart implements IPartListener {
       refresh();
    }
 
-   protected void center() {
+   public void center() {
       zoom = defaultZoom;
       vsb.setSelection(verticalSelection);
       hsb.setSelection(40);
@@ -929,148 +910,14 @@ public class HyperView extends ViewPart implements IPartListener {
    protected void createActions() {
 
       // Reset Action
-      Action centerAction = new Action() {
-
-         @Override
-         public void run() {
-            center();
-         }
-      };
-      centerAction.setText("Center");
-      centerAction.setToolTipText("Center");
-      centerAction.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.CENTER));
+      Action centerAction = new HyperCenterAction(this);
 
       if (provideBackForwardActions()) {
-         // Back Action
-         backAction = new Action() {
-
-            @Override
-            public void run() {
-               printBackList("pre backSelected");
-               if (backList.isEmpty()) {
-                  return;
-               }
-               if (backListIndex > 0) {
-                  backListIndex--;
-               }
-               jumpTo(backList.get(backListIndex));
-               printBackList("post backSelected");
-            }
-         };
-
-         backAction.setText("Back");
-         backAction.setToolTipText("Back");
-         backAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(
-            ISharedImages.IMG_TOOL_BACK));
-         // Forward Action
-         forwardAction = new Action() {
-
-            @Override
-            public void run() {
-               printBackList("pre forwardSelected");
-               if (backList.size() - 1 > backListIndex) {
-                  backListIndex++;
-                  jumpTo(backList.get(backListIndex));
-               }
-               printBackList("post forwardSelected");
-            }
-         };
-         forwardAction.setText("Forward");
-         forwardAction.setToolTipText("Forward");
-         forwardAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(
-            ISharedImages.IMG_TOOL_FORWARD));
+         backAction = new HyperBackAction(this);
+         forwardAction = new HyperForwardAction(this);
       }
-      // // Home
-      // Action homeAction = new Action() {
-      //
-      // public void run() {
-      // if (homeSearchItem == null) {
-      // return;
-      // }
-      // vsb.setSelection(verticalSelection);
-      // hsb.setSelection(40);
-      // backListAddSearchItem(homeSearchItem);
-      // jumpTo(homeSearchItem);
-      // }
-      // };
-      // homeAction.setText("Home");
-      // homeAction.setToolTipText("Home");
-      // homeAction.setImageDescriptor(AtsPlugin.getImageDescriptor("home.gif"));
-      // Zoom in
-      Action zoomInAction = new Action() {
 
-         @Override
-         public void run() {
-            if (homeSearchItem == null) {
-               return;
-            }
-            if (HyperView.debugOn) {
-               System.out.println("zoomInAction");
-            }
-            zoom.pcRadius += zoom.pcRadiusFactor;
-            zoom.uuRadius += zoom.uuRadiusFactor;
-            zoom.xSeparation += zoom.xSeparationFactor;
-            refresh();
-
-         }
-      };
-      zoomInAction.setText("Zoom In");
-      zoomInAction.setToolTipText("Zoom In");
-      zoomInAction.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.ZOOM_IN));
-      // Zoom Out
-      Action zoomOutAction = new Action() {
-
-         @Override
-         public void run() {
-            if (homeSearchItem == null) {
-               return;
-            }
-            if (HyperView.debugOn) {
-               System.out.println("zoomOutAction");
-            }
-            if (zoom.pcRadius >= zoom.pcRadiusFactor) {
-               zoom.pcRadius -= zoom.pcRadiusFactor;
-            }
-            if (zoom.uuRadius >= zoom.uuRadiusFactor) {
-               zoom.uuRadius -= zoom.uuRadiusFactor;
-            }
-            if (zoom.xSeparation >= zoom.xSeparationFactor) {
-               zoom.xSeparation -= zoom.xSeparationFactor;
-            }
-            refresh();
-         }
-      };
-      zoomOutAction.setText("Zoom Out");
-      zoomOutAction.setToolTipText("Zoom Out");
-      zoomOutAction.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.ZOOM_OUT));
-
-      titleAction = new Action("Expand Titles", IAction.AS_CHECK_BOX) {
-
-         @Override
-         public void run() {
-            if (HyperView.debugOn) {
-               System.out.println("expandTitles");
-            }
-            refresh();
-         }
-      };
-      titleAction.setToolTipText("Expand Titles");
-
-      Action refreshAction = new Action("Refresh") {
-
-         @Override
-         public void run() {
-            if (homeSearchItem == null) {
-               MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                  "Refresh Error", "Viewer not loaded, nothing to refresh.");
-               return;
-            }
-            handleRefreshButton();
-         }
-      };
-      refreshAction.setToolTipText("Refresh");
-      ImageManager.getImageDescriptor(PluginUiImage.REFRESH);
-      refreshAction.setImageDescriptor(ImageManager.getImageDescriptor(PluginUiImage.REFRESH));
+      titleAction = new HyperExpandTitleAction(this);
 
       IActionBars bars = getViewSite().getActionBars();
       IMenuManager mm = bars.getMenuManager();
@@ -1081,17 +928,17 @@ public class HyperView extends ViewPart implements IPartListener {
       tbm.add(new Separator());
       // tbm.add(homeAction);
       tbm.add(centerAction);
-      tbm.add(zoomInAction);
-      tbm.add(zoomOutAction);
+      tbm.add(new HyperZoomInAction(this));
+      tbm.add(new HyperZoomOutAction(this));
       if (provideBackForwardActions()) {
          tbm.add(backAction);
          tbm.add(forwardAction);
       }
-      tbm.add(refreshAction);
+      tbm.add(new HyperRefreshAction(this));
 
    }
 
-   protected void handleRefreshButton() {
+   public void handleRefreshButton() {
       refresh();
    }
 
@@ -1164,5 +1011,13 @@ public class HyperView extends ViewPart implements IPartListener {
 
    public Figure getContainer() {
       return container;
+   }
+
+   public List<HyperViewItem> getBackList() {
+      return backList;
+   }
+
+   public static boolean isDebugOn() {
+      return debugOn;
    }
 }

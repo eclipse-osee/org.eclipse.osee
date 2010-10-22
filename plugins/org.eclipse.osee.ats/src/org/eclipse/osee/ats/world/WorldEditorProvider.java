@@ -26,7 +26,7 @@ public abstract class WorldEditorProvider implements IWorldEditorProvider {
 
    public WorldEditorProvider(CustomizeData customizeData, TableLoadOption[] tableLoadOptions) {
       this.customizeData = customizeData;
-      this.tableLoadOptions = tableLoadOptions;
+      this.tableLoadOptions = tableLoadOptions.clone();
    }
 
    @Override

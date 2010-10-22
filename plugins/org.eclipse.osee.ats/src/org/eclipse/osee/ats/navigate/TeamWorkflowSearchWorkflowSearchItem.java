@@ -127,17 +127,21 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
       StringBuffer sb = new StringBuffer();
       Collection<TeamDefinitionArtifact> teamDefs = getSelectedTeamDefinitions();
       if (teamDefs.size() > 0) {
-         sb.append(" - Teams: " + org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", teamDefs));
+         sb.append(" - Teams: ");
+         sb.append(org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", teamDefs));
       }
       if (getSelectedVersionArtifact() != null) {
-         sb.append(" - Version: " + getSelectedVersionArtifact());
+         sb.append(" - Version: ");
+         sb.append(getSelectedVersionArtifact());
       }
       ReleasedOption releaseOption = getSelectedReleased();
       if (releaseOption != null && releaseOption != ReleasedOption.Both) {
-         sb.append(" - ReleasedOption: " + releaseOption);
+         sb.append(" - ReleasedOption: ");
+         sb.append(releaseOption);
       }
       if (getSelectedUser() != null) {
-         sb.append(" - Assignee: " + getSelectedUser());
+         sb.append(" - Assignee: ");
+         sb.append(getSelectedUser());
       }
       if (isIncludeCompletedCancelledCheckbox()) {
          sb.append(" - Include Completed/Cancelled");
@@ -261,11 +265,8 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
    }
 
    public void setVersion(String versionStr) {
-      if (versionCombo != null && versionCombo.getInDataStrings() != null) {
-         // should check if the version combo was populated
-         if (versionCombo.getInDataStrings().length > 0) {
-            versionCombo.set(versionStr);
-         }
+      if (versionCombo != null && versionCombo.getInDataStrings() != null && versionCombo.getInDataStrings().length > 0) {
+         versionCombo.set(versionStr);
       }
    }
 

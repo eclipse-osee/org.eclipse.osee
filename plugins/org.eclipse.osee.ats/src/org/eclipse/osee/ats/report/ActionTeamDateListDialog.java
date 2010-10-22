@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -47,9 +48,9 @@ public class ActionTeamDateListDialog extends SelectionDialog {
    XListViewer teamDefList = new XListViewer("Team(s)");
    XDate dateCombo = new XDate("Date");
    XListViewer changeTypeList = new XListViewer("Include Change Types");
-   private static ArrayList<Object> selectedTeamDefs;
+   private static List<Object> selectedTeamDefs;
    private static Date selectedDate;
-   private static ArrayList<Object> selectedChangeTypes;
+   private static List<Object> selectedChangeTypes;
 
    public ActionTeamDateListDialog(Shell parent) {
       super(parent);
@@ -60,6 +61,71 @@ public class ActionTeamDateListDialog extends SelectionDialog {
    @Override
    protected Control createDialogArea(Composite container) {
 
+      createTeamDefList(container);
+      createChangeTypeList(container);
+      createDateCombo(container);
+
+      return container;
+   }
+
+   private void createDateCombo(Composite container) {
+      Composite comp;
+      comp = new Composite(container, SWT.NONE);
+      comp.setLayout(new GridLayout(2, false));
+      comp.setLayoutData(new GridData(GridData.FILL_BOTH));
+
+      dateCombo.setFormat(DateUtil.MMDDYY);
+      dateCombo.setRequiredEntry(true);
+      dateCombo.createWidgets(comp, 2);
+      if (selectedDate != null) {
+         dateCombo.setDate(selectedDate);
+      }
+      dateCombo.addXModifiedListener(new XModifiedListener() {
+         @Override
+         public void widgetModified(XWidget widget) {
+            selectedDate = dateCombo.getDate();
+         };
+      });
+   }
+
+   private void createChangeTypeList(Composite container) {
+      Composite comp;
+      comp = new Composite(container, SWT.NONE);
+      comp.setLayout(new GridLayout(2, false));
+      comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
+      changeTypeList.setLabelProvider(new ChangeType.ChangeTypeLabelProvider());
+      changeTypeList.setContentProvider(new ArrayContentProvider());
+      Collection<Object> types = new ArrayList<Object>();
+      for (ChangeType type : ChangeType.values()) {
+         types.add(type);
+      }
+      changeTypeList.setInput(types);
+      changeTypeList.setGrabHorizontal(true);
+      changeTypeList.setMultiSelect(true);
+      changeTypeList.createWidgets(comp, 2);
+      if (selectedChangeTypes != null) {
+         ArrayList<Object> sel = new ArrayList<Object>();
+         for (Object obj : selectedChangeTypes) {
+            sel.add(obj);
+         }
+         changeTypeList.setSelected(sel);
+      }
+
+      changeTypeList.addSelectionListener(new SelectionListener() {
+         @Override
+         public void widgetDefaultSelected(SelectionEvent e) {
+            widgetSelected(e);
+         }
+
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            selectedChangeTypes = changeTypeList.getSelected();
+         };
+      });
+   }
+
+   private void createTeamDefList(Composite container) {
       Composite comp = new Composite(container, SWT.NONE);
       comp.setLayout(new GridLayout(2, false));
       comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -100,62 +166,9 @@ public class ActionTeamDateListDialog extends SelectionDialog {
       GridData gd = new GridData();
       gd.heightHint = 300;
       teamDefList.getTable().setLayoutData(gd);
-
-      comp = new Composite(container, SWT.NONE);
-      comp.setLayout(new GridLayout(2, false));
-      comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-
-      changeTypeList.setLabelProvider(new ChangeType.ChangeTypeLabelProvider());
-      changeTypeList.setContentProvider(new ArrayContentProvider());
-      Collection<Object> types = new ArrayList<Object>();
-      for (ChangeType type : ChangeType.values()) {
-         types.add(type);
-      }
-      changeTypeList.setInput(types);
-      changeTypeList.setGrabHorizontal(true);
-      changeTypeList.setMultiSelect(true);
-      changeTypeList.createWidgets(comp, 2);
-      if (selectedChangeTypes != null) {
-         ArrayList<Object> sel = new ArrayList<Object>();
-         for (Object obj : selectedChangeTypes) {
-            sel.add(obj);
-         }
-         changeTypeList.setSelected(sel);
-      }
-
-      changeTypeList.addSelectionListener(new SelectionListener() {
-         @Override
-         public void widgetDefaultSelected(SelectionEvent e) {
-            widgetSelected(e);
-         }
-
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            selectedChangeTypes = changeTypeList.getSelected();
-         };
-      });
-
-      comp = new Composite(container, SWT.NONE);
-      comp.setLayout(new GridLayout(2, false));
-      comp.setLayoutData(new GridData(GridData.FILL_BOTH));
-
-      dateCombo.setFormat(DateUtil.MMDDYY);
-      dateCombo.setRequiredEntry(true);
-      dateCombo.createWidgets(comp, 2);
-      if (selectedDate != null) {
-         dateCombo.setDate(selectedDate);
-      }
-      dateCombo.addXModifiedListener(new XModifiedListener() {
-         @Override
-         public void widgetModified(XWidget widget) {
-            selectedDate = dateCombo.getDate();
-         };
-      });
-
-      return container;
    }
 
-   public ArrayList<TeamDefinitionArtifact> getSelectedTeamDefs() {
+   public List<TeamDefinitionArtifact> getSelectedTeamDefs() {
       ArrayList<TeamDefinitionArtifact> adas = new ArrayList<TeamDefinitionArtifact>();
       for (Object obj : selectedTeamDefs) {
          adas.add((TeamDefinitionArtifact) obj);
@@ -167,7 +180,7 @@ public class ActionTeamDateListDialog extends SelectionDialog {
       return selectedDate;
    }
 
-   public ArrayList<Object> getSelectedChangeTypes() {
+   public List<Object> getSelectedChangeTypes() {
       return selectedChangeTypes;
    }
 

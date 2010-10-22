@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.workflow.flow.SimpleWorkflowDefinition.SimpleState;
  */
 public class AtsStatePercentCompleteWeightSimpleWorkflowRule extends AtsStatePercentCompleteWeightRule {
 
-   public static String ID = "atsStatePercentCompleteWeight.SimpleWorkflow";
+   public final static String ID = "atsStatePercentCompleteWeight.SimpleWorkflow";
 
    public AtsStatePercentCompleteWeightSimpleWorkflowRule() {
       super(ID, ID);

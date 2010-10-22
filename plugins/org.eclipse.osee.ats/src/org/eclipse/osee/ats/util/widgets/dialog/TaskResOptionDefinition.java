@@ -28,7 +28,7 @@ public class TaskResOptionDefinition {
    private boolean completeable;
    private String color;
    private String percent;
-   public static String ATS_TASK_OPTION_TAG = "AtsTaskOption";
+   public final static String ATS_TASK_OPTION_TAG = "AtsTaskOption";
 
    public TaskResOptionDefinition() {
       name = "";

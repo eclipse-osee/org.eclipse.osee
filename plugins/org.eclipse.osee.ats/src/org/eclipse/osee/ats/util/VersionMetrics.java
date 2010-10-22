@@ -40,20 +40,32 @@ public class VersionMetrics {
 
    @Override
    public String toString() {
-      StringBuffer sb = new StringBuffer(verArt.getName() + "\n");
+      StringBuffer sb = new StringBuffer(verArt.getName());
+      sb.append("\n");
       try {
-         sb.append("Workflows: " + verArt.getTargetedForTeamArtifacts().size());
-         sb.append(" Problem: " + getTeamWorkFlows(ChangeType.Problem).size() + " Improve: " + getTeamWorkFlows(
-            ChangeType.Improvement).size() + " Support: " + getTeamWorkFlows(ChangeType.Support).size());
-         sb.append(" Release Date: " + verArt.getReleaseDate());
+         sb.append("Workflows: ");
+         sb.append(verArt.getTargetedForTeamArtifacts().size());
+         sb.append(" Problem: ");
+         sb.append(getTeamWorkFlows(ChangeType.Problem).size());
+         sb.append(" Improve: ");
+         sb.append(getTeamWorkFlows(ChangeType.Improvement).size());
+         sb.append(" Support: ");
+         sb.append(getTeamWorkFlows(ChangeType.Support).size());
+         sb.append(" Release Date: ");
+         sb.append(verArt.getReleaseDate());
          VersionMetrics prevVerMet = getPreviousVerMetViaReleaseDate();
          if (prevVerMet == null) {
             sb.append(" Prev Release Version: <not found>");
          } else {
-            sb.append(" Prev Release Version \"" + prevVerMet + "\"   Release Date: " + verArt.getReleaseDate());
+            sb.append(" Prev Release Version \"");
+            sb.append(prevVerMet);
+            sb.append("\"   Release Date: ");
+            sb.append(verArt.getReleaseDate());
          }
-         sb.append(" Start Date: " + getReleaseStartDate());
-         sb.append(" Num Days: " + getNumberDaysInRelease());
+         sb.append(" Start Date: ");
+         sb.append(getReleaseStartDate());
+         sb.append(" Num Days: ");
+         sb.append(getNumberDaysInRelease());
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
