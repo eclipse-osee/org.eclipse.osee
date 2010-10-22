@@ -387,9 +387,12 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    @Override
    public abstract VersionArtifact getWorldViewTargetedVersion() throws OseeCoreException;
 
-   @SuppressWarnings("unused")
    @Override
    public ChangeType getWorldViewChangeType() throws OseeCoreException {
+      AbstractWorkflowArtifact art = getParentTeamWorkflow();
+      if (art != null) {
+         return art.getWorldViewChangeType();
+      }
       return ChangeType.None;
    }
 
