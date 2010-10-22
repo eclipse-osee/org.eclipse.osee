@@ -33,7 +33,7 @@ public class SMAEditorContributor extends MultiPageEditorActionBarContributor {
 
    @Override
    public void setActivePage(IEditorPart part) {
-      if (activeEditorPart.equals(part)) {
+      if (part == null || activeEditorPart == null || activeEditorPart.equals(part)) {
          return;
       }
 

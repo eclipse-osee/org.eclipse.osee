@@ -157,7 +157,7 @@ public class ActionArtifact extends AbstractAtsArtifact implements IWorldViewArt
             if (!team.isCancelled()) {
                if (priorityType == null) {
                   priorityType = team.getWorldViewPriority();
-               } else if (priorityType != team.getWorldViewPriority()) {
+               } else if (!priorityType.equals(team.getWorldViewPriority())) {
                   return;
                }
             }

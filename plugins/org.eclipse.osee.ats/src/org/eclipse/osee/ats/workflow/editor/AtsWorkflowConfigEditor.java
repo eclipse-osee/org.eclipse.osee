@@ -88,7 +88,7 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
    /** This is the root of the editor's model. */
    private WorkflowDiagram diagram;
    /** Palette component, holding the tools and shapes. */
-   private static PaletteRoot palletteModel;
+   private final PaletteRoot palletteModel;
    public final static String EDITOR_ID = "org.eclipse.osee.ats.workflow.editor.AtsWorkflowConfigEditor";
 
    /** Create a new ShapesEditor instance. This is called by the Workspace. */

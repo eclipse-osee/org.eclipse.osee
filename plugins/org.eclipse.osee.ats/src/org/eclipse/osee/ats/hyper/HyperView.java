@@ -483,9 +483,8 @@ public class HyperView extends ViewPart implements IPartListener {
       } else {
          myRadius = zoom.uuRadius;
       }
-      myRadius =
-         drawNodeChildren(relType, offsetPoint, sourceAnchor, isRight, isLeft, isBottom, isTop, startDegree, cPoint,
-            nwPoint, orderedHvis, degreeDiff, myRadius);
+      drawNodeChildren(relType, offsetPoint, sourceAnchor, isRight, isLeft, isBottom, isTop, startDegree, cPoint,
+         nwPoint, orderedHvis, degreeDiff, myRadius);
    }
 
    private int drawNodeChildren(RelationEnum relType, Point offsetPoint, ChopboxAnchor sourceAnchor, final boolean isRight, final boolean isLeft, final boolean isBottom, final boolean isTop, double startDegree, Point cPoint, Point nwPoint, List<HyperViewItem> orderedHvis, final double degreeDiff, int myRadius) {

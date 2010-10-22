@@ -24,8 +24,6 @@ public class AtsActionBrowserListener extends XResultBrowserListener {
       if (location.contains("javascript:print")) {
          return;
       }
-      String cmdStr = location.replaceFirst("about:blank", "");
-      cmdStr = cmdStr.replaceFirst("blank", "");
       super.changing(event);
    }
 }
