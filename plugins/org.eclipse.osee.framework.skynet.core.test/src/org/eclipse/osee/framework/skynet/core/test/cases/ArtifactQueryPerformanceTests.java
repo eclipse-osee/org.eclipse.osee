@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.junit.Ignore;
 
 /**
  * @author Andrew M Finkbeiner
@@ -143,6 +144,7 @@ public class ArtifactQueryPerformanceTests {
    }
 
    @org.junit.Test
+   @Ignore
    public void testLoadAllBranch() throws OseeCoreException {
       Branch common = BranchManager.getCommonBranch();
       long startTime = System.currentTimeMillis();
