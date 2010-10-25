@@ -41,6 +41,7 @@ import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
 /**
  * @author Roberto E. Escobar
+ * @author Donald G. Dunne
  */
 public class OseeAtsServiceImpl implements IOseeCmService {
 
@@ -62,6 +63,16 @@ public class OseeAtsServiceImpl implements IOseeCmService {
    @Override
    public void openArtifacts(String name, Collection<Artifact> artifacts, OseeCmEditor oseeCmEditor) {
       WorldEditor.open(new WorldEditorSimpleProvider(name, artifacts));
+   }
+
+   @Override
+   public void openArtifactsById(String name, List<String> guidOrHrids, OseeCmEditor oseeCmEditor) {
+      try {
+         List<Artifact> artifacts = ArtifactQuery.getArtifactListFromIds(guidOrHrids, AtsUtil.getAtsBranch());
+         openArtifacts(name, artifacts, oseeCmEditor);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Error opening ATS artifacts by Id", ex);
+      }
    }
 
    @Override
@@ -154,4 +165,5 @@ public class OseeAtsServiceImpl implements IOseeCmService {
    public IArtifactType getPcrTaskArtifactType() {
       return AtsArtifactTypes.Task;
    }
+
 }

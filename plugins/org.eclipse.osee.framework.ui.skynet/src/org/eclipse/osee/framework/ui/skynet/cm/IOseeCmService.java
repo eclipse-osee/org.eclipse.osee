@@ -38,6 +38,8 @@ public interface IOseeCmService {
 
    void openArtifacts(String name, Collection<Artifact> artifacts, OseeCmEditor oseeCmEditor);
 
+   void openArtifactsById(String name, List<String> guidOrHrids, OseeCmEditor oseeCmEditor);
+
    boolean isPcrArtifact(Artifact artifact);
 
    boolean isCompleted(Artifact artifact);

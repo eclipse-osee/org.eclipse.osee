@@ -19,15 +19,9 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.coverage.editor.CoverageEditor;
-import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.IWorkProductTaskProvider;
 import org.eclipse.osee.coverage.model.WorkProductAction;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -75,18 +69,13 @@ public class OpenMultipleWorkProductsAction extends Action {
 
          @Override
          protected IStatus run(IProgressMonitor monitor) {
-            try {
-               IOseeCmService service = SkynetGuiPlugin.getInstance().getOseeCmService();
-               List<String> guids = new ArrayList<String>();
-               for (WorkProductAction action : provider.getWorkProductRelatedActions()) {
-                  guids.add(action.getGuid());
-               }
-               List<Artifact> artifacts = ArtifactQuery.getArtifactListFromIds(guids, coverageEditor.getBranch());
-               service.openArtifacts(coverageEditor.getTitle() + " - Work Products", artifacts,
-                  OseeCmEditor.CmMultiPcrEditor);
-            } catch (OseeCoreException ex) {
-               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+            IOseeCmService service = SkynetGuiPlugin.getInstance().getOseeCmService();
+            List<String> guids = new ArrayList<String>();
+            for (WorkProductAction action : provider.getWorkProductRelatedActions()) {
+               guids.add(action.getGuid());
             }
+            service.openArtifactsById(coverageEditor.getTitle() + " - Work Products", guids,
+               OseeCmEditor.CmMultiPcrEditor);
             return Status.OK_STATUS;
          }
       };
