@@ -1475,14 +1475,6 @@
     </key>
  </extension>
  <extension
-       id="Resource Manipulation"
-       name="Modify a Resource"
-       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-    <Operation
-          className="org.eclipse.osee.framework.ui.skynet.blam.operation.ResourceManipulation">
-    </Operation>
- </extension>
- <extension
        id="DatastoreStatistics"
        name="DatastoreStatistics"
        point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
