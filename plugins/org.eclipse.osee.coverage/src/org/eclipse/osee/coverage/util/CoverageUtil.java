@@ -54,7 +54,7 @@ public class CoverageUtil {
       if (force || CoverageUtil.getBranch() == null) {
          Collection<Branch> branches = BranchManager.getBranches(BranchArchivedState.UNARCHIVED, BranchType.WORKING);
          if (isAdmin()) {
-            branches.add(BranchManager.getCommonBranch());
+            branches.add(BranchManager.getBranch("SAW_Bld_1"));
          }
          BranchSelectionDialog dialog = new BranchSelectionDialog("Select Branch", branches);
          if (dialog.open() != 0) {

@@ -40,9 +40,11 @@ public class CoveragePerspectiveFactory implements IPerspectiveFactory {
       layout.addShowViewShortcut(BranchView.VIEW_ID);
       layout.addShowViewShortcut(CoverageNavigateView.VIEW_ID);
       layout.addShowViewShortcut("org.eclipse.pde.runtime.LogView");
+      layout.addShowViewShortcut("org.eclipse.osee.ats.navigate.NavigateView");
 
       left.addView(CoverageNavigateView.VIEW_ID);
       left.addView(ArtifactExplorer.VIEW_ID + ":*");
+      left.addView("org.eclipse.osee.ats.navigate.NavigateView");
 
       if (CoverageUtil.isAdmin()) {
          bottom.addView("org.eclipse.pde.runtime.LogView");

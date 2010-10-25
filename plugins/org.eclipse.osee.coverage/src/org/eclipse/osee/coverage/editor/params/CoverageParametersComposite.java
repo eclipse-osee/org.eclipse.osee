@@ -80,6 +80,7 @@ public class CoverageParametersComposite extends Composite {
                getAssigeeCombo().clear();
                getNotesXText().set("");
                getNameXText().set("");
+               getWorkProductTasksXText().set("");
                getNamespaceXText().set("");
                getRationaleXText().set("");
                getCoverageMethodHyperlinkSelection().clear();
@@ -116,6 +117,17 @@ public class CoverageParametersComposite extends Composite {
             public void widgetModified(XWidget widget) {
                try {
                   coverageParameters.setNotes(getNotesStr());
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+               }
+            }
+         });
+         getWorkProductTasksXText().addXModifiedListener(new XModifiedListener() {
+
+            @Override
+            public void widgetModified(XWidget widget) {
+               try {
+                  coverageParameters.setWorkProductTasks(getWorkProductTasksStr());
                } catch (OseeCoreException ex) {
                   OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                }
@@ -186,6 +198,13 @@ public class CoverageParametersComposite extends Composite {
       return "";
    }
 
+   public String getWorkProductTasksStr() throws OseeCoreException {
+      if (getWorkProductTasksXText() != null) {
+         return getWorkProductTasksXText().get();
+      }
+      return "";
+   }
+
    public String getNameStr() throws OseeCoreException {
       if (getNameXText() != null) {
          return getNameXText().get();
@@ -213,6 +232,10 @@ public class CoverageParametersComposite extends Composite {
 
    public XText getNotesXText() throws OseeCoreException {
       return (XText) getXWidget("Coverage Unit Notes");
+   }
+
+   public XText getWorkProductTasksXText() throws OseeCoreException {
+      return (XText) getXWidget("Work Product Tasks");
    }
 
    public XText getNameXText() throws OseeCoreException {
@@ -270,8 +293,9 @@ public class CoverageParametersComposite extends Composite {
       sb.append("<XWidget xwidgetType=\"XText\" displayName=\"Rationale\" horizontalLabel=\"true\"/>");
       //
       //
+      sb.append("<XWidget xwidgetType=\"XText\" displayName=\"Work Product Tasks\" beginComposite=\"6\" horizontalLabel=\"true\"/>");
       if (coverageParameters.getCoveragePackageBase().isAssignable()) {
-         sb.append("<XWidget xwidgetType=\"XMembersCombo\" beginComposite=\"6\" displayName=\"Coverage Unit Assignee\" horizontalLabel=\"true\"/>");
+         sb.append("<XWidget xwidgetType=\"XMembersCombo\" displayName=\"Coverage Unit Assignee\" horizontalLabel=\"true\"/>");
       }
       //
       sb.append("<XWidget xwidgetType=\"XText\" displayName=\"Coverage Unit Notes\" horizontalLabel=\"true\"/>");

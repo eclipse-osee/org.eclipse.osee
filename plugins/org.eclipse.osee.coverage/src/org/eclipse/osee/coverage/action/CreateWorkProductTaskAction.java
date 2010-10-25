@@ -92,9 +92,7 @@ public class CreateWorkProductTaskAction extends Action {
       }
       WorkProductAction action = (WorkProductAction) dialog.getResult()[0];
 
-      WorkProductTaskFilteredTreeEntryDialog taskDialog =
-         new WorkProductTaskFilteredTreeEntryDialog(getText(), "Select existing task or enter new task name",
-            "New Task Name");
+      WorkProductTaskFilteredTreeEntryDialog taskDialog = new WorkProductTaskFilteredTreeEntryDialog(getText());
       taskDialog.setInput(action.getTasks());
       if (taskDialog.open() != 0) {
          return;

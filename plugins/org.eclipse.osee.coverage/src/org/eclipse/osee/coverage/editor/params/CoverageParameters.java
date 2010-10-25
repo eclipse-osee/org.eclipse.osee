@@ -20,6 +20,7 @@ import org.eclipse.osee.coverage.model.CoverageOption;
 import org.eclipse.osee.coverage.model.CoveragePackageBase;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
+import org.eclipse.osee.coverage.model.IWorkProductRelatable;
 import org.eclipse.osee.coverage.store.OseeCoverageUnitStore;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -41,6 +42,7 @@ public class CoverageParameters {
    private String namespace;
    private String rationale;
    private String notes;
+   private String workProductTasks;
    private User assignee;
    private boolean showAll = true;
 
@@ -80,8 +82,8 @@ public class CoverageParameters {
             }
          }
       } else if (coverage instanceof CoverageUnit) {
-         if (Strings.isValid(name) || Strings.isValid(namespace) || Strings.isValid(notes) || assignee != null) {
-            if (!((CoverageUnit) coverage).isFolder() && isNameMatch(coverage) && isNamespaceMatch(coverage) && isNotesMatch(coverage) && isAssigneeMatch(coverage)) {
+         if (Strings.isValid(name) || Strings.isValid(namespace) || Strings.isValid(notes) || Strings.isValid(workProductTasks) || assignee != null) {
+            if (!((CoverageUnit) coverage).isFolder() && isNameMatch(coverage) && isNamespaceMatch(coverage) && isNotesMatch(coverage) && isWorkProductTasksMatch(coverage) && isAssigneeMatch(coverage)) {
                matchItems.add(coverage);
                // If CoverageUnit matches, include all coverage items in match
                for (CoverageItem coverageItem : ((CoverageUnit) coverage).getCoverageItems(true)) {
@@ -91,7 +93,9 @@ public class CoverageParameters {
                   //
                   isRationaleMatch(coverageItem) &&
                   //
-                  isNamespaceMatch(coverageItem)) {
+                  isNamespaceMatch(coverageItem) &&
+                  //
+                  isWorkProductTasksMatch(coverageItem)) {
                      matchItems.add(coverageItem);
                   }
                }
@@ -107,7 +111,7 @@ public class CoverageParameters {
     * Recurse up parent tree to ensure all parents match criteria
     */
    private boolean doesParentMatchCriteria(ICoverage coverage) throws OseeCoreException {
-      if ((isNameMatch(coverage) || isNamespaceMatch(coverage)) && isNotesMatch(coverage) && isAssigneeMatch(coverage)) {
+      if ((isNameMatch(coverage) || isNamespaceMatch(coverage)) && isNotesMatch(coverage) && isWorkProductTasksMatch(coverage) && isAssigneeMatch(coverage)) {
          return true;
       } else if (coverage.getParent() instanceof CoverageUnit) {
          return doesParentMatchCriteria(coverage.getParent());
@@ -143,6 +147,23 @@ public class CoverageParameters {
          return false;
       }
       if (((CoverageUnit) coverage).getNotes().contains(notes)) {
+         return true;
+      }
+      return false;
+   }
+
+   /**
+    * Match if no workProductTasks specified OR<br>
+    * ICoverage workProductTasks name contains search string
+    */
+   public boolean isWorkProductTasksMatch(ICoverage coverage) {
+      if (!Strings.isValid(workProductTasks) || !(coverage instanceof IWorkProductRelatable)) {
+         return true;
+      }
+      if (!Strings.isValid(((IWorkProductRelatable) coverage).getWorkProductTaskGuid())) {
+         return false;
+      }
+      if (((IWorkProductRelatable) coverage).getWorkProductTask().getName().contains(workProductTasks)) {
          return true;
       }
       return false;
@@ -289,6 +310,7 @@ public class CoverageParameters {
    public void clearAll() {
       setAssignee(null);
       setNotes(null);
+      setWorkProductTasks(null);
       setNamespace(null);
       setRationale(null);
       setName(null);
@@ -297,7 +319,7 @@ public class CoverageParameters {
 
    private void updateShowAll() {
       this.showAll =
-         getSelectedCoverageMethods().isEmpty() && getAssignee() == null && !Strings.isValid(getNotesStr()) && !Strings.isValid(getNamespace()) && !Strings.isValid(getRationale()) && !Strings.isValid(getName());
+         getSelectedCoverageMethods().isEmpty() && getAssignee() == null && !Strings.isValid(getNotesStr()) && !Strings.isValid(getNamespace()) && !Strings.isValid(getWorkProductTasks()) && !Strings.isValid(getRationale()) && !Strings.isValid(getName());
    }
 
    public boolean isShowAll() {
@@ -333,6 +355,15 @@ public class CoverageParameters {
 
    public void setRationale(String rationale) {
       this.rationale = rationale;
+      updateShowAll();
+   }
+
+   public String getWorkProductTasks() {
+      return workProductTasks;
+   }
+
+   public void setWorkProductTasks(String workProductTasks) {
+      this.workProductTasks = workProductTasks;
       updateShowAll();
    }
 

@@ -26,14 +26,13 @@ public class WorkProductTaskFilteredTreeEntryDialog extends WorkProductTaskFilte
    private final String entryName;
    private XText xText = null;
 
-   public WorkProductTaskFilteredTreeEntryDialog(String title, String message, String entryName) {
-      super(title, message);
-      this.entryName = entryName;
+   public WorkProductTaskFilteredTreeEntryDialog(String title) {
+      super(title, "Enter a NEW task name OR select an existing task using filter.");
+      this.entryName = "New Task Name";
    }
 
    @Override
    protected void createPostCustomArea(Composite parent) {
-      super.createPreCustomArea(parent);
       xText = new XText(entryName);
       if (entryValue != null) {
          xText.setText(entryValue);
@@ -46,6 +45,8 @@ public class WorkProductTaskFilteredTreeEntryDialog extends WorkProductTaskFilte
          }
       });
       xText.createWidgets(parent, 2);
+
+      super.createPreCustomArea(parent);
    }
 
    public String getEntryValue() {
