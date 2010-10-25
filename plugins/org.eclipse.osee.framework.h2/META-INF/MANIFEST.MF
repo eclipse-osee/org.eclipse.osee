@@ -14,4 +14,4 @@ Export-Package: org.eclipse.osee.framework.h2
 Service-Component: OSGI-INF/h2.client.connection.driver.provider.xml
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: org.h2;bundle-version="1.1.117"
+Require-Bundle: org.h2;bundle-version="1.1.0"

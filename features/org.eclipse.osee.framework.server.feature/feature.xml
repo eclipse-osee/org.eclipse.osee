@@ -43,7 +43,7 @@
       <import plugin="org.eclipse.emf.compare.diff" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.emf.compare.match" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.apache.commons.lang"/>
-      <import plugin="org.h2" version="1.1.117" match="greaterOrEqual"/>
+      <import plugin="org.h2" version="1.1.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
