@@ -27,7 +27,6 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -325,7 +324,7 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IBranchE
 
    @Override
    public String toHTML(String labelFont) {
-      return AHTML.simplePage("Unhandled");
+      return "";
    }
 
    @Override
