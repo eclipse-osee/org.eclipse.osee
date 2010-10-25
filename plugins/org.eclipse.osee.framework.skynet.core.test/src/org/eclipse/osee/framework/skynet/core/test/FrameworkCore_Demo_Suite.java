@@ -39,6 +39,9 @@ import org.eclipse.osee.framework.skynet.core.test.event.ArtifactEventTest;
 import org.eclipse.osee.framework.skynet.core.test.event.BranchEventFiltersTest;
 import org.eclipse.osee.framework.skynet.core.test.event.BranchEventLoopbackTest;
 import org.eclipse.osee.framework.skynet.core.test.event.BranchEventTest;
+import org.eclipse.osee.framework.skynet.core.test.event.EventBasicGuidArtifactTest;
+import org.eclipse.osee.framework.skynet.core.test.event.EventBasicGuidRelationTest;
+import org.eclipse.osee.framework.skynet.core.test.event.EventChangeTypeBasicGuidArtifactTest;
 import org.eclipse.osee.framework.skynet.core.test.event.TransactionEventLoopbackTest;
 import org.eclipse.osee.framework.skynet.core.test.event.TransactionEventTest;
 import org.eclipse.osee.framework.skynet.core.test.importing.ImportingSuite;
@@ -63,6 +66,9 @@ import org.junit.runners.Suite;
    ArtifactEventLoopbackTest.class,
    TransactionEventTest.class,
    TransactionEventLoopbackTest.class,
+   EventBasicGuidArtifactTest.class,
+   EventBasicGuidRelationTest.class,
+   EventChangeTypeBasicGuidArtifactTest.class,
    ArtifactQueryTestDemo.class,
    TransactionManagerTest.class,
    BranchTestSuite.class,
