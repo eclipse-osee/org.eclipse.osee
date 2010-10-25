@@ -20,6 +20,11 @@
    <requires>
       <import feature="org.eclipse.emf.ecore" version="2.5.0" match="greaterOrEqual"/>
       <import feature="org.eclipse.emf.common" version="2.5.0" match="greaterOrEqual"/>
+      <import plugin="org.h2" version="1.1.117" match="greaterOrEqual"/>
+      <import feature="org.eclipse.emf.ecore" version="2.5.0" match="greaterOrEqual"/>
+      <import feature="org.eclipse.emf.common" version="2.5.0" match="greaterOrEqual"/>
+      <import feature="org.eclipse.emf.ecore" version="2.5.0" match="greaterOrEqual"/>
+      <import feature="org.eclipse.emf.common" version="2.5.0" match="greaterOrEqual"/>
       <import feature="de.itemis.xtext.antlr.feature" version="1.0.0" match="greaterOrEqual"/>
       <import feature="org.eclipse.xtext.sdk" version="1.0.0" match="greaterOrEqual"/>
       <import feature="org.eclipse.xtext.ui" version="1.0.0" match="greaterOrEqual"/>
