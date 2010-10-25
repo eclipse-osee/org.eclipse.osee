@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.editor.xmerge;
 
+import java.util.Arrays;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.coverage.editor.xcover.CoverageXViewerFactory;
 
@@ -22,13 +23,34 @@ public abstract class CoverageMergeXViewerFactory extends CoverageXViewerFactory
       super();
    }
 
-   public void registerMergeColumns() {
-      registerColumns();
-      for (XViewerColumn xCol : getColumns()) {
-         overrideShowDefault(
-            xCol.getId(),
-            xCol.equals(CoverageXViewerFactory.Name) || xCol.equals(CoverageXViewerFactory.Notes_Col) || xCol.equals(CoverageXViewerFactory.Namespace) || xCol.equals(CoverageXViewerFactory.Coverage_Method));
+   /**
+    * This view needs it's own column objects so it can show/hide accordingly.
+    */
+   @Override
+   public void registerColumns() {
+      for (XViewerColumn xCol : Arrays.asList(Name, Method_Number, Execution_Number, Namespace, Coverage_Percent,
+         Coverage_Method, Work_Product_Task, Coverage_Rationale, Coverage_Test_Units, Assignees_Col, Notes_Col,
+         Parent_Coverage_Unit, Line_Number, Location, Full_Path, Guid)) {
+         XViewerColumn newXCol = xCol.copy();
+         if (xCol.equals(CoverageXViewerFactory.Coverage_Rationale) ||
+         //
+         xCol.equals(CoverageXViewerFactory.Method_Number) ||
+         //
+         xCol.equals(CoverageXViewerFactory.Execution_Number) ||
+         //
+         xCol.equals(CoverageXViewerFactory.Coverage_Method) ||
+         //
+         xCol.equals(CoverageXViewerFactory.Coverage_Percent) ||
+         //
+         xCol.equals(CoverageXViewerFactory.Assignees_Col) ||
+         //
+         xCol.equals(CoverageXViewerFactory.Notes_Col)) {
+            newXCol.setShow(true);
+         }
+         if (xCol.equals(CoverageXViewerFactory.Work_Product_Task)) {
+            newXCol.setShow(false);
+         }
+         registerColumns(newXCol);
       }
    }
-
 }
