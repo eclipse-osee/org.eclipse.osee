@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition.TransitionType;
@@ -162,6 +163,10 @@ public class WorkPage implements IDynamicWidgetLayoutListener {
          sb.append(preHtml);
       }
       for (DynamicXWidgetLayoutData layoutData : dynamicXWidgetLayout.getLayoutDatas()) {
+         XWidget xWidget = layoutData.getXWidget();
+         if (xWidget instanceof IArtifactWidget) {
+            ((IArtifactWidget) xWidget).setArtifact(layoutData.getArtifact());
+         }
          sb.append(layoutData.getXWidget().toHTML(AHTML.LABEL_FONT));
          sb.append(AHTML.newline());
       }
