@@ -37,7 +37,11 @@
       <import plugin="com.google.inject" version="2.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.emf.ecore" version="2.5.0" match="greaterOrEqual"/>
       <import plugin="org.antlr.runtime" version="3.0.0" match="greaterOrEqual"/>
-      <!--<import plugin="org.h2" version="1.1.117" match="greaterOrEqual" />-->
+      <import plugin="org.eclipse.equinox.preferences" version="3.3.0" match="compatible"/>
+      <import plugin="org.eclipse.core.runtime" version="3.6.0" match="compatible"/>
+      <import plugin="org.eclipse.emf.common" version="2.6.0" match="compatible"/>
+      <import plugin="org.eclipse.emf.ecore" version="2.6.0" match="compatible"/>
+      <import plugin="org.eclipse.xtext.util" version="1.0.1" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -334,11 +338,11 @@
          version="0.0.0"
          unpack="false"/>
 
-  <!-- <plugin
+   <plugin
          id="org.h2"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>-->
+         unpack="false"/>
 
 </feature>

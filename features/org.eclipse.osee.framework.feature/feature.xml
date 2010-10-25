@@ -18,6 +18,8 @@
    </license>
 
    <requires>
+      <import feature="org.eclipse.emf.ecore" version="2.5.0" match="greaterOrEqual"/>
+      <import feature="org.eclipse.emf.common" version="2.5.0" match="greaterOrEqual"/>
       <import feature="de.itemis.xtext.antlr.feature" version="1.0.0" match="greaterOrEqual"/>
       <import feature="org.eclipse.xtext.sdk" version="1.0.0" match="greaterOrEqual"/>
       <import feature="org.eclipse.xtext.ui" version="1.0.0" match="greaterOrEqual"/>
@@ -129,11 +131,11 @@
          version="0.0.0"
          unpack="false"/>
 
-   <!--<plugin
+   <plugin
          id="org.eclipse.osee.framework.h2"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>-->
+         unpack="false"/>
 
 </feature>

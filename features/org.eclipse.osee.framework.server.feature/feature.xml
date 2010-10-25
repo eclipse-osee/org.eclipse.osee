@@ -34,6 +34,16 @@
       <import plugin="org.apache.log4j" version="1.2.15" match="greaterOrEqual"/>
       <import plugin="org.eclipse.emf.compare.diff" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.emf.compare.match" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.osee.framework.core"/>
+      <import plugin="org.eclipse.osee.framework.core.message"/>
+      <import plugin="org.eclipse.osee.framework.core.model"/>
+      <import plugin="org.eclipse.osee.framework.jdk.core"/>
+      <import plugin="org.eclipse.osee.framework.logging"/>
+      <import plugin="org.junit"/>
+      <import plugin="org.apache.commons.codec"/>
+      <import plugin="org.eclipse.equinox.ds"/>
+      <import plugin="org.apache.commons.lang"/>
+      <import plugin="org.h2"/>
    </requires>
 
    <plugin
@@ -127,11 +137,11 @@
          version="0.0.0"
          unpack="false"/>
 
-  <!-- <plugin
+   <plugin
          id="org.eclipse.osee.framework.h2"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/> -->
+         unpack="false"/>
 
 </feature>
