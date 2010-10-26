@@ -31,7 +31,7 @@ public class DerbyClientConnection implements IConnectionFactory {
 
       if (firstTime) {
          firstTime = false;
-         Pair<String, Integer> addressAndPort = OseeProperties.getDerbyServerAddress();
+         Pair<String, Integer> addressAndPort = OseeProperties.getOseeDbEmbeddedServerAddress();
          if (addressAndPort != null) {
             DerbyDbServer.startServer(addressAndPort.getFirst(), addressAndPort.getSecond());
          }

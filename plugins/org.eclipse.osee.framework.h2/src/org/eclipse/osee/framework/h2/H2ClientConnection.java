@@ -31,7 +31,7 @@ public class H2ClientConnection implements IConnectionFactory {
 
       if (firstTime) {
          firstTime = false;
-         Pair<String, Integer> addressAndPort = OseeProperties.getDerbyServerAddress();
+         Pair<String, Integer> addressAndPort = OseeProperties.getOseeDbEmbeddedServerAddress();
          if (addressAndPort != null) {
             H2DbServer.startServer(addressAndPort.getFirst(), addressAndPort.getSecond());
          }

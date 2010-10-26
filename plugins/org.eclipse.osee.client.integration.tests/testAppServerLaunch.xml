@@ -9,7 +9,7 @@
    $osee.db.passwd=osee.eclipse \
    $osee.db.address=127.0.0.1 \
    $osee.db.port=1623 \
-   $osee.db.is.derby=false \
+   $osee.db.type=H2,PGSQL,DERBY \
 
 	${osee.app.server.home}	
 	${osee.app.server.port}
@@ -27,9 +27,30 @@
 			</sequential>
 		</for>
 
-		<condition property="isDerbyLaunch">
-			<equals arg1="${osee.db.is.derby}" arg2="true" casesensitive="false" />
-		</condition>
+		<var name="isDerbyLaunch" value="false" />
+		<var name="isPostgreSqlLaunch" value="false" />
+		<var name="isH2Launch" value="false" />
+		<if>
+			<equals arg1="${osee.db.type}" arg2="H2" />
+			<then>
+				<var name="isH2Launch" value="true" />
+			</then>
+			<elseif>
+				<equals arg1="${osee.db.type}" arg2="PGSQL" />
+				<then>
+					<var name="isPostgreSqlLaunch" value="true" />
+				</then>
+			</elseif>
+			<elseif>
+				<equals arg1="${osee.db.type}" arg2="DERBY" />
+				<then>
+					<var name="isDerbyLaunch" value="true" />
+				</then>
+			</elseif>
+			<else>
+				<fail message="Osee Db Type Undefined [${osee.db.type}] - [H2,PGSQL,DERBY] are allowed" />
+			</else>
+		</if>
 
 		<property name="osee.app.server.data" value="${osee.app.server.home}/${eclipse-home}/testWorkspace/serverBinData" />
 		<property name="osee.app.server.connectionFile" value="${osee.app.server.home}/test.osee.client.db.connection.xml" />
@@ -37,14 +58,16 @@
 
 		<echo message="Osee Application Server Home: [${osee.app.server.home}]" />
 		<echo message="Osee Application Server Port: [${osee.app.server.port}]" />
+		<echo message="Osee Application Server Is H2: [${isH2Launch}]" />
 		<echo message="Osee Application Server Is Derby: [${isDerbyLaunch}]" />
+		<echo message="Osee Application Server Is Postgresql: [${isPostgreSqlLaunch}]" />
 	</target>
 
-	<target name="writePosgresqlConnectionFile" unless="isDerbyLaunch">
+	<target name="writePosgresqlConnectionFile" if="isPostgreSqlLaunch">
 		<writeConnectionFile 
 			dbType="postgresql" 
 			dbPrefix="jdbc:postgresql" 
-			dbDriver="postgresqlDriver"
+			dbDriver="postgresql.db.connection" 
 			dbName="${osee.db.name}" 
 			dbUser="${osee.db.user}" 
 			dbPasswd="${osee.db.passwd}" 
@@ -57,9 +80,9 @@
 
 	<target name="writeDerbyConnectionFile" if="isDerbyLaunch">
 		<writeConnectionFile 
-			dbType="derby"
+			dbType="derby" 
 			dbPrefix="jdbc:derby" 
-			dbDriver="netDerbyClientDriver" 
+			dbDriver="net.derby.db.connection" 
 			dbName="${osee.db.name}" 
 			dbUser="${osee.db.user}" 
 			dbPasswd="${osee.db.passwd}" 
@@ -67,7 +90,22 @@
 			dbPort="${osee.db.port}" 
 			connectionFilePath="${osee.app.server.connectionFile}" 
 			connectionid="${osee.app.server.connectionId}" />
-		<property name="additionalJvmArgs" value=" -Dosee.derby.server=${osee.db.address}:${osee.db.port}" />
+		<property name="additionalJvmArgs" value=" -Dosee.db.embedded.server=${osee.db.address}:${osee.db.port}" />
+	</target>
+
+	<target name="writeH2ConnectionFile" if="isH2Launch">
+		<writeConnectionFile 
+			dbType="h2" 
+			dbPrefix="jdbc:h2" 
+			dbDriver="h2.db.connection"
+			dbName="${osee.db.name}" 
+			dbUser="${osee.db.user}" 
+			dbPasswd="${osee.db.passwd}" 
+			dbAddress="${osee.db.address}" 
+			dbPort="${osee.db.port}" 
+			connectionFilePath="${osee.app.server.connectionFile}" 
+			connectionid="${osee.app.server.connectionId}" />
+		<property name="additionalJvmArgs" value=" -Dosee.db.embedded.server=${osee.db.address}:${osee.db.port}" />
 	</target>
 
 	<target name="run" depends="init,writePosgresqlConnectionFile,writeDerbyConnectionFile,launchServer" />
@@ -114,8 +152,9 @@
 		<attribute name="connectionId" />
 		<attribute name="connectionFilePath" />
 		<sequential>
+			<echo message="Writing [@{dbType}] Db Connection File" />
 			<echo file="@{connectionFilePath}">
-				&lt;DatabaseInfo id=&quot;dbConnectionInfo&quot;&gt;${line.separator}
+				&lt;DatabaseInfo id=&quot;db.connection.info&quot;&gt;${line.separator}
 					&lt;DatabaseHome key=&quot;#DBHOME#&quot; /&gt;${line.separator}
 					&lt;DatabaseName key=&quot;#DBNAME#&quot; value=&quot;@{dbName}&quot; /&gt;${line.separator}
 					&lt;DatabaseType key=&quot;#TYPE#&quot; value=&quot;@{dbType}&quot; /&gt;${line.separator}
@@ -126,12 +165,17 @@
 					&lt;Port key=&quot;#PORT#&quot; value=&quot;@AvailableDbServices.port&quot; /&gt;${line.separator}
 				&lt;/DatabaseInfo&gt;${line.separator}
 				${line.separator}
-				&lt;ConnectionDescription id=&quot;postgresqlDriver&quot;&gt;${line.separator}
+				&lt;ConnectionDescription id=&quot;h2.db.connection&quot;&gt;${line.separator}
+					&lt;Driver&gt;org.h2.Driver&lt;/Driver&gt;${line.separator}
+					&lt;Url&gt;#PREFIX#:tcp://#HOST#:#PORT#/#DBHOME##DBNAME#;IGNORECASE=TRUE;SCHEMA_SEARCH_PATH=OSEE, PUBLIC&lt;/Url&gt;${line.separator}
+				&lt;/ConnectionDescription&gt;${line.separator}
+				${line.separator}				
+				&lt;ConnectionDescription id=&quot;postgresql.db.connection&quot;&gt;${line.separator}
 					&lt;Driver&gt;org.postgresql.Driver&lt;/Driver&gt;${line.separator}
 					&lt;Url&gt;#PREFIX#://#HOST#:#PORT#/#DBHOME##DBNAME#&lt;/Url&gt;${line.separator}
 				&lt;/ConnectionDescription$gt;${line.separator}
 				${line.separator}
-				&lt;ConnectionDescription id=&quot;netDerbyClientDriver&quot;&gt;${line.separator}
+				&lt;ConnectionDescription id=&quot;net.derby.db.connection&quot;&gt;${line.separator}
 					&lt;Driver&gt;org.apache.derby.jdbc.ClientDriver&lt;/Driver&gt;${line.separator}
 					&lt;Url&gt;#PREFIX#://#HOST#:#PORT#/#DBHOME##DBNAME#;&lt;/Url&gt;${line.separator}
 					&lt;UrlAttributes&gt;${line.separator}
@@ -143,9 +187,10 @@
 			<echo file="@{connectionFilePath}" append="true">
 				${line.separator}${line.separator}
 				&lt;AvailableDbServices&gt;${line.separator}
-					&lt;Server id=&quot;@{connectionId}&quot; dbInfo=&quot;dbConnectionInfo&quot; connectsWith=&quot;@{dbDriver}&quot; hostAddress=&quot;@{dbAddress}&quot; port=&quot;@{dbPort}&quot; /&gt;${line.separator}
+					&lt;Server id=&quot;@{connectionId}&quot; dbInfo=&quot;db.connection.info&quot; connectsWith=&quot;@{dbDriver}&quot; hostAddress=&quot;@{dbAddress}&quot; port=&quot;@{dbPort}&quot; /&gt;${line.separator}
 				&lt;/AvailableDbServices&gt;${line.separator}
 			</echo>
 		</sequential>
 	</macrodef>
+
 </project>

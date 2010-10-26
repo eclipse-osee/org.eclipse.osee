@@ -29,7 +29,7 @@ public class OseeProperties {
 
    public static final String OSEE_DB_CONNECTION_ID = "osee.db.connection.id";
    private static final String OSEE_CONNECTION_INFO_URI = "osee.connection.info.uri";
-   private static final String OSEE_DERBY_SERVER = "osee.derby.server";
+   private static final String OSEE_EMBEDDED_DB_SERVER = "osee.db.embedded.server";
    private static final String OSEE_DEFAULT_BROKER_URI = "osee.default.broker.uri";
 
    protected OseeProperties() {
@@ -40,9 +40,9 @@ public class OseeProperties {
       return System.getProperty(OSEE_DEFAULT_BROKER_URI);
    }
 
-   public static Pair<String, Integer> getDerbyServerAddress() {
+   public static Pair<String, Integer> getOseeDbEmbeddedServerAddress() {
       Pair<String, Integer> addressAndPort = null;
-      String serverAddress = System.getProperty(OSEE_DERBY_SERVER, "");
+      String serverAddress = System.getProperty(OSEE_EMBEDDED_DB_SERVER, "");
       if (Strings.isValid(serverAddress)) {
          String[] hostPort = serverAddress.split(":");
          addressAndPort = new Pair<String, Integer>(hostPort[0], Integer.parseInt(hostPort[1]));
