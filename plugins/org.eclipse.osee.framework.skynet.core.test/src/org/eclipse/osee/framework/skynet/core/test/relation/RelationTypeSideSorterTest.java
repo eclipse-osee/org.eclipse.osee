@@ -104,13 +104,6 @@ public class RelationTypeSideSorterTest {
    }
 
    @Test
-   public void testGetSideName() {
-      String expectedSideName =
-         relationSide == RelationSide.SIDE_A ? relationType.getSideAName() : relationType.getSideBName();
-      Assert.assertEquals(expectedSideName, sorter.getSideName());
-   }
-
-   @Test
    public void testGetSorterId() throws OseeCoreException {
       String sorterGuid = orderData.getCurrentSorterGuid(relationType, relationSide);
       IRelationSorterId expected = sorterProvider.getRelationOrder(sorterGuid).getSorterId();
