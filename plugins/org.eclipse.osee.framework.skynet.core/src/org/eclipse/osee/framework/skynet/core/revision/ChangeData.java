@@ -87,7 +87,11 @@ public class ChangeData {
                Artifact artifact = change.getChangeArtifact();
 
                ModificationType modType = change.getModificationType();
-               if ((kindType == KindType.Artifact || kindType == KindType.ArtifactOrRelation) && change instanceof AttributeChange) {
+               /**
+                * Only way to determine if artifact is of type Merged is to check it's attributes cause the Artifact is
+                * of type Modified while attribute is of type merged. Only check attribute change for this case.
+                */
+               if ((kindType == KindType.Artifact || kindType == KindType.ArtifactOrRelation) && isAttributeChangeMergeType(change)) {
                   if (modTypes.contains(modType)) {
                      artifacts.add(artifact);
                   }
@@ -106,6 +110,13 @@ public class ChangeData {
          }
       }
       return artifacts;
+   }
+
+   private boolean isAttributeChangeMergeType(Change change) {
+      if (change instanceof AttributeChange && change.getModificationType() == ModificationType.MERGED) {
+         return true;
+      }
+      return false;
    }
 
    private Collection<Artifact> getArtifactsRelationOnly(ModificationType... modificationType) throws OseeCoreException {
