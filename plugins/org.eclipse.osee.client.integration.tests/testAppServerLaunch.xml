@@ -154,6 +154,7 @@
 		<sequential>
 			<echo message="Writing [@{dbType}] Db Connection File" />
 			<echo file="@{connectionFilePath}">
+			&lt;DbConnection&gt;
 				&lt;DatabaseInfo id=&quot;db.connection.info&quot;&gt;${line.separator}
 					&lt;DatabaseHome key=&quot;#DBHOME#&quot; /&gt;${line.separator}
 					&lt;DatabaseName key=&quot;#DBNAME#&quot; value=&quot;@{dbName}&quot; /&gt;${line.separator}
@@ -189,6 +190,7 @@
 				&lt;AvailableDbServices&gt;${line.separator}
 					&lt;Server id=&quot;@{connectionId}&quot; dbInfo=&quot;db.connection.info&quot; connectsWith=&quot;@{dbDriver}&quot; hostAddress=&quot;@{dbAddress}&quot; port=&quot;@{dbPort}&quot; /&gt;${line.separator}
 				&lt;/AvailableDbServices&gt;${line.separator}
+			&lt;/DbConnection&gt;
 			</echo>
 		</sequential>
 	</macrodef>
