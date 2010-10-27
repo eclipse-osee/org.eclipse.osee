@@ -174,7 +174,7 @@
 				&lt;ConnectionDescription id=&quot;postgresql.db.connection&quot;&gt;${line.separator}
 					&lt;Driver&gt;org.postgresql.Driver&lt;/Driver&gt;${line.separator}
 					&lt;Url&gt;#PREFIX#://#HOST#:#PORT#/#DBHOME##DBNAME#&lt;/Url&gt;${line.separator}
-				&lt;/ConnectionDescription$gt;${line.separator}
+				&lt;/ConnectionDescription&gt;${line.separator}
 				${line.separator}
 				&lt;ConnectionDescription id=&quot;net.derby.db.connection&quot;&gt;${line.separator}
 					&lt;Driver&gt;org.apache.derby.jdbc.ClientDriver&lt;/Driver&gt;${line.separator}
