@@ -39,7 +39,8 @@
 		<property name="testWorkspace" value="${eclipse-home}/testWorkspace" />
 		<delete dir="${testWorkspace}" quiet="true" />
 
-		<ant antfile="${basedir}/testAppServerLaunch.xml" target="run" inheritall="true" inheritrefs="true" />
+	   <dirname property="dependencies.basedir" file="${ant.file}"/>	 
+		<ant antfile="${dependencies.basedir}/testAppServerLaunch.xml" target="run" inheritall="true" inheritrefs="true" />
 
 		<!-- <ant target="swtbot-test" antfile="${library-file}" dir="${eclipse-home}"> -->
 		<ant target="ui-test" antfile="${library-file}" dir="${eclipse-home}" inheritall="true" inheritrefs="true">

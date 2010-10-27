@@ -108,7 +108,7 @@
 		<property name="additionalJvmArgs" value=" -Dosee.db.embedded.server=${osee.db.address}:${osee.db.port}" />
 	</target>
 
-	<target name="run" depends="init,writePosgresqlConnectionFile,writeDerbyConnectionFile,launchServer" />
+	<target name="run" depends="init,writeH2ConnectionFile,writePosgresqlConnectionFile,writeDerbyConnectionFile,launchServer" />
 
 	<target name="launchServer">
 		<pathconvert property="launcherJarPath" setonempty="false">
