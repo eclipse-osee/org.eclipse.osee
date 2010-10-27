@@ -27,9 +27,6 @@
 			</sequential>
 		</for>
 
-		<var name="isDerbyLaunch" value="false" />
-		<var name="isPostgreSqlLaunch" value="false" />
-		<var name="isH2Launch" value="false" />
 		<if>
 			<equals arg1="${osee.db.type}" arg2="H2" />
 			<then>
@@ -58,12 +55,10 @@
 
 		<echo message="Osee Application Server Home: [${osee.app.server.home}]" />
 		<echo message="Osee Application Server Port: [${osee.app.server.port}]" />
-		<echo message="Osee Application Server Is H2: [${isH2Launch}]" />
-		<echo message="Osee Application Server Is Derby: [${isDerbyLaunch}]" />
-		<echo message="Osee Application Server Is Postgresql: [${isPostgreSqlLaunch}]" />
+		<echo message="Osee Application Server Db Type: [${osee.db.type}]" />
 	</target>
 
-	<target name="writePosgresqlConnectionFile" if="isPostgreSqlLaunch">
+	<target name="writePosgresqlConnectionFile" depends="init" if="isPostgreSqlLaunch">
 		<writeConnectionFile 
 			dbType="postgresql" 
 			dbPrefix="jdbc:postgresql" 
@@ -78,7 +73,7 @@
 		<property name="additionalJvmArgs" value=" " />
 	</target>
 
-	<target name="writeDerbyConnectionFile" if="isDerbyLaunch">
+	<target name="writeDerbyConnectionFile" depends="init" if="isDerbyLaunch">
 		<writeConnectionFile 
 			dbType="derby" 
 			dbPrefix="jdbc:derby" 
@@ -93,7 +88,7 @@
 		<property name="additionalJvmArgs" value=" -Dosee.db.embedded.server=${osee.db.address}:${osee.db.port}" />
 	</target>
 
-	<target name="writeH2ConnectionFile" if="isH2Launch">
+	<target name="writeH2ConnectionFile" depends="init" if="isH2Launch">
 		<writeConnectionFile 
 			dbType="h2" 
 			dbPrefix="jdbc:h2" 
