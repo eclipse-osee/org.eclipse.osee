@@ -32,8 +32,8 @@ public class H2DbServer {
    }
 
    private void startServerInternal(String host, int port) throws Exception {
+      OseeLog.format(H2DbServer.class, Level.INFO, "Starting H2 Database Server on [%s:%s]....", host, port);
       try {
-         OseeLog.log(H2DbServer.class, Level.INFO, "Starting H2 Database Server ....");
          nwServer = new H2DbServerUtil(InetAddress.getByName(host), port);
          nwServer.start();
 
@@ -51,30 +51,10 @@ public class H2DbServer {
       }
    }
 
-   //   private void stayAlive() {
-   //      keepAlive = new Object();
-   //      synchronized (keepAlive) {
-   //         try {
-   //            keepAlive.wait();
-   //         } catch (InterruptedException e) {
-   //            OseeLog.log(H2DbServer.class, Level.SEVERE, e.getMessage(), e);
-   //         }
-   //      }
-   //   }
-
-   //   private void commitSuicide() {
-   //      if (keepAlive != null) {
-   //         synchronized (keepAlive) {
-   //            keepAlive.notify();
-   //         }
-   //      }
-   //   }
-
    private void shutdown() {
       OseeLog.log(H2DbServer.class, Level.INFO, "Shutting down H2 Database server...");
       nwServer.shutdown();
       OseeLog.log(H2DbServer.class, Level.INFO, "Server down.");
-      //      commitSuicide();
    }
 
    private void addShutdownHook() {
