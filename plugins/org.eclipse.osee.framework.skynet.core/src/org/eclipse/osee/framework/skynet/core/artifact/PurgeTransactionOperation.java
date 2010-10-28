@@ -106,6 +106,7 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
          HashCollection<Branch, TxDeleteInfo> fromToTxData =
             getTransactionPairs(monitor, txIdsToDelete, txsToDeleteQuery, 0.20);
          txsToDeleteQuery.store(connection);
+
          checkForModifiedBaselines(connection, force, txsToDeleteQuery.getQueryId());
          getAffectedArtifacts(connection, txsToDeleteQuery.getQueryId());
 
@@ -118,14 +119,20 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
 
          OseeEventManager.kickTransactionEvent(this, transactionEvent);
       } catch (OseeCoreException ex) {
-         if (connection != null && connection.isClosed() != true) {
-            txsToDeleteQuery.delete(connection);
-            ArtifactLoader.clearQuery(connection, artifactJoinId);
-         }
          OseeExceptions.wrapAndThrow(ex);
       } finally {
-         txsToDeleteQuery.delete();
-         ArtifactLoader.clearQuery(artifactJoinId);
+         clearJoins(connection, txsToDeleteQuery, artifactJoinId);
+      }
+   }
+
+   private void clearJoins(OseeConnection connection, TransactionJoinQuery txsToDeleteQuery, int artifactJoinId) {
+      try {
+         if (connection != null && !connection.isClosed()) {
+            txsToDeleteQuery.delete(connection);
+            ArtifactLoader.clearQuery(artifactJoinId);
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex.toString(), ex);
       }
    }
 
@@ -154,7 +161,7 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
          }
 
       } // This will kick the artifacts reloaded event which should be handled by Applications/UIs
-      if (artifactsInCache.size() > 0) {
+      if (!artifactsInCache.isEmpty()) {
          try {
             ArtifactQuery.reloadArtifacts(artifactsInCache);
          } catch (OseeCoreException ex) {
@@ -299,7 +306,7 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
                "%" + toDeleteTransaction});
          }
       }
-      if (data.size() > 0) {
+      if (!data.isEmpty()) {
          ConnectionHandler.runBatchUpdate(connection, UPDATE_TXS_DETAILS_COMMENT, data);
       }
       monitor.worked(calculateWork(workPercentage));
