@@ -38,7 +38,7 @@ import org.eclipse.osee.framework.skynet.core.types.IArtifact;
  */
 public class RelationContentProvider implements ITreeContentProvider {
    private static Object[] EMPTY_ARRAY = new Object[0];
-   private ArtifactRoot artifact;
+   private Artifact artifactRoot;
    private final Map<Object, Object> childToParentMap = new HashMap<Object, Object>();
 
    @Override
@@ -61,7 +61,7 @@ public class RelationContentProvider implements ITreeContentProvider {
     */
    @Override
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-      this.artifact = (ArtifactRoot) newInput;
+      this.artifactRoot = (Artifact) newInput;
    }
 
    /**
@@ -74,9 +74,8 @@ public class RelationContentProvider implements ITreeContentProvider {
    @Override
    public Object[] getChildren(Object parentElement) {
       try {
-         if (parentElement instanceof ArtifactRoot) {
-            Artifact artifact = ((ArtifactRoot) parentElement).getArtifact();
-            Collection<RelationType> relationTypes = artifact.getValidRelationTypes();
+         if (parentElement instanceof Artifact) {
+            Collection<RelationType> relationTypes = artifactRoot.getValidRelationTypes();
             for (RelationType type : relationTypes) {
                childToParentMap.put(type, parentElement);
             }
@@ -86,16 +85,14 @@ public class RelationContentProvider implements ITreeContentProvider {
          } else if (parentElement instanceof RelationType) {
             RelationType relationType = (RelationType) parentElement;
             int sideAMax =
-               RelationTypeManager.getRelationSideMax(relationType, artifact.getArtifact().getArtifactType(),
-                  RelationSide.SIDE_A);
+               RelationTypeManager.getRelationSideMax(relationType, artifactRoot.getArtifactType(), RelationSide.SIDE_A);
             int sideBMax =
-               RelationTypeManager.getRelationSideMax(relationType, artifact.getArtifact().getArtifactType(),
-                  RelationSide.SIDE_B);
+               RelationTypeManager.getRelationSideMax(relationType, artifactRoot.getArtifactType(), RelationSide.SIDE_B);
 
             RelationTypeSideSorter sideA =
-               RelationManager.createTypeSideSorter(artifact.getArtifact(), relationType, RelationSide.SIDE_A);
+               RelationManager.createTypeSideSorter(artifactRoot, relationType, RelationSide.SIDE_A);
             RelationTypeSideSorter sideB =
-               RelationManager.createTypeSideSorter(artifact.getArtifact(), relationType, RelationSide.SIDE_B);
+               RelationManager.createTypeSideSorter(artifactRoot, relationType, RelationSide.SIDE_B);
             boolean onSideA = sideBMax > 0;
             boolean onSideB = sideAMax > 0;
 
@@ -111,7 +108,7 @@ public class RelationContentProvider implements ITreeContentProvider {
             }
          } else if (parentElement instanceof RelationTypeSideSorter) {
             RelationTypeSideSorter relationSorter = (RelationTypeSideSorter) parentElement;
-            List<? extends IArtifact> artifacts = artifact.getArtifact().getRelatedArtifacts(relationSorter);
+            List<? extends IArtifact> artifacts = artifactRoot.getRelatedArtifacts(relationSorter);
             WrapperForRelationLink[] wrapper = new WrapperForRelationLink[artifacts.size()];
             for (int i = 0; i < artifacts.size(); i++) {
                Artifact sideArtifact = artifacts.get(i).getFullArtifact();

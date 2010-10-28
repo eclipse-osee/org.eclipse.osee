@@ -146,7 +146,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
       treeViewer.setContentProvider(new RelationContentProvider());
       treeViewer.setLabelProvider(relationLabelProvider);
       treeViewer.setUseHashlookup(true);
-      treeViewer.setInput(new ArtifactRoot(artifact));
+      treeViewer.setInput(artifact);
 
       treeViewer.addDoubleClickListener(new DoubleClickListener());
       treeViewer.getTree().addMouseListener(new MouseListener() {
