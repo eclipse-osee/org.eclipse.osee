@@ -113,10 +113,14 @@ public class WordTemplateCompare implements IComparator {
          IFolder folder = RenderingUtil.getRenderFolder(baseVersion.getBranch(), PresentationType.MERGE_EDIT);
          renderer.addFileToWatcher(folder, diffPath.substring(diffPath.lastIndexOf('\\') + 1));
          diffGenerator.addComparison(baseFile, newerFile, diffPath, true);
-         diffGenerator.finish(diffPath.substring(0, diffPath.lastIndexOf('\\')) + "mergeDocs.vbs", show);
-      } else {
+
          if (RenderingUtil.arePopupsAllowed()) {
-            diffGenerator.addComparison(baseFile, newerFile, diffPath, false);
+            diffGenerator.finish(diffPath.substring(0, diffPath.lastIndexOf('\\')) + "mergeDocs.vbs", show);
+         }
+      } else {
+         diffGenerator.addComparison(baseFile, newerFile, diffPath, false);
+
+         if (RenderingUtil.arePopupsAllowed()) {
             diffGenerator.finish(diffPath.substring(0, diffPath.lastIndexOf('\\')) + "/compareDocs.vbs", show);
          }
       }

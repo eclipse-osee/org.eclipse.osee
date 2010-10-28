@@ -12,8 +12,10 @@ package org.eclipse.osee.framework.ui.skynet.util;
 
 import java.util.logging.Level;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 
 /**
  * @author Megumi Telles
@@ -31,18 +33,20 @@ public final class FileUiUtil {
 
    public static boolean ensureFilenameLimit(IFile file) {
       boolean withinLimit = true;
-      String absPath = file.getLocation().toFile().getAbsolutePath();
-      if (absPath.length() > FILENAME_LIMIT) {
-         String warningMessage = "Your filename: \n\n" + absPath + FILENAME_WARNING_MESSAGE;
-         // need to warn user that their filename size is large and may cause the program (Word, Excel, PPT) to error
-         if (showAgain) {
-            //display warning once per session
-            WordUiUtil.displayWarningMessageDialog("Filename Size Warning", warningMessage);
-            showAgain = false;
+      if (Lib.isWindows()) {
+         String absPath = file.getLocation().toFile().getAbsolutePath();
+         if (absPath.length() > FILENAME_LIMIT) {
+            String warningMessage = "Your filename: \n\n" + absPath + FILENAME_WARNING_MESSAGE;
+            // need to warn user that their filename size is large and may cause the program (Word, Excel, PPT) to error
+            if (showAgain && RenderingUtil.arePopupsAllowed()) {
+               //display warning once per session
+               WordUiUtil.displayWarningMessageDialog("Filename Size Warning", warningMessage);
+               showAgain = false;
+            }
+            //log the warning every time
+            OseeLog.log(SkynetGuiPlugin.class, Level.WARNING, warningMessage);
+            withinLimit = false;
          }
-         //log the warning every time
-         OseeLog.log(SkynetGuiPlugin.class, Level.WARNING, warningMessage);
-         withinLimit = false;
       }
       return withinLimit;
    }

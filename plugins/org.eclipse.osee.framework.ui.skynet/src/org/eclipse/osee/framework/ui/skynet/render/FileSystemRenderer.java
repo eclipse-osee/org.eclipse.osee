@@ -182,9 +182,9 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
          if (!artifacts.isEmpty()) {
             Artifact firstArtifact = artifacts.iterator().next();
             try {
-               FileUiUtil.ensureFilenameLimit(file);
-               Program program = getAssociatedProgram(firstArtifact);
                if (RenderingUtil.arePopupsAllowed()) {
+                  FileUiUtil.ensureFilenameLimit(file);
+                  Program program = getAssociatedProgram(firstArtifact);
                   program.execute(file.getLocation().toFile().getAbsolutePath());
                }
             } catch (Exception ex) {

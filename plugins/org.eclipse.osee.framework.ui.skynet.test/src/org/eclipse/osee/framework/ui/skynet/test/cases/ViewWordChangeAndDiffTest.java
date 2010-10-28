@@ -41,6 +41,7 @@ import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.Before;
@@ -81,7 +82,8 @@ public final class ViewWordChangeAndDiffTest {
       try {
          VariableMap options = new VariableMap(IRenderer.NO_DISPLAY, true);
          renderer.setOptions(options);
-         renderer.getComparator().compareArtifacts(new NullProgressMonitor(), PresentationType.DIFF, artifactDeltas);
+         IComparator comparator = renderer.getComparator();
+         comparator.compareArtifacts(new NullProgressMonitor(), PresentationType.DIFF, artifactDeltas);
       } catch (OseeCoreException e) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, e);
          fail("View Word Change Report test failed");

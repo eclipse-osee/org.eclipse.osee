@@ -137,7 +137,9 @@ public final class WordChangeReportOperation extends AbstractOperation {
          checkForCancelledStatus(monitor);
          if (countSuccessful > 0) {
             monitor.setTaskName("Running Diff Script");
-            generator.finish(baseFileStr + "/compareDocs.vbs", !isSuppressWord);
+            if (RenderingUtil.arePopupsAllowed()) {
+               generator.finish(baseFileStr + "/compareDocs.vbs", !isSuppressWord);
+            }
          }
          monitor.worked(calculateWork(0.20));
          checkForCancelledStatus(monitor);
