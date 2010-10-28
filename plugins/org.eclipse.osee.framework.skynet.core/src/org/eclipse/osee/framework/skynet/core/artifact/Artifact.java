@@ -1306,17 +1306,21 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, Co
     * Creates a new artifact and duplicates all of its attribute data.
     */
    public Artifact duplicate(IOseeBranch branch) throws OseeCoreException {
+      return duplicate(branch, new ArrayList<IAttributeType>());
+   }
+
+   public Artifact duplicate(IOseeBranch branch, Collection<IAttributeType> excudeAttributeTypes) throws OseeCoreException {
       Artifact newArtifact = ArtifactTypeManager.makeNewArtifact(artifactType, branch);
       // we do this because attributes were added on creation to meet the
       // minimum attribute requirements
       newArtifact.attributes.clear();
-      copyAttributes(newArtifact);
+      copyAttributes(newArtifact, excudeAttributeTypes);
       return newArtifact;
    }
 
-   private void copyAttributes(Artifact artifact) throws OseeCoreException {
+   private void copyAttributes(Artifact artifact, Collection<IAttributeType> excudeAttributeTypes) throws OseeCoreException {
       for (Attribute<?> attribute : getAttributes()) {
-         if (isCopyAllowed(attribute)) {
+         if (!excudeAttributeTypes.contains(attribute) && isCopyAllowed(attribute)) {
             artifact.addAttribute(attribute.getAttributeType(), attribute.getValue());
          }
       }

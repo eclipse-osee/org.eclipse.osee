@@ -86,6 +86,8 @@ public class XWidgetParser {
          for (XOption xOption : data.getXOptionHandler().getXOptions()) {
             if (xOption == XOption.ALIGN_CENTER) {
                element.setAttribute("align", "Center");
+            } else if (xOption == XOption.NO_LABEL) {
+               element.setAttribute("displayLabel", "false");
             } else if (xOption == XOption.ALIGN_LEFT) {
                element.setAttribute("align", "Left");
             } else if (xOption == XOption.ALIGN_RIGHT) {
@@ -186,6 +188,9 @@ public class XWidgetParser {
          } else if (nodeName.equals("sorted")) {
             dynamicXWidgetLayoutData.getXOptionHandler().add(
                Boolean.parseBoolean(node.getNodeValue()) ? XOption.SORTED : XOption.NONE);
+         } else if (nodeName.equals("displayLabel")) {
+            dynamicXWidgetLayoutData.getXOptionHandler().add(
+               Boolean.parseBoolean(node.getNodeValue()) ? XOption.NONE : XOption.NO_LABEL);
          } else if (nodeName.equals("beginComposite")) {
             dynamicXWidgetLayoutData.setBeginComposite(Integer.parseInt(node.getNodeValue()));
          } else if (nodeName.equals("beginGroupComposite")) {
