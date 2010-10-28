@@ -14,7 +14,6 @@ import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED
 import static org.junit.Assert.assertFalse;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import junit.framework.Assert;
@@ -107,15 +106,17 @@ public class ArtifactLoaderTest {
          thread.start();
       }
 
-      long endTime = new Date().getTime() + 75 * 1000;
+      long endTime = System.currentTimeMillis() + 76 * 1000;
       while (true) {
          Thread.sleep(1000);
          System.out.println("Checking for thread completion..." + numThreadsCompleted + "/" + TOTAL_THREADS);
          if (numThreadsCompleted == TOTAL_THREADS) {
             break;
          }
-         if (new Date().getTime() > endTime) {
-            Assert.fail("Hit timeout value before threads were completed");
+         long currentMillis = System.currentTimeMillis();
+         if (currentMillis > endTime) {
+            Assert.fail(String.format("Hit timeout value before threads were completed - [%s] ms more than expected",
+               currentMillis - endTime));
          }
       }
 
