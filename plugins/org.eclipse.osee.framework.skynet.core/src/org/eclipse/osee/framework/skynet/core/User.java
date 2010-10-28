@@ -189,4 +189,8 @@ public class User extends Artifact {
       return false;
    }
 
+   public void setBooleanSetting(String key, boolean value) throws OseeCoreException {
+      setSetting(key, String.valueOf(value));
+   }
+
 }
