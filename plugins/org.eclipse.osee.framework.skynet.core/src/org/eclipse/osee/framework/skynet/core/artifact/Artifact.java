@@ -747,12 +747,12 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, Co
     * @return comma delimited representation of all the attributes of the type attributeName
     */
    public String getAttributesToString(IAttributeType attributeType) throws OseeCoreException {
-      StringBuffer sb = new StringBuffer();
+      StringBuilder sb = new StringBuilder();
       for (Attribute<?> attr : getAttributes(attributeType)) {
          sb.append(attr);
          sb.append(", ");
       }
-      return sb.toString().replaceFirst(", $", "");
+      return sb.substring(0, sb.length() - 2);
    }
 
    /**
