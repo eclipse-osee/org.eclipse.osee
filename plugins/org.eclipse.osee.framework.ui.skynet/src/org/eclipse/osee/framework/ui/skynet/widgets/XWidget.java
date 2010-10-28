@@ -11,6 +11,8 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.Vector;
@@ -422,5 +424,9 @@ public abstract class XWidget {
 
    public boolean isDisplayLabel() {
       return displayLabel;
+   }
+
+   public Collection<? extends XWidget> getChildrenXWidgets() {
+      return Collections.emptyList();
    }
 }

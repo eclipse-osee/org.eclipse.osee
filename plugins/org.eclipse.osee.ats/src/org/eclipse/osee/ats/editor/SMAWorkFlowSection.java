@@ -207,6 +207,7 @@ public class SMAWorkFlowSection extends SectionPart {
          for (XWidget xWidget : item.getDynamicXWidgetsPreBody(sma)) {
             xWidget.createWidgets(workComp, 2);
             allXWidgets.add(xWidget);
+            allXWidgets.addAll(xWidget.getChildrenXWidgets());
          }
       }
 
@@ -225,13 +226,17 @@ public class SMAWorkFlowSection extends SectionPart {
       // Create dynamic XWidgets
       DynamicXWidgetLayout dynamicXWidgetLayout =
          atsWorkPage.createBody(getManagedForm(), workComp, sma, xModListener, isEditable || isGlobalEditable);
-      allXWidgets.addAll(dynamicXWidgetLayout.getXWidgets());
+      for (XWidget xWidget : dynamicXWidgetLayout.getXWidgets()) {
+         allXWidgets.add(xWidget);
+         allXWidgets.addAll(xWidget.getChildrenXWidgets());
+      }
 
       // Add any dynamic XWidgets declared for page by IAtsStateItem extensions
       for (IAtsStateItem item : AtsStateItemManager.getStateItems(atsWorkPage.getId())) {
          for (XWidget xWidget : item.getDynamicXWidgetsPostBody(sma)) {
             xWidget.createWidgets(workComp, 2);
             allXWidgets.add(xWidget);
+            allXWidgets.addAll(xWidget.getChildrenXWidgets());
          }
       }
 

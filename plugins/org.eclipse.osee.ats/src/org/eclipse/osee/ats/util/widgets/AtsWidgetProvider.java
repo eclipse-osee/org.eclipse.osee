@@ -11,6 +11,8 @@
 
 package org.eclipse.osee.ats.util.widgets;
 
+import org.eclipse.osee.ats.field.OperationalImpactWithWorkaroundXWidget;
+import org.eclipse.osee.ats.field.OperationalImpactXWidget;
 import org.eclipse.osee.ats.util.widgets.commit.XCommitManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlabelGroupSelection;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -40,6 +42,12 @@ public class AtsWidgetProvider implements IXWidgetProvider {
       }
       if (name.equals("Working Branch") || widgetName.equals("XWorkingBranch")) {
          return new XWorkingBranch();
+      }
+      if (name.equals(OperationalImpactXWidget.ID) || widgetName.equals(OperationalImpactXWidget.class.getSimpleName())) {
+         return new OperationalImpactXWidget();
+      }
+      if (name.equals(OperationalImpactWithWorkaroundXWidget.ID) || widgetName.equals(OperationalImpactWithWorkaroundXWidget.class.getSimpleName())) {
+         return new OperationalImpactWithWorkaroundXWidget();
       }
       return toReturn;
    }

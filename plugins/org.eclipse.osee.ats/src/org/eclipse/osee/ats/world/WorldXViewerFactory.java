@@ -18,6 +18,10 @@ import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
+import org.eclipse.osee.ats.field.OperationalImpactColumn;
+import org.eclipse.osee.ats.field.OperationalImpactDesciptionColumn;
+import org.eclipse.osee.ats.field.OperationalImpactWorkaroundColumn;
+import org.eclipse.osee.ats.field.OperationalImpactWorkaroundDesciptionColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeColumn;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerSmaCreatedDateColumn;
@@ -281,6 +285,10 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       Hours_Spent_Total_Col,
       Total_Hours_Spent_Col,
       Originator_Col,
+      new OperationalImpactColumn(),
+      new OperationalImpactDesciptionColumn(),
+      new OperationalImpactWorkaroundColumn(),
+      new OperationalImpactWorkaroundDesciptionColumn(),
       Implementor_Col,
       Review_Author_Col,
       Review_Moderator_Col,

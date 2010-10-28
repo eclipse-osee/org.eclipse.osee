@@ -16,8 +16,9 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 
 /**
  * @author Ryan D. Brooks
+ * @author Donald G. Dunne
  */
-public final class AtsAttributeTypes extends NamedIdentity implements IAttributeType {
+public class AtsAttributeTypes extends NamedIdentity implements IAttributeType {
 
    // @formatter:off
    public static final IAttributeType Actionable = new AtsAttributeTypes("AAMFEcvDtBiaJ3TMatAA", "Actionable", "True if item can have Action written against or assigned to.");
@@ -74,7 +75,7 @@ public final class AtsAttributeTypes extends NamedIdentity implements IAttribute
    public static final IAttributeType WorkPackage = new AtsAttributeTypes("AAMFEdpJqRp2wvA2qvAA", "Work Package", "Designated accounting work package for completing workflow.");
    // @formatter:on
 
-   private AtsAttributeTypes(String guid, String name) {
+   public AtsAttributeTypes(String guid, String name) {
       super(guid, "ats." + name);
    }
 

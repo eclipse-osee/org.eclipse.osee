@@ -60,6 +60,7 @@ public class XText extends XWidget {
    private XTextUrlListener urlListener;
    private XTextSpellModifyDictionary modDict;
    private Font font;
+   Composite composite = null;
 
    public XText() {
       super("AText", "text");
@@ -123,7 +124,6 @@ public class XText extends XWidget {
          }
 
          this.parent = parent;
-         Composite composite = null;
 
          ModifyListener textListener = new ModifyListener() {
 
@@ -298,6 +298,9 @@ public class XText extends XWidget {
             sText.removeModifyListener(urlListener);
          }
          sText.dispose();
+      }
+      if (Widgets.isAccessible(composite)) {
+         composite.dispose();
       }
       if (parent != null && !parent.isDisposed()) {
          parent.layout();
