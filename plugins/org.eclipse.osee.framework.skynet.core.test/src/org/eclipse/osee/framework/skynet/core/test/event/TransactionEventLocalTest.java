@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 Boeing.
+ * Copyright (c) 2004, 2007 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,30 +11,21 @@
 package org.eclipse.osee.framework.skynet.core.test.event;
 
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
 /**
- * event loopback will test that remote messages get processed and treated like local messages by turning off local and
- * enabling remote to be loop-ed back without another client. same tests as base-class should still pass
- * 
  * @author Donald G. Dunne
  */
-public class TransactionEventLoopbackTest extends TransactionEventTest {
+public class TransactionEventLocalTest extends TransactionEventTest {
 
    @BeforeClass
    public static void setUp() {
-      OseeEventManager.getPreferences().setEnableRemoteEventLoopback(true);
-   }
-
-   @AfterClass
-   public static void tearDown() {
       OseeEventManager.getPreferences().setEnableRemoteEventLoopback(false);
    }
 
    @Override
    protected boolean isRemoteTest() {
-      return true;
+      return false;
    }
 
 }

@@ -18,8 +18,8 @@ import org.eclipse.osee.framework.skynet.core.test.event.ArtifactEventTest;
 import org.eclipse.osee.framework.skynet.core.test.event.BranchEventFiltersTest;
 import org.eclipse.osee.framework.skynet.core.test.event.BranchEventLoopbackTest;
 import org.eclipse.osee.framework.skynet.core.test.event.BranchEventTest;
-import org.eclipse.osee.framework.skynet.core.test.event.TransactionEventLoopbackTest;
-import org.eclipse.osee.framework.skynet.core.test.event.TransactionEventTest;
+import org.eclipse.osee.framework.skynet.core.test.event.TransactionEventLocalTest;
+import org.eclipse.osee.framework.skynet.core.test.event.TransactionEventRemoteTest;
 import org.eclipse.osee.framework.skynet.core.test.word.UpdateBookmarkIdTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -29,8 +29,8 @@ import org.junit.runners.Suite;
    UpdateBookmarkIdTest.class,
    ArtifactEventFiltersTest.class,
    BranchEventFiltersTest.class,
-   TransactionEventTest.class,
-   TransactionEventLoopbackTest.class,
+   TransactionEventLocalTest.class,
+   TransactionEventRemoteTest.class,
    BranchEventLoopbackTest.class,
    BranchEventTest.class,
    ArtifactEventTest.class,
