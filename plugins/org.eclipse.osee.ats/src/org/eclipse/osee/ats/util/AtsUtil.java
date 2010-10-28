@@ -138,7 +138,7 @@ public final class AtsUtil {
    }
 
    public static void setEmailEnabled(boolean enabled) {
-      if (!DbUtil.isDbInit()) {
+      if (!DbUtil.isDbInit() && !AtsUtil.isInTest()) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, "Email " + (enabled ? "Enabled" : "Disabled"));
       }
       emailEnabled = enabled;
