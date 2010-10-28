@@ -24,15 +24,13 @@ public class PreviewWholeWordHandler extends AbstractEditorHandler {
 
    @Override
    public Object execute(ExecutionEvent event) {
-      if (!artifacts.isEmpty()) {
-         try {
-            WholeWordRenderer renderer = new WholeWordRenderer();
-            renderer.open(artifacts, PresentationType.PREVIEW);
-            dispose();
+      try {
+         WholeWordRenderer renderer = new WholeWordRenderer();
+         renderer.open(artifacts, PresentationType.PREVIEW);
+         dispose();
 
-         } catch (OseeCoreException ex) {
-            OseeLog.log(PreviewWholeWordHandler.class, OseeLevel.SEVERE_POPUP, ex);
-         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(PreviewWholeWordHandler.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return null;
    }
