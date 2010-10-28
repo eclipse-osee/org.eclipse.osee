@@ -51,9 +51,13 @@ public class DemoTestUtil {
    public static Result isDbPopulatedWithDemoData() throws Exception {
       Branch branch = BranchManager.getBranchByGuid(DemoSawBuilds.SAW_Bld_1.getGuid());
 
-      if (ArtifactQuery.getArtifactListFromTypeAndName(CoreArtifactTypes.SoftwareRequirement, "%Robot%", branch).size() != 6) {
+      Collection<Artifact> robotArtifacts =
+         ArtifactQuery.getArtifactListFromTypeAndName(CoreArtifactTypes.SoftwareRequirement, "%Robot%", branch);
+      if (robotArtifacts.size() >= 6) {
          return new Result(
-            "Expected at least 6 Software Requirements with word \"Robot\".  Database is not be populated with demo data.");
+            String.format(
+               "Expected at least 6 Software Requirements with name \"Robot\" but found [%s].  Database is not be populated with demo data.",
+               robotArtifacts.size()));
       }
       return Result.TrueResult;
    }
@@ -131,7 +135,8 @@ public class DemoTestUtil {
          // This test should only be run on test db
          Assert.assertFalse(AtsUtil.isProductionDb());
          // Confirm test setup with demo data
-         Assert.assertTrue(isDbPopulatedWithDemoData().isTrue());
+         Result result = isDbPopulatedWithDemoData();
+         Assert.assertTrue(result.getText(), result.isTrue());
          // Confirm user is Joe Smith
          Assert.assertTrue("User \"Joe Smith\" does not exist in DB.  Run Demo DBInit prior to this test.",
             UserManager.getUserByUserId("Joe Smith") != null);

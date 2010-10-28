@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.test.util;
 
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
-import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -61,6 +60,7 @@ public class AtsDeleteManagerTest {
 
    @BeforeClass
    public static void testCleanupPre() throws Exception {
+      DemoTestUtil.setUpTest();
       cleanup();
    }
 
@@ -71,13 +71,6 @@ public class AtsDeleteManagerTest {
     */
    @org.junit.Test
    public void testTeamArtDeleteOneWorkflow() throws Exception {
-      if (AtsUtil.isProductionDb()) {
-         fail("Test not intended for production Db");
-      }
-      if (DemoTestUtil.isDbPopulatedWithDemoData().isFalse()) {
-         fail("Test should be run on Demo Db");
-      }
-
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Delete Manager Test");
       // Create Action
       TeamWorkFlowArtifact teamArt =
@@ -103,13 +96,6 @@ public class AtsDeleteManagerTest {
     */
    @org.junit.Test
    public void testTeamArtDeleteWithTwoWorkflows() throws Exception {
-      if (AtsUtil.isProductionDb()) {
-         fail("Test not intended for production Db");
-      }
-      if (DemoTestUtil.isDbPopulatedWithDemoData().isFalse()) {
-         fail("Test should be run on Demo Db");
-      }
-
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Delete Manager Test");
       // Create Action
       TeamWorkFlowArtifact teamArt =
@@ -129,13 +115,6 @@ public class AtsDeleteManagerTest {
 
    @org.junit.Test
    public void testTeamArtPurge() throws Exception {
-      if (AtsUtil.isProductionDb()) {
-         fail("Test not intended for production Db");
-      }
-      if (DemoTestUtil.isDbPopulatedWithDemoData().isFalse()) {
-         fail("Test should be run on Demo Db");
-      }
-
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Delete Manager Test");
       // Create Action
       TeamWorkFlowArtifact teamArt =
@@ -156,13 +135,6 @@ public class AtsDeleteManagerTest {
 
    @org.junit.Test
    public void testActionDelete() throws Exception {
-      if (AtsUtil.isProductionDb()) {
-         fail("Test not intended for production Db");
-      }
-      if (DemoTestUtil.isDbPopulatedWithDemoData().isFalse()) {
-         fail("Test should be run on Demo Db");
-      }
-
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Delete Manager Test");
       // Create Action
       TeamWorkFlowArtifact teamArt =
@@ -183,13 +155,6 @@ public class AtsDeleteManagerTest {
 
    @org.junit.Test
    public void testActionPurge() throws Exception {
-      if (AtsUtil.isProductionDb()) {
-         fail("Test not intended for production Db");
-      }
-      if (DemoTestUtil.isDbPopulatedWithDemoData().isFalse()) {
-         fail("Test should be run on Demo Db");
-      }
-
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Delete Manager Test");
       // Create Action
       TeamWorkFlowArtifact teamArt =
@@ -257,7 +222,7 @@ public class AtsDeleteManagerTest {
       cleanup();
    }
 
-   public static void cleanup() throws Exception {
+   private static void cleanup() throws Exception {
       List<String> names = new ArrayList<String>();
       for (TestNames testName : TestNames.values()) {
          names.add(testName.name());
