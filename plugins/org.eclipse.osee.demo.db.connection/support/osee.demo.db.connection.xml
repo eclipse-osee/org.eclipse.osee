@@ -54,7 +54,7 @@
 	<AvailableDbServices>
 
 		<Server id="h2" dbInfo="h2.db.info" hostAddress="127.0.0.1"
-			port="1621" connectsWith="h2.db.connection" />
+			port="8088" connectsWith="h2.db.connection" />
 
 		<Server id="derby" dbInfo="DerbyServer" hostAddress="127.0.0.1"
 			port="1621" connectsWith="NetDerbyClient" />
