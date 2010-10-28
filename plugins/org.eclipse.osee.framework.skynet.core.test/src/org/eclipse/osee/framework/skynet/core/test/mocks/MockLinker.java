@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.skynet.core.test.mocks;
 
 import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink.ArtifactLinker;
@@ -48,7 +47,7 @@ public class MockLinker implements ArtifactLinker {
    }
 
    @Override
-   public void deleteFromRelationOrder(Artifact aArtifact, Artifact bArtifact, IRelationType relationType) throws OseeCoreException {
+   public void deleteFromRelationOrder(Artifact aArtifact, Artifact bArtifact, IRelationType relationType) {
       //
    }
 }
