@@ -551,6 +551,10 @@ artifactType "Indirect Software Requirement" extends "Abstract Software Requirem
    guid "AAMFDiC7HRQMqr5S0QwA"
 }
 
+artifactType "Implementation Details" extends "Indirect Software Requirement" {
+   guid "AMyewS0I5ADnjgL63tQA"
+}
+
 artifactType "Software Requirement Procedure" extends "Indirect Software Requirement" {
    guid "ABNBLPY4LnIKtcON0mgA"
 }
