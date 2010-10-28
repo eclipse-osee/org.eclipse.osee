@@ -210,6 +210,9 @@ public class InternalClientSessionManager {
          HttpProcessor.post(new URL(url), asInputStream(credential), "text/xml", "UTF-8", outputStream);
       if (result.getCode() == HttpURLConnection.HTTP_ACCEPTED) {
          session = fromEncryptedBytes(outputStream.toByteArray());
+      } else {
+         throw new OseeCoreException("Error during create session request - code [%s]\n%s", result.getCode(),
+            outputStream.toString());
       }
       return session;
    }

@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.server.internal.session;
 
+import java.sql.DatabaseMetaData;
 import java.util.Date;
+import java.util.Properties;
 import org.eclipse.osee.framework.core.data.IOseeUserInfo;
 import org.eclipse.osee.framework.core.data.OseeSessionGrant;
 import org.eclipse.osee.framework.core.enums.StorageState;
@@ -65,15 +67,24 @@ public final class SessionFactory implements IOseeTypeFactory {
       sessionGrant.setCreationRequired(oseeUserInfo.isCreationRequired());
       sessionGrant.setOseeUserInfo(oseeUserInfo);
       sessionGrant.setDatabaseInfo(DatabaseInfoManager.getDefault());
-      if (is_0_9_2_Compatible(session.getClientVersion())) {
-         sessionGrant.setSqlProperties(OseeSql.getSqlProperties(ConnectionHandler.getMetaData()));
-      } else {
-         sessionGrant.setSqlProperties(OseeSql_0_9_1.getSqlProperties(ConnectionHandler.getMetaData()));
-      }
-      sessionGrant.setDataStorePath(OseeServerProperties.getOseeApplicationServerData());
 
+      Properties properties = getSQLProperties(session.getClientVersion());
+      sessionGrant.setSqlProperties(properties);
+
+      sessionGrant.setDataStorePath(OseeServerProperties.getOseeApplicationServerData());
       sessionGrant.setClientBuildDesination(typeIdentifier.getBuildDesignation(session.getClientVersion()));
       return sessionGrant;
+   }
+
+   private static Properties getSQLProperties(String clientVersion) throws OseeCoreException {
+      Properties properties = null;
+      DatabaseMetaData metaData = ConnectionHandler.getMetaData();
+      if (is_0_9_2_Compatible(clientVersion)) {
+         properties = OseeSql.getSqlProperties(metaData);
+      } else {
+         properties = OseeSql_0_9_1.getSqlProperties(metaData);
+      }
+      return properties;
    }
 
    private static boolean is_0_9_2_Compatible(String clientVersion) {
