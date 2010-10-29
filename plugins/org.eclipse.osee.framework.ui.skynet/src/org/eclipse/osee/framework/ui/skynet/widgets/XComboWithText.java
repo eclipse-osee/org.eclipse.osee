@@ -94,7 +94,11 @@ public class XComboWithText extends XCombo {
       }
    }
 
-   private void refreshComposite() {
+   protected int getTextHeightHint() {
+      return 0;
+   }
+
+   protected void refreshComposite() {
       if (text != null && Widgets.isAccessible(text.getStyledText())) {
          text.getLabelWidget().dispose();
          text.dispose();
@@ -103,9 +107,12 @@ public class XComboWithText extends XCombo {
          text = new XText(textLabel);
          text.setFillHorizontally(true);
          text.setFillVertically(true);
-         text.createWidgets(composite, 2);
+         text.createWidgets(getManagedForm(), composite, 2);
          text.setRequiredEntry(textRequiredIfVisible);
-         text.getStyledText().setLayoutData(new GridData(GridData.FILL_BOTH));
+         // Set default height hint of text box if it's empty
+         GridData gd = new GridData(GridData.FILL_BOTH);
+         gd.heightHint = getTextHeightHint();
+         text.getStyledText().setLayoutData(gd);
          text.addModifyListener(new ModifyListener() {
 
             @Override

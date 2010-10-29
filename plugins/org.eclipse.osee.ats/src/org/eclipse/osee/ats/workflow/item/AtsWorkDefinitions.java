@@ -25,7 +25,9 @@ import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.field.OperationalImpactWithWorkaroundXWidget.XOperationalImpactWithWorkaroundRequiredXWidgetWorkItem;
 import org.eclipse.osee.ats.field.OperationalImpactWithWorkaroundXWidget.XOperationalImpactWithWorkaroundXWidgetWorkItem;
+import org.eclipse.osee.ats.field.OperationalImpactXWidget.XOperationalImpactRequiredXWidgetWorkItem;
 import org.eclipse.osee.ats.field.OperationalImpactXWidget.XOperationalImpactXWidgetWorkItem;
 import org.eclipse.osee.ats.util.AtsFolderUtil;
 import org.eclipse.osee.ats.util.AtsFolderUtil.AtsFolder;
@@ -120,7 +122,9 @@ public final class AtsWorkDefinitions implements IWorkDefinitionProvider {
       workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.WorkPackage, "XTextDam", HORIZONTAL_LABEL));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.WORKING_BRANCH_WIDGET, "XWorkingBranch", NONE));
       workItems.add(new XOperationalImpactXWidgetWorkItem());
+      workItems.add(new XOperationalImpactRequiredXWidgetWorkItem());
       workItems.add(new XOperationalImpactWithWorkaroundXWidgetWorkItem());
+      workItems.add(new XOperationalImpactWithWorkaroundRequiredXWidgetWorkItem());
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.VALIDATE_REQ_CHANGES_WIDGET,
          "XValidateReqChangesButton", NONE));
       workItems.add(new AtsAttributeXWidgetWorkItem(ATSAttributes.CREATE_CODE_TEST_TASKS_OFF_REQUIREMENTS,

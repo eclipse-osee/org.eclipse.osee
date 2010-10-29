@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -106,6 +107,10 @@ public class XComboWithTextAndComboWithText extends XCombo {
       }
    }
 
+   protected int getTextHeightHint() {
+      return 0;
+   }
+
    private void refreshComposite() {
       if (text != null && Widgets.isAccessible(text.getStyledText())) {
          text.getLabelWidget().dispose();
@@ -118,9 +123,11 @@ public class XComboWithTextAndComboWithText extends XCombo {
          text = new XText(textLabel);
          text.setFillHorizontally(true);
          text.setFillVertically(true);
-         text.createWidgets(composite, 2);
+         text.createWidgets(getManagedForm(), composite, 2);
          text.setRequiredEntry(textRequiredIfVisible);
-         text.getStyledText().setLayoutData(new GridData(GridData.FILL_BOTH));
+         GridData gd = new GridData(GridData.FILL_BOTH);
+         gd.heightHint = getTextHeightHint();
+         text.getStyledText().setLayoutData(gd);
          text.addModifyListener(new ModifyListener() {
 
             @Override
@@ -131,7 +138,16 @@ public class XComboWithTextAndComboWithText extends XCombo {
          comboWithText =
             new XComboWithText(comboLabel2, textLabel2, comboOptions2, moreInfoOption2, textRequiredIfVisible2);
          comboWithText.setRequiredEntry(combo2RequiredIfVisible);
-         comboWithText.createWidgets(composite, 2);
+         comboWithText.createWidgets(getManagedForm(), composite, 2);
+         // Set default height hint of text box if it's empty
+         if (comboWithText.getText() != null) {
+            GridData gd2 = (GridData) comboWithText.getText().getStyledText().getLayoutData();
+            gd2.heightHint = getTextHeightHint();
+            comboWithText.getText().getStyledText().setLayoutData(gd);
+         }
+         // Since embedding XComboWithText, make that internal composite zero margin so it aligns
+         Composite composite = comboWithText.getComboBox().getParent();
+         composite.setLayout(ALayout.getZeroMarginLayout(4, false));
          comboWithText.refresh();
          comboWithText.addXModifiedListener(new XModifiedListener() {
 
@@ -218,6 +234,9 @@ public class XComboWithTextAndComboWithText extends XCombo {
    @Override
    public void validate() {
       super.validate();
+      if (text != null) {
+         text.validate();
+      }
       if (comboWithText != null) {
          comboWithText.validate();
       }

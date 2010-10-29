@@ -43,13 +43,12 @@ public class AtsWidgetProvider implements IXWidgetProvider {
       if (name.equals("Working Branch") || widgetName.equals("XWorkingBranch")) {
          return new XWorkingBranch();
       }
-      if (name.equals(OperationalImpactXWidget.ID) || widgetName.equals(OperationalImpactXWidget.class.getSimpleName())) {
+      if (widgetName.equals(OperationalImpactXWidget.ID) || widgetName.equals(OperationalImpactXWidget.ID_REQUIRED)) {
          return new OperationalImpactXWidget();
       }
-      if (name.equals(OperationalImpactWithWorkaroundXWidget.ID) || widgetName.equals(OperationalImpactWithWorkaroundXWidget.class.getSimpleName())) {
+      if (widgetName.equals(OperationalImpactWithWorkaroundXWidget.ID) || widgetName.equals(OperationalImpactWithWorkaroundXWidget.ID_REQUIRED)) {
          return new OperationalImpactWithWorkaroundXWidget();
       }
       return toReturn;
    }
-
 }

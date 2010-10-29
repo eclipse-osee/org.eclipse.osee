@@ -14,6 +14,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboWithTextAndComboWithText;
+import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkWidgetDefinition;
 import org.eclipse.osee.framework.ui.swt.Widgets;
@@ -29,6 +30,7 @@ public class OperationalImpactWithWorkaroundXWidget extends XComboWithTextAndCom
 
    TeamWorkFlowArtifact teamArt;
    public static String ID = "OperationalImpactWithWorkaroundXWidget";
+   public static String ID_REQUIRED = "OperationalImpactWithWorkaroundXWidget (required)";
 
    public OperationalImpactWithWorkaroundXWidget() {
       super(OperationalImpactTypes.NAME, "Operational Impact Description", new String[] {"Yes", "No"}, "Yes", true,
@@ -139,6 +141,18 @@ public class OperationalImpactWithWorkaroundXWidget extends XComboWithTextAndCom
       }
    }
 
+   public static class XOperationalImpactWithWorkaroundRequiredXWidgetWorkItem extends WorkWidgetDefinition {
+
+      public XOperationalImpactWithWorkaroundRequiredXWidgetWorkItem() {
+         super(OperationalImpactTypes.NAME, OperationalImpactWithWorkaroundXWidget.ID_REQUIRED);
+         DynamicXWidgetLayoutData data = new DynamicXWidgetLayoutData(null, XOption.REQUIRED);
+         data.setName(getName());
+         data.setStoreName(getId());
+         data.setXWidgetName(OperationalImpactWithWorkaroundXWidget.ID_REQUIRED);
+         set(data);
+      }
+   }
+
    public static class XOperationalImpactWithWorkaroundXWidgetWorkItem extends WorkWidgetDefinition {
 
       public XOperationalImpactWithWorkaroundXWidgetWorkItem() {
@@ -156,4 +170,13 @@ public class OperationalImpactWithWorkaroundXWidget extends XComboWithTextAndCom
       super.createControls(parent, horizontalSpan);
       revert();
    }
+
+   @Override
+   protected int getTextHeightHint() {
+      if (getDescStr().equals("")) {
+         return 30;
+      }
+      return super.getTextHeightHint();
+   }
+
 }

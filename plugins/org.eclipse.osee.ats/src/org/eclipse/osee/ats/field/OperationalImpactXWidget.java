@@ -29,6 +29,7 @@ public class OperationalImpactXWidget extends XComboWithText implements IArtifac
 
    TeamWorkFlowArtifact teamArt;
    public static String ID = "OperationalImpactXWidget";
+   public static String ID_REQUIRED = "OperationalImpactXWidget (required)";
 
    public OperationalImpactXWidget() {
       super(OperationalImpactTypes.NAME, "Operational Impact Description", new String[] {"Yes", "No"}, "Yes", true);
@@ -106,9 +107,30 @@ public class OperationalImpactXWidget extends XComboWithText implements IArtifac
       }
    }
 
+   public static class XOperationalImpactRequiredXWidgetWorkItem extends WorkWidgetDefinition {
+
+      public XOperationalImpactRequiredXWidgetWorkItem() {
+         super(OperationalImpactTypes.NAME, OperationalImpactXWidget.ID_REQUIRED);
+         DynamicXWidgetLayoutData data = new DynamicXWidgetLayoutData(null);
+         data.setName(getName());
+         data.setStoreName(getId());
+         data.setXWidgetName(OperationalImpactXWidget.ID_REQUIRED);
+         set(data);
+      }
+   }
+
    @Override
    protected void createControls(Composite parent, int horizontalSpan) {
       super.createControls(parent, horizontalSpan);
       revert();
    }
+
+   @Override
+   protected int getTextHeightHint() {
+      if (getDescStr().equals("")) {
+         return 30;
+      }
+      return super.getTextHeightHint();
+   }
+
 }
