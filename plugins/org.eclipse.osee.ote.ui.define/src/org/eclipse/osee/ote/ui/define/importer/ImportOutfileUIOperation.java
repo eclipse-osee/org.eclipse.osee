@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.ote.define.jobs.FindCommitableJob;
 import org.eclipse.osee.ote.define.jobs.OutfileToArtifactJob;
@@ -25,7 +26,6 @@ import org.eclipse.osee.ote.ui.define.jobs.CommitTestRunJob;
 import org.eclipse.osee.ote.ui.define.jobs.ReportErrorsJob;
 import org.eclipse.osee.ote.ui.define.utilities.CommitConfiguration;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Roberto E. Escobar
@@ -46,7 +46,7 @@ public class ImportOutfileUIOperation {
          launchImportJob();
       } else {
          toReturn = false;
-         Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
+         Shell shell = AWorkbench.getActiveShell();
          MessageDialog.openInformation(shell, "Information", "There were no resources currently selected for import.");
       }
       return toReturn;

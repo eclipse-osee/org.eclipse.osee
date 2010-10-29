@@ -15,7 +15,10 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
@@ -25,7 +28,7 @@ import org.eclipse.ui.PlatformUI;
 /**
  * @author Donald G. Dunne
  */
-public class AWorkbench {
+public final class AWorkbench {
 
    /**
     * Popup a workbench viewer eg: AWorkbench.popupView(IPageLayout.ID_PROBLEM_VIEW);
@@ -37,6 +40,18 @@ public class AWorkbench {
          return true;
       }
       return false;
+   }
+
+   public static Display getDisplay() {
+      return PlatformUI.getWorkbench().getDisplay();
+   }
+
+   public static Shell getActiveShell() {
+      return getDisplay().getActiveShell();
+   }
+
+   public static Color getSystemColor(int id) {
+      return getDisplay().getSystemColor(id);
    }
 
    public static IViewPart getView(String viewId) {
@@ -71,7 +86,7 @@ public class AWorkbench {
       if (!PlatformUI.isWorkbenchRunning()) {
          OseeLog.log(AWorkbench.class, Level.SEVERE, message);
       } else {
-         PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+         getDisplay().syncExec(new Runnable() {
             @Override
             public void run() {
                MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), title,

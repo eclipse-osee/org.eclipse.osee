@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jini.discovery.EclipseJiniClassloader;
 import org.eclipse.osee.framework.jini.discovery.IRegistrarListener;
 import org.eclipse.osee.framework.plugin.core.config.JiniLookupGroupConfig;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.service.control.managers.ReggieCache;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -32,7 +33,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Roberto E. Escobar
@@ -86,7 +86,7 @@ public class JiniGroupSelector implements IRegistrarListener {
    }
 
    private void populateGroups() {
-      PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+      AWorkbench.getDisplay().asyncExec(new Runnable() {
 
          @Override
          public void run() {

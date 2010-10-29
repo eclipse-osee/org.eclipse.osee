@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.data.TestRunStorageKey;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.panels.BranchSelectSimpleComposite;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.ote.ui.define.OteDefineImage;
@@ -34,7 +35,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Roberto E. Escobar
@@ -153,8 +153,7 @@ public class BranchComboDialog extends TitleAreaDialog implements Listener {
 
    public static Branch getBranchFromUser() throws OseeCoreException {
       Branch toReturn = null;
-      BranchComboDialog branchSelection =
-         new BranchComboDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell());
+      BranchComboDialog branchSelection = new BranchComboDialog(AWorkbench.getActiveShell());
       int result = branchSelection.open();
       if (result == Window.OK) {
          toReturn = branchSelection.getSelection();

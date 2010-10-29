@@ -14,6 +14,7 @@ package org.eclipse.osee.framework.ui.service.control.wizards.launcher.pages;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.service.control.wizards.launcher.ServiceLaunchingInformation;
 import org.eclipse.osee.framework.ui.service.control.wizards.launcher.data.JiniGroupSelector;
 import org.eclipse.osee.framework.ui.service.control.wizards.launcher.data.ServiceItem;
@@ -105,7 +106,7 @@ public class ExecutePage extends DynamicWizardPage {
       group.setText("Enter Commands To Execute:");
 
       cmdText = new FormattedText(group, SWT.NONE, 50, 100, true);
-      cmdText.getStyledText().setBackground(PlatformUI.getWorkbench().getDisplay().getSystemColor(SWT.COLOR_WHITE));
+      cmdText.getStyledText().setBackground(AWorkbench.getSystemColor(SWT.COLOR_WHITE));
       cmdText.getStyledText().addModifyListener(new ModifyListener() {
 
          @Override
@@ -151,7 +152,7 @@ public class ExecutePage extends DynamicWizardPage {
 
          @Override
          public void widgetSelected(SelectionEvent e) {
-            PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+            AWorkbench.getDisplay().asyncExec(new Runnable() {
                @Override
                public void run() {
                   execute.setEnabled(false);

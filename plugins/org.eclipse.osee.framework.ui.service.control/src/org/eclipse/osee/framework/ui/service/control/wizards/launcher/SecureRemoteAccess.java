@@ -20,9 +20,9 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.service.control.ControlPlugin;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.PlatformUI;
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
@@ -128,7 +128,7 @@ public class SecureRemoteAccess {
 
       @Override
       public boolean promptYesNo(String message) {
-         Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
+         Shell shell = AWorkbench.getActiveShell();
          MessageDialog dialog =
             new MessageDialog(shell, "Warning", null, message, MessageDialog.WARNING, new String[] {
                IDialogConstants.YES_LABEL,
@@ -148,7 +148,7 @@ public class SecureRemoteAccess {
 
       @Override
       public boolean promptPassword(String message) {
-         Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
+         Shell shell = AWorkbench.getActiveShell();
          MultiTextDialog inputDialog =
             new MultiTextDialog(shell, "Password", "Enter password: ", new String[] {"password:"},
                new boolean[] {false});
@@ -166,13 +166,13 @@ public class SecureRemoteAccess {
 
       @Override
       public void showMessage(String message) {
-         Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
+         Shell shell = AWorkbench.getActiveShell();
          MessageDialog.openInformation(shell, "Log-in Message", message);
       }
 
       @Override
       public String[] promptKeyboardInteractive(String destination, String name, String instruction, String[] prompt, boolean[] echo) {
-         Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
+         Shell shell = AWorkbench.getActiveShell();
          MultiTextDialog inputDialog =
             new MultiTextDialog(shell, destination + ": " + name, "Enter Password: ", prompt, echo);
          inputDialog.setBlockOnOpen(true);

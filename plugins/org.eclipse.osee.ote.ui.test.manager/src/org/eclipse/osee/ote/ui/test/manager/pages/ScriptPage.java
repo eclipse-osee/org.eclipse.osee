@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -47,7 +48,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
-import org.eclipse.ui.PlatformUI;
 
 public abstract class ScriptPage extends TestManagerPage {
 
@@ -152,7 +152,7 @@ public abstract class ScriptPage extends TestManagerPage {
    }
 
    public void onScriptRunning(final boolean running) {
-      PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+      AWorkbench.getDisplay().asyncExec(new Runnable() {
          @Override
          public void run() {
             if (running) {

@@ -16,6 +16,7 @@ import java.util.Map;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.service.control.ServiceControlImage;
 import org.eclipse.osee.framework.ui.service.control.jobs.TextDisplayHelper;
 import org.eclipse.osee.framework.ui.service.control.jobs.UploadRemoteFileJob;
@@ -147,7 +148,7 @@ public class UploadPage extends DynamicWizardPage {
 
          @Override
          public void widgetSelected(SelectionEvent e) {
-            PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+            AWorkbench.getDisplay().asyncExec(new Runnable() {
                @Override
                public void run() {
                   Job job =

@@ -19,6 +19,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.ote.ui.message.internal.Activator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
@@ -51,7 +52,7 @@ public class RunCsvAction extends Action {
 
       FileDialogSelectionGetter getter = new FileDialogSelectionGetter();
 
-      PlatformUI.getWorkbench().getDisplay().syncExec(getter);
+      AWorkbench.getDisplay().syncExec(getter);
       if (getter.getPath() != null) {
          File file = new File(getter.getPath());
          File csvFile = new File(getter.getPath() + ".csv");
@@ -92,7 +93,7 @@ public class RunCsvAction extends Action {
 
       @Override
       public void run() {
-         FileDialog fd = new FileDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell(), SWT.OPEN);
+         FileDialog fd = new FileDialog(AWorkbench.getActiveShell(), SWT.OPEN);
          fd.setFilterExtensions(new String[] {"*.rec"});
          if (fd.open() != null) {
             path = fd.getFilterPath() + File.separator + fd.getFileName();

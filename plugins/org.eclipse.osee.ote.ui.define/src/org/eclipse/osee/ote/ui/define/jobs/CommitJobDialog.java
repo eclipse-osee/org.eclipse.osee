@@ -22,6 +22,7 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.ote.define.artifacts.TestRunOperator;
 import org.eclipse.osee.ote.ui.define.OteDefineImage;
@@ -30,7 +31,6 @@ import org.eclipse.osee.ote.ui.define.dialogs.CommitDialog;
 import org.eclipse.osee.ote.ui.define.dialogs.OverrideInvalidScriptRevisions;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.UIJob;
 
 /**
@@ -79,7 +79,7 @@ class CommitJobDialog extends UIJob {
    public IStatus runInUIThread(IProgressMonitor monitor) {
       IStatus toReturn = Status.CANCEL_STATUS;
       monitor.setTaskName(getName());
-      Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
+      Shell shell = AWorkbench.getActiveShell();
       CommitDialog dialog = new CommitDialog(shell, CommitColumnEnum.toStringArray(), new TestRunTableLabelProvider());
       dialog.setBlockOnOpen(true);
       dialog.setInput(allItems);

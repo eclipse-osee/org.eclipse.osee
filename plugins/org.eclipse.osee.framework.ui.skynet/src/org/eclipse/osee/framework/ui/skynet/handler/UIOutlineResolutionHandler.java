@@ -19,9 +19,9 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.IStatusHandler;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.WordOutlineExtractorDelegate.ContentType;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.swt.Displays;
-import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Roberto Escobar
@@ -44,8 +44,8 @@ public class UIOutlineResolutionHandler implements IStatusHandler {
                   String.format(
                      "Previous valid outline number was \"%s\", is \"%s\" the next outline number? If not, I will treat it as content.",
                      list.get(0), list.get(1));
-               mutableBoolean.setValue(MessageDialog.openQuestion(
-                  PlatformUI.getWorkbench().getDisplay().getActiveShell(), "Help me decide...", message));
+               mutableBoolean.setValue(MessageDialog.openQuestion(AWorkbench.getActiveShell(), "Help me decide...",
+                  message));
             }
          };
          Displays.ensureInDisplayThread(runnable, true);

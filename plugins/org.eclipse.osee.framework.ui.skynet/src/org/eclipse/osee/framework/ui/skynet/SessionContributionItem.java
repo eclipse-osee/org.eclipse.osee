@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.ui.plugin.OseeStatusContributionItem;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.dialogs.AuthenticationDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -58,7 +59,7 @@ public final class SessionContributionItem extends OseeStatusContributionItem im
             try {
                if (ClientSessionManager.isSessionValid()) {
                   boolean result =
-                     MessageDialog.openQuestion(PlatformUI.getWorkbench().getDisplay().getActiveShell(), "Log Off...",
+                     MessageDialog.openQuestion(AWorkbench.getActiveShell(), "Log Off...",
                         "Are you sure you want to log off and exit OSEE?");
                   if (result) {
                      ClientSessionManager.releaseSession();

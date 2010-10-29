@@ -47,8 +47,8 @@ import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Donald G. Dunne
@@ -235,7 +235,7 @@ public class CoverageEventManager implements IArtifactEventListener, OseeMessagi
 
       @Override
       public void process(final Object message, Map<String, Object> headers, ReplyConnection replyConnection) {
-         PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+         AWorkbench.getDisplay().asyncExec(new Runnable() {
             @Override
             public void run() {
                CoveragePackageEvent1 coverageEvent1 = (CoveragePackageEvent1) message;

@@ -29,12 +29,12 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.service.control.wizards.launcher.ServiceLaunchDataPersist;
 import org.eclipse.osee.framework.ui.service.control.wizards.launcher.ServiceLaunchingInformation;
 import org.eclipse.osee.framework.ui.service.control.wizards.launcher.data.ServiceItem;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.ProgressBar;
-import org.eclipse.ui.PlatformUI;
 import org.osgi.framework.Bundle;
 
 /**
@@ -128,7 +128,7 @@ public class StandAloneApplicationLaunchJob extends Job {
          final int totalEntries = zipfile.size();
          int countEntries = 0;
 
-         PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+         AWorkbench.getDisplay().syncExec(new Runnable() {
             @Override
             public void run() {
                progress.setMinimum(0);
@@ -183,7 +183,7 @@ public class StandAloneApplicationLaunchJob extends Job {
    }
 
    private void incrementProgress(final int increment) {
-      PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+      AWorkbench.getDisplay().syncExec(new Runnable() {
          @Override
          public void run() {
             int position = progress.getSelection();

@@ -265,7 +265,7 @@ public class DbTableViewer {
                TableItem item = items[0];
                for (int index = 0; index < table.getColumnCount(); index++) {
                   if (item.getBounds(index).contains(event.x, event.y)) {
-                     Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
+                     Shell shell = AWorkbench.getActiveShell();
                      CellTextDialog dialog =
                         new CellTextDialog(shell, getAdminView().getSelectedDbItem().getTableName(), table.getColumn(
                            index).getText(), item.getText(index));
@@ -381,7 +381,7 @@ public class DbTableViewer {
          text.setLayoutData(data);
          text.setEditable(false);
          text.setText(dialogMessage);
-         text.setBackground(PlatformUI.getWorkbench().getDisplay().getSystemColor(SWT.COLOR_WHITE));
+         text.setBackground(AWorkbench.getSystemColor(SWT.COLOR_WHITE));
          text.setFont(parent.getFont());
          return composite;
       }

@@ -21,12 +21,12 @@ import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.OseeStatusContributionItem;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.preferences.ConfigurationDetails;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.dialogs.WorkbenchPreferenceDialog;
 import org.eclipse.ui.progress.UIJob;
 
@@ -101,7 +101,7 @@ public class OseeBuildTypeContributionItem extends OseeStatusContributionItem {
 
                @Override
                public IStatus runInUIThread(IProgressMonitor monitor) {
-                  Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
+                  Shell shell = AWorkbench.getActiveShell();
                   WorkbenchPreferenceDialog dialog =
                      WorkbenchPreferenceDialog.createDialogOn(shell, ConfigurationDetails.PAGE_ID);
                   isSelectionAllowed.setValue(false);

@@ -229,7 +229,7 @@ public class UploadRemoteFileJob extends Job {
       //      } else {
 
       //      if (true != toReturn.equals(Status.OK_STATUS)) {
-      //         PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+      //         AWorkbench.getDisplay().asyncExec(new Runnable() {
       //            public void run() {
       //               MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Upload Error",
       //                     "Upload of files to remote host failed.");

@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -48,7 +49,7 @@ public class ReportErrorsJob extends UIJob {
    @Override
    public IStatus runInUIThread(IProgressMonitor monitor) {
       final String errorMessage = Arrays.deepToString(objectsWithErrors).replaceAll(",", ",\n");
-      Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
+      Shell shell = AWorkbench.getActiveShell();
       ResourceErrorDialog dialog = new ResourceErrorDialog(shell, getName(), message, errorMessage);
       dialog.open();
       return Status.OK_STATUS;
@@ -96,7 +97,7 @@ public class ReportErrorsJob extends UIJob {
          text.setLayoutData(data);
          text.setEditable(false);
          text.setText(errorMessage);
-         text.setBackground(PlatformUI.getWorkbench().getDisplay().getSystemColor(SWT.COLOR_WHITE));
+         text.setBackground(AWorkbench.getSystemColor(SWT.COLOR_WHITE));
          return composite;
       }
    }

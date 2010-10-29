@@ -242,7 +242,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
       image.setBackground(Displays.getSystemColor(SWT.COLOR_INFO_BACKGROUND));
 
       Label label = new Label(composite, SWT.NONE);
-      Font font = new Font(PlatformUI.getWorkbench().getDisplay(), "Courier New", 10, SWT.BOLD);
+      Font font = new Font(AWorkbench.getDisplay(), "Courier New", 10, SWT.BOLD);
       label.setFont(font);
       label.setForeground(Displays.getSystemColor(SWT.COLOR_DARK_RED));
       label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true));

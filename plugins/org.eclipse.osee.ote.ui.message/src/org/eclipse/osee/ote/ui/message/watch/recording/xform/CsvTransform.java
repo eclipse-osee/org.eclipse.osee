@@ -22,6 +22,7 @@ import java.util.logging.Level;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.ote.ui.message.internal.Activator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
@@ -36,7 +37,7 @@ public class CsvTransform extends Action {
 
       FileDialogSelectionGetter getter = new FileDialogSelectionGetter();
 
-      PlatformUI.getWorkbench().getDisplay().syncExec(getter);
+      AWorkbench.getDisplay().syncExec(getter);
       if (getter.getPath() != null) {
          File file = new File(getter.getPath());
          File csvFile = new File(getter.getPath() + "_transformed.csv");
@@ -128,7 +129,7 @@ public class CsvTransform extends Action {
 
       @Override
       public void run() {
-         FileDialog fd = new FileDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell(), SWT.OPEN);
+         FileDialog fd = new FileDialog(AWorkbench.getActiveShell(), SWT.OPEN);
          fd.setFilterPath(ResourcesPlugin.getWorkspace().getRoot().getLocation().toOSString());
          // fd.setFilterExtensions(new String[]{"*.rec"});
          if (fd.open() != null) {

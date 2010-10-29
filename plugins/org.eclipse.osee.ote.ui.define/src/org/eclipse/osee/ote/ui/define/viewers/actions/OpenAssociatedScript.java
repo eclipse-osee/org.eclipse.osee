@@ -17,6 +17,7 @@ import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.svn.VersionControl;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.ote.define.artifacts.TestRunOperator;
 import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
 import org.eclipse.osee.ote.ui.define.utilities.SelectionHelper;
@@ -59,8 +60,7 @@ public class OpenAssociatedScript extends AbstractActionHandler {
    }
 
    private void handleException() {
-      MessageDialog.openError(PlatformUI.getWorkbench().getDisplay().getActiveShell(), "Open Script",
-         "Unable to open script with invalid url.");
+      MessageDialog.openError(AWorkbench.getActiveShell(), "Open Script", "Unable to open script with invalid url.");
    }
 
    private void openRemoteScript(String scriptUrl, String revision) {

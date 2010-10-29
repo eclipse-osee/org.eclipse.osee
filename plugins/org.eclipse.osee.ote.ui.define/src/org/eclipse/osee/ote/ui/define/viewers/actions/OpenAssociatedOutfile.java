@@ -17,6 +17,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.ote.define.artifacts.TestRunOperator;
 import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
@@ -72,7 +73,7 @@ public class OpenAssociatedOutfile extends AbstractActionHandler {
 
    private void handleException(Exception ex) {
       OseeLog.log(OteUiDefinePlugin.class, Level.WARNING, "Unable to open outfile.", ex);
-      Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
+      Shell shell = AWorkbench.getActiveShell();
       MessageDialog.openError(shell, "Open Outfile", "Unable to open outfile.");
    }
 }

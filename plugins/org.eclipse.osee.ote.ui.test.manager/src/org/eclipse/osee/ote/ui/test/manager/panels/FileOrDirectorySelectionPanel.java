@@ -12,6 +12,7 @@ package org.eclipse.osee.ote.ui.test.manager.panels;
 
 import java.io.File;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.ote.ui.test.manager.OteTestManagerImage;
 import org.eclipse.osee.ote.ui.test.manager.util.Dialogs;
@@ -28,7 +29,6 @@ import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Roberto E. Escobar
@@ -84,7 +84,7 @@ public class FileOrDirectorySelectionPanel extends Composite {
    }
 
    private void createDialog() {
-      Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
+      Shell shell = AWorkbench.getActiveShell();
       String selection = "";
       if (isDirectory == true) {
          DirectoryDialog directoryDialog = new DirectoryDialog(shell, SWT.OPEN);

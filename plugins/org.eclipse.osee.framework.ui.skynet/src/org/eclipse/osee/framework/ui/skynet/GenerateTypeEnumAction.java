@@ -29,6 +29,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.database.init.SkynetTypesEnumGenerator;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.ws.AWorkspace;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -39,7 +40,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IActionDelegate;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.CheckedTreeSelectionDialog;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
@@ -83,8 +83,8 @@ public class GenerateTypeEnumAction implements IActionDelegate {
 
    private Object getFolderToStoreAutoGenFilesIn(IResource resource) {
       CheckedTreeSelectionDialog resourceDialog =
-         new ResourceSelectionTree(PlatformUI.getWorkbench().getDisplay().getActiveShell(),
-            new WorkbenchLabelProvider(), new WorkbenchContentProvider());
+         new ResourceSelectionTree(AWorkbench.getActiveShell(), new WorkbenchLabelProvider(),
+            new WorkbenchContentProvider());
 
       resourceDialog.setInput(resource.getWorkspace().getRoot());
       resourceDialog.addFilter(new ViewerFilter() {

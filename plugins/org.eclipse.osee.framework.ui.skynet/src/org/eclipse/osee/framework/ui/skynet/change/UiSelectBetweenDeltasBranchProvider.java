@@ -23,9 +23,9 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.IBranchProvider;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectionDialog;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.UIJob;
 
 public final class UiSelectBetweenDeltasBranchProvider implements IBranchProvider {
@@ -54,7 +54,7 @@ public final class UiSelectBetweenDeltasBranchProvider implements IBranchProvide
 
    private IStatus executeInUiThread(final Collection<Branch> selectable, final Branch[] selectedBranch) throws OseeCoreException {
       IStatus status = null;
-      Display display = PlatformUI.getWorkbench().getDisplay();
+      Display display = AWorkbench.getDisplay();
       if (display.getThread().equals(Thread.currentThread())) {
          status = getUserSelection(selectable, selectedBranch);
       } else {

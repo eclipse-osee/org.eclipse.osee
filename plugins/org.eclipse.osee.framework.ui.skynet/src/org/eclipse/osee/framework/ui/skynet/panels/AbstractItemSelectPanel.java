@@ -21,6 +21,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Widgets;
@@ -33,7 +34,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Roberto E. Escobar
@@ -143,7 +143,7 @@ public abstract class AbstractItemSelectPanel<T> {
       if (lastSelected == null) {
          lastSelected = getDefaultItem();
       }
-      Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
+      Shell shell = AWorkbench.getActiveShell();
       Dialog dialog = createSelectDialog(shell, lastSelected);
 
       int result = dialog.open();

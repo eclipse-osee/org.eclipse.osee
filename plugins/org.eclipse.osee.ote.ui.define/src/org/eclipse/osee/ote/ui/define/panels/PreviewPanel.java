@@ -13,6 +13,7 @@ package org.eclipse.osee.ote.ui.define.panels;
 import java.net.URI;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
 import org.eclipse.swt.SWT;
@@ -24,7 +25,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Roberto E. Escobar
@@ -77,7 +77,7 @@ public class PreviewPanel extends Composite {
       defaultComposite.setBackground(Displays.getSystemColor(SWT.COLOR_INFO_BACKGROUND));
 
       Label label = new Label(defaultComposite, SWT.NONE);
-      Font font = new Font(PlatformUI.getWorkbench().getDisplay(), "Courier New", 10, SWT.BOLD);
+      Font font = new Font(AWorkbench.getDisplay(), "Courier New", 10, SWT.BOLD);
       label.setFont(font);
       label.setForeground(Displays.getSystemColor(SWT.COLOR_DARK_RED));
       label.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, true));

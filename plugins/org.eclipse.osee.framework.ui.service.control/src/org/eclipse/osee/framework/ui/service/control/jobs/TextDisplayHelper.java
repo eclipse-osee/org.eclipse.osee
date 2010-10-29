@@ -11,10 +11,10 @@
 package org.eclipse.osee.framework.ui.service.control.jobs;
 
 import org.eclipse.osee.framework.ui.plugin.io.StreamToTextArea;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.FormattedText;
 import org.eclipse.swt.SWT;
-import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Roberto E. Escobar
@@ -32,7 +32,7 @@ public class TextDisplayHelper {
    }
 
    public void updateScrollBar() {
-      PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+      AWorkbench.getDisplay().syncExec(new Runnable() {
          @Override
          public void run() {
             formattedText.getStyledText().setSelection(formattedText.getStyledText().getCharCount());
@@ -41,7 +41,7 @@ public class TextDisplayHelper {
    }
 
    public void addText(final String toDisplay, final int format, final int color, final boolean underline) {
-      PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+      AWorkbench.getDisplay().syncExec(new Runnable() {
          @Override
          public void run() {
             formattedText.addText(toDisplay, format, color, underline);
@@ -50,7 +50,7 @@ public class TextDisplayHelper {
    }
 
    public void clear() {
-      PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+      AWorkbench.getDisplay().syncExec(new Runnable() {
          @Override
          public void run() {
             formattedText.clearTextArea();

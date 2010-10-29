@@ -20,13 +20,13 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.CheckedTreeSelectionDialog;
 import org.eclipse.ui.dialogs.ISelectionStatusValidator;
 
@@ -38,12 +38,12 @@ public final class AttributeTypeEditDisplay implements AttributeTypeEditPresente
 
    @Override
    public void showInformation(String title, String message) {
-      MessageDialog.openInformation(PlatformUI.getWorkbench().getDisplay().getActiveShell(), title, message);
+      MessageDialog.openInformation(AWorkbench.getActiveShell(), title, message);
    }
 
    private CheckedTreeSelectionDialog createDialog(String title, String message, KeyedImage keyedImage) {
       CheckedTreeSelectionDialog dialog =
-         new CheckedTreeSelectionDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell(), new LabelProvider(),
+         new CheckedTreeSelectionDialog(AWorkbench.getActiveShell(), new LabelProvider(),
             new ArrayTreeContentProvider());
       dialog.setTitle(title);
       Image image = ImageManager.getImage(keyedImage);

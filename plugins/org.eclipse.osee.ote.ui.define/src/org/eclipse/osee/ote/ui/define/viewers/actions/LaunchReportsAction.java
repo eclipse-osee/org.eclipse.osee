@@ -13,11 +13,11 @@ package org.eclipse.osee.ote.ui.define.viewers.actions;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.ote.ui.define.dialogs.ReportsDialog;
 import org.eclipse.osee.ote.ui.define.utilities.EditorUtility;
 import org.eclipse.osee.ote.ui.define.utilities.SelectionHelper;
-import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Roberto E. Escobar
@@ -37,7 +37,7 @@ public class LaunchReportsAction extends AbstractActionHandler {
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
-            ReportsDialog dialog = new ReportsDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell());
+            ReportsDialog dialog = new ReportsDialog(AWorkbench.getActiveShell());
             int result = dialog.open();
             if (result == Window.OK) {
                String reportId = dialog.getReportSelected();
