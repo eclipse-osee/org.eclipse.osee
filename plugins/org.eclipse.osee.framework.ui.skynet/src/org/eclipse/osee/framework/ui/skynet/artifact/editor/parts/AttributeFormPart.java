@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.artifact.editor.parts;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.IMessageProvider;
@@ -35,6 +36,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetDecorator;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidgetUtility;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.AttributeXWidgetManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DefaultXWidgetOptionResolver;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IAttributeXWidgetProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPage;
@@ -101,10 +103,6 @@ public class AttributeFormPart extends AbstractFormPart {
          setLabelFonts(composite, FontManager.getDefaultLabelFont());
          layoutControls(composite);
 
-         for (XWidget xWidget : XWidgetUtility.findXWidgetsInControl(composite)) {
-            xWidget.addXModifiedListener(new XWidgetValidationListener());
-            decorator.addWidget(xWidget);
-         }
          decorator.refresh();
          composite.setVisible(true);
 
@@ -175,8 +173,14 @@ public class AttributeFormPart extends AbstractFormPart {
             }
          }
          WorkPage workPage = new WorkPage(concreteWidgets, new DefaultXWidgetOptionResolver());
-         workPage.createBody(getManagedForm(), internalComposite, artifact, widgetModifiedListener, isEditable);
 
+         DynamicXWidgetLayout xWidgetLayout =
+            workPage.createBody(getManagedForm(), internalComposite, artifact, widgetModifiedListener, isEditable);
+         Collection<XWidget> xWidgets = xWidgetLayout.getXWidgets();
+         for (XWidget xWidget : xWidgets) {
+            xWidget.addXModifiedListener(new XWidgetValidationListener());
+            decorator.addWidget(xWidget);
+         }
       } catch (OseeCoreException ex) {
          toolkit.createLabel(parent, String.format("Error creating controls for: [%s]", attributeType.getName()));
       }
