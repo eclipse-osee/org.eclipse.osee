@@ -626,21 +626,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return getSoleAttributeValue(AtsAttributeTypes.GoalOrderVote, "");
    }
 
-   @Override
-   public String getWorldViewCategory() throws OseeCoreException {
-      return getSoleAttributeValue(AtsAttributeTypes.Category1, "");
-   }
-
-   @Override
-   public String getWorldViewCategory2() throws OseeCoreException {
-      return getSoleAttributeValue(AtsAttributeTypes.Category2, "");
-   }
-
-   @Override
-   public String getWorldViewCategory3() throws OseeCoreException {
-      return getSoleAttributeValue(AtsAttributeTypes.Category3, "");
-   }
-
    public int getWorldViewStatePercentComplete() throws OseeCoreException {
       return getPercentCompleteSMAStateTotal(getStateMgr().getCurrentStateName());
    }

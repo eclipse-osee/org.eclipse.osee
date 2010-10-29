@@ -743,6 +743,10 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, Co
       getOrCreateSoleAttribute(attributeType).setValueFromInputStream(stream);
    }
 
+   public String getAttributesToStringSorted(IAttributeType attributeType) throws OseeCoreException {
+      return getAttributesToString(attributeType, true);
+   }
+
    /**
     * @return comma delimited representation of all the attributes of the type attributeType in an unspecified order
     */
@@ -751,25 +755,30 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, Co
    }
 
    /**
-    * @return comma delimited representation of all the attributes of the type attributeType sorted by their string
-    * value
+    * @return comma delimited representation of all the attributes of the type attributeName
     */
-   public String getAttributesToStringSorted(IAttributeType attributeType) throws OseeCoreException {
-      return getAttributesToString(attributeType, true);
-   }
-
-   private String getAttributesToString(IAttributeType attributeType, boolean sorted) throws OseeCoreException {
-      StringBuilder sb = new StringBuilder();
+   public String getAttributesToString(IAttributeType attributeType, boolean sorted) throws OseeCoreException {
+      List<String> strs = new ArrayList<String>();
       List<Attribute<Object>> attributes = getAttributes(attributeType);
       if (sorted) {
          java.util.Collections.sort(attributes);
       }
 
-      for (Attribute<Object> attr : attributes) {
-         sb.append(attr);
-         sb.append(", ");
+      for (Attribute<?> attr : attributes) {
+         strs.add(String.valueOf(attr));
       }
-      return sb.substring(0, sb.length() - 2);
+      return Collections.toString(", ", strs);
+   }
+
+   /**
+    * @return comma separator representation unique values of the attributes of the type attributeName
+    */
+   public String getAttributesToStringUnique(IAttributeType attributeType, String separator) throws OseeCoreException {
+      Set<String> strs = new HashSet<String>();
+      for (Attribute<?> attr : getAttributes(attributeType)) {
+         strs.add(String.valueOf(attr));
+      }
+      return Collections.toString(separator, strs);
    }
 
    /**

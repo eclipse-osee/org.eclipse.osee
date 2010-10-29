@@ -18,6 +18,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
+import org.eclipse.osee.ats.field.CategoryColumn;
 import org.eclipse.osee.ats.field.OperationalImpactColumn;
 import org.eclipse.osee.ats.field.OperationalImpactDesciptionColumn;
 import org.eclipse.osee.ats.field.OperationalImpactWorkaroundColumn;
@@ -120,12 +121,6 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
    public static final XViewerColumn Goal_Order_Vote_Col = new XViewerAtsAttributeColumn(
       COLUMN_NAMESPACE + ".goalOrderVote", AtsAttributeTypes.GoalOrderVote, 40, SWT.LEFT, false, SortDataType.String,
       true);
-   public static final XViewerColumn Category_Col = new XViewerAtsAttributeColumn(AtsAttributeTypes.Category1, 80,
-      SWT.LEFT, false, SortDataType.String, true);
-   public static final XViewerColumn Category2_Col = new XViewerAtsAttributeColumn(AtsAttributeTypes.Category2, 80,
-      SWT.LEFT, false, SortDataType.String, true);
-   public static final XViewerColumn Category3_Col = new XViewerAtsAttributeColumn(AtsAttributeTypes.Category3, 80,
-      SWT.LEFT, false, SortDataType.String, true);
 
    public static XViewerColumn Related_To_State_Col = new XViewerColumn(COLUMN_NAMESPACE + ".relatedToState",
       AtsAttributeTypes.RelatedToState.getUnqualifiedName(), 80, SWT.LEFT, false, SortDataType.String, true,
@@ -266,9 +261,9 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       Estimated_Completion_Date_Col,
       Release_Date_Col,
       Work_Package_Col,
-      Category_Col,
-      Category2_Col,
-      Category3_Col,
+      new CategoryColumn(CategoryColumn.Category1),
+      new CategoryColumn(CategoryColumn.Category2),
+      new CategoryColumn(CategoryColumn.Category3),
       Goal_Order,
       Goal_Order_Vote_Col,
       Related_To_State_Col,

@@ -237,11 +237,6 @@ public abstract class AbstractReviewArtifact extends AbstractTaskableArtifact {
    }
 
    @Override
-   public String getWorldViewCategory() {
-      return "";
-   }
-
-   @Override
    public Date getWorldViewReleaseDate() {
       return null;
    }
@@ -291,16 +286,6 @@ public abstract class AbstractReviewArtifact extends AbstractTaskableArtifact {
 
    public Artifact getArtifact() {
       return this;
-   }
-
-   @Override
-   public String getWorldViewCategory2() {
-      return "";
-   }
-
-   @Override
-   public String getWorldViewCategory3() {
-      return "";
    }
 
 }

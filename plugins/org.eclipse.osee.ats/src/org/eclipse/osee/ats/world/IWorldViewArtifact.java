@@ -49,12 +49,6 @@ public interface IWorldViewArtifact {
 
    String getWorldViewGoalOrder() throws OseeCoreException;
 
-   String getWorldViewCategory() throws OseeCoreException;
-
-   String getWorldViewCategory2() throws OseeCoreException;
-
-   String getWorldViewCategory3() throws OseeCoreException;
-
    ChangeType getWorldViewChangeType() throws OseeCoreException;
 
    String getWorldViewChangeTypeStr() throws OseeCoreException;

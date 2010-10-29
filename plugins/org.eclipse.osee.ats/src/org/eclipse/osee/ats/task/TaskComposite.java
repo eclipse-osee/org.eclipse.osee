@@ -98,7 +98,7 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
          showReleaseMetricsLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
          taskXViewer =
-            new TaskXViewer(this, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, iXTaskViewer.getEditor(), this);
+            new TaskXViewer(this, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, iXTaskViewer.getEditor());
          taskXViewer.setTasksEditable(iXTaskViewer.isTasksEditable());
          taskXViewer.setNewTaskSelectionEnabled(iXTaskViewer.isTasksEditable());
          taskXViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));

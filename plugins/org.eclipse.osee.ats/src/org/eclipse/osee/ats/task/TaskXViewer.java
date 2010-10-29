@@ -53,10 +53,10 @@ public class TaskXViewer extends WorldXViewer {
    private boolean newTaskSelectionEnabled = false;
    private static String viewerId = GUID.create();
 
-   public TaskXViewer(TaskComposite taskComposite, int style, IDirtiableEditor editor, TaskComposite xTaskViewer) {
+   public TaskXViewer(TaskComposite taskComposite, int style, IDirtiableEditor editor) {
       super(taskComposite, style, new TaskXViewerFactory());
       this.editor = editor;
-      this.taskComposite = xTaskViewer;
+      this.taskComposite = taskComposite;
    }
 
    @Override
@@ -335,7 +335,7 @@ public class TaskXViewer extends WorldXViewer {
    }
 
    @Override
-   public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem, boolean persist) {
+   public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
       if (!isTasksEditable()) {
          AWorkbench.popup("ERROR", "Editing disabled for current state.");
          return false;
@@ -362,7 +362,7 @@ public class TaskXViewer extends WorldXViewer {
          } else if (xCol.equals(WorldXViewerFactory.Hours_Spent_State_Col) || xCol.equals(WorldXViewerFactory.Hours_Spent_Total_Col) || xCol.equals(WorldXViewerFactory.Percent_Complete_State_Col) || xCol.equals(WorldXViewerFactory.Percent_Complete_Total_Col)) {
             modified = SMAPromptChangeStatus.promptChangeStatus(Arrays.asList(taskArt), false);
          } else {
-            modified = super.handleAltLeftClick(treeColumn, treeItem, false);
+            modified = super.handleAltLeftClick(treeColumn, treeItem);
          }
 
          if (modified) {
@@ -397,6 +397,11 @@ public class TaskXViewer extends WorldXViewer {
 
    public TaskComposite getTaskComposite() {
       return taskComposite;
+   }
+
+   @Override
+   public boolean isAltLeftClickPersist() {
+      return false;
    }
 
 }

@@ -502,15 +502,6 @@ public class ActionArtifact extends AbstractAtsArtifact implements IWorldViewArt
    }
 
    @Override
-   public String getWorldViewCategory() throws OseeCoreException {
-      Set<String> strs = new HashSet<String>();
-      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         strs.add(team.getWorldViewCategory());
-      }
-      return Collections.toString(";", strs);
-   }
-
-   @Override
    public String getWorldViewGoalOrderVote() throws OseeCoreException {
       return getSoleAttributeValue(AtsAttributeTypes.GoalOrderVote, "");
    }
@@ -520,24 +511,6 @@ public class ActionArtifact extends AbstractAtsArtifact implements IWorldViewArt
       Set<String> strs = new HashSet<String>();
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
          strs.add(team.getWorldViewWorkPackage());
-      }
-      return Collections.toString(";", strs);
-   }
-
-   @Override
-   public String getWorldViewCategory2() throws OseeCoreException {
-      Set<String> strs = new HashSet<String>();
-      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         strs.add(team.getWorldViewCategory2());
-      }
-      return Collections.toString(";", strs);
-   }
-
-   @Override
-   public String getWorldViewCategory3() throws OseeCoreException {
-      Set<String> strs = new HashSet<String>();
-      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         strs.add(team.getWorldViewCategory3());
       }
       return Collections.toString(";", strs);
    }

@@ -29,9 +29,6 @@ public class AtsAttributeTypes extends NamedIdentity implements IAttributeType {
    public static final IAttributeType AllowCreateBranch = new AtsAttributeTypes("AAMFEbARuQEvi6rtY5gA", "Allow Create Branch");
    public static final IAttributeType BaselineBranchGuid = new AtsAttributeTypes("AAMFEdIjJ2za2fblEVgA", "Baseline Branch Guid", "Basline branch associated with ATS object.");
    public static final IAttributeType BlockingReview = new AtsAttributeTypes("AAMFEctKkjMRrIy1C7gA", "Blocking Review");
-   public static final IAttributeType Category1 = new AtsAttributeTypes("AAMFEdrYniOQYrYUKKQA", "Category", "Open field for user to be able to enter text to use for categorizing/sorting.");
-   public static final IAttributeType Category2 = new AtsAttributeTypes("AAMFEdthBkolbJKLXuAA", "Category2", Category1.getDescription());
-   public static final IAttributeType Category3 = new AtsAttributeTypes("AAMFEd06oxr8LMzZxdgA", "Category3", Category1.getDescription());
    public static final IAttributeType ChangeType = new AtsAttributeTypes("AAMFEc+MwGHnPCv7HlgA", "Change Type", "Type of change.");
    public static final IAttributeType CurrentState = new AtsAttributeTypes("AAMFEdOWL3u6hmX2VbwA", "Current State", "Current state of workflow state machine.");
    public static final IAttributeType Decision = new AtsAttributeTypes("AAMFEd7uDXcmqq_FrCQA", "Decision", "Option selected during decision review.");
@@ -79,7 +76,7 @@ public class AtsAttributeTypes extends NamedIdentity implements IAttributeType {
       super(guid, "ats." + name);
    }
 
-   private AtsAttributeTypes(String guid, String name, String description) {
+   public AtsAttributeTypes(String guid, String name, String description) {
       super(guid, "ats." + name, description);
    }
 }
