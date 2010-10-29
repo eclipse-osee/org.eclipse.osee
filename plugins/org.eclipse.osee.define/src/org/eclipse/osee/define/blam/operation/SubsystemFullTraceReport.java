@@ -128,7 +128,7 @@ public class SubsystemFullTraceReport extends AbstractBlam {
             writer.writeCell(subSystemRequirement.getName());
             writer.writeCell(getRequirementText(subSystemRequirement));
             writer.writeCell(subSystemRequirement.getSoleAttributeValue(CoreAttributeTypes.Subsystem, ""));
-            writer.writeCell(subSystemRequirement.getAttributesToString(CoreAttributeTypes.QualificationMethod));
+            writer.writeCell(subSystemRequirement.getAttributesToStringSorted(CoreAttributeTypes.QualificationMethod));
             writer.writeCell(Collections.toString(",",
                subSystemRequirement.getRelatedArtifacts(CoreRelationTypes.Verification__Verifier)));
             topRowForSubsystemReq = false;
@@ -153,7 +153,7 @@ public class SubsystemFullTraceReport extends AbstractBlam {
       writer.writeCell(softwareRequirement.getName());
       writer.writeCell(Collections.toString(",",
          softwareRequirement.getAttributesToStringList(CoreAttributeTypes.Partition)));
-      writer.writeCell(softwareRequirement.getAttributesToString(CoreAttributeTypes.QualificationMethod));
+      writer.writeCell(softwareRequirement.getAttributesToStringSorted(CoreAttributeTypes.QualificationMethod));
 
       tests.clear();
       for (Artifact testProcedure : softwareRequirement.getRelatedArtifacts(CoreRelationTypes.Validation__Validator)) {

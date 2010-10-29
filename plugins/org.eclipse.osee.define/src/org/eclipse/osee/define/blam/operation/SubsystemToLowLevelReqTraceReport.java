@@ -115,7 +115,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
          row[0] = correct(lowLevelReq.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, ""));
          row[1] = lowLevelReq.getName();
          if (isLowerLevelRequirement(lowLevelReq)) {
-            row[2] = lowLevelReq.getAttributesToString(CoreAttributeTypes.QualificationMethod);
+            row[2] = lowLevelReq.getAttributesToStringSorted(CoreAttributeTypes.QualificationMethod);
 
             for (Artifact subSysReq : lowLevelReq.getRelatedArtifacts(CoreRelationTypes.Requirement_Trace__Higher_Level)) {
                row[3] = getAssociatedSubSystem(subSysReq);

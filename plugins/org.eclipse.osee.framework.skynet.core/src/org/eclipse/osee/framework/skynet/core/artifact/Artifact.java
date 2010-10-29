@@ -744,11 +744,28 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, Co
    }
 
    /**
-    * @return comma delimited representation of all the attributes of the type attributeName
+    * @return comma delimited representation of all the attributes of the type attributeType in an unspecified order
     */
    public String getAttributesToString(IAttributeType attributeType) throws OseeCoreException {
+      return getAttributesToString(attributeType, false);
+   }
+
+   /**
+    * @return comma delimited representation of all the attributes of the type attributeType sorted by their string
+    * value
+    */
+   public String getAttributesToStringSorted(IAttributeType attributeType) throws OseeCoreException {
+      return getAttributesToString(attributeType, true);
+   }
+
+   private String getAttributesToString(IAttributeType attributeType, boolean sorted) throws OseeCoreException {
       StringBuilder sb = new StringBuilder();
-      for (Attribute<?> attr : getAttributes(attributeType)) {
+      List<Attribute<Object>> attributes = getAttributes(attributeType);
+      if (sorted) {
+         java.util.Collections.sort(attributes);
+      }
+
+      for (Attribute<Object> attr : attributes) {
          sb.append(attr);
          sb.append(", ");
       }
