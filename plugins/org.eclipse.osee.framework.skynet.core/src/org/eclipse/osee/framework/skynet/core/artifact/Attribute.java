@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
 /**
  * @author Ryan D. Brooks
  */
-public abstract class Attribute<T> {
+public abstract class Attribute<T> implements Comparable<Attribute<T>> {
    private AttributeType attributeType;
    private WeakReference<Artifact> artifactRef;
    private IAttributeDataProvider attributeDataProvider;
@@ -344,4 +344,8 @@ public abstract class Attribute<T> {
       internalSetModificationType(ModificationType.DELETED);
    }
 
+   @Override
+   public int compareTo(Attribute<T> other) {
+      return toString().compareTo(other.toString());
+   }
 }
