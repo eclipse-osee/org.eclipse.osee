@@ -31,12 +31,13 @@ public class VariableMap {
 
    public VariableMap(Object... optionArgs) throws OseeArgumentException {
       for (int i = 0; i < optionArgs.length; i += 2) {
-         if (optionArgs[i] instanceof String) {
+         Object object = optionArgs[i];
+         if (object instanceof String) {
             variableMap.put((String) optionArgs[i], optionArgs[i + 1]);
-         } else if (optionArgs[i] == null) {
-            throw new OseeArgumentException("Option %d must not be null", i);
+         } else if (object == null) {
+            throw new OseeArgumentException("The [%d]th option must not be null", i);
          } else {
-            throw new OseeArgumentException("Option %d must be of type string but is of type [%s]", i,
+            throw new OseeArgumentException("The [%d]th option must be of type string but is of type [%s]", i,
                optionArgs[i].getClass().getName());
          }
       }
