@@ -27,10 +27,6 @@ public class Strings {
       return value != null && value.length() > 0;
    }
 
-   public static boolean isValid(String value) {
-      return value != null && value.length() > 0;
-   }
-
    public static String emptyString() {
       return EMPTY_STRING;
    }
