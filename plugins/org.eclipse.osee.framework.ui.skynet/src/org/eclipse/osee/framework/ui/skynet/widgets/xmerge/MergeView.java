@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
+
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -370,7 +371,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
                try {
                   if (MergeUtility.okToOverwriteEditedValue(attributeConflict, Displays.getActiveShell().getShell(),
                      false)) {
-                     RendererManager.openInJob(attributeConflict.getArtifact(), PresentationType.MERGE_EDIT);
+                     RendererManager.openInJob(attributeConflict.getArtifact(), PresentationType.SPECIALIZED_EDIT);
 
                      attributeConflict.markStatusToReflectEdit();
                   }
