@@ -12,6 +12,7 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xmerge;
 
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -303,7 +305,7 @@ public class MergeUtility {
                            Thread.sleep(500);
                         }
                         monitor.done();
-                        RendererManager.openInJob(attributeConflict.getArtifact(), PresentationType.MERGE_EDIT);
+                        RendererManager.openInJob(attributeConflict.getArtifact(), PresentationType.SPECIALIZED_EDIT);
 
                      } catch (Exception ex) {
                         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);

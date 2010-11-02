@@ -14,6 +14,7 @@ package org.eclipse.osee.framework.ui.skynet.render;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERALIZED_EDIT;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERAL_REQUESTED;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.SPECIALIZED_EDIT;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,7 +22,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+
 import javax.xml.namespace.QName;
+
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -170,7 +173,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
             value = WordUtil.reassignBookMarkID(value);
          }
 
-         if (presentationType == PresentationType.SPECIALIZED_EDIT) {
+         if (presentationType == PresentationType.SPECIALIZED_EDIT || presentationType == PresentationType.MERGE_EDIT) {
             OseeLinkBuilder linkBuilder = new OseeLinkBuilder();
             wordMl.addParagraphNoEscape(linkBuilder.getEditArtifactLink(artifact.getGuid(), artifact.getBranch(),
                "OSEE_EDIT_START"));
@@ -180,7 +183,9 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
          } else {
             wordMl.addWordMl(value);
          }
+         if(presentationType != PresentationType.MERGE && presentationType != PresentationType.MERGE_EDIT){
          wordMl.resetListValue();
+         }
 
       } else {
          super.renderAttribute(attributeType, artifact, PresentationType.SPECIALIZED_EDIT, wordMl, map,
