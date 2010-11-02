@@ -53,7 +53,7 @@ public class DemoTestUtil {
 
       Collection<Artifact> robotArtifacts =
          ArtifactQuery.getArtifactListFromTypeAndName(CoreArtifactTypes.SoftwareRequirement, "%Robot%", branch);
-      if (robotArtifacts.size() >= 6) {
+      if (robotArtifacts.size() < 6) {
          return new Result(
             String.format(
                "Expected at least 6 Software Requirements with name \"Robot\" but found [%s].  Database is not be populated with demo data.",
