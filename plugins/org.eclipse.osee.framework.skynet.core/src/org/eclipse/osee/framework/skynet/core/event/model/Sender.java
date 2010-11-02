@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.skynet.core.event.EventUtil;
  */
 public class Sender {
 
-   String sourceObject;
+   private final String sourceObject;
    private final OseeClientSession oseeSession;
 
    public Sender(Object sourceObject, OseeClientSession oseeSession) {
@@ -76,13 +76,6 @@ public class Sender {
     */
    public Object getSourceObject() {
       return sourceObject;
-   }
-
-   /**
-    * @param sender the sender to set
-    */
-   public void setSourceObject(Object sourceObject) {
-      this.sourceObject = EventUtil.getObjectSafeName(sourceObject);
    }
 
    public NetworkSender getNetworkSender() {

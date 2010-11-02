@@ -13,9 +13,7 @@ package org.eclipse.osee.framework.skynet.core.event;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.OseeBranch;
@@ -39,7 +37,6 @@ import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.model.RemoteEventServiceEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
-import org.eclipse.osee.framework.skynet.core.event.model.TransactionChange;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.systems.EventManagerData;
 import org.eclipse.osee.framework.skynet.core.event.systems.InternalEventManager;
@@ -176,11 +173,13 @@ public class OseeEventManager {
       if (isDisableEvents()) {
          return;
       }
+
+      Sender sender = createSender(source);
       if (testBranchEventListener != null) {
-         testBranchEventListener.handleBranchEvent(createSender(source), branchEvent);
+         testBranchEventListener.handleBranchEvent(sender, branchEvent);
       }
-      branchEvent.setNetworkSender(createSender(source).getNetworkSender());
-      getEventManager().kickBranchEvent(createSender(source), branchEvent);
+      branchEvent.setNetworkSender(sender.getNetworkSender());
+      getEventManager().kickBranchEvent(sender, branchEvent);
    }
 
    // Kick LOCAL and REMOTE access control events
@@ -188,8 +187,9 @@ public class OseeEventManager {
       if (isDisableEvents()) {
          return;
       }
-      accessControlEvent.setNetworkSender(createSender(source).getNetworkSender());
-      getEventManager().kickAccessControlArtifactsEvent(createSender(source), accessControlEvent);
+      Sender sender = createSender(source);
+      accessControlEvent.setNetworkSender(sender.getNetworkSender());
+      getEventManager().kickAccessControlArtifactsEvent(sender, accessControlEvent);
    }
 
    // Kick LOCAL and REMOTE transaction deleted event
@@ -197,17 +197,9 @@ public class OseeEventManager {
       if (isDisableEvents()) {
          return;
       }
-      Set<Integer> transactionIds = new HashSet<Integer>();
-      for (TransactionChange transChange : transactionEvent.getTransactions()) {
-         transactionIds.add(transChange.getTransactionId());
-      }
-      int[] transIds = new int[transactionIds.size()];
-      int x = 0;
-      for (Integer value : transactionIds) {
-         transIds[x++] = value.intValue();
-      }
-      transactionEvent.setNetworkSender(createSender(source).getNetworkSender());
-      getEventManager().kickTransactionEvent(createSender(source), transactionEvent);
+      Sender sender = createSender(source);
+      transactionEvent.setNetworkSender(sender.getNetworkSender());
+      getEventManager().kickTransactionEvent(sender, transactionEvent);
    }
 
    // Kick LOCAL and REMOTE transaction event
@@ -215,8 +207,9 @@ public class OseeEventManager {
       if (isDisableEvents()) {
          return;
       }
-      artifactEvent.setNetworkSender(createSender(source).getNetworkSender());
-      getEventManager().kickArtifactEvent(createSender(source), artifactEvent);
+      Sender sender = createSender(source);
+      artifactEvent.setNetworkSender(sender.getNetworkSender());
+      getEventManager().kickArtifactEvent(sender, artifactEvent);
    }
 
    // Kick LOCAL transaction event
