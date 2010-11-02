@@ -106,7 +106,7 @@ public class ArtifactLoaderTest {
          thread.start();
       }
 
-      long endTime = System.currentTimeMillis() + 76 * 1000;
+      long endTime = System.currentTimeMillis() + 81 * 1000;
       while (true) {
          Thread.sleep(1000);
          System.out.println("Checking for thread completion..." + numThreadsCompleted + "/" + TOTAL_THREADS);
