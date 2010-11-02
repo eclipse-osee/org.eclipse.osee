@@ -27,8 +27,10 @@ import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.model.ICoverageItemProvider;
 import org.eclipse.osee.coverage.model.ICoverageUnitProvider;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -53,8 +55,12 @@ public class CoverageUtil {
    public static boolean getBranchFromUser(boolean force) throws OseeCoreException {
       if (force || CoverageUtil.getBranch() == null) {
          Collection<Branch> branches = BranchManager.getBranches(BranchArchivedState.UNARCHIVED, BranchType.WORKING);
-         if (isAdmin()) {
-            branches.add(BranchManager.getBranch("SAW_Bld_1"));
+         if (isAdmin() && !isProductionDb()) {
+            try {
+               branches.add(BranchManager.getBranch("SAW_Bld_1"));
+            } catch (BranchDoesNotExist ex) {
+               // do nothing
+            }
          }
          BranchSelectionDialog dialog = new BranchSelectionDialog("Select Branch", branches);
          if (dialog.open() != 0) {
@@ -63,6 +69,10 @@ public class CoverageUtil {
          CoverageUtil.setNavigatorSelectedBranch(dialog.getSelected());
       }
       return true;
+   }
+
+   public static boolean isProductionDb() throws OseeCoreException {
+      return ClientSessionManager.isProductionDataStore();
    }
 
    public static CoverageItem getCoverageItemMatchingOrder(Collection<? extends ICoverage> items, CoverageItem coverageItem) {
