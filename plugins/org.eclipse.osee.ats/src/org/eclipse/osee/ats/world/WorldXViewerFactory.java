@@ -19,10 +19,12 @@ import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.field.CategoryColumn;
+import org.eclipse.osee.ats.field.ChangeTypeColumn;
 import org.eclipse.osee.ats.field.OperationalImpactColumn;
 import org.eclipse.osee.ats.field.OperationalImpactDesciptionColumn;
 import org.eclipse.osee.ats.field.OperationalImpactWorkaroundColumn;
 import org.eclipse.osee.ats.field.OperationalImpactWorkaroundDesciptionColumn;
+import org.eclipse.osee.ats.field.PriorityColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeColumn;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerSmaCreatedDateColumn;
@@ -49,10 +51,6 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       SortDataType.String, false, null);
    public static final XViewerColumn State_Col = new XViewerColumn("ats.column.state", "State", 75, SWT.LEFT, true,
       SortDataType.String, false, null);
-   public static final XViewerColumn Priority_Col = new XViewerAtsAttributeColumn(AtsAttributeTypes.PriorityType, 20,
-      SWT.CENTER, true, SortDataType.String, false);
-   public static final XViewerColumn Change_Type_Col = new XViewerAtsAttributeColumn(AtsAttributeTypes.ChangeType, 22,
-      SWT.CENTER, true, SortDataType.String, false);
    public static final XViewerColumn Assignees_Col = new XViewerAtsAttributeColumn(ATSAttributes.ASSIGNEE_ATTRIBUTE,
       100, SWT.LEFT, true, SortDataType.String, false);
    public static final XViewerColumn Title_Col = new XViewerArtifactNameColumn("Title");
@@ -238,8 +236,8 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
    public static final XViewerColumn[] WorldViewColumns = new XViewerColumn[] {
       Type_Col,
       State_Col,
-      Priority_Col,
-      Change_Type_Col,
+      PriorityColumn.getInstance(),
+      ChangeTypeColumn.getInstance(),
       Assignees_Col,
       Title_Col,
       Actionable_Items_Col,
@@ -261,9 +259,9 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       Estimated_Completion_Date_Col,
       Release_Date_Col,
       Work_Package_Col,
-      new CategoryColumn(CategoryColumn.Category1),
-      new CategoryColumn(CategoryColumn.Category2),
-      new CategoryColumn(CategoryColumn.Category3),
+      new CategoryColumn(CategoryColumn.Category1Attribute),
+      new CategoryColumn(CategoryColumn.Category2Attribute),
+      new CategoryColumn(CategoryColumn.Category3Attribute),
       Goal_Order,
       Goal_Order_Vote_Col,
       Related_To_State_Col,

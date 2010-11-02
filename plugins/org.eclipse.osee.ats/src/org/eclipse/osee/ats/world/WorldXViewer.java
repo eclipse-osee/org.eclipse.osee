@@ -36,6 +36,7 @@ import org.eclipse.osee.ats.actions.DeletePurgeAtsArtifactsAction;
 import org.eclipse.osee.ats.actions.EmailActionAction;
 import org.eclipse.osee.ats.actions.FavoriteAction;
 import org.eclipse.osee.ats.actions.ISelectedAtsArtifacts;
+import org.eclipse.osee.ats.actions.ISelectedTeamWorkflowArtifacts;
 import org.eclipse.osee.ats.actions.OpenInArtifactEditorAction;
 import org.eclipse.osee.ats.actions.OpenInAtsWorkflowEditor;
 import org.eclipse.osee.ats.actions.OpenInMassEditorAction;
@@ -49,7 +50,9 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionLockedType;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
+import org.eclipse.osee.ats.field.ChangeTypeAction;
 import org.eclipse.osee.ats.field.IPersistAltLeftClickProvider;
+import org.eclipse.osee.ats.field.PriorityAction;
 import org.eclipse.osee.ats.goal.GoalXViewerFactory;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.task.TaskEditor;
@@ -69,6 +72,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ISelectedArtifacts;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -91,7 +95,7 @@ import org.eclipse.ui.PartInitException;
 /**
  * @author Donald G. Dunne
  */
-public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPersistAltLeftClickProvider {
+public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPersistAltLeftClickProvider, ISelectedTeamWorkflowArtifacts, ISelectedArtifacts {
    private String title;
    private String extendedStatusString = "";
    public static final String MENU_GROUP_ATS_WORLD_EDIT = "ATS WORLD EDIT";
@@ -143,7 +147,8 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       openInArtifactEditorAction = new OpenInArtifactEditorAction(this);
       deletePurgeAtsObjectAction = new DeletePurgeAtsArtifactsAction(this);
       emailAction = new EmailActionAction(this);
-
+      editPriorityAction = new PriorityAction(this, this);
+      editChangeTypeAction = new ChangeTypeAction(this);
       editNotesAction = new Action("Edit Notes", IAction.AS_PUSH_BUTTON) {
          @Override
          public void run() {
@@ -186,24 +191,6 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
                }
             } catch (Exception ex) {
                OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         }
-      };
-
-      editChangeTypeAction = new Action("Edit Change Type", IAction.AS_PUSH_BUTTON) {
-         @Override
-         public void run() {
-            if (PromptChangeUtil.promptChangeType(getSelectedTeamWorkflowArtifacts(), true)) {
-               update(getSelectedArtifactItems().toArray(), null);
-            }
-         }
-      };
-
-      editPriorityAction = new Action("Edit Priority", IAction.AS_PUSH_BUTTON) {
-         @Override
-         public void run() {
-            if (PromptChangeUtil.promptChangePriority(getSelectedTeamWorkflowArtifacts(), true)) {
-               update(getSelectedArtifactItems().toArray(), null);
             }
          }
       };
@@ -658,6 +645,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       super.dispose();
    }
 
+   @Override
    public List<Artifact> getSelectedArtifacts() {
       List<Artifact> arts = new ArrayList<Artifact>();
       TreeItem items[] = getTree().getSelection();
@@ -708,6 +696,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
    /**
     * @return all selected Workflow and any workflow that have Actions with single workflow
     */
+   @Override
    public Set<TeamWorkFlowArtifact> getSelectedTeamWorkflowArtifacts() {
       Set<TeamWorkFlowArtifact> teamArts = new HashSet<TeamWorkFlowArtifact>();
       TreeItem items[] = getTree().getSelection();
@@ -921,10 +910,6 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
             modified = PromptChangeUtil.promptChangeAttribute(sma, AtsAttributeTypes.Numeric2, false, false);
          } else if (xCol.equals(WorldXViewerFactory.Resolution_Col)) {
             modified = PromptChangeUtil.promptChangeAttribute(sma, AtsAttributeTypes.Resolution, false, true);
-         } else if (xCol.equals(WorldXViewerFactory.Change_Type_Col)) {
-            modified = PromptChangeUtil.promptChangeType(sma, false);
-         } else if (xCol.equals(WorldXViewerFactory.Priority_Col)) {
-            modified = PromptChangeUtil.promptChangePriority(sma, false);
          }
          if (modified && isAltLeftClickPersist()) {
             sma.persist("persist attribute change");

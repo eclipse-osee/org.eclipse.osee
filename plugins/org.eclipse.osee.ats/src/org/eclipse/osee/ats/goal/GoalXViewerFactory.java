@@ -18,6 +18,8 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
+import org.eclipse.osee.ats.field.ChangeTypeColumn;
+import org.eclipse.osee.ats.field.PriorityColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.world.AtsWorldEditorItems;
 import org.eclipse.osee.ats.world.IAtsWorldEditorItem;
@@ -35,7 +37,7 @@ public class GoalXViewerFactory extends SkynetXViewerFactory {
    private GoalArtifact soleGoalArtifact;
    public static final List<XViewerColumn> GoalViewerVisibleColumns = Arrays.asList(WorldXViewerFactory.Goal_Order,
       WorldXViewerFactory.Goal_Order_Vote_Col, WorldXViewerFactory.Title_Col, WorldXViewerFactory.Type_Col,
-      WorldXViewerFactory.State_Col, WorldXViewerFactory.Priority_Col, WorldXViewerFactory.Change_Type_Col,
+      WorldXViewerFactory.State_Col, PriorityColumn.getInstance(), ChangeTypeColumn.getInstance(),
       WorldXViewerFactory.Assignees_Col, new XViewerHridColumn(true), WorldXViewerFactory.Created_Date_Col,
       WorldXViewerFactory.Version_Target_Col, WorldXViewerFactory.Notes_Col);
    public static Integer[] widths = new Integer[] {

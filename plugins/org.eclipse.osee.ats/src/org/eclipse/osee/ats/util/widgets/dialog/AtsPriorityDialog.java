@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.util.widgets.dialog;
 import java.util.ArrayList;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
+import org.eclipse.osee.ats.field.PriorityColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -39,7 +39,7 @@ public class AtsPriorityDialog extends ListDialog {
       setContentProvider(new ArrayContentProvider());
       setLabelProvider(new StringLabelProvider());
       try {
-         setInput(AttributeTypeManager.getEnumerationValues(AtsAttributeTypes.PriorityType));
+         setInput(AttributeTypeManager.getEnumerationValues(PriorityColumn.PriorityTypeAttribute));
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }

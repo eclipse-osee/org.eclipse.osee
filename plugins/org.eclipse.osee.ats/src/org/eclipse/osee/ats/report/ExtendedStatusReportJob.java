@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.field.ChangeTypeColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -36,6 +37,7 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
+import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 
 /**
  * @author Donald G. Dunne
@@ -148,7 +150,8 @@ public class ExtendedStatusReportJob extends Job {
          } else if (col == Columns.Priority) {
             values.add((sma.getWorldViewPriority().equals("") ? "." : sma.getWorldViewPriority()));
          } else if (col == Columns.Change_Type) {
-            values.add((sma.getWorldViewChangeType().name().equals("") ? "." : sma.getWorldViewChangeType().name()));
+            ChangeType changeType = ChangeTypeColumn.getChangeType(sma);
+            values.add((changeType == ChangeType.None ? "." : changeType.name()));
          } else if (col == Columns.Title) {
             values.add(sma.getName());
          } else if (col == Columns.Analysis) {
@@ -194,8 +197,7 @@ public class ExtendedStatusReportJob extends Job {
 
    private static void handleOriginatorColumn(AbstractWorkflowArtifact sma, List<String> values) throws OseeCoreException {
       if (sma.getOriginator() == null) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP,
-            "Can't retrieve orig for " + sma.getHumanReadableId());
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't retrieve orig for " + sma.getHumanReadableId());
          values.add(".");
       } else {
          values.add(sma.getOriginator().getName());

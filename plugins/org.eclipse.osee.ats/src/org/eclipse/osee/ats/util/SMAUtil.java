@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.artifact.log.LogItem;
+import org.eclipse.osee.ats.field.ChangeTypeColumn;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -153,7 +154,7 @@ public class SMAUtil {
       List<AbstractWorkflowArtifact> smas = new ArrayList<AbstractWorkflowArtifact>();
       for (AbstractWorkflowArtifact sma : artifacts) {
          TeamWorkFlowArtifact teamArt = sma.getParentTeamWorkflow();
-         if (changeTypes.contains(teamArt.getChangeType())) {
+         if (changeTypes.contains(ChangeTypeColumn.getChangeType(teamArt))) {
             smas.add(sma);
          }
       }

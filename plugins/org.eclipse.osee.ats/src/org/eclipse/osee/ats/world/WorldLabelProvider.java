@@ -50,9 +50,7 @@ public class WorldLabelProvider extends XViewerLabelProvider {
             return null;
          }
          IWorldViewArtifact wva = (IWorldViewArtifact) element;
-         if (xCol.equals(WorldXViewerFactory.Change_Type_Col)) {
-            return wva.getWorldViewChangeType().getImage();
-         } else if (xCol.equals(WorldXViewerFactory.Type_Col)) {
+         if (xCol.equals(WorldXViewerFactory.Type_Col)) {
             return ArtifactImageManager.getImage((Artifact) element);
          } else if (xCol.equals(WorldXViewerFactory.Assignees_Col)) {
             return wva.getAssigneeImage();
@@ -125,12 +123,6 @@ public class WorldLabelProvider extends XViewerLabelProvider {
          }
          if (xCol.equals(WorldXViewerFactory.Assignees_Col)) {
             return wva.getWorldViewActivePoc();
-         }
-         if (xCol.equals(WorldXViewerFactory.Change_Type_Col)) {
-            return wva.getWorldViewChangeTypeStr();
-         }
-         if (xCol.equals(WorldXViewerFactory.Priority_Col)) {
-            return wva.getWorldViewPriority();
          }
          if (xCol.equals(WorldXViewerFactory.Actionable_Items_Col)) {
             return wva.getWorldViewActionableItems();

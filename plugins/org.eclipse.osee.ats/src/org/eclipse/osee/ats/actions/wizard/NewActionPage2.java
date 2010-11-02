@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.actions.wizard;
 
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
+import org.eclipse.osee.ats.field.ChangeTypeColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -78,7 +79,7 @@ public class NewActionPage2 extends WizardPage {
          StringBuffer stringBuffer = new StringBuffer(800);
          stringBuffer.append("<WorkPage>");
          stringBuffer.append("<XWidget displayName=\"Description\" height=\"80\" required=\"true\" xwidgetType=\"XText\" fill=\"Vertically\" toolTip=\"" + AtsAttributeTypes.Description.getDescription() + "\"/>");
-         stringBuffer.append("<XWidget displayName=\"Change Type\" storageName=\"ats.Change Type\" xwidgetType=\"XCombo(" + ATSXWidgetOptionResolver.OPTIONS_FROM_ATTRIBUTE_VALIDITY + ")\" required=\"true\" horizontalLabel=\"true\" toolTip=\"" + AtsAttributeTypes.ChangeType.getDescription() + "\"/>");
+         stringBuffer.append("<XWidget displayName=\"Change Type\" storageName=\"ats.Change Type\" xwidgetType=\"XCombo(" + ATSXWidgetOptionResolver.OPTIONS_FROM_ATTRIBUTE_VALIDITY + ")\" required=\"true\" horizontalLabel=\"true\" toolTip=\"" + ChangeTypeColumn.ChangeTypeAttribute.getDescription() + "\"/>");
          stringBuffer.append("<XWidget displayName=\"Priority\" storageName=\"ats.Priority\" xwidgetType=\"XCombo(" + ATSXWidgetOptionResolver.OPTIONS_FROM_ATTRIBUTE_VALIDITY + ")\" required=\"true\" horizontalLabel=\"true\"/>");
          stringBuffer.append("<XWidget displayName=\"Deadline\" xwidgetType=\"XDate\" horizontalLabel=\"true\" toolTip=\"" + AtsAttributeTypes.NeedBy.getDescription() + "\"/>");
          stringBuffer.append("<XWidget displayName=\"Validation Required\" xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" toolTip=\"" + AtsAttributeTypes.ValidationRequired.getDescription() + "\"/>");

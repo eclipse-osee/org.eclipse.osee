@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.osee.ats.config.AtsCacheManager;
+import org.eclipse.osee.ats.field.PriorityColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
@@ -40,7 +41,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
-import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact;
 
 /**
@@ -129,14 +129,6 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IB
       actionableItemsDam = new XActionableItemsDam(this);
    }
 
-   public ChangeType getChangeType() throws OseeCoreException {
-      return ChangeType.getChangeType(getSoleAttributeValue(AtsAttributeTypes.ChangeType, ""));
-   }
-
-   public void setChangeType(ChangeType type) throws OseeCoreException {
-      setSoleAttributeValue(AtsAttributeTypes.ChangeType, type.name());
-   }
-
    public XActionableItemsDam getActionableItemsDam() {
       return actionableItemsDam;
    }
@@ -168,13 +160,8 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IB
    }
 
    @Override
-   public ChangeType getWorldViewChangeType() throws OseeCoreException {
-      return ChangeType.getChangeType(getSoleAttributeValue(AtsAttributeTypes.ChangeType, ""));
-   }
-
-   @Override
    public String getWorldViewPriority() throws OseeCoreException {
-      return getSoleAttributeValue(AtsAttributeTypes.PriorityType, "");
+      return getSoleAttributeValue(PriorityColumn.PriorityTypeAttribute, "");
    }
 
    @Override

@@ -11,6 +11,8 @@
 package org.eclipse.osee.ats.workflow.page;
 
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
+import org.eclipse.osee.ats.field.ChangeTypeColumn;
+import org.eclipse.osee.ats.field.PriorityColumn;
 import org.eclipse.osee.ats.util.DefaultTeamState;
 import org.eclipse.osee.ats.workflow.flow.TeamWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions.RuleWorkItemId;
@@ -33,8 +35,8 @@ public class AtsEndorseWorkPageDefinition extends WorkPageDefinition {
       addWorkItem("ats.Title");
       addWorkItem(AtsAttributeTypes.Description);
       addWorkItem(AtsAttributeTypes.ProposedResolution);
-      addWorkItem(AtsAttributeTypes.ChangeType);
-      addWorkItem(AtsAttributeTypes.PriorityType);
+      addWorkItem(ChangeTypeColumn.ChangeTypeAttribute);
+      addWorkItem(PriorityColumn.PriorityTypeAttribute);
       addWorkItem(AtsAttributeTypes.NeedBy);
       addWorkItem(AtsAttributeTypes.ValidationRequired);
       addWorkItem(AtsAttributeTypes.WorkPackage);

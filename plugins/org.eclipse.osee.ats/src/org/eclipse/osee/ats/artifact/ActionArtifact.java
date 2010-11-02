@@ -19,6 +19,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
+import org.eclipse.osee.ats.field.ChangeTypeColumn;
+import org.eclipse.osee.ats.field.PriorityColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
@@ -38,7 +40,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -55,7 +56,7 @@ public class ActionArtifact extends AbstractAtsArtifact implements IWorldViewArt
    }
 
    public void resetAttributesOffChildren(SkynetTransaction transaction) throws OseeCoreException {
-      resetChangeTypeOffChildren();
+      ChangeTypeColumn.resetChangeTypeOffChildren(this);
       resetPriorityOffChildren();
       resetUserCommunityOffChildren();
       resetTitleOffChildren();
@@ -126,27 +127,6 @@ public class ActionArtifact extends AbstractAtsArtifact implements IWorldViewArt
       }
    }
 
-   private void resetChangeTypeOffChildren() throws OseeCoreException {
-      ChangeType changeType = null;
-      Collection<TeamWorkFlowArtifact> teamArts = getTeamWorkFlowArtifacts();
-      if (teamArts.size() == 1) {
-         changeType = teamArts.iterator().next().getChangeType();
-      } else {
-         for (TeamWorkFlowArtifact team : teamArts) {
-            if (!team.isCancelled()) {
-               if (changeType == null) {
-                  changeType = team.getChangeType();
-               } else if (changeType != team.getChangeType()) {
-                  return;
-               }
-            }
-         }
-      }
-      if (changeType != null && getChangeType() != changeType) {
-         setChangeType(changeType);
-      }
-   }
-
    private void resetPriorityOffChildren() throws OseeCoreException {
       String priorityType = null;
       Collection<TeamWorkFlowArtifact> teamArts = getTeamWorkFlowArtifacts();
@@ -164,7 +144,7 @@ public class ActionArtifact extends AbstractAtsArtifact implements IWorldViewArt
          }
       }
       if (Strings.isValid(priorityType)) {
-         setSoleAttributeValue(AtsAttributeTypes.PriorityType, priorityType);
+         setSoleAttributeValue(PriorityColumn.PriorityTypeAttribute, priorityType);
       }
    }
 
@@ -176,14 +156,6 @@ public class ActionArtifact extends AbstractAtsArtifact implements IWorldViewArt
          }
       }
       setAttributeValues(AtsAttributeTypes.UserCommunity, userComs);
-   }
-
-   public void setChangeType(ChangeType type) throws OseeCoreException {
-      setSoleAttributeValue(AtsAttributeTypes.ChangeType, type.name());
-   }
-
-   public ChangeType getChangeType() throws OseeCoreException {
-      return ChangeType.getChangeType(getSoleAttributeValue(AtsAttributeTypes.ChangeType, ""));
    }
 
    public Collection<TeamWorkFlowArtifact> getTeamWorkFlowArtifacts() throws OseeCoreException {
@@ -198,11 +170,6 @@ public class ActionArtifact extends AbstractAtsArtifact implements IWorldViewArt
    @Override
    public String getWorldViewTitle() {
       return getName();
-   }
-
-   @Override
-   public ChangeType getWorldViewChangeType() throws OseeCoreException {
-      return ChangeType.getChangeType(getSoleAttributeValue(AtsAttributeTypes.ChangeType, ""));
    }
 
    @Override
@@ -308,7 +275,7 @@ public class ActionArtifact extends AbstractAtsArtifact implements IWorldViewArt
 
    @Override
    public String getWorldViewPriority() throws OseeCoreException {
-      return getSoleAttributeValue(AtsAttributeTypes.PriorityType, "");
+      return getSoleAttributeValue(PriorityColumn.PriorityTypeAttribute, "");
    }
 
    @Override
@@ -616,15 +583,6 @@ public class ActionArtifact extends AbstractAtsArtifact implements IWorldViewArt
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
       return Result.TrueResult;
-   }
-
-   @Override
-   public String getWorldViewChangeTypeStr() throws OseeCoreException {
-      Set<String> strs = new HashSet<String>();
-      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         strs.add(team.getWorldViewChangeTypeStr());
-      }
-      return Collections.toString(";", strs);
    }
 
    @Override

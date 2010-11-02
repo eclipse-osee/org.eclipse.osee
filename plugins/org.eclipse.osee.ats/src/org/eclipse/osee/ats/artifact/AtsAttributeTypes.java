@@ -29,7 +29,6 @@ public class AtsAttributeTypes extends NamedIdentity implements IAttributeType {
    public static final IAttributeType AllowCreateBranch = new AtsAttributeTypes("AAMFEbARuQEvi6rtY5gA", "Allow Create Branch");
    public static final IAttributeType BaselineBranchGuid = new AtsAttributeTypes("AAMFEdIjJ2za2fblEVgA", "Baseline Branch Guid", "Basline branch associated with ATS object.");
    public static final IAttributeType BlockingReview = new AtsAttributeTypes("AAMFEctKkjMRrIy1C7gA", "Blocking Review");
-   public static final IAttributeType ChangeType = new AtsAttributeTypes("AAMFEc+MwGHnPCv7HlgA", "Change Type", "Type of change.");
    public static final IAttributeType CurrentState = new AtsAttributeTypes("AAMFEdOWL3u6hmX2VbwA", "Current State", "Current state of workflow state machine.");
    public static final IAttributeType Decision = new AtsAttributeTypes("AAMFEd7uDXcmqq_FrCQA", "Decision", "Option selected during decision review.");
    public static final IAttributeType DecisionReviewOptions = new AtsAttributeTypes("AAMFEd5hRy1+SRJRqfwA", "Decision Review Options", "Options available for selection in review.  Each line is a separate option. Format: <option name>;<state to transition to>;<assignee>");
@@ -49,7 +48,6 @@ public class AtsAttributeTypes extends NamedIdentity implements IAttributeType {
    public static final IAttributeType Numeric2 = new AtsAttributeTypes("AABiRtvZsAEkU4BS9qwA", "Numeric2", Numeric1.getDescription());
    public static final IAttributeType PercentRework = new AtsAttributeTypes("AAMFEdKfjl2TII9+tuwA", "Percent Rework");
    public static final IAttributeType Points = new AtsAttributeTypes("AY2EeqhzcDEGtXtREkAA", "Points", "Abstract value that describes risk, complexity, and size of Actions.");
-   public static final IAttributeType PriorityType = new AtsAttributeTypes("AAMFEc8JzH1U6XGD59QA", "Priority", "1 = High; 5 = Low");
    public static final IAttributeType Problem = new AtsAttributeTypes("AAMFEdQUxRyevvTu+bwA", "Problem", "Problem found during analysis.");
    public static final IAttributeType ProposedResolution = new AtsAttributeTypes("AAMFEdSSRDGgBQ5tctAA", "Proposed Resolution", "Recommended resolution.");
    public static final IAttributeType RelatedToState = new AtsAttributeTypes("AAMFEdkwHULOmHbMbGgA", "Related To State", "State of parent workflow this object is related to.");

@@ -54,6 +54,21 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
       super(id, attributeType, width, align, show, sortDataType, multiColumnEditable);
    }
 
+   /**
+    * Returns parent team workflow, if AbstractWorkflowArtifact or Artifact, if artifact
+    */
+   protected Artifact getParentTeamWorkflowOrArtifact(Object element) throws OseeCoreException {
+      Artifact useArt = null;
+      if (element instanceof Artifact) {
+         if (element instanceof AbstractWorkflowArtifact) {
+            useArt = ((AbstractWorkflowArtifact) element).getParentTeamWorkflow();
+         } else {
+            useArt = (Artifact) element;
+         }
+      }
+      return useArt;
+   }
+
    @Override
    public Image getColumnImage(Object element, XViewerColumn column, int columnIndex) {
       return null;
@@ -114,18 +129,15 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
                   return false;
                }
             }
-            if (treeItem.getData() instanceof AbstractWorkflowArtifact) {
-               boolean modified =
-                  PromptChangeUtil.promptChangeAttribute((AbstractWorkflowArtifact) treeItem.getData(),
-                     getAttributeType(), false, true);
-               XViewer xViewer = ((XViewerColumn) treeColumn.getData()).getTreeViewer();
-               if (modified && isPersistViewer(xViewer)) {
-                  useArt.persist("persist attribute via alt-left-click");
-               }
-               if (modified) {
-                  xViewer.update(useArt, null);
-                  return true;
-               }
+            boolean modified =
+               PromptChangeUtil.promptChangeAttribute((AbstractWorkflowArtifact) treeItem.getData(),
+                  getAttributeType(), false, true);
+            if (modified && isPersistViewer(treeColumn)) {
+               useArt.persist("persist attribute via alt-left-click");
+            }
+            if (modified) {
+               ((XViewerColumn) treeColumn.getData()).getTreeViewer().update(useArt, null);
+               return true;
             }
          }
       } catch (OseeCoreException ex) {
@@ -135,7 +147,11 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
       return false;
    }
 
-   private boolean isPersistViewer(XViewer xViewer) {
+   protected boolean isPersistViewer(TreeColumn treeColumn) {
+      return isPersistViewer(((XViewerColumn) treeColumn.getData()).getTreeViewer());
+   }
+
+   protected boolean isPersistViewer(XViewer xViewer) {
       return xViewer != null && //
       xViewer instanceof IPersistAltLeftClickProvider //
          && ((IPersistAltLeftClickProvider) xViewer).isAltLeftClickPersist();

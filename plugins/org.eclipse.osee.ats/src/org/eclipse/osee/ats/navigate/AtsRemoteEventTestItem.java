@@ -22,6 +22,8 @@ import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.ats.field.ChangeTypeColumn;
+import org.eclipse.osee.ats.field.PriorityColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
@@ -169,8 +171,8 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       teamArt.deleteAttributes(AtsAttributeTypes.ValidationRequired);
       teamArt.deleteAttributes(AtsAttributeTypes.Resolution);
       teamArt.setSoleAttributeFromString(AtsAttributeTypes.Description, "description 4");
-      teamArt.setSoleAttributeFromString(AtsAttributeTypes.ChangeType, ChangeType.Support.name());
-      teamArt.setSoleAttributeFromString(AtsAttributeTypes.PriorityType, "3");
+      ChangeTypeColumn.setChangeType(teamArt, ChangeType.Support);
+      teamArt.setSoleAttributeFromString(PriorityColumn.PriorityTypeAttribute, "3");
       teamArt.setRelations(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version,
          Collections.singleton(getVersion258()));
       teamArt.persist(transaction);
@@ -196,8 +198,8 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       // Make changes and persist
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Remote Event Test");
       teamArt.setSoleAttributeFromString(AtsAttributeTypes.Description, "description 2");
-      teamArt.setSoleAttributeFromString(AtsAttributeTypes.ChangeType, ChangeType.Problem.name());
-      teamArt.setSoleAttributeFromString(AtsAttributeTypes.PriorityType, "2");
+      ChangeTypeColumn.setChangeType(teamArt, ChangeType.Problem);
+      teamArt.setSoleAttributeFromString(PriorityColumn.PriorityTypeAttribute, "2");
       teamArt.setSoleAttributeFromString(AtsAttributeTypes.ValidationRequired, "yes");
       teamArt.addRelation(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, getVersion256());
       teamArt.persist(transaction);
@@ -231,9 +233,8 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       // Validate values
       TeamWorkFlowArtifact teamArt = actionArt.getTeamWorkFlowArtifacts().iterator().next();
       testEquals("Description", "description", teamArt.getSoleAttributeValue(AtsAttributeTypes.Description, null));
-      testEquals("Change Type", ChangeType.Improvement.name(),
-         teamArt.getSoleAttributeValue(AtsAttributeTypes.ChangeType, null));
-      testEquals("Priority", "1", teamArt.getSoleAttributeValue(AtsAttributeTypes.PriorityType, null));
+      testEquals("Change Type", ChangeType.Improvement.name(), ChangeTypeColumn.getChangeType(teamArt));
+      testEquals("Priority", "1", teamArt.getSoleAttributeValue(PriorityColumn.PriorityTypeAttribute, null));
    }
 
    private void validateActionAtEnd(ActionArtifact actionArt) throws OseeCoreException {
@@ -248,9 +249,8 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       // Validate values
       TeamWorkFlowArtifact teamArt = actionArt.getTeamWorkFlowArtifacts().iterator().next();
       testEquals("Description", "description 4", teamArt.getSoleAttributeValue(AtsAttributeTypes.Description, null));
-      testEquals("Change Type", ChangeType.Support.name(),
-         teamArt.getSoleAttributeValue(AtsAttributeTypes.ChangeType, null));
-      testEquals("Priority", "3", teamArt.getSoleAttributeValue(AtsAttributeTypes.PriorityType, null));
+      testEquals("Change Type", ChangeType.Support.name(), ChangeTypeColumn.getChangeType(teamArt));
+      testEquals("Priority", "3", teamArt.getSoleAttributeValue(PriorityColumn.PriorityTypeAttribute, null));
       testEquals("Validation Required", "false",
          String.valueOf(teamArt.getSoleAttributeValue(AtsAttributeTypes.ValidationRequired, null)));
       testEquals("Targeted Version",

@@ -26,10 +26,12 @@ import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.field.CategoryColumn;
+import org.eclipse.osee.ats.field.ChangeTypeXWidget;
 import org.eclipse.osee.ats.field.OperationalImpactWithWorkaroundXWidget.XOperationalImpactWithWorkaroundRequiredXWidgetWorkItem;
 import org.eclipse.osee.ats.field.OperationalImpactWithWorkaroundXWidget.XOperationalImpactWithWorkaroundXWidgetWorkItem;
 import org.eclipse.osee.ats.field.OperationalImpactXWidget.XOperationalImpactRequiredXWidgetWorkItem;
 import org.eclipse.osee.ats.field.OperationalImpactXWidget.XOperationalImpactXWidgetWorkItem;
+import org.eclipse.osee.ats.field.PriorityXWidget;
 import org.eclipse.osee.ats.util.AtsFolderUtil;
 import org.eclipse.osee.ats.util.AtsFolderUtil.AtsFolder;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -112,7 +114,7 @@ public final class AtsWorkDefinitions implements IWorkDefinitionProvider {
          FILL_VERTICALLY));
       workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.LegacyPcrId, "XTextDam"));
       workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.GoalOrderVote, "XTextDam"));
-      workItems.add(new AtsAttributeXWidgetWorkItem(CategoryColumn.Category1, "XTextDam"));
+      workItems.add(new AtsAttributeXWidgetWorkItem(CategoryColumn.Category1Attribute, "XTextDam"));
       workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.RelatedToState, "XTextDam"));
       workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.SmaNote, "XTextDam", FILL_VERTICALLY));
       workItems.add(new AtsAttributeXWidgetWorkItem("Title", "ats.Title", CoreAttributeTypes.Name, "XTextDam", REQUIRED));
@@ -159,10 +161,9 @@ public final class AtsWorkDefinitions implements IWorkDefinitionProvider {
 
       workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam",
          XOption.HORIZONTAL_LABEL));
-      workItems.add(new AtsAttributeSoleComboXWidgetWorkItem(AtsAttributeTypes.ChangeType,
-         "OPTIONS_FROM_ATTRIBUTE_VALIDITY", XOption.REQUIRED, XOption.BEGIN_COMPOSITE_6));
-      workItems.add(new AtsAttributeSoleComboXWidgetWorkItem(AtsAttributeTypes.PriorityType,
-         "OPTIONS_FROM_ATTRIBUTE_VALIDITY", XOption.REQUIRED));
+      workItems.add(new ChangeTypeXWidget());
+      workItems.add(new PriorityXWidget());
+
       workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.NeedBy, "XDateDam", XOption.HORIZONTAL_LABEL,
          XOption.END_COMPOSITE));
       workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.ValidationRequired, "XCheckBoxDam",

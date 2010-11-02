@@ -23,6 +23,8 @@ import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
 import org.eclipse.osee.ats.artifact.log.LogType;
+import org.eclipse.osee.ats.field.ChangeTypeColumn;
+import org.eclipse.osee.ats.field.PriorityColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -164,8 +166,7 @@ public class ActionManager {
    public static void setArtifactIdentifyData(ActionArtifact fromAction, TeamWorkFlowArtifact toTeam) throws OseeCoreException {
       setArtifactIdentifyData(toTeam, fromAction.getName(),
          fromAction.getSoleAttributeValue(AtsAttributeTypes.Description, ""),
-         ChangeType.getChangeType(fromAction.getSoleAttributeValue(AtsAttributeTypes.ChangeType, "")),
-         fromAction.getSoleAttributeValue(AtsAttributeTypes.PriorityType, ""),
+         ChangeTypeColumn.getChangeType(fromAction), fromAction.getSoleAttributeValue(PriorityColumn.PriorityTypeAttribute, ""),
          //            fromAction.getAttributesToStringList(AtsAttributeTypes.ATS_USER_COMMUNITY),
          fromAction.getSoleAttributeValue(AtsAttributeTypes.ValidationRequired, false),
          fromAction.getSoleAttributeValue(AtsAttributeTypes.NeedBy, (Date) null));
@@ -179,10 +180,10 @@ public class ActionManager {
       if (!desc.equals("")) {
          art.setSoleAttributeValue(AtsAttributeTypes.Description, desc);
       }
-      art.setSoleAttributeValue(AtsAttributeTypes.ChangeType, changeType.name());
+      ChangeTypeColumn.setChangeType(art, changeType);
       //      art.setAttributeValues(ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getStoreName(), userComms);
       if (Strings.isValid(priority)) {
-         art.setSoleAttributeValue(AtsAttributeTypes.PriorityType, priority);
+         art.setSoleAttributeValue(PriorityColumn.PriorityTypeAttribute, priority);
       }
       if (needByDate != null) {
          art.setSoleAttributeValue(AtsAttributeTypes.NeedBy, needByDate);

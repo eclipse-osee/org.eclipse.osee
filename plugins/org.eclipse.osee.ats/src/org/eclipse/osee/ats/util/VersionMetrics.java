@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.ats.field.ChangeTypeColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -95,7 +96,7 @@ public class VersionMetrics {
       List<ChangeType> changeTypes = Arrays.asList(changeType);
       Set<TeamWorkFlowArtifact> teams = new HashSet<TeamWorkFlowArtifact>();
       for (TeamWorkFlowArtifact team : verArt.getTargetedForTeamArtifacts()) {
-         if (changeTypes.contains(team.getChangeType())) {
+         if (changeTypes.contains(ChangeTypeColumn.getChangeType(team))) {
             teams.add(team);
          }
       }

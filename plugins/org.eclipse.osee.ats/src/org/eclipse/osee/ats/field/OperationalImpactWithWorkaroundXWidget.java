@@ -33,7 +33,7 @@ public class OperationalImpactWithWorkaroundXWidget extends XComboWithTextAndCom
    public static String ID_REQUIRED = "OperationalImpactWithWorkaroundXWidget (required)";
 
    public OperationalImpactWithWorkaroundXWidget() {
-      super(OperationalImpactTypes.NAME, "Operational Impact Description", new String[] {"Yes", "No"}, "Yes", true,
+      super(OperationalImpactXWidget.NAME, "Operational Impact Description", new String[] {"Yes", "No"}, "Yes", true,
          true, "Workaround", "Workaround Desription", new String[] {"Yes", "No"}, "Yes", true);
       setRequiredEntry(true);
    }
@@ -47,44 +47,47 @@ public class OperationalImpactWithWorkaroundXWidget extends XComboWithTextAndCom
    public void saveToArtifact() throws OseeCoreException {
       String impact = get();
       if (impact == null || impact.equals("")) {
-         teamArt.deleteSoleAttribute(OperationalImpactTypes.OperationalImpactAttr);
+         teamArt.deleteSoleAttribute(OperationalImpactColumn.OperationalImpactAttr);
       } else {
-         teamArt.setSoleAttributeValue(OperationalImpactTypes.OperationalImpactAttr, impact);
+         teamArt.setSoleAttributeValue(OperationalImpactColumn.OperationalImpactAttr, impact);
       }
       String desc = getDescStr();
       if (desc == null || desc.equals("")) {
-         teamArt.deleteSoleAttribute(OperationalImpactTypes.OperationalImpactDescriptionAttr);
+         teamArt.deleteSoleAttribute(OperationalImpactDesciptionColumn.OperationalImpactDescriptionAttr);
       } else {
-         teamArt.setSoleAttributeValue(OperationalImpactTypes.OperationalImpactDescriptionAttr, desc);
+         teamArt.setSoleAttributeValue(OperationalImpactDesciptionColumn.OperationalImpactDescriptionAttr, desc);
       }
       String workaroundImpact = getWorkaroundImpact();
       if (workaroundImpact == null || workaroundImpact.equals("")) {
-         teamArt.deleteSoleAttribute(OperationalImpactTypes.OperationalImpactWorkaroundAttr);
+         teamArt.deleteSoleAttribute(OperationalImpactWorkaroundColumn.OperationalImpactWorkaroundAttr);
       } else {
-         teamArt.setSoleAttributeValue(OperationalImpactTypes.OperationalImpactWorkaroundAttr, workaroundImpact);
+         teamArt.setSoleAttributeValue(OperationalImpactWorkaroundColumn.OperationalImpactWorkaroundAttr,
+            workaroundImpact);
       }
       String workaroundDesc = getWorkaroundDescStr();
       if (workaroundDesc == null || workaroundDesc.equals("")) {
-         teamArt.deleteSoleAttribute(OperationalImpactTypes.OperationalImpactWorkaroundDescriptionAttr);
+         teamArt.deleteSoleAttribute(OperationalImpactWorkaroundDesciptionColumn.OperationalImpactWorkaroundDescriptionAttr);
       } else {
-         teamArt.setSoleAttributeValue(OperationalImpactTypes.OperationalImpactWorkaroundDescriptionAttr,
-            workaroundDesc);
+         teamArt.setSoleAttributeValue(
+            OperationalImpactWorkaroundDesciptionColumn.OperationalImpactWorkaroundDescriptionAttr, workaroundDesc);
       }
    }
 
    @Override
    public void revert() {
       try {
-         super.set(teamArt.getSoleAttributeValue(OperationalImpactTypes.OperationalImpactAttr, ""));
+         super.set(teamArt.getSoleAttributeValue(OperationalImpactColumn.OperationalImpactAttr, ""));
          if (getText() != null) {
-            getText().set(teamArt.getSoleAttributeValue(OperationalImpactTypes.OperationalImpactDescriptionAttr, ""));
+            getText().set(
+               teamArt.getSoleAttributeValue(OperationalImpactDesciptionColumn.OperationalImpactDescriptionAttr, ""));
          }
          if (getComboWithText() != null) {
             getComboWithText().set(
-               teamArt.getSoleAttributeValue(OperationalImpactTypes.OperationalImpactWorkaroundAttr, ""));
+               teamArt.getSoleAttributeValue(OperationalImpactWorkaroundColumn.OperationalImpactWorkaroundAttr, ""));
             if (getComboWithText().getText() != null) {
                getComboWithText().getText().set(
-                  teamArt.getSoleAttributeValue(OperationalImpactTypes.OperationalImpactWorkaroundDescriptionAttr, ""));
+                  teamArt.getSoleAttributeValue(
+                     OperationalImpactWorkaroundDesciptionColumn.OperationalImpactWorkaroundDescriptionAttr, ""));
             }
             getComboWithText().refresh();
          }
@@ -95,20 +98,22 @@ public class OperationalImpactWithWorkaroundXWidget extends XComboWithTextAndCom
 
    @Override
    public Result isDirty() throws OseeCoreException {
-      if (!get().equals(teamArt.getSoleAttributeValue(OperationalImpactTypes.OperationalImpactAttr, ""))) {
-         return new Result(true, OperationalImpactTypes.OperationalImpactAttr.toString());
+      if (!get().equals(teamArt.getSoleAttributeValue(OperationalImpactColumn.OperationalImpactAttr, ""))) {
+         return new Result(true, OperationalImpactColumn.OperationalImpactAttr.toString());
       }
       if (!getDescStr().equals(
-         teamArt.getSoleAttributeValue(OperationalImpactTypes.OperationalImpactDescriptionAttr, ""))) {
-         return new Result(true, OperationalImpactTypes.OperationalImpactDescriptionAttr.toString());
+         teamArt.getSoleAttributeValue(OperationalImpactDesciptionColumn.OperationalImpactDescriptionAttr, ""))) {
+         return new Result(true, OperationalImpactDesciptionColumn.OperationalImpactDescriptionAttr.toString());
       }
       if (!getWorkaroundImpact().equals(
-         teamArt.getSoleAttributeValue(OperationalImpactTypes.OperationalImpactWorkaroundAttr, ""))) {
-         return new Result(true, OperationalImpactTypes.OperationalImpactWorkaroundAttr.toString());
+         teamArt.getSoleAttributeValue(OperationalImpactWorkaroundColumn.OperationalImpactWorkaroundAttr, ""))) {
+         return new Result(true, OperationalImpactWorkaroundColumn.OperationalImpactWorkaroundAttr.toString());
       }
       if (!getWorkaroundDescStr().equals(
-         teamArt.getSoleAttributeValue(OperationalImpactTypes.OperationalImpactWorkaroundDescriptionAttr, ""))) {
-         return new Result(true, OperationalImpactTypes.OperationalImpactWorkaroundDescriptionAttr.toString());
+         teamArt.getSoleAttributeValue(
+            OperationalImpactWorkaroundDesciptionColumn.OperationalImpactWorkaroundDescriptionAttr, ""))) {
+         return new Result(true,
+            OperationalImpactWorkaroundDesciptionColumn.OperationalImpactWorkaroundDescriptionAttr.toString());
       }
       return Result.FalseResult;
    }
@@ -144,7 +149,7 @@ public class OperationalImpactWithWorkaroundXWidget extends XComboWithTextAndCom
    public static class XOperationalImpactWithWorkaroundRequiredXWidgetWorkItem extends WorkWidgetDefinition {
 
       public XOperationalImpactWithWorkaroundRequiredXWidgetWorkItem() {
-         super(OperationalImpactTypes.NAME, OperationalImpactWithWorkaroundXWidget.ID_REQUIRED);
+         super(OperationalImpactXWidget.NAME, OperationalImpactWithWorkaroundXWidget.ID_REQUIRED);
          DynamicXWidgetLayoutData data = new DynamicXWidgetLayoutData(null, XOption.REQUIRED);
          data.setName(getName());
          data.setStoreName(getId());
@@ -156,7 +161,7 @@ public class OperationalImpactWithWorkaroundXWidget extends XComboWithTextAndCom
    public static class XOperationalImpactWithWorkaroundXWidgetWorkItem extends WorkWidgetDefinition {
 
       public XOperationalImpactWithWorkaroundXWidgetWorkItem() {
-         super(OperationalImpactTypes.NAME, OperationalImpactWithWorkaroundXWidget.ID);
+         super(OperationalImpactXWidget.NAME, OperationalImpactWithWorkaroundXWidget.ID);
          DynamicXWidgetLayoutData data = new DynamicXWidgetLayoutData(null);
          data.setName(getName());
          data.setStoreName(getId());

@@ -28,11 +28,12 @@ import org.eclipse.swt.widgets.Composite;
 public class OperationalImpactXWidget extends XComboWithText implements IArtifactWidget {
 
    TeamWorkFlowArtifact teamArt;
-   public static String ID = "OperationalImpactXWidget";
-   public static String ID_REQUIRED = "OperationalImpactXWidget (required)";
+   public static final String ID = "OperationalImpactXWidget";
+   public static final String ID_REQUIRED = "OperationalImpactXWidget (required)";
+   public static final String NAME = "Operational Impact";
 
    public OperationalImpactXWidget() {
-      super(OperationalImpactTypes.NAME, "Operational Impact Description", new String[] {"Yes", "No"}, "Yes", true);
+      super(NAME, "Operational Impact Description", new String[] {"Yes", "No"}, "Yes", true);
       setRequiredEntry(true);
    }
 
@@ -45,24 +46,25 @@ public class OperationalImpactXWidget extends XComboWithText implements IArtifac
    public void saveToArtifact() throws OseeCoreException {
       String impact = get();
       if (impact == null || impact.equals("")) {
-         teamArt.deleteSoleAttribute(OperationalImpactTypes.OperationalImpactAttr);
+         teamArt.deleteSoleAttribute(OperationalImpactColumn.OperationalImpactAttr);
       } else {
-         teamArt.setSoleAttributeValue(OperationalImpactTypes.OperationalImpactAttr, impact);
+         teamArt.setSoleAttributeValue(OperationalImpactColumn.OperationalImpactAttr, impact);
       }
       String desc = getDescStr();
       if (desc == null || desc.equals("")) {
-         teamArt.deleteSoleAttribute(OperationalImpactTypes.OperationalImpactDescriptionAttr);
+         teamArt.deleteSoleAttribute(OperationalImpactDesciptionColumn.OperationalImpactDescriptionAttr);
       } else {
-         teamArt.setSoleAttributeValue(OperationalImpactTypes.OperationalImpactDescriptionAttr, desc);
+         teamArt.setSoleAttributeValue(OperationalImpactDesciptionColumn.OperationalImpactDescriptionAttr, desc);
       }
    }
 
    @Override
    public void revert() {
       try {
-         super.set(teamArt.getSoleAttributeValue(OperationalImpactTypes.OperationalImpactAttr, ""));
+         super.set(teamArt.getSoleAttributeValue(OperationalImpactColumn.OperationalImpactAttr, ""));
          if (getText() != null) {
-            getText().set(teamArt.getSoleAttributeValue(OperationalImpactTypes.OperationalImpactDescriptionAttr, ""));
+            getText().set(
+               teamArt.getSoleAttributeValue(OperationalImpactDesciptionColumn.OperationalImpactDescriptionAttr, ""));
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
@@ -71,12 +73,12 @@ public class OperationalImpactXWidget extends XComboWithText implements IArtifac
 
    @Override
    public Result isDirty() throws OseeCoreException {
-      if (!get().equals(teamArt.getSoleAttributeValue(OperationalImpactTypes.OperationalImpactAttr, ""))) {
-         return new Result(true, OperationalImpactTypes.OperationalImpactAttr.toString());
+      if (!get().equals(teamArt.getSoleAttributeValue(OperationalImpactColumn.OperationalImpactAttr, ""))) {
+         return new Result(true, OperationalImpactColumn.OperationalImpactAttr.toString());
       }
       if (!getDescStr().equals(
-         teamArt.getSoleAttributeValue(OperationalImpactTypes.OperationalImpactDescriptionAttr, ""))) {
-         return new Result(true, OperationalImpactTypes.OperationalImpactAttr.toString());
+         teamArt.getSoleAttributeValue(OperationalImpactDesciptionColumn.OperationalImpactDescriptionAttr, ""))) {
+         return new Result(true, OperationalImpactDesciptionColumn.OperationalImpactDescriptionAttr.toString());
       }
       return Result.FalseResult;
    }
@@ -98,7 +100,7 @@ public class OperationalImpactXWidget extends XComboWithText implements IArtifac
    public static class XOperationalImpactXWidgetWorkItem extends WorkWidgetDefinition {
 
       public XOperationalImpactXWidgetWorkItem() {
-         super(OperationalImpactTypes.NAME, OperationalImpactXWidget.ID);
+         super(OperationalImpactXWidget.NAME, OperationalImpactXWidget.ID);
          DynamicXWidgetLayoutData data = new DynamicXWidgetLayoutData(null);
          data.setName(getName());
          data.setStoreName(getId());
@@ -110,7 +112,7 @@ public class OperationalImpactXWidget extends XComboWithText implements IArtifac
    public static class XOperationalImpactRequiredXWidgetWorkItem extends WorkWidgetDefinition {
 
       public XOperationalImpactRequiredXWidgetWorkItem() {
-         super(OperationalImpactTypes.NAME, OperationalImpactXWidget.ID_REQUIRED);
+         super(OperationalImpactXWidget.NAME, OperationalImpactXWidget.ID_REQUIRED);
          DynamicXWidgetLayoutData data = new DynamicXWidgetLayoutData(null);
          data.setName(getName());
          data.setStoreName(getId());

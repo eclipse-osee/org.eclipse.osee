@@ -75,7 +75,6 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FrameworkArtifactImageProvider;
 import org.eclipse.osee.framework.ui.skynet.group.IGroupExplorerProvider;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
-import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinitionFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition;
@@ -395,24 +394,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    @Override
    public abstract VersionArtifact getWorldViewTargetedVersion() throws OseeCoreException;
-
-   @Override
-   public ChangeType getWorldViewChangeType() throws OseeCoreException {
-      AbstractWorkflowArtifact art = getParentTeamWorkflow();
-      if (art != null) {
-         return art.getWorldViewChangeType();
-      }
-      return ChangeType.None;
-   }
-
-   @Override
-   public String getWorldViewChangeTypeStr() throws OseeCoreException {
-      if (getWorldViewChangeType() == null || getWorldViewChangeType() == ChangeType.None) {
-         return "";
-      } else {
-         return getWorldViewChangeType().name();
-      }
-   }
 
    public double getEstimatedHoursFromArtifact() throws OseeCoreException {
       if (isAttributeTypeValid(AtsAttributeTypes.EstimatedHours)) {

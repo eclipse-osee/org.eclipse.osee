@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.config.AtsCacheManager;
+import org.eclipse.osee.ats.field.ChangeTypeColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -163,7 +164,7 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
             Collection<TeamWorkFlowArtifact> arts =
                teamMet.getWorkflowsOriginatedBetween(nextReleaseStartDate, nextReleaseEndDate);
             for (TeamWorkFlowArtifact team : arts) {
-               if (!team.isCancelled() && team.getChangeType() == ChangeType.Problem && (team.getWorldViewPriority().equals(
+               if (!team.isCancelled() && ChangeTypeColumn.getChangeType(team) == ChangeType.Problem && (team.getWorldViewPriority().equals(
                   "1") || team.getWorldViewPriority().equals("2"))) {
                   numOrigDurningNextReleaseCycle++;
                }

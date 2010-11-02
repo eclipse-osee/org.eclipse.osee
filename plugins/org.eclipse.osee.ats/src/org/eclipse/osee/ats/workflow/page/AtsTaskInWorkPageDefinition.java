@@ -39,7 +39,7 @@ public class AtsTaskInWorkPageDefinition extends WorkPageDefinition {
       addWorkItem(AtsAttributeTypes.EstimatedCompletionDate);
       addWorkItem(AtsAttributeTypes.RelatedToState);
       addWorkItem(AtsAttributeTypes.SmaNote);
-      addWorkItem(CategoryColumn.Category1);
+      addWorkItem(CategoryColumn.Category1Attribute);
    }
 
 }

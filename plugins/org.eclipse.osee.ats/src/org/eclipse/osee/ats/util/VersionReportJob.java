@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.ats.field.ChangeTypeColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -165,7 +166,7 @@ public class VersionReportJob extends Job {
                      "Action",
                      team.getTeamName(),
                      team.getWorldViewPriority(),
-                     team.getWorldViewChangeTypeStr(),
+                     ChangeTypeColumn.getChangeTypeStr(team),
                      team.getName(),
                      team.getHumanReadableId()}, null, (x % 2 == 0 ? null : "#cccccc")));
 

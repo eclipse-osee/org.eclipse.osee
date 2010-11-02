@@ -24,7 +24,6 @@ import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionLockedType;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.widgets.dialog.AtsPriorityDialog;
 import org.eclipse.osee.ats.util.widgets.dialog.VersionListDialog;
 import org.eclipse.osee.ats.world.search.GoalSearchItem;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -43,7 +42,6 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ArtifactCheckTreeDialog;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ChangeTypeDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.DateSelectionDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserCheckTreeDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserGroupsCheckTreeDialog;
@@ -250,46 +248,6 @@ public final class PromptChangeUtil {
       return true;
    }
 
-   public static boolean promptChangeType(AbstractWorkflowArtifact sma, boolean persist) {
-      if (sma.isTeamWorkflow()) {
-         return promptChangeType(Arrays.asList((TeamWorkFlowArtifact) sma), persist);
-      }
-      return false;
-   }
-
-   public static boolean promptChangeType(final Collection<? extends TeamWorkFlowArtifact> teams, boolean persist) {
-
-      for (TeamWorkFlowArtifact team : teams) {
-         if (team.isReleased() || team.isVersionLocked()) {
-            AWorkbench.popup("ERROR",
-               "Team Workflow\n \"" + team.getName() + "\"\n version is locked or already released.");
-            return false;
-         }
-      }
-      final ChangeTypeDialog dialog = new ChangeTypeDialog(Displays.getActiveShell());
-      try {
-         if (teams.size() == 1) {
-            dialog.setSelected(teams.iterator().next().getChangeType());
-         }
-         if (dialog.open() == 0) {
-
-            SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "ATS Prompt Change Type");
-
-            for (TeamWorkFlowArtifact team : teams) {
-               if (team.getChangeType() != dialog.getSelection()) {
-                  team.setChangeType(dialog.getSelection());
-                  team.saveSMA(transaction);
-               }
-            }
-            transaction.execute();
-         }
-         return true;
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't change priority", ex);
-         return false;
-      }
-   }
-
    public static boolean promptChangePoints(AbstractWorkflowArtifact sma, boolean persist) {
       if (sma.isTeamWorkflow()) {
          return promptChangePoints(Arrays.asList((TeamWorkFlowArtifact) sma), persist);
@@ -323,45 +281,6 @@ public final class PromptChangeUtil {
          return true;
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't change points", ex);
-         return false;
-      }
-   }
-
-   public static boolean promptChangePriority(AbstractWorkflowArtifact sma, boolean persist) {
-      if (sma.isTeamWorkflow()) {
-         return promptChangePriority(Arrays.asList((TeamWorkFlowArtifact) sma), persist);
-      }
-      return false;
-   }
-
-   public static boolean promptChangePriority(final Collection<? extends TeamWorkFlowArtifact> teams, boolean persist) {
-
-      for (TeamWorkFlowArtifact team : teams) {
-         if (team.isReleased() || team.isVersionLocked()) {
-            AWorkbench.popup("ERROR",
-               "Team Workflow\n \"" + team.getName() + "\"\n version is locked or already released.");
-            return false;
-         }
-      }
-      final AtsPriorityDialog ald = new AtsPriorityDialog(Displays.getActiveShell());
-      try {
-         if (teams.size() == 1) {
-            ald.setSelected(teams.iterator().next().getWorldViewPriority());
-         }
-         if (ald.open() == 0) {
-
-            SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "ATS Prompt Change Priority");
-            for (TeamWorkFlowArtifact team : teams) {
-               if (!team.getWorldViewPriority().equals(ald.getSelection())) {
-                  team.setSoleAttributeValue(AtsAttributeTypes.PriorityType, ald.getSelection());
-                  team.saveSMA(transaction);
-               }
-            }
-            transaction.execute();
-         }
-         return true;
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't change priority", ex);
          return false;
       }
    }

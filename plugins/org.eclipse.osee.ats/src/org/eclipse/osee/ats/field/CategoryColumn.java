@@ -12,12 +12,12 @@ import org.eclipse.swt.SWT;
 
 public class CategoryColumn extends XViewerAtsAttributeValueColumn {
 
-   public static final IAttributeType Category1 = new AtsAttributeTypes("AAMFEdrYniOQYrYUKKQA", "Category",
+   public static final IAttributeType Category1Attribute = new AtsAttributeTypes("AAMFEdrYniOQYrYUKKQA", "Category",
       "Open field for user to be able to enter text to use for categorizing/sorting.");
-   public static final IAttributeType Category2 = new AtsAttributeTypes("AAMFEdthBkolbJKLXuAA", "Category2",
-      Category1.getDescription());
-   public static final IAttributeType Category3 = new AtsAttributeTypes("AAMFEd06oxr8LMzZxdgA", "Category3",
-      Category1.getDescription());
+   public static final IAttributeType Category2Attribute = new AtsAttributeTypes("AAMFEdthBkolbJKLXuAA", "Category2",
+      Category1Attribute.getDescription());
+   public static final IAttributeType Category3Attribute = new AtsAttributeTypes("AAMFEd06oxr8LMzZxdgA", "Category3",
+      Category1Attribute.getDescription());
 
    public CategoryColumn(IAttributeType attributeType) {
       super(attributeType, 80, SWT.LEFT, false, SortDataType.String, true);

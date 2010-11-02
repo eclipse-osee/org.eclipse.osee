@@ -22,17 +22,19 @@ import java.util.logging.Level;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.editor.SMAEditor;
+import org.eclipse.osee.ats.field.ChangeTypeColumn;
+import org.eclipse.osee.ats.field.PriorityColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.navigate.AtsXNavigateItemLauncher;
 import org.eclipse.osee.ats.navigate.SearchNavigateItem;
@@ -98,7 +100,7 @@ public class AtsNavigateItemsToWorldViewTest {
       // delete an artifact, look for expected !Errors in the XCol
       deleteAttributesForXColErrorTest(arts, AtsAttributeTypes.TeamDefinition);
       deleteAttributesForXColErrorTest(arts, AtsAttributeTypes.ActionableItem);
-      deleteAttributesForXColErrorTest(arts, AtsAttributeTypes.ChangeType);
+      deleteAttributesForXColErrorTest(arts, ChangeTypeColumn.ChangeTypeAttribute);
    }
 
    @org.junit.Test
@@ -623,7 +625,7 @@ public class AtsNavigateItemsToWorldViewTest {
          verifyArtifactsHasErrors(labelProv, arts, xCol,
             getXViewer().getCustomizeMgr().getColumnNumFromXViewerColumn(xCol), actualErrorCols);
       }
-      if (!AtsAttributeTypes.CurrentState.equals(attributeTypeToDelete) && !AtsAttributeTypes.PriorityType.equals(attributeTypeToDelete)) {
+      if (!AtsAttributeTypes.CurrentState.equals(attributeTypeToDelete) && !PriorityColumn.PriorityTypeAttribute.equals(attributeTypeToDelete)) {
          verifyXCol1HasErrors(actualErrorCols);
       } else {
          verifyXCol2HasErrors(actualErrorCols);

@@ -14,9 +14,10 @@ package org.eclipse.osee.ats.actions;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.field.ChangeTypeColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -59,8 +60,9 @@ public class CopyActionDetailsAction extends Action {
                detailsStr = detailsStr.replaceAll("<name>", sma.getName());
                detailsStr = detailsStr.replaceAll("<artType>", sma.getArtifactTypeName());
                detailsStr =
-                  detailsStr.replaceAll("<changeType>",
-                     Strings.isValid(sma.getWorldViewChangeTypeStr()) ? sma.getWorldViewChangeTypeStr() : "unknown");
+                  detailsStr.replaceAll(
+                     "<changeType>",
+                     Strings.isValid(ChangeTypeColumn.getChangeTypeStr(sma)) ? ChangeTypeColumn.getChangeTypeStr(sma) : "unknown");
             } else {
                detailsStr =
                   "\"" + sma.getArtifactTypeName() + "\" - " + sma.getHumanReadableId() + " - \"" + sma.getName() + "\"";
