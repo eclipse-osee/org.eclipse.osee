@@ -274,36 +274,45 @@ public class CoverageEventManager implements IArtifactEventListener, OseeMessagi
 
    private void handleCoverageEditorSaveEvent(CoverageEditor editor, CoveragePackage coveragePackage, CoveragePackageEvent coverageEvent) {
       //      System.out.println("handle coverage save event => " + coverageEvent.getCoverages().size() + " items");
+      List<String> reloaded = new ArrayList<String>();
       for (CoverageChange change : coverageEvent.getCoverages()) {
          if (change.getEventType() == CoverageEventType.Modified) {
-            reloadCoverage(editor, coveragePackage, change);
+            reloadCoverage(reloaded, editor, coveragePackage, change);
          }
       }
    }
 
-   private void reloadCoverage(CoverageEditor editor, CoveragePackage coveragePackage, CoverageChange change) {
+   private void reloadCoverage(List<String> reloaded, CoverageEditor editor, CoveragePackage coveragePackage, CoverageChange change) {
       //      System.out.println("handle reloadCoverage coverage => " + change);
       ICoverage coverage = coveragePackage.getCoverage(change.getGuid());
       if (coverage != null) {
          if (coverage instanceof CoverageItem) {
             try {
                CoverageUnit parent = (CoverageUnit) ((CoverageItem) coverage).getParent();
-               OseeCoverageUnitStore store = new OseeCoverageUnitStore(parent, editor.getBranch());
-               store.reloadItem(change.getEventType(), (CoverageItem) coverage, change,
-                  coveragePackage.getCoverageOptionManager());
-               OseeCoveragePackageStore cpStore = new OseeCoveragePackageStore(coveragePackage, editor.getBranch());
-               cpStore.loadWorkProductTaskNames(Arrays.asList(coverage));
-               editor.refresh(coverage);
+               // Don't reload parent twice
+               if (!reloaded.contains(parent.getGuid())) {
+                  OseeCoverageUnitStore store = new OseeCoverageUnitStore(parent, editor.getBranch());
+                  store.reloadItem(change.getEventType(), (CoverageItem) coverage, change,
+                     coveragePackage.getCoverageOptionManager());
+                  OseeCoveragePackageStore cpStore = new OseeCoveragePackageStore(coveragePackage, editor.getBranch());
+                  cpStore.loadWorkProductTaskNames(Arrays.asList(coverage));
+                  editor.refresh(coverage);
+                  reloaded.add(coverage.getGuid());
+               }
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          } else if (coverage instanceof CoverageUnit) {
             try {
-               OseeCoverageUnitStore store = new OseeCoverageUnitStore((CoverageUnit) coverage, editor.getBranch());
-               store.load(coveragePackage.getCoverageOptionManager());
-               OseeCoveragePackageStore cpStore = new OseeCoveragePackageStore(coveragePackage, editor.getBranch());
-               cpStore.loadWorkProductTaskNames(Arrays.asList(coverage));
-               editor.refresh(coverage);
+               // Don't reload twice
+               if (!reloaded.contains(coverage.getGuid())) {
+                  OseeCoverageUnitStore store = new OseeCoverageUnitStore((CoverageUnit) coverage, editor.getBranch());
+                  store.load(coveragePackage.getCoverageOptionManager());
+                  OseeCoveragePackageStore cpStore = new OseeCoveragePackageStore(coveragePackage, editor.getBranch());
+                  cpStore.loadWorkProductTaskNames(Arrays.asList(coverage));
+                  editor.refresh(coverage);
+                  reloaded.add(coverage.getGuid());
+               }
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
