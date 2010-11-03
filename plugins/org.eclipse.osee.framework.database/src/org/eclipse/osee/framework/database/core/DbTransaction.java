@@ -48,6 +48,7 @@ public abstract class DbTransaction {
     * <b>Override to handle transaction exception</b>
     */
    protected void handleTxException(Exception ex) {
+      // override to add additional code to exception handling
    }
 
    /**
@@ -55,6 +56,7 @@ public abstract class DbTransaction {
     * the end of the transaction, regardless of exceptions. <br/>
     * <b>Override to add additional code to finally block</b>
     */
+   @SuppressWarnings("unused")
    protected void handleTxFinally() throws OseeCoreException {
       // override to add additional code to finally
    }

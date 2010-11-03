@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.database.core;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 
@@ -28,7 +27,7 @@ public abstract class AbstractDbTxOperation extends AbstractOperation {
       this.databaseService = databaseService;
    }
 
-   protected IOseeDatabaseService getDatabaseService() throws OseeDataStoreException {
+   protected IOseeDatabaseService getDatabaseService() {
       return databaseService;
    }
 
@@ -41,15 +40,18 @@ public abstract class AbstractDbTxOperation extends AbstractOperation {
    protected abstract void doTxWork(IProgressMonitor monitor, OseeConnection connection) throws OseeCoreException;
 
    protected void handleTxException(IProgressMonitor monitor, Exception ex) {
+      // default implementation
    }
 
+   @SuppressWarnings("unused")
    protected void handleTxFinally(IProgressMonitor monitor) throws OseeCoreException {
+      // default implementation
    }
 
    private final class Transaction extends DbTransaction {
       private final IProgressMonitor monitor;
 
-      private Transaction(IProgressMonitor monitor) throws OseeCoreException {
+      private Transaction(IProgressMonitor monitor) {
          super();
          this.monitor = monitor;
       }

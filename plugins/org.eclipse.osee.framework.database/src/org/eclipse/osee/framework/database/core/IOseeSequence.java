@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.database.core;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 
 /**
  * @author Roberto E. Escobar
@@ -69,5 +68,5 @@ public interface IOseeSequence {
 
    int getNextImportMappedIndexId() throws OseeCoreException;
 
-   void clear() throws OseeDataStoreException;
+   void clear();
 }

@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.database.internal.core;
 
 import java.util.HashMap;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeSequence;
 import org.eclipse.osee.framework.database.core.OseeConnection;
@@ -50,7 +49,7 @@ public class OseeSequenceImpl implements IOseeSequence {
    }
 
    @Override
-   public synchronized void clear() throws OseeDataStoreException {
+   public synchronized void clear() {
       sequences.clear();
    }
 

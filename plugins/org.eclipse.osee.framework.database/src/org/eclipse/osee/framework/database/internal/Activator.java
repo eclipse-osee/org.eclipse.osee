@@ -31,9 +31,6 @@ public class Activator implements BundleActivator, IOseeDatabaseServiceProvider 
    private ServiceTracker dbTracker;
    private DatabaseInfoProvider databaseInfoProvider;
 
-   public Activator() {
-   }
-
    @Override
    public void start(BundleContext bundleContext) throws Exception {
       instance = this;

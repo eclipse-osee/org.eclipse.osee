@@ -57,7 +57,7 @@ public class OseeDatabaseServiceImpl implements IOseeDatabaseService {
    }
 
    @Override
-   public IOseeSequence getSequence() throws OseeDataStoreException {
+   public IOseeSequence getSequence() {
       return oseeSequence;
    }
 
@@ -101,6 +101,7 @@ public class OseeDatabaseServiceImpl implements IOseeDatabaseService {
       return new OseeStatementImpl(getDefaultConnectionPool(), (OseeConnectionImpl) connection, autoClose);
    }
 
+   @SuppressWarnings("unused")
    @Override
    public IOseeStatement getStatement(int resultSetType, int resultSetConcurrency) throws OseeDataStoreException {
       throw new UnsupportedOperationException("This needs to be implemented");
@@ -159,8 +160,8 @@ public class OseeDatabaseServiceImpl implements IOseeDatabaseService {
          if ((exlist = ex.getNextException()) != null) {
             OseeLog.log(Activator.class, Level.SEVERE, "This is the nested exception", exlist);
          }
-         throw new OseeCoreException(
-            "sql update failed: \n%s\n%s", query, StatementUtil.getBatchErrorMessage(dataList), ex);
+         throw new OseeCoreException("sql update failed: \n%s\n%s", query,
+            StatementUtil.getBatchErrorMessage(dataList), ex);
       } finally {
          StatementUtil.close(preparedStatement);
       }

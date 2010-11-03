@@ -23,9 +23,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
-public class DatabaseInfoManager {
+public final class DatabaseInfoManager {
 
    private DatabaseInfoManager() {
+      //Utility Class
    }
 
    public static IDatabaseInfo getDefault() throws OseeDataStoreException {
