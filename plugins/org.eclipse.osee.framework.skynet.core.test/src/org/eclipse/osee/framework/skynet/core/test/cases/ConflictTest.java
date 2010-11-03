@@ -39,6 +39,7 @@ import org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 
 /**
  * @author Jeff C. Phillips
@@ -78,7 +79,19 @@ public class ConflictTest {
     */
    @org.junit.Test
    public void testGetMergeBranchNotCreated() throws Exception {
-      runMergeBranchNotCreated();
+      TestUtil.sleep(5000);
+      SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
+      OseeLog.registerLoggerListener(monitorLog);
+      try {
+         Branch mergeBranch =
+            BranchManager.getMergeBranch(ConflictTestManager.getSourceBranch(), ConflictTestManager.getDestBranch());
+
+         assertTrue("The merge branch should be null as it hasn't been created yet", mergeBranch == null);
+      } catch (Exception ex) {
+         fail(ex.getMessage());
+      }
+      assertTrue(String.format("%d SevereLogs during test.", monitorLog.getSevereLogs().size()),
+         monitorLog.getSevereLogs().isEmpty());
    }
 
    /**
@@ -114,7 +127,33 @@ public class ConflictTest {
     */
    @org.junit.Test
    public void testGetMergeBranchCreated() throws Exception {
-      runMergeBranchCreated();
+      TestUtil.sleep(5000);
+      SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
+      OseeLog.registerLoggerListener(monitorLog);
+      try {
+         Branch mergeBranch =
+            BranchManager.getMergeBranch(ConflictTestManager.getSourceBranch(), ConflictTestManager.getDestBranch());
+         assertFalse(mergeBranch == null);
+         Collection<Artifact> artifacts = ArtifactQuery.getArtifactListFromBranch(mergeBranch, INCLUDE_DELETED);
+         if (DEBUG) {
+            System.out.println("Found the following Artifacts on the branch ");
+            System.out.print("     ");
+            for (Artifact artifact : artifacts) {
+               System.out.print(artifact.getArtId() + ", ");
+            }
+            System.out.println("\n");
+         }
+
+         int expectedNumber = ConflictTestManager.numberOfArtifactsOnMergeBranch();
+         int actualNumber = artifacts.size();
+         assertTrue(
+            "(Intermittent failures - needs re-write) - The merge Branch does not contain the expected number of artifacts: ",
+            (expectedNumber <= actualNumber) && (actualNumber <= (expectedNumber + 1)));
+      } catch (Exception ex) {
+         fail(ex.getMessage());
+      }
+      assertTrue(String.format("%d SevereLogs during test.", monitorLog.getAllLogs().size()),
+         monitorLog.getAllLogs().isEmpty());
    }
 
    @org.junit.Test
@@ -158,7 +197,8 @@ public class ConflictTest {
          monitorLog.getAllLogs().isEmpty());
    }
 
-   public void checkCommitWithoutResolutionErrors() {
+   @Ignore
+   public void testCommitWithoutResolutionErrors() {
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
       try {
@@ -190,7 +230,7 @@ public class ConflictTest {
 
    }
 
-   private void checkNoTxCurrent(String dataId, String dataTable) throws OseeCoreException {
+   private static void checkNoTxCurrent(String dataId, String dataTable) throws OseeCoreException {
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       StringBuilder builder = new StringBuilder();
       builder.append(NO_TX_CURRENT_SET[0]);
@@ -213,7 +253,7 @@ public class ConflictTest {
       }
    }
 
-   private void checkMultipleTxCurrent(String dataId, String dataTable) throws OseeCoreException {
+   private static void checkMultipleTxCurrent(String dataId, String dataTable) throws OseeCoreException {
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       StringBuilder builder = new StringBuilder();
       builder.append(MULTIPLE_TX_CURRENT_SET[0]);
@@ -225,7 +265,6 @@ public class ConflictTest {
       builder.append(MULTIPLE_TX_CURRENT_SET[3]);
       builder.append(dataId);
       builder.append(MULTIPLE_TX_CURRENT_SET[4]);
-
       try {
          chStmt.runPreparedQuery(builder.toString());
          if (chStmt.next()) {
@@ -234,52 +273,6 @@ public class ConflictTest {
       } finally {
          chStmt.close();
       }
-   }
-
-   private void runMergeBranchNotCreated() throws Exception {
-      TestUtil.sleep(5000);
-      SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
-      OseeLog.registerLoggerListener(monitorLog);
-      try {
-         Branch mergeBranch =
-            BranchManager.getMergeBranch(ConflictTestManager.getSourceBranch(), ConflictTestManager.getDestBranch());
-
-         assertTrue("The merge branch should be null as it hasn't been created yet", mergeBranch == null);
-      } catch (Exception ex) {
-         fail(ex.getMessage());
-      }
-      assertTrue(String.format("%d SevereLogs during test.", monitorLog.getSevereLogs().size()),
-         monitorLog.getSevereLogs().isEmpty());
-   }
-
-   private void runMergeBranchCreated() throws Exception {
-      TestUtil.sleep(5000);
-      SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
-      OseeLog.registerLoggerListener(monitorLog);
-      try {
-         Branch mergeBranch =
-            BranchManager.getMergeBranch(ConflictTestManager.getSourceBranch(), ConflictTestManager.getDestBranch());
-         assertFalse(mergeBranch == null);
-         Collection<Artifact> artifacts = ArtifactQuery.getArtifactListFromBranch(mergeBranch, INCLUDE_DELETED);
-         if (DEBUG) {
-            System.out.println("Found the following Artifacts on the branch ");
-            System.out.print("     ");
-            for (Artifact artifact : artifacts) {
-               System.out.print(artifact.getArtId() + ", ");
-            }
-            System.out.println("\n");
-         }
-
-         int expectedNumber = ConflictTestManager.numberOfArtifactsOnMergeBranch();
-         int actualNumber = artifacts.size();
-         assertTrue(
-            "(Intermittent failures - needs re-write) - The merge Branch does not contain the expected number of artifacts: ",
-            (expectedNumber <= actualNumber) && (actualNumber <= (expectedNumber + 1)));
-      } catch (Exception ex) {
-         fail(ex.getMessage());
-      }
-      assertTrue(String.format("%d SevereLogs during test.", monitorLog.getAllLogs().size()),
-         monitorLog.getAllLogs().isEmpty());
    }
 
 }
