@@ -21,7 +21,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
@@ -86,14 +85,6 @@ public class AttributesFormSection extends ArtifactEditorFormSection {
       final FormToolkit toolkit = form.getToolkit();
       final Section section = getSection();
 
-      if (formPart != null) {
-         form.removePart(formPart);
-         formPart.dispose();
-         Control control = section.getClient();
-         if (control != null && !control.isDisposed()) {
-            control.dispose();
-         }
-      }
       Composite sectionBody = toolkit.createComposite(section, toolkit.getBorderStyle());
       sectionBody.setLayout(ALayout.getZeroMarginLayout());
       sectionBody.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -106,13 +97,6 @@ public class AttributesFormSection extends ArtifactEditorFormSection {
 
       section.layout(true);
       form.getForm().getBody().layout(true);
-   }
-
-   @Override
-   public void refresh() {
-      super.refresh();
-      updateDataPart();
-      updateToolBarVisibility();
    }
 
    private void updateToolBarVisibility() {
