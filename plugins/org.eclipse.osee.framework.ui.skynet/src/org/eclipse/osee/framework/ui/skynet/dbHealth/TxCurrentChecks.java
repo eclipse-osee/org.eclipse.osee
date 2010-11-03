@@ -47,8 +47,8 @@ public class TxCurrentChecks extends DatabaseHealthOperation {
       resultsTab.addColumn(new XViewerColumn("6", "Mod Type", 80, SWT.LEFT, true, SortDataType.String, false, ""));
       resultsTab.addColumn(new XViewerColumn("7", "TX Current", 80, SWT.LEFT, true, SortDataType.String, false, ""));
 
-      doSubWork(new InvalidTxCurrentsAndModTypes(tableName, columnName, new ResultsReporter(resultsTab),
-         isFixOperationEnabled(), true), monitor, 0.3);
+      doSubWork(new InvalidTxCurrentsAndModTypes("TxCurrentChecks", tableName, columnName, new ResultsReporter(
+         resultsTab), isFixOperationEnabled(), true), monitor, 0.3);
    }
 
    @Override

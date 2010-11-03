@@ -28,13 +28,14 @@ public class TxCurrentsAndModTypesCommand extends CompositeOperation {
 
    private static List<IOperation> buildSubOperations(OperationReporter reporter, boolean archived) {
       List<IOperation> operations = new ArrayList<IOperation>(3);
-      operations.add(buildFixOperation(reporter, archived, "osee_artifact", "art_id"));
-      operations.add(buildFixOperation(reporter, archived, "osee_attribute", "attr_id"));
-      operations.add(buildFixOperation(reporter, archived, "osee_relation_link", "rel_link_id"));
+      operations.add(buildFixOperation(reporter, archived, "1/3 - osee_artifact", "osee_artifact", "art_id"));
+      operations.add(buildFixOperation(reporter, archived, "2/3 - osee_attribute", "osee_attribute", "attr_id"));
+      operations.add(buildFixOperation(reporter, archived, "3/3 - osee_relation_link", "osee_relation_link",
+         "rel_link_id"));
       return operations;
    }
 
-   private static IOperation buildFixOperation(OperationReporter reporter, boolean archived, String tableName, String columnName) {
-      return new InvalidTxCurrentsAndModTypes(tableName, columnName, reporter, true, archived);
+   private static IOperation buildFixOperation(OperationReporter reporter, boolean archived, String operationName, String tableName, String columnName) {
+      return new InvalidTxCurrentsAndModTypes(operationName, tableName, columnName, reporter, true, archived);
    }
 }

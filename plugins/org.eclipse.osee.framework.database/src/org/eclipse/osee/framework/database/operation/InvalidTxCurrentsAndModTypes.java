@@ -44,8 +44,11 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
    private final boolean isFixOperationEnabled;
    private final String txsTableName;
 
-   public InvalidTxCurrentsAndModTypes(String tableName, String columnName, OperationReporter reporter, boolean isFixOperationEnabled, boolean archived) {
+   private final String operationName;
+
+   public InvalidTxCurrentsAndModTypes(String operationName, String tableName, String columnName, OperationReporter reporter, boolean isFixOperationEnabled, boolean archived) {
       super("InvalidTxCurrentsAndModTypes " + tableName + " " + archived, Activator.PLUGIN_ID);
+      this.operationName = operationName;
       this.tableName = tableName;
       this.columnName = columnName;
       this.isFixOperationEnabled = isFixOperationEnabled;
@@ -99,7 +102,7 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
          for (; index > -1; index--) {
             if (!addresses.get(index).isPurge()) {
                if (addresses.get(index).getModType() == ModificationType.MERGED) {
-                  logIssue("found merged mod type for item not in baseline: ", addresses.get(index));
+                  //                  logIssue("found merged mod type for item not in baseline: ", addresses.get(index));
                }
                return;
             }
@@ -158,6 +161,8 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
+      reporter.report("Starting " + operationName);
+
       checkForCancelledStatus(monitor);
 
       IOseeStatement chStmt = ConnectionHandler.getStatement();
@@ -192,5 +197,7 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
       }
 
       fixIssues(monitor);
+
+      reporter.report("Completed " + operationName);
    }
 }
