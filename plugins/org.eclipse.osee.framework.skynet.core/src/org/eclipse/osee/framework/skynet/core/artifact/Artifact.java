@@ -224,8 +224,7 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, Co
    }
 
    /**
-    * Get the exactly one artifact related to this artifact by relations of type relationType are returned in a list
-    * order based on
+    * Get the exactly one artifact related to this artifact by a relation of type relationType
     */
    public Artifact getRelatedArtifact(IRelationEnumeration relationEnum) throws OseeCoreException {
       return RelationManager.getRelatedArtifact(this, relationEnum);
@@ -363,6 +362,11 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, Co
       }
    }
 
+   /**
+    * @return the highest level parent of this artifact which will equal to
+    * OseeSystemArtifacts.getDefaultHierarchyRootArtifact(artifact.getBranch()) except when this artifact is an orphan
+    * @throws OseeCoreException
+    */
    public Artifact getArtifactRoot() throws OseeCoreException {
       Artifact artifactRoot = null;
 
