@@ -26,10 +26,10 @@ import org.eclipse.osee.framework.logging.OseeLog;
 /**
  * @author Roberto E. Escobar
  */
-public class StatementUtil {
+public final class StatementUtil {
 
    private StatementUtil() {
-
+      // Utility class
    }
 
    public static <O extends Object> String getBatchErrorMessage(List<O[]> dataList) {
@@ -55,6 +55,7 @@ public class StatementUtil {
                details.append("NULL\n");
             }
          }
+         details.append("---------\n");
       }
       details.append("]\n");
       return details.toString();
