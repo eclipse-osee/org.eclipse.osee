@@ -18,8 +18,8 @@ import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkSender;
 public class TransactionEvent extends FrameworkEvent {
 
    private TransactionEventType eventType;
-   private List<TransactionChange> transactions;
    private NetworkSender networkSender;
+   private final List<TransactionChange> transactions = new ArrayList<TransactionChange>();
 
    /**
     * Gets the value of the artifacts property.
@@ -37,9 +37,6 @@ public class TransactionEvent extends FrameworkEvent {
     * Objects of the following type(s) are allowed in the list {@link DefaultBasicGuidArtifact }
     */
    public List<TransactionChange> getTransactions() {
-      if (transactions == null) {
-         transactions = new ArrayList<TransactionChange>();
-      }
       return this.transactions;
    }
 

@@ -10,15 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.event.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 
 public class TransactionChange extends FrameworkEvent {
 
    private String branchGuid;
    private int transactionId;
-   private List<DefaultBasicGuidArtifact> artifacts;
+   private final Set<DefaultBasicGuidArtifact> artifacts = new HashSet<DefaultBasicGuidArtifact>();
 
    /**
     * Gets the value of the branchGuid property.
@@ -67,11 +68,7 @@ public class TransactionChange extends FrameworkEvent {
     * <p>
     * Objects of the following type(s) are allowed in the list {@link DefaultBasicGuidArtifact }
     */
-   public List<DefaultBasicGuidArtifact> getArtifacts() {
-      if (artifacts == null) {
-         artifacts = new ArrayList<DefaultBasicGuidArtifact>();
-      }
-      return this.artifacts;
+   public Collection<DefaultBasicGuidArtifact> getArtifacts() {
+      return artifacts;
    }
-
 }
