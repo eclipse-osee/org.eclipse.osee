@@ -30,13 +30,46 @@ public final class CharJoinQuery extends AbstractJoinQuery {
       }
 
       @Override
+      public boolean equals(Object obj) {
+         if (this == obj) {
+            return true;
+         }
+         if (obj == null) {
+            return false;
+         }
+         if (getClass() != obj.getClass()) {
+            return false;
+         }
+         CharJoinEntry other = (CharJoinEntry) obj;
+         if (!getOuterType().equals(other.getOuterType())) {
+            return false;
+         }
+         if (value == null) {
+            if (other.value != null) {
+               return false;
+            }
+         } else if (!value.equals(other.value)) {
+            return false;
+         }
+         return true;
+      }
+
+      @Override
       public int hashCode() {
-         return 37 * value.hashCode();
+         final int prime = 31;
+         int result = 1;
+         result = prime * result + getOuterType().hashCode();
+         result = prime * result + ((value == null) ? 0 : value.hashCode());
+         return result;
       }
 
       @Override
       public String toString() {
          return value;
+      }
+
+      private CharJoinQuery getOuterType() {
+         return CharJoinQuery.this;
       }
    }
 
