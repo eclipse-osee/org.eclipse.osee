@@ -260,10 +260,9 @@ artifactType "Universal Group" extends "Group Artifact" {
    attribute "Description"
 }
 
-artifactType "Renderer Template" extends "Native Artifact" {
+artifactType "Renderer Template" extends "MS Word Whole Document" {
    guid "AAMFDhvZnHKgSeFKMXgA"
    attribute "Template Match Criteria"
-   attribute "Whole Word Content"
 }
 
 attributeType "Template Match Criteria" extends StringAttribute {
