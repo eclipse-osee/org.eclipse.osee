@@ -475,7 +475,7 @@ public class InternalEventManager {
             // Roll-up change information
             try {
                // Log if this is a loopback and what is happening
-               if (!preferences.isEnableRemoteEventLoopback()) {
+               if (preferences.isEnableRemoteEventLoopback()) {
                   EventUtil.eventLog("IEM: TransactionEvent Loopback enabled" + (sender.isLocal() ? " - Ignoring Local Kick" : " - Kicking Local from Loopback"));
                }
 
