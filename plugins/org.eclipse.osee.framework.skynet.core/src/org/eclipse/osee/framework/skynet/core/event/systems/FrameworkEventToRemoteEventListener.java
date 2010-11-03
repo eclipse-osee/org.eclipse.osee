@@ -31,11 +31,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ChangeArtifactType;
-import org.eclipse.osee.framework.skynet.core.artifact.PurgeTransactionOperation;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.event.EventUtil;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkEventUtil;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.PurgeTransactionEventUtil;
 import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.AttributeChange;
@@ -162,7 +162,7 @@ public final class FrameworkEventToRemoteEventListener implements IFrameworkEven
    private void handleTransactionEvent(Sender sender, TransactionEvent transEvent) {
       try {
          if (transEvent.getEventType() == TransactionEventType.Purged) {
-            PurgeTransactionOperation.handleRemotePurgeTransactionEvent(transEvent);
+            PurgeTransactionEventUtil.handleRemotePurgeTransactionEvent(transEvent);
             eventManager.kickTransactionEvent(sender, transEvent);
          } else {
             EventUtil.eventLog("REM: handleTransactionEvent - unhandled mod type " + transEvent.getEventType());
