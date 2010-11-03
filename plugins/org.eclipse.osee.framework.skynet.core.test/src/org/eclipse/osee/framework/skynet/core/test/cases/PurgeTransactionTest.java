@@ -16,11 +16,13 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.test.mocks.Asserts;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -99,9 +101,9 @@ public class PurgeTransactionTest {
    }
 
    private void purge(int transactionId, Map<String, Integer> dbCount) throws Exception {
-      PurgeTransactionOperation purgeOp =
-         new PurgeTransactionOperation(Activator.getInstance().getOseeDatabaseService(), transactionId);
-      Operations.executeWorkAndCheckStatus(purgeOp);
+      IOperation operation =
+         new PurgeTransactionOperation(Activator.getInstance().getOseeDatabaseService(), true, transactionId);
+      Asserts.testOperation(operation, IStatus.OK);
       DbUtil.getTableRowCounts(dbCount, tables);
    }
 

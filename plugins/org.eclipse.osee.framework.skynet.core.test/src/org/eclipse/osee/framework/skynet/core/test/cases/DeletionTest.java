@@ -15,6 +15,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import java.util.Collection;
 import java.util.LinkedList;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -23,7 +24,8 @@ import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.test.mocks.Asserts;
 import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
@@ -170,10 +172,9 @@ public class DeletionTest {
 
       if (DELETE_TRANSACTION_TEST) {
          IOseeDatabaseServiceProvider databaseProvider = Activator.getInstance();
-         PurgeTransactionOperation purgeOp =
+         IOperation operation =
             new PurgeTransactionOperation(databaseProvider.getOseeDatabaseService(), true, deletionTransaction);
-         Operations.executeWorkAndCheckStatus(purgeOp);
-
+         Asserts.testOperation(operation, IStatus.OK);
          if (DEBUG) {
             System.err.println("Deleting the Transaction");
          }
