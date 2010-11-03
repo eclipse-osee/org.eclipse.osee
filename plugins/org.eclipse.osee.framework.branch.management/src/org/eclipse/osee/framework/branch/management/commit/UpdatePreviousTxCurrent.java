@@ -14,39 +14,50 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
+import org.eclipse.osee.framework.database.core.IdJoinQuery;
 import org.eclipse.osee.framework.database.core.JoinUtility;
-import org.eclipse.osee.framework.database.core.JoinUtility.IdJoinQuery;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 
 /**
  * @author Ryan D. Brooks
  */
 public class UpdatePreviousTxCurrent {
-   private final Branch branch;
-   private final OseeConnection connection;
-   private final IdJoinQuery artifactJoin = JoinUtility.createIdJoinQuery();
-   private final IdJoinQuery attributeJoin = JoinUtility.createIdJoinQuery();
-   private final IdJoinQuery relationJoin = JoinUtility.createIdJoinQuery();
    private static final String UPDATE_TXS_NOT_CURRENT =
       "update osee_txs SET tx_current = " + TxChange.NOT_CURRENT.getValue() + " where branch_id = ? AND gamma_id = ? and tx_current <> ? and transaction_id = ?";
+
+   private final Branch branch;
+   private final OseeConnection connection;
+   private IdJoinQuery artifactJoin;
+   private IdJoinQuery attributeJoin;
+   private IdJoinQuery relationJoin;
 
    public UpdatePreviousTxCurrent(Branch branch, OseeConnection connection) {
       this.branch = branch;
       this.connection = connection;
    }
 
-   public void addAttribute(int attributeId) {
+   public void addAttribute(int attributeId) throws OseeDataStoreException {
+      if (attributeJoin == null) {
+         attributeJoin = JoinUtility.createIdJoinQuery();
+      }
       attributeJoin.add(attributeId);
    }
 
-   public void addArtifact(int artifactId) {
+   public void addArtifact(int artifactId) throws OseeDataStoreException {
+      if (artifactJoin == null) {
+         artifactJoin = JoinUtility.createIdJoinQuery();
+      }
       artifactJoin.add(artifactId);
    }
 
-   public void addRelation(int relationId) {
+   public void addRelation(int relationId) throws OseeDataStoreException {
+      if (relationJoin == null) {
+         relationJoin = JoinUtility.createIdJoinQuery();
+      }
       relationJoin.add(relationId);
    }
 
@@ -57,9 +68,11 @@ public class UpdatePreviousTxCurrent {
    }
 
    private void updateTxNotCurrents(String tableName, String columnName, IdJoinQuery idJoin) throws OseeCoreException {
-      idJoin.store(connection);
-      updateNoLongerCurrentGammas(tableName, columnName, idJoin.getQueryId());
-      idJoin.delete(connection);
+      if (idJoin != null) {
+         idJoin.store(connection);
+         updateNoLongerCurrentGammas(tableName, columnName, idJoin.getQueryId());
+         idJoin.delete(connection);
+      }
    }
 
    private void updateNoLongerCurrentGammas(String tableName, String columnName, int queryId) throws OseeCoreException {

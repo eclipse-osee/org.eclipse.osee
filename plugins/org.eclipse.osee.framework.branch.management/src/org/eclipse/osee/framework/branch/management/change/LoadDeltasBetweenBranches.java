@@ -25,9 +25,9 @@ import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
+import org.eclipse.osee.framework.database.core.IdJoinQuery;
 import org.eclipse.osee.framework.database.core.JoinUtility;
-import org.eclipse.osee.framework.database.core.JoinUtility.IdJoinQuery;
-import org.eclipse.osee.framework.database.core.JoinUtility.TransactionJoinQuery;
+import org.eclipse.osee.framework.database.core.TransactionJoinQuery;
 
 /**
  * @author Ryan D. Brooks

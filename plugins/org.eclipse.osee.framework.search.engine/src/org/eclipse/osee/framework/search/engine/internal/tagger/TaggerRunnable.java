@@ -17,9 +17,9 @@ import java.util.LinkedList;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
+import org.eclipse.osee.framework.database.core.DatabaseJoinAccessor.JoinItem;
 import org.eclipse.osee.framework.database.core.DbTransaction;
-import org.eclipse.osee.framework.database.core.JoinUtility;
-import org.eclipse.osee.framework.database.core.JoinUtility.JoinItem;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.search.engine.IAttributeTaggerProviderManager;
@@ -167,7 +167,9 @@ class TaggerRunnable implements Runnable {
                   }
                }
                store(connection, this.searchTags);
-               JoinUtility.deleteQuery(connection, JoinItem.TAG_GAMMA_QUEUE, getTagQueueQueryId());
+
+               ConnectionHandler.runPreparedUpdate(connection, JoinItem.TAG_GAMMA_QUEUE.getDeleteSql(),
+                  getTagQueueQueryId());
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE,
                   String.format("Unable to store tags - tagQueueQueryId [%d]", getTagQueueQueryId()), ex);

@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.core.message.ChangeItem;
 import org.eclipse.osee.framework.core.message.RelationChangeItem;
 import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
-import org.eclipse.osee.framework.database.core.JoinUtility.IdJoinQuery;
+import org.eclipse.osee.framework.database.core.IdJoinQuery;
 
 /**
  * @author Roberto E. Escobar

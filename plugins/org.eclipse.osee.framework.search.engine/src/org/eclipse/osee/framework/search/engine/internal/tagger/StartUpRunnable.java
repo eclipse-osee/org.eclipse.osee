@@ -10,11 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.search.engine.internal.tagger;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.TimerTask;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.server.OseeServerProperties;
 import org.eclipse.osee.framework.database.core.JoinUtility;
+import org.eclipse.osee.framework.database.core.TagQueueJoinQuery;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.search.engine.ISearchEngineTagger;
 
@@ -32,7 +33,8 @@ final class StartUpRunnable extends TimerTask {
    public void run() {
       try {
          if (OseeServerProperties.isCheckTagQueueOnStartupAllowed()) {
-            List<Integer> queries = JoinUtility.getAllTagQueueQueryIds();
+            TagQueueJoinQuery joinQuery = JoinUtility.createTagQueueJoinQuery();
+            Collection<Integer> queries = joinQuery.getAllQueryIds();
             OseeLog.log(SearchEngineTagger.class, Level.INFO,
                String.format("On Start-Up Tagging - [%d] tag queue items.", queries.size()));
             for (Integer queryId : queries) {
