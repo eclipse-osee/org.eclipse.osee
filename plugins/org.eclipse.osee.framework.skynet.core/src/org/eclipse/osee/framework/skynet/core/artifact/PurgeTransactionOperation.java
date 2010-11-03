@@ -14,37 +14,32 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.TransactionDoesNotExist;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
-import org.eclipse.osee.framework.core.operation.IOperation;
-import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.AbstractDbTxOperation;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
+import org.eclipse.osee.framework.database.core.IdJoinQuery;
 import org.eclipse.osee.framework.database.core.JoinUtility;
-import org.eclipse.osee.framework.database.core.JoinUtility.TransactionJoinQuery;
 import org.eclipse.osee.framework.database.core.OseeConnection;
-import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.database.core.TransactionJoinQuery;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.event.model.TransactionChange;
+import org.eclipse.osee.framework.skynet.core.event.PurgeTransactionEventUtil;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionEvent;
-import org.eclipse.osee.framework.skynet.core.event.model.TransactionEventType;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
-import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
@@ -56,32 +51,29 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
       "UPDATE osee_tx_details SET osee_comment = replace(osee_comment, ?, ?) WHERE osee_comment like ?";
 
    private static final String SELECT_GAMMAS_FROM_TRANSACTION =
-      "SELECT txs1.gamma_id, txs1.transaction_id FROM osee_txs txs1, osee_join_transaction txj1 WHERE " + "txs1.transaction_id = txj1.transaction_id AND txj1.query_id = ? AND " + "NOT EXISTS (SELECT 'x' FROM osee_txs txs2 WHERE txs1.gamma_id = txs2.gamma_id AND txs1.transaction_id <> txs2.transaction_id)";
-
-   private static final String DELETE_TRANSACTION_FROM_TRANSACTION_DETAILS =
-      "DELETE FROM osee_tx_details WHERE transaction_id IN (SELECT txj1.transaction_id FROM osee_join_transaction txj1 WHERE txj1.query_id = ?)";
-
-   private static final String DELETE_POSTFIX =
-      "outerTb where outerTb.gamma_id = (SELECT txj1.gamma_id from osee_join_transaction txj1 WHERE outerTb.gamma_id = txj1.gamma_id AND txj1.query_id = ?)";
-
-   private final static String DELETE_ARTIFACT_VERSIONS = "DELETE FROM osee_artifact " + DELETE_POSTFIX;
-   private final static String DELETE_ATTRIBUTES = "DELETE FROM osee_attribute " + DELETE_POSTFIX;
-   private final static String DELETE_RELATIONS = "DELETE FROM osee_relation_link " + DELETE_POSTFIX;
+      "SELECT DISTINCT txs1.gamma_id FROM osee_txs txs1, osee_join_transaction txj1 WHERE txs1.transaction_id = txj1.transaction_id AND txj1.query_id = ? AND NOT EXISTS (SELECT 'x' FROM osee_txs txs2 WHERE txs1.gamma_id = txs2.gamma_id AND txs1.transaction_id <> txs2.transaction_id)";
 
    private final static String DELETE_TXS = "delete from osee_txs where transaction_id = ?";
+   private static final String DELETE_TX_DETAILS = "delete from osee_tx_details where transaction_id = ?";
+
+   private final static String DELETE_ARTIFACT_VERSIONS = "delete from osee_artifact items where items.gamma_id = ?";
+   private final static String DELETE_ATTRIBUTES = "delete from osee_attribute items where items.gamma_id = ?";
+   private final static String DELETE_RELATIONS = "delete from osee_relation_link items where items.gamma_id = ?";
 
    private final static String TRANSACATION_GAMMA_IN_USE =
       "SELECT txs2.transaction_id FROM osee_txs txs1, osee_txs txs2, osee_join_transaction jn where txs1.transaction_id = jn.transaction_id AND txs1.gamma_id = txs2.gamma_id and txs2.transaction_id != txs1.transaction_id AND jn.query_id = ?";
 
-   private final static String LOAD_ARTIFACTS =
-      "INSERT INTO osee_join_artifact (query_id, art_id, branch_id, insert_time) (SELECT ?, art_id, txs.branch_id, CURRENT_TIMESTAMP from osee_txs txs, osee_attribute att, osee_join_transaction tran where tran.query_id = ? AND tran.transaction_id = txs.transaction_id AND txs.gamma_id = att.gamma_id) UNION (SELECT ?, art_id, txs.branch_id, CURRENT_TIMESTAMP FROM osee_txs txs, osee_artifact art, osee_join_transaction tran WHERE tran.query_id = ? AND tran.transaction_id = txs.transaction_id AND txs.gamma_id = art.gamma_id) UNION (SELECT ?, a_art_id as art_id, txs.branch_id, CURRENT_TIMESTAMP FROM osee_txs txs, osee_relation_link rel, osee_join_transaction tran WHERE tran.query_id = ? AND tran.transaction_id = txs.transaction_id AND txs.gamma_id = rel.gamma_id) UNION (SELECT ?, b_art_id as art_id, txs.branch_id, CURRENT_TIMESTAMP FROM osee_txs txs, osee_relation_link rel, osee_join_transaction tran WHERE tran.query_id = ? AND tran.transaction_id = txs.transaction_id AND txs.gamma_id = rel.gamma_id)";
+   private final static String SELECT_AFFECTED_ITEMS =
+      "SELECT %s as item_id, txs.branch_id from osee_join_transaction ojt, osee_txs txs, %s item where ojt.query_id = ? AND ojt.transaction_id = txs.transaction_id AND txs.gamma_id = item.gamma_id";
 
-   private static final String UPDATE_TXS =
-      "UPDATE osee_txs SET tx_current = (CASE WHEN mod_type = 3 THEN 2 ELSE 1 END) WHERE (transaction_id, gamma_id) IN ((SELECT maxt, txs2.gamma_id FROM osee_txs txs2, osee_attribute att2, (SELECT MAX(txs.transaction_id) AS maxt, att.attr_id AS atid FROM osee_txs txs, osee_attribute att, osee_join_artifact jar WHERE txs.branch_id = jar.branch_id AND txs.gamma_id = att.gamma_id and att.art_id = jar.art_id AND jar.query_id = ? GROUP BY att.attr_id, txs.branch_id) new_stuff WHERE txs2.gamma_id = att2.gamma_id AND att2.attr_id = atid AND maxt = txs2.transaction_id) UNION (SELECT maxt, txs2.gamma_id FROM osee_txs txs2, osee_artifact art2, (SELECT MAX(txs.transaction_id) AS maxt, ver.art_id AS atid FROM osee_txs txs, osee_artifact ver, osee_join_artifact jar WHERE txs.branch_id = jar.branch_id AND txs.gamma_id = ver.gamma_id and ver.art_id = jar.art_id AND jar.query_id = ? GROUP BY ver.art_id, txs.branch_id) new_stuff WHERE txs2.gamma_id = art2.gamma_id AND art2.art_id = atid AND maxt = txs2.transaction_id) UNION (SELECT maxt, txs2.gamma_id FROM osee_txs txs2, osee_relation_link rel2, (SELECT MAX(txs.transaction_id) AS maxt, rel.rel_link_id AS linkid FROM osee_txs txs, osee_relation_link rel, osee_join_artifact jar WHERE txs.branch_id = jar.branch_id AND txs.gamma_id = rel.gamma_id and (rel.a_art_id = jar.art_id or rel.b_art_id = jar.art_id) AND jar.query_id = ? GROUP BY rel.rel_link_id, txs.branch_id) new_stuff WHERE txs2.gamma_id = rel2.gamma_id AND rel2.rel_link_id = linkid AND maxt = txs2.transaction_id))";
+   private final static String FIND_NEW_TX_CURRENTS =
+      "SELECT oj.id as item_id, txs.mod_type, txs.gamma_id, txs.transaction_id from osee_join_id oj, %s item, osee_txs txs where oj.query_id = ? and oj.id = item.%s and item.gamma_id = txs.gamma_id and txs.branch_id = ? order by txs.transaction_id desc, oj.id desc";
+
+   private static final String UPDATE_TX_CURRENT =
+      "update osee_txs set tx_current = ? where transaction_id = ? and gamma_id = ?";
 
    private final int[] txIdsToDelete;
    private final boolean force;
-   private int artifactJoinId;
 
    public PurgeTransactionOperation(IOseeDatabaseService databaseService, boolean force, int... txIdsToDelete) {
       super(databaseService, String.format("Delete transactions: %s", Arrays.toString(txIdsToDelete)),
@@ -90,215 +82,177 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
       this.force = force;
    }
 
-   public PurgeTransactionOperation(IOseeDatabaseService databaseService, int... txIdsToDelete) {
-      this(databaseService, true, txIdsToDelete);
-   }
-
    @Override
    protected void doTxWork(IProgressMonitor monitor, OseeConnection connection) throws OseeCoreException {
+      Conditions.checkNotNull(txIdsToDelete, "transaction ids to delete");
+      Conditions.checkExpressionFailOnTrue(txIdsToDelete.length <= 0, "transaction ids to delete cannot be empty");
+
+      Arrays.sort(txIdsToDelete);
+
       TransactionJoinQuery txsToDeleteQuery = JoinUtility.createTransactionJoinQuery();
+
+      Map<TransactionRecord, TransactionRecord> deleteToPreviousTx =
+         findPriorTransactions(monitor, txsToDeleteQuery, 0.20);
+
+      TransactionEvent transactionEvent =
+         PurgeTransactionEventUtil.createPurgeTransactionEvent(deleteToPreviousTx.keySet());
+
+      txsToDeleteQuery.store(connection);
+
+      int txQueryId = txsToDeleteQuery.getQueryId();
+
       try {
-         Arrays.sort(txIdsToDelete);
+         checkForModifiedBaselines(connection, force, txQueryId);
 
-         // Need to compute the events prior to purge
-         TransactionEvent transactionEvent = getPurgeTransactionEvent(txIdsToDelete);
+         Map<Integer, IdJoinQuery> arts = findAffectedItems(connection, "art_id", "osee_artifact", txQueryId);
+         Map<Integer, IdJoinQuery> attrs = findAffectedItems(connection, "attr_id", "osee_attribute", txQueryId);
+         Map<Integer, IdJoinQuery> rels = findAffectedItems(connection, "rel_link_id", "osee_relation_link", txQueryId);
+         monitor.worked(calculateWork(0.20));
 
-         HashCollection<Branch, TxDeleteInfo> fromToTxData =
-            getTransactionPairs(monitor, txIdsToDelete, txsToDeleteQuery, 0.20);
-         txsToDeleteQuery.store(connection);
+         setChildBranchBaselineTxs(connection, monitor, deleteToPreviousTx, 0.20);
+         deleteItemEntriesForTransactions(connection, monitor, txQueryId, 0.20);
 
-         checkForModifiedBaselines(connection, force, txsToDeleteQuery.getQueryId());
-         getAffectedArtifacts(connection, txsToDeleteQuery.getQueryId());
+         monitor.subTask("Remove Tx Rows");
+         List<Object[]> txsToDelete = new ArrayList<Object[]>();
+         for (int txId : txIdsToDelete) {
+            txsToDelete.add(new Object[] {txId});
+         }
+         ConnectionHandler.runBatchUpdate(connection, DELETE_TX_DETAILS, txsToDelete);
+         ConnectionHandler.runBatchUpdate(connection, DELETE_TXS, txsToDelete);
 
-         setChildBranchBaselineTxs(connection, monitor, fromToTxData, 0.20);
-         deleteItemEntriesForTransactions(connection, monitor, txsToDeleteQuery.getQueryId(), 0.20);
-         deleteTransactionsFromTxDetails(connection, monitor, txsToDeleteQuery.getQueryId(), 0.20);
+         monitor.subTask("Updating Previous Tx to Current");
+         List<Object[]> txsUpdate = new ArrayList<Object[]>();
+         computeNewTxCurrents(connection, txsUpdate, "art_id", "osee_artifact", arts);
+         computeNewTxCurrents(connection, txsUpdate, "attr_id", "osee_attribute", attrs);
+         computeNewTxCurrents(connection, txsUpdate, "rel_link_id", "osee_relation_link", rels);
 
-         deleteTxCurrent(connection);
-         updateTxCurrent(connection, monitor, 0.20);
+         ConnectionHandler.runBatchUpdate(connection, UPDATE_TX_CURRENT, txsUpdate);
+         monitor.worked(calculateWork(0.20));
 
          OseeEventManager.kickTransactionEvent(this, transactionEvent);
-      } catch (OseeCoreException ex) {
-         OseeExceptions.wrapAndThrow(ex);
       } finally {
-         clearJoins(connection, txsToDeleteQuery, artifactJoinId);
+         clearJoin(connection, txsToDeleteQuery);
       }
    }
 
-   private void clearJoins(OseeConnection connection, TransactionJoinQuery txsToDeleteQuery, int artifactJoinId) {
+   private void computeNewTxCurrents(OseeConnection connection, Collection<Object[]> txsUpdate, String itemId, String tableName, Map<Integer, IdJoinQuery> affected) throws OseeCoreException {
+      String query = String.format(FIND_NEW_TX_CURRENTS, tableName, itemId);
+
+      for (Entry<Integer, IdJoinQuery> entry : affected.entrySet()) {
+         Integer branchId = entry.getKey();
+         IdJoinQuery joinQuery = entry.getValue();
+
+         IOseeStatement statement = ConnectionHandler.getStatement(connection);
+         try {
+            statement.runPreparedQuery(query, joinQuery.getQueryId(), branchId);
+            int previousItem = -1;
+            while (statement.next()) {
+               int currentItem = statement.getInt("item_id");
+
+               if (previousItem != currentItem) {
+                  ModificationType modType = ModificationType.getMod(statement.getInt("mod_type"));
+                  TxChange txCurrent = TxChange.getCurrent(modType);
+                  txsUpdate.add(new Object[] {
+                     txCurrent.getValue(),
+                     statement.getInt("transaction_id"),
+                     statement.getLong("gamma_id")});
+                  previousItem = currentItem;
+               }
+            }
+         } finally {
+            statement.close();
+         }
+         joinQuery.delete(connection);
+      }
+   }
+
+   private void clearJoin(OseeConnection connection, TransactionJoinQuery txsToDeleteQuery) {
       try {
          if (connection != null && !connection.isClosed()) {
             txsToDeleteQuery.delete(connection);
-            ArtifactLoader.clearQuery(artifactJoinId);
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex.toString(), ex);
       }
    }
 
-   public static void handleRemotePurgeTransactionEvent(TransactionEvent transEvent) {
-      if (transEvent.getEventType() != TransactionEventType.Purged) {
-         return;
-      }
+   private Map<Integer, IdJoinQuery> findAffectedItems(OseeConnection connection, String itemId, String itemTable, int txQueryId) throws OseeCoreException {
+      Map<Integer, IdJoinQuery> items = new HashMap<Integer, IdJoinQuery>();
 
-      Set<Artifact> artifactsInCache = new HashSet<Artifact>();
-      for (TransactionChange transChange : transEvent.getTransactions()) {
-         try {
-            TransactionManager.deCache(transChange.getTransactionId());
-         } catch (OseeCoreException ex1) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex1);
-         }
-
-         for (DefaultBasicGuidArtifact guidArt : transChange.getArtifacts()) {
-            try {
-               Artifact artifact = ArtifactCache.getActive(guidArt);
-               if (artifact != null) {
-                  artifactsInCache.add(artifact);
-               }
-            } catch (OseeCoreException ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, ex);
-            }
-         }
-
-      } // This will kick the artifacts reloaded event which should be handled by Applications/UIs
-      if (!artifactsInCache.isEmpty()) {
-         try {
-            ArtifactQuery.reloadArtifacts(artifactsInCache);
-         } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
-         }
-      }
-
-   }
-
-   private TransactionEvent getPurgeTransactionEvent(int[] txIdsToDelete) {
+      String query = String.format(SELECT_AFFECTED_ITEMS, itemId, itemTable);
+      IOseeStatement statement = ConnectionHandler.getStatement(connection);
       try {
-         TransactionEvent transactionEvent = new TransactionEvent();
-         transactionEvent.setEventType(TransactionEventType.Purged);
-         for (int transId : txIdsToDelete) {
-            try {
-               TransactionChange transChange = new TransactionChange();
-               transChange.setTransactionId(transId);
-               TransactionRecord transRecord = TransactionManager.getTransactionId(transId);
-               Branch branch = BranchManager.getBranch(transRecord.getBranchId());
-               transChange.setBranchGuid(branch.getGuid());
-
-               Collection<Change> changes = new ArrayList<Change>();
-               IOperation operation = ChangeManager.comparedToPreviousTx(transRecord, changes);
-               Operations.executeWorkAndCheckStatus(operation);
-               Set<Artifact> processedArts = new HashSet<Artifact>();
-               for (Change change : changes) {
-                  Artifact art = change.getChangeArtifact();
-                  if (!processedArts.contains(art)) {
-                     transChange.getArtifacts().add(art.getBasicGuidArtifact());
-                     processedArts.add(art);
-                  }
-               }
-               transactionEvent.getTransactions().add(transChange);
-            } catch (Exception ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, ex);
+         statement.runPreparedQuery(query, txQueryId);
+         while (statement.next()) {
+            Integer branchId = statement.getInt("branch_id");
+            IdJoinQuery joinId = items.get(branchId);
+            if (joinId == null) {
+               joinId = JoinUtility.createIdJoinQuery();
+               items.put(branchId, joinId);
             }
+            Integer id = statement.getInt("item_id");
+            joinId.add(id);
          }
-         return transactionEvent;
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      } finally {
+         statement.close();
       }
-      return null;
+
+      for (IdJoinQuery join : items.values()) {
+         join.store();
+      }
+      return items;
    }
 
-   private void getAffectedArtifacts(OseeConnection connection, int transactionQueryId) throws OseeCoreException {
-      artifactJoinId = ArtifactLoader.getNewQueryId();
-      ConnectionHandler.runPreparedUpdate(connection, LOAD_ARTIFACTS, artifactJoinId, transactionQueryId,
-         artifactJoinId, transactionQueryId, artifactJoinId, transactionQueryId, artifactJoinId, transactionQueryId);
-   }
-
-   private HashCollection<Branch, TxDeleteInfo> getTransactionPairs(IProgressMonitor monitor, int[] txsToDelete, TransactionJoinQuery txsToDeleteQuery, double workPercentage) throws OseeCoreException {
-      HashCollection<Branch, TxDeleteInfo> fromToTxData = new HashCollection<Branch, TxDeleteInfo>();
-      if (txsToDelete.length > 0) {
-         double workStep = workPercentage / txsToDelete.length;
-         for (int index = 0; index < txsToDelete.length; index++) {
-            monitor.subTask(String.format("Fetching Previous Tx Info: [%d of %d]", index + 1, txsToDelete.length));
-            int fromTx = txsToDelete[index];
-            TransactionRecord fromTransaction = TransactionManager.getTransactionId(fromTx);
-            TransactionRecord previousTransaction;
-            try {
-               previousTransaction = TransactionManager.getPriorTransaction(fromTransaction);
-            } catch (TransactionDoesNotExist ex) {
-               throw new OseeArgumentException(
-                  "You are trying to delete Transaction [%d] which is a baseline transaction.  If your intent is to delete the Branch use the delete Branch Operation.  \n\nNO TRANSACTIONS WERE DELETED.",
-                  fromTx);
-
-            }
-
-            fromToTxData.put(fromTransaction.getBranch(), new TxDeleteInfo(fromTransaction, previousTransaction));
-
-            // Store transaction id(s) to delete - no need for gammas
-            txsToDeleteQuery.add(-1L, fromTx);
-            monitor.worked(calculateWork(workStep));
+   private Map<TransactionRecord, TransactionRecord> findPriorTransactions(IProgressMonitor monitor, TransactionJoinQuery txsToDeleteQuery, double workPercentage) throws OseeCoreException {
+      Map<TransactionRecord, TransactionRecord> deleteToPreviousTx =
+         new HashMap<TransactionRecord, TransactionRecord>();
+      double workStep = workPercentage / txIdsToDelete.length;
+      for (int index = 0; index < txIdsToDelete.length; index++) {
+         monitor.subTask(String.format("Fetching Previous Tx Info: [%d of %d]", index + 1, txIdsToDelete.length));
+         int fromTx = txIdsToDelete[index];
+         TransactionRecord fromTransaction = TransactionManager.getTransactionId(fromTx);
+         TransactionRecord previousTransaction;
+         try {
+            previousTransaction = TransactionManager.getPriorTransaction(fromTransaction);
+         } catch (TransactionDoesNotExist ex) {
+            throw new OseeArgumentException(
+               "You are trying to delete Transaction [%d] which is a baseline transaction.  If your intent is to delete the Branch use the delete Branch Operation.  \n\nNO TRANSACTIONS WERE DELETED.",
+               fromTx);
          }
-      } else {
-         monitor.worked(calculateWork(workPercentage));
-      }
-      return fromToTxData;
-   }
+         deleteToPreviousTx.put(fromTransaction, previousTransaction);
 
-   private void deleteTransactionsFromTxDetails(OseeConnection connection, IProgressMonitor monitor, int queryId, double workPercentage) throws OseeCoreException {
-      monitor.subTask("Deleting Tx");
-      ConnectionHandler.runPreparedUpdate(connection, DELETE_TRANSACTION_FROM_TRANSACTION_DETAILS, queryId);
-      monitor.worked(calculateWork(workPercentage));
+         // Store transaction id(s) to delete - no need for gammas
+         txsToDeleteQuery.add(-1L, fromTx);
+         monitor.worked(calculateWork(workStep));
+      }
+      return deleteToPreviousTx;
    }
 
    private void deleteItemEntriesForTransactions(OseeConnection connection, IProgressMonitor monitor, int txsToDeleteQueryId, double workPercentage) throws OseeCoreException {
       monitor.subTask("Deleting Tx Items");
-      TransactionJoinQuery txGammasToDelete = JoinUtility.createTransactionJoinQuery();
-      try {
-         populateJoinQueryFromSql(connection, txGammasToDelete, SELECT_GAMMAS_FROM_TRANSACTION, "transaction_id",
-            txsToDeleteQueryId);
-         txGammasToDelete.store();
-         int deleteQueryId = txGammasToDelete.getQueryId();
-         ConnectionHandler.runPreparedUpdate(connection, DELETE_ARTIFACT_VERSIONS, deleteQueryId);
-         ConnectionHandler.runPreparedUpdate(connection, DELETE_ATTRIBUTES, deleteQueryId);
-         ConnectionHandler.runPreparedUpdate(connection, DELETE_RELATIONS, deleteQueryId);
-
-      } finally {
-         if (txGammasToDelete != null && connection != null && connection.isClosed() != true) {
-            txGammasToDelete.delete(connection);
-         }
-      }
-      monitor.worked(calculateWork(workPercentage));
-   }
-
-   private void populateJoinQueryFromSql(OseeConnection connection, TransactionJoinQuery joinQuery, String sql, String txFieldName, Object... data) throws OseeCoreException {
+      List<Object[]> data = new ArrayList<Object[]>();
       IOseeStatement chStmt = ConnectionHandler.getStatement(connection);
       try {
-         chStmt.runPreparedQuery(sql, data);
+         chStmt.runPreparedQuery(SELECT_GAMMAS_FROM_TRANSACTION, txsToDeleteQueryId);
          while (chStmt.next()) {
-            joinQuery.add(chStmt.getLong("gamma_id"), chStmt.getInt(txFieldName));
+            data.add(new Object[] {chStmt.getLong("gamma_id")});
          }
       } finally {
          chStmt.close();
       }
-   }
-
-   private void updateTxCurrent(OseeConnection conn, IProgressMonitor monitor, double workPercentage) throws OseeCoreException {
-      monitor.setTaskName("Updating Previous Tx to Current");
-      ConnectionHandler.runPreparedUpdate(conn, UPDATE_TXS, artifactJoinId, artifactJoinId, artifactJoinId);
+      ConnectionHandler.runBatchUpdate(connection, DELETE_ARTIFACT_VERSIONS, data);
+      ConnectionHandler.runBatchUpdate(connection, DELETE_ATTRIBUTES, data);
+      ConnectionHandler.runBatchUpdate(connection, DELETE_RELATIONS, data);
       monitor.worked(calculateWork(workPercentage));
    }
 
-   private void deleteTxCurrent(OseeConnection connection) throws OseeCoreException {
-      for (int txId : txIdsToDelete) {
-         ConnectionHandler.runPreparedUpdate(connection, DELETE_TXS, txId);
-      }
-   }
-
-   private void setChildBranchBaselineTxs(OseeConnection connection, IProgressMonitor monitor, HashCollection<Branch, TxDeleteInfo> transactions, double workPercentage) throws OseeCoreException {
+   private void setChildBranchBaselineTxs(OseeConnection connection, IProgressMonitor monitor, Map<TransactionRecord, TransactionRecord> deleteToPreviousTx, double workPercentage) throws OseeCoreException {
       List<Object[]> data = new ArrayList<Object[]>();
-      monitor.setTaskName("Update Baseline Txs for Child Branches");
-      for (TxDeleteInfo entry : transactions.getValues()) {
-         TransactionRecord previousTransaction = entry.getPreviousTx();
+      monitor.subTask("Update Baseline Txs for Child Branches");
+      for (Entry<TransactionRecord, TransactionRecord> entry : deleteToPreviousTx.entrySet()) {
+         TransactionRecord previousTransaction = entry.getValue();
          if (previousTransaction != null) {
-            int toDeleteTransaction = entry.getTxToDelete().getId();
+            int toDeleteTransaction = entry.getKey().getId();
 
             data.add(new Object[] {
                String.valueOf(toDeleteTransaction),
@@ -321,24 +275,4 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
             transaction_id);
       }
    }
-
-   private final static class TxDeleteInfo {
-      private final TransactionRecord txToDelete;
-      private final TransactionRecord previousTxFromTxToDelete;
-
-      public TxDeleteInfo(TransactionRecord txToDelete, TransactionRecord previousTxFromTxToDelete) {
-         super();
-         this.txToDelete = txToDelete;
-         this.previousTxFromTxToDelete = previousTxFromTxToDelete;
-      }
-
-      public TransactionRecord getTxToDelete() {
-         return txToDelete;
-      }
-
-      public TransactionRecord getPreviousTx() {
-         return previousTxFromTxToDelete;
-      }
-   }
-
 }
