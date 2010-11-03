@@ -73,9 +73,7 @@ public class OseeEventManager {
          throw new IllegalArgumentException("listener can not be null");
       }
       Collection<IEventListener> priorityListeners = eventManagerData.getPriorityListeners();
-      if (!priorityListeners.contains(listener)) {
-         priorityListeners.add(listener);
-      }
+      priorityListeners.add(listener);
    }
 
    public static void addListener(IEventListener listener) {
@@ -83,9 +81,7 @@ public class OseeEventManager {
          throw new IllegalArgumentException("listener can not be null");
       }
       Collection<IEventListener> listeners = eventManagerData.getListeners();
-      if (!listeners.contains(listener)) {
-         listeners.add(listener);
-      }
+      listeners.add(listener);
    }
 
    public static void removeAllListeners() {

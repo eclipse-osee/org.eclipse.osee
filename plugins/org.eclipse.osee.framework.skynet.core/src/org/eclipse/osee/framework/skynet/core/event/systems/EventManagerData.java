@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.event.systems;
 
 import java.util.Collection;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 import org.eclipse.osee.framework.skynet.core.event.EventSystemPreferences;
 import org.eclipse.osee.framework.skynet.core.event.listener.IEventListener;
 
@@ -20,8 +20,8 @@ import org.eclipse.osee.framework.skynet.core.event.listener.IEventListener;
  */
 public class EventManagerData {
 
-   private final Collection<IEventListener> priorityListeners = new CopyOnWriteArrayList<IEventListener>();
-   private final Collection<IEventListener> listeners = new CopyOnWriteArrayList<IEventListener>();
+   private final Collection<IEventListener> priorityListeners = new CopyOnWriteArraySet<IEventListener>();
+   private final Collection<IEventListener> listeners = new CopyOnWriteArraySet<IEventListener>();
    private final EventSystemPreferences preferences = new EventSystemPreferences();
 
    private InternalEventManager messageEventManager;
