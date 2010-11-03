@@ -15,13 +15,16 @@ import static org.junit.Assert.assertFalse;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Level;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
@@ -40,7 +43,6 @@ import org.junit.BeforeClass;
 public class ArtifactLoaderTest {
 
    private static SevereLoggingMonitor monitorLog;
-   private static int numThreadsCompleted = 0;
    private static int NUM_ARTIFACTS = 100;
    private static String ATTRIBUTE_VALUE = "now is the time";
 
@@ -93,67 +95,59 @@ public class ArtifactLoaderTest {
          ArtifactCache.deCache(artifact);
       }
 
-      // create some threads to load them all at same time
-      List<Thread> threads = new ArrayList<Thread>();
       final int TOTAL_THREADS = 7;
+      Collection<LoadArtifacts> tasks = new ArrayList<LoadArtifacts>();
       for (int x = 1; x <= TOTAL_THREADS; x++) {
-         threads.add(new LoadArtifacts("Thread " + x));
+         tasks.add(new LoadArtifacts());
       }
 
-      // run the threads
-      numThreadsCompleted = 0;
-      for (Thread thread : threads) {
-         thread.start();
-      }
-
-      long endTime = System.currentTimeMillis() + 81 * 1000;
-      while (true) {
-         Thread.sleep(1000);
-         System.out.println("Checking for thread completion..." + numThreadsCompleted + "/" + TOTAL_THREADS);
-         if (numThreadsCompleted == TOTAL_THREADS) {
-            break;
+      ExecutorService executor = Executors.newFixedThreadPool(7, new LoadThreadFactory());
+      List<Future<List<Artifact>>> futures = executor.invokeAll(tasks, 81, TimeUnit.SECONDS);
+      int completed = 0;
+      int cancelled = 0;
+      for (Future<?> future : futures) {
+         if (future.isCancelled()) {
+            cancelled++;
          }
-         long currentMillis = System.currentTimeMillis();
-         if (currentMillis > endTime) {
-            Assert.fail(String.format("Hit timeout value before threads were completed - [%s] ms more than expected",
-               currentMillis - endTime));
+         if (future.isDone()) {
+            completed++;
          }
       }
+      String message =
+         String.format("Hit timeout value before threads were completed - completed[%s] cancelled[%s]", completed,
+            cancelled);
+      Assert.assertEquals(message, 7, completed);
 
       // Load and check artifacts
       artifacts =
          ArtifactQuery.getArtifactListFromName("ArtifactLoaderTest", BranchManager.getCommonBranch(), EXCLUDE_DELETED);
       Assert.assertEquals(NUM_ARTIFACTS, artifacts.size());
-
       for (Artifact artifact : artifacts) {
          Assert.assertEquals(ATTRIBUTE_VALUE, artifact.getSoleAttributeValue(CoreAttributeTypes.DefaultMailServer));
          Assert.assertEquals(1, artifact.getAttributesToStringList(CoreAttributeTypes.DefaultMailServer).size());
       }
-
-      System.out.println("Completed");
    }
-   public class LoadArtifacts extends Thread {
 
-      public LoadArtifacts(String name) {
-         super(name);
-      }
+   private static final class LoadArtifacts implements Callable<List<Artifact>> {
 
       @Override
-      public void run() {
-         try {
-            System.out.println("Running " + getName());
-            List<Artifact> artifacts =
-               ArtifactQuery.getArtifactListFromName("ArtifactLoaderTest", BranchManager.getCommonBranch(),
-                  EXCLUDE_DELETED);
-            if (artifacts.size() != NUM_ARTIFACTS) {
-               throw new OseeStateException("Should have loaded %d not %d", NUM_ARTIFACTS, artifacts.size());
-            }
-            numThreadsCompleted++;
-            System.out.println("Completed " + getName() + "; NumThreads " + numThreadsCompleted);
-         } catch (OseeCoreException ex) {
-            OseeLog.log(ArtifactLoaderTest.class, Level.SEVERE, ex.toString(), ex);
+      public List<Artifact> call() throws Exception {
+         List<Artifact> artifacts =
+            ArtifactQuery.getArtifactListFromName("ArtifactLoaderTest", BranchManager.getCommonBranch(),
+               EXCLUDE_DELETED);
+         if (artifacts.size() != NUM_ARTIFACTS) {
+            throw new OseeStateException("Should have loaded %d not %d", NUM_ARTIFACTS, artifacts.size());
          }
+         return artifacts;
       }
    };
 
+   private static final class LoadThreadFactory implements ThreadFactory {
+      private static int threadCount = 0;
+
+      @Override
+      public Thread newThread(Runnable target) {
+         return new Thread(target, "Loading Thread: " + ++threadCount);
+      }
+   }
 }
