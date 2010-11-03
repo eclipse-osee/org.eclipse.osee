@@ -29,13 +29,13 @@ import org.eclipse.swt.widgets.Composite;
 public class OperationalImpactWithWorkaroundXWidget extends XComboWithTextAndComboWithText implements IArtifactWidget {
 
    TeamWorkFlowArtifact teamArt;
-   public static String ID = "OperationalImpactWithWorkaroundXWidget";
-   public static String ID_REQUIRED = "OperationalImpactWithWorkaroundXWidget (required)";
+   public static String ID = "ats.OperationalImpactWithWorkaround";
+   public static String ID_REQUIRED = "ats.OperationalImpactWithWorkaround.required";
+   public static String WIDGET_NAME = "OperationalImpactWithWorkaroundXWidget";
 
    public OperationalImpactWithWorkaroundXWidget() {
-      super(OperationalImpactXWidget.NAME, "Operational Impact Description", new String[] {"Yes", "No"}, "Yes", true,
-         true, "Workaround", "Workaround Desription", new String[] {"Yes", "No"}, "Yes", true);
-      setRequiredEntry(true);
+      super("Operational Impact", "Operational Impact Description", new String[] {"Yes", "No"}, "Yes", true, true,
+         "Workaround", "Workaround Desription", new String[] {"Yes", "No"}, "Yes", true);
    }
 
    @Override
@@ -146,26 +146,25 @@ public class OperationalImpactWithWorkaroundXWidget extends XComboWithTextAndCom
       }
    }
 
-   public static class XOperationalImpactWithWorkaroundRequiredXWidgetWorkItem extends WorkWidgetDefinition {
-
-      public XOperationalImpactWithWorkaroundRequiredXWidgetWorkItem() {
-         super(OperationalImpactXWidget.NAME, OperationalImpactWithWorkaroundXWidget.ID_REQUIRED);
-         DynamicXWidgetLayoutData data = new DynamicXWidgetLayoutData(null, XOption.REQUIRED);
-         data.setName(getName());
-         data.setStoreName(getId());
-         data.setXWidgetName(OperationalImpactWithWorkaroundXWidget.ID_REQUIRED);
-         set(data);
-      }
-   }
-
    public static class XOperationalImpactWithWorkaroundXWidgetWorkItem extends WorkWidgetDefinition {
 
       public XOperationalImpactWithWorkaroundXWidgetWorkItem() {
-         super(OperationalImpactXWidget.NAME, OperationalImpactWithWorkaroundXWidget.ID);
-         DynamicXWidgetLayoutData data = new DynamicXWidgetLayoutData(null);
-         data.setName(getName());
+         super("Operational Impact - " + ID, ID);
+         DynamicXWidgetLayoutData data = new DynamicXWidgetLayoutData(null, XOption.NOT_REQUIRED);
+         data.setName("Operational Impact");
          data.setStoreName(getId());
-         data.setXWidgetName(OperationalImpactWithWorkaroundXWidget.ID);
+         data.setXWidgetName(WIDGET_NAME);
+         set(data);
+      }
+   }
+   public static class XOperationalImpactWithWorkaroundRequiredXWidgetWorkItem extends WorkWidgetDefinition {
+
+      public XOperationalImpactWithWorkaroundRequiredXWidgetWorkItem() {
+         super("Operational Impact - " + ID_REQUIRED, ID_REQUIRED);
+         DynamicXWidgetLayoutData data = new DynamicXWidgetLayoutData(null, XOption.REQUIRED);
+         data.setName("Operational Impact");
+         data.setStoreName(getId());
+         data.setXWidgetName(WIDGET_NAME);
          set(data);
       }
    }

@@ -14,6 +14,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboWithText;
+import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkWidgetDefinition;
 import org.eclipse.osee.framework.ui.swt.Widgets;
@@ -28,13 +29,12 @@ import org.eclipse.swt.widgets.Composite;
 public class OperationalImpactXWidget extends XComboWithText implements IArtifactWidget {
 
    TeamWorkFlowArtifact teamArt;
-   public static final String ID = "OperationalImpactXWidget";
-   public static final String ID_REQUIRED = "OperationalImpactXWidget (required)";
-   public static final String NAME = "Operational Impact";
+   public static String ID = "ats.OperationalImpact";
+   public static String ID_REQUIRED = "ats.OperationalImpact.required";
+   public static String WIDGET_NAME = "OperationalImpactXWidget";
 
    public OperationalImpactXWidget() {
-      super(NAME, "Operational Impact Description", new String[] {"Yes", "No"}, "Yes", true);
-      setRequiredEntry(true);
+      super("Operational Impact", "Operational Impact Description", new String[] {"Yes", "No"}, "Yes", true);
    }
 
    @Override
@@ -100,11 +100,11 @@ public class OperationalImpactXWidget extends XComboWithText implements IArtifac
    public static class XOperationalImpactXWidgetWorkItem extends WorkWidgetDefinition {
 
       public XOperationalImpactXWidgetWorkItem() {
-         super(OperationalImpactXWidget.NAME, OperationalImpactXWidget.ID);
-         DynamicXWidgetLayoutData data = new DynamicXWidgetLayoutData(null);
-         data.setName(getName());
+         super("Operational Impact - " + ID, ID);
+         DynamicXWidgetLayoutData data = new DynamicXWidgetLayoutData(null, XOption.NOT_REQUIRED);
+         data.setName("Operational Impact");
          data.setStoreName(getId());
-         data.setXWidgetName(OperationalImpactXWidget.ID);
+         data.setXWidgetName(WIDGET_NAME);
          set(data);
       }
    }
@@ -112,11 +112,11 @@ public class OperationalImpactXWidget extends XComboWithText implements IArtifac
    public static class XOperationalImpactRequiredXWidgetWorkItem extends WorkWidgetDefinition {
 
       public XOperationalImpactRequiredXWidgetWorkItem() {
-         super(OperationalImpactXWidget.NAME, OperationalImpactXWidget.ID_REQUIRED);
-         DynamicXWidgetLayoutData data = new DynamicXWidgetLayoutData(null);
-         data.setName(getName());
+         super("Operational Impact - " + ID_REQUIRED, ID_REQUIRED);
+         DynamicXWidgetLayoutData data = new DynamicXWidgetLayoutData(null, XOption.REQUIRED);
+         data.setName("Operational Impact");
          data.setStoreName(getId());
-         data.setXWidgetName(OperationalImpactXWidget.ID_REQUIRED);
+         data.setXWidgetName(WIDGET_NAME);
          set(data);
       }
    }
