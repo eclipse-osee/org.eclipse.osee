@@ -128,7 +128,7 @@ public class UpdateMergeBranch extends DbTransaction {
       int baselineTransaction = mergeBranch.getBaseTransaction().getId();
       for (Artifact artifact : goodMergeBranchArtifacts) {
          numberAttrUpdated +=
-            ConnectionHandler.runPreparedUpdate(UPDATE_ARTIFACTS, baselineTransaction, artifact.getArtId(),
+            ConnectionHandler.runPreparedUpdate(connection, UPDATE_ARTIFACTS, baselineTransaction, artifact.getArtId(),
                sourceBranch.getId(), TxChange.NOT_CURRENT.getValue(), baselineTransaction);
       }
       if (DEBUG) {
