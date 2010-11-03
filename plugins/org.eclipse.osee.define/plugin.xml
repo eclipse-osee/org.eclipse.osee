@@ -91,6 +91,10 @@
             templateName="Work Instruction">
       </Template>
    </extension>
+	<extension id="SystemSubsystemReport" name="System and Subsystem Report"
+		point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+		<Operation className="org.eclipse.osee.define.blam.operation.SystemSubsystemReport" />
+	</extension>
    <extension
          id="PublishSubsystemToDesignTraceability"
          name="Publish Subsystem To Design Traceability"

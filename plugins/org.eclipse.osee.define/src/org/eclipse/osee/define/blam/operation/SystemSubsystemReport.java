@@ -1,0 +1,431 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.osee.define.blam.operation;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.Set;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.jdk.core.type.CountingMap;
+import org.eclipse.osee.framework.jdk.core.type.MutableInteger;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
+import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
+import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
+import org.eclipse.osee.framework.plugin.core.util.AIFile;
+import org.eclipse.osee.framework.plugin.core.util.OseeData;
+import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
+import org.eclipse.osee.framework.skynet.core.utility.Requirements;
+import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
+import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.eclipse.swt.program.Program;
+
+/**
+ * @author Ryan D. Brooks
+ */
+public class SystemSubsystemReport extends AbstractBlam {
+   private CharBackedInputStream charBak;
+   private ISheetWriter excelWriter;
+   private int subsysDescendantCount;
+   private int subsysMarkedCount;
+   private int subsysMarkedAndTracedCount;
+   private int subsysMarkedAndQualifiedCount;
+   private int subsysMarkedAndAllocatedToComponentCount;
+   private final HashMap<String, Set<Artifact>> subsysToSubsysReqsMap;
+   private final HashMap<String, Set<Artifact>> subsysToSysReqsMap;
+   private final LinkedHashSet<Artifact> components;
+   private List<Artifact> sysReqs;
+
+   @Override
+   public String getName() {
+      return "System Subsystem Report";
+   }
+
+   private static enum SubsystemCompletness {
+      paragraphNumber,
+      name,
+      subSys,
+      qualMethod,
+      highLevelTrace,
+      allocated
+   }
+   private static final int COMP_ENUM_COUNT = SubsystemCompletness.values().length;
+
+   public SystemSubsystemReport() {
+      subsysToSubsysReqsMap = new HashMap<String, Set<Artifact>>();
+      subsysToSysReqsMap = new HashMap<String, Set<Artifact>>();
+      components = new LinkedHashSet<Artifact>(250);
+   }
+
+   private void init() throws IOException {
+      subsysDescendantCount = 0;
+      subsysMarkedCount = 0;
+      subsysMarkedAndTracedCount = 0;
+      subsysMarkedAndQualifiedCount = 0;
+      subsysMarkedAndAllocatedToComponentCount = 0;
+      subsysToSubsysReqsMap.clear();
+      subsysToSysReqsMap.clear();
+      components.clear();
+      charBak = new CharBackedInputStream();
+      excelWriter = new ExcelXmlWriter(charBak.getWriter());
+   }
+
+   @Override
+   public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
+      monitor.beginTask("Generating Reports", 100);
+
+      Branch branch = variableMap.getBranch("Branch");
+
+      init();
+
+      monitor.subTask("Aquiring System Components"); // bulk load for performance reasons
+      ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.Component, branch);
+
+      monitor.subTask("Aquiring System Requirements");
+      ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SystemRequirement, branch);
+
+      monitor.subTask("Aquiring Subsystem Requirements"); // bulk load for performance reasons
+      ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SubsystemRequirement, branch);
+
+      Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(branch);
+      Artifact subsysTopFolder = root.getChild(Requirements.SUBSYSTEM_REQUIREMENTS);
+
+      sysReqs = root.getChild(Requirements.SYSTEM_REQUIREMENTS).getDescendants();
+
+      monitor.subTask("Generating Metrics");
+
+      excelWriter.startSheet("report", 7);
+
+      generateMetrics(getProductComponent(root), subsysTopFolder);
+
+      monitor.subTask("Generating Per Subsystem Tables");
+      generatePerSubsystemTables();
+
+      excelWriter.endWorkbook();
+      IFile iFile = OseeData.getIFile("System_Subsystem_Report_" + Lib.getDateTimeString() + ".xml");
+      AIFile.writeToFile(iFile, charBak);
+      Program.launch(iFile.getLocation().toOSString());
+   }
+
+   private void storeInHierarchyOrderBySubsystem(String subSysName, List<Artifact> sysReqByComp) {
+      Set<Artifact> orderedSysReqs = new LinkedHashSet<Artifact>(sysReqByComp.size());
+      for (Artifact sysReq : sysReqs) {
+         if (sysReqByComp.contains(sysReq)) {
+            orderedSysReqs.add(sysReq);
+         }
+      }
+      subsysToSysReqsMap.put(subSysName, orderedSysReqs);
+   }
+
+   private void generateMetrics(Artifact productComponent, Artifact subsysTopFolder) throws IOException, OseeCoreException {
+      String[] row =
+         new String[] {
+            "Subsystem Name",
+            "# of allocated Sys Req",
+            "# of Subsys Descendants",
+            "# of Subsys Req Marked",
+            "# of Subsys Req Traceable to Sys Req",
+            "# of Subsys Req with Qual Method Defined",
+            "# of Subsys Req allocated to HW/SW Components"};
+      excelWriter.writeRow(row);
+
+      CountingMap<Artifact> allocatedSysReqCounter = new CountingMap<Artifact>(sysReqs.size());
+
+      for (Artifact subsysFolder : subsysTopFolder.getChildren()) {
+         resetCounters();
+         String subSysName = subsysFolder.getName();
+         row[0] = subSysName;
+
+         Artifact component = productComponent.getChild(subSysName);
+
+         List<Artifact> sysReqByComp = component.getRelatedArtifacts(CoreRelationTypes.Allocation__Requirement);
+         storeInHierarchyOrderBySubsystem(subSysName, sysReqByComp);
+         allocatedSysReqCounter.put(sysReqByComp);
+
+         recurseWholeSubsystem(subSysName, subsysFolder);
+
+         row[1] = String.valueOf(sysReqByComp.size());
+         row[2] = String.valueOf(subsysDescendantCount);
+         row[3] = String.valueOf(subsysMarkedCount);
+         row[4] = String.valueOf(subsysMarkedAndTracedCount);
+         row[5] = String.valueOf(subsysMarkedAndQualifiedCount);
+         row[6] = String.valueOf(subsysMarkedAndAllocatedToComponentCount);
+
+         excelWriter.writeRow(row);
+      }
+
+      int exactlyOnceCount = 0;
+      int moreThanOnceCount = 0;
+      for (Entry<Artifact, MutableInteger> entry : allocatedSysReqCounter.getCounts()) {
+         int count = entry.getValue().getValue();
+         if (count == 1) {
+            exactlyOnceCount++;
+         } else {
+            moreThanOnceCount++;
+         }
+      }
+
+      excelWriter.writeRow();
+      excelWriter.writeRow();
+      excelWriter.writeRow("Total # of system requirements", String.valueOf(sysReqs.size()));
+      excelWriter.writeRow("# of system requirements alloacted exactly once", String.valueOf(exactlyOnceCount));
+      excelWriter.writeRow("# of system requirements alloacted more than once", String.valueOf(moreThanOnceCount));
+      excelWriter.writeRow("# of system requirements not alloacted",
+         String.valueOf(sysReqs.size() - moreThanOnceCount - exactlyOnceCount));
+   }
+
+   private void generatePerSubsystemTables() throws IOException, OseeCoreException {
+      for (Entry<String, Set<Artifact>> entry : subsysToSubsysReqsMap.entrySet()) {
+         String subSysName = entry.getKey();
+         Set<Artifact> subsysReqs = entry.getValue();
+
+         generateSubsystemRaw(subSysName, subsysReqs);
+
+         generateSubsystemComponentAllocation(subsysReqs);
+
+         generateComponentAllocation(subSysName, subsysReqs);
+
+         generateSystemToSubsystemTrace(subSysName);
+
+         generateSubsystemToSystemTrace(subSysName);
+      }
+   }
+
+   private void generateSubsystemRaw(String subSysName, Set<Artifact> subsysReqs) throws IOException, OseeCoreException {
+      excelWriter.writeRow();
+      excelWriter.writeRow();
+      excelWriter.writeRow(subSysName);
+      excelWriter.writeRow("Detailed Subsystem Requirement Completeness Report");
+      excelWriter.writeRow("Paragraph #", "Paragraph Title", CoreAttributeTypes.Subsystem.getName(),
+         CoreAttributeTypes.QualificationMethod.getName(), "Trace Count", "Allocation Count");
+
+      String[] row = new String[COMP_ENUM_COUNT];
+      for (Artifact artifact : subsysReqs) {
+         row[SubsystemCompletness.paragraphNumber.ordinal()] =
+            artifact.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "");
+         row[SubsystemCompletness.name.ordinal()] = artifact.getName();
+
+         row[SubsystemCompletness.subSys.ordinal()] = artifact.getSoleAttributeValue(CoreAttributeTypes.Subsystem, "");
+
+         if (artifact.isOfType(CoreArtifactTypes.SubsystemRequirement)) {
+            row[SubsystemCompletness.qualMethod.ordinal()] =
+               artifact.getAttributesToStringSorted(CoreAttributeTypes.QualificationMethod);
+         } else {
+            row[SubsystemCompletness.qualMethod.ordinal()] = "N/A: " + artifact.getArtifactTypeName();
+         }
+
+         int higherTraceCount = artifact.getRelatedArtifactsCount(CoreRelationTypes.Requirement_Trace__Higher_Level);
+         row[SubsystemCompletness.highLevelTrace.ordinal()] = String.valueOf(higherTraceCount);
+
+         int allocationCount = artifact.getRelatedArtifactsCount(CoreRelationTypes.Allocation__Component);
+         row[SubsystemCompletness.allocated.ordinal()] = String.valueOf(allocationCount);
+         excelWriter.writeRow(row);
+      }
+   }
+
+   private void generateSubsystemComponentAllocation(Set<Artifact> subsysReqs) throws IOException, OseeCoreException {
+      excelWriter.writeRow();
+      excelWriter.writeRow();
+      excelWriter.writeRow("Subsystem SSDD section 5.1");
+      excelWriter.writeRow("Paragraph #", "Paragraph Title", "Allocated Components");
+
+      String[] row = new String[3];
+      for (Artifact artifact : subsysReqs) {
+         row[0] = artifact.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "");
+         row[1] = artifact.getName();
+
+         if (artifact.isOfType(CoreArtifactTypes.SubsystemRequirement)) {
+            for (Artifact component : artifact.getRelatedArtifacts(CoreRelationTypes.Allocation__Component)) {
+               components.add(component);
+               row[2] = component.getName();
+               excelWriter.writeRow(row);
+               row[0] = row[1] = null;
+            }
+
+            if (row[0] != null) { // if this requirement has no allocated components (i.e. the for loop didn't run)
+               row[2] = null;
+               excelWriter.writeRow(row);
+            }
+         } else {
+            row[2] = "N/A: " + artifact.getArtifactTypeName();
+            excelWriter.writeRow(row);
+         }
+      }
+   }
+
+   private void generateComponentAllocation(String subSysName, Set<Artifact> subsysReqs) throws IOException, OseeCoreException {
+      String[] row = new String[3];
+
+      excelWriter.writeRow();
+      excelWriter.writeRow();
+      excelWriter.writeRow("Subsystem SSDD section 5.2");
+      for (Artifact component : components) {
+         excelWriter.writeRow();
+         excelWriter.writeRow();
+         excelWriter.writeRow(subSysName + " Subsystem Requirements allocated to the " + component.getName());
+         excelWriter.writeRow("PIDS Paragraph #", "PIDS Paragraph Title", "Notes <rationale>");
+         for (Artifact subsysReq : component.getRelatedArtifacts(CoreRelationTypes.Allocation__Requirement)) {
+            if (subsysReqs.contains(subsysReq)) {
+               row[0] = subsysReq.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "");
+               row[1] = subsysReq.getName();
+               String rationale = component.getRelationRationale(subsysReq, CoreRelationTypes.Allocation__Requirement);
+               row[2] = rationale.equals("") ? null : rationale;
+               excelWriter.writeRow(row);
+            }
+         }
+      }
+      components.clear();
+   }
+
+   private void recurseWholeSubsystem(String subSysName, Artifact subsysFolder) throws OseeCoreException {
+      Set<Artifact> subsysReqs = new LinkedHashSet<Artifact>();
+      subsysToSubsysReqsMap.put(subSysName, subsysReqs);
+      countDescendants(subSysName, subsysReqs, subsysFolder);
+   }
+
+   private void resetCounters() {
+      subsysDescendantCount = 0;
+      subsysMarkedCount = 0;
+      subsysMarkedAndTracedCount = 0;
+      subsysMarkedAndQualifiedCount = 0;
+      subsysMarkedAndAllocatedToComponentCount = 0;
+   }
+
+   private void countDescendants(String subSysName, Set<Artifact> subsysReqs, Artifact artifact) throws OseeCoreException {
+      for (Artifact child : artifact.getChildren()) {
+         subsysDescendantCount++;
+         String selectedSubSystem = child.getSoleAttributeValue(CoreAttributeTypes.Subsystem, "");
+
+         if (selectedSubSystem.equals(subSysName)) {
+            subsysMarkedCount++;
+
+            String qualMethod = child.getAttributesToStringSorted(CoreAttributeTypes.QualificationMethod);
+            if (!qualMethod.equals(EnumeratedAttribute.UNSPECIFIED_VALUE)) {
+               subsysMarkedAndQualifiedCount++;
+            }
+
+            int higherTraceCount = child.getRelatedArtifactsCount(CoreRelationTypes.Requirement_Trace__Higher_Level);
+            if (higherTraceCount > 0) {
+               subsysMarkedAndTracedCount++;
+            }
+
+            int allocationCount = child.getRelatedArtifactsCount(CoreRelationTypes.Allocation__Component);
+            if (allocationCount > 0) {
+               subsysMarkedAndAllocatedToComponentCount++;
+            }
+         }
+         subsysReqs.add(child);
+
+         countDescendants(subSysName, subsysReqs, child);
+      }
+   }
+
+   private void generateSystemToSubsystemTrace(String subSysName) throws IOException, OseeCoreException {
+      Set<Artifact> subsysReqs = subsysToSubsysReqsMap.get(subSysName);
+
+      excelWriter.writeRow();
+      excelWriter.writeRow();
+      excelWriter.writeRow(subSysName, "System To Subsystem Trace");
+      excelWriter.writeRow(CoreArtifactTypes.SystemRequirement.getName(), null, "Traceable Subsystem Requirement", null);
+      excelWriter.writeRow("Paragraph #", "Paragraph Title", "Paragraph #", "Paragraph Title");
+
+      String[] row = new String[4];
+      Set<Artifact> orderedSysReqs = subsysToSysReqsMap.get(subSysName);
+
+      for (Artifact sysReq : orderedSysReqs) {
+         row[0] = sysReq.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "");
+         row[1] = sysReq.getName();
+
+         for (Artifact subSysReq : sysReq.getRelatedArtifacts(CoreRelationTypes.Requirement_Trace__Lower_Level)) {
+            if (subsysReqs.contains(subSysReq)) {
+               row[2] = subSysReq.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "");
+               row[3] = subSysReq.getName();
+               excelWriter.writeRow(row);
+               row[0] = row[1] = null;
+            }
+         }
+         if (row[0] != null) { // if this requirement is not traced to any subsys req (i.e. the condition in the for loop didn't run)
+            row[2] = row[3] = null;
+            excelWriter.writeRow(row);
+         }
+      }
+   }
+
+   private void generateSubsystemToSystemTrace(String subSysName) throws IOException, OseeCoreException {
+      Set<Artifact> subsysReqs = subsysToSubsysReqsMap.get(subSysName);
+
+      excelWriter.writeRow();
+      excelWriter.writeRow();
+      excelWriter.writeRow(subSysName, "Subsystem To System Trace");
+      excelWriter.writeRow(CoreArtifactTypes.SubsystemRequirement.getName(), null, null,
+         "Traceable System Requirement", null);
+      excelWriter.writeRow("Paragraph #", "Paragraph Title", CoreAttributeTypes.QualificationMethod.getName(),
+         "Paragraph #", "Paragraph Title");
+
+      String[] row = new String[5];
+
+      for (Artifact subsysReq : subsysReqs) {
+         row[0] = subsysReq.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "");
+         row[1] = subsysReq.getName();
+         if (subsysReq.isOfType(CoreArtifactTypes.SubsystemRequirement)) {
+            row[2] = subsysReq.getAttributesToStringSorted(CoreAttributeTypes.QualificationMethod);
+         } else {
+            row[2] = "N/A: " + subsysReq.getArtifactTypeName();
+         }
+
+         for (Artifact subSysReq : subsysReq.getRelatedArtifacts(CoreRelationTypes.Requirement_Trace__Higher_Level)) {
+            row[3] = subSysReq.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "");
+            row[4] = subSysReq.getName();
+            excelWriter.writeRow(row);
+            row[0] = row[1] = row[2] = null;
+         }
+         if (row[0] != null) { // if this requirement is not traced to any sys req (i.e. the for loop didn't run)
+            row[3] = row[4] = null;
+            excelWriter.writeRow(row);
+         }
+      }
+   }
+
+   private Artifact getProductComponent(Artifact root) throws OseeCoreException {
+      for (Artifact artifact : root.getChildren()) {
+         if (artifact.isOfType(CoreArtifactTypes.Component)) {
+            return artifact;
+         }
+      }
+      throw new OseeStateException("Did not find a child of the hierarchy root that was of type ",
+         CoreArtifactTypes.Component);
+   }
+
+   @Override
+   public String getDescriptionUsage() {
+      return "Generates a spreadsheet of traceability and allocation for sys <-> subsys.";
+   }
+
+   @Override
+   public Collection<String> getCategories() {
+      return Arrays.asList("Reports");
+   }
+}
