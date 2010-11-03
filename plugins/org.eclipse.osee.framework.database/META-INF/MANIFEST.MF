@@ -8,6 +8,7 @@ Export-Package: org.eclipse.osee.framework.database,
  org.eclipse.osee.framework.database.core,
  org.eclipse.osee.framework.database.operation
 Bundle-ActivationPolicy: lazy
+Eclipse-ExtensibleAPI: true
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Import-Package: org.eclipse.core.runtime,
  org.eclipse.core.runtime.jobs,

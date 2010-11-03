@@ -8,17 +8,18 @@ Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.eclipse.osee.framework.branch.management.test,
  org.eclipse.osee.framework.core.datastore.test,
+ org.eclipse.osee.framework.core.dsl.integration.test,
  org.eclipse.osee.framework.core.message.test,
  org.eclipse.osee.framework.core.model.test,
  org.eclipse.osee.framework.core.server.test,
  org.eclipse.osee.framework.core.test,
+ org.eclipse.osee.framework.database.test,
  org.eclipse.osee.framework.jdk.core.test,
  org.eclipse.osee.framework.lifecycle.test,
  org.eclipse.osee.framework.resource.locator.attribute.test,
  org.eclipse.osee.framework.resource.management.test,
  org.eclipse.osee.framework.resource.provider.attribute.test,
  org.eclipse.osee.framework.search.engine.test,
- org.eclipse.osee.framework.core.dsl.integration.test,
  org.osgi.framework;version="1.3.0"
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.junit4;bundle-version="4.5.0"
