@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.operation.IOperation;
-import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.test.mocks.Asserts;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -96,6 +95,7 @@ public abstract class TransactionEventTest {
       int transIdToDelete = transaction.getTransactionNumber();
       newArt.persist(transaction);
       transaction.execute();
+
       if (!isRemoteTest()) {
          Assert.assertEquals(CHANGE_NAME, newArt.getName());
          Assert.assertFalse(newArt.isDirty());
@@ -112,7 +112,6 @@ public abstract class TransactionEventTest {
       // Delete it
       IOperation operation =
          new PurgeTransactionOperation(Activator.getInstance().getOseeDatabaseService(), false, transIdToDelete);
-      Operations.executeWork(operation);
       Asserts.testOperation(operation, IStatus.OK);
 
       // Verify that all stuff reverted
