@@ -12,6 +12,7 @@ fragment@org.eclipse.osee.framework.core.model.test=SVN,,http://dev.eclipse.org/
 fragment@org.eclipse.osee.framework.core.message.test=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.framework.core.message.test
 fragment@org.eclipse.osee.framework.core.test=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.framework.core.test
 fragment@org.eclipse.osee.framework.core.server.test=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.framework.core.server.test
+fragment@org.eclipse.osee.framework.database.test=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.framework.database.test
 fragment@org.eclipse.osee.framework.resource.locator.attribute.test=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.framework.resource.locator.attribute.test
 fragment@org.eclipse.osee.framework.resource.management.test=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.framework.resource.management.test
 fragment@org.eclipse.osee.framework.resource.provider.attribute.test=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.framework.resource.provider.attribute.test

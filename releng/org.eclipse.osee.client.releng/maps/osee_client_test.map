@@ -7,6 +7,7 @@ fragment@org.eclipse.osee.framework.skynet.core.test=SVN,,http://dev.eclipse.org
 fragment@org.eclipse.osee.framework.ui.skynet.test=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.framework.ui.skynet.test
 fragment@org.eclipse.osee.framework.core.test=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.framework.core.test
 fragment@org.eclipse.osee.framework.jdk.core.test=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.framework.jdk.core.test
+fragment@org.eclipse.osee.framework.database.test=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.framework.database.test
 fragment@org.eclipse.osee.framework.messaging.event.res.test=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.framework.messaging.event.res.test
 plugin@org.eclipse.osee.support.test.util=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.support.test.util
 plugin@org.eclipse.osee.client.integration.tests=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.client.integration.tests
