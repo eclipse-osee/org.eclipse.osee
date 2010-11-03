@@ -187,17 +187,21 @@ public class XStackedDam extends XStackedWidget<String> implements IAttributeWid
 
    @Override
    public IStatus isValid() {
-      for (XWidget widget : xWidgets.values()) {
-         IStatus status = widget.isValid();
-         if (!status.isOK()) {
-            return status;
+      IStatus status = super.isValid();
+      if (status.isOK()) {
+         for (XWidget widget : xWidgets.values()) {
+            status = widget.isValid();
+            if (!status.isOK()) {
+               return status;
+            }
          }
       }
-      return Status.OK_STATUS;
+      return status;
    }
 
    @Override
    public void validate() {
+      super.validate();
       String id = getCurrentPageId();
       if (Strings.isValid(id)) {
          XWidget widget = xWidgets.get(id);

@@ -17,11 +17,12 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -82,6 +83,25 @@ public abstract class XStackedWidget<T> extends XLabel {
       }
       this.minPage = minPage;
       this.maxPage = maxPage;
+   }
+
+   @Override
+   public IStatus isValid() {
+      IStatus status = super.isValid();
+      if (status.isOK()) {
+         if (stackedControl.getTotalPages() > maxPage) {
+            status = constructStatus(maxPage, "maximum allowed");
+         } else if (stackedControl.getTotalPages() < minPage) {
+            status = constructStatus(minPage, "minimum required");
+         }
+      }
+      return status;
+   }
+
+   private IStatus constructStatus(int limit, String limitNoun) {
+      String message =
+         String.format("Has %d page(s) but the %s is %d.", stackedControl.getTotalPages(), limitNoun, limit);
+      return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, message);
    }
 
    @Override
@@ -235,42 +255,37 @@ public abstract class XStackedWidget<T> extends XLabel {
       return stackedControl.getCurrentPageId();
    }
 
-   private void setMessage(final int severity, final String message) {
-      Displays.ensureInDisplayThread(new Runnable() {
-         @Override
-         public void run() {
-            if (Widgets.isAccessible(messageLabel)) {
-               Composite parent = messageLabel.getParent();
+   private void setMessage(final int severity, final String format, final Object... args) {
+      if (Widgets.isAccessible(messageLabel)) {
+         Composite parent = messageLabel.getParent();
 
-               String text = message;
-               boolean isVisible = Strings.isValid(text);
+         String text = String.format(format, args);
+         boolean isVisible = Strings.isValid(text);
 
-               String imageName = null;
-               switch (severity) {
-                  case IStatus.INFO:
-                     imageName = ISharedImages.IMG_OBJS_INFO_TSK;
-                     break;
-                  case IStatus.ERROR:
-                     imageName = ISharedImages.IMG_OBJS_ERROR_TSK;
-                     break;
-                  case IStatus.WARNING:
-                     imageName = ISharedImages.IMG_OBJS_WARN_TSK;
-                     break;
-                  default:
-                     break;
-               }
-               Image image =
-                  Strings.isValid(imageName) ? PlatformUI.getWorkbench().getSharedImages().getImage(imageName) : null;
-               messageIcon.setImage(image);
-               messageLabel.setText(isVisible ? " " + text : text);
-
-               messageIcon.setVisible(isVisible);
-               messageLabel.setVisible(isVisible);
-               parent.setVisible(isVisible);
-               parent.layout();
-            }
+         String imageName = null;
+         switch (severity) {
+            case IStatus.INFO:
+               imageName = ISharedImages.IMG_OBJS_INFO_TSK;
+               break;
+            case IStatus.ERROR:
+               imageName = ISharedImages.IMG_OBJS_ERROR_TSK;
+               break;
+            case IStatus.WARNING:
+               imageName = ISharedImages.IMG_OBJS_WARN_TSK;
+               break;
+            default:
+               break;
          }
-      });
+         Image image =
+            Strings.isValid(imageName) ? PlatformUI.getWorkbench().getSharedImages().getImage(imageName) : null;
+         messageIcon.setImage(image);
+         messageLabel.setText(isVisible ? text : "");
+
+         messageIcon.setVisible(isVisible);
+         messageLabel.setVisible(isVisible);
+         parent.setVisible(isVisible);
+         parent.layout();
+      }
    }
 
    protected abstract void createPage(String id, Composite parent, T value);
@@ -312,7 +327,11 @@ public abstract class XStackedWidget<T> extends XLabel {
 
       @Override
       public void run() {
-         stackedControl.addPage((T) null);
+         if (stackedControl.getTotalPages() >= maxPage) {
+            MessageDialog.openError(AWorkbench.getActiveShell(), "Add Attribute", "Already at maximum allowed.");
+         } else {
+            stackedControl.addPage((T) null);
+         }
       }
    }
 
@@ -325,7 +344,11 @@ public abstract class XStackedWidget<T> extends XLabel {
 
       @Override
       public void run() {
-         stackedControl.removePage();
+         if (stackedControl.getTotalPages() <= minPage) {
+            MessageDialog.openError(AWorkbench.getActiveShell(), "Remove Attribute", "Already at minimum allowed.");
+         } else {
+            stackedControl.removePage();
+         }
       }
    }
 
@@ -422,67 +445,36 @@ public abstract class XStackedWidget<T> extends XLabel {
 
       private void addPage(T value) {
          int numberOfPages = getTotalPages();
-         IStatus status = validate(numberOfPages + 1);
-         if (status.isOK()) {
-            setMessage(IStatus.OK, "");
-            String id = GUID.create();
-            if (pageIds.add(id)) {
-               Composite composite = new Composite(stackedViewer.getStackComposite(), SWT.WRAP);
-               composite.setLayout(new GridLayout());
-               composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true));
 
-               createPage(id, composite, value);
-               stackedViewer.addControl(id, composite);
-               setCurrentPage(numberOfPages);
-               notifyXModifiedListeners();
-            } else {
-               setMessage(IStatus.WARNING,
-                  String.format("Add page error - page at index [%s] already exists", getCurrentPageIndex()));
-            }
+         String id = GUID.create();
+         if (pageIds.add(id)) {
+            Composite composite = new Composite(stackedViewer.getStackComposite(), SWT.WRAP);
+            composite.setLayout(new GridLayout());
+            composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true));
+
+            createPage(id, composite, value);
+            stackedViewer.addControl(id, composite);
+            setCurrentPage(numberOfPages);
+            validate();
+            notifyXModifiedListeners();
          } else {
-            setMessage(IStatus.ERROR, status.getMessage());
+            setMessage(IStatus.WARNING, "Add page error - page at index [%s] already exists", getCurrentPageIndex());
          }
+
       }
 
       private void removePage() {
-         int numberOfPages = getTotalPages();
-         IStatus status = validate(numberOfPages - 1);
-         if (status.isOK()) {
-            setMessage(IStatus.OK, "");
-            System.out.println("Delete Page");
-
-            String pageId = pageIds.remove(getCurrentPageIndex());
-            if (pageId != null) {
-               onRemovePage(pageId);
-               Control control = stackedViewer.removeControl(pageId);
-               Widgets.disposeWidget(control);
-               previous();
-               notifyXModifiedListeners();
-            } else {
-               setMessage(IStatus.WARNING,
-                  String.format("Remove page error - page at index [%s] does not exist", getCurrentPageIndex()));
-            }
+         String pageId = pageIds.remove(getCurrentPageIndex());
+         if (pageId != null) {
+            onRemovePage(pageId);
+            Control control = stackedViewer.removeControl(pageId);
+            Widgets.disposeWidget(control);
+            previous();
+            validate();
+            notifyXModifiedListeners();
          } else {
-            setMessage(IStatus.ERROR, status.getMessage());
+            setMessage(IStatus.WARNING, "Remove page error - page at index [%s] does not exist", getCurrentPageIndex());
          }
-      }
-
-      private IStatus validate(int numberOfPages) {
-         IStatus status = null;
-         if (minPage <= numberOfPages && maxPage >= numberOfPages) {
-            status = Status.OK_STATUS;
-         } else {
-            List<String> message = new ArrayList<String>();
-            if (numberOfPages < minPage) {
-               message.add(String.format("Must have at least [%s] page%s", minPage, minPage == 1 ? "" : "s"));
-            }
-            if (numberOfPages > maxPage) {
-               message.add(String.format("Can't add more than [%s] page%s", maxPage, maxPage == 1 ? "" : "s"));
-            }
-            status = new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, Collections.toString(" &", message));
-         }
-         return status;
       }
    }
-
 }

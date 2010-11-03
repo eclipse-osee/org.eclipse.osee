@@ -168,7 +168,7 @@ public abstract class XWidget {
    }
 
    public void validate() {
-      if (isEditable() && Widgets.isAccessible(getControl()) && isFormReady() && areNotificationsAllowed()) {
+      if (Widgets.isAccessible(getControl()) && isFormReady() && areNotificationsAllowed()) {
          IStatus status = isValid();
          if (isInForm()) {
             XWidgetValidateUtility.setStatus(status, this);
