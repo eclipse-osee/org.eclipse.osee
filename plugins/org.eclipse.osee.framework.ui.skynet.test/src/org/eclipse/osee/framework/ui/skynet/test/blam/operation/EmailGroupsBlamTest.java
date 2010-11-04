@@ -15,6 +15,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import org.eclipse.osee.framework.core.client.server.HttpUrlBuilderClient;
+import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -108,11 +110,18 @@ public class EmailGroupsBlamTest extends EmailGroupsBlam {
    public void testEmailGroupsUnsubscribe() throws OseeCoreException, MalformedURLException {
       Assert.assertEquals("Should be subscribed to the user group", Arrays.asList(UserManager.getUser()),
          newGroup.getRelatedArtifacts(CoreRelationTypes.Users_User));
-      //      Program.launch("http://localhost:8089/osee/unsubscribe/group/" + newGroup.getArtId() + "/user/" + UserManager.getUser().getArtId());
-      URL url = new URL("http://localhost:8089/osee/unsubscribe");
-      String xml =
-         "<request><groupId>" + newGroup.getArtId() + "</groupId><userId>" + UserManager.getUser().getArtId() + "</userId></request>";
-      HttpProcessor.delete(url, xml, "text/xml", "UTF-8", new ByteArrayOutputStream(5));
+
+      HttpUrlBuilderClient urlBuilder = HttpUrlBuilderClient.getInstance();
+      String url = urlBuilder.getOsgiServletServiceUrl(OseeServerContext.OSEE_EMAIL_UNSUBSCRIBE, null);
+
+      StringBuilder builder = new StringBuilder();
+      builder.append("<request><groupId>");
+      builder.append(newGroup.getArtId());
+      builder.append("</groupId><userId>");
+      builder.append(UserManager.getUser().getArtId());
+      builder.append("</userId></request>");
+      String xml = builder.toString();
+      HttpProcessor.delete(new URL(url), xml, "text/xml", "UTF-8", new ByteArrayOutputStream(5));
 
       // TODO how test UnsubscribeServlet.doDelete without user interaction
       newGroup.reloadAttributesAndRelations();
@@ -121,10 +130,28 @@ public class EmailGroupsBlamTest extends EmailGroupsBlam {
    }
 
    private String getNonHtmlResult() throws OseeCoreException {
-      return "<pre>Hello World\nNow is the time</pre></br>Click <a href=\"http://localhost:8089/osee/unsubscribe/group/" + newGroup.getArtId() + "/user/" + UserManager.getUser().getArtId() + "\">unsubscribe</a> to stop receiving all emails for the topic \"EmailGroupsBlamTest\"";
+      StringBuilder builder = new StringBuilder();
+      builder.append("<pre>Hello World\nNow is the time</pre>");
+      addUnsubscribeMessage(builder);
+      return builder.toString();
    }
 
    private String getHtmlResult() throws OseeCoreException {
-      return "<b>Hello World</b></br>Click <a href=\"http://localhost:8089/osee/unsubscribe/group/" + newGroup.getArtId() + "/user/" + UserManager.getUser().getArtId() + "\">unsubscribe</a> to stop receiving all emails for the topic \"EmailGroupsBlamTest\"";
+      StringBuilder builder = new StringBuilder();
+      builder.append("<b>Hello World</b>");
+      addUnsubscribeMessage(builder);
+      return builder.toString();
+   }
+
+   private void addUnsubscribeMessage(StringBuilder builder) throws OseeCoreException {
+      builder.append("</br>Click <a href=\"");
+      HttpUrlBuilderClient urlBuilder = HttpUrlBuilderClient.getInstance();
+      String url = urlBuilder.getOsgiServletServiceUrl(OseeServerContext.OSEE_EMAIL_UNSUBSCRIBE, null);
+      builder.append(url);
+      builder.append("/group/");
+      builder.append(newGroup.getArtId());
+      builder.append("/user/");
+      builder.append(UserManager.getUser().getArtId());
+      builder.append("\">unsubscribe</a> to stop receiving all emails for the topic \"EmailGroupsBlamTest\"");
    }
 }

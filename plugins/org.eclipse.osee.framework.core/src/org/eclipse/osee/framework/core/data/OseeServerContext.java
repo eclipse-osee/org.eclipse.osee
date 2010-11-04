@@ -31,6 +31,7 @@ public class OseeServerContext {
    public static final String OSEE_MODEL_CONTEXT = asAbsoluteContext("model");
    public static final String OSEE_CONFIGURE_CONTEXT = asAbsoluteContext("configure");
    public static final String CACHE_CONTEXT = asAbsoluteContext("cache");
+   public static final String OSEE_EMAIL_UNSUBSCRIBE = asAbsoluteContext("unsubscribe");
 
    private static final String asAbsoluteContext(String value) {
       return BASE_CONTEXT + "/" + value;
