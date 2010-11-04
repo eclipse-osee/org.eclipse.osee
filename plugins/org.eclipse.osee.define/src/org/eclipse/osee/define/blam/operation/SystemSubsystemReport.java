@@ -18,6 +18,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
+import org.apache.commons.lang.WordUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -117,11 +118,10 @@ public class SystemSubsystemReport extends AbstractBlam {
 
       monitor.subTask("Generating Metrics");
 
-      excelWriter.startSheet("report", 7);
-
       generateMetrics(getProductComponent(root), subsysTopFolder);
 
       monitor.subTask("Generating Per Subsystem Tables");
+
       generatePerSubsystemTables();
 
       excelWriter.endWorkbook();
@@ -141,6 +141,8 @@ public class SystemSubsystemReport extends AbstractBlam {
    }
 
    private void generateMetrics(Artifact productComponent, Artifact subsysTopFolder) throws IOException, OseeCoreException {
+      excelWriter.startSheet("Metrics", 7);
+
       String[] row =
          new String[] {
             "Subsystem Name",
@@ -195,6 +197,8 @@ public class SystemSubsystemReport extends AbstractBlam {
       excelWriter.writeRow("# of system requirements alloacted more than once", String.valueOf(moreThanOnceCount));
       excelWriter.writeRow("# of system requirements not alloacted",
          String.valueOf(sysReqs.size() - moreThanOnceCount - exactlyOnceCount));
+
+      excelWriter.endSheet();
    }
 
    private void generatePerSubsystemTables() throws IOException, OseeCoreException {
@@ -204,7 +208,7 @@ public class SystemSubsystemReport extends AbstractBlam {
 
          generateSubsystemRaw(subSysName, subsysReqs);
 
-         generateSubsystemComponentAllocation(subsysReqs);
+         generateSubsystemComponentAllocation(subSysName, subsysReqs);
 
          generateComponentAllocation(subSysName, subsysReqs);
 
@@ -215,10 +219,9 @@ public class SystemSubsystemReport extends AbstractBlam {
    }
 
    private void generateSubsystemRaw(String subSysName, Set<Artifact> subsysReqs) throws IOException, OseeCoreException {
-      excelWriter.writeRow();
-      excelWriter.writeRow();
-      excelWriter.writeRow(subSysName);
-      excelWriter.writeRow("Detailed Subsystem Requirement Completeness Report");
+      excelWriter.startSheet(getShortSheetName(subSysName, "Comp"), 6);
+
+      excelWriter.writeRow("Detailed Subsystem Requirement Completeness Report for " + subSysName);
       excelWriter.writeRow("Paragraph #", "Paragraph Title", CoreAttributeTypes.Subsystem.getName(),
          CoreAttributeTypes.QualificationMethod.getName(), "Trace Count", "Allocation Count");
 
@@ -244,11 +247,13 @@ public class SystemSubsystemReport extends AbstractBlam {
          row[SubsystemCompletness.allocated.ordinal()] = String.valueOf(allocationCount);
          excelWriter.writeRow(row);
       }
+
+      excelWriter.endSheet();
    }
 
-   private void generateSubsystemComponentAllocation(Set<Artifact> subsysReqs) throws IOException, OseeCoreException {
-      excelWriter.writeRow();
-      excelWriter.writeRow();
+   private void generateSubsystemComponentAllocation(String subSysName, Set<Artifact> subsysReqs) throws IOException, OseeCoreException {
+      excelWriter.startSheet(getShortSheetName(subSysName, "5.1"), 3);
+
       excelWriter.writeRow("Subsystem SSDD section 5.1");
       excelWriter.writeRow("Paragraph #", "Paragraph Title", "Allocated Components");
 
@@ -274,14 +279,15 @@ public class SystemSubsystemReport extends AbstractBlam {
             excelWriter.writeRow(row);
          }
       }
+
+      excelWriter.endSheet();
    }
 
    private void generateComponentAllocation(String subSysName, Set<Artifact> subsysReqs) throws IOException, OseeCoreException {
-      String[] row = new String[3];
-
-      excelWriter.writeRow();
-      excelWriter.writeRow();
+      excelWriter.startSheet(getShortSheetName(subSysName, "5.2"), 3);
       excelWriter.writeRow("Subsystem SSDD section 5.2");
+
+      String[] row = new String[3];
       for (Artifact component : components) {
          excelWriter.writeRow();
          excelWriter.writeRow();
@@ -297,7 +303,9 @@ public class SystemSubsystemReport extends AbstractBlam {
             }
          }
       }
+
       components.clear();
+      excelWriter.endSheet();
    }
 
    private void recurseWholeSubsystem(String subSysName, Artifact subsysFolder) throws OseeCoreException {
@@ -344,16 +352,15 @@ public class SystemSubsystemReport extends AbstractBlam {
    }
 
    private void generateSystemToSubsystemTrace(String subSysName) throws IOException, OseeCoreException {
-      Set<Artifact> subsysReqs = subsysToSubsysReqsMap.get(subSysName);
+      excelWriter.startSheet(getShortSheetName(subSysName, "System Trace"), 4);
 
-      excelWriter.writeRow();
-      excelWriter.writeRow();
       excelWriter.writeRow(subSysName, "System To Subsystem Trace");
       excelWriter.writeRow(CoreArtifactTypes.SystemRequirement.getName(), null, "Traceable Subsystem Requirement", null);
       excelWriter.writeRow("Paragraph #", "Paragraph Title", "Paragraph #", "Paragraph Title");
 
       String[] row = new String[4];
       Set<Artifact> orderedSysReqs = subsysToSysReqsMap.get(subSysName);
+      Set<Artifact> subsysReqs = subsysToSubsysReqsMap.get(subSysName);
 
       for (Artifact sysReq : orderedSysReqs) {
          row[0] = sysReq.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "");
@@ -372,13 +379,20 @@ public class SystemSubsystemReport extends AbstractBlam {
             excelWriter.writeRow(row);
          }
       }
+
+      excelWriter.endSheet();
+   }
+
+   private String getShortSheetName(String subSysName, String sufix) {
+      String shortenSubSysName = subSysName.contains(" ") ? WordUtils.initials(subSysName) : subSysName;
+      return shortenSubSysName + " " + sufix;
    }
 
    private void generateSubsystemToSystemTrace(String subSysName) throws IOException, OseeCoreException {
+      excelWriter.startSheet(getShortSheetName(subSysName, "Subsystem Trace"), 5);
+
       Set<Artifact> subsysReqs = subsysToSubsysReqsMap.get(subSysName);
 
-      excelWriter.writeRow();
-      excelWriter.writeRow();
       excelWriter.writeRow(subSysName, "Subsystem To System Trace");
       excelWriter.writeRow(CoreArtifactTypes.SubsystemRequirement.getName(), null, null,
          "Traceable System Requirement", null);
@@ -407,6 +421,8 @@ public class SystemSubsystemReport extends AbstractBlam {
             excelWriter.writeRow(row);
          }
       }
+
+      excelWriter.endSheet();
    }
 
    private Artifact getProductComponent(Artifact root) throws OseeCoreException {
