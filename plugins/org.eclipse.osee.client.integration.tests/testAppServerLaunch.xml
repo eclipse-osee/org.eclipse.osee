@@ -83,7 +83,7 @@
 				</fileset>
 			</path>
 		</pathconvert>
-		<forget daemon="true">
+		<forget>
 			<echo message="Launching Osee Application Server..." />
 			<java taskname="build" jvm="${JAVA_HOME}/bin/java" failonerror="true" maxmemory="1024m" timeout="10800000" jar="${launcherJarPath}" fork="true">
 				<classpath>
