@@ -206,6 +206,10 @@ public final class RendererManager {
       open(artifacts, presentationType, null, new NullProgressMonitor());
    }
 
+   public static void open(Artifact artifact, PresentationType presentationType, VariableMap options) throws OseeCoreException {
+      open(Collections.singletonList(artifact), presentationType, options, new NullProgressMonitor());
+   }
+
    public static void open(Artifact artifact, final PresentationType presentationType, IProgressMonitor monitor) throws OseeCoreException {
       open(Collections.singletonList(artifact), presentationType, null, monitor);
    }
