@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.test.navigate;
 
-import static org.junit.Assert.assertTrue;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import junit.framework.Assert;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.navigate.AtsXNavigateItemLauncher;
@@ -28,31 +28,39 @@ import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEdit
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
-import org.junit.Before;
+import org.junit.BeforeClass;
 
 /**
  * @author Donald G. Dunne
  */
 public class AtsNavigateItemsToMassEditorTest {
 
-   @Before
-   public void setup() throws Exception {
+   @BeforeClass
+   public static void setup() throws Exception {
       DemoTestUtil.setUpTest();
    }
 
    @org.junit.Test
    public void testTeamVersions() throws Exception {
       closeTaskEditors();
+
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Team Versions");
-      ((MassEditTeamVersionItem) item).setSelectedTeamDef(TeamDefinitionArtifact.getTeamDefinitions(
-         Arrays.asList("SAW SW")).iterator().next());
+      Assert.assertTrue(item instanceof MassEditTeamVersionItem);
+      MassEditTeamVersionItem massEditItem = ((MassEditTeamVersionItem) item);
+
+      Collection<TeamDefinitionArtifact> teamDefs =
+         TeamDefinitionArtifact.getTeamDefinitions(Collections.singleton("SAW SW"));
+      Assert.assertNotNull(teamDefs);
+      Assert.assertFalse(teamDefs.isEmpty());
+
+      massEditItem.setSelectedTeamDef(teamDefs.iterator().next());
       handleGeneralDoubleClickAndTestResults(item, VersionArtifact.class, 3);
    }
 
-   public void handleGeneralDoubleClickAndTestResults(XNavigateItem item, Class<?> clazz, int numOfType) throws OseeCoreException {
+   private void handleGeneralDoubleClickAndTestResults(XNavigateItem item, Class<?> clazz, int numOfType) throws OseeCoreException {
       AtsXNavigateItemLauncher.handleDoubleClick(item, TableLoadOption.ForcePend, TableLoadOption.NoUI);
       MassArtifactEditor massEditor = getMassArtifactEditor();
-      assertTrue(massEditor != null);
+      Assert.assertNotNull(massEditor);
       Collection<Artifact> arts = massEditor.getLoadedArtifacts();
       NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, clazz, numOfType);
    }
