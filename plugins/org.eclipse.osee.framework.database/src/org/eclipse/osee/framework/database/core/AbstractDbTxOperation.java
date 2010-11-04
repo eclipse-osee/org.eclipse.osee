@@ -43,7 +43,6 @@ public abstract class AbstractDbTxOperation extends AbstractOperation {
       // default implementation
    }
 
-   @SuppressWarnings("unused")
    protected void handleTxFinally(IProgressMonitor monitor) throws OseeCoreException {
       // default implementation
    }
