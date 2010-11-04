@@ -113,6 +113,7 @@ public class ArtifactLoaderTest {
             completed++;
          }
       }
+      executor.shutdownNow();
       String message =
          String.format("Hit timeout value before threads were completed - completed[%s] cancelled[%s]", completed,
             cancelled);
