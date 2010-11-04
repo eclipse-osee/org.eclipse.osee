@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.jdk.core.util;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * @author Roberto E. Escobar
@@ -20,18 +21,20 @@ import java.util.Map;
 public final class HttpUrlBuilder {
 
    private HttpUrlBuilder() {
+      // Utility Class
    }
 
    private static String encode(String value) throws UnsupportedEncodingException {
       return URLEncoder.encode(value, "UTF-8");
    }
 
-   public static String getParametersAsEncodedUrl(Map<String, String> keyValues) throws UnsupportedEncodingException {
+   private static String getParametersAsEncodedUrl(Map<String, String> keyValues) throws UnsupportedEncodingException {
       StringBuilder sb = new StringBuilder();
-      for (String key : keyValues.keySet()) {
+      for (Entry<String, String> entry : keyValues.entrySet()) {
+         String key = entry.getKey();
          sb.append(encode(key));
          sb.append("=");
-         sb.append(encode(keyValues.get(key)));
+         sb.append(encode(entry.getValue()));
          sb.append("&");
       }
       if (sb.length() - 1 >= 0) {
@@ -49,8 +52,10 @@ public final class HttpUrlBuilder {
       sb.append(port);
       sb.append("/");
       sb.append(context);
-      sb.append("?");
-      sb.append(getParametersAsEncodedUrl(parameters));
+      if (parameters != null && !parameters.isEmpty()) {
+         sb.append("?");
+         sb.append(getParametersAsEncodedUrl(parameters));
+      }
       return sb.toString();
    }
 
@@ -58,8 +63,10 @@ public final class HttpUrlBuilder {
       StringBuilder sb = new StringBuilder();
       sb.append(prefix);
       sb.append(context);
-      sb.append("?");
-      sb.append(getParametersAsEncodedUrl(parameters));
+      if (parameters != null && !parameters.isEmpty()) {
+         sb.append("?");
+         sb.append(getParametersAsEncodedUrl(parameters));
+      }
       return sb.toString();
    }
 }
