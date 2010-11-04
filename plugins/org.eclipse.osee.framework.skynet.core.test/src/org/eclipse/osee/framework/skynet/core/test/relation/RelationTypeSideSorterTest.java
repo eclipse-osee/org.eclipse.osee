@@ -45,6 +45,7 @@ import org.eclipse.osee.framework.skynet.core.relation.order.IRelationOrderAcces
 import org.eclipse.osee.framework.skynet.core.relation.order.IRelationSorter;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationSorterProvider;
+import org.eclipse.osee.framework.skynet.core.test.mocks.DataFactory;
 import org.eclipse.osee.framework.skynet.core.test.mocks.MockIArtifact;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
@@ -234,7 +235,7 @@ public class RelationTypeSideSorterTest {
       return data;
    }
 
-   private static IArtifact createArtifact(String name, String guid) throws OseeCoreException {
+   private static IArtifact createArtifact(String name, String guid) {
       int uniqueId = randomGenerator.nextInt();
       Branch branch = new Branch(GUID.create(), name + " - branch", BranchType.WORKING, BranchState.MODIFIED, false);
       return new MockArtifactWithRelations(uniqueId, name, guid, branch, CoreArtifactTypes.Artifact);
@@ -290,8 +291,8 @@ public class RelationTypeSideSorterTest {
    private static final class MockArtifactWithRelations extends MockIArtifact {
       private final Map<IRelationType, List<? extends IArtifact>> relatedItemsMap;
 
-      public MockArtifactWithRelations(int uniqueId, String name, String guid, Branch branch, IArtifactType artifactType) throws OseeCoreException {
-         super(uniqueId, name, guid, branch, artifactType);
+      public MockArtifactWithRelations(int uniqueId, String name, String guid, Branch branch, IArtifactType artifactType) {
+         super(uniqueId, name, guid, branch, DataFactory.fromToken(artifactType));
          this.relatedItemsMap = new HashMap<IRelationType, List<? extends IArtifact>>();
       }
 

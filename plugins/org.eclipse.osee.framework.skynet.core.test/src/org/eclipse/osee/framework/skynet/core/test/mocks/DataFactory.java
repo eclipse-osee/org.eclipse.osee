@@ -17,7 +17,6 @@ import java.util.Random;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.test.mocks.MockDataFactory;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
@@ -36,17 +35,23 @@ public final class DataFactory {
       // Utility Class
    }
 
-   public static IArtifact createArtifact(String name, String guid) throws OseeCoreException {
-      int uniqueId = randomGenerator.nextInt();
-      return createArtifact(uniqueId, name, guid, null, CoreArtifactTypes.Artifact);
+   public static ArtifactType fromToken(IArtifactType artifactType) {
+      String name = artifactType.getName();
+      String guid = artifactType.getGuid();
+      return new ArtifactType(guid, name, true);
    }
 
-   public static IArtifact createArtifact(int uniqueId, String name, String guid, Branch branch, IArtifactType artifactType) throws OseeCoreException {
+   public static IArtifact createArtifact(String name, String guid) {
+      int uniqueId = randomGenerator.nextInt();
+      return createArtifact(uniqueId, name, guid, null, fromToken(CoreArtifactTypes.Artifact));
+   }
+
+   public static IArtifact createArtifact(int uniqueId, String name, String guid, Branch branch, ArtifactType artifactType) {
       return new MockIArtifact(uniqueId, name, guid, branch, artifactType);
    }
 
-   public static IArtifact createArtifact(int uniqueId, String name, String guid, Branch branch) throws OseeCoreException {
-      return new MockIArtifact(uniqueId, name, guid, branch, CoreArtifactTypes.Artifact);
+   public static IArtifact createArtifact(int uniqueId, String name, String guid, Branch branch) {
+      return new MockIArtifact(uniqueId, name, guid, branch, fromToken(CoreArtifactTypes.Artifact));
    }
 
    public static RelationLink createRelationLink(int relationId, int artA, int artB, Branch branch, RelationType relationType) {

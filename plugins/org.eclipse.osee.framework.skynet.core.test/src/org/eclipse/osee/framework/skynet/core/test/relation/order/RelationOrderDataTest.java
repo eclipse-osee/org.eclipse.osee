@@ -18,7 +18,6 @@ import java.util.Random;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
@@ -35,7 +34,7 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.relation.order.IRelationOrderAccessor;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
-import org.eclipse.osee.framework.skynet.core.test.mocks.MockIArtifact;
+import org.eclipse.osee.framework.skynet.core.test.mocks.DataFactory;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.junit.After;
 import org.junit.Assert;
@@ -271,10 +270,10 @@ public class RelationOrderDataTest {
       expectedData.add(new Object[] {relationType.getName(), side.name(), relationOrderIdGuid, artGuids});
    }
 
-   private static IArtifact createArtifact(String name, String guid) throws OseeCoreException {
+   private static IArtifact createArtifact(String name, String guid) {
       int uniqueId = randomGenerator.nextInt();
       Branch branch = new Branch(GUID.create(), name + " - branch", BranchType.WORKING, BranchState.MODIFIED, false);
-      return new MockIArtifact(uniqueId, name, guid, branch, CoreArtifactTypes.Artifact);
+      return DataFactory.createArtifact(uniqueId, name, guid, branch);
    }
 
    private static RelationType createRelationType(RelationTypeCache cache, String name, String delationRelationOrderGuid) throws OseeCoreException {

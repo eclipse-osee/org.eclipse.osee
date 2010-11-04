@@ -12,14 +12,11 @@ package org.eclipse.osee.framework.skynet.core.test.mocks;
 
 import java.util.Collections;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.NamedIdentity;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.RelationTypeSide;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 
 /**
@@ -32,11 +29,12 @@ public class MockIArtifact extends NamedIdentity implements IArtifact {
    private final ArtifactType artifactType;
    private final Branch branch;
 
-   public MockIArtifact(int uniqueId, String name, String guid, Branch branch, IArtifactType artifactType) throws OseeCoreException {
+   // MockObject do not change to use tokens
+   public MockIArtifact(int uniqueId, String name, String guid, Branch branch, ArtifactType artifactType) {
       super(guid, name);
       this.uniqueId = uniqueId;
       this.branch = branch;
-      this.artifactType = ArtifactTypeManager.getType(artifactType);
+      this.artifactType = artifactType;
       clear();
    }
 
