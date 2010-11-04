@@ -67,7 +67,7 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
       "SELECT %s as item_id, txs.branch_id from osee_join_transaction ojt, osee_txs txs, %s item where ojt.query_id = ? AND ojt.transaction_id = txs.transaction_id AND txs.gamma_id = item.gamma_id";
 
    private final static String FIND_NEW_TX_CURRENTS =
-      "SELECT oj.id as item_id, txs.mod_type, txs.gamma_id, txs.transaction_id from osee_join_id oj, %s item, osee_txs txs where oj.query_id = ? and oj.id = item.%s and item.gamma_id = txs.gamma_id and txs.branch_id = ? order by txs.transaction_id desc, oj.id desc";
+      "SELECT oj.id as item_id, txs.mod_type, txs.gamma_id, txs.transaction_id from osee_join_id oj, %s item, osee_txs txs where oj.query_id = ? and oj.id = item.%s and item.gamma_id = txs.gamma_id and txs.branch_id = ? order by oj.id desc, txs.transaction_id desc";
 
    private static final String UPDATE_TX_CURRENT =
       "update osee_txs set tx_current = ? where transaction_id = ? and gamma_id = ?";
