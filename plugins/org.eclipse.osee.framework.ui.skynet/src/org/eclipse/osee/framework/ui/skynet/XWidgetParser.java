@@ -62,7 +62,7 @@ public class XWidgetParser {
       return data;
    }
 
-   public static List<DynamicXWidgetLayoutData> extractlayoutDatas(DynamicXWidgetLayout dynamicXWidgetLayout, Element xWidgets) throws OseeCoreException {
+   public static List<DynamicXWidgetLayoutData> extractlayoutDatas(DynamicXWidgetLayout dynamicXWidgetLayout, Element xWidgets) {
       NodeList widgets = xWidgets.getElementsByTagName(DynamicXWidgetLayout.XWIDGET);
       List<DynamicXWidgetLayoutData> layoutDatas = new ArrayList<DynamicXWidgetLayoutData>(widgets.getLength());
 
@@ -151,8 +151,7 @@ public class XWidgetParser {
       return xmlData;
    }
 
-   @SuppressWarnings("unused")
-   private static DynamicXWidgetLayoutData extractWorkAttribute(DynamicXWidgetLayout dynamicXWidgetLayout, Element widget) throws OseeCoreException {
+   private static DynamicXWidgetLayoutData extractWorkAttribute(DynamicXWidgetLayout dynamicXWidgetLayout, Element widget) {
       DynamicXWidgetLayoutData dynamicXWidgetLayoutData = new DynamicXWidgetLayoutData(dynamicXWidgetLayout);
 
       // Loop through attributes to ensure all are valid and processed

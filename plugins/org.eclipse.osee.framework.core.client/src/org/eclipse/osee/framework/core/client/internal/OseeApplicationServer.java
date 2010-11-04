@@ -34,7 +34,6 @@ import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.data.OseeServerInfo;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.core.util.HttpProcessor;
 import org.eclipse.osee.framework.core.util.HttpProcessor.AcquireResult;
@@ -127,12 +126,8 @@ public class OseeApplicationServer {
 
          outputStream = new ByteArrayOutputStream();
          AcquireResult result = HttpProcessor.acquire(new URL(url), outputStream);
-         try {
-            OseeLog.reportStatus(new BaseStatus(ArbitrationService, Level.INFO, "%s",
-               HttpUrlBuilderClient.getInstance().getArbitrationServerPrefix()));
-         } catch (OseeDataStoreException ex) {
-            OseeLog.log(CoreClientActivator.class, Level.SEVERE, ex);
-         }
+         OseeLog.reportStatus(new BaseStatus(ArbitrationService, Level.INFO, "%s",
+            HttpUrlBuilderClient.getInstance().getArbitrationServerPrefix()));
          if (result.getCode() == HttpURLConnection.HTTP_OK) {
             inputStream = new ByteArrayInputStream(outputStream.toByteArray());
             oseeServerInfo = OseeServerInfo.fromXml(inputStream);

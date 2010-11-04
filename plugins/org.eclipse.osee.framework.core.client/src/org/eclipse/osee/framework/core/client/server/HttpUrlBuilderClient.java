@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.core.client.CoreClientActivator;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.client.internal.OseeApplicationServer;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.HttpUrlBuilder;
@@ -27,11 +26,12 @@ import org.eclipse.osee.framework.logging.OseeLog;
 /**
  * @author Roberto E. Escobar
  */
-public class HttpUrlBuilderClient {
+public final class HttpUrlBuilderClient {
    private static final String urlPrefixFormat = "http://%s:%s/";
    private static final HttpUrlBuilderClient instance = new HttpUrlBuilderClient();
 
    private HttpUrlBuilderClient() {
+      // Singleton
    }
 
    public static HttpUrlBuilderClient getInstance() {
@@ -63,7 +63,7 @@ public class HttpUrlBuilderClient {
       return address;
    }
 
-   public String getArbitrationServerPrefix() throws OseeDataStoreException {
+   public String getArbitrationServerPrefix() {
       String address = OseeClientProperties.getOseeArbitrationServer();
       if (address.endsWith("/") != true) {
          address += "/";

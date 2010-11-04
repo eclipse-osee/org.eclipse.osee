@@ -101,9 +101,8 @@ public class OseeDatabaseServiceImpl implements IOseeDatabaseService {
       return new OseeStatementImpl(getDefaultConnectionPool(), (OseeConnectionImpl) connection, autoClose);
    }
 
-   @SuppressWarnings("unused")
    @Override
-   public IOseeStatement getStatement(int resultSetType, int resultSetConcurrency) throws OseeDataStoreException {
+   public IOseeStatement getStatement(int resultSetType, int resultSetConcurrency) {
       throw new UnsupportedOperationException("This needs to be implemented");
    }
 

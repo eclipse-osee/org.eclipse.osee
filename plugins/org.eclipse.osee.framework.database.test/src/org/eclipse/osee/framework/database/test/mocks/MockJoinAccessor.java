@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.database.test.mocks;
 
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.DatabaseJoinAccessor.JoinItem;
 import org.eclipse.osee.framework.database.core.IJoinAccessor;
 import org.eclipse.osee.framework.database.core.OseeConnection;
@@ -27,27 +26,24 @@ public class MockJoinAccessor implements IJoinAccessor {
    private int queryId;
    private List<Object[]> dataList;
 
-   @SuppressWarnings("unused")
    @Override
-   public void store(OseeConnection connection, JoinItem joinItem, int queryId, List<Object[]> dataList) throws OseeCoreException {
+   public void store(OseeConnection connection, JoinItem joinItem, int queryId, List<Object[]> dataList) {
       this.connection = connection;
       this.joinItem = joinItem;
       this.queryId = queryId;
       this.dataList = dataList;
    }
 
-   @SuppressWarnings("unused")
    @Override
-   public int delete(OseeConnection connection, JoinItem joinItem, int queryId) throws OseeCoreException {
+   public int delete(OseeConnection connection, JoinItem joinItem, int queryId) {
       this.connection = connection;
       this.joinItem = joinItem;
       this.queryId = queryId;
       return 0;
    }
 
-   @SuppressWarnings("unused")
    @Override
-   public Collection<Integer> getAllQueryIds(OseeConnection connection, JoinItem joinItem) throws OseeCoreException {
+   public Collection<Integer> getAllQueryIds(OseeConnection connection, JoinItem joinItem) {
       this.connection = connection;
       this.joinItem = joinItem;
       return null;

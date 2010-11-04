@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.client.server.HttpUrlBuilderClient;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -64,11 +63,7 @@ public class ArbitrationServerPage extends PreferencePage implements IWorkbenchP
       boolean wasArbitrationOverriden = Strings.isValid(OseeClientProperties.getOseeApplicationServer());
       String defaultArbitrationServer = null;
       if (!wasArbitrationOverriden) {
-         try {
-            defaultArbitrationServer = HttpUrlBuilderClient.getInstance().getArbitrationServerPrefix();
-         } catch (OseeDataStoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-         }
+         defaultArbitrationServer = HttpUrlBuilderClient.getInstance().getArbitrationServerPrefix();
       }
 
       String defaultApplicationServer = null;
