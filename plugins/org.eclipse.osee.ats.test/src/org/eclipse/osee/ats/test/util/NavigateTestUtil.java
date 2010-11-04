@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.test.util;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.logging.Level;
 import junit.framework.Assert;
 import org.eclipse.osee.ats.internal.AtsPlugin;
@@ -28,7 +28,7 @@ import org.eclipse.swt.widgets.TreeItem;
 public final class NavigateTestUtil {
 
    private static final HashCollection<String, XNavigateItem> nameToNavItem =
-      new HashCollection<String, XNavigateItem>(true, List.class, 100);
+      new HashCollection<String, XNavigateItem>(true, ArrayList.class, 100);
 
    private static boolean ensurePopulatedRanOnce = false;
 

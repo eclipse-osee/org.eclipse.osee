@@ -89,11 +89,12 @@ import org.osgi.framework.Bundle;
 /**
  * @author Donald G. Dunne
  */
-public class AtsNavigateViewItems extends XNavigateViewItems {
+public final class AtsNavigateViewItems extends XNavigateViewItems {
    private static AtsNavigateViewItems navigateItems = new AtsNavigateViewItems();
-   private List<XNavigateItem> items;
+   private final List<XNavigateItem> items = new ArrayList<XNavigateItem>();
+   private boolean ensurePopulatedRanOnce = false;
 
-   public AtsNavigateViewItems() {
+   private AtsNavigateViewItems() {
       super();
    }
 
@@ -103,75 +104,72 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
 
    @Override
    public List<XNavigateItem> getSearchNavigateItems() {
-      if (items == null) {
-         items = getItems();
-      }
+      ensurePopulated();
       return items;
    }
 
-   private List<XNavigateItem> getItems() {
-      List<XNavigateItem> items = new ArrayList<XNavigateItem>();
-
+   private synchronized void ensurePopulated() {
       if (OseeUiActivator.areOSEEServicesAvailable().isFalse()) {
-         return items;
+         return;
       }
+      if (!ensurePopulatedRanOnce) {
+         this.ensurePopulatedRanOnce = true;
 
-      try {
-         User user = UserManager.getUser();
+         try {
+            User user = UserManager.getUser();
 
-         items.add(new SearchNavigateItem(null, new MyWorldSearchItem("My World", user)));
-         items.add(new SearchNavigateItem(null, new MyFavoritesSearchItem("My Favorites", user)));
-         items.add(new SearchNavigateItem(null, new MySubscribedSearchItem("My Subscribed", user)));
-         items.add(new SearchNavigateItem(null, new MyGoalWorkflowItem("My Goals", user, GoalSearchState.InWork)));
-         items.add(new SearchNavigateItem(null, new MyReviewWorkflowItem("My Reviews", user, ReviewState.InWork)));
-         items.add(new VisitedItems(null));
-         items.add(new XNavigateItemAction(null, new NewAction(), AtsImage.NEW_ACTION));
-         items.add(new SearchNavigateItem(null, new MyWorldSearchItem("User's World")));
+            items.add(new SearchNavigateItem(null, new MyWorldSearchItem("My World", user)));
+            items.add(new SearchNavigateItem(null, new MyFavoritesSearchItem("My Favorites", user)));
+            items.add(new SearchNavigateItem(null, new MySubscribedSearchItem("My Subscribed", user)));
+            items.add(new SearchNavigateItem(null, new MyGoalWorkflowItem("My Goals", user, GoalSearchState.InWork)));
+            items.add(new SearchNavigateItem(null, new MyReviewWorkflowItem("My Reviews", user, ReviewState.InWork)));
+            items.add(new VisitedItems(null));
+            items.add(new XNavigateItemAction(null, new NewAction(), AtsImage.NEW_ACTION));
+            items.add(new SearchNavigateItem(null, new MyWorldSearchItem("User's World")));
 
-         items.add(new SearchNavigateItem(null, new UserSearchWorkflowSearchItem()));
-         items.add(new SearchNavigateItem(null, new TaskSearchWorldSearchItem()));
-         items.add(new SearchNavigateItem(null, new GroupWorldSearchItem((Branch) null)));
-         items.add(new SearchNavigateItem(null, new TeamWorkflowSearchWorkflowSearchItem()));
-         items.add(new SearchNavigateItem(null, new UserCommunitySearchItem()));
-         items.add(new SearchNavigateItem(null, new ActionableItemWorldSearchItem(null, "Actionable Item Search",
-            false, false, false)));
+            items.add(new SearchNavigateItem(null, new UserSearchWorkflowSearchItem()));
+            items.add(new SearchNavigateItem(null, new TaskSearchWorldSearchItem()));
+            items.add(new SearchNavigateItem(null, new GroupWorldSearchItem((Branch) null)));
+            items.add(new SearchNavigateItem(null, new TeamWorkflowSearchWorkflowSearchItem()));
+            items.add(new SearchNavigateItem(null, new UserCommunitySearchItem()));
+            items.add(new SearchNavigateItem(null, new ActionableItemWorldSearchItem(null, "Actionable Item Search",
+               false, false, false)));
 
-         createGoalsSection(items);
-         createVersionsSection(items);
-         addExtensionPointItems(items);
-         createReviewsSection(items);
+            createGoalsSection(items);
+            createVersionsSection(items);
+            addExtensionPointItems(items);
+            createReviewsSection(items);
 
-         XNavigateItem stateItems = new XNavigateItem(null, "States", AtsImage.STATE);
-         new SearchNavigateItem(stateItems, new StateWorldSearchItem());
-         new SearchNavigateItem(stateItems, new StateWorldSearchItem("Search for Authorize Actions", "Authorize"));
-         items.add(stateItems);
+            XNavigateItem stateItems = new XNavigateItem(null, "States", AtsImage.STATE);
+            new SearchNavigateItem(stateItems, new StateWorldSearchItem());
+            new SearchNavigateItem(stateItems, new StateWorldSearchItem("Search for Authorize Actions", "Authorize"));
+            items.add(stateItems);
 
-         // Search Items
-         items.add(new XNavigateItemOperation(null, FrameworkImage.BRANCH_CHANGE, "Open Change Report(s) by ID(s)",
-            new MultipleHridSearchOperationFactory("Open Change Report(s) by ID(s)", AtsEditor.ChangeReport)));
-         items.add(new XNavigateItemOperation(null, AtsImage.OPEN_BY_ID, "Search by ID(s) - Open World Editor",
-            new MultipleHridSearchOperationFactory("Search by ID(s) - Open World Editor", AtsEditor.WorldEditor)));
-         items.add(new XNavigateItemOperation(null, AtsImage.WORKFLOW_CONFIG, "Search by ID(s) - Open Workflow Editor",
-            new MultipleHridSearchOperationFactory("Search by ID(s) - Open Workflow Editor", AtsEditor.WorkflowEditor)));
-         items.add(new XNavigateItemOperation(null, AtsImage.GLOBE, "Quick Search",
-            new AtsQuickSearchOperationFactory()));
+            // Search Items
+            items.add(new XNavigateItemOperation(null, FrameworkImage.BRANCH_CHANGE, "Open Change Report(s) by ID(s)",
+               new MultipleHridSearchOperationFactory("Open Change Report(s) by ID(s)", AtsEditor.ChangeReport)));
+            items.add(new XNavigateItemOperation(null, AtsImage.OPEN_BY_ID, "Search by ID(s) - Open World Editor",
+               new MultipleHridSearchOperationFactory("Search by ID(s) - Open World Editor", AtsEditor.WorldEditor)));
+            items.add(new XNavigateItemOperation(null, AtsImage.WORKFLOW_CONFIG,
+               "Search by ID(s) - Open Workflow Editor", new MultipleHridSearchOperationFactory(
+                  "Search by ID(s) - Open Workflow Editor", AtsEditor.WorkflowEditor)));
+            items.add(new XNavigateItemOperation(null, AtsImage.GLOBE, "Quick Search",
+               new AtsQuickSearchOperationFactory()));
 
-         items.add(new ArtifactImpactToActionSearchItem(null));
+            items.add(new ArtifactImpactToActionSearchItem(null));
 
-         createReportItems(items);
+            createReportItems(items);
 
-         createUtilItems(items);
+            createUtilItems(items);
 
-         BlamContributionManager.addBlamOperationsToNavigator(items);
+            BlamContributionManager.addBlamOperationsToNavigator(items);
 
-         createAdminItems(items);
+            createAdminItems(items);
 
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-         return items;
+         } catch (OseeCoreException ex) {
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         }
       }
-
-      return items;
    }
 
    private void createAdminItems(List<XNavigateItem> items) throws OseeCoreException, OseeArgumentException {
@@ -257,7 +255,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
       items.add(reportItems);
    }
 
-   public void createReviewsSection(List<XNavigateItem> items) {
+   private void createReviewsSection(List<XNavigateItem> items) {
       try {
          XNavigateItem reviewItem = new XNavigateItem(null, "Reviews", AtsImage.REVIEW);
          new SearchNavigateItem(reviewItem, new ShowOpenWorkflowsByArtifactType(
@@ -280,7 +278,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
       }
    }
 
-   public void createVersionsSection(List<XNavigateItem> items) {
+   private void createVersionsSection(List<XNavigateItem> items) {
       try {
          XNavigateItem releaseItems = new XNavigateItem(null, "Versions", FrameworkImage.VERSION);
          new MassEditTeamVersionItem("Team Versions", releaseItems, (TeamDefinitionArtifact) null,
@@ -298,7 +296,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
       }
    }
 
-   public void createGoalsSection(List<XNavigateItem> items) {
+   private void createGoalsSection(List<XNavigateItem> items) {
       try {
          XNavigateItem goalItem = new XNavigateItem(null, "Goals", AtsImage.GOAL);
          new SearchNavigateItem(goalItem, new GoalSearchItem("InWork Goals", new ArrayList<TeamDefinitionArtifact>(),
@@ -311,7 +309,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
       }
    }
 
-   public void addExtensionPointItems(List<XNavigateItem> items) {
+   private void addExtensionPointItems(List<XNavigateItem> items) {
       IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.ats.AtsNavigateItem");
       if (point == null) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't access AtsNavigateItem extension point");
