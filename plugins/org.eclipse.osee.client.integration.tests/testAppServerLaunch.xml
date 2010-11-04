@@ -59,47 +59,17 @@
 	</target>
 
 	<target name="writePosgresqlConnectionFile" depends="init" if="isPostgreSqlLaunch">
-		<writeConnectionFile 
-			dbType="postgresql" 
-			dbPrefix="jdbc:postgresql" 
-			dbDriver="postgresql.db.connection" 
-			dbName="${osee.db.name}" 
-			dbUser="${osee.db.user}" 
-			dbPasswd="${osee.db.passwd}" 
-			dbAddress="${osee.db.address}" 
-			dbPort="${osee.db.port}" 
-			connectionFilePath="${osee.app.server.connectionFile}" 
-			connectionid="${osee.app.server.connectionId}" />
+		<writeConnectionFile dbType="postgresql" dbPrefix="jdbc:postgresql" dbDriver="postgresql.db.connection" dbName="${osee.db.name}" dbUser="${osee.db.user}" dbPasswd="${osee.db.passwd}" dbAddress="${osee.db.address}" dbPort="${osee.db.port}" connectionFilePath="${osee.app.server.connectionFile}" connectionid="${osee.app.server.connectionId}" />
 		<property name="additionalJvmArgs" value=" " />
 	</target>
 
 	<target name="writeDerbyConnectionFile" depends="init" if="isDerbyLaunch">
-		<writeConnectionFile 
-			dbType="derby" 
-			dbPrefix="jdbc:derby" 
-			dbDriver="net.derby.db.connection" 
-			dbName="${osee.db.name}" 
-			dbUser="${osee.db.user}" 
-			dbPasswd="${osee.db.passwd}" 
-			dbAddress="${osee.db.address}" 
-			dbPort="${osee.db.port}" 
-			connectionFilePath="${osee.app.server.connectionFile}" 
-			connectionid="${osee.app.server.connectionId}" />
+		<writeConnectionFile dbType="derby" dbPrefix="jdbc:derby" dbDriver="net.derby.db.connection" dbName="${osee.db.name}" dbUser="${osee.db.user}" dbPasswd="${osee.db.passwd}" dbAddress="${osee.db.address}" dbPort="${osee.db.port}" connectionFilePath="${osee.app.server.connectionFile}" connectionid="${osee.app.server.connectionId}" />
 		<property name="additionalJvmArgs" value=" -Dosee.db.embedded.server=${osee.db.address}:${osee.db.port}" />
 	</target>
 
 	<target name="writeH2ConnectionFile" depends="init" if="isH2Launch">
-		<writeConnectionFile 
-			dbType="h2" 
-			dbPrefix="jdbc:h2" 
-			dbDriver="h2.db.connection"
-			dbName="${osee.db.name}" 
-			dbUser="${osee.db.user}" 
-			dbPasswd="${osee.db.passwd}" 
-			dbAddress="${osee.db.address}" 
-			dbPort="${osee.db.port}" 
-			connectionFilePath="${osee.app.server.connectionFile}" 
-			connectionid="${osee.app.server.connectionId}" />
+		<writeConnectionFile dbType="h2" dbPrefix="jdbc:h2" dbDriver="h2.db.connection" dbName="${osee.db.name}" dbUser="${osee.db.user}" dbPasswd="${osee.db.passwd}" dbAddress="${osee.db.address}" dbPort="${osee.db.port}" connectionFilePath="${osee.app.server.connectionFile}" connectionid="${osee.app.server.connectionId}" />
 		<property name="additionalJvmArgs" value=" -Dosee.db.embedded.server=${osee.db.address}:${osee.db.port}" />
 	</target>
 
@@ -113,7 +83,7 @@
 				</fileset>
 			</path>
 		</pathconvert>
-		<forget>
+		<forget daemon="true">
 			<echo message="Launching Osee Application Server..." />
 			<java taskname="build" jvm="${JAVA_HOME}/bin/java" failonerror="true" maxmemory="1024m" timeout="10800000" jar="${launcherJarPath}" fork="true">
 				<classpath>
