@@ -74,12 +74,15 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
 
    private final int[] txIdsToDelete;
    private final boolean force;
+   private boolean success;
+   private TransactionEvent transactionEvent;
 
    public PurgeTransactionOperation(IOseeDatabaseService databaseService, boolean force, int... txIdsToDelete) {
       super(databaseService, String.format("Delete transactions: %s", Arrays.toString(txIdsToDelete)),
          Activator.PLUGIN_ID);
       this.txIdsToDelete = txIdsToDelete;
       this.force = force;
+      this.success = false;
    }
 
    @Override
@@ -94,8 +97,7 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
       Map<TransactionRecord, TransactionRecord> deleteToPreviousTx =
          findPriorTransactions(monitor, txsToDeleteQuery, 0.20);
 
-      TransactionEvent transactionEvent =
-         PurgeTransactionEventUtil.createPurgeTransactionEvent(deleteToPreviousTx.keySet());
+      transactionEvent = PurgeTransactionEventUtil.createPurgeTransactionEvent(deleteToPreviousTx.keySet());
 
       txsToDeleteQuery.store(connection);
 
@@ -128,10 +130,16 @@ public class PurgeTransactionOperation extends AbstractDbTxOperation {
 
          ConnectionHandler.runBatchUpdate(connection, UPDATE_TX_CURRENT, txsUpdate);
          monitor.worked(calculateWork(0.20));
-
-         OseeEventManager.kickTransactionEvent(this, transactionEvent);
+         success = true;
       } finally {
          clearJoin(connection, txsToDeleteQuery);
+      }
+   }
+
+   @Override
+   protected void handleTxFinally(IProgressMonitor monitor) throws OseeCoreException {
+      if (success) {
+         OseeEventManager.kickTransactionEvent(this, transactionEvent);
       }
    }
 
