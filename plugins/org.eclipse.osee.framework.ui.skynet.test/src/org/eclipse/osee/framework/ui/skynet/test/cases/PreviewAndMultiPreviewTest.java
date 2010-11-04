@@ -275,8 +275,7 @@ public class PreviewAndMultiPreviewTest {
                ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, branch,
                   getClass().getSimpleName() + "1m");
             multiArt3.persist();
-            Arrays.asList(multiArt1, multiArt2, multiArt3);
-            RendererManager.openInJob(Arrays.asList(newArt), PresentationType.PREVIEW);
+            RendererManager.open(newArt, PresentationType.PREVIEW);
             Assert.assertTrue(monitorLog.getLogsAtLevel(Level.WARNING).isEmpty());
             Assert.assertTrue(monitorLog.getLogsAtLevel(Level.SEVERE).isEmpty());
          } catch (OseeCoreException ex) {
