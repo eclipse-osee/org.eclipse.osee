@@ -14,6 +14,7 @@ import java.util.Collection;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
@@ -23,21 +24,25 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 public final class WordUiUtil {
 
    public static void displayErrorMessageDialog(final String title, final String message) {
-      Displays.pendInDisplayThread(new Runnable() {
-         @Override
-         public void run() {
-            MessageDialog.openError(Displays.getActiveShell(), title, message);
-         }
-      });
+      if (RenderingUtil.arePopupsAllowed()) {
+         Displays.pendInDisplayThread(new Runnable() {
+            @Override
+            public void run() {
+               MessageDialog.openError(Displays.getActiveShell(), title, message);
+            }
+         });
+      }
    }
 
    public static void displayWarningMessageDialog(final String title, final String message) {
-      Displays.pendInDisplayThread(new Runnable() {
-         @Override
-         public void run() {
-            MessageDialog.openWarning(Displays.getActiveShell(), title, message);
-         }
-      });
+      if (RenderingUtil.arePopupsAllowed()) {
+         Displays.pendInDisplayThread(new Runnable() {
+            @Override
+            public void run() {
+               MessageDialog.openWarning(Displays.getActiveShell(), title, message);
+            }
+         });
+      }
    }
 
    public static void displayTrackedChangesOnArtifacts(final Collection<Artifact> artifacts) {
@@ -56,7 +61,9 @@ public final class WordUiUtil {
                      XResultData.getHyperlink(artifact)}));
                }
                rd.addRaw(AHTML.endMultiColumnTable());
-               rd.report("Artifacts With Tracked Changes");
+               if (RenderingUtil.arePopupsAllowed()) {
+                  rd.report("Artifacts With Tracked Changes");
+               }
             }
          });
       }
@@ -78,7 +85,9 @@ public final class WordUiUtil {
                      XResultData.getHyperlink(artifact)}));
                }
                rd.addRaw(AHTML.endMultiColumnTable());
-               rd.report("Unhandled Artifacts");
+               if (RenderingUtil.arePopupsAllowed()) {
+                  rd.report("Unhandled Artifacts");
+               }
             }
          });
       }
