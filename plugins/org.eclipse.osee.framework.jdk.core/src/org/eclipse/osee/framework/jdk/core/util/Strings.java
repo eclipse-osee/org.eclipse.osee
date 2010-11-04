@@ -23,7 +23,7 @@ public class Strings {
       // Utility class
    }
 
-   public static boolean isValid(String value) {
+   public static boolean isValid(CharSequence value) {
       return value != null && value.length() > 0;
    }
 
