@@ -34,9 +34,9 @@ public class VariableMap {
          if (optionArgs[i] instanceof String) {
             variableMap.put((String) optionArgs[i], optionArgs[i + 1]);
          } else if (optionArgs[i] == null) {
-            throw new OseeArgumentException("The %dth option must not be null", i);
+            throw new OseeArgumentException("Option %d must not be null", i);
          } else {
-            throw new OseeArgumentException("The %dth option must be of type string but is of type %s", i,
+            throw new OseeArgumentException("Option %d must be of type string but is of type [%s]", i,
                optionArgs[i].getClass().getName());
          }
       }
