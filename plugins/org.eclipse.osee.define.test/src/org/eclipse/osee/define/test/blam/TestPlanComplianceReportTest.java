@@ -47,7 +47,7 @@ public final class TestPlanComplianceReportTest {
       "    <Cell><Data ss:Type=\"String\">Sample_Test_Result_0.pdf&#10;Sample_Test_Result_1.pdf</Data></Cell>";
 
    private static SevereLoggingMonitor monitorLog;
-   private TestPlanComplianceReport testCompReport = null;
+   private final TestPlanComplianceReport testCompReport = new TestPlanComplianceReport();
    private Collection<Artifact> dummyArtifactList = null;
 
    private StringWriter resultBuffer = null;
@@ -123,7 +123,6 @@ public final class TestPlanComplianceReportTest {
 
    private void buildTest(int amountOfTestProcedures, TestStatusEnum testProcedureStatus, int testResultsAmount) throws Exception {
       resultBuffer = new StringWriter();
-      testCompReport = new TestPlanComplianceReport();
       testCompReport.runOperation(loadArtifacts(amountOfTestProcedures, testProcedureStatus, testResultsAmount),
          new NullProgressMonitor(), resultBuffer, false);
    }
