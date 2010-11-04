@@ -17,6 +17,7 @@ import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENER
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.PRODUCE_ATTRIBUTE;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -136,6 +137,7 @@ public final class RendererManager {
       if (bestRendererPrototype == null) {
          throw new OseeStateException("No renderer configured for %s of %s", presentationType, artifact);
       }
+
       return bestRendererPrototype;
    }
 
@@ -185,10 +187,7 @@ public final class RendererManager {
    }
 
    public static void openInJob(Artifact artifact, PresentationType presentationType) {
-      ArrayList<Artifact> artifacts = new ArrayList<Artifact>(1);
-      artifacts.add(artifact);
-
-      openInJob(artifacts, null, presentationType);
+      openInJob(Collections.singletonList(artifact), null, presentationType);
    }
 
    public static void openInJob(Collection<Artifact> artifacts, PresentationType presentationType) {
@@ -208,15 +207,11 @@ public final class RendererManager {
    }
 
    public static void open(Artifact artifact, final PresentationType presentationType, IProgressMonitor monitor) throws OseeCoreException {
-      ArrayList<Artifact> artifacts = new ArrayList<Artifact>(1);
-      artifacts.add(artifact);
-      open(artifacts, presentationType, null, monitor);
+      open(Collections.singletonList(artifact), presentationType, null, monitor);
    }
 
    public static void open(Artifact artifact, final PresentationType presentationType) throws OseeCoreException {
-      ArrayList<Artifact> artifacts = new ArrayList<Artifact>(1);
-      artifacts.add(artifact);
-      open(artifacts, presentationType);
+      open(Collections.singletonList(artifact), presentationType);
    }
 
    public static String merge(Artifact baseVersion, Artifact newerVersion, VariableMap options) throws OseeStateException, OseeCoreException {
