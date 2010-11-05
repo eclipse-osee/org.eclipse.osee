@@ -56,9 +56,11 @@ public class PurgeArtifacts extends DbTransaction {
       "DELETE FROM osee_artifact art WHERE EXISTS ( select * from osee_join_transaction jt1 WHERE jt1.query_id = ? AND jt1.gamma_id = art.gamma_id AND not exists ( select * from osee_txs txs1 where txs1.gamma_id = jt1.gamma_id))";
 
    private final Collection<? extends Artifact> artifactsToPurge;
+   private boolean success;
 
    public PurgeArtifacts(Collection<? extends Artifact> artifactsToPurge) {
       this.artifactsToPurge = artifactsToPurge;
+      this.success = false;
    }
 
    @Override
@@ -159,9 +161,7 @@ public class PurgeArtifacts extends DbTransaction {
          ConnectionHandler.runPreparedUpdate(connection, "DELETE FROM osee_join_transaction where query_id = ?",
             transactionJoinId);
 
-         Set<EventBasicGuidArtifact> artifactChanges = new HashSet<EventBasicGuidArtifact>();
          for (Artifact artifact : artifactsToPurge) {
-            artifactChanges.add(new EventBasicGuidArtifact(EventModType.Purged, artifact));
             ArtifactCache.deCache(artifact);
             artifact.internalSetDeleted();
             for (RelationLink rel : artifact.getRelationsAll(DeletionFlag.EXCLUDE_DELETED)) {
@@ -171,19 +171,29 @@ public class PurgeArtifacts extends DbTransaction {
                attr.markAsPurged();
             }
          }
+         success = true;
+      } finally {
+         ArtifactLoader.clearQuery(connection, queryId);
+      }
+   }
 
+   @Override
+   protected void handleTxFinally() throws OseeCoreException {
+      if (success) {
+         Set<EventBasicGuidArtifact> artifactChanges = new HashSet<EventBasicGuidArtifact>();
+         for (Artifact artifact : artifactsToPurge) {
+            artifactChanges.add(new EventBasicGuidArtifact(EventModType.Purged, artifact));
+         }
          // Kick Local and Remote Events
          ArtifactEvent artifactEvent = new ArtifactEvent(artifactsToPurge.iterator().next().getBranch());
          for (EventBasicGuidArtifact guidArt : artifactChanges) {
             artifactEvent.getArtifacts().add(guidArt);
          }
          OseeEventManager.kickPersistEvent(PurgeArtifacts.class, artifactEvent);
-
-      } finally {
-         ArtifactLoader.clearQuery(connection, queryId);
       }
    }
 
+   @SuppressWarnings("unchecked")
    public void insertSelectItems(OseeConnection connection, String tableName, String artifactJoinSql, int transactionJoinId, Timestamp insertTime, int queryId) throws OseeCoreException {
       IOseeDatabaseService databaseService = Activator.getInstance().getOseeDatabaseService();
       String sql = String.format(INSERT_SELECT_ITEM, tableName, artifactJoinSql);
