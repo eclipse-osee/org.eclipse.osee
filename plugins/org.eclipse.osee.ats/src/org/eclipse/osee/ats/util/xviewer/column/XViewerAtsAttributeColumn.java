@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.xviewer.column;
 
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -18,7 +17,7 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 /**
  * @author Donald G. Dunne
  */
-public class XViewerAtsAttributeColumn extends XViewerColumn {
+public class XViewerAtsAttributeColumn extends XViewerAtsColumn {
 
    private final IAttributeType attributeType;
 

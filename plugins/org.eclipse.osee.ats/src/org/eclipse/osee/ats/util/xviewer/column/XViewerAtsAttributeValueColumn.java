@@ -7,17 +7,14 @@ package org.eclipse.osee.ats.util.xviewer.column;
 
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
-import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.field.IPersistAltLeftClickProvider;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.PromptChangeUtil;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -27,9 +24,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
@@ -70,11 +64,6 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
    }
 
    @Override
-   public Image getColumnImage(Object element, XViewerColumn column, int columnIndex) {
-      return null;
-   }
-
-   @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
          if (element instanceof AbstractWorkflowArtifact) {
@@ -90,26 +79,6 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
       } catch (Exception ex) {
          return XViewerCells.getCellExceptionString(ex);
       }
-      return null;
-   }
-
-   @Override
-   public Color getBackground(Object element, XViewerColumn xCol, int columnIndex) {
-      return null;
-   }
-
-   @Override
-   public Color getForeground(Object element, XViewerColumn xCol, int columnIndex) {
-      return null;
-   }
-
-   @Override
-   public StyledString getStyledText(Object element, XViewerColumn viewerColumn, int columnIndex) {
-      return null;
-   }
-
-   @Override
-   public Font getFont(Object element, XViewerColumn viewerColumn, int columnIndex) {
       return null;
    }
 
@@ -145,16 +114,6 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
       }
 
       return false;
-   }
-
-   protected boolean isPersistViewer(TreeColumn treeColumn) {
-      return isPersistViewer(((XViewerColumn) treeColumn.getData()).getTreeViewer());
-   }
-
-   protected boolean isPersistViewer(XViewer xViewer) {
-      return xViewer != null && //
-      xViewer instanceof IPersistAltLeftClickProvider //
-         && ((IPersistAltLeftClickProvider) xViewer).isAltLeftClickPersist();
    }
 
 }

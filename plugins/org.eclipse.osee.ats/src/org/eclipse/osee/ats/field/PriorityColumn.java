@@ -7,6 +7,9 @@ package org.eclipse.osee.ats.field;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
@@ -29,7 +32,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
-public class PriorityColumn extends XViewerAtsAttributeValueColumn {
+public class PriorityColumn extends XViewerAtsAttributeValueColumn implements IMultiColumnEditProvider {
 
    public static final IAttributeType PriorityTypeAttribute = new AtsAttributeTypes("AAMFEc8JzH1U6XGD59QA", "Priority",
       "1 = High; 5 = Low");
@@ -40,7 +43,7 @@ public class PriorityColumn extends XViewerAtsAttributeValueColumn {
    }
 
    private PriorityColumn() {
-      super(PriorityTypeAttribute, 20, SWT.LEFT, true, SortDataType.String, false);
+      super(PriorityTypeAttribute, 20, SWT.LEFT, true, SortDataType.String, true);
    }
 
    public PriorityColumn(IAttributeType attributeType, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
@@ -125,6 +128,23 @@ public class PriorityColumn extends XViewerAtsAttributeValueColumn {
       }
 
       return false;
+   }
+
+   @Override
+   public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
+      Set<TeamWorkFlowArtifact> smas = new HashSet<TeamWorkFlowArtifact>();
+      for (TreeItem item : treeItems) {
+         Artifact art = (Artifact) item.getData();
+         if (art instanceof TeamWorkFlowArtifact) {
+            smas.add((TeamWorkFlowArtifact) art);
+         }
+      }
+      if (smas.size() == 0) {
+         AWorkbench.popup("Must select Team Workflows");
+         return;
+      }
+      promptChangePriority(smas, true);
+      return;
    }
 
 }

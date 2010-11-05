@@ -12,6 +12,7 @@
 package org.eclipse.osee.ats.world;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -26,9 +27,12 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
 import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.action.ColumnMultiEditAction;
+import org.eclipse.nebula.widgets.xviewer.customize.XViewerCustomMenu;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.actions.ConvertActionableItemsAction;
@@ -124,8 +128,8 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       createMenuActions();
    }
 
-   Action editStatusAction, editNotesAction, editResolutionAction, editEstimateAction, editChangeTypeAction,
-      editPriorityAction, editTargetVersionAction, editAssigneeAction, editActionableItemsAction;
+   Action editAction, editStatusAction, editNotesAction, editResolutionAction, editEstimateAction,
+      editChangeTypeAction, editPriorityAction, editTargetVersionAction, editAssigneeAction, editActionableItemsAction;
    ConvertActionableItemsAction convertActionableItemsAction;
    Action openInAtsWorldEditorAction, openInAtsTaskEditorAction;
    OpenInAtsWorkflowEditor openInAtsWorkflowEditorAction;
@@ -175,6 +179,17 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
                if (SMAPromptChangeStatus.promptChangeStatus(getSelectedSMAArtifacts(), true)) {
                   update(getSelectedSMAArtifacts().toArray(), null);
                }
+            } catch (Exception ex) {
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            }
+         }
+      };
+
+      editAction = new Action("Edit", IAction.AS_PUSH_BUTTON) {
+         @Override
+         public void run() {
+            try {
+               new ColumnMultiEditAction(thisXViewer).run();
             } catch (Exception ex) {
                OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
@@ -317,15 +332,15 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
 
    @Override
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
+      super.handleColumnMultiEdit(treeColumn, treeItems);
       handleColumnMultiEdit(treeColumn, treeItems, true);
    }
 
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems, final boolean persist) {
-      if (treeColumn.getData().equals(WorldXViewerFactory.Groups_Col)) {
-         processGroupsColumn(treeItems);
+      if (treeColumn.getData() instanceof IMultiColumnEditProvider) {
          return;
-      } else if (treeColumn.getData().equals(WorldXViewerFactory.Goals_Col)) {
-         processGoalsColumn(treeItems);
+      } else if (treeColumn.getData().equals(WorldXViewerFactory.Groups_Col)) {
+         processGroupsColumn(treeItems);
          return;
       } else if (treeColumn.getData().equals(WorldXViewerFactory.Related_To_State_Col)) {
          processRelatedToStateColumn(treeItems);
@@ -403,22 +418,6 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       RelatedToStateColumn.promptChangeRelatedToState(tasks, true);
    }
 
-   private void processGoalsColumn(Collection<TreeItem> treeItems) {
-      try {
-         Set<AbstractWorkflowArtifact> smas = new HashSet<AbstractWorkflowArtifact>();
-         for (TreeItem item : treeItems) {
-            Artifact art = (Artifact) item.getData();
-            if (art instanceof AbstractWorkflowArtifact) {
-               smas.add((AbstractWorkflowArtifact) art);
-            }
-         }
-         PromptChangeUtil.promptChangeGoals(smas, true);
-         return;
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      }
-   }
-
    private void processGroupsColumn(Collection<TreeItem> treeItems) {
       try {
          Set<AbstractWorkflowArtifact> smas = new HashSet<AbstractWorkflowArtifact>();
@@ -446,6 +445,9 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       }
       if (!((XViewerColumn) treeColumn.getData()).isMultiColumnEditable()) {
          return false;
+      }
+      if (((XViewerColumn) treeColumn.getData()) instanceof IMultiColumnEditProvider) {
+         return true;
       }
       IAttributeType attributeType = null;
       // Currently don't know how to multi-edit anything but attribute
@@ -514,10 +516,25 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       return obj != null && obj instanceof AbstractWorkflowArtifact ? (AbstractWorkflowArtifact) obj : null;
    }
 
+   /**
+    * Create Edit menu at top to make easier for users to see and eventually enable menu to get rid of all separate edit
+    * items
+    */
+   public void updateEditMenu(MenuManager mm) {
+      final Collection<TreeItem> selectedTreeItems = Arrays.asList(thisXViewer.getTree().getSelection());
+      Set<TreeColumn> editableColumns = ColumnMultiEditAction.getEditableTreeColumns(thisXViewer, selectedTreeItems);
+
+      MenuManager editMenuManager =
+         XViewerCustomMenu.createEditMenuManager(thisXViewer, "Edit", selectedTreeItems, editableColumns);
+      mm.insertBefore(MENU_GROUP_PRE, editMenuManager);
+   }
+
    public void updateEditMenuActions() {
       MenuManager mm = getMenuManager();
 
       // EDIT MENU BLOCK
+      updateEditMenu(mm);
+
       mm.insertBefore(MENU_GROUP_PRE, editChangeTypeAction);
       editChangeTypeAction.setEnabled(getSelectedTeamWorkflowArtifacts().size() > 0);
 
@@ -847,8 +864,6 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
                modified =
                   PromptChangeUtil.promptChangeAttribute(useArt, AtsAttributeTypes.GoalOrderVote,
                      isAltLeftClickPersist(), true);
-            } else if (xCol.equals(WorldXViewerFactory.Goals_Col)) {
-               modified = PromptChangeUtil.promptChangeGoals(useArt, isAltLeftClickPersist());
             }
             if (modified) {
                update(useArt, null);

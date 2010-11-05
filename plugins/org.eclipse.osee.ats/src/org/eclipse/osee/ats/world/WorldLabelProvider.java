@@ -142,9 +142,6 @@ public class WorldLabelProvider extends XViewerLabelProvider {
          if (xCol.equals(WorldXViewerFactory.Groups_Col)) {
             return wva.getWorldViewGroups();
          }
-         if (xCol.equals(WorldXViewerFactory.Goals_Col)) {
-            return wva.getWorldViewGoals();
-         }
          if (xCol.equals(WorldXViewerFactory.Legacy_PCR_Col)) {
             return wva.getWorldViewLegacyPCR();
          }

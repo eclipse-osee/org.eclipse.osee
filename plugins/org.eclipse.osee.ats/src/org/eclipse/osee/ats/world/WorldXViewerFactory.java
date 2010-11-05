@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.field.CategoryColumn;
 import org.eclipse.osee.ats.field.ChangeTypeColumn;
+import org.eclipse.osee.ats.field.GoalsColumn;
 import org.eclipse.osee.ats.field.OperationalImpactColumn;
 import org.eclipse.osee.ats.field.OperationalImpactDesciptionColumn;
 import org.eclipse.osee.ats.field.OperationalImpactWorkaroundColumn;
@@ -186,8 +187,6 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       "Review Moderator", 100, SWT.LEFT, false, SortDataType.String, false, "Review Moderator(s)");
    public static final XViewerColumn Groups_Col = new XViewerColumn(COLUMN_NAMESPACE + ".groups", "Groups", 100,
       SWT.LEFT, false, SortDataType.String, true, "Groups");
-   public static final XViewerColumn Goals_Col = new XViewerColumn(COLUMN_NAMESPACE + ".goals", "Goals", 100, SWT.LEFT,
-      false, SortDataType.String, true, "Goals");
    public static final XViewerColumn Review_Reviewer_Col = new XViewerColumn(COLUMN_NAMESPACE + ".reviewReviewer",
       "Review Reviewer", 100, SWT.LEFT, false, SortDataType.String, false, "Review Reviewer(s)");
    public static final XViewerColumn Review_Decider_Col = new XViewerColumn(COLUMN_NAMESPACE + ".reviewDecider",
@@ -254,7 +253,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       Decision_Col,
       Resolution_Col,
       Groups_Col,
-      Goals_Col,
+      GoalsColumn.getInstance(),
       Estimated_Release_Date_Col,
       Estimated_Completion_Date_Col,
       Release_Date_Col,

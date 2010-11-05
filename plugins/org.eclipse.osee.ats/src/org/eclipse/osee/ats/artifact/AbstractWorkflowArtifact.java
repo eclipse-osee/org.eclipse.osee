@@ -196,11 +196,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return Artifacts.toString("; ", getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Group));
    }
 
-   @Override
-   public String getWorldViewGoals() throws OseeCoreException {
-      return Artifacts.toString("; ", getRelatedArtifacts(AtsRelationTypes.Goal_Goal));
-   }
-
    @SuppressWarnings("unused")
    @Override
    public double getWorldViewWeeklyBenefit() throws OseeCoreException {

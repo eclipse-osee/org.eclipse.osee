@@ -446,11 +446,6 @@ public class ActionArtifact extends AbstractAtsArtifact implements IWorldViewArt
    }
 
    @Override
-   public String getWorldViewGoals() throws OseeCoreException {
-      return Artifacts.toString("; ", getRelatedArtifacts(AtsRelationTypes.Goal_Goal));
-   }
-
-   @Override
    public String getWorldViewNumeric1() throws OseeCoreException {
       Set<String> strs = new HashSet<String>();
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
