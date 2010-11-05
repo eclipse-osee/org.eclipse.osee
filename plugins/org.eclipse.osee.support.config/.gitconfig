@@ -1,9 +1,8 @@
 [core]
         autocrlf = false
+        eol = lf
 [color]
         ui = auto
-[user]
-        email = ryan.d.brooks@boeing.com
 [http]
         proxy = www-slb-proxy.boeing.com:31060
         sslcainfo = bin/curl-ca-bundle.crt
