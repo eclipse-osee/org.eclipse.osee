@@ -54,9 +54,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionLockedType;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
-import org.eclipse.osee.ats.field.ChangeTypeAction;
 import org.eclipse.osee.ats.field.IPersistAltLeftClickProvider;
-import org.eclipse.osee.ats.field.PriorityAction;
 import org.eclipse.osee.ats.goal.GoalXViewerFactory;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.task.TaskEditor;
@@ -129,7 +127,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
    }
 
    Action editAction, editStatusAction, editNotesAction, editResolutionAction, editEstimateAction,
-      editChangeTypeAction, editPriorityAction, editTargetVersionAction, editAssigneeAction, editActionableItemsAction;
+      editTargetVersionAction, editAssigneeAction, editActionableItemsAction;
    ConvertActionableItemsAction convertActionableItemsAction;
    Action openInAtsWorldEditorAction, openInAtsTaskEditorAction;
    OpenInAtsWorkflowEditor openInAtsWorkflowEditorAction;
@@ -151,8 +149,6 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       openInArtifactEditorAction = new OpenInArtifactEditorAction(this);
       deletePurgeAtsObjectAction = new DeletePurgeAtsArtifactsAction(this);
       emailAction = new EmailActionAction(this);
-      editPriorityAction = new PriorityAction(this, this);
-      editChangeTypeAction = new ChangeTypeAction(this);
       editNotesAction = new Action("Edit Notes", IAction.AS_PUSH_BUTTON) {
          @Override
          public void run() {
@@ -339,9 +335,6 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems, final boolean persist) {
       if (treeColumn.getData() instanceof IMultiColumnEditProvider) {
          return;
-      } else if (treeColumn.getData().equals(WorldXViewerFactory.Groups_Col)) {
-         processGroupsColumn(treeItems);
-         return;
       } else if (treeColumn.getData().equals(WorldXViewerFactory.Related_To_State_Col)) {
          processRelatedToStateColumn(treeItems);
          return;
@@ -418,26 +411,9 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       RelatedToStateColumn.promptChangeRelatedToState(tasks, true);
    }
 
-   private void processGroupsColumn(Collection<TreeItem> treeItems) {
-      try {
-         Set<AbstractWorkflowArtifact> smas = new HashSet<AbstractWorkflowArtifact>();
-         for (TreeItem item : treeItems) {
-            Artifact art = (Artifact) item.getData();
-            if (art instanceof TeamWorkFlowArtifact) {
-               smas.add((AbstractWorkflowArtifact) art);
-            }
-         }
-         PromptChangeUtil.promptChangeGroups(smas, true);
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      }
-   }
-
    @Override
    public boolean isColumnMultiEditable(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
-      if (treeColumn.getData().equals(WorldXViewerFactory.Groups_Col)) {
-         return true;
-      } else if (treeColumn.getData().equals(WorldXViewerFactory.Related_To_State_Col)) {
+      if (treeColumn.getData().equals(WorldXViewerFactory.Related_To_State_Col)) {
          return true;
       }
       if (!(treeColumn.getData() instanceof XViewerColumn)) {
@@ -534,12 +510,6 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
 
       // EDIT MENU BLOCK
       updateEditMenu(mm);
-
-      mm.insertBefore(MENU_GROUP_PRE, editChangeTypeAction);
-      editChangeTypeAction.setEnabled(getSelectedTeamWorkflowArtifacts().size() > 0);
-
-      mm.insertBefore(MENU_GROUP_PRE, editPriorityAction);
-      editPriorityAction.setEnabled(getSelectedTeamWorkflowArtifacts().size() > 0);
 
       mm.insertBefore(MENU_GROUP_PRE, editTargetVersionAction);
       editTargetVersionAction.setEnabled(getSelectedTeamWorkflowArtifacts().size() > 0);
@@ -894,8 +864,6 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
             modified = PromptChangeUtil.promptChangeAttribute(sma, AtsAttributeTypes.WeeklyBenefit, false, false);
          } else if (xCol.equals(WorldXViewerFactory.Estimated_Release_Date_Col)) {
             modified = PromptChangeUtil.promptChangeEstimatedReleaseDate(sma);
-         } else if (xCol.equals(WorldXViewerFactory.Groups_Col)) {
-            modified = PromptChangeUtil.promptChangeGroups(sma, false);
          } else if (xCol.equals(WorldXViewerFactory.Estimated_Completion_Date_Col)) {
             modified = PromptChangeUtil.promptChangeDate(sma, AtsAttributeTypes.EstimatedCompletionDate, false);
          } else if (xCol.equals(WorldXViewerFactory.Deadline_Col)) {

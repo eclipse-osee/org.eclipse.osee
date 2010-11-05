@@ -7,7 +7,10 @@ package org.eclipse.osee.ats.field;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
@@ -33,7 +36,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
-public class ChangeTypeColumn extends XViewerAtsAttributeValueColumn {
+public class ChangeTypeColumn extends XViewerAtsAttributeValueColumn implements IMultiColumnEditProvider {
 
    public static final IAttributeType ChangeTypeAttribute = new AtsAttributeTypes("AAMFEc+MwGHnPCv7HlgA",
       "Change Type", "Type of change.");
@@ -44,7 +47,7 @@ public class ChangeTypeColumn extends XViewerAtsAttributeValueColumn {
    }
 
    private ChangeTypeColumn() {
-      super(ChangeTypeAttribute, 22, SWT.CENTER, true, SortDataType.String, false);
+      super(ChangeTypeAttribute, 22, SWT.CENTER, true, SortDataType.String, true);
    }
 
    public ChangeTypeColumn(IAttributeType attributeType, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
@@ -195,6 +198,18 @@ public class ChangeTypeColumn extends XViewerAtsAttributeValueColumn {
       if (changeType != null && getChangeType(actionArt) != changeType) {
          setChangeType(actionArt, changeType);
       }
+   }
+
+   @Override
+   public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
+      Set<TeamWorkFlowArtifact> smas = new HashSet<TeamWorkFlowArtifact>();
+      for (TreeItem item : treeItems) {
+         Artifact art = (Artifact) item.getData();
+         if (art instanceof TeamWorkFlowArtifact) {
+            smas.add((TeamWorkFlowArtifact) art);
+         }
+      }
+      promptChangeType(smas, true);
    }
 
 }

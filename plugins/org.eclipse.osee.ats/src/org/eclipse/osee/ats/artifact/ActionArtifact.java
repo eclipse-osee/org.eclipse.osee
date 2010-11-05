@@ -27,7 +27,6 @@ import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.GoalManager;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -432,17 +431,6 @@ public class ActionArtifact extends AbstractAtsArtifact implements IWorldViewArt
          strs.add(team.getWorldViewNotes());
       }
       return Collections.toString(";", strs);
-   }
-
-   @Override
-   public String getWorldViewGroups() throws OseeCoreException {
-      Set<Artifact> groups = new HashSet<Artifact>();
-      groups.addAll(getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Group));
-      // Roll up if same for all children
-      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         groups.addAll(team.getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Group));
-      }
-      return Artifacts.toString("; ", groups);
    }
 
    @Override

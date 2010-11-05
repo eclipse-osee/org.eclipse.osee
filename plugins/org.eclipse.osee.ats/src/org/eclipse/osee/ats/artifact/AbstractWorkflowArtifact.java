@@ -51,7 +51,6 @@ import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.SystemUser;
-import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -189,11 +188,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    @Override
    public String getWorldViewTeam() throws OseeCoreException {
       return null;
-   }
-
-   @Override
-   public String getWorldViewGroups() throws OseeCoreException {
-      return Artifacts.toString("; ", getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Group));
    }
 
    @SuppressWarnings("unused")
