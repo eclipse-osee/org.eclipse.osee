@@ -51,8 +51,6 @@ import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.artifact.VersionArtifact.VersionLockedType;
-import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
 import org.eclipse.osee.ats.field.IPersistAltLeftClickProvider;
 import org.eclipse.osee.ats.goal.GoalXViewerFactory;
@@ -126,8 +124,8 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       createMenuActions();
    }
 
-   Action editAction, editStatusAction, editNotesAction, editResolutionAction, editEstimateAction,
-      editTargetVersionAction, editAssigneeAction, editActionableItemsAction;
+   Action editAction, editStatusAction, editNotesAction, editResolutionAction, editEstimateAction, editAssigneeAction,
+      editActionableItemsAction;
    ConvertActionableItemsAction convertActionableItemsAction;
    Action openInAtsWorldEditorAction, openInAtsTaskEditorAction;
    OpenInAtsWorkflowEditor openInAtsWorkflowEditorAction;
@@ -199,21 +197,6 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
                if (ArtifactPromptChange.promptChangeAttribute(AtsAttributeTypes.EstimatedHours,
                   getSelectedSMAArtifacts(), true)) {
                   update(getSelectedSMAArtifacts().toArray(), null);
-               }
-            } catch (Exception ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         }
-      };
-
-      editTargetVersionAction = new Action("Edit Targeted Version", IAction.AS_PUSH_BUTTON) {
-         @Override
-         public void run() {
-            try {
-               if (PromptChangeUtil.promptChangeVersion(getSelectedTeamWorkflowArtifacts(),
-                  (AtsUtil.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased),
-                  (AtsUtil.isAtsAdmin() ? VersionLockedType.Both : VersionLockedType.UnLocked), true)) {
-                  update(getSelectedArtifactItems().toArray(), null);
                }
             } catch (Exception ex) {
                OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -510,9 +493,6 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
 
       // EDIT MENU BLOCK
       updateEditMenu(mm);
-
-      mm.insertBefore(MENU_GROUP_PRE, editTargetVersionAction);
-      editTargetVersionAction.setEnabled(getSelectedTeamWorkflowArtifacts().size() > 0);
 
       mm.insertBefore(MENU_GROUP_PRE, editAssigneeAction);
       editAssigneeAction.setEnabled(getSelectedSMAArtifacts().size() > 0);
@@ -849,12 +829,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
          }
          AbstractWorkflowArtifact sma = (AbstractWorkflowArtifact) useArt;
          boolean modified = false;
-         if (xCol.equals(WorldXViewerFactory.Version_Target_Col)) {
-            modified =
-               PromptChangeUtil.promptChangeVersion(sma,
-                  AtsUtil.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased,
-                  AtsUtil.isAtsAdmin() ? VersionLockedType.Both : VersionLockedType.UnLocked, true);
-         } else if (xCol.equals(WorldXViewerFactory.Notes_Col)) {
+         if (xCol.equals(WorldXViewerFactory.Notes_Col)) {
             modified = PromptChangeUtil.promptChangeAttribute(sma, AtsAttributeTypes.SmaNote, false, true);
          } else if (xCol.equals(WorldXViewerFactory.Percent_Rework_Col)) {
             modified = PromptChangeUtil.promptChangePercentAttribute(sma, AtsAttributeTypes.PercentRework, false);

@@ -14,9 +14,9 @@ import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionLockedType;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
+import org.eclipse.osee.ats.field.TargetedVersionColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.PromptChangeUtil;
 import org.eclipse.osee.ats.util.ReadOnlyHyperlinkListener;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -76,7 +76,7 @@ public class SMATargetVersionInfoComposite extends Composite {
                @Override
                public void linkActivated(HyperlinkEvent e) {
                   try {
-                     if (PromptChangeUtil.promptChangeVersion(sma,
+                     if (TargetedVersionColumn.promptChangeVersion(sma,
                         AtsUtil.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased,
                         VersionLockedType.UnLocked, false)) {
                         refresh();
@@ -106,8 +106,8 @@ public class SMATargetVersionInfoComposite extends Composite {
          sma.teamDefHasWorkRule(AtsWorkDefinitions.RuleWorkItemId.atsRequireTargetedVersion.name()) || sma.getWorkPageDefinition().hasWorkRule(
             AtsWorkDefinitions.RuleWorkItemId.atsRequireTargetedVersion.name());
 
-      if (sma.getTargetedForVersion() != null) {
-         str = sma.getTargetedForVersion() + "";
+      if (sma.getTargetedVersion() != null) {
+         str = sma.getTargetedVersion() + "";
       } else {
          str = "<edit>";
          if (required) {

@@ -25,10 +25,10 @@ public class TeamWorkflowLabelProvider extends ArtifactLabelProvider {
    public String getText(Object element) {
       TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) element;
       try {
-         if (teamWf.getWorldViewTargetedVersion() == null) {
+         if (teamWf.getTargetedVersion() == null) {
             return "[" + teamWf.getTeamName() + "] - " + teamWf.getName();
          } else {
-            return "[" + teamWf.getTeamName() + "][" + teamWf.getWorldViewTargetedVersionStr() + "] - " + teamWf.getName();
+            return "[" + teamWf.getTeamName() + "][" + teamWf.getTargetedVersionStr() + "] - " + teamWf.getName();
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);

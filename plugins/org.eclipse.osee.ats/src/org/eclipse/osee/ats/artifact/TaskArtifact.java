@@ -234,11 +234,6 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IATSStateM
    }
 
    @Override
-   public VersionArtifact getWorldViewTargetedVersion() throws OseeCoreException {
-      return getParentSMA().getWorldViewTargetedVersion();
-   }
-
-   @Override
    public double getManHrsPerDayPreference() throws OseeCoreException {
       return getParentSMA().getManHrsPerDayPreference();
    }

@@ -31,6 +31,7 @@ import org.eclipse.osee.ats.artifact.note.AtsNote;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.editor.stateItem.AtsStateItemManager;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
+import org.eclipse.osee.ats.field.TargetedVersionColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.notify.AtsNotification;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
@@ -98,6 +99,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    private AtsLog atsLog;
    private AtsNote atsNote;
    private boolean inTransition = false;
+   private boolean targetedErrorLogged = false;
 
    public AbstractWorkflowArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
@@ -381,9 +383,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return null;
    }
 
-   @Override
-   public abstract VersionArtifact getWorldViewTargetedVersion() throws OseeCoreException;
-
    public double getEstimatedHoursFromArtifact() throws OseeCoreException {
       if (isAttributeTypeValid(AtsAttributeTypes.EstimatedHours)) {
          return getSoleAttributeValue(AtsAttributeTypes.EstimatedHours, 0.0);
@@ -616,14 +615,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    @Override
    public String getWorldViewRelatedToState() throws OseeCoreException {
       return "";
-   }
-
-   @Override
-   public String getWorldViewTargetedVersionStr() throws OseeCoreException {
-      if (getWorldViewTargetedVersion() == null) {
-         return "";
-      }
-      return getWorldViewTargetedVersion().toString();
    }
 
    /**
@@ -1280,7 +1271,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
     */
    public boolean isReleased() {
       try {
-         VersionArtifact verArt = getTargetedForVersion();
+         VersionArtifact verArt = getTargetedVersion();
          if (verArt != null) {
             return verArt.isReleased();
          }
@@ -1292,7 +1283,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    public boolean isVersionLocked() {
       try {
-         VersionArtifact verArt = getTargetedForVersion();
+         VersionArtifact verArt = getTargetedVersion();
          if (verArt != null) {
             return verArt.isVersionLocked();
          }
@@ -1302,8 +1293,12 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return false;
    }
 
-   public VersionArtifact getTargetedForVersion() throws OseeCoreException {
-      return getWorldViewTargetedVersion();
+   public VersionArtifact getTargetedVersion() throws OseeCoreException {
+      return TargetedVersionColumn.getTargetedVersion(this);
+   }
+
+   public String getTargetedVersionStr() throws OseeCoreException {
+      return TargetedVersionColumn.getTargetedVersionStr(this);
    }
 
    public boolean isCompleted() {
@@ -1581,6 +1576,14 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    @Override
    public CmAccessControl getAccessControl() {
       return AtsPlugin.getInstance().getCmService();
+   }
+
+   public boolean isTargetedErrorLogged() {
+      return targetedErrorLogged;
+   }
+
+   public void setTargetedErrorLogged(boolean targetedErrorLogged) {
+      this.targetedErrorLogged = targetedErrorLogged;
    }
 
 }

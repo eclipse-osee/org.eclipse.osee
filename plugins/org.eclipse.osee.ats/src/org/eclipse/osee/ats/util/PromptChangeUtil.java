@@ -12,16 +12,11 @@ package org.eclipse.osee.ats.util;
 
 import java.util.Arrays;
 import java.util.Collection;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
-import org.eclipse.osee.ats.artifact.VersionArtifact.VersionLockedType;
-import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.widgets.dialog.VersionListDialog;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -112,83 +107,6 @@ public final class PromptChangeUtil {
       return false;
    }
 
-   public static boolean promptChangeVersion(AbstractWorkflowArtifact sma, VersionReleaseType versionReleaseType, VersionLockedType versionLockType, boolean persist) throws OseeCoreException {
-      if (AtsUtil.isAtsAdmin() && !sma.isTeamWorkflow()) {
-         AWorkbench.popup("ERROR ", "Cannot set version for: \n\n" + sma.getName());
-         return false;
-      }
-      return promptChangeVersion(Arrays.asList((TeamWorkFlowArtifact) sma), versionReleaseType, versionLockType,
-         persist);
-   }
-
-   public static boolean promptChangeVersion(final Collection<? extends TeamWorkFlowArtifact> smas, VersionReleaseType versionReleaseType, VersionLockedType versionLockType, final boolean persist) throws OseeCoreException {
-      TeamDefinitionArtifact teamDefHoldingVersions = null;
-      for (TeamWorkFlowArtifact teamArt : smas) {
-         if (!teamArt.getTeamDefinition().isTeamUsesVersions()) {
-            AWorkbench.popup("ERROR", "Team \"" + teamArt.getTeamDefinition().getName() + "\" doesn't use versions.");
-            return false;
-         }
-         if (teamArt.isReleased() || teamArt.isVersionLocked()) {
-            String error =
-               "Team Workflow\n \"" + teamArt.getName() + "\"\n targeted version is locked or already released.";
-            if (AtsUtil.isAtsAdmin() && !MessageDialog.openConfirm(Displays.getActiveShell(), "Change Version",
-               error + "\n\nOverride?")) {
-               return false;
-            } else if (!AtsUtil.isAtsAdmin()) {
-               AWorkbench.popup("ERROR", error);
-            }
-         }
-         if (teamDefHoldingVersions != null && teamDefHoldingVersions != teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions()) {
-            AWorkbench.popup("ERROR", "Can't change version on Workflows that have different release version sets.");
-            return false;
-         }
-         if (teamDefHoldingVersions == null) {
-            teamDefHoldingVersions = teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions();
-         }
-      }
-      if (teamDefHoldingVersions == null) {
-         AWorkbench.popup("ERROR", "No versions configured for impacted team(s).");
-         return false;
-      }
-      final VersionListDialog vld =
-         new VersionListDialog("Select Version", "Select Version", teamDefHoldingVersions.getVersionsArtifacts(
-            versionReleaseType, versionLockType));
-      if (smas.size() == 1 && smas.iterator().next().getWorldViewTargetedVersion() != null) {
-         Object[] objs = new Object[1];
-         objs[0] = smas.iterator().next().getWorldViewTargetedVersion();
-         vld.setInitialSelections(objs);
-      }
-      int result = vld.open();
-      if (result != 0) {
-         return false;
-      }
-      Object obj = vld.getResult()[0];
-      VersionArtifact newVersion = (VersionArtifact) obj;
-      //now check selected version
-      if (newVersion.isVersionLocked()) {
-         String error = "Version \"" + newVersion.getFullDisplayName() + "\" is locked or already released.";
-         if (AtsUtil.isAtsAdmin() && !MessageDialog.openConfirm(Displays.getActiveShell(), "Change Version",
-            error + "\n\nOverride?")) {
-            return false;
-         } else if (!AtsUtil.isAtsAdmin()) {
-            AWorkbench.popup("ERROR", error);
-         }
-      }
-
-      for (TeamWorkFlowArtifact teamArt : smas) {
-         teamArt.setRelations(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version,
-            java.util.Collections.singleton(newVersion));
-      }
-      if (persist) {
-         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "ATS Prompt Change Version");
-         for (TeamWorkFlowArtifact teamArt : smas) {
-            teamArt.persist(transaction);
-         }
-         transaction.execute();
-      }
-      return true;
-   }
-
    public static boolean promptChangePoints(AbstractWorkflowArtifact sma, boolean persist) {
       if (sma.isTeamWorkflow()) {
          return promptChangePoints(Arrays.asList((TeamWorkFlowArtifact) sma), persist);
@@ -274,7 +192,7 @@ public final class PromptChangeUtil {
          return false;
       }
       try {
-         VersionArtifact verArt = sma.getTargetedForVersion();
+         VersionArtifact verArt = sma.getTargetedVersion();
          if (verArt != null) {
             // prompt that this object is assigned to a version that is targeted
             // for release xxx - want to change?
@@ -312,7 +230,7 @@ public final class PromptChangeUtil {
 
    public static boolean promptChangeEstimatedReleaseDate(AbstractWorkflowArtifact sma) {
       try {
-         VersionArtifact verArt = sma.getTargetedForVersion();
+         VersionArtifact verArt = sma.getTargetedVersion();
          if (verArt != null) {
             // prompt that this object is assigned to a version that is targeted for release xxx -
             // want to change?

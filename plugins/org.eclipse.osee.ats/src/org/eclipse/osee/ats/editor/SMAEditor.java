@@ -540,7 +540,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
 
    @Override
    public VersionArtifact getMetricsVersionArtifact() throws OseeCoreException {
-      return sma.getWorldViewTargetedVersion();
+      return sma.getTargetedVersion();
    }
 
    @Override

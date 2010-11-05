@@ -747,7 +747,7 @@ public class SMAWorkFlowSection extends SectionPart {
 
       // Only check this if TeamWorkflow, not for reviews
       if (sma instanceof TeamWorkFlowArtifact && (teamDefRequiresTargetedVersion || pageRequiresTargetedVersion) && //
-      sma.getWorldViewTargetedVersion() == null && //
+      sma.getTargetedVersion() == null && //
       !toWorkPageDefinition.isCancelledPage()) {
          AWorkbench.popup("Transition Blocked",
             "Actions must be targeted for a Version.\nPlease set \"Target Version\" before transition.");

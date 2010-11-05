@@ -130,9 +130,6 @@ public class WorldLabelProvider extends XViewerLabelProvider {
          if (xCol.equals(WorldXViewerFactory.User_Community_Col)) {
             return wva.getWorldViewUserCommunity();
          }
-         if (xCol.equals(WorldXViewerFactory.Version_Target_Col)) {
-            return wva.getWorldViewTargetedVersionStr();
-         }
          if (xCol.equals(WorldXViewerFactory.Notes_Col)) {
             return wva.getWorldViewNotes();
          }

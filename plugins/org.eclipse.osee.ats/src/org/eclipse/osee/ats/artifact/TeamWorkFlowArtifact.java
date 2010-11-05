@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.artifact;
 
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -40,7 +39,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact;
 
 /**
@@ -49,7 +47,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact;
 public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IBranchArtifact, IATSStateMachineArtifact {
 
    private XActionableItemsDam actionableItemsDam;
-   private boolean targetedErrorLogged = false;
    private final AtsBranchManager branchMgr;
 
    public TeamWorkFlowArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
@@ -62,8 +59,8 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IB
    public void getSmaArtifactsOneLevel(AbstractWorkflowArtifact smaArtifact, Set<Artifact> artifacts) throws OseeCoreException {
       super.getSmaArtifactsOneLevel(smaArtifact, artifacts);
       try {
-         if (getTargetedForVersion() != null) {
-            artifacts.add(getTargetedForVersion());
+         if (getTargetedVersion() != null) {
+            artifacts.add(getTargetedVersion());
          }
          artifacts.addAll(ReviewManager.getReviews(this));
       } catch (OseeCoreException ex) {
@@ -108,8 +105,8 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IB
    @Override
    public String getEditorTitle() throws OseeCoreException {
       try {
-         if (getWorldViewTargetedVersion() != null) {
-            return getWorldViewType() + ": " + "[" + getWorldViewTargetedVersionStr() + "] - " + getName();
+         if (getTargetedVersion() != null) {
+            return getWorldViewType() + ": " + "[" + getTargetedVersionStr() + "] - " + getName();
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
@@ -216,48 +213,6 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IB
 
    @Override
    public AbstractWorkflowArtifact getParentSMA() {
-      return null;
-   }
-
-   @Override
-   public String getWorldViewTargetedVersionStr() throws OseeCoreException {
-      Collection<VersionArtifact> verArts =
-         getRelatedArtifacts(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, VersionArtifact.class);
-      if (verArts.isEmpty()) {
-         return "";
-      }
-      if (verArts.size() > 1) {
-         String errStr =
-            "Workflow " + getHumanReadableId() + " targeted for multiple versions: " + Artifacts.commaArts(verArts);
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, errStr, null);
-         return XViewerCells.getCellExceptionString(errStr);
-      }
-      VersionArtifact verArt = verArts.iterator().next();
-      if (!isCompleted() && !isCancelled() && verArt.getSoleAttributeValue(AtsAttributeTypes.Released, false)) {
-         String errStr =
-            "Workflow " + getHumanReadableId() + " targeted for released version, but not completed: " + verArt;
-         if (!targetedErrorLogged) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, errStr, null);
-            targetedErrorLogged = true;
-         }
-         return XViewerCells.getCellExceptionString(errStr);
-      }
-      return verArt.getName();
-   }
-
-   @Override
-   public VersionArtifact getWorldViewTargetedVersion() throws OseeCoreException {
-      if (getRelatedArtifactsCount(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version) > 0) {
-         List<Artifact> verArts = getRelatedArtifacts(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
-         if (verArts.size() > 1) {
-            //            System.out.println("put back in");
-            OseeLog.log(AtsPlugin.class, Level.SEVERE,
-               String.format("Team Workflow %s has multiple targeted versions %s", toStringWithId(), verArts));
-            return (VersionArtifact) verArts.iterator().next();
-         } else {
-            return (VersionArtifact) verArts.iterator().next();
-         }
-      }
       return null;
    }
 

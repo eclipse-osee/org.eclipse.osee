@@ -466,15 +466,6 @@ public class ActionArtifact extends AbstractAtsArtifact implements IWorldViewArt
    }
 
    @Override
-   public String getWorldViewTargetedVersionStr() throws OseeCoreException {
-      Set<String> strs = new HashSet<String>();
-      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         strs.add(team.getWorldViewTargetedVersionStr());
-      }
-      return Collections.toString(";", strs);
-   }
-
-   @Override
    public String getWorldViewDecision() {
       return "";
    }
@@ -802,11 +793,6 @@ public class ActionArtifact extends AbstractAtsArtifact implements IWorldViewArt
    @Override
    public String getWorldViewLastStatused() {
       return "(see children)";
-   }
-
-   @Override
-   public VersionArtifact getWorldViewTargetedVersion() {
-      return null;
    }
 
    @Override

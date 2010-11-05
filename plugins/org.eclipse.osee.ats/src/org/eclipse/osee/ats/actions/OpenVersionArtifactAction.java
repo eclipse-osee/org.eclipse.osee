@@ -38,8 +38,8 @@ public class OpenVersionArtifactAction extends Action {
 
    private void performOpen() {
       try {
-         if (sma.getWorldViewTargetedVersion() != null) {
-            RendererManager.open(sma.getWorldViewTargetedVersion(), PresentationType.DEFAULT_OPEN);
+         if (sma.getTargetedVersion() != null) {
+            RendererManager.open(sma.getTargetedVersion(), PresentationType.DEFAULT_OPEN);
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);

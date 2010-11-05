@@ -225,8 +225,8 @@ public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableE
          return verArt;
       }
       for (Artifact artifact : getLoadedArtifacts()) {
-         if (artifact instanceof AbstractWorkflowArtifact && ((AbstractWorkflowArtifact) artifact).getWorldViewTargetedVersion() != null) {
-            return ((AbstractWorkflowArtifact) artifact).getWorldViewTargetedVersion();
+         if (artifact instanceof AbstractWorkflowArtifact && ((AbstractWorkflowArtifact) artifact).getTargetedVersion() != null) {
+            return ((AbstractWorkflowArtifact) artifact).getTargetedVersion();
          }
       }
       return null;

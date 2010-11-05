@@ -162,7 +162,7 @@ public class AtsMetricsComposite extends ScrolledComposite {
       // Try to find an estimated release date from one of the workflows
       for (Artifact art : iAtsMetricsProvider.getMetricsArtifacts()) {
          if (art instanceof TeamWorkFlowArtifact) {
-            VersionArtifact verArt = ((TeamWorkFlowArtifact) art).getWorldViewTargetedVersion();
+            VersionArtifact verArt = ((TeamWorkFlowArtifact) art).getTargetedVersion();
             if (verArt != null && verArt.getEstimatedReleaseDate() != null) {
                return verArt.getEstimatedReleaseDate();
             }

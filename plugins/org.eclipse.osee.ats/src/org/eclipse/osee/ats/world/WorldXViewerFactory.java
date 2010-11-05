@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.field.OperationalImpactDesciptionColumn;
 import org.eclipse.osee.ats.field.OperationalImpactWorkaroundColumn;
 import org.eclipse.osee.ats.field.OperationalImpactWorkaroundDesciptionColumn;
 import org.eclipse.osee.ats.field.PriorityColumn;
+import org.eclipse.osee.ats.field.TargetedVersionColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeColumn;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerSmaCreatedDateColumn;
@@ -66,9 +67,6 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
    public static final XViewerColumn Parent_State_Col = new XViewerColumn(COLUMN_NAMESPACE + ".parentstate",
       "Parent State", 75, SWT.LEFT, false, SortDataType.String, false, "State of the Parent Team Workflow or Action");
    public static final XViewerColumn Created_Date_Col = new XViewerSmaCreatedDateColumn();
-   public static final XViewerColumn Version_Target_Col = new XViewerColumn(COLUMN_NAMESPACE + ".versionTarget",
-      "Version Target", 40, SWT.LEFT, true, SortDataType.String, false,
-      "Date this workflow transitioned to the Completed state.");
    public static final XViewerColumn Team_Col = new XViewerColumn(COLUMN_NAMESPACE + ".team", "Team", 50, SWT.LEFT,
       true, SortDataType.String, false, "Team that has been assigned to work this Action.");
    // Can't be an XViewerAtsAttributeColumn cause display name is not same as attribute name
@@ -242,7 +240,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       User_Community_Col,
       new XViewerHridColumn(),
       Created_Date_Col,
-      Version_Target_Col,
+      TargetedVersionColumn.getInstance(),
       Team_Col,
       Notes_Col,
       Deadline_Col,

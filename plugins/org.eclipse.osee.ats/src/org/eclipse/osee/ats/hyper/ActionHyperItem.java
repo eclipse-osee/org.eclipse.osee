@@ -106,7 +106,7 @@ public class ActionHyperItem extends HyperViewItem {
    private String getTargetedVersion() {
       try {
          if (artifact instanceof TeamWorkFlowArtifact) {
-            String str = ((TeamWorkFlowArtifact) artifact).getWorldViewTargetedVersionStr();
+            String str = ((TeamWorkFlowArtifact) artifact).getTargetedVersionStr();
             return str.isEmpty() ? "" : str;
          }
       } catch (OseeCoreException ex) {

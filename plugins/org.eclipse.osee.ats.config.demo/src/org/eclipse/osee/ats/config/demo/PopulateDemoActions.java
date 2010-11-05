@@ -303,7 +303,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
       DemoDbUtil.sleep(2000L);
       OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Committing branch");
       Job job =
-         reqTeam.getBranchMgr().commitWorkingBranch(false, true, reqTeam.getTargetedForVersion().getParentBranch(),
+         reqTeam.getBranchMgr().commitWorkingBranch(false, true, reqTeam.getTargetedVersion().getParentBranch(),
             true);
       try {
          job.join();

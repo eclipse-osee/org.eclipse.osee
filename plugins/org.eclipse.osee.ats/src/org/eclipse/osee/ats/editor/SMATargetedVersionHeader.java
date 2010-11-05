@@ -14,9 +14,9 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionLockedType;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
+import org.eclipse.osee.ats.field.TargetedVersionColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.PromptChangeUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -63,7 +63,7 @@ public class SMATargetedVersionHeader extends Composite {
                @Override
                public void linkActivated(HyperlinkEvent e) {
                   try {
-                     if (PromptChangeUtil.promptChangeVersion(sma,
+                     if (TargetedVersionColumn.promptChangeVersion(sma,
                         AtsUtil.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased,
                         VersionLockedType.UnLocked, false)) {
                         updateLabel(sma);
@@ -93,8 +93,8 @@ public class SMATargetedVersionHeader extends Composite {
 
    private void updateLabel(AbstractWorkflowArtifact sma) throws OseeCoreException {
       String value = "Not Set";
-      if (sma.getTargetedForVersion() != null) {
-         value = sma.getTargetedForVersion().getName();
+      if (sma.getTargetedVersion() != null) {
+         value = sma.getTargetedVersion().getName();
       }
       valueLabel.setText(value);
       valueLabel.getParent().layout();

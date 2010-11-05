@@ -16,8 +16,8 @@ import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.world.search.GoalSearchItem;
-import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -64,11 +64,6 @@ public class GoalArtifact extends AbstractWorkflowArtifact {
 
    @Override
    public Date getWorldViewReleaseDate() {
-      return null;
-   }
-
-   @Override
-   public VersionArtifact getWorldViewTargetedVersion() {
       return null;
    }
 

@@ -170,8 +170,7 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
          // don't include if version specified and workflow's not targeted for version
          if (versionArt != null) {
             TeamWorkFlowArtifact team = sma.getParentTeamWorkflow();
-            if (team != null && (team.getWorldViewTargetedVersion() == null || !team.getWorldViewTargetedVersion().equals(
-               versionArt))) {
+            if (team != null && (team.getTargetedVersion() == null || !team.getTargetedVersion().equals(versionArt))) {
                continue;
             }
          }
@@ -180,7 +179,7 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
             TeamWorkFlowArtifact team = sma.getParentTeamWorkflow();
             if (team != null) {
                // skip if released is desired and version artifact is not set
-               VersionArtifact setVerArt = team.getWorldViewTargetedVersion();
+               VersionArtifact setVerArt = team.getTargetedVersion();
                if (setVerArt == null && releasedOption == ReleasedOption.Released) {
                   continue;
                }

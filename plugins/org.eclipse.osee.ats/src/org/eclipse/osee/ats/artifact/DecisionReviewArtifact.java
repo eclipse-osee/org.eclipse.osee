@@ -55,14 +55,6 @@ public class DecisionReviewArtifact extends AbstractReviewArtifact implements IR
    }
 
    @Override
-   public VersionArtifact getWorldViewTargetedVersion() throws OseeCoreException {
-      if (getParentSMA() == null) {
-         return null;
-      }
-      return getParentSMA().getWorldViewTargetedVersion();
-   }
-
-   @Override
    public Collection<User> getImplementers() throws OseeCoreException {
       return StateManager.getImplementersByState(this, DecisionReviewState.Decision.name());
    }

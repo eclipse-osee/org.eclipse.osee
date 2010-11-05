@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.world;
 import java.util.Collection;
 import java.util.Date;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.swt.graphics.Image;
@@ -154,10 +153,6 @@ public interface IWorldViewArtifact {
    String getWorldViewUserCommunity() throws OseeCoreException;
 
    String getWorldViewValidationRequiredStr() throws OseeCoreException;
-
-   String getWorldViewTargetedVersionStr() throws OseeCoreException;
-
-   VersionArtifact getWorldViewTargetedVersion() throws OseeCoreException;
 
    double getWorldViewWeeklyBenefit() throws OseeCoreException;
 

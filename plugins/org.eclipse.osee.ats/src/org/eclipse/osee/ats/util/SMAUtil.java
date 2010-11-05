@@ -196,10 +196,10 @@ public class SMAUtil {
          if (sma.getParentTeamWorkflow() == null) {
             continue;
          }
-         if (sma.getWorldViewTargetedVersion() == null) {
+         if (sma.getTargetedVersion() == null) {
             continue;
          }
-         if (versionArts.contains(sma.getWorldViewTargetedVersion())) {
+         if (versionArts.contains(sma.getTargetedVersion())) {
             returnSmas.add(sma);
          }
       }

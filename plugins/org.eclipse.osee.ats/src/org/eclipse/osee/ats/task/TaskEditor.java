@@ -318,8 +318,8 @@ public class TaskEditor extends AbstractArtifactEditor implements IActionable, I
    @Override
    public VersionArtifact getMetricsVersionArtifact() throws OseeCoreException {
       for (TaskArtifact taskArt : tasks) {
-         if (taskArt.getWorldViewTargetedVersion() != null) {
-            return taskArt.getWorldViewTargetedVersion();
+         if (taskArt.getTargetedVersion() != null) {
+            return taskArt.getTargetedVersion();
          }
       }
       return null;

@@ -76,14 +76,6 @@ public class PeerToPeerReviewArtifact extends AbstractReviewArtifact implements 
    }
 
    @Override
-   public VersionArtifact getWorldViewTargetedVersion() throws OseeCoreException {
-      if (getParentSMA() == null) {
-         return null;
-      }
-      return getParentSMA().getWorldViewTargetedVersion();
-   }
-
-   @Override
    public Collection<User> getImplementers() throws OseeCoreException {
       Collection<User> users = StateManager.getImplementersByState(this, PeerToPeerReviewState.Review.name());
       for (UserRole role : userRoleManager.getUserRoles()) {

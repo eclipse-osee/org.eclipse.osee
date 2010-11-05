@@ -68,15 +68,6 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
    }
 
    @Override
-   public VersionArtifact getWorldViewTargetedVersion() throws OseeCoreException {
-      TeamWorkFlowArtifact teamArt = getParentTeamWorkflow();
-      if (teamArt == null) {
-         return null;
-      }
-      return teamArt.getWorldViewTargetedVersion();
-   }
-
-   @Override
    public void atsDelete(Set<Artifact> deleteArts, Map<Artifact, Object> allRelated) throws OseeCoreException {
       super.atsDelete(deleteArts, allRelated);
       for (TaskArtifact taskArt : getTaskArtifacts()) {
