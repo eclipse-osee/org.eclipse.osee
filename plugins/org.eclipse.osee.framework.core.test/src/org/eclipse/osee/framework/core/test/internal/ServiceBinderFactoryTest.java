@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.test.internal;
 
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.internal.ServiceBinderFactoryImpl;
 import org.eclipse.osee.framework.core.test.mocks.MockBundleContext;
 import org.eclipse.osee.framework.core.test.mocks.MockServiceReference;
@@ -57,13 +59,13 @@ public class ServiceBinderFactoryTest {
       factory = new ServiceBinderFactoryImpl(context, handler);
    }
 
-   @Test(expected = IllegalStateException.class)
-   public void testNullBindType() {
+   @Test(expected = OseeStateException.class)
+   public void testNullBindType() throws OseeCoreException {
       factory.createTracker(null, String.class);
    }
 
-   @Test(expected = IllegalStateException.class)
-   public void testCreateSingletonBinderTracker() {
+   @Test(expected = OseeStateException.class)
+   public void testCreateSingletonBinderTracker() throws OseeCoreException {
       ServiceTracker tracker = factory.createTracker(ServiceBindType.SINGLETON, String.class);
       Assert.assertNotNull(tracker);
       tracker.open();
@@ -79,7 +81,7 @@ public class ServiceBinderFactoryTest {
    }
 
    @Test
-   public void testCreateMultiBinderTracker() {
+   public void testCreateMultiBinderTracker() throws OseeCoreException {
       ServiceTracker tracker = factory.createTracker(ServiceBindType.MANY, String.class);
       Assert.assertNotNull(tracker);
       tracker.open();

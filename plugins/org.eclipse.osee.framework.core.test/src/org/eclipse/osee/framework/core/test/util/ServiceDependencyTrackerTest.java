@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.test.mocks.MockBundleContext;
 import org.eclipse.osee.framework.core.test.mocks.MockTrackingHandler;
 import org.eclipse.osee.framework.core.util.ServiceBindType;
@@ -61,7 +62,7 @@ public class ServiceDependencyTrackerTest {
    }
 
    @Test
-   public void testOpen() {
+   public void testOpen() throws OseeCoreException {
       MockServiceBinderFactory factory = new MockServiceBinderFactory();
       ServiceDependencyTracker depTracker = new ServiceDependencyTracker(factory, context, handler);
 
@@ -89,7 +90,7 @@ public class ServiceDependencyTrackerTest {
    }
 
    @Test
-   public void testClose() {
+   public void testClose() throws OseeCoreException {
       MockServiceBinderFactory factory = new MockServiceBinderFactory();
       ServiceDependencyTracker depTracker = new ServiceDependencyTracker(factory, context, handler);
 

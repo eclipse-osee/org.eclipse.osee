@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.core.internal;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.util.AbstractTrackingHandler;
 import org.eclipse.osee.framework.core.util.ServiceBindType;
 import org.eclipse.osee.framework.core.util.ServiceBinderFactory;
@@ -34,7 +35,7 @@ public final class ServiceBinderFactoryImpl implements ServiceBinderFactory {
    }
 
    @Override
-   public ServiceTracker createTracker(ServiceBindType bindType, Class<?> clazz) {
+   public ServiceTracker createTracker(ServiceBindType bindType, Class<?> clazz) throws OseeStateException {
       AbstractServiceBinder binder = null;
       if (ServiceBindType.SINGLETON == bindType) {
          binder = singleBinder;
@@ -42,7 +43,7 @@ public final class ServiceBinderFactoryImpl implements ServiceBinderFactory {
          binder = multiBinder;
       }
       if (binder == null) {
-         throw new IllegalStateException(String.format("Unknown bind type: [%s:%s]", clazz.getName(), bindType));
+         throw new OseeStateException(String.format("Unknown bind type: [%s:%s]", clazz.getName(), bindType));
       }
       return binder.createTracker(clazz);
    }

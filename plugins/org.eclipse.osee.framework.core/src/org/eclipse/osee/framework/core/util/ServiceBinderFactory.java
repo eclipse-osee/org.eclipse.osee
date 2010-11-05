@@ -10,11 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.util;
 
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * @author Roberto E. Escobar
  */
 public interface ServiceBinderFactory {
-   ServiceTracker createTracker(ServiceBindType bindType, Class<?> clazz);
+   ServiceTracker createTracker(ServiceBindType bindType, Class<?> clazz) throws OseeCoreException;
 }

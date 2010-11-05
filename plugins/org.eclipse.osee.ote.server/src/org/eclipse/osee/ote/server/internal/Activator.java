@@ -13,6 +13,7 @@ package org.eclipse.osee.ote.server.internal;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.ServiceDependencyTracker;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.environment.console.ICommandManager;
@@ -54,7 +55,7 @@ public class Activator implements BundleActivator {
       startServer();
    }
 
-   public void startServer() throws ClassNotFoundException, SecurityException, NoSuchMethodException {
+   public void startServer() throws SecurityException, OseeCoreException {
       String oteServerFactoryClass = System.getProperty("osee.ote.server.factory.class");
       if (oteServerFactoryClass != null) {
          String outfileLocation = System.getProperty("osee.ote.outfiles");

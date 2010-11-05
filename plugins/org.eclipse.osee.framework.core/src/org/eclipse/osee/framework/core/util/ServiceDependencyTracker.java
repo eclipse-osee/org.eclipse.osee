@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.internal.ServiceBinderFactoryImpl;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
@@ -39,7 +40,7 @@ public final class ServiceDependencyTracker implements Closeable {
       this.serviceBindFactory = factory;
    }
 
-   public void open() {
+   public void open() throws OseeCoreException {
       Map<Class<?>, ServiceBindType> configuration = handler.getConfiguredDependencies();
       if (configuration != null) {
          for (Entry<Class<?>, ServiceBindType> entry : configuration.entrySet()) {
