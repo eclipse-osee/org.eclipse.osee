@@ -108,8 +108,6 @@ public interface IWorldViewArtifact {
 
    String getWorldViewLastStatused() throws OseeCoreException;
 
-   String getWorldViewOriginator() throws OseeCoreException;
-
    int getWorldViewPercentCompleteState() throws OseeCoreException;
 
    int getWorldViewPercentCompleteStateReview() throws OseeCoreException;

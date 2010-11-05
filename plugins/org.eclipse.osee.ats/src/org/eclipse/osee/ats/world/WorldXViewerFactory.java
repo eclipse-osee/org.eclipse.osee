@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.field.OperationalImpactColumn;
 import org.eclipse.osee.ats.field.OperationalImpactDesciptionColumn;
 import org.eclipse.osee.ats.field.OperationalImpactWorkaroundColumn;
 import org.eclipse.osee.ats.field.OperationalImpactWorkaroundDesciptionColumn;
+import org.eclipse.osee.ats.field.OriginatorColumn;
 import org.eclipse.osee.ats.field.PriorityColumn;
 import org.eclipse.osee.ats.field.TargetedVersionColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
@@ -175,8 +176,6 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       "Total Hours Spent", 40, SWT.CENTER, false, SortDataType.Float, false,
       "Hours spent for all work related to all states.");
 
-   public static final XViewerColumn Originator_Col = new XViewerColumn(COLUMN_NAMESPACE + ".originator", "Originator",
-      80, SWT.LEFT, false, SortDataType.String, false, null);
    public static final XViewerColumn Implementor_Col = new XViewerColumn(COLUMN_NAMESPACE + ".implementer",
       "Implementer", 80, SWT.LEFT, false, SortDataType.String, false,
       "User assigned to the Implementation of the changes.");
@@ -273,7 +272,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       Hours_Spent_State_Review_Col,
       Hours_Spent_Total_Col,
       Total_Hours_Spent_Col,
-      Originator_Col,
+      OriginatorColumn.getInstance(),
       new OperationalImpactColumn(),
       new OperationalImpactDesciptionColumn(),
       new OperationalImpactWorkaroundColumn(),

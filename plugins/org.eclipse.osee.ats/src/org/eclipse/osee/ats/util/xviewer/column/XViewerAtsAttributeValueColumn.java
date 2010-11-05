@@ -74,7 +74,7 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
             for (TeamWorkFlowArtifact team : ((ActionArtifact) element).getTeamWorkFlowArtifacts()) {
                strs.add(getColumnText(team, column, columnIndex));
             }
-            return Collections.toString(";", strs);
+            return Collections.toString("; ", strs);
          }
       } catch (Exception ex) {
          return XViewerCells.getCellExceptionString(ex);

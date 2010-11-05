@@ -75,7 +75,7 @@ public class SMAPrint extends Action {
          //
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Assignees: ", ((IWorldViewArtifact) sma).getWorldViewActivePoc()),
          //
-         AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Originator: ", ((IWorldViewArtifact) sma).getWorldViewOriginator()),
+         AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Originator: ", sma.getOriginatorStr()),
          //
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Created: ", DateUtil.getMMDDYYHHMM(sma.getLog().getCreationDate()))
 

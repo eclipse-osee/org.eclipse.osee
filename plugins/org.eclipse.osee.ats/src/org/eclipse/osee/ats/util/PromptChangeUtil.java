@@ -19,7 +19,6 @@ import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.SystemUser;
-import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -32,7 +31,6 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.DateSelectionDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserCheckTreeDialog;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserListDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
@@ -88,23 +86,6 @@ public final class PromptChangeUtil {
          Artifacts.persistInTransaction(smas);
       }
       return true;
-   }
-
-   public static boolean promptChangeOriginator(AbstractWorkflowArtifact sma) throws OseeCoreException {
-      return promptChangeOriginator(Arrays.asList(sma));
-   }
-
-   public static boolean promptChangeOriginator(final Collection<? extends AbstractWorkflowArtifact> smas) throws OseeCoreException {
-      UserListDialog ld = new UserListDialog(Displays.getActiveShell(), "Select New Originator", Active.Active);
-      int result = ld.open();
-      if (result == 0) {
-         User selectedUser = ld.getSelection();
-         for (AbstractWorkflowArtifact sma : smas) {
-            sma.setOriginator(selectedUser);
-         }
-         return true;
-      }
-      return false;
    }
 
    public static boolean promptChangePoints(AbstractWorkflowArtifact sma, boolean persist) {

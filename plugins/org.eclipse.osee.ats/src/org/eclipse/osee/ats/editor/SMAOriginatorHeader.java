@@ -12,8 +12,8 @@ package org.eclipse.osee.ats.editor;
 
 import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.field.OriginatorColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.PromptChangeUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -60,7 +60,7 @@ public class SMAOriginatorHeader extends Composite {
                @Override
                public void linkActivated(HyperlinkEvent e) {
                   try {
-                     if (PromptChangeUtil.promptChangeOriginator(sma)) {
+                     if (OriginatorColumn.promptChangeOriginator(sma, true)) {
                         origLabel.setText(sma.getOriginator().getName());
                         origLabel.getParent().layout();
                         sma.getEditor().onDirtied();

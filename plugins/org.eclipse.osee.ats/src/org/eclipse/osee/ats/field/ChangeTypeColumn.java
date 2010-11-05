@@ -91,17 +91,24 @@ public class ChangeTypeColumn extends XViewerAtsAttributeValueColumn implements 
          }
          if (dialog.open() == 0) {
 
-            SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "ATS Prompt Change Type");
+            SkynetTransaction transaction = null;
+            if (persist) {
+               transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "ATS Prompt Change Type");
+            }
 
             ChangeType newChangeType = dialog.getSelection();
             for (TeamWorkFlowArtifact team : teams) {
                ChangeType currChangeType = getChangeType(team);
                if (currChangeType != newChangeType) {
                   setChangeType(team, newChangeType);
-                  team.saveSMA(transaction);
+                  if (persist) {
+                     team.saveSMA(transaction);
+                  }
                }
             }
-            transaction.execute();
+            if (persist) {
+               transaction.execute();
+            }
          }
          return true;
       } catch (Exception ex) {

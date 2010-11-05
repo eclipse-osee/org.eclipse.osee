@@ -124,7 +124,7 @@ public class UserWorldSearchItem {
             "%type=\"Originated\" userId=\"" + user.getUserId() + "\"%", AtsUtil.getAtsBranch()));
       // omit historical originators; list current originators
       for (AbstractWorkflowArtifact art : artifacts) {
-         if (art.getWorldViewOriginator().equals(user.getName())) {
+         if (art.getOriginatorStr().equals(user.getName())) {
             originators.add(art);
          }
       }

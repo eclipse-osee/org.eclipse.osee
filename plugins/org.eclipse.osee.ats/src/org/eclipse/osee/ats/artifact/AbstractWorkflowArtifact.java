@@ -346,11 +346,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return getLog().getCreationDate();
    }
 
-   @Override
-   public String getWorldViewOriginator() throws OseeCoreException {
-      return getOriginator().getName();
-   }
-
    @SuppressWarnings("unused")
    @Override
    public String getWorldViewID() throws OseeCoreException {
@@ -1194,6 +1189,10 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    public User getOriginator() throws OseeCoreException {
       return atsLog.getOriginator();
+   }
+
+   public String getOriginatorStr() throws OseeCoreException {
+      return getOriginator().getName();
    }
 
    public void setOriginator(User user) throws OseeCoreException {
