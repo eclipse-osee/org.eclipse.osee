@@ -37,8 +37,6 @@ public interface IWorldViewArtifact {
 
    String getWorldViewCancelledDateStr() throws OseeCoreException;
 
-   String getWorldViewPoint() throws OseeCoreException;
-
    String getWorldViewNumeric1() throws OseeCoreException;
 
    String getWorldViewNumeric2() throws OseeCoreException;
@@ -99,8 +97,6 @@ public interface IWorldViewArtifact {
    String getWorldViewLegacyPCR() throws OseeCoreException;
 
    double getWorldViewManDaysNeeded() throws OseeCoreException;
-
-   String getWorldViewNotes() throws OseeCoreException;
 
    String getWorldViewNumberOfTasks() throws OseeCoreException;
 

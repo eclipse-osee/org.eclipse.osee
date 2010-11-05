@@ -14,7 +14,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -25,13 +24,11 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.DateSelectionDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserCheckTreeDialog;
-import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
  * @author Donald G. Dunne
@@ -86,43 +83,6 @@ public final class PromptChangeUtil {
          Artifacts.persistInTransaction(smas);
       }
       return true;
-   }
-
-   public static boolean promptChangePoints(AbstractWorkflowArtifact sma, boolean persist) {
-      if (sma.isTeamWorkflow()) {
-         return promptChangePoints(Arrays.asList((TeamWorkFlowArtifact) sma), persist);
-      }
-      return false;
-   }
-
-   public static boolean promptChangePoints(final Collection<? extends TeamWorkFlowArtifact> teams, boolean persist) {
-
-      final ChangePointDialog dialog = new ChangePointDialog(Displays.getActiveShell());
-      try {
-         if (teams.size() == 1) {
-            dialog.setSelected(teams.iterator().next().getWorldViewPoint());
-         }
-         if (dialog.open() == 0) {
-
-            SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "ATS Prompt Change Points");
-
-            for (TeamWorkFlowArtifact team : teams) {
-               if (dialog.isClearSelected() || !team.getWorldViewPoint().equals(dialog.getSelection())) {
-                  if (dialog.isClearSelected()) {
-                     team.deleteAttributes(AtsAttributeTypes.Points);
-                  } else {
-                     team.setSoleAttributeFromString(AtsAttributeTypes.Points, dialog.getSelection());
-                  }
-                  team.saveSMA(transaction);
-               }
-            }
-            transaction.execute();
-         }
-         return true;
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't change points", ex);
-         return false;
-      }
    }
 
    public static boolean promptChangePercentAttribute(AbstractWorkflowArtifact sma, IAttributeType attributeType, boolean persist) {

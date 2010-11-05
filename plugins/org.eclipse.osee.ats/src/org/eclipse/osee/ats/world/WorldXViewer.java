@@ -124,7 +124,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       createMenuActions();
    }
 
-   Action editAction, editStatusAction, editNotesAction, editResolutionAction, editEstimateAction, editAssigneeAction,
+   Action editAction, editStatusAction, editResolutionAction, editEstimateAction, editAssigneeAction,
       editActionableItemsAction;
    ConvertActionableItemsAction convertActionableItemsAction;
    Action openInAtsWorldEditorAction, openInAtsTaskEditorAction;
@@ -147,14 +147,6 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       openInArtifactEditorAction = new OpenInArtifactEditorAction(this);
       deletePurgeAtsObjectAction = new DeletePurgeAtsArtifactsAction(this);
       emailAction = new EmailActionAction(this);
-      editNotesAction = new Action("Edit Notes", IAction.AS_PUSH_BUTTON) {
-         @Override
-         public void run() {
-            if (PromptChangeUtil.promptChangeAttribute(getSelectedSMAArtifacts(), AtsAttributeTypes.SmaNote, true, true)) {
-               update(getSelectedSMAArtifacts().toArray(), null);
-            }
-         }
-      };
 
       editResolutionAction = new Action("Edit Resolution", IAction.AS_PUSH_BUTTON) {
          @Override
@@ -321,9 +313,6 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       } else if (treeColumn.getData().equals(WorldXViewerFactory.Related_To_State_Col)) {
          processRelatedToStateColumn(treeItems);
          return;
-      } else if (treeColumn.getData().equals(WorldXViewerFactory.Points_Col)) {
-         processPointsColumn(treeItems);
-         return;
       }
       if (!(treeColumn.getData() instanceof XViewerAttributeColumn) && !(treeColumn.getData() instanceof XViewerAtsAttributeColumn)) {
          AWorkbench.popup("ERROR", "Column is not attribute and thus not multi-editable " + treeColumn.getText());
@@ -370,17 +359,6 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
-   }
-
-   private void processPointsColumn(Collection<TreeItem> treeItems) {
-      Set<TeamWorkFlowArtifact> smas = new HashSet<TeamWorkFlowArtifact>();
-      for (TreeItem item : treeItems) {
-         Artifact art = (Artifact) item.getData();
-         if (art instanceof TeamWorkFlowArtifact) {
-            smas.add((TeamWorkFlowArtifact) art);
-         }
-      }
-      PromptChangeUtil.promptChangePoints(smas, true);
    }
 
    private void processRelatedToStateColumn(Collection<TreeItem> treeItems) {
@@ -479,20 +457,19 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
     * Create Edit menu at top to make easier for users to see and eventually enable menu to get rid of all separate edit
     * items
     */
-   public void updateEditMenu(MenuManager mm) {
+   public MenuManager updateEditMenu(MenuManager mm) {
       final Collection<TreeItem> selectedTreeItems = Arrays.asList(thisXViewer.getTree().getSelection());
       Set<TreeColumn> editableColumns = ColumnMultiEditAction.getEditableTreeColumns(thisXViewer, selectedTreeItems);
 
-      MenuManager editMenuManager =
-         XViewerCustomMenu.createEditMenuManager(thisXViewer, "Edit", selectedTreeItems, editableColumns);
-      mm.insertBefore(MENU_GROUP_PRE, editMenuManager);
+      return XViewerCustomMenu.createEditMenuManager(thisXViewer, "Edit", selectedTreeItems, editableColumns);
    }
 
    public void updateEditMenuActions() {
       MenuManager mm = getMenuManager();
 
       // EDIT MENU BLOCK
-      updateEditMenu(mm);
+      MenuManager editMenuManager = updateEditMenu(mm);
+      mm.insertBefore(MENU_GROUP_PRE, editMenuManager);
 
       mm.insertBefore(MENU_GROUP_PRE, editAssigneeAction);
       editAssigneeAction.setEnabled(getSelectedSMAArtifacts().size() > 0);
@@ -505,9 +482,6 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
 
       mm.insertBefore(MENU_GROUP_PRE, editResolutionAction);
       editResolutionAction.setEnabled(getSelectedSMAArtifacts().size() > 0);
-
-      mm.insertBefore(MENU_GROUP_PRE, editNotesAction);
-      editNotesAction.setEnabled(getSelectedSMAArtifacts().size() > 0);
 
       mm.insertBefore(MENU_GROUP_PRE, editActionableItemsAction);
       editActionableItemsAction.setEnabled(getSelectedActionArtifacts().size() == 1 || getSelectedTeamWorkflowArtifacts().size() == 1);
@@ -522,6 +496,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       MenuManager mm = getMenuManager();
 
       mm.insertBefore(XViewer.MENU_GROUP_PRE, new GroupMarker(MENU_GROUP_ATS_WORLD_EDIT));
+
       updateEditMenuActions();
 
       mm.insertBefore(MENU_GROUP_PRE, new Separator());
@@ -829,9 +804,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
          }
          AbstractWorkflowArtifact sma = (AbstractWorkflowArtifact) useArt;
          boolean modified = false;
-         if (xCol.equals(WorldXViewerFactory.Notes_Col)) {
-            modified = PromptChangeUtil.promptChangeAttribute(sma, AtsAttributeTypes.SmaNote, false, true);
-         } else if (xCol.equals(WorldXViewerFactory.Percent_Rework_Col)) {
+         if (xCol.equals(WorldXViewerFactory.Percent_Rework_Col)) {
             modified = PromptChangeUtil.promptChangePercentAttribute(sma, AtsAttributeTypes.PercentRework, false);
          } else if (xCol.equals(WorldXViewerFactory.Estimated_Hours_Col)) {
             modified = PromptChangeUtil.promptChangeAttribute(sma, AtsAttributeTypes.EstimatedHours, false, false);
@@ -858,8 +831,6 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
             modified = PromptChangeUtil.promptChangeReleaseDate(sma);
          } else if (xCol.equals(WorldXViewerFactory.Work_Package_Col)) {
             modified = PromptChangeUtil.promptChangeAttribute(sma, AtsAttributeTypes.WorkPackage, false, false);
-         } else if (xCol.equals(WorldXViewerFactory.Points_Col)) {
-            modified = PromptChangeUtil.promptChangePoints(sma, false);
          } else if (xCol.equals(WorldXViewerFactory.Related_To_State_Col)) {
             modified = RelatedToStateColumn.promptChangeRelatedToState(sma, false);
          } else if (xCol.equals(WorldXViewerFactory.Numeric1_Col)) {

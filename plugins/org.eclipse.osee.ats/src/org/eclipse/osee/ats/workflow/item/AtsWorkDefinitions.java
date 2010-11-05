@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.field.CategoryColumn;
 import org.eclipse.osee.ats.field.ChangeTypeXWidget;
+import org.eclipse.osee.ats.field.NotesColumn;
 import org.eclipse.osee.ats.field.OperationalImpactWithWorkaroundXWidget.XOperationalImpactWithWorkaroundRequiredXWidgetWorkItem;
 import org.eclipse.osee.ats.field.OperationalImpactWithWorkaroundXWidget.XOperationalImpactWithWorkaroundXWidgetWorkItem;
 import org.eclipse.osee.ats.field.OperationalImpactXWidget.XOperationalImpactRequiredXWidgetWorkItem;
@@ -116,7 +117,7 @@ public final class AtsWorkDefinitions implements IWorkDefinitionProvider {
       workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.GoalOrderVote, "XTextDam"));
       workItems.add(new AtsAttributeXWidgetWorkItem(CategoryColumn.Category1Attribute, "XTextDam"));
       workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.RelatedToState, "XTextDam"));
-      workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.SmaNote, "XTextDam", FILL_VERTICALLY));
+      workItems.add(new AtsAttributeXWidgetWorkItem(NotesColumn.SmaNote, "XTextDam", FILL_VERTICALLY));
       workItems.add(new AtsAttributeXWidgetWorkItem("Title", "ats.Title", CoreAttributeTypes.Name, "XTextDam", REQUIRED));
       workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERTICALLY));
       workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.DecisionReviewOptions, "XTextDam",

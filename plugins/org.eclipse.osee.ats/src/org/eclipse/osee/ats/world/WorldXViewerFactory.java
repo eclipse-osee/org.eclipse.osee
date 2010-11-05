@@ -22,11 +22,13 @@ import org.eclipse.osee.ats.field.CategoryColumn;
 import org.eclipse.osee.ats.field.ChangeTypeColumn;
 import org.eclipse.osee.ats.field.GoalsColumn;
 import org.eclipse.osee.ats.field.GroupsColumn;
+import org.eclipse.osee.ats.field.NotesColumn;
 import org.eclipse.osee.ats.field.OperationalImpactColumn;
 import org.eclipse.osee.ats.field.OperationalImpactDesciptionColumn;
 import org.eclipse.osee.ats.field.OperationalImpactWorkaroundColumn;
 import org.eclipse.osee.ats.field.OperationalImpactWorkaroundDesciptionColumn;
 import org.eclipse.osee.ats.field.OriginatorColumn;
+import org.eclipse.osee.ats.field.PointsColumn;
 import org.eclipse.osee.ats.field.PriorityColumn;
 import org.eclipse.osee.ats.field.TargetedVersionColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
@@ -71,8 +73,6 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
    public static final XViewerColumn Team_Col = new XViewerColumn(COLUMN_NAMESPACE + ".team", "Team", 50, SWT.LEFT,
       true, SortDataType.String, false, "Team that has been assigned to work this Action.");
    // Can't be an XViewerAtsAttributeColumn cause display name is not same as attribute name
-   public static final XViewerColumn Notes_Col = new XViewerColumn(COLUMN_NAMESPACE + ".notes", "Notes", 80, SWT.LEFT,
-      true, SortDataType.String, true, "");
    public static final XViewerColumn Deadline_Col = new XViewerAtsAttributeColumn(COLUMN_NAMESPACE + ".deadline",
       AtsAttributeTypes.NeedBy, 75, SWT.LEFT, true, SortDataType.Date, true);
 
@@ -108,8 +108,6 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       COLUMN_NAMESPACE + ".releaseDate", AtsAttributeTypes.ReleaseDate, 80, SWT.LEFT, false, SortDataType.Date, false);
    public static final XViewerColumn Work_Package_Col = new XViewerAtsAttributeColumn(
       COLUMN_NAMESPACE + ".workPackage", AtsAttributeTypes.WorkPackage, 80, SWT.LEFT, false, SortDataType.String, true);
-   public static final XViewerColumn Points_Col = new XViewerAtsAttributeColumn(AtsAttributeTypes.Points, 40, SWT.LEFT,
-      false, SortDataType.Integer, true);
    public static final XViewerColumn Numeric1_Col = new XViewerAtsAttributeColumn(AtsAttributeTypes.Numeric1, 40,
       SWT.LEFT, false, SortDataType.Float, true);
    public static final XViewerColumn Numeric2_Col = new XViewerAtsAttributeColumn(AtsAttributeTypes.Numeric2, 40,
@@ -241,7 +239,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       Created_Date_Col,
       TargetedVersionColumn.getInstance(),
       Team_Col,
-      Notes_Col,
+      NotesColumn.getInstance(),
       Deadline_Col,
       Annual_Cost_Avoidance_Col,
       Description_Col,
@@ -302,7 +300,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       Parent_ID_Col,
       Days_In_Current_State,
       Parent_State_Col,
-      Points_Col,
+      PointsColumn.getInstance(),
       Numeric1_Col,
       Numeric2_Col,
       new XViewerGuidColumn(false)};

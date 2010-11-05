@@ -35,6 +35,10 @@ public abstract class XViewerAtsColumn extends XViewerColumn {
       return isPersistViewer(((XViewerColumn) treeColumn.getData()).getTreeViewer());
    }
 
+   protected boolean isPersistViewer() {
+      return isPersistViewer(getXViewer());
+   }
+
    protected boolean isPersistViewer(XViewer xViewer) {
       return xViewer != null && //
       xViewer instanceof IPersistAltLeftClickProvider //

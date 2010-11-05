@@ -77,8 +77,7 @@ public class GroupsColumn extends XViewerAtsColumn implements IXViewerValueColum
             if (!(useArt instanceof TeamWorkFlowArtifact)) {
                return false;
             }
-            boolean modified =
-               promptChangeGroups(Arrays.asList((TeamWorkFlowArtifact) useArt), isPersistViewer(treeColumn));
+            boolean modified = promptChangeGroups(Arrays.asList((TeamWorkFlowArtifact) useArt), isPersistViewer());
             XViewer xViewer = ((XViewerColumn) treeColumn.getData()).getTreeViewer();
             if (modified && isPersistViewer(xViewer)) {
                useArt.persist("persist groups via alt-left-click");

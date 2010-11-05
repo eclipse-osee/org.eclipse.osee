@@ -183,17 +183,6 @@ public class ActionArtifact extends AbstractAtsArtifact implements IWorldViewArt
    }
 
    @Override
-   public String getWorldViewPoint() throws OseeCoreException {
-      Set<String> strs = new HashSet<String>();
-      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         if (!team.getWorldViewPoint().equals("")) {
-            strs.add(team.getWorldViewPoint());
-         }
-      }
-      return Collections.toString(", ", strs);
-   }
-
-   @Override
    public String getWorldViewNumberOfTasks() throws OseeCoreException {
       Set<String> strs = new HashSet<String>();
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
@@ -413,15 +402,6 @@ public class ActionArtifact extends AbstractAtsArtifact implements IWorldViewArt
    @Override
    public String getWorldViewRelatedToState() {
       return "";
-   }
-
-   @Override
-   public String getWorldViewNotes() throws OseeCoreException {
-      Set<String> strs = new HashSet<String>();
-      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         strs.add(team.getWorldViewNotes());
-      }
-      return Collections.toString(";", strs);
    }
 
    @Override

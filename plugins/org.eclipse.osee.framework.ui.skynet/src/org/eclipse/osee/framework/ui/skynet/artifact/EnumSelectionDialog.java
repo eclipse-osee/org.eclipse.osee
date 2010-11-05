@@ -40,24 +40,34 @@ public class EnumSelectionDialog extends CheckedTreeSelectionDialog {
    private final XRadioButton replaceAllRadioButton = new XRadioButton("Replace all existing with selected item(s)");
    private final XRadioButton deleteSelectedRadioButton =
       new XRadioButton("Remove selected item(s) if already chosen.");
+   private final XRadioButton removeAll = new XRadioButton("Remove all items.");
+   private boolean isSingletonAttribute = false;
+   private boolean isRemoveAllAllowed = true;
    public static enum Selection {
       AddSelection,
       ReplaceAll,
-      DeleteSelected
+      DeleteSelected,
+      RemoveAll
    };
    private Selection selected = Selection.AddSelection;
 
    public EnumSelectionDialog(IAttributeType attributeType, Collection<? extends Artifact> artifacts) {
       super(Displays.getActiveShell(), new StringLabelProvider(), new ArrayTreeContentProvider());
-      setTitle("Select Options");
       setMessage("Select option(s) to add, delete or replace.");
       Set<String> options;
       try {
          options = AttributeTypeManager.getEnumerationValues(attributeType);
+         isSingletonAttribute = AttributeTypeManager.getType(attributeType).getMaxOccurrences() == 1;
+         isRemoveAllAllowed = AttributeTypeManager.getType(attributeType).getMinOccurrences() == 0;
+         if (isSingletonAttribute) {
+            selected = Selection.ReplaceAll;
+         }
       } catch (OseeCoreException ex) {
          options = new HashSet<String>();
          options.add(ex.getLocalizedMessage());
       }
+
+      setTitle("Select Options" + (isSingletonAttribute ? " - (Singleton)" : ""));
       setInput(options);
       setComparator(new StringViewerSorter());
    }
@@ -69,19 +79,22 @@ public class EnumSelectionDialog extends CheckedTreeSelectionDialog {
       Composite comp = new Composite(container, SWT.NONE);
       comp.setLayout(new GridLayout(2, false));
 
-      addSelectedRadioButton.createWidgets(comp, 2);
-      addSelectedRadioButton.setSelected(true);
-      addSelectedRadioButton.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            super.widgetSelected(e);
-            if (addSelectedRadioButton.isSelected()) {
-               selected = Selection.AddSelection;
+      if (!isSingletonAttribute) {
+         addSelectedRadioButton.createWidgets(comp, 2);
+         addSelectedRadioButton.setSelected(selected == Selection.AddSelection);
+         addSelectedRadioButton.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+               super.widgetSelected(e);
+               if (addSelectedRadioButton.isSelected()) {
+                  selected = Selection.AddSelection;
+               }
             }
-         }
-      });
+         });
+      }
 
       replaceAllRadioButton.createWidgets(comp, 2);
+      replaceAllRadioButton.setSelected(selected == Selection.ReplaceAll);
       replaceAllRadioButton.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
@@ -92,16 +105,30 @@ public class EnumSelectionDialog extends CheckedTreeSelectionDialog {
          }
       });
 
-      deleteSelectedRadioButton.createWidgets(comp, 2);
-      deleteSelectedRadioButton.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            super.widgetSelected(e);
-            if (deleteSelectedRadioButton.isSelected()) {
-               selected = Selection.DeleteSelected;
+      if (!isSingletonAttribute) {
+         deleteSelectedRadioButton.createWidgets(comp, 2);
+         deleteSelectedRadioButton.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+               super.widgetSelected(e);
+               if (deleteSelectedRadioButton.isSelected()) {
+                  selected = Selection.DeleteSelected;
+               }
             }
-         }
-      });
+         });
+      } else if (isRemoveAllAllowed) {
+         removeAll.createWidgets(comp, 2);
+         removeAll.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+               super.widgetSelected(e);
+               if (removeAll.isSelected()) {
+                  selected = Selection.RemoveAll;
+               }
+            }
+         });
+
+      }
       return c;
    }
 

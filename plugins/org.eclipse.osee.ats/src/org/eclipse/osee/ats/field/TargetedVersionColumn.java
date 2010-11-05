@@ -55,7 +55,7 @@ public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerV
    }
 
    private TargetedVersionColumn() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".versionTarget", "Version Targeted", 40, SWT.LEFT, true,
+      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".versionTarget", "Targeted Version", 40, SWT.LEFT, true,
          SortDataType.String, true, "Date this workflow transitioned to the Completed state.");
    }
 

@@ -79,8 +79,7 @@ public class GoalsColumn extends XViewerAtsColumn implements IXViewerValueColumn
             if (!(useArt instanceof TeamWorkFlowArtifact)) {
                return false;
             }
-            boolean modified =
-               promptChangeGoals(Arrays.asList((TeamWorkFlowArtifact) useArt), isPersistViewer(treeColumn));
+            boolean modified = promptChangeGoals(Arrays.asList((TeamWorkFlowArtifact) useArt), isPersistViewer());
             XViewer xViewer = ((XViewerColumn) treeColumn.getData()).getTreeViewer();
             if (modified && isPersistViewer(xViewer)) {
                useArt.persist("persist goals via alt-left-click");

@@ -16,8 +16,7 @@ import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.widgets.dialog.AtsPriorityDialog;
+import org.eclipse.osee.ats.util.PromptChangeUtil;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -25,9 +24,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
@@ -70,22 +67,8 @@ public class PriorityColumn extends XViewerAtsAttributeValueColumn implements IM
             return false;
          }
       }
-      final AtsPriorityDialog ald = new AtsPriorityDialog(Displays.getActiveShell());
       try {
-         if (teams.size() == 1) {
-            ald.setSelected(teams.iterator().next().getWorldViewPriority());
-         }
-         if (ald.open() == 0) {
-
-            SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "ATS Prompt Change Priority");
-            for (TeamWorkFlowArtifact team : teams) {
-               if (!team.getWorldViewPriority().equals(ald.getSelection())) {
-                  team.setSoleAttributeValue(PriorityColumn.PriorityTypeAttribute, ald.getSelection());
-                  team.saveSMA(transaction);
-               }
-            }
-            transaction.execute();
-         }
+         PromptChangeUtil.promptChangeAttribute(teams, PriorityTypeAttribute, persist, false);
          return true;
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't change priority", ex);
@@ -112,8 +95,14 @@ public class PriorityColumn extends XViewerAtsAttributeValueColumn implements IM
             if (!(useArt instanceof TeamWorkFlowArtifact)) {
                return false;
             }
-            boolean modified =
-               promptChangePriority(Arrays.asList((TeamWorkFlowArtifact) useArt), isPersistViewer(treeColumn));
+            TeamWorkFlowArtifact team = (TeamWorkFlowArtifact) useArt;
+            if (team.isReleased() || team.isVersionLocked()) {
+               AWorkbench.popup("ERROR",
+                  "Team Workflow\n \"" + team.getName() + "\"\n version is locked or already released.");
+               return false;
+            }
+
+            boolean modified = promptChangePriority(Arrays.asList((TeamWorkFlowArtifact) useArt), isPersistViewer());
             XViewer xViewer = ((XViewerColumn) treeColumn.getData()).getTreeViewer();
             if (modified && isPersistViewer(xViewer)) {
                useArt.persist("persist priority via alt-left-click");

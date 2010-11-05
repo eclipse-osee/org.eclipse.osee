@@ -5,6 +5,7 @@
  */
 package org.eclipse.osee.ats.util.xviewer.column;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
@@ -42,6 +43,10 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
 
    public XViewerAtsAttributeValueColumn(ATSAttributes atsAttribute, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable) {
       super(atsAttribute, width, align, show, sortDataType, multiColumnEditable);
+   }
+
+   public XViewerAtsAttributeValueColumn(String id, IAttributeType attributeType, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable) {
+      super(id, attributeType, name, width, align, show, sortDataType, multiColumnEditable);
    }
 
    public XViewerAtsAttributeValueColumn(String id, IAttributeType attributeType, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable) {
@@ -100,8 +105,8 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
             }
             boolean modified =
                PromptChangeUtil.promptChangeAttribute((AbstractWorkflowArtifact) treeItem.getData(),
-                  getAttributeType(), false, true);
-            if (modified && isPersistViewer(treeColumn)) {
+                  getAttributeType(), false, isMultiLineStringAttribute());
+            if (modified && isPersistViewer()) {
                useArt.persist("persist attribute via alt-left-click");
             }
             if (modified) {
@@ -116,4 +121,23 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
       return false;
    }
 
+   public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
+      Set<AbstractWorkflowArtifact> smas = new HashSet<AbstractWorkflowArtifact>();
+      for (TreeItem item : treeItems) {
+         Artifact art = (Artifact) item.getData();
+         if (art instanceof AbstractWorkflowArtifact) {
+            smas.add((AbstractWorkflowArtifact) art);
+         }
+      }
+      PromptChangeUtil.promptChangeAttribute(smas, getAttributeType(), isPersistViewer(getXViewer()),
+         isMultiLineStringAttribute());
+      getXViewer().update(smas.toArray(), null);
+   }
+
+   /**
+    * Set if promptChange should display a multi-lined dialog. Only valid for Textual attributes.
+    */
+   public boolean isMultiLineStringAttribute() {
+      return false;
+   }
 }

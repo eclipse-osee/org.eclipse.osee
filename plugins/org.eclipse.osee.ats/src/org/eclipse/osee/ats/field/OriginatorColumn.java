@@ -78,8 +78,7 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
             if (!(useArt instanceof TeamWorkFlowArtifact)) {
                return false;
             }
-            boolean modified =
-               promptChangeOriginator(Arrays.asList((TeamWorkFlowArtifact) useArt), isPersistViewer(treeColumn));
+            boolean modified = promptChangeOriginator(Arrays.asList((TeamWorkFlowArtifact) useArt), isPersistViewer());
             XViewer xViewer = ((XViewerColumn) treeColumn.getData()).getTreeViewer();
             if (modified && isPersistViewer(xViewer)) {
                useArt.persist("persist goals via alt-left-click");

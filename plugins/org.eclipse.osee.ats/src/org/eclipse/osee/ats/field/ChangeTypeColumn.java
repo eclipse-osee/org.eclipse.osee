@@ -136,8 +136,7 @@ public class ChangeTypeColumn extends XViewerAtsAttributeValueColumn implements 
             if (!(useArt instanceof TeamWorkFlowArtifact)) {
                return false;
             }
-            boolean modified =
-               promptChangeType(Arrays.asList((TeamWorkFlowArtifact) useArt), isPersistViewer(treeColumn));
+            boolean modified = promptChangeType(Arrays.asList((TeamWorkFlowArtifact) useArt), isPersistViewer());
             XViewer xViewer = ((XViewerColumn) treeColumn.getData()).getTreeViewer();
             if (modified && isPersistViewer(xViewer)) {
                useArt.persist("persist priority via alt-left-click");

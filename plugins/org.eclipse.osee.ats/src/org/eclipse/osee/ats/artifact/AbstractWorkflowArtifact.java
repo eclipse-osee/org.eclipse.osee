@@ -561,18 +561,8 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    @Override
-   public String getWorldViewNotes() throws OseeCoreException {
-      return getSoleAttributeValue(AtsAttributeTypes.SmaNote, "");
-   }
-
-   @Override
    public String getWorldViewWorkPackage() throws OseeCoreException {
       return getSoleAttributeValue(AtsAttributeTypes.WorkPackage, "");
-   }
-
-   @Override
-   public String getWorldViewPoint() throws OseeCoreException {
-      return getSoleAttributeValue(AtsAttributeTypes.Points, "");
    }
 
    @Override

@@ -65,6 +65,8 @@ public class EnumeratedHandlePromptChange implements IHandlePromptChange {
                artifact.setAttributeValues(attributeType, current);
             } else if (dialog.getSelected() == Selection.ReplaceAll) {
                artifact.setAttributeValues(attributeType, selected);
+            } else if (dialog.getSelected() == Selection.RemoveAll) {
+               artifact.deleteAttributes(attributeType);
             } else {
                AWorkbench.popup("ERROR", "Unhandled selection type => " + dialog.getSelected().name());
                return false;

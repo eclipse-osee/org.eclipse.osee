@@ -113,7 +113,7 @@ public class TaskXViewer extends WorldXViewer {
    }
 
    Action editTaskTitleAction, editTaskAssigneesAction, editTaskStatusAction, editTaskHoursSpentAction,
-      editTaskResolutionAction, editTaskEstimateAction, editTaskRelatedStateAction, editTaskNotesAction;
+      editTaskResolutionAction, editTaskEstimateAction, editTaskRelatedStateAction;
    Action addNewTaskAction, deleteTasksAction;
 
    @Override
@@ -222,23 +222,6 @@ public class TaskXViewer extends WorldXViewer {
          }
       };
 
-      editTaskNotesAction = new Action("Edit Task Notes", IAction.AS_PUSH_BUTTON) {
-         @Override
-         public void run() {
-            try {
-               boolean success =
-                  PromptChangeUtil.promptChangeAttribute(getSelectedTaskArtifacts(), AtsAttributeTypes.SmaNote, false,
-                     true);
-               if (success) {
-                  editor.onDirtied();
-                  update(getSelectedTaskArtifacts().toArray(), null);
-               }
-            } catch (Exception ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         }
-      };
-
       addNewTaskAction = new Action("New Task", IAction.AS_PUSH_BUTTON) {
          @Override
          public void run() {
@@ -267,7 +250,9 @@ public class TaskXViewer extends WorldXViewer {
          item.updateTaskEditMenuActions(this);
       }
 
-      editTaskNotesAction.setEnabled(isTasksEditable() && getSelectedArtifacts().size() > 0);
+      // EDIT MENU BLOCK
+      MenuManager editMenuManager = updateEditMenu(mm);
+      mm.insertBefore(MENU_GROUP_ATS_WORLD_EDIT, editMenuManager);
 
       // EDIT MENU BLOCK
       mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_EDIT, editTaskTitleAction);
@@ -292,9 +277,6 @@ public class TaskXViewer extends WorldXViewer {
 
       mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_EDIT, editTaskRelatedStateAction);
       editTaskRelatedStateAction.setEnabled(isTasksEditable() && getSelectedArtifacts().size() > 0 && isSelectedTaskArtifactsAreInWork());
-
-      mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_EDIT, editTaskNotesAction);
-      editTaskNotesAction.setEnabled(isTasksEditable() && getSelectedArtifacts().size() > 0);
 
    }
 

@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.workflow.page;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TaskArtifact.TaskStates;
 import org.eclipse.osee.ats.field.CategoryColumn;
+import org.eclipse.osee.ats.field.NotesColumn;
 import org.eclipse.osee.ats.workflow.flow.TaskWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions.RuleWorkItemId;
@@ -38,7 +39,7 @@ public class AtsTaskInWorkPageDefinition extends WorkPageDefinition {
       addWorkItem(AtsAttributeTypes.EstimatedHours);
       addWorkItem(AtsAttributeTypes.EstimatedCompletionDate);
       addWorkItem(AtsAttributeTypes.RelatedToState);
-      addWorkItem(AtsAttributeTypes.SmaNote);
+      addWorkItem(NotesColumn.SmaNote);
       addWorkItem(CategoryColumn.Category1Attribute);
    }
 

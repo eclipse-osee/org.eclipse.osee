@@ -50,6 +50,11 @@ public class XViewerAtsAttributeColumn extends XViewerAtsColumn {
          multiColumnEditable, atsAttribute.getDescription(), null);
    }
 
+   public XViewerAtsAttributeColumn(String id, IAttributeType attributeType, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable) {
+      this(id, name, width, align, show, sortDataType, multiColumnEditable, attributeType.getDescription(),
+         attributeType);
+   }
+
    public XViewerAtsAttributeColumn(String id, IAttributeType attributeType, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable) {
       this(id, attributeType.getUnqualifiedName(), width, align, show, sortDataType, multiColumnEditable,
          attributeType.getDescription(), attributeType);
