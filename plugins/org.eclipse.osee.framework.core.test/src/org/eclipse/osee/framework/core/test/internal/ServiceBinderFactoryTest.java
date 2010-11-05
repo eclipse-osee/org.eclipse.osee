@@ -64,7 +64,7 @@ public class ServiceBinderFactoryTest {
       factory.createTracker(null, String.class);
    }
 
-   @Test(expected = OseeStateException.class)
+   @Test(expected = IllegalStateException.class)
    public void testCreateSingletonBinderTracker() throws OseeCoreException {
       ServiceTracker tracker = factory.createTracker(ServiceBindType.SINGLETON, String.class);
       Assert.assertNotNull(tracker);
