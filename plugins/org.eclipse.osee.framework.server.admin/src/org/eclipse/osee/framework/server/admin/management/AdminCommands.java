@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.server.admin.management;
 
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 
@@ -38,21 +39,21 @@ public class AdminCommands {
       this.clearCacheWorker.setExecutionAllowed(true);
    }
 
-   public void getServerStatus(CommandInterpreter ci) {
-      Operations.executeAsJob(new ServerStats(ci), false);
+   public Job getServerStatus(CommandInterpreter ci) {
+      return Operations.executeAsJob(new ServerStats(ci), false);
    }
 
-   public void getServerVersion(CommandInterpreter ci) {
+   public Job getServerVersion(CommandInterpreter ci) {
       GetServerVersionWorker serverVersion = new GetServerVersionWorker();
       serverVersion.setCommandInterpreter(ci);
       serverVersion.setExecutionAllowed(true);
-      Operations.executeAsJob(serverVersion, false);
+      return Operations.executeAsJob(serverVersion, false);
    }
 
-   public void reloadCache(CommandInterpreter ci) {
+   public Job reloadCache(CommandInterpreter ci) {
       if (!this.clearCacheWorker.isRunning() && !this.reloadCacheWorker.isRunning()) {
          this.reloadCacheWorker.setCommandInterpreter(ci);
-         Operations.executeAsJob(reloadCacheWorker, false);
+         return Operations.executeAsJob(reloadCacheWorker, false);
       } else {
          if (clearCacheWorker.isRunning()) {
             ci.println("Waiting for clear cache to complete");
@@ -60,13 +61,14 @@ public class AdminCommands {
          if (reloadCacheWorker.isRunning()) {
             ci.println("Waiting for reload cache to complete");
          }
+         return null;
       }
    }
 
-   public void clearCache(CommandInterpreter ci) {
+   public Job clearCache(CommandInterpreter ci) {
       if (!this.clearCacheWorker.isRunning() && !this.reloadCacheWorker.isRunning()) {
          this.clearCacheWorker.setCommandInterpreter(ci);
-         Operations.executeAsJob(clearCacheWorker, false);
+         return Operations.executeAsJob(clearCacheWorker, false);
       } else {
          if (clearCacheWorker.isRunning()) {
             ci.println("Waiting for clear cache to complete");
@@ -74,24 +76,27 @@ public class AdminCommands {
          if (reloadCacheWorker.isRunning()) {
             ci.println("Waiting for reload cache to complete");
          }
+         return null;
       }
    }
 
-   public void addServerVersion(CommandInterpreter ci) {
+   public Job addServerVersion(CommandInterpreter ci) {
       if (!this.removeServerVersion.isRunning()) {
          this.addServerVersion.setCommandInterpreter(ci);
-         Operations.executeAsJob(addServerVersion, false);
+         return Operations.executeAsJob(addServerVersion, false);
       } else {
          ci.println("Waiting for remove server version");
+         return null;
       }
    }
 
-   public void removeServerVersion(CommandInterpreter ci) {
+   public Job removeServerVersion(CommandInterpreter ci) {
       if (!this.addServerVersion.isRunning()) {
          this.removeServerVersion.setCommandInterpreter(ci);
-         Operations.executeAsJob(removeServerVersion, false);
+         return Operations.executeAsJob(removeServerVersion, false);
       } else {
          ci.println("Waiting for add server version");
+         return null;
       }
    }
 
@@ -104,10 +109,10 @@ public class AdminCommands {
       }
    }
 
-   public void setServletRequestProcessing(CommandInterpreter ci) {
+   public Job setServletRequestProcessing(CommandInterpreter ci) {
       ServerRequestsWorker worker = new ServerRequestsWorker();
       worker.setCommandInterpreter(ci);
       worker.setExecutionAllowed(true);
-      Operations.executeAsJob(worker, false);
+      return Operations.executeAsJob(worker, false);
    }
 }

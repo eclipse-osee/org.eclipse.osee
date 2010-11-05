@@ -49,6 +49,8 @@
 			<property name="vmargs" value="${Dflags}" />
 			<property name="classname" value="${classname}" />
 		</ant>
+		
+		<ant antfile="${dependencies.basedir}/testAppServerLaunch.xml" target="stopServer" inheritall="true" inheritrefs="true" />
 	</target>
 
 

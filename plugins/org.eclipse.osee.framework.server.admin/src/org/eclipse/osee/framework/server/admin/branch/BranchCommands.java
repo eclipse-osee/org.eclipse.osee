@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.server.admin.branch;
 
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.branch.management.purge.PurgeDeletedBranches;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -36,11 +37,11 @@ public class BranchCommands {
       this.integrityWorker.setExecutionAllowed(true);
    }
 
-   public void startBranchExport(CommandInterpreter ci) {
+   public Job startBranchExport(CommandInterpreter ci) {
       if (!this.branchExportWorker.isRunning() && !this.branchImportWorker.isRunning() && !this.integrityWorker.isRunning()) {
          this.branchExportWorker.setCommandInterpreter(ci);
          this.branchExportWorker.setExecutionAllowed(true);
-         Operations.executeAsJob(branchExportWorker, false);
+         return Operations.executeAsJob(branchExportWorker, false);
       } else {
          if (this.branchExportWorker.isRunning()) {
             ci.println("Branch Export is already running.");
@@ -51,6 +52,7 @@ public class BranchCommands {
          if (this.integrityWorker.isRunning()) {
             ci.println("Branch Integrity Check is already running.");
          }
+         return null;
       }
    }
 
@@ -62,11 +64,11 @@ public class BranchCommands {
       }
    }
 
-   public void startBranchImport(CommandInterpreter ci) {
+   public Job startBranchImport(CommandInterpreter ci) {
       if (!this.branchExportWorker.isRunning() && !this.branchImportWorker.isRunning() && !this.integrityWorker.isRunning()) {
          this.branchImportWorker.setCommandInterpreter(ci);
          this.branchImportWorker.setExecutionAllowed(true);
-         Operations.executeAsJob(branchImportWorker, false);
+         return Operations.executeAsJob(branchImportWorker, false);
       } else {
          if (this.branchExportWorker.isRunning()) {
             ci.println("Branch Export is already running.");
@@ -77,6 +79,7 @@ public class BranchCommands {
          if (this.integrityWorker.isRunning()) {
             ci.println("Branch Integrity Check is already running.");
          }
+         return null;
       }
    }
 
@@ -88,11 +91,11 @@ public class BranchCommands {
       }
    }
 
-   public void startBranchIntegrityCheck(CommandInterpreter ci) {
+   public Job startBranchIntegrityCheck(CommandInterpreter ci) {
       if (!this.branchExportWorker.isRunning() && !this.branchImportWorker.isRunning() && !this.integrityWorker.isRunning()) {
          this.integrityWorker.setCommandInterpreter(ci);
          this.integrityWorker.setExecutionAllowed(true);
-         Operations.executeAsJob(integrityWorker, false);
+         return Operations.executeAsJob(integrityWorker, false);
       } else {
          if (this.branchExportWorker.isRunning()) {
             ci.println("Branch Export is already running.");
@@ -103,6 +106,7 @@ public class BranchCommands {
          if (this.integrityWorker.isRunning()) {
             ci.println("Branch Integrity Check is already running.");
          }
+         return null;
       }
    }
 
@@ -114,9 +118,9 @@ public class BranchCommands {
       }
    }
 
-   public void purgeDeletedBranches(CommandInterpreter ci) {
+   public Job purgeDeletedBranches(CommandInterpreter ci) {
       IOperation operation =
          new PurgeDeletedBranches(Activator.getOseeCachingService(), Activator.getOseeDatabaseService());
-      Operations.executeAsJob(operation, false);
+      return Operations.executeAsJob(operation, false);
    }
 }

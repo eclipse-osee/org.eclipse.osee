@@ -122,6 +122,7 @@ public class DataStoreBackupApplication implements IApplication {
 
    @Override
    public void stop() {
+      //
    }
 
 }

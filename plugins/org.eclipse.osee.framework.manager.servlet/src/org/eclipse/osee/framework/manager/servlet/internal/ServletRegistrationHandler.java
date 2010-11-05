@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.core.util.AbstractTrackingHandler;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.framework.manager.servlet.AdminServlet;
 import org.eclipse.osee.framework.manager.servlet.ArtifactFileServlet;
 import org.eclipse.osee.framework.manager.servlet.AtsServlet;
 import org.eclipse.osee.framework.manager.servlet.BranchExchangeServlet;
@@ -133,6 +134,7 @@ public class ServletRegistrationHandler extends AbstractTrackingHandler {
       register(new ConfigurationServlet(appServerManager, translationService, databaseService, caching, branchService),
          OseeServerContext.OSEE_CONFIGURE_CONTEXT);
       register(new DataServlet(locatorManager, resourceManager), "osee/data");
+      register(new AdminServlet(context), "osee/console");
    }
 
    private void register(OseeHttpServlet servlet, String... contexts) {

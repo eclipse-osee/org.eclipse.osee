@@ -73,9 +73,9 @@
 		<property name="additionalJvmArgs" value=" -Dosee.db.embedded.server=${osee.db.address}:${osee.db.port}" />
 	</target>
 
-	<target name="run" depends="init,writeH2ConnectionFile,writePosgresqlConnectionFile,writeDerbyConnectionFile,launchServer" />
+	<target name="run" depends="init,writeH2ConnectionFile,writePosgresqlConnectionFile,writeDerbyConnectionFile,startServer" />
 
-	<target name="launchServer">
+	<target name="startServer">
 		<pathconvert property="launcherJarPath" setonempty="false">
 			<path>
 				<fileset dir="${osee.app.server.home}/plugins">
@@ -103,6 +103,11 @@
 		<waitfor maxwait="1" maxwaitunit="minute" checkevery="100" checkeveryunit="millisecond">
 			<http url="http://127.0.0.1:${osee.app.server.port}" />
 		</waitfor>
+	</target>
+
+	<target name="stopServer" depends="init">
+		<post to="http://127.0.0.1:${osee.app.server.port}/osee/admin?cmd=osee_shutdown" verbose="true" wantresponse="true" property="shutdownOutput" />
+		<echo message="${shutdownOutput}" />
 	</target>
 
 	<macrodef name="writeConnectionFile">

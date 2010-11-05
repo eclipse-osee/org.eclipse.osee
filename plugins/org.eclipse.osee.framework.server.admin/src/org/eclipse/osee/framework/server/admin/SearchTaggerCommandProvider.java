@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.server.admin;
 
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.server.admin.search.SearchTaggerCommands;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 import org.eclipse.osgi.framework.console.CommandProvider;
@@ -25,40 +26,40 @@ public class SearchTaggerCommandProvider implements CommandProvider {
       this.searchTaggerCommands = new SearchTaggerCommands();
    }
 
-   public void _tag_all(CommandInterpreter ci) {
-      searchTaggerCommands.startTagAll(ci);
+   public Job _tag_all(CommandInterpreter ci) {
+      return searchTaggerCommands.startTagAll(ci);
    }
 
    public void _tag_all_stop(CommandInterpreter ci) {
       searchTaggerCommands.stopTagAll(ci);
    }
 
-   public void _drop_all_tags(CommandInterpreter ci) {
-      searchTaggerCommands.startDropAll(ci);
+   public Job _drop_all_tags(CommandInterpreter ci) {
+      return searchTaggerCommands.startDropAll(ci);
    }
 
    public void _drop_all_tags_stop(CommandInterpreter ci) {
       searchTaggerCommands.stopDropAll(ci);
    }
 
-   public void _tagger_stats(CommandInterpreter ci) {
-      searchTaggerCommands.getTaggerStatistics(ci);
+   public Job _tagger_stats(CommandInterpreter ci) {
+      return searchTaggerCommands.getTaggerStatistics(ci);
    }
 
    public void _tagger_stats_clear(CommandInterpreter ci) {
       searchTaggerCommands.clearTaggerStats();
    }
 
-   public void _search_stats(CommandInterpreter ci) {
-      searchTaggerCommands.getSearchStatistics(ci);
+   public Job _search_stats(CommandInterpreter ci) {
+      return searchTaggerCommands.getSearchStatistics(ci);
    }
 
    public void _search_stats_clear(CommandInterpreter ci) {
       searchTaggerCommands.clearSearchStats();
    }
 
-   public void _tag(CommandInterpreter ci) {
-      searchTaggerCommands.startTagItem(ci);
+   public Job _tag(CommandInterpreter ci) {
+      return searchTaggerCommands.startTagItem(ci);
    }
 
    public void _tag_stop(CommandInterpreter ci) {

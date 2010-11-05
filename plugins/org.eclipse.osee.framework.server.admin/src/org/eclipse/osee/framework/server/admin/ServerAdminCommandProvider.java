@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.server.admin;
 
 import java.util.Arrays;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.branch.management.TxCurrentsAndModTypesCommand;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.operation.CommandInterpreterReporter;
@@ -35,54 +36,54 @@ public class ServerAdminCommandProvider implements CommandProvider {
       this.adminCommands = new AdminCommands();
    }
 
-   public void _server_status(CommandInterpreter ci) {
-      adminCommands.getServerStatus(ci);
+   public Job _server_status(CommandInterpreter ci) {
+      return adminCommands.getServerStatus(ci);
    }
 
-   public void _server_process_requests(CommandInterpreter ci) {
-      adminCommands.setServletRequestProcessing(ci);
+   public Job _server_process_requests(CommandInterpreter ci) {
+      return adminCommands.setServletRequestProcessing(ci);
    }
 
-   public void _add_osee_version(CommandInterpreter ci) {
-      adminCommands.addServerVersion(ci);
+   public Job _add_osee_version(CommandInterpreter ci) {
+      return adminCommands.addServerVersion(ci);
    }
 
-   public void _remove_osee_version(CommandInterpreter ci) {
-      adminCommands.removeServerVersion(ci);
+   public Job _remove_osee_version(CommandInterpreter ci) {
+      return adminCommands.removeServerVersion(ci);
    }
 
-   public void _osee_version(CommandInterpreter ci) {
-      adminCommands.getServerVersion(ci);
+   public Job _osee_version(CommandInterpreter ci) {
+      return adminCommands.getServerVersion(ci);
    }
 
-   public void _reload_cache(CommandInterpreter ci) {
-      adminCommands.reloadCache(ci);
+   public Job _reload_cache(CommandInterpreter ci) {
+      return adminCommands.reloadCache(ci);
    }
 
-   public void _clear_cache(CommandInterpreter ci) {
-      adminCommands.clearCache(ci);
+   public Job _clear_cache(CommandInterpreter ci) {
+      return adminCommands.clearCache(ci);
    }
 
-   public void _finish_partial_archives(CommandInterpreter ci) {
-      Operations.executeAsJob(new FinishPartiallyArchivedBranchesCommand(ci), false);
+   public Job _finish_partial_archives(CommandInterpreter ci) {
+      return Operations.executeAsJob(new FinishPartiallyArchivedBranchesCommand(ci), false);
    }
 
-   public void _consolidate_artifact_versions(CommandInterpreter ci) {
-      Operations.executeAsJob(new ConsolidateArtifactVersionsCommand(ci), false);
+   public Job _consolidate_artifact_versions(CommandInterpreter ci) {
+      return Operations.executeAsJob(new ConsolidateArtifactVersionsCommand(ci), false);
    }
 
-   public void _gc(CommandInterpreter ci) {
-      Operations.executeAsJob(new GarbageCollectionCommand(ci), false);
+   public Job _gc(CommandInterpreter ci) {
+      return Operations.executeAsJob(new GarbageCollectionCommand(ci), false);
    }
 
-   public void _schedule(CommandInterpreter ci) {
-      Operations.executeAsJob(new SchedulingCommand(ci), false);
+   public Job _schedule(CommandInterpreter ci) {
+      return Operations.executeAsJob(new SchedulingCommand(ci), false);
    }
 
-   public void _tx_currents(CommandInterpreter ci) {
+   public Job _tx_currents(CommandInterpreter ci) {
       OperationReporter reporter = new CommandInterpreterReporter(ci);
       boolean archived = Boolean.parseBoolean(ci.nextArgument());
-      Operations.executeAsJob(new TxCurrentsAndModTypesCommand(reporter, archived), false);
+      return Operations.executeAsJob(new TxCurrentsAndModTypesCommand(reporter, archived), false);
    }
 
    public void _osee_shutdown(CommandInterpreter ci) {

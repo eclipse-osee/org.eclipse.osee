@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.server.admin;
 
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.server.admin.branch.BranchCommands;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 import org.eclipse.osgi.framework.console.CommandProvider;
@@ -25,32 +26,32 @@ public class BranchManagementCommandProvider implements CommandProvider {
       this.branchCmds = new BranchCommands();
    }
 
-   public void _export_branch(CommandInterpreter ci) {
-      branchCmds.startBranchExport(ci);
+   public Job _export_branch(CommandInterpreter ci) {
+      return branchCmds.startBranchExport(ci);
    }
 
    public void _export_branch_stop(CommandInterpreter ci) {
       branchCmds.stopBranchExport(ci);
    }
 
-   public void _import_branch(CommandInterpreter ci) {
-      branchCmds.startBranchImport(ci);
+   public Job _import_branch(CommandInterpreter ci) {
+      return branchCmds.startBranchImport(ci);
    }
 
    public void _import_branch_stop(CommandInterpreter ci) {
       branchCmds.stopBranchImport(ci);
    }
 
-   public void _check_exchange(CommandInterpreter ci) {
-      branchCmds.startBranchIntegrityCheck(ci);
+   public Job _check_exchange(CommandInterpreter ci) {
+      return branchCmds.startBranchIntegrityCheck(ci);
    }
 
    public void _check_exchange_stop(CommandInterpreter ci) {
       branchCmds.stopBranchIntegrityCheck(ci);
    }
 
-   public void _purge_deleted_branches(CommandInterpreter ci) {
-      branchCmds.purgeDeletedBranches(ci);
+   public Job _purge_deleted_branches(CommandInterpreter ci) {
+      return branchCmds.purgeDeletedBranches(ci);
    }
 
    @Override

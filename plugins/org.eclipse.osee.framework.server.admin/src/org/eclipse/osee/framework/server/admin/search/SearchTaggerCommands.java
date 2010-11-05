@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.server.admin.search;
 
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.server.admin.internal.Activator;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
@@ -34,11 +35,11 @@ public class SearchTaggerCommands {
       this.tagItemWorker.setExecutionAllowed(true);
    }
 
-   public void startTagItem(CommandInterpreter ci) {
+   public Job startTagItem(CommandInterpreter ci) {
       if (!this.dropAllWorker.isRunning() && !this.tagAllWorker.isRunning()) {
          this.tagItemWorker.setCommandInterpreter(ci);
          this.tagItemWorker.setExecutionAllowed(true);
-         Operations.executeAsJob(tagItemWorker, false);
+         return Operations.executeAsJob(tagItemWorker, false);
       } else {
          if (this.dropAllWorker.isRunning()) {
             ci.println("Drop All Tags is running.");
@@ -46,6 +47,7 @@ public class SearchTaggerCommands {
          if (this.tagAllWorker.isRunning()) {
             ci.println("Tag All is running.");
          }
+         return null;
       }
    }
 
@@ -57,11 +59,11 @@ public class SearchTaggerCommands {
       }
    }
 
-   public void startDropAll(CommandInterpreter ci) {
+   public Job startDropAll(CommandInterpreter ci) {
       if (!this.dropAllWorker.isRunning() && !this.tagAllWorker.isRunning() && !this.tagItemWorker.isRunning()) {
          this.dropAllWorker.setCommandInterpreter(ci);
          this.dropAllWorker.setExecutionAllowed(true);
-         Operations.executeAsJob(dropAllWorker, false);
+         return Operations.executeAsJob(dropAllWorker, false);
       } else {
          if (this.dropAllWorker.isRunning()) {
             ci.println("Drop All Tags is running.");
@@ -72,6 +74,7 @@ public class SearchTaggerCommands {
          if (this.tagItemWorker.isRunning()) {
             ci.println("Tag Item is running.");
          }
+         return null;
       }
    }
 
@@ -91,11 +94,11 @@ public class SearchTaggerCommands {
       }
    }
 
-   public void startTagAll(CommandInterpreter ci) {
+   public Job startTagAll(CommandInterpreter ci) {
       if (!this.dropAllWorker.isRunning() && !this.tagAllWorker.isRunning() && !this.tagItemWorker.isRunning()) {
          this.tagAllWorker.setCommandInterpreter(ci);
          this.tagAllWorker.setExecutionAllowed(true);
-         Operations.executeAsJob(tagAllWorker, false);
+         return Operations.executeAsJob(tagAllWorker, false);
       } else {
          if (this.dropAllWorker.isRunning()) {
             ci.println("Drop All Tags is running.");
@@ -106,25 +109,26 @@ public class SearchTaggerCommands {
          if (this.tagItemWorker.isRunning()) {
             ci.println("Tag Item is running.");
          }
+         return null;
       }
    }
 
-   public void getTaggerStatistics(CommandInterpreter ci) {
+   public Job getTaggerStatistics(CommandInterpreter ci) {
       TaggerStats stats = new TaggerStats();
       stats.setCommandInterpreter(ci);
       stats.setExecutionAllowed(true);
-      Operations.executeAsJob(stats, false);
+      return Operations.executeAsJob(stats, false);
    }
 
    public void clearTaggerStats() {
       Activator.getSearchTagger().clearStatistics();
    }
 
-   public void getSearchStatistics(CommandInterpreter ci) {
+   public Job getSearchStatistics(CommandInterpreter ci) {
       SearchStats stats = new SearchStats();
       stats.setCommandInterpreter(ci);
       stats.setExecutionAllowed(true);
-      Operations.executeAsJob(stats, false);
+      return Operations.executeAsJob(stats, false);
    }
 
    public void clearSearchStats() {
