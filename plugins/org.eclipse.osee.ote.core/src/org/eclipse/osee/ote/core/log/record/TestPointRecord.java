@@ -11,6 +11,7 @@
 package org.eclipse.osee.ote.core.log.record;
 
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.TestCase;
@@ -127,7 +128,9 @@ public class TestPointRecord extends TestRecord {
       } else {
          tpElement.appendChild(Jaxp.createElement(doc, "Result", "FAILED"));
       }
-      tpElement.appendChild(this.getLocation(doc));
+      if(TestRecord.getLocationLoggingOn()){
+    	  tpElement.appendChild(this.getLocation(doc));
+      }
       tpElement.appendChild(testPoint.toXml(doc));
 
       return tpElement;

@@ -11,6 +11,7 @@
 package org.eclipse.osee.ote.core.log.record;
 
 import java.util.ArrayList;
+
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.ote.core.MethodFormatter;
@@ -77,7 +78,9 @@ public class TraceRecord extends TestRecord implements Xmlizable {
             additional.appendChild(object.toXml(doc));
          }
       }
-      trElement.appendChild(getLocation(doc));
+      if(TestRecord.getLocationLoggingOn()){
+    	  trElement.appendChild(getLocation(doc));
+      }
       return trElement;
    }
 }

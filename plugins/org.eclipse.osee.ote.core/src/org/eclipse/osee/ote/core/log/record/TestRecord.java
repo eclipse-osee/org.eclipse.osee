@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.regex.Pattern;
+
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -34,6 +35,15 @@ public abstract class TestRecord extends LogRecord implements Xmlizable {
    private static final ArrayList<Pattern> stacktraceExcludes = new ArrayList<Pattern>(32);
    private static final ArrayList<Pattern> stacktraceIncludes = new ArrayList<Pattern>(32);
 
+   private static boolean locationLogginOn = true;
+   
+   public static void setLocationLoggingOn(boolean on){
+	   locationLogginOn = on;
+   }
+   public static boolean getLocationLoggingOn(){
+	   return locationLogginOn;
+   }
+   
    static {
       filterTheStacktrace = System.getProperty("org.eclipse.osee.ote.core.noStacktraceFilter") == null;
       stacktraceExcludes.add(Pattern.compile("org\\.eclipse\\.osee\\..*"));
@@ -119,7 +129,9 @@ public abstract class TestRecord extends LogRecord implements Xmlizable {
    @Override
    public Element toXml(Document doc) {
       Element recordElement = doc.createElement(getLevel().getName());
-      recordElement.appendChild(getLocation(doc));
+      if(TestRecord.getLocationLoggingOn()){
+    	  recordElement.appendChild(getLocation(doc));
+      }
       recordElement.appendChild(Jaxp.createElement(doc, "Message", getMessage()));
 
       for (Xmlizable object : getAdditionalXml()) {
@@ -152,7 +164,6 @@ public abstract class TestRecord extends LogRecord implements Xmlizable {
       if (this.printTimeStamp) {
          locationElement.appendChild(Jaxp.createElement(doc, "Time", Long.toString(timeStamp)));
       }
-
       return locationElement;
    }
 }

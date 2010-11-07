@@ -57,7 +57,9 @@ public class AttentionRecord extends TestRecord {
       for (Xmlizable object : getAdditionalXml()) {
          recordElement.appendChild(object.toXml(doc));
       }
-      recordElement.appendChild(getLocation(doc));
+      if(TestRecord.getLocationLoggingOn()){
+    	  recordElement.appendChild(getLocation(doc));
+      }
       return recordElement;
    }
 
