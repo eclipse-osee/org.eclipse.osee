@@ -810,8 +810,6 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
             modified = PromptChangeUtil.promptChangeAttribute(sma, AtsAttributeTypes.EstimatedHours, false, false);
          } else if (xCol.equals(WorldXViewerFactory.Weekly_Benefit_Hrs_Col)) {
             modified = PromptChangeUtil.promptChangeAttribute(sma, AtsAttributeTypes.WeeklyBenefit, false, false);
-         } else if (xCol.equals(WorldXViewerFactory.Estimated_Release_Date_Col)) {
-            modified = PromptChangeUtil.promptChangeEstimatedReleaseDate(sma);
          } else if (xCol.equals(WorldXViewerFactory.Estimated_Completion_Date_Col)) {
             modified = PromptChangeUtil.promptChangeDate(sma, AtsAttributeTypes.EstimatedCompletionDate, false);
          } else if (xCol.equals(WorldXViewerFactory.Deadline_Col)) {
@@ -827,8 +825,6 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
                "Calculated Field",
                "Work Days Needed field is calculated.\nRemaining Hours / Hours per Week (" + sma.getManHrsPerDayPreference() + ")");
             return false;
-         } else if (xCol.equals(WorldXViewerFactory.Release_Date_Col)) {
-            modified = PromptChangeUtil.promptChangeReleaseDate(sma);
          } else if (xCol.equals(WorldXViewerFactory.Work_Package_Col)) {
             modified = PromptChangeUtil.promptChangeAttribute(sma, AtsAttributeTypes.WorkPackage, false, false);
          } else if (xCol.equals(WorldXViewerFactory.Related_To_State_Col)) {

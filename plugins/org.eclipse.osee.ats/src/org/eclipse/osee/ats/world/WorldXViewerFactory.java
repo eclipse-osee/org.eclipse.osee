@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.field.CategoryColumn;
 import org.eclipse.osee.ats.field.ChangeTypeColumn;
+import org.eclipse.osee.ats.field.EstimatedReleaseDateColumn;
 import org.eclipse.osee.ats.field.GoalsColumn;
 import org.eclipse.osee.ats.field.GroupsColumn;
 import org.eclipse.osee.ats.field.NotesColumn;
@@ -30,6 +31,7 @@ import org.eclipse.osee.ats.field.OperationalImpactWorkaroundDesciptionColumn;
 import org.eclipse.osee.ats.field.OriginatorColumn;
 import org.eclipse.osee.ats.field.PointsColumn;
 import org.eclipse.osee.ats.field.PriorityColumn;
+import org.eclipse.osee.ats.field.ReleaseDateColumn;
 import org.eclipse.osee.ats.field.TargetedVersionColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeColumn;
@@ -98,14 +100,9 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
    public static XViewerColumn Estimated_Hours_Col = new XViewerAtsAttributeColumn(
       COLUMN_NAMESPACE + ".estimatedHours", AtsAttributeTypes.EstimatedHours, 40, SWT.CENTER, false,
       SortDataType.Float, true);
-   public static XViewerColumn Estimated_Release_Date_Col = new XViewerAtsAttributeColumn(
-      COLUMN_NAMESPACE + ".estimatedReleaseDate", AtsAttributeTypes.EstimatedReleaseDate, 80, SWT.LEFT, false,
-      SortDataType.Date, true);
    public static XViewerColumn Estimated_Completion_Date_Col = new XViewerAtsAttributeColumn(
       COLUMN_NAMESPACE + ".estimatedCompletionDate", AtsAttributeTypes.EstimatedCompletionDate, 80, SWT.LEFT, false,
       SortDataType.Date, true);
-   public static final XViewerColumn Release_Date_Col = new XViewerAtsAttributeColumn(
-      COLUMN_NAMESPACE + ".releaseDate", AtsAttributeTypes.ReleaseDate, 80, SWT.LEFT, false, SortDataType.Date, false);
    public static final XViewerColumn Work_Package_Col = new XViewerAtsAttributeColumn(
       COLUMN_NAMESPACE + ".workPackage", AtsAttributeTypes.WorkPackage, 80, SWT.LEFT, false, SortDataType.String, true);
    public static final XViewerColumn Numeric1_Col = new XViewerAtsAttributeColumn(AtsAttributeTypes.Numeric1, 40,
@@ -248,9 +245,9 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       Resolution_Col,
       GroupsColumn.getInstance(),
       GoalsColumn.getInstance(),
-      Estimated_Release_Date_Col,
+      EstimatedReleaseDateColumn.getInstance(),
       Estimated_Completion_Date_Col,
-      Release_Date_Col,
+      ReleaseDateColumn.getInstance(),
       Work_Package_Col,
       new CategoryColumn(CategoryColumn.Category1Attribute),
       new CategoryColumn(CategoryColumn.Category2Attribute),

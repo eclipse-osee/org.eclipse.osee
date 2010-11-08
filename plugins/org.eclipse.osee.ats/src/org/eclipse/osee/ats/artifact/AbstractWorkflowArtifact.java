@@ -31,6 +31,7 @@ import org.eclipse.osee.ats.artifact.note.AtsNote;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.editor.stateItem.AtsStateItemManager;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
+import org.eclipse.osee.ats.field.EstimatedReleaseDateColumn;
 import org.eclipse.osee.ats.field.TargetedVersionColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.notify.AtsNotification;
@@ -653,43 +654,21 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    @Override
-   public Date getWorldViewEstimatedReleaseDate() throws OseeCoreException {
-      Date date = getSoleAttributeValue(AtsAttributeTypes.EstimatedReleaseDate, null);
-      Date parentDate = null;
-      if (getParentSMA() != null) {
-         parentDate = getParentSMA().getWorldViewEstimatedReleaseDate();
-      }
-      if (date == null && parentDate != null) {
-         return parentDate;
-      }
-      return date;
-   }
-
-   @Override
    public Date getWorldViewEstimatedCompletionDate() throws OseeCoreException {
       Date date = getSoleAttributeValue(AtsAttributeTypes.EstimatedCompletionDate, null);
       if (date != null) {
          return date;
       }
       if (getParentSMA() != null) {
-         Date parentDate = getParentSMA().getWorldViewEstimatedCompletionDate();
-         if (parentDate != null) {
-            return parentDate;
-         }
+         date = getParentSMA().getWorldViewEstimatedCompletionDate();
       }
-      date = getWorldViewEstimatedReleaseDate();
-      if (date != null) {
-         return date;
+      if (date == null) {
+         date = EstimatedReleaseDateColumn.getDateFromWorkflow(this);
       }
-      return null;
-   }
-
-   @Override
-   public String getWorldViewEstimatedReleaseDateStr() throws OseeCoreException {
-      if (getWorldViewEstimatedReleaseDate() == null) {
-         return "";
+      if (date == null) {
+         date = EstimatedReleaseDateColumn.getDateFromTargetedVersion(this);
       }
-      return DateUtil.getMMDDYYHHMM(getWorldViewEstimatedReleaseDate());
+      return date;
    }
 
    @Override
@@ -698,17 +677,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
          return "";
       }
       return DateUtil.getMMDDYYHHMM(getWorldViewEstimatedCompletionDate());
-   }
-
-   @Override
-   public abstract Date getWorldViewReleaseDate() throws OseeCoreException;
-
-   @Override
-   public String getWorldViewReleaseDateStr() throws OseeCoreException {
-      if (getWorldViewReleaseDate() == null) {
-         return "";
-      }
-      return DateUtil.getMMDDYYHHMM(getWorldViewReleaseDate());
    }
 
    /**

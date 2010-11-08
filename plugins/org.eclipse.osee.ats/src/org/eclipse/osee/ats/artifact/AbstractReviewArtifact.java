@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.artifact;
 
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -234,11 +233,6 @@ public abstract class AbstractReviewArtifact extends AbstractTaskableArtifact {
    @Override
    public String getWorldViewParentID() throws OseeCoreException {
       return getParentTeamWorkflow().getHumanReadableId();
-   }
-
-   @Override
-   public Date getWorldViewReleaseDate() {
-      return null;
    }
 
    @Override

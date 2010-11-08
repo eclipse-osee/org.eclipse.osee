@@ -55,15 +55,18 @@ public class DateSelectionDialog extends MessageDialog {
 
       new Label(filterComp, SWT.None).setText(dialogMessage);
 
-      final CalendarCombo dp = new CalendarCombo(filterComp, SWT.SINGLE | SWT.FLAT);
+      final CalendarCombo dp = new CalendarCombo(filterComp, SWT.BORDER | SWT.SINGLE | SWT.FLAT);
+      dp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       if (initialDate != null) {
          dp.setDate(initialDate);
       }
       dp.addCalendarListener(new CalendarListenerAdapter() {
          @Override
          public void dateChanged(Calendar date) {
-            if (date != null) {
-               selectedDate = dp.getDate().getTime();
+            if (date == null) {
+               selectedDate = null;
+            } else {
+               selectedDate = date.getTime();
             }
          }
       });

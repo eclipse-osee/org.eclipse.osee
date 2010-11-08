@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.artifact;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.world.search.GoalSearchItem;
@@ -59,11 +58,6 @@ public class GoalArtifact extends AbstractWorkflowArtifact {
 
    @Override
    public TeamWorkFlowArtifact getParentTeamWorkflow() {
-      return null;
-   }
-
-   @Override
-   public Date getWorldViewReleaseDate() {
       return null;
    }
 

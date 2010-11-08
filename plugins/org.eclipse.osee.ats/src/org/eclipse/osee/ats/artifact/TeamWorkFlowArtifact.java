@@ -18,6 +18,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.osee.ats.config.AtsCacheManager;
+import org.eclipse.osee.ats.field.EstimatedReleaseDateColumn;
 import org.eclipse.osee.ats.field.PriorityColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsBranchManager;
@@ -231,46 +232,6 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IB
       return getSoleAttributeValue(AtsAttributeTypes.Description, "");
    }
 
-   /**
-    * If targeted for version exists, return that estimated date. Else, if attribute is set, return that date. Else
-    * null.
-    */
-   @Override
-   public Date getWorldViewEstimatedReleaseDate() throws OseeCoreException {
-      Collection<VersionArtifact> vers =
-         getRelatedArtifacts(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, VersionArtifact.class);
-      Date date = null;
-      if (vers.isEmpty()) {
-         date = getSoleAttributeValue(AtsAttributeTypes.EstimatedReleaseDate, null);
-      } else {
-         date = vers.iterator().next().getEstimatedReleaseDate();
-         if (date == null) {
-            date = getSoleAttributeValue(AtsAttributeTypes.EstimatedReleaseDate, null);
-         }
-      }
-      return date;
-   }
-
-   /**
-    * If targeted for version exists, return that estimated date. Else, if attribute is set, return that date. Else
-    * null.
-    */
-   @Override
-   public Date getWorldViewReleaseDate() throws OseeCoreException {
-      Collection<VersionArtifact> vers =
-         getRelatedArtifacts(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, VersionArtifact.class);
-      Date date = null;
-      if (vers.isEmpty()) {
-         date = getSoleAttributeValue(AtsAttributeTypes.ReleaseDate, null);
-      } else {
-         date = vers.iterator().next().getReleaseDate();
-         if (date == null) {
-            date = getSoleAttributeValue(AtsAttributeTypes.ReleaseDate, null);
-         }
-      }
-      return date;
-   }
-
    @Override
    public Collection<User> getImplementers() throws OseeCoreException {
       return StateManager.getImplementersByState(this, DefaultTeamState.Implement.name());
@@ -331,7 +292,10 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IB
    public Date getWorldViewEstimatedCompletionDate() throws OseeCoreException {
       Date date = super.getWorldViewEstimatedCompletionDate();
       if (date == null) {
-         date = getWorldViewEstimatedReleaseDate();
+         date = EstimatedReleaseDateColumn.getDateFromWorkflow(this);
+      }
+      if (date == null) {
+         date = EstimatedReleaseDateColumn.getDateFromTargetedVersion(this);
       }
       return date;
    }

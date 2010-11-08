@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.artifact;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -53,12 +52,6 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
    public void getSmaArtifactsOneLevel(AbstractWorkflowArtifact smaArtifact, Set<Artifact> artifacts) throws OseeCoreException {
       super.getSmaArtifactsOneLevel(smaArtifact, artifacts);
       artifacts.addAll(getTaskArtifacts());
-   }
-
-   @SuppressWarnings("unused")
-   @Override
-   public Date getWorldViewReleaseDate() throws OseeCoreException {
-      return null;
    }
 
    @SuppressWarnings("unused")

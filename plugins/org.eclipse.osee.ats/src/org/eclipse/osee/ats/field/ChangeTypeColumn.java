@@ -216,6 +216,7 @@ public class ChangeTypeColumn extends XViewerAtsAttributeValueColumn implements 
          }
       }
       promptChangeType(smas, true);
+      getXViewer().update(smas.toArray(), null);
    }
 
 }

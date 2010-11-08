@@ -138,15 +138,6 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IATSStateM
       return getParentSMA().getWorldViewEstimatedCompletionDate();
    }
 
-   @Override
-   public Date getWorldViewEstimatedReleaseDate() throws OseeCoreException {
-      Date value = super.getWorldViewEstimatedReleaseDate();
-      if (value != null) {
-         return value;
-      }
-      return getParentSMA().getWorldViewEstimatedReleaseDate();
-   }
-
    public Boolean isInWork() {
       return getStateMgr().getCurrentStateName().equals(TaskStates.InWork.name());
    }
@@ -223,14 +214,6 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IATSStateM
    @Override
    public String getWorldViewNumberOfTasks() {
       return "";
-   }
-
-   @Override
-   public Date getWorldViewReleaseDate() throws OseeCoreException {
-      if (getParentSMA().isTeamWorkflow()) {
-         return ((TeamWorkFlowArtifact) getParentSMA()).getWorldViewReleaseDate();
-      }
-      return getSoleAttributeValue(AtsAttributeTypes.ReleaseDate);
    }
 
    @Override

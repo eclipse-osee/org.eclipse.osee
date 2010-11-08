@@ -465,11 +465,6 @@ public class ActionArtifact extends AbstractAtsArtifact implements IWorldViewArt
    }
 
    @Override
-   public Date getWorldViewEstimatedReleaseDate() throws OseeCoreException {
-      return getTeamWorkFlowArtifacts().iterator().next().getWorldViewEstimatedReleaseDate();
-   }
-
-   @Override
    public String getWorldViewEstimatedCompletionDateStr() throws OseeCoreException {
       Set<String> strs = new HashSet<String>();
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
@@ -481,29 +476,6 @@ public class ActionArtifact extends AbstractAtsArtifact implements IWorldViewArt
    @Override
    public Date getWorldViewEstimatedCompletionDate() throws OseeCoreException {
       return getTeamWorkFlowArtifacts().iterator().next().getWorldViewEstimatedCompletionDate();
-   }
-
-   @Override
-   public String getWorldViewReleaseDateStr() throws OseeCoreException {
-      Set<String> strs = new HashSet<String>();
-      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         strs.add(team.getWorldViewReleaseDateStr());
-      }
-      return Collections.toString(";", strs);
-   }
-
-   @Override
-   public Date getWorldViewReleaseDate() throws OseeCoreException {
-      return getTeamWorkFlowArtifacts().iterator().next().getWorldViewReleaseDate();
-   }
-
-   @Override
-   public String getWorldViewEstimatedReleaseDateStr() throws OseeCoreException {
-      Set<String> strs = new HashSet<String>();
-      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         strs.add(team.getWorldViewEstimatedReleaseDateStr());
-      }
-      return Collections.toString(";", strs);
    }
 
    @Override

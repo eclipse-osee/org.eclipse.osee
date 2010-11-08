@@ -8,6 +8,7 @@ package org.eclipse.osee.ats.util.xviewer.column;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
@@ -25,6 +26,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
@@ -125,9 +127,17 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
       Set<AbstractWorkflowArtifact> smas = new HashSet<AbstractWorkflowArtifact>();
       for (TreeItem item : treeItems) {
          Artifact art = (Artifact) item.getData();
-         if (art instanceof AbstractWorkflowArtifact) {
-            smas.add((AbstractWorkflowArtifact) art);
+         try {
+            if (art instanceof AbstractWorkflowArtifact && art.isAttributeTypeValid(getAttributeType())) {
+               smas.add((AbstractWorkflowArtifact) art);
+            }
+         } catch (OseeCoreException ex) {
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          }
+      }
+      if (smas.isEmpty()) {
+         AWorkbench.popup(String.format("No selected items valid for attribute [%s] editing", getAttributeType()));
+         return;
       }
       PromptChangeUtil.promptChangeAttribute(smas, getAttributeType(), isPersistViewer(getXViewer()),
          isMultiLineStringAttribute());

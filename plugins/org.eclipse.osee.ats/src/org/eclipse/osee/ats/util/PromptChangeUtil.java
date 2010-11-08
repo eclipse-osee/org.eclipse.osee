@@ -13,8 +13,6 @@ package org.eclipse.osee.ats.util;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.SystemUser;
@@ -27,7 +25,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.DateSelectionDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserCheckTreeDialog;
 
 /**
@@ -127,86 +124,4 @@ public final class PromptChangeUtil {
       return false;
    }
 
-   public static boolean promptChangeReleaseDate(AbstractWorkflowArtifact sma) {
-      if (sma.isReleased() || sma.isVersionLocked()) {
-         AWorkbench.popup("ERROR", "Team Workflow\n \"" + sma.getName() + "\"\n version is locked or already released.");
-         return false;
-      }
-      try {
-         VersionArtifact verArt = sma.getTargetedVersion();
-         if (verArt != null) {
-            // prompt that this object is assigned to a version that is targeted
-            // for release xxx - want to change?
-            DateSelectionDialog diag =
-               new DateSelectionDialog(
-                  "Select Release Date Date",
-                  "Warning: " + sma.getArtifactTypeName() + "'s release date is handled\n" + "by targeted for version \"" + verArt.getName() + "\"\n" + "changing the date here will change the\n" + "date for this entire release.\n\nSelect date to change.\n",
-                  verArt.getReleaseDate());
-            if (verArt.getReleaseDate() != null) {
-               diag.setSelectedDate(verArt.getReleaseDate());
-            }
-            if (diag.open() == 0) {
-               verArt.setSoleAttributeValue(AtsAttributeTypes.ReleaseDate, diag.getSelectedDate());
-               verArt.persist();
-               return true;
-            }
-         } else {
-            // prompt that current release is (get from attribute) - want to change?
-            DateSelectionDialog diag =
-               new DateSelectionDialog("Select Release Date", "Select Release Date", sma.getWorldViewReleaseDate());
-            if (sma.getWorldViewReleaseDate() != null) {
-               diag.setSelectedDate(sma.getWorldViewReleaseDate());
-            }
-            if (diag.open() == 0) {
-               sma.setSoleAttributeValue(AtsAttributeTypes.ReleaseDate, diag.getSelectedDate());
-               sma.persist();
-               return true;
-            }
-         }
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't save release date " + sma.getHumanReadableId(), ex);
-      }
-      return false;
-   }
-
-   public static boolean promptChangeEstimatedReleaseDate(AbstractWorkflowArtifact sma) {
-      try {
-         VersionArtifact verArt = sma.getTargetedVersion();
-         if (verArt != null) {
-            // prompt that this object is assigned to a version that is targeted for release xxx -
-            // want to change?
-            DateSelectionDialog diag =
-               new DateSelectionDialog(
-                  "Select Estimated Release Date Date",
-                  "Warning: " + sma.getArtifactTypeName() + "'s estimated release date is handled\n" + "by targeted for version \"" + verArt.getName() + "\"\n" + "changing the date here will change the\n" + "date for this entire release.\n\nSelect date to change.\n",
-                  verArt.getEstimatedReleaseDate());
-            if (verArt.getEstimatedReleaseDate() != null) {
-               diag.setSelectedDate(verArt.getEstimatedReleaseDate());
-            }
-            if (diag.open() == 0) {
-               verArt.setSoleAttributeValue(AtsAttributeTypes.EstimatedReleaseDate, diag.getSelectedDate());
-               verArt.persist();
-               return true;
-            }
-         } else {
-            // prompt that current est release is (get from attribute); want to
-            // change
-            DateSelectionDialog diag =
-               new DateSelectionDialog("Select Estimate Release Date", "Select Estimated Release Date",
-                  sma.getWorldViewEstimatedReleaseDate());
-            if (sma.getWorldViewEstimatedReleaseDate() != null) {
-               diag.setSelectedDate(sma.getWorldViewEstimatedReleaseDate());
-            }
-            if (diag.open() == 0) {
-               sma.setSoleAttributeValue(AtsAttributeTypes.EstimatedReleaseDate, diag.getSelectedDate());
-               sma.persist();
-               return true;
-            }
-         }
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP,
-            "Can't save est release date " + sma.getHumanReadableId(), ex);
-      }
-      return false;
-   }
 }

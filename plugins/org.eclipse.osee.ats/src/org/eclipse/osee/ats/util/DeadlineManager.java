@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.util;
 import java.util.Date;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.field.EstimatedReleaseDateColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -93,9 +94,12 @@ public class DeadlineManager {
          if (deadDate == null) {
             return Result.FalseResult;
          }
-         Date releaseDate = sma.getWorldViewEstimatedReleaseDate();
+         Date releaseDate = EstimatedReleaseDateColumn.getDateFromWorkflow(sma);
          if (releaseDate == null) {
-            return Result.FalseResult;
+            releaseDate = EstimatedReleaseDateColumn.getDateFromTargetedVersion(sma);
+            if (releaseDate == null) {
+               return Result.FalseResult;
+            }
          }
          if (releaseDate.after(deadDate)) {
             return new Result(true, "Need By Date is past current Release Date.");

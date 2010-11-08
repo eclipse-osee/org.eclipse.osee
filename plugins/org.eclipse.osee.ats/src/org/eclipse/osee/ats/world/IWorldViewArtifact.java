@@ -66,10 +66,6 @@ public interface IWorldViewArtifact {
     */
    double getWorldViewEstimatedHours() throws OseeCoreException;
 
-   Date getWorldViewEstimatedReleaseDate() throws OseeCoreException;
-
-   String getWorldViewEstimatedReleaseDateStr() throws OseeCoreException;
-
    Date getWorldViewEstimatedCompletionDate() throws OseeCoreException;
 
    String getWorldViewEstimatedCompletionDateStr() throws OseeCoreException;
@@ -119,10 +115,6 @@ public interface IWorldViewArtifact {
    String getWorldViewPriority() throws OseeCoreException;
 
    String getWorldViewRelatedToState() throws OseeCoreException;
-
-   Date getWorldViewReleaseDate() throws OseeCoreException;
-
-   String getWorldViewReleaseDateStr() throws OseeCoreException;
 
    double getWorldViewRemainHours() throws OseeCoreException;
 

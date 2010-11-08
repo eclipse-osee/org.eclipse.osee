@@ -18,9 +18,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.ats.field.EstimatedReleaseDateColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.SMAMetrics;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -224,7 +224,7 @@ public class AtsMetricsComposite extends ScrolledComposite {
             "Targeted Version - Estimated Release Date",
             0,
             iAtsMetricsProvider.getMetricsVersionArtifact() == null ? "Not Set" : iAtsMetricsProvider.getMetricsVersionArtifact().getSoleAttributeValueAsString(
-               AtsAttributeTypes.EstimatedReleaseDate, "Not Set")));
+               EstimatedReleaseDateColumn.EstimatedReleaseDate, "Not Set")));
          lines.add(new XBarGraphLine("Metrics Estimated Release Date", 0,
             getEstimatedReleaseDate() == null ? "Not Set" : getEstimatedReleaseDate().toString()));
          lines.add(new XBarGraphLine("Work-Days Till Release", 0,
