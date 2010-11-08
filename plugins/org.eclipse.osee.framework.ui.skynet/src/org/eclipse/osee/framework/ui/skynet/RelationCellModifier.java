@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSideSorter;
 import org.eclipse.swt.widgets.Item;
 
 /**
@@ -35,16 +34,11 @@ public class RelationCellModifier implements ICellModifier {
 
    @Override
    public boolean canModify(Object element, String property) {
-      boolean isModifiable = true;
-
-      if (element instanceof RelationTypeSideSorter) {
-         try {
-            isModifiable = !((RelationTypeSideSorter) element).getArtifact().isReadOnly();
-         } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-         }
+      if (element instanceof WrapperForRelationLink) {
+         WrapperForRelationLink relLink = (WrapperForRelationLink) element;
+         return !(relLink.getArtifactA().isReadOnly() || relLink.getArtifactB().isReadOnly());
       }
-      return isModifiable;
+      return false;
    }
 
    @Override
