@@ -31,6 +31,7 @@ import org.eclipse.osee.ats.artifact.note.AtsNote;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.editor.stateItem.AtsStateItemManager;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
+import org.eclipse.osee.ats.field.EstimatedHoursColumn;
 import org.eclipse.osee.ats.field.EstimatedReleaseDateColumn;
 import org.eclipse.osee.ats.field.TargetedVersionColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
@@ -380,8 +381,8 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    public double getEstimatedHoursFromArtifact() throws OseeCoreException {
-      if (isAttributeTypeValid(AtsAttributeTypes.EstimatedHours)) {
-         return getSoleAttributeValue(AtsAttributeTypes.EstimatedHours, 0.0);
+      if (isAttributeTypeValid(EstimatedHoursColumn.EstimatedHours)) {
+         return getSoleAttributeValue(EstimatedHoursColumn.EstimatedHours, 0.0);
       }
       return 0;
    }
@@ -448,7 +449,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       if (isCompleted() || isCancelled()) {
          return 0;
       }
-      double est = getSoleAttributeValue(AtsAttributeTypes.EstimatedHours, 0.0);
+      double est = getSoleAttributeValue(EstimatedHoursColumn.EstimatedHours, 0.0);
       if (est == 0) {
          return getEstimatedHoursFromArtifact();
       }
@@ -480,11 +481,11 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    @Override
    public Result isWorldViewRemainHoursValid() throws OseeCoreException {
-      if (!isAttributeTypeValid(AtsAttributeTypes.EstimatedHours)) {
+      if (!isAttributeTypeValid(EstimatedHoursColumn.EstimatedHours)) {
          return Result.TrueResult;
       }
       try {
-         Double value = getSoleAttributeValue(AtsAttributeTypes.EstimatedHours, null);
+         Double value = getSoleAttributeValue(EstimatedHoursColumn.EstimatedHours, null);
          if (isCancelled()) {
             return Result.TrueResult;
          }

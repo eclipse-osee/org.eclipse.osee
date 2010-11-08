@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.workflow.page;
 
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
+import org.eclipse.osee.ats.field.EstimatedHoursColumn;
 import org.eclipse.osee.ats.workflow.flow.PeerToPeerWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
@@ -39,6 +40,6 @@ public class AtsPeerPrepareWorkPageDefinition extends WorkPageDefinition {
       addWorkItem(AtsAttributeTypes.RelatedToState);
       addWorkItem(AtsAttributeTypes.ReviewBlocks);
       addWorkItem(AtsAttributeTypes.NeedBy);
-      addWorkItem(AtsAttributeTypes.EstimatedHours);
+      addWorkItem(EstimatedHoursColumn.EstimatedHours);
    }
 }

@@ -27,6 +27,8 @@ import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.field.CategoryColumn;
 import org.eclipse.osee.ats.field.ChangeTypeXWidget;
+import org.eclipse.osee.ats.field.EstimatedHoursRequiredXWidget;
+import org.eclipse.osee.ats.field.EstimatedHoursXWidget;
 import org.eclipse.osee.ats.field.NotesColumn;
 import org.eclipse.osee.ats.field.OperationalImpactWithWorkaroundXWidget.XOperationalImpactWithWorkaroundRequiredXWidgetWorkItem;
 import org.eclipse.osee.ats.field.OperationalImpactWithWorkaroundXWidget.XOperationalImpactWithWorkaroundXWidgetWorkItem;
@@ -74,7 +76,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.XWidgetFactory;
 public final class AtsWorkDefinitions implements IWorkDefinitionProvider {
 
    public static final String ATS_DESCRIPTION_NOT_REQUIRED_ID = AtsAttributeTypes.Description + ".notRequired";
-   public static final String ATS_ESTIMATED_HOURS_NOT_REQUIRED_ID = AtsAttributeTypes.EstimatedHours + ".notRequired";
 
    public static enum RuleWorkItemId {
       atsRequireStateHourSpentPrompt("Work Page Option: Will popup a dialog to prompt user for time spent in this state."),
@@ -155,10 +156,9 @@ public final class AtsWorkDefinitions implements IWorkDefinitionProvider {
          "XComboDam(OPTIONS_FROM_ATTRIBUTE_VALIDITY)", XOption.REQUIRED, XOption.HORIZONTAL_LABEL));
       workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.Decision, "XComboDam(1,2,3)", REQUIRED,
          HORIZONTAL_LABEL));
-      workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.EstimatedHours, "XFloatDam", REQUIRED));
 
-      workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.EstimatedHours.getUnqualifiedName(),
-         ATS_ESTIMATED_HOURS_NOT_REQUIRED_ID, AtsAttributeTypes.EstimatedHours, "XFloatDam", XOption.NOT_REQUIRED));
+      workItems.add(new EstimatedHoursRequiredXWidget());
+      workItems.add(new EstimatedHoursXWidget());
 
       workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.EstimatedCompletionDate, "XDateDam",
          XOption.HORIZONTAL_LABEL));

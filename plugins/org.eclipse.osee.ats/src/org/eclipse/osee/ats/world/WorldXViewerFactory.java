@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.field.CategoryColumn;
 import org.eclipse.osee.ats.field.ChangeTypeColumn;
+import org.eclipse.osee.ats.field.EstimatedHoursColumn;
 import org.eclipse.osee.ats.field.EstimatedReleaseDateColumn;
 import org.eclipse.osee.ats.field.GoalsColumn;
 import org.eclipse.osee.ats.field.GroupsColumn;
@@ -97,9 +98,6 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       SWT.LEFT, false, SortDataType.String, false);
    public static final XViewerColumn Resolution_Col = new XViewerAtsAttributeColumn(AtsAttributeTypes.Resolution, 150,
       SWT.LEFT, false, SortDataType.String, true);
-   public static XViewerColumn Estimated_Hours_Col = new XViewerAtsAttributeColumn(
-      COLUMN_NAMESPACE + ".estimatedHours", AtsAttributeTypes.EstimatedHours, 40, SWT.CENTER, false,
-      SortDataType.Float, true);
    public static XViewerColumn Estimated_Completion_Date_Col = new XViewerAtsAttributeColumn(
       COLUMN_NAMESPACE + ".estimatedCompletionDate", AtsAttributeTypes.EstimatedCompletionDate, 80, SWT.LEFT, false,
       SortDataType.Date, true);
@@ -255,7 +253,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       Goal_Order,
       Goal_Order_Vote_Col,
       Related_To_State_Col,
-      Estimated_Hours_Col,
+      EstimatedHoursColumn.getInstance(),
       Weekly_Benefit_Hrs_Col,
       Remaining_Hours_Col,
       Percent_Complete_State_Col,

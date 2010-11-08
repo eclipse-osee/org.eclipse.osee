@@ -124,8 +124,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       createMenuActions();
    }
 
-   Action editAction, editStatusAction, editResolutionAction, editEstimateAction, editAssigneeAction,
-      editActionableItemsAction;
+   Action editAction, editStatusAction, editResolutionAction, editAssigneeAction, editActionableItemsAction;
    ConvertActionableItemsAction convertActionableItemsAction;
    Action openInAtsWorldEditorAction, openInAtsTaskEditorAction;
    OpenInAtsWorkflowEditor openInAtsWorkflowEditorAction;
@@ -176,20 +175,6 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
          public void run() {
             try {
                new ColumnMultiEditAction(thisXViewer).run();
-            } catch (Exception ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         }
-      };
-
-      editEstimateAction = new Action("Edit Estimated Hours", IAction.AS_PUSH_BUTTON) {
-         @Override
-         public void run() {
-            try {
-               if (ArtifactPromptChange.promptChangeAttribute(AtsAttributeTypes.EstimatedHours,
-                  getSelectedSMAArtifacts(), true)) {
-                  update(getSelectedSMAArtifacts().toArray(), null);
-               }
             } catch (Exception ex) {
                OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
@@ -476,9 +461,6 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
 
       mm.insertBefore(MENU_GROUP_PRE, editStatusAction);
       editStatusAction.setEnabled(getSelectedSMAArtifacts().size() > 0);
-
-      mm.insertBefore(MENU_GROUP_PRE, editEstimateAction);
-      editEstimateAction.setEnabled(getSelectedSMAArtifacts().size() > 0);
 
       mm.insertBefore(MENU_GROUP_PRE, editResolutionAction);
       editResolutionAction.setEnabled(getSelectedSMAArtifacts().size() > 0);
@@ -806,8 +788,6 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
          boolean modified = false;
          if (xCol.equals(WorldXViewerFactory.Percent_Rework_Col)) {
             modified = PromptChangeUtil.promptChangePercentAttribute(sma, AtsAttributeTypes.PercentRework, false);
-         } else if (xCol.equals(WorldXViewerFactory.Estimated_Hours_Col)) {
-            modified = PromptChangeUtil.promptChangeAttribute(sma, AtsAttributeTypes.EstimatedHours, false, false);
          } else if (xCol.equals(WorldXViewerFactory.Weekly_Benefit_Hrs_Col)) {
             modified = PromptChangeUtil.promptChangeAttribute(sma, AtsAttributeTypes.WeeklyBenefit, false, false);
          } else if (xCol.equals(WorldXViewerFactory.Estimated_Completion_Date_Col)) {

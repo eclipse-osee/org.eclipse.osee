@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.ats.artifact;
 
+import org.eclipse.osee.ats.field.EstimatedHoursColumn;
 import org.eclipse.osee.ats.util.TransitionOption;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -79,7 +80,7 @@ public final class DecisionReviewWorkflowManager {
             return result;
          }
       }
-      reviewArt.setSoleAttributeValue(AtsAttributeTypes.EstimatedHours, estimateHours);
+      reviewArt.setSoleAttributeValue(EstimatedHoursColumn.EstimatedHours, estimateHours);
       reviewArt.getStateMgr().updateMetrics(stateHoursSpent, statePercentComplete, true);
       return Result.TrueResult;
    }

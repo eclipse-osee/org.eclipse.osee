@@ -37,7 +37,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
@@ -113,7 +112,7 @@ public class TaskXViewer extends WorldXViewer {
    }
 
    Action editTaskTitleAction, editTaskAssigneesAction, editTaskStatusAction, editTaskHoursSpentAction,
-      editTaskResolutionAction, editTaskEstimateAction, editTaskRelatedStateAction;
+      editTaskResolutionAction, editTaskRelatedStateAction;
    Action addNewTaskAction, deleteTasksAction;
 
    @Override
@@ -190,23 +189,6 @@ public class TaskXViewer extends WorldXViewer {
          }
       };
 
-      editTaskEstimateAction = new Action("Edit Task Estimate", IAction.AS_PUSH_BUTTON) {
-         @Override
-         public void run() {
-            try {
-               boolean success =
-                  ArtifactPromptChange.promptChangeAttribute(AtsAttributeTypes.EstimatedHours,
-                     getSelectedTaskArtifacts(), false);
-               if (success) {
-                  editor.onDirtied();
-                  update(getSelectedTaskArtifacts().toArray(), null);
-               }
-            } catch (Exception ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         }
-      };
-
       editTaskRelatedStateAction = new Action("Edit Task Related to State", IAction.AS_PUSH_BUTTON) {
          @Override
          public void run() {
@@ -272,9 +254,6 @@ public class TaskXViewer extends WorldXViewer {
          editTaskResolutionAction.setEnabled(isTasksEditable() && getSelectedArtifacts().size() > 0 && isSelectedTaskArtifactsAreInWork());
       }
 
-      mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_EDIT, editTaskEstimateAction);
-      editTaskEstimateAction.setEnabled(isTasksEditable() && getSelectedArtifacts().size() > 0 && isSelectedTaskArtifactsAreInWork());
-
       mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_EDIT, editTaskRelatedStateAction);
       editTaskRelatedStateAction.setEnabled(isTasksEditable() && getSelectedArtifacts().size() > 0 && isSelectedTaskArtifactsAreInWork());
 
@@ -327,9 +306,7 @@ public class TaskXViewer extends WorldXViewer {
          TaskArtifact taskArt = (TaskArtifact) treeItem.getData();
          boolean modified = false;
 
-         if (isSelectedTaskArtifactsAreInWork() && xCol.equals(WorldXViewerFactory.Estimated_Hours_Col)) {
-            modified = PromptChangeUtil.promptChangeAttribute(taskArt, AtsAttributeTypes.EstimatedHours, false, false);
-         } else if (isSelectedTaskArtifactsAreInWork() && xCol.equals(WorldXViewerFactory.Title_Col)) {
+         if (isSelectedTaskArtifactsAreInWork() && xCol.equals(WorldXViewerFactory.Title_Col)) {
             modified = PromptChangeUtil.promptChangeAttribute(taskArt, AtsAttributeTypes.Title, false, false);
          } else if (xCol.equals(WorldXViewerFactory.Related_To_State_Col)) {
             modified = RelatedToStateColumn.promptChangeRelatedToState(taskArt, false);

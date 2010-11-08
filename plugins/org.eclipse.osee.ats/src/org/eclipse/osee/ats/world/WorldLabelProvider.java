@@ -157,9 +157,6 @@ public class WorldLabelProvider extends XViewerLabelProvider {
          if (xCol.equals(WorldXViewerFactory.Decision_Col)) {
             return wva.getWorldViewDecision();
          }
-         if (xCol.equals(WorldXViewerFactory.Estimated_Hours_Col)) {
-            return AtsUtil.doubleToI18nString(wva.getWorldViewEstimatedHours());
-         }
          if (xCol.equals(WorldXViewerFactory.Remaining_Hours_Col)) {
             Result result = wva.isWorldViewRemainHoursValid();
             if (result.isFalse()) {

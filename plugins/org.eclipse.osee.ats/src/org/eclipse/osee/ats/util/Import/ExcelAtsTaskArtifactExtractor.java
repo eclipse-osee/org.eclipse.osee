@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.field.EstimatedHoursColumn;
 import org.eclipse.osee.ats.field.NotesColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsNotifyUsers;
@@ -253,7 +254,7 @@ public class ExcelAtsTaskArtifactExtractor {
             } catch (Exception ex) {
                throw new OseeArgumentException("Invalid Estimated Hours \"%s\" for row %d", str, rowNum);
             }
-            taskArt.setSoleAttributeValue(AtsAttributeTypes.EstimatedHours, hours);
+            taskArt.setSoleAttributeValue(EstimatedHoursColumn.EstimatedHours, hours);
          }
       }
 

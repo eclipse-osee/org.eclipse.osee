@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.ats.artifact;
 
+import org.eclipse.osee.ats.field.EstimatedHoursColumn;
 import org.eclipse.osee.ats.util.DefaultTeamState;
 import org.eclipse.osee.ats.util.TransitionOption;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -141,7 +142,7 @@ public class TeamWorkflowManager {
             return result;
          }
       }
-      teamArt.setSoleAttributeValue(AtsAttributeTypes.EstimatedHours, hourEstimate);
+      teamArt.setSoleAttributeValue(EstimatedHoursColumn.EstimatedHours, hourEstimate);
       teamArt.getStateMgr().updateMetrics(stateHoursSpent, statePercentComplete, true);
       return Result.TrueResult;
    }
