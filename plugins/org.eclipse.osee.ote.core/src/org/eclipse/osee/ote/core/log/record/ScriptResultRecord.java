@@ -12,7 +12,10 @@ package org.eclipse.osee.ote.core.log.record;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
+import org.eclipse.osee.framework.jdk.core.persistence.XmlizableStream;
 import org.eclipse.osee.ote.core.TestScript;
 import org.eclipse.osee.ote.core.log.TestLevel;
 import org.w3c.dom.Document;
@@ -26,6 +29,7 @@ public class ScriptResultRecord extends TestRecord {
 
    private static final long serialVersionUID = -6132341487630154239L;
    private final List<Xmlizable> childElements;
+   private final List<XmlizableStream> childStreamElements;
 
    /**
     * ScriptConfigRecord Constructor. Constructs test script configuration log message with timestamp.
@@ -36,10 +40,15 @@ public class ScriptResultRecord extends TestRecord {
    public ScriptResultRecord(TestScript script) {
       super(script.getTestEnvironment(), TestLevel.TEST_POINT, script.getClass().getName(), false);
       childElements = new ArrayList<Xmlizable>(1000);
+      childStreamElements = new ArrayList<XmlizableStream>(100);
    }
 
    public void addChildElement(Xmlizable xml) {
       childElements.add(xml);
+   }
+
+   public void addChildElement(XmlizableStream xml) {
+      childStreamElements.add(xml);
    }
 
    /**
@@ -56,4 +65,15 @@ public class ScriptResultRecord extends TestRecord {
       childElements.clear();
       return result;
    }
+
+   @Override
+   public void toXml(XMLStreamWriter writer) throws XMLStreamException {
+      writer.writeStartElement("ScriptResult");
+      for (XmlizableStream xml : childStreamElements) {
+         xml.toXml(writer);
+      }
+      writer.writeEndElement();
+      childStreamElements.clear();
+   }
+
 }

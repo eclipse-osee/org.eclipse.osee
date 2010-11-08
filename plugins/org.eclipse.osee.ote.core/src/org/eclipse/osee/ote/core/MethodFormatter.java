@@ -11,9 +11,13 @@
 package org.eclipse.osee.ote.core;
 
 import java.util.ArrayList;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
+import org.eclipse.osee.framework.jdk.core.persistence.XmlizableStream;
 import org.eclipse.osee.framework.jdk.core.util.EnumBase;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
+import org.eclipse.osee.framework.jdk.core.util.xml.XMLStreamWriterUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -21,7 +25,7 @@ import org.w3c.dom.Element;
  * @author Charles Shaw
  * @author Robert A. Fisher
  */
-public class MethodFormatter implements Xmlizable {
+public class MethodFormatter implements Xmlizable, XmlizableStream {
    private final ArrayList<String> variableClass;
    private final ArrayList<String> variableValue;
 
@@ -131,5 +135,20 @@ public class MethodFormatter implements Xmlizable {
          toReturn.appendChild(element);
       }
       return toReturn;
+   }
+
+   @Override
+   public void toXml(XMLStreamWriter writer) throws XMLStreamException {
+      writer.writeStartElement("MethodArguments");
+      for (int i = 0; i < variableValue.size(); i++) {
+         writer.writeStartElement("Argument");
+         XMLStreamWriterUtil.writeElement(writer, "Type", variableClass.get(i).toString());
+
+         Object obj = variableValue.get(i);
+         String toLog = obj != null ? XmlSupport.format(obj.toString()) : "null";
+         XMLStreamWriterUtil.writeElement(writer, "Value", toLog);
+         writer.writeEndElement();
+      }
+      writer.writeEndElement();
    }
 }

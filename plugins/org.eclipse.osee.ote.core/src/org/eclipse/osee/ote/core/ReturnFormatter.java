@@ -10,8 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.core;
 
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
+import org.eclipse.osee.framework.jdk.core.persistence.XmlizableStream;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
+import org.eclipse.osee.framework.jdk.core.util.xml.XMLStreamWriterUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -19,7 +23,7 @@ import org.w3c.dom.Element;
  * @author Charles Shaw
  * @author Robert A. Fisher
  */
-public class ReturnFormatter implements Xmlizable {
+public class ReturnFormatter implements Xmlizable, XmlizableStream {
    private String variableValue;
 
    public ReturnFormatter() {
@@ -69,5 +73,10 @@ public class ReturnFormatter implements Xmlizable {
    @Override
    public Element toXml(Document doc) {
       return Jaxp.createElement(doc, "ReturnValue", variableValue);
+   }
+
+   @Override
+   public void toXml(XMLStreamWriter writer) throws XMLStreamException {
+      XMLStreamWriterUtil.writeElement(writer, "ReturnValue", variableValue);
    }
 }

@@ -46,7 +46,6 @@ import org.eclipse.osee.ote.core.framework.prompt.UserInputPromptImpl;
 import org.eclipse.osee.ote.core.framework.testrun.ITestRunListener;
 import org.eclipse.osee.ote.core.framework.testrun.ITestRunListenerProvider;
 import org.eclipse.osee.ote.core.log.ITestPointTally;
-import org.eclipse.osee.ote.core.log.ScriptLogHandler;
 import org.eclipse.osee.ote.core.log.record.AttentionRecord;
 import org.eclipse.osee.ote.core.log.record.ScriptResultRecord;
 import org.eclipse.osee.ote.core.log.record.TestPointRecord;
@@ -172,7 +171,6 @@ public abstract class TestScript implements ITimeout {
    protected final TestEnvironment environment;
    private final boolean isMpLevel;
    private IScriptInitializer scriptInitializer;
-   private ScriptLogHandler scriptLogHandler;
    private final ScriptTypeEnum scriptType;
    private final ArrayList<TestCase> selectiveRunList = new ArrayList<TestCase>(32);
    private Date startTime;
@@ -678,10 +676,6 @@ public abstract class TestScript implements ITimeout {
    @Deprecated
    public ScriptResultRecord getScriptResultRecord() {
       return this.sciprtResultRecord;
-   }
-
-   public ScriptLogHandler getScriptLogHandler() {
-      return this.scriptLogHandler;
    }
 
    public void setAborted(boolean aborted) {

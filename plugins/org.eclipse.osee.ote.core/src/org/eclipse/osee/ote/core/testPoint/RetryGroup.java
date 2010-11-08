@@ -12,7 +12,10 @@ package org.eclipse.osee.ote.core.testPoint;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
+import org.eclipse.osee.framework.jdk.core.persistence.XmlizableStream;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -21,11 +24,12 @@ import org.w3c.dom.Element;
  */
 public class RetryGroup extends CheckGroup {
    ArrayList<Xmlizable> childElements;
+   ArrayList<XmlizableStream> childStreamElements;
 
    public RetryGroup(String groupName) {
       super(Operation.OR, groupName);
       childElements = new ArrayList<Xmlizable>();
-
+      childStreamElements = new ArrayList<XmlizableStream>();
    }
 
    @Override
@@ -36,6 +40,15 @@ public class RetryGroup extends CheckGroup {
          retVal.appendChild(object.toXml(doc));
       }
       return retVal;
+   }
+
+   @Override
+   public void toXml(XMLStreamWriter writer) throws XMLStreamException {
+      buildXml(writer, "RetryGroup");
+      for (XmlizableStream object : childStreamElements) {
+         object.toXml(writer);
+      }
+      writer.writeEndElement();
    }
 
    public void addChildElement(Xmlizable child) {

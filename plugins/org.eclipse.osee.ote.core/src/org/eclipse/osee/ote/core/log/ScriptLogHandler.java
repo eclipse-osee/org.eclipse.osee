@@ -201,6 +201,7 @@ public class ScriptLogHandler extends Handler {
 
    @Override
    public void close() throws SecurityException {
+
       writeOutFile();
    }
 

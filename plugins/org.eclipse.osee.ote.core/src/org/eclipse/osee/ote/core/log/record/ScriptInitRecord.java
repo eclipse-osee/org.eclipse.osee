@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.core.log.record;
 
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 import org.eclipse.osee.ote.core.TestScript;
 import org.eclipse.osee.ote.core.log.TestLevel;
 import org.w3c.dom.Document;
@@ -62,6 +64,11 @@ public class ScriptInitRecord extends TestRecord {
       //We don't add it, but it was necessary to create the
       //element so that we could test for ScriptInitRecord.
       return doc.createElement("ScriptInit");
+   }
+
+   @Override
+   public void toXml(XMLStreamWriter writer) throws XMLStreamException {
+      writer.writeStartElement("ScriptInit");
    }
 
 }

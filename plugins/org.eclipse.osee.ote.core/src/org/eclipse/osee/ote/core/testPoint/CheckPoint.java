@@ -10,7 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.core.testPoint;
 
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
+import org.eclipse.osee.framework.jdk.core.util.xml.XMLStreamWriterUtil;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestPoint;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -100,6 +103,18 @@ public class CheckPoint implements ITestPoint {
          Integer.toString(this.numTransmissions)));
 
       return checkPointElement;
+   }
+
+   @Override
+   public void toXml(XMLStreamWriter writer) throws XMLStreamException {
+      writer.writeStartElement("CheckPoint");
+      XMLStreamWriterUtil.writeElement(writer, "TestPointName", testPointName);
+      XMLStreamWriterUtil.writeElement(writer, "Expected", expected);
+      XMLStreamWriterUtil.writeElement(writer, "Actual", actual);
+      XMLStreamWriterUtil.writeElement(writer, "Result", pass ? "PASSED" : "FAILED");
+      XMLStreamWriterUtil.writeElement(writer, "ElapsedTime", Long.toString(this.elpasedTime));
+      XMLStreamWriterUtil.writeElement(writer, "NumberOfTransmissions", Integer.toString(this.numTransmissions));
+      writer.writeEndElement();
    }
 
    public String getTestPointName() {

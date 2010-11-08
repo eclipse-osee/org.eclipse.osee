@@ -14,8 +14,12 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.logging.Level;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
+import org.eclipse.osee.framework.jdk.core.persistence.XmlizableStream;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
+import org.eclipse.osee.framework.jdk.core.util.xml.XMLStreamWriterUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.enums.PromptResponseType;
 import org.eclipse.osee.ote.core.environment.EnvironmentTask;
@@ -87,7 +91,7 @@ import org.w3c.dom.Element;
  * @author Ryan D. Brooks
  * @author Robert A. Fisher
  */
-public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable {
+public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable, XmlizableStream {
    protected ITestLogger logger;
    private final ITestEnvironmentAccessor environment;
    private final boolean standAlone;
@@ -155,6 +159,26 @@ public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable {
 
    public Element getTastCaseNumberXml(Document doc) {
       return Jaxp.createElement(doc, "Number", String.valueOf(testCaseNumber));
+   }
+
+   public void writeTestCaseNumber(XMLStreamWriter writer) throws XMLStreamException {
+      XMLStreamWriterUtil.writeElement(writer, "Number", String.valueOf(testCaseNumber));
+   }
+
+   public void writeTestCaseClassName(XMLStreamWriter writer) throws XMLStreamException {
+      String name = this.getClass().getName();
+      if (name == null || name.length() == 0) {
+         name = "";
+      }
+      XMLStreamWriterUtil.writeElement(writer, "Name", name);
+   }
+
+   public void writeTracability(XMLStreamWriter writer) throws XMLStreamException {
+      writer.writeStartElement("Tracability");
+      for (RequirementRecord record : scriptTraceability) {
+         record.toXml(writer);
+      }
+      writer.writeEndElement();
    }
 
    public Element getTestCaseClassName(Document doc) {
@@ -265,6 +289,14 @@ public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable {
       testCaseElement.appendChild(getTestCaseClassName(doc));
       testCaseElement.appendChild(getTracabilityXml(doc));
       return testCaseElement;
+   }
+
+   @Override
+   public void toXml(XMLStreamWriter writer) throws XMLStreamException {
+      writer.writeStartElement("TestCase");
+      writeTestCaseNumber(writer);
+      writeTestCaseClassName(writer);
+      writeTracability(writer);
    }
 
    /**

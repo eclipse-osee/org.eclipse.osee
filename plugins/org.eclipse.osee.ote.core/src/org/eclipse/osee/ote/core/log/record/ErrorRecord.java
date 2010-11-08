@@ -14,6 +14,8 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Date;
 import java.util.logging.Level;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.XmlSupport;
@@ -78,5 +80,14 @@ public class ErrorRecord extends TestRecord {
       root.appendChild(Jaxp.createElement(doc, "ExecutionResult", XmlSupport.sanitizeXMLContent(executionResult)));
       root.appendChild(Jaxp.createElement(doc, "ExecutionDetails", XmlSupport.sanitizeXMLContent(executionMessage)));
       return root;
+   }
+
+   @Override
+   public void toXml(XMLStreamWriter writer) throws XMLStreamException {
+      writer.writeStartElement("ExecutionStatus");
+      writeTime(writer);
+      writeElement(writer, "ExecutionResult", XmlSupport.sanitizeXMLContent(executionResult));
+      writeElement(writer, "ExecutionDetails", XmlSupport.sanitizeXMLContent(executionMessage));
+      writer.writeEndElement();
    }
 }

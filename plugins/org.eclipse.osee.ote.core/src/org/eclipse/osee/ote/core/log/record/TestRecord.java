@@ -11,13 +11,15 @@
 package org.eclipse.osee.ote.core.log.record;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.regex.Pattern;
-
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
+import org.eclipse.osee.framework.jdk.core.persistence.XmlizableStream;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
+import org.eclipse.osee.framework.jdk.core.util.xml.XMLStreamWriterUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.environment.TestEnvironment;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
@@ -27,7 +29,7 @@ import org.w3c.dom.Element;
 /**
  * @author Michael A. Winston
  */
-public abstract class TestRecord extends LogRecord implements Xmlizable {
+public abstract class TestRecord extends LogRecord implements Xmlizable, XmlizableStream {
    private static final long serialVersionUID = 2663140700880844240L;
 
    private static boolean filterTheStacktrace = true;
@@ -36,14 +38,15 @@ public abstract class TestRecord extends LogRecord implements Xmlizable {
    private static final ArrayList<Pattern> stacktraceIncludes = new ArrayList<Pattern>(32);
 
    private static boolean locationLogginOn = true;
-   
-   public static void setLocationLoggingOn(boolean on){
-	   locationLogginOn = on;
+
+   public static void setLocationLoggingOn(boolean on) {
+      locationLogginOn = on;
    }
-   public static boolean getLocationLoggingOn(){
-	   return locationLogginOn;
+
+   public static boolean getLocationLoggingOn() {
+      return locationLogginOn;
    }
-   
+
    static {
       filterTheStacktrace = System.getProperty("org.eclipse.osee.ote.core.noStacktraceFilter") == null;
       stacktraceExcludes.add(Pattern.compile("org\\.eclipse\\.osee\\..*"));
@@ -97,6 +100,39 @@ public abstract class TestRecord extends LogRecord implements Xmlizable {
       return locationElement;
    }
 
+   private void calc(XMLStreamWriter writer) throws XMLStreamException {
+      StackTraceElement[] stackElements = this.throwable.getStackTrace();
+      writer.writeStartElement("Location");
+      writer.writeAttribute("id", Integer.toString(stackElements.hashCode()));
+      for (StackTraceElement stackElement : stackElements) {
+         addElement(writer, stackElement);
+      }
+   }
+
+   private void addElement(XMLStreamWriter writer, StackTraceElement stackElement) throws XMLStreamException {
+      if (filterTheStacktrace) {
+         final String className = stackElement.getClassName();
+         for (Pattern includes : stacktraceIncludes) {
+            if (includes.matcher(className).matches()) {
+               writer.writeStartElement("Stacktrace");
+               writer.writeAttribute("source", stackElement.getClassName());
+               writer.writeAttribute("line", Integer.toString(stackElement.getLineNumber()));
+               writer.writeEndElement();
+               return;
+            }
+         }
+         for (Pattern excludes : stacktraceExcludes) {
+            if (excludes.matcher(className).matches()) {
+               return;
+            }
+         }
+      }
+      writer.writeStartElement("Stacktrace");
+      writer.writeAttribute("source", stackElement.getClassName());
+      writer.writeAttribute("line", Integer.toString(stackElement.getLineNumber()));
+      writer.writeEndElement();
+   }
+
    private void addElement(Document doc, StackTraceElement stackElement, Element locationElement) {
       if (filterTheStacktrace) {
          final String className = stackElement.getClassName();
@@ -129,27 +165,19 @@ public abstract class TestRecord extends LogRecord implements Xmlizable {
    @Override
    public Element toXml(Document doc) {
       Element recordElement = doc.createElement(getLevel().getName());
-      if(TestRecord.getLocationLoggingOn()){
-    	  recordElement.appendChild(getLocation(doc));
+      if (TestRecord.getLocationLoggingOn()) {
+         recordElement.appendChild(getLocation(doc));
       }
       recordElement.appendChild(Jaxp.createElement(doc, "Message", getMessage()));
-
-      for (Xmlizable object : getAdditionalXml()) {
-         recordElement.appendChild(object.toXml(doc));
-      }
       return recordElement;
    }
 
-   /**
-    * This method is to be overriden by subclasses of TestRecord that wish to log additional information to the XML
-    * destination.
-    * 
-    * @param baseElement This is the element that is being submitted by TestRecord for toXml().
-    */
-   protected List<Xmlizable> getAdditionalXml() {
-      // This is intended to be overridden by subclasses that
-      // want to supply additional XML information.
-      return new ArrayList<Xmlizable>(0);
+   @Override
+   public void toXml(XMLStreamWriter writer) throws XMLStreamException {
+      writer.writeStartElement(getLevel().getName());
+      writeLocation(writer);
+      writeMessage(writer);
+      writer.writeEndElement();
    }
 
    public Object getSource() {
@@ -165,5 +193,33 @@ public abstract class TestRecord extends LogRecord implements Xmlizable {
          locationElement.appendChild(Jaxp.createElement(doc, "Time", Long.toString(timeStamp)));
       }
       return locationElement;
+   }
+
+   private void getLocation(XMLStreamWriter writer) throws XMLStreamException {
+      calc(writer);
+      writeTime(writer);
+      writer.writeEndElement();
+   }
+
+   protected void writeLocation(XMLStreamWriter writer) throws XMLStreamException {
+      if (TestRecord.getLocationLoggingOn()) {
+         getLocation(writer);
+      }
+   }
+
+   protected void writeTime(XMLStreamWriter writer) throws XMLStreamException {
+      if (this.printTimeStamp) {
+         writer.writeStartElement("Time");
+         writer.writeCharacters(Long.toString(timeStamp));
+         writer.writeEndElement();
+      }
+   }
+
+   protected void writeMessage(XMLStreamWriter writer) throws XMLStreamException {
+      writeElement(writer, "Message", getMessage());
+   }
+
+   protected void writeElement(XMLStreamWriter writer, String elementName, String characterData) throws XMLStreamException {
+      XMLStreamWriterUtil.writeElement(writer, elementName, characterData);
    }
 }

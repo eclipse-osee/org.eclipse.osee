@@ -15,6 +15,8 @@ import java.net.UnknownHostException;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.logging.Level;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.TestScript;
@@ -106,6 +108,41 @@ public class ScriptConfigRecord extends TestRecord {
       }
 
       return configElement;
+   }
+
+   @Override
+   public void toXml(XMLStreamWriter writer) throws XMLStreamException {
+      writer.writeStartElement(BaseTestTags.CONFIG_ENTRY);
+      try {
+         writer.writeAttribute("machineName", InetAddress.getLocalHost().getHostName());
+      } catch (DOMException e) {
+         OseeLog.log(TestEnvironment.class, Level.SEVERE, e);
+      } catch (UnknownHostException e) {
+         OseeLog.log(TestEnvironment.class, Level.SEVERE, e);
+      }
+
+      writeElement(writer, BaseTestTags.SCRIPT_NAME, getMessage());
+
+      writer.writeStartElement("User");
+      writer.writeAttribute("name", this.userName);
+      writer.writeAttribute("email", this.userEmail);
+      writer.writeAttribute("id", this.userId);
+      writer.writeEndElement();
+
+      if (scriptVersionRecord != null) {
+         scriptVersionRecord.toXml(writer);
+      }
+      DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG);
+      writeElement(writer, BaseTestTags.EXECUTION_DATE, dateFormat.format(new Date()).toString());
+
+      TestScript script = ((TestEnvironment) this.getSource()).getTestScript();
+      if (script != null) {
+         writeElement(writer, BaseTestTags.ENVIRONMENT_FIELD, script.getType().toString());
+      } else {
+         // script is null
+         writeElement(writer, BaseTestTags.ENVIRONMENT_FIELD, "Null Script");
+      }
+      writer.writeEndElement();
    }
 
    public void setScriptVersion(ScriptVersionConfig scriptVersionRecord) {

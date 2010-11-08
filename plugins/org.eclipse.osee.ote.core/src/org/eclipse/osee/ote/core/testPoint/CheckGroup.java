@@ -11,7 +11,10 @@
 package org.eclipse.osee.ote.core.testPoint;
 
 import java.util.ArrayList;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
+import org.eclipse.osee.framework.jdk.core.util.xml.XMLStreamWriterUtil;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestGroup;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestPoint;
 import org.w3c.dom.Document;
@@ -105,6 +108,12 @@ public class CheckGroup implements ITestGroup {
       return buildXml(doc, "CheckGroup");
    }
 
+   @Override
+   public void toXml(XMLStreamWriter writer) throws XMLStreamException {
+      buildXml(writer, "CheckGroup");
+      writer.writeEndElement();
+   }
+
    protected Element buildXml(Document doc, String name) {
       Element checkGroupElement = doc.createElement(name);
 
@@ -124,4 +133,18 @@ public class CheckGroup implements ITestGroup {
       return checkGroupElement;
    }
 
+   protected void buildXml(XMLStreamWriter writer, String name) throws XMLStreamException {
+      writer.writeStartElement(name);
+      writer.writeAttribute("Mode", operation.toString());
+      XMLStreamWriterUtil.writeElement(writer, "GroupName", groupName);
+      if (this.isPass()) {
+         XMLStreamWriterUtil.writeElement(writer, "Result", "PASSED");
+      } else {
+         XMLStreamWriterUtil.writeElement(writer, "Result", "FAILED");
+      }
+
+      for (ITestPoint testPoint : testPoints) {
+         testPoint.toXml(writer);
+      }
+   }
 }

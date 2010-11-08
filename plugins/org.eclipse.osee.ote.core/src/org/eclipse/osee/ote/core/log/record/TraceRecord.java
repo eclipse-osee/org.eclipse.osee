@@ -11,9 +11,12 @@
 package org.eclipse.osee.ote.core.log.record;
 
 import java.util.ArrayList;
-
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
+import org.eclipse.osee.framework.jdk.core.persistence.XmlizableStream;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
+import org.eclipse.osee.framework.jdk.core.util.xml.XMLStreamWriterUtil;
 import org.eclipse.osee.ote.core.MethodFormatter;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
 import org.eclipse.osee.ote.core.log.TestLevel;
@@ -29,6 +32,7 @@ public class TraceRecord extends TestRecord implements Xmlizable {
    private final String methodName;
    private final MethodFormatter methodArguments;
    private final ArrayList<Xmlizable> additionalElements;
+   private final ArrayList<XmlizableStream> additionalStreamElements;
 
    private static final String additionalString = "AdditionalInfo";
 
@@ -48,6 +52,7 @@ public class TraceRecord extends TestRecord implements Xmlizable {
       this.methodName = methodName;
       this.methodArguments = methodArguments;
       this.additionalElements = new ArrayList<Xmlizable>();
+      this.additionalStreamElements = new ArrayList<XmlizableStream>();
    }
 
    public TraceRecord(ITestEnvironmentAccessor source, String objectName2, String methodName2, MethodFormatter methodArguments2) {
@@ -57,6 +62,12 @@ public class TraceRecord extends TestRecord implements Xmlizable {
    public void addAdditionalElement(Xmlizable object) {
       if (object != null) {
          additionalElements.add(object);
+      }
+   }
+
+   public void addAdditionalElement(XmlizableStream object) {
+      if (object != null) {
+         additionalStreamElements.add(object);
       }
    }
 
@@ -78,9 +89,25 @@ public class TraceRecord extends TestRecord implements Xmlizable {
             additional.appendChild(object.toXml(doc));
          }
       }
-      if(TestRecord.getLocationLoggingOn()){
-    	  trElement.appendChild(getLocation(doc));
+      if (TestRecord.getLocationLoggingOn()) {
+         trElement.appendChild(getLocation(doc));
       }
       return trElement;
+   }
+
+   @Override
+   public void toXml(XMLStreamWriter writer) throws XMLStreamException {
+      writer.writeStartElement("Trace");
+      XMLStreamWriterUtil.writeElement(writer, "ObjectName", objectName);
+      XMLStreamWriterUtil.writeElement(writer, "MethodName", methodName);
+      methodArguments.toXml(writer);
+      if (!additionalElements.isEmpty()) {
+         writer.writeStartElement(additionalString);
+         for (XmlizableStream object : additionalStreamElements) {
+            object.toXml(writer);
+         }
+         writer.writeEndElement();
+      }
+      writeLocation(writer);
    }
 }

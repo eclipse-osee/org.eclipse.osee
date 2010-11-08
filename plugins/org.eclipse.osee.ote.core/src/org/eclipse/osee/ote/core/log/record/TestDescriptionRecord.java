@@ -17,7 +17,7 @@ import org.eclipse.osee.ote.core.test.tags.BaseTestTags;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class TestDescriptionRecord extends BaseTestRecord {
+public class TestDescriptionRecord extends TestRecord {
 
    private static final long serialVersionUID = -2188431468814850228L;
    private String purpose;

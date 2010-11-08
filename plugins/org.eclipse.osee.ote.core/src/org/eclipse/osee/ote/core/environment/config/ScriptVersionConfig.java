@@ -11,12 +11,15 @@
 package org.eclipse.osee.ote.core.environment.config;
 
 import java.io.Serializable;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
+import org.eclipse.osee.framework.jdk.core.persistence.XmlizableStream;
 import org.eclipse.osee.ote.core.test.tags.BaseTestTags;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class ScriptVersionConfig implements Xmlizable, Serializable {
+public class ScriptVersionConfig implements Xmlizable, XmlizableStream, Serializable {
 
    private static final long serialVersionUID = -4021198751318075600L;
    private String repositoryType;
@@ -138,6 +141,18 @@ public class ScriptVersionConfig implements Xmlizable, Serializable {
       scriptVersion.setAttribute(BaseTestTags.MODIFIED_FIELD, getModifiedFlag());
       scriptVersion.setAttribute(BaseTestTags.URL, getLocation());
       return scriptVersion;
+   }
+
+   @Override
+   public void toXml(XMLStreamWriter writer) throws XMLStreamException {
+      writer.writeStartElement(BaseTestTags.SCRIPT_VERSION);
+      writer.writeAttribute(BaseTestTags.REVISION_FIELD, getRevision());
+      writer.writeAttribute(BaseTestTags.REPOSITORY_TYPE, getRepositoryType());
+      writer.writeAttribute(BaseTestTags.LAST_AUTHOR_FIELD, getLastAuthor());
+      writer.writeAttribute(BaseTestTags.LAST_MODIFIED, getLastModificationDate());
+      writer.writeAttribute(BaseTestTags.MODIFIED_FIELD, getModifiedFlag());
+      writer.writeAttribute(BaseTestTags.URL, getLocation());
+      writer.writeEndElement();
    }
 
 }

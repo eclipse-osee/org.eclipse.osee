@@ -11,6 +11,8 @@
 package org.eclipse.osee.ote.core.log.record;
 
 import java.util.logging.Level;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.TestCase;
 import org.eclipse.osee.ote.core.environment.TestEnvironment;
@@ -54,5 +56,10 @@ public class TestCaseRecord extends TestRecord {
    @Override
    public Element toXml(Document doc) {
       return testCase.toXml(doc);
+   }
+
+   @Override
+   public void toXml(XMLStreamWriter writer) throws XMLStreamException {
+      testCase.toXml(writer);
    }
 }

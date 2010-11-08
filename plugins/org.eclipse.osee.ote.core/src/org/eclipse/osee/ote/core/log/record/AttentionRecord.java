@@ -10,7 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.core.log.record;
 
-import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
 import org.eclipse.osee.ote.core.log.TestLevel;
@@ -54,13 +55,21 @@ public class AttentionRecord extends TestRecord {
    public Element toXml(Document doc) {
       Element recordElement = doc.createElement(getLevel().getName());
       recordElement.appendChild(Jaxp.createElement(doc, "Message", getMessage()));
-      for (Xmlizable object : getAdditionalXml()) {
-         recordElement.appendChild(object.toXml(doc));
-      }
-      if(TestRecord.getLocationLoggingOn()){
-    	  recordElement.appendChild(getLocation(doc));
+      //      for (Xmlizable object : getAdditionalXml()) {
+      //         recordElement.appendChild(object.toXml(doc));
+      //      }
+      if (TestRecord.getLocationLoggingOn()) {
+         recordElement.appendChild(getLocation(doc));
       }
       return recordElement;
+   }
+
+   @Override
+   public void toXml(XMLStreamWriter writer) throws XMLStreamException {
+      writer.writeStartElement(getLevel().getName());
+      writeLocation(writer);
+      writeMessage(writer);
+      writer.writeEndElement();
    }
 
 }

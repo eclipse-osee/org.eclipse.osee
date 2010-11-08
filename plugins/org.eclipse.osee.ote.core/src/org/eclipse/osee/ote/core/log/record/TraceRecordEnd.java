@@ -11,7 +11,10 @@
 package org.eclipse.osee.ote.core.log.record;
 
 import java.util.ArrayList;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
+import org.eclipse.osee.framework.jdk.core.persistence.XmlizableStream;
 import org.eclipse.osee.ote.core.ReturnFormatter;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
 import org.eclipse.osee.ote.core.log.TestLevel;
@@ -23,6 +26,7 @@ public class TraceRecordEnd extends TestRecord implements Xmlizable {
    private static final long serialVersionUID = 8567378567805515775L;
    private final ReturnFormatter returnFormatter;
    private final ArrayList<Xmlizable> additionalElements;
+   private final ArrayList<XmlizableStream> additionalStreamElements;
 
    private static final String additionalString = "AdditionalInfo";
 
@@ -30,11 +34,18 @@ public class TraceRecordEnd extends TestRecord implements Xmlizable {
       super(source, TestLevel.TRACE, "", true);
       this.returnFormatter = returnFormatter;
       this.additionalElements = new ArrayList<Xmlizable>();
+      this.additionalStreamElements = new ArrayList<XmlizableStream>();
    }
 
    public void addAdditionalElement(Xmlizable object) {
       if (object != null) {
          additionalElements.add(object);
+      }
+   }
+
+   public void addAdditionalElement(XmlizableStream object) {
+      if (object != null) {
+         additionalStreamElements.add(object);
       }
    }
 
@@ -55,5 +66,18 @@ public class TraceRecordEnd extends TestRecord implements Xmlizable {
          }
       }
       return trElement;
+   }
+
+   @Override
+   public void toXml(XMLStreamWriter writer) throws XMLStreamException {
+      writer.writeStartElement("TraceEnd");
+      returnFormatter.toXml(writer);
+      if (!additionalElements.isEmpty()) {
+         writer.writeStartElement(additionalString);
+         for (XmlizableStream object : additionalStreamElements) {
+            object.toXml(writer);
+         }
+      }
+      writer.writeEndElement();
    }
 }

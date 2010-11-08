@@ -11,8 +11,10 @@
 package org.eclipse.osee.ote.core.log.record;
 
 import java.util.logging.Level;
-
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
+import org.eclipse.osee.framework.jdk.core.util.xml.XMLStreamWriterUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.TestCase;
 import org.eclipse.osee.ote.core.TestScript;
@@ -128,11 +130,25 @@ public class TestPointRecord extends TestRecord {
       } else {
          tpElement.appendChild(Jaxp.createElement(doc, "Result", "FAILED"));
       }
-      if(TestRecord.getLocationLoggingOn()){
-    	  tpElement.appendChild(this.getLocation(doc));
+      if (TestRecord.getLocationLoggingOn()) {
+         tpElement.appendChild(this.getLocation(doc));
       }
       tpElement.appendChild(testPoint.toXml(doc));
 
       return tpElement;
+   }
+
+   @Override
+   public void toXml(XMLStreamWriter writer) throws XMLStreamException {
+      writer.writeStartElement("TestPoint");
+      XMLStreamWriterUtil.writeElement(writer, "Number", String.valueOf(testPointNumber));
+      if (testPoint.isPass()) {
+         XMLStreamWriterUtil.writeElement(writer, "Result", "PASSED");
+      } else {
+         XMLStreamWriterUtil.writeElement(writer, "Result", "FAILED");
+      }
+      writeLocation(writer);
+      testPoint.toXml(writer);
+      writer.writeEndElement();
    }
 }

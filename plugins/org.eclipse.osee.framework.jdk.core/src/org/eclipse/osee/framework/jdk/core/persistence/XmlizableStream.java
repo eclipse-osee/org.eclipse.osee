@@ -8,14 +8,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ote.core.environment.interfaces;
+package org.eclipse.osee.framework.jdk.core.persistence;
 
-import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
-import org.eclipse.osee.framework.jdk.core.persistence.XmlizableStream;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 
 /**
- * @author Robert A. Fisher The TestPoint interface should be implemented by objects that store pass/fail data.
+ * @author Andrew M. Finkbeiner
  */
-public interface ITestPoint extends Xmlizable, XmlizableStream {
-   public boolean isPass();
+public interface XmlizableStream {
+   public void toXml(XMLStreamWriter writer) throws XMLStreamException;
 }
