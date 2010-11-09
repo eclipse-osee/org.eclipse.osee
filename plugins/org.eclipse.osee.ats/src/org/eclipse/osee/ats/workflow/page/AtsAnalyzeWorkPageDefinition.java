@@ -33,8 +33,8 @@ public class AtsAnalyzeWorkPageDefinition extends WorkPageDefinition {
       addWorkItem(AtsAttributeTypes.WorkPackage);
       addWorkItem(AtsAttributeTypes.Problem);
       addWorkItem(AtsAttributeTypes.ProposedResolution);
-      addWorkItem(AtsAttributeTypes.ChangeTypeAttribute);
-      addWorkItem(AtsAttributeTypes.PriorityTypeAttribute);
+      addWorkItem(AtsAttributeTypes.ChangeType);
+      addWorkItem(AtsAttributeTypes.PriorityType);
       addWorkItem(AtsAttributeTypes.NeedBy);
       addWorkItem(AtsAttributeTypes.EstimatedHours);
    }

@@ -37,7 +37,7 @@ public class PriorityColumn extends XViewerAtsAttributeValueColumn {
    }
 
    private PriorityColumn() {
-      super(AtsAttributeTypes.PriorityTypeAttribute, 20, SWT.LEFT, true, SortDataType.String, true);
+      super(AtsAttributeTypes.PriorityType, 20, SWT.LEFT, true, SortDataType.String, true);
    }
 
    public PriorityColumn(IAttributeType attributeType, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
@@ -65,7 +65,7 @@ public class PriorityColumn extends XViewerAtsAttributeValueColumn {
          }
       }
       try {
-         PromptChangeUtil.promptChangeAttribute(teams, AtsAttributeTypes.PriorityTypeAttribute, persist, false);
+         PromptChangeUtil.promptChangeAttribute(teams, AtsAttributeTypes.PriorityType, persist, false);
          return true;
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't change priority", ex);

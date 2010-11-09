@@ -59,7 +59,7 @@ public class OperationalImpactWorkaroundColumn extends XViewerValueColumn {
    private String getOperationalImpact(IWorldViewArtifact wva) throws OseeCoreException {
       if (wva instanceof TeamWorkFlowArtifact) {
          return ((TeamWorkFlowArtifact) wva).getArtifact().getSoleAttributeValue(
-            AtsAttributeTypes.OperationalImpactWorkaroundAttr, "");
+            AtsAttributeTypes.OperationalImpactWorkaround, "");
       }
       if (wva instanceof ActionArtifact) {
          Set<String> strs = new HashSet<String>();

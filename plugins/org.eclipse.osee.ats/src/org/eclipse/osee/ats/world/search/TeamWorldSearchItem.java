@@ -154,7 +154,7 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
          criteria.add(new AttributeCriteria(AtsAttributeTypes.CurrentState, cancelOrComplete, Operator.NOT_EQUAL));
       }
       if (changeType != null) {
-         criteria.add(new AttributeCriteria(AtsAttributeTypes.ChangeTypeAttribute, changeType.name()));
+         criteria.add(new AttributeCriteria(AtsAttributeTypes.ChangeType, changeType.name()));
       }
 
       List<Artifact> artifacts = ArtifactQuery.getArtifactListFromCriteria(AtsUtil.getAtsBranch(), 1000, criteria);

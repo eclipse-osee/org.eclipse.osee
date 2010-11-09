@@ -158,7 +158,7 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IB
 
    @Override
    public String getWorldViewPriority() throws OseeCoreException {
-      return getSoleAttributeValue(AtsAttributeTypes.PriorityTypeAttribute, "");
+      return getSoleAttributeValue(AtsAttributeTypes.PriorityType, "");
    }
 
    @Override

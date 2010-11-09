@@ -12,7 +12,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 public class ChangeTypeXWidget extends AtsAttributeSoleComboXWidgetWorkItem {
 
    public ChangeTypeXWidget() {
-      super(AtsAttributeTypes.ChangeTypeAttribute, "OPTIONS_FROM_ATTRIBUTE_VALIDITY", XOption.REQUIRED,
+      super(AtsAttributeTypes.ChangeType, "OPTIONS_FROM_ATTRIBUTE_VALIDITY", XOption.REQUIRED,
          XOption.BEGIN_COMPOSITE_6);
    }
 }

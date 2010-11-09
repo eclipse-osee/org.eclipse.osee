@@ -114,7 +114,7 @@ public final class AtsWorkDefinitions implements IWorkDefinitionProvider {
          FILL_VERTICALLY));
       workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.LegacyPcrId, "XTextDam"));
       workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.GoalOrderVote, "XTextDam"));
-      workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.Category1Attribute, "XTextDam"));
+      workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.Category1, "XTextDam"));
       workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.RelatedToState, "XTextDam"));
       workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.SmaNote, "XTextDam", FILL_VERTICALLY));
       workItems.add(new AtsAttributeXWidgetWorkItem("Title", "ats.Title", CoreAttributeTypes.Name, "XTextDam", REQUIRED));

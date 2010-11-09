@@ -12,6 +12,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 public class PriorityXWidget extends AtsAttributeSoleComboXWidgetWorkItem {
 
    public PriorityXWidget() {
-      super(AtsAttributeTypes.PriorityTypeAttribute, "OPTIONS_FROM_ATTRIBUTE_VALIDITY", XOption.REQUIRED);
+      super(AtsAttributeTypes.PriorityType, "OPTIONS_FROM_ATTRIBUTE_VALIDITY", XOption.REQUIRED);
    }
 }

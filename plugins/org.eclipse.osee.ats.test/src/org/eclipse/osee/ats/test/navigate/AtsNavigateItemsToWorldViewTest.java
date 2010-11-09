@@ -98,7 +98,7 @@ public class AtsNavigateItemsToWorldViewTest {
       // delete an artifact, look for expected !Errors in the XCol
       deleteAttributesForXColErrorTest(arts, AtsAttributeTypes.TeamDefinition);
       deleteAttributesForXColErrorTest(arts, AtsAttributeTypes.ActionableItem);
-      deleteAttributesForXColErrorTest(arts, AtsAttributeTypes.ChangeTypeAttribute);
+      deleteAttributesForXColErrorTest(arts, AtsAttributeTypes.ChangeType);
    }
 
    @org.junit.Test
@@ -622,7 +622,7 @@ public class AtsNavigateItemsToWorldViewTest {
          verifyArtifactsHasErrors(labelProv, arts, xCol,
             getXViewer().getCustomizeMgr().getColumnNumFromXViewerColumn(xCol), actualErrorCols);
       }
-      if (!AtsAttributeTypes.CurrentState.equals(attributeTypeToDelete) && !AtsAttributeTypes.PriorityTypeAttribute.equals(attributeTypeToDelete)) {
+      if (!AtsAttributeTypes.CurrentState.equals(attributeTypeToDelete) && !AtsAttributeTypes.PriorityType.equals(attributeTypeToDelete)) {
          verifyXCol1HasErrors(actualErrorCols);
       } else {
          verifyXCol2HasErrors(actualErrorCols);

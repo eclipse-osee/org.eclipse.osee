@@ -142,7 +142,7 @@ public class ActionArtifact extends AbstractAtsArtifact implements IWorldViewArt
          }
       }
       if (Strings.isValid(priorityType)) {
-         setSoleAttributeValue(AtsAttributeTypes.PriorityTypeAttribute, priorityType);
+         setSoleAttributeValue(AtsAttributeTypes.PriorityType, priorityType);
       }
    }
 
@@ -262,7 +262,7 @@ public class ActionArtifact extends AbstractAtsArtifact implements IWorldViewArt
 
    @Override
    public String getWorldViewPriority() throws OseeCoreException {
-      return getSoleAttributeValue(AtsAttributeTypes.PriorityTypeAttribute, "");
+      return getSoleAttributeValue(AtsAttributeTypes.PriorityType, "");
    }
 
    @Override

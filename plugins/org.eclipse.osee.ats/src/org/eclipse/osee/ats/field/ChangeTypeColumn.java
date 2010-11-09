@@ -44,7 +44,7 @@ public class ChangeTypeColumn extends XViewerAtsAttributeValueColumn {
    }
 
    private ChangeTypeColumn() {
-      super(AtsAttributeTypes.ChangeTypeAttribute, 22, SWT.CENTER, true, SortDataType.String, true);
+      super(AtsAttributeTypes.ChangeType, 22, SWT.CENTER, true, SortDataType.String, true);
    }
 
    public ChangeTypeColumn(IAttributeType attributeType, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
@@ -159,11 +159,11 @@ public class ChangeTypeColumn extends XViewerAtsAttributeValueColumn {
    }
 
    public static ChangeType getChangeType(Artifact artifact) throws OseeCoreException {
-      return ChangeType.getChangeType(artifact.getSoleAttributeValue(AtsAttributeTypes.ChangeTypeAttribute, ""));
+      return ChangeType.getChangeType(artifact.getSoleAttributeValue(AtsAttributeTypes.ChangeType, ""));
    }
 
    public static void setChangeType(Artifact artifact, ChangeType changeType) throws OseeCoreException {
-      artifact.setSoleAttributeValue(AtsAttributeTypes.ChangeTypeAttribute, changeType.name());
+      artifact.setSoleAttributeValue(AtsAttributeTypes.ChangeType, changeType.name());
    }
 
    @Override

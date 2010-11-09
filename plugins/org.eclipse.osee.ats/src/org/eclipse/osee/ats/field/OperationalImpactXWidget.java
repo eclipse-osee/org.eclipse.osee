@@ -47,24 +47,24 @@ public class OperationalImpactXWidget extends XComboWithText implements IArtifac
    public void saveToArtifact() throws OseeCoreException {
       String impact = get();
       if (impact == null || impact.equals("")) {
-         teamArt.deleteSoleAttribute(AtsAttributeTypes.OperationalImpactAttr);
+         teamArt.deleteSoleAttribute(AtsAttributeTypes.OperationalImpact);
       } else {
-         teamArt.setSoleAttributeValue(AtsAttributeTypes.OperationalImpactAttr, impact);
+         teamArt.setSoleAttributeValue(AtsAttributeTypes.OperationalImpact, impact);
       }
       String desc = getDescStr();
       if (desc == null || desc.equals("")) {
-         teamArt.deleteSoleAttribute(AtsAttributeTypes.OperationalImpactDescriptionAttr);
+         teamArt.deleteSoleAttribute(AtsAttributeTypes.OperationalImpactDescription);
       } else {
-         teamArt.setSoleAttributeValue(AtsAttributeTypes.OperationalImpactDescriptionAttr, desc);
+         teamArt.setSoleAttributeValue(AtsAttributeTypes.OperationalImpactDescription, desc);
       }
    }
 
    @Override
    public void revert() {
       try {
-         super.set(teamArt.getSoleAttributeValue(AtsAttributeTypes.OperationalImpactAttr, ""));
+         super.set(teamArt.getSoleAttributeValue(AtsAttributeTypes.OperationalImpact, ""));
          if (getText() != null) {
-            getText().set(teamArt.getSoleAttributeValue(AtsAttributeTypes.OperationalImpactDescriptionAttr, ""));
+            getText().set(teamArt.getSoleAttributeValue(AtsAttributeTypes.OperationalImpactDescription, ""));
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
@@ -73,11 +73,11 @@ public class OperationalImpactXWidget extends XComboWithText implements IArtifac
 
    @Override
    public Result isDirty() throws OseeCoreException {
-      if (!get().equals(teamArt.getSoleAttributeValue(AtsAttributeTypes.OperationalImpactAttr, ""))) {
-         return new Result(true, AtsAttributeTypes.OperationalImpactAttr.toString());
+      if (!get().equals(teamArt.getSoleAttributeValue(AtsAttributeTypes.OperationalImpact, ""))) {
+         return new Result(true, AtsAttributeTypes.OperationalImpact.toString());
       }
-      if (!getDescStr().equals(teamArt.getSoleAttributeValue(AtsAttributeTypes.OperationalImpactDescriptionAttr, ""))) {
-         return new Result(true, AtsAttributeTypes.OperationalImpactDescriptionAttr.toString());
+      if (!getDescStr().equals(teamArt.getSoleAttributeValue(AtsAttributeTypes.OperationalImpactDescription, ""))) {
+         return new Result(true, AtsAttributeTypes.OperationalImpactDescription.toString());
       }
       return Result.FalseResult;
    }

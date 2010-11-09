@@ -33,8 +33,8 @@ public class AtsEndorseWorkPageDefinition extends WorkPageDefinition {
       addWorkItem("ats.Title");
       addWorkItem(AtsAttributeTypes.Description);
       addWorkItem(AtsAttributeTypes.ProposedResolution);
-      addWorkItem(AtsAttributeTypes.ChangeTypeAttribute);
-      addWorkItem(AtsAttributeTypes.PriorityTypeAttribute);
+      addWorkItem(AtsAttributeTypes.ChangeType);
+      addWorkItem(AtsAttributeTypes.PriorityType);
       addWorkItem(AtsAttributeTypes.NeedBy);
       addWorkItem(AtsAttributeTypes.ValidationRequired);
       addWorkItem(AtsAttributeTypes.WorkPackage);

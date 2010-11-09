@@ -44,7 +44,7 @@ public class OperationalImpactWorkaroundDesciptionColumn extends XViewerValueCol
       try {
          if (element instanceof TeamWorkFlowArtifact) {
             return ((TeamWorkFlowArtifact) element).getArtifact().getSoleAttributeValue(
-               AtsAttributeTypes.OperationalImpactWorkaroundDescriptionAttr, "");
+               AtsAttributeTypes.OperationalImpactWorkaroundDescription, "");
          }
          if (element instanceof ActionArtifact && ((ActionArtifact) element).getTeamWorkFlowArtifacts().size() == 1) {
             return getColumnText(((ActionArtifact) element).getTeamWorkFlowArtifacts().iterator().next(), column,
