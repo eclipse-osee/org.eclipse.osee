@@ -29,12 +29,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.jdk.core.util.ChecksumUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.MatchFilter;
 import org.eclipse.osee.framework.jdk.core.util.io.streams.StreamPumper;
+import org.eclipse.osee.framework.jdk.core.util.xml.XMLStreamWriterUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExportClassLoader;
 import org.eclipse.osee.ote.core.GCHelper;
@@ -619,6 +622,27 @@ public class AbstractRuntimeManager implements IRuntimeLibraryManager {
          }
       }
       return el;
+   }
+
+   @Override
+   public void toXml(XMLStreamWriter writer) throws XMLStreamException {
+      writer.writeStartElement("RuntimeVersions");
+      if (currentJarVersions != null) {
+         for (String version : currentJarVersions) {
+            XMLStreamWriterUtil.writeElement(writer, "Version", version);
+         }
+      }
+      for (Bundle bundle : runningBundles) {
+         String version = (String) bundle.getHeaders().get("Bundle-Version");
+         if (version != null) {
+            XMLStreamWriterUtil.writeElement(writer, "Version", bundle.getSymbolicName() + version);
+         }
+         String implVersion = (String) bundle.getHeaders().get("Implementation-Version");
+         if (implVersion != null) {
+            XMLStreamWriterUtil.writeElement(writer, "Version", bundle.getSymbolicName() + implVersion);
+         }
+      }
+      writer.writeEndElement();
    }
 
    @Override

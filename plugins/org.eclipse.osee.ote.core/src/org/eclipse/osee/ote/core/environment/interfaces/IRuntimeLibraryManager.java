@@ -13,12 +13,13 @@ package org.eclipse.osee.ote.core.environment.interfaces;
 import java.io.IOException;
 import java.util.Collection;
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
+import org.eclipse.osee.framework.jdk.core.persistence.XmlizableStream;
 import org.eclipse.osee.ote.core.ReturnStatus;
 import org.eclipse.osee.ote.core.environment.BundleConfigurationReport;
 import org.eclipse.osee.ote.core.environment.BundleDescription;
 import org.osgi.framework.Version;
 
-public interface IRuntimeLibraryManager extends Xmlizable {
+public interface IRuntimeLibraryManager extends Xmlizable, XmlizableStream {
    /**
     * @deprecated use isBundleAvailable
     */

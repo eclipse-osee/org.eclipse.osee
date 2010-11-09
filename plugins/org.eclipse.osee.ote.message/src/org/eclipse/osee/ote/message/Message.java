@@ -24,8 +24,12 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
+import org.eclipse.osee.framework.jdk.core.persistence.XmlizableStream;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
+import org.eclipse.osee.framework.jdk.core.util.xml.XMLStreamWriterUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.GCHelper;
 import org.eclipse.osee.ote.core.MethodFormatter;
@@ -51,7 +55,7 @@ import org.w3c.dom.Document;
 /**
  * @author Andrew M. Finkbeiner
  */
-public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T extends MessageData, U extends Message<S, T, U>> implements Xmlizable {
+public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T extends MessageData, U extends Message<S, T, U>> implements Xmlizable, XmlizableStream {
    private static volatile AtomicLong constructed = new AtomicLong(0);
    private static volatile AtomicLong finalized = new AtomicLong(0);
    private final HashMap<String, Element> elementMap;
@@ -726,6 +730,13 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       rootElement.appendChild(Jaxp.createElement(doc, "Name", name));
       rootElement.appendChild(Jaxp.createElement(doc, "Type", getMemType().name()));
       return rootElement;
+   }
+
+   @Override
+   public void toXml(XMLStreamWriter writer) throws XMLStreamException {
+      writer.writeStartElement("Message");
+      XMLStreamWriterUtil.writeElement(writer, "Name", name);
+      XMLStreamWriterUtil.writeElement(writer, "Type", getMemType().name());
    }
 
    public void zeroize() {
