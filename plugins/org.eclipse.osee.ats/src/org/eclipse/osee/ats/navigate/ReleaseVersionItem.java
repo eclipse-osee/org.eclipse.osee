@@ -19,7 +19,6 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionLockedType;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
-import org.eclipse.osee.ats.field.ReleaseDateColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
@@ -92,7 +91,7 @@ public class ReleaseVersionItem extends XNavigateItemAction {
             }
 
             verArt.setSoleAttributeValue(AtsAttributeTypes.Released, true);
-            verArt.setSoleAttributeValue(ReleaseDateColumn.ReleaseDate, new Date());
+            verArt.setSoleAttributeValue(AtsAttributeTypes.ReleaseDate, new Date());
             verArt.setNextVersion(false);
             verArt.persist();
 

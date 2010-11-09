@@ -13,11 +13,6 @@ import org.eclipse.swt.SWT;
 
 public class EstimatedHoursColumn extends XViewerAtsAttributeValueColumn {
 
-   public static final IAttributeType EstimatedHours =
-      new AtsAttributeTypes(
-         "AAMFEdCSqBh+cPyadiwA",
-         "Estimated Hours",
-         "Hours estimated to implement the changes associated with this Action.\nIncludes estimated hours for workflows, tasks and reviews.");
    public static EstimatedHoursColumn instance = new EstimatedHoursColumn();
 
    public static EstimatedHoursColumn getInstance() {
@@ -25,8 +20,8 @@ public class EstimatedHoursColumn extends XViewerAtsAttributeValueColumn {
    }
 
    private EstimatedHoursColumn() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".estimatedHours", EstimatedHours, 40, SWT.CENTER, false,
-         SortDataType.Float, true);
+      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".estimatedHours", AtsAttributeTypes.EstimatedHours, 40, SWT.CENTER,
+         false, SortDataType.Float, true);
    }
 
    public EstimatedHoursColumn(String id, IAttributeType attributeType, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {

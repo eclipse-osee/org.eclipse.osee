@@ -30,8 +30,6 @@ import org.eclipse.swt.widgets.TreeItem;
 
 public class PriorityColumn extends XViewerAtsAttributeValueColumn {
 
-   public static final IAttributeType PriorityTypeAttribute = new AtsAttributeTypes("AAMFEc8JzH1U6XGD59QA", "Priority",
-      "1 = High; 5 = Low");
    public static PriorityColumn instance = new PriorityColumn();
 
    public static PriorityColumn getInstance() {
@@ -39,7 +37,7 @@ public class PriorityColumn extends XViewerAtsAttributeValueColumn {
    }
 
    private PriorityColumn() {
-      super(PriorityTypeAttribute, 20, SWT.LEFT, true, SortDataType.String, true);
+      super(AtsAttributeTypes.PriorityTypeAttribute, 20, SWT.LEFT, true, SortDataType.String, true);
    }
 
    public PriorityColumn(IAttributeType attributeType, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
@@ -67,7 +65,7 @@ public class PriorityColumn extends XViewerAtsAttributeValueColumn {
          }
       }
       try {
-         PromptChangeUtil.promptChangeAttribute(teams, PriorityTypeAttribute, persist, false);
+         PromptChangeUtil.promptChangeAttribute(teams, AtsAttributeTypes.PriorityTypeAttribute, persist, false);
          return true;
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't change priority", ex);

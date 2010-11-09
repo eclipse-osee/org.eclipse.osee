@@ -32,8 +32,6 @@ import org.eclipse.swt.widgets.TreeItem;
 
 public class ResolutionColumn extends XViewerAtsAttributeValueColumn {
 
-   public static final IAttributeType Resolution = new AtsAttributeTypes("AAMFEdUMfV1KdbQNaKwA", "Resolution",
-      "Implementation details.");
    public static ResolutionColumn instance = new ResolutionColumn();
 
    public static ResolutionColumn getInstance() {
@@ -41,7 +39,7 @@ public class ResolutionColumn extends XViewerAtsAttributeValueColumn {
    }
 
    private ResolutionColumn() {
-      super(Resolution, 150, SWT.LEFT, false, SortDataType.String, true);
+      super(AtsAttributeTypes.Resolution, 150, SWT.LEFT, false, SortDataType.String, true);
    }
 
    public ResolutionColumn(String id, IAttributeType attributeType, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
@@ -83,7 +81,7 @@ public class ResolutionColumn extends XViewerAtsAttributeValueColumn {
                xViewer.update(tasks.toArray(), null);
                return true;
             }
-         } else if (PromptChangeUtil.promptChangeAttribute(tasks, Resolution, false, true)) {
+         } else if (PromptChangeUtil.promptChangeAttribute(tasks, AtsAttributeTypes.Resolution, false, true)) {
             //         editor.onDirtied();
             xViewer.update(tasks.toArray(), null);
             return true;
@@ -116,7 +114,8 @@ public class ResolutionColumn extends XViewerAtsAttributeValueColumn {
       try {
          TaskArtifact taskArt = (TaskArtifact) element;
          TaskResOptionDefinition def =
-            taskArt.getTaskResolutionOptionDefinition((String) taskArt.getSoleAttributeValue(Resolution, null));
+            taskArt.getTaskResolutionOptionDefinition((String) taskArt.getSoleAttributeValue(
+               AtsAttributeTypes.Resolution, null));
          if (def != null) {
             return Displays.getSystemColor(def.getColorInt());
          }

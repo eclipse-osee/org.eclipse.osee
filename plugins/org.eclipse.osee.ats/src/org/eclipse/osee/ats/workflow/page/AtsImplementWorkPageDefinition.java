@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.workflow.page;
 
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.field.ResolutionColumn;
 import org.eclipse.osee.ats.util.DefaultTeamState;
 import org.eclipse.osee.ats.workflow.flow.TeamWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions.RuleWorkItemId;
@@ -33,6 +32,6 @@ public class AtsImplementWorkPageDefinition extends WorkPageDefinition {
       addWorkItem(RuleWorkItemId.atsRequireStateHourSpentPrompt.name());
       addWorkItem(AtsAttributeTypes.WorkPackage);
       addWorkItem(AtsAttributeTypes.EstimatedCompletionDate);
-      addWorkItem(ResolutionColumn.Resolution);
+      addWorkItem(AtsAttributeTypes.Resolution);
    }
 }

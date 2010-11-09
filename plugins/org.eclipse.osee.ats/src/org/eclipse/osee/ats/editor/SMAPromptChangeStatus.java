@@ -16,7 +16,6 @@ import java.util.List;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
-import org.eclipse.osee.ats.field.ResolutionColumn;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskOptionStatusDialog;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
@@ -115,7 +114,7 @@ public class SMAPromptChangeStatus {
             sma.getStateMgr().addAssignee(UserManager.getUser());
          }
          if (options != null) {
-            sma.setSoleAttributeValue(ResolutionColumn.Resolution, selectedOption);
+            sma.setSoleAttributeValue(AtsAttributeTypes.Resolution, selectedOption);
          }
          if (sma instanceof TaskArtifact) {
             ((TaskArtifact) sma).statusPercentChanged(hours, percent, transaction);

@@ -29,11 +29,17 @@ public class AtsAttributeTypes extends NamedIdentity implements IAttributeType {
    public static final IAttributeType AllowCreateBranch = new AtsAttributeTypes("AAMFEbARuQEvi6rtY5gA", "Allow Create Branch");
    public static final IAttributeType BaselineBranchGuid = new AtsAttributeTypes("AAMFEdIjJ2za2fblEVgA", "Baseline Branch Guid", "Basline branch associated with ATS object.");
    public static final IAttributeType BlockingReview = new AtsAttributeTypes("AAMFEctKkjMRrIy1C7gA", "Blocking Review");
+   public static final IAttributeType Category1Attribute = new AtsAttributeTypes("AAMFEdrYniOQYrYUKKQA", "Category", "Open field for user to be able to enter text to use for categorizing/sorting.");
+   public static final IAttributeType Category2Attribute = new AtsAttributeTypes("AAMFEdthBkolbJKLXuAA", "Category2", Category1Attribute.getDescription());
+   public static final IAttributeType Category3Attribute = new AtsAttributeTypes("AAMFEd06oxr8LMzZxdgA", "Category3", Category1Attribute.getDescription());
+   public static final IAttributeType ChangeTypeAttribute = new AtsAttributeTypes("AAMFEc+MwGHnPCv7HlgA", "Change Type", "Type of change.");
    public static final IAttributeType CurrentState = new AtsAttributeTypes("AAMFEdOWL3u6hmX2VbwA", "Current State", "Current state of workflow state machine.");
    public static final IAttributeType Decision = new AtsAttributeTypes("AAMFEd7uDXcmqq_FrCQA", "Decision", "Option selected during decision review.");
    public static final IAttributeType DecisionReviewOptions = new AtsAttributeTypes("AAMFEd5hRy1+SRJRqfwA", "Decision Review Options", "Options available for selection in review.  Each line is a separate option. Format: <option name>;<state to transition to>;<assignee>");
    public static final IAttributeType Description = new AtsAttributeTypes("AAMFEdWJ_ChxX6+YKbwA", "Description", "Detailed explanation.");
    public static final IAttributeType EstimatedCompletionDate = new AtsAttributeTypes("AAMFEc18k3Gh+GP7zqAA", "Estimated Completion Date", "Date the changes will be completed.");
+   public static final IAttributeType EstimatedHours = new AtsAttributeTypes("AAMFEdCSqBh+cPyadiwA", "Estimated Hours", "Hours estimated to implement the changes associated with this Action.\nIncludes estimated hours for workflows, tasks and reviews.");
+   public static final IAttributeType EstimatedReleaseDate = new AtsAttributeTypes("AAMFEcy6VB7Ble5SP1QA", "Estimated Release Date", "Date the changes will be made available to the users.");
    public static final IAttributeType FullName = new AtsAttributeTypes("AAMFEdZI9XLT34cTonAA", "Full Name", "Expanded and descriptive name.");
    public static final IAttributeType GoalOrderVote = new AtsAttributeTypes("Aiecsz9pP1CRoQdaYRAA", "Goal Order Vote", "Vote for order item belongs to within goal.");
    public static final IAttributeType HoursPerWorkDay = new AtsAttributeTypes("AAMFEdGlqFsZp22RMdAA", "Hours Per Work Day");
@@ -44,14 +50,23 @@ public class AtsAttributeTypes extends NamedIdentity implements IAttributeType {
    public static final IAttributeType NextVersion = new AtsAttributeTypes("AAMFEcpH8Xb72hsF5AwA", "Next Version", "True if version artifact is \"Next\" version to be released.");
    public static final IAttributeType Numeric1 = new AtsAttributeTypes("AABY2xxQsDm811kCViwA", "Numeric1", "Open field for user to be able to enter numbers for sorting.");
    public static final IAttributeType Numeric2 = new AtsAttributeTypes("AABiRtvZsAEkU4BS9qwA", "Numeric2", Numeric1.getDescription());
+   public static final IAttributeType OperationalImpactAttr = new AtsAttributeTypes("ADTfjCBpFxlyV3o1wLwA", "Operational Impact");
+   public static final IAttributeType OperationalImpactDescriptionAttr = new AtsAttributeTypes("ADTfjCDvUF5PtiKdQ3wA", "Operational Impact Description");
+   public static final IAttributeType OperationalImpactWorkaroundAttr = new AtsAttributeTypes("AbMqFfIwQHRbmzT_VTAA", "Operational Impact Workaround");
+   public static final IAttributeType OperationalImpactWorkaroundDescriptionAttr = new AtsAttributeTypes("AbMo7PoIukFDhQFJxKwA", "Operational Impact Workaround Description");
    public static final IAttributeType PercentRework = new AtsAttributeTypes("AAMFEdKfjl2TII9+tuwA", "Percent Rework");
+   public static final IAttributeType Points = new AtsAttributeTypes("AY2EeqhzcDEGtXtREkAA", "Points", "Abstract value that describes risk, complexity, and size of Actions.");
+   public static final IAttributeType PriorityTypeAttribute = new AtsAttributeTypes("AAMFEc8JzH1U6XGD59QA", "Priority", "1 = High; 5 = Low");
    public static final IAttributeType Problem = new AtsAttributeTypes("AAMFEdQUxRyevvTu+bwA", "Problem", "Problem found during analysis.");
    public static final IAttributeType ProposedResolution = new AtsAttributeTypes("AAMFEdSSRDGgBQ5tctAA", "Proposed Resolution", "Recommended resolution.");
    public static final IAttributeType RelatedToState = new AtsAttributeTypes("AAMFEdkwHULOmHbMbGgA", "Related To State", "State of parent workflow this object is related to.");
    public static final IAttributeType Released = new AtsAttributeTypes("AAMFEcnMoUZMLA2zB1AA", "Released", "True if object is in a released state.");
+   public static final IAttributeType ReleaseDate = new AtsAttributeTypes("AAMFEc3+cGcMDOCdmdAA", "Release Date", "Date the changes were made available to the users.");
+   public static final IAttributeType Resolution = new AtsAttributeTypes("AAMFEdUMfV1KdbQNaKwA", "Resolution", "Implementation details.");
    public static final IAttributeType ReviewBlocks = new AtsAttributeTypes("AAMFEc6G2A8jmRWJgagA", "Review Blocks", "Review Completion will block it's parent workflow in this manner.");
    public static final IAttributeType ReviewDefect = new AtsAttributeTypes("AAMFEd+MSVAb8JQ6f5gA", "Review Defect");
    public static final IAttributeType Role = new AtsAttributeTypes("AAMFEeCqMz0XCSBJ+IQA", "Role");
+   public static final IAttributeType SmaNote = new AtsAttributeTypes("AAMFEdm7ywte8qayfbAA", "SMA Note", "Notes applicable to ATS object");
    public static final IAttributeType State = new AtsAttributeTypes("AAMFEdMa3wzVvp60xLQA", "State", "States of workflow state machine.");
    public static final IAttributeType StateNotes = new AtsAttributeTypes("AAMFEdiWPm7M_xV1EswA", "State Notes");
    public static final IAttributeType TeamDefinition = new AtsAttributeTypes("AAMFEdd5bFEe18bd0lQA", "Team Definition");
@@ -64,11 +79,11 @@ public class AtsAttributeTypes extends NamedIdentity implements IAttributeType {
    public static final IAttributeType WorkPackage = new AtsAttributeTypes("AAMFEdpJqRp2wvA2qvAA", "Work Package", "Designated accounting work package for completing workflow.");
    // @formatter:on
 
-   public AtsAttributeTypes(String guid, String name) {
+   private AtsAttributeTypes(String guid, String name) {
       super(guid, "ats." + name);
    }
 
-   public AtsAttributeTypes(String guid, String name, String description) {
+   private AtsAttributeTypes(String guid, String name, String description) {
       super(guid, "ats." + name, description);
    }
 }

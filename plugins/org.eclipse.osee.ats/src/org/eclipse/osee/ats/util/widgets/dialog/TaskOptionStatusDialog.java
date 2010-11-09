@@ -21,7 +21,7 @@ import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.field.ResolutionColumn;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -89,7 +89,7 @@ public class TaskOptionStatusDialog extends SMAStatusDialog {
          resolutionCombo.createWidgets(parent, 2);
          try {
             if (smas.size() == 1) {
-               String selOption = smas.iterator().next().getSoleAttributeValue(ResolutionColumn.Resolution, "");
+               String selOption = smas.iterator().next().getSoleAttributeValue(AtsAttributeTypes.Resolution, "");
                if (Strings.isValid(selOption)) {
                   selectedOption = nameToResDef.get(selOption);
                   if (selectedOption != null) {

@@ -15,8 +15,6 @@ import org.eclipse.swt.SWT;
 
 public class EstimatedReleaseDateColumn extends AbstractWorkflowVersionDateColumn {
 
-   public static final IAttributeType EstimatedReleaseDate = new AtsAttributeTypes("AAMFEcy6VB7Ble5SP1QA",
-      "Estimated Release Date", "Date the changes will be made available to the users.");
    public static EstimatedReleaseDateColumn instance = new EstimatedReleaseDateColumn();
 
    public static EstimatedReleaseDateColumn getInstance() {
@@ -24,8 +22,8 @@ public class EstimatedReleaseDateColumn extends AbstractWorkflowVersionDateColum
    }
 
    private EstimatedReleaseDateColumn() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".estimatedReleaseDate", EstimatedReleaseDate, 80, SWT.LEFT, false,
-         SortDataType.Date, true);
+      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".estimatedReleaseDate", AtsAttributeTypes.EstimatedReleaseDate, 80,
+         SWT.LEFT, false, SortDataType.Date, true);
    }
 
    public EstimatedReleaseDateColumn(IAttributeType attributeType, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
@@ -43,22 +41,24 @@ public class EstimatedReleaseDateColumn extends AbstractWorkflowVersionDateColum
    }
 
    public static Date getDateFromWorkflow(Object object) throws OseeCoreException {
-      return AbstractWorkflowVersionDateColumn.getDateFromWorkflow(EstimatedReleaseDate, object);
+      return AbstractWorkflowVersionDateColumn.getDateFromWorkflow(AtsAttributeTypes.EstimatedReleaseDate, object);
    }
 
    public static Date getDateFromTargetedVersion(Object object) throws OseeCoreException {
-      return AbstractWorkflowVersionDateColumn.getDateFromTargetedVersion(EstimatedReleaseDate, object);
+      return AbstractWorkflowVersionDateColumn.getDateFromTargetedVersion(AtsAttributeTypes.EstimatedReleaseDate,
+         object);
    }
 
    public static String getDateStrFromWorkflow(AbstractWorkflowArtifact artifact) throws OseeCoreException {
-      return AbstractWorkflowVersionDateColumn.getDateStrFromWorkflow(EstimatedReleaseDate, artifact);
+      return AbstractWorkflowVersionDateColumn.getDateStrFromWorkflow(AtsAttributeTypes.EstimatedReleaseDate, artifact);
    }
 
    public static String getDateStrFromTargetedVersion(AbstractWorkflowArtifact artifact) throws OseeCoreException {
-      return AbstractWorkflowVersionDateColumn.getDateStrFromTargetedVersion(EstimatedReleaseDate, artifact);
+      return AbstractWorkflowVersionDateColumn.getDateStrFromTargetedVersion(AtsAttributeTypes.EstimatedReleaseDate,
+         artifact);
    }
 
    public static String getDateStr(AbstractWorkflowArtifact artifact) throws OseeCoreException {
-      return AbstractWorkflowVersionDateColumn.getDateStr(EstimatedReleaseDate, artifact);
+      return AbstractWorkflowVersionDateColumn.getDateStr(AtsAttributeTypes.EstimatedReleaseDate, artifact);
    }
 }

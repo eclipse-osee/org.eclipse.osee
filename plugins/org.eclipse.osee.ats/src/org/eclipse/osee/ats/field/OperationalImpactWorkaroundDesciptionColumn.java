@@ -13,15 +13,11 @@ import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.swt.SWT;
 
 public class OperationalImpactWorkaroundDesciptionColumn extends XViewerValueColumn {
-
-   public static final IAttributeType OperationalImpactWorkaroundDescriptionAttr = new AtsAttributeTypes(
-      "AbMo7PoIukFDhQFJxKwA", "Operational Impact Workaround Description");
 
    public OperationalImpactWorkaroundDesciptionColumn() {
       super("ats.Operational Impact Workaround Description", "Operational Impact Workaround Description", 150,
@@ -48,7 +44,7 @@ public class OperationalImpactWorkaroundDesciptionColumn extends XViewerValueCol
       try {
          if (element instanceof TeamWorkFlowArtifact) {
             return ((TeamWorkFlowArtifact) element).getArtifact().getSoleAttributeValue(
-               OperationalImpactWorkaroundDescriptionAttr, "");
+               AtsAttributeTypes.OperationalImpactWorkaroundDescriptionAttr, "");
          }
          if (element instanceof ActionArtifact && ((ActionArtifact) element).getTeamWorkFlowArtifacts().size() == 1) {
             return getColumnText(((ActionArtifact) element).getTeamWorkFlowArtifacts().iterator().next(), column,

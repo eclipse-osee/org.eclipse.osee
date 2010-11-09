@@ -24,9 +24,6 @@ import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.field.EstimatedHoursColumn;
-import org.eclipse.osee.ats.field.NotesColumn;
-import org.eclipse.osee.ats.field.ResolutionColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsNotifyUsers;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -221,7 +218,7 @@ public class ExcelAtsTaskArtifactExtractor {
       private void processNotes(String[] row, TaskArtifact taskArt, int i) throws OseeCoreException {
          String str = row[i];
          if (Strings.isValid(str)) {
-            taskArt.setSoleAttributeValue(NotesColumn.SmaNote, str);
+            taskArt.setSoleAttributeValue(AtsAttributeTypes.SmaNote, str);
          }
       }
 
@@ -242,7 +239,7 @@ public class ExcelAtsTaskArtifactExtractor {
       private void processResolution(String[] row, TaskArtifact taskArt, int i) throws OseeCoreException {
          String str = row[i];
          if (Strings.isValid(str)) {
-            taskArt.setSoleAttributeValue(ResolutionColumn.Resolution, str);
+            taskArt.setSoleAttributeValue(AtsAttributeTypes.Resolution, str);
          }
       }
 
@@ -255,7 +252,7 @@ public class ExcelAtsTaskArtifactExtractor {
             } catch (Exception ex) {
                throw new OseeArgumentException("Invalid Estimated Hours \"%s\" for row %d", str, rowNum);
             }
-            taskArt.setSoleAttributeValue(EstimatedHoursColumn.EstimatedHours, hours);
+            taskArt.setSoleAttributeValue(AtsAttributeTypes.EstimatedHours, hours);
          }
       }
 

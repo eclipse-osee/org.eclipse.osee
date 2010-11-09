@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.workflow.page;
 
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
-import org.eclipse.osee.ats.field.ResolutionColumn;
 import org.eclipse.osee.ats.workflow.flow.PeerToPeerWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
@@ -33,7 +32,7 @@ public class AtsPeerReviewWorkPageDefinition extends WorkPageDefinition {
       super(name, pageId, parentId);
       addWorkItem(AtsAttributeTypes.Role);
       addWorkItem(AtsAttributeTypes.ReviewDefect);
-      addWorkItem(ResolutionColumn.Resolution);
+      addWorkItem(AtsAttributeTypes.Resolution);
       addWorkItem(AtsWorkDefinitions.ATS_DESCRIPTION_NOT_REQUIRED_ID);
    }
 

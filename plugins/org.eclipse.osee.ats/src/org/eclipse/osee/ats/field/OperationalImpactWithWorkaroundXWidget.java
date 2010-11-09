@@ -6,6 +6,7 @@
 package org.eclipse.osee.ats.field;
 
 import java.util.logging.Level;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -47,47 +48,42 @@ public class OperationalImpactWithWorkaroundXWidget extends XComboWithTextAndCom
    public void saveToArtifact() throws OseeCoreException {
       String impact = get();
       if (impact == null || impact.equals("")) {
-         teamArt.deleteSoleAttribute(OperationalImpactColumn.OperationalImpactAttr);
+         teamArt.deleteSoleAttribute(AtsAttributeTypes.OperationalImpactAttr);
       } else {
-         teamArt.setSoleAttributeValue(OperationalImpactColumn.OperationalImpactAttr, impact);
+         teamArt.setSoleAttributeValue(AtsAttributeTypes.OperationalImpactAttr, impact);
       }
       String desc = getDescStr();
       if (desc == null || desc.equals("")) {
-         teamArt.deleteSoleAttribute(OperationalImpactDesciptionColumn.OperationalImpactDescriptionAttr);
+         teamArt.deleteSoleAttribute(AtsAttributeTypes.OperationalImpactDescriptionAttr);
       } else {
-         teamArt.setSoleAttributeValue(OperationalImpactDesciptionColumn.OperationalImpactDescriptionAttr, desc);
+         teamArt.setSoleAttributeValue(AtsAttributeTypes.OperationalImpactDescriptionAttr, desc);
       }
       String workaroundImpact = getWorkaroundImpact();
       if (workaroundImpact == null || workaroundImpact.equals("")) {
-         teamArt.deleteSoleAttribute(OperationalImpactWorkaroundColumn.OperationalImpactWorkaroundAttr);
+         teamArt.deleteSoleAttribute(AtsAttributeTypes.OperationalImpactWorkaroundAttr);
       } else {
-         teamArt.setSoleAttributeValue(OperationalImpactWorkaroundColumn.OperationalImpactWorkaroundAttr,
-            workaroundImpact);
+         teamArt.setSoleAttributeValue(AtsAttributeTypes.OperationalImpactWorkaroundAttr, workaroundImpact);
       }
       String workaroundDesc = getWorkaroundDescStr();
       if (workaroundDesc == null || workaroundDesc.equals("")) {
-         teamArt.deleteSoleAttribute(OperationalImpactWorkaroundDesciptionColumn.OperationalImpactWorkaroundDescriptionAttr);
+         teamArt.deleteSoleAttribute(AtsAttributeTypes.OperationalImpactWorkaroundDescriptionAttr);
       } else {
-         teamArt.setSoleAttributeValue(
-            OperationalImpactWorkaroundDesciptionColumn.OperationalImpactWorkaroundDescriptionAttr, workaroundDesc);
+         teamArt.setSoleAttributeValue(AtsAttributeTypes.OperationalImpactWorkaroundDescriptionAttr, workaroundDesc);
       }
    }
 
    @Override
    public void revert() {
       try {
-         super.set(teamArt.getSoleAttributeValue(OperationalImpactColumn.OperationalImpactAttr, ""));
+         super.set(teamArt.getSoleAttributeValue(AtsAttributeTypes.OperationalImpactAttr, ""));
          if (getText() != null) {
-            getText().set(
-               teamArt.getSoleAttributeValue(OperationalImpactDesciptionColumn.OperationalImpactDescriptionAttr, ""));
+            getText().set(teamArt.getSoleAttributeValue(AtsAttributeTypes.OperationalImpactDescriptionAttr, ""));
          }
          if (getComboWithText() != null) {
-            getComboWithText().set(
-               teamArt.getSoleAttributeValue(OperationalImpactWorkaroundColumn.OperationalImpactWorkaroundAttr, ""));
+            getComboWithText().set(teamArt.getSoleAttributeValue(AtsAttributeTypes.OperationalImpactWorkaroundAttr, ""));
             if (getComboWithText().getText() != null) {
                getComboWithText().getText().set(
-                  teamArt.getSoleAttributeValue(
-                     OperationalImpactWorkaroundDesciptionColumn.OperationalImpactWorkaroundDescriptionAttr, ""));
+                  teamArt.getSoleAttributeValue(AtsAttributeTypes.OperationalImpactWorkaroundDescriptionAttr, ""));
             }
             getComboWithText().refresh();
          }
@@ -98,22 +94,19 @@ public class OperationalImpactWithWorkaroundXWidget extends XComboWithTextAndCom
 
    @Override
    public Result isDirty() throws OseeCoreException {
-      if (!get().equals(teamArt.getSoleAttributeValue(OperationalImpactColumn.OperationalImpactAttr, ""))) {
-         return new Result(true, OperationalImpactColumn.OperationalImpactAttr.toString());
+      if (!get().equals(teamArt.getSoleAttributeValue(AtsAttributeTypes.OperationalImpactAttr, ""))) {
+         return new Result(true, AtsAttributeTypes.OperationalImpactAttr.toString());
       }
-      if (!getDescStr().equals(
-         teamArt.getSoleAttributeValue(OperationalImpactDesciptionColumn.OperationalImpactDescriptionAttr, ""))) {
-         return new Result(true, OperationalImpactDesciptionColumn.OperationalImpactDescriptionAttr.toString());
+      if (!getDescStr().equals(teamArt.getSoleAttributeValue(AtsAttributeTypes.OperationalImpactDescriptionAttr, ""))) {
+         return new Result(true, AtsAttributeTypes.OperationalImpactDescriptionAttr.toString());
       }
       if (!getWorkaroundImpact().equals(
-         teamArt.getSoleAttributeValue(OperationalImpactWorkaroundColumn.OperationalImpactWorkaroundAttr, ""))) {
-         return new Result(true, OperationalImpactWorkaroundColumn.OperationalImpactWorkaroundAttr.toString());
+         teamArt.getSoleAttributeValue(AtsAttributeTypes.OperationalImpactWorkaroundAttr, ""))) {
+         return new Result(true, AtsAttributeTypes.OperationalImpactWorkaroundAttr.toString());
       }
       if (!getWorkaroundDescStr().equals(
-         teamArt.getSoleAttributeValue(
-            OperationalImpactWorkaroundDesciptionColumn.OperationalImpactWorkaroundDescriptionAttr, ""))) {
-         return new Result(true,
-            OperationalImpactWorkaroundDesciptionColumn.OperationalImpactWorkaroundDescriptionAttr.toString());
+         teamArt.getSoleAttributeValue(AtsAttributeTypes.OperationalImpactWorkaroundDescriptionAttr, ""))) {
+         return new Result(true, AtsAttributeTypes.OperationalImpactWorkaroundDescriptionAttr.toString());
       }
       return Result.FalseResult;
    }

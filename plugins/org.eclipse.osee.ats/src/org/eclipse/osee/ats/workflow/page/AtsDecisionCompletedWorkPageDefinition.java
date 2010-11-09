@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.workflow.page;
 
-import org.eclipse.osee.ats.field.ResolutionColumn;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.util.DefaultTeamState;
 import org.eclipse.osee.ats.workflow.flow.DecisionWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions.RuleWorkItemId;
@@ -32,7 +32,7 @@ public class AtsDecisionCompletedWorkPageDefinition extends WorkPageDefinition {
       addWorkItem(RuleWorkItemId.atsAddDecisionValidateBlockingReview.name());
       addWorkItem(AtsDecisionDecisionWorkPageDefinition.DECISION_QUESTION_LABEL);
       addWorkItem(AtsDecisionDecisionWorkPageDefinition.DECISION_ANSWER_LABEL);
-      addWorkItem(ResolutionColumn.Resolution);
+      addWorkItem(AtsAttributeTypes.Resolution);
    }
 
 }

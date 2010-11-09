@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.workflow.page;
 
-import org.eclipse.osee.ats.field.ResolutionColumn;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.workflow.flow.SimpleWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.flow.SimpleWorkflowDefinition.SimpleState;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions.RuleWorkItemId;
@@ -30,6 +30,6 @@ public class AtsSimpleInWorkWorkPageDefinition extends WorkPageDefinition {
    public AtsSimpleInWorkWorkPageDefinition(String name, String pageId, String parentId) {
       super(name, pageId, parentId);
       addWorkItem(RuleWorkItemId.atsRequireStateHourSpentPrompt.name());
-      addWorkItem(ResolutionColumn.Resolution);
+      addWorkItem(AtsAttributeTypes.Resolution);
    }
 }

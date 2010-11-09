@@ -13,15 +13,11 @@ import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.swt.SWT;
 
 public class OperationalImpactDesciptionColumn extends XViewerValueColumn {
-
-   public static final IAttributeType OperationalImpactDescriptionAttr = new AtsAttributeTypes("ADTfjCDvUF5PtiKdQ3wA",
-      "Operational Impact Description");
 
    public OperationalImpactDesciptionColumn() {
       super("ats.Operational Impact Description", "Operational Impact Description", 150, SWT.LEFT, false,
@@ -47,7 +43,7 @@ public class OperationalImpactDesciptionColumn extends XViewerValueColumn {
       try {
          if (element instanceof TeamWorkFlowArtifact) {
             return ((TeamWorkFlowArtifact) element).getArtifact().getSoleAttributeValue(
-               OperationalImpactDescriptionAttr, "");
+               AtsAttributeTypes.OperationalImpactDescriptionAttr, "");
          }
          if (element instanceof ActionArtifact && ((ActionArtifact) element).getTeamWorkFlowArtifacts().size() == 1) {
             return getColumnText(((ActionArtifact) element).getTeamWorkFlowArtifacts().iterator().next(), column,

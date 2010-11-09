@@ -20,7 +20,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.osee.ats.field.ChangeTypeColumn;
-import org.eclipse.osee.ats.field.PriorityColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
@@ -143,7 +142,7 @@ public class ActionArtifact extends AbstractAtsArtifact implements IWorldViewArt
          }
       }
       if (Strings.isValid(priorityType)) {
-         setSoleAttributeValue(PriorityColumn.PriorityTypeAttribute, priorityType);
+         setSoleAttributeValue(AtsAttributeTypes.PriorityTypeAttribute, priorityType);
       }
    }
 
@@ -263,7 +262,7 @@ public class ActionArtifact extends AbstractAtsArtifact implements IWorldViewArt
 
    @Override
    public String getWorldViewPriority() throws OseeCoreException {
-      return getSoleAttributeValue(PriorityColumn.PriorityTypeAttribute, "");
+      return getSoleAttributeValue(AtsAttributeTypes.PriorityTypeAttribute, "");
    }
 
    @Override

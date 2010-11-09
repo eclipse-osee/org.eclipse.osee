@@ -33,8 +33,6 @@ import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.editor.SMAEditor;
-import org.eclipse.osee.ats.field.ChangeTypeColumn;
-import org.eclipse.osee.ats.field.PriorityColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.navigate.AtsXNavigateItemLauncher;
 import org.eclipse.osee.ats.navigate.SearchNavigateItem;
@@ -100,7 +98,7 @@ public class AtsNavigateItemsToWorldViewTest {
       // delete an artifact, look for expected !Errors in the XCol
       deleteAttributesForXColErrorTest(arts, AtsAttributeTypes.TeamDefinition);
       deleteAttributesForXColErrorTest(arts, AtsAttributeTypes.ActionableItem);
-      deleteAttributesForXColErrorTest(arts, ChangeTypeColumn.ChangeTypeAttribute);
+      deleteAttributesForXColErrorTest(arts, AtsAttributeTypes.ChangeTypeAttribute);
    }
 
    @org.junit.Test
@@ -624,7 +622,7 @@ public class AtsNavigateItemsToWorldViewTest {
          verifyArtifactsHasErrors(labelProv, arts, xCol,
             getXViewer().getCustomizeMgr().getColumnNumFromXViewerColumn(xCol), actualErrorCols);
       }
-      if (!AtsAttributeTypes.CurrentState.equals(attributeTypeToDelete) && !PriorityColumn.PriorityTypeAttribute.equals(attributeTypeToDelete)) {
+      if (!AtsAttributeTypes.CurrentState.equals(attributeTypeToDelete) && !AtsAttributeTypes.PriorityTypeAttribute.equals(attributeTypeToDelete)) {
          verifyXCol1HasErrors(actualErrorCols);
       } else {
          verifyXCol2HasErrors(actualErrorCols);

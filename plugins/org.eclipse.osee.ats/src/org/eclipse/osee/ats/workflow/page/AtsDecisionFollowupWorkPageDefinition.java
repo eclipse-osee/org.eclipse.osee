@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.workflow.page;
 
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
-import org.eclipse.osee.ats.field.ResolutionColumn;
 import org.eclipse.osee.ats.workflow.flow.DecisionWorkflowDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 
@@ -29,6 +29,6 @@ public class AtsDecisionFollowupWorkPageDefinition extends WorkPageDefinition {
 
    public AtsDecisionFollowupWorkPageDefinition(String name, String pageId, String parentId) {
       super(name, pageId, parentId);
-      addWorkItem(ResolutionColumn.Resolution);
+      addWorkItem(AtsAttributeTypes.Resolution);
    }
 }

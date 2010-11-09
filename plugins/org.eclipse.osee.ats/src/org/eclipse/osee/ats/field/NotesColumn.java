@@ -13,8 +13,6 @@ import org.eclipse.swt.SWT;
 
 public class NotesColumn extends XViewerAtsAttributeValueColumn {
 
-   public static final IAttributeType SmaNote = new AtsAttributeTypes("AAMFEdm7ywte8qayfbAA", "SMA Note",
-      "Notes applicable to ATS object");
    public static NotesColumn instance = new NotesColumn();
 
    public static NotesColumn getInstance() {
@@ -22,8 +20,8 @@ public class NotesColumn extends XViewerAtsAttributeValueColumn {
    }
 
    private NotesColumn() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".notes", SmaNote, "Notes", 80, SWT.LEFT, true, SortDataType.String,
-         true);
+      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".notes", AtsAttributeTypes.SmaNote, "Notes", 80, SWT.LEFT, true,
+         SortDataType.String, true);
    }
 
    public NotesColumn(String id, IAttributeType attributeType, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {

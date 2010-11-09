@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.workflow.page;
 
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
-import org.eclipse.osee.ats.field.EstimatedHoursColumn;
 import org.eclipse.osee.ats.workflow.flow.DecisionWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
@@ -37,7 +36,7 @@ public class AtsDecisionPrepareWorkPageDefinition extends WorkPageDefinition {
       addWorkItem(AtsAttributeTypes.RelatedToState);
       addWorkItem(AtsAttributeTypes.ReviewBlocks);
       addWorkItem(AtsAttributeTypes.NeedBy);
-      addWorkItem(EstimatedHoursColumn.EstimatedHours);
+      addWorkItem(AtsAttributeTypes.EstimatedHours);
    }
 
 }

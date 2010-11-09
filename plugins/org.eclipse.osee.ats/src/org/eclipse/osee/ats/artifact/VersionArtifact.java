@@ -18,8 +18,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.config.AtsCacheManager;
-import org.eclipse.osee.ats.field.EstimatedReleaseDateColumn;
-import org.eclipse.osee.ats.field.ReleaseDateColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
@@ -170,11 +168,11 @@ public class VersionArtifact extends Artifact implements ICommitConfigArtifact {
    }
 
    public Date getEstimatedReleaseDate() throws OseeCoreException {
-      return getSoleAttributeValue(EstimatedReleaseDateColumn.EstimatedReleaseDate, null);
+      return getSoleAttributeValue(AtsAttributeTypes.EstimatedReleaseDate, null);
    }
 
    public Date getReleaseDate() throws OseeCoreException {
-      return getSoleAttributeValue(ReleaseDateColumn.ReleaseDate, null);
+      return getSoleAttributeValue(AtsAttributeTypes.ReleaseDate, null);
    }
 
    public static Set<VersionArtifact> getVersions(Collection<String> teamDefNames) throws OseeCoreException {

@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.config.AtsCacheManager;
-import org.eclipse.osee.ats.field.ChangeTypeColumn;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -155,7 +154,7 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
          criteria.add(new AttributeCriteria(AtsAttributeTypes.CurrentState, cancelOrComplete, Operator.NOT_EQUAL));
       }
       if (changeType != null) {
-         criteria.add(new AttributeCriteria(ChangeTypeColumn.ChangeTypeAttribute, changeType.name()));
+         criteria.add(new AttributeCriteria(AtsAttributeTypes.ChangeTypeAttribute, changeType.name()));
       }
 
       List<Artifact> artifacts = ArtifactQuery.getArtifactListFromCriteria(AtsUtil.getAtsBranch(), 1000, criteria);

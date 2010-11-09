@@ -6,6 +6,7 @@
 package org.eclipse.osee.ats.field;
 
 import java.util.logging.Level;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -46,25 +47,24 @@ public class OperationalImpactXWidget extends XComboWithText implements IArtifac
    public void saveToArtifact() throws OseeCoreException {
       String impact = get();
       if (impact == null || impact.equals("")) {
-         teamArt.deleteSoleAttribute(OperationalImpactColumn.OperationalImpactAttr);
+         teamArt.deleteSoleAttribute(AtsAttributeTypes.OperationalImpactAttr);
       } else {
-         teamArt.setSoleAttributeValue(OperationalImpactColumn.OperationalImpactAttr, impact);
+         teamArt.setSoleAttributeValue(AtsAttributeTypes.OperationalImpactAttr, impact);
       }
       String desc = getDescStr();
       if (desc == null || desc.equals("")) {
-         teamArt.deleteSoleAttribute(OperationalImpactDesciptionColumn.OperationalImpactDescriptionAttr);
+         teamArt.deleteSoleAttribute(AtsAttributeTypes.OperationalImpactDescriptionAttr);
       } else {
-         teamArt.setSoleAttributeValue(OperationalImpactDesciptionColumn.OperationalImpactDescriptionAttr, desc);
+         teamArt.setSoleAttributeValue(AtsAttributeTypes.OperationalImpactDescriptionAttr, desc);
       }
    }
 
    @Override
    public void revert() {
       try {
-         super.set(teamArt.getSoleAttributeValue(OperationalImpactColumn.OperationalImpactAttr, ""));
+         super.set(teamArt.getSoleAttributeValue(AtsAttributeTypes.OperationalImpactAttr, ""));
          if (getText() != null) {
-            getText().set(
-               teamArt.getSoleAttributeValue(OperationalImpactDesciptionColumn.OperationalImpactDescriptionAttr, ""));
+            getText().set(teamArt.getSoleAttributeValue(AtsAttributeTypes.OperationalImpactDescriptionAttr, ""));
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
@@ -73,12 +73,11 @@ public class OperationalImpactXWidget extends XComboWithText implements IArtifac
 
    @Override
    public Result isDirty() throws OseeCoreException {
-      if (!get().equals(teamArt.getSoleAttributeValue(OperationalImpactColumn.OperationalImpactAttr, ""))) {
-         return new Result(true, OperationalImpactColumn.OperationalImpactAttr.toString());
+      if (!get().equals(teamArt.getSoleAttributeValue(AtsAttributeTypes.OperationalImpactAttr, ""))) {
+         return new Result(true, AtsAttributeTypes.OperationalImpactAttr.toString());
       }
-      if (!getDescStr().equals(
-         teamArt.getSoleAttributeValue(OperationalImpactDesciptionColumn.OperationalImpactDescriptionAttr, ""))) {
-         return new Result(true, OperationalImpactDesciptionColumn.OperationalImpactDescriptionAttr.toString());
+      if (!getDescStr().equals(teamArt.getSoleAttributeValue(AtsAttributeTypes.OperationalImpactDescriptionAttr, ""))) {
+         return new Result(true, AtsAttributeTypes.OperationalImpactDescriptionAttr.toString());
       }
       return Result.FalseResult;
    }

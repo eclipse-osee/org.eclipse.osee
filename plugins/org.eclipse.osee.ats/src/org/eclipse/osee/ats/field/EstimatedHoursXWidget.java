@@ -5,17 +5,17 @@
  */
 package org.eclipse.osee.ats.field;
 
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.workflow.item.AtsAttributeXWidgetWorkItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 
 public class EstimatedHoursXWidget extends AtsAttributeXWidgetWorkItem {
 
-   public static final String ATS_ESTIMATED_HOURS_NOT_REQUIRED_ID =
-      EstimatedHoursColumn.EstimatedHours + ".notRequired";
+   public static final String ATS_ESTIMATED_HOURS_NOT_REQUIRED_ID = AtsAttributeTypes.EstimatedHours + ".notRequired";
 
    public EstimatedHoursXWidget() {
-      super(EstimatedHoursColumn.EstimatedHours.getUnqualifiedName(), ATS_ESTIMATED_HOURS_NOT_REQUIRED_ID,
-         EstimatedHoursColumn.EstimatedHours, "XFloatDam", XOption.NOT_REQUIRED);
+      super(AtsAttributeTypes.EstimatedHours.getUnqualifiedName(), ATS_ESTIMATED_HOURS_NOT_REQUIRED_ID,
+         AtsAttributeTypes.EstimatedHours, "XFloatDam", XOption.NOT_REQUIRED);
    }
 
 }

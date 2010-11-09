@@ -21,13 +21,12 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.field.ChangeTypeColumn;
-import org.eclipse.osee.ats.field.EstimatedReleaseDateColumn;
-import org.eclipse.osee.ats.field.ReleaseDateColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -133,15 +132,15 @@ public class VersionReportJob extends Job {
 
    public static String getReleasedString(VersionArtifact verArt) throws OseeCoreException {
       String released = "";
-      if (verArt.isReleased() && verArt.getSoleAttributeValue(ReleaseDateColumn.ReleaseDate, null) != null) {
+      if (verArt.isReleased() && verArt.getSoleAttributeValue(AtsAttributeTypes.ReleaseDate, null) != null) {
          released =
-            " - " + "Released: " + getDateString(verArt.getSoleAttributeValue(ReleaseDateColumn.ReleaseDate,
+            " - " + "Released: " + getDateString(verArt.getSoleAttributeValue(AtsAttributeTypes.ReleaseDate,
                (Date) null));
       }
-      if (verArt.isNextVersion() && verArt.getSoleAttributeValue(EstimatedReleaseDateColumn.EstimatedReleaseDate, null) != null) {
+      if (verArt.isNextVersion() && verArt.getSoleAttributeValue(AtsAttributeTypes.EstimatedReleaseDate, null) != null) {
          released =
             " - " + "Next Release - Estimated Release Date: " + getDateString(verArt.getSoleAttributeValue(
-               EstimatedReleaseDateColumn.EstimatedReleaseDate, (Date) null));
+               AtsAttributeTypes.EstimatedReleaseDate, (Date) null));
       }
       return released;
    }

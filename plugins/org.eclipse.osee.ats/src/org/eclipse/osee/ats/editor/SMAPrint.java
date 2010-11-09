@@ -16,12 +16,12 @@ import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.note.NoteItem;
 import org.eclipse.osee.ats.editor.widget.ReviewInfoXWidget;
 import org.eclipse.osee.ats.field.ChangeTypeColumn;
-import org.eclipse.osee.ats.field.ResolutionColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.Overview;
@@ -137,7 +137,7 @@ public class SMAPrint extends Action {
                art.getAssigneeStr(),
                art.getPercentCompleteSMATotal() + "",
                art.getHoursSpentSMATotal() + "",
-               art.getSoleAttributeValue(ResolutionColumn.Resolution, ""),
+               art.getSoleAttributeValue(AtsAttributeTypes.Resolution, ""),
                art.getHumanReadableId()}));
          }
          rd.addRaw(AHTML.endBorderTable());

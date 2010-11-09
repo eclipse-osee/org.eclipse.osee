@@ -37,8 +37,6 @@ import org.eclipse.swt.widgets.TreeItem;
 
 public class ChangeTypeColumn extends XViewerAtsAttributeValueColumn {
 
-   public static final IAttributeType ChangeTypeAttribute = new AtsAttributeTypes("AAMFEc+MwGHnPCv7HlgA",
-      "Change Type", "Type of change.");
    public static ChangeTypeColumn instance = new ChangeTypeColumn();
 
    public static ChangeTypeColumn getInstance() {
@@ -46,7 +44,7 @@ public class ChangeTypeColumn extends XViewerAtsAttributeValueColumn {
    }
 
    private ChangeTypeColumn() {
-      super(ChangeTypeAttribute, 22, SWT.CENTER, true, SortDataType.String, true);
+      super(AtsAttributeTypes.ChangeTypeAttribute, 22, SWT.CENTER, true, SortDataType.String, true);
    }
 
    public ChangeTypeColumn(IAttributeType attributeType, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
@@ -161,11 +159,11 @@ public class ChangeTypeColumn extends XViewerAtsAttributeValueColumn {
    }
 
    public static ChangeType getChangeType(Artifact artifact) throws OseeCoreException {
-      return ChangeType.getChangeType(artifact.getSoleAttributeValue(ChangeTypeAttribute, ""));
+      return ChangeType.getChangeType(artifact.getSoleAttributeValue(AtsAttributeTypes.ChangeTypeAttribute, ""));
    }
 
    public static void setChangeType(Artifact artifact, ChangeType changeType) throws OseeCoreException {
-      artifact.setSoleAttributeValue(ChangeTypeAttribute, changeType.name());
+      artifact.setSoleAttributeValue(AtsAttributeTypes.ChangeTypeAttribute, changeType.name());
    }
 
    @Override

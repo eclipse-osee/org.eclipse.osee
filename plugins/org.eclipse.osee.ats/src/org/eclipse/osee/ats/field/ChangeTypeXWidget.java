@@ -5,13 +5,14 @@
  */
 package org.eclipse.osee.ats.field;
 
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.workflow.item.AtsAttributeSoleComboXWidgetWorkItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 
 public class ChangeTypeXWidget extends AtsAttributeSoleComboXWidgetWorkItem {
 
    public ChangeTypeXWidget() {
-      super(ChangeTypeColumn.ChangeTypeAttribute, "OPTIONS_FROM_ATTRIBUTE_VALIDITY", XOption.REQUIRED,
+      super(AtsAttributeTypes.ChangeTypeAttribute, "OPTIONS_FROM_ATTRIBUTE_VALIDITY", XOption.REQUIRED,
          XOption.BEGIN_COMPOSITE_6);
    }
 }

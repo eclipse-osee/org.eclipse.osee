@@ -19,7 +19,6 @@ import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.field.EstimatedReleaseDateColumn;
-import org.eclipse.osee.ats.field.PriorityColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
@@ -159,7 +158,7 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IB
 
    @Override
    public String getWorldViewPriority() throws OseeCoreException {
-      return getSoleAttributeValue(PriorityColumn.PriorityTypeAttribute, "");
+      return getSoleAttributeValue(AtsAttributeTypes.PriorityTypeAttribute, "");
    }
 
    @Override

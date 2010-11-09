@@ -24,7 +24,6 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
 import org.eclipse.osee.ats.artifact.log.LogType;
 import org.eclipse.osee.ats.field.ChangeTypeColumn;
-import org.eclipse.osee.ats.field.PriorityColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -166,7 +165,8 @@ public class ActionManager {
    public static void setArtifactIdentifyData(ActionArtifact fromAction, TeamWorkFlowArtifact toTeam) throws OseeCoreException {
       setArtifactIdentifyData(toTeam, fromAction.getName(),
          fromAction.getSoleAttributeValue(AtsAttributeTypes.Description, ""),
-         ChangeTypeColumn.getChangeType(fromAction), fromAction.getSoleAttributeValue(PriorityColumn.PriorityTypeAttribute, ""),
+         ChangeTypeColumn.getChangeType(fromAction),
+         fromAction.getSoleAttributeValue(AtsAttributeTypes.PriorityTypeAttribute, ""),
          //            fromAction.getAttributesToStringList(AtsAttributeTypes.ATS_USER_COMMUNITY),
          fromAction.getSoleAttributeValue(AtsAttributeTypes.ValidationRequired, false),
          fromAction.getSoleAttributeValue(AtsAttributeTypes.NeedBy, (Date) null));
@@ -183,7 +183,7 @@ public class ActionManager {
       ChangeTypeColumn.setChangeType(art, changeType);
       //      art.setAttributeValues(ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getStoreName(), userComms);
       if (Strings.isValid(priority)) {
-         art.setSoleAttributeValue(PriorityColumn.PriorityTypeAttribute, priority);
+         art.setSoleAttributeValue(AtsAttributeTypes.PriorityTypeAttribute, priority);
       }
       if (needByDate != null) {
          art.setSoleAttributeValue(AtsAttributeTypes.NeedBy, needByDate);

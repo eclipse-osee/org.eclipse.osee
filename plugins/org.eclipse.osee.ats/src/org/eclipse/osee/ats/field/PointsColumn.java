@@ -14,8 +14,6 @@ import org.eclipse.swt.SWT;
 
 public class PointsColumn extends XViewerAtsAttributeValueColumn {
 
-   public static final IAttributeType Points = new AtsAttributeTypes("AY2EeqhzcDEGtXtREkAA", "Points",
-      "Abstract value that describes risk, complexity, and size of Actions.");
    public static PointsColumn instance = new PointsColumn();
 
    public static PointsColumn getInstance() {
@@ -23,7 +21,7 @@ public class PointsColumn extends XViewerAtsAttributeValueColumn {
    }
 
    private PointsColumn() {
-      super(Points, 40, SWT.LEFT, false, SortDataType.Integer, true);
+      super(AtsAttributeTypes.Points, 40, SWT.LEFT, false, SortDataType.Integer, true);
    }
 
    public PointsColumn(IAttributeType attributeType, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
@@ -42,7 +40,7 @@ public class PointsColumn extends XViewerAtsAttributeValueColumn {
    }
 
    public static String getPoints(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
-      return teamArt.getSoleAttributeValue(Points, "");
+      return teamArt.getSoleAttributeValue(AtsAttributeTypes.Points, "");
    }
 
 }
