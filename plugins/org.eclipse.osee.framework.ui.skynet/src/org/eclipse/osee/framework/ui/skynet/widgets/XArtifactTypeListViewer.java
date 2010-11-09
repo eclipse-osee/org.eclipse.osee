@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.util.ArrayList;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.model.Branch;
 
 /**
  * @author Jeff C. Phillips
@@ -19,18 +20,13 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 public class XArtifactTypeListViewer extends XTypeListViewer {
    private static final String NAME = "XArtifactTypeListViewer";
 
-   public XArtifactTypeListViewer(String keyedBranchName) {
-      this(keyedBranchName, null);
-   }
-
    public XArtifactTypeListViewer(String keyedBranchName, IArtifactType artifactType) {
       super(NAME);
 
-      setContentProvider(new DefaultBranchContentProvider(new ArtifactTypeContentProvider(),
-         resolveBranch(keyedBranchName)));
+      Branch branch = resolveBranch(keyedBranchName);
+      setContentProvider(new DefaultBranchContentProvider(new ArtifactTypeContentProvider(), branch));
       ArrayList<Object> input = new ArrayList<Object>(1);
-      input.add(resolveBranch(keyedBranchName));
-
+      input.add(branch);
       setInput(input);
 
       if (artifactType != null) {
