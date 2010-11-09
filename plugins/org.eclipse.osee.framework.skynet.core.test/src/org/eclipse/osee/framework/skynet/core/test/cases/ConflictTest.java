@@ -48,20 +48,6 @@ import org.junit.Ignore;
 public class ConflictTest {
    private static final boolean DEBUG =
       "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core.test/debug/Junit"));
-   private static final String[] NO_TX_CURRENT_SET = {
-      "SELECT distinct t1.",
-      ", txs1.branch_id FROM osee_txs txs1, ",
-      " t1 WHERE txs1.gamma_id = t1.gamma_id AND txs1.tx_current = 0 %s SELECT distinct t2.",
-      ", txs2.branch_id FROM osee_txs txs2, ",
-      " t2 WHERE txs2.gamma_id = t2.gamma_id AND txs2.tx_current != 0"};
-
-   private static final String[] MULTIPLE_TX_CURRENT_SET =
-      {
-         "SELECT resulttable.branch_id, resulttable.",
-         ", COUNT(resulttable.branch_id) AS numoccurrences FROM (SELECT txs1.branch_id, t1.",
-         " FROM osee_txs txs1, ",
-         " t1 WHERE txs1.gamma_id = t1.gamma_id AND txs1.tx_current != 0) resulttable GROUP BY resulttable.branch_id, resulttable.",
-         " HAVING(COUNT(resulttable.branch_id) > 1) order by branch_id"};
 
    @BeforeClass
    public static void setUp() throws Exception {
@@ -230,21 +216,18 @@ public class ConflictTest {
 
    }
 
+   private static final String NO_TX_CURRENT_SET =
+      "SELECT distinct t1.%s, txs1.branch_id FROM osee_txs txs1, %s t1 WHERE txs1.gamma_id = t1.gamma_id AND txs1.tx_current = 0 %s SELECT distinct t2.%s, txs2.branch_id FROM osee_txs txs2, %s t2 WHERE txs2.gamma_id = t2.gamma_id AND txs2.tx_current != 0";
+
+   private static final String MULTIPLE_TX_CURRENT_SET =
+      "SELECT resulttable.branch_id, resulttable.%s, COUNT(resulttable.branch_id) AS numoccurrences FROM (SELECT txs1.branch_id, t1.%s FROM osee_txs txs1, %s t1 WHERE txs1.gamma_id = t1.gamma_id AND txs1.tx_current != 0) resulttable GROUP BY resulttable.branch_id, resulttable.%s HAVING(COUNT(resulttable.branch_id) > 1) order by branch_id";
+
    private static void checkNoTxCurrent(String dataId, String dataTable) throws OseeCoreException {
       IOseeStatement chStmt = ConnectionHandler.getStatement();
-      StringBuilder builder = new StringBuilder();
-      builder.append(NO_TX_CURRENT_SET[0]);
-      builder.append(dataId);
-      builder.append(NO_TX_CURRENT_SET[1]);
-      builder.append(dataTable);
-      builder.append(String.format(NO_TX_CURRENT_SET[2], chStmt.getComplementSql()));
-      builder.append(dataId);
-      builder.append(NO_TX_CURRENT_SET[3]);
-      builder.append(dataTable);
-      builder.append(NO_TX_CURRENT_SET[4]);
-
       try {
-         chStmt.runPreparedQuery(builder.toString());
+         String query =
+            String.format(NO_TX_CURRENT_SET, dataId, dataTable, chStmt.getComplementSql(), dataId, dataTable);
+         chStmt.runPreparedQuery(query);
          if (chStmt.next()) {
             fail(String.format("No TX Current Set Failed for dataId = %s and dataTable = %s", dataId, dataTable));
          }
@@ -255,18 +238,9 @@ public class ConflictTest {
 
    private static void checkMultipleTxCurrent(String dataId, String dataTable) throws OseeCoreException {
       IOseeStatement chStmt = ConnectionHandler.getStatement();
-      StringBuilder builder = new StringBuilder();
-      builder.append(MULTIPLE_TX_CURRENT_SET[0]);
-      builder.append(dataId);
-      builder.append(MULTIPLE_TX_CURRENT_SET[1]);
-      builder.append(dataId);
-      builder.append(MULTIPLE_TX_CURRENT_SET[2]);
-      builder.append(dataTable);
-      builder.append(MULTIPLE_TX_CURRENT_SET[3]);
-      builder.append(dataId);
-      builder.append(MULTIPLE_TX_CURRENT_SET[4]);
       try {
-         chStmt.runPreparedQuery(builder.toString());
+         String query = String.format(MULTIPLE_TX_CURRENT_SET, dataId, dataId, dataTable, dataId);
+         chStmt.runPreparedQuery(query);
          if (chStmt.next()) {
             fail(String.format("Multiple TX Current Set Failed for dataId = %s and dataTable = %s", dataId, dataTable));
          }
