@@ -106,17 +106,9 @@ public class ResolutionColumn extends XViewerAtsAttributeValueColumn {
    @Override
    public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
       if (treeItem.getData() instanceof TaskArtifact) {
-         return promptChangeResolutionOfTasks(getXViewer(), (TaskArtifact) treeItem.getData(), isPersist());
+         return promptChangeResolutionOfTasks(getXViewer(), (TaskArtifact) treeItem.getData(), isPersistAltLeftClick());
       }
       return super.handleAltLeftClick(treeColumn, treeItem);
-   }
-
-   private boolean isPersist() {
-      XViewer xViewer = getXViewer();
-      if (xViewer instanceof IPersistAltLeftClickProvider) {
-         return ((IPersistAltLeftClickProvider) xViewer).isAltLeftClickPersist();
-      }
-      return false;
    }
 
    @Override
@@ -165,7 +157,7 @@ public class ResolutionColumn extends XViewerAtsAttributeValueColumn {
       }
 
       if (!tasksUsingResOptions.isEmpty()) {
-         promptChangeResolutionOfTasks(getXViewer(), tasksUsingResOptions, isPersist());
+         promptChangeResolutionOfTasks(getXViewer(), tasksUsingResOptions, isPersistAltLeftClick());
       }
       if (!otherTreeItems.isEmpty()) {
          super.handleColumnMultiEdit(treeColumn, otherTreeItems);

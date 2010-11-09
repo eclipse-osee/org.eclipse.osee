@@ -32,6 +32,7 @@ import org.eclipse.osee.ats.field.OperationalImpactWorkaroundDesciptionColumn;
 import org.eclipse.osee.ats.field.OriginatorColumn;
 import org.eclipse.osee.ats.field.PointsColumn;
 import org.eclipse.osee.ats.field.PriorityColumn;
+import org.eclipse.osee.ats.field.RelatedToStateColumn;
 import org.eclipse.osee.ats.field.ReleaseDateColumn;
 import org.eclipse.osee.ats.field.ResolutionColumn;
 import org.eclipse.osee.ats.field.TargetedVersionColumn;
@@ -111,9 +112,6 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       COLUMN_NAMESPACE + ".goalOrderVote", AtsAttributeTypes.GoalOrderVote, 40, SWT.LEFT, false, SortDataType.String,
       true);
 
-   public static XViewerColumn Related_To_State_Col = new XViewerColumn(COLUMN_NAMESPACE + ".relatedToState",
-      AtsAttributeTypes.RelatedToState.getUnqualifiedName(), 80, SWT.LEFT, false, SortDataType.String, true,
-      "Parent workflow state that task is to be worked in.");
    public static final XViewerColumn Weekly_Benefit_Hrs_Col = new XViewerAtsAttributeColumn(
       COLUMN_NAMESPACE + ".weeklyBenefitHrs", AtsAttributeTypes.WeeklyBenefit, 40, SWT.CENTER, false,
       SortDataType.Float, true);
@@ -249,7 +247,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       new CategoryColumn(CategoryColumn.Category3Attribute),
       Goal_Order,
       Goal_Order_Vote_Col,
-      Related_To_State_Col,
+      RelatedToStateColumn.getInstance(),
       EstimatedHoursColumn.getInstance(),
       Weekly_Benefit_Hrs_Col,
       Remaining_Hours_Col,

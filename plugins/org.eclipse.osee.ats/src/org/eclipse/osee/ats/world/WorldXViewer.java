@@ -64,7 +64,6 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.DefaultTeamState;
 import org.eclipse.osee.ats.util.GoalManager;
 import org.eclipse.osee.ats.util.PromptChangeUtil;
-import org.eclipse.osee.ats.util.xviewer.RelatedToStateColumn;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeColumn;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -269,9 +268,6 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems, final boolean persist) {
       if (treeColumn.getData() instanceof IMultiColumnEditProvider) {
          return;
-      } else if (treeColumn.getData().equals(WorldXViewerFactory.Related_To_State_Col)) {
-         processRelatedToStateColumn(treeItems);
-         return;
       }
       if (!(treeColumn.getData() instanceof XViewerAttributeColumn) && !(treeColumn.getData() instanceof XViewerAtsAttributeColumn)) {
          AWorkbench.popup("ERROR", "Column is not attribute and thus not multi-editable " + treeColumn.getText());
@@ -320,22 +316,8 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       }
    }
 
-   private void processRelatedToStateColumn(Collection<TreeItem> treeItems) {
-      Set<TaskArtifact> tasks = new HashSet<TaskArtifact>();
-      for (TreeItem item : treeItems) {
-         Artifact art = (Artifact) item.getData();
-         if (art instanceof TaskArtifact) {
-            tasks.add((TaskArtifact) art);
-         }
-      }
-      RelatedToStateColumn.promptChangeRelatedToState(tasks, true);
-   }
-
    @Override
    public boolean isColumnMultiEditable(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
-      if (treeColumn.getData().equals(WorldXViewerFactory.Related_To_State_Col)) {
-         return true;
-      }
       if (!(treeColumn.getData() instanceof XViewerColumn)) {
          return false;
       }
@@ -773,8 +755,6 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
             return false;
          } else if (xCol.equals(WorldXViewerFactory.Work_Package_Col)) {
             modified = PromptChangeUtil.promptChangeAttribute(sma, AtsAttributeTypes.WorkPackage, false, false);
-         } else if (xCol.equals(WorldXViewerFactory.Related_To_State_Col)) {
-            modified = RelatedToStateColumn.promptChangeRelatedToState(sma, false);
          } else if (xCol.equals(WorldXViewerFactory.Numeric1_Col)) {
             modified = PromptChangeUtil.promptChangeAttribute(sma, AtsAttributeTypes.Numeric1, false, false);
          } else if (xCol.equals(WorldXViewerFactory.Numeric2_Col)) {

@@ -114,8 +114,6 @@ public interface IWorldViewArtifact {
 
    String getWorldViewPriority() throws OseeCoreException;
 
-   String getWorldViewRelatedToState() throws OseeCoreException;
-
    double getWorldViewRemainHours() throws OseeCoreException;
 
    String getWorldViewReviewAuthor() throws OseeCoreException;

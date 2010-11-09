@@ -56,6 +56,10 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
       super(id, attributeType, width, align, show, sortDataType, multiColumnEditable);
    }
 
+   public XViewerAtsAttributeValueColumn(String id, IAttributeType attributeType, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
+      super(id, attributeType, width, align, show, sortDataType, multiColumnEditable, description);
+   }
+
    /**
     * Returns parent team workflow, if AbstractWorkflowArtifact or Artifact, if artifact
     */

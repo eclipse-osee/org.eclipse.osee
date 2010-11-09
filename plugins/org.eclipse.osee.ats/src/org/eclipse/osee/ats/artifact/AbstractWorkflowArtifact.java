@@ -593,12 +593,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return String.valueOf(num);
    }
 
-   @SuppressWarnings("unused")
-   @Override
-   public String getWorldViewRelatedToState() throws OseeCoreException {
-      return "";
-   }
-
    /**
     * Return true if this artifact, it's ATS relations and any of the other side artifacts are dirty
     * 

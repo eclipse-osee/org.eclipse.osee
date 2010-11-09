@@ -130,9 +130,6 @@ public class WorldLabelProvider extends XViewerLabelProvider {
          if (xCol.equals(WorldXViewerFactory.Team_Col)) {
             return wva.getWorldViewTeam();
          }
-         if (xCol.equals(WorldXViewerFactory.Related_To_State_Col)) {
-            return wva.getWorldViewRelatedToState();
-         }
          if (xCol.equals(WorldXViewerFactory.Branch_Status_Col)) {
             return wva.getWorldViewBranchStatus();
          }

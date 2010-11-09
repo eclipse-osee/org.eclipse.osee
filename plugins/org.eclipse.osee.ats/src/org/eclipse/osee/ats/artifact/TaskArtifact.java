@@ -55,7 +55,8 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IATSStateM
    }
 
    public boolean isRelatedToParentWorkflowCurrentState() throws OseeCoreException {
-      return getWorldViewRelatedToState().equals(getParentSMA().getStateMgr().getCurrentStateName());
+      return getSoleAttributeValueAsString(AtsAttributeTypes.RelatedToState, "").equals(
+         getParentSMA().getStateMgr().getCurrentStateName());
    }
 
    public boolean isUsingTaskResolutionOptions() throws OseeCoreException {
@@ -103,11 +104,6 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IATSStateM
       } catch (Exception ex) {
          return "Error: " + ex.getLocalizedMessage();
       }
-   }
-
-   @Override
-   public String getWorldViewRelatedToState() throws OseeCoreException {
-      return getSoleAttributeValue(AtsAttributeTypes.RelatedToState, "");
    }
 
    @Override

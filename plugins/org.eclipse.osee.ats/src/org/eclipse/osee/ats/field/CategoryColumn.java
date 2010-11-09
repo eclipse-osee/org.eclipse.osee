@@ -23,9 +23,8 @@ public class CategoryColumn extends XViewerAtsAttributeValueColumn {
       super(attributeType, 80, SWT.LEFT, false, SortDataType.String, true);
    }
 
-   public CategoryColumn(IAttributeType attributeType, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
+   public CategoryColumn(IAttributeType attributeType, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable) {
       super(attributeType, width, align, show, sortDataType, multiColumnEditable);
-      setDescription(description);
    }
 
    /**
@@ -35,7 +34,7 @@ public class CategoryColumn extends XViewerAtsAttributeValueColumn {
    @Override
    public CategoryColumn copy() {
       return new CategoryColumn(getAttributeType(), getWidth(), getAlign(), isShow(), getSortDataType(),
-         isMultiColumnEditable(), getDescription());
+         isMultiColumnEditable());
    }
 
 }

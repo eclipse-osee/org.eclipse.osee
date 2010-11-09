@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.field.ResolutionColumn;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -67,7 +68,8 @@ public class SMAPromptChangeStatus {
                      "Task work configured to be done in parent's \"%s\" state.\nParent workflow is currently in \"%s\" state.\n\n" +
                      //
                      "Either transition parent workflow or change Task's \"Related to State\" to perform task work.",
-                     taskArt.getName(), taskArt.getWorldViewRelatedToState(),
+                     taskArt.getName(),
+                     taskArt.getSoleAttributeValueAsString(AtsAttributeTypes.RelatedToState, "unknown"),
                      taskArt.getParentSMA().getStateMgr().getCurrentStateName()));
             }
          }

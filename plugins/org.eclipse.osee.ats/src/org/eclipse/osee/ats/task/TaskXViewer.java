@@ -27,7 +27,6 @@ import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
 import org.eclipse.osee.ats.field.ResolutionColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.PromptChangeUtil;
-import org.eclipse.osee.ats.util.xviewer.RelatedToStateColumn;
 import org.eclipse.osee.ats.world.AtsWorldEditorItems;
 import org.eclipse.osee.ats.world.IAtsWorldEditorItem;
 import org.eclipse.osee.ats.world.WorldXViewer;
@@ -112,7 +111,7 @@ public class TaskXViewer extends WorldXViewer {
       return true;
    }
 
-   Action editTaskTitleAction, editTaskStatusAction, editTaskHoursSpentAction, editTaskRelatedStateAction;
+   Action editTaskTitleAction, editTaskStatusAction, editTaskHoursSpentAction;
    Action addNewTaskAction, deleteTasksAction;
 
    @Override
@@ -164,21 +163,6 @@ public class TaskXViewer extends WorldXViewer {
          }
       };
 
-      editTaskRelatedStateAction = new Action("Edit Task Related to State", IAction.AS_PUSH_BUTTON) {
-         @Override
-         public void run() {
-            try {
-               boolean success = RelatedToStateColumn.promptChangeRelatedToState(getSelectedTaskArtifacts(), false);
-               if (success) {
-                  editor.onDirtied();
-                  update(getSelectedTaskArtifacts().toArray(), null);
-               }
-            } catch (Exception ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         }
-      };
-
       addNewTaskAction = new Action("New Task", IAction.AS_PUSH_BUTTON) {
          @Override
          public void run() {
@@ -221,9 +205,6 @@ public class TaskXViewer extends WorldXViewer {
       mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_EDIT, editTaskHoursSpentAction);
       editTaskHoursSpentAction.setEnabled(isTasksEditable() && getSelectedArtifacts().size() > 0);
 
-      mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_EDIT, editTaskRelatedStateAction);
-      editTaskRelatedStateAction.setEnabled(isTasksEditable() && getSelectedArtifacts().size() > 0 && isSelectedTaskArtifactsAreInWork());
-
    }
 
    @Override
@@ -253,10 +234,6 @@ public class TaskXViewer extends WorldXViewer {
 
          if (isSelectedTaskArtifactsAreInWork() && xCol.equals(WorldXViewerFactory.Title_Col)) {
             modified = PromptChangeUtil.promptChangeAttribute(taskArt, AtsAttributeTypes.Title, false, false);
-         } else if (xCol.equals(WorldXViewerFactory.Related_To_State_Col)) {
-            modified = RelatedToStateColumn.promptChangeRelatedToState(taskArt, false);
-         } else if (isSelectedTaskArtifactsAreInWork() && xCol.equals(WorldXViewerFactory.Related_To_State_Col)) {
-            modified = PromptChangeUtil.promptChangeAttribute(taskArt, AtsAttributeTypes.RelatedToState, false, false);
          } else if (isUsingTaskResolutionOptions() && (xCol.equals(WorldXViewerFactory.Hours_Spent_State_Col) || xCol.equals(WorldXViewerFactory.Hours_Spent_Total_Col) || xCol.equals(WorldXViewerFactory.Percent_Complete_State_Col) || xCol.equals(WorldXViewerFactory.Percent_Complete_Total_Col))) {
             modified = ResolutionColumn.promptChangeResolutionOfTasks(this, getSelectedTaskArtifacts(), false);
          } else if (xCol.equals(WorldXViewerFactory.Hours_Spent_State_Col) || xCol.equals(WorldXViewerFactory.Hours_Spent_Total_Col) || xCol.equals(WorldXViewerFactory.Percent_Complete_State_Col) || xCol.equals(WorldXViewerFactory.Percent_Complete_Total_Col)) {

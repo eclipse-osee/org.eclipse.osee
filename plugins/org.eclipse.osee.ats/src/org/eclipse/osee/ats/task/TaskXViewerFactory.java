@@ -19,6 +19,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
 import org.eclipse.osee.ats.field.AssigneeColumn;
 import org.eclipse.osee.ats.field.EstimatedHoursColumn;
 import org.eclipse.osee.ats.field.NotesColumn;
+import org.eclipse.osee.ats.field.RelatedToStateColumn;
 import org.eclipse.osee.ats.field.ResolutionColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.world.AtsWorldEditorItems;
@@ -36,7 +37,7 @@ public class TaskXViewerFactory extends SkynetXViewerFactory {
    public static final List<XViewerColumn> TaskViewerVisibleColumns = Arrays.asList(WorldXViewerFactory.Title_Col,
       WorldXViewerFactory.State_Col, AssigneeColumn.getInstance(), WorldXViewerFactory.Percent_Complete_Total_Col,
       WorldXViewerFactory.Total_Hours_Spent_Col, ResolutionColumn.getInstance(), EstimatedHoursColumn.getInstance(),
-      WorldXViewerFactory.Remaining_Hours_Col, WorldXViewerFactory.Related_To_State_Col, NotesColumn.getInstance());
+      WorldXViewerFactory.Remaining_Hours_Col, RelatedToStateColumn.getInstance(), NotesColumn.getInstance());
    public static Integer[] widths = new Integer[] {450, 60, 150, 40, 40, 100, 50, 50, 50, 80, 80};
 
    public TaskXViewerFactory() {

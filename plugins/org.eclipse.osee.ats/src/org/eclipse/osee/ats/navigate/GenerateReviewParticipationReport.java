@@ -16,6 +16,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.ats.field.RelatedToStateColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerReviewRoleColumn;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerSmaCompletedDateColumn;
@@ -107,7 +108,7 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
          registerColumns(new XViewerSmaStateColumn());
          registerColumns(new XViewerSmaCompletedDateColumn("Completed"));
          registerColumns(new XViewerReviewRoleColumn(user));
-         registerColumns(WorldXViewerFactory.Related_To_State_Col);
+         registerColumns(RelatedToStateColumn.getInstance());
          registerColumns(new XViewerArtifactNameColumn(true));
          registerColumns(new XViewerGuidColumn(true));
          registerAllAttributeColumns();

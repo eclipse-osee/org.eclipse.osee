@@ -391,11 +391,6 @@ public class ActionArtifact extends AbstractAtsArtifact implements IWorldViewArt
    }
 
    @Override
-   public String getWorldViewRelatedToState() {
-      return "";
-   }
-
-   @Override
    public String getWorldViewNumeric1() throws OseeCoreException {
       Set<String> strs = new HashSet<String>();
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {

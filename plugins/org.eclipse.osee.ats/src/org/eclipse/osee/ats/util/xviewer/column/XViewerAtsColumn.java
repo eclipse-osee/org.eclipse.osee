@@ -65,4 +65,12 @@ public abstract class XViewerAtsColumn extends XViewerColumn {
       return null;
    }
 
+   protected boolean isPersistAltLeftClick() {
+      XViewer xViewer = getXViewer();
+      if (xViewer instanceof IPersistAltLeftClickProvider) {
+         return ((IPersistAltLeftClickProvider) xViewer).isAltLeftClickPersist();
+      }
+      return false;
+   }
+
 }
