@@ -11,10 +11,8 @@
 package org.eclipse.osee.framework.skynet.core.importing.parsers;
 
 import java.net.URI;
-import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
 
@@ -72,8 +70,6 @@ public abstract class AbstractArtifactExtractor implements IArtifactExtractor {
          extractFromSource(source, collector);
          connectParentChildRelations(collector);
          connectCollectorParent(collector);
-      } catch (Exception ex) {
-         OseeLog.log(AbstractArtifactExtractor.class, Level.SEVERE, ex.getLocalizedMessage());
       } finally {
          if (hasDelegate()) {
             getDelegate().dispose();
