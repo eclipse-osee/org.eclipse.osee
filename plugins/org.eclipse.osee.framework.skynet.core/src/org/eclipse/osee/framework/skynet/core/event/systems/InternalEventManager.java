@@ -71,7 +71,7 @@ public class InternalEventManager {
       this.priorityListeners = priorityListeners;
       this.executorService = executorService;
       this.preferences = preferences;
-      this.frameworkListener = new FrameworkEventToRemoteEventListener(this);
+      this.frameworkListener = new FrameworkEventToRemoteEventListener(executorService, preferences, this);
       this.connectionStatus = connectionStatus;
    }
 

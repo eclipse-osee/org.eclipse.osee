@@ -10,15 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.event.systems;
 
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.logging.Level;
+import java.util.concurrent.ExecutorService;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.res.AttributeEventModificationType;
 import org.eclipse.osee.framework.messaging.event.res.IFrameworkEventListener;
 import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
@@ -32,6 +30,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ChangeArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.event.EventSystemPreferences;
 import org.eclipse.osee.framework.skynet.core.event.EventUtil;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkEventUtil;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -49,7 +48,6 @@ import org.eclipse.osee.framework.skynet.core.event.model.EventModifiedBasicGuid
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionEventType;
-import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
@@ -61,100 +59,79 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
  */
 public final class FrameworkEventToRemoteEventListener implements IFrameworkEventListener {
 
+   private final EventSystemPreferences preferences;
    private final InternalEventManager eventManager;
-   private final ArrayBlockingQueue<RemoteEvent> queue = new ArrayBlockingQueue<RemoteEvent>(100, true);
-   private RemoteEventProcessorThread processorThread;
+   private final ExecutorService executorService;
 
-   public FrameworkEventToRemoteEventListener(InternalEventManager eventManager) {
+   public FrameworkEventToRemoteEventListener(ExecutorService executorService, EventSystemPreferences preferences, InternalEventManager eventManager) {
+      this.executorService = executorService;
+      this.preferences = preferences;
       this.eventManager = eventManager;
-   }
-
-   private synchronized void startProcessing() {
-      if (OseeEventManager.getPreferences().isPendRunning()) {
-         processRemoteEvents();
-      } else {
-         if (processorThread == null || !processorThread.isAlive()) {
-            processorThread = new RemoteEventProcessorThread();
-            processorThread.start();
-         }
-      }
    }
 
    @Override
    public void onEvent(final RemoteEvent remoteEvent) {
-      // Add to queue; remote events must be processed in order and not multi-threaded
-      queue.add(remoteEvent);
       //      System.out.println("adding to queue -> " + queue.size());
-      startProcessing();
+      Runnable runnable = new Runnable() {
+         @Override
+         public void run() {
+            processRemoteEvents(remoteEvent);
+         }
+      };
+      execute(runnable);
    }
 
-   public class RemoteEventProcessorThread extends Thread {
-
-      public RemoteEventProcessorThread() {
-         super("OSEE Remote Events");
+   private void execute(Runnable runnable) {
+      if (preferences.isPendRunning()) {
+         runnable.run();
+      } else {
+         executorService.submit(runnable);
       }
+   }
 
-      @Override
-      public void run() {
+   private void processRemoteEvents(RemoteEvent remoteEvent) {
+      if (remoteEvent == null) {
+         return;
+      }
+      Sender sender = new Sender(remoteEvent.getNetworkSender());
+      // If the sender's sessionId is the same as this client, then this event was
+      // created in this client and returned by remote event manager; ignore and continue
+      if (sender.isLocal()) {
+         return;
+      }
+      // Handles TransactionEvents, ArtifactChangeTypeEvents, ArtifactPurgeEvents
+      if (remoteEvent instanceof RemotePersistEvent1) {
          try {
-            while (true) {
-               processRemoteEvents();
-               Thread.sleep(1000);
-            }
+            RemotePersistEvent1 event1 = (RemotePersistEvent1) remoteEvent;
+            ArtifactEvent transEvent = FrameworkEventUtil.getPersistEvent(event1);
+            updateArtifacts(sender, transEvent);
+            updateRelations(sender, transEvent);
+            eventManager.kickArtifactEvent(sender, transEvent);
          } catch (Exception ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
+            EventUtil.eventLog("REM: RemoteTransactionEvent1", ex);
          }
-      }
-   }
-
-   private void processRemoteEvents() {
-      while (!queue.isEmpty()) {
-         //         System.out.println("processing queue -> " + queue.size());
-         RemoteEvent remoteEvent = queue.poll();
-         if (remoteEvent == null) {
-            return;
+      } else if (remoteEvent instanceof RemoteBranchEvent1) {
+         try {
+            BranchEvent branchEvent = FrameworkEventUtil.getBranchEvent((RemoteBranchEvent1) remoteEvent);
+            updateBranches(sender, branchEvent);
+            eventManager.kickBranchEvent(sender, branchEvent);
+         } catch (Exception ex) {
+            EventUtil.eventLog("REM: RemoteBranchEvent1", ex);
          }
-         Sender sender = new Sender(remoteEvent.getNetworkSender());
-         // If the sender's sessionId is the same as this client, then this event was
-         // created in this client and returned by remote event manager; ignore and continue
-         if (sender.isLocal()) {
-            return;
+      } else if (remoteEvent instanceof RemoteTransactionEvent1) {
+         try {
+            TransactionEvent transEvent = FrameworkEventUtil.getTransactionEvent((RemoteTransactionEvent1) remoteEvent);
+            handleTransactionEvent(sender, transEvent);
+         } catch (Exception ex) {
+            EventUtil.eventLog("REM: RemoteBranchEvent1", ex);
          }
-         // Handles TransactionEvents, ArtifactChangeTypeEvents, ArtifactPurgeEvents
-         if (remoteEvent instanceof RemotePersistEvent1) {
-            try {
-               RemotePersistEvent1 event1 = (RemotePersistEvent1) remoteEvent;
-               ArtifactEvent transEvent = FrameworkEventUtil.getPersistEvent(event1);
-               updateArtifacts(sender, transEvent);
-               updateRelations(sender, transEvent);
-               eventManager.kickArtifactEvent(sender, transEvent);
-            } catch (Exception ex) {
-               EventUtil.eventLog("REM: RemoteTransactionEvent1", ex);
-            }
-         } else if (remoteEvent instanceof RemoteBranchEvent1) {
-            try {
-               BranchEvent branchEvent = FrameworkEventUtil.getBranchEvent((RemoteBranchEvent1) remoteEvent);
-               updateBranches(sender, branchEvent);
-               eventManager.kickBranchEvent(sender, branchEvent);
-            } catch (Exception ex) {
-               EventUtil.eventLog("REM: RemoteBranchEvent1", ex);
-            }
-         } else if (remoteEvent instanceof RemoteTransactionEvent1) {
-            try {
-               TransactionEvent transEvent =
-                  FrameworkEventUtil.getTransactionEvent((RemoteTransactionEvent1) remoteEvent);
-               handleTransactionEvent(sender, transEvent);
-            } catch (Exception ex) {
-               EventUtil.eventLog("REM: RemoteBranchEvent1", ex);
-            }
-         } else if (remoteEvent instanceof RemoteAccessControlEvent1) {
-            try {
-               AccessControlEvent accessEvent =
-                  FrameworkEventUtil.getAccessControlEvent((RemoteAccessControlEvent1) remoteEvent);
-               eventManager.kickAccessControlArtifactsEvent(sender, accessEvent);
-            } catch (Exception ex) {
-               EventUtil.eventLog("REM: RemoteAccessControlEvent1", ex);
-            }
+      } else if (remoteEvent instanceof RemoteAccessControlEvent1) {
+         try {
+            AccessControlEvent accessEvent =
+               FrameworkEventUtil.getAccessControlEvent((RemoteAccessControlEvent1) remoteEvent);
+            eventManager.kickAccessControlArtifactsEvent(sender, accessEvent);
+         } catch (Exception ex) {
+            EventUtil.eventLog("REM: RemoteAccessControlEvent1", ex);
          }
       }
    }

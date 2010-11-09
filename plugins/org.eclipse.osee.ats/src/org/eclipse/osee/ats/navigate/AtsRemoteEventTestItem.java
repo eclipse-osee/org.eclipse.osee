@@ -233,7 +233,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       // Validate values
       TeamWorkFlowArtifact teamArt = actionArt.getTeamWorkFlowArtifacts().iterator().next();
       testEquals("Description", "description", teamArt.getSoleAttributeValue(AtsAttributeTypes.Description, null));
-      testEquals("Change Type", ChangeType.Improvement.name(), ChangeTypeColumn.getChangeType(teamArt));
+      testEquals("Change Type", ChangeType.Improvement, ChangeTypeColumn.getChangeType(teamArt));
       testEquals("Priority", "1", teamArt.getSoleAttributeValue(PriorityColumn.PriorityTypeAttribute, null));
    }
 
@@ -249,12 +249,19 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       // Validate values
       TeamWorkFlowArtifact teamArt = actionArt.getTeamWorkFlowArtifacts().iterator().next();
       testEquals("Description", "description 4", teamArt.getSoleAttributeValue(AtsAttributeTypes.Description, null));
-      testEquals("Change Type", ChangeType.Support.name(), ChangeTypeColumn.getChangeType(teamArt));
+      testEquals("Change Type", ChangeType.Support, ChangeTypeColumn.getChangeType(teamArt));
       testEquals("Priority", "3", teamArt.getSoleAttributeValue(PriorityColumn.PriorityTypeAttribute, null));
       testEquals("Validation Required", "false",
          String.valueOf(teamArt.getSoleAttributeValue(AtsAttributeTypes.ValidationRequired, null)));
-      testEquals("Targeted Version",
-         (teamArt.getTargetedForVersion() != null ? teamArt.getTargetedForVersion().toString() : "not set"), "2.5.7");
+
+      VersionArtifact verArt = teamArt.getTargetedForVersion();
+      String expectedTargetedVersion;
+      if (verArt != null) {
+         expectedTargetedVersion = verArt.toString();
+      } else {
+         expectedTargetedVersion = "not set";
+      }
+      testEquals("Targeted Version", expectedTargetedVersion, "2.5.7");
       testEquals("State", DefaultTeamState.Analyze.name(), teamArt.getStateMgr().getCurrentStateName());
    }
 
