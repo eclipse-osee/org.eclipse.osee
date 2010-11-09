@@ -44,7 +44,7 @@
 
 		<!-- <ant target="swtbot-test" antfile="${library-file}" dir="${eclipse-home}"> -->
 		<ant target="ui-test" antfile="${library-file}" dir="${eclipse-home}" inheritall="true" inheritrefs="true">
-			<property name="data-dir" value="${testWorkspace}" />
+			<property name="data-dir" value="${testWorkspace} -clean -product org.eclipse.osee.framework.ui.product.osee" />
 			<property name="plugin-name" value="${plugin-name}" />
 			<property name="vmargs" value="${Dflags}" />
 			<property name="classname" value="${classname}" />
