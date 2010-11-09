@@ -35,6 +35,7 @@ import org.eclipse.osee.ats.field.OperationalImpactWithWorkaroundXWidget.XOperat
 import org.eclipse.osee.ats.field.OperationalImpactXWidget.XOperationalImpactRequiredXWidgetWorkItem;
 import org.eclipse.osee.ats.field.OperationalImpactXWidget.XOperationalImpactXWidgetWorkItem;
 import org.eclipse.osee.ats.field.PriorityXWidget;
+import org.eclipse.osee.ats.field.ResolutionColumn;
 import org.eclipse.osee.ats.util.AtsFolderUtil;
 import org.eclipse.osee.ats.util.AtsFolderUtil.AtsFolder;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -120,7 +121,7 @@ public final class AtsWorkDefinitions implements IWorkDefinitionProvider {
       workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.RelatedToState, "XTextDam"));
       workItems.add(new AtsAttributeXWidgetWorkItem(NotesColumn.SmaNote, "XTextDam", FILL_VERTICALLY));
       workItems.add(new AtsAttributeXWidgetWorkItem("Title", "ats.Title", CoreAttributeTypes.Name, "XTextDam", REQUIRED));
-      workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.Resolution, "XTextDam", FILL_VERTICALLY));
+      workItems.add(new AtsAttributeXWidgetWorkItem(ResolutionColumn.Resolution, "XTextDam", FILL_VERTICALLY));
       workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.DecisionReviewOptions, "XTextDam",
          FILL_VERTICALLY));
       workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.Problem, "XTextDam", FILL_VERTICALLY));

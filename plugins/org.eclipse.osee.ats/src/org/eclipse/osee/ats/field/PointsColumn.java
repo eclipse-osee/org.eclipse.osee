@@ -5,7 +5,6 @@
  */
 package org.eclipse.osee.ats.field;
 
-import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
@@ -13,7 +12,7 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.swt.SWT;
 
-public class PointsColumn extends XViewerAtsAttributeValueColumn implements IMultiColumnEditProvider {
+public class PointsColumn extends XViewerAtsAttributeValueColumn {
 
    public static final IAttributeType Points = new AtsAttributeTypes("AY2EeqhzcDEGtXtREkAA", "Points",
       "Abstract value that describes risk, complexity, and size of Actions.");

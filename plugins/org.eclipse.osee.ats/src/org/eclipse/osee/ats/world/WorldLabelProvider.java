@@ -16,17 +16,14 @@ import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
-import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.GoalManager;
-import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
@@ -52,8 +49,6 @@ public class WorldLabelProvider extends XViewerLabelProvider {
          IWorldViewArtifact wva = (IWorldViewArtifact) element;
          if (xCol.equals(WorldXViewerFactory.Type_Col)) {
             return ArtifactImageManager.getImage((Artifact) element);
-         } else if (xCol.equals(WorldXViewerFactory.Assignees_Col)) {
-            return wva.getAssigneeImage();
          } else if (xCol.equals(WorldXViewerFactory.Deadline_Col)) {
             if (wva.isWorldViewDeadlineAlerting().isTrue()) {
                return ImageManager.getImage(FrameworkImage.WARNING);
@@ -78,13 +73,6 @@ public class WorldLabelProvider extends XViewerLabelProvider {
    @Override
    public Color getForeground(Object element, XViewerColumn xCol, int columnIndex) {
       try {
-         if (element instanceof TaskArtifact && xCol.equals(WorldXViewerFactory.Resolution_Col)) {
-            TaskArtifact taskArt = (TaskArtifact) element;
-            TaskResOptionDefinition def = taskArt.getTaskResolutionOptionDefinition(taskArt.getWorldViewResolution());
-            if (def != null) {
-               return Displays.getSystemColor(def.getColorInt());
-            }
-         }
          for (IAtsWorldEditorItem item : AtsWorldEditorItems.getItems()) {
             if (item.isXColumnProvider(xCol)) {
                Color color = item.getForeground(element, xCol, columnIndex);
@@ -121,17 +109,11 @@ public class WorldLabelProvider extends XViewerLabelProvider {
          if (xCol.equals(WorldXViewerFactory.State_Col)) {
             return wva.getWorldViewState();
          }
-         if (xCol.equals(WorldXViewerFactory.Assignees_Col)) {
-            return wva.getWorldViewActivePoc();
-         }
          if (xCol.equals(WorldXViewerFactory.Actionable_Items_Col)) {
             return wva.getWorldViewActionableItems();
          }
          if (xCol.equals(WorldXViewerFactory.User_Community_Col)) {
             return wva.getWorldViewUserCommunity();
-         }
-         if (xCol.equals(WorldXViewerFactory.Resolution_Col)) {
-            return wva.getWorldViewResolution();
          }
          if (xCol.equals(WorldXViewerFactory.Legacy_PCR_Col)) {
             return wva.getWorldViewLegacyPCR();

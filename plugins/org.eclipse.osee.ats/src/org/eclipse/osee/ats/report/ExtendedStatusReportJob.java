@@ -20,10 +20,10 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.field.ChangeTypeColumn;
+import org.eclipse.osee.ats.field.ResolutionColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -208,7 +208,7 @@ public class ExtendedStatusReportJob extends Job {
       String desc = sma.getDescription();
       if (sma instanceof TaskArtifact) {
          TaskArtifact taskArt = (TaskArtifact) sma;
-         desc = taskArt.getDescription() + " " + taskArt.getSoleAttributeValue(AtsAttributeTypes.Resolution, "");
+         desc = taskArt.getDescription() + " " + taskArt.getSoleAttributeValue(ResolutionColumn.Resolution, "");
       }
       if (desc.matches("^ *$")) {
          values.add(".");

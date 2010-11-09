@@ -11,8 +11,8 @@
 package org.eclipse.osee.ats.editor;
 
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.field.AssigneeColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.PromptChangeUtil;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -69,7 +69,7 @@ public class SMAAssigneesHeader extends Composite {
                         "You must be assigned to modify assignees.\nContact current Assignee or Select Priviledged Edit for Authorized Overriders.");
                      return;
                   }
-                  if (PromptChangeUtil.promptChangeAssignees(sma, false)) {
+                  if (AssigneeColumn.promptChangeAssignees(sma, false)) {
                      sma.getEditor().doSave(null);
                   }
                } catch (Exception ex) {

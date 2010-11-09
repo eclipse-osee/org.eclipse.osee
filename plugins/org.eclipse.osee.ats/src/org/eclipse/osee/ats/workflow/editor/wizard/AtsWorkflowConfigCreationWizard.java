@@ -17,6 +17,7 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.config.AtsConfigManager;
+import org.eclipse.osee.ats.field.ResolutionColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
@@ -127,7 +128,7 @@ public class AtsWorkflowConfigCreationWizard extends Wizard implements INewWizar
       WorkPageDefinition implementPage = new WorkPageDefinition("Implement", namespace + ".Implement", null);
       implementPage.addWorkItem(RuleWorkItemId.atsRequireStateHourSpentPrompt.name());
       implementPage.addWorkItem(AtsAttributeTypes.WorkPackage);
-      implementPage.addWorkItem(AtsAttributeTypes.Resolution);
+      implementPage.addWorkItem(ResolutionColumn.Resolution);
 
       WorkPageDefinition completedPage =
          new WorkPageDefinition("Completed", namespace + ".Completed", AtsCompletedWorkPageDefinition.ID);

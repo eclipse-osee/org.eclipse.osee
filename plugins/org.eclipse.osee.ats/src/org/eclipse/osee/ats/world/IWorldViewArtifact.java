@@ -21,9 +21,9 @@ public interface IWorldViewArtifact {
 
    Image getAssigneeImage() throws OseeCoreException;
 
-   String getWorldViewActionableItems() throws OseeCoreException;
+   String getAssigneeStr() throws OseeCoreException;
 
-   String getWorldViewActivePoc() throws OseeCoreException;
+   String getWorldViewActionableItems() throws OseeCoreException;
 
    double getWorldViewAnnualCostAvoidance() throws OseeCoreException;
 
@@ -117,8 +117,6 @@ public interface IWorldViewArtifact {
    String getWorldViewRelatedToState() throws OseeCoreException;
 
    double getWorldViewRemainHours() throws OseeCoreException;
-
-   String getWorldViewResolution() throws OseeCoreException;
 
    String getWorldViewReviewAuthor() throws OseeCoreException;
 

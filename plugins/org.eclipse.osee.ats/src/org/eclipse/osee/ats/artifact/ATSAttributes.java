@@ -26,7 +26,6 @@ public class ATSAttributes {
    public static final ATSAttributes CREATE_CODE_TEST_TASKS_OFF_REQUIREMENTS = new ATSAttributes("Create Code/Test Tasks");
    public static final ATSAttributes CHECK_SIGNALS_VIA_CDB_WIDGET = new ATSAttributes("Check Signals Via CDB");
    public static final ATSAttributes SHOW_CDB_DIFF_REPORT_WIDGET = new ATSAttributes("Show CDB Differences Report");
-   public static final ATSAttributes ASSIGNEE_ATTRIBUTE = new ATSAttributes("Assignees", "Users currently assigned to do work.");
    public static final ATSAttributes COMMIT_MANAGER_WIDGET = new ATSAttributes("Commit Manager", "Commit branches to parent and parallel branches.");
    // @formatter:on
 

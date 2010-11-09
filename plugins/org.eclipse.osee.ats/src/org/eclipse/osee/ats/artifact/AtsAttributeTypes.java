@@ -49,7 +49,6 @@ public class AtsAttributeTypes extends NamedIdentity implements IAttributeType {
    public static final IAttributeType ProposedResolution = new AtsAttributeTypes("AAMFEdSSRDGgBQ5tctAA", "Proposed Resolution", "Recommended resolution.");
    public static final IAttributeType RelatedToState = new AtsAttributeTypes("AAMFEdkwHULOmHbMbGgA", "Related To State", "State of parent workflow this object is related to.");
    public static final IAttributeType Released = new AtsAttributeTypes("AAMFEcnMoUZMLA2zB1AA", "Released", "True if object is in a released state.");
-   public static final IAttributeType Resolution = new AtsAttributeTypes("AAMFEdUMfV1KdbQNaKwA", "Resolution", "Implementation details.");
    public static final IAttributeType ReviewBlocks = new AtsAttributeTypes("AAMFEc6G2A8jmRWJgagA", "Review Blocks", "Review Completion will block it's parent workflow in this manner.");
    public static final IAttributeType ReviewDefect = new AtsAttributeTypes("AAMFEd+MSVAb8JQ6f5gA", "Review Defect");
    public static final IAttributeType Role = new AtsAttributeTypes("AAMFEeCqMz0XCSBJ+IQA", "Role");

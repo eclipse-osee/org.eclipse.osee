@@ -15,9 +15,9 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
-import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
+import org.eclipse.osee.ats.field.AssigneeColumn;
 import org.eclipse.osee.ats.field.CategoryColumn;
 import org.eclipse.osee.ats.field.ChangeTypeColumn;
 import org.eclipse.osee.ats.field.EstimatedHoursColumn;
@@ -33,6 +33,7 @@ import org.eclipse.osee.ats.field.OriginatorColumn;
 import org.eclipse.osee.ats.field.PointsColumn;
 import org.eclipse.osee.ats.field.PriorityColumn;
 import org.eclipse.osee.ats.field.ReleaseDateColumn;
+import org.eclipse.osee.ats.field.ResolutionColumn;
 import org.eclipse.osee.ats.field.TargetedVersionColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeColumn;
@@ -60,8 +61,6 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       SortDataType.String, false, null);
    public static final XViewerColumn State_Col = new XViewerColumn("ats.column.state", "State", 75, SWT.LEFT, true,
       SortDataType.String, false, null);
-   public static final XViewerColumn Assignees_Col = new XViewerAtsAttributeColumn(ATSAttributes.ASSIGNEE_ATTRIBUTE,
-      100, SWT.LEFT, true, SortDataType.String, false);
    public static final XViewerColumn Title_Col = new XViewerArtifactNameColumn("Title");
    public static final XViewerColumn Actionable_Items_Col = new XViewerAtsAttributeColumn(
       COLUMN_NAMESPACE + ".actionableItems", AtsAttributeTypes.ActionableItem, 80, SWT.LEFT, true, SortDataType.String,
@@ -96,8 +95,6 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       AtsAttributeTypes.LegacyPcrId, 40, SWT.LEFT, false, SortDataType.String, false);
    public static final XViewerColumn Decision_Col = new XViewerAtsAttributeColumn(AtsAttributeTypes.Decision, 150,
       SWT.LEFT, false, SortDataType.String, false);
-   public static final XViewerColumn Resolution_Col = new XViewerAtsAttributeColumn(AtsAttributeTypes.Resolution, 150,
-      SWT.LEFT, false, SortDataType.String, true);
    public static XViewerColumn Estimated_Completion_Date_Col = new XViewerAtsAttributeColumn(
       COLUMN_NAMESPACE + ".estimatedCompletionDate", AtsAttributeTypes.EstimatedCompletionDate, 80, SWT.LEFT, false,
       SortDataType.Date, true);
@@ -226,7 +223,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       State_Col,
       PriorityColumn.getInstance(),
       ChangeTypeColumn.getInstance(),
-      Assignees_Col,
+      AssigneeColumn.getInstance(),
       Title_Col,
       Actionable_Items_Col,
       User_Community_Col,
@@ -240,7 +237,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       Description_Col,
       Legacy_PCR_Col,
       Decision_Col,
-      Resolution_Col,
+      ResolutionColumn.getInstance(),
       GroupsColumn.getInstance(),
       GoalsColumn.getInstance(),
       EstimatedReleaseDateColumn.getInstance(),

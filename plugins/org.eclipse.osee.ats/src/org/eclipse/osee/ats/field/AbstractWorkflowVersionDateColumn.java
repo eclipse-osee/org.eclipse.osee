@@ -8,7 +8,6 @@ package org.eclipse.osee.ats.field;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
@@ -25,7 +24,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 /**
  * This class provides for a Date where the value is either stored in Workflow or Version or both.
  */
-public class AbstractWorkflowVersionDateColumn extends XViewerAtsAttributeValueColumn implements IMultiColumnEditProvider {
+public class AbstractWorkflowVersionDateColumn extends XViewerAtsAttributeValueColumn {
 
    public AbstractWorkflowVersionDateColumn(IAttributeType attributeType, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
       super(attributeType, width, align, show, sortDataType, multiColumnEditable);

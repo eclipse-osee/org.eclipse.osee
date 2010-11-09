@@ -15,6 +15,7 @@ import org.eclipse.osee.ats.artifact.TaskArtifact.TaskStates;
 import org.eclipse.osee.ats.field.CategoryColumn;
 import org.eclipse.osee.ats.field.EstimatedHoursColumn;
 import org.eclipse.osee.ats.field.NotesColumn;
+import org.eclipse.osee.ats.field.ResolutionColumn;
 import org.eclipse.osee.ats.workflow.flow.TaskWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions.RuleWorkItemId;
@@ -36,7 +37,7 @@ public class AtsTaskInWorkPageDefinition extends WorkPageDefinition {
       addWorkItem(RuleWorkItemId.atsRequireStateHourSpentPrompt.name());
       addWorkItem("ats.Title");
       addWorkItem(AtsWorkDefinitions.ATS_DESCRIPTION_NOT_REQUIRED_ID);
-      addWorkItem(AtsAttributeTypes.Resolution);
+      addWorkItem(ResolutionColumn.Resolution);
       addWorkItem(EstimatedHoursColumn.EstimatedHours);
       addWorkItem(AtsAttributeTypes.EstimatedCompletionDate);
       addWorkItem(AtsAttributeTypes.RelatedToState);

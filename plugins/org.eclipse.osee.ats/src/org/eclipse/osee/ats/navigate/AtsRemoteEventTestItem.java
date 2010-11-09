@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.field.ChangeTypeColumn;
 import org.eclipse.osee.ats.field.PriorityColumn;
+import org.eclipse.osee.ats.field.ResolutionColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
@@ -169,7 +170,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       // Make changes and persist
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Remote Event Test");
       teamArt.deleteAttributes(AtsAttributeTypes.ValidationRequired);
-      teamArt.deleteAttributes(AtsAttributeTypes.Resolution);
+      teamArt.deleteAttributes(ResolutionColumn.Resolution);
       teamArt.setSoleAttributeFromString(AtsAttributeTypes.Description, "description 4");
       ChangeTypeColumn.setChangeType(teamArt, ChangeType.Support);
       teamArt.setSoleAttributeFromString(PriorityColumn.PriorityTypeAttribute, "3");

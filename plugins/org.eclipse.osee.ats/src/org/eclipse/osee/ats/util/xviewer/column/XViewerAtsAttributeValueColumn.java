@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
+import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
@@ -37,7 +38,7 @@ import org.eclipse.swt.widgets.TreeItem;
  * 
  * @author Donald G. Dunne
  */
-public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn implements IAltLeftClickProvider, IXViewerValueColumn {
+public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn implements IAltLeftClickProvider, IMultiColumnEditProvider, IXViewerValueColumn {
 
    public XViewerAtsAttributeValueColumn(IAttributeType attributeType, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable) {
       super(attributeType, width, align, show, sortDataType, multiColumnEditable);
@@ -123,6 +124,7 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
       return false;
    }
 
+   @Override
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
       Set<AbstractWorkflowArtifact> smas = new HashSet<AbstractWorkflowArtifact>();
       for (TreeItem item : treeItems) {

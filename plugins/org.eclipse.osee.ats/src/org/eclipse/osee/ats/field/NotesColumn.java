@@ -5,14 +5,13 @@
  */
 package org.eclipse.osee.ats.field;
 
-import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.swt.SWT;
 
-public class NotesColumn extends XViewerAtsAttributeValueColumn implements IMultiColumnEditProvider {
+public class NotesColumn extends XViewerAtsAttributeValueColumn {
 
    public static final IAttributeType SmaNote = new AtsAttributeTypes("AAMFEdm7ywte8qayfbAA", "SMA Note",
       "Notes applicable to ATS object");

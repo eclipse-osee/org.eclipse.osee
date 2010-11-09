@@ -301,7 +301,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    public String implementersStr = null;
 
    @Override
-   public String getWorldViewActivePoc() throws OseeCoreException {
+   public String getAssigneeStr() throws OseeCoreException {
       if (isCancelledOrCompleted()) {
          if (implementersStr == null && !getImplementers().isEmpty()) {
             implementersStr = "(" + Artifacts.toString("; ", getImplementers()) + ")";
@@ -438,11 +438,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    @Override
    public String getWorldViewPriority() throws OseeCoreException {
       return "";
-   }
-
-   @Override
-   public String getWorldViewResolution() throws OseeCoreException {
-      return getAttributesToString(AtsAttributeTypes.Resolution);
    }
 
    public double getRemainHoursFromArtifact() throws OseeCoreException {

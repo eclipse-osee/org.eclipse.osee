@@ -9,7 +9,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
@@ -29,7 +28,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
-public class PriorityColumn extends XViewerAtsAttributeValueColumn implements IMultiColumnEditProvider {
+public class PriorityColumn extends XViewerAtsAttributeValueColumn {
 
    public static final IAttributeType PriorityTypeAttribute = new AtsAttributeTypes("AAMFEc8JzH1U6XGD59QA", "Priority",
       "1 = High; 5 = Low");

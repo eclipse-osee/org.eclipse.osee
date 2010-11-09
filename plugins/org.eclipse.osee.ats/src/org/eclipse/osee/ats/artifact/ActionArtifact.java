@@ -223,7 +223,7 @@ public class ActionArtifact extends AbstractAtsArtifact implements IWorldViewArt
    }
 
    @Override
-   public String getWorldViewActivePoc() throws OseeCoreException {
+   public String getAssigneeStr() throws OseeCoreException {
       Set<User> pocs = new HashSet<User>();
       Set<User> implementers = new HashSet<User>();
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
@@ -338,15 +338,6 @@ public class ActionArtifact extends AbstractAtsArtifact implements IWorldViewArt
    @Override
    public Date getWorldViewCancelledDate() throws OseeCoreException {
       return getTeamWorkFlowArtifacts().iterator().next().getWorldViewCancelledDate();
-   }
-
-   @Override
-   public String getWorldViewResolution() throws OseeCoreException {
-      Set<String> strs = new HashSet<String>();
-      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         strs.add(team.getWorldViewResolution());
-      }
-      return Collections.toString(";", strs);
    }
 
    @Override

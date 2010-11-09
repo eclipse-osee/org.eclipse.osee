@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.field.EstimatedHoursColumn;
 import org.eclipse.osee.ats.field.NotesColumn;
+import org.eclipse.osee.ats.field.ResolutionColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsNotifyUsers;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -241,7 +242,7 @@ public class ExcelAtsTaskArtifactExtractor {
       private void processResolution(String[] row, TaskArtifact taskArt, int i) throws OseeCoreException {
          String str = row[i];
          if (Strings.isValid(str)) {
-            taskArt.setSoleAttributeValue(AtsAttributeTypes.Resolution, str);
+            taskArt.setSoleAttributeValue(ResolutionColumn.Resolution, str);
          }
       }
 

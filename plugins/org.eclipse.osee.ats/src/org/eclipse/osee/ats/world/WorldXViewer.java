@@ -74,7 +74,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ISelectedArtifacts;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
@@ -124,7 +123,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       createMenuActions();
    }
 
-   Action editAction, editStatusAction, editResolutionAction, editAssigneeAction, editActionableItemsAction;
+   Action editAction, editStatusAction, editActionableItemsAction;
    ConvertActionableItemsAction convertActionableItemsAction;
    Action openInAtsWorldEditorAction, openInAtsTaskEditorAction;
    OpenInAtsWorkflowEditor openInAtsWorkflowEditorAction;
@@ -147,16 +146,6 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       deletePurgeAtsObjectAction = new DeletePurgeAtsArtifactsAction(this);
       emailAction = new EmailActionAction(this);
 
-      editResolutionAction = new Action("Edit Resolution", IAction.AS_PUSH_BUTTON) {
-         @Override
-         public void run() {
-            if (PromptChangeUtil.promptChangeAttribute(getSelectedSMAArtifacts(), AtsAttributeTypes.Resolution, true,
-               true)) {
-               update(getSelectedSMAArtifacts().toArray(), null);
-            }
-         }
-      };
-
       editStatusAction = new Action("Edit Status", IAction.AS_PUSH_BUTTON) {
          @Override
          public void run() {
@@ -175,21 +164,6 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
          public void run() {
             try {
                new ColumnMultiEditAction(thisXViewer).run();
-            } catch (Exception ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         }
-      };
-
-      editAssigneeAction = new Action("Edit Assignee", IAction.AS_PUSH_BUTTON) {
-         @Override
-         public void run() {
-            try {
-               Set<AbstractWorkflowArtifact> artifacts = getSelectedSMAArtifacts();
-               if (PromptChangeUtil.promptChangeAssignees(artifacts, false)) {
-                  Artifacts.persistInTransaction(artifacts);
-                  update(getSelectedArtifactItems().toArray(), null);
-               }
             } catch (Exception ex) {
                OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
@@ -456,14 +430,8 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       MenuManager editMenuManager = updateEditMenu(mm);
       mm.insertBefore(MENU_GROUP_PRE, editMenuManager);
 
-      mm.insertBefore(MENU_GROUP_PRE, editAssigneeAction);
-      editAssigneeAction.setEnabled(getSelectedSMAArtifacts().size() > 0);
-
       mm.insertBefore(MENU_GROUP_PRE, editStatusAction);
       editStatusAction.setEnabled(getSelectedSMAArtifacts().size() > 0);
-
-      mm.insertBefore(MENU_GROUP_PRE, editResolutionAction);
-      editResolutionAction.setEnabled(getSelectedSMAArtifacts().size() > 0);
 
       mm.insertBefore(MENU_GROUP_PRE, editActionableItemsAction);
       editActionableItemsAction.setEnabled(getSelectedActionArtifacts().size() == 1 || getSelectedTeamWorkflowArtifacts().size() == 1);
@@ -794,8 +762,6 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
             modified = PromptChangeUtil.promptChangeDate(sma, AtsAttributeTypes.EstimatedCompletionDate, false);
          } else if (xCol.equals(WorldXViewerFactory.Deadline_Col)) {
             modified = PromptChangeUtil.promptChangeDate(sma, AtsAttributeTypes.NeedBy, false);
-         } else if (xCol.equals(WorldXViewerFactory.Assignees_Col)) {
-            modified = PromptChangeUtil.promptChangeAssignees(sma, false);
          } else if (xCol.equals(WorldXViewerFactory.Remaining_Hours_Col)) {
             AWorkbench.popup("Calculated Field",
                "Hours Remaining field is calculated.\nHour Estimate - (Hour Estimate * Percent Complete)");
@@ -813,8 +779,6 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
             modified = PromptChangeUtil.promptChangeAttribute(sma, AtsAttributeTypes.Numeric1, false, false);
          } else if (xCol.equals(WorldXViewerFactory.Numeric2_Col)) {
             modified = PromptChangeUtil.promptChangeAttribute(sma, AtsAttributeTypes.Numeric2, false, false);
-         } else if (xCol.equals(WorldXViewerFactory.Resolution_Col)) {
-            modified = PromptChangeUtil.promptChangeAttribute(sma, AtsAttributeTypes.Resolution, false, true);
          }
          if (modified && isAltLeftClickPersist()) {
             sma.persist("persist attribute change");

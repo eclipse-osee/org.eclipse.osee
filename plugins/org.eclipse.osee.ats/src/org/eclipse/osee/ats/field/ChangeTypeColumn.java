@@ -10,7 +10,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
@@ -36,7 +35,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
-public class ChangeTypeColumn extends XViewerAtsAttributeValueColumn implements IMultiColumnEditProvider {
+public class ChangeTypeColumn extends XViewerAtsAttributeValueColumn {
 
    public static final IAttributeType ChangeTypeAttribute = new AtsAttributeTypes("AAMFEc+MwGHnPCv7HlgA",
       "Change Type", "Type of change.");
