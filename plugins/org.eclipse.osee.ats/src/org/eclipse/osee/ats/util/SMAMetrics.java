@@ -24,6 +24,9 @@ import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.ats.field.EstimatedHoursColumn;
+import org.eclipse.osee.ats.field.RemainingHoursColumn;
+import org.eclipse.osee.ats.field.WorkDaysNeededColumn;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -111,10 +114,10 @@ public class SMAMetrics {
       cummulativeWorkflowPercentComplete = 0;
       manDaysNeeded = 0;
       for (AbstractWorkflowArtifact team : smas) {
-         hrsRemainFromEstimates += team.getWorldViewRemainHours();
-         estHours += team.getWorldViewEstimatedHours();
+         hrsRemainFromEstimates += RemainingHoursColumn.getRemainingHours(team);
+         estHours += EstimatedHoursColumn.getEstimatedHours(team);
          hrsSpent += team.getWorldViewHoursSpentTotal();
-         manDaysNeeded += team.getWorldViewManDaysNeeded();
+         manDaysNeeded += WorkDaysNeededColumn.getWorldViewManDaysNeeded(team);
          cummulativeWorkflowPercentComplete += team.getWorldViewPercentCompleteTotal();
       }
       if (hrsRemainFromEstimates != 0) {
@@ -149,9 +152,6 @@ public class SMAMetrics {
                (estimatedReleaseDate == null ? "Not Set" : DateUtil.getMMDDYY(estimatedReleaseDate)), daysTillRel) : ""));
    }
 
-   /**
-    * @return the userToCompletedSmas
-    */
    public HashCollection<User, Artifact> getUserToCompletedSmas() {
       return userToCompletedSmas;
    }
@@ -251,9 +251,6 @@ public class SMAMetrics {
       return completed / getTaskArts().size() * 100;
    }
 
-   /**
-    * @return the str
-    */
    @Override
    public String toString() {
       return str;
@@ -263,9 +260,6 @@ public class SMAMetrics {
       return new SMAMetrics(smas, versionArtifact, manHoursPerDay, estimatedrelDate).str;
    }
 
-   /**
-    * @return the assigneesAssignedOrCompleted
-    */
    public Set<User> getAssigneesAssignedOrCompleted() {
       return assigneesAssignedOrCompleted;
    }
@@ -289,30 +283,18 @@ public class SMAMetrics {
             (estimatedReleaseDate == null ? "Not Set" : DateUtil.getMMDDYY(estimatedReleaseDate)), daysTillRel) : ""));
    }
 
-   /**
-    * @return the estRelDate
-    */
    public Date getEstRelDate() {
       return estimatedReleaseDate;
    }
 
-   /**
-    * @param estRelDate the estRelDate to set
-    */
    public void setEstRelDate(Date estRelDate) {
       this.estimatedReleaseDate = estRelDate;
    }
 
-   /**
-    * @return the daysTillRel
-    */
    public long getDaysTillRel() {
       return daysTillRel;
    }
 
-   /**
-    * @return the hours till release
-    */
    public double getHoursTillRel() {
       return daysTillRel * manHoursPerDay;
    }
@@ -333,30 +315,18 @@ public class SMAMetrics {
       this.daysTillRel = daysTillRel;
    }
 
-   /**
-    * @return the versionArtifact
-    */
    public VersionArtifact getVersionArtifact() {
       return versionArtifact;
    }
 
-   /**
-    * @param versionArtifact the versionArtifact to set
-    */
    public void setVersionArtifact(VersionArtifact versionArtifact) {
       this.versionArtifact = versionArtifact;
    }
 
-   /**
-    * @return the numTeamWfs
-    */
    public int getNumTeamWfs() {
       return teamArts.size();
    }
 
-   /**
-    * @return the numTasks
-    */
    public int getNumTasks() {
       return taskArts.size();
    }
@@ -368,115 +338,71 @@ public class SMAMetrics {
    public int getNumNotEstimated() throws OseeCoreException {
       int count = 0;
       for (AbstractWorkflowArtifact sma : smas) {
-         if (sma.getWorldViewEstimatedHours() == 0) {
+         if (EstimatedHoursColumn.getEstimatedHours(sma) == 0) {
             count++;
          }
       }
       return count;
    }
 
-   /**
-    * @return the numTasks
-    */
    public int getNumActions() {
       return actionArts.size();
    }
 
-   /**
-    * @return the numTasks
-    */
    public int getNumReviews() {
       return reviewArts.size();
    }
 
-   /**
-    * @return the estHours
-    */
    public double getEstHours() {
       return estHours;
    }
 
-   /**
-    * @param estHours the estHours to set
-    */
    public void setEstHours(double estHours) {
       this.estHours = estHours;
    }
 
-   /**
-    * @return the hrsRemain
-    */
    public double getHrsRemainFromEstimates() {
       return hrsRemainFromEstimates;
    }
 
-   /**
-    * @return the hrsSpent
-    */
    public double getHrsSpent() {
       return hrsSpent;
    }
 
-   /**
-    * @return the manDaysNeeded
-    */
    public double getManDaysNeeded() {
       return manDaysNeeded;
    }
 
-   /**
-    * @return the cummulativePercentComplete
-    */
    public double getCummulativeWorkflowPercentComplete() {
       return cummulativeWorkflowPercentComplete;
    }
 
-   /**
-    * @return the percentComplete
-    */
    public double getPercentCompleteByWorkflowPercents() {
       return percentCompleteByWorkflowPercents;
    }
 
-   /**
-    * @return the manDayHrs
-    */
    public double getHoursPerManDay() {
       return manHoursPerDay;
    }
 
-   /**
-    * @return the teamArts
-    */
    public Set<TeamWorkFlowArtifact> getTeamArts() {
       return teamArts;
    }
 
-   /**
-    * @return the actionArts
-    */
    public Set<ActionArtifact> getActionArts() {
       return actionArts;
    }
 
-   /**
-    * @return the taskArts
-    */
    public Set<TaskArtifact> getTaskArts() {
       return taskArts;
    }
 
-   /**
-    * @return the reviewArts
-    */
    public Set<AbstractReviewArtifact> getReviewArts() {
       return reviewArts;
    }
 
    /**
     * Return all SMAs including Review and Tasks
-    * 
-    * @return the userToSmas
     */
    public HashCollection<User, Artifact> getUserToAssignedSmas() {
       return userToAssignedSmas;

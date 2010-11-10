@@ -104,7 +104,7 @@ public class AnnualCostAvoidanceColumn extends XViewerAtsColumn implements IXVie
          if (artifact.isAttributeTypeValid(AtsAttributeTypes.WeeklyBenefit)) {
             return Result.TrueResult;
          }
-         Result result = artifact.isWorldViewRemainHoursValid();
+         Result result = RemainingHoursColumn.isRemainingHoursValid(artifact);
          if (result.isFalse()) {
             return result;
          }

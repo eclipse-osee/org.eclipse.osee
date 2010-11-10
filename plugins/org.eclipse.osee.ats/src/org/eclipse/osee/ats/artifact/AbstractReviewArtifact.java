@@ -230,30 +230,6 @@ public abstract class AbstractReviewArtifact extends AbstractTaskableArtifact {
       return standAlone;
    }
 
-   @SuppressWarnings("unused")
-   @Override
-   public String getWorldViewReviewDecider() throws OseeCoreException {
-      return "";
-   }
-
-   @SuppressWarnings("unused")
-   @Override
-   public String getWorldViewReviewModerator() throws OseeCoreException {
-      return "";
-   }
-
-   @SuppressWarnings("unused")
-   @Override
-   public String getWorldViewReviewReviewer() throws OseeCoreException {
-      return "";
-   }
-
-   @SuppressWarnings("unused")
-   @Override
-   public String getWorldViewReviewAuthor() throws OseeCoreException {
-      return "";
-   }
-
    @Override
    public double getWorldViewWeeklyBenefit() {
       return 0;

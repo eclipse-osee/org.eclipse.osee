@@ -19,6 +19,13 @@ import org.eclipse.swt.SWT;
 
 public class OperationalImpactWorkaroundDesciptionColumn extends XViewerValueColumn {
 
+   public static OperationalImpactWorkaroundDesciptionColumn instance =
+      new OperationalImpactWorkaroundDesciptionColumn();
+
+   public static OperationalImpactWorkaroundDesciptionColumn getInstance() {
+      return instance;
+   }
+
    public OperationalImpactWorkaroundDesciptionColumn() {
       super("ats.Operational Impact Workaround Description", "Operational Impact Workaround Description", 150,
          SWT.LEFT, false, SortDataType.String, true,

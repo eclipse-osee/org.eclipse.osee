@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 
 /**
  * @author Donald G. Dunne
@@ -77,36 +76,6 @@ public class PeerToPeerReviewArtifact extends AbstractReviewArtifact implements 
          users.add(role.getUser());
       }
       return users;
-   }
-
-   @Override
-   public String getWorldViewReviewAuthor() throws OseeCoreException {
-      return Artifacts.toString("; ", getUserRoleManager().getRoleUsers(Role.Author));
-   }
-
-   @Override
-   public String getWorldViewReviewModerator() throws OseeCoreException {
-      return Artifacts.toString("; ", getUserRoleManager().getRoleUsers(Role.Moderator));
-   }
-
-   @Override
-   public String getWorldViewReviewReviewer() throws OseeCoreException {
-      return Artifacts.toString("; ", getUserRoleManager().getRoleUsers(Role.Reviewer));
-   }
-
-   @Override
-   public String getWorldViewNumberOfReviewIssueDefects() throws OseeCoreException {
-      return String.valueOf(getDefectManager().getNumIssues());
-   }
-
-   @Override
-   public String getWorldViewNumberOfReviewMajorDefects() throws OseeCoreException {
-      return String.valueOf(getDefectManager().getNumMajor());
-   }
-
-   @Override
-   public String getWorldViewNumberOfReviewMinorDefects() throws OseeCoreException {
-      return String.valueOf(getDefectManager().getNumMinor());
    }
 
 }

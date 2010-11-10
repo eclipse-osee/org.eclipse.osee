@@ -25,7 +25,8 @@ import org.eclipse.swt.SWT;
 public class XViewerLastModifiedByColumn extends XViewerValueColumn {
 
    public XViewerLastModifiedByColumn(boolean show) {
-      this("framework.lastModBy", "Last Modified By", 50, SWT.LEFT, show, SortDataType.String, false, null);
+      this("framework.lastModBy", "Last Modified By", 50, SWT.LEFT, show, SortDataType.String, false,
+         "Retrieves user of last attribute update of this artifact.");
    }
 
    public XViewerLastModifiedByColumn(String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {

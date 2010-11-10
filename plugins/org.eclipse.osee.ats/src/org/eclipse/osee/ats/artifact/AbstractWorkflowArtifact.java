@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.osee.ats.artifact.log.ArtifactLog;
 import org.eclipse.osee.ats.artifact.log.AtsLog;
 import org.eclipse.osee.ats.artifact.log.LogItem;
@@ -58,7 +57,6 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.services.CmAccessControl;
 import org.eclipse.osee.framework.core.services.HasCmAccessControl;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -143,11 +141,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    public String getArtifactSuperTypeName() {
       return getArtifactTypeName();
-   }
-
-   @Override
-   public String getWorldViewImplementer() throws OseeCoreException {
-      return Artifacts.toString("; ", getImplementers());
    }
 
    @SuppressWarnings("unused")
@@ -266,52 +259,10 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return Artifacts.toString("; ", getStateMgr().getAssignees());
    }
 
-   @Override
-   public String getWorldViewCompletedDateStr() throws OseeCoreException {
-      if (isCompleted()) {
-         if (getWorldViewCompletedDate() == null) {
-            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Completed with no date => " + getHumanReadableId());
-            return XViewerCells.getCellExceptionString("Completed with no date.");
-         }
-         return DateUtil.getMMDDYYHHMM(getWorldViewCompletedDate());
-      }
-      return "";
-   }
-
-   @Override
-   public String getWorldViewCancelledDateStr() throws OseeCoreException {
-      if (isCancelled()) {
-         if (getWorldViewCancelledDate() == null) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, "Cancelled with no date => " + getHumanReadableId());
-            return XViewerCells.getCellExceptionString("Cancelled with no date.");
-         }
-         return DateUtil.getMMDDYYHHMM(getWorldViewCancelledDate());
-      }
-      return "";
-   }
-
    @SuppressWarnings("unused")
    @Override
    public String getWorldViewID() throws OseeCoreException {
       return getHumanReadableId();
-   }
-
-   @Override
-   public Date getWorldViewCompletedDate() throws OseeCoreException {
-      LogItem item = getLog().getCompletedLogItem();
-      if (item != null) {
-         return item.getDate();
-      }
-      return null;
-   }
-
-   @Override
-   public Date getWorldViewCancelledDate() throws OseeCoreException {
-      LogItem item = getLog().getCancelledLogItem();
-      if (item != null) {
-         return item.getDate();
-      }
-      return null;
    }
 
    public double getEstimatedHoursFromArtifact() throws OseeCoreException {
@@ -357,17 +308,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return getEstimatedHoursFromArtifact() + getEstimatedHoursFromTasks() + getEstimatedHoursFromReviews();
    }
 
-   @Override
-   public double getWorldViewEstimatedHours() throws OseeCoreException {
-      return getEstimatedHoursTotal();
-   }
-
-   @SuppressWarnings("unused")
-   @Override
-   public String getWorldViewPriority() throws OseeCoreException {
-      return "";
-   }
-
    public double getRemainHoursFromArtifact() throws OseeCoreException {
       if (isCompleted() || isCancelled()) {
          return 0;
@@ -397,83 +337,13 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return 0;
    }
 
-   @Override
-   public double getWorldViewRemainHours() throws OseeCoreException {
-      return getRemainHoursTotal();
-   }
-
-   @Override
-   public Result isWorldViewRemainHoursValid() throws OseeCoreException {
-      if (!isAttributeTypeValid(AtsAttributeTypes.EstimatedHours)) {
-         return Result.TrueResult;
-      }
-      try {
-         Double value = getSoleAttributeValue(AtsAttributeTypes.EstimatedHours, null);
-         if (isCancelled()) {
-            return Result.TrueResult;
-         }
-         if (value == null) {
-            return new Result("Estimated Hours not set.");
-         }
-         return Result.TrueResult;
-      } catch (Exception ex) {
-         return new Result(
-            ex.getClass().getName() + ": " + ex.getLocalizedMessage() + "\n\n" + Lib.exceptionToString(ex));
-      }
-   }
-
-   @Override
-   public Result isWorldViewManDaysNeededValid() throws OseeCoreException {
-      Result result = isWorldViewRemainHoursValid();
-      if (result.isFalse()) {
-         return result;
-      }
-      if (getManHrsPerDayPreference() == 0) {
-         return new Result("Man Day Hours Preference is not set.");
-      }
-
-      return Result.TrueResult;
-   }
-
-   @Override
-   public double getWorldViewManDaysNeeded() throws OseeCoreException {
-      double hrsRemain = getWorldViewRemainHours();
-      double manDaysNeeded = 0;
-      if (hrsRemain != 0) {
-         manDaysNeeded = hrsRemain / getManHrsPerDayPreference();
-      }
-      return manDaysNeeded;
-   }
-
    @SuppressWarnings("unused")
    public double getManHrsPerDayPreference() throws OseeCoreException {
       return AtsUtil.DEFAULT_HOURS_PER_WORK_DAY;
    }
 
-   @Override
-   public String getWorldViewNumeric1() throws OseeCoreException {
-      return AtsUtil.doubleToI18nString(getSoleAttributeValue(AtsAttributeTypes.Numeric1, 0.0), true);
-   }
-
-   @Override
-   public String getWorldViewNumeric2() throws OseeCoreException {
-      return AtsUtil.doubleToI18nString(getSoleAttributeValue(AtsAttributeTypes.Numeric2, 0.0), true);
-   }
-
    public int getWorldViewStatePercentComplete() throws OseeCoreException {
       return getPercentCompleteSMAStateTotal(getStateMgr().getCurrentStateName());
-   }
-
-   @Override
-   public String getWorldViewNumberOfTasks() throws OseeCoreException {
-      if (!(this instanceof AbstractTaskableArtifact)) {
-         return "";
-      }
-      int num = ((AbstractTaskableArtifact) this).getTaskArtifacts().size();
-      if (num == 0) {
-         return "";
-      }
-      return String.valueOf(num);
    }
 
    /**
@@ -540,29 +410,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return getParentSMA();
    }
 
-   @Override
-   public String getWorldViewValidationRequiredStr() throws OseeCoreException {
-      if (isAttributeTypeValid(AtsAttributeTypes.ValidationRequired)) {
-         return String.valueOf(getSoleAttributeValue(AtsAttributeTypes.ValidationRequired, false));
-      }
-      return "";
-   }
-
-   @SuppressWarnings("unused")
-   @Override
-   public int getWorldViewPercentRework() throws OseeCoreException {
-      return 0;
-   }
-
-   @Override
-   public String getWorldViewPercentReworkStr() throws OseeCoreException {
-      int reWork = getWorldViewPercentRework();
-      if (reWork == 0) {
-         return "";
-      }
-      return String.valueOf(reWork);
-   }
-
    public static Set<IArtifactType> getAllSMAType() throws OseeCoreException {
       Set<IArtifactType> artTypeNames = TeamWorkflowExtensions.getAllTeamWorkflowArtifactTypes();
       artTypeNames.add(AtsArtifactTypes.Task);
@@ -588,36 +435,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
          result.addAll(teamArts);
       }
       return result;
-   }
-
-   @SuppressWarnings("unused")
-   @Override
-   public String getWorldViewBranchStatus() throws OseeCoreException {
-      return "";
-   }
-
-   @SuppressWarnings("unused")
-   @Override
-   public String getWorldViewReviewAuthor() throws OseeCoreException {
-      return "";
-   }
-
-   @SuppressWarnings("unused")
-   @Override
-   public String getWorldViewReviewDecider() throws OseeCoreException {
-      return "";
-   }
-
-   @SuppressWarnings("unused")
-   @Override
-   public String getWorldViewReviewModerator() throws OseeCoreException {
-      return "";
-   }
-
-   @SuppressWarnings("unused")
-   @Override
-   public String getWorldViewReviewReviewer() throws OseeCoreException {
-      return "";
    }
 
    /**
@@ -858,67 +675,14 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return DateUtil.getMMDDYYHHMM(getLastModified());
    }
 
-   @Override
-   public String getWorldViewLastStatused() throws OseeCoreException {
-      return DateUtil.getMMDDYYHHMM(getLog().getLastStatusedDate());
-   }
-
    @SuppressWarnings("unused")
    public String getWorldViewSWEnhancement() throws OseeCoreException {
       return "";
    }
 
-   @SuppressWarnings("unused")
-   @Override
-   public String getWorldViewNumberOfReviewIssueDefects() throws OseeCoreException {
-      return "";
-   }
-
-   @SuppressWarnings("unused")
-   @Override
-   public String getWorldViewNumberOfReviewMajorDefects() throws OseeCoreException {
-      return "";
-   }
-
-   @SuppressWarnings("unused")
-   @Override
-   public String getWorldViewNumberOfReviewMinorDefects() throws OseeCoreException {
-      return "";
-   }
-
-   @Override
-   public String getWorldViewActionsIntiatingWorkflow() throws OseeCoreException {
-      return getParentActionArtifact().getWorldViewActionsIntiatingWorkflow();
-   }
-
-   @Override
-   public String getWorldViewDaysInCurrentState() throws OseeCoreException {
-      double timeInCurrState = getStateMgr().getTimeInState();
-      if (timeInCurrState == 0) {
-         return "0.0";
-      }
-      return AtsUtil.doubleToI18nString(timeInCurrState / DateUtil.MILLISECONDS_IN_A_DAY);
-   }
-
    @Override
    public String getGroupExplorerName() {
       return String.format("[%s] %s", getStateMgr().getCurrentStateName(), getName());
-   }
-
-   @Override
-   public String getWorldViewOriginatingWorkflowStr() throws OseeCoreException {
-      return getParentActionArtifact().getWorldViewOriginatingWorkflowStr();
-   }
-
-   @Override
-   public Collection<TeamWorkFlowArtifact> getWorldViewOriginatingWorkflows() throws OseeCoreException {
-      return getParentActionArtifact().getWorldViewOriginatingWorkflows();
-   }
-
-   @SuppressWarnings("unused")
-   @Override
-   public String getWorldViewNumberOfTasksRemaining() throws OseeCoreException {
-      return "";
    }
 
    public void closeEditors(boolean save) {
@@ -1087,6 +851,22 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    public boolean isCompleted() {
       return stateMgr.getCurrentStateName().equals(DefaultTeamState.Completed.name());
+   }
+
+   public Date getCompletedDate() throws OseeCoreException {
+      LogItem item = getLog().getCompletedLogItem();
+      if (item != null) {
+         return item.getDate();
+      }
+      return null;
+   }
+
+   public Date getCancelledDate() throws OseeCoreException {
+      LogItem item = getLog().getCancelledLogItem();
+      if (item != null) {
+         return item.getDate();
+      }
+      return null;
    }
 
    public boolean isCancelled() {

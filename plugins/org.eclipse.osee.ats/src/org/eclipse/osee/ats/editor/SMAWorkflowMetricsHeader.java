@@ -12,9 +12,9 @@ package org.eclipse.osee.ats.editor;
 
 import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.field.RemainingHoursColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
@@ -53,7 +53,7 @@ public class SMAWorkflowMetricsHeader extends Composite {
                "Calculation: sum of all hours spent for all tasks, reviews and in each state");
          remainHoursLabel =
             FormsUtil.createLabelValue(toolkit, this, "Remaining Hours: ", "",
-               WorldXViewerFactory.Remaining_Hours_Col.getDescription());
+               RemainingHoursColumn.getInstance().getDescription());
 
          refresh();
       } catch (Exception ex) {
@@ -76,11 +76,11 @@ public class SMAWorkflowMetricsHeader extends Composite {
             hoursSpentLabel.setText(String.valueOf(AtsUtil.doubleToI18nString(sma.getHoursSpentSMATotal())));
          }
          if (hoursSpentLabel != null && !hoursSpentLabel.isDisposed()) {
-            Result result = sma.isWorldViewRemainHoursValid();
+            Result result = RemainingHoursColumn.isRemainingHoursValid(sma);
             if (result.isFalse()) {
                remainHoursLabel.setText("Error" + result.getText());
             } else {
-               remainHoursLabel.setText(String.valueOf(AtsUtil.doubleToI18nString(sma.getWorldViewRemainHours())));
+               remainHoursLabel.setText(String.valueOf(AtsUtil.doubleToI18nString(RemainingHoursColumn.getRemainingHours(sma))));
             }
          }
       } catch (Exception ex) {

@@ -35,7 +35,7 @@ public class MassXViewerFactory extends SkynetXViewerFactory {
       registerAllAttributeColumnsForArtifacts(artifacts, true, true);
       registerColumns(new XViewerHridColumn(true));
       registerColumns(new XViewerGuidColumn(true));
-      registerColumns(new XViewerArtifactTypeColumn(true));
+      registerColumns(XViewerArtifactTypeColumn.getInstance());
       registerColumns(new XViewerLastModifiedDateColumn(true));
       registerColumns(new XViewerLastModifiedByColumn(true));
    }

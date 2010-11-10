@@ -70,14 +70,6 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
       }
    }
 
-   @Override
-   public String getWorldViewNumberOfTasksRemaining() throws OseeCoreException {
-      if (getTaskArtifacts().isEmpty()) {
-         return "";
-      }
-      return String.valueOf(getNumTasksInWork());
-   }
-
    public Collection<TaskArtifact> getTaskArtifacts() throws OseeCoreException {
       return AtsCacheManager.getTaskArtifacts(this);
    }

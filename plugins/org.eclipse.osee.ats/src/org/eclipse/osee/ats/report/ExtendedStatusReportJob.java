@@ -149,7 +149,8 @@ public class ExtendedStatusReportJob extends Job {
          } else if (col == Columns.Type) {
             values.add(sma.getArtifactTypeName());
          } else if (col == Columns.Priority) {
-            values.add((sma.getWorldViewPriority().equals("") ? "." : sma.getWorldViewPriority()));
+            String priStr = sma.getSoleAttributeValue(AtsAttributeTypes.PriorityType, "");
+            values.add(priStr.equals("") ? "." : priStr);
          } else if (col == Columns.Change_Type) {
             ChangeType changeType = ChangeTypeColumn.getChangeType(sma);
             values.add((changeType == ChangeType.None ? "." : changeType.name()));

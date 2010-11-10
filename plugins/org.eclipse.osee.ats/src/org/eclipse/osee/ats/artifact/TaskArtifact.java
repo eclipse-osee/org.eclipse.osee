@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.field.EstimatedHoursColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.DefaultTeamState;
@@ -178,29 +179,8 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IATSStateM
    }
 
    @Override
-   public String getWorldViewNumberOfTasks() {
-      return "";
-   }
-
-   @Override
    public double getManHrsPerDayPreference() throws OseeCoreException {
       return getParentSMA().getManHrsPerDayPreference();
-   }
-
-   @Override
-   public double getWorldViewRemainHours() throws OseeCoreException {
-      if (isCompleted() || isCancelled()) {
-         return 0;
-      }
-      double est = getWorldViewEstimatedHours();
-      if (getWorldViewStatePercentComplete() == 0) {
-         return getWorldViewEstimatedHours();
-      }
-      double percent = getStateMgr().getPercentComplete(TaskStates.InWork.name());
-      if (percent == 0) {
-         return getWorldViewEstimatedHours();
-      }
-      return getWorldViewEstimatedHours() - est * percent / 100.0;
    }
 
    @Override
@@ -255,6 +235,22 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IATSStateM
          return sma.getWorldViewSWEnhancement();
       }
       return "";
+   }
+
+   @Override
+   public double getRemainHoursFromArtifact() throws OseeCoreException {
+      if (isCompleted() || isCancelled()) {
+         return 0;
+      }
+      double est = EstimatedHoursColumn.getEstimatedHours(this);
+      if (getWorldViewStatePercentComplete() == 0) {
+         return est;
+      }
+      double percent = getStateMgr().getPercentComplete(TaskStates.InWork.name());
+      if (percent == 0) {
+         return est;
+      }
+      return est - ((est * percent) / 100.0);
    }
 
 }

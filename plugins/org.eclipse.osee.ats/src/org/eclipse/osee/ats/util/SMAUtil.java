@@ -19,8 +19,11 @@ import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.artifact.log.LogItem;
+import org.eclipse.osee.ats.field.CancelledDateColumn;
 import org.eclipse.osee.ats.field.ChangeTypeColumn;
+import org.eclipse.osee.ats.field.CompletedDateColumn;
 import org.eclipse.osee.ats.field.CreatedDateColumn;
+import org.eclipse.osee.ats.field.PriorityColumn;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -86,9 +89,9 @@ public class SMAUtil {
          Date completedCancelDate = null;
          if (sma.isCancelledOrCompleted()) {
             if (sma.isCancelled()) {
-               completedCancelDate = sma.getWorldViewCancelledDate();
+               completedCancelDate = CancelledDateColumn.getDate(sma);
             } else {
-               completedCancelDate = sma.getWorldViewCompletedDate();
+               completedCancelDate = CompletedDateColumn.getDate(sma);
             }
          }
          if (createDate.before(date) && (completedCancelDate == null || completedCancelDate.after(date))) {
@@ -104,9 +107,9 @@ public class SMAUtil {
          Date completedCancelDate = null;
          if (sma.isCancelledOrCompleted()) {
             if (sma.isCancelled()) {
-               completedCancelDate = sma.getWorldViewCancelledDate();
+               completedCancelDate = CancelledDateColumn.getDate(sma);
             } else {
-               completedCancelDate = sma.getWorldViewCompletedDate();
+               completedCancelDate = CompletedDateColumn.getDate(sma);
             }
          }
          if (completedCancelDate == null) {
@@ -170,7 +173,7 @@ public class SMAUtil {
       List<AbstractWorkflowArtifact> smas = new ArrayList<AbstractWorkflowArtifact>();
       for (AbstractWorkflowArtifact sma : artifacts) {
          TeamWorkFlowArtifact teamArt = sma.getParentTeamWorkflow();
-         if (priorityTypes.contains(teamArt.getWorldViewPriority())) {
+         if (priorityTypes.contains(PriorityColumn.getPriorityStr(teamArt))) {
             smas.add(sma);
          }
       }

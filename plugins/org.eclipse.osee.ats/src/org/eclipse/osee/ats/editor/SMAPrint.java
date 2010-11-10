@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.artifact.note.NoteItem;
 import org.eclipse.osee.ats.editor.widget.ReviewInfoXWidget;
 import org.eclipse.osee.ats.field.ChangeTypeColumn;
 import org.eclipse.osee.ats.field.DeadlineColumn;
+import org.eclipse.osee.ats.field.PriorityColumn;
 import org.eclipse.osee.ats.field.TeamColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -87,7 +88,7 @@ public class SMAPrint extends Action {
       resultData.addRaw(AHTML.addRowMultiColumnTable(new String[] {
          //
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Change Type: ", ChangeTypeColumn.getChangeTypeStr(sma)),
-         AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Priority: ", sma.getWorldViewPriority()),
+         AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Priority: ", PriorityColumn.getPriorityStr(sma)),
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Need By: ", DeadlineColumn.getDateStr(sma))}));
 
       resultData.addRaw(AHTML.addRowMultiColumnTable(new String[] {

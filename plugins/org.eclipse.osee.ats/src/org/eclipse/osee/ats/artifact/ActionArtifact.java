@@ -10,19 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.artifact;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.osee.ats.field.ChangeTypeColumn;
-import org.eclipse.osee.ats.field.CreatedDateColumn;
-import org.eclipse.osee.ats.field.TeamColumn;
-import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.field.PriorityColumn;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
@@ -32,13 +25,11 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -130,13 +121,13 @@ public class ActionArtifact extends AbstractAtsArtifact implements IWorldViewArt
       String priorityType = null;
       Collection<TeamWorkFlowArtifact> teamArts = getTeamWorkFlowArtifacts();
       if (teamArts.size() == 1) {
-         priorityType = teamArts.iterator().next().getWorldViewPriority();
+         priorityType = PriorityColumn.getPriorityStr(teamArts.iterator().next());
       } else {
          for (TeamWorkFlowArtifact team : teamArts) {
             if (!team.isCancelled()) {
                if (priorityType == null) {
-                  priorityType = team.getWorldViewPriority();
-               } else if (!priorityType.equals(team.getWorldViewPriority())) {
+                  priorityType = PriorityColumn.getPriorityStr(team);
+               } else if (!priorityType.equals(PriorityColumn.getPriorityStr(team))) {
                   return;
                }
             }
@@ -172,52 +163,10 @@ public class ActionArtifact extends AbstractAtsArtifact implements IWorldViewArt
    }
 
    @Override
-   public String getWorldViewBranchStatus() throws OseeCoreException {
-      Set<String> strs = new HashSet<String>();
-      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         if (!team.getWorldViewBranchStatus().equals("")) {
-            strs.add(team.getWorldViewBranchStatus());
-         }
-      }
-      return Collections.toString(", ", strs);
-   }
-
-   @Override
-   public String getWorldViewNumberOfTasks() throws OseeCoreException {
-      Set<String> strs = new HashSet<String>();
-      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         if (!team.getWorldViewNumberOfTasks().equals("")) {
-            strs.add(team.getWorldViewNumberOfTasks());
-         }
-      }
-      return Collections.toString(", ", strs);
-   }
-
-   @Override
-   public String getWorldViewNumberOfTasksRemaining() throws OseeCoreException {
-      Set<String> strs = new HashSet<String>();
-      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         if (!team.getWorldViewNumberOfTasksRemaining().equals("")) {
-            strs.add(team.getWorldViewNumberOfTasksRemaining());
-         }
-      }
-      return Collections.toString(", ", strs);
-   }
-
-   @Override
    public String getState() throws OseeCoreException {
       Set<String> strs = new HashSet<String>();
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
          strs.add(team.getState());
-      }
-      return Collections.toString(";", strs);
-   }
-
-   @Override
-   public String getWorldViewDaysInCurrentState() throws OseeCoreException {
-      Set<String> strs = new HashSet<String>();
-      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         strs.add(team.getWorldViewDaysInCurrentState());
       }
       return Collections.toString(";", strs);
    }
@@ -243,11 +192,6 @@ public class ActionArtifact extends AbstractAtsArtifact implements IWorldViewArt
    }
 
    @Override
-   public String getWorldViewPriority() throws OseeCoreException {
-      return getSoleAttributeValue(AtsAttributeTypes.PriorityType, "");
-   }
-
-   @Override
    public Image getAssigneeImage() throws OseeCoreException {
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
          Image image = team.getAssigneeImage();
@@ -266,64 +210,6 @@ public class ActionArtifact extends AbstractAtsArtifact implements IWorldViewArt
          TeamWorkFlowArtifact.class)) {
          art.atsDelete(deleteArts, allRelated);
       }
-   }
-
-   @Override
-   public String getWorldViewCompletedDateStr() throws OseeCoreException {
-      Set<String> strs = new HashSet<String>();
-      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         strs.add(team.getWorldViewCompletedDateStr());
-      }
-      return Collections.toString(";", strs);
-   }
-
-   @Override
-   public Date getWorldViewCompletedDate() throws OseeCoreException {
-      return getTeamWorkFlowArtifacts().iterator().next().getWorldViewCompletedDate();
-   }
-
-   @Override
-   public String getWorldViewCancelledDateStr() throws OseeCoreException {
-      Set<String> strs = new HashSet<String>();
-      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         strs.add(team.getWorldViewCancelledDateStr());
-      }
-      return Collections.toString(";", strs);
-   }
-
-   @Override
-   public Date getWorldViewCancelledDate() throws OseeCoreException {
-      return getTeamWorkFlowArtifacts().iterator().next().getWorldViewCancelledDate();
-   }
-
-   @Override
-   public double getWorldViewRemainHours() throws OseeCoreException {
-      double hours = 0;
-      // Add up hours for all children
-      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         hours += team.getWorldViewRemainHours();
-      }
-      return hours;
-   }
-
-   @Override
-   public double getWorldViewManDaysNeeded() throws OseeCoreException {
-      double hours = 0;
-      // Add up hours for all children
-      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         hours += team.getWorldViewManDaysNeeded();
-      }
-      return hours;
-   }
-
-   @Override
-   public double getWorldViewEstimatedHours() throws OseeCoreException {
-      double hours = 0;
-      // Add up hours for all children
-      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         hours += team.getWorldViewEstimatedHours();
-      }
-      return hours;
    }
 
    public int getWorldViewStatePercentComplete() throws OseeCoreException {
@@ -347,68 +233,8 @@ public class ActionArtifact extends AbstractAtsArtifact implements IWorldViewArt
    }
 
    @Override
-   public String getWorldViewNumeric1() throws OseeCoreException {
-      Set<String> strs = new HashSet<String>();
-      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         strs.add(team.getWorldViewNumeric1());
-      }
-      return Collections.toString(";", strs);
-   }
-
-   @Override
-   public String getWorldViewNumeric2() throws OseeCoreException {
-      Set<String> strs = new HashSet<String>();
-      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         strs.add(team.getWorldViewNumeric2());
-      }
-      return Collections.toString(";", strs);
-   }
-
-   @Override
    public Artifact getParentAtsArtifact() {
       return null;
-   }
-
-   @Override
-   public String getWorldViewValidationRequiredStr() {
-      try {
-         return String.valueOf(getSoleAttributeValue(AtsAttributeTypes.ValidationRequired, false));
-      } catch (Exception ex) {
-         return XViewerCells.getCellExceptionString(ex);
-      }
-   }
-
-   @Override
-   public Result isWorldViewRemainHoursValid() throws OseeCoreException {
-      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         if (team.isWorldViewRemainHoursValid().isFalse()) {
-            return team.isWorldViewRemainHoursValid();
-         }
-      }
-      return Result.TrueResult;
-   }
-
-   @Override
-   public Result isWorldViewManDaysNeededValid() {
-      try {
-         for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-            if (team.isWorldViewManDaysNeededValid().isFalse()) {
-               return team.isWorldViewManDaysNeededValid();
-            }
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-      }
-      return Result.TrueResult;
-   }
-
-   @Override
-   public String getWorldViewImplementer() throws OseeCoreException {
-      Set<String> strs = new HashSet<String>();
-      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         strs.add(team.getWorldViewImplementer());
-      }
-      return Collections.toString(";", strs);
    }
 
    @Override
@@ -421,40 +247,6 @@ public class ActionArtifact extends AbstractAtsArtifact implements IWorldViewArt
          }
       }
       return hours;
-   }
-
-   @Override
-   public String getWorldViewPercentReworkStr() throws OseeCoreException {
-      Set<String> strs = new HashSet<String>();
-      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         strs.add(team.getWorldViewPercentReworkStr());
-      }
-      return Collections.toString(";", strs);
-   }
-
-   @Override
-   public int getWorldViewPercentRework() {
-      return 0;
-   }
-
-   @Override
-   public String getWorldViewReviewAuthor() {
-      return "";
-   }
-
-   @Override
-   public String getWorldViewReviewDecider() {
-      return "";
-   }
-
-   @Override
-   public String getWorldViewReviewModerator() {
-      return "";
-   }
-
-   @Override
-   public String getWorldViewReviewReviewer() {
-      return "";
    }
 
    @Override
@@ -574,75 +366,6 @@ public class ActionArtifact extends AbstractAtsArtifact implements IWorldViewArt
 
    public String getWorldViewLastUpdated() throws OseeCoreException {
       return DateUtil.getMMDDYYHHMM(getLastModified());
-   }
-
-   @Override
-   public String getWorldViewLastStatused() {
-      return "(see children)";
-   }
-
-   @Override
-   public String getWorldViewNumberOfReviewIssueDefects() {
-      return "";
-   }
-
-   @Override
-   public String getWorldViewNumberOfReviewMajorDefects() {
-      return "";
-   }
-
-   @Override
-   public String getWorldViewNumberOfReviewMinorDefects() {
-      return "";
-   }
-
-   @Override
-   public String getWorldViewActionsIntiatingWorkflow() throws OseeCoreException {
-      Date earliestDate = null;
-      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         if (earliestDate == null || team.getLog().getCreationDate().before(earliestDate)) {
-            earliestDate = team.getLog().getCreationDate();
-         }
-      }
-      List<String> teamNames = new ArrayList<String>();
-      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         if (team.getLog().getCreationDate().equals(earliestDate)) {
-            teamNames.add(team.getTeamName());
-         }
-      }
-      return Collections.toString("; ", teamNames);
-   }
-
-   @Override
-   public String getWorldViewOriginatingWorkflowStr() throws OseeCoreException {
-      Set<String> strs = new HashSet<String>();
-      for (TeamWorkFlowArtifact team : getWorldViewOriginatingWorkflows()) {
-         strs.add(TeamColumn.getName(team));
-      }
-      return Collections.toString(";", strs);
-   }
-
-   @Override
-   public Collection<TeamWorkFlowArtifact> getWorldViewOriginatingWorkflows() throws OseeCoreException {
-      if (getTeamWorkFlowArtifacts().size() == 1) {
-         return getTeamWorkFlowArtifacts();
-      }
-      Collection<TeamWorkFlowArtifact> results = new ArrayList<TeamWorkFlowArtifact>();
-      Date origDate = null;
-      for (TeamWorkFlowArtifact teamArt : getTeamWorkFlowArtifacts()) {
-         if (teamArt.isCancelled()) {
-            continue;
-         }
-         Date teamArtDate = CreatedDateColumn.getDate(teamArt);
-         if (origDate == null || teamArtDate.before(origDate)) {
-            results.clear();
-            origDate = teamArtDate;
-            results.add(teamArt);
-         } else if (origDate.equals(teamArtDate)) {
-            results.add(teamArt);
-         }
-      }
-      return results;
    }
 
 }

@@ -22,6 +22,12 @@ import org.eclipse.swt.SWT;
  */
 public class XViewerHridColumn extends XViewerValueColumn {
 
+   public static XViewerHridColumn instance = new XViewerHridColumn();
+
+   public static XViewerHridColumn getInstance() {
+      return instance;
+   }
+
    public XViewerHridColumn() {
       this(false);
    }

@@ -96,11 +96,6 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IB
    }
 
    @Override
-   public int getWorldViewPercentRework() throws OseeCoreException {
-      return getSoleAttributeValue(AtsAttributeTypes.PercentRework, 0);
-   }
-
-   @Override
    public String getEditorTitle() throws OseeCoreException {
       try {
          if (getTargetedVersion() != null) {
@@ -152,11 +147,6 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IB
    @Override
    public String getType() {
       return getTeamName() + " Workflow";
-   }
-
-   @Override
-   public String getWorldViewPriority() throws OseeCoreException {
-      return getSoleAttributeValue(AtsAttributeTypes.PriorityType, "");
    }
 
    @Override
@@ -224,23 +214,6 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IB
          return 0;
       }
       return new Float(value).doubleValue();
-   }
-
-   @Override
-   public String getWorldViewBranchStatus() {
-      try {
-         if (getBranchMgr().isWorkingBranchInWork()) {
-            return "Working";
-         } else if (getBranchMgr().isCommittedBranchExists()) {
-            if (!getBranchMgr().isAllObjectsToCommitToConfigured() || !getBranchMgr().isBranchesAllCommitted()) {
-               return "Needs Commit";
-            }
-            return "Committed";
-         }
-         return "";
-      } catch (Exception ex) {
-         return "Exception: " + ex.getLocalizedMessage();
-      }
    }
 
    @Override

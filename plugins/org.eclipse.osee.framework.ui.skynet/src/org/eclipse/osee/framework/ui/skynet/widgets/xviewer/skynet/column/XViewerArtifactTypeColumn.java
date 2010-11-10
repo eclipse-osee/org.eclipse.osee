@@ -24,13 +24,15 @@ import org.eclipse.swt.graphics.Image;
  */
 public class XViewerArtifactTypeColumn extends XViewerValueColumn {
 
-   public XViewerArtifactTypeColumn(boolean show) {
-      this("framework.artifact.type." + "Artifact Type", "Artifact Type", 150, SWT.LEFT, show, SortDataType.String,
-         false, "Artifact Type");
+   public static XViewerArtifactTypeColumn instance = new XViewerArtifactTypeColumn();
+
+   public static XViewerArtifactTypeColumn getInstance() {
+      return instance;
    }
 
-   public XViewerArtifactTypeColumn(String name) {
-      this("framework.artifact.type." + name, name, 150, SWT.LEFT, true, SortDataType.String, false, "Artifact Type");
+   public XViewerArtifactTypeColumn() {
+      this("framework.artifact.type." + "Artifact Type", "Artifact Type", 150, SWT.LEFT, true, SortDataType.String,
+         false, "Artifact Type");
    }
 
    public XViewerArtifactTypeColumn(String id, String name, boolean show) {

@@ -19,9 +19,13 @@ import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.field.ActionableItemsColumn;
 import org.eclipse.osee.ats.field.AnnualCostAvoidanceColumn;
 import org.eclipse.osee.ats.field.AssigneeColumn;
+import org.eclipse.osee.ats.field.BranchStatusColumn;
+import org.eclipse.osee.ats.field.CancelledDateColumn;
 import org.eclipse.osee.ats.field.CategoryColumn;
 import org.eclipse.osee.ats.field.ChangeTypeColumn;
+import org.eclipse.osee.ats.field.CompletedDateColumn;
 import org.eclipse.osee.ats.field.CreatedDateColumn;
+import org.eclipse.osee.ats.field.DaysInCurrentStateColumn;
 import org.eclipse.osee.ats.field.DeadlineColumn;
 import org.eclipse.osee.ats.field.DecisionColumn;
 import org.eclipse.osee.ats.field.DescriptionColumn;
@@ -32,28 +36,44 @@ import org.eclipse.osee.ats.field.GoalOrderColumn;
 import org.eclipse.osee.ats.field.GoalOrderVoteColumn;
 import org.eclipse.osee.ats.field.GoalsColumn;
 import org.eclipse.osee.ats.field.GroupsColumn;
+import org.eclipse.osee.ats.field.ImplementorColumn;
+import org.eclipse.osee.ats.field.LastStatusedColumn;
 import org.eclipse.osee.ats.field.LegacyPcrIdColumn;
 import org.eclipse.osee.ats.field.NotesColumn;
+import org.eclipse.osee.ats.field.NumberOfTasksColumn;
+import org.eclipse.osee.ats.field.NumberOfTasksRemainingColumn;
 import org.eclipse.osee.ats.field.NumericColumn;
 import org.eclipse.osee.ats.field.OperationalImpactColumn;
 import org.eclipse.osee.ats.field.OperationalImpactDesciptionColumn;
 import org.eclipse.osee.ats.field.OperationalImpactWorkaroundColumn;
 import org.eclipse.osee.ats.field.OperationalImpactWorkaroundDesciptionColumn;
+import org.eclipse.osee.ats.field.OriginatingWorkFlowColumn;
 import org.eclipse.osee.ats.field.OriginatorColumn;
 import org.eclipse.osee.ats.field.ParentIdColumn;
 import org.eclipse.osee.ats.field.ParentStateColumn;
+import org.eclipse.osee.ats.field.PercentReworkColumn;
 import org.eclipse.osee.ats.field.PointsColumn;
 import org.eclipse.osee.ats.field.PriorityColumn;
 import org.eclipse.osee.ats.field.RelatedToStateColumn;
 import org.eclipse.osee.ats.field.ReleaseDateColumn;
+import org.eclipse.osee.ats.field.RemainingHoursColumn;
 import org.eclipse.osee.ats.field.ResolutionColumn;
+import org.eclipse.osee.ats.field.ReviewAuthorColumn;
+import org.eclipse.osee.ats.field.ReviewDeciderColumn;
+import org.eclipse.osee.ats.field.ReviewModeratorColumn;
+import org.eclipse.osee.ats.field.ReviewNumIssuesColumn;
+import org.eclipse.osee.ats.field.ReviewNumMajorDefectsColumn;
+import org.eclipse.osee.ats.field.ReviewNumMinorDefectsColumn;
+import org.eclipse.osee.ats.field.ReviewReviewerColumn;
 import org.eclipse.osee.ats.field.StateColumn;
 import org.eclipse.osee.ats.field.TargetedVersionColumn;
 import org.eclipse.osee.ats.field.TeamColumn;
 import org.eclipse.osee.ats.field.TitleColumn;
 import org.eclipse.osee.ats.field.TypeColumn;
 import org.eclipse.osee.ats.field.UserCommunityColumn;
+import org.eclipse.osee.ats.field.ValidationRequiredColumn;
 import org.eclipse.osee.ats.field.WeeklyBenefitHrsColumn;
+import org.eclipse.osee.ats.field.WorkDaysNeededColumn;
 import org.eclipse.osee.ats.field.WorkPackageColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
@@ -74,10 +94,6 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
 
    public GoalArtifact soleGoalArtifact;
    public static final String COLUMN_NAMESPACE = "ats.column";
-
-   public static final XViewerColumn Remaining_Hours_Col = new XViewerColumn(COLUMN_NAMESPACE + ".remainingHours",
-      "Remaining Hours", 40, SWT.CENTER, false, SortDataType.Float, false,
-      "Hours that remain to complete the changes.\n\nEstimated Hours - (Estimated Hours * Percent Complete).");
 
    public static final XViewerColumn Percent_Complete_State_Col = new XViewerColumn(
       COLUMN_NAMESPACE + ".statePercentComplete", "State Percent Complete", 40, SWT.CENTER, false,
@@ -124,58 +140,6 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       "Total Hours Spent", 40, SWT.CENTER, false, SortDataType.Float, false,
       "Hours spent for all work related to all states.");
 
-   public static final XViewerColumn Implementor_Col = new XViewerColumn(COLUMN_NAMESPACE + ".implementer",
-      "Implementer", 80, SWT.LEFT, false, SortDataType.String, false,
-      "User assigned to the Implementation of the changes.");
-   public static final XViewerColumn Review_Author_Col = new XViewerColumn(COLUMN_NAMESPACE + ".reviewAuthor",
-      "Review Author", 100, SWT.LEFT, false, SortDataType.String, false, "Review Author(s)");
-   public static final XViewerColumn Review_Moderator_Col = new XViewerColumn(COLUMN_NAMESPACE + ".reviewModerator",
-      "Review Moderator", 100, SWT.LEFT, false, SortDataType.String, false, "Review Moderator(s)");
-   public static final XViewerColumn Review_Reviewer_Col = new XViewerColumn(COLUMN_NAMESPACE + ".reviewReviewer",
-      "Review Reviewer", 100, SWT.LEFT, false, SortDataType.String, false, "Review Reviewer(s)");
-   public static final XViewerColumn Review_Decider_Col = new XViewerColumn(COLUMN_NAMESPACE + ".reviewDecider",
-      "Review Decider", 100, SWT.LEFT, false, SortDataType.String, false, "Review Decider");
-   public static final XViewerColumn Completed_Date_Col = new XViewerColumn(COLUMN_NAMESPACE + ".completedDate",
-      "Completed Date", 80, SWT.CENTER, false, SortDataType.Date, false, null);
-   public static final XViewerColumn Cancelled_Date_Col = new XViewerColumn(COLUMN_NAMESPACE + ".cancelledDate",
-      "Cancelled Date", 80, SWT.CENTER, false, SortDataType.Date, false, null);
-   public static final XViewerColumn Work_Days_Needed_Col = new XViewerColumn(COLUMN_NAMESPACE + ".workDaysNeeded",
-      "Hours Per Work Day", 40, SWT.CENTER, false, SortDataType.Float, false, null);
-   public static final XViewerColumn Days_In_Current_State = new XViewerColumn(COLUMN_NAMESPACE + ".daysInCurrState",
-      "Days in Current State", 40, SWT.CENTER, false, SortDataType.Float, false, null);
-   public static final XViewerColumn Percent_Rework_Col = new XViewerColumn(COLUMN_NAMESPACE + ".percentRework",
-      "Percent Rework", 40, SWT.CENTER, false, SortDataType.Percent, false, null);
-   public static final XViewerColumn Branch_Status_Col = new XViewerColumn(COLUMN_NAMESPACE + ".branchStatus",
-      "Branch Status", 40, SWT.CENTER, false, SortDataType.String, false, null);
-   public static final XViewerColumn Number_of_Tasks_Col = new XViewerColumn(COLUMN_NAMESPACE + ".numberOfTasks",
-      "Number of Tasks", 40, SWT.CENTER, false, SortDataType.Integer, false, null);
-   public static final XViewerColumn Number_of_Tasks_Remining_Col = new XViewerColumn(
-      COLUMN_NAMESPACE + ".numberOfTasksRemain", "Number of Tasks Remaining", 40, SWT.CENTER, false,
-      SortDataType.Integer, false, null);
-   public static final XViewerColumn Last_Modified_By_Col = new XViewerColumn(COLUMN_NAMESPACE + ".lastModifiedBy",
-      "Last Modified By", 40, SWT.CENTER, false, SortDataType.String, false,
-      "Retrieves user of last attribute update of this artifact.");
-   public static final XViewerColumn Last_Statused_Col = new XViewerColumn(COLUMN_NAMESPACE + ".lastStatused",
-      "Last Statused", 40, SWT.CENTER, false, SortDataType.Date, false,
-      "Retrieves timestamp of status (percent completed or hours spent).");
-   public static final XViewerColumn Validation_Required_Col = new XViewerColumn(
-      COLUMN_NAMESPACE + ".validationRequired", "Validation Required", 80, SWT.LEFT, false, SortDataType.String, false,
-      "If set, Originator will be asked to perform a review to\nensure changes are as expected.");
-   public static final XViewerColumn Review_Minor_Defects = new XViewerColumn(COLUMN_NAMESPACE + ".reviewMinorDefects",
-      "Review Minor Defects", 40, SWT.CENTER, false, SortDataType.Integer, false,
-      "Number of Minor Defects found in Review");
-   public static final XViewerColumn Review_Major_Defects = new XViewerColumn(COLUMN_NAMESPACE + ".reviewMajorDefects",
-      "Review Major Defects", 40, SWT.CENTER, false, SortDataType.Integer, false,
-      "Number of Major Defects found in Review");
-   public static final XViewerColumn Review_Issues = new XViewerColumn(COLUMN_NAMESPACE + ".reviewIssues",
-      "Review Issues", 40, SWT.CENTER, false, SortDataType.Integer, false, "Number of Issues found in Review");
-   public static final XViewerColumn Originating_Workflow = new XViewerColumn("ats.column.origWf",
-      "Originating Workflow", 150, SWT.LEFT, false, SortDataType.String, false,
-      "Team Workflow(s) that were created upon origination of this Action.  Cancelled workflows not included.");
-   public static final XViewerColumn Actions_Initiating_Workflow_Col = new XViewerColumn("ats.column.initWf",
-      "Action's Initiating Workflow", 150, SWT.LEFT, false, SortDataType.String, false,
-      "This is the first workflow(s) that created the initiation of the Action");
-   public static final XViewerColumn Artifact_Type_Col = new XViewerArtifactTypeColumn(true);
    public static final XViewerColumn[] WorldViewColumns = new XViewerColumn[] {
       TypeColumn.getInstance(),
       StateColumn.getInstance(),
@@ -185,7 +149,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       TitleColumn.getInstance(),
       ActionableItemsColumn.getInstance(),
       UserCommunityColumn.getInstance(),
-      new XViewerHridColumn(),
+      XViewerHridColumn.getInstance(),
       CreatedDateColumn.getInstance(),
       TargetedVersionColumn.getInstance(),
       TeamColumn.getInstance(),
@@ -210,7 +174,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       RelatedToStateColumn.getInstance(),
       EstimatedHoursColumn.getInstance(),
       WeeklyBenefitHrsColumn.getInstance(),
-      Remaining_Hours_Col,
+      RemainingHoursColumn.getInstance(),
       Percent_Complete_State_Col,
       Percent_Complete_State_Task_Col,
       Percent_Complete_State_Review_Col,
@@ -221,34 +185,33 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       Hours_Spent_Total_Col,
       Total_Hours_Spent_Col,
       OriginatorColumn.getInstance(),
-      new OperationalImpactColumn(),
-      new OperationalImpactDesciptionColumn(),
-      new OperationalImpactWorkaroundColumn(),
-      new OperationalImpactWorkaroundDesciptionColumn(),
-      Implementor_Col,
-      Review_Author_Col,
-      Review_Moderator_Col,
-      Review_Reviewer_Col,
-      Review_Decider_Col,
-      Completed_Date_Col,
-      Cancelled_Date_Col,
-      Work_Days_Needed_Col,
-      Percent_Rework_Col,
-      Branch_Status_Col,
-      Number_of_Tasks_Col,
-      Number_of_Tasks_Remining_Col,
+      OperationalImpactColumn.getInstance(),
+      OperationalImpactDesciptionColumn.getInstance(),
+      OperationalImpactWorkaroundColumn.getInstance(),
+      OperationalImpactWorkaroundDesciptionColumn.getInstance(),
+      ImplementorColumn.getInstance(),
+      ReviewAuthorColumn.getInstance(),
+      ReviewModeratorColumn.getInstance(),
+      ReviewReviewerColumn.getInstance(),
+      ReviewDeciderColumn.getInstance(),
+      CompletedDateColumn.getInstance(),
+      CancelledDateColumn.getInstance(),
+      WorkDaysNeededColumn.getInstance(),
+      PercentReworkColumn.getInstance(),
+      BranchStatusColumn.getInstance(),
+      NumberOfTasksColumn.getInstance(),
+      NumberOfTasksRemainingColumn.getInstance(),
       new XViewerLastModifiedByColumn(false),
       new XViewerLastModifiedDateColumn(false),
-      Last_Statused_Col,
-      Validation_Required_Col,
-      Review_Major_Defects,
-      Review_Minor_Defects,
-      Review_Issues,
-      Actions_Initiating_Workflow_Col,
-      Artifact_Type_Col,
-      Originating_Workflow,
+      LastStatusedColumn.getInstance(),
+      ValidationRequiredColumn.getInstance(),
+      ReviewNumMajorDefectsColumn.getInstance(),
+      ReviewNumMinorDefectsColumn.getInstance(),
+      ReviewNumIssuesColumn.getInstance(),
+      XViewerArtifactTypeColumn.getInstance(),
+      OriginatingWorkFlowColumn.getInstance(),
       ParentIdColumn.getInstance(),
-      Days_In_Current_State,
+      DaysInCurrentStateColumn.getInstance(),
       ParentStateColumn.getInstance(),
       PointsColumn.getInstance(),
       NumericColumn.getNumeric1Instance(),

@@ -386,13 +386,13 @@ public class SMAWorkFlowSection extends SectionPart {
       if (isCurrentState) {
          if (sma.isCompleted()) {
             sb.append(" - ");
-            sb.append(sma.getWorldViewCompletedDateStr());
+            sb.append(DateUtil.getMMDDYYHHMM(sma.getCompletedDate()));
             LogItem item = sma.getLog().getStateEvent(LogType.StateEntered, atsWorkPage.getName());
             sb.append(" by ");
             sb.append(item.getUser().getName());
          } else if (sma.isCancelled()) {
             sb.append(" - ");
-            sb.append(sma.getWorldViewCancelledDateStr());
+            sb.append(DateUtil.getMMDDYYHHMM(sma.getCancelledDate()));
             LogItem item = sma.getLog().getStateEvent(LogType.StateEntered, atsWorkPage.getName());
             sb.append(" by ");
             sb.append(item.getUser().getName());

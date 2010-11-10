@@ -133,4 +133,10 @@ public class PriorityColumn extends XViewerAtsAttributeValueColumn {
       return;
    }
 
+   public static String getPriorityStr(Object object) throws OseeCoreException {
+      if (object instanceof Artifact) {
+         return ((Artifact) object).getSoleAttributeValue(AtsAttributeTypes.PriorityType, "");
+      }
+      return "";
+   }
 }

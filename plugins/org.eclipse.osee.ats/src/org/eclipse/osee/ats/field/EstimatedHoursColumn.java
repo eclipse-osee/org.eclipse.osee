@@ -51,19 +51,23 @@ public class EstimatedHoursColumn extends XViewerAtsAttributeValueColumn {
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
-         if (element instanceof AbstractWorkflowArtifact) {
-            return AtsUtil.doubleToI18nString(((AbstractWorkflowArtifact) element).getEstimatedHoursTotal());
-         } else if (element instanceof ActionArtifact) {
-            double total = 0;
-            for (TeamWorkFlowArtifact team : ((ActionArtifact) element).getTeamWorkFlowArtifacts()) {
-               total += team.getEstimatedHoursTotal();
-            }
-            return AtsUtil.doubleToI18nString(total);
-         }
+         return AtsUtil.doubleToI18nString(getEstimatedHours(element));
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
       return super.getColumnText(element, column, columnIndex);
    }
 
+   public static double getEstimatedHours(Object object) throws OseeCoreException {
+      if (object instanceof AbstractWorkflowArtifact) {
+         return ((AbstractWorkflowArtifact) object).getEstimatedHoursTotal();
+      } else if (object instanceof ActionArtifact) {
+         double total = 0;
+         for (TeamWorkFlowArtifact team : ((ActionArtifact) object).getTeamWorkFlowArtifacts()) {
+            total += team.getEstimatedHoursTotal();
+         }
+         return total;
+      }
+      return 0.0;
+   }
 }

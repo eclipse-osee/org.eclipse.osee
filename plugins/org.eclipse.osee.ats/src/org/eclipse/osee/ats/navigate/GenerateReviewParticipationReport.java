@@ -102,7 +102,7 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
 
       public ReviewParticipationXViewerFactory(User user) {
          super(MASS_XVIEWER_CUSTOMIZE_NAMESPACE);
-         registerColumns(new XViewerArtifactTypeColumn(true));
+         registerColumns(XViewerArtifactTypeColumn.getInstance());
          registerColumns(new XViewerHridColumn());
          registerColumns(LegacyPcrIdColumn.getInstance());
          registerColumns(new XViewerSmaStateColumn());

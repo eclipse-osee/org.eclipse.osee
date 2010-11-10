@@ -24,6 +24,12 @@ import org.eclipse.swt.SWT;
 
 public class OperationalImpactWorkaroundColumn extends XViewerValueColumn {
 
+   public static OperationalImpactWorkaroundColumn instance = new OperationalImpactWorkaroundColumn();
+
+   public static OperationalImpactWorkaroundColumn getInstance() {
+      return instance;
+   }
+
    public OperationalImpactWorkaroundColumn() {
       super("ats.Operational Impact Workaround", "Operational Impact Workaround", 80, SWT.LEFT, false,
          SortDataType.String, true, "Does operational impact to the product have a workaround?");

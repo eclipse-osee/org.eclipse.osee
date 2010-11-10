@@ -19,6 +19,12 @@ import org.eclipse.swt.SWT;
 
 public class OperationalImpactDesciptionColumn extends XViewerValueColumn {
 
+   public static OperationalImpactDesciptionColumn instance = new OperationalImpactDesciptionColumn();
+
+   public static OperationalImpactDesciptionColumn getInstance() {
+      return instance;
+   }
+
    public OperationalImpactDesciptionColumn() {
       super("ats.Operational Impact Description", "Operational Impact Description", 150, SWT.LEFT, false,
          SortDataType.String, true, "What is the operational impact to the product.");

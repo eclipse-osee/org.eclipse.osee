@@ -24,6 +24,12 @@ import org.eclipse.swt.SWT;
 
 public class OperationalImpactColumn extends XViewerValueColumn {
 
+   public static OperationalImpactColumn instance = new OperationalImpactColumn();
+
+   public static OperationalImpactColumn getInstance() {
+      return instance;
+   }
+
    public OperationalImpactColumn() {
       super("ats.Operational Impact", "Operational Impact", 80, SWT.LEFT, false, SortDataType.String, true,
          "Does this change have an operational impact to the product.");
@@ -58,8 +64,8 @@ public class OperationalImpactColumn extends XViewerValueColumn {
 
    private String getOperationalImpact(IWorldViewArtifact wva) throws OseeCoreException {
       if (wva instanceof TeamWorkFlowArtifact) {
-         return ((TeamWorkFlowArtifact) wva).getArtifact().getSoleAttributeValue(
-            AtsAttributeTypes.OperationalImpact, "");
+         return ((TeamWorkFlowArtifact) wva).getArtifact().getSoleAttributeValue(AtsAttributeTypes.OperationalImpact,
+            "");
       }
       if (wva instanceof ActionArtifact) {
          Set<String> strs = new HashSet<String>();

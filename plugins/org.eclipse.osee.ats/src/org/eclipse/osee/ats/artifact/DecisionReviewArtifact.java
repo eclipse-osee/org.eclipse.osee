@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 
 /**
  * @author Donald G. Dunne
@@ -47,11 +46,6 @@ public class DecisionReviewArtifact extends AbstractReviewArtifact implements IR
    @Override
    public Collection<User> getImplementers() throws OseeCoreException {
       return StateManager.getImplementersByState(this, DecisionReviewState.Decision.name());
-   }
-
-   @Override
-   public String getWorldViewReviewDecider() throws OseeCoreException {
-      return Artifacts.toString("; ", getStateMgr().getAssignees(DecisionReviewState.Decision.name()));
    }
 
 }

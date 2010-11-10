@@ -47,7 +47,6 @@ import org.eclipse.osee.ats.actions.OpenInMassEditorAction;
 import org.eclipse.osee.ats.actions.SubscribedAction;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
@@ -61,7 +60,6 @@ import org.eclipse.osee.ats.task.TaskXViewer;
 import org.eclipse.osee.ats.util.ArtifactEmailWizard;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.DefaultTeamState;
-import org.eclipse.osee.ats.util.PromptChangeUtil;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeColumn;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -717,18 +715,6 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
          }
          AbstractWorkflowArtifact sma = (AbstractWorkflowArtifact) useArt;
          boolean modified = false;
-         if (xCol.equals(WorldXViewerFactory.Percent_Rework_Col)) {
-            modified = PromptChangeUtil.promptChangePercentAttribute(sma, AtsAttributeTypes.PercentRework, false);
-         } else if (xCol.equals(WorldXViewerFactory.Remaining_Hours_Col)) {
-            AWorkbench.popup("Calculated Field",
-               "Hours Remaining field is calculated.\nHour Estimate - (Hour Estimate * Percent Complete)");
-            return false;
-         } else if (xCol.equals(WorldXViewerFactory.Work_Days_Needed_Col)) {
-            AWorkbench.popup(
-               "Calculated Field",
-               "Work Days Needed field is calculated.\nRemaining Hours / Hours per Week (" + sma.getManHrsPerDayPreference() + ")");
-            return false;
-         }
          if (modified && isAltLeftClickPersist()) {
             sma.persist("persist attribute change");
          }
