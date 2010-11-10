@@ -19,12 +19,14 @@ import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.framework.core.data.AccessContextId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
@@ -42,7 +44,14 @@ public class AtsBranchObjectManager implements AtsAccessContextIdResolver {
    }
 
    private Artifact getAssociatedArtifact(Branch objectBranch) throws OseeCoreException {
-      return ArtifactQuery.getArtifactFromId(objectBranch.getAssociatedArtifactId(), atsBranch);
+      Artifact toReturn = null;
+      int artId = objectBranch.getAssociatedArtifactId();
+      if (artId > 0) {
+         toReturn = ArtifactQuery.getArtifactFromId(artId, atsBranch);
+      } else {
+         toReturn = UserManager.getUser(SystemUser.OseeSystem);
+      }
+      return toReturn;
    }
 
    public boolean isApplicable(Branch objectBranch) throws OseeCoreException {
