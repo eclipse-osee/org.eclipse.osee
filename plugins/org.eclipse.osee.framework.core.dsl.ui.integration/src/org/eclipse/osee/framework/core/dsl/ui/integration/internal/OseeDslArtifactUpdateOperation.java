@@ -55,8 +55,8 @@ public class OseeDslArtifactUpdateOperation extends AbstractOperation {
 
          Map<Branch, SkynetTransaction> transactionMap = new HashMap<Branch, SkynetTransaction>();
          for (OseeDslSegment segment : segments) {
-            int startAt = segment.end();
-            int endAt = segment.start();
+            int startAt = segment.start();
+            int endAt = segment.end();
 
             String data = source.substring(startAt, endAt);
             addChanges(transactionMap, segment.getBranchGuid(), segment.getArtifactGuid(), data);
