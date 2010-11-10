@@ -14,8 +14,8 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
-import org.eclipse.osee.ats.field.AssigneeColumn;
-import org.eclipse.osee.ats.field.ChangeTypeColumn;
+import org.eclipse.osee.ats.column.AssigneeColumn;
+import org.eclipse.osee.ats.column.ChangeTypeColumn;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**

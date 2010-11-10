@@ -50,9 +50,9 @@ import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.column.GoalOrderColumn;
+import org.eclipse.osee.ats.column.IPersistAltLeftClickProvider;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
-import org.eclipse.osee.ats.field.GoalOrderColumn;
-import org.eclipse.osee.ats.field.IPersistAltLeftClickProvider;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.task.TaskEditorSimpleProvider;
@@ -670,62 +670,6 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
    @Override
    public String getStatusString() {
       return extendedStatusString;
-   }
-
-   @Override
-   public boolean handleLeftClickInIconArea(TreeColumn treeColumn, TreeItem treeItem) {
-      try {
-         Artifact useArt = (Artifact) treeItem.getData();
-         boolean modified = false;
-         if (useArt instanceof ActionArtifact) {
-            if (((ActionArtifact) useArt).getTeamWorkFlowArtifacts().size() == 1) {
-               useArt = ((ActionArtifact) useArt).getTeamWorkFlowArtifacts().iterator().next();
-            } else {
-               return false;
-            }
-         }
-         if (modified) {
-            update(useArt, null);
-            return true;
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      }
-      return false;
-   }
-
-   @Override
-   public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
-      try {
-         Artifact useArt = (Artifact) treeItem.getData();
-         boolean handled = super.handleAltLeftClick(treeColumn, treeItem);
-         if (handled) {
-            return true;
-         }
-         if (!(treeColumn.getData() instanceof XViewerColumn)) {
-            return false;
-         }
-         XViewerColumn xCol = (XViewerColumn) treeColumn.getData();
-         if (useArt instanceof ActionArtifact) {
-            if (((ActionArtifact) useArt).getTeamWorkFlowArtifacts().size() == 1) {
-               useArt = ((ActionArtifact) useArt).getTeamWorkFlowArtifacts().iterator().next();
-            } else {
-               return false;
-            }
-         }
-         AbstractWorkflowArtifact sma = (AbstractWorkflowArtifact) useArt;
-         boolean modified = false;
-         if (modified && isAltLeftClickPersist()) {
-            sma.persist("persist attribute change");
-         }
-         if (modified) {
-            update(useArt, null);
-            return true;
-         }
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      }
-      return false;
    }
 
    public String getExtendedStatusString() {

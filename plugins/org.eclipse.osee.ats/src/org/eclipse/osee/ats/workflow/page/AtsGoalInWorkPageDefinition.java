@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.workflow.page;
 
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.GoalArtifact.GoalState;
-import org.eclipse.osee.ats.field.EstimatedHoursXWidget;
+import org.eclipse.osee.ats.column.EstimatedHoursXWidget;
 import org.eclipse.osee.ats.workflow.flow.GoalWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;

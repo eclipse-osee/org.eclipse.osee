@@ -8,7 +8,7 @@ package org.eclipse.osee.ats.util.xviewer.column;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
-import org.eclipse.osee.ats.field.IPersistAltLeftClickProvider;
+import org.eclipse.osee.ats.column.IPersistAltLeftClickProvider;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;

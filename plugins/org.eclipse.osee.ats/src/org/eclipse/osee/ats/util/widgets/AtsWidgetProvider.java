@@ -11,8 +11,8 @@
 
 package org.eclipse.osee.ats.util.widgets;
 
-import org.eclipse.osee.ats.field.OperationalImpactWithWorkaroundXWidget;
-import org.eclipse.osee.ats.field.OperationalImpactXWidget;
+import org.eclipse.osee.ats.column.OperationalImpactWithWorkaroundXWidget;
+import org.eclipse.osee.ats.column.OperationalImpactXWidget;
 import org.eclipse.osee.ats.util.widgets.commit.XCommitManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlabelGroupSelection;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
