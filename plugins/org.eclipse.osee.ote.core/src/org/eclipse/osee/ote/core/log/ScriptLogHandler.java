@@ -19,13 +19,16 @@ import java.util.List;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+
 import org.apache.xml.serialize.OutputFormat;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.ote.core.GCHelper;
 import org.eclipse.osee.ote.core.environment.TestEnvironment;
 import org.eclipse.osee.ote.core.log.record.ScriptInitRecord;
 import org.eclipse.osee.ote.core.log.record.ScriptResultRecord;
@@ -45,7 +48,6 @@ import org.w3c.dom.ProcessingInstruction;
  */
 public class ScriptLogHandler extends Handler {
    private final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-   private final TestEnvironment testEnvironment;
    protected Element testCaseElement;
    protected Element parent;
    protected Element child;
@@ -64,7 +66,7 @@ public class ScriptLogHandler extends Handler {
     */
    public ScriptLogHandler(File outFile, TestEnvironment testEnvironment) {
       super();
-      this.testEnvironment = testEnvironment;
+      GCHelper.getGCHelper().addRefWatch(this);
       this.outFile = outFile;
       OseeLog.log(TestEnvironment.class, Level.FINE, outFile.getAbsolutePath());
 
@@ -90,6 +92,8 @@ public class ScriptLogHandler extends Handler {
       document.appendChild(processingInstruction);
       records = new ArrayList<LogRecord>();
 
+      document.appendChild(document.createComment("INSERT DISTRO STATEMENT HERE"));
+
       this.testScriptElement = document.createElement("TestScript");
       this.scriptInitElement = document.createElement("ScriptInit");
       document.appendChild(testScriptElement);
@@ -105,10 +109,6 @@ public class ScriptLogHandler extends Handler {
     */
    public void writeOutFile() {
       try {
-         if (testEnvironment.getTestScript() != null) {
-            testScriptElement.insertBefore(document.createComment(testEnvironment.getTestScript().getOutfileComment()),
-               testScriptElement.getFirstChild());
-         }
          Jaxp.writeXmlDocument(document, outFile, format);
       } catch (TransformerException ex) {
          OseeLog.log(TestEnvironment.class, Level.SEVERE, ex);
@@ -127,70 +127,76 @@ public class ScriptLogHandler extends Handler {
    }
 
    public synchronized void flushRecords() {
-      for (int i = 0; i < records.size(); i++) {
-         LogRecord logRecord = records.get(i);
+      try {
+         for (int i = 0; i < records.size(); i++) {
+            LogRecord logRecord = records.get(i);
 
-         if (logRecord instanceof TestRecord) {
-            TestRecord record = (TestRecord) logRecord;
-            child = record.toXml(document);
+            if (logRecord instanceof TestRecord) {
+               TestRecord record = (TestRecord) logRecord;
+               child = record.toXml(document);
 
-            if (record instanceof TestCaseRecord) {
-               testCaseElement = child;
-               testScriptElement.appendChild(testCaseElement);
-               parent = testCaseElement;
-            } else {
-
-               if (record instanceof ScriptResultRecord) {
-                  testScriptElement.appendChild(child);
-               } else if (record instanceof ScriptInitRecord) {
-                  if (((ScriptInitRecord) record).getStartFlag()) {
-                     // We are doing it this way so that it is chronologically accurate in the xml.
-                     if (scriptInitElement.getParentNode() == null) {
-                        testScriptElement.appendChild(scriptInitElement);
-                     }
-                     parent = scriptInitElement;
-                  } else {
-                     parent = testScriptElement;
-                  }
+               if (record instanceof TestCaseRecord) {
+                  testCaseElement = child;
+                  testScriptElement.appendChild(testCaseElement);
+                  parent = testCaseElement;
                } else {
-                  parent.appendChild(child);
-                  if (record instanceof TraceRecord) {// method began
-                     parent = child;
-                  } else if (record instanceof TraceRecordEnd) {// method ended
-                     if (parent.getParentNode() != null) {
-                        parent = (Element) parent.getParentNode();
+
+                  if (record instanceof ScriptResultRecord) {
+                     testScriptElement.appendChild(child);
+                  } else if (record instanceof ScriptInitRecord) {
+                     if (((ScriptInitRecord) record).getStartFlag()) {
+                        // We are doing it this way so that it is chronologically accurate in the xml.
+                        if (scriptInitElement.getParentNode() == null) {
+                           testScriptElement.appendChild(scriptInitElement);
+                        }
+                        parent = scriptInitElement;
+                     } else {
+                        parent = testScriptElement;
+                     }
+                  } else {
+                     parent.appendChild(child);
+                     if (record instanceof TraceRecord) {// method began
+                        parent = child;
+                     } else if (record instanceof TraceRecordEnd) {// method ended
+                        if (parent.getParentNode() != null) {
+                           parent = (Element) parent.getParentNode();
+                        }
                      }
                   }
                }
-            }
-         } else {
-            if (parent != null) {
-               Element el = document.createElement("OteLog");
-               el.setAttribute("Level", logRecord.getLevel().getLocalizedName());
-               el.setAttribute("Logger", logRecord.getLoggerName());
-               Element msg = document.createElement("Message");
-               msg.appendChild(document.createTextNode(logRecord.getMessage()));
-               el.appendChild(msg);
+            } else {
+               if (parent != null) {
+                  Element el = document.createElement("OteLog");
+                  el.setAttribute("Level", logRecord.getLevel().getLocalizedName());
+                  el.setAttribute("Logger", logRecord.getLoggerName());
+                  Element msg = document.createElement("Message");
+                  msg.appendChild(document.createTextNode(logRecord.getMessage()));
+                  el.appendChild(msg);
 
-               if (logRecord.getThrown() != null) {
+                  if (logRecord.getThrown() != null) {
 
-                  try {
-                     StringWriter sw = new StringWriter();
-                     PrintWriter pw = new PrintWriter(sw);
-                     logRecord.getThrown().printStackTrace(pw);
-                     pw.close();
+                     try {
+                        StringWriter sw = new StringWriter();
+                        PrintWriter pw = new PrintWriter(sw);
+                        logRecord.getThrown().printStackTrace(pw);
+                        pw.close();
 
-                     Element thrown = document.createElement("Throwable");
-                     thrown.appendChild(document.createTextNode(sw.toString()));
-                     el.appendChild(thrown);
-                  } catch (Exception ex) {
+                        Element thrown = document.createElement("Throwable");
+                        thrown.appendChild(document.createTextNode(sw.toString()));
+                        el.appendChild(thrown);
+                     } catch (Exception ex) {
+                     }
                   }
+                  parent.appendChild(el);
                }
-               parent.appendChild(el);
             }
          }
       }
-      records.clear();
+      catch (Exception ex) {
+         ex.printStackTrace();
+      } finally {
+         records.clear();
+      }
    }
 
    @Override
