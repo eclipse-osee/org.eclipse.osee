@@ -18,13 +18,10 @@ import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.GoalManager;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -47,13 +44,7 @@ public class WorldLabelProvider extends XViewerLabelProvider {
             return null;
          }
          IWorldViewArtifact wva = (IWorldViewArtifact) element;
-         if (xCol.equals(WorldXViewerFactory.Type_Col)) {
-            return ArtifactImageManager.getImage((Artifact) element);
-         } else if (xCol.equals(WorldXViewerFactory.Deadline_Col)) {
-            if (wva.isWorldViewDeadlineAlerting().isTrue()) {
-               return ImageManager.getImage(FrameworkImage.WARNING);
-            }
-         } else if (xCol.equals(WorldXViewerFactory.Artifact_Type_Col)) {
+         if (xCol.equals(WorldXViewerFactory.Artifact_Type_Col)) {
             return ArtifactImageManager.getImage((Artifact) wva);
          }
          for (IAtsWorldEditorItem item : AtsWorldEditorItems.getItems()) {
@@ -96,45 +87,14 @@ public class WorldLabelProvider extends XViewerLabelProvider {
          }
          IWorldViewArtifact wva = (IWorldViewArtifact) element;
          Artifact art = (Artifact) element;
-         if (art.isDeleted()) {
-            if (xCol.equals(WorldXViewerFactory.Title_Col)) {
-               return art.getName();
-            } else {
-               return "<deleted>";
-            }
-         }
-         if (xCol.equals(WorldXViewerFactory.Type_Col)) {
-            return wva.getWorldViewType();
-         }
-         if (xCol.equals(WorldXViewerFactory.State_Col)) {
-            return wva.getWorldViewState();
-         }
-         if (xCol.equals(WorldXViewerFactory.Actionable_Items_Col)) {
-            return wva.getWorldViewActionableItems();
-         }
-         if (xCol.equals(WorldXViewerFactory.User_Community_Col)) {
-            return wva.getWorldViewUserCommunity();
-         }
-         if (xCol.equals(WorldXViewerFactory.Legacy_PCR_Col)) {
-            return wva.getWorldViewLegacyPCR();
-         }
-         if (xCol.equals(WorldXViewerFactory.Created_Date_Col)) {
-            return wva.getWorldViewCreatedDateStr();
-         }
          if (xCol.equals(WorldXViewerFactory.Completed_Date_Col)) {
             return wva.getWorldViewCompletedDateStr();
          }
          if (xCol.equals(WorldXViewerFactory.Cancelled_Date_Col)) {
             return wva.getWorldViewCancelledDateStr();
          }
-         if (xCol.equals(WorldXViewerFactory.Team_Col)) {
-            return wva.getWorldViewTeam();
-         }
          if (xCol.equals(WorldXViewerFactory.Branch_Status_Col)) {
             return wva.getWorldViewBranchStatus();
-         }
-         if (xCol.equals(WorldXViewerFactory.Decision_Col)) {
-            return wva.getWorldViewDecision();
          }
          if (xCol.equals(WorldXViewerFactory.Remaining_Hours_Col)) {
             Result result = wva.isWorldViewRemainHoursValid();
@@ -175,30 +135,6 @@ public class WorldLabelProvider extends XViewerLabelProvider {
          if (xCol.equals(WorldXViewerFactory.Percent_Rework_Col)) {
             return wva.getWorldViewPercentReworkStr();
          }
-         if (xCol.equals(WorldXViewerFactory.Estimated_Completion_Date_Col)) {
-            return wva.getWorldViewEstimatedCompletionDateStr();
-         }
-         if (xCol.equals(WorldXViewerFactory.Deadline_Col)) {
-            return wva.getWorldViewDeadlineDateStr();
-         }
-         if (xCol.equals(WorldXViewerFactory.Work_Package_Col)) {
-            return wva.getWorldViewWorkPackage();
-         }
-         if (xCol.equals(WorldXViewerFactory.Numeric1_Col)) {
-            return wva.getWorldViewNumeric1();
-         }
-         if (xCol.equals(WorldXViewerFactory.Numeric2_Col)) {
-            return wva.getWorldViewNumeric2();
-         }
-         if (xCol.equals(WorldXViewerFactory.Goal_Order_Vote_Col)) {
-            return wva.getWorldViewGoalOrderVote();
-         }
-         if (xCol.equals(WorldXViewerFactory.Goal_Order)) {
-            if (parentGoalArtifact != null) {
-               return GoalManager.getGoalOrder(parentGoalArtifact, art);
-            }
-            return wva.getWorldViewGoalOrder();
-         }
          if (xCol.equals(WorldXViewerFactory.Number_of_Tasks_Col)) {
             return wva.getWorldViewNumberOfTasks();
          }
@@ -216,9 +152,6 @@ public class WorldLabelProvider extends XViewerLabelProvider {
          }
          if (xCol.equals(WorldXViewerFactory.Last_Statused_Col)) {
             return wva.getWorldViewLastStatused();
-         }
-         if (xCol.equals(WorldXViewerFactory.Description_Col)) {
-            return wva.getWorldViewDescription();
          }
          if (xCol.equals(WorldXViewerFactory.Validation_Required_Col)) {
             return wva.getWorldViewValidationRequiredStr();
@@ -241,24 +174,8 @@ public class WorldLabelProvider extends XViewerLabelProvider {
          if (xCol.equals(WorldXViewerFactory.Actions_Initiating_Workflow_Col)) {
             return wva.getWorldViewActionsIntiatingWorkflow();
          }
-         if (xCol.equals(WorldXViewerFactory.Parent_ID_Col)) {
-            return wva.getWorldViewParentID();
-         }
-         if (xCol.equals(WorldXViewerFactory.Parent_State_Col)) {
-            return wva.getWorldViewParentState();
-         }
          if (xCol.equals(WorldXViewerFactory.Days_In_Current_State)) {
             return wva.getWorldViewDaysInCurrentState();
-         }
-         if (xCol.equals(WorldXViewerFactory.Weekly_Benefit_Hrs_Col)) {
-            return AtsUtil.doubleToI18nString(wva.getWorldViewWeeklyBenefit(), true);
-         }
-         if (xCol.equals(WorldXViewerFactory.Annual_Cost_Avoidance_Col)) {
-            Result result = wva.isWorldViewAnnualCostAvoidanceValid();
-            if (result.isFalse()) {
-               return result.getText();
-            }
-            return AtsUtil.doubleToI18nString(wva.getWorldViewAnnualCostAvoidance(), true);
          }
          if (xCol.equals(WorldXViewerFactory.Work_Days_Needed_Col)) {
             Result result = wva.isWorldViewManDaysNeededValid();
@@ -321,5 +238,9 @@ public class WorldLabelProvider extends XViewerLabelProvider {
     */
    public void setParentGoal(GoalArtifact parentGoalArtifact) {
       this.parentGoalArtifact = parentGoalArtifact;
+   }
+
+   public GoalArtifact getParentGoalArtifact() {
+      return parentGoalArtifact;
    }
 }

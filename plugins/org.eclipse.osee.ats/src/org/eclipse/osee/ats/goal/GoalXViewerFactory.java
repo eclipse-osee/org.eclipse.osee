@@ -20,9 +20,15 @@ import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.field.AssigneeColumn;
 import org.eclipse.osee.ats.field.ChangeTypeColumn;
+import org.eclipse.osee.ats.field.CreatedDateColumn;
+import org.eclipse.osee.ats.field.GoalOrderColumn;
+import org.eclipse.osee.ats.field.GoalOrderVoteColumn;
 import org.eclipse.osee.ats.field.NotesColumn;
 import org.eclipse.osee.ats.field.PriorityColumn;
+import org.eclipse.osee.ats.field.StateColumn;
 import org.eclipse.osee.ats.field.TargetedVersionColumn;
+import org.eclipse.osee.ats.field.TitleColumn;
+import org.eclipse.osee.ats.field.TypeColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.world.AtsWorldEditorItems;
 import org.eclipse.osee.ats.world.IAtsWorldEditorItem;
@@ -38,14 +44,14 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewe
 public class GoalXViewerFactory extends SkynetXViewerFactory {
 
    private GoalArtifact soleGoalArtifact;
-   public static final List<XViewerColumn> GoalViewerVisibleColumns = Arrays.asList(WorldXViewerFactory.Goal_Order,
-      WorldXViewerFactory.Goal_Order_Vote_Col, WorldXViewerFactory.Title_Col, WorldXViewerFactory.Type_Col,
-      WorldXViewerFactory.State_Col, PriorityColumn.getInstance(), ChangeTypeColumn.getInstance(),
-      AssigneeColumn.getInstance(), new XViewerHridColumn(true), WorldXViewerFactory.Created_Date_Col,
-      TargetedVersionColumn.getInstance(), NotesColumn.getInstance());
+   public static final List<? extends XViewerColumn> GoalViewerVisibleColumns = Arrays.asList(
+      GoalOrderColumn.getInstance(), GoalOrderVoteColumn.getInstance(), TitleColumn.getInstance(),
+      TypeColumn.getInstance(), StateColumn.getInstance(), PriorityColumn.getInstance(),
+      ChangeTypeColumn.getInstance(), AssigneeColumn.getInstance(), new XViewerHridColumn(true),
+      CreatedDateColumn.getInstance(), TargetedVersionColumn.getInstance(), NotesColumn.getInstance());
    public static Integer[] widths = new Integer[] {
-      WorldXViewerFactory.Goal_Order.getWidth(),
-      WorldXViewerFactory.Goal_Order_Vote_Col.getWidth(),
+      GoalOrderColumn.getInstance().getWidth(),
+      GoalOrderVoteColumn.getInstance().getWidth(),
       250,
       60,
       60,
@@ -98,11 +104,11 @@ public class GoalXViewerFactory extends SkynetXViewerFactory {
    public CustomizeData getDefaultTableCustomizeData() {
       CustomizeData customizeData = super.getDefaultTableCustomizeData();
       for (XViewerColumn xCol : customizeData.getColumnData().getColumns()) {
-         if (xCol.getId().equals(WorldXViewerFactory.Goal_Order.getId())) {
+         if (xCol.getId().equals(GoalOrderColumn.getInstance().getId())) {
             xCol.setSortForward(true);
          }
       }
-      customizeData.getSortingData().setSortingNames(WorldXViewerFactory.Goal_Order.getId());
+      customizeData.getSortingData().setSortingNames(GoalOrderColumn.getInstance().getId());
       return customizeData;
    }
 

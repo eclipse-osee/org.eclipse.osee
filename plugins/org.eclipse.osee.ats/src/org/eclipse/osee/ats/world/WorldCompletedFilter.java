@@ -27,7 +27,7 @@ public class WorldCompletedFilter extends ViewerFilter {
       try {
          Artifact art = (Artifact) element;
          if (art instanceof IWorldViewArtifact) {
-            return !p.matcher(((IWorldViewArtifact) art).getWorldViewState()).find();
+            return !p.matcher(((IWorldViewArtifact) art).getState()).find();
          }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);

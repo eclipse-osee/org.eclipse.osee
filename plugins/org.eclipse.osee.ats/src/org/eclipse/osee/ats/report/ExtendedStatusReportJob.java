@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.field.ChangeTypeColumn;
+import org.eclipse.osee.ats.field.CreatedDateColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -163,7 +164,7 @@ public class ExtendedStatusReportJob extends Job {
          } else if (col == Columns.Status_State) {
             values.add(sma.getStateMgr().getCurrentStateName());
          } else if (col == Columns.Date_Created) {
-            values.add(sma.getWorldViewCreatedDateStr());
+            values.add(CreatedDateColumn.getDateStr(sma));
          } else if (col == Columns.Version) {
             values.add((!Strings.isValid(sma.getTargetedVersionStr()) ? "." : sma.getTargetedVersionStr()));
          }

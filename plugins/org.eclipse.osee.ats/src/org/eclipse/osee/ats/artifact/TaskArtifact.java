@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.artifact;
 
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -28,7 +27,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -111,29 +109,6 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IATSStateM
       super.atsDelete(deleteArts, allRelated);
    }
 
-   @Override
-   public String getWorldViewTeam() {
-      return "";
-   }
-
-   @Override
-   public String getWorldViewWorkPackage() throws OseeCoreException {
-      String value = super.getWorldViewWorkPackage();
-      if (Strings.isValid(value)) {
-         return value;
-      }
-      return getParentSMA().getWorldViewWorkPackage();
-   }
-
-   @Override
-   public Date getWorldViewEstimatedCompletionDate() throws OseeCoreException {
-      Date value = super.getWorldViewEstimatedCompletionDate();
-      if (value != null) {
-         return value;
-      }
-      return getParentSMA().getWorldViewEstimatedCompletionDate();
-   }
-
    public Boolean isInWork() {
       return getStateMgr().getCurrentStateName().equals(TaskStates.InWork.name());
    }
@@ -200,11 +175,6 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IATSStateM
       } else if (fromWorkPageDefinition.getPageName().equals(DefaultTeamState.Cancelled.name()) && isCancelled()) {
          transitionToInWork(UserManager.getUser(), 99, 0, transaction, transitionOption);
       }
-   }
-
-   @Override
-   public String getWorldViewDescription() throws OseeCoreException {
-      return getSoleAttributeValue(AtsAttributeTypes.Description, "");
    }
 
    @Override
@@ -279,31 +249,12 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IATSStateM
    }
 
    @Override
-   public Result isWorldViewAnnualCostAvoidanceValid() {
-      return Result.TrueResult;
-   }
-
-   @Override
-   public String getWorldViewLegacyPCR() throws OseeCoreException {
-      AbstractWorkflowArtifact sma = getParentSMA();
-      if (sma != null) {
-         return sma.getWorldViewLegacyPCR();
-      }
-      return "";
-   }
-
-   @Override
    public String getWorldViewSWEnhancement() throws OseeCoreException {
       AbstractWorkflowArtifact sma = getParentSMA();
       if (sma != null) {
          return sma.getWorldViewSWEnhancement();
       }
       return "";
-   }
-
-   @Override
-   public String getWorldViewParentID() throws OseeCoreException {
-      return getParentTeamWorkflow().getHumanReadableId();
    }
 
 }

@@ -61,11 +61,6 @@ public class GoalArtifact extends AbstractWorkflowArtifact {
       return null;
    }
 
-   @Override
-   public String getWorldViewParentID() {
-      return null;
-   }
-
    public List<Artifact> getMembers() throws OseeCoreException {
       return getRelatedArtifacts(AtsRelationTypes.Goal_Member, DeletionFlag.EXCLUDE_DELETED);
    }

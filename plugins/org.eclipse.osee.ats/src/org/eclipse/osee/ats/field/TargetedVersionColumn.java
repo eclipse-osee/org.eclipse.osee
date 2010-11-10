@@ -35,6 +35,7 @@ import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -244,7 +245,10 @@ public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerV
          if (element instanceof ActionArtifact) {
             Set<String> strs = new HashSet<String>();
             for (TeamWorkFlowArtifact team : ((ActionArtifact) element).getTeamWorkFlowArtifacts()) {
-               strs.add(team.getTargetedVersionStr());
+               String str = team.getTargetedVersionStr();
+               if (Strings.isValid(str)) {
+                  strs.add(str);
+               }
             }
             return Collections.toString(";", strs);
 

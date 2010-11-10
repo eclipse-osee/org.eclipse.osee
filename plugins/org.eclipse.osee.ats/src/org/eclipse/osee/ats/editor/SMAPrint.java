@@ -22,6 +22,8 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.note.NoteItem;
 import org.eclipse.osee.ats.editor.widget.ReviewInfoXWidget;
 import org.eclipse.osee.ats.field.ChangeTypeColumn;
+import org.eclipse.osee.ats.field.DeadlineColumn;
+import org.eclipse.osee.ats.field.TeamColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.Overview;
@@ -69,9 +71,9 @@ public class SMAPrint extends Action {
       resultData.addRaw(AHTML.beginMultiColumnTable(100));
       resultData.addRaw(AHTML.addRowMultiColumnTable(new String[] {
          //
-         AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Current State: ", ((IWorldViewArtifact) sma).getWorldViewState()),
+         AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Current State: ", sma.getState()),
          //
-         AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Team: ", ((IWorldViewArtifact) sma).getWorldViewTeam()),
+         AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Team: ", TeamColumn.getName(sma)),
          //
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Assignees: ", ((IWorldViewArtifact) sma).getAssigneeStr()),
          //
@@ -86,7 +88,7 @@ public class SMAPrint extends Action {
          //
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Change Type: ", ChangeTypeColumn.getChangeTypeStr(sma)),
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Priority: ", sma.getWorldViewPriority()),
-         AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Need By: ", sma.getWorldViewDeadlineDateStr())}));
+         AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Need By: ", DeadlineColumn.getDateStr(sma))}));
 
       resultData.addRaw(AHTML.addRowMultiColumnTable(new String[] {
          //

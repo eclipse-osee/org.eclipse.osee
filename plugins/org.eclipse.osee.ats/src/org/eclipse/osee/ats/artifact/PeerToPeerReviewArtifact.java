@@ -71,11 +71,6 @@ public class PeerToPeerReviewArtifact extends AbstractReviewArtifact implements 
    }
 
    @Override
-   public String getWorldViewDescription() throws OseeCoreException {
-      return getSoleAttributeValue(AtsAttributeTypes.Description, "");
-   }
-
-   @Override
    public Collection<User> getImplementers() throws OseeCoreException {
       Collection<User> users = StateManager.getImplementersByState(this, PeerToPeerReviewState.Review.name());
       for (UserRole role : userRoleManager.getUserRoles()) {

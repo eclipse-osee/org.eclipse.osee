@@ -45,16 +45,6 @@ public class DecisionReviewArtifact extends AbstractReviewArtifact implements IR
    }
 
    @Override
-   public String getWorldViewDecision() throws OseeCoreException {
-      return getSoleAttributeValue(AtsAttributeTypes.Decision, "");
-   }
-
-   @Override
-   public String getWorldViewDescription() throws OseeCoreException {
-      return getSoleAttributeValue(AtsAttributeTypes.Description, "");
-   }
-
-   @Override
    public Collection<User> getImplementers() throws OseeCoreException {
       return StateManager.getImplementersByState(this, DecisionReviewState.Decision.name());
    }

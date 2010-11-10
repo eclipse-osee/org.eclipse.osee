@@ -23,9 +23,7 @@ public interface IWorldViewArtifact {
 
    String getAssigneeStr() throws OseeCoreException;
 
-   String getWorldViewActionableItems() throws OseeCoreException;
-
-   double getWorldViewAnnualCostAvoidance() throws OseeCoreException;
+   String getState() throws OseeCoreException;
 
    String getWorldViewBranchStatus() throws OseeCoreException;
 
@@ -41,34 +39,14 @@ public interface IWorldViewArtifact {
 
    String getWorldViewNumeric2() throws OseeCoreException;
 
-   String getWorldViewGoalOrderVote() throws OseeCoreException;
-
-   String getWorldViewGoalOrder() throws OseeCoreException;
-
    Date getWorldViewCompletedDate() throws OseeCoreException;
 
    String getWorldViewCompletedDateStr() throws OseeCoreException;
-
-   Date getWorldViewCreatedDate() throws OseeCoreException;
-
-   String getWorldViewCreatedDateStr() throws OseeCoreException;
-
-   Date getWorldViewDeadlineDate() throws OseeCoreException;
-
-   String getWorldViewDeadlineDateStr() throws OseeCoreException;
-
-   String getWorldViewDecision() throws OseeCoreException;
-
-   String getWorldViewDescription() throws OseeCoreException;
 
    /**
     * @return estimated hours from workflow attribute, tasks and reviews
     */
    double getWorldViewEstimatedHours() throws OseeCoreException;
-
-   Date getWorldViewEstimatedCompletionDate() throws OseeCoreException;
-
-   String getWorldViewEstimatedCompletionDateStr() throws OseeCoreException;
 
    double getWorldViewHoursSpentState() throws OseeCoreException;
 
@@ -82,15 +60,9 @@ public interface IWorldViewArtifact {
 
    String getWorldViewID() throws OseeCoreException;
 
-   String getWorldViewParentID() throws OseeCoreException;
-
-   String getWorldViewParentState() throws OseeCoreException;
-
    String getWorldViewDaysInCurrentState() throws OseeCoreException;
 
    String getWorldViewImplementer() throws OseeCoreException;
-
-   String getWorldViewLegacyPCR() throws OseeCoreException;
 
    double getWorldViewManDaysNeeded() throws OseeCoreException;
 
@@ -124,25 +96,13 @@ public interface IWorldViewArtifact {
 
    String getWorldViewReviewReviewer() throws OseeCoreException;
 
-   String getWorldViewState() throws OseeCoreException;
-
-   String getWorldViewTeam() throws OseeCoreException;
-
    String getWorldViewTitle() throws OseeCoreException;
 
-   String getWorldViewType() throws OseeCoreException;
-
-   String getWorldViewUserCommunity() throws OseeCoreException;
+   String getType() throws OseeCoreException;
 
    String getWorldViewValidationRequiredStr() throws OseeCoreException;
 
    double getWorldViewWeeklyBenefit() throws OseeCoreException;
-
-   String getWorldViewWorkPackage() throws OseeCoreException;
-
-   Result isWorldViewAnnualCostAvoidanceValid() throws OseeCoreException;
-
-   Result isWorldViewDeadlineAlerting() throws OseeCoreException;
 
    Result isWorldViewManDaysNeededValid() throws OseeCoreException;
 

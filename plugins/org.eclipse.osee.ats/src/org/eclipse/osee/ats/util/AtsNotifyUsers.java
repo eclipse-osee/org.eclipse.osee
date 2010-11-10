@@ -17,6 +17,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.AbstractReviewArtifact;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.log.LogItem;
 import org.eclipse.osee.ats.artifact.log.LogType;
@@ -172,7 +173,7 @@ public class AtsNotifyUsers implements IArtifactEventListener {
 
    private static String getIdString(AbstractWorkflowArtifact sma) {
       try {
-         String legacyPcrId = sma.getWorldViewLegacyPCR();
+         String legacyPcrId = sma.getSoleAttributeValue(AtsAttributeTypes.LegacyPcrId, "");
          if (!legacyPcrId.equals("")) {
             return "HRID: " + sma.getHumanReadableId() + " / LegacyId: " + legacyPcrId;
          }

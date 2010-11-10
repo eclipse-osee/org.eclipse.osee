@@ -230,20 +230,6 @@ public abstract class AbstractReviewArtifact extends AbstractTaskableArtifact {
       return standAlone;
    }
 
-   @Override
-   public String getWorldViewParentID() throws OseeCoreException {
-      return getParentTeamWorkflow().getHumanReadableId();
-   }
-
-   @Override
-   public String getWorldViewTeam() throws OseeCoreException {
-      TeamWorkFlowArtifact teamDef = getParentTeamWorkflow();
-      if (teamDef != null) {
-         return teamDef.getWorldViewTeam();
-      }
-      return "";
-   }
-
    @SuppressWarnings("unused")
    @Override
    public String getWorldViewReviewDecider() throws OseeCoreException {
@@ -271,11 +257,6 @@ public abstract class AbstractReviewArtifact extends AbstractTaskableArtifact {
    @Override
    public double getWorldViewWeeklyBenefit() {
       return 0;
-   }
-
-   @Override
-   public String getWorldViewWorkPackage() {
-      return "";
    }
 
    public Artifact getArtifact() {

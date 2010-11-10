@@ -54,12 +54,6 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
       artifacts.addAll(getTaskArtifacts());
    }
 
-   @SuppressWarnings("unused")
-   @Override
-   public String getWorldViewParentID() throws OseeCoreException {
-      return null;
-   }
-
    @Override
    public void atsDelete(Set<Artifact> deleteArts, Map<Artifact, Object> allRelated) throws OseeCoreException {
       super.atsDelete(deleteArts, allRelated);

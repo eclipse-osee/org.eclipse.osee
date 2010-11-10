@@ -52,17 +52,15 @@ import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
+import org.eclipse.osee.ats.field.GoalOrderColumn;
 import org.eclipse.osee.ats.field.IPersistAltLeftClickProvider;
-import org.eclipse.osee.ats.goal.GoalXViewerFactory;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.task.TaskEditorSimpleProvider;
 import org.eclipse.osee.ats.task.TaskXViewer;
 import org.eclipse.osee.ats.util.ArtifactEmailWizard;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.DefaultTeamState;
-import org.eclipse.osee.ats.util.GoalManager;
 import org.eclipse.osee.ats.util.PromptChangeUtil;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeColumn;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -70,7 +68,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ISelectedArtifacts;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -80,7 +77,6 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerAttributeColumn;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
-import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
@@ -712,21 +708,6 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
             return false;
          }
          XViewerColumn xCol = (XViewerColumn) treeColumn.getData();
-         if (useArt.isOfType(AtsArtifactTypes.AtsArtifact)) {
-            boolean modified = false;
-            if (xCol.equals(WorldXViewerFactory.Goal_Order)) {
-               handleAltLeftClickGoalOrder(treeItem, (IATSArtifact) useArt);
-               return false;
-            } else if (xCol.equals(WorldXViewerFactory.Goal_Order_Vote_Col)) {
-               modified =
-                  PromptChangeUtil.promptChangeAttribute(useArt, AtsAttributeTypes.GoalOrderVote,
-                     isAltLeftClickPersist(), true);
-            }
-            if (modified) {
-               update(useArt, null);
-               return true;
-            }
-         }
          if (useArt instanceof ActionArtifact) {
             if (((ActionArtifact) useArt).getTeamWorkFlowArtifacts().size() == 1) {
                useArt = ((ActionArtifact) useArt).getTeamWorkFlowArtifacts().iterator().next();
@@ -738,12 +719,6 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
          boolean modified = false;
          if (xCol.equals(WorldXViewerFactory.Percent_Rework_Col)) {
             modified = PromptChangeUtil.promptChangePercentAttribute(sma, AtsAttributeTypes.PercentRework, false);
-         } else if (xCol.equals(WorldXViewerFactory.Weekly_Benefit_Hrs_Col)) {
-            modified = PromptChangeUtil.promptChangeAttribute(sma, AtsAttributeTypes.WeeklyBenefit, false, false);
-         } else if (xCol.equals(WorldXViewerFactory.Estimated_Completion_Date_Col)) {
-            modified = PromptChangeUtil.promptChangeDate(sma, AtsAttributeTypes.EstimatedCompletionDate, false);
-         } else if (xCol.equals(WorldXViewerFactory.Deadline_Col)) {
-            modified = PromptChangeUtil.promptChangeDate(sma, AtsAttributeTypes.NeedBy, false);
          } else if (xCol.equals(WorldXViewerFactory.Remaining_Hours_Col)) {
             AWorkbench.popup("Calculated Field",
                "Hours Remaining field is calculated.\nHour Estimate - (Hour Estimate * Percent Complete)");
@@ -753,12 +728,6 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
                "Calculated Field",
                "Work Days Needed field is calculated.\nRemaining Hours / Hours per Week (" + sma.getManHrsPerDayPreference() + ")");
             return false;
-         } else if (xCol.equals(WorldXViewerFactory.Work_Package_Col)) {
-            modified = PromptChangeUtil.promptChangeAttribute(sma, AtsAttributeTypes.WorkPackage, false, false);
-         } else if (xCol.equals(WorldXViewerFactory.Numeric1_Col)) {
-            modified = PromptChangeUtil.promptChangeAttribute(sma, AtsAttributeTypes.Numeric1, false, false);
-         } else if (xCol.equals(WorldXViewerFactory.Numeric2_Col)) {
-            modified = PromptChangeUtil.promptChangeAttribute(sma, AtsAttributeTypes.Numeric2, false, false);
          }
          if (modified && isAltLeftClickPersist()) {
             sma.persist("persist attribute change");
@@ -773,27 +742,6 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       return false;
    }
 
-   private void handleAltLeftClickGoalOrder(TreeItem treeItem, IATSArtifact atsArt) throws OseeCoreException {
-
-      GoalArtifact parentGoalArtifact = null;
-      if (xViewerFactory instanceof GoalXViewerFactory) {
-         parentGoalArtifact = ((GoalXViewerFactory) xViewerFactory).getSoleGoalArtifact();
-      }
-      if (parentGoalArtifact == null) {
-         parentGoalArtifact = getParentGoalArtifact(treeItem);
-      }
-      GoalArtifact changedGoal = null;
-      if (parentGoalArtifact != null) {
-         changedGoal = GoalManager.promptChangeGoalOrder(parentGoalArtifact, (Artifact) treeItem.getData());
-      } else {
-         changedGoal = GoalManager.promptChangeGoalOrder((Artifact) treeItem.getData());
-      }
-      if (changedGoal != null) {
-         refresh(changedGoal);
-         update(atsArt, null);
-      }
-   }
-
    public String getExtendedStatusString() {
       return extendedStatusString;
    }
@@ -803,20 +751,13 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       updateStatusLabel();
    }
 
-   private GoalArtifact getParentGoalArtifact(TreeItem treeItem) {
-      if (Widgets.isAccessible(treeItem) && Widgets.isAccessible(treeItem.getParentItem()) && treeItem.getParentItem().getData() instanceof GoalArtifact) {
-         return (GoalArtifact) treeItem.getParentItem().getData();
-      }
-      return null;
-   }
-
    /**
     * store off parent goalItem in label provider so it can determine parent when providing order of goal member
     */
    @Override
    protected void doUpdateItem(Item item, Object element) {
       if (item instanceof TreeItem) {
-         GoalArtifact parentGoalArtifact = getParentGoalArtifact((TreeItem) item);
+         GoalArtifact parentGoalArtifact = GoalOrderColumn.getParentGoalArtifact((TreeItem) item);
          if (parentGoalArtifact != null) {
             ((WorldLabelProvider) getLabelProvider()).setParentGoal(parentGoalArtifact);
          }

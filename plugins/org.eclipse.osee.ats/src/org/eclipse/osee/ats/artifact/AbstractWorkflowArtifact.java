@@ -31,7 +31,6 @@ import org.eclipse.osee.ats.artifact.note.AtsNote;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.editor.stateItem.AtsStateItemManager;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
-import org.eclipse.osee.ats.field.EstimatedReleaseDateColumn;
 import org.eclipse.osee.ats.field.TargetedVersionColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.notify.AtsNotification;
@@ -39,9 +38,7 @@ import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsNotifyUsers;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.DeadlineManager;
 import org.eclipse.osee.ats.util.DefaultTeamState;
-import org.eclipse.osee.ats.util.GoalManager;
 import org.eclipse.osee.ats.util.StateManager;
 import org.eclipse.osee.ats.util.TransitionOption;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
@@ -95,7 +92,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    protected TeamWorkFlowArtifact parentTeamArt;
    protected ActionArtifact parentAction;
    private StateManager stateMgr;
-   private DeadlineManager deadlineMgr;
    private SMAEditor editor;
    private AtsLog atsLog;
    private AtsNote atsNote;
@@ -131,7 +127,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    public void initalizePreSaveCache() {
       try {
-         deadlineMgr = new DeadlineManager(this);
          stateMgr = new StateManager(this);
          atsLog = new AtsLog(new ArtifactLog(this));
          atsNote = new AtsNote(new ArtifactNote(this));
@@ -151,33 +146,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    @Override
-   public Date getWorldViewDeadlineDate() throws OseeCoreException {
-      Date result = getSoleAttributeValue(AtsAttributeTypes.NeedBy, null);
-      if (result == null && !(this instanceof TeamWorkFlowArtifact)) {
-         AbstractWorkflowArtifact art = getParentTeamWorkflow();
-         if (art != null) {
-            return art.getWorldViewDeadlineDate();
-         }
-      }
-      return result;
-   }
-
-   @Override
-   public String getWorldViewDeadlineDateStr() throws OseeCoreException {
-      Date date = getWorldViewDeadlineDate();
-      if (date != null) {
-         return DateUtil.getMMDDYY(date);
-      }
-      return "";
-   }
-
-   @SuppressWarnings("unused")
-   @Override
-   public String getWorldViewDescription() throws OseeCoreException {
-      return "";
-   }
-
-   @Override
    public String getWorldViewImplementer() throws OseeCoreException {
       return Artifacts.toString("; ", getImplementers());
    }
@@ -185,12 +153,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    @SuppressWarnings("unused")
    public Collection<User> getImplementers() throws OseeCoreException {
       return Collections.emptyList();
-   }
-
-   @SuppressWarnings("unused")
-   @Override
-   public String getWorldViewTeam() throws OseeCoreException {
-      return null;
    }
 
    @SuppressWarnings("unused")
@@ -238,14 +200,9 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return parentTeamArt;
    }
 
-   public String getEditorTitle() throws OseeCoreException {
-      return getWorldViewType() + ": " + getName();
-   }
-
    @SuppressWarnings("unused")
-   @Override
-   public String getWorldViewActionableItems() throws OseeCoreException {
-      return "";
+   public String getEditorTitle() throws OseeCoreException {
+      return getType() + ": " + getName();
    }
 
    /**
@@ -280,9 +237,8 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       super.atsDelete(deleteArts, allRelated);
    }
 
-   @SuppressWarnings("unused")
    @Override
-   public String getWorldViewType() throws OseeCoreException {
+   public String getType() {
       return getArtifactTypeName();
    }
 
@@ -293,7 +249,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    @Override
-   public String getWorldViewState() {
+   public String getState() {
       return getStateMgr().getCurrentStateName();
    }
 
@@ -308,14 +264,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
          return implementersStr;
       }
       return Artifacts.toString("; ", getStateMgr().getAssignees());
-   }
-
-   @Override
-   public String getWorldViewCreatedDateStr() throws OseeCoreException {
-      if (getWorldViewCreatedDate() == null) {
-         return XViewerCells.getCellExceptionString("No creation date");
-      }
-      return DateUtil.getMMDDYYHHMM(getWorldViewCreatedDate());
    }
 
    @Override
@@ -342,23 +290,10 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return "";
    }
 
-   @Override
-   public Date getWorldViewCreatedDate() throws OseeCoreException {
-      return getLog().getCreationDate();
-   }
-
    @SuppressWarnings("unused")
    @Override
    public String getWorldViewID() throws OseeCoreException {
       return getHumanReadableId();
-   }
-
-   @Override
-   public String getWorldViewLegacyPCR() throws OseeCoreException {
-      if (isAttributeTypeValid(AtsAttributeTypes.LegacyPcrId)) {
-         return getSoleAttributeValue(AtsAttributeTypes.LegacyPcrId, "");
-      }
-      return "";
    }
 
    @Override
@@ -425,12 +360,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    @Override
    public double getWorldViewEstimatedHours() throws OseeCoreException {
       return getEstimatedHoursTotal();
-   }
-
-   @SuppressWarnings("unused")
-   @Override
-   public String getWorldViewUserCommunity() throws OseeCoreException {
-      return "";
    }
 
    @SuppressWarnings("unused")
@@ -521,46 +450,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return AtsUtil.DEFAULT_HOURS_PER_WORK_DAY;
    }
 
-   @SuppressWarnings("unused")
-   @Override
-   public double getWorldViewAnnualCostAvoidance() throws OseeCoreException {
-      return 0;
-   }
-
-   @Override
-   public Result isWorldViewAnnualCostAvoidanceValid() throws OseeCoreException {
-      if (isAttributeTypeValid(AtsAttributeTypes.WeeklyBenefit)) {
-         return Result.TrueResult;
-      }
-      Result result = isWorldViewRemainHoursValid();
-      if (result.isFalse()) {
-         return result;
-      }
-      String value = null;
-      try {
-         value = getSoleAttributeValue(AtsAttributeTypes.WeeklyBenefit, "");
-         if (!Strings.isValid(value)) {
-            return new Result("Weekly Benefit Hours not set.");
-         }
-         double val = new Float(value).doubleValue();
-         if (val == 0) {
-            return new Result("Weekly Benefit Hours not set.");
-         }
-      } catch (NumberFormatException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "HRID " + getHumanReadableId(), ex);
-         return new Result("Weekly Benefit value is invalid double \"" + value + "\"");
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "HRID " + getHumanReadableId(), ex);
-         return new Result("Exception calculating cost avoidance.  See log for details.");
-      }
-      return Result.TrueResult;
-   }
-
-   @Override
-   public String getWorldViewWorkPackage() throws OseeCoreException {
-      return getSoleAttributeValue(AtsAttributeTypes.WorkPackage, "");
-   }
-
    @Override
    public String getWorldViewNumeric1() throws OseeCoreException {
       return AtsUtil.doubleToI18nString(getSoleAttributeValue(AtsAttributeTypes.Numeric1, 0.0), true);
@@ -569,11 +458,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    @Override
    public String getWorldViewNumeric2() throws OseeCoreException {
       return AtsUtil.doubleToI18nString(getSoleAttributeValue(AtsAttributeTypes.Numeric2, 0.0), true);
-   }
-
-   @Override
-   public String getWorldViewGoalOrderVote() throws OseeCoreException {
-      return getSoleAttributeValue(AtsAttributeTypes.GoalOrderVote, "");
    }
 
    public int getWorldViewStatePercentComplete() throws OseeCoreException {
@@ -642,32 +526,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       artifacts.add(smaArtifact);
    }
 
-   @Override
-   public Date getWorldViewEstimatedCompletionDate() throws OseeCoreException {
-      Date date = getSoleAttributeValue(AtsAttributeTypes.EstimatedCompletionDate, null);
-      if (date != null) {
-         return date;
-      }
-      if (getParentSMA() != null) {
-         date = getParentSMA().getWorldViewEstimatedCompletionDate();
-      }
-      if (date == null) {
-         date = EstimatedReleaseDateColumn.getDateFromWorkflow(this);
-      }
-      if (date == null) {
-         date = EstimatedReleaseDateColumn.getDateFromTargetedVersion(this);
-      }
-      return date;
-   }
-
-   @Override
-   public String getWorldViewEstimatedCompletionDateStr() throws OseeCoreException {
-      if (getWorldViewEstimatedCompletionDate() == null) {
-         return "";
-      }
-      return DateUtil.getMMDDYYHHMM(getWorldViewEstimatedCompletionDate());
-   }
-
    /**
     * Called at the end of a transition just before transaction manager persist. SMAs can override to perform tasks due
     * to transition.
@@ -675,12 +533,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    @SuppressWarnings("unused")
    public void transitioned(WorkPageDefinition fromPage, WorkPageDefinition toPage, Collection<User> toAssignees, boolean persist, SkynetTransaction transaction) throws OseeCoreException {
       // provided for subclass implementation
-   }
-
-   @SuppressWarnings("unused")
-   @Override
-   public String getWorldViewDecision() throws OseeCoreException {
-      return "";
    }
 
    @Override
@@ -694,12 +546,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
          return String.valueOf(getSoleAttributeValue(AtsAttributeTypes.ValidationRequired, false));
       }
       return "";
-   }
-
-   @SuppressWarnings("unused")
-   @Override
-   public Result isWorldViewDeadlineAlerting() throws OseeCoreException {
-      return Result.FalseResult;
    }
 
    @SuppressWarnings("unused")
@@ -1052,14 +898,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
          return "0.0";
       }
       return AtsUtil.doubleToI18nString(timeInCurrState / DateUtil.MILLISECONDS_IN_A_DAY);
-   }
-
-   @Override
-   public String getWorldViewParentState() throws OseeCoreException {
-      if (getParentSMA() != null) {
-         return getParentSMA().getStateMgr().getCurrentStateName();
-      }
-      return "";
    }
 
    @Override
@@ -1459,10 +1297,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       this.inTransition = inTransition;
    }
 
-   public DeadlineManager getDeadlineMgr() {
-      return deadlineMgr;
-   }
-
    public StateManager getStateMgr() {
       return stateMgr;
    }
@@ -1477,11 +1311,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    public boolean isReview() {
       return this instanceof AbstractReviewArtifact;
-   }
-
-   @Override
-   public String getWorldViewGoalOrder() throws OseeCoreException {
-      return GoalManager.getGoalOrder(this);
    }
 
    public AtsWorkPage getCurrentAtsWorkPage() throws OseeCoreException {

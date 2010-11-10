@@ -41,7 +41,10 @@ public class AbstractWorkflowVersionDateColumn extends XViewerAtsAttributeValueC
          if (element instanceof ActionArtifact) {
             Set<String> strs = new HashSet<String>();
             for (TeamWorkFlowArtifact team : ((ActionArtifact) element).getTeamWorkFlowArtifacts()) {
-               strs.add(getColumnText(team, column, columnIndex));
+               String str = getColumnText(team, column, columnIndex);
+               if (Strings.isValid(str)) {
+                  strs.add(str);
+               }
             }
             return Collections.toString(";", strs);
 

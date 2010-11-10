@@ -12,13 +12,11 @@
 package org.eclipse.osee.ats.artifact;
 
 import java.util.Collection;
-import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.osee.ats.config.AtsCacheManager;
-import org.eclipse.osee.ats.field.EstimatedReleaseDateColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
@@ -106,7 +104,7 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IB
    public String getEditorTitle() throws OseeCoreException {
       try {
          if (getTargetedVersion() != null) {
-            return getWorldViewType() + ": " + "[" + getTargetedVersionStr() + "] - " + getName();
+            return getType() + ": " + "[" + getTargetedVersionStr() + "] - " + getName();
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
@@ -152,7 +150,7 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IB
    }
 
    @Override
-   public String getWorldViewType() {
+   public String getType() {
       return getTeamName() + " Workflow";
    }
 
@@ -162,26 +160,11 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IB
    }
 
    @Override
-   public String getWorldViewUserCommunity() throws OseeCoreException {
-      return getAttributesToString(AtsAttributeTypes.UserCommunity);
-   }
-
-   @Override
-   public String getWorldViewActionableItems() throws OseeCoreException {
-      return getActionableItemsDam().getActionableItemsStr();
-   }
-
-   @Override
    public void atsDelete(Set<Artifact> deleteArts, Map<Artifact, Object> allRelated) throws OseeCoreException {
       super.atsDelete(deleteArts, allRelated);
       for (AbstractReviewArtifact reviewArt : ReviewManager.getReviews(this)) {
          reviewArt.atsDelete(deleteArts, allRelated);
       }
-   }
-
-   @Override
-   public String getWorldViewTeam() {
-      return getTeamName();
    }
 
    @Override
@@ -227,11 +210,6 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IB
    }
 
    @Override
-   public String getWorldViewDescription() throws OseeCoreException {
-      return getSoleAttributeValue(AtsAttributeTypes.Description, "");
-   }
-
-   @Override
    public Collection<User> getImplementers() throws OseeCoreException {
       return StateManager.getImplementersByState(this, DefaultTeamState.Implement.name());
    }
@@ -246,13 +224,6 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IB
          return 0;
       }
       return new Float(value).doubleValue();
-   }
-
-   @Override
-   public double getWorldViewAnnualCostAvoidance() throws OseeCoreException {
-      double benefit = getWorldViewWeeklyBenefit();
-      double remainHrs = getRemainHoursTotal();
-      return benefit * 52 - remainHrs;
    }
 
    @Override
@@ -280,23 +251,6 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IB
    @Override
    public Branch getWorkingBranch() throws OseeCoreException {
       return getBranchMgr().getWorkingBranch();
-   }
-
-   @Override
-   public String getWorldViewParentID() throws OseeCoreException {
-      return getParentActionArtifact().getHumanReadableId();
-   }
-
-   @Override
-   public Date getWorldViewEstimatedCompletionDate() throws OseeCoreException {
-      Date date = super.getWorldViewEstimatedCompletionDate();
-      if (date == null) {
-         date = EstimatedReleaseDateColumn.getDateFromWorkflow(this);
-      }
-      if (date == null) {
-         date = EstimatedReleaseDateColumn.getDateFromTargetedVersion(this);
-      }
-      return date;
    }
 
    public AtsBranchManager getBranchMgr() {

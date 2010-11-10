@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.editor;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.field.ActionableItemsColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -111,7 +112,7 @@ public class SMAActionableItemHeader extends Composite {
             label.setText(" " + "Error: No Actionable Items identified.");
             label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
          } else {
-            label.setText(" " + teamWf.getParentActionArtifact().getWorldViewActionableItems());
+            label.setText(" " + ActionableItemsColumn.getActionableItemsStr(teamWf.getParentActionArtifact()));
             label.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
             label.setForeground(Displays.getSystemColor(SWT.COLOR_BLACK));
          }
@@ -119,5 +120,4 @@ public class SMAActionableItemHeader extends Composite {
          layout();
       }
    }
-
 }

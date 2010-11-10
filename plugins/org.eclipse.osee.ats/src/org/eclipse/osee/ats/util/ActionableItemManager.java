@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.field.ActionableItemsColumn;
 import org.eclipse.osee.ats.util.widgets.dialog.AICheckTreeDialog;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -123,7 +124,8 @@ public class ActionableItemManager {
    public static Result convertActionableItems(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       Result toReturn = Result.FalseResult;
       AICheckTreeDialog diag =
-         new AICheckTreeDialog("Convert Impacted Actionable Items",
+         new AICheckTreeDialog(
+            "Convert Impacted Actionable Items",
             "NOTE: This should NOT be the normal path to changing actionable items.\n\nIf a team has " +
             //
             "determined " + "that there is NO impact and that another actionable items IS impacted:\n" +
@@ -140,7 +142,7 @@ public class ActionableItemManager {
             //
             "does not need to do anything, this dialog will purge the\n" + "team from the DB as if it was " +
             //
-            "never chosen.\n\n" + "Current Actionable Item(s): " + teamArt.getWorldViewActionableItems() + "\n" +
+            "never chosen.\n\n" + "Current Actionable Item(s): " + ActionableItemsColumn.getActionableItemsStr(teamArt) + "\n" +
             //
             "Current Team: " + teamArt.getTeamDefinition().getName() + "\n" +
             //
@@ -169,7 +171,7 @@ public class ActionableItemManager {
                   "Actionable Item selected belongs to same team as currently selected team.\n" + "Use \"Edit Actionable Items\" instaed.");
          } else {
             StringBuffer sb = new StringBuffer("Converting...\nActionable Item(s): ");
-            sb.append(teamArt.getWorldViewActionableItems());
+            sb.append(ActionableItemsColumn.getActionableItemsStr(teamArt));
             sb.append("\nTeam: ");
             sb.append(teamArt.getTeamDefinition().getName());
             sb.append("\nto\nActionable Item(s): ");

@@ -46,7 +46,7 @@ public class XViewerSmaStateColumn extends XViewerValueColumn {
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) throws XViewerException {
       try {
          if (element instanceof IWorldViewArtifact) {
-            return ((IWorldViewArtifact) element).getWorldViewState();
+            return ((IWorldViewArtifact) element).getState();
          }
          return "";
       } catch (OseeCoreException ex) {

@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.util.PromptChangeUtil;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -84,7 +85,10 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
          if (element instanceof ActionArtifact) {
             Set<String> strs = new HashSet<String>();
             for (TeamWorkFlowArtifact team : ((ActionArtifact) element).getTeamWorkFlowArtifacts()) {
-               strs.add(getColumnText(team, column, columnIndex));
+               String str = getColumnText(team, column, columnIndex);
+               if (Strings.isValid(str)) {
+                  strs.add(str);
+               }
             }
             return Collections.toString("; ", strs);
          }

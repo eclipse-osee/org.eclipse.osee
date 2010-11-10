@@ -46,8 +46,8 @@ public class AssigneeColumn extends XViewerAtsColumn implements IXViewerValueCol
    }
 
    private AssigneeColumn() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + "ats.Assingees", "Assignees", 100, SWT.LEFT, true,
-         SortDataType.String, true, "");
+      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".assignees", "Assignees", 100, SWT.LEFT, true, SortDataType.String,
+         true, "");
    }
 
    public AssigneeColumn(String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {

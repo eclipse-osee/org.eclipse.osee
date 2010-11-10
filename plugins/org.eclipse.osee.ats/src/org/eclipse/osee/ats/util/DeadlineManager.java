@@ -13,9 +13,10 @@ package org.eclipse.osee.ats.util;
 import java.util.Date;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.field.DeadlineColumn;
+import org.eclipse.osee.ats.field.EstimatedCompletionDateColumn;
 import org.eclipse.osee.ats.field.EstimatedReleaseDateColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 
@@ -24,73 +25,69 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
  */
 public class DeadlineManager {
 
-   private final AbstractWorkflowArtifact sma;
-
-   public DeadlineManager(AbstractWorkflowArtifact sma) {
-      this.sma = sma;
-   }
-
-   public Date getEcdDate() {
+   public static Date getEcdDate(AbstractWorkflowArtifact sma) {
       try {
-         return ((IWorldViewArtifact) sma).getWorldViewEstimatedCompletionDate();
+         return EstimatedCompletionDateColumn.getDate(sma);
       } catch (Exception ex) {
          // do nothing
       }
       return null;
    }
 
-   public Date getDeadlineDate() {
+   public static Date getDeadlineDate(AbstractWorkflowArtifact sma) {
       try {
-         return ((IWorldViewArtifact) sma).getWorldViewDeadlineDate();
+         return DeadlineColumn.getDate(sma);
       } catch (Exception ex) {
          // do nothing
       }
       return null;
    }
 
-   public boolean isDeadlineDateSet() {
-      return getDeadlineDate() != null;
+   public static boolean isDeadlineDateSet(AbstractWorkflowArtifact sma) {
+      return getDeadlineDate(sma) != null;
    }
 
-   public boolean isEcdDateSet() {
-      return getEcdDate() != null;
+   public static boolean isEcdDateSet(AbstractWorkflowArtifact sma) {
+      return getEcdDate(sma) != null;
    }
 
-   public Result isDeadlineDateOverdue() {
+   public static Result isDeadlineDateOverdue(AbstractWorkflowArtifact sma) {
       if (sma.isCompleted() || sma.isCancelled()) {
          return Result.FalseResult;
       }
-      if (new Date().after(getDeadlineDate())) {
+      if (new Date().after(getDeadlineDate(sma))) {
          return new Result(true, "Need By Date has passed.");
       }
       return Result.FalseResult;
    }
 
-   public Result isEcdDateOverdue() {
+   public static Result isEcdDateOverdue(AbstractWorkflowArtifact sma) {
       if (sma.isCompleted() || sma.isCancelled()) {
          return Result.FalseResult;
       }
-      if (getEcdDate() == null) {
+      Date ecdDate = getEcdDate(sma);
+      Date deadlineDate = getDeadlineDate(sma);
+      if (ecdDate == null) {
          return Result.FalseResult;
       }
-      if (new Date().after(getEcdDate())) {
+      if (new Date().after(ecdDate)) {
          return new Result(true, "Estimated Completion Date has passed.");
       }
-      if (getDeadlineDate() == null) {
+      if (deadlineDate == null) {
          return Result.FalseResult;
       }
-      if (getEcdDate().after(getDeadlineDate())) {
+      if (ecdDate.after(deadlineDate)) {
          return new Result(true, "Estimated Completion Date after Need By Date.");
       }
       return Result.FalseResult;
    }
 
-   public Result isDeadlinePastRelease() {
+   public static Result isDeadlinePastRelease(AbstractWorkflowArtifact sma) {
       try {
          if (sma.isCompleted() || sma.isCancelled()) {
             return Result.FalseResult;
          }
-         Date deadDate = getDeadlineDate();
+         Date deadDate = getDeadlineDate(sma);
          if (deadDate == null) {
             return Result.FalseResult;
          }
@@ -110,26 +107,26 @@ public class DeadlineManager {
       return Result.FalseResult;
    }
 
-   public Result isDeadlineDateAlerting() {
-      if (!isDeadlineDateSet()) {
+   public static Result isDeadlineDateAlerting(AbstractWorkflowArtifact sma) {
+      if (!isDeadlineDateSet(sma)) {
          return Result.FalseResult;
       }
-      Result r = isDeadlineDateOverdue();
+      Result r = isDeadlineDateOverdue(sma);
       if (r.isTrue()) {
          return r;
       }
-      r = isDeadlinePastRelease();
+      r = isDeadlinePastRelease(sma);
       if (r.isTrue()) {
          return r;
       }
       return Result.FalseResult;
    }
 
-   public Result isEcdDateAlerting() {
-      if (!isEcdDateSet()) {
+   public static Result isEcdDateAlerting(AbstractWorkflowArtifact sma) {
+      if (!isEcdDateSet(sma)) {
          return Result.FalseResult;
       }
-      Result r = isEcdDateOverdue();
+      Result r = isEcdDateOverdue(sma);
       if (r.isTrue()) {
          return r;
       }

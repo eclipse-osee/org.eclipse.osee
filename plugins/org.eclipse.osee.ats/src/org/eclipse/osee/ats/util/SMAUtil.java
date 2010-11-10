@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.artifact.log.LogItem;
 import org.eclipse.osee.ats.field.ChangeTypeColumn;
+import org.eclipse.osee.ats.field.CreatedDateColumn;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -81,7 +82,7 @@ public class SMAUtil {
    public static Collection<AbstractWorkflowArtifact> getOpenAtDate(Date date, Collection<AbstractWorkflowArtifact> artifacts) throws OseeCoreException {
       List<AbstractWorkflowArtifact> smas = new ArrayList<AbstractWorkflowArtifact>();
       for (AbstractWorkflowArtifact sma : artifacts) {
-         Date createDate = sma.getWorldViewCreatedDate();
+         Date createDate = CreatedDateColumn.getDate(sma);
          Date completedCancelDate = null;
          if (sma.isCancelledOrCompleted()) {
             if (sma.isCancelled()) {
@@ -129,7 +130,7 @@ public class SMAUtil {
    public static Collection<AbstractWorkflowArtifact> getStateAtDate(Date date, Collection<String> states, Collection<AbstractWorkflowArtifact> artifacts) throws OseeCoreException {
       List<AbstractWorkflowArtifact> smas = new ArrayList<AbstractWorkflowArtifact>();
       for (AbstractWorkflowArtifact sma : artifacts) {
-         Date createDate = sma.getWorldViewCreatedDate();
+         Date createDate = CreatedDateColumn.getDate(sma);
          if (createDate.after(date)) {
             continue;
          }
