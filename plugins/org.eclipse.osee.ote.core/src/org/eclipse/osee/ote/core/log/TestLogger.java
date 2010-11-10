@@ -14,6 +14,7 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
+import org.eclipse.osee.framework.jdk.core.persistence.XmlizableStream;
 import org.eclipse.osee.ote.core.MethodFormatter;
 import org.eclipse.osee.ote.core.ReturnFormatter;
 import org.eclipse.osee.ote.core.TestCase;
@@ -291,6 +292,9 @@ public class TestLogger extends Logger implements ITestLogger {
       String methodName = new Exception().getStackTrace()[methodCount].getMethodName();
       TraceRecord record = new TraceRecord(source, objectName, methodName, methodFormat, true);
       record.addAdditionalElement(xmlObject);
+      if (xmlObject instanceof XmlizableStream) {
+         record.addAdditionalElement((XmlizableStream) xmlObject);
+      }
       log(record);
    }
 }

@@ -737,6 +737,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       writer.writeStartElement("Message");
       XMLStreamWriterUtil.writeElement(writer, "Name", name);
       XMLStreamWriterUtil.writeElement(writer, "Type", getMemType().name());
+      writer.writeEndElement();
    }
 
    public void zeroize() {

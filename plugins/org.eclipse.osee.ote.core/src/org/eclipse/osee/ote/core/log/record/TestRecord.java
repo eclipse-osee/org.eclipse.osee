@@ -114,10 +114,10 @@ public abstract class TestRecord extends LogRecord implements Xmlizable, Xmlizab
          final String className = stackElement.getClassName();
          for (Pattern includes : stacktraceIncludes) {
             if (includes.matcher(className).matches()) {
-               writer.writeStartElement("Stacktrace");
+               writer.writeEmptyElement("Stacktrace");
                writer.writeAttribute("source", stackElement.getClassName());
                writer.writeAttribute("line", Integer.toString(stackElement.getLineNumber()));
-               writer.writeEndElement();
+               //               writer.writeEndElement();
                return;
             }
          }
@@ -127,10 +127,10 @@ public abstract class TestRecord extends LogRecord implements Xmlizable, Xmlizab
             }
          }
       }
-      writer.writeStartElement("Stacktrace");
+      writer.writeEmptyElement("Stacktrace");
       writer.writeAttribute("source", stackElement.getClassName());
       writer.writeAttribute("line", Integer.toString(stackElement.getLineNumber()));
-      writer.writeEndElement();
+      //      writer.writeEndElement();
    }
 
    private void addElement(Document doc, StackTraceElement stackElement, Element locationElement) {

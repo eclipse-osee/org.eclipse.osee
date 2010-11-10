@@ -10,10 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.core.log;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -24,6 +26,7 @@ import java.util.logging.LogRecord;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+import org.eclipse.osee.framework.jdk.core.util.xml.XMLStreamWriterPrettyPrint;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.environment.TestEnvironment;
 import org.eclipse.osee.ote.core.log.record.ScriptInitRecord;
@@ -37,22 +40,16 @@ import org.eclipse.osee.ote.core.log.record.TraceRecordEnd;
  */
 public class ScriptStreamOutLogHandler extends Handler {
    private final List<LogRecord> records;
-   private FileOutputStream outputStream;
+   private OutputStream outputStream;
    private XMLStreamWriter writer;
 
-   /**
-    * ScriptLogHandler Constructor. Sets the outfile to log to and the test script that will be logged. It also
-    * establishes the xml format to be used.
-    * 
-    * @param outFile Reference to the outfile that will be used to output the log.
-    */
    public ScriptStreamOutLogHandler(File outFile) {
       super();
       records = new ArrayList<LogRecord>();
       try {
-         outputStream = new FileOutputStream(outFile);
+         outputStream = new BufferedOutputStream(new FileOutputStream(outFile), 8192 * 16);
          XMLOutputFactory factory = XMLOutputFactory.newInstance();
-         writer = factory.createXMLStreamWriter(outputStream);
+         writer = new XMLStreamWriterPrettyPrint(factory.createXMLStreamWriter(outputStream));
          writer.writeStartDocument("1.0");
          writer.writeComment("DISTRO_STATEMENT_HERE");
          writer.writeStartElement("TestScript");
@@ -83,7 +80,14 @@ public class ScriptStreamOutLogHandler extends Handler {
 
             if (logRecord instanceof TestRecord) {
                TestRecord record = (TestRecord) logRecord;
-               if (started && isTopLevelElement(record)) {
+
+               if (record instanceof ScriptInitRecord) {
+                  if (!((ScriptInitRecord) record).getStartFlag()) {
+                     continue;
+                  }
+               }
+
+               if (!started && isTopLevelElement(record)) {
                   started = true;
                   record.toXml(writer);
                } else if (isTopLevelElement(record)) {
@@ -117,6 +121,11 @@ public class ScriptStreamOutLogHandler extends Handler {
       } catch (XMLStreamException ex) {
          OseeLog.log(ScriptStreamOutLogHandler.class, Level.SEVERE, ex);
       } finally {
+         try {
+            writer.writeEndDocument();
+         } catch (XMLStreamException ex) {
+            OseeLog.log(ScriptStreamOutLogHandler.class, Level.SEVERE, ex);
+         }
          records.clear();
       }
    }
@@ -128,7 +137,6 @@ public class ScriptStreamOutLogHandler extends Handler {
    @Override
    public void close() throws SecurityException {
       try {
-         writer.writeEndDocument();
          writer.flush();
          writer.close();
          outputStream.close();

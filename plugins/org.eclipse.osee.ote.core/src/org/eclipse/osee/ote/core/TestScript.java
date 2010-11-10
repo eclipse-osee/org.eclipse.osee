@@ -24,6 +24,7 @@ import java.util.logging.Level;
 
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
+import org.eclipse.osee.framework.jdk.core.persistence.XmlizableStream;
 import org.eclipse.osee.framework.logging.ILoggerFilter;
 import org.eclipse.osee.framework.logging.ILoggerListener;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -432,6 +433,9 @@ public abstract class TestScript implements ITimeout {
 
    public void addScriptSummary(Xmlizable xml) {
       sciprtResultRecord.addChildElement(xml);
+      if (xml instanceof XmlizableStream) {
+         sciprtResultRecord.addChildElement((XmlizableStream) xml);
+      }
    }
 
    /**
