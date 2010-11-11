@@ -14,15 +14,20 @@ import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import junit.framework.Assert;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
+import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.ActionManager;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationException;
@@ -39,14 +44,19 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.support.test.util.DemoActionableItems;
+import org.eclipse.osee.support.test.util.DemoArtifactTypes;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.DemoUsers;
+import org.eclipse.osee.support.test.util.DemoWorkType;
 import org.eclipse.osee.support.test.util.TestUtil;
 
 /**
  * @author Donald G. Dunne
  */
 public class DemoTestUtil {
+   public static Map<DemoWorkType, Artifact> unCommittedWorkflows;
+   public static Map<DemoWorkType, Artifact> committedWorkflows;
+   public static TeamWorkFlowArtifact toolsTeamWorkflow;
 
    public static Result isDbPopulatedWithDemoData() throws Exception {
       Branch branch = BranchManager.getBranchByGuid(DemoSawBuilds.SAW_Bld_1.getGuid());
@@ -100,6 +110,23 @@ public class DemoTestUtil {
       return teamArt;
    }
 
+   public static TeamWorkFlowArtifact addTeamWorkflow(ActionArtifact actionArt, String title, SkynetTransaction transaction) throws OseeCoreException {
+      Set<ActionableItemArtifact> actionableItems =
+         ActionableItemArtifact.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Test.getName()));
+      Collection<TeamDefinitionArtifact> teamDefs = TeamDefinitionArtifact.getImpactedTeamDefs(actionableItems);
+
+      ActionManager.createTeamWorkflow(actionArt, teamDefs.iterator().next(), actionableItems,
+         Arrays.asList(UserManager.getUser()), transaction);
+
+      TeamWorkFlowArtifact teamArt = null;
+      for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts()) {
+         if (team.getTeamDefinition().getName().contains("Test")) {
+            teamArt = team;
+         }
+      }
+      return teamArt;
+   }
+
    /**
     * Create tasks named title + <num>
     */
@@ -121,6 +148,56 @@ public class DemoTestUtil {
       }
       new PurgeArtifacts(artifacts).execute();
       TestUtil.sleep(4000);
+   }
+
+   public static TeamWorkFlowArtifact getToolsTeamWorkflow() throws OseeCoreException {
+      if (toolsTeamWorkflow == null) {
+         for (Artifact art : ArtifactQuery.getArtifactListFromName("Button S doesn't work on help",
+            AtsUtil.getAtsBranch(), EXCLUDE_DELETED)) {
+            if (art instanceof TeamWorkFlowArtifact) {
+               toolsTeamWorkflow = (TeamWorkFlowArtifact) art;
+            }
+         }
+      }
+      return toolsTeamWorkflow;
+   }
+
+   public static Artifact getUncommittedActionWorkflow(DemoWorkType demoWorkType) throws OseeCoreException {
+      if (unCommittedWorkflows == null) {
+         unCommittedWorkflows = new HashMap<DemoWorkType, Artifact>();
+         for (Artifact art : ArtifactQuery.getArtifactListFromName(
+            "SAW (uncommitted) More Reqt Changes for Diagram View", AtsUtil.getAtsBranch(), EXCLUDE_DELETED)) {
+            if (art.isOfType(DemoArtifactTypes.DemoCodeTeamWorkflow)) {
+               unCommittedWorkflows.put(DemoWorkType.Code, art);
+            } else if (art.isOfType(DemoArtifactTypes.DemoTestTeamWorkflow)) {
+               unCommittedWorkflows.put(DemoWorkType.Test, art);
+            } else if (art.isOfType(DemoArtifactTypes.DemoReqTeamWorkflow)) {
+               unCommittedWorkflows.put(DemoWorkType.Requirements, art);
+            } else if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
+               unCommittedWorkflows.put(DemoWorkType.SW_Design, art);
+            }
+         }
+      }
+      return unCommittedWorkflows.get(demoWorkType);
+   }
+
+   public static Artifact getCommittedActionWorkflow(DemoWorkType demoWorkType) throws OseeCoreException {
+      if (committedWorkflows == null) {
+         committedWorkflows = new HashMap<DemoWorkType, Artifact>();
+         for (Artifact art : ArtifactQuery.getArtifactListFromName("SAW (committed) Reqt Changes for Diagram View",
+            AtsUtil.getAtsBranch(), EXCLUDE_DELETED)) {
+            if (art.isOfType(DemoArtifactTypes.DemoCodeTeamWorkflow)) {
+               committedWorkflows.put(DemoWorkType.Code, art);
+            } else if (art.isOfType(DemoArtifactTypes.DemoTestTeamWorkflow)) {
+               committedWorkflows.put(DemoWorkType.Test, art);
+            } else if (art.isOfType(DemoArtifactTypes.DemoReqTeamWorkflow)) {
+               committedWorkflows.put(DemoWorkType.Requirements, art);
+            } else if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
+               committedWorkflows.put(DemoWorkType.SW_Design, art);
+            }
+         }
+      }
+      return committedWorkflows.get(demoWorkType);
    }
 
    /**

@@ -81,7 +81,7 @@ public class CreatedDateColumn extends XViewerAtsColumn implements IXViewerValue
          return Collections.toString(";", strs);
 
       }
-      return DateUtil.getMMDDYY(getDate(object));
+      return DateUtil.getMMDDYYHHMM(getDate(object));
    }
 
 }

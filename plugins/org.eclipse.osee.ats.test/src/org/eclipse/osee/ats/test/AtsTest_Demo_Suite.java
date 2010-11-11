@@ -34,6 +34,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+   AtsTest_Demo_Column_Suite.class,
    LogItemTest.class,
    AtsLogTest.class,
    NoteItemTest.class,

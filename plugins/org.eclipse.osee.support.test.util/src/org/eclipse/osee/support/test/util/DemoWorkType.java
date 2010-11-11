@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.config.demo.util;
+package org.eclipse.osee.support.test.util;
 
 /**
  * Declares the different work types for Widget_A and Widget_B

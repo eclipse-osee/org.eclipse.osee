@@ -163,7 +163,11 @@ public class ChangeTypeColumn extends XViewerAtsAttributeValueColumn {
    }
 
    public static void setChangeType(Artifact artifact, ChangeType changeType) throws OseeCoreException {
-      artifact.setSoleAttributeValue(AtsAttributeTypes.ChangeType, changeType.name());
+      if (changeType == ChangeType.None) {
+         artifact.deleteSoleAttribute(AtsAttributeTypes.ChangeType);
+      } else {
+         artifact.setSoleAttributeValue(AtsAttributeTypes.ChangeType, changeType.name());
+      }
    }
 
    @Override

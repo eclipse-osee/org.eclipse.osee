@@ -57,7 +57,7 @@ public class DeadlineColumn extends XViewerAtsAttributeValueColumn {
          if (!(element instanceof IWorldViewArtifact)) {
             return null;
          }
-         if (isWorldViewDeadlineAlerting(element).isTrue()) {
+         if (isDeadlineAlerting(element).isTrue()) {
             return ImageManager.getImage(FrameworkImage.WARNING);
          }
       } catch (Exception ex) {
@@ -66,16 +66,16 @@ public class DeadlineColumn extends XViewerAtsAttributeValueColumn {
       return null;
    }
 
-   public static Result isWorldViewDeadlineAlerting(Object object) throws OseeCoreException {
-      if (object instanceof ActionArtifact) {
+   public static Result isDeadlineAlerting(Object object) throws OseeCoreException {
+      if (object instanceof AbstractWorkflowArtifact) {
+         return DeadlineManager.isDeadlineDateAlerting((AbstractWorkflowArtifact) object);
+      } else if (object instanceof ActionArtifact) {
          for (TeamWorkFlowArtifact team : ((ActionArtifact) object).getTeamWorkFlowArtifacts()) {
-            Result result = isWorldViewDeadlineAlerting(team);
+            Result result = isDeadlineAlerting(team);
             if (result.isTrue()) {
                return result;
             }
          }
-      } else if (object instanceof AbstractWorkflowArtifact) {
-         return DeadlineManager.isDeadlineDateAlerting((AbstractWorkflowArtifact) object);
       }
       return Result.FalseResult;
    }
