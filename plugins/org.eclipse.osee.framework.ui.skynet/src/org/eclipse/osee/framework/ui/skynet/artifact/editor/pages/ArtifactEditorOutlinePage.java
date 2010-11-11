@@ -11,8 +11,6 @@
 package org.eclipse.osee.framework.ui.skynet.artifact.editor.pages;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ISelection;
@@ -207,18 +205,14 @@ public class ArtifactEditorOutlinePage extends ContentOutlinePage {
    }
 
    private final static class AttributeTypeContainer {
-      private List<AttributeType> types;
+      private final List<AttributeType> types;
       private final String name;
       private final boolean editable;
 
-      public AttributeTypeContainer(String name, boolean editable, AttributeType... data) {
+      public AttributeTypeContainer(String name, boolean editable, List<AttributeType> types) {
          this.name = name;
          this.editable = editable;
-         if (data == null) {
-            this.types = Collections.emptyList();
-         } else {
-            this.types = Arrays.asList(data);
-         }
+         this.types = types;
       }
 
       public String getName() {
@@ -237,5 +231,4 @@ public class ArtifactEditorOutlinePage extends ContentOutlinePage {
          return getTypes().contains(type);
       }
    }
-
 }

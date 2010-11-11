@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.artifact.editor.sections;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -66,8 +64,7 @@ public class AttributeTypeEditPresenter {
 
    public void onAddAttributeType() throws OseeCoreException {
       Artifact artifact = model.getArtifact();
-      IAttributeType[] types = AttributeTypeUtil.getEmptyTypes(artifact);
-      List<IAttributeType> input = new ArrayList<IAttributeType>(Arrays.asList(types));
+      List<? extends IAttributeType> input = AttributeTypeUtil.getEmptyTypes(artifact);
       Collection<? extends IAttributeType> selectedItems =
          selectItems(OperationType.ADD_ITEM, "Add Attribute Types", "add", input);
       if (!selectedItems.isEmpty()) {
@@ -81,10 +78,9 @@ public class AttributeTypeEditPresenter {
 
    public void onRemoveAttributeType() throws OseeCoreException {
       Artifact artifact = model.getArtifact();
-      AttributeType[] types = AttributeTypeUtil.getTypesWithData(artifact);
       Collection<AttributeType> validTypesPerBranch = artifact.getAttributeTypes();
-      List<AttributeType> input = new ArrayList<AttributeType>(Arrays.asList(types));
-      for (AttributeType type : types) {
+      List<AttributeType> input = AttributeTypeUtil.getTypesWithData(artifact);
+      for (AttributeType type : input) {
          if (validTypesPerBranch.contains(type) && artifact.getAttributes(type).size() - 1 < type.getMinOccurrences()) {
             input.remove(type);
          }

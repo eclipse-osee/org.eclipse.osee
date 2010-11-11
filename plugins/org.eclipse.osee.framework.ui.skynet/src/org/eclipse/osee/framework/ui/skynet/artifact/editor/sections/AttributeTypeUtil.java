@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
  */
 public class AttributeTypeUtil {
 
-   public static AttributeType[] getEmptyTypes(Artifact artifact) throws OseeCoreException {
+   public static List<AttributeType> getEmptyTypes(Artifact artifact) throws OseeCoreException {
       List<AttributeType> items = new ArrayList<AttributeType>();
       for (AttributeType type : artifact.getAttributeTypes()) {
          if (!CoreAttributeTypes.Name.equals(type) && artifact.getAttributes(type).isEmpty()) {
@@ -34,10 +34,10 @@ public class AttributeTypeUtil {
          }
       }
       Collections.sort(items);
-      return items.toArray(new AttributeType[items.size()]);
+      return items;
    }
 
-   public static Set<AttributeType> toTypes(List<Attribute<?>> attributes) {
+   private static Set<AttributeType> toTypes(List<Attribute<?>> attributes) {
       Set<AttributeType> types = new HashSet<AttributeType>();
       for (Attribute<?> attribute : attributes) {
          types.add(attribute.getAttributeType());
@@ -45,7 +45,7 @@ public class AttributeTypeUtil {
       return types;
    }
 
-   public static AttributeType[] getTypesWithData(Artifact artifact) throws OseeCoreException {
+   public static List<AttributeType> getTypesWithData(Artifact artifact) throws OseeCoreException {
       List<AttributeType> items = new ArrayList<AttributeType>();
 
       List<Attribute<?>> attributeInstances = artifact.getAttributes(artifact.isDeleted());
@@ -70,7 +70,6 @@ public class AttributeTypeUtil {
       if (annotations != null) {
          items.add(annotations);
       }
-      return items.toArray(new AttributeType[items.size()]);
+      return items;
    }
-
 }

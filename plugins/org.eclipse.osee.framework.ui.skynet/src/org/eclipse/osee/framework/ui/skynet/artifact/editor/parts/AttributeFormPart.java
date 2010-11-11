@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.artifact.editor.parts;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
@@ -91,7 +90,7 @@ public class AttributeFormPart extends AbstractFormPart {
          Artifact artifact = editor.getEditorInput().getArtifact();
          boolean isEditable = !artifact.isReadOnly();
 
-         List<AttributeType> types = Arrays.asList(AttributeTypeUtil.getTypesWithData(artifact));
+         List<AttributeType> types = AttributeTypeUtil.getTypesWithData(artifact);
          boolean willHaveASection = hasWordAttribute(types);
          for (AttributeType attributeType : types) {
             if (AttributeTypeManager.isBaseTypeCompatible(WordAttribute.class, attributeType) || attributeType.equals(CoreAttributeTypes.RelationOrder)) {
