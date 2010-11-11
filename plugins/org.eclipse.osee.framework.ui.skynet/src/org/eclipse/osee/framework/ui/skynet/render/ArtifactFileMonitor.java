@@ -27,7 +27,6 @@ final class ArtifactFileMonitor {
    private final ResourceAttributes readonlyfileAttributes;
    private final FileWatcher watcher;
    private boolean firstTime;
-   private boolean workbenchSavePopUpDisabled;
 
    public ArtifactFileMonitor(IArtifactUpdateOperationFactory jobFactory) {
       firstTime = true;
@@ -50,39 +49,31 @@ final class ArtifactFileMonitor {
       }
    }
 
-   public boolean isWorkbenchSavePopUpDisabled() {
-      return workbenchSavePopUpDisabled;
-   }
-
-   public void setWorkbenchSavePopUpDisabled(boolean workbenchSavePopUpDisabled) {
-      this.workbenchSavePopUpDisabled = workbenchSavePopUpDisabled;
-   }
-
    private void monitorFile(File file) {
       watcher.addFile(file);
-      boolean isInTest = Boolean.valueOf(System.getProperty("osee.isInTest"));
-      if (!isInTest && firstTime) {
+      if (firstTime) {
          firstTime = false;
 
-         if (!workbenchSavePopUpDisabled) {
-            PlatformUI.getWorkbench().addWorkbenchListener(new IWorkbenchListener() {
+         PlatformUI.getWorkbench().addWorkbenchListener(new IWorkbenchListener() {
 
-               @Override
-               public void postShutdown(IWorkbench workbench) {
-                  // do nothing
-               }
+            @Override
+            public void postShutdown(IWorkbench workbench) {
+               // do nothing
+            }
 
-               @Override
-               public boolean preShutdown(IWorkbench workbench, boolean forced) {
-                  boolean wasConfirmed =
+            @Override
+            public boolean preShutdown(IWorkbench workbench, boolean forced) {
+               boolean wasConfirmed = true;
+               if (RenderingUtil.arePopupsAllowed()) {
+                  wasConfirmed =
                      MessageDialog.openConfirm(
                         PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
                         "OSEE Edit",
                         "OSEE artifacts were opened for edit. Please save all external work before continuing. Click OK to continue shutdown process or Cancel to abort.");
-                  return forced || wasConfirmed;
                }
-            });
-         }
+               return forced || wasConfirmed;
+            }
+         });
       }
    }
 }

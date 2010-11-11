@@ -64,7 +64,6 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
       ArtifactFileMonitor monitor = getFileMonitor();
       if (monitor == null) {
          monitor = new ArtifactFileMonitor(jobFactory);
-         monitor.setWorkbenchSavePopUpDisabled(isWorkbenchSavePopUpDisabled());
          FILE_MONITOR_MAP.put(monitorKey, monitor);
       }
    }
@@ -142,29 +141,6 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
    public abstract Program getAssociatedProgram(Artifact artifact) throws OseeCoreException;
 
    public abstract String getAssociatedExtension(Artifact artifact) throws OseeCoreException;
-
-   /**
-    * @return the workbenchSavePopUpDisabled
-    */
-   public static boolean isWorkbenchSavePopUpDisabled() {
-      boolean result = false;
-      for (ArtifactFileMonitor monitor : FILE_MONITOR_MAP.values()) {
-         result = monitor.isWorkbenchSavePopUpDisabled();
-         if (result) {
-            break;
-         }
-      }
-      return result;
-   }
-
-   /**
-    * @param workbenchSavePopUpDisabled the workbenchSavePopUpDisabled to set
-    */
-   public static void setWorkbenchSavePopUpDisabled(boolean workbenchSavePopUpDisabled) {
-      for (ArtifactFileMonitor monitor : FILE_MONITOR_MAP.values()) {
-         monitor.setWorkbenchSavePopUpDisabled(workbenchSavePopUpDisabled);
-      }
-   }
 
    private ArtifactFileMonitor getFileMonitor() {
       return FILE_MONITOR_MAP.get(monitorKey);

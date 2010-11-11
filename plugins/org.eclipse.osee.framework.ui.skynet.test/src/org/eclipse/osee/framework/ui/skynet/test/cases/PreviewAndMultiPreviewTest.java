@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.test.util.FrameworkTestUtil;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
@@ -49,7 +48,6 @@ public class PreviewAndMultiPreviewTest {
    @BeforeClass
    public static void testSetUp() throws OseeCoreException {
       Assert.assertFalse("Not to be run on production datbase.", TestUtil.isProductionDb());
-      FileSystemRenderer.setWorkbenchSavePopUpDisabled(true);
       RenderingUtil.setPopupsAllowed(false);
    }
 

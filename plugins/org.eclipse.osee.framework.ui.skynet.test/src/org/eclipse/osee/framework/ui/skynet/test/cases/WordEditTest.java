@@ -89,7 +89,6 @@ public class WordEditTest {
    private static void probeWordEditingCapability(boolean useRendererManager, String className) {
       try {
          SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
-         FileSystemRenderer.setWorkbenchSavePopUpDisabled(true);
          Branch branch = BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1);
          Artifact newArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, branch, className);
          newArt.persist();
