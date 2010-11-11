@@ -18,9 +18,11 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
+import org.eclipse.osee.framework.core.model.RelationTypeSide;
 import org.eclipse.osee.framework.core.model.access.AccessData;
 import org.eclipse.osee.framework.core.model.access.AccessDetail;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 
 public class ObjectAccessProvider implements IAccessProvider {
 
@@ -37,6 +39,14 @@ public class ObjectAccessProvider implements IAccessProvider {
             setArtifactAccessData(userArtifact, (Artifact) object, accessData);
          } else if (object instanceof Branch) {
             setBranchAccessData(userArtifact, (Branch) object, accessData);
+         } else if (object instanceof RelationLink) {
+            RelationLink relation = (RelationLink) object;
+            Artifact artifactA = relation.getArtifactA();
+            Artifact artifactB = relation.getArtifactB();
+            setArtifactAccessData(userArtifact, artifactA, accessData);
+            setArtifactAccessData(userArtifact, artifactB, accessData);
+         } else if (object instanceof RelationTypeSide) {
+            // Do Nothing
          } else {
             throw new OseeStateException("Unhandled object type for access control [%s]", object);
          }
