@@ -83,6 +83,10 @@ public class TestUtil {
       return count++;
    }
 
+   public static void severeLoggingStop(SevereLoggingMonitor monitorLog) {
+      OseeLog.unregisterLoggerListener(monitorLog);
+   }
+
    public static void severeLoggingEnd(SevereLoggingMonitor monitorLog) throws Exception {
       severeLoggingEnd(monitorLog, ignoreLogging);
    }
