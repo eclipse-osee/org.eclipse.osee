@@ -17,8 +17,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.linking.OseeLinkBuilder;
-import org.eclipse.osee.framework.skynet.core.linking.OseeLinkParser;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
@@ -33,7 +31,6 @@ public class WordArtifactElementExtractor implements IElementExtractor {
    private static final String SECTION_TAG = "wx:sect";
    private static final String SUB_SECTION_TAG = "wx:sub-section";
    private static final String BODY_TAG = "w:body";
-   private static final OseeLinkBuilder LINK_BUILDER = new OseeLinkBuilder();
    private final Map<String, Element> pictureMap;
    private Element oleDataElement;
    private final Document document;
@@ -44,6 +41,7 @@ public class WordArtifactElementExtractor implements IElementExtractor {
       LOOKING_FOR_START,
       LOOKING_FOR_END
    };
+
    private enum Side {
       left,
       right
@@ -82,7 +80,7 @@ public class WordArtifactElementExtractor implements IElementExtractor {
                numberOfStartTags++;
                parseState = ParseState.LOOKING_FOR_END;
                newArtifactElement = document.createElement("WordAttribute.WORD_TEMPLATE_CONTENT");
-               populateNewArtifactElementFromHlink(newArtifactElement, getHlinkDescendant(element));
+               populateNewArtifactElementFromHlink(newArtifactElement, getbookmarkDescendant(element));
                artifactElements.add(newArtifactElement);
 
                Node clonedElement = cloneWithoutArtifactEditTag(element, Side.right);
@@ -112,11 +110,11 @@ public class WordArtifactElementExtractor implements IElementExtractor {
       return element.getChildNodes().getLength() > 0 && element.getChildNodes().item(0).getChildNodes().getLength() > 0;
    }
 
-   private Element getHlinkDescendant(Element element) {
+   private Element getbookmarkDescendant(Element element) {
       NodeList descendants = element.getElementsByTagName("*");
       for (int i = 0; i < descendants.getLength(); i++) {
          Element descendant = (Element) descendants.item(i);
-         if (isEditLink(descendant)) {
+         if (isEditbookmark(descendant)) {
             return descendant;
          }
       }
@@ -132,14 +130,18 @@ public class WordArtifactElementExtractor implements IElementExtractor {
 
       Element clonedElement = (Element) element.cloneNode(true);
       boolean beforeEditTag = true;
+      boolean afterEditTag = false;
       NodeList descendants = clonedElement.getElementsByTagName("*");
+
       for (int i = 0; i < descendants.getLength(); i++) {
          Node descendant = descendants.item(i);
-         if (isEditLink(descendant)) {
-            descendant.getParentNode().removeChild(descendant);
+         if (isEditbookmark(descendant)) {
             removals.add(descendant);
             beforeEditTag = false;
-         } else if (beforeEditTag && keepSide == Side.right || !beforeEditTag && keepSide == Side.left) {
+         } else if (isBookmarkEnd(descendant)) {
+            removals.add(descendant);
+            afterEditTag = true;
+         } else if ((!beforeEditTag && !afterEditTag) || (beforeEditTag && keepSide == Side.right) || (afterEditTag && keepSide == Side.left)) {
             removals.add(descendant);
          }
       }
@@ -150,20 +152,38 @@ public class WordArtifactElementExtractor implements IElementExtractor {
             parentNode.removeChild(remove);
          }
       }
+
       return clonedElement;
    }
 
-   private boolean isEditLink(Node element) {
-      String HLINK_ELEMENT_NAME = WordUtil.elementNameFor("hlink");
+   private boolean isBookmarkEnd(Node descendant) {
+      boolean toReturn = false;
 
-      if (element.getNodeName().contains(HLINK_ELEMENT_NAME)) {
-         Node destinationAttribute = element.getAttributes().getNamedItem("w:dest");
-         if (destinationAttribute != null) {
-            return LINK_BUILDER.isEditArtifactLink(destinationAttribute.getNodeValue());
+      if (descendant.getNodeName().contains("bookmarkEnd")) {
+         toReturn = true;
+      } else if (descendant.getNodeName().contains("annotation")) {
+         Node destinationAttribute = descendant.getAttributes().getNamedItem("w:type");
+         toReturn = destinationAttribute.getNodeValue().contains("Word.Bookmark.End");
+      }
+      return toReturn;
+   }
+
+   private boolean isEditbookmark(Node element) {
+      return isBookmarkStart(element);
+   }
+
+   private boolean isBookmarkStart(Node element) {
+      boolean isBookmarkStart = false;
+      String ANNOTATION_NAME = WordUtil.elementNameFor("annotation");
+      String name = element.getNodeName();
+
+      if (name.contains(ANNOTATION_NAME) || name.contains("bookmarkStart")) {
+         Node destinationAttribute = element.getAttributes().getNamedItem("w:name");
+         if (destinationAttribute != null && destinationAttribute.getNodeValue().contains("oseebookmark")) {
+            isBookmarkStart = true;
          }
       }
-
-      return false;
+      return isBookmarkStart;
    }
 
    private void validateEditTags() throws OseeCoreException {
@@ -173,10 +193,24 @@ public class WordArtifactElementExtractor implements IElementExtractor {
       }
    }
 
-   private void populateNewArtifactElementFromHlink(Element newArtifactElement, Element element) throws OseeCoreException, DOMException {
-      OseeLinkParser linkParser = new OseeLinkParser();
-      linkParser.parse(element.getAttribute("w:dest"));
-      newArtifactElement.setAttribute("guid", linkParser.getGuid());
+   private void populateNewArtifactElementFromHlink(Element newArtifactElement, Element element) throws DOMException {
+      newArtifactElement.setAttribute("guid", getDest(element));
+   }
+
+   private String getDest(Element element) {
+      String guid = "";
+
+      if (element.getNodeName().contains("annotation")) {
+         String elementName = "";
+         Node destinationAttribute = element.getAttributes().getNamedItem("w:name");
+         elementName = destinationAttribute.getNodeValue();
+
+         if (elementName.contains("oseebookmark")) {
+            String[] nameGuidPair = elementName.split("\\.");
+            guid = nameGuidPair[1];
+         }
+      }
+      return guid;
    }
 
    private boolean isArtifactEditTag(Element element) {
@@ -187,7 +221,7 @@ public class WordArtifactElementExtractor implements IElementExtractor {
       NodeList descendants = element.getElementsByTagName("*");
       for (int i = 0; i < descendants.getLength(); i++) {
          Node descendant = descendants.item(i);
-         if (isEditLink(descendant)) {
+         if (isEditbookmark(descendant)) {
             return true;
          }
       }

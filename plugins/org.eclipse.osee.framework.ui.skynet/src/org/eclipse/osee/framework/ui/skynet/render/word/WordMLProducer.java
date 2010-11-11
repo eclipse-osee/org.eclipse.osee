@@ -17,7 +17,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
@@ -248,6 +247,12 @@ public class WordMLProducer extends Producer {
       append("<w:p><w:r><w:t>");
       append(text);
       append("</w:t></w:r></w:p>");
+   }
+
+   public void addEditParagraphNoEscape(CharSequence text) throws OseeCoreException {
+      startParagraph();
+      append(text);
+      endParagraph();
    }
 
    public void addParagraph(CharSequence text) throws OseeCoreException {

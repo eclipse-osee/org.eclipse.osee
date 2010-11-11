@@ -14,7 +14,6 @@ package org.eclipse.osee.framework.ui.skynet.render;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERALIZED_EDIT;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERAL_REQUESTED;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.SPECIALIZED_EDIT;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,9 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-
 import javax.xml.namespace.QName;
-
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -175,16 +172,19 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
 
          if (presentationType == PresentationType.SPECIALIZED_EDIT || presentationType == PresentationType.MERGE_EDIT) {
             OseeLinkBuilder linkBuilder = new OseeLinkBuilder();
-            wordMl.addParagraphNoEscape(linkBuilder.getEditArtifactLink(artifact.getGuid(), artifact.getBranch(),
-               "OSEE_EDIT_START"));
+            //            wordMl.addParagraphNoEscape(linkBuilder.getEditArtifactLink(artifact.getGuid(), artifact.getBranch(),
+            //               "OSEE_EDIT_START"));
+            //            wordMl.addWordMl(value);
+            //            wordMl.addParagraphNoEscape(linkBuilder.getEditArtifactLink(artifact.getGuid(), artifact.getBranch(),
+            //               "OSEE_EDIT_END"));
+            wordMl.addEditParagraphNoEscape(linkBuilder.getStartEditBookmark(artifact.getGuid()));
             wordMl.addWordMl(value);
-            wordMl.addParagraphNoEscape(linkBuilder.getEditArtifactLink(artifact.getGuid(), artifact.getBranch(),
-               "OSEE_EDIT_END"));
+            wordMl.addEditParagraphNoEscape(linkBuilder.getEndEditBookmark(artifact.getGuid()));
          } else {
             wordMl.addWordMl(value);
          }
-         if(presentationType != PresentationType.MERGE && presentationType != PresentationType.MERGE_EDIT){
-         wordMl.resetListValue();
+         if (presentationType != PresentationType.MERGE && presentationType != PresentationType.MERGE_EDIT) {
+            wordMl.resetListValue();
          }
 
       } else {

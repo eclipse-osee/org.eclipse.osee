@@ -28,6 +28,10 @@ public class OseeLinkBuilder {
       "<w:hlink w:dest=\"%s\"><w:r><w:rPr><w:rStyle w:val=\"Hyperlink\"/></w:rPr><w:t>%s</w:t></w:r></w:hlink>";
    private static final String WORDML_BOOKMARK_FORMAT =
       "<aml:annotation aml:id=\"%s\" w:type=\"Word.Bookmark.Start\" w:name=\"OSEE.%s\"/><aml:annotation aml:id=\"%s\" w:type=\"Word.Bookmark.End\"/>";
+   private static final String BOOK_MARK_EDIT_START =
+      "<aml:annotation aml:id=\"%s\" w:type=\"Word.Bookmark.Start\" w:name=\"oseebookmark.%s\"/><w:r><w:rPr><w:b/><w:color w:val=\"0070C0\"/></w:rPr><w:t>START_EDIT</w:t></w:r><aml:annotation aml:id=\"%s\" w:type=\"Word.Bookmark.End\"/>";
+   private static final String BOOK_MARK_END =
+      "<aml:annotation aml:id=\"%s\" w:type=\"Word.Bookmark.Start\" w:name=\"oseebookmarks.%s\"/><w:r><w:rPr><w:b/><w:color w:val=\"0070C0\"/></w:rPr><w:t>END_EDIT</w:t></w:r><aml:annotation aml:id=\"%s\" w:type=\"Word.Bookmark.End\"/>";
    private static final String OSEE_LINK_MARKER = "OSEE_LINK(%s)";
 
    public OseeLinkBuilder() {
@@ -66,6 +70,21 @@ public class OseeLinkBuilder {
       getValidNumber(random.nextInt(19580427), random);
 
       return String.format(WORDML_BOOKMARK_FORMAT, 0, source.getGuid(), 0);
+   }
+
+   public String getStartEditBookmark(String guid) {
+      return getEditBookmark(guid, true);
+   }
+
+   public String getEndEditBookmark(String guid) {
+      return getEditBookmark(guid, false);
+   }
+
+   private String getEditBookmark(String guid, boolean isStart) {
+      Random random = new Random();
+      getValidNumber(random.nextInt(19580427), random);
+      String bookmarkTag = isStart ? BOOK_MARK_EDIT_START : BOOK_MARK_END;
+      return String.format(bookmarkTag, 0, guid, 0);
    }
 
    private int getValidNumber(int number, Random random) {
