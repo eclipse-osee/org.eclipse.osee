@@ -44,7 +44,8 @@ public class AtsCmAccessControl implements CmAccessControl, HasAccessModel {
       if (object != null) {
          try {
             if (object instanceof Artifact) {
-               result = atsBranchObjectManager.isApplicable(((Artifact) object).getBranch());
+               Artifact artifact = (Artifact) object;
+               result = atsBranchObjectManager.isApplicable(artifact.getBranch());
             } else if (object instanceof Branch) {
                result = atsBranchObjectManager.isApplicable((Branch) object);
             }
