@@ -90,7 +90,7 @@ public final class ArtifactDataAccessor implements ArtifactDataProvider {
             Artifact artifactPtr = artifact;
             while (artifactPtr != null) {
                hierarchy.add(artifactPtr.getGuid());
-               artifactPtr = artifact.getParent();
+               artifactPtr = artifactPtr.getParent();
             }
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
