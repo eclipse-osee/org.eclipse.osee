@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -90,7 +91,7 @@ public class FrameworkTestUtil {
    /**
     * Deletes all artifacts with names that start with any title given
     */
-   public static void cleanupSimpleTest(Branch branch, Collection<String> titles) throws Exception {
+   public static void cleanupSimpleTest(IOseeBranch branch, Collection<String> titles) throws Exception {
       List<Artifact> artifacts = new ArrayList<Artifact>();
       for (String title : titles) {
          artifacts.addAll(ArtifactQuery.getArtifactListFromName(title + "%", branch, EXCLUDE_DELETED));
@@ -104,7 +105,7 @@ public class FrameworkTestUtil {
    /**
     * Deletes any artifact with name that starts with title
     */
-   public static void cleanupSimpleTest(Branch branch, String title) throws Exception {
+   public static void cleanupSimpleTest(IOseeBranch branch, String title) throws Exception {
       cleanupSimpleTest(branch, Arrays.asList(title));
    }
 
