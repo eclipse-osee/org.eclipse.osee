@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
@@ -47,13 +48,14 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
    }
 
    @Override
-   public List<DynamicXWidgetLayoutData> getDynamicXWidgetLayoutData(AttributeType attributeType) {
-      int minOccurrence = attributeType.getMinOccurrences();
-      int maxOccurrence = attributeType.getMaxOccurrences();
+   public List<DynamicXWidgetLayoutData> getDynamicXWidgetLayoutData(IAttributeType attributeType) throws OseeCoreException {
+      AttributeType fullAttributeType = AttributeTypeManager.getType(attributeType);
+      int minOccurrence = fullAttributeType.getMinOccurrences();
+      int maxOccurrence = fullAttributeType.getMaxOccurrences();
 
       List<DynamicXWidgetLayoutData> xWidgetLayoutData = new ArrayList<DynamicXWidgetLayoutData>();
 
-      DynamicXWidgetLayoutData defaultData = createDynamicXWidgetLayout(attributeType);
+      DynamicXWidgetLayoutData defaultData = createDynamicXWidgetLayout(fullAttributeType);
       xWidgetLayoutData.add(defaultData);
 
       String xWidgetName;
@@ -75,7 +77,7 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
       return xWidgetLayoutData;
    }
 
-   private String getXWidgetName(DynamicXWidgetLayoutData defaultData, AttributeType attributeType, int minOccurrence, int maxOccurrence) throws OseeCoreException {
+   private String getXWidgetName(DynamicXWidgetLayoutData defaultData, IAttributeType attributeType, int minOccurrence, int maxOccurrence) throws OseeCoreException {
       String xWidgetName = "";
       if (AttributeTypeManager.isBaseTypeCompatible(EnumeratedAttribute.class, attributeType)) {
          if (maxOccurrence == 1) {

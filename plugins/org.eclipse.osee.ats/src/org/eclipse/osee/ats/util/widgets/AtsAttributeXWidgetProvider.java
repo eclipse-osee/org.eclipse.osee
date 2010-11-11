@@ -17,7 +17,7 @@ import java.util.List;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DefaultAttributeXWidgetProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
 
@@ -38,7 +38,7 @@ public class AtsAttributeXWidgetProvider extends DefaultAttributeXWidgetProvider
    }
 
    @Override
-   public List<DynamicXWidgetLayoutData> getDynamicXWidgetLayoutData(AttributeType attributeType) {
+   public List<DynamicXWidgetLayoutData> getDynamicXWidgetLayoutData(IAttributeType attributeType) throws OseeCoreException {
       List<DynamicXWidgetLayoutData> layouts = super.getDynamicXWidgetLayoutData(attributeType);
       DynamicXWidgetLayoutData layoutData = layouts.get(0);
       if (XFLAT_ATTRIBUTE_TYPES.contains(attributeType)) {

@@ -11,8 +11,8 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 
 import java.util.List;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
@@ -38,7 +38,7 @@ public class AttributeXWidgetManager {
       return extensionObjects.getObjects();
    }
 
-   public static IAttributeXWidgetProvider getAttributeXWidgetProvider(AttributeType attributeType) throws OseeCoreException {
+   public static IAttributeXWidgetProvider getAttributeXWidgetProvider(IAttributeType attributeType) throws OseeCoreException {
       for (IAttributeXWidgetProvider provider : instance.getProviders()) {
          List<DynamicXWidgetLayoutData> datas = provider.getDynamicXWidgetLayoutData(attributeType);
          if (!datas.isEmpty()) {

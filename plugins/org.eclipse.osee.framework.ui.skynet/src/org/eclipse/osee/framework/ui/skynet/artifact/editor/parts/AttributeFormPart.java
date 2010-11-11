@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.IMessageProvider;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
@@ -154,7 +155,7 @@ public class AttributeFormPart extends AbstractFormPart {
       }
    }
 
-   private Composite createAttributeTypeControls(Composite parent, FormToolkit toolkit, Artifact artifact, AttributeType attributeType, boolean willHaveASection, boolean isEditable, boolean isExpandable) {
+   private Composite createAttributeTypeControls(Composite parent, FormToolkit toolkit, Artifact artifact, IAttributeType attributeType, boolean willHaveASection, boolean isEditable, boolean isExpandable) {
       Composite internalComposite = toolkit.createComposite(parent, SWT.WRAP);
       GridLayout layout = ALayout.getZeroMarginLayout(1, false);
       if (willHaveASection) {
@@ -187,7 +188,7 @@ public class AttributeFormPart extends AbstractFormPart {
       return internalComposite;
    }
 
-   private void createAttributeTypeControlsInSection(Composite parent, FormToolkit toolkit, AttributeType attributeType, boolean willHaveASection, boolean isEditable) {
+   private void createAttributeTypeControlsInSection(Composite parent, FormToolkit toolkit, IAttributeType attributeType, boolean willHaveASection, boolean isEditable) {
       int style = ExpandableComposite.COMPACT | ExpandableComposite.TREE_NODE;
 
       Composite internalComposite = toolkit.createComposite(parent, SWT.WRAP);
