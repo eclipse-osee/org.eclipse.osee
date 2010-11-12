@@ -25,7 +25,7 @@ public class ReviewModeratorColumn extends XViewerAtsColumn implements IXViewerV
    }
 
    private ReviewModeratorColumn() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".reviewReviewer", "Review Reviewer", 100, SWT.LEFT, false,
+      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".reviewModerator", "Review Reviewer", 100, SWT.LEFT, false,
          SortDataType.String, false, "Review Reviewer(s)");
    }
 
