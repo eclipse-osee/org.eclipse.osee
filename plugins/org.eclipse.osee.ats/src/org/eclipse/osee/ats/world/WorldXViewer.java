@@ -72,7 +72,7 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerAttributeColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.AttributeColumn;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.events.DisposeEvent;
@@ -263,15 +263,15 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       if (treeColumn.getData() instanceof IMultiColumnEditProvider) {
          return;
       }
-      if (!(treeColumn.getData() instanceof XViewerAttributeColumn) && !(treeColumn.getData() instanceof XViewerAtsAttributeColumn)) {
+      if (!(treeColumn.getData() instanceof AttributeColumn) && !(treeColumn.getData() instanceof XViewerAtsAttributeColumn)) {
          AWorkbench.popup("ERROR", "Column is not attribute and thus not multi-editable " + treeColumn.getText());
          return;
       }
 
       XResultData rData = new XResultData();
       IAttributeType attributeType = null;
-      if (treeColumn.getData() instanceof XViewerAttributeColumn) {
-         final XViewerAttributeColumn xCol = (XViewerAttributeColumn) treeColumn.getData();
+      if (treeColumn.getData() instanceof AttributeColumn) {
+         final AttributeColumn xCol = (AttributeColumn) treeColumn.getData();
          attributeType = xCol.getAttributeType();
       }
       if (treeColumn.getData() instanceof XViewerAtsAttributeColumn) {
@@ -323,8 +323,8 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       }
       IAttributeType attributeType = null;
       // Currently don't know how to multi-edit anything but attribute
-      if (treeColumn.getData() instanceof XViewerAttributeColumn) {
-         XViewerAttributeColumn xCol = (XViewerAttributeColumn) treeColumn.getData();
+      if (treeColumn.getData() instanceof AttributeColumn) {
+         AttributeColumn xCol = (AttributeColumn) treeColumn.getData();
          attributeType = xCol.getAttributeType();
       } else if (treeColumn.getData() instanceof XViewerAtsAttributeColumn) {
          XViewerAtsAttributeColumn xCol = (XViewerAtsAttributeColumn) treeColumn.getData();

@@ -37,10 +37,10 @@ import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEdit
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditorInput;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserListDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerArtifactNameColumn;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerArtifactTypeColumn;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerGuidColumn;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerHridColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.ArtifactNameColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.ArtifactTypeColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.GuidColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.HridColumn;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
@@ -102,15 +102,15 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
 
       public ReviewParticipationXViewerFactory(User user) {
          super(MASS_XVIEWER_CUSTOMIZE_NAMESPACE);
-         registerColumns(XViewerArtifactTypeColumn.getInstance());
-         registerColumns(new XViewerHridColumn());
+         registerColumns(ArtifactTypeColumn.getInstance());
+         registerColumns(new HridColumn());
          registerColumns(LegacyPcrIdColumn.getInstance());
          registerColumns(new XViewerSmaStateColumn());
          registerColumns(new XViewerSmaCompletedDateColumn("Completed"));
          registerColumns(new XViewerReviewRoleColumn(user));
          registerColumns(RelatedToStateColumn.getInstance());
-         registerColumns(new XViewerArtifactNameColumn(true));
-         registerColumns(new XViewerGuidColumn(true));
+         registerColumns(new ArtifactNameColumn(true));
+         registerColumns(new GuidColumn(true));
          registerAllAttributeColumns();
       }
 

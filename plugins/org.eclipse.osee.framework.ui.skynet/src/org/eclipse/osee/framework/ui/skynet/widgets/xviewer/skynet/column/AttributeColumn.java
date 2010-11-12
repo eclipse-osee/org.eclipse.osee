@@ -22,21 +22,31 @@ import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 /**
  * @author Donald G. Dunne
  */
-public class XViewerAttributeColumn extends XViewerValueColumn {
+public class AttributeColumn extends XViewerValueColumn {
 
-   private final IAttributeType attributeType;
+   private IAttributeType attributeType;
 
    /**
     * XViewer uses copies of column definitions so originals that are registered are not corrupted. Classes extending
     * XViewerValueColumn need to extend this constructor to copy extra stored fields
     */
    @Override
-   public XViewerAttributeColumn copy() {
-      return new XViewerAttributeColumn(getId(), getName(), getAttributeType(), getWidth(), getAlign(), isShow(),
-         getSortDataType(), isMultiColumnEditable(), getDescription());
+   public AttributeColumn copy() {
+      AttributeColumn newXCol = new AttributeColumn();
+      copy(this, newXCol);
+      return newXCol;
    }
 
-   public XViewerAttributeColumn(String id, String name, IAttributeType attributeType, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
+   private void copy(AttributeColumn fromXCol, AttributeColumn toXCol) {
+      super.copy(fromXCol, toXCol);
+      toXCol.setAttributeType(fromXCol.attributeType);
+   }
+
+   protected AttributeColumn() {
+      super();
+   }
+
+   public AttributeColumn(String id, String name, IAttributeType attributeType, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
       super(id, name, width, align, show, sortDataType, multiColumnEditable, description);
       this.attributeType = attributeType;
    }
@@ -61,5 +71,9 @@ public class XViewerAttributeColumn extends XViewerValueColumn {
 
    public IAttributeType getAttributeType() {
       return attributeType;
+   }
+
+   public void setAttributeType(IAttributeType attributeType) {
+      this.attributeType = attributeType;
    }
 }

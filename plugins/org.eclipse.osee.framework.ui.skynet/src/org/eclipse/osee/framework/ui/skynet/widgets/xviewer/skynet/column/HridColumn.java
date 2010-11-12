@@ -20,24 +20,20 @@ import org.eclipse.swt.SWT;
 /**
  * @author Donald G. Dunne
  */
-public class XViewerHridColumn extends XViewerValueColumn {
+public class HridColumn extends XViewerValueColumn {
 
-   public static XViewerHridColumn instance = new XViewerHridColumn();
+   public static HridColumn instance = new HridColumn();
 
-   public static XViewerHridColumn getInstance() {
+   public static HridColumn getInstance() {
       return instance;
    }
 
-   public XViewerHridColumn() {
+   public HridColumn() {
       this(false);
    }
 
-   public XViewerHridColumn(boolean show) {
-      this("framework.hrid", "HRID", 75, SWT.LEFT, show, SortDataType.String, false, "Human Readable ID");
-   }
-
-   public XViewerHridColumn(String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
-      super(id, name, width, align, show, sortDataType, multiColumnEditable, description);
+   public HridColumn(boolean show) {
+      super("framework.hrid", "HRID", 75, SWT.LEFT, show, SortDataType.String, false, "Human Readable ID");
    }
 
    /**
@@ -45,9 +41,10 @@ public class XViewerHridColumn extends XViewerValueColumn {
     * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
     */
    @Override
-   public XViewerHridColumn copy() {
-      return new XViewerHridColumn(getId(), getName(), getWidth(), getAlign(), isShow(), getSortDataType(),
-         isMultiColumnEditable(), getDescription());
+   public HridColumn copy() {
+      HridColumn newXCol = new HridColumn(isShow());
+      copy(this, newXCol);
+      return newXCol;
    }
 
    @Override

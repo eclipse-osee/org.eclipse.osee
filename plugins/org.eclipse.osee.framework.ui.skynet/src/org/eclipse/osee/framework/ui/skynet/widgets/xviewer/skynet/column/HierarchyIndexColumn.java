@@ -26,16 +26,18 @@ import org.eclipse.swt.SWT;
  * @author Roberto E. Escobar
  * @author Ryan D. Brooks
  */
-public class XViewerHierarchyIndex extends XViewerValueColumn {
+public class HierarchyIndexColumn extends XViewerValueColumn {
    private final Set<Artifact> strongArtifactRefs = new HashSet<Artifact>();
 
-   public XViewerHierarchyIndex(boolean show) {
-      this("framework.hierarchy.index", "Hierarchy Index", 50, SWT.LEFT, show, SortDataType.Paragraph_Number, false,
-         "Hierarchy Index");
+   public static HierarchyIndexColumn instance = new HierarchyIndexColumn();
+
+   public static HierarchyIndexColumn getInstance() {
+      return instance;
    }
 
-   public XViewerHierarchyIndex(String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
-      super(id, name, width, align, show, sortDataType, multiColumnEditable, description);
+   private HierarchyIndexColumn() {
+      super("framework.hierarchy.index", "Hierarchy Index", 50, SWT.LEFT, false, SortDataType.Paragraph_Number, false,
+         "Hierarchy Index");
    }
 
    /**
@@ -43,9 +45,10 @@ public class XViewerHierarchyIndex extends XViewerValueColumn {
     * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
     */
    @Override
-   public XViewerHierarchyIndex copy() {
-      return new XViewerHierarchyIndex(getId(), getName(), getWidth(), getAlign(), isShow(), getSortDataType(),
-         isMultiColumnEditable(), getDescription());
+   public HierarchyIndexColumn copy() {
+      HierarchyIndexColumn newXCol = new HierarchyIndexColumn();
+      copy(this, newXCol);
+      return newXCol;
    }
 
    @Override

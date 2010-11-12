@@ -80,11 +80,11 @@ import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerArtifactTypeColumn;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerGuidColumn;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerHridColumn;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerLastModifiedByColumn;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerLastModifiedDateColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.ArtifactTypeColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.GuidColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.HridColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastModifiedByColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastModifiedDateColumn;
 import org.eclipse.swt.SWT;
 
 /**
@@ -149,7 +149,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       TitleColumn.getInstance(),
       ActionableItemsColumn.getInstance(),
       UserCommunityColumn.getInstance(),
-      XViewerHridColumn.getInstance(),
+      HridColumn.getInstance(),
       CreatedDateColumn.getInstance(),
       TargetedVersionColumn.getInstance(),
       TeamColumn.getInstance(),
@@ -201,14 +201,14 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       BranchStatusColumn.getInstance(),
       NumberOfTasksColumn.getInstance(),
       NumberOfTasksRemainingColumn.getInstance(),
-      new XViewerLastModifiedByColumn(false),
-      new XViewerLastModifiedDateColumn(false),
+      new LastModifiedByColumn(false),
+      new LastModifiedDateColumn(false),
       LastStatusedColumn.getInstance(),
       ValidationRequiredColumn.getInstance(),
       ReviewNumMajorDefectsColumn.getInstance(),
       ReviewNumMinorDefectsColumn.getInstance(),
       ReviewNumIssuesColumn.getInstance(),
-      XViewerArtifactTypeColumn.getInstance(),
+      ArtifactTypeColumn.getInstance(),
       OriginatingWorkFlowColumn.getInstance(),
       ParentIdColumn.getInstance(),
       DaysInCurrentStateColumn.getInstance(),
@@ -216,7 +216,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       PointsColumn.getInstance(),
       NumericColumn.getNumeric1Instance(),
       NumericColumn.getNumeric2Instance(),
-      new XViewerGuidColumn(false)};
+      new GuidColumn(false)};
    private final static String NAMESPACE = "org.eclipse.osee.ats.WorldXViewer";
 
    public WorldXViewerFactory() {

@@ -23,15 +23,11 @@ import org.eclipse.swt.SWT;
 /**
  * @author Donald G. Dunne
  */
-public class XViewerLastModifiedDateColumn extends XViewerValueColumn {
+public class LastModifiedDateColumn extends XViewerValueColumn {
 
-   public XViewerLastModifiedDateColumn(boolean show) {
-      this("framework.lastModDate", "Last Modified Date", 50, SWT.LEFT, show, SortDataType.Date, false,
+   public LastModifiedDateColumn(boolean show) {
+      super("framework.lastModDate", "Last Modified Date", 50, SWT.LEFT, show, SortDataType.Date, false,
          "Retrieves date of last attribute update of this artifact.");
-   }
-
-   public XViewerLastModifiedDateColumn(String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
-      super(id, name, width, align, show, sortDataType, multiColumnEditable, description);
    }
 
    /**
@@ -39,9 +35,10 @@ public class XViewerLastModifiedDateColumn extends XViewerValueColumn {
     * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
     */
    @Override
-   public XViewerLastModifiedDateColumn copy() {
-      return new XViewerLastModifiedDateColumn(getId(), getName(), getWidth(), getAlign(), isShow(), getSortDataType(),
-         isMultiColumnEditable(), getDescription());
+   public LastModifiedDateColumn copy() {
+      LastModifiedDateColumn newXCol = new LastModifiedDateColumn(isShow());
+      copy(this, newXCol);
+      return newXCol;
    }
 
    @Override

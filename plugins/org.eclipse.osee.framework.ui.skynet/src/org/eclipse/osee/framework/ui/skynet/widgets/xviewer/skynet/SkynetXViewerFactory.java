@@ -32,8 +32,8 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.OseeXViewerTreeReport;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerArtifactNameColumn;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerAttributeColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.ArtifactNameColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.AttributeColumn;
 import org.eclipse.swt.SWT;
 
 /**
@@ -96,7 +96,7 @@ public class SkynetXViewerFactory extends XViewerFactory {
    }
 
    public static XViewerColumn getAttributeColumn(IAttributeType attributeType) throws OseeCoreException {
-      return new XViewerAttributeColumn("attribute." + attributeType.getName(), attributeType.getName(), attributeType,
+      return new AttributeColumn("attribute." + attributeType.getName(), attributeType.getName(), attributeType,
          75, SWT.LEFT, false, XViewerAttributeSortDataType.get(attributeType), false, null);
    }
 
@@ -115,7 +115,7 @@ public class SkynetXViewerFactory extends XViewerFactory {
       }
       Set<String> attrNames = new HashSet<String>();
       // Add Name first
-      columns.add(new XViewerArtifactNameColumn(true));
+      columns.add(new ArtifactNameColumn(true));
       attrNames.add("Name");
       for (AttributeType attributeType : attributeTypes) {
          if (!attrNames.contains(attributeType.getName())) {

@@ -36,7 +36,7 @@ import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.ats.world.WorldXViewerSorter;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerHridColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.HridColumn;
 
 /**
  * @author Donald G. Dunne
@@ -47,7 +47,7 @@ public class GoalXViewerFactory extends SkynetXViewerFactory {
    public static final List<? extends XViewerColumn> GoalViewerVisibleColumns = Arrays.asList(
       GoalOrderColumn.getInstance(), GoalOrderVoteColumn.getInstance(), TitleColumn.getInstance(),
       TypeColumn.getInstance(), StateColumn.getInstance(), PriorityColumn.getInstance(),
-      ChangeTypeColumn.getInstance(), AssigneeColumn.getInstance(), new XViewerHridColumn(true),
+      ChangeTypeColumn.getInstance(), AssigneeColumn.getInstance(), new HridColumn(true),
       CreatedDateColumn.getInstance(), TargetedVersionColumn.getInstance(), NotesColumn.getInstance());
    public static Integer[] widths = new Integer[] {
       GoalOrderColumn.getInstance().getWidth(),

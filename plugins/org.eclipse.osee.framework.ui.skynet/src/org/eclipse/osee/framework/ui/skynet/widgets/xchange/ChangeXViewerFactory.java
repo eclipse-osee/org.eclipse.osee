@@ -16,12 +16,12 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerArtifactTypeColumn;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerGuidColumn;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerHierarchyIndex;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerHridColumn;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerLastModifiedByColumn;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.XViewerLastModifiedDateColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.ArtifactTypeColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.GuidColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastModifiedByColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.HierarchyIndexColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.HridColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastModifiedDateColumn;
 import org.eclipse.swt.SWT;
 
 /**
@@ -49,12 +49,12 @@ public class ChangeXViewerFactory extends SkynetXViewerFactory {
    public ChangeXViewerFactory() {
       super(NAMESPACE);
       registerColumns(Name, Item_Type, Item_Kind, Change_Type, Is_Value, Was_Value, paraNumber);
-      registerColumns(new XViewerHierarchyIndex(false));
-      registerColumns(new XViewerHridColumn());
-      registerColumns(new XViewerGuidColumn(false));
-      registerColumns(new XViewerArtifactTypeColumn("framework.change.artifactType", "Artifact Type", true));
-      registerColumns(new XViewerLastModifiedDateColumn(false));
-      registerColumns(new XViewerLastModifiedByColumn(false));
+      registerColumns(HierarchyIndexColumn.getInstance());
+      registerColumns(new HridColumn());
+      registerColumns(new GuidColumn(false));
+      registerColumns(new ArtifactTypeColumn("framework.change.artifactType"));
+      registerColumns(new LastModifiedDateColumn(false));
+      registerColumns(new LastModifiedByColumn(false));
       registerAllAttributeColumns();
    }
 
