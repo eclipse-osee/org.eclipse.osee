@@ -21,6 +21,7 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.nebula.widgets.xviewer.action.ColumnMultiEditAction;
 import org.eclipse.nebula.widgets.xviewer.action.TableCustomizationAction;
 import org.eclipse.nebula.widgets.xviewer.action.ViewSelectedCellDataAction;
+import org.eclipse.nebula.widgets.xviewer.action.ViewSelectedCellDataAction.Option;
 import org.eclipse.nebula.widgets.xviewer.action.ViewTableReportAction;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -46,6 +47,7 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.action.EditTransactionComment;
 import org.eclipse.osee.framework.ui.skynet.action.ITransactionRecordSelectionProvider;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -64,6 +66,7 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
    private static String HELP_CONTEXT_ID = "BranchView";
    public static final String BRANCH_ID = "branchId";
    private XBranchWidget xBranchWidget;
+   private final Clipboard clipboard = new Clipboard(null);
 
    public BranchView() {
       super();
@@ -77,6 +80,7 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
 
       branchViewPresentationPreferences.setDisposed(true);
       OseeEventManager.removeListener(this);
+      clipboard.dispose();
    }
 
    @Override
@@ -116,7 +120,8 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
             menuManager.add(new Separator());
             menuManager.add(new TableCustomizationAction(xBranchWidget.getXViewer()));
             menuManager.add(new ViewTableReportAction(xBranchWidget.getXViewer()));
-            menuManager.add(new ViewSelectedCellDataAction(xBranchWidget.getXViewer()));
+            menuManager.add(new ViewSelectedCellDataAction(xBranchWidget.getXViewer(), clipboard, Option.Copy));
+            menuManager.add(new ViewSelectedCellDataAction(xBranchWidget.getXViewer(), null, Option.View));
             try {
                if (AccessControlManager.isOseeAdmin()) {
                   menuManager.add(new ColumnMultiEditAction(xBranchWidget.getXViewer()));
