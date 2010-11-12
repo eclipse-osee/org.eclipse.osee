@@ -75,7 +75,7 @@ public class AttributesFormSection extends ArtifactEditorFormSection {
 
    private IActionContributor getActionContributor() {
       if (actionContributor == null) {
-         actionContributor = new AttributeActionContribution((ArtifactEditor) getEditor());
+         actionContributor = new AttributeActionContribution(this);
       }
       return actionContributor;
    }
@@ -112,5 +112,9 @@ public class AttributesFormSection extends ArtifactEditorFormSection {
    public void dispose() {
       formPart.dispose();
       super.dispose();
+   }
+
+   public AttributeFormPart getAttributeFormPart() {
+      return formPart;
    }
 }

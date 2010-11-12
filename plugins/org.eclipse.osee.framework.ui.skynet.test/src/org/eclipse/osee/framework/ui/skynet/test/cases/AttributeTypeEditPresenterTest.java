@@ -262,5 +262,13 @@ public class AttributeTypeEditPresenterTest {
       public void setInput(List<? extends IAttributeType> input) {
          this.input = input;
       }
+
+      @Override
+      public void addWidgetFor(Collection<? extends IAttributeType> attributeTypes) {
+      }
+
+      @Override
+      public void removeWidgetFor(Collection<? extends IAttributeType> attributeTypes) {
+      }
    }
 }

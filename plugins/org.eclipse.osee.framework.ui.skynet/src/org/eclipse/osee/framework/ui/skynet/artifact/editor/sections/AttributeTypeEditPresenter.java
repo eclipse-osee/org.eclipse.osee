@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.artifact.editor.sections;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -31,6 +32,10 @@ public class AttributeTypeEditPresenter {
       void showInformation(String title, String message);
 
       Collection<? extends IAttributeType> getSelections(OperationType operationType, String title, String message, List<? extends IAttributeType> input);
+
+      void addWidgetFor(Collection<? extends IAttributeType> attributeTypes) throws OseeCoreException;
+
+      void removeWidgetFor(Collection<? extends IAttributeType> attributeTypes) throws OseeCoreException;
    }
 
    public static interface Model {
@@ -41,7 +46,6 @@ public class AttributeTypeEditPresenter {
       Artifact getArtifact();
 
       void refreshDirtyArtifact();
-
    }
 
    private final Display display;
@@ -73,6 +77,7 @@ public class AttributeTypeEditPresenter {
          for (IAttributeType attributeType : selectedItems) {
             artifact.addAttribute(attributeType);
          }
+         display.addWidgetFor(selectedItems);
       }
    }
 
@@ -80,19 +85,23 @@ public class AttributeTypeEditPresenter {
       Artifact artifact = model.getArtifact();
       Collection<AttributeType> validTypesPerBranch = artifact.getAttributeTypes();
       List<AttributeType> input = AttributeTypeUtil.getTypesWithData(artifact);
-      for (AttributeType type : input) {
+      AttributeType type = null;
+
+      for (Iterator<AttributeType> iterator = input.iterator(); iterator.hasNext(); type = iterator.next()) {
          if (validTypesPerBranch.contains(type) && artifact.getAttributes(type).size() - 1 < type.getMinOccurrences()) {
-            input.remove(type);
+            iterator.remove();
          }
       }
       Collection<? extends IAttributeType> selectedItems =
          selectItems(OperationType.REMOVE_ITEM, "Delete Attribute Types", "remove", input);
       if (!selectedItems.isEmpty()) {
          handleDirtyEditor();
+
          for (IAttributeType attributeType : selectedItems) {
             artifact.deleteAttributes(attributeType);
          }
       }
+      display.removeWidgetFor(selectedItems);
    }
 
    private Collection<? extends IAttributeType> selectItems(OperationType operationType, String title, String operationName, List<? extends IAttributeType> input) {

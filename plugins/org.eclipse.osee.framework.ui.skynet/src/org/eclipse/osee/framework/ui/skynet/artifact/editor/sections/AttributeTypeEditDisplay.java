@@ -20,6 +20,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -31,9 +32,10 @@ import org.eclipse.ui.dialogs.CheckedTreeSelectionDialog;
 import org.eclipse.ui.dialogs.ISelectionStatusValidator;
 
 public final class AttributeTypeEditDisplay implements AttributeTypeEditPresenter.Display {
+   private final AttributesFormSection attributesForm;
 
-   public AttributeTypeEditDisplay() {
-      super();
+   public AttributeTypeEditDisplay(AttributesFormSection attributesForm) {
+      this.attributesForm = attributesForm;
    }
 
    @Override
@@ -93,5 +95,15 @@ public final class AttributeTypeEditDisplay implements AttributeTypeEditPresente
             break;
       }
       return toReturn;
+   }
+
+   @Override
+   public void addWidgetFor(Collection<? extends IAttributeType> attributeTypes) throws OseeCoreException {
+      attributesForm.getAttributeFormPart().addWidgetForAttributeType(attributeTypes);
+   }
+
+   @Override
+   public void removeWidgetFor(Collection<? extends IAttributeType> attributeTypes) {
+      attributesForm.getAttributeFormPart().removeWidgetForAttributeType(attributeTypes);
    }
 }

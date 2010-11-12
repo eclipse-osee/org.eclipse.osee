@@ -30,8 +30,9 @@ public class AttributeActionContribution implements IActionContributor {
 
    private final AttributeTypeEditPresenter attributeTypeEditor;
 
-   public AttributeActionContribution(ArtifactEditor editor) {
-      AttributeTypeEditPresenter.Display view = new AttributeTypeEditDisplay();
+   public AttributeActionContribution(AttributesFormSection attributesForm) {
+      AttributeTypeEditPresenter.Display view = new AttributeTypeEditDisplay(attributesForm);
+      ArtifactEditor editor = ((ArtifactEditor) attributesForm.getEditor());
       attributeTypeEditor = new AttributeTypeEditPresenter(new Model(editor), view);
    }
 
@@ -61,7 +62,6 @@ public class AttributeActionContribution implements IActionContributor {
       public void refreshDirtyArtifact() {
          editor.refreshDirtyArtifact();
       }
-
    }
 
    @Override
