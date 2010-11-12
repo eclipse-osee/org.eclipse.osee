@@ -10,24 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xchange;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.change.ArtifactChange;
 
 public class XChangeContentProvider implements ITreeContentProvider {
    private static Object[] EMPTY_ARRAY = new Object[0];
-   private final List<ArtifactChange> orderedChanges;
 
    public XChangeContentProvider() {
       super();
-      this.orderedChanges = new ArrayList<ArtifactChange>();
    }
 
    @Override
@@ -54,30 +45,6 @@ public class XChangeContentProvider implements ITreeContentProvider {
    @Override
    public Object[] getElements(Object inputElement) {
       return getChildren(inputElement);
-   }
-
-   private void computeDocOrder(Object[] data) {
-      Map<Artifact, ArtifactChange> artChangeMap = new HashMap<Artifact, ArtifactChange>();
-      for (Object object : data) {
-         if (object instanceof ArtifactChange) {
-            ArtifactChange artifactChanged = (ArtifactChange) object;
-            Artifact artifact = artifactChanged.getChangeArtifact();
-            if (artifact != null) {
-               artChangeMap.put(artifact, artifactChanged);
-            }
-         }
-      }
-      orderedChanges.clear();
-      List<Artifact> sortedArtifact = new ArrayList<Artifact>();
-
-      for (Artifact artifactToSort : artChangeMap.keySet()) {
-         sortedArtifact.add(artifactToSort);
-      }
-
-      Collections.sort(sortedArtifact, new DefaultHierarchySorter());
-      for (Artifact artifact : sortedArtifact) {
-         orderedChanges.add(artChangeMap.get(artifact));
-      }
    }
 
    @Override
