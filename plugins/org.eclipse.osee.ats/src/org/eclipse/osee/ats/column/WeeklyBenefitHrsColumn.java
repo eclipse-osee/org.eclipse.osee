@@ -8,7 +8,6 @@ package org.eclipse.osee.ats.column;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.swt.SWT;
 
 public class WeeklyBenefitHrsColumn extends XViewerAtsAttributeValueColumn {
@@ -19,13 +18,9 @@ public class WeeklyBenefitHrsColumn extends XViewerAtsAttributeValueColumn {
       return instance;
    }
 
-   public WeeklyBenefitHrsColumn() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".weeklyBenefitHrs", AtsAttributeTypes.WeeklyBenefit, 40,
-         SWT.CENTER, false, SortDataType.Float, true);
-   }
-
-   public WeeklyBenefitHrsColumn(IAttributeType attributeType, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable) {
-      super(attributeType, width, align, show, sortDataType, multiColumnEditable);
+   private WeeklyBenefitHrsColumn() {
+      super(AtsAttributeTypes.WeeklyBenefit, WorldXViewerFactory.COLUMN_NAMESPACE + ".weeklyBenefitHrs",
+         AtsAttributeTypes.WeeklyBenefit.getName(), 40, SWT.CENTER, false, SortDataType.Float, true, "");
    }
 
    /**
@@ -34,8 +29,9 @@ public class WeeklyBenefitHrsColumn extends XViewerAtsAttributeValueColumn {
     */
    @Override
    public WeeklyBenefitHrsColumn copy() {
-      return new WeeklyBenefitHrsColumn(getAttributeType(), getWidth(), getAlign(), isShow(), getSortDataType(),
-         isMultiColumnEditable());
+      WeeklyBenefitHrsColumn newXCol = new WeeklyBenefitHrsColumn();
+      copy(this, newXCol);
+      return newXCol;
    }
 
 }

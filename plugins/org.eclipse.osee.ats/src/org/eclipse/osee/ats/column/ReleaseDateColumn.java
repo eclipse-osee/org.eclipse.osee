@@ -9,9 +9,7 @@ import java.util.Date;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.swt.SWT;
 
 public class ReleaseDateColumn extends AbstractWorkflowVersionDateColumn {
 
@@ -22,12 +20,7 @@ public class ReleaseDateColumn extends AbstractWorkflowVersionDateColumn {
    }
 
    private ReleaseDateColumn() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".releaseDate", AtsAttributeTypes.ReleaseDate, 80, SWT.LEFT, false,
-         SortDataType.Date, true);
-   }
-
-   public ReleaseDateColumn(IAttributeType attributeType, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
-      super(attributeType, width, align, show, sortDataType, multiColumnEditable, description);
+      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".releaseDate", AtsAttributeTypes.ReleaseDate);
    }
 
    /**
@@ -36,8 +29,9 @@ public class ReleaseDateColumn extends AbstractWorkflowVersionDateColumn {
     */
    @Override
    public ReleaseDateColumn copy() {
-      return new ReleaseDateColumn(getAttributeType(), getWidth(), getAlign(), isShow(), getSortDataType(),
-         isMultiColumnEditable(), getDescription());
+      ReleaseDateColumn newXCol = new ReleaseDateColumn();
+      copy(this, newXCol);
+      return newXCol;
    }
 
    public static Date getDateFromWorkflow(Object object) throws OseeCoreException {

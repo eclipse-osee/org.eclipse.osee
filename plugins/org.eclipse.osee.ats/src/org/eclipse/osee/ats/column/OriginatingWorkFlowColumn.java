@@ -36,18 +36,15 @@ public class OriginatingWorkFlowColumn extends XViewerAtsColumn implements IXVie
          "Team Workflow(s) that were created upon origination of this Action.  Cancelled workflows not included.");
    }
 
-   public OriginatingWorkFlowColumn(String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
-      super(id, name, width, align, show, sortDataType, multiColumnEditable, description);
-   }
-
    /**
     * XViewer uses copies of column definitions so originals that are registered are not corrupted. Classes extending
     * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
     */
    @Override
    public OriginatingWorkFlowColumn copy() {
-      return new OriginatingWorkFlowColumn(getId(), getName(), getWidth(), getAlign(), isShow(), getSortDataType(),
-         isMultiColumnEditable(), getDescription());
+      OriginatingWorkFlowColumn newXCol = new OriginatingWorkFlowColumn();
+      copy(this, newXCol);
+      return newXCol;
    }
 
    @Override

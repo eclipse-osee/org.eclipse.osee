@@ -14,7 +14,6 @@ import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
-import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
@@ -41,24 +40,16 @@ import org.eclipse.swt.widgets.TreeItem;
  */
 public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn implements IAltLeftClickProvider, IMultiColumnEditProvider, IXViewerValueColumn {
 
-   public XViewerAtsAttributeValueColumn(IAttributeType attributeType, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable) {
-      super(attributeType, width, align, show, sortDataType, multiColumnEditable);
+   public XViewerAtsAttributeValueColumn(IAttributeType attributeType, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
+      super(attributeType, width, align, show, sortDataType, multiColumnEditable, description);
    }
 
-   public XViewerAtsAttributeValueColumn(ATSAttributes atsAttribute, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable) {
-      super(atsAttribute, width, align, show, sortDataType, multiColumnEditable);
+   public XViewerAtsAttributeValueColumn(IAttributeType attributeType, String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
+      super(attributeType, id, name, width, align, show, sortDataType, multiColumnEditable, description);
    }
 
-   public XViewerAtsAttributeValueColumn(String id, IAttributeType attributeType, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable) {
-      super(id, attributeType, name, width, align, show, sortDataType, multiColumnEditable);
-   }
-
-   public XViewerAtsAttributeValueColumn(String id, IAttributeType attributeType, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable) {
-      super(id, attributeType, width, align, show, sortDataType, multiColumnEditable);
-   }
-
-   public XViewerAtsAttributeValueColumn(String id, IAttributeType attributeType, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
-      super(id, attributeType, width, align, show, sortDataType, multiColumnEditable, description);
+   protected XViewerAtsAttributeValueColumn() {
+      super();
    }
 
    /**

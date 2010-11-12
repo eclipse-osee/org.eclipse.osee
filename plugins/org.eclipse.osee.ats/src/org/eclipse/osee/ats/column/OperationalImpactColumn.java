@@ -30,13 +30,9 @@ public class OperationalImpactColumn extends XViewerValueColumn {
       return instance;
    }
 
-   public OperationalImpactColumn() {
+   private OperationalImpactColumn() {
       super("ats.Operational Impact", "Operational Impact", 80, SWT.LEFT, false, SortDataType.String, true,
          "Does this change have an operational impact to the product.");
-   }
-
-   public OperationalImpactColumn(String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
-      super(id, name, width, align, show, sortDataType, multiColumnEditable, description);
    }
 
    /**
@@ -45,8 +41,9 @@ public class OperationalImpactColumn extends XViewerValueColumn {
     */
    @Override
    public OperationalImpactColumn copy() {
-      return new OperationalImpactColumn(getId(), getName(), getWidth(), getAlign(), isShow(), getSortDataType(),
-         isMultiColumnEditable(), getDescription());
+      OperationalImpactColumn newXCol = new OperationalImpactColumn();
+      copy(this, newXCol);
+      return newXCol;
    }
 
    @Override

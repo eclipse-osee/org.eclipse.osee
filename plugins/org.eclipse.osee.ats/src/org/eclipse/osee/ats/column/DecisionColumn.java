@@ -9,7 +9,6 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.swt.SWT;
 
 public class DecisionColumn extends XViewerAtsAttributeValueColumn {
@@ -20,12 +19,8 @@ public class DecisionColumn extends XViewerAtsAttributeValueColumn {
       return instance;
    }
 
-   public DecisionColumn() {
-      super(AtsAttributeTypes.Decision, 150, SWT.LEFT, false, SortDataType.String, false);
-   }
-
-   public DecisionColumn(IAttributeType attributeType, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable) {
-      super(attributeType, width, align, show, sortDataType, multiColumnEditable);
+   private DecisionColumn() {
+      super(AtsAttributeTypes.Decision, 150, SWT.LEFT, false, SortDataType.String, false, "");
    }
 
    /**
@@ -34,8 +29,9 @@ public class DecisionColumn extends XViewerAtsAttributeValueColumn {
     */
    @Override
    public DecisionColumn copy() {
-      return new DecisionColumn(getAttributeType(), getWidth(), getAlign(), isShow(), getSortDataType(),
-         isMultiColumnEditable());
+      DecisionColumn newXCol = new DecisionColumn();
+      copy(this, newXCol);
+      return newXCol;
    }
 
    @Override

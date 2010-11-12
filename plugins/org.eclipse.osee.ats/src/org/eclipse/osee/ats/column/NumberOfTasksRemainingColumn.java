@@ -33,18 +33,15 @@ public class NumberOfTasksRemainingColumn extends XViewerAtsColumn implements IX
          false, SortDataType.Integer, false, null);
    }
 
-   public NumberOfTasksRemainingColumn(String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
-      super(id, name, width, align, show, sortDataType, multiColumnEditable, description);
-   }
-
    /**
     * XViewer uses copies of column definitions so originals that are registered are not corrupted. Classes extending
     * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
     */
    @Override
    public NumberOfTasksRemainingColumn copy() {
-      return new NumberOfTasksRemainingColumn(getId(), getName(), getWidth(), getAlign(), isShow(), getSortDataType(),
-         isMultiColumnEditable(), getDescription());
+      NumberOfTasksRemainingColumn newXCol = new NumberOfTasksRemainingColumn();
+      copy(this, newXCol);
+      return newXCol;
    }
 
    @Override

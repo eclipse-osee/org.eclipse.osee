@@ -10,16 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.xviewer.column;
 
-import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Donald G. Dunne
  */
 public class XViewerAtsAttributeColumn extends XViewerAtsColumn {
 
-   private final IAttributeType attributeType;
+   private IAttributeType attributeType;
 
    /**
     * XViewer uses copies of column definitions so originals that are registered are not corrupted. Classes extending
@@ -27,46 +27,46 @@ public class XViewerAtsAttributeColumn extends XViewerAtsColumn {
     */
    @Override
    public XViewerAtsAttributeColumn copy() {
-      return new XViewerAtsAttributeColumn(getId(), getName(), getWidth(), getAlign(), isShow(), getSortDataType(),
-         isMultiColumnEditable(), getDescription(), attributeType);
+      XViewerAtsAttributeColumn newXCol = new XViewerAtsAttributeColumn();
+      copy(this, newXCol);
+      return newXCol;
    }
 
-   private XViewerAtsAttributeColumn(String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description, IAttributeType attributeType) {
-      super(id, name, width, align, show, sortDataType, multiColumnEditable, description);
+   private void copy(XViewerAtsAttributeColumn fromXCol, XViewerAtsAttributeColumn toXCol) {
+      super.copy(fromXCol, toXCol);
+      toXCol.setAttributeType(fromXCol.attributeType);
+   }
+
+   protected XViewerAtsAttributeColumn() {
+      super();
+   }
+
+   public XViewerAtsAttributeColumn(IAttributeType attributeType, String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
+      super(id, name, width, align, show, sortDataType, multiColumnEditable,
+         Strings.isValid(description) ? description : attributeType.getDescription());
       this.attributeType = attributeType;
    }
 
-   public XViewerAtsAttributeColumn(IAttributeType attributeType, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable) {
-      this(generateId(attributeType.getUnqualifiedName()), attributeType, width, align, show, sortDataType,
-         multiColumnEditable);
+   public XViewerAtsAttributeColumn(IAttributeType attributeType, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
+      this(attributeType, generateId(attributeType.getUnqualifiedName()), attributeType.getName(), width, align, show,
+         sortDataType, multiColumnEditable, description);
    }
 
    private static final String generateId(String unqualifiedName) {
       return WorldXViewerFactory.COLUMN_NAMESPACE + "." + unqualifiedName.replaceAll(" ", "").toLowerCase();
    }
 
-   public XViewerAtsAttributeColumn(ATSAttributes atsAttribute, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable) {
-      this(generateId(atsAttribute.getDisplayName()), atsAttribute.getDisplayName(), width, align, show, sortDataType,
-         multiColumnEditable, atsAttribute.getDescription(), null);
-   }
-
-   public XViewerAtsAttributeColumn(String id, IAttributeType attributeType, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable) {
-      this(id, name, width, align, show, sortDataType, multiColumnEditable, attributeType.getDescription(),
-         attributeType);
-   }
-
-   public XViewerAtsAttributeColumn(String id, IAttributeType attributeType, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
-      this(id, attributeType.getUnqualifiedName(), width, align, show, sortDataType, multiColumnEditable, description,
-         attributeType);
-   }
-
-   public XViewerAtsAttributeColumn(String id, IAttributeType attributeType, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable) {
-      this(id, attributeType.getUnqualifiedName(), width, align, show, sortDataType, multiColumnEditable,
-         attributeType.getDescription(), attributeType);
-   }
+   //   public XViewerAtsAttributeColumn(ATSAttributes atsAttribute, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable) {
+   //      this(null, generateId(atsAttribute.getDisplayName()), atsAttribute.getDisplayName(), width, align, show,
+   //         sortDataType, multiColumnEditable, atsAttribute.getDescription());
+   //   }
 
    public IAttributeType getAttributeType() {
       return attributeType;
+   }
+
+   public void setAttributeType(IAttributeType attributeType) {
+      this.attributeType = attributeType;
    }
 
 }

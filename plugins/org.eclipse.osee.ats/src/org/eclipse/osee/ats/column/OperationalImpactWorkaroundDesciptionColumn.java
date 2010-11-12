@@ -26,14 +26,10 @@ public class OperationalImpactWorkaroundDesciptionColumn extends XViewerValueCol
       return instance;
    }
 
-   public OperationalImpactWorkaroundDesciptionColumn() {
+   private OperationalImpactWorkaroundDesciptionColumn() {
       super("ats.Operational Impact Workaround Description", "Operational Impact Workaround Description", 150,
          SWT.LEFT, false, SortDataType.String, true,
          "What is the workaround for the operational impact to the product.");
-   }
-
-   private OperationalImpactWorkaroundDesciptionColumn(String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
-      super(id, name, width, align, show, sortDataType, multiColumnEditable, description);
    }
 
    /**
@@ -42,8 +38,9 @@ public class OperationalImpactWorkaroundDesciptionColumn extends XViewerValueCol
     */
    @Override
    public OperationalImpactWorkaroundDesciptionColumn copy() {
-      return new OperationalImpactWorkaroundDesciptionColumn(getId(), getName(), getWidth(), getAlign(), isShow(),
-         getSortDataType(), isMultiColumnEditable(), getDescription());
+      OperationalImpactWorkaroundDesciptionColumn newXCol = new OperationalImpactWorkaroundDesciptionColumn();
+      copy(this, newXCol);
+      return newXCol;
    }
 
    @Override

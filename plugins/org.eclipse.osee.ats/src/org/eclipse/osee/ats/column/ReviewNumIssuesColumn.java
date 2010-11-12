@@ -27,18 +27,15 @@ public class ReviewNumIssuesColumn extends XViewerAtsColumn implements IXViewerV
          SortDataType.Integer, false, "Number of Issues found in Review");
    }
 
-   public ReviewNumIssuesColumn(String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
-      super(id, name, width, align, show, sortDataType, multiColumnEditable, description);
-   }
-
    /**
     * XViewer uses copies of column definitions so originals that are registered are not corrupted. Classes extending
     * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
     */
    @Override
    public ReviewNumIssuesColumn copy() {
-      return new ReviewNumIssuesColumn(getId(), getName(), getWidth(), getAlign(), isShow(), getSortDataType(),
-         isMultiColumnEditable(), getDescription());
+      ReviewNumIssuesColumn newXCol = new ReviewNumIssuesColumn();
+      copy(this, newXCol);
+      return newXCol;
    }
 
    @Override

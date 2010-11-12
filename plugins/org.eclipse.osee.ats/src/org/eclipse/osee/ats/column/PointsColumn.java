@@ -8,7 +8,6 @@ package org.eclipse.osee.ats.column;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.swt.SWT;
 
@@ -21,12 +20,7 @@ public class PointsColumn extends XViewerAtsAttributeValueColumn {
    }
 
    private PointsColumn() {
-      super(AtsAttributeTypes.Points, 40, SWT.LEFT, false, SortDataType.Integer, true);
-   }
-
-   public PointsColumn(IAttributeType attributeType, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
-      super(attributeType, width, align, show, sortDataType, multiColumnEditable);
-      setDescription(description);
+      super(AtsAttributeTypes.Points, 40, SWT.LEFT, false, SortDataType.Integer, true, "");
    }
 
    /**
@@ -35,8 +29,9 @@ public class PointsColumn extends XViewerAtsAttributeValueColumn {
     */
    @Override
    public PointsColumn copy() {
-      return new PointsColumn(getAttributeType(), getWidth(), getAlign(), isShow(), getSortDataType(),
-         isMultiColumnEditable(), getDescription());
+      PointsColumn newXCol = new PointsColumn();
+      copy(this, newXCol);
+      return newXCol;
    }
 
    public static String getPoints(TeamWorkFlowArtifact teamArt) throws OseeCoreException {

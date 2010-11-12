@@ -8,7 +8,6 @@ package org.eclipse.osee.ats.column;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.swt.SWT;
 
 public class ValidationRequiredColumn extends XViewerAtsAttributeValueColumn {
@@ -20,13 +19,9 @@ public class ValidationRequiredColumn extends XViewerAtsAttributeValueColumn {
    }
 
    private ValidationRequiredColumn() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".validationRequired", AtsAttributeTypes.ValidationRequired, 80,
-         SWT.LEFT, false, SortDataType.String, false,
+      super(AtsAttributeTypes.ValidationRequired, WorldXViewerFactory.COLUMN_NAMESPACE + ".validationRequired",
+         AtsAttributeTypes.ValidationRequired.getName(), 80, SWT.LEFT, false, SortDataType.String, false,
          "If set, Originator will be asked to perform a review to\nensure changes are as expected.");
-   }
-
-   public ValidationRequiredColumn(IAttributeType attributeType, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable) {
-      super(attributeType, width, align, show, sortDataType, multiColumnEditable);
    }
 
    /**
@@ -35,8 +30,9 @@ public class ValidationRequiredColumn extends XViewerAtsAttributeValueColumn {
     */
    @Override
    public ValidationRequiredColumn copy() {
-      return new ValidationRequiredColumn(getAttributeType(), getWidth(), getAlign(), isShow(), getSortDataType(),
-         isMultiColumnEditable());
+      ValidationRequiredColumn newXCol = new ValidationRequiredColumn();
+      copy(this, newXCol);
+      return newXCol;
    }
 
 }

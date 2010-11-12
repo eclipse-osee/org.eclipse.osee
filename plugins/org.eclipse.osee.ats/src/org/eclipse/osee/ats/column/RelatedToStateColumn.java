@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.StateListDialog;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -44,12 +43,8 @@ public class RelatedToStateColumn extends XViewerAtsAttributeValueColumn {
    }
 
    private RelatedToStateColumn() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".relatedToState", AtsAttributeTypes.RelatedToState, 80, SWT.LEFT,
-         false, SortDataType.String, true);
-   }
-
-   public RelatedToStateColumn(String id, IAttributeType attributeType, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
-      super(id, attributeType, width, align, show, sortDataType, multiColumnEditable);
+      super(AtsAttributeTypes.RelatedToState, WorldXViewerFactory.COLUMN_NAMESPACE + ".relatedToState",
+         AtsAttributeTypes.RelatedToState.getName(), 80, SWT.LEFT, false, SortDataType.String, true, "");
    }
 
    /**
@@ -58,8 +53,9 @@ public class RelatedToStateColumn extends XViewerAtsAttributeValueColumn {
     */
    @Override
    public RelatedToStateColumn copy() {
-      return new RelatedToStateColumn(getId(), getAttributeType(), getName(), getWidth(), getAlign(), isShow(),
-         getSortDataType(), isMultiColumnEditable(), getDescription());
+      RelatedToStateColumn newXCol = new RelatedToStateColumn();
+      copy(this, newXCol);
+      return newXCol;
    }
 
    public static boolean promptChangeRelatedToState(AbstractWorkflowArtifact sma, boolean persist) {

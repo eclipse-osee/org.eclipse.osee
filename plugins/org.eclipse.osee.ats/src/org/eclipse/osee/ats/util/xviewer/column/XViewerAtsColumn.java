@@ -23,6 +23,10 @@ import org.eclipse.swt.widgets.TreeColumn;
  */
 public abstract class XViewerAtsColumn extends XViewerColumn {
 
+   protected XViewerAtsColumn() {
+      super();
+   }
+
    public XViewerAtsColumn(String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
       super(id, name, width, align, show, sortDataType, multiColumnEditable, description);
    }

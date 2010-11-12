@@ -5,15 +5,14 @@
  */
 package org.eclipse.osee.ats.column;
 
+import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.swt.SWT;
 
@@ -25,13 +24,9 @@ public class WorkPackageColumn extends XViewerAtsAttributeValueColumn {
       return instance;
    }
 
-   public WorkPackageColumn() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".workPackage", AtsAttributeTypes.WorkPackage, 80, SWT.LEFT, false,
-         SortDataType.String, true);
-   }
-
-   public WorkPackageColumn(IAttributeType attributeType, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable) {
-      super(attributeType, width, align, show, sortDataType, multiColumnEditable);
+   private WorkPackageColumn() {
+      super(AtsAttributeTypes.WorkPackage, WorldXViewerFactory.COLUMN_NAMESPACE + ".workPackage",
+         AtsAttributeTypes.WorkPackage.getName(), 80, SWT.LEFT, false, SortDataType.String, true, "");
    }
 
    /**
@@ -40,8 +35,9 @@ public class WorkPackageColumn extends XViewerAtsAttributeValueColumn {
     */
    @Override
    public WorkPackageColumn copy() {
-      return new WorkPackageColumn(getAttributeType(), getWidth(), getAlign(), isShow(), getSortDataType(),
-         isMultiColumnEditable());
+      WorkPackageColumn newXCol = new WorkPackageColumn();
+      copy(this, newXCol);
+      return newXCol;
    }
 
    @Override
@@ -50,7 +46,7 @@ public class WorkPackageColumn extends XViewerAtsAttributeValueColumn {
          try {
             return getColumnText(((TaskArtifact) element).getParentTeamWorkflow(), column, columnIndex);
          } catch (OseeCoreException ex) {
-            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          }
       }
       return super.getColumnText(element, column, columnIndex);

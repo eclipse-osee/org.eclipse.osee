@@ -17,7 +17,6 @@ import org.eclipse.osee.ats.util.DeadlineManager;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -35,13 +34,10 @@ public class EstimatedCompletionDateColumn extends XViewerAtsAttributeValueColum
       return instance;
    }
 
-   public EstimatedCompletionDateColumn() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".estimatedCompletionDate",
-         AtsAttributeTypes.EstimatedCompletionDate, 80, SWT.LEFT, false, SortDataType.Date, true);
-   }
-
-   public EstimatedCompletionDateColumn(IAttributeType attributeType, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable) {
-      super(attributeType, width, align, show, sortDataType, multiColumnEditable);
+   private EstimatedCompletionDateColumn() {
+      super(AtsAttributeTypes.EstimatedCompletionDate,
+         WorldXViewerFactory.COLUMN_NAMESPACE + ".estimatedCompletionDate",
+         AtsAttributeTypes.EstimatedCompletionDate.getName(), 80, SWT.LEFT, false, SortDataType.Date, true, "");
    }
 
    /**
@@ -50,8 +46,9 @@ public class EstimatedCompletionDateColumn extends XViewerAtsAttributeValueColum
     */
    @Override
    public EstimatedCompletionDateColumn copy() {
-      return new EstimatedCompletionDateColumn(getAttributeType(), getWidth(), getAlign(), isShow(), getSortDataType(),
-         isMultiColumnEditable());
+      EstimatedCompletionDateColumn newXCol = new EstimatedCompletionDateColumn();
+      copy(this, newXCol);
+      return newXCol;
    }
 
    @Override

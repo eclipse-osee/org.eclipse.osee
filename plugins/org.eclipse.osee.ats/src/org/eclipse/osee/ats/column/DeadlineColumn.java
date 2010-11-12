@@ -15,7 +15,6 @@ import org.eclipse.osee.ats.util.DeadlineManager;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -32,13 +31,9 @@ public class DeadlineColumn extends XViewerAtsAttributeValueColumn {
       return instance;
    }
 
-   public DeadlineColumn() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".deadline", AtsAttributeTypes.NeedBy, 75, SWT.LEFT, true,
-         SortDataType.Date, true);
-   }
-
-   public DeadlineColumn(IAttributeType attributeType, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable) {
-      super(attributeType, width, align, show, sortDataType, multiColumnEditable);
+   private DeadlineColumn() {
+      super(AtsAttributeTypes.NeedBy, WorldXViewerFactory.COLUMN_NAMESPACE + ".deadline",
+         AtsAttributeTypes.NeedBy.getName(), 75, SWT.LEFT, true, SortDataType.Date, true, "");
    }
 
    /**
@@ -47,8 +42,9 @@ public class DeadlineColumn extends XViewerAtsAttributeValueColumn {
     */
    @Override
    public DeadlineColumn copy() {
-      return new DeadlineColumn(getAttributeType(), getWidth(), getAlign(), isShow(), getSortDataType(),
-         isMultiColumnEditable());
+      DeadlineColumn newXCol = new DeadlineColumn();
+      copy(this, newXCol);
+      return newXCol;
    }
 
    @Override

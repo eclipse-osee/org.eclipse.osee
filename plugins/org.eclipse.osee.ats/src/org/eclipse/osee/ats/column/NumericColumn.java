@@ -24,11 +24,11 @@ public class NumericColumn extends XViewerAtsAttributeValueColumn {
    }
 
    public NumericColumn(IAttributeType attributeType) {
-      super(attributeType, 40, SWT.LEFT, false, SortDataType.Float, true);
+      super(attributeType, 40, SWT.LEFT, false, SortDataType.Float, true, "");
    }
 
-   public NumericColumn(IAttributeType attributeType, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable) {
-      super(attributeType, width, align, show, sortDataType, multiColumnEditable);
+   private NumericColumn() {
+      super();
    }
 
    /**
@@ -37,8 +37,9 @@ public class NumericColumn extends XViewerAtsAttributeValueColumn {
     */
    @Override
    public NumericColumn copy() {
-      return new NumericColumn(getAttributeType(), getWidth(), getAlign(), isShow(), getSortDataType(),
-         isMultiColumnEditable());
+      NumericColumn newXCol = new NumericColumn();
+      copy(this, newXCol);
+      return newXCol;
    }
 
 }

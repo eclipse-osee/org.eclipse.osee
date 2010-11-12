@@ -27,18 +27,15 @@ public class ReviewNumMinorDefectsColumn extends XViewerAtsColumn implements IXV
          false, SortDataType.Integer, false, "Number of Minor Defects found in Review");
    }
 
-   public ReviewNumMinorDefectsColumn(String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
-      super(id, name, width, align, show, sortDataType, multiColumnEditable, description);
-   }
-
    /**
     * XViewer uses copies of column definitions so originals that are registered are not corrupted. Classes extending
     * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
     */
    @Override
    public ReviewNumMinorDefectsColumn copy() {
-      return new ReviewNumMinorDefectsColumn(getId(), getName(), getWidth(), getAlign(), isShow(), getSortDataType(),
-         isMultiColumnEditable(), getDescription());
+      ReviewNumMinorDefectsColumn newXCol = new ReviewNumMinorDefectsColumn();
+      copy(this, newXCol);
+      return newXCol;
    }
 
    @Override

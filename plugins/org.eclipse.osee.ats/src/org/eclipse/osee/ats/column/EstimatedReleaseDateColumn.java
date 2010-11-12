@@ -9,9 +9,7 @@ import java.util.Date;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.swt.SWT;
 
 public class EstimatedReleaseDateColumn extends AbstractWorkflowVersionDateColumn {
 
@@ -22,12 +20,7 @@ public class EstimatedReleaseDateColumn extends AbstractWorkflowVersionDateColum
    }
 
    private EstimatedReleaseDateColumn() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".estimatedReleaseDate", AtsAttributeTypes.EstimatedReleaseDate, 80,
-         SWT.LEFT, false, SortDataType.Date, true);
-   }
-
-   public EstimatedReleaseDateColumn(IAttributeType attributeType, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
-      super(attributeType, width, align, show, sortDataType, multiColumnEditable, description);
+      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".estimatedReleaseDate", AtsAttributeTypes.EstimatedReleaseDate);
    }
 
    /**
@@ -35,9 +28,10 @@ public class EstimatedReleaseDateColumn extends AbstractWorkflowVersionDateColum
     * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
     */
    @Override
-   public ReleaseDateColumn copy() {
-      return new ReleaseDateColumn(getAttributeType(), getWidth(), getAlign(), isShow(), getSortDataType(),
-         isMultiColumnEditable(), getDescription());
+   public EstimatedReleaseDateColumn copy() {
+      EstimatedReleaseDateColumn newXCol = new EstimatedReleaseDateColumn();
+      copy(this, newXCol);
+      return newXCol;
    }
 
    public static Date getDateFromWorkflow(Object object) throws OseeCoreException {

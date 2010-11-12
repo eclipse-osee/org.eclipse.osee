@@ -28,18 +28,15 @@ public class TeamColumn extends XViewerAtsColumn implements IXViewerValueColumn 
          "Team that has been assigned to work this Action.");
    }
 
-   public TeamColumn(String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
-      super(id, name, width, align, show, sortDataType, multiColumnEditable, description);
-   }
-
    /**
     * XViewer uses copies of column definitions so originals that are registered are not corrupted. Classes extending
     * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
     */
    @Override
    public TeamColumn copy() {
-      return new TeamColumn(getId(), getName(), getWidth(), getAlign(), isShow(), getSortDataType(),
-         isMultiColumnEditable(), getDescription());
+      TeamColumn newXCol = new TeamColumn();
+      copy(this, newXCol);
+      return newXCol;
    }
 
    @Override

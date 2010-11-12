@@ -8,7 +8,6 @@ package org.eclipse.osee.ats.column;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.swt.SWT;
 
 public class LegacyPcrIdColumn extends XViewerAtsAttributeValueColumn {
@@ -19,13 +18,9 @@ public class LegacyPcrIdColumn extends XViewerAtsAttributeValueColumn {
       return instance;
    }
 
-   public LegacyPcrIdColumn() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".legacyPcr", AtsAttributeTypes.LegacyPcrId, 40, SWT.LEFT, false,
-         SortDataType.String, false);
-   }
-
-   public LegacyPcrIdColumn(IAttributeType attributeType, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable) {
-      super(attributeType, width, align, show, sortDataType, multiColumnEditable);
+   private LegacyPcrIdColumn() {
+      super(AtsAttributeTypes.LegacyPcrId, WorldXViewerFactory.COLUMN_NAMESPACE + ".legacyPcr",
+         AtsAttributeTypes.LegacyPcrId.getName(), 40, SWT.LEFT, false, SortDataType.String, false, "");
    }
 
    /**
@@ -34,8 +29,9 @@ public class LegacyPcrIdColumn extends XViewerAtsAttributeValueColumn {
     */
    @Override
    public LegacyPcrIdColumn copy() {
-      return new LegacyPcrIdColumn(getAttributeType(), getWidth(), getAlign(), isShow(), getSortDataType(),
-         isMultiColumnEditable());
+      LegacyPcrIdColumn newXCol = new LegacyPcrIdColumn();
+      copy(this, newXCol);
+      return newXCol;
    }
 
 }

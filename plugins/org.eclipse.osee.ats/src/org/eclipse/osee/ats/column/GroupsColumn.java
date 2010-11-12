@@ -48,18 +48,15 @@ public class GroupsColumn extends XViewerAtsColumn implements IXViewerValueColum
          true, "Groups");
    }
 
-   public GroupsColumn(String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
-      super(id, name, width, align, show, sortDataType, multiColumnEditable, description);
-   }
-
    /**
     * XViewer uses copies of column definitions so originals that are registered are not corrupted. Classes extending
     * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
     */
    @Override
    public GroupsColumn copy() {
-      return new GroupsColumn(getId(), getName(), getWidth(), getAlign(), isShow(), getSortDataType(),
-         isMultiColumnEditable(), getDescription());
+      GroupsColumn newXCol = new GroupsColumn();
+      copy(this, newXCol);
+      return newXCol;
    }
 
    @Override

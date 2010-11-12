@@ -8,7 +8,6 @@ package org.eclipse.osee.ats.column;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.swt.SWT;
 
 public class NotesColumn extends XViewerAtsAttributeValueColumn {
@@ -20,13 +19,8 @@ public class NotesColumn extends XViewerAtsAttributeValueColumn {
    }
 
    private NotesColumn() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".notes", AtsAttributeTypes.SmaNote, "Notes", 80, SWT.LEFT, true,
-         SortDataType.String, true);
-   }
-
-   public NotesColumn(String id, IAttributeType attributeType, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
-      super(id, attributeType, name, width, align, show, sortDataType, multiColumnEditable);
-      setDescription(description);
+      super(AtsAttributeTypes.SmaNote, WorldXViewerFactory.COLUMN_NAMESPACE + ".notes", "Notes", 80, SWT.LEFT, true,
+         SortDataType.String, true, "");
    }
 
    /**
@@ -35,8 +29,9 @@ public class NotesColumn extends XViewerAtsAttributeValueColumn {
     */
    @Override
    public NotesColumn copy() {
-      return new NotesColumn(getId(), getAttributeType(), getName(), getWidth(), getAlign(), isShow(),
-         getSortDataType(), isMultiColumnEditable(), getDescription());
+      NotesColumn newXCol = new NotesColumn();
+      copy(this, newXCol);
+      return newXCol;
    }
 
    @Override

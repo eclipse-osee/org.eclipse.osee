@@ -5,7 +5,9 @@
  */
 package org.eclipse.osee.ats.test.column;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import junit.framework.Assert;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
@@ -116,8 +118,9 @@ public class PeerToPeerReviewColumnsTest {
          ReviewAuthorColumn.getInstance().getColumnText(peerArt, null, 0));
       Assert.assertEquals(DemoUsers.Jason_Michael.getName(),
          ReviewModeratorColumn.getInstance().getColumnText(peerArt, null, 0));
-      Assert.assertEquals(DemoUsers.Kay_Jones.getName() + "; " + DemoUsers.Joe_Smith.getName(),
-         ReviewReviewerColumn.getInstance().getColumnText(peerArt, null, 0));
-
+      List<String> results =
+         Arrays.asList(DemoUsers.Kay_Jones.getName() + "; " + DemoUsers.Joe_Smith.getName(),
+            DemoUsers.Joe_Smith.getName() + "; " + DemoUsers.Kay_Jones.getName());
+      Assert.assertTrue(results.contains(ReviewReviewerColumn.getInstance().getColumnText(peerArt, null, 0)));
    }
 }

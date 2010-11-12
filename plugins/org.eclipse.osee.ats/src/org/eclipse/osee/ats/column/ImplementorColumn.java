@@ -33,18 +33,15 @@ public class ImplementorColumn extends XViewerAtsColumn implements IXViewerValue
          SortDataType.String, false, "User assigned to the Implementation of the changes.");
    }
 
-   public ImplementorColumn(String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
-      super(id, name, width, align, show, sortDataType, multiColumnEditable, description);
-   }
-
    /**
     * XViewer uses copies of column definitions so originals that are registered are not corrupted. Classes extending
     * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
     */
    @Override
    public ImplementorColumn copy() {
-      return new ImplementorColumn(getId(), getName(), getWidth(), getAlign(), isShow(), getSortDataType(),
-         isMultiColumnEditable(), getDescription());
+      ImplementorColumn newXCol = new ImplementorColumn();
+      copy(this, newXCol);
+      return newXCol;
    }
 
    @Override

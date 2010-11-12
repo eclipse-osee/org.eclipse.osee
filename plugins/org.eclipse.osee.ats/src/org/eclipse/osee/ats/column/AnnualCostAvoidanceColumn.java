@@ -43,18 +43,15 @@ public class AnnualCostAvoidanceColumn extends XViewerAtsColumn implements IXVie
          "Hours that would be saved for the first year if this change were completed.\n\n" + "(Weekly Benefit Hours * 52 weeks) - Remaining Hours\n\n" + "If number is high, benefit is great given hours remaining.");
    }
 
-   public AnnualCostAvoidanceColumn(String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
-      super(id, name, width, align, show, sortDataType, multiColumnEditable, description);
-   }
-
    /**
     * XViewer uses copies of column definitions so originals that are registered are not corrupted. Classes extending
     * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
     */
    @Override
    public AnnualCostAvoidanceColumn copy() {
-      return new AnnualCostAvoidanceColumn(getId(), getName(), getWidth(), getAlign(), isShow(), getSortDataType(),
-         isMultiColumnEditable(), getDescription());
+      AnnualCostAvoidanceColumn newXCol = new AnnualCostAvoidanceColumn();
+      copy(this, newXCol);
+      return newXCol;
    }
 
    @Override

@@ -17,7 +17,6 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.PromptChangeUtil;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -37,12 +36,7 @@ public class PriorityColumn extends XViewerAtsAttributeValueColumn {
    }
 
    private PriorityColumn() {
-      super(AtsAttributeTypes.PriorityType, 20, SWT.LEFT, true, SortDataType.String, true);
-   }
-
-   public PriorityColumn(IAttributeType attributeType, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
-      super(attributeType, width, align, show, sortDataType, multiColumnEditable);
-      setDescription(description);
+      super(AtsAttributeTypes.PriorityType, 20, SWT.LEFT, true, SortDataType.String, true, "");
    }
 
    /**
@@ -51,8 +45,9 @@ public class PriorityColumn extends XViewerAtsAttributeValueColumn {
     */
    @Override
    public PriorityColumn copy() {
-      return new PriorityColumn(getAttributeType(), getWidth(), getAlign(), isShow(), getSortDataType(),
-         isMultiColumnEditable(), getDescription());
+      PriorityColumn newXCol = new PriorityColumn();
+      copy(this, newXCol);
+      return newXCol;
    }
 
    public static boolean promptChangePriority(final Collection<? extends TeamWorkFlowArtifact> teams, boolean persist) {

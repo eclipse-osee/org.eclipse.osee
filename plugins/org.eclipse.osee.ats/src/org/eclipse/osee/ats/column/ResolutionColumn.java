@@ -19,7 +19,6 @@ import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.PromptChangeUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -39,12 +38,7 @@ public class ResolutionColumn extends XViewerAtsAttributeValueColumn {
    }
 
    private ResolutionColumn() {
-      super(AtsAttributeTypes.Resolution, 150, SWT.LEFT, false, SortDataType.String, true);
-   }
-
-   public ResolutionColumn(String id, IAttributeType attributeType, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
-      super(id, attributeType, name, width, align, show, sortDataType, multiColumnEditable);
-      setDescription(description);
+      super(AtsAttributeTypes.Resolution, 150, SWT.LEFT, false, SortDataType.String, true, "");
    }
 
    /**
@@ -53,8 +47,9 @@ public class ResolutionColumn extends XViewerAtsAttributeValueColumn {
     */
    @Override
    public ResolutionColumn copy() {
-      return new ResolutionColumn(getId(), getAttributeType(), getName(), getWidth(), getAlign(), isShow(),
-         getSortDataType(), isMultiColumnEditable(), getDescription());
+      ResolutionColumn newXCol = new ResolutionColumn();
+      copy(this, newXCol);
+      return newXCol;
    }
 
    @Override

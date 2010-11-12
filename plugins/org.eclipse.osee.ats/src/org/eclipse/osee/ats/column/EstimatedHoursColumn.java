@@ -15,7 +15,6 @@ import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.swt.SWT;
@@ -29,13 +28,8 @@ public class EstimatedHoursColumn extends XViewerAtsAttributeValueColumn {
    }
 
    private EstimatedHoursColumn() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".estimatedHours", AtsAttributeTypes.EstimatedHours, 40, SWT.CENTER,
-         false, SortDataType.Float, true);
-   }
-
-   public EstimatedHoursColumn(String id, IAttributeType attributeType, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
-      super(id, attributeType, name, width, align, show, sortDataType, multiColumnEditable);
-      setDescription(description);
+      super(AtsAttributeTypes.EstimatedHours, WorldXViewerFactory.COLUMN_NAMESPACE + ".estimatedHours",
+         AtsAttributeTypes.EstimatedHours.getName(), 40, SWT.CENTER, false, SortDataType.Float, true, "");
    }
 
    /**
@@ -44,8 +38,9 @@ public class EstimatedHoursColumn extends XViewerAtsAttributeValueColumn {
     */
    @Override
    public EstimatedHoursColumn copy() {
-      return new EstimatedHoursColumn(getId(), getAttributeType(), getName(), getWidth(), getAlign(), isShow(),
-         getSortDataType(), isMultiColumnEditable(), getDescription());
+      EstimatedHoursColumn newXCol = new EstimatedHoursColumn();
+      copy(this, newXCol);
+      return newXCol;
    }
 
    @Override

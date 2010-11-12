@@ -13,7 +13,6 @@ import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.PromptChangeUtil;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -31,13 +30,9 @@ public class GoalOrderVoteColumn extends XViewerAtsAttributeValueColumn {
       return instance;
    }
 
-   public GoalOrderVoteColumn() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".goalOrderVote", AtsAttributeTypes.GoalOrderVote, 40, SWT.LEFT,
-         false, SortDataType.String, true);
-   }
-
-   public GoalOrderVoteColumn(IAttributeType attributeType, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable) {
-      super(attributeType, width, align, show, sortDataType, multiColumnEditable);
+   private GoalOrderVoteColumn() {
+      super(AtsAttributeTypes.GoalOrderVote, WorldXViewerFactory.COLUMN_NAMESPACE + ".goalOrderVote",
+         AtsAttributeTypes.GoalOrderVote.getName(), 40, SWT.LEFT, false, SortDataType.String, true, "");
    }
 
    /**
@@ -46,8 +41,9 @@ public class GoalOrderVoteColumn extends XViewerAtsAttributeValueColumn {
     */
    @Override
    public GoalOrderVoteColumn copy() {
-      return new GoalOrderVoteColumn(getAttributeType(), getWidth(), getAlign(), isShow(), getSortDataType(),
-         isMultiColumnEditable());
+      GoalOrderVoteColumn newXCol = new GoalOrderVoteColumn();
+      copy(this, newXCol);
+      return newXCol;
    }
 
    @Override

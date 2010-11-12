@@ -41,18 +41,15 @@ public class RemainingHoursColumn extends XViewerAtsColumn implements IXViewerVa
          "Hours that remain to complete the changes.\n\nEstimated Hours - (Estimated Hours * Percent Complete).");
    }
 
-   public RemainingHoursColumn(String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
-      super(id, name, width, align, show, sortDataType, multiColumnEditable, description);
-   }
-
    /**
     * XViewer uses copies of column definitions so originals that are registered are not corrupted. Classes extending
     * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
     */
    @Override
    public RemainingHoursColumn copy() {
-      return new RemainingHoursColumn(getId(), getName(), getWidth(), getAlign(), isShow(), getSortDataType(),
-         isMultiColumnEditable(), getDescription());
+      RemainingHoursColumn newXCol = new RemainingHoursColumn();
+      copy(this, newXCol);
+      return newXCol;
    }
 
    @Override

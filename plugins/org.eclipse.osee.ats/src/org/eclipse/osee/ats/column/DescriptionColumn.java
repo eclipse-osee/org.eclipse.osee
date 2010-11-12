@@ -7,7 +7,6 @@ package org.eclipse.osee.ats.column;
 
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.swt.SWT;
 
 public class DescriptionColumn extends XViewerAtsAttributeValueColumn {
@@ -18,12 +17,8 @@ public class DescriptionColumn extends XViewerAtsAttributeValueColumn {
       return instance;
    }
 
-   public DescriptionColumn() {
-      super(AtsAttributeTypes.Description, 150, SWT.LEFT, false, SortDataType.String, true);
-   }
-
-   public DescriptionColumn(IAttributeType attributeType, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable) {
-      super(attributeType, width, align, show, sortDataType, multiColumnEditable);
+   private DescriptionColumn() {
+      super(AtsAttributeTypes.Description, 150, SWT.LEFT, false, SortDataType.String, true, "");
    }
 
    /**
@@ -32,8 +27,9 @@ public class DescriptionColumn extends XViewerAtsAttributeValueColumn {
     */
    @Override
    public DescriptionColumn copy() {
-      return new DescriptionColumn(getAttributeType(), getWidth(), getAlign(), isShow(), getSortDataType(),
-         isMultiColumnEditable());
+      DescriptionColumn newXCol = new DescriptionColumn();
+      copy(this, newXCol);
+      return newXCol;
    }
 
    @Override

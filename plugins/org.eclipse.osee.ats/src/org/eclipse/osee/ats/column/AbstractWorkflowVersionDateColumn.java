@@ -20,19 +20,15 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.swt.SWT;
 
 /**
  * This class provides for a Date where the value is either stored in Workflow or Version or both.
  */
-public class AbstractWorkflowVersionDateColumn extends XViewerAtsAttributeValueColumn {
+public abstract class AbstractWorkflowVersionDateColumn extends XViewerAtsAttributeValueColumn {
 
-   public AbstractWorkflowVersionDateColumn(IAttributeType attributeType, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
-      super(attributeType, width, align, show, sortDataType, multiColumnEditable);
-      setDescription(description);
-   }
-
-   public AbstractWorkflowVersionDateColumn(String id, IAttributeType attributeType, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable) {
-      super(id, attributeType, width, align, show, sortDataType, multiColumnEditable);
+   public AbstractWorkflowVersionDateColumn(String id, IAttributeType attributeType) {
+      super(attributeType, id, attributeType.getName(), 80, SWT.LEFT, false, SortDataType.Date, true, "");
    }
 
    @Override

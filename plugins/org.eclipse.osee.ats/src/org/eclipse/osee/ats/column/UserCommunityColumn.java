@@ -7,7 +7,6 @@ package org.eclipse.osee.ats.column;
 
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.swt.SWT;
 
 public class UserCommunityColumn extends XViewerAtsAttributeValueColumn {
@@ -18,12 +17,8 @@ public class UserCommunityColumn extends XViewerAtsAttributeValueColumn {
       return instance;
    }
 
-   public UserCommunityColumn() {
-      super(AtsAttributeTypes.UserCommunity, 60, SWT.LEFT, false, SortDataType.String, false);
-   }
-
-   public UserCommunityColumn(IAttributeType attributeType, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable) {
-      super(attributeType, width, align, show, sortDataType, multiColumnEditable);
+   private UserCommunityColumn() {
+      super(AtsAttributeTypes.UserCommunity, 60, SWT.LEFT, false, SortDataType.String, false, "");
    }
 
    /**
@@ -32,8 +27,9 @@ public class UserCommunityColumn extends XViewerAtsAttributeValueColumn {
     */
    @Override
    public UserCommunityColumn copy() {
-      return new UserCommunityColumn(getAttributeType(), getWidth(), getAlign(), isShow(), getSortDataType(),
-         isMultiColumnEditable());
+      UserCommunityColumn newXCol = new UserCommunityColumn();
+      copy(this, newXCol);
+      return newXCol;
    }
 
 }

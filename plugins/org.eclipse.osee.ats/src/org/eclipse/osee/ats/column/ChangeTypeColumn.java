@@ -19,7 +19,6 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -44,12 +43,7 @@ public class ChangeTypeColumn extends XViewerAtsAttributeValueColumn {
    }
 
    private ChangeTypeColumn() {
-      super(AtsAttributeTypes.ChangeType, 22, SWT.CENTER, true, SortDataType.String, true);
-   }
-
-   public ChangeTypeColumn(IAttributeType attributeType, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
-      super(attributeType, width, align, show, sortDataType, multiColumnEditable);
-      setDescription(description);
+      super(AtsAttributeTypes.ChangeType, 22, SWT.CENTER, true, SortDataType.String, true, "");
    }
 
    /**
@@ -58,8 +52,9 @@ public class ChangeTypeColumn extends XViewerAtsAttributeValueColumn {
     */
    @Override
    public ChangeTypeColumn copy() {
-      return new ChangeTypeColumn(getAttributeType(), getWidth(), getAlign(), isShow(), getSortDataType(),
-         isMultiColumnEditable(), getDescription());
+      ChangeTypeColumn newXCol = new ChangeTypeColumn();
+      copy(this, newXCol);
+      return newXCol;
    }
 
    public static boolean promptChangeType(AbstractWorkflowArtifact sma, boolean persist) {

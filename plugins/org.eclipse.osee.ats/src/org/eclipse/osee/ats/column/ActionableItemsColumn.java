@@ -19,7 +19,6 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
@@ -34,12 +33,8 @@ public class ActionableItemsColumn extends XViewerAtsAttributeValueColumn {
    }
 
    private ActionableItemsColumn() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".actionableItems", AtsAttributeTypes.ActionableItem, 80, SWT.LEFT,
-         true, SortDataType.String, false);
-   }
-
-   public ActionableItemsColumn(IAttributeType attributeType, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable) {
-      super(attributeType, width, align, show, sortDataType, multiColumnEditable);
+      super(AtsAttributeTypes.ActionableItem, WorldXViewerFactory.COLUMN_NAMESPACE + ".actionableItems",
+         AtsAttributeTypes.ActionableItem.getName(), 80, SWT.LEFT, true, SortDataType.String, false, "");
    }
 
    /**
@@ -48,8 +43,9 @@ public class ActionableItemsColumn extends XViewerAtsAttributeValueColumn {
     */
    @Override
    public ActionableItemsColumn copy() {
-      return new ActionableItemsColumn(getAttributeType(), getWidth(), getAlign(), isShow(), getSortDataType(),
-         isMultiColumnEditable());
+      ActionableItemsColumn newXCol = new ActionableItemsColumn();
+      copy(this, newXCol);
+      return newXCol;
    }
 
    @Override

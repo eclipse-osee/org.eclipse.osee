@@ -40,18 +40,15 @@ public class GoalOrderColumn extends XViewerAtsColumn implements IXViewerValueCo
          SortDataType.Integer, true, "Order of item within displayed goal.  Editing this field changes order.");
    }
 
-   public GoalOrderColumn(String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
-      super(id, name, width, align, show, sortDataType, multiColumnEditable, description);
-   }
-
    /**
     * XViewer uses copies of column definitions so originals that are registered are not corrupted. Classes extending
     * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
     */
    @Override
    public GoalOrderColumn copy() {
-      return new GoalOrderColumn(getId(), getName(), getWidth(), getAlign(), isShow(), getSortDataType(),
-         isMultiColumnEditable(), getDescription());
+      GoalOrderColumn newXCol = new GoalOrderColumn();
+      copy(this, newXCol);
+      return newXCol;
    }
 
    @Override

@@ -7,7 +7,6 @@ package org.eclipse.osee.ats.column;
 
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.swt.SWT;
@@ -20,13 +19,9 @@ public class TitleColumn extends XViewerAtsAttributeValueColumn {
       return instance;
    }
 
-   public TitleColumn() {
-      super("framework.artifact.name.Title", CoreAttributeTypes.Name, "Title", 150, SWT.LEFT, true,
-         SortDataType.String, false);
-   }
-
-   public TitleColumn(IAttributeType attributeType, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable) {
-      super(attributeType, width, align, show, sortDataType, multiColumnEditable);
+   private TitleColumn() {
+      super(CoreAttributeTypes.Name, "framework.artifact.name.Title", "Title", 150, SWT.LEFT, true,
+         SortDataType.String, false, "");
    }
 
    /**
@@ -35,8 +30,9 @@ public class TitleColumn extends XViewerAtsAttributeValueColumn {
     */
    @Override
    public TitleColumn copy() {
-      return new TitleColumn(getAttributeType(), getWidth(), getAlign(), isShow(), getSortDataType(),
-         isMultiColumnEditable());
+      TitleColumn newXCol = new TitleColumn();
+      copy(this, newXCol);
+      return newXCol;
    }
 
    @Override
