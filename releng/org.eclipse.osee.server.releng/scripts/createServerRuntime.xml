@@ -52,13 +52,13 @@
 			extraVMArgs="-Dosee.connection.info.uri=[custom connection file path] -Dosee.application.server.data=[binary data path]" />
 	</target>
 
-	<target name="generateDerbyLaunch">
+	<target name="generateH2Launch">
 		<createLaunch 
-			filepath="${tempAppServerFolder}/runDerby.sh" 
-			connection.id="derby" 
+			filepath="${tempAppServerFolder}/runH2.sh" 
+			connection.id="h2" 
 			serverport="8089"
 			launcher="${launcherJar}" 
-			extraVMArgs="-Dosee.derby.server=127.0.0.1:1621" />
+			extraVMArgs="Dosee.db.embedded.server=0.0.0.0:8088" />
 	</target>
 
 	<target name="generateLocalPostgresLaunch">
@@ -69,7 +69,7 @@
 			launcher="${launcherJar}" />
 	</target>
 
-	<target name="generateLaunchScripts" depends="generateTemplate,generateDerbyLaunch,generateLocalPostgresLaunch">
+	<target name="generateLaunchScripts" depends="generateTemplate,generateH2Launch,generateLocalPostgresLaunch">
 	</target>
 
 	<!-- *************************************************************** -->
