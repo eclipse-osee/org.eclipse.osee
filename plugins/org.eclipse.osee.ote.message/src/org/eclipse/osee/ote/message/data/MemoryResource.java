@@ -14,6 +14,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.logging.Level;
+
 import org.eclipse.osee.ote.message.MessageSystemException;
 
 /**
@@ -44,6 +45,17 @@ public class MemoryResource {
       _dataHasChanged = false;
    }
 
+   public final String getUnfilteredASCIIString(int offset, int msb, int lsb) {
+	   offset += _offset;
+	   int size = (lsb - msb + 1) / 8;
+
+	   StringBuilder str = new StringBuilder(size);
+	   int limit = Math.min(size, byteArray.get().length-offset);
+	   for (int i = 0; i < limit; i++) {
+		   str.append(getASCIICharFromOffset(offset + i));
+	   }
+	   return str.toString();
+   }
    public void setData(byte data[]) {
       byteArray.set(data);
       _dataHasChanged = true;
