@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column;
 
+import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.util.XViewerException;
@@ -32,7 +33,7 @@ public class AttributeColumn extends XViewerValueColumn {
     */
    @Override
    public AttributeColumn copy() {
-      AttributeColumn newXCol = new AttributeColumn();
+      AttributeColumn newXCol = new AttributeColumn(this.getXViewer(), this.toXml());
       copy(this, newXCol);
       return newXCol;
    }
@@ -42,8 +43,8 @@ public class AttributeColumn extends XViewerValueColumn {
       toXCol.setAttributeType(fromXCol.attributeType);
    }
 
-   protected AttributeColumn() {
-      super();
+   protected AttributeColumn(XViewer xViewer, String xml) {
+      super(xViewer, xml);
    }
 
    public AttributeColumn(String id, String name, IAttributeType attributeType, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
