@@ -92,7 +92,7 @@ public class ScriptLogHandler extends Handler {
       document.appendChild(processingInstruction);
       records = new ArrayList<LogRecord>();
 
-      document.appendChild(document.createComment("INSERT DISTRO STATEMENT HERE"));
+      document.appendChild(document.createComment("OUTFILE_COMMNET"));
 
       this.testScriptElement = document.createElement("TestScript");
       this.scriptInitElement = document.createElement("ScriptInit");

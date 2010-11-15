@@ -21,6 +21,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
+
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 import org.eclipse.osee.framework.logging.ILoggerFilter;
@@ -647,10 +648,22 @@ public abstract class TestScript implements ITimeout {
    }
 
    public boolean addTestRunListener(ITestRunListener listener) {
+      if( listenerProvider == null )
+      {
+         String message = String.format("Could not add run listener %s since listener provider is null.", listener.getClass().getName());
+         OseeLog.log(getClass(), Level.WARNING, message, new Exception());
+         return false;
+      }
       return this.listenerProvider.addTestRunListener(listener);
    }
 
    public boolean removeTestRunListener(ITestRunListener listener) {
+      if( listenerProvider == null )
+      {
+         String message = String.format("Could not remove run listener %s since listener provider is null.", listener.getClass().getName());
+         OseeLog.log(getClass(), Level.WARNING, message, new Exception());
+         return false;
+      }
       return this.listenerProvider.removeTestRunListener(listener);
    }
 
