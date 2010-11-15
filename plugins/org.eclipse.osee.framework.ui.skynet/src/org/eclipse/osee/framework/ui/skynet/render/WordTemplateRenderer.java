@@ -172,11 +172,6 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
 
          if (presentationType == PresentationType.SPECIALIZED_EDIT || presentationType == PresentationType.MERGE_EDIT) {
             OseeLinkBuilder linkBuilder = new OseeLinkBuilder();
-            //            wordMl.addParagraphNoEscape(linkBuilder.getEditArtifactLink(artifact.getGuid(), artifact.getBranch(),
-            //               "OSEE_EDIT_START"));
-            //            wordMl.addWordMl(value);
-            //            wordMl.addParagraphNoEscape(linkBuilder.getEditArtifactLink(artifact.getGuid(), artifact.getBranch(),
-            //               "OSEE_EDIT_END"));
             wordMl.addEditParagraphNoEscape(linkBuilder.getStartEditBookmark(artifact.getGuid()));
             wordMl.addWordMl(value);
             wordMl.addEditParagraphNoEscape(linkBuilder.getEndEditBookmark(artifact.getGuid()));

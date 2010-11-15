@@ -52,7 +52,6 @@ public class WordMLProducer extends Producer {
    private final int[] outlineNumber;
    private int outlineLevel;
    private int flattenedLevelCount;
-   private boolean previousPageLandsacpe;
    private final Map<String, Integer> alphabetMap;
 
    public WordMLProducer(Appendable strB) {
@@ -103,6 +102,16 @@ public class WordMLProducer extends Producer {
       append("\"/></w:listPr></w:pPr><w:r><w:t>");
       append(Xml.escape(headingText));
       append("</w:t></w:r></w:p>");
+   }
+
+   public void setPageBreak() throws OseeCoreException {
+      append("<w:p>");
+      append("<w:pPr>");
+      append("<w:sectPr>");
+      append("<w:pgSz w:w=\"12240\" w:h=\"15840\" w:code=\"1\" />");
+      append("</w:sectPr>");
+      append("</w:pPr>");
+      append("</w:p>");
    }
 
    public String setHeadingNumbers(String outlineNumber, String template, String outlineType) {
@@ -341,16 +350,14 @@ public class WordMLProducer extends Producer {
 
       boolean landscape = pageTypeValue != null && pageTypeValue.equals("Landscape");
 
-      if (landscape || previousPageLandsacpe) {
+      if (landscape) {
          append("<w:p>");
          append("<w:pPr>");
          append("<w:sectPr>");
-         append(landscape ? "<w:pgSz w:w=\"15840\" w:h=\"12240\" w:orient=\"landscape\" w:code=\"1\" />" : "<w:pgSz w:w=\"12240\" w:h=\"15840\" w:code=\"1\" />");
+         append("<w:pgSz w:w=\"15840\" w:h=\"12240\" w:orient=\"landscape\" w:code=\"1\" />");
          append("</w:sectPr>");
          append("</w:pPr>");
          append("</w:p>");
-
-         previousPageLandsacpe = landscape;
       }
    }
 }

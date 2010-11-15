@@ -355,6 +355,9 @@ public class WordTemplateProcessor {
       if (!artifact.isAttributeTypeValid(CoreAttributeTypes.WholeWordContent) && !artifact.isAttributeTypeValid(CoreAttributeTypes.NativeContent)) {
          //If the artifact has not been processed
          if (!processedArtifacts.contains(artifact)) {
+
+            handleLandscapeArtifactSectionBreak(artifact, wordMl);
+
             if (outlining) {
                String headingText = artifact.getSoleAttributeValue(headingAttributeType, "");
                CharSequence paragraphNumber =
@@ -382,6 +385,18 @@ public class WordTemplateProcessor {
          }
       } else {
          nonTemplateArtifacts.add(artifact);
+      }
+   }
+
+   private void handleLandscapeArtifactSectionBreak(Artifact artifact, WordMLProducer wordMl) throws OseeCoreException {
+      String pageTypeValue = null;
+      if (artifact.isAttributeTypeValid(CoreAttributeTypes.PageType)) {
+         pageTypeValue = artifact.getSoleAttributeValue(CoreAttributeTypes.PageType, "Portrait");
+      }
+      boolean landscape = pageTypeValue != null && pageTypeValue.equals("Landscape");
+
+      if (landscape) {
+         wordMl.setPageBreak();
       }
    }
 
