@@ -11,6 +11,7 @@
 package org.eclipse.osee.ote.core.framework;
 
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.jdk.core.type.IPropertyStore;
 import org.eclipse.osee.framework.logging.BaseStatus;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -75,10 +76,10 @@ public class BaseRunManager implements IRunManager {
                      rb.append(result);
                   }
                }
-               rb.append(lifecycleListenerProvider.notifyPreDispose(propertyStore, testRunManager.getTest(), env));
-               rb.append(testRunManager.dispose());
-               rb.append(lifecycleListenerProvider.notifyPostDispose(propertyStore, env));
             }
+            rb.append(lifecycleListenerProvider.notifyPreDispose(propertyStore, testRunManager.getTest(), env));
+            rb.append(testRunManager.dispose());
+            rb.append(lifecycleListenerProvider.notifyPostDispose(propertyStore, env));
          }
          this.resultCollector.dispose(env);
          this.resultCollector = null;

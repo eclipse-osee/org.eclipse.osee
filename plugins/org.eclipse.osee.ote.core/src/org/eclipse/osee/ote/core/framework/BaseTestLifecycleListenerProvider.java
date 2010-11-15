@@ -12,8 +12,10 @@ package org.eclipse.osee.ote.core.framework;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Level;
 
 import org.eclipse.osee.framework.jdk.core.type.IPropertyStore;
+import org.eclipse.osee.framework.logging.BaseStatus;
 import org.eclipse.osee.ote.core.TestScript;
 import org.eclipse.osee.ote.core.environment.TestEnvironment;
 import org.eclipse.osee.ote.core.framework.event.IEventData;
@@ -45,7 +47,12 @@ public class BaseTestLifecycleListenerProvider implements ITestLifecycleListener
       IEventData eventData = eventProvider.getEventData(propertyStore, null);
       MethodResultImpl result = new MethodResultImpl(ReturnCode.OK);
       for (ITestLifecycleListener listener : listeners) {
-         result = collectStatus(result, listener.postDispose(eventData, env));
+         try {
+            result = collectStatus(result, listener.postDispose(eventData, env));
+         } catch (Throwable th) {
+            result = collectStatus(result,new MethodResultImpl(ReturnCode.ERROR));
+            result.addStatus(new BaseStatus(this.getClass().getName(), Level.SEVERE, th));
+         }
       }
 
       int newSize = listeners.size();
@@ -75,7 +82,12 @@ public class BaseTestLifecycleListenerProvider implements ITestLifecycleListener
       IEventData eventData = eventProvider.getEventData(propertyStore, test);
       MethodResultImpl result = new MethodResultImpl(ReturnCode.OK);
       for (ITestLifecycleListener listener : listeners) {
-         result = collectStatus(result, listener.preDispose(eventData, env));
+         try {
+            result = collectStatus(result, listener.preDispose(eventData, env));
+         } catch (Throwable th) {
+            result = collectStatus(result,new MethodResultImpl(ReturnCode.ERROR));
+            result.addStatus(new BaseStatus(this.getClass().getName(), Level.SEVERE, th));
+         }
       }
       return result;
    }
