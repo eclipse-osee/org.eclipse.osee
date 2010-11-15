@@ -592,7 +592,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IArtifact
 
    @Override
    public void handleArtifactEvent(final ArtifactEvent artifactEvent, Sender sender) {
-      if (!artifactEvent.isHasEvent(reviewArt.getArtifact())) {
+      if (reviewArt == null || !artifactEvent.isHasEvent(reviewArt.getArtifact())) {
          return;
       }
       Displays.ensureInDisplayThread(new Runnable() {

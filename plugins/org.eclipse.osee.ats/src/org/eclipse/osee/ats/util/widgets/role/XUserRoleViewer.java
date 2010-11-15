@@ -496,7 +496,7 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IArtifa
 
    @Override
    public void handleArtifactEvent(final ArtifactEvent artifactEvent, Sender sender) {
-      if (!artifactEvent.isHasEvent(reviewArt.getArtifact())) {
+      if (reviewArt == null || !artifactEvent.isHasEvent(reviewArt.getArtifact())) {
          return;
       }
       Displays.ensureInDisplayThread(new Runnable() {
