@@ -59,7 +59,6 @@ public class ChangeXViewer extends XViewer {
       @Override
       public void keyReleased(KeyEvent e) {
          if (e.keyCode == SWT.F5) {
-            System.out.println("pressed");
             ViewWordChangeReportHandler handler = new ViewWordChangeReportHandler();
             if (handler.isEnabled()) {
                handler.execute(null);

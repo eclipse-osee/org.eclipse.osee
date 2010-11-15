@@ -124,7 +124,7 @@ public class ChangeReportPage extends FormPage {
       MenuManager manager = xviewer.getMenuManager();
       manager.setRemoveAllWhenShown(true);
       manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-      manager.addMenuListener(new ChangeReportMenuListener());
+      manager.addMenuListener(new ChangeReportMenuListener(xviewer));
 
       Control control = xviewer.getTree();
       Menu menu = manager.createContextMenu(control);
@@ -135,10 +135,19 @@ public class ChangeReportPage extends FormPage {
    }
 
    private static final class ChangeReportMenuListener implements IMenuListener {
+
+      private final ChangeXViewer xviewer;
+
+      private ChangeReportMenuListener(ChangeXViewer xviewer) {
+         this.xviewer = xviewer;
+      }
+
       @Override
       public void menuAboutToShow(IMenuManager manager) {
-         MenuManager menuManager = (MenuManager) manager;
-         menuManager.insertBefore(XViewer.MENU_GROUP_PRE, new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+         MenuManager menuManager = xviewer.getMenuManager();
+         if (menuManager.find(XViewer.MENU_GROUP_PRE) != null) {
+            menuManager.insertBefore(XViewer.MENU_GROUP_PRE, new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+         }
       }
    }
 
