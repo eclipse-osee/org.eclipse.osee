@@ -170,7 +170,15 @@ public class StateManager {
    }
 
    public void setMetrics(double hours, int percentComplete, boolean logMetrics) throws OseeCoreException {
-      currentStateDam.setMetrics(hours, percentComplete, logMetrics);
+      setMetrics(getCurrentStateName(), hours, percentComplete, logMetrics);
+   }
+
+   public void setMetrics(String stateName, double hours, int percentComplete, boolean logMetrics) throws OseeCoreException {
+      if (stateName.equals(getCurrentStateName())) {
+         currentStateDam.setMetrics(hours, percentComplete, logMetrics);
+      } else {
+         stateDam.setMetrics(stateName, hours, percentComplete, logMetrics);
+      }
    }
 
    /**

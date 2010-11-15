@@ -122,19 +122,19 @@ public class TeamWorkflowManager {
    }
 
    public Result setEndorseData(boolean popup, String propRes, int statePercentComplete, double stateHoursSpent) throws OseeCoreException {
-      if (!teamArt.getStateMgr().getCurrentStateName().equals("Endorse")) {
+      if (!teamArt.getStateMgr().getCurrentStateName().equals(DefaultTeamState.Endorse.name())) {
          Result result = new Result("Action not in Endorse state");
          if (result.isFalse() && popup) {
             result.popup();
             return result;
          }
       }
-      teamArt.getStateMgr().updateMetrics(stateHoursSpent, statePercentComplete, true);
+      teamArt.getStateMgr().setMetrics(DefaultTeamState.Endorse.name(), stateHoursSpent, statePercentComplete, true);
       return Result.TrueResult;
    }
 
    public Result setAnalyzeData(boolean popup, String problem, String propRes, double hourEstimate, int statePercentComplete, double stateHoursSpent) throws OseeCoreException {
-      if (!teamArt.getStateMgr().getCurrentStateName().equals("Analyze")) {
+      if (!teamArt.getStateMgr().getCurrentStateName().equals(DefaultTeamState.Analyze.name())) {
          Result result = new Result("Action not in Analyze state");
          if (result.isFalse() && popup) {
             result.popup();
@@ -142,31 +142,31 @@ public class TeamWorkflowManager {
          }
       }
       teamArt.setSoleAttributeValue(AtsAttributeTypes.EstimatedHours, hourEstimate);
-      teamArt.getStateMgr().updateMetrics(stateHoursSpent, statePercentComplete, true);
+      teamArt.getStateMgr().setMetrics(DefaultTeamState.Analyze.name(), stateHoursSpent, statePercentComplete, true);
       return Result.TrueResult;
    }
 
    public Result setAuthorizeData(boolean popup, int statePercentComplete, double stateHoursSpent) throws OseeCoreException {
-      if (!teamArt.getStateMgr().getCurrentStateName().equals("Authorize")) {
+      if (!teamArt.getStateMgr().getCurrentStateName().equals(DefaultTeamState.Authorize.name())) {
          Result result = new Result("Action not in Authorize state");
          if (result.isFalse() && popup) {
             result.popup();
             return result;
          }
       }
-      teamArt.getStateMgr().updateMetrics(stateHoursSpent, statePercentComplete, true);
+      teamArt.getStateMgr().setMetrics(DefaultTeamState.Authorize.name(), stateHoursSpent, statePercentComplete, true);
       return Result.TrueResult;
    }
 
    public Result setImplementData(boolean popup, String resolution, int statePercentComplete, double stateHoursSpent) throws OseeCoreException {
-      if (!teamArt.getStateMgr().getCurrentStateName().equals("Implement")) {
+      if (!teamArt.getStateMgr().getCurrentStateName().equals(DefaultTeamState.Implement.name())) {
          Result result = new Result("Action not in Implement state");
          if (result.isFalse() && popup) {
             result.popup();
             return result;
          }
       }
-      teamArt.getStateMgr().updateMetrics(stateHoursSpent, statePercentComplete, true);
+      teamArt.getStateMgr().setMetrics(DefaultTeamState.Implement.name(), stateHoursSpent, statePercentComplete, true);
       return Result.TrueResult;
    }
 
