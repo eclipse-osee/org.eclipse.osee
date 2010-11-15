@@ -56,7 +56,7 @@ public class AtsLog {
    @Override
    public String toString() {
       try {
-         return getLogItems().toString();
+         return org.eclipse.osee.framework.jdk.core.util.Collections.toString("\n", getLogItems());
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          return ex.getLocalizedMessage();

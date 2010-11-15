@@ -37,6 +37,7 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.actions.ConvertActionableItemsAction;
 import org.eclipse.osee.ats.actions.DeletePurgeAtsArtifactsAction;
+import org.eclipse.osee.ats.actions.EditStatusAction;
 import org.eclipse.osee.ats.actions.EmailActionAction;
 import org.eclipse.osee.ats.actions.FavoriteAction;
 import org.eclipse.osee.ats.actions.ISelectedAtsArtifacts;
@@ -52,7 +53,6 @@ import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.column.GoalOrderColumn;
 import org.eclipse.osee.ats.column.IPersistAltLeftClickProvider;
-import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.task.TaskEditorSimpleProvider;
@@ -116,7 +116,8 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       createMenuActions();
    }
 
-   Action editAction, editStatusAction, editActionableItemsAction;
+   Action editAction, editActionableItemsAction;
+   EditStatusAction editStatusAction;
    ConvertActionableItemsAction convertActionableItemsAction;
    Action openInAtsWorldEditorAction, openInAtsTaskEditorAction;
    OpenInAtsWorkflowEditor openInAtsWorkflowEditorAction;
@@ -138,19 +139,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       openInArtifactEditorAction = new OpenInArtifactEditorAction(this);
       deletePurgeAtsObjectAction = new DeletePurgeAtsArtifactsAction(this);
       emailAction = new EmailActionAction(this);
-
-      editStatusAction = new Action("Edit Status", IAction.AS_PUSH_BUTTON) {
-         @Override
-         public void run() {
-            try {
-               if (SMAPromptChangeStatus.promptChangeStatus(getSelectedSMAArtifacts(), true)) {
-                  update(getSelectedSMAArtifacts().toArray(), null);
-               }
-            } catch (Exception ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         }
-      };
+      editStatusAction = new EditStatusAction(this, this);
 
       editAction = new Action("Edit", IAction.AS_PUSH_BUTTON) {
          @Override
