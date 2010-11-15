@@ -27,7 +27,7 @@ Import-Package: org.eclipse.core.runtime,
  org.eclipse.osee.framework.skynet.core,
  org.eclipse.osee.framework.skynet.core.test,
  org.eclipse.osee.framework.ui.plugin.xnavigate,
- org.eclipse.osee.framework.ui.skynet.artifact,
+ org.eclipse.osee.framework.ui.skynet.render,
  org.eclipse.osee.framework.ui.skynet.test,
  org.eclipse.osee.support.test.util,
  org.osgi.framework

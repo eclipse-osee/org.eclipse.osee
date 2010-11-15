@@ -17,7 +17,7 @@ import org.eclipse.osee.define.test.AllDefineTestSuite;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.messaging.event.res.test.AllEventResTestSuite;
 import org.eclipse.osee.framework.skynet.core.test.FrameworkCore_Demo_Suite;
-import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactSaveNotificationHandler;
+import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.osee.framework.ui.skynet.test.FrameworkUi_Demo_Suite;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.AfterClass;
@@ -48,7 +48,8 @@ public class MasterTestSuite_DemoDbTests {
       assertTrue("Client must authenticate using demo protocol",
          ClientSessionManager.getSession().getAuthenticationProtocol().equals("demo"));
       assertTrue("Should be run on demo database.", TestUtil.isDemoDb());
-      ArtifactSaveNotificationHandler.setNoPopUp(true);
+
+      RenderingUtil.setPopupsAllowed(false);
       TestUtil.setIsInTest(true);
    }
 
