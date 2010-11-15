@@ -17,6 +17,8 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactURL;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 /**
  * @author Roberto E. Escobar
@@ -85,6 +87,22 @@ public class OseeLinkBuilder {
       getValidNumber(random.nextInt(19580427), random);
       String bookmarkTag = isStart ? BOOK_MARK_EDIT_START : BOOK_MARK_END;
       return String.format(bookmarkTag, 0, guid, 0);
+   }
+
+   public String extractGuid(Element element) {
+      String guid = "";
+
+      if (element.getNodeName().contains("annotation")) {
+         String elementName = "";
+         Node destinationAttribute = element.getAttributes().getNamedItem("w:name");
+         elementName = destinationAttribute.getNodeValue();
+
+         if (elementName.contains("oseebookmark")) {
+            String[] nameGuidPair = elementName.split("\\.");
+            guid = nameGuidPair[1];
+         }
+      }
+      return guid;
    }
 
    private int getValidNumber(int number, Random random) {

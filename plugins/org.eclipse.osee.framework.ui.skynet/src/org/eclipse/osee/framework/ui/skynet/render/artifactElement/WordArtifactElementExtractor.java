@@ -17,6 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.linking.OseeLinkBuilder;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
@@ -31,6 +32,17 @@ public class WordArtifactElementExtractor implements IElementExtractor {
    private static final String SECTION_TAG = "wx:sect";
    private static final String SUB_SECTION_TAG = "wx:sub-section";
    private static final String BODY_TAG = "w:body";
+   private static final String ANNOTATION = "annotation";
+   private static final String TYPE = "w:type";
+   private static final String NAME = "w:name";
+   private static final String PIC = "w:pic";
+   private static final String IMGAGE = "v:imagedata";
+   private static final String BIN_DATA = "w:binData";
+   private static final String BOOKMARK_END = "bookmarkEnd";
+   private static final String BOOKMARK_START = "bookmarkStart";
+   private static final String BOOKMARK = "oseebookmark";
+   private static final String BOOKMARK_END_TYPE = "Word.Bookmark.End";
+
    private final Map<String, Element> pictureMap;
    private Element oleDataElement;
    private final Document document;
@@ -62,6 +74,11 @@ public class WordArtifactElementExtractor implements IElementExtractor {
 
    @Override
    public List<Element> extractElements() throws DOMException, OseeCoreException {
+      OseeLinkBuilder linkBuilder = new OseeLinkBuilder();
+      return extractElements(linkBuilder);
+   }
+
+   public List<Element> extractElements(OseeLinkBuilder linkBuilder) throws DOMException, OseeCoreException {
       final List<Element> artifactElements = new LinkedList<Element>();
       Element rootElement = document.getDocumentElement();
       pictureMap.clear();
@@ -80,7 +97,7 @@ public class WordArtifactElementExtractor implements IElementExtractor {
                numberOfStartTags++;
                parseState = ParseState.LOOKING_FOR_END;
                newArtifactElement = document.createElement("WordAttribute.WORD_TEMPLATE_CONTENT");
-               populateNewArtifactElementFromHlink(newArtifactElement, getbookmarkDescendant(element));
+               populateNewArtifactElementFromBookmark(newArtifactElement, getbookmarkDescendant(element), linkBuilder);
                artifactElements.add(newArtifactElement);
 
                Node clonedElement = cloneWithoutArtifactEditTag(element, Side.right);
@@ -157,15 +174,16 @@ public class WordArtifactElementExtractor implements IElementExtractor {
    }
 
    private boolean isBookmarkEnd(Node descendant) {
-      boolean toReturn = false;
+      boolean isBookmark = false;
+      String annotationName = WordUtil.elementNameFor(ANNOTATION);
 
-      if (descendant.getNodeName().contains("bookmarkEnd")) {
-         toReturn = true;
-      } else if (descendant.getNodeName().contains("annotation")) {
-         Node destinationAttribute = descendant.getAttributes().getNamedItem("w:type");
-         toReturn = destinationAttribute.getNodeValue().contains("Word.Bookmark.End");
+      if (descendant.getNodeName().contains(BOOKMARK_END)) {
+         isBookmark = true;
+      } else if (descendant.getNodeName().contains(annotationName)) {
+         Node destinationAttribute = descendant.getAttributes().getNamedItem(TYPE);
+         isBookmark = destinationAttribute.getNodeValue().contains(BOOKMARK_END_TYPE);
       }
-      return toReturn;
+      return isBookmark;
    }
 
    private boolean isEditbookmark(Node element) {
@@ -174,12 +192,12 @@ public class WordArtifactElementExtractor implements IElementExtractor {
 
    private boolean isBookmarkStart(Node element) {
       boolean isBookmarkStart = false;
-      String ANNOTATION_NAME = WordUtil.elementNameFor("annotation");
+      String annotationName = WordUtil.elementNameFor(ANNOTATION);
       String name = element.getNodeName();
 
-      if (name.contains(ANNOTATION_NAME) || name.contains("bookmarkStart")) {
-         Node destinationAttribute = element.getAttributes().getNamedItem("w:name");
-         if (destinationAttribute != null && destinationAttribute.getNodeValue().contains("oseebookmark")) {
+      if (name.contains(annotationName) || name.contains(BOOKMARK_START)) {
+         Node destinationAttribute = element.getAttributes().getNamedItem(NAME);
+         if (destinationAttribute != null && destinationAttribute.getNodeValue().contains(BOOKMARK)) {
             isBookmarkStart = true;
          }
       }
@@ -193,24 +211,8 @@ public class WordArtifactElementExtractor implements IElementExtractor {
       }
    }
 
-   private void populateNewArtifactElementFromHlink(Element newArtifactElement, Element element) throws DOMException {
-      newArtifactElement.setAttribute("guid", getDest(element));
-   }
-
-   private String getDest(Element element) {
-      String guid = "";
-
-      if (element.getNodeName().contains("annotation")) {
-         String elementName = "";
-         Node destinationAttribute = element.getAttributes().getNamedItem("w:name");
-         elementName = destinationAttribute.getNodeValue();
-
-         if (elementName.contains("oseebookmark")) {
-            String[] nameGuidPair = elementName.split("\\.");
-            guid = nameGuidPair[1];
-         }
-      }
-      return guid;
+   private void populateNewArtifactElementFromBookmark(Element newArtifactElement, Element element, OseeLinkBuilder linkBuilder) throws DOMException {
+      newArtifactElement.setAttribute("guid", linkBuilder.extractGuid(element));
    }
 
    private boolean isArtifactEditTag(Element element) {
@@ -236,12 +238,12 @@ public class WordArtifactElementExtractor implements IElementExtractor {
       NodeList descendants = element.getElementsByTagName("*");
       for (int i = 0; i < descendants.getLength(); i++) {
          Node descendant = descendants.item(i);
-         if (descendant.getNodeName().contains("w:pic")) {
-            NodeList imageDataElement = ((Element) descendant).getElementsByTagName("v:imagedata");
+         if (descendant.getNodeName().contains(PIC)) {
+            NodeList imageDataElement = ((Element) descendant).getElementsByTagName(IMGAGE);
             if (imageDataElement.getLength() > 0) {
                String imgKey = ((Element) imageDataElement.item(0)).getAttribute("src");
                Element storedPictureElement = pictureMap.get(imgKey);
-               NodeList binDataElement = ((Element) descendant).getElementsByTagName("w:binData");
+               NodeList binDataElement = ((Element) descendant).getElementsByTagName(BIN_DATA);
 
                if (storedPictureElement != null) {
                   if (binDataElement.getLength() == 0) {
