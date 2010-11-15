@@ -53,12 +53,15 @@ public class AttributeTypeUtil {
 
       AttributeType nameType = null;
       AttributeType annotations = null;
+      AttributeType relationOrder = null;
 
       for (AttributeType type : typesInExistence) {
          if (CoreAttributeTypes.Name.equals(type)) {
             nameType = type;
          } else if (CoreAttributeTypes.Annotation.equals(type)) {
             annotations = type;
+         } else if (CoreAttributeTypes.RelationOrder.equals(type)) {
+            relationOrder = type;
          } else {
             items.add(type);
          }
@@ -69,6 +72,9 @@ public class AttributeTypeUtil {
       }
       if (annotations != null) {
          items.add(annotations);
+      }
+      if (relationOrder != null) {
+         items.add(relationOrder);
       }
       return items;
    }

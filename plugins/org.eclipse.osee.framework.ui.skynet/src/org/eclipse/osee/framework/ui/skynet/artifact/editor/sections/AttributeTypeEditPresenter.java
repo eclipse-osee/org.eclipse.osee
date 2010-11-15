@@ -72,8 +72,6 @@ public class AttributeTypeEditPresenter {
       Collection<? extends IAttributeType> selectedItems =
          selectItems(OperationType.ADD_ITEM, "Add Attribute Types", "add", input);
       if (!selectedItems.isEmpty()) {
-         handleDirtyEditor();
-
          for (IAttributeType attributeType : selectedItems) {
             artifact.addAttribute(attributeType);
          }
@@ -88,20 +86,21 @@ public class AttributeTypeEditPresenter {
       AttributeType type = null;
 
       for (Iterator<AttributeType> iterator = input.iterator(); iterator.hasNext(); type = iterator.next()) {
-         if (validTypesPerBranch.contains(type) && artifact.getAttributes(type).size() - 1 < type.getMinOccurrences()) {
-            iterator.remove();
+         if (validTypesPerBranch.contains(type)) {
+            int occurrencesAfterRemoval = artifact.getAttributes(type).size() - 1;
+            if (occurrencesAfterRemoval < type.getMinOccurrences()) {
+               iterator.remove();
+            }
          }
       }
       Collection<? extends IAttributeType> selectedItems =
          selectItems(OperationType.REMOVE_ITEM, "Delete Attribute Types", "remove", input);
       if (!selectedItems.isEmpty()) {
-         handleDirtyEditor();
-
          for (IAttributeType attributeType : selectedItems) {
             artifact.deleteAttributes(attributeType);
          }
+         display.removeWidgetFor(selectedItems);
       }
-      display.removeWidgetFor(selectedItems);
    }
 
    private Collection<? extends IAttributeType> selectItems(OperationType operationType, String title, String operationName, List<? extends IAttributeType> input) {

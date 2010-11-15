@@ -39,6 +39,11 @@ public class AttributesFormSection extends ArtifactEditorFormSection {
    }
 
    @Override
+   public ArtifactEditor getEditor() {
+      return (ArtifactEditor) super.getEditor();
+   }
+
+   @Override
    public void initialize(IManagedForm form) {
       super.initialize(form);
       Section section = getSection();
@@ -89,7 +94,7 @@ public class AttributesFormSection extends ArtifactEditorFormSection {
       sectionBody.setLayout(ALayout.getZeroMarginLayout());
       sectionBody.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      formPart = new AttributeFormPart((ArtifactEditor) getEditor());
+      formPart = new AttributeFormPart(getEditor());
       form.addPart(formPart);
       formPart.createContents(sectionBody);
       section.setClient(sectionBody);

@@ -60,6 +60,12 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
    }
 
    @Override
+   public void editorDirtyStateChanged() {
+      super.editorDirtyStateChanged();
+      getOutlinePage().refresh();
+   }
+
+   @Override
    public void onDirtied() {
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
@@ -191,7 +197,7 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
       return super.getAdapter(adapter);
    }
 
-   protected ArtifactEditorOutlinePage getOutlinePage() {
+   public ArtifactEditorOutlinePage getOutlinePage() {
       if (outlinePage == null) {
          outlinePage = new ArtifactEditorOutlinePage();
       }
@@ -231,9 +237,8 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
             setPartName(getEditorInput().getName());
             setTitleImage(getEditorInput().getImage());
             ArtifactEditorOutlinePage outlinePage = getOutlinePage();
-            if (outlinePage != null) {
-               outlinePage.refresh();
-            }
+            outlinePage.refresh();
+
             ArtifactFormPage page = getFormPage();
             if (page != null && Widgets.isAccessible(page.getPartControl())) {
                page.refresh();

@@ -32,7 +32,7 @@ public class AttributeActionContribution implements IActionContributor {
 
    public AttributeActionContribution(AttributesFormSection attributesForm) {
       AttributeTypeEditPresenter.Display view = new AttributeTypeEditDisplay(attributesForm);
-      ArtifactEditor editor = ((ArtifactEditor) attributesForm.getEditor());
+      ArtifactEditor editor = (attributesForm.getEditor());
       attributeTypeEditor = new AttributeTypeEditPresenter(new Model(editor), view);
    }
 
@@ -81,7 +81,6 @@ public class AttributeActionContribution implements IActionContributor {
       public void run() {
          try {
             attributeTypeEditor.onAddAttributeType();
-            attributeTypeEditor.refreshDirtyArtifact();
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
@@ -99,7 +98,6 @@ public class AttributeActionContribution implements IActionContributor {
       public void run() {
          try {
             attributeTypeEditor.onRemoveAttributeType();
-            attributeTypeEditor.refreshDirtyArtifact();
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
