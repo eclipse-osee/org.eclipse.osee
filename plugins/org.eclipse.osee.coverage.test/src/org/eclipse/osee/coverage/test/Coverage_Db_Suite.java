@@ -43,10 +43,14 @@ public class Coverage_Db_Suite {
    @BeforeClass
    public static void setUp() throws Exception {
       assertTrue("Should be run on test database.", TestUtil.isTestDb());
-      assertTrue("Application Server must be running.",
-         ClientSessionManager.getAuthenticationProtocols().contains("lba"));
-      assertTrue("Client must authenticate using lba protocol",
-         ClientSessionManager.getSession().getAuthenticationProtocol().equals("lba"));
+      assertTrue(
+         "Application Server must be running.",
+         ClientSessionManager.getAuthenticationProtocols().contains("lba") || ClientSessionManager.getAuthenticationProtocols().contains(
+            "demo"));
+      assertTrue(
+         "Client must authenticate using lba protocol",
+         ClientSessionManager.getSession().getAuthenticationProtocol().equals("lba") || ClientSessionManager.getSession().getAuthenticationProtocol().equals(
+            "demo"));
       TestUtil.setIsInTest(true);
    }
 
