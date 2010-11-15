@@ -307,6 +307,10 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
    }
 
    private void handleNewGroup() {
+      if (branch == null) {
+         AWorkbench.popup("Must select branch first");
+         return;
+      }
       EntryDialog ed =
          new EntryDialog(Displays.getActiveShell(), "Create New Group", null, "Enter Group Name",
             MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
