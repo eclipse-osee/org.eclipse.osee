@@ -99,11 +99,16 @@ public class AttributeTypeEditPresenterTest {
    private void testOperation(OperationType operationType, String expectedTitle, String expectedOpMessage, String expectedNoneMessage) throws OseeCoreException {
       editor.setDirty(true);
       editor.setWasSaved(false);
+      display.setAddWidgetsAttributeTypes(null);
+      display.setRemoveWidgetsAttributeTypes(null);
 
       // None Selected
       display.setSelected();
       List<IAttributeType> selectable = new ArrayList<IAttributeType>(Arrays.asList(selectableTypes));
       performOp(controller, operationType);
+
+      Assert.assertNull(display.getAddWidgetsAttributeTypes());
+      Assert.assertNull(display.getRemoveWidgetsAttributeTypes());
 
       // Editor not saved unless artifact change
       Assert.assertFalse(editor.wasSaved());
@@ -112,13 +117,19 @@ public class AttributeTypeEditPresenterTest {
 
       // Add one at a time
       for (IAttributeType itemToSelect : selectableTypes) {
+         display.setAddWidgetsAttributeTypes(null);
+         display.setRemoveWidgetsAttributeTypes(null);
 
          display.setSelected(itemToSelect);
+
          if (OperationType.ADD_ITEM == operationType) {
             Assert.assertTrue(artifact.getAttributes(itemToSelect).isEmpty());
          } else if (OperationType.REMOVE_ITEM == operationType) {
             Assert.assertFalse(artifact.getAttributes(itemToSelect).isEmpty());
          }
+
+         Assert.assertNull(display.getAddWidgetsAttributeTypes());
+         Assert.assertNull(display.getRemoveWidgetsAttributeTypes());
          performOp(controller, operationType);
 
          // Editor saved before adding types
@@ -129,15 +140,31 @@ public class AttributeTypeEditPresenterTest {
 
          if (OperationType.ADD_ITEM == operationType) {
             Assert.assertFalse(artifact.getAttributes(itemToSelect).isEmpty());
+            Assert.assertNull(display.getRemoveWidgetsAttributeTypes());
+
+            Collection<? extends IAttributeType> addedTypes = display.getAddWidgetsAttributeTypes();
+            Assert.assertEquals(1, addedTypes.size());
+            Assert.assertEquals(itemToSelect, addedTypes.iterator().next());
+
          } else if (OperationType.REMOVE_ITEM == operationType) {
             Assert.assertTrue(artifact.getAttributes(itemToSelect).isEmpty());
+            Assert.assertNull(display.getAddWidgetsAttributeTypes());
+
+            Collection<? extends IAttributeType> removedTypes = display.getRemoveWidgetsAttributeTypes();
+            Assert.assertEquals(1, removedTypes.size());
+            Assert.assertEquals(itemToSelect, removedTypes.iterator().next());
          }
          selectable.remove(itemToSelect);
       }
 
+      display.setAddWidgetsAttributeTypes(null);
+      display.setRemoveWidgetsAttributeTypes(null);
+
       // None Selectable
       display.setSelected();
       performOp(controller, operationType);
+      Assert.assertNull(display.getAddWidgetsAttributeTypes());
+      Assert.assertNull(display.getRemoveWidgetsAttributeTypes());
       Pair<String, String> info = display.getShowInfo();
       Assert.assertEquals(expectedTitle, info.getFirst());
       Assert.assertEquals(expectedNoneMessage, info.getSecond());
@@ -155,6 +182,8 @@ public class AttributeTypeEditPresenterTest {
       Assert.assertEquals(title, selectionInfo.getFirst());
       Assert.assertEquals(message, selectionInfo.getSecond());
       Assert.assertNull(display.getShowInfo());
+
+      //      display.getSelections(operationType, title, message, input)
    }
 
    private final static class MockEditor implements AttributeTypeEditPresenter.Model {
@@ -208,6 +237,8 @@ public class AttributeTypeEditPresenterTest {
       private OperationType operationType;
       private List<? extends IAttributeType> input;
       private Collection<? extends IAttributeType> selected;
+      private Collection<? extends IAttributeType> addWidgetsAttributeTypes;
+      private Collection<? extends IAttributeType> removeWidgetsAttributeTypes;
 
       private MockDisplay() {
          this.selected = Collections.emptyList();
@@ -263,12 +294,30 @@ public class AttributeTypeEditPresenterTest {
          this.input = input;
       }
 
+      public Collection<? extends IAttributeType> getAddWidgetsAttributeTypes() {
+         return addWidgetsAttributeTypes;
+      }
+
+      public Collection<? extends IAttributeType> getRemoveWidgetsAttributeTypes() {
+         return removeWidgetsAttributeTypes;
+      }
+
+      public void setAddWidgetsAttributeTypes(Collection<? extends IAttributeType> addWidgetsAttributeTypes) {
+         this.addWidgetsAttributeTypes = addWidgetsAttributeTypes;
+      }
+
+      public void setRemoveWidgetsAttributeTypes(Collection<? extends IAttributeType> removeWidgetsAttributeTypes) {
+         this.removeWidgetsAttributeTypes = removeWidgetsAttributeTypes;
+      }
+
       @Override
       public void addWidgetFor(Collection<? extends IAttributeType> attributeTypes) {
+         addWidgetsAttributeTypes = attributeTypes;
       }
 
       @Override
       public void removeWidgetFor(Collection<? extends IAttributeType> attributeTypes) {
+         removeWidgetsAttributeTypes = attributeTypes;
       }
    }
 }
