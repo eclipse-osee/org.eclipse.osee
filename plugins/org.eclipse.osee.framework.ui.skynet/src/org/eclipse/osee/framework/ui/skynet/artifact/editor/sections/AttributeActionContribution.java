@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.artifact.editor.sections;
 
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -44,16 +43,6 @@ public class AttributeActionContribution implements IActionContributor {
       }
 
       @Override
-      public void doSave() {
-         editor.doSave(new NullProgressMonitor());
-      }
-
-      @Override
-      public boolean isDirty() {
-         return editor.isDirty();
-      }
-
-      @Override
       public Artifact getArtifact() {
          return editor.getEditorInput().getArtifact();
       }
@@ -61,6 +50,11 @@ public class AttributeActionContribution implements IActionContributor {
       @Override
       public void refreshDirtyArtifact() {
          editor.refreshDirtyArtifact();
+      }
+
+      @Override
+      public void dirtyStateChanged() {
+         editor.editorDirtyStateChanged();
       }
    }
 

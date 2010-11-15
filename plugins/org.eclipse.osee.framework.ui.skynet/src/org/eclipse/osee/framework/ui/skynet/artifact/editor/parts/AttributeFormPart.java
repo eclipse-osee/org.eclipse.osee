@@ -82,7 +82,6 @@ public class AttributeFormPart extends AbstractFormPart {
    @Override
    public void refresh() {
       super.refresh();
-      editor.editorDirtyStateChanged();
       getManagedForm().getForm().getBody().layout(true);
    }
 

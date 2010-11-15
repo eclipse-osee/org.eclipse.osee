@@ -97,8 +97,7 @@ public class AttributeTypeEditPresenterTest {
    }
 
    private void testOperation(OperationType operationType, String expectedTitle, String expectedOpMessage, String expectedNoneMessage) throws OseeCoreException {
-      editor.setDirty(true);
-      editor.setWasSaved(false);
+      editor.setWasDirtyStateCalled(false);
       display.setAddWidgetsAttributeTypes(null);
       display.setRemoveWidgetsAttributeTypes(null);
 
@@ -111,12 +110,14 @@ public class AttributeTypeEditPresenterTest {
       Assert.assertNull(display.getRemoveWidgetsAttributeTypes());
 
       // Editor not saved unless artifact change
-      Assert.assertFalse(editor.wasSaved());
-      Assert.assertTrue(editor.isDirty());
+      Assert.assertFalse(editor.wasDirtyStateCalled());
       checkDisplay(display, operationType, expectedTitle, expectedOpMessage, selectable);
 
       // Add one at a time
       for (IAttributeType itemToSelect : selectableTypes) {
+         editor.setWasDirtyStateCalled(false);
+         Assert.assertFalse(editor.wasDirtyStateCalled());
+
          display.setAddWidgetsAttributeTypes(null);
          display.setRemoveWidgetsAttributeTypes(null);
 
@@ -132,9 +133,8 @@ public class AttributeTypeEditPresenterTest {
          Assert.assertNull(display.getRemoveWidgetsAttributeTypes());
          performOp(controller, operationType);
 
-         // Editor saved before adding types
-         Assert.assertTrue(editor.wasSaved());
-         Assert.assertFalse(editor.isDirty());
+         // Check Dirty State
+         Assert.assertTrue(editor.wasDirtyStateCalled());
 
          checkDisplay(display, operationType, expectedTitle, expectedOpMessage, selectable);
 
@@ -157,14 +157,22 @@ public class AttributeTypeEditPresenterTest {
          selectable.remove(itemToSelect);
       }
 
+      editor.setWasDirtyStateCalled(false);
+      Assert.assertFalse(editor.wasDirtyStateCalled());
+
       display.setAddWidgetsAttributeTypes(null);
       display.setRemoveWidgetsAttributeTypes(null);
+
+      //      artifact.deleteAttributes(CoreAttributeTypes.Name);
 
       // None Selectable
       display.setSelected();
       performOp(controller, operationType);
       Assert.assertNull(display.getAddWidgetsAttributeTypes());
       Assert.assertNull(display.getRemoveWidgetsAttributeTypes());
+
+      Assert.assertFalse(editor.wasDirtyStateCalled());
+
       Pair<String, String> info = display.getShowInfo();
       Assert.assertEquals(expectedTitle, info.getFirst());
       Assert.assertEquals(expectedNoneMessage, info.getSecond());
@@ -187,31 +195,15 @@ public class AttributeTypeEditPresenterTest {
    }
 
    private final static class MockEditor implements AttributeTypeEditPresenter.Model {
-      private boolean wasSaved;
-      private boolean dirty;
+      private boolean wasDirtyStateCalled;
       private Artifact artifact;
 
-      public void setDirty(boolean dirty) {
-         this.dirty = dirty;
+      public void setWasDirtyStateCalled(boolean wasDirtyStateCalled) {
+         this.wasDirtyStateCalled = wasDirtyStateCalled;
       }
 
-      public void setWasSaved(boolean wasSaved) {
-         this.wasSaved = wasSaved;
-      }
-
-      public boolean wasSaved() {
-         return wasSaved;
-      }
-
-      @Override
-      public void doSave() {
-         setWasSaved(true);
-         setDirty(false);
-      }
-
-      @Override
-      public boolean isDirty() {
-         return dirty;
+      public boolean wasDirtyStateCalled() {
+         return wasDirtyStateCalled;
       }
 
       @Override
@@ -226,6 +218,11 @@ public class AttributeTypeEditPresenterTest {
       @Override
       public void refreshDirtyArtifact() {
          // do nothing
+      }
+
+      @Override
+      public void dirtyStateChanged() {
+         this.wasDirtyStateCalled = true;
       }
 
    }

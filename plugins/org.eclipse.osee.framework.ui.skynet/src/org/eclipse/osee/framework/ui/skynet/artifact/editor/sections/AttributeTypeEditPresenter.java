@@ -39,9 +39,8 @@ public class AttributeTypeEditPresenter {
    }
 
    public static interface Model {
-      void doSave();
 
-      boolean isDirty();
+      void dirtyStateChanged();
 
       Artifact getArtifact();
 
@@ -54,12 +53,6 @@ public class AttributeTypeEditPresenter {
    public AttributeTypeEditPresenter(Model model, Display display) {
       this.display = display;
       this.model = model;
-   }
-
-   public void handleDirtyEditor() {
-      if (model.isDirty()) {
-         model.doSave();
-      }
    }
 
    public void refreshDirtyArtifact() {
@@ -76,6 +69,7 @@ public class AttributeTypeEditPresenter {
             artifact.addAttribute(attributeType);
          }
          display.addWidgetFor(selectedItems);
+         model.dirtyStateChanged();
       }
    }
 
@@ -83,9 +77,10 @@ public class AttributeTypeEditPresenter {
       Artifact artifact = model.getArtifact();
       Collection<AttributeType> validTypesPerBranch = artifact.getAttributeTypes();
       List<AttributeType> input = AttributeTypeUtil.getTypesWithData(artifact);
-      AttributeType type = null;
 
-      for (Iterator<AttributeType> iterator = input.iterator(); iterator.hasNext(); type = iterator.next()) {
+      Iterator<AttributeType> iterator = input.iterator();
+      while (iterator.hasNext()) {
+         AttributeType type = iterator.next();
          if (validTypesPerBranch.contains(type)) {
             int occurrencesAfterRemoval = artifact.getAttributes(type).size() - 1;
             if (occurrencesAfterRemoval < type.getMinOccurrences()) {
@@ -100,6 +95,7 @@ public class AttributeTypeEditPresenter {
             artifact.deleteAttributes(attributeType);
          }
          display.removeWidgetFor(selectedItems);
+         model.dirtyStateChanged();
       }
    }
 
