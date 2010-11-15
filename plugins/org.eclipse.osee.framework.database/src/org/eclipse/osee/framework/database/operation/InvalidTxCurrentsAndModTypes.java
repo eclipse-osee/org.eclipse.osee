@@ -44,11 +44,10 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
    private final boolean isFixOperationEnabled;
    private final String txsTableName;
 
-   private final String operationName;
-
    public InvalidTxCurrentsAndModTypes(String operationName, String tableName, String columnName, OperationReporter reporter, boolean isFixOperationEnabled, boolean archived) {
-      super("InvalidTxCurrentsAndModTypes " + tableName + " " + archived, Activator.PLUGIN_ID);
-      this.operationName = operationName;
+      super(
+         "InvalidTxCurrentsAndModTypes " + operationName + tableName + " fix:" + isFixOperationEnabled + " archived:" + archived,
+         Activator.PLUGIN_ID);
       this.tableName = tableName;
       this.columnName = columnName;
       this.isFixOperationEnabled = isFixOperationEnabled;
@@ -161,7 +160,7 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      reporter.report("Starting " + operationName);
+      reporter.report("Starting " + getName());
 
       checkForCancelledStatus(monitor);
 
@@ -198,6 +197,6 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
 
       fixIssues(monitor);
 
-      reporter.report("Completed " + operationName);
+      reporter.report("Completed " + getName());
    }
 }
