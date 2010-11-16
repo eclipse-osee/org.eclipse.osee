@@ -5,9 +5,15 @@
  */
 package org.eclipse.osee.ats.column;
 
+import java.util.logging.Level;
+import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
+import org.eclipse.osee.ats.artifact.TaskArtifact;
+import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.swt.SWT;
 
 public class LegacyPcrIdColumn extends XViewerAtsAttributeValueColumn {
@@ -32,6 +38,18 @@ public class LegacyPcrIdColumn extends XViewerAtsAttributeValueColumn {
       LegacyPcrIdColumn newXCol = new LegacyPcrIdColumn();
       copy(this, newXCol);
       return newXCol;
+   }
+
+   @Override
+   public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
+      if (element instanceof TaskArtifact) {
+         try {
+            return getColumnText(((TaskArtifact) element).getParentTeamWorkflow(), column, columnIndex);
+         } catch (OseeCoreException ex) {
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         }
+      }
+      return super.getColumnText(element, column, columnIndex);
    }
 
 }
