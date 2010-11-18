@@ -15,6 +15,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.debug.core.IStatusHandler;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
@@ -45,9 +46,11 @@ public class WordAttribute extends StringAttribute {
          Branch branch = art.getBranch();
 
          try {
-            if ((Boolean) DebugPlugin.getDefault().getStatusHandler(promptStatus).handleStatus(
-               promptStatus,
-               "This document contains track changes and cannot be saved with them. Do you want OSEE to remove them?" + "\n\nNote:You will need to reopen this artifact in OSEE to see the final result.")) {
+            String message =
+               "This document contains track changes and cannot be saved with them. Do you want OSEE to remove them?" + "\n\nNote:You will need to reopen this artifact in OSEE to see the final result.";
+            IStatusHandler handler = DebugPlugin.getDefault().getStatusHandler(promptStatus);
+            boolean isOkToRemove = (Boolean) handler.handleStatus(promptStatus, message);
+            if (isOkToRemove) {
                returnValue = WordUtil.removeAnnotations(value);
             } else {
                throw new OseeCoreException(String.format(
