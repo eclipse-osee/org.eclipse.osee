@@ -146,7 +146,7 @@ public class XText extends XWidget {
             composite.setLayoutData(new GridData(GridData.FILL_BOTH));
          } else {
             composite = new Composite(parent, SWT.NONE);
-            GridLayout layout = ALayout.getZeroMarginLayout(2, false);
+            GridLayout layout = ALayout.getZeroMarginLayout(horizontalSpan, false);
             layout.verticalSpacing = 4;
             composite.setLayout(layout);
             GridData gd = new GridData(GridData.FILL_HORIZONTAL);

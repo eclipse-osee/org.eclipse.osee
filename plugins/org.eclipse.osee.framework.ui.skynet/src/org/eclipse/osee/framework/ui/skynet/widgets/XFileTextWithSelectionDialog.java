@@ -54,7 +54,11 @@ public class XFileTextWithSelectionDialog extends XText {
 
    @Override
    public void createControls(final Composite parent, int horizontalSpan, boolean fillText) {
-      super.createControls(parent, horizontalSpan, fillText);
+      int lhspan = horizontalSpan;
+      if (!verticalLabel && lhspan < 3) {
+         lhspan = 3;
+      }
+      super.createControls(parent, lhspan, fillText);
 
       Button fileDialog = new Button(getStyledText().getParent(), SWT.NONE);
       fileDialog.setText("Select " + type.name());
