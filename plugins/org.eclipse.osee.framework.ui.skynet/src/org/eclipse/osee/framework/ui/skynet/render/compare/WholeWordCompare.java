@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
-import org.eclipse.osee.framework.skynet.core.word.WordAnnotationHandler;
+import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.skynet.preferences.MsWordPreferencePage;
 import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
@@ -123,9 +123,9 @@ public class WholeWordCompare implements IComparator {
       Pair<String, Boolean> annotation = null;
       if (attribute != null) {
          String value = attribute.getValue();
-         if (WordAnnotationHandler.containsWordAnnotations(value)) {
+         if (WordUtil.containsWordAnnotations(value)) {
             annotation = new Pair<String, Boolean>(value, attribute.isDirty());
-            attribute.setFromString(WordAnnotationHandler.removeAnnotations(value));
+            attribute.setFromString(WordUtil.removeAnnotations(value));
          }
       }
       return annotation;

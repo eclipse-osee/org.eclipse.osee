@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.WordWholeDocumentAttribute;
 import org.eclipse.osee.framework.skynet.core.linking.LinkType;
 import org.eclipse.osee.framework.skynet.core.linking.WordMlLinkHandler;
-import org.eclipse.osee.framework.skynet.core.word.WordAnnotationHandler;
+import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
 import org.eclipse.osee.framework.ui.skynet.render.compare.WholeWordCompare;
 
@@ -78,7 +78,7 @@ public class WholeWordRenderer extends WordRenderer {
          } else {
             Artifact artifact = artifacts.iterator().next();
             String content = artifact.getOrInitializeSoleAttributeValue(CoreAttributeTypes.WholeWordContent);
-            if (presentationType == PresentationType.DIFF && WordAnnotationHandler.containsWordAnnotations(content)) {
+            if (presentationType == PresentationType.DIFF && WordUtil.containsWordAnnotations(content)) {
                throw new OseeStateException(
                   "Trying to diff the [%s] artifact on the [%s] branch, which has tracked changes turned on.  All tracked changes must be removed before the artifacts can be compared.",
                   artifact.getName(), artifact.getBranch().getShortName());

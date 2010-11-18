@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
-import org.eclipse.osee.framework.skynet.core.word.WordAnnotationHandler;
+import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.skynet.preferences.MsWordPreferencePage;
 
 public final class RenderingUtil {
@@ -169,7 +169,7 @@ public final class RenderingUtil {
             if (attribute != null) {
                String value = attribute.getValue().toString();
                // check for track changes
-               if (WordAnnotationHandler.containsWordAnnotations(value)) {
+               if (WordUtil.containsWordAnnotations(value)) {
                   // capture those artifacts that have tracked changes on
                   artifacts.add(artifact);
                }

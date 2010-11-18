@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.linking.LinkType;
 import org.eclipse.osee.framework.skynet.core.linking.WordMlLinkHandler;
 import org.eclipse.osee.framework.skynet.core.test.util.FrameworkTestUtil;
-import org.eclipse.osee.framework.skynet.core.word.WordAnnotationHandler;
+import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.TestUtil;
@@ -46,14 +46,14 @@ public class WordTrackedChangesTest {
 
    @org.junit.Test
    public void testFindTrackChanges() throws Exception {
-      assertTrue(WordAnnotationHandler.containsWordAnnotations(getFileContent(TEST_WORD_EDIT_FILE_NAME)));
+      assertTrue(WordUtil.containsWordAnnotations(getFileContent(TEST_WORD_EDIT_FILE_NAME)));
    }
 
    @org.junit.Test
    public void testRemoveTrackChanges() throws Exception {
       String content = getFileContent(TEST_WORD_EDIT_FILE_NAME);
-      content = WordAnnotationHandler.removeAnnotations(content);
-      assertFalse(WordAnnotationHandler.containsWordAnnotations(content));
+      content = WordUtil.removeAnnotations(content);
+      assertFalse(WordUtil.containsWordAnnotations(content));
    }
 
    @org.junit.Test
@@ -66,7 +66,7 @@ public class WordTrackedChangesTest {
       newArt.persist();
       String unlinkedContent = WordMlLinkHandler.unlink(linkType, newArt, content);
 
-      assertTrue(WordAnnotationHandler.containsWordAnnotations(unlinkedContent));
+      assertTrue(WordUtil.containsWordAnnotations(unlinkedContent));
    }
 
    private String getFileContent(String fileName) throws IOException {

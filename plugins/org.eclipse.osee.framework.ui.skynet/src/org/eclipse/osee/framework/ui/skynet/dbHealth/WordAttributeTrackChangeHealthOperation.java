@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.dbHealth;
 
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.word.WordAnnotationHandler;
+import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 
 /**
  * @author Roberto E. Escobar
@@ -34,7 +34,7 @@ public class WordAttributeTrackChangeHealthOperation extends AbstractWordAttribu
 
    @Override
    protected void applyFix(AttrData attrData) {
-      String fixedData = WordAnnotationHandler.removeAnnotations(attrData.getResource().getData());
+      String fixedData = WordUtil.removeAnnotations(attrData.getResource().getData());
       attrData.getResource().setData(fixedData);
    }
 
@@ -48,7 +48,7 @@ public class WordAttributeTrackChangeHealthOperation extends AbstractWordAttribu
       boolean result = false;
       String data = resource.getData();
       if (Strings.isValid(data)) {
-         result = WordAnnotationHandler.containsWordAnnotations(data);
+         result = WordUtil.containsWordAnnotations(data);
       }
       return result;
    }
