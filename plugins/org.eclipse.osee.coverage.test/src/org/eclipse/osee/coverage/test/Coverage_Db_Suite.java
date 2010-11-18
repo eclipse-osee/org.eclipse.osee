@@ -18,8 +18,8 @@ import org.eclipse.osee.coverage.test.model.CoverageUnitPersistTest;
 import org.eclipse.osee.coverage.test.model.DbTestUnitProviderTest;
 import org.eclipse.osee.coverage.test.model.TestUnitStoreTest;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.osee.support.test.util.TestUtil;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -51,11 +51,7 @@ public class Coverage_Db_Suite {
          "Client must authenticate using lba protocol",
          ClientSessionManager.getSession().getAuthenticationProtocol().equals("lba") || ClientSessionManager.getSession().getAuthenticationProtocol().equals(
             "demo"));
-      TestUtil.setIsInTest(true);
+      RenderingUtil.setPopupsAllowed(false);
    }
 
-   @AfterClass
-   public static void tearDown() throws Exception {
-      TestUtil.setIsInTest(false);
-   }
 }

@@ -221,7 +221,6 @@ public class DemoTestUtil {
          Assert.assertTrue(
             "Authenticated user should be \"Joe Smith\" and is not.  Check that Demo Application Server is being run.",
             UserManager.getUser().getUserId().equals("Joe Smith"));
-         TestUtil.setIsInTest(true);
       } catch (OseeAuthenticationException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          Assert.fail("Can't authenticate, either Demo Application Server is not running or Demo DbInit has not been performed");

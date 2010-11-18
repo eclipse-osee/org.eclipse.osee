@@ -21,9 +21,9 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.osee.support.test.util.DemoUsers;
 import org.eclipse.osee.support.test.util.TestUtil;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 
@@ -37,7 +37,7 @@ public class MasterTestSuite_DemoDbInit {
    public static void setup() throws Exception {
       assertTrue("Demo Application Server must be running",
          ClientSessionManager.getAuthenticationProtocols().contains("demo"));
-      TestUtil.setIsInTest(true);
+      RenderingUtil.setPopupsAllowed(false);
    }
 
    @org.junit.Test
@@ -85,10 +85,5 @@ public class MasterTestSuite_DemoDbInit {
       } catch (Exception ex) {
          Assert.fail(Lib.exceptionToString(ex));
       }
-   }
-
-   @AfterClass
-   public static void tearDown() throws Exception {
-      TestUtil.setIsInTest(false);
    }
 }

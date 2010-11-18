@@ -97,7 +97,6 @@ public class AtsBranchConfigurationTest {
          throw new IllegalStateException("BranchConfigThroughTeamDefTest should not be run on production DB");
       }
       AtsBulkLoad.loadConfig(true);
-      TestUtil.setIsInTest(true);
    }
 
    @org.junit.Test
@@ -424,7 +423,6 @@ public class AtsBranchConfigurationTest {
    public void tearDown() throws Exception {
       cleanupBranchTest(AtsTestBranches.BranchViaVersions);
       cleanupBranchTest(AtsTestBranches.BranchViaTeamDef);
-      TestUtil.setIsInTest(false);
    }
 
    public static void configureAts(String namespace, String teamDefName, Collection<String> versionNames, Collection<String> actionableItems, String workflowId) throws Exception {

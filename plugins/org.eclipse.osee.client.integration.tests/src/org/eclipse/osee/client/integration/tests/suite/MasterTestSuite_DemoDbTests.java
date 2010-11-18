@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.skynet.core.test.FrameworkCore_Demo_Suite;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.osee.framework.ui.skynet.test.FrameworkUi_Demo_Suite;
 import org.eclipse.osee.support.test.util.TestUtil;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -52,11 +51,6 @@ public class MasterTestSuite_DemoDbTests {
       assertTrue("Should be run on demo database.", TestUtil.isDemoDb());
 
       RenderingUtil.setPopupsAllowed(false);
-      TestUtil.setIsInTest(true);
    }
 
-   @AfterClass
-   public static void tearDown() throws Exception {
-      TestUtil.setIsInTest(false);
-   }
 }

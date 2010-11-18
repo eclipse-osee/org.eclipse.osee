@@ -44,20 +44,6 @@ public class TestUtil {
       return DEMO_DB_TYPE.equals(OseeInfo.getCachedValue(OseeInfo.DB_TYPE_KEY));
    }
 
-   /**
-    * Need to match methods in OseeProperties
-    */
-   public static boolean isInTest() {
-      return Boolean.valueOf(System.getProperty("osee.isInTest"));
-   }
-
-   /**
-    * Need to match methods in OseeProperties
-    */
-   public static void setIsInTest(boolean isInTest) {
-      System.setProperty("osee.isInTest", String.valueOf(isInTest));
-   }
-
    public static void sleep(long milliseconds) throws Exception {
       System.out.println("Sleeping " + milliseconds);
       Thread.sleep(milliseconds);
