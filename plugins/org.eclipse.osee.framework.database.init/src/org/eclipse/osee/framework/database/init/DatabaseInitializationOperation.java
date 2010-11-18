@@ -242,6 +242,7 @@ public class DatabaseInitializationOperation {
          connection.connect();
          canConnection = true;
       } catch (Exception ex) {
+         // Do Nothing
       }
       return canConnection;
    }
