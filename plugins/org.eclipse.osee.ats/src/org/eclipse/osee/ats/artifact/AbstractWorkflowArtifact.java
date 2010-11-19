@@ -101,6 +101,19 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    @Override
+   public void onBirth() throws OseeCoreException {
+      super.onBirth();
+      if (getSoleAttributeValue(AtsAttributeTypes.CurrentStateType, null) == null) {
+         if (getSoleAttributeValue(AtsAttributeTypes.CurrentState, null) == null) {
+            setSoleAttributeValue(AtsAttributeTypes.CurrentState, "");
+         }
+         if (isAttributeTypeValid(AtsAttributeTypes.CurrentStateType)) {
+            setSoleAttributeValue(AtsAttributeTypes.CurrentStateType, WorkPageType.Working.name());
+         }
+      }
+   }
+
+   @Override
    public void onInitializationComplete() throws OseeCoreException {
       super.onInitializationComplete();
       initializeSMA();
@@ -119,14 +132,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    public void initalizePreSaveCache() {
       try {
-         if (getSoleAttributeValue(AtsAttributeTypes.CurrentStateType, null) == null) {
-            if (getSoleAttributeValue(AtsAttributeTypes.CurrentState, null) == null) {
-               setSoleAttributeValue(AtsAttributeTypes.CurrentState, "");
-            }
-            if (isAttributeTypeValid(AtsAttributeTypes.CurrentStateType)) {
-               setSoleAttributeValue(AtsAttributeTypes.CurrentStateType, WorkPageType.Working.name());
-            }
-         }
          stateMgr = new StateManager(this);
          atsLog = new AtsLog(new ArtifactLog(this));
          atsNote = new AtsNote(new ArtifactNote(this));

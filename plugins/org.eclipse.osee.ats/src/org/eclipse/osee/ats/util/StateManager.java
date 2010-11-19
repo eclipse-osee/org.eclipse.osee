@@ -146,7 +146,18 @@ public class StateManager {
    public WorkPageType getCurrentWorkPageType() {
       try {
          if (sma.isAttributeTypeValid(AtsAttributeTypes.CurrentStateType)) {
-            return WorkPageType.valueOf(sma.getSoleAttributeValueAsString(AtsAttributeTypes.CurrentStateType, null));
+            // backward compatibility
+            if (sma.getSoleAttributeValueAsString(AtsAttributeTypes.CurrentStateType, null) == null) {
+               if (getCurrentStateName().equals(TeamState.Completed.name())) {
+                  return WorkPageType.Completed;
+               } else if (getCurrentStateName().equals(TeamState.Cancelled.name())) {
+                  return WorkPageType.Cancelled;
+               } else {
+                  return WorkPageType.Working;
+               }
+            } else {
+               return WorkPageType.valueOf(sma.getSoleAttributeValueAsString(AtsAttributeTypes.CurrentStateType, null));
+            }
          } else {
             // display console error, but only once
             if (!notValidAttributeType.contains(sma.getArtifactTypeName())) {
