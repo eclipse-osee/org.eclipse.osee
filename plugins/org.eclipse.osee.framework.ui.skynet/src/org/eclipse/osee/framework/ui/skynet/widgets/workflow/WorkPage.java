@@ -36,7 +36,7 @@ import org.w3c.dom.Element;
  * 
  * @author Donald G. Dunne
  */
-public class WorkPage implements IDynamicWidgetLayoutListener {
+public class WorkPage implements IDynamicWidgetLayoutListener, IWorkPage {
 
    protected DynamicXWidgetLayout dynamicXWidgetLayout;
    protected final WorkPageDefinition workPageDefinition;
@@ -158,7 +158,7 @@ public class WorkPage implements IDynamicWidgetLayoutListener {
 
    public String getHtml(String backgroundColor, String preHtml, String postHtml) throws OseeCoreException {
       StringBuffer sb = new StringBuffer();
-      sb.append(AHTML.startBorderTable(100, backgroundColor, getName()));
+      sb.append(AHTML.startBorderTable(100, backgroundColor, getPageName()));
       if (preHtml != null) {
          sb.append(preHtml);
       }
@@ -223,8 +223,14 @@ public class WorkPage implements IDynamicWidgetLayoutListener {
       dynamicXWidgetLayout.processLayoutDatas(element);
    }
 
-   public String getName() {
+   @Override
+   public String getPageName() {
       return workPageDefinition.getPageName();
+   }
+
+   @Override
+   public WorkPageType getWorkPageType() {
+      return workPageDefinition.getWorkPageType();
    }
 
    public String getId() {
@@ -262,6 +268,26 @@ public class WorkPage implements IDynamicWidgetLayoutListener {
    @Override
    public int hashCode() {
       return super.hashCode();
+   }
+
+   @Override
+   public boolean isCompletedOrCancelledPage() {
+      return getWorkPageType().isCompletedOrCancelledPage();
+   }
+
+   @Override
+   public boolean isCompletedPage() {
+      return getWorkPageType().isCompletedPage();
+   }
+
+   @Override
+   public boolean isCancelledPage() {
+      return getWorkPageType().isCancelledPage();
+   }
+
+   @Override
+   public boolean isWorkingPage() {
+      return getWorkPageType().isWorkingPage();
    }
 
 }

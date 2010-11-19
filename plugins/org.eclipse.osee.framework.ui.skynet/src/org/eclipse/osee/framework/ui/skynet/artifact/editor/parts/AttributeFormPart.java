@@ -137,7 +137,7 @@ public class AttributeFormPart extends AbstractFormPart {
       super.dispose();
    }
 
-   private void setLabelFonts(Control parent, Font font) {
+   public static void setLabelFonts(Control parent, Font font) {
       if (parent instanceof Label) {
          Label label = (Label) parent;
          label.setFont(font);

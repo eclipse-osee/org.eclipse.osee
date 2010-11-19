@@ -59,7 +59,7 @@ public class CreatedDateColumn extends XViewerAtsColumn implements IXViewerValue
       if (object instanceof ActionArtifact) {
          return getDate(((ActionArtifact) object).getTeamWorkFlowArtifacts().iterator().next());
       } else if (object instanceof AbstractWorkflowArtifact) {
-         return ((AbstractWorkflowArtifact) object).getLog().getCreationDate();
+         return ((AbstractWorkflowArtifact) object).getCreatedDate();
       }
       return null;
    }

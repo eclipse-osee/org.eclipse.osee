@@ -30,12 +30,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
  */
 public class PeerToPeerReviewArtifact extends AbstractReviewArtifact implements IReviewArtifact, IATSStateMachineArtifact {
 
-   public static enum PeerToPeerReviewState {
-      Prepare,
-      Review,
-      Completed
-   };
-
    public PeerToPeerReviewArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
       defectManager = new DefectManager(this);
@@ -54,7 +48,7 @@ public class PeerToPeerReviewArtifact extends AbstractReviewArtifact implements 
          return new Status(IStatus.ERROR, namespace, "Must have at least one Reviewer");
       }
       // If in review state, all roles must have hours spent entered
-      if (getStateMgr().getCurrentStateName().equals(PeerToPeerReviewArtifact.PeerToPeerReviewState.Review.name())) {
+      if (isInState(PeerToPeerReviewState.Review)) {
          for (UserRole uRole : userRoleManager.getUserRoles()) {
             if (uRole.getHoursSpent() == null) {
                return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, "Hours spent must be entered for each role.");
@@ -71,7 +65,7 @@ public class PeerToPeerReviewArtifact extends AbstractReviewArtifact implements 
 
    @Override
    public Collection<User> getImplementers() throws OseeCoreException {
-      Collection<User> users = StateManager.getImplementersByState(this, PeerToPeerReviewState.Review.name());
+      Collection<User> users = StateManager.getImplementersByState(this, PeerToPeerReviewState.Review);
       for (UserRole role : userRoleManager.getUserRoles()) {
          users.add(role.getUser());
       }

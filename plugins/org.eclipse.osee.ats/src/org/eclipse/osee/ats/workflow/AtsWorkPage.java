@@ -16,7 +16,6 @@ import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.editor.stateItem.AtsStateItemManager;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.DefaultTeamState;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResolutionOptionRule;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -53,15 +52,11 @@ public class AtsWorkPage extends WorkPage {
    }
 
    public boolean isCurrentState(AbstractWorkflowArtifact sma) {
-      return sma.isCurrentState(getName());
+      return sma.isInState(this);
    }
 
    public boolean isCurrentNonCompleteCancelledState(AbstractWorkflowArtifact sma) {
-      return sma.isCurrentState(getName()) && !isCompleteCancelledState();
-   }
-
-   public boolean isCompleteCancelledState() {
-      return isCancelledPage() || isCompletePage();
+      return isCurrentState(sma) && !isCompletedOrCancelledPage();
    }
 
    @Override
@@ -106,18 +101,6 @@ public class AtsWorkPage extends WorkPage {
             }
          }
       }
-   }
-
-   public boolean isCompletePage() {
-      return getName().equals(DefaultTeamState.Completed.name());
-   }
-
-   public boolean isCancelledPage() {
-      return getName().equals(DefaultTeamState.Cancelled.name());
-   }
-
-   public boolean isEndorsePage() {
-      return getName().equals(DefaultTeamState.Endorse.name());
    }
 
    public TaskResolutionOptionRule getTaskResDef() {

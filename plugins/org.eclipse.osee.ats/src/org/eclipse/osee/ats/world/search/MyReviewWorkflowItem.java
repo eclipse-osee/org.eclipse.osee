@@ -67,7 +67,7 @@ public class MyReviewWorkflowItem extends UserSearchItem {
 
       List<Artifact> artifactsToReturn = new ArrayList<Artifact>(artifacts.size());
       for (Artifact artifact : artifacts) {
-         if (artifact instanceof AbstractReviewArtifact && (reviewState == ReviewState.All || reviewState == ReviewState.InWork && !((AbstractWorkflowArtifact) artifact).isCancelledOrCompleted())) {
+         if (artifact instanceof AbstractReviewArtifact && (reviewState == ReviewState.All || reviewState == ReviewState.InWork && !((AbstractWorkflowArtifact) artifact).isCompletedOrCancelled())) {
             artifactsToReturn.add(artifact);
          }
       }

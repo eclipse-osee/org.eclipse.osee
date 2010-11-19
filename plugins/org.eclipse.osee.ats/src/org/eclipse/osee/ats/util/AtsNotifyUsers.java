@@ -19,8 +19,6 @@ import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.artifact.log.LogItem;
-import org.eclipse.osee.ats.artifact.log.LogType;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.role.UserRole;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -97,7 +95,7 @@ public class AtsNotifyUsers implements IArtifactEventListener {
       List<NotifyType> types = Collections.getAggregate(notifyTypes);
 
       if (types.contains(NotifyType.Originator)) {
-         User originator = sma.getOriginator();
+         User originator = sma.getCreatedBy();
          if (originator.isActive()) {
             if (!EmailUtil.isEmailValid(originator)) {
                OseeLog.log(AtsPlugin.class, Level.INFO,
@@ -134,7 +132,7 @@ public class AtsNotifyUsers implements IArtifactEventListener {
          }
       }
       if (types.contains(NotifyType.Cancelled) || types.contains(NotifyType.Completed) && ((sma.isTeamWorkflow() || sma instanceof AbstractReviewArtifact) && (sma.isCompleted() || sma.isCancelled()))) {
-         User originator = sma.getOriginator();
+         User originator = sma.getCreatedBy();
          if (originator.isActive()) {
             if (!EmailUtil.isEmailValid(originator)) {
                OseeLog.log(AtsPlugin.class, Level.INFO,
@@ -146,12 +144,11 @@ public class AtsNotifyUsers implements IArtifactEventListener {
                         sma.getArtifactTypeName(), sma.getName())));
                }
                if (sma.isCancelled()) {
-                  LogItem cancelledItem = sma.getLog().getStateEvent(LogType.StateCancelled);
                   notificationManager.addNotificationEvent(new OseeNotificationEvent(Arrays.asList(originator),
                      getIdString(sma), NotifyType.Cancelled.name(), String.format(
                         "[%s] titled [%s] was cancelled from the [%s] state on [%s].<br>Reason: [%s]",
-                        sma.getArtifactTypeName(), sma.getName(), cancelledItem.getState(),
-                        cancelledItem.getDate(DateUtil.MMDDYYHHMM), cancelledItem.getMsg())));
+                        sma.getArtifactTypeName(), sma.getName(), sma.getCancelledFromState(),
+                        DateUtil.getMMDDYYHHMM(sma.internalGetCancelledDate()), sma.getCancelledReason())));
                }
             }
          }

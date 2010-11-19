@@ -16,6 +16,7 @@ import java.util.List;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
+import org.eclipse.osee.ats.artifact.DecisionReviewState;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.util.widgets.DecisionOption;
 import org.eclipse.osee.ats.util.widgets.XDecisionOptions;
@@ -72,9 +73,9 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
          return null;
       }
       if (followUpRequired) {
-         return DecisionReviewArtifact.DecisionReviewState.Followup.name();
+         return DecisionReviewState.Followup.getPageName();
       } else {
-         return DecisionReviewArtifact.DecisionReviewState.Completed.name();
+         return DecisionReviewState.Completed.getPageName();
       }
    }
 

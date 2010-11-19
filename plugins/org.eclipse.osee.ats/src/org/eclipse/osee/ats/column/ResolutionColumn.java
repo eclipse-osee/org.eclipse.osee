@@ -87,7 +87,7 @@ public class ResolutionColumn extends XViewerAtsAttributeValueColumn {
       return false;
    }
 
-   public boolean isSelectedTaskArtifactsAreInWork(final Collection<? extends TaskArtifact> tasks) {
+   public boolean isSelectedTaskArtifactsAreInWork(final Collection<? extends TaskArtifact> tasks) throws OseeCoreException {
       for (TaskArtifact taskArt : tasks) {
          if (!taskArt.isInWork()) {
             return false;

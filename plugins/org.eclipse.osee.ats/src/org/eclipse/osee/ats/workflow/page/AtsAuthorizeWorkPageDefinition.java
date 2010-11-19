@@ -11,23 +11,24 @@
 package org.eclipse.osee.ats.workflow.page;
 
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.util.DefaultTeamState;
+import org.eclipse.osee.ats.util.TeamState;
 import org.eclipse.osee.ats.workflow.flow.TeamWorkflowDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageType;
 
 /**
  * @author Donald G. Dunne
  */
 public class AtsAuthorizeWorkPageDefinition extends WorkPageDefinition {
 
-   public final static String ID = TeamWorkflowDefinition.ID + "." + DefaultTeamState.Authorize.name();
+   public final static String ID = TeamWorkflowDefinition.ID + "." + TeamState.Authorize.getPageName();
 
    public AtsAuthorizeWorkPageDefinition() {
-      this(DefaultTeamState.Authorize.name(), ID, null);
+      this(TeamState.Authorize.getPageName(), ID, null);
    }
 
    public AtsAuthorizeWorkPageDefinition(String name, String pageId, String parentId) {
-      super(name, pageId, parentId);
+      super(name, pageId, parentId, WorkPageType.Working);
       addWorkItem(AtsAttributeTypes.WorkPackage);
       addWorkItem(AtsAttributeTypes.EstimatedCompletionDate);
    }

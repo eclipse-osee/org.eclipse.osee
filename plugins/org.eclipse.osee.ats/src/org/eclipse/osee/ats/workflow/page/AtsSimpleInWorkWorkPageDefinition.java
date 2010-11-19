@@ -15,6 +15,7 @@ import org.eclipse.osee.ats.workflow.flow.SimpleWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.flow.SimpleWorkflowDefinition.SimpleState;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions.RuleWorkItemId;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageType;
 
 /**
  * @author Donald G. Dunne
@@ -28,7 +29,7 @@ public class AtsSimpleInWorkWorkPageDefinition extends WorkPageDefinition {
    }
 
    public AtsSimpleInWorkWorkPageDefinition(String name, String pageId, String parentId) {
-      super(name, pageId, parentId);
+      super(name, pageId, parentId, WorkPageType.Working);
       addWorkItem(RuleWorkItemId.atsRequireStateHourSpentPrompt.name());
       addWorkItem(AtsAttributeTypes.Resolution);
    }

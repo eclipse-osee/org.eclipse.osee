@@ -308,9 +308,9 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          // Only display current or past states
          for (AtsWorkPage atsWorkPage : sma.getAtsWorkPages()) {
             try {
-               if (sma.isCurrentState(atsWorkPage.getName()) || sma.getStateMgr().isStateVisited(atsWorkPage.getName())) {
+               if (sma.isInState(atsWorkPage) || sma.getStateMgr().isStateVisited(atsWorkPage)) {
                   // Don't show completed or cancelled state if not currently those state
-                  if (atsWorkPage.isCompletePage() && !sma.isCompleted()) {
+                  if (atsWorkPage.isCompletedPage() && !sma.isCompleted()) {
                      continue;
                   }
                   if (atsWorkPage.isCancelledPage() && !sma.isCancelled()) {
@@ -397,7 +397,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
 
       // Current Assignees
       if (isCurrentNonCompleteCanceledState) {
-         boolean editable = !sma.isCancelledOrCompleted() && !sma.isReadOnly() &&
+         boolean editable = !sma.isCompletedOrCancelled() && !sma.isReadOnly() &&
          // and access control writeable
          sma.isAccessControlWrite() && //
 
@@ -583,8 +583,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
 
       try {
          FormsUtil.createLabelText(toolkit, topLineComp, "Current State: ", sma.getStateMgr().getCurrentStateName());
-         FormsUtil.createLabelText(toolkit, topLineComp, "Created: ",
-            DateUtil.getMMDDYYHHMM(sma.getLog().getCreationDate()));
+         FormsUtil.createLabelText(toolkit, topLineComp, "Created: ", DateUtil.getMMDDYYHHMM(sma.getCreatedDate()));
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }

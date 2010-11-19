@@ -12,8 +12,8 @@ package org.eclipse.osee.ats.workflow.flow;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.ats.artifact.TaskArtifact.TaskStates;
-import org.eclipse.osee.ats.util.DefaultTeamState;
+import org.eclipse.osee.ats.artifact.TaskStates;
+import org.eclipse.osee.ats.util.TeamState;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.ats.workflow.page.AtsCancelledWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsCompletedWorkPageDefinition;
@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageType;
 
 /**
  * @author Donald G. Dunne
@@ -35,7 +36,7 @@ public class TaskWorkflowDefinition extends WorkFlowDefinition {
 
    public TaskWorkflowDefinition() {
       this(ID, ID);
-      startPageId = TaskStates.InWork.name();
+      startPageId = TaskStates.InWork.getPageName();
    }
 
    public TaskWorkflowDefinition(Artifact artifact) throws OseeCoreException {
@@ -52,10 +53,10 @@ public class TaskWorkflowDefinition extends WorkFlowDefinition {
 
       // Add Task Page and Workflow Definition
       workItems.add(new AtsTaskInWorkPageDefinition());
-      workItems.add(new WorkPageDefinition(DefaultTeamState.Completed.name(), ID + "." + TaskStates.Completed.name(),
-         AtsCompletedWorkPageDefinition.ID));
-      workItems.add(new WorkPageDefinition(DefaultTeamState.Cancelled.name(), ID + "." + TaskStates.Cancelled.name(),
-         AtsCancelledWorkPageDefinition.ID));
+      workItems.add(new WorkPageDefinition(TeamState.Completed.getPageName(),
+         ID + "." + TaskStates.Completed.getPageName(), AtsCompletedWorkPageDefinition.ID, WorkPageType.Completed));
+      workItems.add(new WorkPageDefinition(TeamState.Cancelled.getPageName(),
+         ID + "." + TaskStates.Cancelled.getPageName(), AtsCancelledWorkPageDefinition.ID, WorkPageType.Cancelled));
       workItems.add(new TaskWorkflowDefinition());
 
       return workItems;
@@ -63,13 +64,15 @@ public class TaskWorkflowDefinition extends WorkFlowDefinition {
 
    public TaskWorkflowDefinition(String name, String id) {
       super(name, id, null);
-      addPageTransition(TaskStates.InWork.name(), TaskStates.Completed.name(), TransitionType.ToPageAsDefault);
+      addPageTransition(TaskStates.InWork.getPageName(), TaskStates.Completed.getPageName(),
+         TransitionType.ToPageAsDefault);
 
       // Add return transitions
-      addPageTransition(TaskStates.Completed.name(), TaskStates.InWork.name(), TransitionType.ToPageAsReturn);
+      addPageTransition(TaskStates.Completed.getPageName(), TaskStates.InWork.getPageName(),
+         TransitionType.ToPageAsReturn);
 
       // Add cancelled transitions
-      addPageTransitionToPageAndReturn(TaskStates.InWork.name(), TaskStates.Cancelled.name());
+      addPageTransitionToPageAndReturn(TaskStates.InWork.getPageName(), TaskStates.Cancelled.getPageName());
    }
 
 }

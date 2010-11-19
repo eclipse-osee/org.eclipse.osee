@@ -36,17 +36,17 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.artifact.log.AtsLog;
 import org.eclipse.osee.ats.artifact.log.LogItem;
-import org.eclipse.osee.ats.artifact.log.LogType;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.internal.workflow.SMAState;
+import org.eclipse.osee.ats.internal.workflow.XCurrentStateDam;
+import org.eclipse.osee.ats.internal.workflow.XStateDam;
 import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.task.TaskEditorSimpleProvider;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.widgets.SMAState;
-import org.eclipse.osee.ats.util.widgets.XCurrentStateDam;
-import org.eclipse.osee.ats.util.widgets.XStateDam;
+import org.eclipse.osee.ats.util.TeamState;
 import org.eclipse.osee.ats.world.WorldXNavigateItemAction;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.SystemUser;
@@ -81,6 +81,7 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLo
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.util.email.EmailUtil;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkPage;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
@@ -443,7 +444,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                if (artifact instanceof AbstractWorkflowArtifact) {
                   XStateDam stateDam = new XStateDam((AbstractWorkflowArtifact) artifact);
                   for (SMAState state : stateDam.getStates()) {
-                     if (state.isCompletedOrCancelled() && state.getPercentComplete() != 0) {
+                     if ((state.getName().equals("Completed") || state.getName().equals("Cancelled")) && state.getPercentComplete() != 0) {
                         testNameToResultsMap.put(
                            "testAtsAttributeValues",
                            "Error: ats.State error for SMA: " + XResultData.getHyperlink(artifact) + " State: " + state.getName() + " Percent: " + state.getPercentComplete());
@@ -460,7 +461,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                if (artifact instanceof AbstractWorkflowArtifact) {
                   XCurrentStateDam currentStateDam = new XCurrentStateDam((AbstractWorkflowArtifact) artifact);
                   SMAState state = currentStateDam.getState();
-                  if (state.isCompletedOrCancelled() && state.getPercentComplete() != 0) {
+                  if ((state.getName().equals("Completed") || state.getName().equals("Cancelled")) && state.getPercentComplete() != 0) {
                      testNameToResultsMap.put(
                         "testAtsAttributeValues",
                         "Error: ats.CurrentState error for SMA: " + XResultData.getHyperlink(artifact) + " State: " + state.getName() + " Percent: " + state.getPercentComplete());
@@ -720,7 +721,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             AbstractWorkflowArtifact sma = (AbstractWorkflowArtifact) art;
             try {
                AtsLog log = sma.getLog();
-               if (log.getOriginator() == null) {
+               if (sma.getCreatedBy() == null) {
                   try {
                      testNameToResultsMap.put(
                         "testAtsLogs",
@@ -731,14 +732,14 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                         "Error: " + sma.getArtifactTypeName() + " " + XResultData.getHyperlink(sma) + " exception accessing originator: " + ex.getLocalizedMessage());
                   }
                }
-               for (String stateName : Arrays.asList("Completed", "Cancelled")) {
-                  if (sma.getStateMgr().getCurrentStateName().equals(stateName)) {
-                     LogItem logItem = log.getStateEvent(LogType.StateEntered, stateName);
+               for (IWorkPage state : Arrays.asList(TeamState.Completed, TeamState.Cancelled)) {
+                  if (sma.isInState(state)) {
+                     LogItem logItem = sma.getStateStartedData(state);
                      if (logItem == null) {
                         try {
                            testNameToResultsMap.put(
                               "testAtsLogs",
-                              "Error: " + sma.getArtifactTypeName() + " " + XResultData.getHyperlink(sma) + " state \"" + stateName + "\" logItem == null");
+                              "Error: " + sma.getArtifactTypeName() + " " + XResultData.getHyperlink(sma) + " state \"" + state + "\" logItem == null");
                         } catch (Exception ex) {
                            testNameToResultsMap.put(
                               "testAtsLogs",
@@ -749,7 +750,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                         try {
                            testNameToResultsMap.put(
                               "testAtsLogs",
-                              "Error: " + sma.getArtifactTypeName() + " " + XResultData.getHyperlink(sma) + " state \"" + stateName + "\" logItem.date == null");
+                              "Error: " + sma.getArtifactTypeName() + " " + XResultData.getHyperlink(sma) + " state \"" + state + "\" logItem.date == null");
                         } catch (Exception ex) {
                            testNameToResultsMap.put(
                               "testAtsLogs",

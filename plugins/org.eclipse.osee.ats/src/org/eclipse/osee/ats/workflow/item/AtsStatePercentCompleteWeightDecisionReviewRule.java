@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.workflow.item;
 
-import org.eclipse.osee.ats.artifact.DecisionReviewArtifact.DecisionReviewState;
+import org.eclipse.osee.ats.artifact.DecisionReviewState;
 
 /**
  * @author Donald G. Dunne
@@ -22,10 +22,10 @@ public class AtsStatePercentCompleteWeightDecisionReviewRule extends AtsStatePer
    public AtsStatePercentCompleteWeightDecisionReviewRule() {
       super(ID, ID);
       setDescription("State Percent Complete rule for Decision Review.");
-      addWorkDataKeyValue(DecisionReviewState.Prepare.name(), ".20");
-      addWorkDataKeyValue(DecisionReviewState.Decision.name(), ".69");
-      addWorkDataKeyValue(DecisionReviewState.Followup.name(), ".09");
-      addWorkDataKeyValue(DecisionReviewState.Completed.name(), ".01");
+      addWorkDataKeyValue(DecisionReviewState.Prepare.getPageName(), ".20");
+      addWorkDataKeyValue(DecisionReviewState.Decision.getPageName(), ".69");
+      addWorkDataKeyValue(DecisionReviewState.Followup.getPageName(), ".09");
+      addWorkDataKeyValue(DecisionReviewState.Completed.getPageName(), ".01");
    }
 
 }

@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.operation;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
@@ -25,6 +26,7 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -89,7 +91,9 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
                   final TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
                   SkynetTransaction transaction =
                      new SkynetTransaction(AtsUtil.getAtsBranch(), "Import Tasks from Simple List");
-                  teamArt.createTasks(titles, assignees, transaction);
+                  Date createdDate = new Date();
+                  User createdBy = UserManager.getUser();
+                  teamArt.createTasks(titles, assignees, createdDate, createdBy, transaction);
                   teamArt.persist(transaction);
                   transaction.execute();
                } catch (Exception ex) {

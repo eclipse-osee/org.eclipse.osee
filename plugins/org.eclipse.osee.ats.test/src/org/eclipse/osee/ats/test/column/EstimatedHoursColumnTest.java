@@ -5,6 +5,7 @@
  */
 package org.eclipse.osee.ats.test.column;
 
+import java.util.Date;
 import junit.framework.Assert;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
@@ -15,6 +16,7 @@ import org.eclipse.osee.ats.column.EstimatedHoursColumn;
 import org.eclipse.osee.ats.test.util.DemoTestUtil;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -41,9 +43,11 @@ public class EstimatedHoursColumnTest {
       ActionArtifact actionArt = teamArt1.getParentActionArtifact();
       TeamWorkFlowArtifact teamArt2 =
          DemoTestUtil.addTeamWorkflow(actionArt, EstimatedHoursColumnTest.class.getSimpleName(), transaction);
-      TaskArtifact taskArt1 = teamArt1.createNewTask(EstimatedHoursColumnTest.class.getSimpleName());
+      TaskArtifact taskArt1 =
+         teamArt1.createNewTask(EstimatedHoursColumnTest.class.getSimpleName(), new Date(), UserManager.getUser());
       taskArt1.persist(transaction);
-      TaskArtifact taskArt2 = teamArt1.createNewTask(EstimatedHoursColumnTest.class.getSimpleName());
+      TaskArtifact taskArt2 =
+         teamArt1.createNewTask(EstimatedHoursColumnTest.class.getSimpleName(), new Date(), UserManager.getUser());
       taskArt2.persist(transaction);
       PeerToPeerReviewArtifact peerArt =
          ReviewManager.createNewPeerToPeerReview(teamArt1, getClass().getSimpleName(),

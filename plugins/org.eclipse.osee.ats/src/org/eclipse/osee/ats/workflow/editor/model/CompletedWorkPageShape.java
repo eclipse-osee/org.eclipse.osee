@@ -16,6 +16,7 @@ import org.eclipse.osee.ats.workflow.page.AtsCompletedWorkPageDefinition;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageType;
 
 /**
  * @author Donald G. Dunne
@@ -23,7 +24,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 public class CompletedWorkPageShape extends WorkPageShape {
 
    public CompletedWorkPageShape() {
-      super(new WorkPageDefinition("Completed", "NEW", AtsCompletedWorkPageDefinition.ID));
+      super(new WorkPageDefinition("Completed", "NEW", AtsCompletedWorkPageDefinition.ID, WorkPageType.Completed));
    }
 
    @Override

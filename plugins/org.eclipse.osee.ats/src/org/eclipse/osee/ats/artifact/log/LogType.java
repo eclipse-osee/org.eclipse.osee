@@ -14,13 +14,13 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 
 public enum LogType {
    None,
+   Assign,
+   Released,
    Originated,
    StateComplete,
    StateCancelled,
    StateEntered,
-   Released,
    Error,
-   Assign,
    Note,
    Metrics;
 

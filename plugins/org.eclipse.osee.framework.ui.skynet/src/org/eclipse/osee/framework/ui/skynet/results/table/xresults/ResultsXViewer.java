@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.XViewerFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
@@ -26,8 +27,8 @@ import org.eclipse.swt.widgets.TreeItem;
  */
 public class ResultsXViewer extends XViewer {
 
-   public ResultsXViewer(Composite parent, int style, List<XViewerColumn> xColumns) {
-      super(parent, style, new ResultsXViewerFactory(xColumns));
+   public ResultsXViewer(Composite parent, int style, List<XViewerColumn> xColumns, XViewerFactory xViewerFactory) {
+      super(parent, style, xViewerFactory);
    }
 
    @Override

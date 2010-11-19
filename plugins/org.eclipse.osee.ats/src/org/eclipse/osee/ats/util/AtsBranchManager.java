@@ -39,6 +39,7 @@ import org.eclipse.osee.ats.workflow.item.AtsAddDecisionReviewRule.DecisionRuleO
 import org.eclipse.osee.ats.workflow.item.AtsAddPeerToPeerReviewRule;
 import org.eclipse.osee.ats.workflow.item.StateEventType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -56,6 +57,8 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.IExceptionableRunnable;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
+import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
@@ -370,8 +373,7 @@ public class AtsBranchManager {
          }
 
          if (teamArt.getTargetedVersion().getParentBranch() == null) {
-            return new Result(false,
-               "Parent Branch not configured for Version [" + teamArt.getTargetedVersion() + "]");
+            return new Result(false, "Parent Branch not configured for Version [" + teamArt.getTargetedVersion() + "]");
          }
          if (!teamArt.getTargetedVersion().getParentBranch().getBranchType().isBaselineBranch()) {
             return new Result(false, "Parent Branch must be of Baseline branch type.  See Admin for configuration.");
@@ -409,8 +411,7 @@ public class AtsBranchManager {
          }
 
          if (teamArt.getTargetedVersion().getParentBranch() == null) {
-            return new Result(false,
-               "Parent Branch not configured for Version [" + teamArt.getTargetedVersion() + "]");
+            return new Result(false, "Parent Branch not configured for Version [" + teamArt.getTargetedVersion() + "]");
          }
          return Result.TrueResult;
 
@@ -657,7 +658,7 @@ public class AtsBranchManager {
       return Result.TrueResult;
    }
 
-   public static void createNecessaryBranchEventReviews(StateEventType stateEventType, TeamWorkFlowArtifact teamArt, SkynetTransaction transaction) throws OseeCoreException {
+   public static void createNecessaryBranchEventReviews(StateEventType stateEventType, TeamWorkFlowArtifact teamArt, Date createdDate, User createdBy, SkynetTransaction transaction) throws OseeCoreException {
       if (stateEventType != StateEventType.CommitBranch && stateEventType != StateEventType.CreateBranch) {
          throw new OseeStateException("Invalid stateEventType [%s]", stateEventType);
       }
@@ -668,8 +669,8 @@ public class AtsBranchManager {
             if (eventType != null && eventType.equals(stateEventType)) {
                if (ruleId.equals(AtsAddDecisionReviewRule.ID)) {
                   DecisionReviewArtifact decArt =
-                     AtsAddDecisionReviewRule.createNewDecisionReview(workRuleDef, transaction, teamArt,
-                        DecisionRuleOption.TransitionToDecision);
+                     AtsAddDecisionReviewRule.createNewDecisionReview(workRuleDef, transaction, teamArt, createdDate,
+                        createdBy, DecisionRuleOption.TransitionToDecision);
                   if (decArt != null) {
                      decArt.persist(transaction);
                   }
@@ -722,7 +723,8 @@ public class AtsBranchManager {
             // Create reviews as necessary
             SkynetTransaction transaction =
                new SkynetTransaction(AtsUtil.getAtsBranch(), "Create Reviews upon Transition");
-            createNecessaryBranchEventReviews(StateEventType.CreateBranch, teamArt, transaction);
+            createNecessaryBranchEventReviews(StateEventType.CreateBranch, teamArt, new Date(),
+               UserManager.getUser(SystemUser.OseeSystem), transaction);
             transaction.execute();
             return Status.OK_STATUS;
          }

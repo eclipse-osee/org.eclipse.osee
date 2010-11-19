@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.test.config;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
@@ -31,7 +32,7 @@ import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.DefaultTeamState;
+import org.eclipse.osee.ats.util.TeamState;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.NamedIdentity;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
@@ -45,6 +46,7 @@ import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -154,7 +156,8 @@ public class AtsBranchConfigurationTest {
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
       ActionArtifact actionArt =
          ActionManager.createAction(null, AtsTestBranches.BranchViaVersions.getName() + " Req Changes", "description",
-            ChangeType.Problem, "1", false, null, selectedActionableItems, transaction);
+            ChangeType.Problem, "1", false, null, selectedActionableItems, new Date(), UserManager.getUser(),
+            transaction);
       actionArt.getTeamWorkFlowArtifacts().iterator().next().addRelation(
          AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, verArtToTarget);
       actionArt.getTeamWorkFlowArtifacts().iterator().next().persist(transaction);
@@ -167,7 +170,7 @@ public class AtsBranchConfigurationTest {
       OseeLog.log(AtsPlugin.class, Level.INFO, "Transitioning to Implement state");
 
       transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
-      dtwm.transitionTo(DefaultTeamState.Implement, null, false, transaction);
+      dtwm.transitionTo(TeamState.Implement, null, false, transaction);
       teamWf.persist(transaction);
       transaction.execute();
 
@@ -252,7 +255,7 @@ public class AtsBranchConfigurationTest {
       String actionTitle = AtsTestBranches.BranchViaTeamDef.getName() + " Req Changes";
       ActionArtifact actionArt =
          ActionManager.createAction(null, actionTitle, "description", ChangeType.Problem, "1", false, null,
-            selectedActionableItems, transaction);
+            selectedActionableItems, new Date(), UserManager.getUser(), transaction);
       transaction.execute();
 
       final TeamWorkFlowArtifact teamWf = actionArt.getTeamWorkFlowArtifacts().iterator().next();
@@ -262,7 +265,7 @@ public class AtsBranchConfigurationTest {
       OseeLog.log(AtsPlugin.class, Level.INFO, "Transitioning to Implement state");
       transaction =
          new SkynetTransaction(AtsUtil.getAtsBranch(), "Test branch via team definition: Transition to desired state");
-      dtwm.transitionTo(DefaultTeamState.Implement, null, false, transaction);
+      dtwm.transitionTo(TeamState.Implement, null, false, transaction);
       teamWf.persist(transaction);
       transaction.execute();
 

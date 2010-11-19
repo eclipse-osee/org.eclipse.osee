@@ -20,7 +20,7 @@ import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.DefaultTeamState;
+import org.eclipse.osee.ats.util.TeamState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
@@ -142,7 +142,10 @@ public class AtsLog {
       return logItems;
    }
 
-   public void setOriginator(User user) throws OseeCoreException {
+   /**
+    * Used to reset the original originated user. Only for internal use. Kept for backward compatibility.
+    */
+   public void internalResetOriginator(User user) throws OseeCoreException {
       List<LogItem> logItems = getLogItems();
       for (LogItem item : logItems) {
          if (item.getType() == LogType.Originated) {
@@ -153,7 +156,10 @@ public class AtsLog {
       }
    }
 
-   public void setCreationDate(Date date) throws OseeCoreException {
+   /**
+    * Used to reset the original originated user. Only for internal use. Kept for backward compatibility.
+    */
+   public void internalResetCreatedDate(Date date) throws OseeCoreException {
       List<LogItem> logItems = getLogItems();
       for (LogItem item : logItems) {
          if (item.getType() == LogType.Originated) {
@@ -164,15 +170,10 @@ public class AtsLog {
       }
    }
 
-   public String getCancellationReason() throws OseeCoreException {
-      LogItem item = getStateEvent(LogType.StateCancelled);
-      if (item == null) {
-         return "";
-      }
-      return item.getMsg();
-   }
-
-   public String getCancelledFromState() throws OseeCoreException {
+   /**
+    * This method is replaced by AbstractWorkflowArtifact.getCancelledFromState. Kept for backward compatibility.
+    */
+   public String internalGetCancelledFromState() throws OseeCoreException {
       LogItem item = getStateEvent(LogType.StateCancelled);
       if (item == null) {
          return "";
@@ -180,7 +181,10 @@ public class AtsLog {
       return item.getState();
    }
 
-   public String getCompletedFromState() throws OseeCoreException {
+   /**
+    * This method is replaced by AbstractWorkflowArtifact.getCompletedFromState. Kept for backward compatibility.
+    */
+   public String internalGetCompletedFromState() throws OseeCoreException {
       LogItem item = getStateEvent(LogType.StateComplete);
       if (item == null) {
          return "";
@@ -188,7 +192,10 @@ public class AtsLog {
       return item.getState();
    }
 
-   public void setCancellationReason(String reason) throws OseeCoreException {
+   /**
+    * This method is replaced by AbstractWorkflowArtifact.setCompletedFromState. Kept for backward compatibility.
+    */
+   public void internalSetCancellationReason(String reason) throws OseeCoreException {
       List<LogItem> logItems = getLogItemsReversed();
       for (LogItem item : logItems) {
          if (item.getType() == LogType.StateCancelled) {
@@ -200,9 +207,10 @@ public class AtsLog {
    }
 
    /**
-    * Since originator can be changed, return the date of the first originated log item
+    * Since originator can be changed, return the date of the first originated log item. Kept for backward
+    * compatibility.
     */
-   public Date getCreationDate() throws OseeCoreException {
+   public Date internalGetCreationDate() throws OseeCoreException {
       LogItem logItem = getEvent(LogType.Originated);
       if (logItem == null) {
          return null;
@@ -211,9 +219,9 @@ public class AtsLog {
    }
 
    /**
-    * Since originator change be changed, return the last originated event's user
+    * Since originator change be changed, return the last originated event's user. Kept for backward compatibility.
     */
-   public User getOriginator() throws OseeCoreException {
+   public User internalGetOriginator() throws OseeCoreException {
       LogItem logItem = getLastEvent(LogType.Originated);
       if (logItem == null) {
          return null;
@@ -351,16 +359,23 @@ public class AtsLog {
       return null;
    }
 
-   public LogItem getCancelledLogItem() throws OseeCoreException {
+   /**
+    * This method is replaced by Cancelled Date, By and Reason attributes. It will not work with multiple cancelled
+    * state design
+    */
+   public LogItem internalGetCancelledLogItem() throws OseeCoreException {
       if (cancelledLogItem == null) {
-         cancelledLogItem = getStateEvent(LogType.StateEntered, DefaultTeamState.Cancelled.name());
+         cancelledLogItem = getStateEvent(LogType.StateEntered, TeamState.Cancelled.getPageName());
       }
       return cancelledLogItem;
    }
 
-   public LogItem getCompletedLogItem() throws OseeCoreException {
+   /**
+    * This method is replaced by Completed Date, By attributes. It will not work with multiple completed state design
+    */
+   public LogItem internalGetCompletedLogItem() throws OseeCoreException {
       if (completedLogItem == null) {
-         completedLogItem = getStateEvent(LogType.StateEntered, DefaultTeamState.Completed.name());
+         completedLogItem = getStateEvent(LogType.StateEntered, TeamState.Completed.getPageName());
       }
       return completedLogItem;
    }

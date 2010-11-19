@@ -84,7 +84,7 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
    public String getParameterXWidgetXml() {
       return "<xWidgets>" +
       //
-      "<XWidget xwidgetType=\"XMembersCombo\" beginComposite=\"14\" displayName=\"User\" horizontalLabel=\"true\"/>" +
+      "<XWidget xwidgetType=\"XMembersCombo\" beginComposite=\"10\" displayName=\"User\" horizontalLabel=\"true\"/>" +
       //
       "<XWidget displayName=\"Assignee\" xwidgetType=\"XCheckBox\" defaultValue=\"true\" labelAfter=\"true\" horizontalLabel=\"true\"/>" +
       //
@@ -94,7 +94,7 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
       //
       "<XWidget displayName=\"Favorites\" xwidgetType=\"XCheckBox\" defaultValue=\"false\" labelAfter=\"true\" horizontalLabel=\"true\"/>" +
       //
-      "<XWidget displayName=\"Include Team Workflows\" xwidgetType=\"XCheckBox\" defaultValue=\"true\" labelAfter=\"true\" horizontalLabel=\"true\"/>" +
+      "<XWidget displayName=\"Include Team Workflows\" beginComposite=\"6\" xwidgetType=\"XCheckBox\" defaultValue=\"true\" labelAfter=\"true\" horizontalLabel=\"true\"/>" +
       //
       "<XWidget displayName=\"Include Reviews\" xwidgetType=\"XCheckBox\" defaultValue=\"true\" labelAfter=\"true\" horizontalLabel=\"true\"/>" +
       //

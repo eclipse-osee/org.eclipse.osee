@@ -16,6 +16,7 @@ import org.eclipse.osee.ats.workflow.page.AtsCancelledWorkPageDefinition;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageType;
 
 /**
  * @author Donald G. Dunne
@@ -27,7 +28,7 @@ public class CancelledWorkPageShape extends WorkPageShape {
    }
 
    public CancelledWorkPageShape() {
-      super(new WorkPageDefinition("Cancelled", "NEW", AtsCancelledWorkPageDefinition.ID));
+      super(new WorkPageDefinition("Cancelled", "NEW", AtsCancelledWorkPageDefinition.ID, WorkPageType.Cancelled));
    }
 
    @Override

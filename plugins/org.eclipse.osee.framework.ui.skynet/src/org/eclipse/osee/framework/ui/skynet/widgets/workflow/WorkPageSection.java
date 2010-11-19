@@ -31,7 +31,7 @@ public class WorkPageSection extends SectionPart {
 
    private Section createPage(Composite comp, WorkPage page, XFormToolkit toolkit) throws Exception {
       Section section = toolkit.createSection(comp, ExpandableComposite.TWISTIE | ExpandableComposite.TITLE_BAR);
-      section.setText(page.getName());
+      section.setText(page.getPageName());
       section.setExpanded(true);
       section.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 

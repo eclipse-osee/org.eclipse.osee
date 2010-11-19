@@ -14,6 +14,7 @@ import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.artifact.AbstractReviewArtifact.ReviewBlockType;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
@@ -25,12 +26,13 @@ import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsDeleteManager;
 import org.eclipse.osee.ats.util.AtsDeleteManager.DeleteOption;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.DefaultTeamState;
+import org.eclipse.osee.ats.util.TeamState;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.Named;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
+import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -194,9 +196,11 @@ public class AtsDeleteManagerTest {
    }
 
    private TeamWorkFlowArtifact createAction(TestNames testName, Collection<ActionableItemArtifact> actionableItems, SkynetTransaction transaction) throws OseeCoreException {
+      Date createdDate = new Date();
+      User createdBy = UserManager.getUser();
       ActionArtifact actionArt =
          ActionManager.createAction(null, testName.name(), "Description", ChangeType.Improvement, "2", false, null,
-            actionableItems, transaction);
+            actionableItems, createdDate, createdBy, transaction);
 
       TeamWorkFlowArtifact teamArt = null;
       for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts()) {
@@ -205,12 +209,13 @@ public class AtsDeleteManagerTest {
          }
       }
 
-      teamArt.createTasks(Arrays.asList(testName.name() + "Task 1", testName.name() + "Task 2"), null, transaction);
+      teamArt.createTasks(Arrays.asList(testName.name() + "Task 1", testName.name() + "Task 2"), null, createdDate,
+         createdBy, transaction);
 
       DecisionReviewArtifact decRev =
          ReviewManager.createNewDecisionReview(teamArt, ReviewBlockType.None, testName.name(),
-            DefaultTeamState.Endorse.name(), "Description", ReviewManager.getDefaultDecisionReviewOptions(),
-            Arrays.asList(UserManager.getUser()));
+            TeamState.Endorse.getPageName(), "Description", ReviewManager.getDefaultDecisionReviewOptions(),
+            Arrays.asList(UserManager.getUser()), createdDate, createdBy);
       decRev.persist(transaction);
 
       return teamArt;

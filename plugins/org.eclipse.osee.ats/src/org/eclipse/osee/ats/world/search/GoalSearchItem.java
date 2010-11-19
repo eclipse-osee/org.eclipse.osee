@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.DefaultTeamState;
 import org.eclipse.osee.ats.util.GoalManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -32,7 +31,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AbstractArtifactSearchCriteria;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeCriteria;
-import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 
 /**
@@ -118,10 +116,7 @@ public class GoalSearchItem extends WorldUISearchItem {
       }
 
       if (!showFinished) {
-         List<String> cancelOrComplete = new ArrayList<String>(2);
-         cancelOrComplete.add(DefaultTeamState.Cancelled.name() + ";;;");
-         cancelOrComplete.add(DefaultTeamState.Completed.name() + ";;;");
-         criteria.add(new AttributeCriteria(AtsAttributeTypes.CurrentState, cancelOrComplete, Operator.NOT_EQUAL));
+         TeamWorldSearchItem.addIncludeCompletedCancelledCriteria(criteria, false, false);
       }
 
       List<Artifact> artifacts =
@@ -136,7 +131,7 @@ public class GoalSearchItem extends WorldUISearchItem {
             if (userArt != null && !sma.getStateMgr().getAssignees().contains(userArt)) {
                continue;
             }
-            if (!showFinished && sma.isCancelledOrCompleted()) {
+            if (!showFinished && sma.isCompletedOrCancelled()) {
                continue;
             }
             resultGoalArtifacts.add(goalArt);

@@ -72,15 +72,15 @@ public class SMAPrint extends Action {
       resultData.addRaw(AHTML.beginMultiColumnTable(100));
       resultData.addRaw(AHTML.addRowMultiColumnTable(new String[] {
          //
-         AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Current State: ", sma.getState()),
+         AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Current State: ", sma.getCurrentStateName()),
          //
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Team: ", TeamColumn.getName(sma)),
          //
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Assignees: ", ((IWorldViewArtifact) sma).getAssigneeStr()),
          //
-         AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Originator: ", sma.getOriginatorStr()),
+         AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Originator: ", sma.getCreatedBy().getName()),
          //
-         AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Created: ", DateUtil.getMMDDYYHHMM(sma.getLog().getCreationDate()))
+         AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Created: ", DateUtil.getMMDDYYHHMM(sma.getCreatedDate()))
 
       }));
       resultData.addRaw(AHTML.endMultiColumnTable());
@@ -153,9 +153,9 @@ public class SMAPrint extends Action {
    private void getWorkFlowHtml(XResultData rd) throws OseeCoreException {
       // Only display current or past states
       for (AtsWorkPage atsWorkPage : sma.getAtsWorkPages()) {
-         if (sma.isCurrentState(atsWorkPage.getName()) || sma.getStateMgr().isStateVisited(atsWorkPage.getName())) {
+         if (sma.isInState(atsWorkPage) || sma.getStateMgr().isStateVisited(atsWorkPage)) {
             // Don't show completed or cancelled state if not currently those state
-            if (atsWorkPage.isCompletePage() && !sma.isCompleted()) {
+            if (atsWorkPage.isCompletedPage() && !sma.isCompleted()) {
                continue;
             }
             if (atsWorkPage.isCancelledPage() && !sma.isCancelled()) {
@@ -163,15 +163,14 @@ public class SMAPrint extends Action {
             }
             StringBuffer notesSb = new StringBuffer();
             for (NoteItem note : sma.getNotes().getNoteItems()) {
-               if (note.getState().equals(atsWorkPage.getName())) {
+               if (note.getState().equals(atsWorkPage.getPageName())) {
                   notesSb.append(note.toHTML());
                   notesSb.append(AHTML.newline());
                }
             }
-            if (sma.isCurrentState(atsWorkPage.getName()) || sma.getStateMgr().isStateVisited(atsWorkPage.getName()) && sma.isTeamWorkflow()) {
+            if (sma.isInState(atsWorkPage) || sma.getStateMgr().isStateVisited(atsWorkPage) && sma.isTeamWorkflow()) {
                atsWorkPage.generateLayoutDatas(sma);
-               rd.addRaw(atsWorkPage.getHtml(
-                  sma.isCurrentState(atsWorkPage.getName()) ? AtsUtil.activeColor : AtsUtil.normalColor,
+               rd.addRaw(atsWorkPage.getHtml(sma.isInState(atsWorkPage) ? AtsUtil.activeColor : AtsUtil.normalColor,
                   notesSb.toString(), getStateHoursSpentHtml(atsWorkPage) + getReviewData(sma, atsWorkPage)));
                rd.addRaw(AHTML.newline());
             }
@@ -181,14 +180,14 @@ public class SMAPrint extends Action {
 
    private String getReviewData(AbstractWorkflowArtifact sma, AtsWorkPage page) throws OseeCoreException {
       if (sma instanceof TeamWorkFlowArtifact) {
-         return ReviewInfoXWidget.toHTML((TeamWorkFlowArtifact) sma, page.getName());
+         return ReviewInfoXWidget.toHTML((TeamWorkFlowArtifact) sma, page);
       }
       return "";
    }
 
    private String getStateHoursSpentHtml(WorkPage page) throws OseeCoreException {
       return AHTML.getLabelValueStr("State Hours Spent",
-         AtsUtil.doubleToI18nString(sma.getStateMgr().getHoursSpent(page.getName())) + "<br>");
+         AtsUtil.doubleToI18nString(sma.getStateMgr().getHoursSpent(page)) + "<br>");
    }
 
    public boolean isIncludeTaskList() {

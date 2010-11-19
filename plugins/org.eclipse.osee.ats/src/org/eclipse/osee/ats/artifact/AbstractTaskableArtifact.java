@@ -13,13 +13,12 @@ package org.eclipse.osee.ats.artifact;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.artifact.TaskArtifact.TaskStates;
-import org.eclipse.osee.ats.artifact.log.LogType;
 import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
@@ -36,6 +35,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkPage;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 
 /**
@@ -79,13 +79,13 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
    }
 
    public Collection<TaskArtifact> getTaskArtifactsFromCurrentState() throws OseeCoreException {
-      return getTaskArtifacts(getStateMgr().getCurrentStateName());
+      return getTaskArtifacts(getStateMgr().getCurrentState());
    }
 
-   public Collection<TaskArtifact> getTaskArtifacts(String stateName) throws OseeCoreException {
+   public Collection<TaskArtifact> getTaskArtifacts(IWorkPage state) throws OseeCoreException {
       List<TaskArtifact> arts = new ArrayList<TaskArtifact>();
       for (TaskArtifact taskArt : getTaskArtifacts()) {
-         if (taskArt.getSoleAttributeValue(AtsAttributeTypes.RelatedToState, "").equals(stateName)) {
+         if (taskArt.getSoleAttributeValue(AtsAttributeTypes.RelatedToState, "").equals(state.getPageName())) {
             arts.add(taskArt);
          }
       }
@@ -96,22 +96,14 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
       return getRelatedArtifactsCount(AtsRelationTypes.SmaToTask_Task) > 0;
    }
 
-   public TaskArtifact createNewTask(String title) throws OseeCoreException {
-      return createNewTask(Arrays.asList(UserManager.getUser()), title);
+   public TaskArtifact createNewTask(String title, Date createdDate, User createdBy) throws OseeCoreException {
+      return createNewTask(Arrays.asList(UserManager.getUser()), title, createdDate, createdBy);
    }
 
-   public TaskArtifact createNewTask(User assignee, String title) throws OseeCoreException {
-      return createNewTask(Arrays.asList(assignee), title);
-   }
-
-   public TaskArtifact createNewTask(Collection<User> assignees, String title) throws OseeCoreException {
+   public TaskArtifact createNewTask(Collection<User> assignees, String title, Date createdDate, User createdBy) throws OseeCoreException {
       TaskArtifact taskArt = null;
       taskArt = (TaskArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Task, AtsUtil.getAtsBranch(), title);
-      taskArt.getLog().addLog(LogType.Originated, "", "");
-
-      // Initialize state machine
-      taskArt.getStateMgr().initializeStateMachine(TaskStates.InWork.name(), assignees);
-      taskArt.getLog().addLog(LogType.StateEntered, "InWork", "");
+      taskArt.initializeNewStateMachine(TaskStates.InWork, assignees, new Date(), UserManager.getUser());
 
       // Set parent state task is related to
       taskArt.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, getStateMgr().getCurrentStateName());
@@ -135,9 +127,9 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
       return Result.TrueResult;
    }
 
-   public Result areTasksComplete(String stateName) {
+   public Result areTasksComplete(IWorkPage state) {
       try {
-         for (TaskArtifact taskArt : getTaskArtifacts(stateName)) {
+         for (TaskArtifact taskArt : getTaskArtifacts(state)) {
             if (taskArt.isInWork()) {
                return new Result(false, "Task " + taskArt.getGuid() + " Not Complete");
             }
@@ -166,13 +158,13 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
    /**
     * Return Estimated Task Hours of "Related to State" stateName
     * 
-    * @param relatedToStateName state name of parent workflow's state
+    * @param relatedToState state name of parent workflow's state
     * @return Returns the Estimated Hours
     */
    @Override
-   public double getEstimatedHoursFromTasks(String relatedToStateName) throws OseeCoreException {
+   public double getEstimatedHoursFromTasks(IWorkPage relatedToState) throws OseeCoreException {
       double hours = 0;
-      for (TaskArtifact taskArt : getTaskArtifacts(relatedToStateName)) {
+      for (TaskArtifact taskArt : getTaskArtifacts(relatedToState)) {
          hours += taskArt.getEstimatedHoursTotal();
       }
       return hours;
@@ -194,12 +186,12 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
    /**
     * Return Remain Task Hours of "Related to State" stateName
     * 
-    * @param relatedToStateName state name of parent workflow's state
+    * @param relatedToState state name of parent workflow's state
     * @return Returns the Remain Hours
     */
-   public double getRemainHoursFromTasks(String relatedToStateName) throws OseeCoreException {
+   public double getRemainHoursFromTasks(IWorkPage relatedToState) throws OseeCoreException {
       double hours = 0;
-      for (TaskArtifact taskArt : getTaskArtifacts(relatedToStateName)) {
+      for (TaskArtifact taskArt : getTaskArtifacts(relatedToState)) {
          hours += taskArt.getRemainHoursFromArtifact();
       }
       return hours;
@@ -220,12 +212,12 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
    /**
     * Return Hours Spent for Tasks of "Related to State" stateName
     * 
-    * @param relatedToStateName state name of parent workflow's state
+    * @param relatedToState state name of parent workflow's state
     * @return Returns the Hours Spent
     */
-   public double getHoursSpentFromTasks(String relatedToStateName) throws OseeCoreException {
+   public double getHoursSpentFromTasks(IWorkPage relatedToState) throws OseeCoreException {
       double spent = 0;
-      for (TaskArtifact taskArt : getTaskArtifacts(relatedToStateName)) {
+      for (TaskArtifact taskArt : getTaskArtifacts(relatedToState)) {
          spent += taskArt.getHoursSpentSMATotal();
       }
       return spent;
@@ -234,12 +226,12 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
    /**
     * Return Total Percent Complete / # Tasks for "Related to State" stateName
     * 
-    * @param relatedToStateName state name of parent workflow's state
+    * @param relatedToState state name of parent workflow's state
     * @return Returns the Percent Complete.
     */
-   public int getPercentCompleteFromTasks(String relatedToStateName) throws OseeCoreException {
+   public int getPercentCompleteFromTasks(IWorkPage relatedToState) throws OseeCoreException {
       int spent = 0;
-      Collection<TaskArtifact> taskArts = getTaskArtifacts(relatedToStateName);
+      Collection<TaskArtifact> taskArts = getTaskArtifacts(relatedToState);
       for (TaskArtifact taskArt : taskArts) {
          spent += taskArt.getPercentCompleteSMATotal();
       }
@@ -249,10 +241,10 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
       return spent / taskArts.size();
    }
 
-   public Collection<TaskArtifact> createTasks(List<String> titles, List<User> assignees, SkynetTransaction transaction) throws OseeCoreException {
+   public Collection<TaskArtifact> createTasks(List<String> titles, List<User> assignees, Date createdDate, User createdBy, SkynetTransaction transaction) throws OseeCoreException {
       List<TaskArtifact> tasks = new ArrayList<TaskArtifact>();
       for (String title : titles) {
-         TaskArtifact taskArt = createNewTask(title);
+         TaskArtifact taskArt = createNewTask(title, createdDate, createdBy);
          if (assignees != null && !assignees.isEmpty()) {
             Set<User> users = new HashSet<User>(); // NOPMD by b0727536 on 9/29/10 8:51 AM
             for (User art : assignees) {

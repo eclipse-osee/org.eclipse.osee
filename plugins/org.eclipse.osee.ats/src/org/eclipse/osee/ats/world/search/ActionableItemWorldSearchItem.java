@@ -24,7 +24,6 @@ import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.DefaultTeamState;
 import org.eclipse.osee.ats.util.widgets.dialog.ActionActionableItemListDialog;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -32,7 +31,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AbstractArtifactSearchCriteria;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeCriteria;
-import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 
 /**
@@ -138,10 +136,7 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
       criteria.add(new AttributeCriteria(AtsAttributeTypes.ActionableItem, actionItemGuids));
       // exclude completed or canceled
       if (!selectedShowFinished) {
-         List<String> cancelOrComplete = new ArrayList<String>(2);
-         cancelOrComplete.add(DefaultTeamState.Cancelled.name() + ";;;");
-         cancelOrComplete.add(DefaultTeamState.Completed.name() + ";;;");
-         criteria.add(new AttributeCriteria(AtsAttributeTypes.CurrentState, cancelOrComplete, Operator.NOT_EQUAL));
+         TeamWorldSearchItem.addIncludeCompletedCancelledCriteria(criteria, false, false);
       }
       Collection<Artifact> artifacts =
          ArtifactQuery.getArtifactListFromCriteria(AtsUtil.getAtsBranch(), 1000, criteria);

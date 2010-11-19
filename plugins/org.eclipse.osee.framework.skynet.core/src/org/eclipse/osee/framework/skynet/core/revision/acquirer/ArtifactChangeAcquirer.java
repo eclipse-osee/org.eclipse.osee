@@ -46,7 +46,9 @@ public class ArtifactChangeAcquirer extends ChangeAcquirer {
       TransactionRecord fromTransactionId;
       TransactionRecord toTransactionId;
 
-      getMonitor().subTask("Gathering New or Deleted Artifacts");
+      if (getMonitor() != null) {
+         getMonitor().subTask("Gathering New or Deleted Artifacts");
+      }
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
 
@@ -86,7 +88,9 @@ public class ArtifactChangeAcquirer extends ChangeAcquirer {
             artifactChangeBuilders.put(artId, artifactChangeBuilder);
          }
 
-         getMonitor().worked(25);
+         if (getMonitor() != null) {
+            getMonitor().worked(25);
+         }
       } finally {
          chStmt.close();
       }

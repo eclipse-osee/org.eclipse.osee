@@ -15,10 +15,13 @@ import java.util.Collection;
 import org.eclipse.osee.ats.util.TransitionOption;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem;
 import org.eclipse.osee.ats.util.widgets.role.UserRole;
+import org.eclipse.osee.ats.workflow.TransitionManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkPage;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageType;
 
 /**
  * Methods in support of programatically transitioning the Peer Review Workflow through it's states. Only to be used for
@@ -38,17 +41,18 @@ public final class PeerToPeerReviewWorkflowManager {
     * 
     * @param user User to transition to OR null if should use user of current state
     */
-   public static Result transitionTo(PeerToPeerReviewArtifact reviewArt, PeerToPeerReviewArtifact.PeerToPeerReviewState toState, Collection<UserRole> roles, Collection<DefectItem> defects, User user, boolean popup, SkynetTransaction transaction) throws OseeCoreException {
+   public static Result transitionTo(PeerToPeerReviewArtifact reviewArt, PeerToPeerReviewState toState, Collection<UserRole> roles, Collection<DefectItem> defects, User user, boolean popup, SkynetTransaction transaction) throws OseeCoreException {
       Result result = setPrepareStateData(popup, reviewArt, roles, "DoThis.java", 100, .2, transaction);
       if (result.isFalse()) {
          return result;
       }
       result =
-         transitionToState(popup, reviewArt, PeerToPeerReviewArtifact.PeerToPeerReviewState.Review.name(), transaction);
+         transitionToState(PeerToPeerReviewState.Review.getWorkPageType(), popup, reviewArt,
+            PeerToPeerReviewState.Review, transaction);
       if (result.isFalse()) {
          return result;
       }
-      if (toState == PeerToPeerReviewArtifact.PeerToPeerReviewState.Review) {
+      if (toState == PeerToPeerReviewState.Review) {
          return Result.TrueResult;
       }
 
@@ -58,17 +62,18 @@ public final class PeerToPeerReviewWorkflowManager {
       }
 
       result =
-         transitionToState(popup, reviewArt, PeerToPeerReviewArtifact.PeerToPeerReviewState.Completed.name(),
-            transaction);
+         transitionToState(PeerToPeerReviewState.Completed.getWorkPageType(), popup, reviewArt,
+            PeerToPeerReviewState.Completed, transaction);
       if (result.isFalse()) {
          return result;
       }
       return Result.TrueResult;
    }
 
-   private static Result transitionToState(boolean popup, PeerToPeerReviewArtifact teamArt, String toState, SkynetTransaction transaction) throws OseeCoreException {
+   private static Result transitionToState(WorkPageType workPageType, boolean popup, PeerToPeerReviewArtifact reviewArt, IWorkPage toState, SkynetTransaction transaction) throws OseeCoreException {
+      TransitionManager transitionMgr = new TransitionManager(reviewArt);
       Result result =
-         teamArt.transition(toState, teamArt.getStateMgr().getAssignees().iterator().next(), transaction,
+         transitionMgr.transition(toState, reviewArt.getStateMgr().getAssignees().iterator().next(), transaction,
             TransitionOption.None);
       if (result.isFalse() && popup) {
          result.popup();
@@ -77,7 +82,7 @@ public final class PeerToPeerReviewWorkflowManager {
    }
 
    public static Result setPrepareStateData(boolean popup, PeerToPeerReviewArtifact reviewArt, Collection<UserRole> roles, String reviewMaterials, int statePercentComplete, double stateHoursSpent, SkynetTransaction transaction) throws OseeCoreException {
-      if (!reviewArt.getStateMgr().getCurrentStateName().equals("Prepare")) {
+      if (!reviewArt.isInState(PeerToPeerReviewState.Prepare)) {
          Result result = new Result("Action not in Prepare state");
          if (result.isFalse() && popup) {
             result.popup();

@@ -53,7 +53,8 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
    protected XCombo releasedCombo = null;
    protected XCombo versionCombo = null;
    protected XMembersCombo assigneeCombo;
-   protected XCheckBox includeCompletedCancelledCheckbox;
+   protected XCheckBox includeCompletedCheckbox;
+   protected XCheckBox includeCancelledCheckbox;
    protected XCheckBox showFlatCheckbox;
 
    public TeamWorkflowSearchWorkflowSearchItem(String name) {
@@ -83,17 +84,19 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
    public String getParameterXWidgetXml() throws OseeCoreException {
       return "<xWidgets>" +
       //
-      "<XWidget xwidgetType=\"XHyperlabelTeamDefinitionSelection\" displayName=\"Team Definitions(s)\" horizontalLabel=\"true\"/>" +
+      "<XWidget displayName=\"Team Definitions(s)\" xwidgetType=\"XHyperlabelTeamDefinitionSelection\" horizontalLabel=\"true\"/>" +
       //
-      "<XWidget xwidgetType=\"XCombo()\" beginComposite=\"10\" displayName=\"Version\" horizontalLabel=\"true\"/>" +
+      "<XWidget displayName=\"Version\" xwidgetType=\"XCombo()\" beginComposite=\"6\" horizontalLabel=\"true\"/>" +
       //
-      "<XWidget xwidgetType=\"XCombo(Both,Released,UnReleased)\" displayName=\"Released\" horizontalLabel=\"true\"/>" +
+      "<XWidget displayName=\"Released\" xwidgetType=\"XCombo(Both,Released,UnReleased)\" horizontalLabel=\"true\"/>" +
       //
-      "<XWidget xwidgetType=\"XMembersCombo\" displayName=\"Assignee\" horizontalLabel=\"true\"/>" +
+      "<XWidget displayName=\"Assignee\" xwidgetType=\"XMembersCombo\" horizontalLabel=\"true\"/>" +
       //
-      "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Include Completed/Cancelled\" defaultValue=\"false\" labelAfter=\"true\" horizontalLabel=\"true\"/>" +
+      "<XWidget displayName=\"Include Completed\" beginComposite=\"6\" xwidgetType=\"XCheckBox\" defaultValue=\"false\" labelAfter=\"true\" horizontalLabel=\"true\"/>" +
       //
-      "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Show Flat\" defaultValue=\"false\" labelAfter=\"true\" horizontalLabel=\"true\" toolTip=\"Show Tasks/Reviews flattened instead of hierarchcial\"/>" +
+      "<XWidget displayName=\"Include Cancelled\" xwidgetType=\"XCheckBox\" defaultValue=\"false\" labelAfter=\"true\" horizontalLabel=\"true\"/>" +
+      //
+      "<XWidget displayName=\"Show Flat\" xwidgetType=\"XCheckBox\" defaultValue=\"false\" labelAfter=\"true\" horizontalLabel=\"true\" toolTip=\"Show Tasks/Reviews flattened instead of hierarchcial\"/>" +
       //
       "</xWidgets>";
    }
@@ -101,8 +104,9 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
    @Override
    public Collection<? extends Artifact> performSearchGetResults(SearchType searchType) throws OseeCoreException {
       Collection<Artifact> artifacts =
-         new TeamWorldSearchItem("", getSelectedTeamDefinitions(), isIncludeCompletedCancelledCheckbox(), false, false,
-            getSelectedVersionArtifact(), getSelectedUser(), getSelectedReleased()).performSearchGetResults(false);
+         new TeamWorldSearchItem("", getSelectedTeamDefinitions(), isIncludeCompletedCheckbox(),
+            isIncludeCancelledCheckbox(), false, false, getSelectedVersionArtifact(), getSelectedUser(),
+            getSelectedReleased()).performSearchGetResults(false);
       return filterShowFlat(artifacts);
    }
 
@@ -143,8 +147,14 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
          sb.append(" - Assignee: ");
          sb.append(getSelectedUser());
       }
-      if (isIncludeCompletedCancelledCheckbox()) {
+      if (isIncludeCompletedCheckbox() && isIncludeCancelledCheckbox()) {
          sb.append(" - Include Completed/Cancelled");
+      }
+      if (isIncludeCompletedCheckbox()) {
+         sb.append(" - Include Completed");
+      }
+      if (isIncludeCancelledCheckbox()) {
+         sb.append(" - Include Cancelled");
       }
       return Strings.truncate(getName() + sb.toString(), WorldEditor.TITLE_MAX_LENGTH, true);
    }
@@ -155,8 +165,11 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
       if (widget.getLabel().equals("Assignee")) {
          assigneeCombo = (XMembersCombo) widget;
       }
-      if (widget.getLabel().equals("Include Completed/Cancelled")) {
-         includeCompletedCancelledCheckbox = (XCheckBox) widget;
+      if (widget.getLabel().equals("Include Completed")) {
+         includeCompletedCheckbox = (XCheckBox) widget;
+      }
+      if (widget.getLabel().equals("Include Cancelled")) {
+         includeCancelledCheckbox = (XCheckBox) widget;
       }
       if (widget.getLabel().equals("Show Flat")) {
          showFlatCheckbox = (XCheckBox) widget;
@@ -215,16 +228,29 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
       }
    }
 
-   protected boolean isIncludeCompletedCancelledCheckbox() {
-      if (includeCompletedCancelledCheckbox == null) {
+   protected boolean isIncludeCancelledCheckbox() {
+      if (includeCancelledCheckbox == null) {
          return false;
       }
-      return includeCompletedCancelledCheckbox.isSelected();
+      return includeCancelledCheckbox.isSelected();
    }
 
-   public void includeCompletedCancelledCheckbox(boolean selected) {
-      if (includeCompletedCancelledCheckbox != null) {
-         includeCompletedCancelledCheckbox.set(selected);
+   public void setIncludeCancelledCheckbox(boolean selected) {
+      if (includeCancelledCheckbox != null) {
+         includeCancelledCheckbox.set(selected);
+      }
+   }
+
+   protected boolean isIncludeCompletedCheckbox() {
+      if (includeCompletedCheckbox == null) {
+         return false;
+      }
+      return includeCompletedCheckbox.isSelected();
+   }
+
+   public void setIncludeCompletedCheckbox(boolean selected) {
+      if (includeCompletedCheckbox != null) {
+         includeCompletedCheckbox.set(selected);
       }
    }
 
@@ -324,7 +350,7 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
          if (user != null) {
             selected = true;
          }
-         boolean includeCompleted = isIncludeCompletedCancelledCheckbox();
+         boolean includeCompleted = isIncludeCompletedCheckbox() || isIncludeCancelledCheckbox();
          if (!selected) {
             return new Result("You must select at least Team, Version or Assignee.");
          }

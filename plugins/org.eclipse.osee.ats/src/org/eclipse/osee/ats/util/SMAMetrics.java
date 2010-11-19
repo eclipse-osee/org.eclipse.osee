@@ -188,27 +188,27 @@ public class SMAMetrics {
       return smas;
    }
 
-   public Collection<TeamWorkFlowArtifact> getCompletedTeamWorkflows() {
+   public Collection<TeamWorkFlowArtifact> getCompletedTeamWorkflows() throws OseeCoreException {
       Set<TeamWorkFlowArtifact> teams = new HashSet<TeamWorkFlowArtifact>();
       for (TeamWorkFlowArtifact team : getTeamArts()) {
-         if (team.isCancelledOrCompleted()) {
+         if (team.isCompletedOrCancelled()) {
             teams.add(team);
          }
       }
       return teams;
    }
 
-   public Collection<AbstractWorkflowArtifact> getCompletedWorkflows() {
+   public Collection<AbstractWorkflowArtifact> getCompletedWorkflows() throws OseeCoreException {
       Set<AbstractWorkflowArtifact> completed = new HashSet<AbstractWorkflowArtifact>();
       for (AbstractWorkflowArtifact sma : smas) {
-         if (sma.isCancelledOrCompleted()) {
+         if (sma.isCompletedOrCancelled()) {
             completed.add(sma);
          }
       }
       return completed;
    }
 
-   public double getPercentCompleteByTeamWorkflow() {
+   public double getPercentCompleteByTeamWorkflow() throws OseeCoreException {
       if (getTeamArts().isEmpty()) {
          return 0;
       }
@@ -219,7 +219,7 @@ public class SMAMetrics {
       return completed / getTeamArts().size() * 100;
    }
 
-   public double getPercentCompleteByWorkflow() {
+   public double getPercentCompleteByWorkflow() throws OseeCoreException {
       if (smas.isEmpty()) {
          return 0;
       }
@@ -230,17 +230,17 @@ public class SMAMetrics {
       return completed / smas.size() * 100;
    }
 
-   public Collection<TaskArtifact> getCompletedTaskWorkflows() {
+   public Collection<TaskArtifact> getCompletedTaskWorkflows() throws OseeCoreException {
       Set<TaskArtifact> tasks = new HashSet<TaskArtifact>();
       for (TaskArtifact team : getTaskArts()) {
-         if (team.isCancelledOrCompleted()) {
+         if (team.isCompletedOrCancelled()) {
             tasks.add(team);
          }
       }
       return tasks;
    }
 
-   public double getPercentCompleteByTaskWorkflow() {
+   public double getPercentCompleteByTaskWorkflow() throws OseeCoreException {
       if (getTaskArts().isEmpty()) {
          return 0;
       }

@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.util.widgets;
+package org.eclipse.osee.ats.internal.workflow;
 
 import java.util.Collection;
 import java.util.Date;
@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextDam;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkPage;
 
 /**
  * @author Donald G. Dunne
@@ -46,17 +47,17 @@ public abstract class XStateAssigneesDam extends XTextDam {
       return (AbstractWorkflowArtifact) super.getArtifact();
    }
 
-   public SMAState getState(String stateName, boolean create) {
+   public SMAState getState(IWorkPage state, boolean create) {
       try {
          for (String stateXml : getArtifact().getAttributesToStringList(getAttributeType())) {
-            if (stateXml.startsWith(stateName + ";")) {
-               SMAState state = new SMAState();
-               state.setFromXml(stateXml);
-               return state;
+            if (stateXml.startsWith(state.getPageName() + ";")) {
+               SMAState smaState = new SMAState();
+               smaState.setFromXml(stateXml);
+               return smaState;
             }
          }
          if (create) {
-            return new SMAState(stateName);
+            return new SMAState(state.getPageName());
          }
       } catch (Exception ex) {
          try {
@@ -68,31 +69,31 @@ public abstract class XStateAssigneesDam extends XTextDam {
       return null;
    }
 
-   public void updateMetrics(String stateName, double additionalHours, int percentComplete, boolean logMetrics) throws OseeCoreException {
-      SMAState currState = getState(stateName, false);
-      currState.setHoursSpent(currState.getHoursSpent() + additionalHours);
-      currState.setPercentComplete(percentComplete);
-      setState(currState);
+   public void updateMetrics(IWorkPage state, double additionalHours, int percentComplete, boolean logMetrics) throws OseeCoreException {
+      SMAState smaState = getState(state, false);
+      smaState.setHoursSpent(smaState.getHoursSpent() + additionalHours);
+      smaState.setPercentComplete(percentComplete);
+      setState(smaState);
       if (logMetrics) {
-         logMetrics(stateName);
+         logMetrics(state);
       }
    }
 
-   public void setMetrics(String stateName, double hours, int percentComplete, boolean logMetrics) throws OseeCoreException {
-      SMAState currState = getState(stateName, false);
+   public void setMetrics(IWorkPage state, double hours, int percentComplete, boolean logMetrics) throws OseeCoreException {
+      SMAState currState = getState(state, false);
       currState.setHoursSpent(hours);
       currState.setPercentComplete(percentComplete);
       setState(currState);
       if (logMetrics) {
-         logMetrics(stateName);
+         logMetrics(state);
       }
    }
 
-   protected void logMetrics(String stateName) throws OseeCoreException {
+   protected void logMetrics(IWorkPage state) throws OseeCoreException {
       AbstractWorkflowArtifact sma = getArtifact();
       String hoursSpent = AtsUtil.doubleToI18nString(sma.getHoursSpentSMATotal());
-      XCurrentStateDam.logMetrics(sma, sma.getPercentCompleteSMATotal() + "", hoursSpent, stateName,
-         UserManager.getUser(), new Date());
+      XCurrentStateDam.logMetrics(sma, sma.getPercentCompleteSMATotal() + "", hoursSpent, state, UserManager.getUser(),
+         new Date());
    }
 
    public Set<SMAState> getStates() {

@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.workflow.flow;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.ats.util.DefaultTeamState;
+import org.eclipse.osee.ats.util.TeamState;
 import org.eclipse.osee.ats.workflow.item.AtsStatePercentCompleteWeightSimpleWorkflowRule;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.ats.workflow.page.AtsCancelledWorkPageDefinition;
@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageType;
 
 /**
  * @author Donald G. Dunne
@@ -85,12 +86,12 @@ public class SimpleWorkflowDefinition extends WorkFlowDefinition {
       List<WorkItemDefinition> workItems = new ArrayList<WorkItemDefinition>();
 
       workItems.add(new WorkPageDefinition(SimpleState.Endorse.name(), SimpleWorkflowDefinition.ENDORSE_STATE_ID,
-         AtsEndorseWorkPageDefinition.ID));
+         AtsEndorseWorkPageDefinition.ID, WorkPageType.Working));
       workItems.add(new AtsSimpleInWorkWorkPageDefinition());
-      workItems.add(new WorkPageDefinition(DefaultTeamState.Completed.name(),
-         SimpleWorkflowDefinition.COMPLETED_STATE_ID, AtsCompletedWorkPageDefinition.ID));
-      workItems.add(new WorkPageDefinition(DefaultTeamState.Cancelled.name(),
-         SimpleWorkflowDefinition.CANCELLED_STATE_ID, AtsCancelledWorkPageDefinition.ID));
+      workItems.add(new WorkPageDefinition(TeamState.Completed.getPageName(),
+         SimpleWorkflowDefinition.COMPLETED_STATE_ID, AtsCompletedWorkPageDefinition.ID, WorkPageType.Completed));
+      workItems.add(new WorkPageDefinition(TeamState.Cancelled.getPageName(),
+         SimpleWorkflowDefinition.CANCELLED_STATE_ID, AtsCancelledWorkPageDefinition.ID, WorkPageType.Cancelled));
       workItems.add(new SimpleWorkflowDefinition());
 
       return workItems;

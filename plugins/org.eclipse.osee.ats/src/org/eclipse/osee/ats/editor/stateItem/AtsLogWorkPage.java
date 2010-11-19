@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.editor.stateItem;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageType;
 
 /**
  * @author Donald G. Dunne
@@ -30,7 +31,8 @@ public class AtsLogWorkPage extends AtsWorkPage {
    }
 
    public AtsLogWorkPage(String title) {
-      super(new EmptyWorkFlowDefinition(title, PAGE_ID), new WorkPageDefinition(title, PAGE_ID, null), null, null);
+      super(new EmptyWorkFlowDefinition(title, PAGE_ID), new WorkPageDefinition(title, PAGE_ID, null,
+         WorkPageType.Working), null, null);
    }
 
 }

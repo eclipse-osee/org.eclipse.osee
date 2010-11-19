@@ -16,15 +16,16 @@ import static org.junit.Assert.assertTrue;
 import java.util.Collection;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
-import org.eclipse.osee.ats.artifact.TaskArtifact.TaskStates;
+import org.eclipse.osee.ats.artifact.TaskStates;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
 import org.eclipse.osee.ats.test.util.DemoTestUtil;
 import org.eclipse.osee.ats.test.util.SMATestUtil;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.DefaultTeamState;
+import org.eclipse.osee.ats.util.TeamState;
 import org.eclipse.osee.ats.util.TransitionOption;
 import org.eclipse.osee.ats.util.widgets.dialog.SimpleTaskResolutionOptionsRule;
+import org.eclipse.osee.ats.workflow.TransitionManager;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -72,23 +73,23 @@ public class SMAPromptChangeStatusTest {
 
       // Change two to 100, 1 hr split
       SMAPromptChangeStatus.performChangeStatus(tasks, null, null, 1, 100, true, true);
-      SMATestUtil.validateSMAs(tasks, TaskStates.Completed.name(), 100, 0.25);
+      SMATestUtil.validateSMAs(tasks, TaskStates.Completed.getPageName(), 100, 0.25);
 
       // Change two to 100, 1 hr split
       // hours should be added to inwork state; make sure completed state isn't statused
       SMAPromptChangeStatus.performChangeStatus(tasks, null, null, 1, 100, true, true);
-      SMATestUtil.validateSMAs(tasks, TaskStates.Completed.name(), 100, 0.50);
+      SMATestUtil.validateSMAs(tasks, TaskStates.Completed.getPageName(), 100, 0.50);
 
       // Change two to 99, 1 hr split
       // transitions to InWork and adds hours
       // make sure hours not added to completed state
       SMAPromptChangeStatus.performChangeStatus(tasks, null, null, 1, 99, true, true);
-      SMATestUtil.validateSMAs(tasks, TaskStates.InWork.name(), 99, 0.75);
+      SMATestUtil.validateSMAs(tasks, TaskStates.InWork.getPageName(), 99, 0.75);
 
       // Change two to 55, 0
       // no transition, no hours spent
       SMAPromptChangeStatus.performChangeStatus(tasks, null, null, 0, 55, true, true);
-      SMATestUtil.validateSMAs(tasks, TaskStates.InWork.name(), 55, 0.75);
+      SMATestUtil.validateSMAs(tasks, TaskStates.InWork.getPageName(), 55, 0.75);
 
    }
 
@@ -108,26 +109,26 @@ public class SMAPromptChangeStatusTest {
       // Change two to 100, 1 hr split
       SMAPromptChangeStatus.performChangeStatus(tasks, optionsRule.getOptions(),
          SimpleTaskResolutionOptionsRule.States.Complete.name(), 1, 100, true, true);
-      SMATestUtil.validateSMAs(tasks, TaskStates.Completed.name(), 100, 0.25);
+      SMATestUtil.validateSMAs(tasks, TaskStates.Completed.getPageName(), 100, 0.25);
 
       // Change two to 100, 1 hr split
       // hours should be added to inwork state; make sure completed state isn't statused
       SMAPromptChangeStatus.performChangeStatus(tasks, optionsRule.getOptions(),
          SimpleTaskResolutionOptionsRule.States.Complete.name(), 1, 100, true, true);
-      SMATestUtil.validateSMAs(tasks, TaskStates.Completed.name(), 100, 0.50);
+      SMATestUtil.validateSMAs(tasks, TaskStates.Completed.getPageName(), 100, 0.50);
 
       // Change two to 99, 1 hr split
       // transitions to InWork and adds hours
       // make sure hours not added to completed state
       SMAPromptChangeStatus.performChangeStatus(tasks, optionsRule.getOptions(),
          SimpleTaskResolutionOptionsRule.States.In_Work.name(), 1, 99, true, true);
-      SMATestUtil.validateSMAs(tasks, TaskStates.InWork.name(), 99, 0.75);
+      SMATestUtil.validateSMAs(tasks, TaskStates.InWork.getPageName(), 99, 0.75);
 
       // Change two to 55, 0
       // no transition, no hours spent
       SMAPromptChangeStatus.performChangeStatus(tasks, optionsRule.getOptions(),
          SimpleTaskResolutionOptionsRule.States.In_Work.name(), 0, 55, true, true);
-      SMATestUtil.validateSMAs(tasks, TaskStates.InWork.name(), 55, 0.75);
+      SMATestUtil.validateSMAs(tasks, TaskStates.InWork.getPageName(), 55, 0.75);
    }
 
    @org.junit.Test
@@ -142,7 +143,8 @@ public class SMAPromptChangeStatusTest {
 
       // test that if one task is cancelled, can't change status
       transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Prompt Change Status Test");
-      cancelTask.transition(TaskStates.Cancelled.name(), (User) null, transaction, TransitionOption.Persist);
+      TransitionManager transitionMgr = new TransitionManager(cancelTask);
+      transitionMgr.transition(TaskStates.Cancelled, (User) null, transaction, TransitionOption.Persist);
       transaction.execute();
       Result result = SMAPromptChangeStatus.isValidToChangeStatus(tasks);
       assertTrue(result.isFalse());
@@ -162,7 +164,7 @@ public class SMAPromptChangeStatusTest {
 
       // test that if task not in related-to state of workflows's current status, can't change status
       transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Prompt Change Status Test");
-      taskArt.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, DefaultTeamState.Analyze.name());
+      taskArt.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, TeamState.Analyze.getPageName());
       transaction.execute();
       Result result = SMAPromptChangeStatus.isValidToChangeStatus(tasks);
       assertTrue(result.isFalse());

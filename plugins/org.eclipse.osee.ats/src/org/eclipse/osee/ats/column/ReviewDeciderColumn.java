@@ -9,7 +9,7 @@ import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
-import org.eclipse.osee.ats.artifact.DecisionReviewArtifact.DecisionReviewState;
+import org.eclipse.osee.ats.artifact.DecisionReviewState;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -45,7 +45,7 @@ public class ReviewDeciderColumn extends XViewerAtsColumn implements IXViewerVal
       try {
          if (element instanceof DecisionReviewArtifact) {
             return Artifacts.toString("; ",
-               ((DecisionReviewArtifact) element).getStateMgr().getAssignees(DecisionReviewState.Decision.name()));
+               ((DecisionReviewArtifact) element).getStateMgr().getAssignees(DecisionReviewState.Decision));
          }
       } catch (OseeCoreException ex) {
          XViewerCells.getCellExceptionString(ex);

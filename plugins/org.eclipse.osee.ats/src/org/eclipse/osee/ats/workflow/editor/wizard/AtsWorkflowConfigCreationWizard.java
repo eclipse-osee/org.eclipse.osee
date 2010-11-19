@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition.
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition.WriteType;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageType;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 
@@ -120,20 +121,23 @@ public class AtsWorkflowConfigCreationWizard extends Wizard implements INewWizar
    public static WorkflowData generateSimpleWorkflow(String namespace, SkynetTransaction transaction, TeamDefinitionArtifact teamDef) throws OseeCoreException {
       WorkFlowDefinition workflow = new WorkFlowDefinition(namespace, namespace, null);
       WorkPageDefinition endorsePage =
-         new WorkPageDefinition("Endorse", namespace + ".Endorse", AtsEndorseWorkPageDefinition.ID);
+         new WorkPageDefinition("Endorse", namespace + ".Endorse", AtsEndorseWorkPageDefinition.ID, WorkPageType.Working);
 
       workflow.setStartPageId(endorsePage.getPageName());
 
-      WorkPageDefinition implementPage = new WorkPageDefinition("Implement", namespace + ".Implement", null);
+      WorkPageDefinition implementPage =
+         new WorkPageDefinition("Implement", namespace + ".Implement", null, WorkPageType.Working);
       implementPage.addWorkItem(RuleWorkItemId.atsRequireStateHourSpentPrompt.name());
       implementPage.addWorkItem(AtsAttributeTypes.WorkPackage);
       implementPage.addWorkItem(AtsAttributeTypes.Resolution);
 
       WorkPageDefinition completedPage =
-         new WorkPageDefinition("Completed", namespace + ".Completed", AtsCompletedWorkPageDefinition.ID);
+         new WorkPageDefinition("Completed", namespace + ".Completed", AtsCompletedWorkPageDefinition.ID,
+            WorkPageType.Completed);
 
       WorkPageDefinition cancelledPage =
-         new WorkPageDefinition("Cancelled", namespace + ".Cancelled", AtsCancelledWorkPageDefinition.ID);
+         new WorkPageDefinition("Cancelled", namespace + ".Cancelled", AtsCancelledWorkPageDefinition.ID,
+            WorkPageType.Cancelled);
 
       workflow.addPageTransition(endorsePage.getPageName(), implementPage.getPageName(), TransitionType.ToPageAsDefault);
       workflow.addPageTransition(implementPage.getPageName(), endorsePage.getPageName(), TransitionType.ToPageAsReturn);

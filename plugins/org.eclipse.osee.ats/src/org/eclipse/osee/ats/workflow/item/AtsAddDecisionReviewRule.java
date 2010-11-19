@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.workflow.item;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.AbstractReviewArtifact.ReviewBlockType;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
@@ -81,8 +82,11 @@ public class AtsAddDecisionReviewRule extends WorkRuleDefinition {
 
    /**
     * Creates decision review if one of same name doesn't already exist
+    * 
+    * @param createdDate TODO
+    * @param createdUser TODO
     */
-   public static DecisionReviewArtifact createNewDecisionReview(WorkRuleDefinition atsAddDecisionReviewRule, SkynetTransaction transaction, TeamWorkFlowArtifact teamArt, DecisionRuleOption... decisionRuleOption) throws OseeCoreException {
+   public static DecisionReviewArtifact createNewDecisionReview(WorkRuleDefinition atsAddDecisionReviewRule, SkynetTransaction transaction, TeamWorkFlowArtifact teamArt, Date createdDate, User createdBy, DecisionRuleOption... decisionRuleOption) throws OseeCoreException {
       if (!atsAddDecisionReviewRule.getId().startsWith(AtsAddDecisionReviewRule.ID)) {
          throw new OseeArgumentException("WorkRuleDefinition must be AtsAddDecisionReviewRule.ID");
       }
@@ -99,7 +103,7 @@ public class AtsAddDecisionReviewRule extends WorkRuleDefinition {
                getValueOrDefault(teamArt, atsAddDecisionReviewRule, DecisionParameter.forState),
                getReviewBlockTypeOrDefault(teamArt, atsAddDecisionReviewRule),
                getValueOrDefault(teamArt, atsAddDecisionReviewRule, DecisionParameter.options),
-               getAssigneesOrDefault(teamArt, atsAddDecisionReviewRule), transaction);
+               getAssigneesOrDefault(teamArt, atsAddDecisionReviewRule), createdDate, createdBy, transaction);
       } else {
          decArt =
             ReviewManager.createNewDecisionReview(teamArt, title,
@@ -107,7 +111,7 @@ public class AtsAddDecisionReviewRule extends WorkRuleDefinition {
                getValueOrDefault(teamArt, atsAddDecisionReviewRule, DecisionParameter.forState),
                getReviewBlockTypeOrDefault(teamArt, atsAddDecisionReviewRule),
                getValueOrDefault(teamArt, atsAddDecisionReviewRule, DecisionParameter.options),
-               getAssigneesOrDefault(teamArt, atsAddDecisionReviewRule), transaction);
+               getAssigneesOrDefault(teamArt, atsAddDecisionReviewRule), createdDate, createdBy, transaction);
       }
 
       decArt.getLog().addLog(LogType.Note, null, "Review auto-generated off rule " + atsAddDecisionReviewRule.getId());

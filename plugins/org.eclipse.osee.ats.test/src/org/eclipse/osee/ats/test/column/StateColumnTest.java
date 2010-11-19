@@ -11,7 +11,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.column.AssigneeColumn;
 import org.eclipse.osee.ats.column.StateColumn;
 import org.eclipse.osee.ats.test.util.DemoTestUtil;
-import org.eclipse.osee.ats.util.DefaultTeamState;
+import org.eclipse.osee.ats.util.TeamState;
 import org.eclipse.osee.support.test.util.DemoWorkType;
 
 /**
@@ -24,11 +24,11 @@ public class StateColumnTest {
    public void testGetColumnText() throws Exception {
       TeamWorkFlowArtifact reqArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Requirements);
-      Assert.assertEquals(DefaultTeamState.Implement.name(),
+      Assert.assertEquals(TeamState.Implement.getPageName(),
          StateColumn.getInstance().getColumnText(reqArt, AssigneeColumn.getInstance(), 0));
 
       ActionArtifact actionArt = reqArt.getParentActionArtifact();
-      Assert.assertEquals(DefaultTeamState.Implement.name(),
+      Assert.assertEquals(TeamState.Implement.getPageName(),
          StateColumn.getInstance().getColumnText(actionArt, AssigneeColumn.getInstance(), 0));
 
    }

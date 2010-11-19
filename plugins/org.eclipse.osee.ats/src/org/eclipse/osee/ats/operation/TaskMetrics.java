@@ -20,12 +20,12 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
-import org.eclipse.osee.ats.artifact.TaskArtifact.TaskStates;
+import org.eclipse.osee.ats.artifact.TaskStates;
+import org.eclipse.osee.ats.internal.workflow.SMAState;
+import org.eclipse.osee.ats.internal.workflow.XCurrentStateDam;
+import org.eclipse.osee.ats.internal.workflow.XStateDam;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.widgets.SMAState;
-import org.eclipse.osee.ats.util.widgets.XCurrentStateDam;
-import org.eclipse.osee.ats.util.widgets.XStateDam;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
@@ -93,10 +93,10 @@ public class TaskMetrics extends AbstractBlam {
    private void tallyState(TaskArtifact task) throws OseeCoreException {
       XStateDam stateDam = new XStateDam(task);
 
-      SMAState state = stateDam.getState(TaskStates.InWork.name(), false);
+      SMAState state = stateDam.getState(TaskStates.InWork, false);
       if (state == null) {
          XCurrentStateDam currentStateDam = new XCurrentStateDam(task);
-         state = currentStateDam.getState(TaskStates.InWork.name(), false);
+         state = currentStateDam.getState(TaskStates.InWork, false);
       }
 
       for (User user : state.getAssignees()) {

@@ -14,7 +14,7 @@ import org.eclipse.osee.ats.column.ParentIdColumn;
 import org.eclipse.osee.ats.column.ParentStateColumn;
 import org.eclipse.osee.ats.test.util.DemoTestUtil;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
-import org.eclipse.osee.ats.util.DefaultTeamState;
+import org.eclipse.osee.ats.util.TeamState;
 import org.eclipse.osee.support.test.util.DemoWorkType;
 
 /**
@@ -36,7 +36,7 @@ public class ParentStateAndIdColumnTest {
 
       PeerToPeerReviewArtifact peerArt =
          (PeerToPeerReviewArtifact) codeArt.getRelatedArtifact(AtsRelationTypes.TeamWorkflowToReview_Review);
-      Assert.assertEquals(DefaultTeamState.Implement.name(),
+      Assert.assertEquals(TeamState.Implement.getPageName(),
          ParentStateColumn.getInstance().getColumnText(peerArt, AssigneeColumn.getInstance(), 0));
       Assert.assertEquals(codeArt.getHumanReadableId(),
          ParentIdColumn.getInstance().getColumnText(peerArt, AssigneeColumn.getInstance(), 0));

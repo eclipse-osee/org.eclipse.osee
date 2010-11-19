@@ -29,7 +29,7 @@ import org.eclipse.osee.ats.util.AtsFolderUtil;
 import org.eclipse.osee.ats.util.AtsFolderUtil.AtsFolder;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.DefaultTeamState;
+import org.eclipse.osee.ats.util.TeamState;
 import org.eclipse.osee.ats.workflow.editor.wizard.AtsWorkflowConfigCreationWizard.WorkflowData;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -212,18 +212,18 @@ public class AtsConfigManager extends AbstractOperation {
       newWorkflowArt.persist(transaction);
 
       // Duplicate work pages w/ namespace changes
-      for (DefaultTeamState state : DefaultTeamState.values()) {
+      for (TeamState state : TeamState.values()) {
          Artifact defaultStateArt =
-            WorkItemDefinitionFactory.getWorkItemDefinitionArtifact("osee.ats.teamWorkflow." + state.name());
+            WorkItemDefinitionFactory.getWorkItemDefinitionArtifact("osee.ats.teamWorkflow." + state.getPageName());
          Artifact newStateArt = defaultStateArt.duplicate(AtsUtil.getAtsBranch());
          for (Attribute<?> attr : newStateArt.getAttributes()) {
             if (attr instanceof StringAttribute) {
                attr.setFromString(attr.getDisplayableString().replaceAll("osee.ats.teamWorkflow", namespace));
             }
          }
-         if (state == DefaultTeamState.Completed || state == DefaultTeamState.Cancelled) {
+         if (state.isCompletedOrCancelledPage()) {
             newStateArt.setSoleAttributeFromString(CoreAttributeTypes.WorkParentId,
-               "osee.ats.teamWorkflow." + state.name());
+               "osee.ats.teamWorkflow." + state.getPageName());
          }
 
          // Add same relations as default work pages to new work pages (widgets and rules)
@@ -237,7 +237,6 @@ public class AtsConfigManager extends AbstractOperation {
       return new WorkflowData(new WorkFlowDefinition(newWorkflowArt), newWorkflowArt);
 
    }
-
    public static final class OpenAtsConfigEditors implements Display {
 
       @Override

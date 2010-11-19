@@ -10,30 +10,18 @@ abstract artifactType "ats.Ats Artifact" extends "Artifact" {
    attribute "ats.Description"
 }
 
-artifactType "ats.Review" extends "ats.Ats Artifact" {
+artifactType "ats.Review" extends "ats.State Machine" {
    guid "ABMa6P4TwzXA1b8K3RAA"
    attribute "ats.Actionable Item"
-   attribute "ats.Current State"
-   attribute "ats.Estimated Completion Date"
-   attribute "ats.Estimated Hours"
-   attribute "ats.Estimated Release Date"
-   attribute "ats.Legacy PCR Id"
-   attribute "ats.Log"
-   attribute "ats.Need By"
    attribute "ats.Related To State"
-   attribute "ats.Resolution"
    attribute "ats.Review Blocks"
-   attribute "ats.Role"
-   attribute "ats.SMA Note"
-   attribute "ats.State Notes"
-   attribute "ats.State"
 }
 
 artifactType "PeerToPeer Review" extends "ats.Review" {
    guid "AAMFDhh_300dpgmNtRAA"
-   attribute "ats.Authors"
    attribute "ats.Location"
    attribute "ats.Review Defect"
+   attribute "ats.Role"
 }
 
 artifactType "Decision Review" extends "ats.Review" {
@@ -104,6 +92,16 @@ abstract artifactType "ats.State Machine" extends "ats.Ats Artifact" {
    attribute "ats.SMA Note"
    attribute "ats.State Notes"
    attribute "ats.State"
+   attribute "ats.Current State Type"
+   attribute "ats.Created By"
+   attribute "ats.Created Date"
+   attribute "ats.Completed By"
+   attribute "ats.Completed Date"
+   attribute "ats.Completed From State"
+   attribute "ats.Cancelled By"
+   attribute "ats.Cancelled Date"
+   attribute "ats.Cancelled From State"
+   attribute "ats.Cancelled Reason"
 }
 
 artifactType "Goal" extends "ats.State Machine" {
@@ -156,6 +154,13 @@ attributeType "ats.Validation Required" extends BooleanAttribute {
    min 0
    max 1
    defaultValue "no"
+}
+
+attributeType "ats.Current State Type" extends StringAttribute {
+   guid "ATOWheEyGUJmPmPuqyAA"
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
 }
 
 attributeType "ats.Active" extends BooleanAttribute {
@@ -254,6 +259,69 @@ attributeType "ats.Estimated Release Date" extends DateAttribute {
 
 attributeType "ats.Estimated Completion Date" extends DateAttribute {
    guid "AAMFEc18k3Gh+GP7zqAA"
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "ats.Completed Date" extends DateAttribute {
+   guid "AXnxSfRg6UhirNzaZnQA"
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "ats.Completed By" extends StringAttribute {
+   guid "AXo6tqxrOStgd9P16XQA"
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "ats.Completed From State" extends StringAttribute {
+   guid "AXr9OO909xRiI3MFNOwA"
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "ats.Cancelled Date" extends DateAttribute {
+   guid "AXnyKG1waCcPPHHGEFQA"
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "ats.Cancelled By" extends StringAttribute {
+   guid "AXpNsieBHnqaJJfduGgA"
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "ats.Cancelled Reason" extends StringAttribute {
+   guid "AXqJE0SmwRQzvzlqC9gA"
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "ats.Cancelled From State" extends StringAttribute {
+   guid "AXrxlXOwGiAnlaUNX6AA"
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "ats.Created Date" extends DateAttribute {
+   guid "AXny90bBpmfNkLpNhqwA"
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "ats.Created By" extends StringAttribute {
+   guid "AXpTVIExV1p0kp9IKKQA"
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -624,13 +692,6 @@ attributeType "ats.Location" extends StringAttribute {
    max 1
    taggerId DefaultAttributeTaggerProvider
    fileExtension "txt"
-}
-
-attributeType "ats.Authors" extends StringAttribute {
-   guid "AAMFEQmzoyhG0QNbstQA"
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
 }
 
 attributeType "ats.Role" extends StringAttribute {

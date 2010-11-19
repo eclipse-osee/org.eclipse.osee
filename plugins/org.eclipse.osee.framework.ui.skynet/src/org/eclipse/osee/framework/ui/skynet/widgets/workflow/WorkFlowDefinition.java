@@ -372,7 +372,7 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
       // Move completed to the end if it exists
       WorkPageDefinition completedPage = null;
       for (WorkPageDefinition workPageDefinition : orderedPages) {
-         if (workPageDefinition.isCompletePage()) {
+         if (workPageDefinition.isCompletedPage()) {
             completedPage = workPageDefinition;
          }
       }

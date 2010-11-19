@@ -20,8 +20,8 @@ import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
-import org.eclipse.osee.ats.util.DefaultTeamState;
 import org.eclipse.osee.ats.util.StateManager;
+import org.eclipse.osee.ats.util.TeamState;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.ats.util.widgets.XActionableItemsDam;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -201,7 +201,7 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IB
 
    @Override
    public Collection<User> getImplementers() throws OseeCoreException {
-      return StateManager.getImplementersByState(this, DefaultTeamState.Implement.name());
+      return StateManager.getImplementersByState(this, TeamState.Implement);
    }
 
    @Override

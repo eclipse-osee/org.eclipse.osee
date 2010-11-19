@@ -41,7 +41,6 @@ import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
@@ -61,6 +60,7 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEdit
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkPage;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -487,13 +487,17 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
    }
 
    @Override
-   public Collection<TaskArtifact> getTaskArtifacts(String stateName) throws OseeCoreException {
+   public Collection<TaskArtifact> getTaskArtifacts(IWorkPage state) throws OseeCoreException {
       if (sma instanceof AbstractTaskableArtifact) {
-         if (!Strings.isValid(stateName)) {
-            return ((AbstractTaskableArtifact) sma).getTaskArtifacts();
-         } else {
-            return ((AbstractTaskableArtifact) sma).getTaskArtifacts(stateName);
-         }
+         return ((AbstractTaskableArtifact) sma).getTaskArtifacts(state);
+      }
+      return Collections.emptyList();
+   }
+
+   @Override
+   public Collection<TaskArtifact> getTaskArtifacts() throws OseeCoreException {
+      if (sma instanceof AbstractTaskableArtifact) {
+         return ((AbstractTaskableArtifact) sma).getTaskArtifacts();
       }
       return Collections.emptyList();
    }
@@ -505,7 +509,12 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
 
    @Override
    public boolean isTasksEditable() {
-      if (!(sma instanceof AbstractTaskableArtifact) || sma.isCancelledOrCompleted()) {
+      try {
+         if (!(sma instanceof AbstractTaskableArtifact) || sma.isCompletedOrCancelled()) {
+            return false;
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          return false;
       }
       return true;

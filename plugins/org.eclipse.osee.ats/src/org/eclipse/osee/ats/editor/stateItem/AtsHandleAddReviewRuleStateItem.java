@@ -12,19 +12,23 @@ package org.eclipse.osee.ats.editor.stateItem;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.workflow.item.AtsAddDecisionReviewRule;
 import org.eclipse.osee.ats.workflow.item.AtsAddDecisionReviewRule.DecisionParameter;
 import org.eclipse.osee.ats.workflow.item.AtsAddDecisionReviewRule.DecisionRuleOption;
 import org.eclipse.osee.ats.workflow.item.AtsAddPeerToPeerReviewRule;
 import org.eclipse.osee.ats.workflow.item.StateEventType;
+import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkPage;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
 
 /**
@@ -38,7 +42,7 @@ public class AtsHandleAddReviewRuleStateItem extends AtsStateItem {
    }
 
    @Override
-   public void transitioned(AbstractWorkflowArtifact sma, String fromState, String toState, Collection<User> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
+   public void transitioned(AbstractWorkflowArtifact sma, IWorkPage fromState, IWorkPage toState, Collection<User> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
       super.transitioned(sma, fromState, toState, toAssignees, transaction);
 
       // Create any decision or peerToPeer reviews for transitionTo and transitionFrom
@@ -47,7 +51,9 @@ public class AtsHandleAddReviewRuleStateItem extends AtsStateItem {
       }
    }
 
-   public static void runRule(AbstractWorkflowArtifact sma, String toState, String ruleId, SkynetTransaction transaction) throws OseeCoreException {
+   public static void runRule(AbstractWorkflowArtifact sma, IWorkPage toState, String ruleId, SkynetTransaction transaction) throws OseeCoreException {
+      Date createdDate = new Date();
+      User createdBy = UserManager.getUser(SystemUser.OseeSystem);
       for (WorkRuleDefinition workRuleDef : sma.getWorkRulesStartsWith(ruleId)) {
          if (!sma.isTeamWorkflow()) {
             continue;
@@ -57,11 +63,11 @@ public class AtsHandleAddReviewRuleStateItem extends AtsStateItem {
          if (!Strings.isValid(forState)) {
             continue;
          }
-         if (eventType != null && toState.equals(forState) && eventType == StateEventType.TransitionTo) {
+         if (eventType != null && toState.getPageName().equals(forState) && eventType == StateEventType.TransitionTo) {
             if (ruleId.startsWith(AtsAddDecisionReviewRule.ID)) {
                DecisionReviewArtifact decArt =
                   AtsAddDecisionReviewRule.createNewDecisionReview(workRuleDef, transaction,
-                     (TeamWorkFlowArtifact) sma, DecisionRuleOption.TransitionToDecision);
+                     (TeamWorkFlowArtifact) sma, createdDate, createdBy, DecisionRuleOption.TransitionToDecision);
                if (decArt != null) {
                   decArt.persist(transaction);
                }

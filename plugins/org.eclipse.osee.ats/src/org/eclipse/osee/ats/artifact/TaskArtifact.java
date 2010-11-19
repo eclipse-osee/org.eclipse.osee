@@ -18,11 +18,12 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.column.EstimatedHoursColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
-import org.eclipse.osee.ats.util.DefaultTeamState;
 import org.eclipse.osee.ats.util.StateManager;
+import org.eclipse.osee.ats.util.TeamState;
 import org.eclipse.osee.ats.util.TransitionOption;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResolutionOptionRule;
+import org.eclipse.osee.ats.workflow.TransitionManager;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -42,12 +43,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
  * @author Donald G. Dunne
  */
 public class TaskArtifact extends AbstractWorkflowArtifact implements IATSStateMachineArtifact {
-
-   public static enum TaskStates {
-      InWork,
-      Completed,
-      Cancelled
-   };
 
    public TaskArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
@@ -110,12 +105,8 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IATSStateM
       super.atsDelete(deleteArts, allRelated);
    }
 
-   public Boolean isInWork() {
-      return getStateMgr().getCurrentStateName().equals(TaskStates.InWork.name());
-   }
-
    public void transitionToCompleted(double additionalHours, SkynetTransaction transaction, TransitionOption... transitionOption) {
-      if (getStateMgr().getCurrentStateName().equals(DefaultTeamState.Completed.name())) {
+      if (isInState(TeamState.Completed)) {
          return;
       }
       // Assign current user if unassigned
@@ -127,17 +118,19 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IATSStateM
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
-      Result result = transition(DefaultTeamState.Completed.name(), (User) null, transaction, transitionOption);
+      TransitionManager transitionMgr = new TransitionManager(this);
+      Result result = transitionMgr.transition(TaskStates.Completed, (User) null, transaction, transitionOption);
       if (result.isFalse()) {
          result.popup();
       }
    }
 
    public void transitionToInWork(User toUser, int percentComplete, double additionalHours, SkynetTransaction transaction, TransitionOption... transitionOption) throws OseeCoreException {
-      if (getStateMgr().getCurrentStateName().equals(TaskStates.InWork.name())) {
+      if (isInState(TaskStates.InWork)) {
          return;
       }
-      Result result = transition(TaskStates.InWork.name(), toUser, transaction, transitionOption);
+      TransitionManager transitionMgr = new TransitionManager(this);
+      Result result = transitionMgr.transition(TaskStates.InWork, toUser, transaction, transitionOption);
       if (getStateMgr().getPercentComplete() != percentComplete || additionalHours > 0) {
          getStateMgr().updateMetrics(additionalHours, percentComplete, true);
       }
@@ -163,7 +156,7 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IATSStateM
       // Case where already completed and statusing, just add additional hours to InWork state
       else if (percentComplete == 100 && isCompleted()) {
          if (additionalHours > 0) {
-            getStateMgr().updateMetrics(TaskStates.InWork.name(), additionalHours, percentComplete, true);
+            getStateMgr().updateMetrics(TaskStates.InWork, additionalHours, percentComplete, true);
          }
       } else {
          getStateMgr().updateMetrics(additionalHours, percentComplete, true);
@@ -171,9 +164,10 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IATSStateM
    }
 
    public void parentWorkFlowTransitioned(WorkPageDefinition fromWorkPageDefinition, WorkPageDefinition toWorkPageDefinition, Collection<User> toAssignees, boolean persist, SkynetTransaction transaction, TransitionOption... transitionOption) throws OseeCoreException {
-      if (toWorkPageDefinition.getPageName().equals(DefaultTeamState.Cancelled.name()) && isInWork()) {
-         transitionToCancelled("Parent Cancelled", transaction, transitionOption);
-      } else if (fromWorkPageDefinition.getPageName().equals(DefaultTeamState.Cancelled.name()) && isCancelled()) {
+      if (toWorkPageDefinition.getPageName().equals(TeamState.Cancelled.getPageName()) && isInWork()) {
+         TransitionManager transitionMgr = new TransitionManager(this);
+         transitionMgr.transitionToCancelled("Parent Cancelled", transaction, transitionOption);
+      } else if (fromWorkPageDefinition.getPageName().equals(TeamState.Cancelled.getPageName()) && isCancelled()) {
          transitionToInWork(UserManager.getUser(), 99, 0, transaction, transitionOption);
       }
    }
@@ -220,7 +214,7 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IATSStateM
 
    @Override
    public Collection<User> getImplementers() throws OseeCoreException {
-      return StateManager.getImplementersByState(this, TaskStates.InWork.name());
+      return StateManager.getImplementersByState(this, TaskStates.InWork);
    }
 
    @Override
@@ -246,7 +240,7 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IATSStateM
       if (getWorldViewStatePercentComplete() == 0) {
          return est;
       }
-      double percent = getStateMgr().getPercentComplete(TaskStates.InWork.name());
+      double percent = getStateMgr().getPercentComplete(TaskStates.InWork);
       if (percent == 0) {
          return est;
       }

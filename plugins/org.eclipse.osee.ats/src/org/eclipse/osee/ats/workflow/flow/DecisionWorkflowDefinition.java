@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.workflow.flow;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.ats.util.DefaultTeamState;
+import org.eclipse.osee.ats.util.TeamState;
 import org.eclipse.osee.ats.workflow.item.AtsStatePercentCompleteWeightDecisionReviewRule;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.ats.workflow.page.AtsCancelledWorkPageDefinition;
@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageType;
 
 /**
  * @author Donald G. Dunne
@@ -34,7 +35,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 public class DecisionWorkflowDefinition extends WorkFlowDefinition {
 
    public final static String ID = "osee.ats.decisionReview";
-   public final static String DECISION_CANCELLED_STATE_ID = ID + "." + DefaultTeamState.Cancelled.name();
+   public final static String DECISION_CANCELLED_STATE_ID = ID + "." + TeamState.Cancelled.getPageName();
 
    public DecisionWorkflowDefinition() {
       super(ID, ID, null);
@@ -60,8 +61,9 @@ public class DecisionWorkflowDefinition extends WorkFlowDefinition {
       workItems.add(new AtsDecisionDecisionWorkPageDefinition());
       workItems.add(new AtsDecisionFollowupWorkPageDefinition());
       workItems.add(new AtsDecisionCompletedWorkPageDefinition());
-      workItems.add(new WorkPageDefinition(DefaultTeamState.Cancelled.name(),
-         DecisionWorkflowDefinition.DECISION_CANCELLED_STATE_ID, AtsCancelledWorkPageDefinition.ID));
+      workItems.add(new WorkPageDefinition(TeamState.Cancelled.getPageName(),
+         DecisionWorkflowDefinition.DECISION_CANCELLED_STATE_ID, AtsCancelledWorkPageDefinition.ID,
+         WorkPageType.Cancelled));
       workItems.add(new DecisionWorkflowDefinition());
 
       return workItems;

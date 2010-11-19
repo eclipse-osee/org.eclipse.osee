@@ -29,12 +29,29 @@ public class AtsAttributeTypes extends NamedIdentity implements IAttributeType {
    public static final IAttributeType AllowCreateBranch = new AtsAttributeTypes("AAMFEbARuQEvi6rtY5gA", "Allow Create Branch");
    public static final IAttributeType BaselineBranchGuid = new AtsAttributeTypes("AAMFEdIjJ2za2fblEVgA", "Baseline Branch Guid", "Basline branch associated with ATS object.");
    public static final IAttributeType BlockingReview = new AtsAttributeTypes("AAMFEctKkjMRrIy1C7gA", "Blocking Review");
+   
    public static final IAttributeType Category1 = new AtsAttributeTypes("AAMFEdrYniOQYrYUKKQA", "Category", "Open field for user to be able to enter text to use for categorizing/sorting.");
    public static final IAttributeType Category2 = new AtsAttributeTypes("AAMFEdthBkolbJKLXuAA", "Category2", Category1.getDescription());
    public static final IAttributeType Category3 = new AtsAttributeTypes("AAMFEd06oxr8LMzZxdgA", "Category3", Category1.getDescription());
+
    public static final IAttributeType ChangeType = new AtsAttributeTypes("AAMFEc+MwGHnPCv7HlgA", "Change Type", "Type of change.");
+   
+   public static final IAttributeType CancelledDate = new AtsAttributeTypes("AXnyKG1waCcPPHHGEFQA", "Cancelled Date", "Date the workflow was cancelled.");
+   public static final IAttributeType CancelledBy = new AtsAttributeTypes("AXpNsieBHnqaJJfduGgA", "Cancelled By", "UserId of the user who cancelled workflow.");
+   public static final IAttributeType CancelledReason = new AtsAttributeTypes("AXqJE0SmwRQzvzlqC9gA", "Cancelled Reason", "Explanation of why worklfow was cancelled.");
+   public static final IAttributeType CancelledFromState = new AtsAttributeTypes("AXrxlXOwGiAnlaUNX6AA", "Cancelled From State", "State workflow was in when cancelled.");
+   
+   public static final IAttributeType CreatedDate = new AtsAttributeTypes("AXny90bBpmfNkLpNhqwA", "Created Date", "Date the workflow was created.");
+   public static final IAttributeType CreatedBy = new AtsAttributeTypes("AXpTVIExV1p0kp9IKKQA", "Created By", "UserId of the user who created the workflow.");
+
+   public static final IAttributeType CompletedDate = new AtsAttributeTypes("AXnxSfRg6UhirNzaZnQA", "Completed Date", "Date the workflow was completed.");
+   public static final IAttributeType CompletedBy = new AtsAttributeTypes("AXo6tqxrOStgd9P16XQA", "Completed By", "UserId of the user who completed workflow.");
+   public static final IAttributeType CompletedFromState = new AtsAttributeTypes("AXr9OO909xRiI3MFNOwA", "Completed From State", "State workflow was in when completed.");
+
    public static final IAttributeType CurrentState = new AtsAttributeTypes("AAMFEdOWL3u6hmX2VbwA", "Current State", "Current state of workflow state machine.");
+   public static final IAttributeType CurrentStateType = new AtsAttributeTypes("ATOWheEyGUJmPmPuqyAA", "Current State Type", "Type of Current State: InWork, Completed or Cancelled.");
    public static final IAttributeType Decision = new AtsAttributeTypes("AAMFEd7uDXcmqq_FrCQA", "Decision", "Option selected during decision review.");
+
    public static final IAttributeType DecisionReviewOptions = new AtsAttributeTypes("AAMFEd5hRy1+SRJRqfwA", "Decision Review Options", "Options available for selection in review.  Each line is a separate option. Format: <option name>;<state to transition to>;<assignee>");
    public static final IAttributeType Description = new AtsAttributeTypes("AAMFEdWJ_ChxX6+YKbwA", "Description", "Detailed explanation.");
    public static final IAttributeType EstimatedCompletionDate = new AtsAttributeTypes("AAMFEc18k3Gh+GP7zqAA", "Estimated Completion Date", "Date the changes will be completed.");

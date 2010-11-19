@@ -15,7 +15,8 @@ import java.util.Collection;
 import junit.framework.Assert;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.util.DefaultTeamState;
+import org.eclipse.osee.ats.internal.workflow.SMAState;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author Donald G. Dunne
@@ -31,7 +32,7 @@ public class SMATestUtil {
       for (AbstractWorkflowArtifact sma : smas) {
          Assert.assertEquals("Current State wrong for " + sma.getHumanReadableId(),
             sma.getStateMgr().getCurrentStateName(), stateName);
-         if (sma.isCancelledOrCompleted()) {
+         if (sma.isCompletedOrCancelled()) {
             Assert.assertEquals("ats.CurrentState wrong " + sma.getHumanReadableId(),
                sma.getStateMgr().getCurrentStateName() + ";;;",
                sma.getSoleAttributeValue(AtsAttributeTypes.CurrentState));
@@ -40,13 +41,21 @@ public class SMATestUtil {
             totalPercent);
          Assert.assertEquals("Hours Spent wrong for " + sma.getHumanReadableId(), sma.getWorldViewHoursSpentTotal(),
             hoursSpent);
-         for (String stateValue : sma.getAttributesToStringList(AtsAttributeTypes.CurrentState)) {
-            if (stateValue.startsWith(DefaultTeamState.Completed.name())) {
-               Assert.assertEquals("ats.State wrong " + sma.getHumanReadableId(), stateValue, "Completed;;;");
-            } else if (stateValue.startsWith(DefaultTeamState.Cancelled.name())) {
-               Assert.assertEquals("ats.State wrong " + sma.getHumanReadableId(), stateValue, "Cancelled;;;");
+
+         for (String stateValue : sma.getAttributesToStringList(AtsAttributeTypes.State)) {
+            SMAState smaState = new SMAState();
+            smaState.setFromXml(stateValue);
+            boolean isCompletedCancelledState = isCompletedCancelledState(sma, smaState.getName());
+            if (isCompletedCancelledState) {
+               Assert.assertTrue(
+                  "completed/cancelled ats.State [" + stateValue + "] wrong " + sma.getHumanReadableId(),
+                  stateValue.endsWith(";;;"));
             }
          }
       }
+   }
+
+   public static boolean isCompletedCancelledState(AbstractWorkflowArtifact aba, String stateName) throws OseeCoreException {
+      return aba.getWorkFlowDefinition().getWorkPageDefinitionByName(stateName).isCompletedOrCancelledPage();
    }
 }

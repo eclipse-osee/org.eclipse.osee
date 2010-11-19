@@ -36,20 +36,20 @@ import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
  */
 public class SMAUtil {
 
-   public static Collection<AbstractWorkflowArtifact> getCompletedCancelled(Collection<AbstractWorkflowArtifact> smas) {
+   public static Collection<AbstractWorkflowArtifact> getCompletedCancelled(Collection<AbstractWorkflowArtifact> smas) throws OseeCoreException {
       List<AbstractWorkflowArtifact> artifactsToReturn = new ArrayList<AbstractWorkflowArtifact>(smas.size());
       for (AbstractWorkflowArtifact sma : smas) {
-         if (sma.isCancelledOrCompleted()) {
+         if (sma.isCompletedOrCancelled()) {
             artifactsToReturn.add(sma);
          }
       }
       return artifactsToReturn;
    }
 
-   public static Collection<AbstractWorkflowArtifact> getInWork(Collection<AbstractWorkflowArtifact> smas) {
+   public static Collection<AbstractWorkflowArtifact> getInWork(Collection<AbstractWorkflowArtifact> smas) throws OseeCoreException {
       List<AbstractWorkflowArtifact> artifactsToReturn = new ArrayList<AbstractWorkflowArtifact>(smas.size());
       for (AbstractWorkflowArtifact sma : smas) {
-         if (!sma.isCancelledOrCompleted()) {
+         if (!sma.isCompletedOrCancelled()) {
             artifactsToReturn.add(sma);
          }
       }
@@ -60,6 +60,26 @@ public class SMAUtil {
       List<AbstractWorkflowArtifact> artifactsToReturn = new ArrayList<AbstractWorkflowArtifact>(smas.size());
       for (AbstractWorkflowArtifact sma : smas) {
          if (!stateNames.contains(sma.getStateMgr().getCurrentStateName())) {
+            artifactsToReturn.add(sma);
+         }
+      }
+      return artifactsToReturn;
+   }
+
+   public static Collection<AbstractWorkflowArtifact> filterOutCompleted(Collection<AbstractWorkflowArtifact> smas) throws OseeCoreException {
+      List<AbstractWorkflowArtifact> artifactsToReturn = new ArrayList<AbstractWorkflowArtifact>(smas.size());
+      for (AbstractWorkflowArtifact sma : smas) {
+         if (!sma.isCompleted()) {
+            artifactsToReturn.add(sma);
+         }
+      }
+      return artifactsToReturn;
+   }
+
+   public static Collection<AbstractWorkflowArtifact> filterOutCancelled(Collection<AbstractWorkflowArtifact> smas) throws OseeCoreException {
+      List<AbstractWorkflowArtifact> artifactsToReturn = new ArrayList<AbstractWorkflowArtifact>(smas.size());
+      for (AbstractWorkflowArtifact sma : smas) {
+         if (!sma.isCancelled()) {
             artifactsToReturn.add(sma);
          }
       }
@@ -87,7 +107,7 @@ public class SMAUtil {
       for (AbstractWorkflowArtifact sma : artifacts) {
          Date createDate = CreatedDateColumn.getDate(sma);
          Date completedCancelDate = null;
-         if (sma.isCancelledOrCompleted()) {
+         if (sma.isCompletedOrCancelled()) {
             if (sma.isCancelled()) {
                completedCancelDate = CancelledDateColumn.getDate(sma);
             } else {
@@ -105,7 +125,7 @@ public class SMAUtil {
       List<AbstractWorkflowArtifact> smas = new ArrayList<AbstractWorkflowArtifact>();
       for (AbstractWorkflowArtifact sma : artifacts) {
          Date completedCancelDate = null;
-         if (sma.isCancelledOrCompleted()) {
+         if (sma.isCompletedOrCancelled()) {
             if (sma.isCancelled()) {
                completedCancelDate = CancelledDateColumn.getDate(sma);
             } else {

@@ -36,7 +36,7 @@ public class StatePercentCompleteXWidget extends XHyperlinkLabelValueSelection {
    private final boolean isCurrentState;
 
    public StatePercentCompleteXWidget(IManagedForm managedForm, AtsWorkPage page, final AbstractWorkflowArtifact sma, Composite composite, int horizontalSpan, XModifiedListener xModListener, boolean isCurrentState) {
-      super("\"" + page.getName() + "\"" + " State Percent Complete");
+      super("\"" + page.getPageName() + "\"" + " State Percent Complete");
       this.page = page;
       this.sma = sma;
       this.isCurrentState = isCurrentState;
@@ -77,26 +77,25 @@ public class StatePercentCompleteXWidget extends XHyperlinkLabelValueSelection {
       try {
          setEditable(isCurrentState && !sma.isReadOnly());
          StringBuffer sb =
-            new StringBuffer(String.format("        State Percent: %d",
-               sma.getStateMgr().getPercentComplete(page.getName())));
+            new StringBuffer(String.format("        State Percent: %d", sma.getStateMgr().getPercentComplete(page)));
          boolean breakoutNeeded = false;
          if (sma instanceof AbstractTaskableArtifact && ((AbstractTaskableArtifact) sma).hasTaskArtifacts()) {
             sb.append(String.format("\n        Task  Percent: %d",
-               ((AbstractTaskableArtifact) sma).getPercentCompleteFromTasks(page.getName())));
+               ((AbstractTaskableArtifact) sma).getPercentCompleteFromTasks(page)));
             breakoutNeeded = true;
          }
          if (sma.isTeamWorkflow() && ReviewManager.hasReviews((TeamWorkFlowArtifact) sma)) {
             sb.append(String.format("\n     Review Percent: %d",
-               ReviewManager.getPercentComplete((TeamWorkFlowArtifact) sma, page.getName())));
+               ReviewManager.getPercentComplete((TeamWorkFlowArtifact) sma, page)));
             breakoutNeeded = true;
          }
          if (breakoutNeeded) {
             if (!getControl().isDisposed()) {
                setToolTip(sb.toString() + "\n" + TOOLTIP);
             }
-            return String.valueOf(sma.getPercentCompleteSMAStateTotal(page.getName()));
+            return String.valueOf(sma.getPercentCompleteSMAStateTotal(page));
          } else {
-            return String.valueOf(sma.getStateMgr().getPercentComplete(page.getName()));
+            return String.valueOf(sma.getStateMgr().getPercentComplete(page));
          }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);

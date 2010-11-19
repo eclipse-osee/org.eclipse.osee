@@ -11,25 +11,25 @@
 package org.eclipse.osee.ats.workflow.page;
 
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
+import org.eclipse.osee.ats.artifact.DecisionReviewState;
 import org.eclipse.osee.ats.workflow.flow.DecisionWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageType;
 
 /**
  * @author Donald G. Dunne
  */
 public class AtsDecisionPrepareWorkPageDefinition extends WorkPageDefinition {
 
-   public final static String ID =
-      DecisionWorkflowDefinition.ID + "." + DecisionReviewArtifact.DecisionReviewState.Prepare.name();
+   public final static String ID = DecisionWorkflowDefinition.ID + "." + DecisionReviewState.Prepare.getPageName();
 
    public AtsDecisionPrepareWorkPageDefinition() {
-      this(DecisionReviewArtifact.DecisionReviewState.Prepare.name(), ID, null);
+      this(DecisionReviewState.Prepare.getPageName(), ID, null);
    }
 
    public AtsDecisionPrepareWorkPageDefinition(String name, String pageId, String parentId) {
-      super(name, pageId, parentId);
+      super(name, pageId, parentId, WorkPageType.Working);
       addWorkItem("ats.Title");
       addWorkItem(AtsAttributeTypes.DecisionReviewOptions);
       addWorkItem(AtsWorkDefinitions.ATS_DESCRIPTION_NOT_REQUIRED_ID);

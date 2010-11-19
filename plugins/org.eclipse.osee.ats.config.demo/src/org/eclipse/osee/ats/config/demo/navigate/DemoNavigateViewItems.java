@@ -90,16 +90,16 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
             TeamDefinitionArtifact teamDef = DemoTeams.getInstance().getTeamDef(team);
             XNavigateItem teamItems = new XNavigateItemFolder(jhuItem, "JHU " + team.name().replaceAll("_", " "));
             new SearchNavigateItem(teamItems, new TeamWorldSearchItem("Show Open " + teamDef + " Actions",
-               Arrays.asList(DemoTeams.getInstance().getTeamDef(team)), false, true, true, null, null,
+               Arrays.asList(DemoTeams.getInstance().getTeamDef(team)), false, false, true, true, null, null,
                ReleasedOption.Both));
             new SearchNavigateItem(teamItems, new TeamWorldSearchItem("Show Open " + teamDef + " Workflows",
-               Arrays.asList(DemoTeams.getInstance().getTeamDef(team)), false, false, true, null, null,
+               Arrays.asList(DemoTeams.getInstance().getTeamDef(team)), false, false, false, true, null, null,
                ReleasedOption.Both));
             // Handle all children teams
             for (TeamDefinitionArtifact childTeamDef : Artifacts.getChildrenOfTypeSet(
                DemoTeams.getInstance().getTeamDef(team), TeamDefinitionArtifact.class, true)) {
                new SearchNavigateItem(teamItems, new TeamWorldSearchItem("Show Open " + childTeamDef + " Workflows",
-                  Arrays.asList(childTeamDef), false, false, false, null, null, ReleasedOption.Both));
+                  Arrays.asList(childTeamDef), false, false, false, false, null, null, ReleasedOption.Both));
             }
             if (teamDef.isTeamUsesVersions()) {
                if (team.name().contains("SAW")) {
@@ -112,7 +112,7 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
                new SearchNavigateItem(teamItems, new VersionTargetedForTeamSearchItem(teamDef, null, false,
                   LoadView.WorldEditor));
                new SearchNavigateItem(teamItems, new TeamWorldSearchItem("Show Un-Released Team Workflows",
-                  Arrays.asList(teamDef), true, false, true, null, null, ReleasedOption.UnReleased));
+                  Arrays.asList(teamDef), true, true, false, true, null, null, ReleasedOption.UnReleased));
                new ReleaseVersionItem(teamItems, teamDef);
                new CreateNewVersionItem(teamItems, teamDef);
             }

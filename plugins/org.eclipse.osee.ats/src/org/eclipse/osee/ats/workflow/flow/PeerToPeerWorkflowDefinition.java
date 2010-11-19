@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.workflow.flow;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.ats.util.DefaultTeamState;
+import org.eclipse.osee.ats.util.TeamState;
 import org.eclipse.osee.ats.workflow.item.AtsStatePercentCompleteWeightPeerToPeerReviewRule;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.ats.workflow.page.AtsCancelledWorkPageDefinition;
@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageType;
 
 /**
  * @author Donald G. Dunne
@@ -33,8 +34,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 public class PeerToPeerWorkflowDefinition extends WorkFlowDefinition {
 
    public final static String ID = "osee.ats.peerToPeerReview";
-   public final static String PEER_REVIEW_COMPLETED_STATE_ID = ID + "." + DefaultTeamState.Completed.name();
-   public final static String PEER_REVIEW_CANCELLED_STATE_ID = ID + "." + DefaultTeamState.Cancelled.name();
+   public final static String PEER_REVIEW_COMPLETED_STATE_ID = ID + "." + TeamState.Completed.getPageName();
+   public final static String PEER_REVIEW_CANCELLED_STATE_ID = ID + "." + TeamState.Cancelled.getPageName();
 
    public PeerToPeerWorkflowDefinition() {
       super(ID, ID, null);
@@ -58,10 +59,12 @@ public class PeerToPeerWorkflowDefinition extends WorkFlowDefinition {
       // Add PeerToPeer Pages and Workflow Definition
       workItems.add(new AtsPeerPrepareWorkPageDefinition());
       workItems.add(new AtsPeerReviewWorkPageDefinition());
-      workItems.add(new WorkPageDefinition(DefaultTeamState.Completed.name(),
-         PeerToPeerWorkflowDefinition.PEER_REVIEW_COMPLETED_STATE_ID, AtsCompletedWorkPageDefinition.ID));
-      workItems.add(new WorkPageDefinition(DefaultTeamState.Cancelled.name(),
-         PeerToPeerWorkflowDefinition.PEER_REVIEW_CANCELLED_STATE_ID, AtsCancelledWorkPageDefinition.ID));
+      workItems.add(new WorkPageDefinition(TeamState.Completed.getPageName(),
+         PeerToPeerWorkflowDefinition.PEER_REVIEW_COMPLETED_STATE_ID, AtsCompletedWorkPageDefinition.ID,
+         WorkPageType.Completed));
+      workItems.add(new WorkPageDefinition(TeamState.Cancelled.getPageName(),
+         PeerToPeerWorkflowDefinition.PEER_REVIEW_CANCELLED_STATE_ID, AtsCancelledWorkPageDefinition.ID,
+         WorkPageType.Cancelled));
       workItems.add(new PeerToPeerWorkflowDefinition());
 
       return workItems;

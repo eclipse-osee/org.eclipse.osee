@@ -100,17 +100,17 @@ public class AtsNotification {
    public static void notifyOriginatorAndReset(AbstractWorkflowArtifact workflow, boolean resetOnly) throws OseeCoreException {
       User preSaveOriginator = guidToOriginatorMap.get(workflow.getGuid());
       if (preSaveOriginator == null || resetOnly) {
-         User orig = workflow.getOriginator();
+         User orig = workflow.getCreatedBy();
          if (orig == null) {
             orig = UserManager.getUser();
             guidToOriginatorMap.put(workflow.getGuid(), orig);
          }
          return;
       }
-      if (workflow.getOriginator() != null && !workflow.getOriginator().equals(preSaveOriginator)) {
+      if (workflow.getCreatedBy() != null && !workflow.getCreatedBy().equals(preSaveOriginator)) {
          AtsNotifyUsers.getInstance().notify(workflow, AtsNotifyUsers.NotifyType.Originator);
       }
-      guidToOriginatorMap.put(workflow.getGuid(), workflow.getOriginator());
+      guidToOriginatorMap.put(workflow.getGuid(), workflow.getCreatedBy());
    }
 
    public static Set<IAtsNotification> getAtsNotificationItems() {

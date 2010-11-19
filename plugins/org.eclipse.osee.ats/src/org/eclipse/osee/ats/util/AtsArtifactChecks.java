@@ -91,7 +91,8 @@ public class AtsArtifactChecks extends ArtifactCheck {
       if (teamDefs.size() > 0) {
 
          TeamWorldSearchItem srch =
-            new TeamWorldSearchItem("Team Def search", teamDefs, true, false, true, null, null, ReleasedOption.Both);
+            new TeamWorldSearchItem("Team Def search", teamDefs, true, true, false, true, null, null,
+               ReleasedOption.Both);
          if (srch.performSearchGetResults(false).size() > 0) {
             return "Team Definition (or children Team Definitions) selected to delete have related Team Workflows; Delete or re-assign Team Workflows first.";
          }

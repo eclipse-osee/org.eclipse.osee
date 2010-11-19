@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.XViewerFactory;
 import org.eclipse.nebula.widgets.xviewer.XViewerTreeReport;
 import org.eclipse.osee.framework.core.util.TableWriterAdaptor;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -26,6 +27,7 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.skynet.results.table.xresults.ResultsXViewer;
 import org.eclipse.osee.framework.ui.skynet.results.table.xresults.ResultsXViewerContentProvider;
+import org.eclipse.osee.framework.ui.skynet.results.table.xresults.ResultsXViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.results.table.xresults.ResultsXViewerLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.util.HtmlExportTable;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -48,6 +50,7 @@ public class ResultsEditorTableTab implements IResultsEditorTableTab {
    private List<XViewerColumn> columns;
    private Collection<IResultsXViewerRow> rows;
    private ResultsXViewer resultsXViewer;
+   private XViewerFactory xViewerFactory;
 
    public ResultsEditorTableTab(String tabName) {
       this(tabName, null, null);
@@ -59,6 +62,7 @@ public class ResultsEditorTableTab implements IResultsEditorTableTab {
       this.tabName = tabName;
       this.columns = columns;
       this.rows = rows;
+      this.xViewerFactory = new ResultsXViewerFactory(columns);
    }
 
    public void addColumn(XViewerColumn xViewerColumn) {
@@ -87,11 +91,15 @@ public class ResultsEditorTableTab implements IResultsEditorTableTab {
    @Override
    public Composite createTab(Composite parent, ResultsEditor resultsEditor) {
       Composite comp = ALayout.createCommonPageComposite(parent);
-      ToolBar toolBar = resultsEditor.createToolBar(comp);
-      addToolBarItems(toolBar);
+      comp.setLayoutData(new GridData(GridData.FILL_BOTH));
+      if (resultsEditor != null) {
+         ToolBar toolBar = resultsEditor.createToolBar(comp);
+         addToolBarItems(toolBar);
+      }
 
       GridData gd = new GridData(GridData.FILL_BOTH);
-      resultsXViewer = new ResultsXViewer(comp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, getTableColumns());
+      resultsXViewer =
+         new ResultsXViewer(comp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, getTableColumns(), xViewerFactory);
       resultsXViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
       resultsXViewer.setContentProvider(new ResultsXViewerContentProvider());
       resultsXViewer.setLabelProvider(new ResultsXViewerLabelProvider(resultsXViewer));
@@ -187,5 +195,13 @@ public class ResultsEditorTableTab implements IResultsEditorTableTab {
          }
       });
 
+   }
+
+   public ResultsXViewer getResultsXViewer() {
+      return resultsXViewer;
+   }
+
+   public void setxViewerFactory(XViewerFactory xViewerFactory) {
+      this.xViewerFactory = xViewerFactory;
    }
 }

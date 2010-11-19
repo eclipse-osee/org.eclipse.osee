@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util;
 
+import java.util.Date;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -24,9 +25,11 @@ import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.ats.workflow.item.StateEventType;
+import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -67,7 +70,7 @@ public class AtsBranchCommitJob extends Job {
          // Loop through this state's blocking reviews to confirm complete
          if (teamArt.isTeamWorkflow()) {
             for (AbstractReviewArtifact reviewArt : ReviewManager.getReviewsFromCurrentState(teamArt)) {
-               if (reviewArt.getReviewBlockType() == ReviewBlockType.Commit && !reviewArt.isCancelledOrCompleted()) {
+               if (reviewArt.getReviewBlockType() == ReviewBlockType.Commit && !reviewArt.isCompletedOrCancelled()) {
                   return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID,
                      "Blocking Review must be completed before commit.");
                }
@@ -126,7 +129,8 @@ public class AtsBranchCommitJob extends Job {
       if (branchCommitted) {
          // Create reviews as necessary
          SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Create Reviews upon Commit");
-         AtsBranchManager.createNecessaryBranchEventReviews(StateEventType.CommitBranch, teamArt, transaction);
+         AtsBranchManager.createNecessaryBranchEventReviews(StateEventType.CommitBranch, teamArt, new Date(),
+            UserManager.getUser(SystemUser.OseeSystem), transaction);
          transaction.execute();
       }
    }

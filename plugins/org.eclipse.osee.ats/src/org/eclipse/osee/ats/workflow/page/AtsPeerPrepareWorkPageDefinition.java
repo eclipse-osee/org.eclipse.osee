@@ -11,25 +11,25 @@
 package org.eclipse.osee.ats.workflow.page;
 
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
+import org.eclipse.osee.ats.artifact.PeerToPeerReviewState;
 import org.eclipse.osee.ats.workflow.flow.PeerToPeerWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageType;
 
 /**
  * @author Donald G. Dunne
  */
 public class AtsPeerPrepareWorkPageDefinition extends WorkPageDefinition {
 
-   public final static String ID =
-      PeerToPeerWorkflowDefinition.ID + "." + PeerToPeerReviewArtifact.PeerToPeerReviewState.Prepare.name();
+   public final static String ID = PeerToPeerWorkflowDefinition.ID + "." + PeerToPeerReviewState.Prepare.getPageName();
 
    public AtsPeerPrepareWorkPageDefinition() {
-      this(PeerToPeerReviewArtifact.PeerToPeerReviewState.Prepare.name(), ID, null);
+      this(PeerToPeerReviewState.Prepare.getPageName(), ID, null);
    }
 
    public AtsPeerPrepareWorkPageDefinition(String name, String pageId, String parentId) {
-      super(name, pageId, parentId);
+      super(name, pageId, parentId, WorkPageType.Working);
       addWorkItem("ats.Title");
       addWorkItem(AtsAttributeTypes.RelatedToState);
       addWorkItem(AtsAttributeTypes.LegacyPcrId);

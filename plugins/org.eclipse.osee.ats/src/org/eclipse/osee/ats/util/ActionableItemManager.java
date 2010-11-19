@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.util;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -63,10 +64,12 @@ public class ActionableItemManager {
 
       final StringBuffer sb = new StringBuffer();
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Edit Actionable Items");
+      Date createdDate = new Date();
+      User createdBy = UserManager.getUser();
 
       // Add new aias
       for (ActionableItemArtifact aia : diag.getChecked()) {
-         Result result = addActionableItemToTeamsOrAddTeams(actionArt, aia, UserManager.getUser(), transaction);
+         Result result = addActionableItemToTeamsOrAddTeams(actionArt, aia, createdDate, createdBy, transaction);
          sb.append(result.getText());
       }
       // Remove unchecked aias
@@ -83,7 +86,7 @@ public class ActionableItemManager {
       return new Result(true, sb.toString());
    }
 
-   public static Result addActionableItemToTeamsOrAddTeams(ActionArtifact actionArt, ActionableItemArtifact aia, User originator, SkynetTransaction transaction) throws OseeCoreException {
+   public static Result addActionableItemToTeamsOrAddTeams(ActionArtifact actionArt, ActionableItemArtifact aia, Date createdDate, User createdBy, SkynetTransaction transaction) throws OseeCoreException {
       StringBuffer sb = new StringBuffer();
       for (TeamDefinitionArtifact tda : TeamDefinitionArtifact.getImpactedTeamDefs(Arrays.asList(aia))) {
          boolean teamExists = false;
@@ -106,10 +109,8 @@ public class ActionableItemManager {
          }
          if (!teamExists) {
             TeamWorkFlowArtifact teamArt =
-               ActionManager.createTeamWorkflow(actionArt, tda, Arrays.asList(aia), tda.getLeads(), transaction);
-            if (originator != null) {
-               teamArt.getLog().setOriginator(originator);
-            }
+               ActionManager.createTeamWorkflow(actionArt, tda, Arrays.asList(aia), tda.getLeads(), transaction,
+                  createdDate, createdBy);
             teamArt.persist(transaction);
             sb.append(aia.getName() + " => added team workflow \"" + tda.getName() + "\"\n");
          }

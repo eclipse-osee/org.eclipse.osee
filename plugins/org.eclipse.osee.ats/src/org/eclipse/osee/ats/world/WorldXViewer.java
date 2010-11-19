@@ -59,7 +59,7 @@ import org.eclipse.osee.ats.task.TaskEditorSimpleProvider;
 import org.eclipse.osee.ats.task.TaskXViewer;
 import org.eclipse.osee.ats.util.ArtifactEmailWizard;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.DefaultTeamState;
+import org.eclipse.osee.ats.util.TeamState;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeColumn;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -614,7 +614,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
    public void setCancelledNotification() {
       TreeItem item = getTree().getItem(0);
       if (item.getData() instanceof String) {
-         item.setData(DefaultTeamState.Cancelled.name());
+         item.setData(TeamState.Cancelled.getPageName());
       }
       refresh(item.getData());
    }

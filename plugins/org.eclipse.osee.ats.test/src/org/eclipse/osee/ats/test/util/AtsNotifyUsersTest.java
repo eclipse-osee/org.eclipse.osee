@@ -17,12 +17,13 @@ import java.util.Collections;
 import java.util.List;
 import junit.framework.Assert;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.artifact.log.LogType;
 import org.eclipse.osee.ats.util.AtsNotifyUsers;
 import org.eclipse.osee.ats.util.AtsNotifyUsers.NotifyType;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.DefaultTeamState;
 import org.eclipse.osee.ats.util.SubscribeManager;
+import org.eclipse.osee.ats.util.TeamState;
+import org.eclipse.osee.ats.util.TransitionOption;
+import org.eclipse.osee.ats.workflow.TransitionManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -71,7 +72,7 @@ public class AtsNotifyUsersTest {
       atsNotifyUsers.setInTest(true);
 
       TeamWorkFlowArtifact teamArt = DemoTestUtil.createSimpleAction(AtsNotifyUsersTest.class.getSimpleName(), null);
-      teamArt.setOriginator(kay_ValidEmail);
+      teamArt.internalSetCreatedBy(kay_ValidEmail);
       List<User> assignees =
          Arrays.asList(inactiveSteve, alex_NoValidEmail, jason_ValidEmail, kay_ValidEmail, joeSmith_CurrentUser);
       teamArt.getStateMgr().setAssignees(assignees);
@@ -88,11 +89,11 @@ public class AtsNotifyUsersTest {
          event.getDescription());
 
       notifyManager.clear();
-      teamArt.setOriginator(inactiveSteve);
+      teamArt.internalSetCreatedBy(inactiveSteve);
       teamArt.persist();
       AtsNotifyUsers.getInstance().notify(teamArt, NotifyType.Originator);
       Assert.assertEquals(0, notifyManager.getNotificationEvents().size());
-      teamArt.setOriginator(kay_ValidEmail);
+      teamArt.internalSetCreatedBy(kay_ValidEmail);
       teamArt.persist();
 
       notifyManager.clear();
@@ -140,7 +141,7 @@ public class AtsNotifyUsersTest {
       Assert.assertEquals(0, notifyManager.getNotificationEvents().size());
 
       notifyManager.clear();
-      teamArt.getStateMgr().initializeStateMachine(DefaultTeamState.Completed.name());
+      teamArt.getStateMgr().initializeStateMachine(TeamState.Completed);
       AtsNotifyUsers.getInstance().notify(teamArt, NotifyType.Completed);
       event = notifyManager.getNotificationEvents().get(0);
       Assert.assertEquals(NotifyType.Completed.name(), event.getType());
@@ -148,18 +149,21 @@ public class AtsNotifyUsersTest {
       Assert.assertEquals("[Demo Code Team Workflow] titled [AtsNotifyUsersTest] is Completed", event.getDescription());
 
       notifyManager.clear();
-      teamArt.setOriginator(inactiveSteve);
+      teamArt.internalSetCreatedBy(inactiveSteve);
       teamArt.persist();
-      teamArt.getStateMgr().initializeStateMachine(DefaultTeamState.Completed.name());
+      teamArt.getStateMgr().initializeStateMachine(TeamState.Completed);
       AtsNotifyUsers.getInstance().notify(teamArt, NotifyType.Completed);
       Assert.assertEquals(0, notifyManager.getNotificationEvents().size());
-      teamArt.setOriginator(kay_ValidEmail);
+      teamArt.internalSetCreatedBy(kay_ValidEmail);
       teamArt.persist();
 
       notifyManager.clear();
-      teamArt.getLog().addLog(LogType.StateCancelled, "Endorse", "this is the reason");
-      teamArt.getStateMgr().initializeStateMachine(DefaultTeamState.Cancelled.name());
-      AtsNotifyUsers.getInstance().notify(teamArt, NotifyType.Cancelled);
+      teamArt.getStateMgr().initializeStateMachine(TeamState.Endorse);
+      TransitionManager transMgr = new TransitionManager(teamArt);
+      transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), getClass().getSimpleName());
+      transMgr.transitionToCancelled("this is the reason", transaction,
+         TransitionOption.OverrideTransitionValidityCheck);
+      transaction.execute();
       Assert.assertEquals(1, notifyManager.getNotificationEvents().size());
       event = notifyManager.getNotificationEvents().get(0);
       Assert.assertEquals(NotifyType.Cancelled.name(), event.getType());

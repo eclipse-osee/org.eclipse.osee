@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.util.widgets;
+package org.eclipse.osee.ats.internal.workflow;
 
 import java.util.Date;
 import java.util.Set;
@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.artifact.log.LogType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkPage;
 
 /**
  * @author Donald G. Dunne
@@ -55,7 +56,7 @@ public class XCurrentStateDam extends XStateAssigneesDam {
       currState.setPercentComplete(percentComplete);
       setState(currState);
       if (logMetrics) {
-         logMetrics();
+         logMetrics(getArtifact().getStateMgr().getCurrentState());
       }
    }
 
@@ -65,18 +66,14 @@ public class XCurrentStateDam extends XStateAssigneesDam {
       currState.setPercentComplete(percentComplete);
       setState(currState);
       if (logMetrics) {
-         logMetrics();
+         logMetrics(getArtifact().getStateMgr().getCurrentState());
       }
    }
 
-   private void logMetrics() throws OseeCoreException {
-      logMetrics("");
-   }
-
-   public static void logMetrics(AbstractWorkflowArtifact sma, String percent, String hours, String stateName, User user, Date date) throws OseeCoreException {
+   public static void logMetrics(AbstractWorkflowArtifact sma, String percent, String hours, IWorkPage state, User user, Date date) throws OseeCoreException {
       LogItem logItem =
-         new LogItem(LogType.Metrics, date, user, stateName, String.format("Percent %s Hours %s", percent, hours),
-            sma.getHumanReadableId());
+         new LogItem(LogType.Metrics, date, user, state.getPageName(), String.format("Percent %s Hours %s", percent,
+            hours), sma.getHumanReadableId());
       sma.getLog().addLogItem(logItem);
    }
 }

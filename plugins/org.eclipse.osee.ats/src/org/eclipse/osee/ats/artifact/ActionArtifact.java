@@ -16,13 +16,11 @@ import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.ats.column.ChangeTypeColumn;
 import org.eclipse.osee.ats.column.PriorityColumn;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -153,30 +151,11 @@ public class ActionArtifact extends AbstractAtsArtifact implements IWorldViewArt
    }
 
    @Override
-   public String getType() {
-      return AtsArtifactTypes.Action.getName();
-   }
-
-   @Override
-   public String getWorldViewTitle() {
-      return getName();
-   }
-
-   @Override
-   public String getState() throws OseeCoreException {
-      Set<String> strs = new HashSet<String>();
-      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         strs.add(team.getState());
-      }
-      return Collections.toString(";", strs);
-   }
-
-   @Override
    public String getAssigneeStr() throws OseeCoreException {
       Set<User> pocs = new HashSet<User>();
       Set<User> implementers = new HashSet<User>();
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         if (team.isCancelledOrCompleted()) {
+         if (team.isCompletedOrCancelled()) {
             implementers.addAll(team.getImplementers());
          } else {
             pocs.addAll(team.getStateMgr().getAssignees());
@@ -184,11 +163,6 @@ public class ActionArtifact extends AbstractAtsArtifact implements IWorldViewArt
       }
       return Artifacts.toString("; ", pocs) + (implementers.isEmpty() ? "" : "(" + Artifacts.toString("; ",
          implementers) + ")");
-   }
-
-   @Override
-   public String getWorldViewID() {
-      return getHumanReadableId();
    }
 
    @Override
@@ -235,18 +209,6 @@ public class ActionArtifact extends AbstractAtsArtifact implements IWorldViewArt
    @Override
    public Artifact getParentAtsArtifact() {
       return null;
-   }
-
-   @Override
-   public double getWorldViewWeeklyBenefit() throws OseeCoreException {
-      double hours = 0;
-      // Add up hours for all children
-      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         if (!team.isCompleted() && !team.isCancelled()) {
-            hours += team.getWorldViewWeeklyBenefit();
-         }
-      }
-      return hours;
    }
 
    @Override

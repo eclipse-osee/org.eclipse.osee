@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.test.util;
 
 import static org.junit.Assert.assertFalse;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -23,6 +24,7 @@ import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -74,7 +76,7 @@ public class AtsPurgeTest {
             org.eclipse.osee.framework.jdk.core.util.Collections.castAll(
                ActionableItemArtifact.class,
                ArtifactQuery.getArtifactListFromTypeAndName(AtsArtifactTypes.ActionableItem, "SAW Test",
-                  AtsUtil.getAtsBranch())), transaction);
+                  AtsUtil.getAtsBranch())), new Date(), UserManager.getUser(), transaction);
       actionArt.persist(transaction);
       transaction.execute();
 
@@ -83,7 +85,8 @@ public class AtsPurgeTest {
 
       for (int x = 0; x < 30; x++) {
          TaskArtifact taskArt =
-            actionArt.getTeamWorkFlowArtifacts().iterator().next().createNewTask(getClass().getSimpleName() + x);
+            actionArt.getTeamWorkFlowArtifacts().iterator().next().createNewTask(getClass().getSimpleName() + x,
+               new Date(), UserManager.getUser());
          taskArt.persist();
          artsToPurge.add(taskArt);
       }

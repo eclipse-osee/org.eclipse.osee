@@ -1148,6 +1148,7 @@ abstract artifactType "Work Item Definition" extends "Artifact" {
 artifactType "Work Page Definition" extends "Work Item Definition" {
    guid "AAMFDhzuyizN4qu7tXgA"
    attribute "osee.wi.Work Page Name"
+   attribute "osee.wi.Work Page Type"
 }
 
 artifactType "Work Flow Definition" extends "Work Item Definition" {
@@ -1217,6 +1218,13 @@ attributeType "osee.wi.Transition" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max unlimited
+}
+
+attributeType "osee.wi.Work Page Type" extends StringAttribute {
+   guid "ATTKEn8ob0KafAl5vuAA"
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
 }
 
 attributeType "osee.wi.Start Page" extends StringAttribute {

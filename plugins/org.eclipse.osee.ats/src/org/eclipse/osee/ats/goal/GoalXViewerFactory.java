@@ -44,6 +44,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.HridCo
 public class GoalXViewerFactory extends SkynetXViewerFactory {
 
    private GoalArtifact soleGoalArtifact;
+   @SuppressWarnings("unchecked")
    public static final List<? extends XViewerColumn> GoalViewerVisibleColumns = Arrays.asList(
       GoalOrderColumn.getInstance(), GoalOrderVoteColumn.getInstance(), TitleColumn.getInstance(),
       TypeColumn.getInstance(), StateColumn.getInstance(), PriorityColumn.getInstance(),

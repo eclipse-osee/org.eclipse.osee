@@ -11,25 +11,26 @@
 package org.eclipse.osee.ats.workflow.page;
 
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.TaskArtifact.TaskStates;
+import org.eclipse.osee.ats.artifact.TaskStates;
 import org.eclipse.osee.ats.workflow.flow.TaskWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions.RuleWorkItemId;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageType;
 
 /**
  * @author Donald G. Dunne
  */
 public class AtsTaskInWorkPageDefinition extends WorkPageDefinition {
 
-   public final static String ID = TaskWorkflowDefinition.ID + "." + TaskStates.InWork.name();
+   public final static String ID = TaskWorkflowDefinition.ID + "." + TaskStates.InWork.getPageName();
 
    public AtsTaskInWorkPageDefinition() {
-      this(TaskStates.InWork.name(), ID, null);
+      this(TaskStates.InWork.getPageName(), ID, null);
    }
 
    public AtsTaskInWorkPageDefinition(String name, String pageId, String parentId) {
-      super(name, pageId, parentId);
+      super(name, pageId, parentId, WorkPageType.Working);
       addWorkItem(RuleWorkItemId.atsRequireStateHourSpentPrompt.name());
       addWorkItem("ats.Title");
       addWorkItem(AtsWorkDefinitions.ATS_DESCRIPTION_NOT_REQUIRED_ID);

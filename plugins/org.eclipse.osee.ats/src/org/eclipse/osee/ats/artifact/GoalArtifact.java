@@ -27,12 +27,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
  */
 public class GoalArtifact extends AbstractWorkflowArtifact {
 
-   public static enum GoalState {
-      InWork,
-      Completed,
-      Cancelled
-   };
-
    public GoalArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
       registerAtsWorldRelation(AtsRelationTypes.Goal_Member);

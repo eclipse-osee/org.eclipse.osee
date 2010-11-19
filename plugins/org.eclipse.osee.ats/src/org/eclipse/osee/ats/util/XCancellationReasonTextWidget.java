@@ -36,7 +36,7 @@ public class XCancellationReasonTextWidget extends XText implements IArtifactWid
       if (!Widgets.isAccessible(getControl())) {
          return Result.FalseResult;
       }
-      if (!getText().equals(sma.getLog().getCancellationReason())) {
+      if (!getText().equals(sma.getCancelledReason())) {
          return new Result(true, "Cancallation Reason dirty");
       }
       return Result.FalseResult;
@@ -50,7 +50,7 @@ public class XCancellationReasonTextWidget extends XText implements IArtifactWid
    @Override
    public void saveToArtifact() throws OseeCoreException {
       if (Strings.isValid(getText())) {
-         sma.getLog().setCancellationReason(getText());
+         sma.setCancellationReason(getText());
       }
    }
 
@@ -58,7 +58,7 @@ public class XCancellationReasonTextWidget extends XText implements IArtifactWid
    public void setArtifact(Artifact artifact) throws OseeCoreException {
       if (artifact instanceof AbstractWorkflowArtifact) {
          this.sma = (AbstractWorkflowArtifact) artifact;
-         setText(sma.getLog().getCancellationReason());
+         setText(sma.getCancelledReason());
       }
    }
 

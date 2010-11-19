@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.editor.widget;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.jobs.Job;
@@ -29,6 +30,7 @@ import org.eclipse.osee.ats.util.Overview;
 import org.eclipse.osee.ats.util.TransitionOption;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.ats.util.widgets.dialog.StateListAndTitleDialog;
+import org.eclipse.osee.ats.workflow.TransitionManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -40,6 +42,7 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.widgets.XLabelValueBase;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkPage;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
@@ -59,7 +62,7 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
  */
 public class ReviewInfoXWidget extends XLabelValueBase {
 
-   private final String forStateName;
+   private final IWorkPage forState;
    private final List<Label> labelWidgets = new ArrayList<Label>();
    private Composite destroyableComposite = null;
    private final Composite composite;
@@ -68,12 +71,12 @@ public class ReviewInfoXWidget extends XLabelValueBase {
    private final XFormToolkit toolkit;
    private final TeamWorkFlowArtifact teamArt;
 
-   public ReviewInfoXWidget(IManagedForm managedForm, XFormToolkit toolkit, final TeamWorkFlowArtifact teamArt, final String forStateName, Composite composite, int horizontalSpan) {
-      super("\"" + forStateName + "\" State Reviews");
+   public ReviewInfoXWidget(IManagedForm managedForm, XFormToolkit toolkit, final TeamWorkFlowArtifact teamArt, final IWorkPage forState, Composite composite, int horizontalSpan) {
+      super("\"" + forState.getPageName() + "\" State Reviews");
       this.managedForm = managedForm;
       this.toolkit = toolkit;
       this.teamArt = teamArt;
-      this.forStateName = forStateName;
+      this.forState = forState;
       this.composite = composite;
       this.horizontalSpan = horizontalSpan;
       reDisplay();
@@ -94,7 +97,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
 
       try {
          addAdminRightClickOption();
-         Collection<AbstractReviewArtifact> revArts = ReviewManager.getReviews(teamArt, forStateName);
+         Collection<AbstractReviewArtifact> revArts = ReviewManager.getReviews(teamArt, forState);
          if (revArts.isEmpty()) {
             setValueText("No Reviews Created");
          }
@@ -119,7 +122,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                      new StateListAndTitleDialog("Create Decision Review",
                         "Select state to that review will be associated with.",
                         teamArt.getWorkFlowDefinition().getPageNames());
-                  dialog.setInitialSelections(new Object[] {forStateName});
+                  dialog.setInitialSelections(new Object[] {forState.getPageName()});
                   if (dialog.open() == 0) {
                      if (!Strings.isValid(dialog.getReviewTitle())) {
                         AWorkbench.popup("ERROR", "Must enter review title");
@@ -127,7 +130,8 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                      }
                      NewDecisionReviewJob job =
                         new NewDecisionReviewJob(teamArt, null, dialog.getReviewTitle(), dialog.getSelectedState(),
-                           null, ReviewManager.getDefaultDecisionReviewOptions(), null);
+                           null, ReviewManager.getDefaultDecisionReviewOptions(), null, new Date(),
+                           UserManager.getUser());
                      job.setUser(true);
                      job.setPriority(Job.LONG);
                      job.schedule();
@@ -158,7 +162,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                      new StateListAndTitleDialog("Add Peer to Peer Review",
                         "Select state to that review will be associated with.",
                         teamArt.getWorkFlowDefinition().getPageNames());
-                  dialog.setInitialSelections(new Object[] {forStateName});
+                  dialog.setInitialSelections(new Object[] {forState.getPageName()});
                   dialog.setReviewTitle(PeerToPeerReviewArtifact.getDefaultReviewTitle(teamArt));
                   if (dialog.open() == 0) {
                      if (!Strings.isValid(dialog.getReviewTitle())) {
@@ -185,7 +189,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
             workComp.setLayoutData(gd);
 
             for (AbstractReviewArtifact revArt : revArts) {
-               createReviewHyperlink(workComp, managedForm, toolkit, revArt, forStateName);
+               createReviewHyperlink(workComp, managedForm, toolkit, revArt, forState);
             }
          }
 
@@ -203,16 +207,17 @@ public class ReviewInfoXWidget extends XLabelValueBase {
       }
    }
 
-   public static String toHTML(final TeamWorkFlowArtifact teamArt, String forStateName) throws OseeCoreException {
-      if (ReviewManager.getReviews(teamArt, forStateName).isEmpty()) {
+   public static String toHTML(final TeamWorkFlowArtifact teamArt, IWorkPage forState) throws OseeCoreException {
+      if (ReviewManager.getReviews(teamArt, forState).isEmpty()) {
          return "";
       }
       StringBuffer html = new StringBuffer();
       try {
-         html.append(AHTML.addSpace(1) + AHTML.getLabelStr(AHTML.LABEL_FONT, "\"" + forStateName + "\" State Reviews"));
+         html.append(AHTML.addSpace(1) + AHTML.getLabelStr(AHTML.LABEL_FONT,
+            "\"" + forState.getPageName() + "\" State Reviews"));
          html.append(AHTML.startBorderTable(100, Overview.normalColor, ""));
          html.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Review Type", "Title", "ID"}));
-         for (AbstractReviewArtifact art : ReviewManager.getReviews(teamArt, forStateName)) {
+         for (AbstractReviewArtifact art : ReviewManager.getReviews(teamArt, forState)) {
             html.append(AHTML.addRowMultiColumnTable(new String[] {
                art.getArtifactTypeName(),
                art.getName(),
@@ -227,10 +232,10 @@ public class ReviewInfoXWidget extends XLabelValueBase {
    }
 
    public String toHTML() throws OseeCoreException {
-      return ReviewInfoXWidget.toHTML(teamArt, forStateName);
+      return ReviewInfoXWidget.toHTML(teamArt, forState);
    }
 
-   private void createReviewHyperlink(Composite comp, IManagedForm managedForm, XFormToolkit toolkit, final AbstractReviewArtifact revArt, String forStateName) throws OseeCoreException {
+   private void createReviewHyperlink(Composite comp, IManagedForm managedForm, XFormToolkit toolkit, final AbstractReviewArtifact revArt, IWorkPage forState) throws OseeCoreException {
 
       Composite workComp = toolkit.createContainer(comp, 1);
       workComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING));
@@ -238,21 +243,21 @@ public class ReviewInfoXWidget extends XLabelValueBase {
 
       Label strLabel = new Label(workComp, SWT.NONE);
       labelWidgets.add(strLabel);
-      if (revArt.isBlocking() && !revArt.isCancelledOrCompleted()) {
+      if (revArt.isBlocking() && !revArt.isCompletedOrCancelled()) {
          strLabel.setText("State Blocking [" + revArt.getArtifactTypeName() + "] must be completed: ");
          IMessageManager messageManager = managedForm.getMessageManager();
          if (messageManager != null) {
             messageManager.addMessage(
                "validation.error",
-               "\"" + forStateName + "\" State has a blocking [" + revArt.getArtifactTypeName() + "] that must be completed.",
+               "\"" + forState.getPageName() + "\" State has a blocking [" + revArt.getArtifactTypeName() + "] that must be completed.",
                null, IMessageProvider.ERROR, strLabel);
          }
-      } else if (!revArt.isCancelledOrCompleted()) {
+      } else if (!revArt.isCompletedOrCancelled()) {
          strLabel.setText("Open [" + revArt.getArtifactTypeName() + "] exists: ");
          IMessageManager messageManager = managedForm.getMessageManager();
          if (messageManager != null) {
             messageManager.addMessage("validation.error",
-               "\"" + forStateName + "\" State has an open [" + revArt.getArtifactTypeName() + "].", null,
+               "\"" + forState.getPageName() + "\" State has an open [" + revArt.getArtifactTypeName() + "].", null,
                IMessageProvider.WARNING, strLabel);
          }
       } else {
@@ -286,12 +291,13 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                      SkynetTransaction transaction =
                         new SkynetTransaction(AtsUtil.getAtsBranch(), "ATS Auto Complete Reviews");
                      for (AbstractReviewArtifact revArt : ReviewManager.getReviewsFromCurrentState(teamArt)) {
-                        if (!revArt.isCancelledOrCompleted()) {
+                        if (!revArt.isCompletedOrCancelled()) {
                            if (revArt.getStateMgr().isUnAssigned()) {
                               revArt.getStateMgr().setAssignee(UserManager.getUser());
                            }
+                           TransitionManager transitionMgr = new TransitionManager(revArt);
                            Result result =
-                              revArt.transitionToCompleted("", transaction,
+                              transitionMgr.transitionToCompleted("", transaction,
                                  TransitionOption.OverrideTransitionValidityCheck, TransitionOption.Persist);
                            if (result.isFalse()) {
                               result.popup();

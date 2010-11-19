@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.artifact;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -29,20 +28,18 @@ import org.eclipse.osee.ats.artifact.note.ArtifactNote;
 import org.eclipse.osee.ats.artifact.note.AtsNote;
 import org.eclipse.osee.ats.column.TargetedVersionColumn;
 import org.eclipse.osee.ats.editor.SMAEditor;
-import org.eclipse.osee.ats.editor.stateItem.AtsStateItemManager;
-import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.notify.AtsNotification;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
-import org.eclipse.osee.ats.util.AtsNotifyUsers;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.DefaultTeamState;
+import org.eclipse.osee.ats.util.SimpleTeamState;
 import org.eclipse.osee.ats.util.StateManager;
-import org.eclipse.osee.ats.util.TransitionOption;
+import org.eclipse.osee.ats.util.TeamState;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
+import org.eclipse.osee.ats.workflow.TransitionManager;
 import org.eclipse.osee.ats.workflow.item.AtsStatePercentCompleteWeightRule;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
@@ -64,17 +61,20 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
+import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FrameworkArtifactImageProvider;
 import org.eclipse.osee.framework.ui.skynet.group.IGroupExplorerProvider;
-import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkPage;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinitionFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageType;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
 import org.eclipse.swt.graphics.Image;
 
@@ -101,12 +101,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    @Override
-   public void onBirth() throws OseeCoreException {
-      super.onBirth();
-      setSoleAttributeValue(AtsAttributeTypes.CurrentState, "");
-   }
-
-   @Override
    public void onInitializationComplete() throws OseeCoreException {
       super.onInitializationComplete();
       initializeSMA();
@@ -125,6 +119,14 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    public void initalizePreSaveCache() {
       try {
+         if (getSoleAttributeValue(AtsAttributeTypes.CurrentStateType, null) == null) {
+            if (getSoleAttributeValue(AtsAttributeTypes.CurrentState, null) == null) {
+               setSoleAttributeValue(AtsAttributeTypes.CurrentState, "");
+            }
+            if (isAttributeTypeValid(AtsAttributeTypes.CurrentStateType)) {
+               setSoleAttributeValue(AtsAttributeTypes.CurrentStateType, WorkPageType.Working.name());
+            }
+         }
          stateMgr = new StateManager(this);
          atsLog = new AtsLog(new ArtifactLog(this));
          atsNote = new AtsNote(new ArtifactNote(this));
@@ -133,6 +135,19 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
+   }
+
+   public void initializeNewStateMachine(IWorkPage state, Collection<User> assignees, Date createdDate, User createdBy) throws OseeCoreException {
+      getStateMgr().initializeStateMachine(state, assignees);
+      setCreatedBy(createdBy, true, createdDate);
+      (new TransitionManager(this)).logStateStartedEvent(state, createdDate, createdBy);
+   }
+
+   public boolean isTargetedVersionable() throws OseeCoreException {
+      if (!isTeamWorkflow()) {
+         return false;
+      }
+      return ((TeamWorkFlowArtifact) this).getTeamDefinition().getTeamDefinitionHoldingVersions() != null && ((TeamWorkFlowArtifact) this).getTeamDefinition().getTeamDefinitionHoldingVersions().isTeamUsesVersions();
    }
 
    public String getHelpContext() {
@@ -149,7 +164,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    @SuppressWarnings("unused")
-   @Override
    public double getWorldViewWeeklyBenefit() throws OseeCoreException {
       return 0;
    }
@@ -230,39 +244,29 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       super.atsDelete(deleteArts, allRelated);
    }
 
-   @Override
    public String getType() {
       return getArtifactTypeName();
    }
 
-   @SuppressWarnings("unused")
-   @Override
-   public String getWorldViewTitle() throws OseeCoreException {
-      return getName();
+   public String getCurrentStateName() {
+      return getStateMgr().getCurrentStateName();
    }
 
-   @Override
-   public String getState() {
-      return getStateMgr().getCurrentStateName();
+   public boolean isInState(IWorkPage state) {
+      return getStateMgr().isInState(state);
    }
 
    public String implementersStr = null;
 
    @Override
    public String getAssigneeStr() throws OseeCoreException {
-      if (isCancelledOrCompleted()) {
+      if (isCompletedOrCancelled()) {
          if (implementersStr == null && !getImplementers().isEmpty()) {
             implementersStr = "(" + Artifacts.toString("; ", getImplementers()) + ")";
          }
          return implementersStr;
       }
       return Artifacts.toString("; ", getStateMgr().getAssignees());
-   }
-
-   @SuppressWarnings("unused")
-   @Override
-   public String getWorldViewID() throws OseeCoreException {
-      return getHumanReadableId();
    }
 
    public double getEstimatedHoursFromArtifact() throws OseeCoreException {
@@ -272,7 +276,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return 0;
    }
 
-   public double getEstimatedHoursFromTasks(String relatedToState) throws OseeCoreException {
+   public double getEstimatedHoursFromTasks(IWorkPage relatedToState) throws OseeCoreException {
       if (!(this instanceof AbstractTaskableArtifact)) {
          return 0;
       }
@@ -293,14 +297,14 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return 0;
    }
 
-   public double getEstimatedHoursFromReviews(String relatedToState) throws OseeCoreException {
+   public double getEstimatedHoursFromReviews(IWorkPage relatedToState) throws OseeCoreException {
       if (isTeamWorkflow()) {
          return ReviewManager.getEstimatedHours((TeamWorkFlowArtifact) this, relatedToState);
       }
       return 0;
    }
 
-   public double getEstimatedHoursTotal(String relatedToState) throws OseeCoreException {
+   public double getEstimatedHoursTotal(IWorkPage relatedToState) throws OseeCoreException {
       return getEstimatedHoursFromArtifact() + getEstimatedHoursFromTasks(relatedToState) + getEstimatedHoursFromReviews(relatedToState);
    }
 
@@ -343,7 +347,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    public int getWorldViewStatePercentComplete() throws OseeCoreException {
-      return getPercentCompleteSMAStateTotal(getStateMgr().getCurrentStateName());
+      return getPercentCompleteSMAStateTotal(getStateMgr().getCurrentState());
    }
 
    /**
@@ -357,8 +361,19 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
          getSmaArtifactsOneLevel(this, artifacts);
          for (Artifact artifact : artifacts) {
             if (artifact.isDirty()) {
-               return new Result(true, String.format("Artifact [%s][%s] is dirty", artifact.getHumanReadableId(),
-                  artifact));
+               String rString = null;
+               for (Attribute<?> attribute : artifact.internalGetAttributes()) {
+                  if (attribute.isDirty()) {
+                     rString = "Attribute: " + attribute.getNameValueDescription();
+                     break;
+                  }
+               }
+
+               if (rString == null) {
+                  rString = RelationManager.reportHasDirtyLinks(artifact);
+               }
+               return new Result(true, String.format("Artifact [%s][%s] is dirty\n\n%s", artifact.getHumanReadableId(),
+                  artifact, rString));
             }
          }
       } catch (Exception ex) {
@@ -440,26 +455,26 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    /**
     * Return hours spent working ONLY the SMA stateName (not children SMAs)
     */
-   public double getHoursSpentSMAState(String stateName) throws OseeCoreException {
-      return getStateMgr().getHoursSpent(stateName);
+   public double getHoursSpentSMAState(IWorkPage state) throws OseeCoreException {
+      return getStateMgr().getHoursSpent(state);
    }
 
    /**
     * Return hours spent working ONLY on tasks related to stateName
     */
-   public double getHoursSpentSMAStateTasks(String stateName) throws OseeCoreException {
+   public double getHoursSpentSMAStateTasks(IWorkPage state) throws OseeCoreException {
       if (!(this instanceof AbstractTaskableArtifact)) {
          return 0;
       }
-      return ((AbstractTaskableArtifact) this).getHoursSpentFromTasks(stateName);
+      return ((AbstractTaskableArtifact) this).getHoursSpentFromTasks(state);
    }
 
    /**
     * Return hours spent working ONLY on reviews related to stateName
     */
-   public double getHoursSpentSMAStateReviews(String stateName) throws OseeCoreException {
+   public double getHoursSpentSMAStateReviews(IWorkPage state) throws OseeCoreException {
       if (isTeamWorkflow()) {
-         return ReviewManager.getHoursSpent((TeamWorkFlowArtifact) this, stateName);
+         return ReviewManager.getHoursSpent((TeamWorkFlowArtifact) this, state);
       }
       return 0;
    }
@@ -467,13 +482,13 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    /**
     * Return hours spent working on all things (including children SMAs) related to stateName
     */
-   public double getHoursSpentSMAStateTotal(String stateName) throws OseeCoreException {
-      return getHoursSpentSMAState(stateName) + getHoursSpentSMAStateTasks(stateName) + getHoursSpentSMAStateReviews(stateName);
+   public double getHoursSpentSMAStateTotal(IWorkPage state) throws OseeCoreException {
+      return getHoursSpentSMAState(state) + getHoursSpentSMAStateTasks(state) + getHoursSpentSMAStateReviews(state);
    }
 
    @Override
    public double getWorldViewHoursSpentStateTotal() throws OseeCoreException {
-      return getHoursSpentSMAStateTotal(getStateMgr().getCurrentStateName());
+      return getHoursSpentSMAStateTotal(getStateMgr().getCurrentState());
    }
 
    /**
@@ -482,7 +497,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    public double getHoursSpentSMATotal() throws OseeCoreException {
       double hours = 0.0;
       for (String stateName : getStateMgr().getVisitedStateNames()) {
-         hours += getHoursSpentSMAStateTotal(stateName);
+         hours += getHoursSpentSMAStateTotal(new SimpleTeamState(stateName, WorkPageType.Working));
       }
       return hours;
    }
@@ -490,26 +505,26 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    /**
     * Return Percent Complete working ONLY the SMA stateName (not children SMAs)
     */
-   public int getPercentCompleteSMAState(String stateName) throws OseeCoreException {
-      return getStateMgr().getPercentComplete(stateName);
+   public int getPercentCompleteSMAState(IWorkPage state) throws OseeCoreException {
+      return getStateMgr().getPercentComplete(state);
    }
 
    /**
     * Return Percent Complete ONLY on tasks related to stateName. Total Percent / # Tasks
     */
-   public int getPercentCompleteSMAStateTasks(String stateName) throws OseeCoreException {
+   public int getPercentCompleteSMAStateTasks(IWorkPage state) throws OseeCoreException {
       if (!(this instanceof AbstractTaskableArtifact)) {
          return 0;
       }
-      return ((AbstractTaskableArtifact) this).getPercentCompleteFromTasks(stateName);
+      return ((AbstractTaskableArtifact) this).getPercentCompleteFromTasks(state);
    }
 
    /**
     * Return Percent Complete ONLY on reviews related to stateName. Total Percent / # Reviews
     */
-   public int getPercentCompleteSMAStateReviews(String stateName) throws OseeCoreException {
+   public int getPercentCompleteSMAStateReviews(IWorkPage state) throws OseeCoreException {
       if (isTeamWorkflow()) {
-         return ReviewManager.getPercentComplete((TeamWorkFlowArtifact) this, stateName);
+         return ReviewManager.getPercentComplete((TeamWorkFlowArtifact) this, state);
       }
       return 0;
    }
@@ -518,8 +533,8 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
     * Return Percent Complete on all things (including children SMAs) related to stateName. Total Percent for state,
     * tasks and reviews / 1 + # Tasks + # Reviews
     */
-   public int getPercentCompleteSMAStateTotal(String stateName) throws OseeCoreException {
-      return getStateMetricsData(stateName).getResultingPercent();
+   public int getPercentCompleteSMAStateTotal(IWorkPage state) throws OseeCoreException {
+      return getStateMetricsData(state).getResultingPercent();
    }
 
    /**
@@ -528,29 +543,29 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
     * percent = all state's percents / number of states (minus completed/cancelled)
     */
    public int getPercentCompleteSMATotal() throws OseeCoreException {
-      if (isCancelledOrCompleted()) {
+      if (isCompletedOrCancelled()) {
          return 100;
       }
       Map<String, Double> stateToWeightMap = getStatePercentCompleteWeight();
       if (!stateToWeightMap.isEmpty()) {
          // Calculate total percent using configured weighting
          int percent = 0;
-         for (String stateName : getWorkFlowDefinition().getPageNames()) {
-            if (!stateName.equals(DefaultTeamState.Completed.name()) && !stateName.equals(DefaultTeamState.Cancelled.name())) {
-               Double weight = stateToWeightMap.get(stateName);
+         for (WorkPageDefinition workPage : getWorkFlowDefinition().getPages()) {
+            if (!workPage.isCompletedPage() && !workPage.isCancelledPage()) {
+               Double weight = stateToWeightMap.get(workPage);
                if (weight == null) {
                   weight = 0.0;
                }
-               percent += weight * getPercentCompleteSMAStateTotal(stateName);
+               percent += weight * getPercentCompleteSMAStateTotal(workPage);
             }
          }
          return percent;
       } else {
          int percent = 0;
          int numStates = 0;
-         for (String stateName : getWorkFlowDefinition().getPageNames()) {
-            if (!stateName.equals(DefaultTeamState.Completed.name()) && !stateName.equals(DefaultTeamState.Cancelled.name())) {
-               percent += getPercentCompleteSMAStateTotal(stateName);
+         for (WorkPageDefinition workPage : getWorkFlowDefinition().getPages()) {
+            if (!workPage.isCompletedPage() && !workPage.isCancelledPage()) {
+               percent += getPercentCompleteSMAStateTotal(workPage);
                numStates++;
             }
          }
@@ -582,14 +597,14 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return stateToWeight;
    }
 
-   private StateMetricsData getStateMetricsData(String stateName) throws OseeCoreException {
+   private StateMetricsData getStateMetricsData(IWorkPage teamState) throws OseeCoreException {
       // Add percent and bump objects 1 for state percent
-      int percent = getPercentCompleteSMAState(stateName);
+      int percent = getPercentCompleteSMAState(teamState);
       int numObjects = 1; // the state itself is one object
 
       // Add percent for each task and bump objects for each task
       if (this instanceof AbstractTaskableArtifact) {
-         Collection<TaskArtifact> tasks = ((AbstractTaskableArtifact) this).getTaskArtifacts(stateName);
+         Collection<TaskArtifact> tasks = ((AbstractTaskableArtifact) this).getTaskArtifacts(teamState);
          for (TaskArtifact taskArt : tasks) {
             percent += taskArt.getPercentCompleteSMATotal();
          }
@@ -598,7 +613,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
       // Add percent for each review and bump objects for each review
       if (isTeamWorkflow()) {
-         Collection<AbstractReviewArtifact> reviews = ReviewManager.getReviews((TeamWorkFlowArtifact) this, stateName);
+         Collection<AbstractReviewArtifact> reviews = ReviewManager.getReviews((TeamWorkFlowArtifact) this, teamState);
          for (AbstractReviewArtifact reviewArt : reviews) {
             percent += reviewArt.getPercentCompleteSMATotal();
          }
@@ -629,17 +644,17 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    @Override
    public double getWorldViewHoursSpentState() throws OseeCoreException {
-      return getHoursSpentSMAState(getStateMgr().getCurrentStateName());
+      return getHoursSpentSMAState(getStateMgr().getCurrentState());
    }
 
    @Override
    public double getWorldViewHoursSpentStateReview() throws OseeCoreException {
-      return getHoursSpentSMAStateReviews(getStateMgr().getCurrentStateName());
+      return getHoursSpentSMAStateReviews(getStateMgr().getCurrentState());
    }
 
    @Override
    public double getWorldViewHoursSpentStateTask() throws OseeCoreException {
-      return getHoursSpentSMAStateTasks(getStateMgr().getCurrentStateName());
+      return getHoursSpentSMAStateTasks(getStateMgr().getCurrentState());
    }
 
    @Override
@@ -649,17 +664,17 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    @Override
    public int getWorldViewPercentCompleteState() throws OseeCoreException {
-      return getPercentCompleteSMAState(getStateMgr().getCurrentStateName());
+      return getPercentCompleteSMAState(getStateMgr().getCurrentState());
    }
 
    @Override
    public int getWorldViewPercentCompleteStateReview() throws OseeCoreException {
-      return getPercentCompleteSMAStateReviews(getStateMgr().getCurrentStateName());
+      return getPercentCompleteSMAStateReviews(getStateMgr().getCurrentState());
    }
 
    @Override
    public int getWorldViewPercentCompleteStateTask() throws OseeCoreException {
-      return getPercentCompleteSMAStateTasks(getStateMgr().getCurrentStateName());
+      return getPercentCompleteSMAStateTasks(getStateMgr().getCurrentState());
    }
 
    @Override
@@ -734,18 +749,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    public boolean isAccessControlWrite() throws OseeCoreException {
       return AccessControlManager.hasPermission(this, PermissionEnum.WRITE);
-   }
-
-   public User getOriginator() throws OseeCoreException {
-      return atsLog.getOriginator();
-   }
-
-   public String getOriginatorStr() throws OseeCoreException {
-      return getOriginator().getName();
-   }
-
-   public void setOriginator(User user) throws OseeCoreException {
-      atsLog.addLog(LogType.Originated, "", "Changed by " + UserManager.getUser().getName(), user);
    }
 
    /**
@@ -849,36 +852,182 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return TargetedVersionColumn.getTargetedVersionStr(this);
    }
 
-   public boolean isCompleted() {
-      return stateMgr.getCurrentStateName().equals(DefaultTeamState.Completed.name());
+   public boolean isCompleted() throws OseeCoreException {
+      if (isAttributeTypeValid(AtsAttributeTypes.CurrentStateType)) {
+         return getSoleAttributeValue(AtsAttributeTypes.CurrentStateType, "").equals(WorkPageType.Completed.name());
+      } else {
+         return getCurrentStateName().equals(TeamState.Completed.getPageName());
+      }
+   }
+
+   public void setCreatedBy(User user, boolean logChange, Date date) throws OseeCoreException {
+      if (logChange) {
+         if (getSoleAttributeValue(AtsAttributeTypes.CreatedBy, null) == null) {
+            atsLog.addLog(LogType.Originated, "", "", date, user);
+         } else {
+            atsLog.addLog(LogType.Originated, "", "Changed by " + UserManager.getUser().getName(), date, user);
+            atsLog.internalResetOriginator(UserManager.getUser());
+         }
+      }
+      if (isAttributeTypeValid(AtsAttributeTypes.CreatedBy)) {
+         setSoleAttributeValue(AtsAttributeTypes.CreatedBy, UserManager.getUser().getUserId());
+      }
+   }
+
+   public void internalSetCreatedBy(User user) throws OseeCoreException {
+      atsLog.internalResetOriginator(user);
+      if (isAttributeTypeValid(AtsAttributeTypes.CreatedBy)) {
+         setSoleAttributeValue(AtsAttributeTypes.CreatedBy, user.getUserId());
+      }
+   }
+
+   public void internalSetCreatedDate(Date date) throws OseeCoreException {
+      atsLog.internalResetCreatedDate(date);
+      if (isAttributeTypeValid(AtsAttributeTypes.CreatedDate)) {
+         setSoleAttributeValue(AtsAttributeTypes.CreatedDate, date);
+      }
+   }
+
+   public Date getCreatedDate() throws OseeCoreException {
+      Date date = getSoleAttributeValue(AtsAttributeTypes.CreatedDate, null);
+      if (date == null) {
+         // Keep this for backward compatibility
+         return getLog().internalGetCreationDate();
+      }
+      return date;
+   }
+
+   public User getCreatedBy() throws OseeCoreException {
+      String userId = getSoleAttributeValue(AtsAttributeTypes.CreatedBy, null);
+      if (!Strings.isValid(userId)) {
+         return getLog().internalGetOriginator();
+      } else {
+         return UserManager.getUserByUserId(userId);
+      }
+   }
+
+   public Date internalGetCancelledDate() throws OseeCoreException {
+      Date date = getSoleAttributeValue(AtsAttributeTypes.CancelledDate, null);
+      if (date == null) {
+         // Keep this for backward compatibility
+         LogItem item = getLog().internalGetCancelledLogItem();
+         if (item != null) {
+            return item.getDate();
+         }
+         return null;
+      }
+      return date;
+   }
+
+   public User internalGetCancelledBy() throws OseeCoreException {
+      String userId = getSoleAttributeValue(AtsAttributeTypes.CancelledBy, null);
+      if (!Strings.isValid(userId)) {
+         // Keep this for backward compatibility
+         LogItem item = getLog().internalGetCancelledLogItem();
+         if (item != null) {
+            return item.getUser();
+         }
+         return null;
+      } else {
+         return UserManager.getUserByUserId(userId);
+      }
+   }
+
+   public String getCancelledReason() throws OseeCoreException {
+      String reason = getSoleAttributeValue(AtsAttributeTypes.CancelledReason, null);
+      if (!Strings.isValid(reason)) {
+         // Keep this for backward compatibility
+         LogItem item = getLog().internalGetCancelledLogItem();
+         if (item != null) {
+            return item.getMsg();
+         }
+         return null;
+      }
+      return reason;
+   }
+
+   public void setCancellationReason(String reason) throws OseeCoreException {
+      // Keep this for backward compatibility
+      getLog().internalSetCancellationReason(reason);
+      if (isAttributeTypeValid(AtsAttributeTypes.CancelledReason)) {
+         setSoleAttributeValue(AtsAttributeTypes.CancelledReason, reason);
+      }
+   }
+
+   public String getCancelledFromState() throws OseeCoreException {
+      String fromState = getSoleAttributeValue(AtsAttributeTypes.CancelledFromState, null);
+      if (!Strings.isValid(fromState)) {
+         // Keep this for backward compatibility
+         return getLog().internalGetCancelledFromState();
+      }
+      return fromState;
    }
 
    public Date getCompletedDate() throws OseeCoreException {
-      LogItem item = getLog().getCompletedLogItem();
-      if (item != null) {
-         return item.getDate();
+      Date date = getSoleAttributeValue(AtsAttributeTypes.CompletedDate, null);
+      if (date == null) {
+         // Keep this for backward compatibility
+         LogItem item = getLog().internalGetCompletedLogItem();
+         if (item != null) {
+            return item.getDate();
+         }
+         return null;
       }
-      return null;
+      return date;
    }
 
-   public Date getCancelledDate() throws OseeCoreException {
-      LogItem item = getLog().getCancelledLogItem();
-      if (item != null) {
-         return item.getDate();
+   public User getCompletedBy() throws OseeCoreException {
+      String userId = getSoleAttributeValue(AtsAttributeTypes.CompletedBy, null);
+      if (!Strings.isValid(userId)) {
+         // Keep this for backward compatibility
+         LogItem item = getLog().internalGetCompletedLogItem();
+         if (item != null) {
+            return item.getUser();
+         }
+         return null;
+      } else {
+         return UserManager.getUserByUserId(userId);
       }
-      return null;
    }
 
-   public boolean isCancelled() {
-      return stateMgr.getCurrentStateName().equals(DefaultTeamState.Cancelled.name());
+   public LogItem getStateCompletedData(IWorkPage state) throws OseeCoreException {
+      return getLog().getStateEvent(LogType.StateComplete, state.getPageName());
    }
 
-   public boolean isCancelledOrCompleted() {
+   public LogItem getStateStartedData(IWorkPage state) throws OseeCoreException {
+      return getLog().getStateEvent(LogType.StateEntered, state.getPageName());
+   }
+
+   public String getCompletedFromState() throws OseeCoreException {
+      String fromState = getSoleAttributeValue(AtsAttributeTypes.CompletedFromState, null);
+      if (!Strings.isValid(fromState)) {
+         return getLog().internalGetCompletedFromState();
+      }
+      return fromState;
+   }
+
+   public boolean isInWork() throws OseeCoreException {
+      // Backward compatibility; remove this once 0.9.7 released
+      if (isAttributeTypeValid(AtsAttributeTypes.CurrentStateType)) {
+         return getSoleAttributeValue(AtsAttributeTypes.CurrentStateType, "").equals(WorkPageType.Working.name());
+      } else {
+         return !isCompletedOrCancelled();
+      }
+
+   }
+
+   public boolean isCancelled() throws OseeCoreException {
+      // Backward compatibility; remove this once 0.9.7 released
+      if (isAttributeTypeValid(AtsAttributeTypes.CurrentStateType)) {
+         return getSoleAttributeValue(AtsAttributeTypes.CurrentStateType, "").equals(WorkPageType.Cancelled.name());
+      } else {
+         return getCurrentStateName().equals(TeamState.Cancelled.getPageName());
+      }
+
+   }
+
+   public boolean isCompletedOrCancelled() throws OseeCoreException {
       return isCompleted() || isCancelled();
-   }
-
-   public boolean isCurrentState(String stateName) {
-      return stateName.equals(stateMgr.getCurrentStateName());
    }
 
    public void setTransitionAssignees(Collection<User> assignees) throws OseeCoreException {
@@ -909,156 +1058,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    public String getTransitionAssigneesStr() throws OseeCoreException {
       return Artifacts.toTextList(getTransitionAssignees(), ";");
-   }
-
-   public Result transitionToCancelled(String reason, SkynetTransaction transaction, TransitionOption... transitionOption) {
-      Result result =
-         transition(DefaultTeamState.Cancelled.name(), Arrays.asList(new User[] {}), reason, transaction,
-            transitionOption);
-      return result;
-   }
-
-   public Result transitionToCompleted(String reason, SkynetTransaction transaction, TransitionOption... transitionOption) {
-      Result result =
-         transition(DefaultTeamState.Completed.name(), Arrays.asList(new User[] {}), reason, transaction,
-            transitionOption);
-      return result;
-   }
-
-   public Result isTransitionValid(final String toStateName, final Collection<User> toAssignees, TransitionOption... transitionOption) throws OseeCoreException {
-      boolean overrideTransitionCheck =
-         org.eclipse.osee.framework.jdk.core.util.Collections.getAggregate(transitionOption).contains(
-            TransitionOption.OverrideTransitionValidityCheck);
-      boolean overrideAssigneeCheck =
-         org.eclipse.osee.framework.jdk.core.util.Collections.getAggregate(transitionOption).contains(
-            TransitionOption.OverrideAssigneeCheck);
-      // Validate assignees
-      if (!overrideAssigneeCheck && (getStateMgr().getAssignees().contains(UserManager.getUser(SystemUser.OseeSystem)) || getStateMgr().getAssignees().contains(
-         UserManager.getUser(SystemUser.Guest)) || getStateMgr().getAssignees().contains(
-         UserManager.getUser(SystemUser.UnAssigned)))) {
-         return new Result("Can not transition with \"Guest\", \"UnAssigned\" or \"OseeSystem\" user as assignee.");
-      }
-
-      // Validate toState name
-      final WorkPageDefinition fromWorkPageDefinition = getWorkPageDefinition();
-      final WorkPageDefinition toWorkPageDefinition = getWorkPageDefinitionByName(toStateName);
-      if (toWorkPageDefinition == null) {
-         return new Result("Invalid toState \"" + toStateName + "\"");
-      }
-
-      // Validate transition from fromPage to toPage
-      if (!overrideTransitionCheck && !getWorkFlowDefinition().getToPages(fromWorkPageDefinition).contains(
-         toWorkPageDefinition)) {
-         String errStr =
-            "Not configured to transition to \"" + toStateName + "\" from \"" + fromWorkPageDefinition.getPageName() + "\"";
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, errStr);
-         return new Result(errStr);
-      }
-      // Don't transition with existing working branch
-      if (toStateName.equals(DefaultTeamState.Cancelled.name()) && isTeamWorkflow() && ((TeamWorkFlowArtifact) this).getBranchMgr().isWorkingBranchInWork()) {
-         return new Result("Working Branch exists.  Please delete working branch before cancelling.");
-      }
-
-      // Don't transition with uncommitted branch if this is a commit state
-      if (AtsWorkDefinitions.isAllowCommitBranch(getWorkPageDefinition()) && isTeamWorkflow() && ((TeamWorkFlowArtifact) this).getBranchMgr().isWorkingBranchInWork()) {
-         return new Result("Working Branch exists.  Please commit or delete working branch before transition.");
-      }
-
-      // Check extension points for valid transition
-      List<IAtsStateItem> atsStateItems = AtsStateItemManager.getStateItems(fromWorkPageDefinition.getId());
-      for (IAtsStateItem item : atsStateItems) {
-         Result result = item.transitioning(this, fromWorkPageDefinition.getPageName(), toStateName, toAssignees);
-         if (result.isFalse()) {
-            return result;
-         }
-      }
-      for (IAtsStateItem item : atsStateItems) {
-         Result result = item.transitioning(this, fromWorkPageDefinition.getPageName(), toStateName, toAssignees);
-         if (result.isFalse()) {
-            return result;
-         }
-      }
-      return Result.TrueResult;
-   }
-
-   public Result transition(String toStateName, User toAssignee, SkynetTransaction transaction, TransitionOption... transitionOption) {
-      List<User> users = new ArrayList<User>();
-      if (toAssignee != null && !toStateName.equals(DefaultTeamState.Completed.name()) && !toStateName.equals(DefaultTeamState.Cancelled.name())) {
-         users.add(toAssignee);
-      }
-      return transition(toStateName, users, transaction, transitionOption);
-   }
-
-   public boolean isTargetedVersionable() throws OseeCoreException {
-      if (!isTeamWorkflow()) {
-         return false;
-      }
-      return ((TeamWorkFlowArtifact) this).getTeamDefinition().getTeamDefinitionHoldingVersions() != null && ((TeamWorkFlowArtifact) this).getTeamDefinition().getTeamDefinitionHoldingVersions().isTeamUsesVersions();
-   }
-
-   public Result transition(String toStateName, Collection<User> toAssignees, SkynetTransaction transaction, TransitionOption... transitionOption) {
-      return transition(toStateName, toAssignees, (String) null, transaction, transitionOption);
-   }
-
-   private Result transition(final String toStateName, final Collection<User> toAssignees, final String completeOrCancelReason, SkynetTransaction transaction, TransitionOption... transitionOption) {
-      try {
-         final boolean persist =
-            org.eclipse.osee.framework.jdk.core.util.Collections.getAggregate(transitionOption).contains(
-               TransitionOption.Persist);
-
-         Result result = isTransitionValid(toStateName, toAssignees, transitionOption);
-         if (result.isFalse()) {
-            return result;
-         }
-
-         final WorkPageDefinition fromWorkPageDefinition = getWorkPageDefinition();
-         final WorkPageDefinition toWorkPageDefinition = getWorkPageDefinitionByName(toStateName);
-
-         transitionHelper(toAssignees, persist, fromWorkPageDefinition, toWorkPageDefinition, toStateName,
-            completeOrCancelReason, transaction);
-         if (persist) {
-            OseeNotificationManager.getInstance().sendNotifications();
-         }
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-         return new Result("Transaction failed " + ex.getLocalizedMessage());
-      }
-      return Result.TrueResult;
-   }
-
-   private void transitionHelper(Collection<User> toAssignees, boolean persist, WorkPageDefinition fromPage, WorkPageDefinition toPage, String toStateName, String completeOrCancelReason, SkynetTransaction transaction) throws OseeCoreException {
-      // Log transition
-      if (toPage.isCancelledPage()) {
-         atsLog.addLog(LogType.StateCancelled, stateMgr.getCurrentStateName(), completeOrCancelReason);
-      } else {
-         atsLog.addLog(LogType.StateComplete, stateMgr.getCurrentStateName(),
-            (completeOrCancelReason == null ? "" : completeOrCancelReason));
-      }
-      atsLog.addLog(LogType.StateEntered, toStateName, "");
-
-      stateMgr.transitionHelper(toAssignees, persist, fromPage, toPage, toStateName, completeOrCancelReason);
-
-      if (isValidationRequired() && isTeamWorkflow()) {
-         ReviewManager.createValidateReview((TeamWorkFlowArtifact) this, false, transaction);
-      }
-
-      AtsNotifyUsers.getInstance().notify(this, AtsNotifyUsers.NotifyType.Subscribed,
-         AtsNotifyUsers.NotifyType.Completed, AtsNotifyUsers.NotifyType.Completed);
-
-      // Persist
-      if (persist) {
-         persist(transaction);
-      }
-
-      transitioned(fromPage, toPage, toAssignees, true, transaction);
-
-      // Notify extension points of transition
-      for (IAtsStateItem item : AtsStateItemManager.getStateItems(fromPage.getId())) {
-         item.transitioned(this, fromPage.getPageName(), toStateName, toAssignees, transaction);
-      }
-      for (IAtsStateItem item : AtsStateItemManager.getStateItems(toPage.getId())) {
-         item.transitioned(this, fromPage.getPageName(), toStateName, toAssignees, transaction);
-      }
    }
 
    public SMAEditor getEditor() {
@@ -1095,7 +1094,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    public AtsWorkPage getCurrentAtsWorkPage() throws OseeCoreException {
       for (AtsWorkPage atsWorkPage : getAtsWorkPages()) {
-         if (isCurrentState(atsWorkPage.getName())) {
+         if (getStateMgr().isInState(atsWorkPage)) {
             return atsWorkPage;
          }
       }

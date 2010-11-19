@@ -90,6 +90,7 @@ public final class CoreAttributeTypes extends NamedIdentity implements IAttribut
    public static final IAttributeType WorkData = new CoreAttributeTypes("AAMFEbyhslOoQf3+hyAA", "osee.wi.Work Data");
    public static final IAttributeType WorkDescription = new CoreAttributeTypes("AAMFEb57TkhPHyzOLDwA", "osee.wi.Work Description");
    public static final IAttributeType WorkId = new CoreAttributeTypes("AAMFEb0hXw933Zrje2QA", "osee.wi.Work Id");
+   public static final IAttributeType WorkPageType = new CoreAttributeTypes("ATTKEn8ob0KafAl5vuAA", "osee.wi.Work Page Type");
    public static final IAttributeType WorkPageName = new CoreAttributeTypes("AAMFEb+vCyCjKbzzHoQA", "osee.wi.Work Page Name");
    public static final IAttributeType WorkParentId = new CoreAttributeTypes("AAMFEb8R5y9WcjD5hcwA", "osee.wi.Work Parent Id");
    public static final IAttributeType WorkStartPage = new CoreAttributeTypes("AAMFEcDfggQLaAdLlpQA", "osee.wi.Start Page");

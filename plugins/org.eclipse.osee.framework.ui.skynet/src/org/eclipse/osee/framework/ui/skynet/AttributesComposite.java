@@ -20,6 +20,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerEditor;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -179,7 +181,27 @@ public class AttributesComposite extends Composite {
       }
       tableViewer.setContentProvider(new AttributeContentProvider());
       tableViewer.setLabelProvider(new AttributeLabelProvider());
+      tableViewer.setSorter(new AttributeNameSorter());
       tableViewer.setInput(artifact);
+   }
+   public class AttributeNameSorter extends ViewerSorter {
+
+      public AttributeNameSorter() {
+         super();
+      }
+
+      @Override
+      @SuppressWarnings("unchecked")
+      public int compare(Viewer viewer, Object o1, Object o2) {
+         if (o1 instanceof Attribute && o2 instanceof Attribute) {
+            return getComparator().compare(((Attribute<?>) o1).getAttributeType().getName(),
+               ((Attribute<?>) o2).getAttributeType().getName());
+         } else if (o1 instanceof String && o2 instanceof String) {
+            return getComparator().compare(o1, o2);
+         }
+         return super.compare(viewer, o1, o2);
+      }
+
    }
 
    private void createColumns() {

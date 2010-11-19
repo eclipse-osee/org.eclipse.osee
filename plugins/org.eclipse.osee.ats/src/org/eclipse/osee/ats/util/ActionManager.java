@@ -22,7 +22,6 @@ import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
-import org.eclipse.osee.ats.artifact.log.LogType;
 import org.eclipse.osee.ats.column.ChangeTypeColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -38,13 +37,14 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 
 /**
  * @author Donald G. Dunne
  */
 public class ActionManager {
 
-   public static ActionArtifact createAction(IProgressMonitor monitor, String title, String desc, ChangeType changeType, String priority, boolean validationRequired, Date needByDate, Collection<ActionableItemArtifact> actionableItems, SkynetTransaction transaction) throws OseeCoreException {
+   public static ActionArtifact createAction(IProgressMonitor monitor, String title, String desc, ChangeType changeType, String priority, boolean validationRequired, Date needByDate, Collection<ActionableItemArtifact> actionableItems, Date createdDate, User createdBy, SkynetTransaction transaction) throws OseeCoreException {
       // if "tt" is title, this is an action created for development. To
       // make it easier, all fields are automatically filled in for ATS developer
 
@@ -70,14 +70,14 @@ public class ActionManager {
 
       // Create team workflow artifacts
       for (TeamDefinitionArtifact teamDef : teams) {
-         createTeamWorkflow(actionArt, teamDef, actionableItems, teamDef.getLeads(actionableItems), transaction);
+         createTeamWorkflow(actionArt, teamDef, actionableItems, teamDef.getLeads(actionableItems), transaction,
+            createdDate, createdBy);
       }
       actionArt.persist(transaction);
       return actionArt;
-
    }
 
-   public static TeamWorkFlowArtifact createTeamWorkflow(ActionArtifact actionArt, TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems, Collection<User> assignees, SkynetTransaction transaction, CreateTeamOption... createTeamOption) throws OseeCoreException {
+   public static TeamWorkFlowArtifact createTeamWorkflow(ActionArtifact actionArt, TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems, Collection<User> assignees, SkynetTransaction transaction, Date createdDate, User createdBy, CreateTeamOption... createTeamOption) throws OseeCoreException {
       IArtifactType teamWorkflowArtifact = AtsArtifactTypes.TeamWorkflow;
       IAtsTeamWorkflow teamExt = null;
 
@@ -97,8 +97,8 @@ public class ActionManager {
 
       // NOTE: The persist of the workflow will auto-email the assignees
       TeamWorkFlowArtifact teamArt =
-         createTeamWorkflow(actionArt, teamDef, actionableItems, assignees, teamWorkflowArtifact, transaction,
-            createTeamOption);
+         createTeamWorkflow(actionArt, teamDef, actionableItems, assignees, createdDate, createdBy, null, null,
+            teamWorkflowArtifact, transaction, createTeamOption);
       // Notify extension that workflow was created
       if (teamExt != null) {
          teamExt.teamWorkflowCreated(teamArt);
@@ -106,12 +106,7 @@ public class ActionManager {
       return teamArt;
    }
 
-   public static TeamWorkFlowArtifact createTeamWorkflow(ActionArtifact actionArt, TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems, Collection<User> assignees, IArtifactType artifactType, SkynetTransaction transaction, CreateTeamOption... createTeamOption) throws OseeCoreException {
-      return createTeamWorkflow(actionArt, teamDef, actionableItems, assignees, null, null, artifactType, transaction,
-         createTeamOption);
-   }
-
-   public static TeamWorkFlowArtifact createTeamWorkflow(ActionArtifact actionArt, TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems, Collection<User> assignees, String guid, String hrid, IArtifactType artifactType, SkynetTransaction transaction, CreateTeamOption... createTeamOption) throws OseeCoreException {
+   public static TeamWorkFlowArtifact createTeamWorkflow(ActionArtifact actionArt, TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems, Collection<User> assignees, Date createdDate, User createdBy, String guid, String hrid, IArtifactType artifactType, SkynetTransaction transaction, CreateTeamOption... createTeamOption) throws OseeCoreException {
 
       if (!Collections.getAggregate(createTeamOption).contains(CreateTeamOption.Duplicate_If_Exists)) {
          // Make sure team doesn't already exist
@@ -131,9 +126,8 @@ public class ActionManager {
          teamArt =
             (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactType, AtsUtil.getAtsBranch(), guid, hrid);
       }
-      setArtifactIdentifyData(actionArt, teamArt);
 
-      teamArt.getLog().addLog(LogType.Originated, "", "");
+      setArtifactIdentifyData(actionArt, teamArt);
 
       // Relate Workflow to ActionableItems (by guid) if team is responsible
       // for that AI
@@ -147,9 +141,8 @@ public class ActionManager {
       teamArt.setTeamDefinition(teamDef);
 
       // Initialize state machine
-      String startState = teamArt.getWorkFlowDefinition().getStartPage().getPageName();
-      teamArt.getStateMgr().initializeStateMachine(startState, assignees);
-      teamArt.getLog().addLog(LogType.StateEntered, startState, "");
+      WorkPageDefinition startPage = teamArt.getWorkFlowDefinition().getStartPage();
+      teamArt.initializeNewStateMachine(startPage, assignees, createdDate, createdBy);
 
       // Relate Action to WorkFlow
       actionArt.addRelation(AtsRelationTypes.ActionToWorkflow_WorkFlow, teamArt);

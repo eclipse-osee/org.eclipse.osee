@@ -100,7 +100,7 @@ public class TaskXViewer extends WorldXViewer {
       return null;
    }
 
-   public boolean isSelectedTaskArtifactsAreInWork() {
+   public boolean isSelectedTaskArtifactsAreInWork() throws OseeCoreException {
       Iterator<?> i = ((IStructuredSelection) getSelection()).iterator();
       while (i.hasNext()) {
          Object obj = i.next();
@@ -197,7 +197,11 @@ public class TaskXViewer extends WorldXViewer {
 
       // EDIT MENU BLOCK
       mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_EDIT, editTaskTitleAction);
-      editTaskTitleAction.setEnabled(isTasksEditable() && getSelectedArtifacts().size() == 1 && isSelectedTaskArtifactsAreInWork());
+      try {
+         editTaskTitleAction.setEnabled(isTasksEditable() && getSelectedArtifacts().size() == 1 && isSelectedTaskArtifactsAreInWork());
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      }
 
       mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_EDIT, editTaskStatusAction);
       editTaskStatusAction.setEnabled(isTasksEditable() && getSelectedArtifacts().size() > 0);

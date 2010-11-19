@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.workflow.item;
 
-import org.eclipse.osee.ats.util.DefaultTeamState;
+import org.eclipse.osee.ats.util.TeamState;
 
 /**
  * @author Donald G. Dunne
@@ -22,11 +22,11 @@ public class AtsStatePercentCompleteWeightDefaultWorkflowRule extends AtsStatePe
    public AtsStatePercentCompleteWeightDefaultWorkflowRule() {
       super(ID, ID);
       setDescription("State Percent Complete rule where Analyze and Implement states are where work is performed.");
-      addWorkDataKeyValue(DefaultTeamState.Endorse.name(), ".05");
-      addWorkDataKeyValue(DefaultTeamState.Analyze.name(), ".1");
-      addWorkDataKeyValue(DefaultTeamState.Authorize.name(), ".05");
-      addWorkDataKeyValue(DefaultTeamState.Implement.name(), ".79");
-      addWorkDataKeyValue(DefaultTeamState.Completed.name(), ".01");
+      addWorkDataKeyValue(TeamState.Endorse.getPageName(), ".05");
+      addWorkDataKeyValue(TeamState.Analyze.getPageName(), ".1");
+      addWorkDataKeyValue(TeamState.Authorize.getPageName(), ".05");
+      addWorkDataKeyValue(TeamState.Implement.getPageName(), ".79");
+      addWorkDataKeyValue(TeamState.Completed.getPageName(), ".01");
    }
 
 }

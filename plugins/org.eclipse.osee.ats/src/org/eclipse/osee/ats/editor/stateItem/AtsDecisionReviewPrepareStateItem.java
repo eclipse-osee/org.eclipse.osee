@@ -11,12 +11,13 @@
 package org.eclipse.osee.ats.editor.stateItem;
 
 import java.util.Collection;
-import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.artifact.DecisionReviewState;
 import org.eclipse.osee.ats.util.widgets.XDecisionOptions;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkPage;
 
 /**
  * @author Donald G. Dunne
@@ -29,8 +30,9 @@ public class AtsDecisionReviewPrepareStateItem extends AtsStateItem {
    }
 
    @Override
-   public Result transitioning(AbstractWorkflowArtifact sma, String fromState, String toState, Collection<User> toAssignees) throws OseeCoreException {
-      if (fromState.equals(DecisionReviewArtifact.DecisionReviewState.Prepare.name()) && toState.equals(DecisionReviewArtifact.DecisionReviewState.Decision.name())) {
+   public Result transitioning(AbstractWorkflowArtifact sma, IWorkPage fromState, IWorkPage toState, Collection<User> toAssignees) throws OseeCoreException {
+      if (fromState.getPageName().equals(DecisionReviewState.Prepare.getPageName()) && toState.getPageName().equals(
+         DecisionReviewState.Decision.getPageName())) {
          XDecisionOptions decOptions = new XDecisionOptions(sma);
          return decOptions.validateDecisionOptions();
       }

@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -22,8 +23,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
-import org.eclipse.osee.ats.artifact.GoalArtifact.GoalState;
-import org.eclipse.osee.ats.artifact.log.LogType;
+import org.eclipse.osee.ats.artifact.GoalState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -164,14 +164,11 @@ public final class GoalManager {
 
    public static GoalArtifact createGoal(String title) throws OseeCoreException {
       GoalArtifact goalArt =
-         (GoalArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Goal, AtsUtil.getAtsBranch());
-      goalArt.setName(title);
-      goalArt.getLog().addLog(LogType.Originated, "", "");
+         (GoalArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Goal, AtsUtil.getAtsBranch(), title);
 
       // Initialize state machine
-      goalArt.getStateMgr().initializeStateMachine(GoalState.InWork.name(),
-         Collections.singleton(UserManager.getUser()));
-      goalArt.getLog().addLog(LogType.StateEntered, GoalState.InWork.name(), "");
+      goalArt.initializeNewStateMachine(GoalState.InWork, Collections.singleton(UserManager.getUser()), new Date(),
+         UserManager.getUser());
       return goalArt;
    }
 

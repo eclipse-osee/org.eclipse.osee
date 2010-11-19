@@ -94,7 +94,6 @@ public final class RevisionChangeLoader {
    /**
     * Not Part of Change Report Acquires artifact, relation and attribute changes from a source branch since its
     * creation.
-    * 
     */
    private Collection<Change> getChanges(Branch sourceBranch, TransactionRecord transactionId, IProgressMonitor monitor, Artifact specificArtifact) throws OseeCoreException {
       @SuppressWarnings("unused")
@@ -107,7 +106,9 @@ public final class RevisionChangeLoader {
       Set<Integer> newAndDeletedArtifactIds = new HashSet<Integer>();
       boolean historical = sourceBranch == null;
 
-      monitor.beginTask("Find Changes", 100);
+      if (monitor != null) {
+         monitor.beginTask("Find Changes", 100);
+      }
 
       ArtifactChangeAcquirer artifactChangeAcquirer =
          new ArtifactChangeAcquirer(sourceBranch, transactionId, monitor, specificArtifact, artIds, changeBuilders,
@@ -124,7 +125,9 @@ public final class RevisionChangeLoader {
             newAndDeletedArtifactIds);
       changeBuilders = relationChangeAcquirer.acquireChanges();
 
-      monitor.subTask("Loading Artifacts from the Database");
+      if (monitor != null) {
+         monitor.subTask("Loading Artifacts from the Database");
+      }
       Branch branch = historical ? transactionId.getBranch() : sourceBranch;
 
       if (historical) {
@@ -138,7 +141,9 @@ public final class RevisionChangeLoader {
          changes.add(builder.build(branch));
       }
 
-      monitor.done();
+      if (monitor != null) {
+         monitor.done();
+      }
       return changes;
    }
 }

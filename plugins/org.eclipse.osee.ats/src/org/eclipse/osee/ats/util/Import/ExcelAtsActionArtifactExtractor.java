@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.util.Import;
 import java.io.FileFilter;
 import java.io.InputStreamReader;
 import java.net.URI;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
@@ -113,12 +114,14 @@ public class ExcelAtsActionArtifactExtractor {
    public void createArtifactsAndNotify(SkynetTransaction transaction) {
       AtsUtil.setEmailEnabled(false);
       Set<TeamWorkFlowArtifact> teamWfs = new HashSet<TeamWorkFlowArtifact>();
+      Date createdDate = new Date();
       try {
+         User createdBy = UserManager.getUser();
          for (ActionData aData : actionDatas) {
             ActionArtifact actionArt =
                ActionManager.createAction(null, aData.title, aData.desc, ChangeType.getChangeType(aData.changeType),
                   aData.priorityStr, false, null, ActionableItemArtifact.getActionableItems(aData.actionableItems),
-                  transaction);
+                  createdDate, createdBy, transaction);
             actionArts.add(actionArt);
             if (!aData.version.equals("")) {
                Artifact verArt = AtsCacheManager.getSoleArtifactByName(AtsArtifactTypes.Version, aData.version);

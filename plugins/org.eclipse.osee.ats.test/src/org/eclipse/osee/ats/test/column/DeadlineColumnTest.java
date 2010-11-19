@@ -40,7 +40,7 @@ public class DeadlineColumnTest {
 
       Assert.assertNull(DeadlineColumn.getDate(teamArt));
 
-      Date creationDate = teamArt.getLog().getCreationDate();
+      Date creationDate = teamArt.getCreatedDate();
       Calendar calendar = DateUtil.getCalendar(creationDate);
       calendar.add(Calendar.DAY_OF_MONTH, -1);
       Date overdueDate = calendar.getTime();

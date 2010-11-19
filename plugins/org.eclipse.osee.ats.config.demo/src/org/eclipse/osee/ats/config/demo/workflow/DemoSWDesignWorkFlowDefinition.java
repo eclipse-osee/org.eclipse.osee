@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.config.demo.workflow;
 
 import java.util.Arrays;
 import org.eclipse.osee.ats.artifact.AbstractReviewArtifact.ReviewBlockType;
-import org.eclipse.osee.ats.util.DefaultTeamState;
+import org.eclipse.osee.ats.util.TeamState;
 import org.eclipse.osee.ats.workflow.flow.TeamWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.item.AtsStatePercentCompleteWeightDefaultWorkflowRule;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
@@ -37,16 +37,16 @@ public class DemoSWDesignWorkFlowDefinition extends TeamWorkflowDefinition {
    public void config(WriteType writeType, XResultData xResultData) throws OseeCoreException {
       // Create decision and peer rules
       DemoAddDecisionReviewRule decisionTransitionToRule =
-         new DemoAddDecisionReviewRule(DefaultTeamState.Analyze.name(), ReviewBlockType.None,
+         new DemoAddDecisionReviewRule(TeamState.Analyze.getPageName(), ReviewBlockType.None,
             StateEventType.TransitionTo);
       DemoAddDecisionReviewRule decisionCreateBranchRule =
-         new DemoAddDecisionReviewRule(DefaultTeamState.Implement.name(), ReviewBlockType.None,
+         new DemoAddDecisionReviewRule(TeamState.Implement.getPageName(), ReviewBlockType.None,
             StateEventType.CreateBranch);
       DemoAddPeerToPeerReviewRule peerTransitionToRule =
-         new DemoAddPeerToPeerReviewRule(DefaultTeamState.Authorize.name(), ReviewBlockType.None,
+         new DemoAddPeerToPeerReviewRule(TeamState.Authorize.getPageName(), ReviewBlockType.None,
             StateEventType.TransitionTo);
       DemoAddPeerToPeerReviewRule peerCommitBranchRule =
-         new DemoAddPeerToPeerReviewRule(DefaultTeamState.Implement.name(), ReviewBlockType.None,
+         new DemoAddPeerToPeerReviewRule(TeamState.Implement.getPageName(), ReviewBlockType.None,
             StateEventType.CommitBranch);
       // Import decision and peer rules into database
       AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(writeType, null,
@@ -56,18 +56,18 @@ public class DemoSWDesignWorkFlowDefinition extends TeamWorkflowDefinition {
       AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(writeType, xResultData,
          TeamWorkflowDefinition.getWorkPageDefinitionsForId(getId()));
       AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(writeType, xResultData, new DemoSWDesignWorkFlowDefinition());
-      AtsWorkDefinitions.relatePageToBranchCommitRules(ID + "." + DefaultTeamState.Implement.name());
+      AtsWorkDefinitions.relatePageToBranchCommitRules(ID + "." + TeamState.Implement.getPageName());
 
       // Add Non-blocking createBranch decision review to Implement state
-      WorkItemDefinitionFactory.relateWorkItemDefinitions(ID + "." + DefaultTeamState.Analyze.name(),
+      WorkItemDefinitionFactory.relateWorkItemDefinitions(ID + "." + TeamState.Analyze.getPageName(),
          decisionTransitionToRule.getId());
-      WorkItemDefinitionFactory.relateWorkItemDefinitions(ID + "." + DefaultTeamState.Implement.name(),
+      WorkItemDefinitionFactory.relateWorkItemDefinitions(ID + "." + TeamState.Implement.getPageName(),
          decisionCreateBranchRule.getId());
 
       // Add Non-blocking commitBranch peerToPeer review to Implement state
-      WorkItemDefinitionFactory.relateWorkItemDefinitions(ID + "." + DefaultTeamState.Authorize.name(),
+      WorkItemDefinitionFactory.relateWorkItemDefinitions(ID + "." + TeamState.Authorize.getPageName(),
          peerTransitionToRule.getId());
-      WorkItemDefinitionFactory.relateWorkItemDefinitions(ID + "." + DefaultTeamState.Implement.name(),
+      WorkItemDefinitionFactory.relateWorkItemDefinitions(ID + "." + TeamState.Implement.getPageName(),
          peerCommitBranchRule.getId());
    }
 }

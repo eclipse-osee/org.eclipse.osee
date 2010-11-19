@@ -11,8 +11,6 @@
 package org.eclipse.osee.ats.workflow.item;
 
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.artifact.log.LogItem;
-import org.eclipse.osee.ats.artifact.log.LogType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
@@ -29,8 +27,7 @@ public class AtsCancellationReasonStateWorkItem extends WorkWidgetDefinition {
       super("Cancellation Reason", ID);
       DynamicXWidgetLayoutData data = new DynamicXWidgetLayoutData(null);
       data.setName(getName());
-      LogItem item = sma.getLog().getStateEvent(LogType.StateCancelled);
-      data.setDefaultValue(item.getMsg());
+      data.setDefaultValue(sma.getCancelledFromState());
       data.setId(getId());
       data.setXWidgetName("XText");
       data.getXOptionHandler().add(XOption.NOT_EDITABLE);

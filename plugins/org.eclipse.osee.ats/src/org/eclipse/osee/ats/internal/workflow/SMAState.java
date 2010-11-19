@@ -8,13 +8,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.util.widgets;
+package org.eclipse.osee.ats.internal.workflow;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.ats.util.DefaultTeamState;
+import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.TeamState;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -96,7 +97,7 @@ public class SMAState {
          if (assignees.size() > 1 && assignees.contains(UserManager.getUser(SystemUser.UnAssigned))) {
             throw new OseeArgumentException("Can not assign to user and UnAssigned");
          }
-         if (assignees.size() > 0 && (name.equals(DefaultTeamState.Completed.name()) || name.equals(DefaultTeamState.Cancelled.name()))) {
+         if (assignees.size() > 0 && (name.equals(TeamState.Completed.getPageName()) || name.equals(TeamState.Cancelled.getPageName()))) {
             throw new OseeStateException("Can't assign completed/cancelled states.");
          }
       } else {
@@ -115,7 +116,7 @@ public class SMAState {
     * Sets the assignees but DOES NOT write to SMA. This method should NOT be called outside the StateMachineArtifact.
     */
    public void setAssignee(User assignee) throws OseeCoreException {
-      if (assignee != null && (name.equals(DefaultTeamState.Completed.name()) || name.equals(DefaultTeamState.Cancelled.name()))) {
+      if (assignee != null && (name.equals(TeamState.Completed.getPageName()) || name.equals(TeamState.Cancelled.getPageName()))) {
          throw new OseeStateException("Can't assign completed/cancelled states.");
       }
       if (assignee == UserManager.getUser(SystemUser.OseeSystem) || assignee == UserManager.getUser(SystemUser.Guest)) {
@@ -198,7 +199,7 @@ public class SMAState {
    }
 
    public String getHoursSpentStr() {
-      return String.valueOf(hoursSpent);
+      return AtsUtil.doubleToI18nString(hoursSpent, true);
    }
 
    public void setHoursSpent(double hoursSpent) {
@@ -213,15 +214,4 @@ public class SMAState {
       this.percentComplete = percentComplete;
    }
 
-   public boolean isCompleted() {
-      return getName().equals(DefaultTeamState.Completed.name());
-   }
-
-   public boolean isCancelled() {
-      return getName().equals(DefaultTeamState.Cancelled.name());
-   }
-
-   public boolean isCompletedOrCancelled() {
-      return isCompleted() || isCancelled();
-   }
 }

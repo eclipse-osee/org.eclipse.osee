@@ -7,6 +7,7 @@ package org.eclipse.osee.ats.column;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
@@ -101,6 +102,7 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
       int result = ld.open();
       if (result == 0) {
          User selectedUser = ld.getSelection();
+         Date createdDate = new Date();
 
          SkynetTransaction transaction = null;
          if (persist) {
@@ -108,7 +110,7 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
          }
 
          for (AbstractWorkflowArtifact sma : smas) {
-            sma.setOriginator(selectedUser);
+            sma.setCreatedBy(selectedUser, true, createdDate);
             if (persist) {
                sma.persist(transaction);
             }
@@ -125,12 +127,12 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
          if (element instanceof AbstractWorkflowArtifact) {
-            return ((AbstractWorkflowArtifact) element).getOriginatorStr();
+            return ((AbstractWorkflowArtifact) element).getCreatedBy().getName();
          }
          if (element instanceof ActionArtifact) {
             Set<String> strs = new HashSet<String>();
             for (TeamWorkFlowArtifact team : ((ActionArtifact) element).getTeamWorkFlowArtifacts()) {
-               strs.add(team.getOriginatorStr());
+               strs.add(team.getCreatedBy().getName());
             }
             return Collections.toString("; ", strs);
          }

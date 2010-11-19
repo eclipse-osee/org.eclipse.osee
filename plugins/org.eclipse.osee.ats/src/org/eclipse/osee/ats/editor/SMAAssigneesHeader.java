@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor;
 
+import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.column.AssigneeColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
@@ -44,42 +45,46 @@ public class SMAAssigneesHeader extends Composite {
       setLayout(ALayout.getZeroMarginLayout(2, false));
       toolkit.adapt(this);
 
-      if (!sma.isCancelled() && !sma.isCompleted()) {
-         Hyperlink link = toolkit.createHyperlink(this, TARGET_VERSION, SWT.NONE);
-         link.addHyperlinkListener(new IHyperlinkListener() {
+      try {
+         if (!sma.isCancelled() && !sma.isCompleted()) {
+            Hyperlink link = toolkit.createHyperlink(this, TARGET_VERSION, SWT.NONE);
+            link.addHyperlinkListener(new IHyperlinkListener() {
 
-            @Override
-            public void linkEntered(HyperlinkEvent e) {
-               // do nothing
-            }
-
-            @Override
-            public void linkExited(HyperlinkEvent e) {
-               // do nothing
-            }
-
-            @Override
-            public void linkActivated(HyperlinkEvent e) {
-               try {
-                  if (!isEditable && !sma.getStateMgr().getAssignees().contains(
-                     UserManager.getUser(SystemUser.UnAssigned)) && !sma.getStateMgr().getAssignees().contains(
-                     UserManager.getUser())) {
-                     AWorkbench.popup(
-                        "ERROR",
-                        "You must be assigned to modify assignees.\nContact current Assignee or Select Priviledged Edit for Authorized Overriders.");
-                     return;
-                  }
-                  if (AssigneeColumn.promptChangeAssignees(sma, false)) {
-                     sma.getEditor().doSave(null);
-                  }
-               } catch (Exception ex) {
-                  OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               @Override
+               public void linkEntered(HyperlinkEvent e) {
+                  // do nothing
                }
-            }
-         });
-      } else {
-         Label origLabel = toolkit.createLabel(this, TARGET_VERSION);
-         origLabel.setLayoutData(new GridData());
+
+               @Override
+               public void linkExited(HyperlinkEvent e) {
+                  // do nothing
+               }
+
+               @Override
+               public void linkActivated(HyperlinkEvent e) {
+                  try {
+                     if (!isEditable && !sma.getStateMgr().getAssignees().contains(
+                        UserManager.getUser(SystemUser.UnAssigned)) && !sma.getStateMgr().getAssignees().contains(
+                        UserManager.getUser())) {
+                        AWorkbench.popup(
+                           "ERROR",
+                           "You must be assigned to modify assignees.\nContact current Assignee or Select Priviledged Edit for Authorized Overriders.");
+                        return;
+                     }
+                     if (AssigneeColumn.promptChangeAssignees(sma, false)) {
+                        sma.getEditor().doSave(null);
+                     }
+                  } catch (Exception ex) {
+                     OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                  }
+               }
+            });
+         } else {
+            Label origLabel = toolkit.createLabel(this, TARGET_VERSION);
+            origLabel.setLayoutData(new GridData());
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
 
       valueLabel = toolkit.createLabel(this, "Not Set");

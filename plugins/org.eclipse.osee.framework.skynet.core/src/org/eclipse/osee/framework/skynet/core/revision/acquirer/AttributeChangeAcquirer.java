@@ -60,7 +60,9 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
       boolean hasBranch = getSourceBranch() != null;
       long time = System.currentTimeMillis();
       try {
-         getMonitor().subTask("Gathering Attribute Changes");
+         if (getMonitor() != null) {
+            getMonitor().subTask("Gathering Attribute Changes");
+         }
          TransactionRecord fromTransactionId;
          TransactionRecord toTransactionId;
          boolean hasSpecificArtifact = getSpecificArtifact() != null;
@@ -154,8 +156,10 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
             }
          }
 
-         monitor.worked(13);
-         monitor.subTask("Gathering Was values");
+         if (getMonitor() != null) {
+            monitor.worked(13);
+            monitor.subTask("Gathering Was values");
+         }
       } finally {
          chStmt.close();
       }
@@ -216,7 +220,9 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
             ArtifactLoader.clearQuery(queryId);
             chStmt.close();
          }
-         monitor.worked(12);
+         if (getMonitor() != null) {
+            monitor.worked(12);
+         }
       }
    }
 }

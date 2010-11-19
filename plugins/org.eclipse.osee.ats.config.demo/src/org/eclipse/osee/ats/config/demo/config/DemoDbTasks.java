@@ -12,11 +12,14 @@ package org.eclipse.osee.ats.config.demo.config;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.config.demo.internal.OseeAtsConfigDemoActivator;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.support.test.util.DemoUsers;
 
 /**
@@ -27,13 +30,15 @@ public class DemoDbTasks {
    public static void createTasks() throws Exception {
       OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Create tasks off code workflows");
       boolean firstTaskWorkflow = true;
+      Date createdDate = new Date();
+      User createdBy = UserManager.getUser();
       for (TeamWorkFlowArtifact codeArt : DemoDbUtil.getSampleCodeWorkflows()) {
          for (String title : getTaskTitles(firstTaskWorkflow)) {
             TaskArtifact taskArt =
                codeArt.createNewTask(
                   (firstTaskWorkflow ? Arrays.asList(DemoDbUtil.getDemoUser(DemoUsers.Joe_Smith),
                      DemoDbUtil.getDemoUser(DemoUsers.Kay_Jones)) : Arrays.asList(DemoDbUtil.getDemoUser(DemoUsers.Joe_Smith))),
-                  title);
+                  title, createdDate, createdBy);
             taskArt.persist();
          }
          firstTaskWorkflow = false;

@@ -11,7 +11,9 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -21,18 +23,21 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 /**
  * @author Donald G. Dunne
  */
-public class WorkPageDefinition extends WorkItemWithChildrenDefinition {
+public class WorkPageDefinition extends WorkItemWithChildrenDefinition implements IWorkPage {
 
    private String pageName;
+   private WorkPageType workPageType;
 
-   public WorkPageDefinition(String pageName, String pageId, String parentId) {
-      this(pageId, pageName, pageId, parentId);
+   public WorkPageDefinition(String pageName, String pageId, String parentId, WorkPageType workPageType) {
+      this(pageId, pageName, pageId, parentId, workPageType);
    }
 
-   public WorkPageDefinition(String itemName, String pageName, String pageId, String parentId) {
+   public WorkPageDefinition(String itemName, String pageName, String pageId, String parentId, WorkPageType workPageType) {
       super(itemName, pageId, parentId);
       this.pageName = pageName;
+      this.workPageType = workPageType;
    }
+   private static final Set<String> notValidAttributeType = new HashSet<String>();
 
    public WorkPageDefinition(Artifact artifact) throws OseeCoreException {
       super(artifact, artifact.getName(), //
@@ -40,9 +45,29 @@ public class WorkPageDefinition extends WorkItemWithChildrenDefinition {
          artifact.getSoleAttributeValue(CoreAttributeTypes.WorkId, (String) null), //
          artifact.getSoleAttributeValue(CoreAttributeTypes.WorkParentId, (String) null)//
       );
+
       setType(artifact.getSoleAttributeValue(CoreAttributeTypes.WorkType, (String) null));
       loadWorkDataKeyValueMap(artifact);
       setPageName(artifact.getSoleAttributeValue(CoreAttributeTypes.WorkPageName, (String) null));
+
+      if (artifact.isAttributeTypeValid(CoreAttributeTypes.WorkPageType)) {
+         setWorkPageType(WorkPageType.valueOf(artifact.getSoleAttributeValueAsString(CoreAttributeTypes.WorkPageType,
+            null)));
+      } else {
+         // display console error, but only once
+         if (!notValidAttributeType.contains(artifact.getArtifactTypeName())) {
+            notValidAttributeType.add(artifact.getArtifactTypeName());
+            System.err.println("WorkPageType not valid for " + artifact.getArtifactTypeName());
+         }
+         // TODO get rid of this once database configured for new types (or leave for backward compatibility?
+         if (getPageName().equals("Completed")) {
+            setWorkPageType(WorkPageType.Completed);
+         } else if (getPageName().equals("Cancelled")) {
+            setWorkPageType(WorkPageType.Cancelled);
+         } else {
+            setWorkPageType(WorkPageType.Working);
+         }
+      }
 
    }
 
@@ -68,6 +93,10 @@ public class WorkPageDefinition extends WorkItemWithChildrenDefinition {
       // Only store start page if it's part of this definition
       if (pageName != null) {
          art.setSoleAttributeFromString(CoreAttributeTypes.WorkPageName, pageName);
+         System.err.println("remove this once types imported");
+         if (art.isAttributeTypeValid(CoreAttributeTypes.WorkPageType)) {
+            art.setSoleAttributeFromString(CoreAttributeTypes.WorkPageType, workPageType.name());
+         }
       }
       return art;
    }
@@ -80,14 +109,6 @@ public class WorkPageDefinition extends WorkItemWithChildrenDefinition {
          }
       }
       return wids;
-   }
-
-   public boolean isCompletePage() {
-      return getPageName().equals("Completed");
-   }
-
-   public boolean isCancelledPage() {
-      return getPageName().equals("Cancelled");
    }
 
    public boolean isInstanceof(String workPageDefinitionId) throws OseeCoreException {
@@ -109,12 +130,42 @@ public class WorkPageDefinition extends WorkItemWithChildrenDefinition {
       return CoreArtifactTypes.WorkPageDefinition;
    }
 
+   @Override
    public String getPageName() {
       return pageName;
    }
 
    public void setPageName(String pageName) {
       this.pageName = pageName;
+   }
+
+   @Override
+   public WorkPageType getWorkPageType() {
+      return workPageType;
+   }
+
+   public void setWorkPageType(WorkPageType workPageType) {
+      this.workPageType = workPageType;
+   }
+
+   @Override
+   public boolean isCompletedOrCancelledPage() {
+      return getWorkPageType().isCompletedOrCancelledPage();
+   }
+
+   @Override
+   public boolean isCompletedPage() {
+      return getWorkPageType().isCompletedPage();
+   }
+
+   @Override
+   public boolean isCancelledPage() {
+      return getWorkPageType().isCancelledPage();
+   }
+
+   @Override
+   public boolean isWorkingPage() {
+      return getWorkPageType().isWorkingPage();
    }
 
 }

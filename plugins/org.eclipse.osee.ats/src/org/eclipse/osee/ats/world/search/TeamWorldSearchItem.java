@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
@@ -23,20 +24,25 @@ import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.config.AtsCacheManager;
+import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.DefaultTeamState;
+import org.eclipse.osee.ats.util.TeamState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AbstractArtifactSearchCriteria;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeCriteria;
 import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageType;
 
 /**
  * @author Donald G. Dunne
@@ -50,35 +56,38 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
    };
    private Collection<TeamDefinitionArtifact> teamDefs;
    private final boolean recurseChildren;
-   private boolean showFinished;
+   private boolean includeCompleted;
    private boolean showAction;
    private final Collection<String> teamDefNames;
    private final ChangeType changeType;
    private final VersionArtifact versionArt;
    private final User userArt;
    private final ReleasedOption releasedOption;
+   private final boolean includeCancelled;
 
-   public TeamWorldSearchItem(String displayName, List<String> teamDefNames, boolean showFinished, boolean showAction, boolean recurseChildren, ChangeType changeType, VersionArtifact versionArt, User userArt, ReleasedOption releasedOption) {
+   public TeamWorldSearchItem(String displayName, List<String> teamDefNames, boolean includeCompleted, boolean includeCancelled, boolean showAction, boolean recurseChildren, ChangeType changeType, VersionArtifact versionArt, User userArt, ReleasedOption releasedOption) {
       super(displayName, AtsImage.TEAM_WORKFLOW);
+      this.includeCancelled = includeCancelled;
       this.versionArt = versionArt;
       this.userArt = userArt;
       this.teamDefNames = teamDefNames;
-      this.showFinished = showFinished;
+      this.includeCompleted = includeCompleted;
       this.releasedOption = releasedOption;
       this.showAction = showAction;
       this.recurseChildren = recurseChildren;
       this.changeType = changeType;
    }
 
-   public TeamWorldSearchItem(String displayName, Collection<TeamDefinitionArtifact> teamDefs, boolean showFinished, boolean showAction, boolean recurseChildren, VersionArtifact versionArt, User userArt, ReleasedOption releasedOption) {
+   public TeamWorldSearchItem(String displayName, Collection<TeamDefinitionArtifact> teamDefs, boolean includeCompleted, boolean includeCancelled, boolean showAction, boolean recurseChildren, VersionArtifact versionArt, User userArt, ReleasedOption releasedOption) {
       super(displayName, AtsImage.TEAM_WORKFLOW);
+      this.includeCancelled = includeCancelled;
       this.versionArt = versionArt;
       this.userArt = userArt;
       this.recurseChildren = recurseChildren;
       this.releasedOption = releasedOption;
       this.teamDefNames = null;
       this.teamDefs = teamDefs;
-      this.showFinished = showFinished;
+      this.includeCompleted = includeCompleted;
       this.showAction = showAction;
       this.changeType = null;
    }
@@ -91,7 +100,8 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
       this.recurseChildren = teamWorldUISearchItem.recurseChildren;
       this.teamDefNames = teamWorldUISearchItem.teamDefNames;
       this.teamDefs = teamWorldUISearchItem.teamDefs;
-      this.showFinished = teamWorldUISearchItem.showFinished;
+      this.includeCompleted = teamWorldUISearchItem.includeCompleted;
+      this.includeCancelled = teamWorldUISearchItem.includeCancelled;
       this.showAction = teamWorldUISearchItem.showAction;
       this.changeType = teamWorldUISearchItem.changeType;
    }
@@ -147,12 +157,8 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
          criteria.add(new AttributeCriteria(AtsAttributeTypes.TeamDefinition, teamDefinitionGuids));
       }
 
-      if (!showFinished) {
-         List<String> cancelOrComplete = new ArrayList<String>(2);
-         cancelOrComplete.add(DefaultTeamState.Cancelled.name() + ";;;");
-         cancelOrComplete.add(DefaultTeamState.Completed.name() + ";;;");
-         criteria.add(new AttributeCriteria(AtsAttributeTypes.CurrentState, cancelOrComplete, Operator.NOT_EQUAL));
-      }
+      addIncludeCompletedCancelledCriteria(criteria, includeCompleted, includeCancelled);
+
       if (changeType != null) {
          criteria.add(new AttributeCriteria(AtsAttributeTypes.ChangeType, changeType.name()));
       }
@@ -202,6 +208,39 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
 
    }
 
+   public static void addIncludeCompletedCancelledCriteria(List<AbstractArtifactSearchCriteria> criteria, boolean includeCompleted, boolean includeCancelled) throws OseeCoreException {
+      try {
+         if (AttributeTypeManager.getType(AtsAttributeTypes.CurrentStateType) != null) {
+            if (!includeCancelled && !includeCompleted) {
+               criteria.add(new AttributeCriteria(AtsAttributeTypes.CurrentStateType, WorkPageType.Working.name()));
+            } else {
+               List<String> cancelOrComplete = new ArrayList<String>(2);
+               cancelOrComplete.add(WorkPageType.Working.name());
+               if (includeCompleted) {
+                  cancelOrComplete.add(WorkPageType.Completed.name());
+               }
+               if (includeCancelled) {
+                  cancelOrComplete.add(WorkPageType.Cancelled.name());
+               }
+               criteria.add(new AttributeCriteria(AtsAttributeTypes.CurrentStateType, cancelOrComplete, Operator.EQUAL));
+            }
+         }
+      } catch (OseeTypeDoesNotExist ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         // Backward compatibility; remove after 0.9.7 release
+         List<String> cancelOrComplete = new ArrayList<String>(2);
+         if (!includeCancelled) {
+            cancelOrComplete.add(TeamState.Cancelled.name() + ";;;");
+         }
+         if (!includeCompleted) {
+            cancelOrComplete.add(TeamState.Completed.name() + ";;;");
+         }
+         if (cancelOrComplete.size() > 0) {
+            criteria.add(new AttributeCriteria(AtsAttributeTypes.CurrentState, cancelOrComplete, Operator.NOT_EQUAL));
+         }
+      }
+   }
+
    /**
     * @param showAction The showAction to set.
     */
@@ -213,7 +252,7 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
     * @param showFinished The showFinished to set.
     */
    public void setShowFinished(boolean showFinished) {
-      this.showFinished = showFinished;
+      this.includeCompleted = showFinished;
    }
 
    @Override

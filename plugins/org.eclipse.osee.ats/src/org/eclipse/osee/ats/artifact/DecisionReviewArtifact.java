@@ -26,12 +26,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
 public class DecisionReviewArtifact extends AbstractReviewArtifact implements IReviewArtifact, IATSStateMachineArtifact {
 
    public XDecisionOptions decisionOptions;
-   public static enum DecisionReviewState {
-      Prepare,
-      Decision,
-      Followup,
-      Completed
-   };
 
    public DecisionReviewArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
@@ -45,7 +39,7 @@ public class DecisionReviewArtifact extends AbstractReviewArtifact implements IR
 
    @Override
    public Collection<User> getImplementers() throws OseeCoreException {
-      return StateManager.getImplementersByState(this, DecisionReviewState.Decision.name());
+      return StateManager.getImplementersByState(this, DecisionReviewState.Decision);
    }
 
 }

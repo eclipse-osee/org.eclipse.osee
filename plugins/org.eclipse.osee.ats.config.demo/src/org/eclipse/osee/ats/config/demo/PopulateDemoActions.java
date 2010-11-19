@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.config.demo;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
@@ -39,9 +40,9 @@ import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.DefaultTeamState;
 import org.eclipse.osee.ats.util.FavoritesManager;
 import org.eclipse.osee.ats.util.SubscribeManager;
+import org.eclipse.osee.ats.util.TeamState;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.SystemUser;
@@ -59,6 +60,7 @@ import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
+import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -303,8 +305,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
       DemoDbUtil.sleep(2000L);
       OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Committing branch");
       Job job =
-         reqTeam.getBranchMgr().commitWorkingBranch(false, true, reqTeam.getTargetedVersion().getParentBranch(),
-            true);
+         reqTeam.getBranchMgr().commitWorkingBranch(false, true, reqTeam.getTargetedVersion().getParentBranch(), true);
       try {
          job.join();
       } catch (InterruptedException ex) {
@@ -426,24 +427,27 @@ public class PopulateDemoActions extends XNavigateItemAction {
       OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "createNonReqChangeDemoActions - SAW_Bld_2");
       createActions(DemoDbActionData.getNonReqSawActionData(), DemoSawBuilds.SAW_Bld_2.toString(), null, transaction);
       OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "createNonReqChangeDemoActions - SAW_Bld_1");
-      createActions(DemoDbActionData.getNonReqSawActionData(), DemoSawBuilds.SAW_Bld_1.toString(),
-         DefaultTeamState.Completed, transaction);
+      createActions(DemoDbActionData.getNonReqSawActionData(), DemoSawBuilds.SAW_Bld_1.toString(), TeamState.Completed,
+         transaction);
       OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "createNonReqChangeDemoActions - getGenericActionData");
       createActions(DemoDbActionData.getGenericActionData(), null, null, transaction);
       transaction.execute();
    }
 
-   private Set<ActionArtifact> createActions(Set<DemoDbActionData> actionDatas, String versionStr, DefaultTeamState toStateOverride, SkynetTransaction transaction) throws Exception {
+   private Set<ActionArtifact> createActions(Set<DemoDbActionData> actionDatas, String versionStr, TeamState toStateOverride, SkynetTransaction transaction) throws Exception {
       Set<ActionArtifact> actionArts = new HashSet<ActionArtifact>();
       int currNum = 1;
       for (DemoDbActionData aData : actionDatas) {
          OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Creating " + currNum++ + "/" + actionDatas.size());
          int x = 0;
+         Date createdDate = new Date();
+         User createdBy = UserManager.getUser();
+
          for (String prefixTitle : aData.prefixTitles) {
             ActionArtifact actionArt =
                ActionManager.createAction(null, prefixTitle + " " + aData.postFixTitle,
                   TITLE_PREFIX[x] + " " + aData.postFixTitle, CHANGE_TYPE[x], "1", false, null,
-                  aData.getActionableItems(), transaction);
+                  aData.getActionableItems(), createdDate, createdBy, transaction);
             actionArts.add(actionArt);
             for (TeamWorkFlowArtifact teamWf : actionArt.getTeamWorkFlowArtifacts()) {
                TeamWorkflowManager dtwm = new TeamWorkflowManager(teamWf);

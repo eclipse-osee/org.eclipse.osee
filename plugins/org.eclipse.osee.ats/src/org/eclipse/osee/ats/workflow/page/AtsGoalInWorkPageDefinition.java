@@ -11,11 +11,12 @@
 package org.eclipse.osee.ats.workflow.page;
 
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.GoalArtifact.GoalState;
+import org.eclipse.osee.ats.artifact.GoalState;
 import org.eclipse.osee.ats.column.EstimatedHoursXWidget;
 import org.eclipse.osee.ats.workflow.flow.GoalWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageType;
 
 /**
  * @author Donald G. Dunne
@@ -29,7 +30,7 @@ public class AtsGoalInWorkPageDefinition extends WorkPageDefinition {
    }
 
    public AtsGoalInWorkPageDefinition(String name, String pageId, String parentId) {
-      super(name, pageId, parentId);
+      super(name, pageId, parentId, WorkPageType.Working);
       addWorkItem("ats.Title");
       addWorkItem(AtsWorkDefinitions.ATS_DESCRIPTION_NOT_REQUIRED_ID);
       addWorkItem(EstimatedHoursXWidget.ATS_ESTIMATED_HOURS_NOT_REQUIRED_ID);

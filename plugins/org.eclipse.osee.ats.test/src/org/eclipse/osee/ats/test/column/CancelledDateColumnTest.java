@@ -12,8 +12,9 @@ import org.eclipse.osee.ats.column.AssigneeColumn;
 import org.eclipse.osee.ats.column.CancelledDateColumn;
 import org.eclipse.osee.ats.test.util.DemoTestUtil;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.DefaultTeamState;
+import org.eclipse.osee.ats.util.TeamState;
 import org.eclipse.osee.ats.util.TransitionOption;
+import org.eclipse.osee.ats.workflow.TransitionManager;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -45,8 +46,9 @@ public class CancelledDateColumnTest {
       Assert.assertNull(date);
       Assert.assertEquals("", CancelledDateColumn.getDateStr(teamArt));
 
+      TransitionManager transitionMgr = new TransitionManager(teamArt);
       transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), CancelledDateColumnTest.class.getSimpleName());
-      teamArt.transitionToCancelled("reason", transaction, TransitionOption.OverrideTransitionValidityCheck);
+      transitionMgr.transitionToCancelled("reason", transaction, TransitionOption.OverrideTransitionValidityCheck);
       transaction.execute();
 
       date = CancelledDateColumn.getDate(teamArt);
@@ -56,7 +58,7 @@ public class CancelledDateColumnTest {
          CancelledDateColumn.getInstance().getColumnText(teamArt, AssigneeColumn.getInstance(), 0));
 
       transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), CancelledDateColumnTest.class.getSimpleName());
-      teamArt.transition(DefaultTeamState.Endorse.name(), UserManager.getUser(), transaction,
+      transitionMgr.transition(TeamState.Endorse, UserManager.getUser(), transaction,
          TransitionOption.OverrideTransitionValidityCheck);
       transaction.execute();
 

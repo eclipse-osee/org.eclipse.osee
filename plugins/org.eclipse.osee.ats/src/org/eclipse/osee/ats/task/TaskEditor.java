@@ -42,6 +42,7 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkPage;
 import org.eclipse.osee.framework.ui.swt.CursorManager;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
@@ -346,7 +347,12 @@ public class TaskEditor extends AbstractArtifactEditor implements IActionable, I
    }
 
    @Override
-   public Collection<TaskArtifact> getTaskArtifacts(String stateName) {
+   public Collection<TaskArtifact> getTaskArtifacts(IWorkPage state) {
+      return tasks;
+   }
+
+   @Override
+   public Collection<TaskArtifact> getTaskArtifacts() {
       return tasks;
    }
 

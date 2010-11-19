@@ -15,6 +15,7 @@ import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.plugin.core.IActionable;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkPage;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 
 /**
@@ -24,7 +25,9 @@ public interface IXTaskViewer {
 
    public String getTabName() throws OseeCoreException;
 
-   public Collection<TaskArtifact> getTaskArtifacts(String stateName) throws OseeCoreException;
+   public Collection<TaskArtifact> getTaskArtifacts(IWorkPage state) throws OseeCoreException;
+
+   public Collection<TaskArtifact> getTaskArtifacts() throws OseeCoreException;
 
    public IDirtiableEditor getEditor() throws OseeCoreException;
 

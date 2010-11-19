@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.column.ChangeTypeColumn;
 import org.eclipse.osee.ats.column.CreatedDateColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.TeamState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -124,7 +125,7 @@ public class ExtendedStatusReportJob extends Job {
             monitor.subTask(str);
             for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts()) {
                addTableRow(sb, team);
-               for (TaskArtifact taskArt : team.getTaskArtifacts("Implement")) {
+               for (TaskArtifact taskArt : team.getTaskArtifacts(TeamState.Implement)) {
                   addTableRow(sb, taskArt);
                }
             }
@@ -198,11 +199,11 @@ public class ExtendedStatusReportJob extends Job {
    }
 
    private static void handleOriginatorColumn(AbstractWorkflowArtifact sma, List<String> values) throws OseeCoreException {
-      if (sma.getOriginator() == null) {
+      if (sma.getCreatedBy() == null) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't retrieve orig for " + sma.getHumanReadableId());
          values.add(".");
       } else {
-         values.add(sma.getOriginator().getName());
+         values.add(sma.getCreatedBy().getName());
       }
    }
 

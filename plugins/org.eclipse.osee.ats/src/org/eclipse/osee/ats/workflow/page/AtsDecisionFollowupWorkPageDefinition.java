@@ -11,24 +11,24 @@
 package org.eclipse.osee.ats.workflow.page;
 
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
+import org.eclipse.osee.ats.artifact.DecisionReviewState;
 import org.eclipse.osee.ats.workflow.flow.DecisionWorkflowDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageType;
 
 /**
  * @author Donald G. Dunne
  */
 public class AtsDecisionFollowupWorkPageDefinition extends WorkPageDefinition {
 
-   public final static String ID =
-      DecisionWorkflowDefinition.ID + "." + DecisionReviewArtifact.DecisionReviewState.Followup.name();
+   public final static String ID = DecisionWorkflowDefinition.ID + "." + DecisionReviewState.Followup.getPageName();
 
    public AtsDecisionFollowupWorkPageDefinition() {
-      this(DecisionReviewArtifact.DecisionReviewState.Followup.name(), ID, null);
+      this(DecisionReviewState.Followup.getPageName(), ID, null);
    }
 
    public AtsDecisionFollowupWorkPageDefinition(String name, String pageId, String parentId) {
-      super(name, pageId, parentId);
+      super(name, pageId, parentId, WorkPageType.Working);
       addWorkItem(AtsAttributeTypes.Resolution);
    }
 }

@@ -14,6 +14,7 @@ package org.eclipse.osee.ats.task;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -42,6 +43,7 @@ import org.eclipse.osee.ats.world.WorldXViewerEventManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
@@ -97,8 +99,7 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
          showReleaseMetricsLabel = new Label(this, SWT.NONE);
          showReleaseMetricsLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-         taskXViewer =
-            new TaskXViewer(this, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, iXTaskViewer.getEditor());
+         taskXViewer = new TaskXViewer(this, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, iXTaskViewer.getEditor());
          taskXViewer.setTasksEditable(iXTaskViewer.isTasksEditable());
          taskXViewer.setNewTaskSelectionEnabled(iXTaskViewer.isTasksEditable());
          taskXViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -145,7 +146,7 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
 
    public void loadTable() throws OseeCoreException {
       this.taskArts.clear();
-      add(iXTaskViewer.getTaskArtifacts(""));
+      add(iXTaskViewer.getTaskArtifacts());
    }
 
    public void handleDeleteTask() {
@@ -213,7 +214,9 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
             MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
       if (ed.open() == 0) {
          try {
-            taskArt = ((AbstractTaskableArtifact) iXTaskViewer.getSma()).createNewTask(ed.getEntry());
+            taskArt =
+               ((AbstractTaskableArtifact) iXTaskViewer.getSma()).createNewTask(ed.getEntry(), new Date(),
+                  UserManager.getUser());
             iXTaskViewer.getEditor().onDirtied();
             add(Collections.singleton(taskArt));
             AtsCacheManager.decacheTaskArtifacts((AbstractTaskableArtifact) iXTaskViewer.getSma());

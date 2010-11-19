@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
@@ -52,9 +53,9 @@ public interface IAtsStateItem {
    /**
     * @return Result of operation. If Result.isFalse(), transition will not continue and Result.popup will occur.
     */
-   public Result transitioning(AbstractWorkflowArtifact sma, String fromState, String toState, Collection<User> toAssignees) throws OseeCoreException;
+   public Result transitioning(AbstractWorkflowArtifact sma, IWorkPage fromState, IWorkPage toState, Collection<User> toAssignees) throws OseeCoreException;
 
-   public void transitioned(AbstractWorkflowArtifact sma, String fromState, String toState, Collection<User> toAssignees, SkynetTransaction transaction) throws OseeCoreException;
+   public void transitioned(AbstractWorkflowArtifact sma, IWorkPage fromState, IWorkPage toState, Collection<User> toAssignees, SkynetTransaction transaction) throws OseeCoreException;
 
    /**
     * @return Result of operation. If Result.isFalse(), commit will not continue and Result.popup will occur.

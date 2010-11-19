@@ -12,13 +12,14 @@
 package org.eclipse.osee.ats.actions;
 
 import java.util.Collection;
+import java.util.Date;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsOpenOption;
-import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.artifact.AbstractReviewArtifact.ReviewBlockType;
+import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -36,8 +37,10 @@ public class NewDecisionReviewJob extends Job {
    private final String options;
    private final Collection<User> assignees;
    private final String description;
+   private final Date createdDate;
+   private final User createdBy;
 
-   public NewDecisionReviewJob(TeamWorkFlowArtifact teamParent, ReviewBlockType reviewBlockType, String reviewTitle, String againstState, String description, String options, Collection<User> assignees) {
+   public NewDecisionReviewJob(TeamWorkFlowArtifact teamParent, ReviewBlockType reviewBlockType, String reviewTitle, String againstState, String description, String options, Collection<User> assignees, Date createdDate, User createdBy) {
       super("Creating New Decision Review");
       this.teamParent = teamParent;
       this.reviewTitle = reviewTitle;
@@ -46,6 +49,8 @@ public class NewDecisionReviewJob extends Job {
       this.description = description;
       this.options = options;
       this.assignees = assignees;
+      this.createdDate = createdDate;
+      this.createdBy = createdBy;
    }
 
    @Override
@@ -53,7 +58,7 @@ public class NewDecisionReviewJob extends Job {
       try {
          DecisionReviewArtifact decArt =
             ReviewManager.createNewDecisionReview(teamParent, reviewBlockType, reviewTitle, againstState, description,
-               options, assignees);
+               options, assignees, createdDate, createdBy);
          decArt.persist();
          AtsUtil.openATSAction(decArt, AtsOpenOption.OpenOneOrPopupSelect);
       } catch (Exception ex) {

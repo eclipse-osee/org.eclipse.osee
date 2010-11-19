@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.ats.actions.AccessControlAction;
+import org.eclipse.osee.ats.actions.AtsLogHistoryAction;
 import org.eclipse.osee.ats.actions.ConvertActionableItemsAction;
 import org.eclipse.osee.ats.actions.DeletePurgeAtsArtifactsAction;
 import org.eclipse.osee.ats.actions.DirtyReportAction;
@@ -215,6 +216,7 @@ public class SMAOperationsSection extends SectionPart {
          new XButtonViaAction(new OpenInAtsWorldAction(editor.getSma())).createWidgets(sectionBody, 2);
          new XButtonViaAction(new OpenInSkyWalkerAction(editor.getSma())).createWidgets(sectionBody, 2);
          new XButtonViaAction(new ResourceHistoryAction(editor.getSma())).createWidgets(sectionBody, 2);
+         new XButtonViaAction(new AtsLogHistoryAction(editor.getSma())).createWidgets(sectionBody, 2);
          if (editor.getSma().getParentSMA() != null) {
             new XButtonViaAction(new OpenParentAction(editor.getSma())).createWidgets(sectionBody, 2);
          }

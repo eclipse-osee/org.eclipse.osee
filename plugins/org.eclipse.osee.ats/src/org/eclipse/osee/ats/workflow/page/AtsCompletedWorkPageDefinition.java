@@ -10,24 +10,25 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.workflow.page;
 
-import org.eclipse.osee.ats.util.DefaultTeamState;
+import org.eclipse.osee.ats.util.TeamState;
 import org.eclipse.osee.ats.workflow.flow.TeamWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions.RuleWorkItemId;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageType;
 
 /**
  * @author Donald G. Dunne
  */
 public class AtsCompletedWorkPageDefinition extends WorkPageDefinition {
 
-   public final static String ID = TeamWorkflowDefinition.ID + "." + DefaultTeamState.Completed.name();
+   public final static String ID = TeamWorkflowDefinition.ID + "." + TeamState.Completed.getPageName();
 
    public AtsCompletedWorkPageDefinition() {
-      this(DefaultTeamState.Completed.name(), ID, null);
+      this(TeamState.Completed.getPageName(), ID, null);
    }
 
    public AtsCompletedWorkPageDefinition(String name, String pageId, String parentId) {
-      super(name, pageId, parentId);
+      super(name, pageId, parentId, WorkPageType.Completed);
       addWorkItem(RuleWorkItemId.atsAddDecisionValidateBlockingReview.name());
    }
 

@@ -20,10 +20,7 @@ import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.log.AtsLog;
-import org.eclipse.osee.ats.artifact.log.LogItem;
-import org.eclipse.osee.ats.artifact.log.LogType;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.widgets.SMAState;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -141,8 +138,8 @@ public class Overview {
          AHTML.getLabelStr(labelFont, "State: ") + sma.getStateMgr().getCurrentStateName(),
          AHTML.getLabelStr(labelFont, "Type: ") + sma.getArtifactTypeName(),
          AHTML.getLabelStr(labelFont, "Id: ") + sma.getHumanReadableId()}));
-      addTable(getLabelValue("Originator", sma.getOriginator().getName()),
-         getLabelValue("Creation Date", DateUtil.getMMDDYYHHMM(sma.getLog().getCreationDate())));
+      addTable(getLabelValue("Originator", sma.getCreatedBy().getName()),
+         getLabelValue("Creation Date", DateUtil.getMMDDYYHHMM(sma.getCreatedDate())));
       if (sma.isTeamWorkflow()) {
          addTable(getLabelValue("Team", ((TeamWorkFlowArtifact) sma).getTeamName()),
             getLabelValue("Assignees", Artifacts.toString("; ", sma.getStateMgr().getAssignees())));
@@ -151,9 +148,8 @@ public class Overview {
       }
       addTable(getLabelValue("Description", sma.getDescription()));
       if (sma.isCancelled()) {
-         LogItem item = sma.getLog().getStateEvent(LogType.StateCancelled);
-         addTable(getLabelValue("Cancelled From", item.getState()));
-         addTable(getLabelValue("Cancellation Reason", item.getMsg()));
+         addTable(getLabelValue("Cancelled From", sma.getCancelledFromState()));
+         addTable(getLabelValue("Cancellation Reason", sma.getCancelledReason()));
       }
       if (sma instanceof TaskArtifact) {
          AbstractWorkflowArtifact parentArt = ((TaskArtifact) sma).getParentSMA();
@@ -280,12 +276,6 @@ public class Overview {
       if (artifactLog != null && artifactLog.getLogItems().size() > 0) {
          addTable(artifact.getLog().getTable());
       }
-   }
-
-   public void startStateBorderTable(AbstractWorkflowArtifact sma, SMAState state) {
-      String caption = state.getName();
-      String assgn = Artifacts.toString("; ", state.getAssignees());
-      startStateBorderTable(sma.getStateMgr().getCurrentStateName().equals(state.getName()), caption, assgn);
    }
 
    public void startStateBorderTable(boolean active, String name, String assignee) {

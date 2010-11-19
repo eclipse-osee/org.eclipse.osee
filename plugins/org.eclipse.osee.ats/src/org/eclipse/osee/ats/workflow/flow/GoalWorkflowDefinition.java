@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.workflow.flow;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.ats.artifact.GoalArtifact.GoalState;
+import org.eclipse.osee.ats.artifact.GoalState;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.ats.workflow.page.AtsCancelledWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsCompletedWorkPageDefinition;
@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageType;
 
 public class GoalWorkflowDefinition extends WorkFlowDefinition {
 
@@ -49,9 +50,9 @@ public class GoalWorkflowDefinition extends WorkFlowDefinition {
       // Add Task Page and Workflow Definition
       workItems.add(new AtsGoalInWorkPageDefinition());
       workItems.add(new WorkPageDefinition(GoalState.Completed.name(), ID + "." + GoalState.Completed.name(),
-         AtsCompletedWorkPageDefinition.ID));
+         AtsCompletedWorkPageDefinition.ID, WorkPageType.Completed));
       workItems.add(new WorkPageDefinition(GoalState.Cancelled.name(), ID + "." + GoalState.Cancelled.name(),
-         AtsCancelledWorkPageDefinition.ID));
+         AtsCancelledWorkPageDefinition.ID, WorkPageType.Cancelled));
       workItems.add(new GoalWorkflowDefinition());
 
       return workItems;

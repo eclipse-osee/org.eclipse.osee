@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.operation;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -121,6 +122,8 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
    private void handleCreateNewWorkflow(Collection<TeamWorkFlowArtifact> teamArts, String title) throws OseeCoreException {
       Set<TeamWorkFlowArtifact> newTeamArts = new HashSet<TeamWorkFlowArtifact>();
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Duplicate Workflow");
+      Date createdDate = new Date();
+      User createdBy = UserManager.getUser();
       for (TeamWorkFlowArtifact teamArt : teamArts) {
          Collection<User> assignees = teamArt.getStateMgr().getAssignees();
          if (!assignees.contains(UserManager.getUser())) {
@@ -128,7 +131,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
          }
          TeamWorkFlowArtifact newTeamArt =
             ActionManager.createTeamWorkflow(teamArt.getParentActionArtifact(), teamArt.getTeamDefinition(),
-               teamArt.getActionableItemsDam().getActionableItems(), assignees, transaction,
+               teamArt.getActionableItemsDam().getActionableItems(), assignees, transaction, createdDate, createdBy,
                CreateTeamOption.Duplicate_If_Exists);
          if (Strings.isValid(title)) {
             newTeamArt.setName(title);

@@ -61,7 +61,7 @@ public class SMAOriginatorHeader extends Composite {
                public void linkActivated(HyperlinkEvent e) {
                   try {
                      if (OriginatorColumn.promptChangeOriginator(sma, true)) {
-                        origLabel.setText(sma.getOriginator().getName());
+                        origLabel.setText(sma.getCreatedBy().getName());
                         origLabel.getParent().layout();
                         sma.getEditor().onDirtied();
                      }
@@ -70,19 +70,19 @@ public class SMAOriginatorHeader extends Composite {
                   }
                }
             });
-            if (sma.getOriginator() == null) {
+            if (sma.getCreatedBy() == null) {
                Label errorLabel = toolkit.createLabel(this, "Error: No originator identified.");
                errorLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
             } else {
-               origLabel = toolkit.createLabel(this, sma.getOriginator().getName());
+               origLabel = toolkit.createLabel(this, sma.getCreatedBy().getName());
                origLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
             }
          } else {
-            if (sma.getOriginator() == null) {
+            if (sma.getCreatedBy() == null) {
                Label errorLabel = toolkit.createLabel(this, "Error: No originator identified.");
                errorLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
             } else {
-               Label origLabel = toolkit.createLabel(this, ORIGINATOR + sma.getOriginator().getName());
+               Label origLabel = toolkit.createLabel(this, ORIGINATOR + sma.getCreatedBy().getName());
                origLabel.setLayoutData(new GridData());
             }
          }

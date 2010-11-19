@@ -16,8 +16,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
+import org.eclipse.osee.ats.artifact.DecisionReviewState;
 import org.eclipse.osee.ats.artifact.DecisionReviewWorkflowManager;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
+import org.eclipse.osee.ats.artifact.PeerToPeerReviewState;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewWorkflowManager;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.config.demo.internal.OseeAtsConfigDemoActivator;
@@ -30,6 +32,7 @@ import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Severity;
 import org.eclipse.osee.ats.util.widgets.role.UserRole;
 import org.eclipse.osee.ats.util.widgets.role.UserRole.Role;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -60,24 +63,28 @@ public class DemoDbReviews {
     */
    public static void createDecisionReviews(SkynetTransaction transaction) throws Exception {
 
+      Date createdDate = new Date();
+      User createdBy = UserManager.getUser();
+
       OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Create Decision reviews");
       TeamWorkFlowArtifact firstTestArt = getSampleReviewTestWorkflows().get(0);
       TeamWorkFlowArtifact secondTestArt = getSampleReviewTestWorkflows().get(1);
 
       // Create a Decision review and transition to ReWork
-      DecisionReviewArtifact reviewArt = ReviewManager.createValidateReview(firstTestArt, true, transaction);
+      DecisionReviewArtifact reviewArt =
+         ReviewManager.createValidateReview(firstTestArt, true, createdDate, createdBy, transaction);
       Result result =
-         DecisionReviewWorkflowManager.transitionTo(reviewArt, DecisionReviewArtifact.DecisionReviewState.Followup,
-            UserManager.getUser(), false, transaction);
+         DecisionReviewWorkflowManager.transitionTo(reviewArt, DecisionReviewState.Followup, UserManager.getUser(),
+            false, transaction);
       if (result.isFalse()) {
          throw new IllegalStateException("Failed transitioning review to Followup: " + result.getText());
       }
       reviewArt.persist(transaction);
 
       // Create a Decision review and transition to Completed
-      reviewArt = ReviewManager.createValidateReview(secondTestArt, true, transaction);
-      DecisionReviewWorkflowManager.transitionTo(reviewArt, DecisionReviewArtifact.DecisionReviewState.Completed,
-         UserManager.getUser(), false, transaction);
+      reviewArt = ReviewManager.createValidateReview(secondTestArt, true, createdDate, createdBy, transaction);
+      DecisionReviewWorkflowManager.transitionTo(reviewArt, DecisionReviewState.Completed, UserManager.getUser(),
+         false, transaction);
       if (result.isFalse()) {
          throw new IllegalStateException("Failed transitioning review to Completed: " + result.getText());
       }
@@ -130,8 +137,8 @@ public class DemoDbReviews {
       roles.add(new UserRole(Role.Reviewer, DemoDbUtil.getDemoUser(DemoUsers.Kay_Jones)));
       roles.add(new UserRole(Role.Reviewer, DemoDbUtil.getDemoUser(DemoUsers.Alex_Kay), 2.0, true));
       Result result =
-         PeerToPeerReviewWorkflowManager.transitionTo(reviewArt, PeerToPeerReviewArtifact.PeerToPeerReviewState.Review,
-            roles, null, UserManager.getUser(), false, transaction);
+         PeerToPeerReviewWorkflowManager.transitionTo(reviewArt, PeerToPeerReviewState.Review, roles, null,
+            UserManager.getUser(), false, transaction);
       if (result.isFalse()) {
          throw new IllegalStateException("Failed transitioning review to Review: " + result.getText());
       }
@@ -159,9 +166,8 @@ public class DemoDbReviews {
       defects.add(new DefectItem(DemoDbUtil.getDemoUser(DemoUsers.Joe_Smith), Severity.Major, Disposition.Accept,
          InjectionActivity.Code, "Negate logic", "Fixed", "There.java:Line 234", new Date()));
       result =
-         PeerToPeerReviewWorkflowManager.transitionTo(reviewArt,
-            PeerToPeerReviewArtifact.PeerToPeerReviewState.Completed, roles, defects, UserManager.getUser(), false,
-            transaction);
+         PeerToPeerReviewWorkflowManager.transitionTo(reviewArt, PeerToPeerReviewState.Completed, roles, defects,
+            UserManager.getUser(), false, transaction);
       reviewArt.persist(transaction);
       if (result.isFalse()) {
          throw new IllegalStateException("Failed transitioning review to Completed: " + result.getText());

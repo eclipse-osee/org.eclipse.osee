@@ -61,6 +61,7 @@ public enum AtsImage implements KeyedImage {
    TASK_SELECTED("taskSelected.gif"),
    TEAM_DEFINITION("team.gif"),
    TEAM_WORKFLOW("workflow.gif"),
+   TRANSITION("transition.gif"),
    VERSION_LOCKED("yellowV_8_8.gif"),
    WORKFLOW_CONFIG("workflow.gif"),
    TOOL("T.gif"),

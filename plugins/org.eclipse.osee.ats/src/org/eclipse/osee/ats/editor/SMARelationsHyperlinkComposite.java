@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.ats.editor;
 
+import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.artifact.AbstractReviewArtifact;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
@@ -108,8 +109,8 @@ public class SMARelationsHyperlinkComposite extends Composite {
       return false;
    }
 
-   private String getCompletedCancelledString(Artifact art) {
-      if (art instanceof AbstractWorkflowArtifact && ((AbstractWorkflowArtifact) art).isCancelledOrCompleted()) {
+   private String getCompletedCancelledString(Artifact art) throws OseeCoreException {
+      if (art instanceof AbstractWorkflowArtifact && ((AbstractWorkflowArtifact) art).isCompletedOrCancelled()) {
          return " " + ((AbstractWorkflowArtifact) art).getStateMgr().getCurrentStateName() + " ";
       }
       return "";
@@ -126,39 +127,42 @@ public class SMARelationsHyperlinkComposite extends Composite {
    }
 
    private void createLink(final Artifact art, String prefix, String action, Artifact thisArt) {
-      toolkit.createLabel(
-         this,
-         prefix + " \"" + thisArt.getArtifactTypeName() + "\" " + action + getCompletedCancelledString(art) + " \"" + art.getArtifactTypeName() + "\" ");
-      Hyperlink link =
-         toolkit.createHyperlink(this, String.format("\"%s\" - %s",
-            art.getName().length() < 60 ? art.getName() : art.getName().substring(0, 60), art.getHumanReadableId()),
-            SWT.NONE);
-      link.addHyperlinkListener(new IHyperlinkListener() {
+      try {
+         toolkit.createLabel(
+            this,
+            prefix + " \"" + thisArt.getArtifactTypeName() + "\" " + action + getCompletedCancelledString(art) + " \"" + art.getArtifactTypeName() + "\" ");
+         Hyperlink link =
+            toolkit.createHyperlink(this, String.format("\"%s\" - %s",
+               art.getName().length() < 60 ? art.getName() : art.getName().substring(0, 60), art.getHumanReadableId()),
+               SWT.NONE);
+         link.addHyperlinkListener(new IHyperlinkListener() {
 
-         @Override
-         public void linkEntered(HyperlinkEvent e) {
-            // do nothing
-         }
+            @Override
+            public void linkEntered(HyperlinkEvent e) {
+               // do nothing
+            }
 
-         @Override
-         public void linkExited(HyperlinkEvent e) {
-            // do nothing
-         }
+            @Override
+            public void linkExited(HyperlinkEvent e) {
+               // do nothing
+            }
 
-         @Override
-         public void linkActivated(HyperlinkEvent e) {
-            if (art instanceof IATSArtifact) {
-               AtsUtil.openATSAction(art, AtsOpenOption.OpenOneOrPopupSelect);
-            } else {
-               try {
-                  RendererManager.open(art, PresentationType.DEFAULT_OPEN);
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            @Override
+            public void linkActivated(HyperlinkEvent e) {
+               if (art instanceof IATSArtifact) {
+                  AtsUtil.openATSAction(art, AtsOpenOption.OpenOneOrPopupSelect);
+               } else {
+                  try {
+                     RendererManager.open(art, PresentationType.DEFAULT_OPEN);
+                  } catch (OseeCoreException ex) {
+                     OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                  }
                }
             }
-         }
-      });
-
+         });
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      }
    }
 
    private void processReviewArtifact(final AbstractReviewArtifact reviewArt) throws OseeCoreException {

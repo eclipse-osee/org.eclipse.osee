@@ -60,7 +60,8 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
 
    private XMembersCombo assigneeCombo;
-   private XCheckBox includeCompletedCancelledCheckbox;
+   private XCheckBox includeCompletedCheckbox;
+   private XCheckBox includeCancelledCheckbox;
    private XHyperlabelTeamDefinitionSelection teamCombo = null;
    private XHyperlabelGroupSelection groupWidget = null;
    private XCombo versionCombo = null;
@@ -77,15 +78,17 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
    public String getParameterXWidgetXml() {
       return "<xWidgets>" +
       //
-      "<XWidget xwidgetType=\"XHyperlabelTeamDefinitionSelection\" displayName=\"Team Definitions(s)\" horizontalLabel=\"true\"/>" +
+      "<XWidget displayName=\"Team Definitions(s)\" xwidgetType=\"XHyperlabelTeamDefinitionSelection\" horizontalLabel=\"true\"/>" +
       //
-      "<XWidget xwidgetType=\"XCombo()\" beginComposite=\"8\" displayName=\"Version\" horizontalLabel=\"true\"/>" +
+      "<XWidget displayName=\"Version\" xwidgetType=\"XCombo()\" beginComposite=\"5\" horizontalLabel=\"true\"/>" +
       //
-      "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Include Completed/Cancelled\" defaultValue=\"false\" labelAfter=\"true\" horizontalLabel=\"true\"/>" +
+      "<XWidget displayName=\"Assignee\" xwidgetType=\"XMembersCombo\" horizontalLabel=\"true\"/>" +
       //
-      "<XWidget xwidgetType=\"XHyperlabelGroupSelection\" displayName=\"Group(s)\" horizontalLabel=\"true\"/>" +
+      "<XWidget displayName=\"Group(s)\" xwidgetType=\"XHyperlabelGroupSelection\" horizontalLabel=\"true\"/>" +
       //
-      "<XWidget xwidgetType=\"XMembersCombo\" displayName=\"Assignee\" horizontalLabel=\"true\"/>" +
+      "<XWidget displayName=\"Include Completed\" xwidgetType=\"XCheckBox\" beginComposite=\"4\" defaultValue=\"false\" labelAfter=\"true\" horizontalLabel=\"true\"/>" +
+      //
+      "<XWidget displayName=\"Include Cancelled\" xwidgetType=\"XCheckBox\"  defaultValue=\"false\" labelAfter=\"true\" horizontalLabel=\"true\"/>" +
       //
       "</xWidgets>";
    }
@@ -116,7 +119,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
       // Else, get workflows from teamdefs
       else if (teamDefs.size() > 0) {
          TeamWorldSearchItem teamWorldSearchItem =
-            new TeamWorldSearchItem("", teamDefs, true, false, false, null, null, ReleasedOption.Both);
+            new TeamWorldSearchItem("", teamDefs, true, true, false, false, null, null, ReleasedOption.Both);
          workflows.addAll(teamWorldSearchItem.performSearchGetResults(false, SearchType.Search));
       } else if (groups.size() > 0) {
          Set<TaskArtifact> taskArts = new HashSet<TaskArtifact>();
@@ -157,11 +160,16 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
       for (Artifact art : artifacts) {
          TaskArtifact taskArt = (TaskArtifact) art;
          // If not include completed and task is such, skip this task
-         if (!isIncludeCompletedCancelledCheckbox() && taskArt.isCancelledOrCompleted()) {
+         if (!isIncludeCompletedCheckbox() && taskArt.isCompleted()) {
             continue;
          }
+         if (!isIncludeCancelledCheckbox() && taskArt.isCancelled()) {
+            continue;
+         }
+         boolean isIncludeCompletedAndCompleted = isIncludeCompletedCheckbox() && taskArt.isCompleted();
+         boolean isIncludeCancelledAndCancelled = isIncludeCancelledCheckbox() && taskArt.isCancelled();
          // If include completed and task is such and user not implementer, skip this task
-         if (isIncludeCompletedCancelledCheckbox() && taskArt.isCancelledOrCompleted() && getSelectedUser() != null && taskArt.getImplementers().contains(
+         if ((isIncludeCompletedAndCompleted || isIncludeCancelledAndCancelled) && getSelectedUser() != null && taskArt.getImplementers().contains(
             getSelectedUser())) {
             tasks.add(taskArt);
             continue;
@@ -177,9 +185,9 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
 
    @Override
    public Result isParameterSelectionValid() throws OseeCoreException {
-      if (getSelectedUser() != null && isIncludeCompletedCancelledCheckbox() && getSelectedVersionArtifact() == null && getSelectedTeamDefinitions().isEmpty()) {
+      if (getSelectedUser() != null && isIncludeCompletedCheckbox() && isIncludeCancelledCheckbox() && getSelectedVersionArtifact() == null && getSelectedTeamDefinitions().isEmpty()) {
          // This case is unsupported  and should be filtered out prior to this point
-         throw new OseeArgumentException("Unsupported User and Include Completed selected.");
+         throw new OseeArgumentException("Unsupported User and Include Completed/Cancelled selected.");
       }
 
       // If only user selected, handle that case separately
@@ -219,8 +227,14 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
          sb.append(" - Assignee: ");
          sb.append(getSelectedUser());
       }
-      if (isIncludeCompletedCancelledCheckbox()) {
+      if (isIncludeCompletedCheckbox() && isIncludeCancelledCheckbox()) {
          sb.append(" - Include Completed/Cancelled");
+      }
+      if (isIncludeCompletedCheckbox()) {
+         sb.append(" - Include Completed");
+      }
+      if (isIncludeCancelledCheckbox()) {
+         sb.append(" - Include Cancelled");
       }
       return Strings.truncate("Tasks" + sb.toString(), TaskEditor.TITLE_MAX_LENGTH, true);
    }
@@ -243,8 +257,11 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
       if (widget.getLabel().equals("Assignee")) {
          assigneeCombo = (XMembersCombo) widget;
       }
-      if (widget.getLabel().equals("Include Completed/Cancelled")) {
-         includeCompletedCancelledCheckbox = (XCheckBox) widget;
+      if (widget.getLabel().equals("Include Completed")) {
+         includeCompletedCheckbox = (XCheckBox) widget;
+      }
+      if (widget.getLabel().equals("Include Cancelled")) {
+         includeCancelledCheckbox = (XCheckBox) widget;
       }
       if (widget.getLabel().equals("Version")) {
          versionCombo = (XCombo) widget;
@@ -299,16 +316,29 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
       }
    }
 
-   private boolean isIncludeCompletedCancelledCheckbox() {
-      if (includeCompletedCancelledCheckbox == null) {
+   private boolean isIncludeCancelledCheckbox() {
+      if (includeCancelledCheckbox == null) {
          return false;
       }
-      return includeCompletedCancelledCheckbox.isSelected();
+      return includeCancelledCheckbox.isSelected();
    }
 
-   public void setIncludeCompletedCancelledCheckbox(boolean selected) {
-      if (includeCompletedCancelledCheckbox != null) {
-         includeCompletedCancelledCheckbox.set(selected);
+   public void setIncludeCancelledCheckbox(boolean selected) {
+      if (includeCancelledCheckbox != null) {
+         includeCancelledCheckbox.set(selected);
+      }
+   }
+
+   private boolean isIncludeCompletedCheckbox() {
+      if (includeCompletedCheckbox == null) {
+         return false;
+      }
+      return includeCompletedCheckbox.isSelected();
+   }
+
+   public void setIncludeCompletedCheckbox(boolean selected) {
+      if (includeCompletedCheckbox != null) {
+         includeCompletedCheckbox.set(selected);
       }
    }
 

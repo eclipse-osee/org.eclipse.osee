@@ -19,8 +19,6 @@ public interface IWorldViewArtifact {
 
    String getAssigneeStr() throws OseeCoreException;
 
-   String getState() throws OseeCoreException;
-
    /**
     * @return estimated hours from workflow attribute, tasks and reviews
     */
@@ -34,8 +32,6 @@ public interface IWorldViewArtifact {
 
    double getWorldViewHoursSpentTotal() throws OseeCoreException;
 
-   String getWorldViewID() throws OseeCoreException;
-
    int getWorldViewPercentCompleteState() throws OseeCoreException;
 
    int getWorldViewPercentCompleteStateReview() throws OseeCoreException;
@@ -43,11 +39,5 @@ public interface IWorldViewArtifact {
    int getWorldViewPercentCompleteStateTask() throws OseeCoreException;
 
    int getWorldViewPercentCompleteTotal() throws OseeCoreException;
-
-   String getWorldViewTitle() throws OseeCoreException;
-
-   String getType() throws OseeCoreException;
-
-   double getWorldViewWeeklyBenefit() throws OseeCoreException;
 
 }

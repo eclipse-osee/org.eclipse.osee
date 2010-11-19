@@ -27,8 +27,9 @@ import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.DefaultTeamState;
+import org.eclipse.osee.ats.util.TeamState;
 import org.eclipse.osee.ats.util.TransitionOption;
+import org.eclipse.osee.ats.workflow.TransitionManager;
 import org.eclipse.osee.ats.world.WorldXNavigateItemAction;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -142,7 +143,8 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
 
    private void makeChanges7(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Remote Event Test");
-      teamArt.transition(DefaultTeamState.Analyze.name(), Collections.singleton(UserManager.getUser()), transaction,
+      TransitionManager transitionMgr = new TransitionManager(teamArt);
+      transitionMgr.transition(TeamState.Analyze, Collections.singleton(UserManager.getUser()), transaction,
          TransitionOption.Persist);
       teamArt.persist(transaction);
       transaction.execute();
@@ -261,7 +263,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
          expectedTargetedVersion = "not set";
       }
       testEquals("Targeted Version", expectedTargetedVersion, "2.5.7");
-      testEquals("State", DefaultTeamState.Analyze.name(), teamArt.getStateMgr().getCurrentStateName());
+      testEquals("State", TeamState.Analyze.getPageName(), teamArt.getStateMgr().getCurrentStateName());
    }
 
    private void testEquals(String name, Object expected, Object actual) {

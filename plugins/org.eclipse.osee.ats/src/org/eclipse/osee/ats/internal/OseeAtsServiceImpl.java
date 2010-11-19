@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -92,8 +93,12 @@ public class OseeAtsServiceImpl implements IOseeCmService {
 
    @Override
    public boolean isCompleted(Artifact artifact) {
-      if (isPcrArtifact(artifact) && artifact instanceof AbstractWorkflowArtifact) {
-         return ((AbstractWorkflowArtifact) artifact).isCancelledOrCompleted();
+      try {
+         if (isPcrArtifact(artifact) && artifact instanceof AbstractWorkflowArtifact) {
+            return ((AbstractWorkflowArtifact) artifact).isCompletedOrCancelled();
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
       return false;
    }
@@ -117,7 +122,7 @@ public class OseeAtsServiceImpl implements IOseeCmService {
       try {
          Artifact artifact = ArtifactQuery.getArtifactFromId(parentPcrGuid, AtsUtil.getAtsBranch());
          if (artifact instanceof AbstractTaskableArtifact) {
-            return ((AbstractTaskableArtifact) artifact).createNewTask(name);
+            return ((AbstractTaskableArtifact) artifact).createNewTask(name, new Date(), UserManager.getUser());
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);

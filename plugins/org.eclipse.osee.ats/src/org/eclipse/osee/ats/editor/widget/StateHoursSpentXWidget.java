@@ -36,7 +36,7 @@ public class StateHoursSpentXWidget extends XHyperlinkLabelValueSelection {
    private final boolean isCurrentState;
 
    public StateHoursSpentXWidget(IManagedForm managedForm, AtsWorkPage page, final AbstractWorkflowArtifact sma, Composite composite, int horizontalSpan, XModifiedListener xModListener, boolean isCurrentState) {
-      super("\"" + page.getName() + "\"" + " State Hours Spent");
+      super("\"" + page.getPageName() + "\"" + " State Hours Spent");
       this.page = page;
       this.sma = sma;
       this.isCurrentState = isCurrentState;
@@ -76,25 +76,24 @@ public class StateHoursSpentXWidget extends XHyperlinkLabelValueSelection {
       }
       try {
          StringBuffer sb =
-            new StringBuffer(String.format("        State Hours: %5.2f",
-               sma.getStateMgr().getHoursSpent(page.getName())));
+            new StringBuffer(String.format("        State Hours: %5.2f", sma.getStateMgr().getHoursSpent(page)));
          setEditable(isCurrentState && !sma.isReadOnly());
          boolean breakoutNeeded = false;
          if (sma instanceof AbstractTaskableArtifact && ((AbstractTaskableArtifact) sma).hasTaskArtifacts()) {
             sb.append(String.format("\n        Task  Hours: %5.2f",
-               ((AbstractTaskableArtifact) sma).getHoursSpentFromTasks(page.getName())));
+               ((AbstractTaskableArtifact) sma).getHoursSpentFromTasks(page)));
             breakoutNeeded = true;
          }
          if (sma.isTeamWorkflow() && ReviewManager.hasReviews((TeamWorkFlowArtifact) sma)) {
             sb.append(String.format("\n     Review Hours: %5.2f",
-               ReviewManager.getHoursSpent((TeamWorkFlowArtifact) sma, page.getName())));
+               ReviewManager.getHoursSpent((TeamWorkFlowArtifact) sma, page)));
             breakoutNeeded = true;
          }
          if (breakoutNeeded) {
             setToolTip(sb.toString());
-            return String.format("%5.2f", sma.getHoursSpentSMAStateTotal(page.getName()));
+            return String.format("%5.2f", sma.getHoursSpentSMAStateTotal(page));
          } else {
-            return String.format("%5.2f", sma.getStateMgr().getHoursSpent(page.getName()));
+            return String.format("%5.2f", sma.getStateMgr().getHoursSpent(page));
          }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);

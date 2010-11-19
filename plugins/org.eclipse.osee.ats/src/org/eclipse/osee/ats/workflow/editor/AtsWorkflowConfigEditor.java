@@ -262,7 +262,7 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
                if (pageDef.isCancelledPage()) {
                   pageShape = new CancelledWorkPageShape(pageDef);
                   pageShape.setLocation(new Point(250, 300));
-               } else if (pageDef.isCompletePage()) {
+               } else if (pageDef.isCompletedPage()) {
                   pageShape = new CompletedWorkPageShape(pageDef);
                   pageShape.setLocation(new Point(50, yLoc += 90));
                } else {

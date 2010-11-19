@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.DefaultTeamState;
 import org.eclipse.osee.ats.util.SMAUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -105,30 +104,19 @@ public class UserWorldSearchItem {
       }
 
       if (!options.contains(UserSearchOption.IncludeCancelled)) {
-         filteredArts =
-            SMAUtil.filterOutState(filteredArts, java.util.Collections.singleton(DefaultTeamState.Cancelled.name()));
+         filteredArts = SMAUtil.filterOutCancelled(filteredArts);
       }
 
       if (!options.contains(UserSearchOption.IncludeCompleted)) {
-         filteredArts =
-            SMAUtil.filterOutState(filteredArts, java.util.Collections.singleton(DefaultTeamState.Completed.name()));
+         filteredArts = SMAUtil.filterOutCompleted(filteredArts);
       }
 
       return filteredArts;
    }
 
    private Collection<AbstractWorkflowArtifact> getOriginatorArtifacts() throws OseeCoreException {
-      Collection<AbstractWorkflowArtifact> originators = new ArrayList<AbstractWorkflowArtifact>();
-      Collection<AbstractWorkflowArtifact> artifacts =
-         Collections.castAll(ArtifactQuery.getArtifactListFromAttribute(AtsAttributeTypes.Log,
-            "%type=\"Originated\" userId=\"" + user.getUserId() + "\"%", AtsUtil.getAtsBranch()));
-      // omit historical originators; list current originators
-      for (AbstractWorkflowArtifact art : artifacts) {
-         if (art.getOriginatorStr().equals(user.getName())) {
-            originators.add(art);
-         }
-      }
-      return originators;
+      return Collections.castAll(ArtifactQuery.getArtifactListFromAttribute(AtsAttributeTypes.CreatedBy,
+         user.getUserId(), AtsUtil.getAtsBranch()));
    }
 
    private Collection<AbstractWorkflowArtifact> getSubscribedArtifacts() throws OseeCoreException {

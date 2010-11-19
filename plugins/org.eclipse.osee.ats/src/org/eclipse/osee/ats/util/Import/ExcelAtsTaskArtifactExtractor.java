@@ -14,6 +14,7 @@ package org.eclipse.osee.ats.util.Import;
 import java.io.FileFilter;
 import java.io.InputStreamReader;
 import java.net.URI;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
@@ -101,12 +102,16 @@ public class ExcelAtsTaskArtifactExtractor {
       private final AbstractWorkflowArtifact sma;
       private final SkynetTransaction transaction;
       private final boolean emailPOCs;
+      private final Date createdDate;
+      private final User createdBy;
 
-      protected InternalRowProcessor(IProgressMonitor monitor, SkynetTransaction transaction, AbstractWorkflowArtifact sma, boolean emailPOCs) {
+      protected InternalRowProcessor(IProgressMonitor monitor, SkynetTransaction transaction, AbstractWorkflowArtifact sma, boolean emailPOCs) throws OseeCoreException {
          this.monitor = monitor;
          this.transaction = transaction;
          this.emailPOCs = emailPOCs;
          this.sma = sma;
+         createdDate = new Date();
+         createdBy = UserManager.getUser();
       }
 
       @Override
@@ -144,7 +149,7 @@ public class ExcelAtsTaskArtifactExtractor {
          try {
             rowNum++;
             monitor.setTaskName("Processing Row " + rowNum);
-            TaskArtifact taskArt = ((AbstractTaskableArtifact) sma).createNewTask("");
+            TaskArtifact taskArt = ((AbstractTaskableArtifact) sma).createNewTask("", createdDate, createdBy);
 
             monitor.subTask("Validating...");
             boolean valid = validateRow(row);
@@ -323,7 +328,7 @@ public class ExcelAtsTaskArtifactExtractor {
             OseeLog.log(AtsPlugin.class, Level.SEVERE,
                String.format("Invalid Originator \"%s\" for row %d\nSetting to current user.", userName, rowNum));
          }
-         taskArt.getLog().setOriginator(u);
+         taskArt.internalSetCreatedBy(u);
       }
    }
 }

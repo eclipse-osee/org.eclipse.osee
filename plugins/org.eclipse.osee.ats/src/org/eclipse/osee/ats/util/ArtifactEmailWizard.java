@@ -33,7 +33,7 @@ public class ArtifactEmailWizard extends EmailWizard {
    private static List<EmailGroup> getEmailableGroups(AbstractWorkflowArtifact workflow) throws OseeCoreException {
       ArrayList<EmailGroup> groupNames = new ArrayList<EmailGroup>();
       ArrayList<String> emails = new ArrayList<String>();
-      emails.add(workflow.getOriginator().getEmail());
+      emails.add(workflow.getCreatedBy().getEmail());
       groupNames.add(new EmailGroup("Originator", emails));
       if (workflow.getStateMgr().getAssignees().size() > 0) {
          emails = new ArrayList<String>();

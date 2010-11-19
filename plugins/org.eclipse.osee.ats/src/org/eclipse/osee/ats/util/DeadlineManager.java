@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.column.DeadlineColumn;
 import org.eclipse.osee.ats.column.EstimatedCompletionDateColumn;
 import org.eclipse.osee.ats.column.EstimatedReleaseDateColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 
@@ -52,8 +53,12 @@ public class DeadlineManager {
    }
 
    public static Result isDeadlineDateOverdue(AbstractWorkflowArtifact sma) {
-      if (sma.isCompleted() || sma.isCancelled()) {
-         return Result.FalseResult;
+      try {
+         if (sma.isCompleted() || sma.isCancelled()) {
+            return Result.FalseResult;
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
       if (new Date().after(getDeadlineDate(sma))) {
          return new Result(true, "Need By Date has passed.");
@@ -62,8 +67,12 @@ public class DeadlineManager {
    }
 
    public static Result isEcdDateOverdue(AbstractWorkflowArtifact sma) {
-      if (sma.isCompleted() || sma.isCancelled()) {
-         return Result.FalseResult;
+      try {
+         if (sma.isCompleted() || sma.isCancelled()) {
+            return Result.FalseResult;
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
       Date ecdDate = getEcdDate(sma);
       Date deadlineDate = getDeadlineDate(sma);

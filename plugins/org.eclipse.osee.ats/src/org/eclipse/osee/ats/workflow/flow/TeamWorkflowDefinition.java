@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.workflow.flow;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.ats.util.DefaultTeamState;
+import org.eclipse.osee.ats.util.TeamState;
 import org.eclipse.osee.ats.workflow.item.AtsStatePercentCompleteWeightDefaultWorkflowRule;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.ats.workflow.page.AtsAnalyzeWorkPageDefinition;
@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageType;
 
 /**
  * @author Donald G. Dunne
@@ -64,7 +65,7 @@ public class TeamWorkflowDefinition extends WorkFlowDefinition {
    public TeamWorkflowDefinition(String name, String workflowId) {
       super(name, workflowId, null);
       addDefaultTransitions(this, workflowId);
-      startPageId = DefaultTeamState.Endorse.name();
+      startPageId = TeamState.Endorse.getPageName();
    }
 
    public static List<WorkItemDefinition> getAtsWorkDefinitions() {
@@ -85,51 +86,53 @@ public class TeamWorkflowDefinition extends WorkFlowDefinition {
    public static List<WorkItemDefinition> getWorkPageDefinitionsForId(String workflowId) {
       List<WorkItemDefinition> workItems = new ArrayList<WorkItemDefinition>();
       // Add Team Page and Workflow Definition
-      workItems.add(new WorkPageDefinition(DefaultTeamState.Endorse.name(),
-         workflowId + "." + DefaultTeamState.Endorse.name(), AtsEndorseWorkPageDefinition.ID));
-      workItems.add(new WorkPageDefinition(DefaultTeamState.Analyze.name(),
-         workflowId + "." + DefaultTeamState.Analyze.name(), AtsAnalyzeWorkPageDefinition.ID));
-      workItems.add(new WorkPageDefinition(DefaultTeamState.Authorize.name(),
-         workflowId + "." + DefaultTeamState.Authorize.name(), AtsAuthorizeWorkPageDefinition.ID));
-      workItems.add(new WorkPageDefinition(DefaultTeamState.Implement.name(),
-         workflowId + "." + DefaultTeamState.Implement.name(), AtsImplementWorkPageDefinition.ID));
-      workItems.add(new WorkPageDefinition(DefaultTeamState.Completed.name(),
-         workflowId + "." + DefaultTeamState.Completed.name(), AtsCompletedWorkPageDefinition.ID));
-      workItems.add(new WorkPageDefinition(DefaultTeamState.Cancelled.name(),
-         workflowId + "." + DefaultTeamState.Cancelled.name(), AtsCancelledWorkPageDefinition.ID));
+      workItems.add(new WorkPageDefinition(TeamState.Endorse.getPageName(),
+         workflowId + "." + TeamState.Endorse.getPageName(), AtsEndorseWorkPageDefinition.ID, WorkPageType.Working));
+      workItems.add(new WorkPageDefinition(TeamState.Analyze.getPageName(),
+         workflowId + "." + TeamState.Analyze.getPageName(), AtsAnalyzeWorkPageDefinition.ID, WorkPageType.Working));
+      workItems.add(new WorkPageDefinition(TeamState.Authorize.getPageName(),
+         workflowId + "." + TeamState.Authorize.getPageName(), AtsAuthorizeWorkPageDefinition.ID, WorkPageType.Working));
+      workItems.add(new WorkPageDefinition(TeamState.Implement.getPageName(),
+         workflowId + "." + TeamState.Implement.getPageName(), AtsImplementWorkPageDefinition.ID, WorkPageType.Working));
+      workItems.add(new WorkPageDefinition(TeamState.Completed.getPageName(),
+         workflowId + "." + TeamState.Completed.getPageName(), AtsCompletedWorkPageDefinition.ID,
+         WorkPageType.Completed));
+      workItems.add(new WorkPageDefinition(TeamState.Cancelled.getPageName(),
+         workflowId + "." + TeamState.Cancelled.getPageName(), AtsCancelledWorkPageDefinition.ID,
+         WorkPageType.Cancelled));
       return workItems;
    }
 
    public static void addDefaultTransitions(WorkFlowDefinition teamWorkflowDefinition, String workflowId) {
-      teamWorkflowDefinition.addPageTransition(DefaultTeamState.Endorse.name(), DefaultTeamState.Analyze.name(),
+      teamWorkflowDefinition.addPageTransition(TeamState.Endorse.getPageName(), TeamState.Analyze.getPageName(),
          TransitionType.ToPageAsDefault);
-      teamWorkflowDefinition.addPageTransition(DefaultTeamState.Analyze.name(), DefaultTeamState.Authorize.name(),
+      teamWorkflowDefinition.addPageTransition(TeamState.Analyze.getPageName(), TeamState.Authorize.getPageName(),
          TransitionType.ToPageAsDefault);
-      teamWorkflowDefinition.addPageTransition(DefaultTeamState.Authorize.name(), DefaultTeamState.Implement.name(),
+      teamWorkflowDefinition.addPageTransition(TeamState.Authorize.getPageName(), TeamState.Implement.getPageName(),
          TransitionType.ToPageAsDefault);
-      teamWorkflowDefinition.addPageTransition(DefaultTeamState.Implement.name(), DefaultTeamState.Completed.name(),
+      teamWorkflowDefinition.addPageTransition(TeamState.Implement.getPageName(), TeamState.Completed.getPageName(),
          TransitionType.ToPageAsDefault);
 
       // Add return transitions
-      teamWorkflowDefinition.addPageTransition(DefaultTeamState.Analyze.name(), DefaultTeamState.Endorse.name(),
+      teamWorkflowDefinition.addPageTransition(TeamState.Analyze.getPageName(), TeamState.Endorse.getPageName(),
          TransitionType.ToPageAsReturn);
-      teamWorkflowDefinition.addPageTransition(DefaultTeamState.Authorize.name(), DefaultTeamState.Analyze.name(),
+      teamWorkflowDefinition.addPageTransition(TeamState.Authorize.getPageName(), TeamState.Analyze.getPageName(),
          TransitionType.ToPageAsReturn);
-      teamWorkflowDefinition.addPageTransition(DefaultTeamState.Implement.name(), DefaultTeamState.Analyze.name(),
+      teamWorkflowDefinition.addPageTransition(TeamState.Implement.getPageName(), TeamState.Analyze.getPageName(),
          TransitionType.ToPageAsReturn);
-      teamWorkflowDefinition.addPageTransition(DefaultTeamState.Implement.name(), DefaultTeamState.Authorize.name(),
+      teamWorkflowDefinition.addPageTransition(TeamState.Implement.getPageName(), TeamState.Authorize.getPageName(),
          TransitionType.ToPageAsReturn);
-      teamWorkflowDefinition.addPageTransition(DefaultTeamState.Completed.name(), DefaultTeamState.Implement.name(),
+      teamWorkflowDefinition.addPageTransition(TeamState.Completed.getPageName(), TeamState.Implement.getPageName(),
          TransitionType.ToPageAsReturn);
 
       // Add cancelled transitions
-      teamWorkflowDefinition.addPageTransitionToPageAndReturn(DefaultTeamState.Endorse.name(),
-         DefaultTeamState.Cancelled.name());
-      teamWorkflowDefinition.addPageTransitionToPageAndReturn(DefaultTeamState.Analyze.name(),
-         DefaultTeamState.Cancelled.name());
-      teamWorkflowDefinition.addPageTransitionToPageAndReturn(DefaultTeamState.Authorize.name(),
-         DefaultTeamState.Cancelled.name());
-      teamWorkflowDefinition.addPageTransitionToPageAndReturn(DefaultTeamState.Implement.name(),
-         DefaultTeamState.Cancelled.name());
+      teamWorkflowDefinition.addPageTransitionToPageAndReturn(TeamState.Endorse.getPageName(),
+         TeamState.Cancelled.getPageName());
+      teamWorkflowDefinition.addPageTransitionToPageAndReturn(TeamState.Analyze.getPageName(),
+         TeamState.Cancelled.getPageName());
+      teamWorkflowDefinition.addPageTransitionToPageAndReturn(TeamState.Authorize.getPageName(),
+         TeamState.Cancelled.getPageName());
+      teamWorkflowDefinition.addPageTransitionToPageAndReturn(TeamState.Implement.getPageName(),
+         TeamState.Cancelled.getPageName());
    }
 }

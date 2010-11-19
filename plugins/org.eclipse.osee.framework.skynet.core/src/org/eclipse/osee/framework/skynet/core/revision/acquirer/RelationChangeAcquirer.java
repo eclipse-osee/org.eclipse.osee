@@ -44,7 +44,9 @@ public class RelationChangeAcquirer extends ChangeAcquirer {
       TransactionRecord fromTransactionId;
       TransactionRecord toTransactionId;
 
-      getMonitor().subTask("Gathering Relation Changes");
+      if (getMonitor() != null) {
+         getMonitor().subTask("Gathering Relation Changes");
+      }
       try {
          boolean hasBranch = getSourceBranch() != null;
 
@@ -86,7 +88,9 @@ public class RelationChangeAcquirer extends ChangeAcquirer {
                      RelationTypeManager.getType(chStmt.getInt("rel_link_type_id")), !hasBranch));
             }
          }
-         getMonitor().worked(25);
+         if (getMonitor() != null) {
+            getMonitor().worked(25);
+         }
       } finally {
          chStmt.close();
       }

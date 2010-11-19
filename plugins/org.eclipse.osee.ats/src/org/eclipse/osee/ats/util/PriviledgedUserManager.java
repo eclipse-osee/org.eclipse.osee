@@ -78,7 +78,7 @@ public class PriviledgedUserManager {
             teamArt.getTeamDefinition().hasWorkRule(
                RuleWorkItemId.atsAllowPriviledgedEditToTeamMemberAndOriginator.name());
          if (!users.contains(UserManager.getUser()) && (workPageToMemberAndOriginator || teamDefToMemberAndOriginator) && //
-         teamArt.getOriginator().equals(UserManager.getUser()) && teamArt.getTeamDefinition().getMembers().contains(
+         teamArt.getCreatedBy().equals(UserManager.getUser()) && teamArt.getTeamDefinition().getMembers().contains(
             UserManager.getUser())) {
             users.add(UserManager.getUser());
          }

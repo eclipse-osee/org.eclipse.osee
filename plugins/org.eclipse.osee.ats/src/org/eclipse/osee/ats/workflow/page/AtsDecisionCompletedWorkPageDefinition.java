@@ -11,24 +11,25 @@
 package org.eclipse.osee.ats.workflow.page;
 
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.util.DefaultTeamState;
+import org.eclipse.osee.ats.util.TeamState;
 import org.eclipse.osee.ats.workflow.flow.DecisionWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions.RuleWorkItemId;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageType;
 
 /**
  * @author Donald G. Dunne
  */
 public class AtsDecisionCompletedWorkPageDefinition extends WorkPageDefinition {
 
-   public final static String ID = DecisionWorkflowDefinition.ID + "." + DefaultTeamState.Completed.name();
+   public final static String ID = DecisionWorkflowDefinition.ID + "." + TeamState.Completed.getPageName();
 
    public AtsDecisionCompletedWorkPageDefinition() {
-      this(DefaultTeamState.Completed.name(), ID, null);
+      this(TeamState.Completed.getPageName(), ID, null);
    }
 
    public AtsDecisionCompletedWorkPageDefinition(String name, String pageId, String parentId) {
-      super(name, pageId, parentId);
+      super(name, pageId, parentId, WorkPageType.Completed);
       addWorkItem(RuleWorkItemId.atsAddDecisionValidateBlockingReview.name());
       addWorkItem(AtsDecisionDecisionWorkPageDefinition.DECISION_QUESTION_LABEL);
       addWorkItem(AtsDecisionDecisionWorkPageDefinition.DECISION_ANSWER_LABEL);

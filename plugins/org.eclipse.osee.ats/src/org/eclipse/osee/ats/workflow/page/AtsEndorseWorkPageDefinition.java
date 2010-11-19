@@ -11,24 +11,25 @@
 package org.eclipse.osee.ats.workflow.page;
 
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.util.DefaultTeamState;
+import org.eclipse.osee.ats.util.TeamState;
 import org.eclipse.osee.ats.workflow.flow.TeamWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions.RuleWorkItemId;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageType;
 
 /**
  * @author Donald G. Dunne
  */
 public class AtsEndorseWorkPageDefinition extends WorkPageDefinition {
 
-   public final static String ID = TeamWorkflowDefinition.ID + "." + DefaultTeamState.Endorse.name();
+   public final static String ID = TeamWorkflowDefinition.ID + "." + TeamState.Endorse.getPageName();
 
    public AtsEndorseWorkPageDefinition() {
-      this(DefaultTeamState.Endorse.name(), ID, null);
+      this(TeamState.Endorse.getPageName(), ID, null);
    }
 
    public AtsEndorseWorkPageDefinition(String name, String pageId, String parentId) {
-      super(name, pageId, parentId);
+      super(name, pageId, parentId, WorkPageType.Working);
       addWorkItem(RuleWorkItemId.atsRequireStateHourSpentPrompt.name());
       addWorkItem("ats.Title");
       addWorkItem(AtsAttributeTypes.Description);
