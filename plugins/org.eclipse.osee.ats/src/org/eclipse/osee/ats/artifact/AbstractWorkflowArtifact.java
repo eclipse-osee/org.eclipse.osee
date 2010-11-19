@@ -870,7 +870,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
          setSoleAttributeValue(AtsAttributeTypes.CreatedBy, UserManager.getUser().getUserId());
       }
       if (isAttributeTypeValid(AtsAttributeTypes.CreatedDate)) {
-         setSoleAttributeValue(AtsAttributeTypes.CreatedDate, UserManager.getUser().getUserId());
+         setSoleAttributeValue(AtsAttributeTypes.CreatedDate, date);
       }
    }
 
