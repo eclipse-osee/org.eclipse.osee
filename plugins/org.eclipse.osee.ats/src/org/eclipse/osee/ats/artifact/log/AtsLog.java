@@ -181,6 +181,14 @@ public class AtsLog {
       return item.getState();
    }
 
+   public String internalGetCancelledReason() throws OseeCoreException {
+      LogItem item = getStateEvent(LogType.StateCancelled);
+      if (item == null) {
+         return "";
+      }
+      return item.getMsg();
+   }
+
    /**
     * This method is replaced by AbstractWorkflowArtifact.getCompletedFromState. Kept for backward compatibility.
     */

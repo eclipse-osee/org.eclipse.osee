@@ -48,12 +48,9 @@ import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.TeamState;
 import org.eclipse.osee.ats.world.WorldXNavigateItemAction;
-import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
-import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -131,9 +128,6 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          try {
 
             XResultData rd = new XResultData();
-
-            // TODO this can be removed after 0.9.6; all relations between smas and user artifacts can be purged after 0.9.6
-            removeRelatedAssignees(rd);
 
             runIt(monitor, rd);
             rd.report(getName());
@@ -217,33 +211,6 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       xResultData.reportSevereLoggingMonitor(monitorLog);
       if (monitor != null) {
          xResultData.log(monitor, "Completed processing " + count + " artifacts.");
-      }
-   }
-
-   // TODO this can be removed after 0.9.6; all relations between smas and user artifacts can be purged after 0.9.6
-   private void removeRelatedAssignees(XResultData rd) {
-      try {
-         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "remove related assignees");
-         for (User user : UserManager.getUsers()) {
-            Set<Artifact> smasToRemove = new HashSet<Artifact>();
-            for (Artifact art : user.getRelatedArtifacts(CoreRelationTypes.Users_Artifact)) {
-               if (art instanceof AbstractWorkflowArtifact) {
-                  if (!AccessControlManager.hasPermission(art, PermissionEnum.FULLACCESS)) {
-                     rd.logError(String.format("No permission to remove relations for [%s]", art));
-                  } else {
-                     user.deleteRelation(CoreRelationTypes.Users_Artifact, art);
-                     smasToRemove.add(art);
-                  }
-               }
-            }
-            if (smasToRemove.size() > 0) {
-               rd.log(String.format("Removed [%d] sma relations from [%s]", smasToRemove.size(), user));
-               user.persist(transaction);
-            }
-         }
-         transaction.execute();
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
    }
 
