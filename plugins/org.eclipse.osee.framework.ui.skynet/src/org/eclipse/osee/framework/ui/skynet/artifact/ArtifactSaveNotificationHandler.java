@@ -96,11 +96,9 @@ public class ArtifactSaveNotificationHandler implements IWorkbenchListener {
                isShutdownAllowed = false;
                HashCollection<Branch, Artifact> branchMap = Artifacts.getBranchArtifactMap(dirtyArts);
 
-               if (RenderingUtil.arePopupsAllowed()) {
-                  for (Branch branch : branchMap.keySet()) {
-                     MassArtifactEditor.editArtifacts(String.format("Unsaved Artifacts for Branch [%s]", branch),
-                        branchMap.getValues(branch));
-                  }
+               for (Branch branch : branchMap.keySet()) {
+                  MassArtifactEditor.editArtifacts(String.format("Unsaved Artifacts for Branch [%s]", branch),
+                     branchMap.getValues(branch));
                }
             }
          } else {

@@ -18,14 +18,17 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.AIFile;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.FileUiUtil;
 import org.eclipse.swt.program.Program;
 import org.eclipse.ui.IEditorDescriptor;
@@ -162,6 +165,9 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
                   FileUiUtil.ensureFilenameLimit(file);
                   Program program = getAssociatedProgram(firstArtifact);
                   program.execute(file.getLocation().toFile().getAbsolutePath());
+               } else {
+                  OseeLog.log(SkynetGuiPlugin.class, Level.INFO,
+                     String.format("Test - Opening File - [%s]" + file.getLocation().toFile().getAbsolutePath()));
                }
             } catch (Exception ex) {
                IWorkbench workbench = PlatformUI.getWorkbench();

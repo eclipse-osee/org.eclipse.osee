@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.render.compare;
 
 import java.util.Collection;
+import java.util.logging.Level;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -19,11 +20,13 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.preferences.MsWordPreferencePage;
 import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
@@ -99,14 +102,22 @@ public class WholeWordCompare implements IComparator {
          renderer.addFileToWatcher(folder, diffPath.substring(diffPath.lastIndexOf('\\') + 1));
          diffGenerator.addComparison(baseFile, newerFile, diffPath, true);
 
+         String vbsPath = diffPath.substring(0, diffPath.lastIndexOf('\\')) + "mergeDocs.vbs";
          if (RenderingUtil.arePopupsAllowed()) {
-            diffGenerator.finish(diffPath.substring(0, diffPath.lastIndexOf('\\')) + "mergeDocs.vbs", show);
+            diffGenerator.finish(vbsPath, show);
+         } else {
+            OseeLog.log(SkynetGuiPlugin.class, Level.INFO,
+               String.format("Test - Skip launch of mergeDocs.vbs for [%s]", vbsPath));
          }
       } else {
          diffGenerator.addComparison(baseFile, newerFile, diffPath, false);
 
+         String vbsPath = diffPath.substring(0, diffPath.lastIndexOf('\\')) + "/compareDocs.vbs";
          if (RenderingUtil.arePopupsAllowed()) {
-            diffGenerator.finish(diffPath.substring(0, diffPath.lastIndexOf('\\')) + "/compareDocs.vbs", show);
+            diffGenerator.finish(vbsPath, show);
+         } else {
+            OseeLog.log(SkynetGuiPlugin.class, Level.INFO,
+               String.format("Test - Skip launch of compareDocs.vbs for [%s]", vbsPath));
          }
       }
       return diffPath;

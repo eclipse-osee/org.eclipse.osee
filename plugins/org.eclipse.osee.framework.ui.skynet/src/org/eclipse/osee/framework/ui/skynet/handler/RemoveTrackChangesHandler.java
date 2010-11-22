@@ -10,10 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.handler;
 
+import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.debug.core.IStatusHandler;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.ui.PlatformUI;
@@ -40,6 +43,7 @@ public class RemoveTrackChangesHandler implements IStatusHandler {
       } else {
          // For Test Purposes
          isOkToRemove.setValue(true);
+         OseeLog.log(SkynetGuiPlugin.class, Level.INFO, "Test - accept track change removal.");
       }
       return isOkToRemove.getValue();
    }

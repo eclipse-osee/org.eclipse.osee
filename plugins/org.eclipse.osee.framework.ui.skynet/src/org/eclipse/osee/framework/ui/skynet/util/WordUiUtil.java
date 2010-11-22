@@ -11,9 +11,12 @@
 package org.eclipse.osee.framework.ui.skynet.util;
 
 import java.util.Collection;
+import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -31,6 +34,9 @@ public final class WordUiUtil {
                MessageDialog.openError(Displays.getActiveShell(), title, message);
             }
          });
+      } else {
+         OseeLog.log(SkynetGuiPlugin.class, Level.INFO,
+            String.format("Test - Skip Error Dialog - [%s - %s]", title, message));
       }
    }
 
@@ -42,6 +48,9 @@ public final class WordUiUtil {
                MessageDialog.openWarning(Displays.getActiveShell(), title, message);
             }
          });
+      } else {
+         OseeLog.log(SkynetGuiPlugin.class, Level.INFO,
+            String.format("Test - Skip Warning Dialog - [%s - %s]", title, message));
       }
    }
 
@@ -63,6 +72,9 @@ public final class WordUiUtil {
                rd.addRaw(AHTML.endMultiColumnTable());
                if (RenderingUtil.arePopupsAllowed()) {
                   rd.report("Artifacts With Tracked Changes");
+               } else {
+                  OseeLog.log(SkynetGuiPlugin.class, Level.INFO,
+                     String.format("Test - Skip Artifacts With Tracked Changes Report - [%s]", artifacts));
                }
             }
          });
@@ -87,6 +99,9 @@ public final class WordUiUtil {
                rd.addRaw(AHTML.endMultiColumnTable());
                if (RenderingUtil.arePopupsAllowed()) {
                   rd.report("Unhandled Artifacts");
+               } else {
+                  OseeLog.log(SkynetGuiPlugin.class, Level.INFO,
+                     String.format("Test - Skip Unhandled Artifacts Report - %s - [%s]", warningString, artifacts));
                }
             }
          });

@@ -12,13 +12,16 @@ package org.eclipse.osee.framework.ui.skynet.render;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourceAttributes;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.utility.FileWatcher;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchListener;
 import org.eclipse.ui.PlatformUI;
@@ -70,6 +73,9 @@ final class ArtifactFileMonitor {
                         PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
                         "OSEE Edit",
                         "OSEE artifacts were opened for edit. Please save all external work before continuing. Click OK to continue shutdown process or Cancel to abort.");
+               } else {
+                  OseeLog.log(SkynetGuiPlugin.class, Level.INFO,
+                     "Test - OSEE artifacts were opened for edit - Default to saving edited artifacts");
                }
                return forced || wasConfirmed;
             }

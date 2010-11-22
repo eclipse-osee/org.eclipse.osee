@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.render.compare;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -102,6 +103,9 @@ public final class WordChangeReportOperation extends AbstractOperation {
                      WordUiUtil.displayWarningMessageDialog("Diff Artifacts Warning",
                         "Detected tracked changes for some artifacts. Please refer to the results HTML report.");
                      WordUiUtil.displayTrackedChangesOnArtifacts(artifacts);
+                  } else {
+                     OseeLog.log(SkynetGuiPlugin.class, Level.INFO, String.format(
+                        "Test - Skipping - Detected tracked changes for some artifacts for [%s]", artifacts));
                   }
                   continue;
                }
