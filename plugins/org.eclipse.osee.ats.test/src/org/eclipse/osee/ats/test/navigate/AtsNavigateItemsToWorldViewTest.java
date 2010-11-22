@@ -218,7 +218,7 @@ public class AtsNavigateItemsToWorldViewTest {
       NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, TaskArtifact.class, DemoTestUtil.getNumTasks());
       NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, TeamWorkFlowArtifact.class, 25);
       NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, PeerToPeerReviewArtifact.class, 8);
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, DecisionReviewArtifact.class, 8);
+      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, DecisionReviewArtifact.class, 3);
       runGeneralXColTest(84, false);
    }
 

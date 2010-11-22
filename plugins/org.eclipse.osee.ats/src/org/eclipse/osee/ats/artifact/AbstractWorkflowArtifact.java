@@ -863,11 +863,11 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
             atsLog.addLog(LogType.Originated, "", "", date, user);
          } else {
             atsLog.addLog(LogType.Originated, "", "Changed by " + UserManager.getUser().getName(), date, user);
-            atsLog.internalResetOriginator(UserManager.getUser());
+            atsLog.internalResetOriginator(user);
          }
       }
       if (isAttributeTypeValid(AtsAttributeTypes.CreatedBy)) {
-         setSoleAttributeValue(AtsAttributeTypes.CreatedBy, UserManager.getUser().getUserId());
+         setSoleAttributeValue(AtsAttributeTypes.CreatedBy, user.getUserId());
       }
       if (isAttributeTypeValid(AtsAttributeTypes.CreatedDate)) {
          setSoleAttributeValue(AtsAttributeTypes.CreatedDate, date);
