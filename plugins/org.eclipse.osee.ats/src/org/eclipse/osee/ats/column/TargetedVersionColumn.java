@@ -130,6 +130,7 @@ public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerV
                return false;
             } else if (!AtsUtil.isAtsAdmin()) {
                AWorkbench.popup("ERROR", error);
+               continue;
             }
          }
          if (teamDefHoldingVersions != null && teamDefHoldingVersions != teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions()) {
