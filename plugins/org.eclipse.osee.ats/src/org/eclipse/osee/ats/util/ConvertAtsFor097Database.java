@@ -39,6 +39,7 @@ import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
+import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageType;
@@ -75,13 +76,15 @@ public class ConvertAtsFor097Database extends XNavigateItemAction {
       @Override
       protected IStatus run(IProgressMonitor monitor) {
          try {
-
+            OseeNotificationManager.getInstance().setEmailEnabled(false);
             XResultData rd = new XResultData(false);
             runIt(monitor, rd);
             rd.report(getName());
          } catch (Exception ex) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
             return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
+         } finally {
+            OseeNotificationManager.getInstance().setEmailEnabled(true);
          }
          monitor.done();
          return Status.OK_STATUS;

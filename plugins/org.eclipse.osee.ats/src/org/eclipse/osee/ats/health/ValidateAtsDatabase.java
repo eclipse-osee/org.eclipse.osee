@@ -71,6 +71,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.skynet.core.utility.ElapsedTime;
@@ -179,6 +180,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          count += artifacts.size();
 
          // Remove this after 0.9.7 release and last sync
+         OseeEventManager.setDisableEvents(false);
          SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Convert ATS for 097 Release");
          ConvertAtsFor097Database.convertWorkPageDefinitions(testNameToResultsMap, artifacts, transaction);
          ConvertAtsFor097Database.convertWorkflowArtifacts(testNameToResultsMap, artifacts, transaction);
@@ -216,6 +218,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             xResultData.log(result);
          }
       }
+      OseeEventManager.setDisableEvents(true);
       xResultData.reportSevereLoggingMonitor(monitorLog);
       if (monitor != null) {
          xResultData.log(monitor, "Completed processing " + count + " artifacts.");
