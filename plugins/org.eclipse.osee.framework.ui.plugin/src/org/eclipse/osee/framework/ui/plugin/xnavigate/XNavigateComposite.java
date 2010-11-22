@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.internal.OseePluginUiActivator;
+import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.OSEEFilteredTree;
 import org.eclipse.swt.SWT;
@@ -29,7 +30,6 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
@@ -66,25 +66,8 @@ public class XNavigateComposite extends Composite {
       super(parent, style);
       this.navigateViewItems = navigateViewItems;
 
-      setLayout(new GridLayout(1, false));
+      setLayout(ALayout.getZeroMarginLayout(1, false));
       setLayoutData(new GridData(GridData.FILL_BOTH));
-
-      /*
-       * Create a grid layout object so the text and treeviewer are layed out the way I want.
-       */
-      GridLayout layout = new GridLayout();
-      layout.numColumns = 1;
-      layout.verticalSpacing = 0;
-      layout.marginWidth = 0;
-      layout.marginHeight = 0;
-      parent.setLayout(layout);
-      parent.setLayoutData(new GridData(GridData.FILL_BOTH));
-      // parent.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_WHITE));
-
-      // if (!ConnectionHandler.isConnected()) {
-      // (new Label(parent, SWT.NONE)).setText("DB Connection Unavailable");
-      // return;
-      // }
 
       filteredTree = new OSEEFilteredTree(this, SWT.SINGLE | SWT.BORDER, patternFilter);
       filteredTree.getViewer().setContentProvider(new XNavigateContentProvider());
@@ -105,6 +88,7 @@ public class XNavigateComposite extends Composite {
       filteredTree.getViewer().getTree().addKeyListener(new KeyListener() {
          @Override
          public void keyPressed(KeyEvent e) {
+            // do nothing
          }
 
          @Override

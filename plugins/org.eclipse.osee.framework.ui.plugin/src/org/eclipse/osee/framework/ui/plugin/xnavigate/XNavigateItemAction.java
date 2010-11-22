@@ -58,7 +58,7 @@ public class XNavigateItemAction extends XNavigateItem {
             Displays.ensureInDisplayThread(new Runnable() {
                @Override
                public void run() {
-                  if (MessageDialog.openConfirm(Displays.getActiveShell(), getName(), getName())) {
+                  if (MessageDialog.openConfirm(Displays.getActiveShell(), getName(), getName() + "?")) {
                      action.run();
                   }
                }

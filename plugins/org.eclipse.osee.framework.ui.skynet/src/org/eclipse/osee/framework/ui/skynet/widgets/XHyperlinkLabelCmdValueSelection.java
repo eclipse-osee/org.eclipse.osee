@@ -83,7 +83,9 @@ public abstract class XHyperlinkLabelCmdValueSelection extends XWidget {
 
       Composite comp = new Composite(parent, SWT.NONE);
       comp.setLayout(ALayout.getZeroMarginLayout(5, false));
-      comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+      gd.horizontalSpan = horizontalSpan;
+      comp.setLayoutData(gd);
 
       // Create Text Widgets
       if (isDisplayLabel() && !getLabel().equals("")) {
@@ -91,6 +93,9 @@ public abstract class XHyperlinkLabelCmdValueSelection extends XWidget {
          labelWidget.setText(getLabel() + ":");
          if (getToolTip() != null) {
             labelWidget.setToolTipText(getToolTip());
+         }
+         if (toolkit != null) {
+            toolkit.adapt(labelWidget, true, true);
          }
       }
       if (toolkit == null) {
