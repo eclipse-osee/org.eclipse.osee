@@ -117,8 +117,8 @@ public class ConvertAtsFor097Database extends XNavigateItemAction {
          Collection<Artifact> artifacts = ArtifactQuery.getArtifactListFromIds(artIdList, AtsUtil.getAtsBranch());
          elapsedTime.end();
          count += artifacts.size();
-         convertWorkPageDefinitions(artifacts, transaction);
-         convertWorkflowArtifacts(artifacts, transaction);
+         convertWorkPageDefinitions(testNameToResultsMap, artifacts, transaction);
+         convertWorkflowArtifacts(testNameToResultsMap, artifacts, transaction);
          if (monitor != null) {
             monitor.worked(1);
          }
@@ -139,15 +139,15 @@ public class ConvertAtsFor097Database extends XNavigateItemAction {
       }
    }
 
-   private void convertWorkflowArtifacts(Collection<Artifact> artifacts, SkynetTransaction transaction) {
+   public static void convertWorkflowArtifacts(HashCollection<String, String> testNameToResultsMap, Collection<Artifact> artifacts, SkynetTransaction transaction) {
       for (Artifact artifact : artifacts) {
          try {
             if (artifact.isOfType(AtsArtifactTypes.StateMachineArtifact)) {
                AbstractWorkflowArtifact aba = (AbstractWorkflowArtifact) artifact;
-               setCurrentStateType(aba);
-               setCompletedAttributes(aba);
-               setCancelledAttributes(aba);
-               setCreatedAttributes(aba);
+               setCurrentStateType(testNameToResultsMap, aba);
+               setCompletedAttributes(testNameToResultsMap, aba);
+               setCancelledAttributes(testNameToResultsMap, aba);
+               setCreatedAttributes(testNameToResultsMap, aba);
                if (aba.isDirty()) {
                   aba.persist(transaction);
                }
@@ -159,7 +159,7 @@ public class ConvertAtsFor097Database extends XNavigateItemAction {
       }
    }
 
-   private void setCreatedAttributes(AbstractWorkflowArtifact aba) throws OseeCoreException {
+   private static void setCreatedAttributes(HashCollection<String, String> testNameToResultsMap, AbstractWorkflowArtifact aba) throws OseeCoreException {
       if (aba.getSoleAttributeValueAsString(AtsAttributeTypes.CreatedBy, null) == null) {
          aba.setSoleAttributeValue(AtsAttributeTypes.CreatedBy, aba.getLog().internalGetOriginator().getUserId());
          aba.setSoleAttributeValue(AtsAttributeTypes.CreatedDate, aba.getLog().internalGetCreationDate());
@@ -168,7 +168,7 @@ public class ConvertAtsFor097Database extends XNavigateItemAction {
       }
    }
 
-   private void setCancelledAttributes(AbstractWorkflowArtifact aba) throws OseeCoreException {
+   private static void setCancelledAttributes(HashCollection<String, String> testNameToResultsMap, AbstractWorkflowArtifact aba) throws OseeCoreException {
       if (aba.getCurrentStateName().equals(TeamState.Cancelled.name()) && aba.getSoleAttributeValueAsString(
          AtsAttributeTypes.CancelledBy, null) == null) {
          LogItem item = aba.getLog().internalGetCancelledLogItem();
@@ -181,7 +181,7 @@ public class ConvertAtsFor097Database extends XNavigateItemAction {
       }
    }
 
-   private void setCompletedAttributes(AbstractWorkflowArtifact aba) throws OseeCoreException {
+   private static void setCompletedAttributes(HashCollection<String, String> testNameToResultsMap, AbstractWorkflowArtifact aba) throws OseeCoreException {
       if (aba.getCurrentStateName().equals(TeamState.Completed.name()) && aba.getSoleAttributeValueAsString(
          AtsAttributeTypes.CompletedBy, null) == null) {
          LogItem item = aba.getLog().internalGetCompletedLogItem();
@@ -193,7 +193,7 @@ public class ConvertAtsFor097Database extends XNavigateItemAction {
       }
    }
 
-   private void setCurrentStateType(AbstractWorkflowArtifact aba) throws OseeCoreException {
+   private static void setCurrentStateType(HashCollection<String, String> testNameToResultsMap, AbstractWorkflowArtifact aba) throws OseeCoreException {
       if (aba.getSoleAttributeValueAsString(AtsAttributeTypes.CurrentStateType, null) == null) {
          if (aba.getCurrentStateName().equals("Completed")) {
             aba.setSoleAttributeValue(AtsAttributeTypes.CurrentStateType, WorkPageType.Completed.name());
@@ -207,7 +207,7 @@ public class ConvertAtsFor097Database extends XNavigateItemAction {
       }
    }
 
-   private void convertWorkPageDefinitions(Collection<Artifact> artifacts, SkynetTransaction transaction) {
+   public static void convertWorkPageDefinitions(HashCollection<String, String> testNameToResultsMap, Collection<Artifact> artifacts, SkynetTransaction transaction) {
       for (Artifact artifact : artifacts) {
          try {
             if (artifact.isOfType(CoreArtifactTypes.WorkPageDefinition)) {

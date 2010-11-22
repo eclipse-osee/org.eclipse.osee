@@ -46,6 +46,7 @@ import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.ConvertAtsFor097Database;
 import org.eclipse.osee.ats.util.TeamState;
 import org.eclipse.osee.ats.world.WorldXNavigateItemAction;
 import org.eclipse.osee.framework.core.data.SystemUser;
@@ -176,6 +177,13 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          Collection<Artifact> artifacts = ArtifactQuery.getArtifactListFromIds(artIdList, AtsUtil.getAtsBranch());
          elapsedTime.end();
          count += artifacts.size();
+
+         // Remove this after 0.9.7 release and last sync
+         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Convert ATS for 097 Release");
+         ConvertAtsFor097Database.convertWorkPageDefinitions(testNameToResultsMap, artifacts, transaction);
+         ConvertAtsFor097Database.convertWorkflowArtifacts(testNameToResultsMap, artifacts, transaction);
+         transaction.execute();
+
          testArtifactIds(artifacts);
          testAtsAttributeValues(artifacts);
          testAtsActionsHaveTeamWorkflow(artifacts);
