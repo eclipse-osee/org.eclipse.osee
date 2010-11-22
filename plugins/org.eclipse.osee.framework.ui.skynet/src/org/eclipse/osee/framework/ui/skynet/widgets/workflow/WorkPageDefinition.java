@@ -93,10 +93,7 @@ public class WorkPageDefinition extends WorkItemWithChildrenDefinition implement
       // Only store start page if it's part of this definition
       if (pageName != null) {
          art.setSoleAttributeFromString(CoreAttributeTypes.WorkPageName, pageName);
-         System.err.println("remove this once types imported");
-         if (art.isAttributeTypeValid(CoreAttributeTypes.WorkPageType)) {
-            art.setSoleAttributeFromString(CoreAttributeTypes.WorkPageType, workPageType.name());
-         }
+         art.setSoleAttributeFromString(CoreAttributeTypes.WorkPageType, workPageType.name());
       }
       return art;
    }
