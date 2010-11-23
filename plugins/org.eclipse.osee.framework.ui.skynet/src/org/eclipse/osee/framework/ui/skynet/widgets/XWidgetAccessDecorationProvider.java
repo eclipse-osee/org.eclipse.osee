@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
+import java.util.Collections;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.access.PermissionStatus;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -53,7 +53,7 @@ public class XWidgetAccessDecorationProvider implements XWidgetDecorator.Decorat
          try {
             Artifact artifact = attributeWidget.getArtifact();
             permissionStatus =
-               policyHandlerService.hasAttributeTypePermission(Collections.asCollection(artifact), attributeType,
+               policyHandlerService.hasAttributeTypePermission(Collections.singleton(artifact), attributeType,
                   PermissionEnum.WRITE, Level.FINE);
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
