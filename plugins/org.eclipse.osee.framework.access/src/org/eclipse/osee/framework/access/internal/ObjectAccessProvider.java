@@ -15,10 +15,8 @@ import org.eclipse.osee.framework.access.IAccessProvider;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
-import org.eclipse.osee.framework.core.model.RelationTypeSide;
 import org.eclipse.osee.framework.core.model.access.AccessData;
 import org.eclipse.osee.framework.core.model.access.AccessDetail;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -45,10 +43,6 @@ public class ObjectAccessProvider implements IAccessProvider {
             Artifact artifactB = relation.getArtifactB();
             setArtifactAccessData(userArtifact, artifactA, accessData);
             setArtifactAccessData(userArtifact, artifactB, accessData);
-         } else if (object instanceof RelationTypeSide) {
-            // Do Nothing
-         } else {
-            throw new OseeStateException("Unhandled object type for access control [%s]", object);
          }
       }
    }
