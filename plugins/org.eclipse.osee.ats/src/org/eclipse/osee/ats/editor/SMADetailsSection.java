@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.framework.core.data.AccessContextId;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.services.CmAccessControl;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -88,8 +89,14 @@ public class SMADetailsSection extends SectionPart {
       }
 
       if (Widgets.isAccessible(formText)) {
+         AbstractWorkflowArtifact workflow = editor.getSma();
+
          try {
-            formText.setText(Artifacts.getDetailsFormText(getSMADetails(editor.getSma())), true, true);
+            Map<String, String> smaDetails = Artifacts.getDetailsKeyValues(workflow);
+            addSMADetails(workflow, smaDetails);
+
+            String formattedDetails = Artifacts.getDetailsFormText(smaDetails);
+            formText.setText(formattedDetails, true, true);
          } catch (Exception ex) {
             formText.setText(Lib.exceptionToString(ex), false, false);
          }
@@ -97,8 +104,7 @@ public class SMADetailsSection extends SectionPart {
       }
    }
 
-   private Map<String, String> getSMADetails(AbstractWorkflowArtifact workflow) throws OseeCoreException {
-      Map<String, String> details = Artifacts.getDetailsKeyValues(workflow);
+   private void addSMADetails(AbstractWorkflowArtifact workflow, Map<String, String> details) throws OseeCoreException {
       details.put("Workflow Definition", workflow.getWorkDefinition().getName());
       if (workflow.getParentActionArtifact() != null) {
          details.put("Action Id", workflow.getParentActionArtifact().getHumanReadableId());
@@ -107,31 +113,41 @@ public class SMADetailsSection extends SectionPart {
          details.put("Parent Team Workflow Id", workflow.getParentTeamWorkflow().getHumanReadableId());
       }
       if (workflow.isOfType(AtsArtifactTypes.TeamWorkflow)) {
-         details.put("Access Context Id", getAccessContextId(workflow));
+         details.put("Working Branch Access Context Id", getAccessContextId((TeamWorkFlowArtifact) workflow));
       }
-      return details;
    }
 
-   private String getAccessContextId(AbstractWorkflowArtifact workflow) {
-      String message = null;
-      try {
-         CmAccessControl accessControl = workflow.getAccessControl();
-         if (accessControl == null) {
-            message = "AtsCmAccessControlService not started";
-         } else {
-            Collection<? extends AccessContextId> ids = accessControl.getContextId(UserManager.getUser(), this);
-            message = ids.toString();
+   private String getAccessContextId(TeamWorkFlowArtifact workflow) {
+      String message;
+      CmAccessControl accessControl = workflow.getAccessControl();
+      if (accessControl == null) {
+         message = "AtsCmAccessControlService not found.";
+      } else {
+         Branch workingBranch = null;
+         try {
+            workingBranch = workflow.getWorkingBranch();
+         } catch (Exception ex) {
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          }
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-         message = String.format("Error getting context id [%s]", ex.getMessage());
+         if (workingBranch == null) {
+            message = "No working branch";
+         } else {
+            try {
+               Collection<? extends AccessContextId> ids =
+                  accessControl.getContextId(UserManager.getUser(), workingBranch);
+               message = ids.toString();
+            } catch (Exception ex) {
+               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+               message = String.format("Error getting context id [%s]", ex.getMessage());
+            }
+         }
       }
       return message;
    }
 
    @Override
    public void dispose() {
-      if (formText != null && !formText.isDisposed()) {
+      if (Widgets.isAccessible(formText)) {
          formText.dispose();
       }
       super.dispose();

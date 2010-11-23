@@ -14,7 +14,6 @@ package org.eclipse.osee.ats.internal;
 import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.util.AtsNotifyUsers;
 import org.eclipse.osee.ats.util.AtsPreSaveCacheRemoteEventHandler;
-import org.eclipse.osee.framework.core.services.CmAccessControl;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.core.util.ServiceDependencyTracker;
 import org.eclipse.osee.framework.plugin.core.IActionReportingService;
@@ -31,11 +30,9 @@ import org.osgi.framework.ServiceRegistration;
 public class AtsPlugin implements BundleActivator {
    public static final String PLUGIN_ID = "org.eclipse.osee.ats";
 
-   private static AtsPlugin pluginInstance = new AtsPlugin();
    private ServiceRegistration service1;
    private ServiceRegistration service2;
    private ServiceDependencyTracker tracker;
-   private AtsCmAccessControlRegHandler cmAccessHandler;
 
    public AtsPlugin() {
       super();
@@ -50,8 +47,7 @@ public class AtsPlugin implements BundleActivator {
          context.registerService(IActionReportingService.class.getName(), new AtsActionReportingServiceImpl(), null);
       service2 = context.registerService(IOseeCmService.class.getName(), new OseeAtsServiceImpl(), null);
 
-      cmAccessHandler = new AtsCmAccessControlRegHandler();
-      tracker = new ServiceDependencyTracker(context, cmAccessHandler);
+      tracker = new ServiceDependencyTracker(context, new AtsCmAccessControlRegHandler());
       tracker.open();
    }
 
@@ -60,17 +56,6 @@ public class AtsPlugin implements BundleActivator {
       OsgiUtil.close(tracker);
       OsgiUtil.close(service1);
       OsgiUtil.close(service2);
-   }
-
-   public static AtsPlugin getInstance() {
-      return pluginInstance;
-   }
-
-   public CmAccessControl getCmService() {
-      if (cmAccessHandler == null) {
-         return null;
-      }
-      return cmAccessHandler.getCmService();
    }
 
 }

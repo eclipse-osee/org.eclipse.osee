@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.ats.artifact.log.ArtifactLog;
 import org.eclipse.osee.ats.artifact.log.AtsLog;
 import org.eclipse.osee.ats.artifact.log.LogItem;
@@ -50,7 +51,6 @@ import org.eclipse.osee.ats.workflow.item.AtsStatePercentCompleteWeightRule;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.access.AccessControlManager;
-import org.eclipse.osee.framework.core.data.AccessContextId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
@@ -80,6 +80,9 @@ import org.eclipse.osee.framework.ui.skynet.group.IGroupExplorerProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkPage;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageType;
 import org.eclipse.swt.graphics.Image;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 
 /**
  * @author Donald G. Dunne
@@ -1113,35 +1116,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return "";
    }
 
-   public Map<String, String> getSMADetails() throws OseeCoreException {
-      Map<String, String> details = Artifacts.getDetailsKeyValues(this);
-      details.put("Workflow Definition", getWorkFlowDefinition().getName());
-      if (getParentActionArtifact() != null) {
-         details.put("Action Id", getParentActionArtifact().getHumanReadableId());
-      }
-      if (!(this instanceof TeamWorkFlowArtifact) && getParentTeamWorkflow() != null) {
-         details.put("Parent Team Workflow Id", getParentTeamWorkflow().getHumanReadableId());
-      }
-      if (this.isOfType(AtsArtifactTypes.TeamWorkflow)) {
-         String message = null;
-         CmAccessControl accessControl = getAccessControl();
-         if (accessControl != null) {
-            Branch workingBranch = ((TeamWorkFlowArtifact) this).getWorkingBranch();
-            if (workingBranch == null) {
-               message = "No working branch == no context id";
-            } else {
-               Collection<? extends AccessContextId> ids =
-                  accessControl.getContextId(UserManager.getUser(), workingBranch);
-               message = "Working branch context ids = " + ids.toString();
-            }
-         } else {
-            message = "AtsCmAccessControlService not started";
-         }
-         details.put("Access Context Id", message);
-      }
-      return details;
-   }
-
    protected void addPriviledgedUsersUpTeamDefinitionTree(TeamDefinitionArtifact tda, Set<User> users) throws OseeCoreException {
       users.addAll(tda.getLeads());
       users.addAll(tda.getPrivilegedMembers());
@@ -1154,7 +1128,10 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    @Override
    public CmAccessControl getAccessControl() {
-      return AtsPlugin.getInstance().getCmService();
+      Bundle bundle = Platform.getBundle(AtsPlugin.PLUGIN_ID);
+      BundleContext context = bundle.getBundleContext();
+      ServiceReference reference = context.getServiceReference(CmAccessControl.class.getName());
+      return (CmAccessControl) context.getService(reference);
    }
 
    public boolean isTargetedErrorLogged() {
