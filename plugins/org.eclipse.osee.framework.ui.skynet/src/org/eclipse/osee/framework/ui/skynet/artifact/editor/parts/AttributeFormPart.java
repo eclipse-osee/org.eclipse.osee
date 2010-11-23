@@ -70,6 +70,14 @@ public class AttributeFormPart extends AbstractFormPart {
    private final XWidgetDecorator decorator = new XWidgetDecorator();
    private final Map<IAttributeType, Composite> xWidgetsMap = new HashMap<IAttributeType, Composite>();
 
+   private final XModifiedListener widgetModifiedListener = new XModifiedListener() {
+
+      @Override
+      public void widgetModified(XWidget widget) {
+         editor.onDirtied();
+      }
+   };
+
    public AttributeFormPart(ArtifactEditor editor) {
       this.editor = editor;
       try {
@@ -102,8 +110,6 @@ public class AttributeFormPart extends AbstractFormPart {
          addWidgetForAttributeType(types);
 
          layoutControls(composite);
-
-         decorator.refresh();
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, "Unable to access attribute types", ex);
       } finally {
@@ -234,13 +240,6 @@ public class AttributeFormPart extends AbstractFormPart {
 
       return expandable;
    }
-   private final XModifiedListener widgetModifiedListener = new XModifiedListener() {
-
-      @Override
-      public void widgetModified(XWidget widget) {
-         editor.onDirtied();
-      }
-   };
 
    @Override
    public void commit(boolean onSave) {
@@ -274,6 +273,13 @@ public class AttributeFormPart extends AbstractFormPart {
       refresh();
    }
 
+   public void removeWidgetForAttributeType(Collection<? extends IAttributeType> attributeTypes) {
+      for (IAttributeType attributeType : attributeTypes) {
+         xWidgetsMap.remove(attributeType).dispose();
+      }
+      refresh();
+   }
+
    private final class XWidgetValidationListener implements XModifiedListener {
 
       @Override
@@ -295,12 +301,5 @@ public class AttributeFormPart extends AbstractFormPart {
             }
          }
       }
-   }
-
-   public void removeWidgetForAttributeType(Collection<IAttributeType> attributeTypes) {
-      for (IAttributeType attributeType : attributeTypes) {
-         xWidgetsMap.remove(attributeType).dispose();
-      }
-      refresh();
    }
 }
