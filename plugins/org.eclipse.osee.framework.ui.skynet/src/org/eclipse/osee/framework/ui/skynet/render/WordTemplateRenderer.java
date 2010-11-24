@@ -14,6 +14,7 @@ package org.eclipse.osee.framework.ui.skynet.render;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERALIZED_EDIT;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERAL_REQUESTED;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.SPECIALIZED_EDIT;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,7 +22,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+
 import javax.xml.namespace.QName;
+
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -172,9 +175,10 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
 
          if (presentationType == PresentationType.SPECIALIZED_EDIT || presentationType == PresentationType.MERGE_EDIT) {
             OseeLinkBuilder linkBuilder = new OseeLinkBuilder();
-            wordMl.addEditParagraphNoEscape(linkBuilder.getStartEditBookmark(artifact.getGuid()));
+            wordMl.addEditParagraphNoEscape(linkBuilder.getStartEditImage(artifact.getGuid()));
             wordMl.addWordMl(value);
-            wordMl.addEditParagraphNoEscape(linkBuilder.getEndEditBookmark(artifact.getGuid()));
+            wordMl.addEditParagraphNoEscape(linkBuilder.getEndEditImage(artifact.getGuid()));
+
          } else {
             wordMl.addWordMl(value);
          }

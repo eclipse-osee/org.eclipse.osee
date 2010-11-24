@@ -51,7 +51,7 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.preferences.MsWordPreferencePage;
 import org.eclipse.osee.framework.ui.skynet.render.artifactElement.IElementExtractor;
 import org.eclipse.osee.framework.ui.skynet.render.artifactElement.MergeEditArtifactElementExtractor;
-import org.eclipse.osee.framework.ui.skynet.render.artifactElement.WordArtifactElementExtractor;
+import org.eclipse.osee.framework.ui.skynet.render.artifactElement.WordImageArtifactElementExtractor;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
@@ -95,7 +95,7 @@ public class UpdateArtifactOperation extends AbstractOperation {
                processSingleEdit(artifact);
             }
          } else if (multiEditMatcher.matches()) {
-            WordArtifactElementExtractor elementExtractor = new WordArtifactElementExtractor(extractJaxpDocument());
+        	 WordImageArtifactElementExtractor elementExtractor = new WordImageArtifactElementExtractor(extractJaxpDocument());
             processMultiEdit(elementExtractor, branch);
          }
       }
@@ -122,7 +122,7 @@ public class UpdateArtifactOperation extends AbstractOperation {
 
    private void processSingleEdit(Artifact artifact) throws OseeCoreException, ParserConfigurationException, SAXException, IOException {
       if (artifact.isAttributeTypeValid(CoreAttributeTypes.WordTemplateContent)) {
-         WordArtifactElementExtractor elementExtractor = new WordArtifactElementExtractor(extractJaxpDocument());
+    	  WordImageArtifactElementExtractor elementExtractor = new WordImageArtifactElementExtractor(extractJaxpDocument());
          wordArtifactUpdate(elementExtractor, artifact.getBranch());
       } else {
          processNativeDocuments(artifact);

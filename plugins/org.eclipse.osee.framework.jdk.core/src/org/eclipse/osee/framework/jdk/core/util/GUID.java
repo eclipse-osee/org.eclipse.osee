@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.jdk.core.util;
 
 import java.io.UnsupportedEncodingException;
 import java.util.regex.Pattern;
+
 import org.apache.commons.codec.binary.Base64;
 
 /**
@@ -19,6 +20,7 @@ import org.apache.commons.codec.binary.Base64;
  * @author Robert A. Fisher
  */
 public class GUID {
+	//Note: We can not allow periods in GUID. The update edit logic makes assumptions that there will be no periods.
    private final static Pattern pattern = Pattern.compile("[0-9A-Za-z\\+_=]{20,22}");
 
    private static final ThreadLocal<byte[]> threadLocalBytes = new ThreadLocal<byte[]>() {

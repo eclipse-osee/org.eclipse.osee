@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.linking.OseeLinkBuilder;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
@@ -212,7 +213,7 @@ public class WordArtifactElementExtractor implements IElementExtractor {
    }
 
    private void populateNewArtifactElementFromBookmark(Element newArtifactElement, Element element, OseeLinkBuilder linkBuilder) throws DOMException {
-      newArtifactElement.setAttribute("guid", linkBuilder.extractGuid(element));
+//      newArtifactElement.setAttribute("guid", linkBuilder.extractEditGuid(element));
    }
 
    private boolean isArtifactEditTag(Element element) {
@@ -231,7 +232,7 @@ public class WordArtifactElementExtractor implements IElementExtractor {
    }
 
    private boolean properLevelChild(Element element) {
-      return properLevelChildWord2003(element) || properLevelChildWord2007(element);
+      return (properLevelChildWord2003(element) || properLevelChildWord2007(element));
    }
 
    private void handleImages(Element element) {
@@ -285,7 +286,7 @@ public class WordArtifactElementExtractor implements IElementExtractor {
          grandParentName.equals(BODY_TAG) && parentName.equals(SECTION_TAG) && !myName.equals(SUB_SECTION_TAG);
       boolean subsectionChild = parentName.equals(SUB_SECTION_TAG) && !myName.equals(SUB_SECTION_TAG);
 
-      return nonSubsectionBodyChild || sectionChild || subsectionChild;
+      return (nonSubsectionBodyChild || sectionChild || subsectionChild);
    }
 
    private boolean properLevelChildWord2007(Element element) {

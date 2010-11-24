@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
@@ -176,11 +177,11 @@ public class WordMLProducer extends Producer {
       append("<w:p>");
    }
 
-   public void startSection() throws OseeCoreException {
+   public void startSubSection() throws OseeCoreException {
       append("<wx:sect>");
    }
 
-   public void endSection() throws OseeCoreException {
+   public void endSubSection() throws OseeCoreException {
       append("</wx:sect>");
    }
 

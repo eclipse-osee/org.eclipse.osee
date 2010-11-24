@@ -85,7 +85,7 @@ public class WordEditTest {
 
       String testData = getExpectedContent();
       Assert.assertNotNull(testData);
-      String expected = testData.replaceAll("###ART_GUID###", artifact.getGuid());
+      String expected = replaceGuidMarkers(testData, artifact.getGuid());
 
       FileSystemRenderer renderer = new WordTemplateRenderer();
 
@@ -94,7 +94,6 @@ public class WordEditTest {
       writeNewContentAndWaitForSave(artifact, editFile, expected);
 
       String actual = getRenderedStoredContent(renderer, artifact);
-
       Assert.assertEquals(expected, actual);
       TestUtil.severeLoggingEnd(monitorLog);
    }
@@ -107,7 +106,7 @@ public class WordEditTest {
 
       String testData = getExpectedContent();
       Assert.assertNotNull(testData);
-      String expected = testData.replaceAll("###ART_GUID###", artifact.getGuid());
+      String expected = replaceGuidMarkers(testData, artifact.getGuid());
 
       FileSystemRenderer renderer = RendererManager.getBestFileRenderer(PresentationType.SPECIALIZED_EDIT, artifact);
 
@@ -116,9 +115,15 @@ public class WordEditTest {
       writeNewContentAndWaitForSave(artifact, editFile, expected);
 
       String actual = getRenderedStoredContent(renderer, artifact);
-
       Assert.assertEquals(expected, actual);
       TestUtil.severeLoggingEnd(monitorLog);
+   }
+
+   private static String replaceGuidMarkers(String data, String guid) {
+      String expected = data.replaceAll("###ART_GUID###", guid);
+      expected = expected.replaceAll("###TAG_GUID_START###", guid + "_START.jpg");
+      expected = expected.replaceAll("###TAG_GUID_END###", guid + "_END.jpg");
+      return expected;
    }
 
    private static IFile openArtifactForEdit(FileSystemRenderer renderer, Artifact artifact) throws OseeCoreException {
@@ -129,15 +134,18 @@ public class WordEditTest {
    }
 
    private static void writeNewContentAndWaitForSave(Artifact artifact, IFile editFile, String content) throws UnsupportedEncodingException, CoreException, InterruptedException {
+      boolean eventBoolean = OseeEventManager.isDisableEvents();
       UpdateArtifactListener listener = new UpdateArtifactListener(EventModType.Modified, artifact);
       OseeEventManager.addListener(listener);
+      OseeEventManager.setDisableEvents(false);
       try {
          editFile.setContents(new ByteArrayInputStream(content.getBytes("UTF-8")), IResource.FORCE,
             new NullProgressMonitor());
          synchronized (listener) {
-            listener.wait(10000);
+            listener.wait(20000);
          }
       } finally {
+         OseeEventManager.setDisableEvents(eventBoolean);
          OseeEventManager.removeListener(listener);
       }
       Assert.assertTrue("Update Event was not received", listener.wasUpdateReceived());
