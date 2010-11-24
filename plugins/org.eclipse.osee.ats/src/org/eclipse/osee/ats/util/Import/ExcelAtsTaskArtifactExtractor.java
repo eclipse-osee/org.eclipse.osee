@@ -145,56 +145,52 @@ public class ExcelAtsTaskArtifactExtractor {
       }
 
       @Override
-      public void processRow(String[] row) {
-         try {
-            rowNum++;
-            monitor.setTaskName("Processing Row " + rowNum);
-            TaskArtifact taskArt = ((AbstractTaskableArtifact) sma).createNewTask("", createdDate, createdBy);
+      public void processRow(String[] row) throws OseeCoreException {
+         rowNum++;
+         monitor.setTaskName("Processing Row " + rowNum);
+         TaskArtifact taskArt = ((AbstractTaskableArtifact) sma).createNewTask("", createdDate, createdBy);
 
-            monitor.subTask("Validating...");
-            boolean valid = validateRow(row);
-            if (!valid) {
-               return;
+         monitor.subTask("Validating...");
+         boolean valid = validateRow(row);
+         if (!valid) {
+            return;
+         }
+         AtsUtil.setEmailEnabled(false);
+         for (int i = 0; i < row.length; i++) {
+            if (headerRow[i] == null) {
+               OseeLog.log(AtsPlugin.class, Level.SEVERE, "Null header column => " + i);
+            } else if (headerRow[i].equalsIgnoreCase("Originator")) {
+               processOriginator(row, taskArt, i);
+            } else if (headerRow[i].equalsIgnoreCase("Assignees")) {
+               processAssignees(row, taskArt, i);
+            } else if (headerRow[i].equalsIgnoreCase("Resolution")) {
+               processResolution(row, taskArt, i);
+            } else if (headerRow[i].equalsIgnoreCase("Description")) {
+               processDescription(row, taskArt, i);
+            } else if (headerRow[i].equalsIgnoreCase("Related to State")) {
+               processRelatedToState(row, taskArt, i);
+            } else if (headerRow[i].equalsIgnoreCase("Notes")) {
+               processNotes(row, taskArt, i);
+            } else if (headerRow[i].equalsIgnoreCase("Title")) {
+               processTitle(row, taskArt, i);
+            } else if (headerRow[i].equalsIgnoreCase("Percent Complete")) {
+               processPercentComplete(row, i);
+            } else if (headerRow[i].equalsIgnoreCase("Hours Spent")) {
+               processHoursSpent(row, i);
+            } else if (headerRow[i].equalsIgnoreCase("Estimated Hours")) {
+               processEstimatedHours(row, taskArt, i);
+            } else {
+               OseeLog.log(AtsPlugin.class, Level.SEVERE, "Unhandled column => " + headerRow[i]);
             }
-            AtsUtil.setEmailEnabled(false);
-            for (int i = 0; i < row.length; i++) {
-               if (headerRow[i] == null) {
-                  OseeLog.log(AtsPlugin.class, Level.SEVERE, "Null header column => " + i);
-               } else if (headerRow[i].equalsIgnoreCase("Originator")) {
-                  processOriginator(row, taskArt, i);
-               } else if (headerRow[i].equalsIgnoreCase("Assignees")) {
-                  processAssignees(row, taskArt, i);
-               } else if (headerRow[i].equalsIgnoreCase("Resolution")) {
-                  processResolution(row, taskArt, i);
-               } else if (headerRow[i].equalsIgnoreCase("Description")) {
-                  processDescription(row, taskArt, i);
-               } else if (headerRow[i].equalsIgnoreCase("Related to State")) {
-                  processRelatedToState(row, taskArt, i);
-               } else if (headerRow[i].equalsIgnoreCase("Notes")) {
-                  processNotes(row, taskArt, i);
-               } else if (headerRow[i].equalsIgnoreCase("Title")) {
-                  processTitle(row, taskArt, i);
-               } else if (headerRow[i].equalsIgnoreCase("Percent Complete")) {
-                  processPercentComplete(row, i);
-               } else if (headerRow[i].equalsIgnoreCase("Hours Spent")) {
-                  processHoursSpent(row, i);
-               } else if (headerRow[i].equalsIgnoreCase("Estimated Hours")) {
-                  processEstimatedHours(row, taskArt, i);
-               } else {
-                  OseeLog.log(AtsPlugin.class, Level.SEVERE, "Unhandled column => " + headerRow[i]);
-               }
-            }
-            AtsUtil.setEmailEnabled(true);
-            if (taskArt.isCompleted()) {
-               taskArt.transitionToCompleted(0, transaction, TransitionOption.None);
-            }
-            // always persist
-            taskArt.persist(transaction);
-            if (emailPOCs && !taskArt.isCompleted() && !taskArt.isCancelled()) {
-               AtsNotifyUsers.getInstance().notify(sma, AtsNotifyUsers.NotifyType.Assigned);
-            }
-         } catch (OseeCoreException ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         }
+         AtsUtil.setEmailEnabled(true);
+         if (taskArt.isCompleted()) {
+            taskArt.transitionToCompleted(0, transaction, TransitionOption.None);
+         }
+         // always persist
+         taskArt.persist(transaction);
+         if (emailPOCs && !taskArt.isCompleted() && !taskArt.isCancelled()) {
+            AtsNotifyUsers.getInstance().notify(sma, AtsNotifyUsers.NotifyType.Assigned);
          }
       }
 

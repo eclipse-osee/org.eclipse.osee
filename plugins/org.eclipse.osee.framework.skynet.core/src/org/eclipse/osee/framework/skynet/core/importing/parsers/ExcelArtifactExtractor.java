@@ -139,17 +139,13 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
       }
 
       @Override
-      public void processRow(String[] row) {
+      public void processRow(String[] row) throws OseeArgumentException {
          rowCount++;
          if (importingRelations) {
             String guida = null;
             String guidb = null;
-            try {
-               guida = getGuid(row[1]);
-               guidb = getGuid(row[2]);
-            } catch (Exception ex) {
-               throw new IllegalStateException(ex);
-            }
+            guida = getGuid(row[1]);
+            guidb = getGuid(row[2]);
 
             if (guida == null || guidb == null) {
                OseeLog.log(Activator.class, Level.WARNING,
@@ -162,7 +158,7 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
                if (headerRow[i] != null) {
                   if (headerRow[i].equalsIgnoreCase("Outline Number")) {
                      if (row[i] == null) {
-                        throw new IllegalArgumentException("Outline Number must not be blank");
+                        throw new OseeArgumentException("Outline Number must not be blank");
                      }
                      roughArtifact.setSectionNumber(row[i]);
                   } else if (headerRow[i].equalsIgnoreCase("GUID")) {

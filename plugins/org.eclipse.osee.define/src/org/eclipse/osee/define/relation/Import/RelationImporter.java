@@ -14,18 +14,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.define.DefinePlugin;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.xml.sax.InputSource;
@@ -59,45 +57,31 @@ public class RelationImporter implements RowProcessor {
    }
 
    @Override
-   public void processRow(String[] row) {
+   public void processRow(String[] row) throws OseeCoreException {
       if (done) {
          return;
       }
-      try {
-         monitor.worked(1);
-         Collection<Artifact> artifacts =
-            ArtifactQuery.getArtifactListFromTypeAndAttribute(CoreArtifactTypes.SubsystemRequirement,
-               CoreAttributeTypes.ParagraphNumber, row[1], branch);
+      monitor.worked(1);
+      Collection<Artifact> artifacts =
+         ArtifactQuery.getArtifactListFromTypeAndAttribute(CoreArtifactTypes.SubsystemRequirement,
+            CoreAttributeTypes.ParagraphNumber, row[1], branch);
 
-         Artifact rowArtifact;
-         try {
-            rowArtifact = getSoleArtifact(artifacts);
-         } catch (IllegalArgumentException ex) {
-            OseeLog.log(DefinePlugin.class, Level.SEVERE, ex);
-            return;
-         }
+      Artifact rowArtifact = getSoleArtifact(artifacts);
 
-         if (rowArtifact == null) {
-            System.out.println("Skipping " + row[0] + " becuase no matching artifact was found");
-         } else {
-            if (!row[0].equals(rowArtifact.getName())) {
-               System.out.printf("Warning %s != %s%n", row[0], rowArtifact.getName());
+      if (!row[0].equals(rowArtifact.getName())) {
+         System.out.printf("Warning %s != %s%n", row[0], rowArtifact.getName());
+      }
+      monitor.subTask(rowArtifact.getName());
+      for (int i = 0; i < columnArtifacts.length; i++) {
+         String rationale = row[i + leadingColumnCount];
+         if (rationale != null) {
+            if (rationale.equalsIgnoreCase("x")) {
+               rationale = "";
             }
-            monitor.subTask(rowArtifact.getName());
-            for (int i = 0; i < columnArtifacts.length; i++) {
-               String rationale = row[i + leadingColumnCount];
-               if (rationale != null) {
-                  if (rationale.equalsIgnoreCase("x")) {
-                     rationale = "";
-                  }
-                  columnArtifacts[i].addRelation(RelationOrderBaseTypes.USER_DEFINED,
-                     CoreRelationTypes.Allocation__Requirement, rowArtifact, rationale);
-                  columnArtifacts[i].persist();
-               }
-            }
+            columnArtifacts[i].addRelation(RelationOrderBaseTypes.USER_DEFINED,
+               CoreRelationTypes.Allocation__Requirement, rowArtifact, rationale);
+            columnArtifacts[i].persist();
          }
-      } catch (Exception ex) {
-         OseeLog.log(DefinePlugin.class, Level.SEVERE, ex);
       }
    }
 

@@ -14,7 +14,7 @@ package org.eclipse.osee.framework.jdk.core.util.io.xml;
  * @author Ryan D. Brooks
  */
 public interface RowProcessor {
-   public abstract void processRow(String[] row);
+   public abstract void processRow(String[] row) throws Exception;
 
    public abstract void processHeaderRow(String[] row);
 

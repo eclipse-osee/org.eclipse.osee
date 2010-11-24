@@ -86,7 +86,7 @@ public class ExcelSaxHandler extends AbstractSaxHandler {
    }
 
    @Override
-   public void endElementFound(String uri, String localName, String qName) throws SAXException {
+   public void endElementFound(String uri, String localName, String qName) throws Exception {
       if (localName.equalsIgnoreCase("Data")) {
          String contentStr = getContents();
          if (!contentStr.equals(ExcelXmlWriter.blobMessage)) {

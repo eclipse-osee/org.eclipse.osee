@@ -157,7 +157,7 @@ public class RoughToRealArtifactOperation extends AbstractOperation {
             RelationManager.addRelation(importArtifactOrder, relationType, aArt, bArt, roughRelation.getRationale());
             aArt.persist(transaction);
          } catch (IllegalArgumentException ex) {
-            OseeLog.log(Activator.class, Level.WARNING, ex.getLocalizedMessage());
+            OseeLog.log(Activator.class, Level.WARNING, ex);
          }
       }
    }

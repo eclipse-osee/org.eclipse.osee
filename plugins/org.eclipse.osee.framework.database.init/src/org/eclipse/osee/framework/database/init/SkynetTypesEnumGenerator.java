@@ -18,12 +18,9 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.TreeSet;
-import java.util.logging.Level;
 import java.util.regex.Pattern;
-import org.eclipse.osee.framework.database.init.internal.DatabaseInitActivator;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -156,6 +153,7 @@ public class SkynetTypesEnumGenerator implements RowProcessor {
       return description;
    }
 
+   @Override
    public void processHeaderRow(String[] headerRow) {
       if (done) {
          return;
@@ -171,26 +169,23 @@ public class SkynetTypesEnumGenerator implements RowProcessor {
    /**
     * import Artifacts
     */
-   public void processRow(String[] row) {
+   @Override
+   public void processRow(String[] row) throws ClassNotFoundException {
       if (done) {
          return;
       }
-      try {
-         switch (currentTable) {
-            case ARTIFACT_TYPE_TABLE:
-               addArtifactType(row);
-               break;
-            case ATTRIBUTE_TYPE_TABLE:
-               addAttributeType(row);
-               break;
-            case RELATION_TYPE_TABLE:
-               addRelationType(row);
-               break;
-            default:
-               break;
-         }
-      } catch (Exception ex) {
-         OseeLog.log(DatabaseInitActivator.class, Level.SEVERE, ex);
+      switch (currentTable) {
+         case ARTIFACT_TYPE_TABLE:
+            addArtifactType(row);
+            break;
+         case ATTRIBUTE_TYPE_TABLE:
+            addAttributeType(row);
+            break;
+         case RELATION_TYPE_TABLE:
+            addRelationType(row);
+            break;
+         default:
+            break;
       }
    }
 
@@ -243,19 +238,24 @@ public class SkynetTypesEnumGenerator implements RowProcessor {
       artifacts.add(nonJavaCharP.matcher(artifactTypeName).replaceAll("_").toUpperCase() + "(\"" + artifactTypeName + "\")");
    }
 
+   @Override
    public void processEmptyRow() {
    }
 
+   @Override
    public void processCommentRow(String[] row) {
    }
 
+   @Override
    public void reachedEndOfWorksheet() {
       done = true;
    }
 
+   @Override
    public void detectedRowAndColumnCounts(int rowCount, int columnCount) {
    }
 
+   @Override
    public void foundStartOfWorksheet(String sheetName) {
       this.sheetName = nonJavaCharP.matcher(sheetName).replaceAll("_").toUpperCase();
    }
