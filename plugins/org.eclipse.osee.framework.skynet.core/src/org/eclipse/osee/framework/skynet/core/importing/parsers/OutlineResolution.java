@@ -98,8 +98,6 @@ public final class OutlineResolution {
       try {
          returnValue = Integer.parseInt(stringContainingDigit);
       } catch (NumberFormatException ex) {
-         //apparently what was passed in is not a valid number
-         //System.out.println("OutlineResolution.java: Last string had an invalid digit. Ignoring...");
          returnValue = -1;
       }
       return returnValue;

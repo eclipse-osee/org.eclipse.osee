@@ -71,7 +71,6 @@ public final class FrameworkEventToRemoteEventListener implements IFrameworkEven
 
    @Override
    public void onEvent(final RemoteEvent remoteEvent) {
-      //      System.out.println("adding to queue -> " + queue.size());
       Runnable runnable = new Runnable() {
          @Override
          public void run() {
@@ -209,7 +208,6 @@ public final class FrameworkEventToRemoteEventListener implements IFrameworkEven
             if (aArtifact == null && bArtifact == null) {
                return;
             }
-            //            System.out.println(String.format("[%s - %s <-> %s - %s]", eventType, aArtifact, bArtifact, relationType));
             boolean aArtifactLoaded = aArtifact != null;
             boolean bArtifactLoaded = bArtifact != null;
 
