@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/lba_svn/osee/!svn/ver/26054/trunk/_Documents/osee.doc/eclipseCon/2009/tutorial/OseeClient
+END
+db_init
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/lba_svn/osee/!svn/ver/26029/trunk/_Documents/osee.doc/eclipseCon/2009/tutorial/OseeClient/db_init
+END
+replace_me_with_the_update_sites.txt
+K 25
+svn:wc:ra_dav:version-url
+V 127
+/lba_svn/osee/!svn/ver/26054/trunk/_Documents/osee.doc/eclipseCon/2009/tutorial/OseeClient/replace_me_with_the_update_sites.txt
+END
+client_launch
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/lba_svn/osee/!svn/ver/26029/trunk/_Documents/osee.doc/eclipseCon/2009/tutorial/OseeClient/client_launch
+END

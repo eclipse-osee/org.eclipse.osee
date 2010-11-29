@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/lba_svn/osee/!svn/ver/26054/trunk/_Documents/osee.doc/eclipseCon/2009/tutorial/PostgreSQL
+END
+osee_db_setup_windows.bat
+K 25
+svn:wc:ra_dav:version-url
+V 116
+/lba_svn/osee/!svn/ver/26029/trunk/_Documents/osee.doc/eclipseCon/2009/tutorial/PostgreSQL/osee_db_setup_windows.bat
+END
+osee.sql
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/lba_svn/osee/!svn/ver/26029/trunk/_Documents/osee.doc/eclipseCon/2009/tutorial/PostgreSQL/osee.sql
+END
+osee_db_setup_linux.sh
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/lba_svn/osee/!svn/ver/26029/trunk/_Documents/osee.doc/eclipseCon/2009/tutorial/PostgreSQL/osee_db_setup_linux.sh
+END
+pgpass.conf
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/lba_svn/osee/!svn/ver/26029/trunk/_Documents/osee.doc/eclipseCon/2009/tutorial/PostgreSQL/pgpass.conf
+END
+pgpass_mac.conf
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/lba_svn/osee/!svn/ver/26029/trunk/_Documents/osee.doc/eclipseCon/2009/tutorial/PostgreSQL/pgpass_mac.conf
+END
+replace_me_with_postgress_installs.txt
+K 25
+svn:wc:ra_dav:version-url
+V 129
+/lba_svn/osee/!svn/ver/26054/trunk/_Documents/osee.doc/eclipseCon/2009/tutorial/PostgreSQL/replace_me_with_postgress_installs.txt
+END
+osee_db_setup_mac.sh
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/lba_svn/osee/!svn/ver/26029/trunk/_Documents/osee.doc/eclipseCon/2009/tutorial/PostgreSQL/osee_db_setup_mac.sh
+END
