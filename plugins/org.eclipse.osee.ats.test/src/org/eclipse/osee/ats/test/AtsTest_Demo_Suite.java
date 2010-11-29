@@ -34,6 +34,9 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+   AtsNavigateItemsToMassEditorTest.class,
+   AtsNavigateItemsToTaskEditorTest.class,
+   AtsNavigateItemsToWorldViewTest.class,
    AtsTest_Demo_Column_Suite.class,
    LogItemTest.class,
    AtsLogTest.class,
@@ -47,10 +50,7 @@ import org.junit.runners.Suite;
    AtsPurgeTest.class,
    AtsNotifyUsersTest.class,
    AtsBranchConfigurationTest.class,
-   AtsValidateAtsDatabaseTest.class,
-   AtsNavigateItemsToMassEditorTest.class,
-   AtsNavigateItemsToTaskEditorTest.class,
-   AtsNavigateItemsToWorldViewTest.class})
+   AtsValidateAtsDatabaseTest.class,})
 /**
  * @author Donald G. Dunne
  */

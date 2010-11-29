@@ -49,7 +49,7 @@ public class NewPeerToPeerReviewItem extends XNavigateItemAction {
             try {
                SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "New Peer To Peer Review");
                PeerToPeerReviewArtifact peerArt =
-                  ReviewManager.createNewPeerToPeerReview(null, ed.getEntry(), null, UserManager.getUser(), new Date(),
+                  ReviewManager.createNewPeerToPeerReview(null, ed.getEntry(), null, new Date(), UserManager.getUser(),
                      transaction);
                peerArt.getActionableItemsDam().setActionableItems(ld.getSelected());
                peerArt.persist(transaction);

@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.log.LogType;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
+import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -85,8 +86,8 @@ public class AtsAddPeerToPeerReviewRule extends WorkRuleDefinition {
       }
       PeerToPeerReviewArtifact peerArt =
          ReviewManager.createNewPeerToPeerReview(teamArt, title,
-            getValueOrDefault(teamArt, atsAddPeerToPeerReviewRule, PeerToPeerParameter.forState),
-            UserManager.getUser(), new Date(), transaction);
+            getValueOrDefault(teamArt, atsAddPeerToPeerReviewRule, PeerToPeerParameter.forState), new Date(),
+            UserManager.getUser(SystemUser.OseeSystem), transaction);
       String desc = getValueOrDefault(teamArt, atsAddPeerToPeerReviewRule, PeerToPeerParameter.description);
       if (Strings.isValid(desc)) {
          peerArt.setSoleAttributeFromString(AtsAttributeTypes.Description, desc);

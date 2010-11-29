@@ -199,7 +199,7 @@ public class AtsNavigateItemsToWorldViewTest {
       Collection<Artifact> arts = editor.getLoadedArtifacts();
       NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, TaskArtifact.class, DemoTestUtil.getNumTasks());
       NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, TeamWorkFlowArtifact.class, 18);
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, PeerToPeerReviewArtifact.class, 7);
+      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, PeerToPeerReviewArtifact.class, 2);
       // Only 2 decision reviews should have been created by Joe, rest are Rule reviews created by OseeSystem user
       NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, DecisionReviewArtifact.class, 2);
    }
@@ -217,9 +217,9 @@ public class AtsNavigateItemsToWorldViewTest {
       Collection<Artifact> arts = editor.getLoadedArtifacts();
       NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, TaskArtifact.class, DemoTestUtil.getNumTasks());
       NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, TeamWorkFlowArtifact.class, 25);
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, PeerToPeerReviewArtifact.class, 8);
+      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, PeerToPeerReviewArtifact.class, 2);
       NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, DecisionReviewArtifact.class, 3);
-      runGeneralXColTest(84, false);
+      runGeneralXColTest(74, false);
    }
 
    private void runGeneralUserSearchTest(XNavigateItem item, int expectedNum) throws Exception {
