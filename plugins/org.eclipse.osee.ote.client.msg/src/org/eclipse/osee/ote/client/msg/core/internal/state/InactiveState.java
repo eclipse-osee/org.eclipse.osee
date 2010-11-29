@@ -57,7 +57,7 @@ public class InactiveState extends AbstractSubscriptionState {
       } catch (Exception e) {
          OseeLog.log(ActivateState.class, Level.SEVERE, "problem releasing instance of " + getMsgClassName());
       }
-      return new UnresolvedState(instance.getMessage().getName(), this);
+      return new UnresolvedState(getMsgClassName(), this);
    }
 
    @Override
