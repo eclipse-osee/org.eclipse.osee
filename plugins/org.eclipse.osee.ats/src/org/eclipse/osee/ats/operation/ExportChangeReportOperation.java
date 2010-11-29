@@ -36,7 +36,6 @@ import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
-import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 
 /**
@@ -52,8 +51,6 @@ public class ExportChangeReportOperation extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws OseeCoreException {
-      RenderingUtil.setPopupsAllowed(false);
-
       for (Artifact workflow : workflows) {
          Collection<Change> changes = computeChanges(workflow, monitor);
          if (!changes.isEmpty() && changes.size() < 4000) {
@@ -62,7 +59,6 @@ public class ExportChangeReportOperation extends AbstractOperation {
          }
          monitor.worked(calculateWork(0.50));
       }
-      RenderingUtil.setPopupsAllowed(true);
    }
 
    private Collection<Change> computeChanges(Artifact workflow, IProgressMonitor monitor) throws OseeCoreException {
@@ -107,9 +103,12 @@ public class ExportChangeReportOperation extends AbstractOperation {
    }
 
    private void generateDiffReport(Collection<Change> changes, String legacyPcrId, IProgressMonitor monitor) throws OseeCoreException {
-      VariableMap variableMap =
-         new VariableMap(IRenderer.NO_DISPLAY, true, "diffReportFolderName", legacyPcrId, IRenderer.FILE_NAME_OPTION,
-            legacyPcrId);
+      VariableMap variableMap = new VariableMap();
+      variableMap.setValue(IRenderer.NO_DISPLAY, true);
+      variableMap.setValue("diffReportFolderName", legacyPcrId);
+      variableMap.setValue(IRenderer.FILE_NAME_OPTION, legacyPcrId);
+      variableMap.setValue(IRenderer.SKIP_DIALOGS, true);
+
       Collection<ArtifactDelta> compareArtifacts = ChangeManager.getCompareArtifacts(changes);
 
       WordTemplateRenderer renderer = new WordTemplateRenderer();

@@ -50,6 +50,7 @@ public final class WordChangeReportOperation extends AbstractOperation {
    private final boolean isSuppressWord;
    private final IAttributeType attributeType;
    private final ArtifactDeltaToFileConverter converter;
+   private final boolean skipDialogs;
    private IFolder changeReportFolder;
 
    public WordChangeReportOperation(Collection<ArtifactDelta> artifactDeltas, FileSystemRenderer renderer) throws OseeArgumentException {
@@ -61,6 +62,7 @@ public final class WordChangeReportOperation extends AbstractOperation {
 
       fileName = renderer.getStringOption(IRenderer.FILE_NAME_OPTION);
       isSuppressWord = renderer.getBooleanOption(IRenderer.NO_DISPLAY);
+      skipDialogs = renderer.getBooleanOption(IRenderer.SKIP_DIALOGS);
       this.attributeType = CoreAttributeTypes.WordTemplateContent;
    }
 
@@ -99,7 +101,7 @@ public final class WordChangeReportOperation extends AbstractOperation {
                artifacts.addAll(RenderingUtil.checkForTrackedChangesOn(artifactDelta.getEndArtifact()));
 
                if (!artifacts.isEmpty()) {
-                  if (RenderingUtil.arePopupsAllowed()) {
+                  if (RenderingUtil.arePopupsAllowed() || !skipDialogs) {
                      WordUiUtil.displayWarningMessageDialog("Diff Artifacts Warning",
                         "Detected tracked changes for some artifacts. Please refer to the results HTML report.");
                      WordUiUtil.displayTrackedChangesOnArtifacts(artifacts);
@@ -143,13 +145,15 @@ public final class WordChangeReportOperation extends AbstractOperation {
             monitor.setTaskName("Running Diff Script");
             if (RenderingUtil.arePopupsAllowed()) {
                generator.finish(baseFileStr + "/compareDocs.vbs", !isSuppressWord);
+            } else {
+               OseeLog.log(SkynetGuiPlugin.class, Level.INFO, "Test - Skipping - Compare vbs ");
             }
          }
          monitor.worked(calculateWork(0.20));
          checkForCancelledStatus(monitor);
          // Let the user know that these artifacts had tracked changes on and we are not handling them
          // Also, list these artifacts in an artifact explorer
-         if (!artifacts.isEmpty() && RenderingUtil.arePopupsAllowed()) {
+         if (!artifacts.isEmpty() && (RenderingUtil.arePopupsAllowed() || !skipDialogs)) {
             WordUiUtil.displayWarningMessageDialog("Diff Artifacts Warning",
                "Detected tracked changes for some artifacts. Please refer to the results HTML report.");
             WordUiUtil.displayTrackedChangesOnArtifacts(artifacts);

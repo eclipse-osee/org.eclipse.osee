@@ -38,6 +38,7 @@ public interface IRenderer {
 
    public static final String FILE_NAME_OPTION = "filename";
    public static final String NO_DISPLAY = "noDisplay";
+   public static final String SKIP_DIALOGS = "skipDialogs";
 
    public List<String> getCommandId(PresentationType presentationType);
 

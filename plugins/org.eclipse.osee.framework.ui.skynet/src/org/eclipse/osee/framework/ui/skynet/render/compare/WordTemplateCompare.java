@@ -15,7 +15,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -23,7 +22,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -35,17 +33,19 @@ import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
-import org.eclipse.osee.framework.ui.skynet.render.VbaWordDiffGenerator;
 import org.eclipse.osee.framework.ui.skynet.render.WordImageChecker;
 import org.eclipse.osee.framework.ui.skynet.util.WordUiUtil;
 
-public class WordTemplateCompare implements IComparator {
+public class WordTemplateCompare extends AbstractWordCompare {
    private static final IAttributeType ATTRIBUTE_TYPE = CoreAttributeTypes.WordTemplateContent;
 
-   private final FileSystemRenderer renderer;
-
    public WordTemplateCompare(FileSystemRenderer renderer) {
-      this.renderer = renderer;
+      super(renderer);
+   }
+
+   @Override
+   protected PresentationType getMergePresentationType() {
+      return PresentationType.MERGE_EDIT;
    }
 
    @Override
@@ -62,7 +62,7 @@ public class WordTemplateCompare implements IComparator {
       artifacts.addAll(RenderingUtil.checkForTrackedChangesOn(newerArtifact));
 
       if (!artifacts.isEmpty()) {
-         if (RenderingUtil.arePopupsAllowed()) {
+         if (RenderingUtil.arePopupsAllowed() || !getRenderer().getBooleanOption(IRenderer.SKIP_DIALOGS)) {
             WordUiUtil.displayWarningMessageDialog("Diff Artifacts Warning",
                "Detected tracked changes for some artifacts. Please refer to the results HTML report.");
             WordUiUtil.displayTrackedChangesOnArtifacts(artifacts);
@@ -78,8 +78,8 @@ public class WordTemplateCompare implements IComparator {
             originalValue = WordImageChecker.checkForImageDiffs(baseContent, newerContent);
          }
 
-         Pair<IFile, IFile> compareFiles =
-            new ArtifactDeltaToFileConverter(renderer).convertToFile(presentationType, artifactDelta);
+         ArtifactDeltaToFileConverter converter = new ArtifactDeltaToFileConverter(getRenderer());
+         Pair<IFile, IFile> compareFiles = converter.convertToFile(presentationType, artifactDelta);
 
          WordImageChecker.restoreOriginalValue(baseContent, originalValue);
          WordImageChecker.restoreOriginalValue(newerContent, newAnnotationValue);
@@ -88,57 +88,6 @@ public class WordTemplateCompare implements IComparator {
             presentationType);
       }
       return "";
-   }
-
-   @Override
-   public String compare(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, PresentationType presentationType) throws OseeCoreException {
-      String diffPath;
-
-      String fileName = renderer.getStringOption(IRenderer.FILE_NAME_OPTION);
-      if (!Strings.isValid(fileName)) {
-         if (baseVersion != null) {
-            String baseFileStr = baseFile.getLocation().toOSString();
-            diffPath =
-               baseFileStr.substring(0, baseFileStr.lastIndexOf(')') + 1) + " to " + (newerVersion != null ? newerVersion.getTransactionNumber() : " deleted") + baseFileStr.substring(baseFileStr.lastIndexOf(')') + 1);
-         } else {
-            String baseFileStr = newerFile.getLocation().toOSString();
-            diffPath =
-               baseFileStr.substring(0, baseFileStr.lastIndexOf('(') + 1) + "new " + baseFileStr.substring(baseFileStr.lastIndexOf('(') + 1);
-         }
-      } else {
-         IFolder folder = RenderingUtil.getRenderFolder(baseVersion.getBranch(), PresentationType.MERGE_EDIT);
-         diffPath = folder.getLocation().toOSString() + '\\' + fileName;
-      }
-
-      VbaWordDiffGenerator diffGenerator = new VbaWordDiffGenerator();
-      diffGenerator.initialize(presentationType == PresentationType.DIFF,
-         presentationType == PresentationType.MERGE_EDIT);
-
-      boolean show = !renderer.getBooleanOption(IRenderer.NO_DISPLAY);
-      if (presentationType == PresentationType.MERGE_EDIT && baseVersion != null) {
-         IFolder folder = RenderingUtil.getRenderFolder(baseVersion.getBranch(), PresentationType.MERGE_EDIT);
-         renderer.addFileToWatcher(folder, diffPath.substring(diffPath.lastIndexOf('\\') + 1));
-         diffGenerator.addComparison(baseFile, newerFile, diffPath, true);
-
-         String vbsPath = diffPath.substring(0, diffPath.lastIndexOf('\\')) + "mergeDocs.vbs";
-         if (RenderingUtil.arePopupsAllowed()) {
-            diffGenerator.finish(vbsPath, show);
-         } else {
-            OseeLog.log(SkynetGuiPlugin.class, Level.INFO,
-               String.format("Test - Skip launch of mergeDocs.vbs for [%s]", vbsPath));
-         }
-      } else {
-         diffGenerator.addComparison(baseFile, newerFile, diffPath, false);
-
-         String vbsPath = diffPath.substring(0, diffPath.lastIndexOf('\\')) + "/compareDocs.vbs";
-         if (RenderingUtil.arePopupsAllowed()) {
-            diffGenerator.finish(vbsPath, show);
-         } else {
-            OseeLog.log(SkynetGuiPlugin.class, Level.INFO,
-               String.format("Test - Skip launch of compareDocs.vbs for [%s]", vbsPath));
-         }
-      }
-      return diffPath;
    }
 
    private Attribute<String> getWordContent(Artifact artifact, IAttributeType attributeType) throws OseeCoreException {
@@ -155,7 +104,8 @@ public class WordTemplateCompare implements IComparator {
     */
    @Override
    public void compareArtifacts(IProgressMonitor monitor, PresentationType presentationType, Collection<ArtifactDelta> artifactDeltas) throws OseeCoreException {
-      IOperation operation = new WordChangeReportOperation(artifactDeltas, renderer);
+      IOperation operation = new WordChangeReportOperation(artifactDeltas, getRenderer());
       Operations.executeWorkAndCheckStatus(operation, monitor);
    }
+
 }
