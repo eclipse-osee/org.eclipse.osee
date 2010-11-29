@@ -66,7 +66,8 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
    protected void doTxWork(IProgressMonitor monitor, OseeConnection connection) throws OseeCoreException {
       this.connection = connection;
       this.monitor = monitor;
-      int numberOfChildren = databaseService.runPreparedQueryFetchObject(0, COUNT_CHILD_BRANCHES, branch.getId());
+      int numberOfChildren =
+         databaseService.runPreparedQueryFetchObject(connection, 0, COUNT_CHILD_BRANCHES, branch.getId());
       if (numberOfChildren > 0) {
          throw new OseeArgumentException("Unable to purge a branch containing children: branchId[%s]", branch.getId());
       }
