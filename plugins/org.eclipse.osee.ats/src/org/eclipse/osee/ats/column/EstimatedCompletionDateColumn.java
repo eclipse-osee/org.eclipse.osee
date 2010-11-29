@@ -37,7 +37,8 @@ public class EstimatedCompletionDateColumn extends XViewerAtsAttributeValueColum
    private EstimatedCompletionDateColumn() {
       super(AtsAttributeTypes.EstimatedCompletionDate,
          WorldXViewerFactory.COLUMN_NAMESPACE + ".estimatedCompletionDate",
-         AtsAttributeTypes.EstimatedCompletionDate.getName(), 80, SWT.LEFT, false, SortDataType.Date, true, "");
+         AtsAttributeTypes.EstimatedCompletionDate.getUnqualifiedName(), 80, SWT.LEFT, false, SortDataType.Date, true,
+         "");
    }
 
    /**

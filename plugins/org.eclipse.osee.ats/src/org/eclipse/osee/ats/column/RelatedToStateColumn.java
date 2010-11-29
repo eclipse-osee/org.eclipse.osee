@@ -44,7 +44,7 @@ public class RelatedToStateColumn extends XViewerAtsAttributeValueColumn {
 
    private RelatedToStateColumn() {
       super(AtsAttributeTypes.RelatedToState, WorldXViewerFactory.COLUMN_NAMESPACE + ".relatedToState",
-         AtsAttributeTypes.RelatedToState.getName(), 80, SWT.LEFT, false, SortDataType.String, true, "");
+         AtsAttributeTypes.RelatedToState.getUnqualifiedName(), 80, SWT.LEFT, false, SortDataType.String, true, "");
    }
 
    /**

@@ -20,7 +20,7 @@ public class ValidationRequiredColumn extends XViewerAtsAttributeValueColumn {
 
    private ValidationRequiredColumn() {
       super(AtsAttributeTypes.ValidationRequired, WorldXViewerFactory.COLUMN_NAMESPACE + ".validationRequired",
-         AtsAttributeTypes.ValidationRequired.getName(), 80, SWT.LEFT, false, SortDataType.String, false,
+         AtsAttributeTypes.ValidationRequired.getUnqualifiedName(), 80, SWT.LEFT, false, SortDataType.String, false,
          "If set, Originator will be asked to perform a review to\nensure changes are as expected.");
    }
 

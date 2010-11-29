@@ -48,8 +48,8 @@ public class XViewerAtsAttributeColumn extends XViewerAtsColumn {
    }
 
    public XViewerAtsAttributeColumn(IAttributeType attributeType, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
-      this(attributeType, generateId(attributeType.getUnqualifiedName()), attributeType.getName(), width, align, show,
-         sortDataType, multiColumnEditable, description);
+      this(attributeType, generateId(attributeType.getUnqualifiedName()), attributeType.getUnqualifiedName(), width,
+         align, show, sortDataType, multiColumnEditable, description);
    }
 
    private static final String generateId(String unqualifiedName) {

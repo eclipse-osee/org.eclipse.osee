@@ -28,7 +28,7 @@ import org.eclipse.swt.SWT;
 public abstract class AbstractWorkflowVersionDateColumn extends XViewerAtsAttributeValueColumn {
 
    public AbstractWorkflowVersionDateColumn(String id, IAttributeType attributeType) {
-      super(attributeType, id, attributeType.getName(), 80, SWT.LEFT, false, SortDataType.Date, true, "");
+      super(attributeType, id, attributeType.getUnqualifiedName(), 80, SWT.LEFT, false, SortDataType.Date, true, "");
    }
 
    @Override

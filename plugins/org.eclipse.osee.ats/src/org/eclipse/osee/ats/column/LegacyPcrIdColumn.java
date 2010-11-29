@@ -26,7 +26,7 @@ public class LegacyPcrIdColumn extends XViewerAtsAttributeValueColumn {
 
    private LegacyPcrIdColumn() {
       super(AtsAttributeTypes.LegacyPcrId, WorldXViewerFactory.COLUMN_NAMESPACE + ".legacyPcr",
-         AtsAttributeTypes.LegacyPcrId.getName(), 40, SWT.LEFT, false, SortDataType.String, false, "");
+         AtsAttributeTypes.LegacyPcrId.getUnqualifiedName(), 40, SWT.LEFT, false, SortDataType.String, false, "");
    }
 
    /**

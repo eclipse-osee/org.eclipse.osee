@@ -29,7 +29,7 @@ public class EstimatedHoursColumn extends XViewerAtsAttributeValueColumn {
 
    private EstimatedHoursColumn() {
       super(AtsAttributeTypes.EstimatedHours, WorldXViewerFactory.COLUMN_NAMESPACE + ".estimatedHours",
-         AtsAttributeTypes.EstimatedHours.getName(), 40, SWT.CENTER, false, SortDataType.Float, true, "");
+         AtsAttributeTypes.EstimatedHours.getUnqualifiedName(), 40, SWT.CENTER, false, SortDataType.Float, true, "");
    }
 
    /**

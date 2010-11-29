@@ -33,7 +33,7 @@ public class DeadlineColumn extends XViewerAtsAttributeValueColumn {
 
    private DeadlineColumn() {
       super(AtsAttributeTypes.NeedBy, WorldXViewerFactory.COLUMN_NAMESPACE + ".deadline",
-         AtsAttributeTypes.NeedBy.getName(), 75, SWT.LEFT, true, SortDataType.Date, true, "");
+         AtsAttributeTypes.NeedBy.getUnqualifiedName(), 75, SWT.LEFT, true, SortDataType.Date, true, "");
    }
 
    /**

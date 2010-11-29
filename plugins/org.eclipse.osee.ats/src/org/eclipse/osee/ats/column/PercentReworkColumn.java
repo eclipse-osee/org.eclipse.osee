@@ -20,7 +20,7 @@ public class PercentReworkColumn extends XViewerAtsAttributeValueColumn {
 
    private PercentReworkColumn() {
       super(AtsAttributeTypes.PercentRework, WorldXViewerFactory.COLUMN_NAMESPACE + ".percentRework",
-         AtsAttributeTypes.PercentRework.getName(), 40, SWT.CENTER, false, SortDataType.Percent, false, "");
+         AtsAttributeTypes.PercentRework.getUnqualifiedName(), 40, SWT.CENTER, false, SortDataType.Percent, false, "");
    }
 
    /**

@@ -34,7 +34,7 @@ public class ActionableItemsColumn extends XViewerAtsAttributeValueColumn {
 
    private ActionableItemsColumn() {
       super(AtsAttributeTypes.ActionableItem, WorldXViewerFactory.COLUMN_NAMESPACE + ".actionableItems",
-         AtsAttributeTypes.ActionableItem.getName(), 80, SWT.LEFT, true, SortDataType.String, false, "");
+         AtsAttributeTypes.ActionableItem.getUnqualifiedName(), 80, SWT.LEFT, true, SortDataType.String, false, "");
    }
 
    /**
