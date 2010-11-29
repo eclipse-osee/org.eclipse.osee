@@ -50,19 +50,21 @@ public class OteMarkerHelper {
          int num = Integer.parseInt(number);
          String details = String.format("#%03d %s", num, description);
 
-         for (StacktraceData stackLocation : data.getStacktraceCollection().getStackTrace()) {
-            String file = stackLocation.getSource();
-            String line = stackLocation.getLine();
-            //pull out the java file name
-            file = file.substring(file.lastIndexOf(".") + 1);
-            int innerMarker = file.indexOf("$");
-            if (innerMarker > 0) {
-               file = file.substring(0, file.indexOf("$"));
-            }
-            file += ".java";
-            int linenumber = Integer.parseInt(line);
+         if (data.getStacktraceCollection() != null) {
+            for (StacktraceData stackLocation : data.getStacktraceCollection().getStackTrace()) {
+               String file = stackLocation.getSource();
+               String line = stackLocation.getLine();
+               //pull out the java file name
+               file = file.substring(file.lastIndexOf(".") + 1);
+               int innerMarker = file.indexOf("$");
+               if (innerMarker > 0) {
+                  file = file.substring(0, file.indexOf("$"));
+               }
+               file += ".java";
+               int linenumber = Integer.parseInt(line);
 
-            markerInfo.add(new MarkerInfo(file, linenumber, details));
+               markerInfo.add(new MarkerInfo(file, linenumber, details));
+            }
          }
       }
       finish();
