@@ -52,6 +52,7 @@ artifactType "Team Definition" extends "ats.Ats Artifact", "Abstract Access Cont
    attribute "ats.Actionable"
    attribute "ats.Allow Create Branch"
    attribute "ats.Allow Commit Branch"
+   attribute "ats.Related Task Workflow Definition"
 }
 
 artifactType "Actionable Item" extends "ats.Ats Artifact", "Abstract Access Controlled" {
@@ -102,6 +103,7 @@ abstract artifactType "ats.State Machine" extends "ats.Ats Artifact" {
    attribute "ats.Cancelled Date"
    attribute "ats.Cancelled From State"
    attribute "ats.Cancelled Reason"
+   attribute "ats.Workflow Definition"
 }
 
 artifactType "Goal" extends "ats.State Machine" {
@@ -133,6 +135,7 @@ artifactType "Team Workflow" extends "ats.State Machine", "Abstract Access Contr
    attribute "ats.Operational Impact Description"
    attribute "ats.Operational Impact Workaround"
    attribute "ats.Operational Impact Workaround Description"
+   attribute "ats.Related Task Workflow Definition"
 }
 
 artifactType "Task" extends "ats.State Machine" {
@@ -158,6 +161,20 @@ attributeType "ats.Validation Required" extends BooleanAttribute {
 
 attributeType "ats.Current State Type" extends StringAttribute {
    guid "ATOWheEyGUJmPmPuqyAA"
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "ats.Workflow Definition" extends StringAttribute {
+   guid "ADG50fkFrQIxmfZgk3gA"
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "ats.Related Task Workflow Definition" extends StringAttribute {
+   guid "AdR02A0xcUq4arK58BAA"
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1

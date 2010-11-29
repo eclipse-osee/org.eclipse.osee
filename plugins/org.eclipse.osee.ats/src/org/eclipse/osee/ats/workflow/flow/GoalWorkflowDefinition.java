@@ -32,7 +32,7 @@ public class GoalWorkflowDefinition extends WorkFlowDefinition {
 
    public GoalWorkflowDefinition() {
       this(ID, ID);
-      startPageId = GoalState.InWork.name();
+      startPageId = GoalState.InWork.getPageName();
    }
 
    public GoalWorkflowDefinition(Artifact artifact) throws OseeCoreException {
@@ -49,10 +49,10 @@ public class GoalWorkflowDefinition extends WorkFlowDefinition {
 
       // Add Task Page and Workflow Definition
       workItems.add(new AtsGoalInWorkPageDefinition());
-      workItems.add(new WorkPageDefinition(GoalState.Completed.name(), ID + "." + GoalState.Completed.name(),
-         AtsCompletedWorkPageDefinition.ID, WorkPageType.Completed));
-      workItems.add(new WorkPageDefinition(GoalState.Cancelled.name(), ID + "." + GoalState.Cancelled.name(),
-         AtsCancelledWorkPageDefinition.ID, WorkPageType.Cancelled));
+      workItems.add(new WorkPageDefinition(GoalState.Completed.getPageName(),
+         ID + "." + GoalState.Completed.getPageName(), AtsCompletedWorkPageDefinition.ID, WorkPageType.Completed));
+      workItems.add(new WorkPageDefinition(GoalState.Cancelled.getPageName(),
+         ID + "." + GoalState.Cancelled.getPageName(), AtsCancelledWorkPageDefinition.ID, WorkPageType.Cancelled));
       workItems.add(new GoalWorkflowDefinition());
 
       return workItems;
@@ -60,13 +60,15 @@ public class GoalWorkflowDefinition extends WorkFlowDefinition {
 
    public GoalWorkflowDefinition(String name, String id) {
       super(name, id, null);
-      addPageTransition(GoalState.InWork.name(), GoalState.Completed.name(), TransitionType.ToPageAsDefault);
+      addPageTransition(GoalState.InWork.getPageName(), GoalState.Completed.getPageName(),
+         TransitionType.ToPageAsDefault);
 
       // Add return transitions
-      addPageTransition(GoalState.Completed.name(), GoalState.InWork.name(), TransitionType.ToPageAsReturn);
+      addPageTransition(GoalState.Completed.getPageName(), GoalState.InWork.getPageName(),
+         TransitionType.ToPageAsReturn);
 
       // Add cancelled transitions
-      addPageTransitionToPageAndReturn(GoalState.InWork.name(), GoalState.Cancelled.name());
+      addPageTransitionToPageAndReturn(GoalState.InWork.getPageName(), GoalState.Cancelled.getPageName());
    }
 
 }

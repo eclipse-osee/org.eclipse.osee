@@ -23,7 +23,6 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
-import org.eclipse.osee.ats.artifact.GoalState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -167,8 +166,7 @@ public final class GoalManager {
          (GoalArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Goal, AtsUtil.getAtsBranch(), title);
 
       // Initialize state machine
-      goalArt.initializeNewStateMachine(GoalState.InWork, Collections.singleton(UserManager.getUser()), new Date(),
-         UserManager.getUser());
+      goalArt.initializeNewStateMachine(Collections.singleton(UserManager.getUser()), new Date(), UserManager.getUser());
       return goalArt;
    }
 

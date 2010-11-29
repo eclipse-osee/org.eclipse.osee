@@ -103,12 +103,12 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
    public TaskArtifact createNewTask(Collection<User> assignees, String title, Date createdDate, User createdBy) throws OseeCoreException {
       TaskArtifact taskArt = null;
       taskArt = (TaskArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Task, AtsUtil.getAtsBranch(), title);
-      taskArt.initializeNewStateMachine(TaskStates.InWork, assignees, new Date(), UserManager.getUser());
+
+      addRelation(AtsRelationTypes.SmaToTask_Task, taskArt);
+      taskArt.initializeNewStateMachine(assignees, new Date(), UserManager.getUser());
 
       // Set parent state task is related to
       taskArt.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, getStateMgr().getCurrentStateName());
-
-      addRelation(AtsRelationTypes.SmaToTask_Task, taskArt);
 
       return taskArt;
    }

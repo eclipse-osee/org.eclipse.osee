@@ -290,4 +290,14 @@ public class WorkPage implements IDynamicWidgetLayoutListener, IWorkPage {
       return getWorkPageType().isWorkingPage();
    }
 
+   @Override
+   public String getDescription() {
+      return null;
+   }
+
+   @Override
+   public Integer getDefaultPercent() {
+      return 0;
+   }
+
 }

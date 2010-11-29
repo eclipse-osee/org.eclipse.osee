@@ -10,51 +10,28 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util;
 
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkPage;
+import java.util.Set;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageAdapter;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageType;
 
-public enum TeamState implements IWorkPage {
-   Endorse(WorkPageType.Working),
-   Analyze(WorkPageType.Working),
-   Authorize(WorkPageType.Working),
-   Implement(WorkPageType.Working),
-   Completed(WorkPageType.Completed),
-   Cancelled(WorkPageType.Cancelled);
+public class TeamState extends WorkPageAdapter {
+   public static TeamState Endorse = new TeamState("Endorse", WorkPageType.Working);
+   public static TeamState Analyze = new TeamState("Analyze", WorkPageType.Working);
+   public static TeamState Authorize = new TeamState("Authorize", WorkPageType.Working);
+   public static TeamState Implement = new TeamState("Implement", WorkPageType.Working);
+   public static TeamState Completed = new TeamState("Completed", WorkPageType.Completed);
+   public static TeamState Cancelled = new TeamState("Cancelled", WorkPageType.Cancelled);
 
-   private final WorkPageType workPageType;
-
-   private TeamState(WorkPageType workPageType) {
-      this.workPageType = workPageType;
+   private TeamState(String pageName, WorkPageType workPageType) {
+      super(TeamState.class, pageName, workPageType);
    }
 
-   @Override
-   public WorkPageType getWorkPageType() {
-      return workPageType;
+   public static TeamState valueOf(String pageName) {
+      return WorkPageAdapter.valueOfPage(TeamState.class, pageName);
    }
 
-   @Override
-   public String getPageName() {
-      return name();
-   }
-
-   @Override
-   public boolean isCompletedOrCancelledPage() {
-      return getWorkPageType().isCompletedOrCancelledPage();
-   }
-
-   @Override
-   public boolean isCompletedPage() {
-      return getWorkPageType().isCompletedPage();
-   }
-
-   @Override
-   public boolean isCancelledPage() {
-      return getWorkPageType().isCancelledPage();
-   }
-
-   @Override
-   public boolean isWorkingPage() {
-      return getWorkPageType().isWorkingPage();
+   public static Set<TeamState> values() {
+      return WorkPageAdapter.pages(TeamState.class);
    }
 
 }

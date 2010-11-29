@@ -24,15 +24,16 @@ import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
+import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.column.ChangeTypeXWidget;
 import org.eclipse.osee.ats.column.EstimatedHoursRequiredXWidget;
 import org.eclipse.osee.ats.column.EstimatedHoursXWidget;
-import org.eclipse.osee.ats.column.PriorityXWidget;
 import org.eclipse.osee.ats.column.OperationalImpactWithWorkaroundXWidget.XOperationalImpactWithWorkaroundRequiredXWidgetWorkItem;
 import org.eclipse.osee.ats.column.OperationalImpactWithWorkaroundXWidget.XOperationalImpactWithWorkaroundXWidgetWorkItem;
 import org.eclipse.osee.ats.column.OperationalImpactXWidget.XOperationalImpactRequiredXWidgetWorkItem;
 import org.eclipse.osee.ats.column.OperationalImpactXWidget.XOperationalImpactXWidgetWorkItem;
+import org.eclipse.osee.ats.column.PriorityXWidget;
 import org.eclipse.osee.ats.util.AtsFolderUtil;
 import org.eclipse.osee.ats.util.AtsFolderUtil.AtsFolder;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -48,6 +49,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -205,11 +207,29 @@ public final class AtsWorkDefinitions implements IWorkDefinitionProvider {
 
    @Override
    public WorkFlowDefinition getWorkFlowDefinition(Artifact artifact) throws OseeCoreException {
+      // If this artifact specifies it's own workflow definition, use it
+      String workFlowDefId = artifact.getSoleAttributeValue(AtsAttributeTypes.WorkflowDefinition, null);
+      if (Strings.isValid(workFlowDefId)) {
+         return (WorkFlowDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(workFlowDefId);
+      }
+      // Otherwise, use workflow defined by WorkflowDefinition
       if (artifact instanceof TeamWorkFlowArtifact) {
-         // return (WorkFlowDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(TeamWorkflowDefinition.ID);
          return ((TeamWorkFlowArtifact) artifact).getTeamDefinition().getWorkFlowDefinition();
       }
       if (artifact instanceof TaskArtifact) {
+         // If Team Workflow specifies task workflow id, use it
+         TeamWorkFlowArtifact teamArt = ((TaskArtifact) artifact).getParentTeamWorkflow();
+         workFlowDefId = teamArt.getSoleAttributeValue(AtsAttributeTypes.RelatedTaskWorkflowDefinition, null);
+         if (Strings.isValid(workFlowDefId)) {
+            return (WorkFlowDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(workFlowDefId);
+         }
+         // If Team Definition specifies task workflow id, use it
+         TeamDefinitionArtifact teamDef = teamArt.getTeamDefinition();
+         workFlowDefId = teamDef.getSoleAttributeValue(AtsAttributeTypes.RelatedTaskWorkflowDefinition, null);
+         if (Strings.isValid(workFlowDefId)) {
+            return (WorkFlowDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(workFlowDefId);
+         }
+         // Else, use default Task workflow
          return (WorkFlowDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(TaskWorkflowDefinition.ID);
       }
       if (artifact instanceof GoalArtifact) {

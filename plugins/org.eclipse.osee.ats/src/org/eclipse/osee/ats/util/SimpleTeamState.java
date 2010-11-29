@@ -10,46 +10,20 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util;
 
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkPage;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageAdapter;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageType;
 
-public class SimpleTeamState implements IWorkPage {
-   private final WorkPageType workPageType;
+public class SimpleTeamState extends WorkPageAdapter {
    private final String name;
 
    public SimpleTeamState(String name, WorkPageType workPageType) {
+      super(SimpleTeamState.class, name, workPageType);
       this.name = name;
-      this.workPageType = workPageType;
-   }
-
-   @Override
-   public WorkPageType getWorkPageType() {
-      return workPageType;
    }
 
    @Override
    public String getPageName() {
       return name;
-   }
-
-   @Override
-   public boolean isCompletedOrCancelledPage() {
-      return getWorkPageType().isCompletedOrCancelledPage();
-   }
-
-   @Override
-   public boolean isCompletedPage() {
-      return getWorkPageType().isCompletedPage();
-   }
-
-   @Override
-   public boolean isCancelledPage() {
-      return getWorkPageType().isCancelledPage();
-   }
-
-   @Override
-   public boolean isWorkingPage() {
-      return getWorkPageType().isWorkingPage();
    }
 
 }

@@ -142,6 +142,11 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       }
    }
 
+   public void initializeNewStateMachine(Collection<User> assignees, Date createdDate, User createdBy) throws OseeCoreException {
+      WorkPageDefinition startPage = getWorkFlowDefinition().getStartPage();
+      initializeNewStateMachine(startPage, assignees, createdDate, createdBy);
+   }
+
    public void initializeNewStateMachine(IWorkPage state, Collection<User> assignees, Date createdDate, User createdBy) throws OseeCoreException {
       getStateMgr().initializeStateMachine(state, assignees);
       setCreatedBy(createdBy, true, createdDate);

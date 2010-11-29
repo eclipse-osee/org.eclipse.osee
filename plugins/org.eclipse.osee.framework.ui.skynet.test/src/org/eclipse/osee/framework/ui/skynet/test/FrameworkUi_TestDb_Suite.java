@@ -17,6 +17,8 @@ import org.eclipse.osee.framework.ui.skynet.test.cases.PreviewAndMultiPreviewTes
 import org.eclipse.osee.framework.ui.skynet.test.cases.ViewWordChangeAndDiffTest;
 import org.eclipse.osee.framework.ui.skynet.test.cases.WordEditTest;
 import org.eclipse.osee.framework.ui.skynet.test.cases.WordTrackedChangesTest;
+import org.eclipse.osee.framework.ui.skynet.test.util.enumeration.AbstractEnumerationTest;
+import org.eclipse.osee.framework.ui.skynet.test.widgets.workflow.WorkPageAdapterTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -28,7 +30,9 @@ BlamXWidgetTest.class, //
    WordEditTest.class, //
    WordTrackedChangesTest.class, //
    PreviewAndMultiPreviewTest.class, //
-   ViewWordChangeAndDiffTest.class})
+   ViewWordChangeAndDiffTest.class, //
+   WorkPageAdapterTest.class, //
+   AbstractEnumerationTest.class})
 /**
  * @author Megumi Telles
  */

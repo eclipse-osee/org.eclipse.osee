@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
  * @author Donald G. Dunne
  */
 public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
+   public static String TO_ANY_PAGE = "TO_ANY_PAGE";
    public static enum TransitionType {
       // Normal transition; will be provided as option in transition pulldown
       ToPage,
@@ -146,9 +147,11 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
             for (Map<TransitionType, Set<String>> transTypeToPageIds : inheritedPageIdToPageIdsViaTransitionType.values()) {
                for (TransitionType transType : transTypeToPageIds.keySet()) {
                   for (String pageId2 : transTypeToPageIds.get(transType)) {
-                     workPageDefinition =
-                        (WorkPageDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(getFullPageId(pageId2));
-                     pageNameToPageId.put(workPageDefinition.getPageName(), workPageDefinition.id);
+                     if (!pageId2.endsWith(WorkFlowDefinition.TO_ANY_PAGE)) {
+                        workPageDefinition =
+                           (WorkPageDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(getFullPageId(pageId2));
+                        pageNameToPageId.put(workPageDefinition.getPageName(), workPageDefinition.id);
+                     }
                   }
                }
             }
@@ -166,7 +169,6 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
    /**
     * Since transitions can be defined by full ids or just page name (eg "Endorse"), check if pageId has namespace
     * characters and thus it's full name or add id to given pageId
-    * 
     */
    private String getFullPageId(String pageId) {
       return pageId.contains(".") ? pageId : getId() + "." + pageId;
@@ -348,11 +350,21 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
       if (transitionTypeToPageIds != null) {
          for (TransitionType transType : transitionType) {
             Set<String> toPageIds = transitionTypeToPageIds.get(transType);
+            Set<String> realPageIds = new HashSet<String>();
             if (toPageIds == null) {
                continue;
             }
-            for (WorkItemDefinition def : WorkItemDefinitionFactory.getWorkItemDefinitions(toPageIds)) {
-               workPageDefs.add((WorkPageDefinition) def);
+            for (String pageId : toPageIds) {
+               if (pageId.endsWith(WorkFlowDefinition.TO_ANY_PAGE)) {
+                  workPageDefs.addAll(workFlowDefinition.getPages());
+               } else {
+                  realPageIds.add(pageId);
+               }
+            }
+            if (!realPageIds.isEmpty()) {
+               for (WorkItemDefinition def : WorkItemDefinitionFactory.getWorkItemDefinitions(realPageIds)) {
+                  workPageDefs.add((WorkPageDefinition) def);
+               }
             }
          }
       }

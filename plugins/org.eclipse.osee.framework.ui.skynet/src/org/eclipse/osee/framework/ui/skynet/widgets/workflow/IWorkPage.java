@@ -11,6 +11,10 @@ public interface IWorkPage {
 
    public String getPageName();
 
+   public String getDescription();
+
+   public Integer getDefaultPercent();
+
    public boolean isCompletedPage();
 
    public boolean isCancelledPage();

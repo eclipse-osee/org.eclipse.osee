@@ -1,47 +1,24 @@
 package org.eclipse.osee.ats.artifact;
 
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkPage;
+import java.util.Set;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageAdapter;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageType;
 
-public enum PeerToPeerReviewState implements IWorkPage {
-   Prepare(WorkPageType.Working),
-   Review(WorkPageType.Working),
-   Completed(WorkPageType.Completed);
+public class PeerToPeerReviewState extends WorkPageAdapter {
+   public static PeerToPeerReviewState Prepare = new PeerToPeerReviewState("Prepare", WorkPageType.Working);
+   public static PeerToPeerReviewState Review = new PeerToPeerReviewState("Review", WorkPageType.Working);
+   public static PeerToPeerReviewState Completed = new PeerToPeerReviewState("Completed", WorkPageType.Completed);
 
-   private final WorkPageType workPageType;
-
-   private PeerToPeerReviewState(WorkPageType workPageType) {
-      this.workPageType = workPageType;
+   private PeerToPeerReviewState(String pageName, WorkPageType workPageType) {
+      super(PeerToPeerReviewState.class, pageName, workPageType);
    }
 
-   @Override
-   public WorkPageType getWorkPageType() {
-      return workPageType;
+   public static PeerToPeerReviewState valueOf(String pageName) {
+      return WorkPageAdapter.valueOfPage(PeerToPeerReviewState.class, pageName);
    }
 
-   @Override
-   public String getPageName() {
-      return name();
-   }
-
-   @Override
-   public boolean isCompletedOrCancelledPage() {
-      return getWorkPageType().isCompletedOrCancelledPage();
-   }
-
-   @Override
-   public boolean isCompletedPage() {
-      return getWorkPageType().isCompletedPage();
-   }
-
-   @Override
-   public boolean isCancelledPage() {
-      return getWorkPageType().isCancelledPage();
-   }
-
-   @Override
-   public boolean isWorkingPage() {
-      return getWorkPageType().isWorkingPage();
+   public Set<PeerToPeerReviewState> values() {
+      return WorkPageAdapter.pages(PeerToPeerReviewState.class);
    }
 
 };

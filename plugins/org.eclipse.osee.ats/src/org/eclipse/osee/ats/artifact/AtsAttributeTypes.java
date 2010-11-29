@@ -93,7 +93,10 @@ public class AtsAttributeTypes extends NamedIdentity implements IAttributeType {
    public static final IAttributeType ValidationRequired = new AtsAttributeTypes("AAMFEcjT0TwkD2R4w1QA", "Validation Required", "If selected, originator will be asked to validate the implementation.");
    public static final IAttributeType VersionLocked = new AtsAttributeTypes("AAzRtEJXbjzR5jySOZgA", "Version Locked", "True if version artifact is locked.");
    public static final IAttributeType WeeklyBenefit = new AtsAttributeTypes("AAMFEdEnEU9AecOHMOwA", "Weekly Benefit", "Estimated number of hours that will be saved over a single year if this change is completed.");
+   public static final IAttributeType WorkflowDefinition = new AtsAttributeTypes("ADG50fkFrQIxmfZgk3gA", "Workflow Definition", "Specific work flow definition id used by this Workflow artifact");
+   public static final IAttributeType RelatedTaskWorkflowDefinition = new AtsAttributeTypes("AdR02A0xcUq4arK58BAA", "Related Task Workflow Definition", "Specific work flow definition id used by Tasks related to this Workflow");
    public static final IAttributeType WorkPackage = new AtsAttributeTypes("AAMFEdpJqRp2wvA2qvAA", "Work Package", "Designated accounting work package for completing workflow.");
+   
    // @formatter:on
 
    private AtsAttributeTypes(String guid, String name) {

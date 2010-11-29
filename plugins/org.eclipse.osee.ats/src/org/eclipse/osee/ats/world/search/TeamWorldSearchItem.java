@@ -236,10 +236,10 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
          // Backward compatibility; remove after 0.9.7 release
          List<String> cancelOrComplete = new ArrayList<String>(2);
          if (!includeCancelled) {
-            cancelOrComplete.add(TeamState.Cancelled.name() + ";;;");
+            cancelOrComplete.add(TeamState.Cancelled.getPageName() + ";;;");
          }
          if (!includeCompleted) {
-            cancelOrComplete.add(TeamState.Completed.name() + ";;;");
+            cancelOrComplete.add(TeamState.Completed.getPageName() + ";;;");
          }
          if (cancelOrComplete.size() > 0) {
             criteria.add(new AttributeCriteria(AtsAttributeTypes.CurrentState, cancelOrComplete, Operator.NOT_EQUAL));

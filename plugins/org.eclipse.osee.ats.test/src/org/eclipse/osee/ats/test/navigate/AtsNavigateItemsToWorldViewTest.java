@@ -158,7 +158,7 @@ public class AtsNavigateItemsToWorldViewTest {
       IDynamicWidgetLayoutListener dwl = editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener();
       ((UserSearchWorkflowSearchItem) dwl).setSelectedUser(UserManager.getUser(DemoUsers.Joe_Smith));
       ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.Assignee, true);
-      ((UserSearchWorkflowSearchItem) dwl).setSelectedState(TeamState.Implement.name());
+      ((UserSearchWorkflowSearchItem) dwl).setSelectedState(TeamState.Implement.getPageName());
       editor.getWorldXWidgetActionPage().reSearch(true);
       Collection<Artifact> arts = editor.getLoadedArtifacts();
       NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AbstractWorkflowArtifact.class, 7);

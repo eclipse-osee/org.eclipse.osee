@@ -1,48 +1,25 @@
 package org.eclipse.osee.ats.artifact;
 
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkPage;
+import java.util.Set;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageAdapter;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageType;
 
-public enum DecisionReviewState implements IWorkPage {
-   Prepare(WorkPageType.Working),
-   Decision(WorkPageType.Working),
-   Followup(WorkPageType.Working),
-   Completed(WorkPageType.Completed);
+public class DecisionReviewState extends WorkPageAdapter {
+   public static DecisionReviewState Prepare = new DecisionReviewState("Prepare", WorkPageType.Working);
+   public static DecisionReviewState Decision = new DecisionReviewState("Decision", WorkPageType.Working);
+   public static DecisionReviewState Followup = new DecisionReviewState("Followup", WorkPageType.Working);
+   public static DecisionReviewState Completed = new DecisionReviewState("Completed", WorkPageType.Completed);
 
-   private final WorkPageType workPageType;
-
-   private DecisionReviewState(WorkPageType workPageType) {
-      this.workPageType = workPageType;
+   private DecisionReviewState(String pageName, WorkPageType workPageType) {
+      super(DecisionReviewState.class, pageName, workPageType);
    }
 
-   @Override
-   public WorkPageType getWorkPageType() {
-      return workPageType;
+   public static DecisionReviewState valueOf(String pageName) {
+      return WorkPageAdapter.valueOfPage(DecisionReviewState.class, pageName);
    }
 
-   @Override
-   public String getPageName() {
-      return name();
-   }
-
-   @Override
-   public boolean isCompletedOrCancelledPage() {
-      return getWorkPageType().isCompletedOrCancelledPage();
-   }
-
-   @Override
-   public boolean isCompletedPage() {
-      return getWorkPageType().isCompletedPage();
-   }
-
-   @Override
-   public boolean isCancelledPage() {
-      return getWorkPageType().isCancelledPage();
-   }
-
-   @Override
-   public boolean isWorkingPage() {
-      return getWorkPageType().isWorkingPage();
+   public static Set<DecisionReviewState> values() {
+      return WorkPageAdapter.pages(DecisionReviewState.class);
    }
 
 };

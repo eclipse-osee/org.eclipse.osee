@@ -148,9 +148,9 @@ public class StateManager {
          if (sma.isAttributeTypeValid(AtsAttributeTypes.CurrentStateType)) {
             // backward compatibility
             if (sma.getSoleAttributeValueAsString(AtsAttributeTypes.CurrentStateType, null) == null) {
-               if (getCurrentStateName().equals(TeamState.Completed.name())) {
+               if (getCurrentStateName().equals(TeamState.Completed.getPageName())) {
                   return WorkPageType.Completed;
-               } else if (getCurrentStateName().equals(TeamState.Cancelled.name())) {
+               } else if (getCurrentStateName().equals(TeamState.Cancelled.getPageName())) {
                   return WorkPageType.Cancelled;
                } else {
                   return WorkPageType.Working;
@@ -165,9 +165,9 @@ public class StateManager {
                System.err.println("CurrentStateType not valid for " + sma.getArtifactTypeName());
             }
             // TODO get rid of this once database configured for new types (or leave for backward compatibility?
-            if (getCurrentStateName().equals(TeamState.Completed.name())) {
+            if (getCurrentStateName().equals(TeamState.Completed.getPageName())) {
                return WorkPageType.Completed;
-            } else if (getCurrentStateName().equals(TeamState.Cancelled.name())) {
+            } else if (getCurrentStateName().equals(TeamState.Cancelled.getPageName())) {
                return WorkPageType.Cancelled;
             } else {
                return WorkPageType.Working;

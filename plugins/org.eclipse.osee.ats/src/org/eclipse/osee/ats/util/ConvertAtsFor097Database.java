@@ -181,7 +181,7 @@ public class ConvertAtsFor097Database extends XNavigateItemAction {
    private static void setCancelledAttributes(HashCollection<String, String> testNameToResultsMap, AbstractWorkflowArtifact aba) throws OseeCoreException {
       String stateType = aba.getSoleAttributeValueAsString(AtsAttributeTypes.CurrentStateType, "");
       boolean stateTypeSaysCancelled = stateType.equals(WorkPageType.Cancelled.name());
-      boolean currentStateIsCancelled = aba.getCurrentStateName().equals(TeamState.Cancelled.name());
+      boolean currentStateIsCancelled = aba.getCurrentStateName().equals(TeamState.Cancelled.getPageName());
       boolean set = false;
       if (currentStateIsCancelled || stateTypeSaysCancelled) {
          LogItem item = aba.getLog().internalGetCancelledLogItem();
@@ -214,7 +214,7 @@ public class ConvertAtsFor097Database extends XNavigateItemAction {
    private static void setCompletedAttributes(HashCollection<String, String> testNameToResultsMap, AbstractWorkflowArtifact aba) throws OseeCoreException {
       String stateType = aba.getSoleAttributeValueAsString(AtsAttributeTypes.CurrentStateType, "");
       boolean stateTypeSaysCompleted = stateType.equals(WorkPageType.Completed.name());
-      boolean currentStateIsCompleted = aba.getCurrentStateName().equals(TeamState.Completed.name());
+      boolean currentStateIsCompleted = aba.getCurrentStateName().equals(TeamState.Completed.getPageName());
       boolean set = false;
       if (currentStateIsCompleted || stateTypeSaysCompleted) {
          LogItem item = aba.getLog().internalGetCompletedLogItem();

@@ -1,46 +1,24 @@
 package org.eclipse.osee.ats.artifact;
 
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkPage;
+import java.util.Set;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageAdapter;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageType;
 
-public enum TaskStates implements IWorkPage {
-   InWork(WorkPageType.Working),
-   Completed(WorkPageType.Completed),
-   Cancelled(WorkPageType.Cancelled);
+public class TaskStates extends WorkPageAdapter {
+   public static TaskStates InWork = new TaskStates("InWork", WorkPageType.Working);
+   public static TaskStates Completed = new TaskStates("Completed", WorkPageType.Completed);
+   public static TaskStates Cancelled = new TaskStates("Cancelled", WorkPageType.Cancelled);
 
-   private final WorkPageType workPageType;
-
-   private TaskStates(WorkPageType workPageType) {
-      this.workPageType = workPageType;
+   private TaskStates(String pageName, WorkPageType workPageType) {
+      super(TaskStates.class, pageName, workPageType);
    }
 
-   @Override
-   public WorkPageType getWorkPageType() {
-      return workPageType;
+   public static TaskStates valueOf(String pageName) {
+      return WorkPageAdapter.valueOfPage(TaskStates.class, pageName);
    }
 
-   @Override
-   public String getPageName() {
-      return name();
+   public Set<TaskStates> values() {
+      return WorkPageAdapter.pages(TaskStates.class);
    }
 
-   @Override
-   public boolean isCompletedOrCancelledPage() {
-      return getWorkPageType().isCompletedOrCancelledPage();
-   }
-
-   @Override
-   public boolean isCompletedPage() {
-      return getWorkPageType().isCompletedPage();
-   }
-
-   @Override
-   public boolean isCancelledPage() {
-      return getWorkPageType().isCancelledPage();
-   }
-
-   @Override
-   public boolean isWorkingPage() {
-      return getWorkPageType().isWorkingPage();
-   }
 };

@@ -37,7 +37,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 
 /**
  * @author Donald G. Dunne
@@ -141,8 +140,7 @@ public class ActionManager {
       teamArt.setTeamDefinition(teamDef);
 
       // Initialize state machine
-      WorkPageDefinition startPage = teamArt.getWorkFlowDefinition().getStartPage();
-      teamArt.initializeNewStateMachine(startPage, assignees, createdDate, createdBy);
+      teamArt.initializeNewStateMachine(assignees, createdDate, createdBy);
 
       // Relate Action to WorkFlow
       actionArt.addRelation(AtsRelationTypes.ActionToWorkflow_WorkFlow, teamArt);
