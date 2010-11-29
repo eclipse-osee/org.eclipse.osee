@@ -14,39 +14,92 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.EnumSelectionDialog;
 import org.eclipse.osee.framework.ui.skynet.artifact.EnumSelectionDialog.Selection;
+import org.eclipse.osee.framework.ui.skynet.artifact.EnumSingletonSelectionDialog;
 
 /**
  * @author Jeff C. Phillips
  */
 public class EnumeratedHandlePromptChange implements IHandlePromptChange {
-   private final EnumSelectionDialog dialog;
+   private EnumSelectionDialog dialog = null;
+   private EnumSingletonSelectionDialog singletonDialog = null;
    private final Collection<? extends Artifact> artifacts;
    private final IAttributeType attributeType;
    private final boolean persist;
+   private boolean isSingletonAttribute = false;
 
    public EnumeratedHandlePromptChange(Collection<? extends Artifact> artifacts, IAttributeType attributeType, String displayName, boolean persist) {
       super();
       this.artifacts = artifacts;
       this.attributeType = attributeType;
       this.persist = persist;
-      this.dialog = new EnumSelectionDialog(attributeType, artifacts);
+
+      try {
+         isSingletonAttribute = AttributeTypeManager.getType(attributeType).getMaxOccurrences() == 1;
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+      }
+      if (isSingletonAttribute) {
+         this.singletonDialog = new EnumSingletonSelectionDialog(attributeType, artifacts);
+      } else {
+         this.dialog = new EnumSelectionDialog(attributeType, artifacts);
+      }
    }
 
    @Override
    public boolean promptOk() {
-      return dialog.open() == Window.OK;
+      if (isSingletonAttribute) {
+         return singletonDialog.open() == Window.OK;
+      } else {
+         return dialog.open() == Window.OK;
+      }
    }
 
    @Override
    public boolean store() throws OseeCoreException {
+      if (isSingletonAttribute) {
+         return storeSingleton();
+      } else {
+         return storeNonSingleton();
+      }
+   }
+
+   private boolean storeSingleton() throws OseeCoreException {
+      String selected = singletonDialog.getSelectedOption();
+      boolean isRemoveAll = singletonDialog.isRemoveAllSelected();
+      if (artifacts.size() > 0) {
+         SkynetTransaction transaction =
+            !persist ? null : new SkynetTransaction(artifacts.iterator().next().getBranch(),
+               "Change enumerated attribute");
+         for (Artifact artifact : artifacts) {
+            if (isRemoveAll) {
+               artifact.deleteAttributes(attributeType);
+            } else {
+               artifact.setSoleAttributeValue(attributeType, selected);
+            }
+            if (persist) {
+               artifact.persist(transaction);
+            }
+         }
+         if (persist) {
+            transaction.execute();
+         }
+      }
+      return true;
+   }
+
+   private boolean storeNonSingleton() throws OseeCoreException {
       Set<String> selected = new HashSet<String>();
       for (Object obj : dialog.getResult()) {
          selected.add((String) obj);
