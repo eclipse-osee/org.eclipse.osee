@@ -101,9 +101,21 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
       Collection<Artifact> groups = getSelectedGroups();
       User user = getSelectedUser();
 
-      // If only user selected, handle that case separately
-      if (verArt == null && teamDefs.isEmpty() && user != null) {
-         return handleOnlyUserSelected();
+      // If user selected, handle that case separately cause it's faster to start with assigned
+      if (user != null) {
+         Set<TaskArtifact> userTaskArts = getUserAssignedTaskArtifacts();
+         Set<TaskArtifact> removeTaskArts = new HashSet<TaskArtifact>();
+         for (TaskArtifact taskArt : userTaskArts) {
+            if (verArt != null && !verArt.equals(taskArt.getParentTeamWorkflow().getTargetedVersion())) {
+               removeTaskArts.add(taskArt);
+            }
+            if (!teamDefs.isEmpty() && !teamDefs.contains(taskArt.getParentTeamWorkflow().getTeamDefinition())) {
+               removeTaskArts.add(taskArt);
+            }
+         }
+         userTaskArts.removeAll(removeTaskArts);
+         return filterByCompletedAndSelectedUser(userTaskArts);
+
       } // If version specified, get workflows from targeted relation
       if (verArt != null) {
          for (Artifact art : verArt.getRelatedArtifacts(AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow)) {
@@ -143,11 +155,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
       return filterByCompletedAndSelectedUser(artifacts);
    }
 
-   private Collection<TaskArtifact> handleOnlyUserSelected() throws OseeCoreException {
-      return filterByCompletedAndSelectedUser(getUserAssignedTaskArtifacts());
-   }
-
-   private Collection<TaskArtifact> getUserAssignedTaskArtifacts() throws OseeCoreException {
+   private Set<TaskArtifact> getUserAssignedTaskArtifacts() throws OseeCoreException {
       Set<TaskArtifact> tasks = new HashSet<TaskArtifact>();
       for (Artifact art : AtsUtil.getAssigned(getSelectedUser(), TaskArtifact.class)) {
          tasks.add((TaskArtifact) art);
