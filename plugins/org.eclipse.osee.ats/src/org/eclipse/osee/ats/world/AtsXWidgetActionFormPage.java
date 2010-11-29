@@ -36,6 +36,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -75,7 +76,7 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
       FormsUtil.addHeadingGradient(toolkit, scrolledForm, true);
 
       Composite body = scrolledForm.getBody();
-      body.setLayout(ALayout.getZeroMarginLayout(1, true));
+      body.setLayout(new GridLayout(1, true));
       body.setLayoutData(new GridData(SWT.LEFT, SWT.LEFT, false, false));
 
       try {

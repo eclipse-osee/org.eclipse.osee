@@ -80,13 +80,13 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
       //
       "<XWidget displayName=\"Team Definitions(s)\" xwidgetType=\"XHyperlabelTeamDefinitionSelection\" horizontalLabel=\"true\"/>" +
       //
-      "<XWidget displayName=\"Version\" xwidgetType=\"XCombo()\" beginComposite=\"5\" horizontalLabel=\"true\"/>" +
+      "<XWidget displayName=\"Version\" beginComposite=\"4\" xwidgetType=\"XCombo()\" horizontalLabel=\"true\"/>" +
       //
       "<XWidget displayName=\"Assignee\" xwidgetType=\"XMembersCombo\" horizontalLabel=\"true\"/>" +
       //
-      "<XWidget displayName=\"Group(s)\" xwidgetType=\"XHyperlabelGroupSelection\" horizontalLabel=\"true\"/>" +
+      "<XWidget displayName=\"Group(s)\" beginComposite=\"2\" xwidgetType=\"XHyperlabelGroupSelection\" horizontalLabel=\"true\"/>" +
       //
-      "<XWidget displayName=\"Include Completed\" xwidgetType=\"XCheckBox\" beginComposite=\"4\" defaultValue=\"false\" labelAfter=\"true\" horizontalLabel=\"true\"/>" +
+      "<XWidget displayName=\"Include Completed\" beginComposite=\"4\" xwidgetType=\"XCheckBox\" defaultValue=\"false\" labelAfter=\"true\" horizontalLabel=\"true\"/>" +
       //
       "<XWidget displayName=\"Include Cancelled\" xwidgetType=\"XCheckBox\"  defaultValue=\"false\" labelAfter=\"true\" horizontalLabel=\"true\"/>" +
       //
