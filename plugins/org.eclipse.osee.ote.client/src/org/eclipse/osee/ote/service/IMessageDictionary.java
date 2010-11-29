@@ -16,7 +16,7 @@ import org.eclipse.osee.ote.message.MessageSink;
 
 /**
  * Allows the lookup of message definitions
- * 
+ *
  * @author Ken J. Aguilar
  */
 public interface IMessageDictionary {
@@ -31,13 +31,11 @@ public interface IMessageDictionary {
 
    /**
     * Finds the class definition of a message of the given name
-    * 
+    *
     * @return Returns values reference.
     * @throws ClassNotFoundException if no class definition was found with the given name
     */
    Class<? extends Message> lookupMessage(String messageName) throws ClassNotFoundException;
 
    void dispose();
-
-   String getImplementationVersion(String file) throws Exception;
 }

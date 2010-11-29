@@ -89,7 +89,6 @@ public class MessageView extends ViewPart implements IActionable, IMessageDictio
    protected ViewerSorter nameSorter;
    public static final String VIEW_ID = "org.eclipse.osee.ote.ui.message.view.MessageView";
    private Label startLabel;
-   private Label versionLbl;
    private Composite parentComposite;
    private Button searchButton;
    private int numMessages = 0;
@@ -117,11 +116,6 @@ public class MessageView extends ViewPart implements IActionable, IMessageDictio
       Widgets.attachToParent(startLabel, SWT.TOP, 0, 0);
       Widgets.attachToParent(startLabel, SWT.LEFT, 0, 0);
       Widgets.attachToParent(startLabel, SWT.RIGHT, 50, 0);
-
-      versionLbl = new Label(parentComposite, SWT.CENTER);
-      Widgets.attachToParent(versionLbl, SWT.TOP, 0, 0);
-      Widgets.attachToParent(versionLbl, SWT.LEFT, 50, 5);
-      Widgets.attachToParent(versionLbl, SWT.RIGHT, 100, 0);
 
       // Create the tree treeViewer as a child of the composite parent
       treeViewer = new TreeViewer(parentComposite);
@@ -541,8 +535,7 @@ public class MessageView extends ViewPart implements IActionable, IMessageDictio
                dictionary.generateMessageIndex(treeBuilder);
                numMessages = treeBuilder.getNumMessages();
                numElements = treeBuilder.getNumElements();
-               versionLbl.setText(dictionary.getMessageLibraryVersion());
-               versionLbl.setToolTipText(String.format("#Messages: %d, #Elements: %d", numMessages, numElements));
+               treeViewer.getTree().setToolTipText(String.format("#Messages: %d, #Elements: %d\n\nProviders:\n%s", numMessages, numElements, dictionary.getMessageLibraryVersion()));
                searchText.setEnabled(true);
                startLabel.setText("Ready for query");
             } catch (Exception e) {
@@ -565,14 +558,13 @@ public class MessageView extends ViewPart implements IActionable, IMessageDictio
    }
 
    private void setLibraryUnloadedState() {
-      if (treeViewer.getTree().isDisposed() || startLabel.isDisposed() || versionLbl.isDisposed() || searchText.isDisposed()) {
+      if (treeViewer.getTree().isDisposed() || startLabel.isDisposed() || searchText.isDisposed()) {
          return;
       }
+      treeViewer.getTree().setToolTipText("");
       treeViewer.getTree().setBackground(Displays.getSystemColor(SWT.COLOR_GRAY));
       startLabel.setText("message library not detected");
       treeViewer.setInput(null);
-      versionLbl.setText("");
-      versionLbl.setToolTipText("");
       searchText.setEnabled(false);
    }
 

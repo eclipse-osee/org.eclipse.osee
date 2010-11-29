@@ -19,7 +19,7 @@ import org.eclipse.osee.ote.message.MessageSink;
 /**
  * Builds a simple tree out of messages. All nodes under the root are messages. Each node under each message is a
  * message element
- * 
+ *
  * @author Ken J. Aguilar
  */
 public class MessageTreeBuilder implements MessageSink {
@@ -49,6 +49,15 @@ public class MessageTreeBuilder implements MessageSink {
       lastAddedMsgNode = new ArrayList<String>(64);
       msgs.put(messageName, lastAddedMsgNode);
       numMessages++;
+   }
+
+   @Override
+   public void absorbProvider(String providerName) {
+      // We don't care about absorbing this yet
+      // In the future it would be nice to have this
+      // information stored and related to the messages
+      // that are from this provider for display
+      // to the users
    }
 
    public int getNumElements() {
