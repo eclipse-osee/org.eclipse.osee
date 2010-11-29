@@ -83,6 +83,10 @@ public class MessageSelectionDialog extends ElementListSelectionDialog {
                messages.add(messageName);
             }
 
+            @Override
+            public void absorbProvider(String providerName) {
+            }
+
          });
          setElements(messages.toArray());
       } catch (Exception e) {
