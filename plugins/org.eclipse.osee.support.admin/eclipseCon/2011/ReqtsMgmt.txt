@@ -1,28 +1,57 @@
-Title: 
-   Get your FREE/Open Source Requirements Management application!
-   Fire your Requirements Management vendor!
-   Is $10,000 per seat license really worth it?
+Title: Fire your Requirements Management vendor!
 
+This tutorial will provide you with a full-featured requirements management application ready for your requirements development.  First, we will walk you through download, configuration and use of OSEE Define.  Then we will show you how to modify the requirements data model and configure the system for your needs.
+
+OSEE Define is a full-featured open source requirements management solution that allows users to define and use their own data model.  It's advanced branch management capabilities, including change reports and automated merging, make it possible to control many variants of a project with ease. Since OSEE Define retains a full revision history of every resource in the system, engineers can make and review changes with greater confidence.  The data integration and traceability features OSEE offers enable a coherent view of a project across its full life-cycle.
+
+OSEE Define Features Include:
+
+   Enterprise support for concurrent, distributed requirements development
+   Bidirectional traceability across the full product lifecycle
+   Multi-level branching and merging
+   Automated change detection capabilities
+   Incorporate native file formats into your requirements set
+   Control many variants with multi-basline committing
+   Automatically publish documents using customer configured templates
+   Advanced navigation and search capabilities
+   Integrated process and workflow
+
+OSEE Define comes bundled with an embedded database and a sample data model configured, so it's easy to get started and it's features can help you improve quality, increase efficiency and ultimately reduce costs of managing your requirements.
+
+-----------------------------
 Name of product: OSEE Define - Requirements Management Solution
+   Requirements Management Solution - Buy it Now: $0.00
+   Requirements Management Solution - Download Now
 
-This tutorial will provide you with a full-featured requirements management application ready for your requirements developement.  Part 1 will show you how to download, configure and use OSEE Define.  Part 2 will provide you with the knowledge to create your own requirements data model and configure OSEE Define for it's use.
+Define
 
-OSEE Define is a full-featured open source requirements management solution that allows users to define their own requirements data model and start creating and relating requirements from customer level down to software requirements and even to the code units.  OSEE Define provides features that can help you improve quality, increase efficiency and ultimately reduce costs of managing your requirements.
+Define provides requirements and process management with tightly integrated change management using the Action Tracking System (ATS). OSEE provides publishing capabilities that enable the creation of documents from smaller internal documents to the complex documents needed to meet military requirements for contract deliverables such as the Software Requirements Specification (SRS), System Performance Specification (SPS), Prime Item Development Specification (PIDS), and all the required traceability between them.
+Key Capabilities
 
-Features Include:
+    * Enterprise support for concurrent, distributed requirements development
+    * Integrated process and workflow
+    * Programmatic, bidirectional traceability
+    * End user navigation and search capabilities
+    * Capture accurate, meaningful review metrics
+    * Tight integration with lifecycle tools
+    * Automated change detection capabilities
 
-End-to-end traceability from top to low level requirements
-Ability to develop requirements in parallel with other developers through branching and merging
-View changes made on a working branch to make and review changes with greater confidence
-Incorporate native file formats into your requirements set
-Control many variants with advanced automated merging
-Automatically publish documents using customer configured templates
--- something about multi-user
+-----------------------------------------
+-----------------------------------------
 
-OSEE Define comes bundled with an integrated H2 database with a sample data model configured, so it's easy to get get started.
+Parallel Requirements Development
+Variant Management
+Branching and Merging
+Systems Engineering
+Configuration Management
+Bi-directional traceability
+Integrated Requirements Management
+Extensible Data Model
+Full Versioning
 
----
+Why this tool: Lean, Agile, ??
 
+----
 
 Changes are can be configuration managed and changes shown through a powerful
 
@@ -41,19 +70,6 @@ This Tutorial will:
 - You will leave with a running Requirements Management Solution ready for your requirements development
 
 ---
-
-Parallel Requirements Development
-Variant Management
-Branching and Merging
-Systems Engineering
-Configuration Management
-Bi-directional traceability
-Integrated Requirements Management
-Extensible Data Model
-Full Versioning
-
-Why this tool: Lean, Agile, ??
-
 --
 
 12:55 PMBrooks, Ryan 
