@@ -168,57 +168,63 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       if (monitor != null) {
          monitor.beginTask(getName(), artIdLists.size());
       }
-      testNameToResultsMap = new HashCollection<String, String>();
-      int artSetNum = 1;
-      for (Collection<Integer> artIdList : artIdLists) {
-         // Don't process all lists if just trying to test this report
-         elapsedTime =
-            new ElapsedTime(String.format("ValidateAtsDatabase - load Artifact set %d/%d", artSetNum++,
-               artIdLists.size()));
-         Collection<Artifact> artifacts = ArtifactQuery.getArtifactListFromIds(artIdList, AtsUtil.getAtsBranch());
-         elapsedTime.end();
-         count += artifacts.size();
 
-         // Remove this after 0.9.7 release and last sync
-         OseeEventManager.setDisableEvents(false);
-         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Convert ATS for 097 Release");
-         ConvertAtsFor097Database.convertWorkPageDefinitions(testNameToResultsMap, artifacts, transaction);
-         ConvertAtsFor097Database.convertWorkflowArtifacts(testNameToResultsMap, artifacts, transaction);
-         transaction.execute();
-
-         testArtifactIds(artifacts);
-         testAtsAttributeValues(artifacts);
-         testAtsActionsHaveTeamWorkflow(artifacts);
-         testAtsWorkflowsHaveAction(artifacts);
-         testAtsWorkflowsHaveZeroOrOneVersion(artifacts);
-         testTasksHaveParentWorkflow(artifacts);
-         testReviewsHaveParentWorkflowOrActionableItems(artifacts);
-         testReviewsHaveValidDefectAndRoleXml(artifacts);
-         testTeamWorkflows(artifacts);
-         testAtsBranchManager(artifacts);
-         testTeamDefinitions(artifacts);
-         testVersionArtifacts(artifacts);
-         testStateMachineAssignees(artifacts);
-         testAtsLogs(artifacts);
-         testActionableItemToTeamDefinition(artifacts);
-         testTeamDefinitionHasWorkflow(artifacts);
-         for (IAtsHealthCheck atsHealthCheck : AtsHealthCheck.getAtsHealthCheckItems()) {
-            atsHealthCheck.validateAtsDatabase(artifacts, testNameToResultsMap);
-         }
-         if (monitor != null) {
-            monitor.worked(1);
-         }
-      }
-      // Log resultMap data into xResultData
-      String[] keys = testNameToResultsMap.keySet().toArray(new String[testNameToResultsMap.keySet().size()]);
-      Arrays.sort(keys);
-      for (String testName : keys) {
-         xResultData.log(testName);
-         for (String result : testNameToResultsMap.getValues(testName)) {
-            xResultData.log(result);
-         }
-      }
+      // Remove this after 0.9.7 release and last sync
       OseeEventManager.setDisableEvents(true);
+      try {
+
+         testNameToResultsMap = new HashCollection<String, String>();
+         int artSetNum = 1;
+         for (Collection<Integer> artIdList : artIdLists) {
+            // Don't process all lists if just trying to test this report
+            elapsedTime =
+               new ElapsedTime(String.format("ValidateAtsDatabase - load Artifact set %d/%d", artSetNum++,
+                  artIdLists.size()));
+            Collection<Artifact> artifacts = ArtifactQuery.getArtifactListFromIds(artIdList, AtsUtil.getAtsBranch());
+            elapsedTime.end();
+            count += artifacts.size();
+
+            SkynetTransaction transaction =
+               new SkynetTransaction(AtsUtil.getAtsBranch(), "Convert ATS for 097 Release");
+            ConvertAtsFor097Database.convertWorkPageDefinitions(testNameToResultsMap, artifacts, transaction);
+            ConvertAtsFor097Database.convertWorkflowArtifacts(testNameToResultsMap, artifacts, transaction);
+            transaction.execute();
+
+            testArtifactIds(artifacts);
+            testAtsAttributeValues(artifacts);
+            testAtsActionsHaveTeamWorkflow(artifacts);
+            testAtsWorkflowsHaveAction(artifacts);
+            testAtsWorkflowsHaveZeroOrOneVersion(artifacts);
+            testTasksHaveParentWorkflow(artifacts);
+            testReviewsHaveParentWorkflowOrActionableItems(artifacts);
+            testReviewsHaveValidDefectAndRoleXml(artifacts);
+            testTeamWorkflows(artifacts);
+            testAtsBranchManager(artifacts);
+            testTeamDefinitions(artifacts);
+            testVersionArtifacts(artifacts);
+            testStateMachineAssignees(artifacts);
+            testAtsLogs(artifacts);
+            testActionableItemToTeamDefinition(artifacts);
+            testTeamDefinitionHasWorkflow(artifacts);
+            for (IAtsHealthCheck atsHealthCheck : AtsHealthCheck.getAtsHealthCheckItems()) {
+               atsHealthCheck.validateAtsDatabase(artifacts, testNameToResultsMap);
+            }
+            if (monitor != null) {
+               monitor.worked(1);
+            }
+         }
+         // Log resultMap data into xResultData
+         String[] keys = testNameToResultsMap.keySet().toArray(new String[testNameToResultsMap.keySet().size()]);
+         Arrays.sort(keys);
+         for (String testName : keys) {
+            xResultData.log(testName);
+            for (String result : testNameToResultsMap.getValues(testName)) {
+               xResultData.log(result);
+            }
+         }
+      } finally {
+         OseeEventManager.setDisableEvents(false);
+      }
       xResultData.reportSevereLoggingMonitor(monitorLog);
       if (monitor != null) {
          xResultData.log(monitor, "Completed processing " + count + " artifacts.");
