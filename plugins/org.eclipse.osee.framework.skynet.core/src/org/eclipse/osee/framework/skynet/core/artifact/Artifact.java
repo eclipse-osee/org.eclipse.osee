@@ -97,7 +97,7 @@ import org.osgi.framework.Bundle;
  * Test: @link ArtifactTest
  */
 
-public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, Comparable<Artifact>, IBasicGuidArtifact {
+public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, IBasicGuidArtifact {
    public static final String UNNAMED = "Unnamed";
    public static final String BEFORE_GUID_STRING = "/BeforeGUID/PrePend";
    public static final String AFTER_GUID_STRING = "/AfterGUID";
@@ -164,10 +164,10 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, Co
 
    /**
     * All the artifacts related to this artifact by relations of type relationType are returned in a list order based on
-    * the stored relation order
+    * the stored relation order use getRelatedArtifacts(Artifact artifact, IRelationEnumeration relationEnum) instead
+    * (or similar variant)
     */
    @Deprecated
-   // use getRelatedArtifacts(Artifact artifact, IRelationEnumeration relationEnum)  instead (or similar variant)
    public List<? extends IArtifact> getRelatedArtifacts(RelationType relationType) throws OseeCoreException {
       return RelationManager.getRelatedArtifacts(this, new RelationTypeSide(relationType, RelationSide.SIDE_B));
    }
@@ -579,7 +579,7 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, Co
       return !attributes.isEmpty();
    }
 
-   public Collection<AttributeType> getAttributeTypes() throws OseeCoreException {
+   public Collection<IAttributeType> getAttributeTypes() throws OseeCoreException {
       return getArtifactType().getAttributeTypes(branch);
    }
 
@@ -1568,28 +1568,6 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, Co
    }
 
    @Override
-   public final int compareTo(Artifact otherArtifact) {
-      if (otherArtifact == null || otherArtifact.isDeleted()) {
-         return -1;
-      } else if (this.isDeleted()) {
-         return 1;
-      }
-
-      int diff;
-      if (otherArtifact.equals(this)) {
-         diff = 0;
-      } else {
-         try {
-            diff = getName().compareTo(otherArtifact.getName());
-         } catch (Exception ex) {
-            diff = 0;
-         }
-      }
-
-      return diff;
-   }
-
-   @Override
    public final int hashCode() {
       int hashCode = 11;
       hashCode = hashCode * 37 + getGuid().hashCode();
@@ -1628,8 +1606,8 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, Co
       return false;
    }
 
-   public int getRemainingAttributeCount(AttributeType attributeType) throws OseeCoreException {
-      return attributeType.getMaxOccurrences() - getAttributeCount(attributeType);
+   public int getRemainingAttributeCount(IAttributeType attributeType) throws OseeCoreException {
+      return AttributeTypeManager.getMaxOccurrences(attributeType) - getAttributeCount(attributeType);
    }
 
    public int getAttributeCount(IAttributeType attributeType) throws OseeCoreException {
@@ -1722,8 +1700,8 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, Co
       if (modType == ModificationType.DELETED) {
          return;
       }
-      for (AttributeType attributeType : getAttributeTypes()) {
-         int missingCount = attributeType.getMinOccurrences() - getAttributeCount(attributeType);
+      for (IAttributeType attributeType : getAttributeTypes()) {
+         int missingCount = AttributeTypeManager.getMinOccurrences(attributeType) - getAttributeCount(attributeType);
          for (int i = 0; i < missingCount; i++) {
             initializeAttribute(attributeType, ModificationType.NEW, isNewArtifact, true);
          }

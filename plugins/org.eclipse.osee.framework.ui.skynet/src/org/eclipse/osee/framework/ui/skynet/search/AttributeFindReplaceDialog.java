@@ -101,8 +101,8 @@ public class AttributeFindReplaceDialog extends Dialog {
 
    private void setInputs() {
       try {
-         Collection<AttributeType> attributeTypes = AttributeTypeManager.getValidAttributeTypes(branch);
-         cmbAttributeDescriptors.setInput(attributeTypes.toArray(new AttributeType[attributeTypes.size()]));
+         Collection<IAttributeType> attributeTypes = AttributeTypeManager.getValidAttributeTypes(branch);
+         cmbAttributeDescriptors.setInput(attributeTypes.toArray(new IAttributeType[attributeTypes.size()]));
          cmbAttributeDescriptors.getCombo().select(0);
       } catch (OseeCoreException ex) {
          cmbAttributeDescriptors.setInput(new Object[] {ex});

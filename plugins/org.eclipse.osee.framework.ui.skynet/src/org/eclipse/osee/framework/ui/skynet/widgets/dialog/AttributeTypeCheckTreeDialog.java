@@ -15,7 +15,7 @@ import java.util.Collection;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.widgets.Composite;
@@ -27,11 +27,11 @@ import org.eclipse.ui.dialogs.CheckedTreeSelectionDialog;
  */
 public class AttributeTypeCheckTreeDialog extends CheckedTreeSelectionDialog {
 
-   public AttributeTypeCheckTreeDialog(Collection<? extends AttributeType> attributeTypes) {
+   public AttributeTypeCheckTreeDialog(Collection<IAttributeType> attributeTypes) {
       this(attributeTypes, new AttributeTypeLabelProvider());
    }
 
-   public AttributeTypeCheckTreeDialog(Collection<? extends AttributeType> attributeTypes, ILabelProvider iLabelProvider) {
+   public AttributeTypeCheckTreeDialog(Collection<IAttributeType> attributeTypes, ILabelProvider iLabelProvider) {
       super(Displays.getActiveShell(), iLabelProvider, new ArrayTreeContentProvider());
       if (attributeTypes != null) {
          setInput(attributeTypes);
@@ -42,10 +42,10 @@ public class AttributeTypeCheckTreeDialog extends CheckedTreeSelectionDialog {
       this(null);
    }
 
-   public Collection<AttributeType> getSelection() {
-      ArrayList<AttributeType> arts = new ArrayList<AttributeType>();
+   public Collection<IAttributeType> getSelection() {
+      ArrayList<IAttributeType> arts = new ArrayList<IAttributeType>();
       for (Object obj : getResult()) {
-         arts.add((AttributeType) obj);
+         arts.add((IAttributeType) obj);
       }
       return arts;
    }
@@ -57,16 +57,11 @@ public class AttributeTypeCheckTreeDialog extends CheckedTreeSelectionDialog {
          @SuppressWarnings("unchecked")
          @Override
          public int compare(Viewer viewer, Object e1, Object e2) {
-            AttributeType type1 = (AttributeType) e1;
-            AttributeType type2 = (AttributeType) e2;
+            IAttributeType type1 = (IAttributeType) e1;
+            IAttributeType type2 = (IAttributeType) e2;
             return getComparator().compare(type1.getName(), type2.getName());
          }
       });
       return c;
    }
-
-   public void setAttributeType(Collection<? extends AttributeType> attributeTypes) {
-      setInput(attributeTypes);
-   }
-
 }

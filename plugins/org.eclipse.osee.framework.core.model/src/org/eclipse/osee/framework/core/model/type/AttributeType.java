@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  * @author Robert A. Fisher
  * @author Ryan D. Brooks
  */
-public final class AttributeType extends AbstractOseeType implements Comparable<AttributeType>, IAttributeType {
+public final class AttributeType extends AbstractOseeType implements IAttributeType {
 
    private static final String ATTRIBUTE_BASE_TYPE_ID_FIELD_KEY = "osee.base.attribute.type.id.field";
    private static final String ATTRIBUTE_PROVIDER_ID_FIELD_KEY = "osee.attribute.provider.id.field";
@@ -112,15 +112,6 @@ public final class AttributeType extends AbstractOseeType implements Comparable<
 
    public String getFileTypeExtension() {
       return getFieldValueLogException("", ATTRIBUTE_FILE_EXTENSION_FIELD_KEY);
-   }
-
-   @Override
-   public int compareTo(AttributeType other) {
-      int result = -1;
-      if (other != null && other.getName() != null && getName() != null) {
-         result = getName().compareTo(other.getName());
-      }
-      return result;
    }
 
    /**

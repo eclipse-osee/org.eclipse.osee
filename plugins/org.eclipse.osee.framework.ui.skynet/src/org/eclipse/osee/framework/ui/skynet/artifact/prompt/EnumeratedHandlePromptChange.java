@@ -46,7 +46,7 @@ public class EnumeratedHandlePromptChange implements IHandlePromptChange {
       this.persist = persist;
 
       try {
-         isSingletonAttribute = AttributeTypeManager.getType(attributeType).getMaxOccurrences() == 1;
+         isSingletonAttribute = AttributeTypeManager.getMaxOccurrences(attributeType) == 1;
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }

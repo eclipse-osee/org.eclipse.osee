@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.server.ISession;
 /**
  * @author Roberto E. Escobar
  */
-public final class Session extends AbstractOseeType implements ISession, Comparable<ISession> {
+public final class Session extends AbstractOseeType implements ISession {
 
    public static final String SESSION_CREATION_DATE = "session.creation.date";
    public static final String SESSION_USER_ID = "session.user.id";
@@ -129,14 +129,4 @@ public final class Session extends AbstractOseeType implements ISession, Compara
    public void setClientPort(Integer clientPort) {
       setFieldLogException(SESSION_CLIENT_PORT, clientPort);
    }
-
-   @Override
-   public int compareTo(ISession other) {
-      int result = -1;
-      if (other != null && other.getGuid() != null && getGuid() != null) {
-         result = getGuid().compareTo(other.getGuid());
-      }
-      return result;
-   }
-
 }

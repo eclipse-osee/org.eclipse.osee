@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.core.model.OseeField;
 /**
  * @author Robert A. Fisher
  */
-public final class RelationType extends AbstractOseeType implements IRelationType, Comparable<RelationType> {
+public final class RelationType extends AbstractOseeType implements IRelationType {
 
    private static final String RELATION_SIDE_A_NAME_FIELD_KEY = "osee.relation.type.side.a.name.field";
    private static final String RELATION_SIDE_B_NAME_FIELD_KEY = "osee.relation.type.side.b.name.field";
@@ -102,15 +102,6 @@ public final class RelationType extends AbstractOseeType implements IRelationTyp
          throw new OseeArgumentException("sideName does not match either of the available side names");
       }
       return getSideAName().equals(sideName);
-   }
-
-   @Override
-   public int compareTo(RelationType other) {
-      int result = -1;
-      if (other != null && other.getName() != null && getName() != null) {
-         result = getName().compareTo(other.getName());
-      }
-      return result;
    }
 
    @Override

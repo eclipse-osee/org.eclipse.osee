@@ -75,7 +75,7 @@ public class OseeValidator {
 
    public IStatus validate(int requiredQualityOfService, Artifact artifact) {
       try {
-         for (AttributeType attributeType : artifact.getAttributeTypes()) {
+         for (IAttributeType attributeType : artifact.getAttributeTypes()) {
             for (Attribute<?> attribute : artifact.getAttributes(attributeType)) {
                IStatus status = validate(requiredQualityOfService, artifact, attributeType, attribute.getValue());
                if (!status.isOK()) {

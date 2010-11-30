@@ -92,4 +92,12 @@ public class NamedIdentity implements Identity, FullyNamed, HasDescription {
    public void setName(String name) throws OseeCoreException {
       this.name = name;
    }
+
+   @Override
+   public int compareTo(Named other) {
+      if (other != null && other.getName() != null && getName() != null) {
+         return getName().compareTo(other.getName());
+      }
+      return -1;
+   }
 }

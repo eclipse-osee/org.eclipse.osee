@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.core.model.internal.fields.ArtifactTypeAttribu
 /**
  * @author Robert A. Fisher
  */
-public final class ArtifactType extends AbstractOseeType implements Comparable<ArtifactType>, IArtifactType {
+public final class ArtifactType extends AbstractOseeType implements IArtifactType {
 
    public static final String ARTIFACT_IS_ABSTRACT_FIELD_KEY = "osee.artifact.type.is.abstract.field";
    public static final String ARTIFACT_INHERITANCE_FIELD_KEY = "osee.artifact.type.inheritance.field";
@@ -115,14 +115,14 @@ public final class ArtifactType extends AbstractOseeType implements Comparable<A
       return getFieldValue(ARTIFACT_TYPE_ATTRIBUTES_FIELD_KEY);
    }
 
-   public Collection<AttributeType> getAttributeTypes(Branch branch) throws OseeCoreException {
+   public Collection<IAttributeType> getAttributeTypes(Branch branch) throws OseeCoreException {
       // Do not use ARTIFACT_TYPE_ATTRIBUTES_FIELD for this call since it must use branch inheritance to get all attribute types
-      Set<AttributeType> attributeTypes = new HashSet<AttributeType>();
+      Set<IAttributeType> attributeTypes = new HashSet<IAttributeType>();
       getAttributeTypes(attributeTypes, this, branch);
       return attributeTypes;
    }
 
-   private static void getAttributeTypes(Set<AttributeType> attributeTypes, ArtifactType artifactType, Branch branch) throws OseeCoreException {
+   private static void getAttributeTypes(Set<IAttributeType> attributeTypes, ArtifactType artifactType, Branch branch) throws OseeCoreException {
       Map<Branch, Collection<AttributeType>> validityMap = artifactType.getLocalAttributeTypes();
 
       Branch branchCursor = branch;
@@ -184,14 +184,4 @@ public final class ArtifactType extends AbstractOseeType implements Comparable<A
    public String toString() {
       return getName();
    }
-
-   @Override
-   public int compareTo(ArtifactType other) {
-      int result = -1;
-      if (other != null && other.getName() != null && getName() != null) {
-         result = getName().compareTo(other.getName());
-      }
-      return result;
-   }
-
 }

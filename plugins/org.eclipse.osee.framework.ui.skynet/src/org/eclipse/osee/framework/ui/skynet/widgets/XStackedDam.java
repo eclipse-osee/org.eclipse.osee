@@ -23,7 +23,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -75,10 +74,8 @@ public class XStackedDam extends XStackedWidget<String> implements IAttributeWid
    public void setAttributeType(Artifact artifact, IAttributeType attributeType) throws OseeCoreException {
       this.artifact = artifact;
       this.attributeType = attributeType;
-      AttributeType theAttributeType = AttributeTypeManager.getType(getAttributeType());
-
-      int minOccurrence = theAttributeType.getMinOccurrences();
-      int maxOccurrence = theAttributeType.getMaxOccurrences();
+      int minOccurrence = AttributeTypeManager.getMinOccurrences(attributeType);
+      int maxOccurrence = AttributeTypeManager.getMaxOccurrences(attributeType);
 
       if (minOccurrence == 0) {
          minOccurrence = 1;

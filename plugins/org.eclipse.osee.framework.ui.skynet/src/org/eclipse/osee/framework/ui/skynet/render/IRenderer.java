@@ -15,7 +15,6 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
@@ -66,5 +65,5 @@ public interface IRenderer {
 
    public IComparator getComparator();
 
-   public List<AttributeType> orderAttributeNames(Artifact artifact, Collection<AttributeType> attributeTypes);
+   public List<IAttributeType> orderAttributeNames(Artifact artifact, Collection<IAttributeType> attributeTypes);
 }

@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -146,7 +145,7 @@ public final class RendererManager {
          producer, options, attributeElement);
    }
 
-   public static Collection<AttributeType> getAttributeTypeOrderList(Artifact artifact) throws OseeCoreException {
+   public static Collection<IAttributeType> getAttributeTypeOrderList(Artifact artifact) throws OseeCoreException {
       return getBestRenderer(PresentationType.PRODUCE_ATTRIBUTE, artifact, null).orderAttributeNames(artifact,
          artifact.getAttributeTypes());
    }

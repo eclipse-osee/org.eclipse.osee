@@ -16,7 +16,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -55,9 +54,8 @@ public class XSelectFromMultiChoiceDam extends XSelectFromDialog<String> impleme
    public void setAttributeType(Artifact artifact, IAttributeType attributeType) throws OseeCoreException {
       this.artifact = artifact;
       this.attributeType = attributeType;
-      AttributeType theAttributeType = AttributeTypeManager.getType(getAttributeType());
-      int minOccurrence = theAttributeType.getMinOccurrences();
-      int maxOccurrence = theAttributeType.getMaxOccurrences();
+      int minOccurrence = AttributeTypeManager.getMinOccurrences(attributeType);
+      int maxOccurrence = AttributeTypeManager.getMaxOccurrences(attributeType);
 
       setRequiredSelection(minOccurrence, maxOccurrence);
       setSelected(getStored());

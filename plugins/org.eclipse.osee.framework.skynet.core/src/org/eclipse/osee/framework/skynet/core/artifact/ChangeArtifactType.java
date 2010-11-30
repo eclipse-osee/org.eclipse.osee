@@ -20,13 +20,13 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugPlugin;
-import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -132,7 +132,7 @@ public class ChangeArtifactType {
    private static void processAttributes(Artifact artifact, IArtifactType artifactType) throws OseeCoreException {
       attributesToPurge = new LinkedList<Attribute<?>>();
 
-      for (AttributeType attributeType : artifact.getAttributeTypes()) {
+      for (IAttributeType attributeType : artifact.getAttributeTypes()) {
          ArtifactType aType = ArtifactTypeManager.getType(artifactType);
          if (!aType.isValidAttributeType(attributeType, artifact.getBranch())) {
             attributesToPurge.addAll(artifact.getAttributes(attributeType));

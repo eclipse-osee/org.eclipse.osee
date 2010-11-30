@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.RelationTypeSide;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -116,7 +115,7 @@ public final class SkyWalkerOptions {
       if (showAttributes == null) {
          showAttributes = new HashMap<IAttributeType, Boolean>();
          try {
-            for (AttributeType descriptor : AttributeTypeManager.getValidAttributeTypes(artifact.getBranch())) {
+            for (IAttributeType descriptor : AttributeTypeManager.getValidAttributeTypes(artifact.getBranch())) {
                showAttributes.put(descriptor, false);
             }
          } catch (OseeCoreException ex) {

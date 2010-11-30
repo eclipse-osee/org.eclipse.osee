@@ -12,8 +12,8 @@ package org.eclipse.osee.framework.ui.skynet.Import;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.AttributeBasedArtifactResolver;
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.GuidBasedArtifactResolver;
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.IArtifactImportResolver;
@@ -24,7 +24,7 @@ public enum MatchingStrategy {
    GUID(),
    NONE();
 
-   public IArtifactImportResolver getResolver(IArtifactType primaryArtifactType, Collection<AttributeType> nonChangingAttributes, boolean createNewIfNotExist, boolean deleteUnmatchedArtifacts) {
+   public IArtifactImportResolver getResolver(IArtifactType primaryArtifactType, Collection<IAttributeType> nonChangingAttributes, boolean createNewIfNotExist, boolean deleteUnmatchedArtifacts) {
       switch (this) {
          case ATTRIBUTE:
             return new AttributeBasedArtifactResolver(primaryArtifactType, CoreArtifactTypes.Heading,

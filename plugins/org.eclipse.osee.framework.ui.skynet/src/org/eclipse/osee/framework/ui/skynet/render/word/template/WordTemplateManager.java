@@ -12,13 +12,12 @@
 package org.eclipse.osee.framework.ui.skynet.render.word.template;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
@@ -226,15 +225,13 @@ public class WordTemplateManager {
 
    /**
     * This method expands wildcard(*) attribute names into all of the attribute types of a particular artifact.
-    * 
     */
    private List<ITemplateTask> preProcessTemplateTasks(List<ITemplateTask> tasks, Artifact artifact) throws OseeCoreException {
       List<ITemplateTask> newTasks = new ArrayList<ITemplateTask>();
       for (ITemplateTask task : tasks) {
          if (task instanceof TemplateAttribute && ((TemplateAttribute) task).isTypeNameWildcard()) {
             TemplateAttribute attributeTask = (TemplateAttribute) task;
-            Collection<AttributeType> attributeTypes = artifact.getAttributeTypes();
-            for (AttributeType attributeType : attributeTypes) {
+            for (IAttributeType attributeType : artifact.getAttributeTypes()) {
                newTasks.add(new TemplateAttribute(attributeTask, attributeType.getName()));
             }
          } else {

@@ -29,9 +29,9 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -298,7 +298,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       attributeValue.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
       try {
-         for (AttributeType type : AttributeTypeManager.getValidAttributeTypes(getSelectedBranch())) {
+         for (IAttributeType type : AttributeTypeManager.getValidAttributeTypes(getSelectedBranch())) {
             attributeTypeList.add(type.getName());
             attributeTypeList.setData(type.getName(), type);
          }

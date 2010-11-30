@@ -16,7 +16,6 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -35,12 +34,12 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
  */
 public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvider {
 
-   private DynamicXWidgetLayoutData createDynamicXWidgetLayout(AttributeType attributeType) {
+   private DynamicXWidgetLayoutData createDynamicXWidgetLayout(IAttributeType attributeType, int minOccurrence) {
       DynamicXWidgetLayoutData defaultData = new DynamicXWidgetLayoutData(null);
       defaultData.setName(attributeType.getName());
       defaultData.setStoreName(attributeType.getName());
       defaultData.setToolTip(attributeType.getDescription());
-      if (attributeType.getMinOccurrences() > 0) {
+      if (minOccurrence > 0) {
          defaultData.getXOptionHandler().add(XOption.REQUIRED);
       }
       defaultData.getXOptionHandler().add(XOption.HORIZONTAL_LABEL);
@@ -49,13 +48,12 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
 
    @Override
    public List<DynamicXWidgetLayoutData> getDynamicXWidgetLayoutData(IAttributeType attributeType) throws OseeCoreException {
-      AttributeType fullAttributeType = AttributeTypeManager.getType(attributeType);
-      int minOccurrence = fullAttributeType.getMinOccurrences();
-      int maxOccurrence = fullAttributeType.getMaxOccurrences();
+      int minOccurrence = AttributeTypeManager.getMinOccurrences(attributeType);
+      int maxOccurrence = AttributeTypeManager.getMaxOccurrences(attributeType);
 
       List<DynamicXWidgetLayoutData> xWidgetLayoutData = new ArrayList<DynamicXWidgetLayoutData>();
 
-      DynamicXWidgetLayoutData defaultData = createDynamicXWidgetLayout(fullAttributeType);
+      DynamicXWidgetLayoutData defaultData = createDynamicXWidgetLayout(attributeType, minOccurrence);
       xWidgetLayoutData.add(defaultData);
 
       String xWidgetName;

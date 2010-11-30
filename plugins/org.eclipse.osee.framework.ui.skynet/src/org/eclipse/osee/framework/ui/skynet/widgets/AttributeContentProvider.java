@@ -15,8 +15,8 @@ import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -36,7 +36,7 @@ public class AttributeContentProvider implements ITreeContentProvider {
          ArrayList<Object> descriptors = new ArrayList<Object>();
 
          try {
-            for (AttributeType descriptor : AttributeTypeManager.getValidAttributeTypes((Branch) parentElement)) {
+            for (IAttributeType descriptor : AttributeTypeManager.getValidAttributeTypes((Branch) parentElement)) {
                descriptors.add(descriptor);
             }
          } catch (Exception ex) {

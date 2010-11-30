@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.panels;
 import java.util.Collection;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.AttributeTypeCheckTreeDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.AttributeTypeLabelProvider;
 import org.eclipse.swt.widgets.Shell;
@@ -21,9 +21,9 @@ import org.eclipse.swt.widgets.Shell;
 /**
  * @author Roberto E. Escobar
  */
-public class AttributeTypeSelectPanel extends AbstractItemSelectPanel<Collection<AttributeType>> {
+public class AttributeTypeSelectPanel extends AbstractItemSelectPanel<Collection<IAttributeType>> {
 
-   private Collection<AttributeType> attributeTypes;
+   private Collection<IAttributeType> attributeTypes;
    private String title;
    private String message;
 
@@ -33,7 +33,7 @@ public class AttributeTypeSelectPanel extends AbstractItemSelectPanel<Collection
       this.message = "";
    }
 
-   public void setAllowedAttributeTypes(Collection<AttributeType> attributeTypes) {
+   public void setAllowedAttributeTypes(Collection<IAttributeType> attributeTypes) {
       this.attributeTypes = attributeTypes;
    }
 
@@ -46,7 +46,7 @@ public class AttributeTypeSelectPanel extends AbstractItemSelectPanel<Collection
    }
 
    @Override
-   protected Dialog createSelectDialog(Shell shell, Collection<AttributeType> lastSelected) {
+   protected Dialog createSelectDialog(Shell shell, Collection<IAttributeType> lastSelected) {
       AttributeTypeCheckTreeDialog dialog = new AttributeTypeCheckTreeDialog(attributeTypes);
       dialog.setTitle(title);
       dialog.setMessage(message);
@@ -60,7 +60,7 @@ public class AttributeTypeSelectPanel extends AbstractItemSelectPanel<Collection
    protected boolean updateFromDialogResult(Dialog dialog) {
       boolean wasUpdated = false;
       AttributeTypeCheckTreeDialog castedDialog = (AttributeTypeCheckTreeDialog) dialog;
-      Collection<AttributeType> artifactTypes = castedDialog.getSelection();
+      Collection<IAttributeType> artifactTypes = castedDialog.getSelection();
       if (artifactTypes != null) {
          setSelected(artifactTypes);
          wasUpdated = true;

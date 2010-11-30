@@ -46,9 +46,9 @@ public class AttributeTypeManager {
       return Activator.getInstance().getOseeCacheService().getBranchCache();
    }
 
-   public static Collection<AttributeType> getValidAttributeTypes(IOseeBranch branchToken) throws OseeCoreException {
+   public static Collection<IAttributeType> getValidAttributeTypes(IOseeBranch branchToken) throws OseeCoreException {
       Branch branch = getBranchCache().get(branchToken);
-      Set<AttributeType> attributeTypes = new HashSet<AttributeType>(100);
+      Set<IAttributeType> attributeTypes = new HashSet<IAttributeType>(100);
       for (ArtifactType artifactType : ArtifactTypeManager.getAllTypes()) {
          attributeTypes.addAll(artifactType.getAttributeTypes(branch));
       }
@@ -59,8 +59,8 @@ public class AttributeTypeManager {
       return getCache().getAll();
    }
 
-   public static Collection<AttributeType> getTaggableTypes() throws OseeCoreException {
-      Collection<AttributeType> taggableTypes = new ArrayList<AttributeType>();
+   public static Collection<IAttributeType> getTaggableTypes() throws OseeCoreException {
+      Collection<IAttributeType> taggableTypes = new ArrayList<IAttributeType>();
       for (AttributeType type : getAllTypes()) {
          if (type.isTaggable()) {
             taggableTypes.add(type);
@@ -115,12 +115,20 @@ public class AttributeTypeManager {
       return attributeType;
    }
 
-   public static Set<String> getEnumerationValues(AttributeType attributeType) throws OseeCoreException {
+   private static Set<String> getEnumerationValues(AttributeType attributeType) throws OseeCoreException {
       return attributeType.getOseeEnumType().valuesAsOrderedStringSet();
    }
 
    public static Set<String> getEnumerationValues(IAttributeType attributeType) throws OseeCoreException {
       return getEnumerationValues(getType(attributeType));
+   }
+
+   public static int getMinOccurrences(IAttributeType attributeType) throws OseeCoreException {
+      return getType(attributeType).getMinOccurrences();
+   }
+
+   public static int getMaxOccurrences(IAttributeType attributeType) throws OseeCoreException {
+      return getType(attributeType).getMaxOccurrences();
    }
 
    public static Set<String> getEnumerationValues(String attributeName) throws OseeCoreException {

@@ -19,7 +19,6 @@ import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -97,7 +96,7 @@ public class AttributeFormPart extends AbstractFormPart {
       try {
          Artifact artifact = editor.getEditorInput().getArtifact();
 
-         List<AttributeType> types = AttributeTypeUtil.getTypesWithData(artifact);
+         List<IAttributeType> types = AttributeTypeUtil.getTypesWithData(artifact);
          addWidgetForAttributeType(types);
 
          layoutControls(composite);
@@ -110,7 +109,7 @@ public class AttributeFormPart extends AbstractFormPart {
       }
    }
 
-   public void addWidgetForAttributeType(Collection<? extends IAttributeType> attributeTypes) throws OseeCoreException {
+   public void addWidgetForAttributeType(Collection<IAttributeType> attributeTypes) throws OseeCoreException {
       Artifact artifact = editor.getEditorInput().getArtifact();
       boolean isEditable = !artifact.isReadOnly();
 
@@ -295,7 +294,7 @@ public class AttributeFormPart extends AbstractFormPart {
       }
    }
 
-   public void removeWidgetForAttributeType(Collection<? extends IAttributeType> attributeTypes) {
+   public void removeWidgetForAttributeType(Collection<IAttributeType> attributeTypes) {
       for (IAttributeType attributeType : attributeTypes) {
          xWidgetsMap.remove(attributeType).dispose();
       }

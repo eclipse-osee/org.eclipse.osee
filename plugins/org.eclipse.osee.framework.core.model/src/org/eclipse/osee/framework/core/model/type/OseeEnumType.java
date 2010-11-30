@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.core.model.internal.fields.EnumEntryField;
  * 
  * @author Roberto E. Escobar
  */
-public class OseeEnumType extends AbstractOseeType implements Comparable<OseeEnumType> {
+public class OseeEnumType extends AbstractOseeType {
 
    public static final String OSEE_ENUM_TYPE_ENTRIES_FIELD = "osee.enum.type.entries.field";
 
@@ -122,18 +122,8 @@ public class OseeEnumType extends AbstractOseeType implements Comparable<OseeEnu
       List<OseeEnumEntry> entries = new ArrayList<OseeEnumEntry>();
       entries.addAll(Arrays.asList(values()));
       if (!entries.remove(entry)) {
-         throw new OseeArgumentException("OseeEnumEntry[%s] does not exist on OseeEnumType[%s]", entry,
-            this);
+         throw new OseeArgumentException("OseeEnumEntry[%s] does not exist on OseeEnumType[%s]", entry, this);
       }
       setEntries(entries);
-   }
-
-   @Override
-   public int compareTo(OseeEnumType other) {
-      int result = -1;
-      if (other != null && other.getName() != null && getName() != null) {
-         result = getName().compareTo(other.getName());
-      }
-      return result;
    }
 }

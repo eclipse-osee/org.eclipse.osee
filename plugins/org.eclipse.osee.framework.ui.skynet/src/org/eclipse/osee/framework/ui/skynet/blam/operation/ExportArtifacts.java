@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -38,7 +39,7 @@ import org.eclipse.swt.program.Program;
 public class ExportArtifacts extends AbstractBlam {
    private CharBackedInputStream charBak;
    private ISheetWriter excelWriter;
-   private AttributeType[] attributeColumns;
+   private IAttributeType[] attributeColumns;
    private AttributeType nameAttributeType;
    private static final int NUM_FIXED_COLUMNS = 4;
 
@@ -72,7 +73,7 @@ public class ExportArtifacts extends AbstractBlam {
       excelWriter.writeCell("HRID");
       excelWriter.writeCell("Artifact Type");
       excelWriter.writeCell("Name");
-      for (AttributeType attributeType : attributeColumns) {
+      for (IAttributeType attributeType : attributeColumns) {
          excelWriter.writeCell(attributeType.getName());
       }
       excelWriter.endRow();
@@ -83,7 +84,7 @@ public class ExportArtifacts extends AbstractBlam {
          row[1] = artifact.getHumanReadableId();
          row[2] = artifact.getArtifactTypeName();
          row[3] = artifact.getName();
-         for (AttributeType attributeType : artifact.getAttributeTypes()) {
+         for (IAttributeType attributeType : artifact.getAttributeTypes()) {
             if (!attributeType.equals(nameAttributeType)) {
                String value = artifact.getAttributesToString(attributeType);
                if (!value.equals("")) {
@@ -102,10 +103,10 @@ public class ExportArtifacts extends AbstractBlam {
    }
 
    private void mapAttributeTypeToColumn(List<Artifact> artifacts) throws OseeCoreException {
-      HashSet<AttributeType> attributeTypes = new HashSet<AttributeType>();
+      HashSet<IAttributeType> attributeTypes = new HashSet<IAttributeType>();
 
       for (Artifact artifact : artifacts) {
-         for (AttributeType attributeType : artifact.getAttributeTypes()) {
+         for (IAttributeType attributeType : artifact.getAttributeTypes()) {
             attributeTypes.add(attributeType);
          }
       }

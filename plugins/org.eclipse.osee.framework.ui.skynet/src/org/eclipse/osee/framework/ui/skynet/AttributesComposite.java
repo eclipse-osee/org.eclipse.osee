@@ -22,8 +22,8 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerEditor;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -247,7 +247,7 @@ public class AttributesComposite extends Composite {
             MenuItem addItem = (MenuItem) e.getSource();
             for (MenuItem attrItem : addItem.getMenu().getItems()) {
                try {
-                  attrItem.setEnabled(artifact.getRemainingAttributeCount((AttributeType) attrItem.getData()) > 0);
+                  attrItem.setEnabled(artifact.getRemainingAttributeCount((IAttributeType) attrItem.getData()) > 0);
                } catch (OseeCoreException ex) {
                   OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                }
@@ -259,7 +259,7 @@ public class AttributesComposite extends Composite {
 
       try {
          SelectionAdapter listener = new AttributeMenuSelectionListener(this, tableViewer, editor);
-         for (AttributeType attributeType : artifact.getAttributeTypes()) {
+         for (IAttributeType attributeType : artifact.getAttributeTypes()) {
             MenuItem item = new MenuItem(attributesMenu, SWT.CASCADE);
             item.setText(attributeType.getName() + " Attribute");
             item.setData(attributeType);

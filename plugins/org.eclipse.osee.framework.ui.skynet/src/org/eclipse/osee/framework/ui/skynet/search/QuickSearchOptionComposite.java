@@ -454,14 +454,14 @@ public class QuickSearchOptionComposite extends Composite {
       @Override
       public void configure() {
          try {
-            Collection<AttributeType> taggableItems = AttributeTypeManager.getTaggableTypes();
+            Collection<IAttributeType> taggableItems = AttributeTypeManager.getTaggableTypes();
             AttributeTypeFilteredCheckTreeDialog dialog =
                new AttributeTypeFilteredCheckTreeDialog("Attribute Type Filter Selection",
                   "Select attribute types to search in.");
             dialog.setSelectableTypes(taggableItems);
 
-            List<AttributeType> selectedElements = new ArrayList<AttributeType>();
-            for (AttributeType type : taggableItems) {
+            List<IAttributeType> selectedElements = new ArrayList<IAttributeType>();
+            for (IAttributeType type : taggableItems) {
                if (configuration.contains(type)) {
                   selectedElements.add(type);
                }
@@ -522,7 +522,7 @@ public class QuickSearchOptionComposite extends Composite {
 
       @Override
       public String toString() {
-         Collection<AttributeType> taggableItems;
+         Collection<IAttributeType> taggableItems;
          try {
             taggableItems = AttributeTypeManager.getTaggableTypes();
             if (taggableItems.size() == configuration.size()) {

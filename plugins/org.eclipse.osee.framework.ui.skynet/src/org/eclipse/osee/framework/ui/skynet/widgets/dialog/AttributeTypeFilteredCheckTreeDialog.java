@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -33,7 +34,7 @@ import org.eclipse.ui.dialogs.PatternFilter;
 public class AttributeTypeFilteredCheckTreeDialog extends OSEECheckedFilteredTreeDialog {
 
    private static PatternFilter patternFilter = new PatternFilter();
-   private Collection<AttributeType> selectableTypes;
+   private Collection<IAttributeType> selectableTypes;
 
    public AttributeTypeFilteredCheckTreeDialog(String title, String message) {
       super(title, message, patternFilter, new AttributeContentProvider(), new AttributeTypeLabelProvider(),
@@ -68,11 +69,11 @@ public class AttributeTypeFilteredCheckTreeDialog extends OSEECheckedFilteredTre
       return super.isComplete();
    }
 
-   public Collection<AttributeType> getSelectableTypes() {
+   public Collection<IAttributeType> getSelectableTypes() {
       return selectableTypes;
    }
 
-   public void setSelectableTypes(Collection<AttributeType> selectableTypes) {
+   public void setSelectableTypes(Collection<IAttributeType> selectableTypes) {
       this.selectableTypes = selectableTypes;
    }
 

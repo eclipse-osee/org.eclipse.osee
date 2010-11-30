@@ -20,9 +20,9 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -316,7 +316,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
       return artifactTypeSelectPanel.getSelected();
    }
 
-   public Collection<AttributeType> getNonChangingAttributes() {
+   public Collection<IAttributeType> getNonChangingAttributes() {
       return attributeTypeSelectPanel.getSelected();
    }
 
@@ -385,7 +385,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
                OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
          } else {
-            attributeTypeSelectPanel.setAllowedAttributeTypes(new ArrayList<AttributeType>());
+            attributeTypeSelectPanel.setAllowedAttributeTypes(new ArrayList<IAttributeType>());
          }
       }
    }

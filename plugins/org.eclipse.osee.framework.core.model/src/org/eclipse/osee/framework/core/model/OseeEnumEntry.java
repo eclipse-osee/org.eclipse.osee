@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
 /**
  * @author Roberto E. Escobar
  */
-public class OseeEnumEntry extends AbstractOseeType implements Comparable<OseeEnumEntry> {
+public class OseeEnumEntry extends AbstractOseeType {
    private final static String ENUM_ENTRY_ORDINAL_FIELD = "osee.enum.entry.ordinal.field";
 
    public OseeEnumEntry(String guid, String name, int ordinal) {
@@ -35,10 +35,6 @@ public class OseeEnumEntry extends AbstractOseeType implements Comparable<OseeEn
    public Pair<String, Integer> asPair() {
       return new Pair<String, Integer>(getName(), ordinal());
    }
-
-   //   public OseeEnumType getDeclaringClass() throws OseeCoreException {
-   //      return getCache().getEnumType(this);
-   //   }
 
    @Override
    public boolean equals(Object object) {
@@ -60,10 +56,5 @@ public class OseeEnumEntry extends AbstractOseeType implements Comparable<OseeEn
    @Override
    public String toString() {
       return String.format("%s:%s", getName(), ordinal());
-   }
-
-   @Override
-   public int compareTo(OseeEnumEntry other) {
-      return this.ordinal() - other.ordinal();
    }
 }

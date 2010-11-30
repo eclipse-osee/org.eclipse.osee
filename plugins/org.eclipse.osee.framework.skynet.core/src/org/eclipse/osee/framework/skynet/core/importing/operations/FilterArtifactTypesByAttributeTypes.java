@@ -15,10 +15,10 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -50,17 +50,14 @@ public class FilterArtifactTypesByAttributeTypes extends AbstractOperation {
          names.addAll(artifact.getAttributeTypeNames());
       }
       selectedArtifactTypes.clear();
-      Set<AttributeType> requiredTypes = new HashSet<AttributeType>();
+      Set<IAttributeType> requiredTypes = new HashSet<IAttributeType>();
       for (String name : names) {
-         AttributeType type = AttributeTypeManager.getType(name);
-         if (type != null) {
-            requiredTypes.add(type);
-         }
+         requiredTypes.add(AttributeTypeManager.getType(name));
       }
       Branch resolvedBranch = BranchManager.getBranch(branch);
       for (ArtifactType artifactType : ArtifactTypeManager.getValidArtifactTypes(resolvedBranch)) {
          if (!artifactType.isAbstract()) {
-            Collection<AttributeType> attributeTypes = artifactType.getAttributeTypes(resolvedBranch);
+            Collection<IAttributeType> attributeTypes = artifactType.getAttributeTypes(resolvedBranch);
             if (Collections.setComplement(requiredTypes, attributeTypes).isEmpty()) {
                selectedArtifactTypes.add(artifactType);
             }

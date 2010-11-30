@@ -72,7 +72,7 @@ public class PriorityColumn extends XViewerAtsAttributeValueColumn {
    public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
       try {
          // Only prompt change for sole attribute types
-         if (AttributeTypeManager.getType(getAttributeType()).getMaxOccurrences() != 1) {
+         if (AttributeTypeManager.getMaxOccurrences(getAttributeType()) != 1) {
             return false;
          }
          if (treeItem.getData() instanceof Artifact) {

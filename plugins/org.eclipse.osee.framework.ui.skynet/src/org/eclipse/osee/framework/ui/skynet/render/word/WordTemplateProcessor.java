@@ -418,7 +418,7 @@ public class WordTemplateProcessor {
          String attributeName = attributeElement.getAttributeName();
 
          if (attributeName.equals("*")) {
-            for (AttributeType attributeType : RendererManager.getAttributeTypeOrderList(artifact)) {
+            for (IAttributeType attributeType : RendererManager.getAttributeTypeOrderList(artifact)) {
                if (!outlining || !attributeType.equals(headingAttributeType)) {
                   processAttribute(variableMap, artifact, wordMl, attributeElement, attributeType, true,
                      presentationType, multipleArtifacts);

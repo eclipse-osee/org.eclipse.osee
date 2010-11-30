@@ -142,7 +142,7 @@ public class AttributeTypeEditPresenterTest {
             Assert.assertFalse(artifact.getAttributes(itemToSelect).isEmpty());
             Assert.assertNull(display.getRemoveWidgetsAttributeTypes());
 
-            Collection<? extends IAttributeType> addedTypes = display.getAddWidgetsAttributeTypes();
+            Collection<IAttributeType> addedTypes = display.getAddWidgetsAttributeTypes();
             Assert.assertEquals(1, addedTypes.size());
             Assert.assertEquals(itemToSelect, addedTypes.iterator().next());
 
@@ -150,7 +150,7 @@ public class AttributeTypeEditPresenterTest {
             Assert.assertTrue(artifact.getAttributes(itemToSelect).isEmpty());
             Assert.assertNull(display.getAddWidgetsAttributeTypes());
 
-            Collection<? extends IAttributeType> removedTypes = display.getRemoveWidgetsAttributeTypes();
+            Collection<IAttributeType> removedTypes = display.getRemoveWidgetsAttributeTypes();
             Assert.assertEquals(1, removedTypes.size());
             Assert.assertEquals(itemToSelect, removedTypes.iterator().next());
          }
@@ -179,7 +179,7 @@ public class AttributeTypeEditPresenterTest {
    }
 
    private static void checkDisplay(MockDisplay display, OperationType expectedType, String title, String message, List<IAttributeType> expectedSelectable) {
-      List<? extends IAttributeType> selectableItems = display.getInput();
+      List<IAttributeType> selectableItems = display.getInput();
 
       Assert.assertFalse(
          String.format("Selectable Types - expected:[%s] actual:[%s]", expectedSelectable, selectableItems),
@@ -232,17 +232,17 @@ public class AttributeTypeEditPresenterTest {
       private Pair<String, String> showInfo;
       private Pair<String, String> selectionInfo;
       private OperationType operationType;
-      private List<? extends IAttributeType> input;
-      private Collection<? extends IAttributeType> selected;
-      private Collection<? extends IAttributeType> addWidgetsAttributeTypes;
-      private Collection<? extends IAttributeType> removeWidgetsAttributeTypes;
+      private List<IAttributeType> input;
+      private Collection<IAttributeType> selected;
+      private Collection<IAttributeType> addWidgetsAttributeTypes;
+      private Collection<IAttributeType> removeWidgetsAttributeTypes;
 
       private MockDisplay() {
          this.selected = Collections.emptyList();
       }
 
       @Override
-      public Collection<? extends IAttributeType> getSelections(OperationType operationType, String title, String message, List<? extends IAttributeType> input) {
+      public Collection<IAttributeType> getSelections(OperationType operationType, String title, String message, List<IAttributeType> input) {
          setSelectionInfo(new Pair<String, String>(title, message));
          setInput(input);
          setOperationType(operationType);
@@ -267,7 +267,7 @@ public class AttributeTypeEditPresenterTest {
          return operationType;
       }
 
-      public List<? extends IAttributeType> getInput() {
+      public List<IAttributeType> getInput() {
          return input;
       }
 
@@ -287,33 +287,33 @@ public class AttributeTypeEditPresenterTest {
          this.operationType = operationType;
       }
 
-      public void setInput(List<? extends IAttributeType> input) {
+      public void setInput(List<IAttributeType> input) {
          this.input = input;
       }
 
-      public Collection<? extends IAttributeType> getAddWidgetsAttributeTypes() {
+      public Collection<IAttributeType> getAddWidgetsAttributeTypes() {
          return addWidgetsAttributeTypes;
       }
 
-      public Collection<? extends IAttributeType> getRemoveWidgetsAttributeTypes() {
+      public Collection<IAttributeType> getRemoveWidgetsAttributeTypes() {
          return removeWidgetsAttributeTypes;
       }
 
-      public void setAddWidgetsAttributeTypes(Collection<? extends IAttributeType> addWidgetsAttributeTypes) {
+      public void setAddWidgetsAttributeTypes(Collection<IAttributeType> addWidgetsAttributeTypes) {
          this.addWidgetsAttributeTypes = addWidgetsAttributeTypes;
       }
 
-      public void setRemoveWidgetsAttributeTypes(Collection<? extends IAttributeType> removeWidgetsAttributeTypes) {
+      public void setRemoveWidgetsAttributeTypes(Collection<IAttributeType> removeWidgetsAttributeTypes) {
          this.removeWidgetsAttributeTypes = removeWidgetsAttributeTypes;
       }
 
       @Override
-      public void addWidgetFor(Collection<? extends IAttributeType> attributeTypes) {
+      public void addWidgetFor(Collection<IAttributeType> attributeTypes) {
          addWidgetsAttributeTypes = attributeTypes;
       }
 
       @Override
-      public void removeWidgetFor(Collection<? extends IAttributeType> attributeTypes) {
+      public void removeWidgetFor(Collection<IAttributeType> attributeTypes) {
          removeWidgetsAttributeTypes = attributeTypes;
       }
    }

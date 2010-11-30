@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.List;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -275,18 +276,18 @@ public class ModelAsserts {
       ArtifactType artifactType = artCache.getByGuid(artTypeGuid);
       Assert.assertNotNull(artifactType);
 
-      List<AttributeType> expectedAttributes = new ArrayList<AttributeType>();
+      List<IAttributeType> expectedAttributes = new ArrayList<IAttributeType>();
       for (String attrGuid : attributeGuids) {
-         AttributeType attributeType = attrCache.getByGuid(attrGuid);
+         IAttributeType attributeType = attrCache.getByGuid(attrGuid);
          Assert.assertNotNull(attributeType);
          expectedAttributes.add(attributeType);
       }
 
-      Collection<AttributeType> actualTypes = artifactType.getAttributeTypes(branch);
+      Collection<IAttributeType> actualTypes = artifactType.getAttributeTypes(branch);
       Assert.assertEquals(String.format("ArtifactType [%s] - incorrect number of attributes actual - %s expected - %s",
          artTypeGuid, actualTypes, expectedAttributes), expectedAttributes.size(), actualTypes.size());
 
-      Collection<AttributeType> typesNotFound =
+      Collection<IAttributeType> typesNotFound =
          org.eclipse.osee.framework.jdk.core.util.Collections.setComplement(expectedAttributes, actualTypes);
       Assert.assertTrue(
          String.format("Artifact [%s] for branch [%s] did not have the following attributes [%s]",

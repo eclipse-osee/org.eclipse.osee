@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -175,11 +174,11 @@ public class DefaultArtifactRenderer implements IRenderer {
    }
 
    @Override
-   public List<AttributeType> orderAttributeNames(Artifact artifact, Collection<AttributeType> attributeTypes) {
-      ArrayList<AttributeType> orderedAttributeTypes = new ArrayList<AttributeType>(attributeTypes.size());
-      AttributeType contentType = null;
+   public List<IAttributeType> orderAttributeNames(Artifact artifact, Collection<IAttributeType> attributeTypes) {
+      ArrayList<IAttributeType> orderedAttributeTypes = new ArrayList<IAttributeType>(attributeTypes.size());
+      IAttributeType contentType = null;
 
-      for (AttributeType attributeType : attributeTypes) {
+      for (IAttributeType attributeType : attributeTypes) {
          if (attributeType.equals(CoreAttributeTypes.WholeWordContent) || attributeType.equals(CoreAttributeTypes.WordTemplateContent)) {
             contentType = attributeType;
          } else {

@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 /**
  * @author Roberto E. Escobar
  */
-public class Branch extends AbstractOseeType implements Comparable<Branch>, IAdaptable, IOseeBranch {
+public class Branch extends AbstractOseeType implements IAdaptable, IOseeBranch {
 
    private static final int SHORT_NAME_LIMIT = 35;
 
@@ -146,15 +146,6 @@ public class Branch extends AbstractOseeType implements Comparable<Branch>, IAda
    @Override
    public String toString() {
       return getName();
-   }
-
-   @Override
-   public int compareTo(Branch other) {
-      int result = -1;
-      if (other != null && other.getName() != null && getName() != null) {
-         result = getName().compareTo(other.getName());
-      }
-      return result;
    }
 
    public Collection<Branch> getChildren() throws OseeCoreException {

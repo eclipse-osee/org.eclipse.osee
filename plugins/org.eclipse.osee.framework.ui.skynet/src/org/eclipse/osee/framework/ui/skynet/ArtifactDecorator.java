@@ -33,7 +33,6 @@ import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -88,7 +87,7 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
          saveAction(showArtBranch, "artifact.decorator.show.artBranch");
          saveAction(showArtVersion, "artifact.decorator.show.artVersion");
          if (attributesAction != null) {
-            Collection<String> items = attributesAction.getSelected();
+            Collection<IAttributeType> items = attributesAction.getSelected();
             UserManager.setSetting(asKey(storageKey, "artifact.decorator.attrTypes"), Collections.toString(",", items));
             saveAction(attributesAction, "artifact.decorator.show.attrTypes");
          }
@@ -197,11 +196,11 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
       String toReturn = null;
       if (attributesAction != null) {
          Conditions.checkNotNull(artifact, "artifact");
-         Collection<String> selectedItems = attributesAction.getSelected();
+         Collection<IAttributeType> selectedItems = attributesAction.getSelected();
 
          List<String> info = new ArrayList<String>();
          for (IAttributeType attributeType : artifact.getAttributeTypes()) {
-            if (selectedItems.contains(attributeType.getGuid())) {
+            if (selectedItems.contains(attributeType)) {
                String value = artifact.getAttributesToString(attributeType);
                if (Strings.isValid(value)) {
                   info.add(value);
@@ -294,13 +293,13 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
 
    private final class ShowAttributeAction extends Action {
 
-      private final Set<String> selectedTypes;
+      private final Set<IAttributeType> selectedTypes;
       private final IBranchProvider branchProvider;
 
       public ShowAttributeAction(IBranchProvider branchProvider, KeyedImage image) {
          super("Show Attributes", IAction.AS_PUSH_BUTTON);
          this.branchProvider = branchProvider;
-         this.selectedTypes = new HashSet<String>();
+         this.selectedTypes = new HashSet<IAttributeType>();
          if (image != null) {
             setImageDescriptor(ImageManager.getImageDescriptor(image));
          }
@@ -319,16 +318,17 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
                      if (branch == null) {
                         status = new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, "Branch not selected");
                      } else {
-                        Collection<AttributeType> selectableTypes = AttributeTypeManager.getValidAttributeTypes(branch);
+                        Collection<IAttributeType> selectableTypes =
+                           AttributeTypeManager.getValidAttributeTypes(branch);
                         AttributeTypeFilteredCheckTreeDialog dialog =
                            new AttributeTypeFilteredCheckTreeDialog("Select Attribute Types",
                               "Select attribute types to display.");
                         dialog.setSelectableTypes(selectableTypes);
 
                         List<IAttributeType> initSelection = new ArrayList<IAttributeType>();
-                        for (String entry : selectedTypes) {
-                           for (AttributeType type : selectableTypes) {
-                              if (type.getGuid().equals(entry)) {
+                        for (IAttributeType entry : selectedTypes) {
+                           for (IAttributeType type : selectableTypes) {
+                              if (type.equals(entry)) {
                                  initSelection.add(type);
                               }
                            }
@@ -340,7 +340,7 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
                            selectedTypes.clear();
                            for (Object object : dialog.getResult()) {
                               if (object instanceof IAttributeType) {
-                                 selectedTypes.add(((IAttributeType) object).getGuid());
+                                 selectedTypes.add(((IAttributeType) object));
                               }
                            }
                            refreshView();
@@ -357,13 +357,15 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
          }
       }
 
-      public Collection<String> getSelected() {
+      public Collection<IAttributeType> getSelected() {
          return selectedTypes;
       }
 
-      public void setSelected(Collection<String> selected) {
+      public void setSelected(Collection<String> selected) throws OseeCoreException {
          selectedTypes.clear();
-         selectedTypes.addAll(selected);
+         for (String name : selected) {
+            selectedTypes.add(AttributeTypeManager.getType(name));
+         }
       }
    }
 

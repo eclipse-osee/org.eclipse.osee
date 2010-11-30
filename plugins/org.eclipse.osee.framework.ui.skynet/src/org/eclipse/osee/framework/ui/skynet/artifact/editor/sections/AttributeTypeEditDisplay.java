@@ -66,7 +66,7 @@ public final class AttributeTypeEditDisplay implements AttributeTypeEditPresente
    }
 
    @Override
-   public Collection<IAttributeType> getSelections(OperationType operationType, String title, String message, List<? extends IAttributeType> input) {
+   public Collection<IAttributeType> getSelections(OperationType operationType, String title, String message, List<IAttributeType> input) {
       Collection<IAttributeType> toReturn = Collections.emptyList();
       CheckedTreeSelectionDialog dialog = createDialog(title, message, getImage(operationType));
       dialog.setInput(input);
@@ -98,12 +98,12 @@ public final class AttributeTypeEditDisplay implements AttributeTypeEditPresente
    }
 
    @Override
-   public void addWidgetFor(Collection<? extends IAttributeType> attributeTypes) throws OseeCoreException {
+   public void addWidgetFor(Collection<IAttributeType> attributeTypes) throws OseeCoreException {
       attributesForm.getAttributeFormPart().addWidgetForAttributeType(attributeTypes);
    }
 
    @Override
-   public void removeWidgetFor(Collection<? extends IAttributeType> attributeTypes) {
+   public void removeWidgetFor(Collection<IAttributeType> attributeTypes) {
       attributesForm.getAttributeFormPart().removeWidgetForAttributeType(attributeTypes);
    }
 }

@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.artifact.editor.pages;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -20,12 +21,14 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.BaseArtifactEditorInput;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.AttributeTypeUtil;
@@ -119,8 +122,8 @@ public class ArtifactEditorOutlinePage extends ContentOutlinePage {
             AttributeTypeContainer container = (AttributeTypeContainer) element;
             containers.add(container);
             return container.isEditable() ? ImageManager.getImage(FrameworkImage.EDIT_ARTIFACT) : ImageManager.getImage(FrameworkImage.ADD_GREEN);
-         } else if (element instanceof AttributeType) {
-            AttributeType type = (AttributeType) element;
+         } else if (element instanceof IAttributeType) {
+            IAttributeType type = (IAttributeType) element;
             for (AttributeTypeContainer container : containers) {
                if (container.contains(type)) {
                   return container.isEditable() ? ImageManager.getImage(FrameworkImage.ATTRIBUTE_SUB_A) : ImageManager.getImage(FrameworkImage.ATTRIBUTE_DISABLED);
@@ -192,7 +195,7 @@ public class ArtifactEditorOutlinePage extends ContentOutlinePage {
                Artifact artifact = (Artifact) element;
                return !artifact.getAttributeTypes().isEmpty();
             } catch (OseeCoreException ex) {
-               ex.printStackTrace();
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
          }
          return false;
@@ -205,11 +208,11 @@ public class ArtifactEditorOutlinePage extends ContentOutlinePage {
    }
 
    private final static class AttributeTypeContainer {
-      private final List<AttributeType> types;
+      private final List<IAttributeType> types;
       private final String name;
       private final boolean editable;
 
-      public AttributeTypeContainer(String name, boolean editable, List<AttributeType> types) {
+      public AttributeTypeContainer(String name, boolean editable, List<IAttributeType> types) {
          this.name = name;
          this.editable = editable;
          this.types = types;
@@ -219,7 +222,7 @@ public class ArtifactEditorOutlinePage extends ContentOutlinePage {
          return name;
       }
 
-      public List<AttributeType> getTypes() {
+      public List<IAttributeType> getTypes() {
          return types;
       }
 
@@ -227,7 +230,7 @@ public class ArtifactEditorOutlinePage extends ContentOutlinePage {
          return editable;
       }
 
-      public boolean contains(AttributeType type) {
+      public boolean contains(IAttributeType type) {
          return getTypes().contains(type);
       }
    }
