@@ -50,7 +50,7 @@ public class AtsQueryPerformanceTests {
    public void testTeamWorldSearchItem() throws Exception {
       TeamWorldSearchItem searchItem =
          new TeamWorldSearchItem("Show Open OSEE Actions", Arrays.asList("ATS", "Define", "OTE"), false, false, true,
-            false, null, null, null, null);
+            false, null, null, null, null, null);
       long startTime = System.currentTimeMillis();
       Collection<Artifact> artifacts = searchItem.performSearch(SearchType.Search);
       long elapsedTime = System.currentTimeMillis() - startTime;

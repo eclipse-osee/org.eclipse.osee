@@ -54,7 +54,6 @@ import org.eclipse.osee.ats.world.search.MySubscribedSearchItem;
 import org.eclipse.osee.ats.world.search.MyWorldSearchItem;
 import org.eclipse.osee.ats.world.search.NextVersionSearchItem;
 import org.eclipse.osee.ats.world.search.ShowOpenWorkflowsByArtifactType;
-import org.eclipse.osee.ats.world.search.StateWorldSearchItem;
 import org.eclipse.osee.ats.world.search.TaskSearchWorldSearchItem;
 import org.eclipse.osee.ats.world.search.UserCommunitySearchItem;
 import org.eclipse.osee.ats.world.search.UserRelatedToAtsObjectSearch;
@@ -141,11 +140,6 @@ public final class AtsNavigateViewItems extends XNavigateViewItems {
             createVersionsSection(items);
             addExtensionPointItems(items);
             createReviewsSection(items);
-
-            XNavigateItem stateItems = new XNavigateItem(null, "States", AtsImage.STATE);
-            new SearchNavigateItem(stateItems, new StateWorldSearchItem());
-            new SearchNavigateItem(stateItems, new StateWorldSearchItem("Search for Authorize Actions", "Authorize"));
-            items.add(stateItems);
 
             // Search Items
             items.add(new XNavigateItemOperation(null, FrameworkImage.BRANCH_CHANGE, "Open Change Report(s) by ID(s)",

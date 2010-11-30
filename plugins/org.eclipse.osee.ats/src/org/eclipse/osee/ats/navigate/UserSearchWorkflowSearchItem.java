@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.navigate;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
@@ -20,6 +22,7 @@ import org.eclipse.osee.ats.artifact.VersionArtifact.VersionLockedType;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.XHyperlabelTeamDefinitionSelection;
+import org.eclipse.osee.ats.util.widgets.XStateCombo;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.ats.world.search.UserWorldSearchItem;
@@ -61,6 +64,7 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
    private XCheckBox reviewsCheckbox;
    private XCheckBox teamWorkflowsCheckbox;
    private XCheckBox tasksCheckbox;
+   private XStateCombo stateCombo = null;
 
    public UserSearchWorkflowSearchItem() {
       super("User Search", FrameworkImage.USER);
@@ -100,9 +104,11 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
       //
       "<XWidget displayName=\"Include Tasks\" endComposite=\"true\" xwidgetType=\"XCheckBox\" defaultValue=\"true\" labelAfter=\"true\" horizontalLabel=\"true\"/>" +
       //
-      "<XWidget displayName=\"Version\" xwidgetType=\"XCombo()\" beginComposite=\"3\" horizontalLabel=\"true\"/>" +
+      "<XWidget displayName=\"Version\" beginComposite=\"5\" xwidgetType=\"XCombo()\" horizontalLabel=\"true\"/>" +
       //
-      "<XWidget displayName=\"Team Definitions(s)\" endComposite=\"true\" xwidgetType=\"XHyperlabelTeamDefinitionSelection\" horizontalLabel=\"true\"/>" +
+      "<XWidget displayName=\"State\" xwidgetType=\"XStateCombo\" horizontalLabel=\"true\"/>" +
+      //
+      "<XWidget displayName=\"Team Definitions(s)\" beginComposite=\"2\" endComposite=\"true\" xwidgetType=\"XHyperlabelTeamDefinitionSelection\" horizontalLabel=\"true\"/>" +
       //
       "<XWidget displayName=\"Include Completed\" beginComposite=\"4\" xwidgetType=\"XCheckBox\" defaultValue=\"false\" labelAfter=\"true\" horizontalLabel=\"true\"/>" +
       //
@@ -117,6 +123,7 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
          getSelectedUser(),
          getSelectedTeamDefinitions(),
          (getSelectedVersionArtifact() != null ? Collections.singleton(getSelectedVersionArtifact()) : null),
+         getSelectedState(),
          //
          (isAssigneeCheckbox() ? UserSearchOption.Assignee : UserSearchOption.None),
          (isFavoritesCheckbox() ? UserSearchOption.Favorites : UserSearchOption.None),
@@ -156,6 +163,9 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
       }
       if (isAssigneeCheckbox()) {
          sb.append(" - Assignee");
+      }
+      if (getSelectedState() != null) {
+         sb.append(" - State: ");
       }
       if (isOriginatedCheckbox()) {
          sb.append(" - Originated");
@@ -215,6 +225,11 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
          versionCombo.getComboBox().setVisibleItemCount(25);
          widget.setToolTip("Select Team to populate Version list");
       }
+      if (widget.getLabel().equals("State")) {
+         stateCombo = (XStateCombo) widget;
+         stateCombo.getComboViewer().getCombo().setVisibleItemCount(25);
+         widget.setToolTip("Select State of Task");
+      }
       if (widget.getLabel().equals("Team Definitions(s)")) {
          teamCombo = (XHyperlabelTeamDefinitionSelection) widget;
          teamCombo.addXModifiedListener(new XModifiedListener() {
@@ -261,6 +276,22 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
       if (userCombo != null) {
          userCombo.set(user);
       }
+   }
+
+   private String getSelectedState() {
+      if (stateCombo == null) {
+         return null;
+      }
+      return stateCombo.getSelectedState();
+   }
+
+   public void setSelectedState(String stateName) {
+      if (stateCombo == null) {
+         return;
+      }
+      List<Object> states = new ArrayList<Object>();
+      states.add("Implement");
+      stateCombo.setSelected(states);
    }
 
    public void setSelected(UserSearchOption userSearchOption, boolean set) throws OseeStateException {

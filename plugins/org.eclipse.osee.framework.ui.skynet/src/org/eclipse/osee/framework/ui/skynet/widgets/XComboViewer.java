@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -263,7 +263,7 @@ public class XComboViewer extends XWidget {
       }
    }
 
-   public void setSelected(ArrayList<Object> selected) {
+   public void setSelected(List<Object> selected) {
       comboViewer.setSelection(new StructuredSelection(selected.toArray(new Object[selected.size()])));
       updateListWidget();
    }

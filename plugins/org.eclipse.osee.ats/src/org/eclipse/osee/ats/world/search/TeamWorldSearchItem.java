@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.SMAUtil;
 import org.eclipse.osee.ats.util.TeamState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
@@ -64,8 +65,9 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
    private final User userArt;
    private final ReleasedOption releasedOption;
    private final boolean includeCancelled;
+   private final String stateName;
 
-   public TeamWorldSearchItem(String displayName, List<String> teamDefNames, boolean includeCompleted, boolean includeCancelled, boolean showAction, boolean recurseChildren, ChangeType changeType, VersionArtifact versionArt, User userArt, ReleasedOption releasedOption) {
+   public TeamWorldSearchItem(String displayName, List<String> teamDefNames, boolean includeCompleted, boolean includeCancelled, boolean showAction, boolean recurseChildren, ChangeType changeType, VersionArtifact versionArt, User userArt, ReleasedOption releasedOption, String stateName) {
       super(displayName, AtsImage.TEAM_WORKFLOW);
       this.includeCancelled = includeCancelled;
       this.versionArt = versionArt;
@@ -76,15 +78,17 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
       this.showAction = showAction;
       this.recurseChildren = recurseChildren;
       this.changeType = changeType;
+      this.stateName = stateName;
    }
 
-   public TeamWorldSearchItem(String displayName, Collection<TeamDefinitionArtifact> teamDefs, boolean includeCompleted, boolean includeCancelled, boolean showAction, boolean recurseChildren, VersionArtifact versionArt, User userArt, ReleasedOption releasedOption) {
+   public TeamWorldSearchItem(String displayName, Collection<TeamDefinitionArtifact> teamDefs, boolean includeCompleted, boolean includeCancelled, boolean showAction, boolean recurseChildren, VersionArtifact versionArt, User userArt, ReleasedOption releasedOption, String stateName) {
       super(displayName, AtsImage.TEAM_WORKFLOW);
       this.includeCancelled = includeCancelled;
       this.versionArt = versionArt;
       this.userArt = userArt;
       this.recurseChildren = recurseChildren;
       this.releasedOption = releasedOption;
+      this.stateName = stateName;
       this.teamDefNames = null;
       this.teamDefs = teamDefs;
       this.includeCompleted = includeCompleted;
@@ -104,6 +108,7 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
       this.includeCancelled = teamWorldUISearchItem.includeCancelled;
       this.showAction = teamWorldUISearchItem.showAction;
       this.changeType = teamWorldUISearchItem.changeType;
+      this.stateName = teamWorldUISearchItem.stateName;
    }
 
    public Collection<String> getProductSearchName() {
@@ -201,9 +206,10 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
          resultSet.add(art);
       }
       if (showAction) {
-         return RelationManager.getRelatedArtifacts(resultSet, 1, AtsRelationTypes.ActionToWorkflow_Action);
+         return SMAUtil.filterState(stateName,
+            RelationManager.getRelatedArtifacts(resultSet, 1, AtsRelationTypes.ActionToWorkflow_Action));
       } else {
-         return resultSet;
+         return SMAUtil.filterState(stateName, resultSet);
       }
 
    }

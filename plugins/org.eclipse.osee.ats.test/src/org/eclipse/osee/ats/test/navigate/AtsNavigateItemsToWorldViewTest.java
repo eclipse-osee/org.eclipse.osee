@@ -46,13 +46,13 @@ import org.eclipse.osee.ats.test.util.DemoTestUtil;
 import org.eclipse.osee.ats.test.util.NavigateTestUtil;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.TeamState;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldXViewer;
 import org.eclipse.osee.ats.world.search.ActionableItemWorldSearchItem;
 import org.eclipse.osee.ats.world.search.GroupWorldSearchItem;
 import org.eclipse.osee.ats.world.search.NextVersionSearchItem;
 import org.eclipse.osee.ats.world.search.ShowOpenWorkflowsByArtifactType;
-import org.eclipse.osee.ats.world.search.StateWorldSearchItem;
 import org.eclipse.osee.ats.world.search.TeamWorldSearchItem.ReleasedOption;
 import org.eclipse.osee.ats.world.search.UserCommunitySearchItem;
 import org.eclipse.osee.ats.world.search.UserSearchItem;
@@ -149,6 +149,19 @@ public class AtsNavigateItemsToWorldViewTest {
       editor.getWorldXWidgetActionPage().reSearch(true);
       Collection<Artifact> arts = editor.getLoadedArtifacts();
       NavigateTestUtil.testExpectedVersusActual(item.getName(), 1, arts.size());
+   }
+
+   @org.junit.Test
+   public void testSearchState() throws Exception {
+      XNavigateItem item = openUserSearchEditor();
+      WorldEditor editor = getSingleEditorOrFail();
+      IDynamicWidgetLayoutListener dwl = editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener();
+      ((UserSearchWorkflowSearchItem) dwl).setSelectedUser(UserManager.getUser(DemoUsers.Joe_Smith));
+      ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.Assignee, true);
+      ((UserSearchWorkflowSearchItem) dwl).setSelectedState(TeamState.Implement.name());
+      editor.getWorldXWidgetActionPage().reSearch(true);
+      Collection<Artifact> arts = editor.getLoadedArtifacts();
+      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AbstractWorkflowArtifact.class, 7);
    }
 
    @org.junit.Test
@@ -473,21 +486,6 @@ public class AtsNavigateItemsToWorldViewTest {
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Show Workflows Waiting PeerToPeer Reviews");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof ShowOpenWorkflowsByArtifactType);
       runGeneralLoadingTest(item, TeamWorkFlowArtifact.class, 6);
-   }
-
-   @org.junit.Test
-   public void testSearchByCurrentState() throws Exception {
-      XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Search by Current State");
-      assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof StateWorldSearchItem);
-      ((StateWorldSearchItem) ((SearchNavigateItem) item).getWorldSearchItem()).setSelectedStateClass("Implement");
-      runGeneralLoadingTest(item, TeamWorkFlowArtifact.class, 17, null, TableLoadOption.DontCopySearchItem);
-   }
-
-   @org.junit.Test
-   public void testSearchForAuthorizeActions() throws Exception {
-      XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Search for Authorize Actions");
-      assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof StateWorldSearchItem);
-      runGeneralLoadingTest(item, TeamWorkFlowArtifact.class, 0);
    }
 
    private Collection<Artifact> runGeneralLoadingTest(String xNavigateItemName, Class<?> clazz, int numOfType, User user) throws Exception {

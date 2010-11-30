@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.task.TaskEditorParameterSearchItem;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.XHyperlabelTeamDefinitionSelection;
+import org.eclipse.osee.ats.util.widgets.XStateCombo;
 import org.eclipse.osee.ats.world.search.TeamWorldSearchItem.ReleasedOption;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -65,6 +66,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
    private XHyperlabelTeamDefinitionSelection teamCombo = null;
    private XHyperlabelGroupSelection groupWidget = null;
    private XCombo versionCombo = null;
+   private XStateCombo stateCombo = null;
 
    public TaskSearchWorldSearchItem(WorldSearchItem worldSearchItem) {
       super(worldSearchItem);
@@ -80,9 +82,11 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
       //
       "<XWidget displayName=\"Team Definitions(s)\" xwidgetType=\"XHyperlabelTeamDefinitionSelection\" horizontalLabel=\"true\"/>" +
       //
-      "<XWidget displayName=\"Version\" beginComposite=\"4\" xwidgetType=\"XCombo()\" horizontalLabel=\"true\"/>" +
+      "<XWidget displayName=\"Version\" beginComposite=\"6\" xwidgetType=\"XCombo()\" horizontalLabel=\"true\"/>" +
       //
       "<XWidget displayName=\"Assignee\" xwidgetType=\"XMembersCombo\" horizontalLabel=\"true\"/>" +
+      //
+      "<XWidget displayName=\"State\" xwidgetType=\"XStateCombo\" horizontalLabel=\"true\"/>" +
       //
       "<XWidget displayName=\"Group(s)\" beginComposite=\"2\" xwidgetType=\"XHyperlabelGroupSelection\" horizontalLabel=\"true\"/>" +
       //
@@ -114,7 +118,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
             }
          }
          userTaskArts.removeAll(removeTaskArts);
-         return filterByCompletedAndSelectedUser(userTaskArts);
+         return filterByCompletedAndStateAndSelectedUser(userTaskArts);
 
       } // If version specified, get workflows from targeted relation
       if (verArt != null) {
@@ -131,7 +135,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
       // Else, get workflows from teamdefs
       else if (teamDefs.size() > 0) {
          TeamWorldSearchItem teamWorldSearchItem =
-            new TeamWorldSearchItem("", teamDefs, true, true, false, false, null, null, ReleasedOption.Both);
+            new TeamWorldSearchItem("", teamDefs, true, true, false, false, null, null, ReleasedOption.Both, null);
          workflows.addAll(teamWorldSearchItem.performSearchGetResults(false, SearchType.Search));
       } else if (groups.size() > 0) {
          Set<TaskArtifact> taskArts = new HashSet<TaskArtifact>();
@@ -144,7 +148,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
                }
             }
          }
-         return filterByCompletedAndSelectedUser(taskArts);
+         return filterByCompletedAndStateAndSelectedUser(taskArts);
       }
 
       // Bulk load tasks related to workflows
@@ -152,7 +156,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
          RelationManager.getRelatedArtifacts(workflows, 1, AtsRelationTypes.SmaToTask_Task);
 
       // Apply the remaining criteria
-      return filterByCompletedAndSelectedUser(artifacts);
+      return filterByCompletedAndStateAndSelectedUser(artifacts);
    }
 
    private Set<TaskArtifact> getUserAssignedTaskArtifacts() throws OseeCoreException {
@@ -163,10 +167,17 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
       return tasks;
    }
 
-   private Collection<TaskArtifact> filterByCompletedAndSelectedUser(Collection<? extends Artifact> artifacts) throws OseeCoreException {
+   private Collection<TaskArtifact> filterByCompletedAndStateAndSelectedUser(Collection<? extends Artifact> artifacts) throws OseeCoreException {
       Set<TaskArtifact> tasks = new HashSet<TaskArtifact>();
+      String selectedState = getSelectedState();
+      boolean isSelectedStateValid = Strings.isValid(selectedState);
       for (Artifact art : artifacts) {
          TaskArtifact taskArt = (TaskArtifact) art;
+         if (isSelectedStateValid) {
+            if (!taskArt.getCurrentStateName().equals(selectedState)) {
+               continue;
+            }
+         }
          // If not include completed and task is such, skip this task
          if (!isIncludeCompletedCheckbox() && taskArt.isCompleted()) {
             continue;
@@ -235,6 +246,10 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
          sb.append(" - Assignee: ");
          sb.append(getSelectedUser());
       }
+      if (getSelectedState() != null) {
+         sb.append(" - State: ");
+         sb.append(getSelectedState());
+      }
       if (isIncludeCompletedCheckbox() && isIncludeCancelledCheckbox()) {
          sb.append(" - Include Completed/Cancelled");
       }
@@ -275,6 +290,11 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
          versionCombo = (XCombo) widget;
          versionCombo.getComboBox().setVisibleItemCount(25);
          widget.setToolTip("Select Team to populate Version list");
+      }
+      if (widget.getLabel().equals("State")) {
+         stateCombo = (XStateCombo) widget;
+         stateCombo.getComboViewer().getCombo().setVisibleItemCount(25);
+         widget.setToolTip("Select State of Task");
       }
       if (widget.getLabel().equals("Team Definitions(s)")) {
          teamCombo = (XHyperlabelTeamDefinitionSelection) widget;
@@ -348,6 +368,13 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
       if (includeCompletedCheckbox != null) {
          includeCompletedCheckbox.set(selected);
       }
+   }
+
+   private String getSelectedState() {
+      if (stateCombo == null) {
+         return null;
+      }
+      return stateCombo.getSelectedState();
    }
 
    private VersionArtifact getSelectedVersionArtifact() throws OseeCoreException {

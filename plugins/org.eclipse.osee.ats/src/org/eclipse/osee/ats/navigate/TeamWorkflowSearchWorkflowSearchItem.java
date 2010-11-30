@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.ats.util.widgets.XHyperlabelTeamDefinitionSelection;
+import org.eclipse.osee.ats.util.widgets.XStateCombo;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.ats.world.search.TeamWorldSearchItem;
@@ -56,6 +57,7 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
    protected XCheckBox includeCompletedCheckbox;
    protected XCheckBox includeCancelledCheckbox;
    protected XCheckBox showFlatCheckbox;
+   private XStateCombo stateCombo = null;
 
    public TeamWorkflowSearchWorkflowSearchItem(String name) {
       super(name, AtsImage.TEAM_WORKFLOW);
@@ -86,11 +88,13 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
       //
       "<XWidget displayName=\"Team Definitions(s)\" xwidgetType=\"XHyperlabelTeamDefinitionSelection\" horizontalLabel=\"true\"/>" +
       //
-      "<XWidget displayName=\"Version\" xwidgetType=\"XCombo()\" beginComposite=\"6\" horizontalLabel=\"true\"/>" +
+      "<XWidget displayName=\"Version\" xwidgetType=\"XCombo()\" beginComposite=\"8\" horizontalLabel=\"true\"/>" +
       //
       "<XWidget displayName=\"Released\" xwidgetType=\"XCombo(Both,Released,UnReleased)\" horizontalLabel=\"true\"/>" +
       //
       "<XWidget displayName=\"Assignee\" xwidgetType=\"XMembersCombo\" horizontalLabel=\"true\"/>" +
+      //
+      "<XWidget displayName=\"State\" xwidgetType=\"XStateCombo\" horizontalLabel=\"true\"/>" +
       //
       "<XWidget displayName=\"Include Completed\" beginComposite=\"6\" xwidgetType=\"XCheckBox\" defaultValue=\"false\" labelAfter=\"true\" horizontalLabel=\"true\"/>" +
       //
@@ -106,7 +110,7 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
       Collection<Artifact> artifacts =
          new TeamWorldSearchItem("", getSelectedTeamDefinitions(), isIncludeCompletedCheckbox(),
             isIncludeCancelledCheckbox(), false, false, getSelectedVersionArtifact(), getSelectedUser(),
-            getSelectedReleased()).performSearchGetResults(false);
+            getSelectedReleased(), getSelectedState()).performSearchGetResults(false);
       return filterShowFlat(artifacts);
    }
 
@@ -147,6 +151,10 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
          sb.append(" - Assignee: ");
          sb.append(getSelectedUser());
       }
+      if (getSelectedState() != null) {
+         sb.append(" - State: ");
+         sb.append(getSelectedState());
+      }
       if (isIncludeCompletedCheckbox() && isIncludeCancelledCheckbox()) {
          sb.append(" - Include Completed/Cancelled");
       }
@@ -173,6 +181,11 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
       }
       if (widget.getLabel().equals("Show Flat")) {
          showFlatCheckbox = (XCheckBox) widget;
+      }
+      if (widget.getLabel().equals("State")) {
+         stateCombo = (XStateCombo) widget;
+         stateCombo.getComboViewer().getCombo().setVisibleItemCount(25);
+         widget.setToolTip("Select State of Task");
       }
       if (widget.getLabel().equals("Version")) {
          versionCombo = (XCombo) widget;
@@ -226,6 +239,13 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
       if (assigneeCombo != null) {
          assigneeCombo.set(user);
       }
+   }
+
+   private String getSelectedState() {
+      if (stateCombo == null) {
+         return null;
+      }
+      return stateCombo.getSelectedState();
    }
 
    protected boolean isIncludeCancelledCheckbox() {

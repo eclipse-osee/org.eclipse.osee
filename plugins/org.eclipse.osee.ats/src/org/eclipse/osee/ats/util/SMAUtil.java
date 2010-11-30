@@ -24,8 +24,10 @@ import org.eclipse.osee.ats.column.ChangeTypeColumn;
 import org.eclipse.osee.ats.column.CompletedDateColumn;
 import org.eclipse.osee.ats.column.CreatedDateColumn;
 import org.eclipse.osee.ats.column.PriorityColumn;
+import org.eclipse.osee.ats.column.StateColumn;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 
@@ -81,6 +83,20 @@ public class SMAUtil {
       for (AbstractWorkflowArtifact sma : smas) {
          if (!sma.isCancelled()) {
             artifactsToReturn.add(sma);
+         }
+      }
+      return artifactsToReturn;
+   }
+
+   public static Collection<Artifact> filterState(String selectedState, Collection<? extends Artifact> smas) {
+      List<Artifact> artifactsToReturn = new ArrayList<Artifact>(smas.size());
+      if (!Strings.isValid(selectedState)) {
+         artifactsToReturn.addAll(smas);
+      } else {
+         for (Artifact sma : smas) {
+            if (StateColumn.getInstance().getColumnText(sma, null, 0).equals(selectedState)) {
+               artifactsToReturn.add(sma);
+            }
          }
       }
       return artifactsToReturn;

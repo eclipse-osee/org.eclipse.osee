@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet;
 
-import java.text.Collator;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 
@@ -19,8 +18,8 @@ import org.eclipse.jface.viewers.ViewerSorter;
  */
 public class ToStringViewerSorter extends ViewerSorter {
 
-   public ToStringViewerSorter(Collator collator) {
-      super(collator);
+   public ToStringViewerSorter() {
+      super();
    }
 
    @SuppressWarnings("unchecked")

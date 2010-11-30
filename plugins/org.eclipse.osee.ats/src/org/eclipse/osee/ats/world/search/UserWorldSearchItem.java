@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.SMAUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
@@ -38,6 +39,7 @@ public class UserWorldSearchItem {
    private final Collection<VersionArtifact> versions;
    private final Collection<UserSearchOption> options;
    private final User user;
+   private final String selectedState;
 
    public static enum UserSearchOption {
       None,
@@ -52,10 +54,11 @@ public class UserWorldSearchItem {
       IncludeTasks
    };
 
-   public UserWorldSearchItem(User user, Collection<TeamDefinitionArtifact> teamDefs, Collection<VersionArtifact> versions, UserSearchOption... userSearchOption) {
+   public UserWorldSearchItem(User user, Collection<TeamDefinitionArtifact> teamDefs, Collection<VersionArtifact> versions, String selectedState, UserSearchOption... userSearchOption) {
       this.user = user;
       this.teamDefs = teamDefs;
       this.versions = versions;
+      this.selectedState = selectedState;
       this.options = Collections.getAggregate(userSearchOption);
    }
 
@@ -96,6 +99,10 @@ public class UserWorldSearchItem {
 
       if (versions != null && versions.size() > 0) {
          filteredArts = SMAUtil.getVersionWorkflows(filteredArts, versions);
+      }
+
+      if (Strings.isValid(selectedState)) {
+         filteredArts = SMAUtil.getSMAs(SMAUtil.filterState(selectedState, filteredArts));
       }
 
       // Handle include completed/cancelled option

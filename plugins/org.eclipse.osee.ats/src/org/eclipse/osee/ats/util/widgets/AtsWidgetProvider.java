@@ -31,23 +31,20 @@ public class AtsWidgetProvider implements IXWidgetProvider {
          XHyperlabelTeamDefinitionSelection widget = new XHyperlabelTeamDefinitionSelection(name);
          widget.setToolTip(widgetLayoutData.getToolTip());
          toReturn = widget;
-      }
-      if (widgetName.equals(XHyperlabelGroupSelection.WIDGET_ID)) {
+      } else if (widgetName.equals(XHyperlabelGroupSelection.WIDGET_ID)) {
          XHyperlabelGroupSelection widget = new XHyperlabelGroupSelection(name);
          widget.setToolTip(widgetLayoutData.getToolTip());
          toReturn = widget;
-      }
-      if (name.equals("Commit Manager") || widgetName.equals("XCommitManager")) {
-         return new XCommitManager();
-      }
-      if (name.equals("Working Branch") || widgetName.equals("XWorkingBranch")) {
-         return new XWorkingBranch();
-      }
-      if (widgetName.equals(OperationalImpactXWidget.WIDGET_NAME)) {
-         return new OperationalImpactXWidget();
-      }
-      if (widgetName.equals(OperationalImpactWithWorkaroundXWidget.WIDGET_NAME)) {
-         return new OperationalImpactWithWorkaroundXWidget();
+      } else if (widgetName.equals(XStateCombo.WIDGET_ID)) {
+         toReturn = new XStateCombo();
+      } else if (name.equals("Commit Manager") || widgetName.equals("XCommitManager")) {
+         toReturn = new XCommitManager();
+      } else if (name.equals("Working Branch") || widgetName.equals("XWorkingBranch")) {
+         toReturn = new XWorkingBranch();
+      } else if (widgetName.equals(OperationalImpactXWidget.WIDGET_NAME)) {
+         toReturn = new OperationalImpactXWidget();
+      } else if (widgetName.equals(OperationalImpactWithWorkaroundXWidget.WIDGET_NAME)) {
+         toReturn = new OperationalImpactWithWorkaroundXWidget();
       }
       return toReturn;
    }
