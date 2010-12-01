@@ -153,7 +153,7 @@ public class NewActionPage3 extends WizardPage {
    }
 
    private static void getWizardXWidgetExtensions() {
-      if (wizardExtensionItems.isEmpty()) {
+      if (!wizardExtensionItems.isEmpty()) {
          return;
       }
 

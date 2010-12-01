@@ -427,4 +427,12 @@
             classname="org.eclipse.osee.ats.util.widgets.AtsAttributeXWidgetProvider">
       </AttributeXWidgetProvider>
    </extension>
+   <extension
+         id="CopyAtsConfigurationBlam"
+         name="CopyAtsConfigurationBlam"
+         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+      <Operation
+            className="org.eclipse.osee.ats.navigate.CopyAtsConfigurationBlam">
+      </Operation>
+   </extension>
 </plugin>

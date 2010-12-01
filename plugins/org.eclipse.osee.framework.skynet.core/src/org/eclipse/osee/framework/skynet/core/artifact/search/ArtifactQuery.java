@@ -173,6 +173,22 @@ public class ArtifactQuery {
          QueryType.GET);
    }
 
+   /**
+    * search for exactly one artifact based on its type and name - otherwise throw an exception
+    * 
+    * @return exactly one artifact based on its type and name, otherwise null
+    * @throws MultipleArtifactsExist if more than one artifact is found
+    */
+   public static Artifact getArtifactFromTypeAndNameNoException(IArtifactType artifactType, String artifactName, IOseeBranch branch) throws OseeCoreException {
+      try {
+         return queryFromTypeAndAttribute(artifactType, CoreAttributeTypes.Name, artifactName, branch).getOrCheckArtifact(
+            QueryType.GET);
+      } catch (ArtifactDoesNotExist ex) {
+         // do nothing
+      }
+      return null;
+   }
+
    public static List<Integer> selectArtifactIdsFromTypeAndName(IArtifactType artifactType, String artifactName, IOseeBranch branch) throws OseeCoreException {
       return queryFromTypeAndAttribute(artifactType, CoreAttributeTypes.Name, artifactName, branch).selectArtifacts(2);
    }
