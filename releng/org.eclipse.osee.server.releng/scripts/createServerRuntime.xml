@@ -77,14 +77,18 @@
 		<property name="demoFiles" value="${dependencies.basedir}/../demo" />
 		<property name="demoTarget" value="${tempAppServerFolder}/demo" />
 
-		<copydir src="${demoFiles}" dest="${tempAppServerFolder}" />
-		<unzip src="h2.zip" dest="${demoTarget}" />
+		<mkdir dir="${demoTarget}" />
+		<copy todir="${demoTarget}" >
+			 <fileset dir="${demoFiles}"/>
+		</copy>
+		
+		<unzip src="${demoTarget}/h2.zip" dest="${demoTarget}" />
 
-		<mkdir dir="${demoDataPath}/binary_data" />
-		<unzip src="binary_data.zip" dest="${demoTarget}/binary_data" />
+		<mkdir dir="${demoTarget}/binary_data" />
+		<unzip src="${demoTarget}/binary_data.zip" dest="${demoTarget}/binary_data" />
 
-		<delete file="h2.zip" failonerror="false" />
-		<delete file="binary_data.zip" failonerror="false" />
+		<delete file="${demoTarget}/h2.zip" failonerror="false" />
+		<delete file="${demoTarget}/binary_data.zip" failonerror="false" />
 	</target>
 
 	<target name="generateLocalPostgresLaunch">
