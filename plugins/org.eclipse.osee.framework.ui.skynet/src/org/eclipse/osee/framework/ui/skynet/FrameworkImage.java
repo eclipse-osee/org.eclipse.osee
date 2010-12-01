@@ -53,6 +53,7 @@ public enum FrameworkImage implements KeyedImage {
    CHANGE_LOG("changelog_obj.gif"),
    CLOCK("clock.gif"),
    COLLAPSE_ALL("collapseAll.gif"),
+   COMPARE_DOCUMENTS("compareDocs.gif"),
    COMPARE_HEAD_TX("head.gif"),
    COMPARE_PARENT_BRANCH("branches.gif"),
    COMPARE_OTHER_BRANCH("branches_rep.gif"),

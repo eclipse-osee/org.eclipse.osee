@@ -52,6 +52,7 @@ import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.action.EditTransactionComment;
 import org.eclipse.osee.framework.ui.skynet.action.ITransactionRecordSelectionProvider;
+import org.eclipse.osee.framework.ui.skynet.action.WasIsCompareEditorAction;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiUtil;
 import org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener;
 import org.eclipse.osee.framework.ui.skynet.menu.ArtifactDiffMenu;
@@ -181,6 +182,7 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
       ArtifactDiffMenu.createDiffMenuItem(popupMenu, xHistoryWidget.getXViewer(), "Compare two Artifacts");
 
       (new ActionContributionItem(new EditTransactionComment(this))).fill(popupMenu, 3);
+      (new ActionContributionItem(new WasIsCompareEditorAction())).fill(popupMenu, 3);
 
       // Setup generic xviewer menu items
       XViewerCustomMenu xMenu = new XViewerCustomMenu(xHistoryWidget.getXViewer());
