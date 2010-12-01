@@ -14,6 +14,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
@@ -31,6 +33,13 @@ public final class ChangeUiUtil {
 
    public static void open(Branch branch) throws OseeCoreException {
       Conditions.checkNotNull(branch, "Branch");
+      if (branch.getBranchType() == BranchType.BASELINE) {
+         if (!MessageDialog.openConfirm(AWorkbench.getActiveShell(), "Show Change Report",
+            "You have chosen to show a change report for a BASLINE branch.\n\n" + //
+            "This could be a very long running task and take many resources.\n\nAre you sure?")) {
+            return;
+         }
+      }
       open(createInput(branch, true));
    }
 
