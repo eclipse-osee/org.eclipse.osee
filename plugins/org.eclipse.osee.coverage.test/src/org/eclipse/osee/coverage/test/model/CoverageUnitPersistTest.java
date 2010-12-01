@@ -20,7 +20,6 @@ import org.eclipse.osee.coverage.event.CoveragePackageEvent;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.merge.IMergeItem;
 import org.eclipse.osee.coverage.merge.MergeImportManager;
-import org.eclipse.osee.coverage.merge.MergeItem;
 import org.eclipse.osee.coverage.merge.MergeManager;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageItem;
@@ -119,7 +118,7 @@ public class CoverageUnitPersistTest {
       MergeManager mergeManager = new MergeManager(saveCoveragePackage, coverageImport);
       List<IMergeItem> mergeItems = new ArrayList<IMergeItem>();
       for (IMergeItem mergeItem : mergeManager.getMergeItems()) {
-         ((MergeItem) mergeItem).setChecked(true);
+         mergeItem.setChecked(true);
       }
       MergeImportManager importer = new MergeImportManager(mergeManager);
       importer.importItems(new ISaveable() {
