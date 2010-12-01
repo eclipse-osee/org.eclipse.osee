@@ -16,11 +16,14 @@ import java.util.Collections;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Ryan D. Brooks
@@ -39,17 +42,36 @@ public abstract class ArtifactFactory {
       this.artifactTypeNames = null;
    }
 
+   public Artifact makeNewArtifact(IOseeBranch branch, IArtifactType artifactTypeToken, String guid, String humandReadableId, ArtifactProcessor earlyArtifactInitialization) throws OseeCoreException {
+      return makeNewArtifact(branch, artifactTypeToken, null, guid, humandReadableId, earlyArtifactInitialization);
+   }
+
    /**
     * Used to create a new artifact (one that has never been saved into the datastore)
     */
-   public Artifact makeNewArtifact(IOseeBranch branch, IArtifactType artifactTypeToken, String guid, String humandReadableId, ArtifactProcessor earlyArtifactInitialization) throws OseeCoreException {
+   public Artifact makeNewArtifact(IOseeBranch branch, IArtifactType artifactTypeToken, String artifactName, String guid, String humanReadableId, ArtifactProcessor earlyArtifactInitialization) throws OseeCoreException {
       ArtifactType artifactType = ArtifactTypeManager.getType(artifactTypeToken);
 
-      if (artifactType.isAbstract()) {
-         throw new OseeArgumentException("Cannot create an instance of abstract type [%s]", artifactType);
+      Conditions.checkExpressionFailOnTrue(artifactType.isAbstract(),
+         "Cannot create an instance of abstract type [%s]", artifactType);
+
+      if (guid == null) {
+         guid = GUID.create();
+      } else {
+         Conditions.checkExpressionFailOnTrue(!GUID.isValid(guid),
+            "Invalid guid [%s] during artifact creation [name: %s]", guid, artifactName);
       }
 
-      Artifact artifact = getArtifactInstance(guid, humandReadableId, BranchManager.getBranch(branch), artifactType);
+      if (humanReadableId == null) {
+         String hrid = HumanReadableId.generate();
+         humanReadableId = ArtifactFactory.isUniqueHRID(hrid) ? hrid : HumanReadableId.generate();
+      } else {
+         Conditions.checkExpressionFailOnTrue(!HumanReadableId.isValid(humanReadableId),
+            "Invalid human readable id [%s] during artifact creation [name: %s, guid: %s]", humanReadableId,
+            artifactName, guid);
+      }
+
+      Artifact artifact = getArtifactInstance(guid, humanReadableId, BranchManager.getBranch(branch), artifactType);
 
       artifact.setArtId(ConnectionHandler.getSequence().getNextArtifactId());
       if (earlyArtifactInitialization != null) {
@@ -61,7 +83,17 @@ public abstract class ArtifactFactory {
       artifact.onBirth();
       artifact.onInitializationComplete();
 
+      if (Strings.isValid(artifactName)) {
+         artifact.setName(artifactName);
+      }
+
       return artifact;
+   }
+
+   public static boolean isUniqueHRID(String id) throws OseeCoreException {
+      String DUPLICATE_HRID_SEARCH =
+         "select count(1) from (select DISTINCT(art_id) from osee_artifact where human_readable_id = ?) t1";
+      return ConnectionHandler.runPreparedQueryFetchLong(0L, DUPLICATE_HRID_SEARCH, id) <= 0;
    }
 
    public synchronized Artifact reflectExisitingArtifact(int artId, String guid, String humandReadableId, IArtifactType artifactType, int gammaId, IOseeBranch branch, ModificationType modificationType) throws OseeCoreException {

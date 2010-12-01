@@ -64,13 +64,11 @@ import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.core.services.IAccessControlService;
-import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.DbTransaction;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -110,7 +108,7 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, Co
    private final Set<DefaultBasicGuidRelationReorder> relationOrderRecords =
       new HashSet<DefaultBasicGuidRelationReorder>();
    private final Branch branch;
-   private String humanReadableId;
+   private final String humanReadableId;
    private ArtifactType artifactType;
    private final ArtifactFactory parentFactory;
    private AttributeAnnotationManager annotationMgr;
@@ -128,12 +126,7 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, Co
       objectEditState = EditState.NO_CHANGE;
       modType = ModificationType.NEW;
 
-      if (humanReadableId == null) {
-         populateHumanReadableID();
-      } else {
-         this.humanReadableId = humanReadableId;
-      }
-
+      this.humanReadableId = humanReadableId;
       this.parentFactory = parentFactory;
       this.branch = branch;
       this.artifactType = ArtifactTypeManager.getType(artifactType);
@@ -1260,17 +1253,6 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, Co
 
    public String getHumanReadableId() {
       return humanReadableId;
-   }
-
-   private void populateHumanReadableID() throws OseeCoreException {
-      String hrid = HumanReadableId.generate();
-      humanReadableId = isUniqueHRID(hrid) ? hrid : HumanReadableId.generate();
-   }
-
-   public static boolean isUniqueHRID(String id) throws OseeCoreException {
-      String DUPLICATE_HRID_SEARCH =
-         "select count(1) from (select DISTINCT(art_id) from osee_artifact where human_readable_id = ?) t1";
-      return ConnectionHandler.runPreparedQueryFetchLong(0L, DUPLICATE_HRID_SEARCH, id) <= 0;
    }
 
    /**

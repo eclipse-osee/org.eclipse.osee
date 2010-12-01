@@ -15,7 +15,8 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 
@@ -67,7 +68,9 @@ public class BinaryContentUtils {
       return fileTypeExtension;
    }
 
-   public static String getStorageName(Attribute<?> attribute) throws OseeStateException {
-      return attribute.getArtifact().getGuid();
+   public static String getStorageName(Attribute<?> attribute) throws OseeCoreException {
+      String guid = attribute.getArtifact().getGuid();
+      Conditions.checkExpressionFailOnTrue(!GUID.isValid(guid), "Artifact has an invalid guid [%s]", guid);
+      return guid;
    }
 }

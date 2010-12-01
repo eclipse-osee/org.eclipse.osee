@@ -14,7 +14,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
-import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.DataStore;
 import org.eclipse.osee.framework.skynet.core.attribute.utils.AbstractResourceProcessor;
@@ -50,7 +49,7 @@ public class AttributeResourceProcessor extends AbstractResourceProcessor {
    }
 
    @Override
-   public String createStorageName() throws OseeStateException {
+   public String createStorageName() throws OseeCoreException {
       return BinaryContentUtils.getStorageName(attribute);
    }
 }
