@@ -58,7 +58,7 @@
 			connection.id="h2" 
 			serverport="8089"
 			launcher="${launcherJar}" 
-			extraVMArgs="Dosee.db.embedded.server=0.0.0.0:8088" />
+			extraVMArgs="-Dosee.db.embedded.server=0.0.0.0:8088" />
 	</target>
 
 	<target name="generateLocalPostgresLaunch">
