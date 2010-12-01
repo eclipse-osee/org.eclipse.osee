@@ -1,0 +1,24 @@
+<DbConnection>
+
+	<DatabaseInfo id="h2.db.info">
+		<DatabaseHome key="#DBHOME#" value="demo/h2/" />
+		<DatabaseName key="#DBNAME#" value="osee.h2.db" />
+		<DatabaseType key="#TYPE#" value="h2" />
+		<Prefix key="#PREFIX#" value="jdbc:h2:tcp" />
+		<UserName key="#USERNAME#" value="osee" />
+		<Password key="#PASSWORD#" value="oseeadmin" />
+		<Host key="#HOST#" value="@AvailableDbServices.hostAddress" />
+		<Port key="#PORT#" value="@AvailableDbServices.port" />
+	</DatabaseInfo>
+
+	<ConnectionDescription id="h2.db.connection">
+		<Driver>org.h2.Driver</Driver>
+		<Url>#PREFIX#://#HOST#:#PORT#/#DBHOME##DBNAME#;IGNORECASE=TRUE;SCHEMA_SEARCH_PATH=OSEE,PUBLIC</Url>
+	</ConnectionDescription>
+
+	<AvailableDbServices>
+		<Server id="osee.demo.h2" dbInfo="h2.db.info" hostAddress="127.0.0.1"
+			port="8088" connectsWith="h2.db.connection" />
+	</AvailableDbServices>
+
+</DbConnection>

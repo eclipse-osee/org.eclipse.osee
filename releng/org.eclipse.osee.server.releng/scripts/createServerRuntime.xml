@@ -11,9 +11,9 @@
 
 		<property name="configFolder" value="${tempAppServerFolder}/configuration" />
 		<property name="pluginsFolder" value="${tempAppServerFolder}/plugins" />
-		
+
 		<mkdir dir="${configFolder}" />
-		
+
 		<pathconvert property="launcherBundlePath" setonempty="false">
 			<path>
 				<fileset dir="${pluginsFolder}">
@@ -44,32 +44,58 @@
 	<!-- *************************************************************** -->
 	<target name="generateTemplate">
 		<createLaunch 
-			filepath="${tempAppServerFolder}/runExample.sh"
+			filepath="${tempAppServerFolder}/runExample.sh" 
 			connection.id="[id from connection file]" 
-			serverport="8089"
+			serverport="8089" 
 			isexecutable="false" 
-			launcher="${launcherJar}"
-			extraVMArgs="-Dosee.connection.info.uri=[custom connection file path] -Dosee.application.server.data=[binary data path]" />
+			launcher="${launcherJar}" 
+			extraVMArgs="-Dosee.connection.info.uri=[custom connection file path] \${line.separator}-Dosee.application.server.data=[binary data path]" />
 	</target>
 
 	<target name="generateH2Launch">
 		<createLaunch 
 			filepath="${tempAppServerFolder}/runH2.sh" 
 			connection.id="h2" 
-			serverport="8089"
+			serverport="8089" 
 			launcher="${launcherJar}" 
 			extraVMArgs="-Dosee.db.embedded.server=0.0.0.0:8088" />
 	</target>
 
+	<target name="generateDemoLaunch">
+		<createLaunch 
+			filepath="${tempAppServerFolder}/runDemo.sh" 
+			connection.id="h2" 
+			serverport="8089" 
+			launcher="${launcherJar}" 
+			extraVMArgs="-Dosee.db.embedded.server=0.0.0.0:8088 \${line.separator}-Dosee.connection.info.uri=&quot;demo/osee.demo.db.connection.xml&quot; \${line.separator}-Dosee.application.server.data=&quot;demo/binary_data&quot;" />
+
+		<copy file="${tempAppServerFolder}/runDemo.sh" tofile="${tempAppServerFolder}/runDemo.bat" overwrite="true" />
+		<replaceregexp file="${tempAppServerFolder}/runDemo.bat" match="\\" replace="^" flags="g" />
+
+		<!-- Copy Demo Files -->
+		<dirname property="dependencies.basedir" file="${ant.file}" />
+		<property name="demoFiles" value="${dependencies.basedir}/../demo" />
+		<property name="demoTarget" value="${tempAppServerFolder}/demo" />
+
+		<copydir src="${demoFiles}" dest="${tempAppServerFolder}" />
+		<unzip src="h2.zip" dest="${demoTarget}" />
+
+		<mkdir dir="${demoDataPath}/binary_data" />
+		<unzip src="binary_data.zip" dest="${demoTarget}/binary_data" />
+
+		<delete file="h2.zip" failonerror="false" />
+		<delete file="binary_data.zip" failonerror="false" />
+	</target>
+
 	<target name="generateLocalPostgresLaunch">
 		<createLaunch 
-			filepath="${tempAppServerFolder}/runPostgresqlLocal.sh"
+			filepath="${tempAppServerFolder}/runPostgresqlLocal.sh" 
 			connection.id="postgresqlLocalhost" 
-			serverport="8089"
+			serverport="8089" 
 			launcher="${launcherJar}" />
 	</target>
 
-	<target name="generateLaunchScripts" depends="generateTemplate,generateH2Launch,generateLocalPostgresLaunch">
+	<target name="generateLaunchScripts" depends="generateTemplate,generateDemoLaunch,generateH2Launch,generateLocalPostgresLaunch">
 	</target>
 
 	<!-- *************************************************************** -->
@@ -135,10 +161,11 @@ osee.log.default=INFO
 		<attribute name="extraVMArgs" default=" " />
 		<sequential>
 			<echo file="@{filepath}" append="false">java \
--Xmx@{serverMaxMem}
+-Xmx@{serverMaxMem} \
 -Dorg.osgi.service.http.port=@{serverport} \
 -Dosee.db.connection.id=@{connection.id} \
-@{extraVMArgs} -jar plugins/@{launcher} -console
+@{extraVMArgs} \
+-jar plugins/@{launcher} -console
 </echo>
 			<if>
 				<equals arg1="executable" arg2="true" />
