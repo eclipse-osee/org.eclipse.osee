@@ -4,7 +4,7 @@
 		<DatabaseHome key="#DBHOME#" value="~/h2/" />
 		<DatabaseName key="#DBNAME#" value="osee.h2.db" />
 		<DatabaseType key="#TYPE#" value="h2" />
-		<Prefix key="#PREFIX#" value="jdbc:h2" />
+		<Prefix key="#PREFIX#" value="jdbc:h2:tcp" />
 		<UserName key="#USERNAME#" value="osee" />
 		<Password key="#PASSWORD#" value="oseeadmin" />
 		<Host key="#HOST#" value="@AvailableDbServices.hostAddress" />
@@ -13,7 +13,7 @@
 
 	<ConnectionDescription id="h2.db.connection">
 		<Driver>org.h2.Driver</Driver>
-		<Url>#PREFIX#:tcp://#HOST#:#PORT#/#DBHOME##DBNAME#;IGNORECASE=TRUE;SCHEMA_SEARCH_PATH=OSEE, PUBLIC</Url>
+		<Url>#PREFIX#://#HOST#:#PORT#/#DBHOME##DBNAME#;IGNORECASE=TRUE;SCHEMA_SEARCH_PATH=OSEE,PUBLIC</Url>
 	</ConnectionDescription>
 
 	<DatabaseInfo id="DerbyServer">
