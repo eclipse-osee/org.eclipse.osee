@@ -110,10 +110,10 @@ public final class AtsNavigateViewItems extends XNavigateViewItems {
    }
 
    private synchronized void ensurePopulated() {
-      if (OseeUiActivator.areOSEEServicesAvailable().isFalse()) {
-         return;
-      }
       if (!ensurePopulatedRanOnce) {
+         if (OseeUiActivator.areOSEEServicesAvailable().isFalse()) {
+            return;
+         }
          this.ensurePopulatedRanOnce = true;
 
          try {
