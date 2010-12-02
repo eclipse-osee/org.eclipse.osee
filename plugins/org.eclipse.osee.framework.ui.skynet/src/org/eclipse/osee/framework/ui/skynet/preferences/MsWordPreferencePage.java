@@ -44,7 +44,7 @@ public class MsWordPreferencePage extends PreferencePage implements IWorkbenchPr
       identifyImageChangesInWord.setSelection(getUserBooleanSetting(IDENTFY_IMAGE_CHANGES));
 
       removeTrackedChangesInWord = new Button(parent, SWT.CHECK);
-      removeTrackedChangesInWord.setText("Do Not Remove Word Tracked Changes prior to Diffing");
+      removeTrackedChangesInWord.setText("Remove Word Tracked Changes prior to Diffing");
       removeTrackedChangesInWord.setSelection(getUserBooleanSetting(REMOVE_TRACKED_CHANGES));
 
       saveAllChanges = new Button(parent, SWT.CHECK);

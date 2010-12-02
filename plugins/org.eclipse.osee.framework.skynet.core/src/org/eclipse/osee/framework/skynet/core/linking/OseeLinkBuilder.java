@@ -116,15 +116,6 @@ public class OseeLinkBuilder {
          String.format("Invalid Link: artifact with guid:[%s] on branchId:[%s] does not exist", guid, branch.getId()));
    }
 
-   public boolean isEditArtifactLink(String link) {
-      return link.startsWith("http://none/edit?");
-   }
-
-   public String getEditArtifactLink(String guid, Branch branch, String message) {
-      String processType = "edit";
-      return getArtifactLinkWithMessage(processType, guid, branch, message);
-   }
-
    private String getArtifactLinkWithMessage(String processType, String guid, Branch branch, String message) {
       String internalLink = String.format("http://none/%s?guid=%s&amp;branchId=%s", processType, guid, branch.getId());
       return String.format(WORDML_LINK_FORMAT, internalLink, message);

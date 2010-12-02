@@ -356,7 +356,7 @@ public class WordTemplateProcessor {
          //If the artifact has not been processed
          if (!processedArtifacts.contains(artifact)) {
 
-            handleLandscapeArtifactSectionBreak(artifact, wordMl);
+            handleLandscapeArtifactSectionBreak(artifact, wordMl, multipleArtifacts);
 
             if (outlining) {
                String headingText = artifact.getSoleAttributeValue(headingAttributeType, "");
@@ -388,15 +388,18 @@ public class WordTemplateProcessor {
       }
    }
 
-   private void handleLandscapeArtifactSectionBreak(Artifact artifact, WordMLProducer wordMl) throws OseeCoreException {
+   private void handleLandscapeArtifactSectionBreak(Artifact artifact, WordMLProducer wordMl, boolean multipleArtifacts) throws OseeCoreException {
       String pageTypeValue = null;
-      if (artifact.isAttributeTypeValid(CoreAttributeTypes.PageType)) {
-         pageTypeValue = artifact.getSoleAttributeValue(CoreAttributeTypes.PageType, "Portrait");
-      }
-      boolean landscape = pageTypeValue != null && pageTypeValue.equals("Landscape");
+      //There is no reason to add an additional page break if there is a single artifacts
+      if (multipleArtifacts) {
+         if (artifact.isAttributeTypeValid(CoreAttributeTypes.PageType)) {
+            pageTypeValue = artifact.getSoleAttributeValue(CoreAttributeTypes.PageType, "Portrait");
+         }
+         boolean landscape = pageTypeValue != null && pageTypeValue.equals("Landscape");
 
-      if (landscape) {
-         wordMl.setPageBreak();
+         if (landscape) {
+            wordMl.setPageBreak();
+         }
       }
    }
 
