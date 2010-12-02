@@ -85,7 +85,8 @@
 		</pathconvert>
 		<forget>
 			<echo message="Launching Osee Application Server..." />
-			<java taskname="build" jvm="${JAVA_HOME}/bin/java" failonerror="true" maxmemory="1024m" timeout="10800000" jar="${launcherJarPath}" fork="true">
+			<!-- Test Should Complete in 30 mins (timeout vale) - currently, they only take 11 mins -->
+			<java taskname="build" jvm="${JAVA_HOME}/bin/java" failonerror="true" maxmemory="1024m" timeout="1800000" jar="${launcherJarPath}" fork="true">
 				<classpath>
 					<fileset dir="${osee.app.server.home}/plugins" includes="org.eclipse.equinox.launcher_*.jar" />
 					<pathelement location="${osee.app.server.home}/plugins" />
