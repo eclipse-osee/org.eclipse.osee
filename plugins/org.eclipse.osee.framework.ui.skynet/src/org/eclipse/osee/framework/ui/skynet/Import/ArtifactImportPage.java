@@ -14,7 +14,6 @@ import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -24,7 +23,6 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
-import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -36,9 +34,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.importing.ArtifactExtractorContributionManager;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
-import org.eclipse.osee.framework.skynet.core.importing.operations.FilterArtifactTypesByAttributeTypes;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
-import org.eclipse.osee.framework.skynet.core.importing.operations.SourceToRoughArtifactOperation;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactExtractor;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactExtractorDelegate;
 import org.eclipse.osee.framework.ui.plugin.util.DirectoryOrFileSelector;
@@ -432,12 +428,13 @@ public class ArtifactImportPage extends WizardDataTransferPage {
          final File sourceFile = selectionLatch.currentSelected.sourceFile;
          final IArtifactExtractor extractor = selectionLatch.currentSelected.extractor;
 
-         List<IOperation> ops = new ArrayList<IOperation>();
-         ops.add(new SourceToRoughArtifactOperation(extractor, sourceFile, collector));
-         ops.add(new FilterArtifactTypesByAttributeTypes(destinationArtifact.getBranch(), collector,
-            selectedArtifactTypes));
+         IOperation op =
+            ArtifactImportOperationFactory.createArtifactsCompOperation("Extracting data from source", sourceFile,
+               destinationArtifact, extractor, collector, selectedArtifactTypes, true);
+
          selectedArtifactTypes.clear();
-         if (executeOperation(new CompositeOperation("Extracting data from source", SkynetGuiPlugin.PLUGIN_ID, ops))) {
+
+         if (executeOperation(op)) {
             artifactTypeSelectPanel.setAllowedArtifactTypes(selectedArtifactTypes);
             try {
                if (getArtifactType() != null) {

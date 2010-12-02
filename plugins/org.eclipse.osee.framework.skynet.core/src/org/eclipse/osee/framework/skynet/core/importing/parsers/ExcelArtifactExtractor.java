@@ -14,9 +14,12 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.InputStreamReader;
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
@@ -80,6 +83,33 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
       private final DoubleKeyHashMap<String, Integer, RoughArtifact> relationHelper =
          new DoubleKeyHashMap<String, Integer, RoughArtifact>();
 
+      private static enum RowTypeEnum {
+         PARAGRAPH_NO(CoreAttributeTypes.ParagraphNumber.getName()),
+         ARTIFACT_NAME(CoreAttributeTypes.Name.getName()),
+         GUID("GUID"),
+         HRID("Human Readable Id"),
+         OTHER("");
+
+         private final static Map<String, RowTypeEnum> rawStringToRowType = new HashMap<String, RowTypeEnum>();
+
+         public String _rowType;
+
+         RowTypeEnum(String rowType) {
+            _rowType = rowType;
+         }
+
+         public static synchronized RowTypeEnum fromString(String value) {
+            if (rawStringToRowType.isEmpty()) {
+               for (RowTypeEnum enumStatus : RowTypeEnum.values()) {
+                  RowTypeEnum.rawStringToRowType.put(enumStatus._rowType, enumStatus);
+               }
+            }
+            RowTypeEnum returnVal = rawStringToRowType.get(value);
+            return returnVal != null ? returnVal : OTHER;
+         }
+      }
+      private final Map<Integer, RowTypeEnum> rowIndexToRowTypeMap = new HashMap<Integer, RowTypeEnum>();
+
       private final Matcher guidMatcher;
       private final RoughArtifactCollector collector;
 
@@ -132,8 +162,15 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
          rowCount++;
          this.headerRow = headerRow.clone();
          for (int i = 0; i < this.headerRow.length; i++) {
-            if (headerRow[i] != null && headerRow[i].trim().length() == 0) {
+            String value = headerRow[i];
+            if (value != null) {
+               value = value.trim();
+            }
+            if (!Strings.isValid(value)) {
                this.headerRow[i] = null;
+            } else {
+               RowTypeEnum rowTypeEnum = RowTypeEnum.fromString(value);
+               rowIndexToRowTypeMap.put(i, rowTypeEnum);
             }
          }
       }
@@ -154,26 +191,42 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
             collector.addRoughRelation(new RoughRelation(row[0], guida, guidb, row[5]));
          } else {
             RoughArtifact roughArtifact = new RoughArtifact(RoughArtifactKind.PRIMARY);
-            for (int i = 0; i < row.length; i++) {
-               if (headerRow[i] != null) {
-                  if (headerRow[i].equalsIgnoreCase("Outline Number")) {
-                     if (row[i] == null) {
-                        throw new OseeArgumentException("Outline Number must not be blank");
+            if (!rowIndexToRowTypeMap.isEmpty()) {
+               for (int rowIndex = 0; rowIndex < row.length; rowIndex++) {
+                  RowTypeEnum rowType = rowIndexToRowTypeMap.get(rowIndex);
+
+                  String rowValue = row[rowIndex];
+
+                  if (Strings.isValid(rowValue)) {
+                     switch (rowType) {
+                        case PARAGRAPH_NO:
+                           roughArtifact.setSectionNumber(row[rowIndex]);
+                           roughArtifact.addAttribute(CoreAttributeTypes.ParagraphNumber, rowValue);
+                           break;
+                        case ARTIFACT_NAME:
+                           roughArtifact.addAttribute(CoreAttributeTypes.Name, rowValue);
+                           break;
+                        case GUID:
+                           roughArtifact.setGuid(rowValue);
+                           break;
+                        case HRID:
+                           roughArtifact.setHumandReadableId(rowValue);
+                           break;
+                        case OTHER:
+                           roughArtifact.addAttribute(headerRow[rowIndex], rowValue);
+                           break;
                      }
-                     roughArtifact.setSectionNumber(row[i]);
-                  } else if (headerRow[i].equalsIgnoreCase("GUID")) {
-                     roughArtifact.setGuid(row[i]);
-                  } else if (headerRow[i].equalsIgnoreCase("Human Readable Id")) {
-                     roughArtifact.setHumandReadableId(row[i]);
                   } else {
-                     if (Strings.isValid(row[i])) {
-                        roughArtifact.addAttribute(headerRow[i], row[i]);
+                     //complain only if row value invalid and parsing paragraph numbers
+                     if (rowType == RowTypeEnum.PARAGRAPH_NO) {
+                        throw new OseeArgumentException("%s must not be blank", CoreAttributeTypes.ParagraphNumber);
                      }
                   }
+
                }
             }
-            collector.addRoughArtifact(roughArtifact);
 
+            collector.addRoughArtifact(roughArtifact);
             relationHelper.put(primaryDescriptor.getName(), Integer.valueOf(rowCount), roughArtifact);
          }
       }

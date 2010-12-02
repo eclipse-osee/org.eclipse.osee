@@ -26,28 +26,30 @@ import org.eclipse.osee.framework.ui.skynet.test.cases.ViewWordChangeAndDiffTest
 import org.eclipse.osee.framework.ui.skynet.test.cases.WordArtifactElementExtractorTest;
 import org.eclipse.osee.framework.ui.skynet.test.cases.WordEditTest;
 import org.eclipse.osee.framework.ui.skynet.test.cases.WordTrackedChangesTest;
+import org.eclipse.osee.framework.ui.skynet.test.importer.ImportTestSuite;
 import org.eclipse.osee.framework.ui.skynet.test.renderer.RendererTestSuite;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({//
-BlamXWidgetTest.class, //
-   EmailGroupsBlamTest.class, //
-   ResultsEditorConverterTest.class, //
-   ArtifactPasteConfigurationTest.class, //
-   ArtifactPasteOperationTest.class, //
-   RelationOrderRendererTest.class, //
-   InterArtifactDropTest.class, //
-   WordEditTest.class, //
-   WordTrackedChangesTest.class, //
-   PreviewAndMultiPreviewTest.class, //
-   ViewWordChangeAndDiffTest.class, //
-   WordArtifactElementExtractorTest.class, //
-   AttributeTypeEditPresenterTest.class, //
-   ArtifactPromptChangeTest.class, //
-   RendererTestSuite.class})
+@Suite.SuiteClasses({
+   BlamXWidgetTest.class,
+   EmailGroupsBlamTest.class,
+   ResultsEditorConverterTest.class,
+   ArtifactPasteConfigurationTest.class,
+   ArtifactPasteOperationTest.class,
+   RelationOrderRendererTest.class,
+   InterArtifactDropTest.class,
+   WordEditTest.class,
+   WordTrackedChangesTest.class,
+   PreviewAndMultiPreviewTest.class,
+   ViewWordChangeAndDiffTest.class,
+   WordArtifactElementExtractorTest.class,
+   AttributeTypeEditPresenterTest.class,
+   ArtifactPromptChangeTest.class,
+   RendererTestSuite.class,
+   ImportTestSuite.class})
 /**
  * @author Donald G. Dunne
  */

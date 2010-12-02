@@ -11,9 +11,11 @@
 package org.eclipse.osee.framework.skynet.core.importing.resolvers;
 
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 
@@ -38,6 +40,12 @@ public class GuidBasedArtifactResolver extends NewArtifactImportResolver {
    public Artifact resolve(RoughArtifact roughArtifact, Branch branch, Artifact realParent, Artifact root) throws OseeCoreException {
       List<Artifact> descendants = root.getDescendants();
       Artifact realArtifact = null;
+
+      if (roughArtifact.getGuid() == null) {
+         OseeLog.format(GuidBasedArtifactResolver.class, Level.INFO,
+            "Guid based resolver is comparing a null GUID. roughArtifactifact: [%s]. Attributes: [%s]", roughArtifact,
+            roughArtifact.getAttributes());
+      }
 
       for (Artifact artifact : descendants) {
          if (guidsMatch(roughArtifact, artifact)) {

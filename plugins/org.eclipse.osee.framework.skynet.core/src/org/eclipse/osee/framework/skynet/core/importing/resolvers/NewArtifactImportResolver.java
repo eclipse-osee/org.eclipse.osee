@@ -10,10 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.importing.resolvers;
 
+import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactProcessor;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -35,6 +37,9 @@ public class NewArtifactImportResolver implements IArtifactImportResolver {
    @Override
    public Artifact resolve(final RoughArtifact roughArtifact, final Branch branch, Artifact realParent, Artifact root) throws OseeCoreException {
       IArtifactType artifactType = getArtifactType(roughArtifact.getRoughArtifactKind());
+
+      OseeLog.format(NewArtifactImportResolver.class, Level.INFO, "New artifact: [%s]. Attributes: [%s]",
+         roughArtifact, roughArtifact.getAttributes());
 
       Artifact realArtifact =
          ArtifactTypeManager.getFactory(artifactType).makeNewArtifact(branch, artifactType, roughArtifact.getGuid(),

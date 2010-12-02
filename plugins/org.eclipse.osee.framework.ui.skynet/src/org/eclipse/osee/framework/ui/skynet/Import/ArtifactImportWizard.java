@@ -11,26 +11,17 @@
 package org.eclipse.osee.framework.ui.skynet.Import;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.operation.AbstractOperation;
-import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.importing.operations.CompleteArtifactImportOperation;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
-import org.eclipse.osee.framework.skynet.core.importing.operations.RoughToRealArtifactOperation;
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.IArtifactImportResolver;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.ui.skynet.ArtifactValidationCheckOperation;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
@@ -48,7 +39,6 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
       setDialogSettings(SkynetGuiPlugin.getInstance().getDialogSettings());
       setWindowTitle("OSEE Artifact Import Wizard");
       setNeedsProgressMonitor(true);
-
       setHelpAvailable(true);
    }
 
@@ -90,37 +80,15 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
    public boolean performFinish() {
       final Artifact destinationArtifact = mainPage.getDestinationArtifact();
       final boolean isDeleteUnmatchedSelected = mainPage.isDeleteUnmatchedSelected();
-      final String opName = "Importing Artifacts onto: " + destinationArtifact;
       final RoughArtifactCollector roughItems = mainPage.getCollectedArtifacts();
       final IArtifactImportResolver resolver = getResolver();
 
-      Operations.executeAsJob(new AbstractOperation(opName, SkynetGuiPlugin.PLUGIN_ID) {
-         @Override
-         protected void doWork(IProgressMonitor monitor) throws Exception {
-            SkynetTransaction transaction = null;
-            transaction = new SkynetTransaction(destinationArtifact.getBranch(), "Artifact Import Wizard transaction");
-            List<Artifact> children = new ArrayList<Artifact>();
-            try {
-               children = destinationArtifact.getDescendants();
-            } catch (OseeCoreException ex) {
-               reportError("Unable to get artifact children: artifact:[%s] branch:[%s]", destinationArtifact.getGuid(),
-                  destinationArtifact.getBranch().getGuid(), ex);
-            }
-            List<IOperation> subOps = new ArrayList<IOperation>();
-            subOps.add(new RoughToRealArtifactOperation(transaction, destinationArtifact, roughItems, resolver,
-               isDeleteUnmatchedSelected));
-            subOps.add(new ArtifactValidationCheckOperation(children, false));
-            subOps.add(new CompleteArtifactImportOperation(transaction, destinationArtifact));
-            IOperation ret = new CompositeOperation(opName, SkynetGuiPlugin.PLUGIN_ID, subOps);
-            Operations.executeWorkAndCheckStatus(ret, monitor);
-         }
-
-         private void reportError(String message, String arg1, String arg2, Exception ex) throws Exception {
-            throw new Exception(String.format(message, arg1, arg2), ex);
-         }
-
-      }, true);
-      return true;
+      final String opName = String.format("Importing Artifacts onto: [%s]", destinationArtifact);
+      IOperation operation =
+         ArtifactImportOperationFactory.createRoughToRealOperation(opName, destinationArtifact, resolver, false,
+            roughItems, isDeleteUnmatchedSelected);
+      Job job = Operations.executeAsJob(operation, true);
+      return job != null;
    }
 
    private IArtifactImportResolver getResolver() {
