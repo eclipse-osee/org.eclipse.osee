@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.test.importer;
 
 import java.io.File;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -50,8 +51,6 @@ public final class ArtifactImportWizardTest {
 
    private static SevereLoggingMonitor monitorLog = null;
    private static Artifact myRootArtifact = null;
-   private static String inputFilesLocation =
-      ArtifactImportWizardTest.class.getProtectionDomain().getCodeSource().getLocation() + "src";
 
    @Test
    public void simpleImportNobodyGetsDeleted() throws Exception {
@@ -109,8 +108,10 @@ public final class ArtifactImportWizardTest {
    }
 
    private void buildAndRunCoreTest(String nameOfExcelImportFile) throws Exception {
-      File inputExcelFile = new File(getResourcePath(nameOfExcelImportFile));
-      Assert.assertTrue(inputExcelFile.isFile());
+      URL url = ArtifactImportWizardTest.class.getResource(nameOfExcelImportFile);
+      Assert.assertNotNull(url);
+      File inputExcelFile = new File(url.toURI());
+      Assert.assertTrue(inputExcelFile.exists());
 
       IArtifactImportResolver resolver =
          MatchingStrategy.GUID.getResolver(CoreArtifactTypes.SystemRequirement, null, true, true);
@@ -182,12 +183,6 @@ public final class ArtifactImportWizardTest {
    @AfterClass
    public static void tearDownOnce() throws Exception {
       TestUtil.severeLoggingEnd(monitorLog);
-   }
-
-   private static String getResourcePath(String name) {
-      String path = inputFilesLocation + ArtifactImportWizardTest.class.getResource(name).getPath();
-      path = path.substring(path.indexOf("C:"), path.length());
-      return path;
    }
 
    //   private void displayArtifactTree(Artifact artifact) throws OseeCoreException {
