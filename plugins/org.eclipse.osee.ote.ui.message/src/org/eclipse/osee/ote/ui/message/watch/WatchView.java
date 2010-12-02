@@ -26,6 +26,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -954,7 +955,10 @@ public final class WatchView extends ViewPart implements IActionable, IMessageDi
          @Override
          public void run() {
             try {
-               statusTxt.setText("loaded with " + dictionary.getMessageLibraryVersion());
+               String libraryProviders = String.format("Providers:\n%s", dictionary.getMessageLibraryVersion());
+               statusTxt.setText("libraries loaded");
+               statusTxt.setToolTipText(libraryProviders);
+			   treeViewer.getTree().setToolTipText(libraryProviders);
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, "exception while processing library", ex);
             }
@@ -974,6 +978,7 @@ public final class WatchView extends ViewPart implements IActionable, IMessageDi
    }
 
    private void setNoLibraryStatus() {
+	  treeViewer.getTree().setToolTipText("");
       statusTxt.setText("no library detected");
    }
 
