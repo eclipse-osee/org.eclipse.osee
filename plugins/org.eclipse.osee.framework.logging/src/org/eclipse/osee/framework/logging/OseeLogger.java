@@ -42,6 +42,7 @@ public class OseeLogger {
                Level lev = Level.parse(level);
                levelMap.put(name, lev);
             } catch (Exception ex) {
+               // Do Nothing
             }
          }
       }
