@@ -305,7 +305,7 @@ public class StateManager {
       return getVisitedStateNames().contains(state.getPageName());
    }
 
-   public void transitionHelper(Collection<User> toAssignees, boolean persist, WorkPageDefinition fromPage, WorkPageDefinition toPage, IWorkPage toState, String cancelReason) throws OseeCoreException {
+   public void transitionHelper(Collection<User> toAssignees, WorkPageDefinition fromPage, WorkPageDefinition toPage, IWorkPage toState, String cancelReason) throws OseeCoreException {
       // Set XCurrentState info to XState
       stateDam.setState(currentStateDam.getState());
 
@@ -314,7 +314,7 @@ public class StateManager {
       if (previousState == null) {
          currentStateDam.setState(new SMAState(toState.getPageName(), toAssignees));
       } else {
-         if (toAssignees.size() > 0) {
+         if (!org.eclipse.osee.framework.jdk.core.util.Collections.isEqual(previousState.getAssignees(), toAssignees)) {
             previousState.setAssignees(toAssignees);
          }
          currentStateDam.setState(previousState);

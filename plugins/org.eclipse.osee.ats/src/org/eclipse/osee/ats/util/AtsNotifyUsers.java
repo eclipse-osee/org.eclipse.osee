@@ -131,7 +131,7 @@ public class AtsNotifyUsers implements IArtifactEventListener {
                   sma.getArtifactTypeName(), sma.getName(), sma.getStateMgr().getCurrentStateName())));
          }
       }
-      if (types.contains(NotifyType.Cancelled) || types.contains(NotifyType.Completed) && ((sma.isTeamWorkflow() || sma instanceof AbstractReviewArtifact) && (sma.isCompleted() || sma.isCancelled()))) {
+      if (types.contains(NotifyType.Cancelled) || types.contains(NotifyType.Completed) && (!sma.isTask() && (sma.isCompleted() || sma.isCancelled()))) {
          User originator = sma.getCreatedBy();
          if (originator.isActive()) {
             if (!EmailUtil.isEmailValid(originator)) {
@@ -140,15 +140,16 @@ public class AtsNotifyUsers implements IArtifactEventListener {
             } else if (!UserManager.getUser().equals(originator)) {
                if (sma.isCompleted()) {
                   notificationManager.addNotificationEvent(new OseeNotificationEvent(Arrays.asList(originator),
-                     getIdString(sma), NotifyType.Completed.name(), String.format("[%s] titled [%s] is Completed",
-                        sma.getArtifactTypeName(), sma.getName())));
+                     getIdString(sma), sma.getCurrentStateName(), String.format("[%s] titled [%s] is [%s]",
+                        sma.getArtifactTypeName(), sma.getName(), sma.getCurrentStateName())));
                }
                if (sma.isCancelled()) {
                   notificationManager.addNotificationEvent(new OseeNotificationEvent(Arrays.asList(originator),
-                     getIdString(sma), NotifyType.Cancelled.name(), String.format(
-                        "[%s] titled [%s] was cancelled from the [%s] state on [%s].<br>Reason: [%s]",
-                        sma.getArtifactTypeName(), sma.getName(), sma.getCancelledFromState(),
-                        DateUtil.getMMDDYYHHMM(sma.internalGetCancelledDate()), sma.getCancelledReason())));
+                     getIdString(sma), sma.getCurrentStateName(), String.format(
+                        "[%s] titled [%s] was [%s] from the [%s] state on [%s].<br>Reason: [%s]",
+                        sma.getArtifactTypeName(), sma.getName(), sma.getCurrentStateName(),
+                        sma.getCancelledFromState(), DateUtil.getMMDDYYHHMM(sma.internalGetCancelledDate()),
+                        sma.getCancelledReason())));
                }
             }
          }

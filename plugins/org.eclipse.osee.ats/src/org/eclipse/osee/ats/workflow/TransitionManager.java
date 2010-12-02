@@ -160,7 +160,7 @@ public class TransitionManager {
       }
       logStateStartedEvent(toState, transitionDate, transitionUser);
 
-      aba.getStateMgr().transitionHelper(toAssignees, persist, fromPage, toPage, toState, completeOrCancelReason);
+      aba.getStateMgr().transitionHelper(toAssignees, fromPage, toPage, toState, completeOrCancelReason);
 
       if (aba.isValidationRequired() && aba.isTeamWorkflow()) {
          ReviewManager.createValidateReview((TeamWorkFlowArtifact) aba, false, transitionDate, transitionUser,

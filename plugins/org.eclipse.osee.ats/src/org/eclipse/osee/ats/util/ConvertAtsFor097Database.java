@@ -21,6 +21,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.log.LogItem;
+import org.eclipse.osee.ats.artifact.log.LogType;
 import org.eclipse.osee.ats.health.ValidateAtsDatabase;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -217,6 +218,12 @@ public class ConvertAtsFor097Database extends XNavigateItemAction {
       boolean set = false;
       if (currentStateIsCompleted || stateTypeSaysCompleted) {
          LogItem item = aba.getLog().internalGetCompletedLogItem();
+         if (item == null) {
+            // If transition to complete was with new completed state, internalGetCompletedLogItem won't work, try
+            // to get from work page definition page name
+            WorkPageDefinition page = aba.getWorkPageDefinition();
+            item = aba.getLog().getStateEvent(LogType.StateEntered, page.getPageName());
+         }
          if (!item.getUserId().equals(aba.getSoleAttributeValue(AtsAttributeTypes.CompletedBy, ""))) {
             aba.setSoleAttributeValue(AtsAttributeTypes.CompletedBy, item.getUserId());
             set = true;
