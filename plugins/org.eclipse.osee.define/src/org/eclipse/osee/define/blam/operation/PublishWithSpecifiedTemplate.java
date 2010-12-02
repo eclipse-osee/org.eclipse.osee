@@ -76,6 +76,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
       newVariableMap.setValue("Publish As Diff", variableMap.getValue("Publish As Diff"));
       //      newVariableMap.setValue("Diff from Baseline", variableMap.getValue("Diff from Baseline"));
       newVariableMap.setValue("linkType", linkType);
+      newVariableMap.setValue("OpenDocument", variableMap.getValue("Open Document in Word"));
 
       WordTemplateRenderer renderer = new WordTemplateRenderer();
       SkynetTransaction transaction = new SkynetTransaction(branch, "BLAM: Publish with specified template");
@@ -96,7 +97,8 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
    public String getXWidgetsXml() {
       populateTemplateList();
       StringBuilder builder = new StringBuilder();
-      builder.append("<xWidgets><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Update Paragraph Numbers\" />");
+      builder.append("<xWidgets><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Open Document in Word\" />");
+      builder.append("<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Update Paragraph Numbers\" />");
 
       builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Document Link Format:\"/>");
       builder.append("<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Use Artifact Names\" />");

@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -54,8 +55,10 @@ import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
+import org.eclipse.osee.framework.ui.skynet.util.FileUiUtil;
 import org.eclipse.osee.framework.ui.skynet.util.WordUiUtil;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.swt.program.Program;
 
 /**
  * @author Robert A. Fisher
@@ -92,6 +95,7 @@ public class WordTemplateProcessor {
    private static final Pattern internalOutlineElementsPattern = Pattern.compile(
       "<((\\w+:)?(HeadingAttribute|RecurseChildren|Number))>(.*?)</\\1>",
       Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Program wordApp = Program.findProgram("doc");
 
    private String slaveTemplate;
    private String slaveTemplateName;
@@ -126,8 +130,14 @@ public class WordTemplateProcessor {
 
       IFolder folder = RenderingUtil.ensureRenderFolderExists(PresentationType.PREVIEW);
       String fileName = String.format("%s_%s.xml", masterTemplateArtifact.getSafeName(), Lib.getDateTimeString());
-      AIFile.writeToFile(folder.getFile(fileName),
+      IFile file = folder.getFile(fileName);
+      AIFile.writeToFile(file,
          applyTemplate(variableMap, artifacts, masterTemplate, folder, null, null, PresentationType.PREVIEW));
+
+      if (variableMap.getBoolean("OpenDocument") && file != null) {
+         FileUiUtil.ensureFilenameLimit(file);
+         wordApp.execute(file.getLocation().toFile().getAbsolutePath());
+      }
    }
 
    /**
