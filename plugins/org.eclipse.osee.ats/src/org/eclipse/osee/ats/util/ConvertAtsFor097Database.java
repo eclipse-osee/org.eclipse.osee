@@ -112,8 +112,8 @@ public class ConvertAtsFor097Database extends XNavigateItemAction {
       }
       int artSetNum = 1;
       testNameToResultsMap = new HashCollection<String, String>();
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), getName());
       for (Collection<Integer> artIdList : artIdLists) {
+         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), getName());
          // Don't process all lists if just trying to test this report
          elapsedTime =
             new ElapsedTime(String.format(getName() + " - load Artifact set %d/%d", artSetNum++, artIdLists.size()));
@@ -125,8 +125,8 @@ public class ConvertAtsFor097Database extends XNavigateItemAction {
          if (monitor != null) {
             monitor.worked(1);
          }
+         transaction.execute();
       }
-      transaction.execute();
       // Log resultMap data into xResultData
       String[] keys = testNameToResultsMap.keySet().toArray(new String[testNameToResultsMap.keySet().size()]);
       Arrays.sort(keys);
