@@ -36,6 +36,7 @@ import org.eclipse.osee.ats.util.AtsEditor;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.ConvertAtsFor096Database;
 import org.eclipse.osee.ats.util.ConvertAtsFor097Database;
+import org.eclipse.osee.ats.util.ConvertAtsSingleFor097Database;
 import org.eclipse.osee.ats.util.DoesNotWorkItemAts;
 import org.eclipse.osee.ats.world.search.ActionableItemWorldSearchItem;
 import org.eclipse.osee.ats.world.search.ArtifactTypeSearchItem;
@@ -175,6 +176,7 @@ public final class AtsNavigateViewItems extends XNavigateViewItems {
          XNavigateItem dbConvertItems = new XNavigateItem(adminItems, "Database Conversions", PluginUiImage.ADMIN);
          new ConvertAtsFor096Database(dbConvertItems);
          new ConvertAtsFor097Database(dbConvertItems);
+         new ConvertAtsSingleFor097Database(dbConvertItems);
 
          new AtsNotificationNavigateItem(adminItems);
          new AtsNotificationNavigateItem(adminItems, true);

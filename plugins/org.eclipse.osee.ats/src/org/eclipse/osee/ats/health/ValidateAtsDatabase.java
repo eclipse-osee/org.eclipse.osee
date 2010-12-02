@@ -214,20 +214,24 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             }
          }
          // Log resultMap data into xResultData
-         String[] keys = testNameToResultsMap.keySet().toArray(new String[testNameToResultsMap.keySet().size()]);
-         Arrays.sort(keys);
-         for (String testName : keys) {
-            xResultData.log(testName);
-            for (String result : testNameToResultsMap.getValues(testName)) {
-               xResultData.log(result);
-            }
-         }
+         addResultsMapToResultData(xResultData, testNameToResultsMap);
       } finally {
          OseeEventManager.setDisableEvents(false);
       }
       xResultData.reportSevereLoggingMonitor(monitorLog);
       if (monitor != null) {
          xResultData.log(monitor, "Completed processing " + count + " artifacts.");
+      }
+   }
+
+   public static void addResultsMapToResultData(XResultData xResultData, HashCollection<String, String> testNameToResultsMap) {
+      String[] keys = testNameToResultsMap.keySet().toArray(new String[testNameToResultsMap.keySet().size()]);
+      Arrays.sort(keys);
+      for (String testName : keys) {
+         xResultData.log(testName);
+         for (String result : testNameToResultsMap.getValues(testName)) {
+            xResultData.log(result);
+         }
       }
    }
 

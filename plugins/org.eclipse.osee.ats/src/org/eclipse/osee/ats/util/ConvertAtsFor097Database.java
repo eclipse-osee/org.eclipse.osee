@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
@@ -128,14 +127,8 @@ public class ConvertAtsFor097Database extends XNavigateItemAction {
          transaction.execute();
       }
       // Log resultMap data into xResultData
-      String[] keys = testNameToResultsMap.keySet().toArray(new String[testNameToResultsMap.keySet().size()]);
-      Arrays.sort(keys);
-      for (String testName : keys) {
-         xResultData.log(testName);
-         for (String result : testNameToResultsMap.getValues(testName)) {
-            xResultData.log(result);
-         }
-      }
+      ValidateAtsDatabase.addResultsMapToResultData(xResultData, testNameToResultsMap);
+
       xResultData.reportSevereLoggingMonitor(monitorLog);
       if (monitor != null) {
          xResultData.log(monitor, "Completed processing " + count + " artifacts.");
@@ -157,17 +150,30 @@ public class ConvertAtsFor097Database extends XNavigateItemAction {
             }
          } catch (OseeCoreException ex) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-            testNameToResultsMap.put("convertWorkPageDefinitions", "Error: Exception: " + ex.getLocalizedMessage());
+            if (testNameToResultsMap != null) {
+               testNameToResultsMap.put("convertWorkPageDefinitions", "Error: Exception: " + ex.getLocalizedMessage());
+            }
          }
       }
    }
 
    private static void setCreatedAttributes(HashCollection<String, String> testNameToResultsMap, AbstractWorkflowArtifact aba) throws OseeCoreException {
       if (aba.getSoleAttributeValueAsString(AtsAttributeTypes.CreatedBy, null) == null) {
-         aba.setSoleAttributeValue(AtsAttributeTypes.CreatedBy, aba.getLog().internalGetOriginator().getUserId());
-         aba.setSoleAttributeValue(AtsAttributeTypes.CreatedDate, aba.getLog().internalGetCreationDate());
-         testNameToResultsMap.put("setCreatedAttributes",
-            "Info: " + XResultData.getHyperlink(aba.getName(), aba) + " adding created attributes.");
+         boolean set = false;
+         if (!aba.getLog().internalGetOriginator().getUserId().equals(
+            aba.getSoleAttributeValue(AtsAttributeTypes.CreatedBy, ""))) {
+            aba.setSoleAttributeValue(AtsAttributeTypes.CreatedBy, aba.getLog().internalGetOriginator().getUserId());
+            set = true;
+         }
+         if (!aba.getLog().internalGetCreationDate().equals(
+            aba.getSoleAttributeValue(AtsAttributeTypes.CreatedDate, null))) {
+            aba.setSoleAttributeValue(AtsAttributeTypes.CreatedDate, aba.getLog().internalGetCreationDate());
+            set = true;
+         }
+         if (testNameToResultsMap != null && set) {
+            testNameToResultsMap.put("setCreatedAttributes",
+               "Info: " + XResultData.getHyperlink(aba.getName(), aba) + " adding created attributes.");
+         }
       }
    }
 
@@ -175,14 +181,32 @@ public class ConvertAtsFor097Database extends XNavigateItemAction {
       String stateType = aba.getSoleAttributeValueAsString(AtsAttributeTypes.CurrentStateType, "");
       boolean stateTypeSaysCancelled = stateType.equals(WorkPageType.Cancelled.name());
       boolean currentStateIsCancelled = aba.getCurrentStateName().equals(TeamState.Cancelled.name());
+      boolean set = false;
       if (currentStateIsCancelled || stateTypeSaysCancelled) {
          LogItem item = aba.getLog().internalGetCancelledLogItem();
-         aba.setSoleAttributeValue(AtsAttributeTypes.CancelledBy, item.getUserId());
-         aba.setSoleAttributeValue(AtsAttributeTypes.CancelledDate, item.getDate());
-         aba.setSoleAttributeValue(AtsAttributeTypes.CancelledFromState, aba.getLog().internalGetCancelledFromState());
-         aba.setSoleAttributeValue(AtsAttributeTypes.CancelledReason, aba.getLog().internalGetCancelledReason());
-         testNameToResultsMap.put("setCancelledAttributes",
-            "Info: " + XResultData.getHyperlink(aba.getName(), aba) + " adding cancelled attributes.");
+         if (!item.getUserId().equals(aba.getSoleAttributeValue(AtsAttributeTypes.CancelledBy, ""))) {
+            set = true;
+            aba.setSoleAttributeValue(AtsAttributeTypes.CancelledBy, item.getUserId());
+         }
+         if (!item.getDate().equals(aba.getSoleAttributeValue(AtsAttributeTypes.CancelledDate, null))) {
+            aba.setSoleAttributeValue(AtsAttributeTypes.CancelledDate, item.getDate());
+            set = true;
+         }
+         if (!aba.getLog().internalGetCancelledFromState().equals(
+            aba.getSoleAttributeValue(AtsAttributeTypes.CancelledFromState, null))) {
+            aba.setSoleAttributeValue(AtsAttributeTypes.CancelledFromState,
+               aba.getLog().internalGetCancelledFromState());
+            set = true;
+         }
+         if (!aba.getLog().internalGetCancelledReason().equals(
+            aba.getSoleAttributeValue(AtsAttributeTypes.CancelledReason, ""))) {
+            aba.setSoleAttributeValue(AtsAttributeTypes.CancelledReason, aba.getLog().internalGetCancelledReason());
+            set = true;
+         }
+         if (testNameToResultsMap != null && set) {
+            testNameToResultsMap.put("setCancelledAttributes",
+               "Info: " + XResultData.getHyperlink(aba.getName(), aba) + " adding cancelled attributes.");
+         }
       }
    }
 
@@ -190,27 +214,50 @@ public class ConvertAtsFor097Database extends XNavigateItemAction {
       String stateType = aba.getSoleAttributeValueAsString(AtsAttributeTypes.CurrentStateType, "");
       boolean stateTypeSaysCompleted = stateType.equals(WorkPageType.Completed.name());
       boolean currentStateIsCompleted = aba.getCurrentStateName().equals(TeamState.Completed.name());
+      boolean set = false;
       if (currentStateIsCompleted || stateTypeSaysCompleted) {
          LogItem item = aba.getLog().internalGetCompletedLogItem();
-         aba.setSoleAttributeValue(AtsAttributeTypes.CompletedBy, item.getUserId());
-         aba.setSoleAttributeValue(AtsAttributeTypes.CompletedDate, item.getDate());
-         aba.setSoleAttributeValue(AtsAttributeTypes.CompletedFromState, aba.getLog().internalGetCompletedFromState());
-         testNameToResultsMap.put("setCompletedAttributes",
-            "Info: " + XResultData.getHyperlink(aba.getName(), aba) + " adding completed attributes.");
+         if (!item.getUserId().equals(aba.getSoleAttributeValue(AtsAttributeTypes.CompletedBy, ""))) {
+            aba.setSoleAttributeValue(AtsAttributeTypes.CompletedBy, item.getUserId());
+            set = true;
+         }
+         if (!item.getDate().equals(aba.getSoleAttributeValue(AtsAttributeTypes.CompletedDate, null))) {
+            aba.setSoleAttributeValue(AtsAttributeTypes.CompletedDate, item.getDate());
+            set = true;
+         }
+         if (!aba.getLog().internalGetCompletedFromState().equals(
+            aba.getSoleAttributeValue(AtsAttributeTypes.CompletedFromState, null))) {
+            aba.setSoleAttributeValue(AtsAttributeTypes.CompletedFromState,
+               aba.getLog().internalGetCompletedFromState());
+            set = true;
+         }
+         if (testNameToResultsMap != null && set) {
+            testNameToResultsMap.put("setCompletedAttributes",
+               "Info: " + XResultData.getHyperlink(aba.getName(), aba) + " adding completed attributes.");
+         }
       }
    }
 
    private static void setCurrentStateType(HashCollection<String, String> testNameToResultsMap, AbstractWorkflowArtifact aba) throws OseeCoreException {
       String stateType = aba.getSoleAttributeValueAsString(AtsAttributeTypes.CurrentStateType, "");
-      if (aba.getCurrentStateName().equals("Completed") && !stateType.equals(WorkPageType.Completed.name())) {
+      boolean set = false;
+      WorkPageDefinition page = aba.getWorkPageDefinition();
+      boolean currentStateIsCompleted = aba.getCurrentStateName().equals("Completed") || page.isCompletedPage();
+      boolean currentStateIsCancelled = aba.getCurrentStateName().equals("Cancelled") || page.isCancelledPage();
+      if (currentStateIsCompleted && !stateType.equals(WorkPageType.Completed.name())) {
          aba.setSoleAttributeValue(AtsAttributeTypes.CurrentStateType, WorkPageType.Completed.name());
-      } else if (aba.getCurrentStateName().equals("Cancelled") && !stateType.equals(WorkPageType.Cancelled.name())) {
+         set = true;
+      } else if (currentStateIsCancelled && !stateType.equals(WorkPageType.Cancelled.name())) {
          aba.setSoleAttributeValue(AtsAttributeTypes.CurrentStateType, WorkPageType.Cancelled.name());
-      } else if (!stateType.equals(WorkPageType.Working.name())) {
+         set = true;
+      } else if ((!currentStateIsCancelled && !currentStateIsCompleted) && !stateType.equals(WorkPageType.Working.name())) {
          aba.setSoleAttributeValue(AtsAttributeTypes.CurrentStateType, WorkPageType.Working.name());
+         set = true;
       }
-      testNameToResultsMap.put("setCurrentStateType",
-         "Info: " + XResultData.getHyperlink(aba.getName(), aba) + " adding current state type.");
+      if (testNameToResultsMap != null && set) {
+         testNameToResultsMap.put("setCurrentStateType",
+            "Info: " + XResultData.getHyperlink(aba.getName(), aba) + " adding current state type.");
+      }
    }
 
    public static void convertWorkPageDefinitions(HashCollection<String, String> testNameToResultsMap, Collection<Artifact> artifacts, SkynetTransaction transaction) {
@@ -219,9 +266,11 @@ public class ConvertAtsFor097Database extends XNavigateItemAction {
             if (artifact.isOfType(CoreArtifactTypes.WorkPageDefinition)) {
                WorkPageDefinition page = new WorkPageDefinition(artifact);
                if (artifact.getSoleAttributeValueAsString(CoreAttributeTypes.WorkPageType, null) == null) {
-                  testNameToResultsMap.put(
-                     "convertWorkPageDefinitions",
-                     "Info: WorkPageDefinition: " + XResultData.getHyperlink(artifact.getName(), artifact) + " adding Work Page Type attribute.");
+                  if (testNameToResultsMap != null) {
+                     testNameToResultsMap.put(
+                        "convertWorkPageDefinitions",
+                        "Info: WorkPageDefinition: " + XResultData.getHyperlink(artifact.getName(), artifact) + " adding Work Page Type attribute.");
+                  }
                   if (page.getPageName().equals("Completed")) {
                      artifact.setSoleAttributeValue(CoreAttributeTypes.WorkPageType, WorkPageType.Completed.name());
                   } else if (page.getPageName().equals("Cancelled")) {
@@ -236,7 +285,9 @@ public class ConvertAtsFor097Database extends XNavigateItemAction {
             }
          } catch (OseeCoreException ex) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-            testNameToResultsMap.put("convertWorkPageDefinitions", "Error: Exception: " + ex.getLocalizedMessage());
+            if (testNameToResultsMap != null) {
+               testNameToResultsMap.put("convertWorkPageDefinitions", "Error: Exception: " + ex.getLocalizedMessage());
+            }
          }
       }
    }
