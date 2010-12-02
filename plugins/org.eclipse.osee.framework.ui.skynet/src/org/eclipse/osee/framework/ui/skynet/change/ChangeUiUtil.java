@@ -36,7 +36,7 @@ public final class ChangeUiUtil {
       if (branch.getBranchType() == BranchType.BASELINE) {
          if (!MessageDialog.openConfirm(AWorkbench.getActiveShell(), "Show Change Report",
             "You have chosen to show a change report for a BASLINE branch.\n\n" + //
-            "This could be a very long running task and take many resources.\n\nAre you sure?")) {
+            "This could be a very long running task and consume large resources.\n\nAre you sure?")) {
             return;
          }
       }

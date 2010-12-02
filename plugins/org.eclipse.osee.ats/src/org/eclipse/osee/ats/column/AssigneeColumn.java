@@ -17,7 +17,6 @@ import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
@@ -73,10 +72,11 @@ public class AssigneeColumn extends XViewerAtsColumn implements IXViewerValueCol
                   return false;
                }
             }
-            if (!(useArt instanceof TeamWorkFlowArtifact)) {
+            if (!(useArt instanceof AbstractWorkflowArtifact)) {
                return false;
             }
-            boolean modified = promptChangeAssignees(Arrays.asList((TeamWorkFlowArtifact) useArt), isPersistViewer());
+            boolean modified =
+               promptChangeAssignees(Arrays.asList((AbstractWorkflowArtifact) useArt), isPersistViewer());
             XViewer xViewer = ((XViewerColumn) treeColumn.getData()).getTreeViewer();
             if (modified && isPersistViewer(xViewer)) {
                useArt.persist("persist assignees via alt-left-click");
@@ -157,7 +157,7 @@ public class AssigneeColumn extends XViewerAtsColumn implements IXViewerValueCol
          Set<AbstractWorkflowArtifact> smas = new HashSet<AbstractWorkflowArtifact>();
          for (TreeItem item : treeItems) {
             Artifact art = (Artifact) item.getData();
-            if (art instanceof TeamWorkFlowArtifact) {
+            if (art instanceof AbstractWorkflowArtifact) {
                smas.add((AbstractWorkflowArtifact) art);
             }
             if (art instanceof ActionArtifact && ((ActionArtifact) art).getTeamWorkFlowArtifacts().size() == 1) {
