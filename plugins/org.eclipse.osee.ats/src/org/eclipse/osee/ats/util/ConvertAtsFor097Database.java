@@ -105,7 +105,7 @@ public class ConvertAtsFor097Database extends XNavigateItemAction {
       elapsedTime.end();
 
       // Un-comment to process specific artifact from common - Test Mode
-      // artIdLists = Arrays.asList((Collection<Integer>) Arrays.asList(new Integer(524575)));
+      //      artIdLists = Arrays.asList((Collection<Integer>) Arrays.asList(new Integer(510936)));
 
       if (monitor != null) {
          monitor.beginTask(getName(), artIdLists.size());
@@ -172,8 +172,10 @@ public class ConvertAtsFor097Database extends XNavigateItemAction {
    }
 
    private static void setCancelledAttributes(HashCollection<String, String> testNameToResultsMap, AbstractWorkflowArtifact aba) throws OseeCoreException {
-      if (aba.getCurrentStateName().equals(TeamState.Cancelled.name()) && aba.getSoleAttributeValueAsString(
-         AtsAttributeTypes.CancelledBy, null) == null) {
+      String stateType = aba.getSoleAttributeValueAsString(AtsAttributeTypes.CurrentStateType, "");
+      boolean stateTypeSaysCancelled = stateType.equals(WorkPageType.Cancelled.name());
+      boolean currentStateIsCancelled = aba.getCurrentStateName().equals(TeamState.Cancelled.name());
+      if (currentStateIsCancelled || stateTypeSaysCancelled) {
          LogItem item = aba.getLog().internalGetCancelledLogItem();
          aba.setSoleAttributeValue(AtsAttributeTypes.CancelledBy, item.getUserId());
          aba.setSoleAttributeValue(AtsAttributeTypes.CancelledDate, item.getDate());
@@ -185,8 +187,10 @@ public class ConvertAtsFor097Database extends XNavigateItemAction {
    }
 
    private static void setCompletedAttributes(HashCollection<String, String> testNameToResultsMap, AbstractWorkflowArtifact aba) throws OseeCoreException {
-      if (aba.getCurrentStateName().equals(TeamState.Completed.name()) && aba.getSoleAttributeValueAsString(
-         AtsAttributeTypes.CompletedBy, null) == null) {
+      String stateType = aba.getSoleAttributeValueAsString(AtsAttributeTypes.CurrentStateType, "");
+      boolean stateTypeSaysCompleted = stateType.equals(WorkPageType.Completed.name());
+      boolean currentStateIsCompleted = aba.getCurrentStateName().equals(TeamState.Completed.name());
+      if (currentStateIsCompleted || stateTypeSaysCompleted) {
          LogItem item = aba.getLog().internalGetCompletedLogItem();
          aba.setSoleAttributeValue(AtsAttributeTypes.CompletedBy, item.getUserId());
          aba.setSoleAttributeValue(AtsAttributeTypes.CompletedDate, item.getDate());
@@ -197,17 +201,16 @@ public class ConvertAtsFor097Database extends XNavigateItemAction {
    }
 
    private static void setCurrentStateType(HashCollection<String, String> testNameToResultsMap, AbstractWorkflowArtifact aba) throws OseeCoreException {
-      if (aba.getSoleAttributeValueAsString(AtsAttributeTypes.CurrentStateType, null) == null) {
-         if (aba.getCurrentStateName().equals("Completed")) {
-            aba.setSoleAttributeValue(AtsAttributeTypes.CurrentStateType, WorkPageType.Completed.name());
-         } else if (aba.getCurrentStateName().equals("Cancelled")) {
-            aba.setSoleAttributeValue(AtsAttributeTypes.CurrentStateType, WorkPageType.Cancelled.name());
-         } else {
-            aba.setSoleAttributeValue(AtsAttributeTypes.CurrentStateType, WorkPageType.Working.name());
-         }
-         testNameToResultsMap.put("setCurrentStateType",
-            "Info: " + XResultData.getHyperlink(aba.getName(), aba) + " adding current state type.");
+      String stateType = aba.getSoleAttributeValueAsString(AtsAttributeTypes.CurrentStateType, "");
+      if (aba.getCurrentStateName().equals("Completed") && !stateType.equals(WorkPageType.Completed.name())) {
+         aba.setSoleAttributeValue(AtsAttributeTypes.CurrentStateType, WorkPageType.Completed.name());
+      } else if (aba.getCurrentStateName().equals("Cancelled") && !stateType.equals(WorkPageType.Cancelled.name())) {
+         aba.setSoleAttributeValue(AtsAttributeTypes.CurrentStateType, WorkPageType.Cancelled.name());
+      } else if (!stateType.equals(WorkPageType.Working.name())) {
+         aba.setSoleAttributeValue(AtsAttributeTypes.CurrentStateType, WorkPageType.Working.name());
       }
+      testNameToResultsMap.put("setCurrentStateType",
+         "Info: " + XResultData.getHyperlink(aba.getName(), aba) + " adding current state type.");
    }
 
    public static void convertWorkPageDefinitions(HashCollection<String, String> testNameToResultsMap, Collection<Artifact> artifacts, SkynetTransaction transaction) {
