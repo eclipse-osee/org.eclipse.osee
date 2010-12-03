@@ -126,7 +126,7 @@ public class ReviewManager {
          (PeerToPeerReviewArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.PeerToPeerReview,
             AtsUtil.getAtsBranch(), reviewTitle == null ? "Peer to Peer Review" : reviewTitle);
       // Initialize state machine
-      peerToPeerRev.initializeNewStateMachine(null, new Date(), UserManager.getUser());
+      peerToPeerRev.initializeNewStateMachine(null, new Date(), createdBy);
 
       if (teamArt != null) {
          teamArt.addRelation(AtsRelationTypes.TeamWorkflowToReview_Review, peerToPeerRev);
