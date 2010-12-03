@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -110,7 +111,9 @@ public final class ArtifactImportWizardTest {
    private void buildAndRunCoreTest(String nameOfExcelImportFile) throws Exception {
       URL url = ArtifactImportWizardTest.class.getResource(nameOfExcelImportFile);
       Assert.assertNotNull(url);
-      File inputExcelFile = new File(url.toURI());
+      URL fileURL = FileLocator.resolve(url);
+      Assert.assertNotNull(fileURL);
+      File inputExcelFile = new File(fileURL.toURI());
       Assert.assertTrue(inputExcelFile.exists());
 
       IArtifactImportResolver resolver =
