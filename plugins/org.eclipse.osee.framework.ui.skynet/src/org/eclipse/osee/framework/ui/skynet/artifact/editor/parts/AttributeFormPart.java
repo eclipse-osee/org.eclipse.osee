@@ -82,6 +82,7 @@ public class AttributeFormPart extends AbstractFormPart {
    @Override
    public void refresh() {
       super.refresh();
+      decorator.refresh();
       getManagedForm().getForm().getBody().layout(true);
    }
 
@@ -268,6 +269,7 @@ public class AttributeFormPart extends AbstractFormPart {
       if (saveCount == widgets.size()) {
          super.commit(onSave);
       }
+      refresh();
    }
 
    private final class XWidgetValidationListener implements XModifiedListener {
