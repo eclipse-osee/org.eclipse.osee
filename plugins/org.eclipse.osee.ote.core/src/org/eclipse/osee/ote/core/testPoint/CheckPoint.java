@@ -33,11 +33,12 @@ public class CheckPoint implements ITestPoint {
     * CheckPoint objects are used for describing the result of a check and can be logged directly to a the logger as a
     * testPoint or can be added to a CheckGroup if it is just a part of a larger series of checks being performed that
     * all constitute one overall check.
-    * 
+    *
     * @param testPointName The item being tested. (i.e. TSD Button).
     * @param expected The expected condition for a pass point.
     * @param actual The actual condition during the check.
     * @param pass The result of the check.
+    * @param elapsedTime The amount of time elapsed in milliseconds
     */
    public CheckPoint(String testPointName, String expected, String actual, boolean pass, long elapsedTime) {
       this(testPointName, expected, actual, pass, 0, elapsedTime);
@@ -62,6 +63,10 @@ public class CheckPoint implements ITestPoint {
 
    public CheckPoint(String testPointName, String expected, String actual, boolean pass) {
       this(testPointName, expected, actual, pass, 0);
+   }
+
+   public CheckPoint(String testPointName, boolean expected, boolean actual) {
+      this(testPointName, expected, actual, expected == actual, 0);
    }
 
    /**
