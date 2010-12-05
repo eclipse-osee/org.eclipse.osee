@@ -11,8 +11,10 @@
 package org.eclipse.osee.ote.core.log.record;
 
 import java.util.logging.Level;
+
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.jdk.core.util.xml.XMLStreamWriterUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -130,9 +132,7 @@ public class TestPointRecord extends TestRecord {
       } else {
          tpElement.appendChild(Jaxp.createElement(doc, "Result", "FAILED"));
       }
-      if (TestRecord.getLocationLoggingOn()) {
-         tpElement.appendChild(this.getLocation(doc));
-      }
+      tpElement.appendChild(this.getLocation(doc));
       tpElement.appendChild(testPoint.toXml(doc));
 
       return tpElement;
