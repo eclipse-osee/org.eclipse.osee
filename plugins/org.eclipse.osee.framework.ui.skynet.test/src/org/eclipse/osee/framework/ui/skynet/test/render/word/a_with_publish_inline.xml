@@ -1,0 +1,34 @@
+<wx:sub-section>
+	<w:p>
+		<w:r>
+			<w:t>This is A's body paragraph...</w:t>
+		</w:r>
+	</w:p>
+	<w:p>
+	</w:p>
+	<w:p>
+		<w:pPr>
+			<w:rPr>
+				<w:vanish/>
+			</w:rPr>
+		</w:pPr>
+		<w:r>
+			<w:rPr>
+				<w:vanish/>
+			</w:rPr>
+			<w:fldChar w:fldCharType="begin"/>
+		</w:r>
+		<w:r>
+			<w:rPr>
+				<w:vanish/>
+			</w:rPr>
+			<w:instrText>LISTNUM"listreset"\l1\s0</w:instrText>
+		</w:r>
+		<w:r>
+			<w:rPr>
+				<w:vanish/>
+			</w:rPr>
+			<w:fldChar w:fldCharType="end"/><wx:t wx:val="1."/>
+		</w:r>
+	</w:p>
+</wx:sub-section>

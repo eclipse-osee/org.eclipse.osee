@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.render.word;
 
+import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.WordTemplateContent;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
 import java.io.InputStream;
 import java.nio.charset.CharacterCodingException;
@@ -65,6 +66,7 @@ import org.eclipse.swt.program.Program;
  * @author Jeff C. Phillips
  * @author Ryan D. Brooks
  * @author Andrew M. Finkbeiner
+ * @link WordTemplateProcessorTest
  */
 public class WordTemplateProcessor {
    private static final String ARTIFACT = "Artifact";
@@ -230,7 +232,7 @@ public class WordTemplateProcessor {
 
    private void processArtifactSet(VariableMap variableMap, final String artifactElement, final List<Artifact> artifacts, final WordMLProducer wordMl, final String outlineType, PresentationType presentationType) throws OseeCoreException {
       nonTemplateArtifacts.clear();
-      if (outlineNumber != null) {
+      if (Strings.isValid(outlineNumber)) {
          wordMl.setNextParagraphNumberTo(outlineNumber);
       }
 
@@ -239,6 +241,7 @@ public class WordTemplateProcessor {
       for (Artifact artifact : artifacts) {
          processObjectArtifact(variableMap, artifact, wordMl, outlineType, presentationType, artifacts.size() > 1);
       }
+
       //maintain a list of artifacts that have been processed so we do not have duplicates.
       processedArtifacts.clear();
    }
@@ -367,11 +370,18 @@ public class WordTemplateProcessor {
          if (!processedArtifacts.contains(artifact)) {
 
             handleLandscapeArtifactSectionBreak(artifact, wordMl, multipleArtifacts);
+            boolean publishInline = artifact.getSoleAttributeValue(CoreAttributeTypes.PublishInline, false);
 
             if (outlining) {
                String headingText = artifact.getSoleAttributeValue(headingAttributeType, "");
-               CharSequence paragraphNumber =
-                  wordMl.startOutlineSubSection("Times New Roman", headingText, outlineType);
+
+               CharSequence paragraphNumber = null;
+
+               if (publishInline) {
+                  paragraphNumber = wordMl.startOutlineSubSection();
+               } else {
+                  paragraphNumber = wordMl.startOutlineSubSection("Times New Roman", headingText, outlineType);
+               }
 
                VariableMap options = renderer.getOptions();
                if (renderer.getBooleanOption(WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION)) {
@@ -381,7 +391,9 @@ public class WordTemplateProcessor {
                   }
                }
             }
-            processAttributes(variableMap, artifact, wordMl, presentationType, multipleArtifacts);
+
+            processAttributes(variableMap, artifact, wordMl, presentationType, multipleArtifacts, publishInline);
+
             if (recurseChildren) {
                for (Artifact childArtifact : artifact.getChildren()) {
                   processObjectArtifact(variableMap, childArtifact, wordMl, outlineType, presentationType,
@@ -413,7 +425,7 @@ public class WordTemplateProcessor {
       }
    }
 
-   private void processAttributes(VariableMap variableMap, Artifact artifact, WordMLProducer wordMl, PresentationType presentationType, boolean multipleArtifacts) throws OseeCoreException {
+	private void processAttributes(VariableMap variableMap, Artifact artifact, WordMLProducer wordMl, PresentationType presentationType, boolean multipleArtifacts, boolean publishInLine) throws OseeCoreException {
       for (AttributeElement attributeElement : attributeElements) {
          String attributeName = attributeElement.getAttributeName();
 
@@ -421,14 +433,14 @@ public class WordTemplateProcessor {
             for (IAttributeType attributeType : RendererManager.getAttributeTypeOrderList(artifact)) {
                if (!outlining || !attributeType.equals(headingAttributeType)) {
                   processAttribute(variableMap, artifact, wordMl, attributeElement, attributeType, true,
-                     presentationType, multipleArtifacts);
+                     presentationType, multipleArtifacts, publishInLine);
                }
             }
          } else {
             AttributeType attributeType = AttributeTypeManager.getType(attributeName);
             if (artifact.isAttributeTypeValid(attributeType)) {
                processAttribute(variableMap, artifact, wordMl, attributeElement, attributeType, false,
-                  presentationType, multipleArtifacts);
+                  presentationType, multipleArtifacts, publishInLine);
             }
 
          }
@@ -436,7 +448,7 @@ public class WordTemplateProcessor {
       wordMl.setPageLayout(artifact);
    }
 
-   private void processAttribute(VariableMap variableMap, Artifact artifact, WordMLProducer wordMl, AttributeElement attributeElement, IAttributeType attributeType, boolean allAttrs, PresentationType presentationType, boolean multipleArtifacts) throws OseeCoreException {
+   private void processAttribute(VariableMap variableMap, Artifact artifact, WordMLProducer wordMl, AttributeElement attributeElement, IAttributeType attributeType, boolean allAttrs, PresentationType presentationType, boolean multipleArtifacts, boolean publishInLine) throws OseeCoreException {
       // This is for SRS Publishing. Do not publish unspecified attributes
       if (!allAttrs && (attributeType.equals(CoreAttributeTypes.Partition) || attributeType.equals(CoreAttributeTypes.SafetyCriticality))) {
          if (artifact.isAttributeTypeValid(CoreAttributeTypes.Partition)) {
@@ -449,7 +461,7 @@ public class WordTemplateProcessor {
       }
 
       //Create a wordTemplateContent for new guys when opening them for edit.
-      if (attributeType.equals(CoreAttributeTypes.WordTemplateContent) && presentationType == PresentationType.SPECIALIZED_EDIT) {
+      if (attributeType.equals(WordTemplateContent) && presentationType == PresentationType.SPECIALIZED_EDIT) {
          artifact.getOrInitializeSoleAttributeValue(attributeType);
       }
 
@@ -471,8 +483,10 @@ public class WordTemplateProcessor {
             }
          }
 
-         RendererManager.renderAttribute(attributeType, presentationType, artifact, variableMap, wordMl,
-            attributeElement);
+         if (!(publishInLine && artifact.isAttributeTypeValid(WordTemplateContent)) || attributeType.equals(WordTemplateContent)) {
+            RendererManager.renderAttribute(attributeType, presentationType, artifact, variableMap, wordMl,
+               attributeElement);
+         }
       }
    }
 

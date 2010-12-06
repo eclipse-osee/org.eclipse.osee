@@ -1,0 +1,57 @@
+<wx:sub-section>
+	<w:p>
+		<w:pPr>
+			<w:pStyle w:val="Heading3"/><w:listPr>
+				<wx:t wx:val="1.1.1" wx:wTabBefore="540" wx:wTabAfter="90"/>
+				<wx:font wx:val="Times New Roman"/></w:listPr>
+		</w:pPr>
+		<w:r>
+			<w:t>C</w:t>
+		</w:r>
+	</w:p>
+	<w:p>
+		<w:r>
+			<w:t> CSCI: </w:t>
+		</w:r>
+		<w:r>
+			<w:t>Unspecified</w:t>
+		</w:r>
+	</w:p>
+	<w:p>
+		<w:r>
+			<w:t> Development Assurance Level: </w:t>
+		</w:r>
+		<w:r>
+			<w:t>E</w:t>
+	</w:r></w:p>
+	<w:p>
+		<w:r>
+			<w:t> Partition: </w:t>
+		</w:r>
+		<w:r>
+			<w:t>Unspecified</w:t>
+		</w:r>
+	</w:p>
+	<w:p>
+		<w:r>
+			<w:t> Qualification Method: </w:t>
+			</w:r><w:r><w:t>Unspecified</w:t>
+		</w:r>
+	</w:p>
+	<w:p>
+		<w:r>
+			<w:t> Subsystem: </w:t>
+		</w:r>
+		<w:r>
+			<w:t>Unspecified</w:t>
+		</w:r>
+	</w:p>
+	<w:p>
+		<w:r>
+			<w:t> Technical Performance Parameter: </w:t>
+		</w:r>
+		<w:r>
+			<w:t>no</w:t>
+		</w:r>
+	</w:p>
+</wx:sub-section>

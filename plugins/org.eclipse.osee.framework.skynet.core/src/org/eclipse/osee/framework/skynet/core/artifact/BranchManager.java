@@ -387,7 +387,7 @@ public class BranchManager {
    private static Branch createBranch(BranchType branchType, TransactionRecord parentTransaction, String branchName, String branchGuid, Artifact associatedArtifact, String creationComment, int populateBaseTxFromAddressingQueryId, int destinationBranchId) throws OseeCoreException {
       CreateBranchHttpRequestOperation operation =
          new CreateBranchHttpRequestOperation(branchType, parentTransaction, branchName, branchGuid,
-	    associatedArtifact, creationComment, populateBaseTxFromAddressingQueryId, destinationBranchId);
+            associatedArtifact, creationComment, populateBaseTxFromAddressingQueryId, destinationBranchId);
       Operations.executeWorkAndCheckStatus(operation);
       return operation.getNewBranch();
    }
@@ -469,7 +469,7 @@ public class BranchManager {
       getCache().storeItems(branches);
    }
 
-   public static String toFileName(Branch branch) throws OseeCoreException {
+   public static String toFileName(IOseeBranch branch) throws OseeCoreException {
       return BranchUtility.toFileName(branch);
    }
 

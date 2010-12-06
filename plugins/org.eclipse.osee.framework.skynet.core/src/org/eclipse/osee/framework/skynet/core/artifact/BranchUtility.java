@@ -14,6 +14,7 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
@@ -29,13 +30,13 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public final class BranchUtility {
 
-   public static String toFileName(Branch branch) throws OseeCoreException {
+   public static String toFileName(IOseeBranch branch) throws OseeCoreException {
       if (branch == null) {
          throw new OseeArgumentException("branch cannot be null");
       }
       String branchGuid = branch.getGuid();
       if (!GUID.isValid(branchGuid)) {
-         throw new OseeStateException("GUID for branch [%s] is invalid", branch.getId());
+         throw new OseeStateException("GUID for branch [%s] is invalid", branch.getName());
       }
       return encode(branchGuid);
    }

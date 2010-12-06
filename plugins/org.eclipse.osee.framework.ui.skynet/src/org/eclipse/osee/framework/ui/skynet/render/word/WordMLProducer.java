@@ -17,10 +17,10 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -55,17 +55,24 @@ public class WordMLProducer extends Producer {
    private int flattenedLevelCount;
    private final Map<String, Integer> alphabetMap;
 
-   public WordMLProducer(Appendable strB) {
-      this.strB = strB;
-      this.outlineNumber = new int[10]; // word supports 9 levels of outlining; index this array from 1 to 9
-      this.outlineLevel = 0;
-      this.flattenedLevelCount = 0;
+   private static final String DEFAULT_FONT = "Times New Roman";
 
-      this.alphabetMap = new HashMap<String, Integer>();
+   public WordMLProducer(Appendable str) {
+      this.strB = str;
+      outlineNumber = new int[10]; // word supports 9 levels of outlining; index this array from 1 to 9
+      outlineLevel = 0;
+      flattenedLevelCount = 0;
+
+      alphabetMap = new HashMap<String, Integer>();
 
       alphabetMap.put("A.0", 1);
       alphabetMap.put("B.0", 2);
       alphabetMap.put("C.0", 3);
+   }
+
+   public CharSequence startOutlineSubSection() throws OseeCoreException {
+      CharSequence paragraphNumber = startOutlineSubSection(DEFAULT_FONT, null, null);
+      return paragraphNumber;
    }
 
    public CharSequence startOutlineSubSection(CharSequence font, CharSequence headingText, String outlineType) throws OseeCoreException {
@@ -74,7 +81,6 @@ public class WordMLProducer extends Producer {
          CharSequence paragraphNumber = getOutlineNumber();
          startOutlineSubSection((outlineType != null ? outlineType : "Heading") + outlineLevel, paragraphNumber, font,
             headingText);
-
          return paragraphNumber;
       } else {
          flattenedLevelCount++;
@@ -93,16 +99,20 @@ public class WordMLProducer extends Producer {
    }
 
    public void startOutlineSubSection(CharSequence style, CharSequence outlineNumber, CharSequence font, CharSequence headingText) throws OseeCoreException {
+      //startSubSection();
       append("<wx:sub-section>");
-      append("<w:p><w:pPr><w:pStyle w:val=\"");
-      append(style);
-      append("\"/><w:listPr><wx:t wx:val=\"");
-      append(outlineNumber);
-      append("\" wx:wTabBefore=\"540\" wx:wTabAfter=\"90\"/><wx:font wx:val=\"");
-      append(font);
-      append("\"/></w:listPr></w:pPr><w:r><w:t>");
-      append(Xml.escape(headingText));
-      append("</w:t></w:r></w:p>");
+      if (Strings.isValid(headingText)) {
+         startParagraph();
+         append("<w:pPr>");
+         writeParagraphStyle(style);
+         append("<w:listPr><wx:t wx:val=\"");
+         append(outlineNumber);
+         append("\" wx:wTabBefore=\"540\" wx:wTabAfter=\"90\"/><wx:font wx:val=\"");
+         append(font);
+         append("\"/></w:listPr></w:pPr>");
+         writeHeadingText(headingText);
+         endParagraph();
+      }
    }
 
    public void setPageBreak() throws OseeCoreException {
@@ -113,6 +123,18 @@ public class WordMLProducer extends Producer {
       append("</w:sectPr>");
       append("</w:pPr>");
       append("</w:p>");
+   }
+
+   private void writeParagraphStyle(CharSequence style) throws OseeCoreException {
+      append("<w:pStyle w:val=\"");
+      append(style);
+      append("\"/>");
+   }
+
+   private void writeHeadingText(CharSequence headingText) throws OseeCoreException {
+      append("<w:r><w:t>");
+      append(Xml.escape(headingText));
+      append("</w:t></w:r>");
    }
 
    public String setHeadingNumbers(String outlineNumber, String template, String outlineType) {
@@ -186,7 +208,7 @@ public class WordMLProducer extends Producer {
    }
 
    public void createSubDoc(String fileName) throws OseeCoreException {
-      if (fileName == null || fileName.length() == 0) {
+      if (Strings.isValid(fileName)) {
          throw new IllegalArgumentException("The file name can not be null or empty.");
       }
 
@@ -194,7 +216,7 @@ public class WordMLProducer extends Producer {
    }
 
    public void createHyperLinkDoc(String fileName) throws OseeCoreException {
-      if (fileName == null || fileName.length() == 0) {
+      if (Strings.isValid(fileName)) {
          throw new IllegalArgumentException("The file name can not be null or empty.");
       }
 
@@ -266,9 +288,9 @@ public class WordMLProducer extends Producer {
    }
 
    public void addParagraph(CharSequence text) throws OseeCoreException {
-      append("<w:p><w:r><w:t>");
-      append(Xml.escape(text));
-      append("</w:t></w:r></w:p>");
+      startParagraph();
+      addTextInsideParagraph(text);
+      endParagraph();
    }
 
    public void addParagraphBold(CharSequence text) throws OseeCoreException {

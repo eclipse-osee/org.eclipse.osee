@@ -3,7 +3,7 @@
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http:www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *     Boeing - initial API and implementation
@@ -30,30 +30,32 @@ import org.eclipse.osee.framework.ui.skynet.test.importer.ImportTestSuite;
 import org.eclipse.osee.framework.ui.skynet.test.renderer.RendererTestSuite;
 import org.eclipse.osee.framework.ui.skynet.test.util.enumeration.AbstractEnumerationTest;
 import org.eclipse.osee.framework.ui.skynet.test.widgets.workflow.WorkPageAdapterTest;
+import org.eclipse.osee.framework.ui.skynet.test.render.word.WordTestSuite;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({//
-BlamXWidgetTest.class, //
-   EmailGroupsBlamTest.class, //
-   ResultsEditorConverterTest.class, //
-   ArtifactPasteConfigurationTest.class, //
-   ArtifactPasteOperationTest.class, //
-   RelationOrderRendererTest.class, //
-   InterArtifactDropTest.class, //
-   WordEditTest.class, //
-   WordTrackedChangesTest.class, //
-   PreviewAndMultiPreviewTest.class, //
-   ViewWordChangeAndDiffTest.class, //
-   WordArtifactElementExtractorTest.class, //
-   AttributeTypeEditPresenterTest.class, //
-   ArtifactPromptChangeTest.class, //
-   RendererTestSuite.class, //
-   WorkPageAdapterTest.class, //
-   AbstractEnumerationTest.class, //
-   ImportTestSuite.class})
+@Suite.SuiteClasses({
+BlamXWidgetTest.class,
+   EmailGroupsBlamTest.class,
+   ResultsEditorConverterTest.class,
+   ArtifactPasteConfigurationTest.class,
+   ArtifactPasteOperationTest.class,
+   RelationOrderRendererTest.class,
+   InterArtifactDropTest.class,
+   WordEditTest.class,
+   WordTrackedChangesTest.class,
+   PreviewAndMultiPreviewTest.class,
+   ViewWordChangeAndDiffTest.class,
+   WordArtifactElementExtractorTest.class,
+   AttributeTypeEditPresenterTest.class,
+   ArtifactPromptChangeTest.class,
+   RendererTestSuite.class,
+   WorkPageAdapterTest.class,
+   AbstractEnumerationTest.class,
+   ImportTestSuite.class,
+   WordTestSuite.class})
 /**
  * @author Donald G. Dunne
  */

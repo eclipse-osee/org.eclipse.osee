@@ -294,6 +294,7 @@ artifactType "Folder" extends "Artifact" {
 artifactType "General Data" extends "Artifact" {
    guid "AAMFDhQXfyb2m+jCwlwA"
    attribute "General String Data"
+   attribute "PublishInline"
 }
 
 artifactType "Support Document" extends "MS Word Template" {
@@ -468,6 +469,7 @@ artifactType "MS Word Template" extends "MS Word" {
    attribute "Word Ole Data"
    attribute "Page Type"
    attribute "Word Template Content"
+   attribute "PublishInline"
 }
 
 abstract artifactType "Native Artifact" extends "Artifact" {

@@ -16,18 +16,19 @@ import java.util.Random;
 import java.util.Set;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchUtility;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.skynet.preferences.MsWordPreferencePage;
@@ -86,6 +87,11 @@ public final class RenderingUtil {
    }
 
    public static String getFilenameFromArtifact(FileSystemRenderer renderer, Artifact artifact, PresentationType presentationType) throws OseeCoreException {
+      String fileName = renderer.getStringOption(IRenderer.FILE_NAME_OPTION);
+      if (Strings.isValid(fileName)) {
+         return fileName;
+      }
+
       StringBuilder name = new StringBuilder(100);
 
       if (artifact != null) {
@@ -113,10 +119,10 @@ public final class RenderingUtil {
       return name.toString();
    }
 
-   public static IFolder getRenderFolder(Branch branch, PresentationType presentationType) throws OseeCoreException {
+   public static IFolder getRenderFolder(IOseeBranch branch, PresentationType presentationType) throws OseeCoreException {
       try {
          IFolder baseFolder = ensureRenderFolderExists(presentationType);
-         IFolder renderFolder = baseFolder.getFolder(BranchManager.toFileName(branch));
+         IFolder renderFolder = baseFolder.getFolder(BranchUtility.toFileName(branch));
          if (!renderFolder.exists()) {
             renderFolder.create(true, true, null);
          }
