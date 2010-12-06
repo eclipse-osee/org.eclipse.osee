@@ -14,9 +14,14 @@ import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.OseeActivator;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
 import org.eclipse.osee.framework.ui.plugin.internal.OseePluginUiActivator;
 import org.osgi.framework.Bundle;
@@ -27,34 +32,25 @@ import org.osgi.framework.Bundle;
 public final class XNavigateContributionManager {
 
    private XNavigateContributionManager() {
+      //Utility Class
    }
 
-   public static Set<XNavigateExtensionPointData> getNavigateItems(String viewIdToMatch) {
+   public static Set<XNavigateExtensionPointData> getNavigateItems(String viewIdToMatch) throws OseeCoreException {
+      Conditions.checkNotNull(viewIdToMatch, "viewIdToMatch");
       Set<XNavigateExtensionPointData> toReturn = new HashSet<XNavigateExtensionPointData>();
       List<IConfigurationElement> elements =
          ExtensionPoints.getExtensionElements(OseePluginUiActivator.PLUGIN_ID + ".XNavigateItem", "XNavigateItem");
       for (IConfigurationElement element : elements) {
-         String className = element.getAttribute("classname");
-         String category = element.getAttribute("category");
          String viewId = element.getAttribute("viewId");
-
-         if (viewIdToMatch != null && viewIdToMatch.equals(viewId)) {
+         if (viewIdToMatch.equals(viewId)) {
+            String className = element.getAttribute("classname");
             String bundleName = element.getContributor().getName();
             if (Strings.isValid(bundleName) && Strings.isValid(className)) {
-               try {
-                  Bundle bundle = Platform.getBundle(bundleName);
-                  Class<?> taskClass = bundle.loadClass(className);
-                  Object object;
-                  try {
-                     Method getInstance = taskClass.getMethod("getInstance", new Class[] {});
-                     object = getInstance.invoke(null, new Object[] {});
-                  } catch (Exception ex) {
-                     object = taskClass.newInstance();
-                  }
-                  toReturn.add(new XNavigateExtensionPointData(viewId, category, (IXNavigateContainer) object));
-               } catch (Exception ex) {
-                  throw new IllegalArgumentException(String.format("Unable to Load: [%s - %s]", bundleName, className),
-                     ex);
+               IXNavigateContainer navigateContainer = createXNavigateContainer(className, bundleName);
+               if (navigateContainer != null) {
+                  String category = element.getAttribute("category");
+                  XNavigateExtensionPointData data = createXNavigateData(viewId, category, navigateContainer);
+                  toReturn.add(data);
                }
             }
          }
@@ -62,4 +58,29 @@ public final class XNavigateContributionManager {
       return toReturn;
    }
 
+   private static XNavigateExtensionPointData createXNavigateData(String viewId, String category, IXNavigateContainer navigateContainer) {
+      String categoryToSet = category != null ? category : "";
+      return new XNavigateExtensionPointData(viewId, categoryToSet, navigateContainer);
+   }
+
+   private static IXNavigateContainer createXNavigateContainer(String className, String bundleName) {
+      IXNavigateContainer toReturn = null;
+      Bundle bundle = Platform.getBundle(bundleName);
+      try {
+         Class<?> taskClass = bundle.loadClass(className);
+         try {
+            Method getInstance = taskClass.getMethod("getInstance", new Class[] {});
+            toReturn = (IXNavigateContainer) getInstance.invoke(null, new Object[] {});
+         } catch (Exception ex) {
+            toReturn = (IXNavigateContainer) taskClass.newInstance();
+         }
+      } catch (Exception ex) {
+         OseeLog.log(OseeActivator.class, Level.SEVERE,
+            String.format("Unable to Load: [%s - %s]", bundleName, className), ex);
+      } catch (LinkageError error) {
+         OseeLog.log(OseeActivator.class, Level.SEVERE,
+            String.format("Unable to Load: [%s - %s]", bundleName, className), error);
+      }
+      return toReturn;
+   }
 }

@@ -16,12 +16,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateContributionManager;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateExtensionPointData;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateViewItems;
+import org.eclipse.osee.ote.ui.internal.TestCoreGuiPlugin;
 
 /**
  * @author Donald G. Dunne
@@ -40,11 +42,15 @@ public class OteNavigateViewItems extends XNavigateViewItems {
    @Override
    public List<XNavigateItem> getSearchNavigateItems() {
       List<XNavigateItem> items = new ArrayList<XNavigateItem>();
-      addExtensionPointItems(items);
+      try {
+         addExtensionPointItems(items);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(TestCoreGuiPlugin.class, Level.SEVERE, ex);
+      }
       return items;
    }
 
-   private void addExtensionPointItems(List<XNavigateItem> items) {
+   private void addExtensionPointItems(List<XNavigateItem> items) throws OseeCoreException {
       Collection<XNavigateExtensionPointData> oteNavigateItemExtensions =
          XNavigateContributionManager.getNavigateItems(OteNavigateView.VIEW_ID);
       Map<String, XNavigateItem> categoryToNavigateItem =
