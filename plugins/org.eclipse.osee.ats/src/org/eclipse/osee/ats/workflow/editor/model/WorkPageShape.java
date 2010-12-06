@@ -54,7 +54,8 @@ public class WorkPageShape extends RectangleShape {
    };
 
    public WorkPageShape() {
-      this(new WorkPageDefinition("New" + AtsUtil.getAtsDeveloperIncrementingNum(), "NEW", null, WorkPageType.Working));
+      this(new WorkPageDefinition("New" + AtsUtil.getAtsDeveloperIncrementingNum(), "NEW", null, WorkPageType.Working,
+         AtsUtil.getAtsDeveloperIncrementingNum()));
    }
 
    public WorkPageShape(WorkPageDefinition workPageDefinition) {

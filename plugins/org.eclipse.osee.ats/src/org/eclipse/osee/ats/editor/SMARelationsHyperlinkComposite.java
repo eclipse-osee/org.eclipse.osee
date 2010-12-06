@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.skynet.core.relation.crossbranch.CrossBranchLinkManager;
-import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -46,7 +45,6 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
  */
 public class SMARelationsHyperlinkComposite extends Composite {
 
-   private final XFormToolkit toolkit;
    private static IRelationEnumeration[] sides = new IRelationEnumeration[] {
       AtsRelationTypes.TeamWorkflowToReview_Review,
       AtsRelationTypes.TeamWorkflowToReview_Team,
@@ -58,10 +56,11 @@ public class SMARelationsHyperlinkComposite extends Composite {
       CoreRelationTypes.Dependency__Dependency};
    private AbstractWorkflowArtifact sma;
    private Label actionableItemsLabel;
+   private final SMAEditor editor;
 
-   public SMARelationsHyperlinkComposite(Composite parent, XFormToolkit toolkit, int style) {
+   public SMARelationsHyperlinkComposite(Composite parent, int style, SMAEditor editor) {
       super(parent, style);
-      this.toolkit = toolkit;
+      this.editor = editor;
    }
 
    public void create(AbstractWorkflowArtifact sma) throws OseeCoreException {
@@ -70,7 +69,7 @@ public class SMARelationsHyperlinkComposite extends Composite {
       GridData gd = new GridData(GridData.FILL_HORIZONTAL);
       gd.widthHint = 500;
       setLayoutData(gd);
-      toolkit.adapt(this);
+      editor.getToolkit().adapt(this);
 
       // Create all hyperlinks from this artifact to others of interest
       createArtifactRelationHyperlinks("This", sma, "is reviewed by", AtsRelationTypes.TeamWorkflowToReview_Review);
@@ -128,13 +127,15 @@ public class SMARelationsHyperlinkComposite extends Composite {
 
    private void createLink(final Artifact art, String prefix, String action, Artifact thisArt) {
       try {
-         toolkit.createLabel(
+         editor.getToolkit().createLabel(
             this,
             prefix + " \"" + thisArt.getArtifactTypeName() + "\" " + action + getCompletedCancelledString(art) + " \"" + art.getArtifactTypeName() + "\" ");
          Hyperlink link =
-            toolkit.createHyperlink(this, String.format("\"%s\" - %s",
-               art.getName().length() < 60 ? art.getName() : art.getName().substring(0, 60), art.getHumanReadableId()),
-               SWT.NONE);
+            editor.getToolkit().createHyperlink(
+               this,
+               String.format("\"%s\" - %s",
+                  art.getName().length() < 60 ? art.getName() : art.getName().substring(0, 60),
+                  art.getHumanReadableId()), SWT.NONE);
          link.addHyperlinkListener(new IHyperlinkListener() {
 
             @Override
@@ -169,8 +170,8 @@ public class SMARelationsHyperlinkComposite extends Composite {
       if (reviewArt.getActionableItemsDam().getActionableItemGuids().isEmpty()) {
          return;
       }
-      actionableItemsLabel = toolkit.createLabel(this, "");
-      Hyperlink link = toolkit.createHyperlink(this, "(Edit)", SWT.NONE);
+      actionableItemsLabel = editor.getToolkit().createLabel(this, "");
+      Hyperlink link = editor.getToolkit().createHyperlink(this, "(Edit)", SWT.NONE);
       link.addHyperlinkListener(new IHyperlinkListener() {
 
          @Override
@@ -214,7 +215,7 @@ public class SMARelationsHyperlinkComposite extends Composite {
             return;
          }
          reviewArt.getActionableItemsDam().setActionableItems(diag.getChecked());
-         sma.getEditor().onDirtied();
+         editor.onDirtied();
          refreshActionableItemsLabel();
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);

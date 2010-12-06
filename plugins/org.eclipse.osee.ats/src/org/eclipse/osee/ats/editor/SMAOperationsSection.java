@@ -163,7 +163,7 @@ public class SMAOperationsSection extends SectionPart {
       sectionBody.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
       if (editor.getSma().isTeamWorkflow()) {
-         new XButtonViaAction(new DirtyReportAction(editor.getSma())).createWidgets(sectionBody, 2);
+         new XButtonViaAction(new DirtyReportAction(editor.getSma(), editor)).createWidgets(sectionBody, 2);
          new XButtonViaAction(new ReloadAction(editor.getSma())).createWidgets(sectionBody, 2);
          new XButtonViaAction(new ConvertActionableItemsAction(editor)).createWidgets(sectionBody, 2);
       }
@@ -191,7 +191,7 @@ public class SMAOperationsSection extends SectionPart {
       sectionBody.setLayout(ALayout.getZeroMarginLayout(1, false));
       sectionBody.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      new XButtonViaAction(new RefreshDirtyAction(editor.getSma())).createWidgets(sectionBody, 2);
+      new XButtonViaAction(new RefreshDirtyAction(editor.getSma(), editor)).createWidgets(sectionBody, 2);
       new XButtonViaAction(new DeletePurgeAtsArtifactsAction(editor)).createWidgets(sectionBody, 2);
       new XButtonViaAction(new WorkflowDebugAction(editor.getSma())).createWidgets(sectionBody, 2);
       if (ShowBranchChangeDataAction.isApplicable(editor.getSma())) {

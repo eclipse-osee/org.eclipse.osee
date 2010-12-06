@@ -18,14 +18,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.ats.actions.wizard.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
-import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
 import org.eclipse.osee.ats.column.ChangeTypeXWidget;
 import org.eclipse.osee.ats.column.EstimatedHoursRequiredXWidget;
 import org.eclipse.osee.ats.column.EstimatedHoursXWidget;
@@ -76,6 +78,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.XWidgetFactory;
 public final class AtsWorkDefinitions implements IWorkDefinitionProvider {
 
    public static final String ATS_DESCRIPTION_NOT_REQUIRED_ID = AtsAttributeTypes.Description + ".notRequired";
+   public static final String ATS_ESTIMATED_HOURS_NOT_REQUIRED_ID = AtsAttributeTypes.EstimatedHours + ".notRequired";
 
    public static enum RuleWorkItemId {
       atsRequireStateHourSpentPrompt("Work Page Option: Will popup a dialog to prompt user for time spent in this state."),
@@ -205,41 +208,75 @@ public final class AtsWorkDefinitions implements IWorkDefinitionProvider {
       return new ArrayList<WorkItemDefinition>();
    }
 
-   @Override
-   public WorkFlowDefinition getWorkFlowDefinition(Artifact artifact) throws OseeCoreException {
+   public static WorkFlowDefinition getWorkFlowDefinitionFromArtifact(Artifact artifact) throws OseeCoreException {
       // If this artifact specifies it's own workflow definition, use it
       String workFlowDefId = artifact.getSoleAttributeValue(AtsAttributeTypes.WorkflowDefinition, null);
       if (Strings.isValid(workFlowDefId)) {
          return (WorkFlowDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(workFlowDefId);
       }
-      // Otherwise, use workflow defined by WorkflowDefinition
-      if (artifact instanceof TeamWorkFlowArtifact) {
-         return ((TeamWorkFlowArtifact) artifact).getTeamDefinition().getWorkFlowDefinition();
+      return null;
+   }
+
+   public WorkFlowDefinition getWorkFlowDefinitionForTask(TaskArtifact taskArt) throws OseeCoreException {
+      WorkFlowDefinition workDef = null;
+      for (IAtsTeamWorkflow provider : TeamWorkflowExtensions.getAtsTeamWorkflowExtensions()) {
+         String workFlowDefId = provider.getRelatedTaskWorkflowDefinitionId(taskArt.getParentSMA());
+         if (Strings.isValid(workFlowDefId)) {
+            workDef = (WorkFlowDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(workFlowDefId);
+            break;
+         }
       }
-      if (artifact instanceof TaskArtifact) {
-         // If Team Workflow specifies task workflow id, use it
-         TeamWorkFlowArtifact teamArt = ((TaskArtifact) artifact).getParentTeamWorkflow();
-         workFlowDefId = teamArt.getSoleAttributeValue(AtsAttributeTypes.RelatedTaskWorkflowDefinition, null);
-         if (Strings.isValid(workFlowDefId)) {
-            return (WorkFlowDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(workFlowDefId);
-         }
-         // If Team Definition specifies task workflow id, use it
-         TeamDefinitionArtifact teamDef = teamArt.getTeamDefinition();
-         workFlowDefId = teamDef.getSoleAttributeValue(AtsAttributeTypes.RelatedTaskWorkflowDefinition, null);
-         if (Strings.isValid(workFlowDefId)) {
-            return (WorkFlowDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(workFlowDefId);
-         }
+      if (workDef == null) {
+         // If task specifies it's own workflow id, use it
+         workDef = getWorkFlowDefinitionFromArtifact(taskArt);
+      }
+      if (workDef == null) {
+         // Else If parent SMA has a related task definition workflow id specified, use it
+         workDef = getWorkFlowDefinitionFromArtifact(taskArt.getParentSMA());
+      }
+      if (workDef == null) {
+         // Else If parent TeamWorkflow's TeamDefinition has a related task definition workflow id, use it
+         workDef = getWorkFlowDefinitionFromArtifact(taskArt.getParentTeamWorkflow().getTeamDefinition());
+      }
+      if (workDef == null) {
          // Else, use default Task workflow
-         return (WorkFlowDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(TaskWorkflowDefinition.ID);
+         workDef = (WorkFlowDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(TaskWorkflowDefinition.ID);
       }
-      if (artifact instanceof GoalArtifact) {
-         return (WorkFlowDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(GoalWorkflowDefinition.ID);
+      return workDef;
+   }
+
+   @Override
+   public WorkFlowDefinition getWorkFlowDefinition(Artifact artifact) throws OseeCoreException {
+      if (artifact instanceof TaskArtifact) {
+         return getWorkFlowDefinitionForTask((TaskArtifact) artifact);
       }
-      if (artifact instanceof PeerToPeerReviewArtifact) {
-         return (WorkFlowDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(PeerToPeerWorkflowDefinition.ID);
-      }
-      if (artifact instanceof DecisionReviewArtifact) {
-         return (WorkFlowDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(DecisionWorkflowDefinition.ID);
+      if (artifact instanceof AbstractWorkflowArtifact) {
+         AbstractWorkflowArtifact aba = (AbstractWorkflowArtifact) artifact;
+         // Check extensions for definition handling
+         for (IAtsTeamWorkflow provider : TeamWorkflowExtensions.getAtsTeamWorkflowExtensions()) {
+            String workFlowDefId = provider.getWorkflowDefinitionId(aba);
+            if (Strings.isValid(workFlowDefId)) {
+               return (WorkFlowDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(workFlowDefId);
+            }
+         }
+         // If this artifact specifies it's own workflow definition, use it
+         WorkFlowDefinition def = getWorkFlowDefinitionFromArtifact(artifact);
+         if (def != null) {
+            return def;
+         }
+         // Otherwise, use workflow defined by WorkflowDefinition
+         if (artifact instanceof TeamWorkFlowArtifact) {
+            return ((TeamWorkFlowArtifact) artifact).getTeamDefinition().getWorkFlowDefinition();
+         }
+         if (artifact instanceof GoalArtifact) {
+            return (WorkFlowDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(GoalWorkflowDefinition.ID);
+         }
+         if (artifact instanceof PeerToPeerReviewArtifact) {
+            return (WorkFlowDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(PeerToPeerWorkflowDefinition.ID);
+         }
+         if (artifact instanceof DecisionReviewArtifact) {
+            return (WorkFlowDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(DecisionWorkflowDefinition.ID);
+         }
       }
       return null;
    }

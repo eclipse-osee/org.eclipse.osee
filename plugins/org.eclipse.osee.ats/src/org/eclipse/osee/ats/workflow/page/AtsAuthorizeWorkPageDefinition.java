@@ -23,12 +23,12 @@ public class AtsAuthorizeWorkPageDefinition extends WorkPageDefinition {
 
    public final static String ID = TeamWorkflowDefinition.ID + "." + TeamState.Authorize.getPageName();
 
-   public AtsAuthorizeWorkPageDefinition() {
-      this(TeamState.Authorize.getPageName(), ID, null);
+   public AtsAuthorizeWorkPageDefinition(int ordinal) {
+      this(TeamState.Authorize.getPageName(), ID, null, ordinal);
    }
 
-   public AtsAuthorizeWorkPageDefinition(String name, String pageId, String parentId) {
-      super(name, pageId, parentId, WorkPageType.Working);
+   public AtsAuthorizeWorkPageDefinition(String name, String pageId, String parentId, int ordinal) {
+      super(name, pageId, parentId, WorkPageType.Working, ordinal);
       addWorkItem(AtsAttributeTypes.WorkPackage);
       addWorkItem(AtsAttributeTypes.EstimatedCompletionDate);
    }

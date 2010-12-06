@@ -72,12 +72,12 @@ public class TeamWorkflowDefinition extends WorkFlowDefinition {
       List<WorkItemDefinition> workItems = new ArrayList<WorkItemDefinition>();
 
       // Add Team Page and Workflow Definition
-      workItems.add(new AtsEndorseWorkPageDefinition());
-      workItems.add(new AtsAnalyzeWorkPageDefinition());
-      workItems.add(new AtsAuthorizeWorkPageDefinition());
-      workItems.add(new AtsImplementWorkPageDefinition());
-      workItems.add(new AtsCompletedWorkPageDefinition());
-      workItems.add(new AtsCancelledWorkPageDefinition());
+      workItems.add(new AtsEndorseWorkPageDefinition(1));
+      workItems.add(new AtsAnalyzeWorkPageDefinition(2));
+      workItems.add(new AtsAuthorizeWorkPageDefinition(3));
+      workItems.add(new AtsImplementWorkPageDefinition(4));
+      workItems.add(new AtsCompletedWorkPageDefinition(5));
+      workItems.add(new AtsCancelledWorkPageDefinition(6));
       workItems.add(new TeamWorkflowDefinition());
 
       return workItems;
@@ -87,19 +87,21 @@ public class TeamWorkflowDefinition extends WorkFlowDefinition {
       List<WorkItemDefinition> workItems = new ArrayList<WorkItemDefinition>();
       // Add Team Page and Workflow Definition
       workItems.add(new WorkPageDefinition(TeamState.Endorse.getPageName(),
-         workflowId + "." + TeamState.Endorse.getPageName(), AtsEndorseWorkPageDefinition.ID, WorkPageType.Working));
+         workflowId + "." + TeamState.Endorse.getPageName(), AtsEndorseWorkPageDefinition.ID, WorkPageType.Working, 1));
       workItems.add(new WorkPageDefinition(TeamState.Analyze.getPageName(),
-         workflowId + "." + TeamState.Analyze.getPageName(), AtsAnalyzeWorkPageDefinition.ID, WorkPageType.Working));
+         workflowId + "." + TeamState.Analyze.getPageName(), AtsAnalyzeWorkPageDefinition.ID, WorkPageType.Working, 2));
       workItems.add(new WorkPageDefinition(TeamState.Authorize.getPageName(),
-         workflowId + "." + TeamState.Authorize.getPageName(), AtsAuthorizeWorkPageDefinition.ID, WorkPageType.Working));
+         workflowId + "." + TeamState.Authorize.getPageName(), AtsAuthorizeWorkPageDefinition.ID, WorkPageType.Working,
+         3));
       workItems.add(new WorkPageDefinition(TeamState.Implement.getPageName(),
-         workflowId + "." + TeamState.Implement.getPageName(), AtsImplementWorkPageDefinition.ID, WorkPageType.Working));
+         workflowId + "." + TeamState.Implement.getPageName(), AtsImplementWorkPageDefinition.ID, WorkPageType.Working,
+         4));
       workItems.add(new WorkPageDefinition(TeamState.Completed.getPageName(),
          workflowId + "." + TeamState.Completed.getPageName(), AtsCompletedWorkPageDefinition.ID,
-         WorkPageType.Completed));
+         WorkPageType.Completed, 5));
       workItems.add(new WorkPageDefinition(TeamState.Cancelled.getPageName(),
          workflowId + "." + TeamState.Cancelled.getPageName(), AtsCancelledWorkPageDefinition.ID,
-         WorkPageType.Cancelled));
+         WorkPageType.Cancelled, 6));
       return workItems;
    }
 

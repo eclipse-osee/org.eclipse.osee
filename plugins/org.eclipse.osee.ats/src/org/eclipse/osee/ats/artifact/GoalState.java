@@ -1,6 +1,6 @@
 package org.eclipse.osee.ats.artifact;
 
-import java.util.Set;
+import java.util.List;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageAdapter;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageType;
 
@@ -17,7 +17,7 @@ public class GoalState extends WorkPageAdapter {
       return WorkPageAdapter.valueOfPage(GoalState.class, pageName);
    }
 
-   public Set<GoalState> values() {
+   public List<GoalState> values() {
       return WorkPageAdapter.pages(GoalState.class);
    }
 

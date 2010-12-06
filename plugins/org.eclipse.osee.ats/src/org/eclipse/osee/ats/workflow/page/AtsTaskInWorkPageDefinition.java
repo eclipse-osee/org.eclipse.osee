@@ -25,12 +25,12 @@ public class AtsTaskInWorkPageDefinition extends WorkPageDefinition {
 
    public final static String ID = TaskWorkflowDefinition.ID + "." + TaskStates.InWork.getPageName();
 
-   public AtsTaskInWorkPageDefinition() {
-      this(TaskStates.InWork.getPageName(), ID, null);
+   public AtsTaskInWorkPageDefinition(int ordinal) {
+      this(TaskStates.InWork.getPageName(), ID, null, ordinal);
    }
 
-   public AtsTaskInWorkPageDefinition(String name, String pageId, String parentId) {
-      super(name, pageId, parentId, WorkPageType.Working);
+   public AtsTaskInWorkPageDefinition(String name, String pageId, String parentId, int ordinal) {
+      super(name, pageId, parentId, WorkPageType.Working, ordinal);
       addWorkItem(RuleWorkItemId.atsRequireStateHourSpentPrompt.name());
       addWorkItem("ats.Title");
       addWorkItem(AtsWorkDefinitions.ATS_DESCRIPTION_NOT_REQUIRED_ID);

@@ -121,23 +121,24 @@ public class AtsWorkflowConfigCreationWizard extends Wizard implements INewWizar
    public static WorkflowData generateSimpleWorkflow(String namespace, SkynetTransaction transaction, TeamDefinitionArtifact teamDef) throws OseeCoreException {
       WorkFlowDefinition workflow = new WorkFlowDefinition(namespace, namespace, null);
       WorkPageDefinition endorsePage =
-         new WorkPageDefinition("Endorse", namespace + ".Endorse", AtsEndorseWorkPageDefinition.ID, WorkPageType.Working);
+         new WorkPageDefinition("Endorse", namespace + ".Endorse", AtsEndorseWorkPageDefinition.ID,
+            WorkPageType.Working, 1);
 
       workflow.setStartPageId(endorsePage.getPageName());
 
       WorkPageDefinition implementPage =
-         new WorkPageDefinition("Implement", namespace + ".Implement", null, WorkPageType.Working);
+         new WorkPageDefinition("Implement", namespace + ".Implement", null, WorkPageType.Working, 2);
       implementPage.addWorkItem(RuleWorkItemId.atsRequireStateHourSpentPrompt.name());
       implementPage.addWorkItem(AtsAttributeTypes.WorkPackage);
       implementPage.addWorkItem(AtsAttributeTypes.Resolution);
 
       WorkPageDefinition completedPage =
          new WorkPageDefinition("Completed", namespace + ".Completed", AtsCompletedWorkPageDefinition.ID,
-            WorkPageType.Completed);
+            WorkPageType.Completed, 3);
 
       WorkPageDefinition cancelledPage =
          new WorkPageDefinition("Cancelled", namespace + ".Cancelled", AtsCancelledWorkPageDefinition.ID,
-            WorkPageType.Cancelled);
+            WorkPageType.Cancelled, 4);
 
       workflow.addPageTransition(endorsePage.getPageName(), implementPage.getPageName(), TransitionType.ToPageAsDefault);
       workflow.addPageTransition(implementPage.getPageName(), endorsePage.getPageName(), TransitionType.ToPageAsReturn);

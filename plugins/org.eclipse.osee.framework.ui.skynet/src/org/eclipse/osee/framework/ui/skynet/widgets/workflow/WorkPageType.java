@@ -6,9 +6,9 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 
 public enum WorkPageType {
+   Working,
    Completed,
-   Cancelled,
-   Working;
+   Cancelled;
 
    public boolean isCompletedPage() {
       return this == Completed;

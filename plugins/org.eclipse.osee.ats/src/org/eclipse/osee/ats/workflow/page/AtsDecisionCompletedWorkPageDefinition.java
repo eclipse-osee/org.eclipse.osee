@@ -24,12 +24,12 @@ public class AtsDecisionCompletedWorkPageDefinition extends WorkPageDefinition {
 
    public final static String ID = DecisionWorkflowDefinition.ID + "." + TeamState.Completed.getPageName();
 
-   public AtsDecisionCompletedWorkPageDefinition() {
-      this(TeamState.Completed.getPageName(), ID, null);
+   public AtsDecisionCompletedWorkPageDefinition(int ordinal) {
+      this(TeamState.Completed.getPageName(), ID, null, ordinal);
    }
 
-   public AtsDecisionCompletedWorkPageDefinition(String name, String pageId, String parentId) {
-      super(name, pageId, parentId, WorkPageType.Completed);
+   public AtsDecisionCompletedWorkPageDefinition(String name, String pageId, String parentId, int ordinal) {
+      super(name, pageId, parentId, WorkPageType.Completed, ordinal);
       addWorkItem(RuleWorkItemId.atsAddDecisionValidateBlockingReview.name());
       addWorkItem(AtsDecisionDecisionWorkPageDefinition.DECISION_QUESTION_LABEL);
       addWorkItem(AtsDecisionDecisionWorkPageDefinition.DECISION_ANSWER_LABEL);

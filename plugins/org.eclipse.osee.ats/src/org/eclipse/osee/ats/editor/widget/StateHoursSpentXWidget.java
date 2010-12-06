@@ -15,6 +15,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
@@ -34,12 +35,14 @@ public class StateHoursSpentXWidget extends XHyperlinkLabelValueSelection {
    private final AbstractWorkflowArtifact sma;
    private final AtsWorkPage page;
    private final boolean isCurrentState;
+   private final SMAEditor editor;
 
-   public StateHoursSpentXWidget(IManagedForm managedForm, AtsWorkPage page, final AbstractWorkflowArtifact sma, Composite composite, int horizontalSpan, XModifiedListener xModListener, boolean isCurrentState) {
+   public StateHoursSpentXWidget(IManagedForm managedForm, AtsWorkPage page, final AbstractWorkflowArtifact sma, Composite composite, int horizontalSpan, XModifiedListener xModListener, boolean isCurrentState, SMAEditor editor) {
       super("\"" + page.getPageName() + "\"" + " State Hours Spent");
       this.page = page;
       this.sma = sma;
       this.isCurrentState = isCurrentState;
+      this.editor = editor;
       if (xModListener != null) {
          addXModifiedListener(xModListener);
       }
@@ -53,7 +56,7 @@ public class StateHoursSpentXWidget extends XHyperlinkLabelValueSelection {
    public boolean handleSelection() {
       try {
          SMAPromptChangeStatus.promptChangeStatus(Collections.singleton(sma), false);
-         sma.getEditor().onDirtied();
+         editor.onDirtied();
          return true;
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);

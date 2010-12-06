@@ -31,6 +31,11 @@ public class WorkPageAdapterTest {
    @Test
    public void testValues() {
       Assert.assertEquals(8, OrderedStates.values().size());
+
+      // values should return in ordinal order 
+      Assert.assertEquals(OrderedStates.One.getPageName(), OrderedStates.values().get(0).getPageName());
+      Assert.assertEquals(OrderedStates.Five.getPageName(), OrderedStates.values().get(4).getPageName());
+      Assert.assertEquals(OrderedStates.Completed.getPageName(), OrderedStates.values().get(7).getPageName());
    }
 
 }

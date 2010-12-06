@@ -24,12 +24,12 @@ public class AtsDecisionPrepareWorkPageDefinition extends WorkPageDefinition {
 
    public final static String ID = DecisionWorkflowDefinition.ID + "." + DecisionReviewState.Prepare.getPageName();
 
-   public AtsDecisionPrepareWorkPageDefinition() {
-      this(DecisionReviewState.Prepare.getPageName(), ID, null);
+   public AtsDecisionPrepareWorkPageDefinition(int ordinal) {
+      this(DecisionReviewState.Prepare.getPageName(), ID, null, ordinal);
    }
 
-   public AtsDecisionPrepareWorkPageDefinition(String name, String pageId, String parentId) {
-      super(name, pageId, parentId, WorkPageType.Working);
+   public AtsDecisionPrepareWorkPageDefinition(String name, String pageId, String parentId, int ordinal) {
+      super(name, pageId, parentId, WorkPageType.Working, ordinal);
       addWorkItem("ats.Title");
       addWorkItem(AtsAttributeTypes.DecisionReviewOptions);
       addWorkItem(AtsWorkDefinitions.ATS_DESCRIPTION_NOT_REQUIRED_ID);

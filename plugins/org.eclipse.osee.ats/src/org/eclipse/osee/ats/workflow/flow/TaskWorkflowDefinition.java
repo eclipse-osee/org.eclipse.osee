@@ -52,11 +52,11 @@ public class TaskWorkflowDefinition extends WorkFlowDefinition {
       List<WorkItemDefinition> workItems = new ArrayList<WorkItemDefinition>();
 
       // Add Task Page and Workflow Definition
-      workItems.add(new AtsTaskInWorkPageDefinition());
+      workItems.add(new AtsTaskInWorkPageDefinition(1));
       workItems.add(new WorkPageDefinition(TeamState.Completed.getPageName(),
-         ID + "." + TaskStates.Completed.getPageName(), AtsCompletedWorkPageDefinition.ID, WorkPageType.Completed));
+         ID + "." + TaskStates.Completed.getPageName(), AtsCompletedWorkPageDefinition.ID, WorkPageType.Completed, 2));
       workItems.add(new WorkPageDefinition(TeamState.Cancelled.getPageName(),
-         ID + "." + TaskStates.Cancelled.getPageName(), AtsCancelledWorkPageDefinition.ID, WorkPageType.Cancelled));
+         ID + "." + TaskStates.Cancelled.getPageName(), AtsCancelledWorkPageDefinition.ID, WorkPageType.Cancelled, 3));
       workItems.add(new TaskWorkflowDefinition());
 
       return workItems;

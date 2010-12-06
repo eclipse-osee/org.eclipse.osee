@@ -24,12 +24,12 @@ public class AtsSimpleInWorkWorkPageDefinition extends WorkPageDefinition {
 
    public final static String ID = SimpleWorkflowDefinition.ID + "." + SimpleState.InWork.name();
 
-   public AtsSimpleInWorkWorkPageDefinition() {
-      this(SimpleState.InWork.name(), ID, null);
+   public AtsSimpleInWorkWorkPageDefinition(int ordinal) {
+      this(SimpleState.InWork.name(), ID, null, ordinal);
    }
 
-   public AtsSimpleInWorkWorkPageDefinition(String name, String pageId, String parentId) {
-      super(name, pageId, parentId, WorkPageType.Working);
+   public AtsSimpleInWorkWorkPageDefinition(String name, String pageId, String parentId, int ordinal) {
+      super(name, pageId, parentId, WorkPageType.Working, ordinal);
       addWorkItem(RuleWorkItemId.atsRequireStateHourSpentPrompt.name());
       addWorkItem(AtsAttributeTypes.Resolution);
    }

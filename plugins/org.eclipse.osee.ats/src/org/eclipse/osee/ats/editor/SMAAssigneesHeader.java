@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -39,15 +38,15 @@ public class SMAAssigneesHeader extends Composite {
    private final static String TARGET_VERSION = "Assignee(s):";
    Label valueLabel;
 
-   public SMAAssigneesHeader(Composite parent, int style, final AbstractWorkflowArtifact sma, XFormToolkit toolkit, final boolean isEditable) {
+   public SMAAssigneesHeader(Composite parent, int style, final AbstractWorkflowArtifact sma, final boolean isEditable, final SMAEditor editor) {
       super(parent, style);
       setLayoutData(new GridData());
       setLayout(ALayout.getZeroMarginLayout(2, false));
-      toolkit.adapt(this);
+      editor.getToolkit().adapt(this);
 
       try {
          if (!sma.isCancelled() && !sma.isCompleted()) {
-            Hyperlink link = toolkit.createHyperlink(this, TARGET_VERSION, SWT.NONE);
+            Hyperlink link = editor.getToolkit().createHyperlink(this, TARGET_VERSION, SWT.NONE);
             link.addHyperlinkListener(new IHyperlinkListener() {
 
                @Override
@@ -72,7 +71,7 @@ public class SMAAssigneesHeader extends Composite {
                         return;
                      }
                      if (AssigneeColumn.promptChangeAssignees(sma, false)) {
-                        sma.getEditor().doSave(null);
+                        editor.doSave(null);
                      }
                   } catch (Exception ex) {
                      OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -80,14 +79,14 @@ public class SMAAssigneesHeader extends Composite {
                }
             });
          } else {
-            Label origLabel = toolkit.createLabel(this, TARGET_VERSION);
+            Label origLabel = editor.getToolkit().createLabel(this, TARGET_VERSION);
             origLabel.setLayoutData(new GridData());
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
 
-      valueLabel = toolkit.createLabel(this, "Not Set");
+      valueLabel = editor.getToolkit().createLabel(this, "Not Set");
       valueLabel.setLayoutData(new GridData());
       updateLabel(sma);
 

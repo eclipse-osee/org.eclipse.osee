@@ -57,13 +57,14 @@ public class DecisionWorkflowDefinition extends WorkFlowDefinition {
       List<WorkItemDefinition> workItems = new ArrayList<WorkItemDefinition>();
 
       // Add Decision Pages and Workflow Definition
-      workItems.add(new AtsDecisionPrepareWorkPageDefinition());
-      workItems.add(new AtsDecisionDecisionWorkPageDefinition());
-      workItems.add(new AtsDecisionFollowupWorkPageDefinition());
-      workItems.add(new AtsDecisionCompletedWorkPageDefinition());
+      workItems.add(new AtsDecisionPrepareWorkPageDefinition(1));
+      workItems.add(new AtsDecisionDecisionWorkPageDefinition(2));
+      workItems.add(new AtsDecisionFollowupWorkPageDefinition(3));
+      workItems.add(new AtsDecisionCompletedWorkPageDefinition(4));
       workItems.add(new WorkPageDefinition(TeamState.Cancelled.getPageName(),
          DecisionWorkflowDefinition.DECISION_CANCELLED_STATE_ID, AtsCancelledWorkPageDefinition.ID,
-         WorkPageType.Cancelled));
+         WorkPageType.Cancelled, 5));
+
       workItems.add(new DecisionWorkflowDefinition());
 
       return workItems;

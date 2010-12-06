@@ -24,12 +24,12 @@ public class AtsAnalyzeWorkPageDefinition extends WorkPageDefinition {
 
    public final static String ID = TeamWorkflowDefinition.ID + "." + TeamState.Analyze.getPageName();
 
-   public AtsAnalyzeWorkPageDefinition() {
-      this(TeamState.Analyze.getPageName(), ID, null);
+   public AtsAnalyzeWorkPageDefinition(int ordinal) {
+      this(TeamState.Analyze.getPageName(), ID, null, ordinal);
    }
 
-   public AtsAnalyzeWorkPageDefinition(String name, String pageId, String parentId) {
-      super(name, pageId, parentId, WorkPageType.Working);
+   public AtsAnalyzeWorkPageDefinition(String name, String pageId, String parentId, int ordinal) {
+      super(name, pageId, parentId, WorkPageType.Working, ordinal);
       addWorkItem(RuleWorkItemId.atsRequireStateHourSpentPrompt.name());
       addWorkItem(AtsAttributeTypes.WorkPackage);
       addWorkItem(AtsAttributeTypes.Problem);

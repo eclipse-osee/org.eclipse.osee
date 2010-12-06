@@ -24,12 +24,12 @@ public class AtsEndorseWorkPageDefinition extends WorkPageDefinition {
 
    public final static String ID = TeamWorkflowDefinition.ID + "." + TeamState.Endorse.getPageName();
 
-   public AtsEndorseWorkPageDefinition() {
-      this(TeamState.Endorse.getPageName(), ID, null);
+   public AtsEndorseWorkPageDefinition(int ordinal) {
+      this(TeamState.Endorse.getPageName(), ID, null, ordinal);
    }
 
-   public AtsEndorseWorkPageDefinition(String name, String pageId, String parentId) {
-      super(name, pageId, parentId, WorkPageType.Working);
+   public AtsEndorseWorkPageDefinition(String name, String pageId, String parentId, int ordinal) {
+      super(name, pageId, parentId, WorkPageType.Working, ordinal);
       addWorkItem(RuleWorkItemId.atsRequireStateHourSpentPrompt.name());
       addWorkItem("ats.Title");
       addWorkItem(AtsAttributeTypes.Description);

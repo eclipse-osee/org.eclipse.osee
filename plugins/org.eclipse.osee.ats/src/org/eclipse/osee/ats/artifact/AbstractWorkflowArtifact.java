@@ -1070,14 +1070,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return Artifacts.toTextList(getTransitionAssignees(), ";");
    }
 
-   public SMAEditor getEditor() {
-      return editor;
-   }
-
-   public void setEditor(SMAEditor editor) {
-      this.editor = editor;
-   }
-
    public boolean isInTransition() {
       return inTransition;
    }

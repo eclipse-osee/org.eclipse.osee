@@ -24,12 +24,12 @@ public class AtsPeerReviewWorkPageDefinition extends WorkPageDefinition {
 
    public final static String ID = PeerToPeerWorkflowDefinition.ID + "." + PeerToPeerReviewState.Review.getPageName();
 
-   public AtsPeerReviewWorkPageDefinition() {
-      this(PeerToPeerReviewState.Review.getPageName(), ID, null);
+   public AtsPeerReviewWorkPageDefinition(int ordinal) {
+      this(PeerToPeerReviewState.Review.getPageName(), ID, null, ordinal);
    }
 
-   public AtsPeerReviewWorkPageDefinition(String name, String pageId, String parentId) {
-      super(name, pageId, parentId, WorkPageType.Working);
+   public AtsPeerReviewWorkPageDefinition(String name, String pageId, String parentId, int ordinal) {
+      super(name, pageId, parentId, WorkPageType.Working, ordinal);
       addWorkItem(AtsAttributeTypes.Role);
       addWorkItem(AtsAttributeTypes.ReviewDefect);
       addWorkItem(AtsAttributeTypes.Resolution);

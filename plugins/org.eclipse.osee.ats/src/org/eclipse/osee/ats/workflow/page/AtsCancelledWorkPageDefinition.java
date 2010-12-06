@@ -22,11 +22,11 @@ public class AtsCancelledWorkPageDefinition extends WorkPageDefinition {
 
    public final static String ID = TeamWorkflowDefinition.ID + "." + TeamState.Cancelled.getPageName();
 
-   public AtsCancelledWorkPageDefinition() {
-      this(TeamState.Cancelled.getPageName(), ID, null);
+   public AtsCancelledWorkPageDefinition(int ordinal) {
+      this(TeamState.Cancelled.getPageName(), ID, null, ordinal);
    }
 
-   public AtsCancelledWorkPageDefinition(String name, String pageId, String parentId) {
-      super(name, pageId, parentId, WorkPageType.Cancelled);
+   public AtsCancelledWorkPageDefinition(String name, String pageId, String parentId, int ordinal) {
+      super(name, pageId, parentId, WorkPageType.Cancelled, ordinal);
    }
 }

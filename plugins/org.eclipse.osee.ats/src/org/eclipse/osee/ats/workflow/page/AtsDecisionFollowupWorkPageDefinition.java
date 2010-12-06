@@ -23,12 +23,12 @@ public class AtsDecisionFollowupWorkPageDefinition extends WorkPageDefinition {
 
    public final static String ID = DecisionWorkflowDefinition.ID + "." + DecisionReviewState.Followup.getPageName();
 
-   public AtsDecisionFollowupWorkPageDefinition() {
-      this(DecisionReviewState.Followup.getPageName(), ID, null);
+   public AtsDecisionFollowupWorkPageDefinition(int ordinal) {
+      this(DecisionReviewState.Followup.getPageName(), ID, null, ordinal);
    }
 
-   public AtsDecisionFollowupWorkPageDefinition(String name, String pageId, String parentId) {
-      super(name, pageId, parentId, WorkPageType.Working);
+   public AtsDecisionFollowupWorkPageDefinition(String name, String pageId, String parentId, int ordinal) {
+      super(name, pageId, parentId, WorkPageType.Working, ordinal);
       addWorkItem(AtsAttributeTypes.Resolution);
    }
 }

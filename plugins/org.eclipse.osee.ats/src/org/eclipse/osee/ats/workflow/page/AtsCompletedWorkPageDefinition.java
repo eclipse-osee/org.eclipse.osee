@@ -23,12 +23,12 @@ public class AtsCompletedWorkPageDefinition extends WorkPageDefinition {
 
    public final static String ID = TeamWorkflowDefinition.ID + "." + TeamState.Completed.getPageName();
 
-   public AtsCompletedWorkPageDefinition() {
-      this(TeamState.Completed.getPageName(), ID, null);
+   public AtsCompletedWorkPageDefinition(int ordinal) {
+      this(TeamState.Completed.getPageName(), ID, null, ordinal);
    }
 
-   public AtsCompletedWorkPageDefinition(String name, String pageId, String parentId) {
-      super(name, pageId, parentId, WorkPageType.Completed);
+   public AtsCompletedWorkPageDefinition(String name, String pageId, String parentId, int ordinal) {
+      super(name, pageId, parentId, WorkPageType.Completed, ordinal);
       addWorkItem(RuleWorkItemId.atsAddDecisionValidateBlockingReview.name());
    }
 

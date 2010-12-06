@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageType;
 public class CompletedWorkPageShape extends WorkPageShape {
 
    public CompletedWorkPageShape() {
-      super(new WorkPageDefinition("Completed", "NEW", AtsCompletedWorkPageDefinition.ID, WorkPageType.Completed));
+      super(new WorkPageDefinition("Completed", "NEW", AtsCompletedWorkPageDefinition.ID, WorkPageType.Completed, 2));
    }
 
    @Override

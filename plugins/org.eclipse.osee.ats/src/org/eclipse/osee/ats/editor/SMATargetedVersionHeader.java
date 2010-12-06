@@ -20,7 +20,6 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
@@ -39,15 +38,15 @@ public class SMATargetedVersionHeader extends Composite {
    private final static String TARGET_VERSION = "Target Version:";
    Label valueLabel;
 
-   public SMATargetedVersionHeader(Composite parent, int style, final AbstractWorkflowArtifact sma, XFormToolkit toolkit) {
+   public SMATargetedVersionHeader(Composite parent, int style, final AbstractWorkflowArtifact sma, final SMAEditor editor) {
       super(parent, style);
       setLayoutData(new GridData());
       setLayout(ALayout.getZeroMarginLayout(2, false));
-      toolkit.adapt(this);
+      editor.getToolkit().adapt(this);
 
       try {
          if (!sma.isCancelled() && !sma.isCompleted()) {
-            Hyperlink link = toolkit.createHyperlink(this, TARGET_VERSION, SWT.NONE);
+            Hyperlink link = editor.getToolkit().createHyperlink(this, TARGET_VERSION, SWT.NONE);
             link.addHyperlinkListener(new IHyperlinkListener() {
 
                @Override
@@ -67,7 +66,7 @@ public class SMATargetedVersionHeader extends Composite {
                         AtsUtil.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased,
                         VersionLockedType.UnLocked, false)) {
                         updateLabel(sma);
-                        sma.getEditor().onDirtied();
+                        editor.onDirtied();
                      }
                   } catch (Exception ex) {
                      OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -75,16 +74,16 @@ public class SMATargetedVersionHeader extends Composite {
                }
             });
          } else {
-            Label origLabel = toolkit.createLabel(this, TARGET_VERSION);
+            Label origLabel = editor.getToolkit().createLabel(this, TARGET_VERSION);
             origLabel.setLayoutData(new GridData());
          }
 
-         valueLabel = toolkit.createLabel(this, "Not Set");
+         valueLabel = editor.getToolkit().createLabel(this, "Not Set");
          valueLabel.setLayoutData(new GridData());
          updateLabel(sma);
 
       } catch (OseeCoreException ex) {
-         Label errorLabel = toolkit.createLabel(this, "Error: " + ex.getLocalizedMessage());
+         Label errorLabel = editor.getToolkit().createLabel(this, "Error: " + ex.getLocalizedMessage());
          errorLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }

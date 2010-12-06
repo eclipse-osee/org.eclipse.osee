@@ -57,14 +57,14 @@ public class PeerToPeerWorkflowDefinition extends WorkFlowDefinition {
       List<WorkItemDefinition> workItems = new ArrayList<WorkItemDefinition>();
 
       // Add PeerToPeer Pages and Workflow Definition
-      workItems.add(new AtsPeerPrepareWorkPageDefinition());
-      workItems.add(new AtsPeerReviewWorkPageDefinition());
+      workItems.add(new AtsPeerPrepareWorkPageDefinition(1));
+      workItems.add(new AtsPeerReviewWorkPageDefinition(2));
       workItems.add(new WorkPageDefinition(TeamState.Completed.getPageName(),
          PeerToPeerWorkflowDefinition.PEER_REVIEW_COMPLETED_STATE_ID, AtsCompletedWorkPageDefinition.ID,
-         WorkPageType.Completed));
+         WorkPageType.Completed, 3));
       workItems.add(new WorkPageDefinition(TeamState.Cancelled.getPageName(),
          PeerToPeerWorkflowDefinition.PEER_REVIEW_CANCELLED_STATE_ID, AtsCancelledWorkPageDefinition.ID,
-         WorkPageType.Cancelled));
+         WorkPageType.Cancelled, 4));
       workItems.add(new PeerToPeerWorkflowDefinition());
 
       return workItems;

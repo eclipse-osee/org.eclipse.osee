@@ -22,10 +22,21 @@ public class WorkPageDefinitionViewSorter extends ViewerSorter {
       super();
    }
 
-   @SuppressWarnings("unchecked")
    @Override
    public int compare(Viewer viewer, Object e1, Object e2) {
-      return getComparator().compare(((WorkPageDefinition) e1).getPageName(), ((WorkPageDefinition) e2).getPageName());
+      WorkPageDefinition def1 = (WorkPageDefinition) e1;
+      WorkPageDefinition def2 = (WorkPageDefinition) e2;
+      if (def1.getWorkPageOrdinal() == def2.getWorkPageOrdinal()) {
+         return compareByName(def1, def2);
+      } else if (def1.getWorkPageOrdinal() < def2.getWorkPageOrdinal()) {
+         return -1;
+      } else {
+         return 1;
+      }
    }
 
+   @SuppressWarnings("unchecked")
+   private int compareByName(WorkPageDefinition def1, WorkPageDefinition def2) {
+      return getComparator().compare(def1.getPageName(), def2.getPageName());
+   }
 }

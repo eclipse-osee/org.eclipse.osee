@@ -5,12 +5,15 @@
  */
 package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -24,6 +27,8 @@ public abstract class WorkPageAdapter implements IWorkPage {
    private static CompositeKeyHashMap<Class<?>, String, WorkPageAdapter> classAndNameToPage =
       new CompositeKeyHashMap<Class<?>, String, WorkPageAdapter>();
    private static final Map<WorkPageAdapter, Integer> pageToOrdinal = new HashMap<WorkPageAdapter, Integer>(10);
+   private static final Map<Class<?>, List<WorkPageAdapter>> classToPages =
+      new HashMap<Class<?>, List<WorkPageAdapter>>();
    private static final CountingMap<Class<?>> classToOrdinalCount = new CountingMap<Class<?>>(20);
    private String description;
    private final String pageName;
@@ -47,15 +52,25 @@ public abstract class WorkPageAdapter implements IWorkPage {
       return (T) classAndNameToPage.get(clazz, pageName);
    }
 
-   @SuppressWarnings("unchecked")
-   public static <T> Set<T> pages(Class<?> clazz) {
-      Set<T> pages = new HashSet<T>();
-      for (WorkPageAdapter page : pageToOrdinal.keySet()) {
-         if (page.getClass().isAssignableFrom(clazz)) {
-            pages.add((T) page);
+   public synchronized static <T> List<T> pages(Class<?> clazz) {
+      if (classToPages.get(clazz) == null) {
+         Set<WorkPageAdapter> pages = new HashSet<WorkPageAdapter>();
+         for (WorkPageAdapter page : pageToOrdinal.keySet()) {
+            if (page.getClass().isAssignableFrom(clazz)) {
+               pages.add(page);
+            }
          }
+         List<WorkPageAdapter> pagesOrdered = new ArrayList<WorkPageAdapter>();
+         for (int x = 1; x <= pages.size(); x++) {
+            for (WorkPageAdapter page : pages) {
+               if (page.ordinal() == x) {
+                  pagesOrdered.add(page);
+               }
+            }
+         }
+         classToPages.put(clazz, pagesOrdered);
       }
-      return pages;
+      return Collections.castAll(classToPages.get(clazz));
    }
 
    @Override

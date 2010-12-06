@@ -27,15 +27,17 @@ public class WorkPageDefinition extends WorkItemWithChildrenDefinition implement
 
    private String pageName;
    private WorkPageType workPageType;
+   private int workPageOrdinal;
 
-   public WorkPageDefinition(String pageName, String pageId, String parentId, WorkPageType workPageType) {
-      this(pageId, pageName, pageId, parentId, workPageType);
+   public WorkPageDefinition(String pageName, String pageId, String parentId, WorkPageType workPageType, int ordinal) {
+      this(pageId, pageName, pageId, parentId, workPageType, ordinal);
    }
 
-   public WorkPageDefinition(String itemName, String pageName, String pageId, String parentId, WorkPageType workPageType) {
+   public WorkPageDefinition(String itemName, String pageName, String pageId, String parentId, WorkPageType workPageType, int ordinal) {
       super(itemName, pageId, parentId);
       this.pageName = pageName;
       this.workPageType = workPageType;
+      this.workPageOrdinal = ordinal;
    }
    private static final Set<String> notValidAttributeType = new HashSet<String>();
 
@@ -43,13 +45,14 @@ public class WorkPageDefinition extends WorkItemWithChildrenDefinition implement
       super(artifact, artifact.getName(), //
          artifact.getSoleAttributeValue(CoreAttributeTypes.WorkPageName, (String) null),//
          artifact.getSoleAttributeValue(CoreAttributeTypes.WorkId, (String) null), //
-         artifact.getSoleAttributeValue(CoreAttributeTypes.WorkParentId, (String) null)//
+         artifact.getSoleAttributeValue(CoreAttributeTypes.WorkParentId, (String) null) //
       );
 
       setType(artifact.getSoleAttributeValue(CoreAttributeTypes.WorkType, (String) null));
       loadWorkDataKeyValueMap(artifact);
       setPageName(artifact.getSoleAttributeValue(CoreAttributeTypes.WorkPageName, (String) null));
 
+      setWorkPageOrdinal(artifact.getSoleAttributeValue(CoreAttributeTypes.WorkPageOrdinal, 0));
       if (artifact.isAttributeTypeValid(CoreAttributeTypes.WorkPageType)) {
          setWorkPageType(WorkPageType.valueOf(artifact.getSoleAttributeValueAsString(CoreAttributeTypes.WorkPageType,
             null)));
@@ -94,6 +97,7 @@ public class WorkPageDefinition extends WorkItemWithChildrenDefinition implement
       if (pageName != null) {
          art.setSoleAttributeFromString(CoreAttributeTypes.WorkPageName, pageName);
          art.setSoleAttributeFromString(CoreAttributeTypes.WorkPageType, workPageType.name());
+         art.setSoleAttributeValue(CoreAttributeTypes.WorkPageOrdinal, workPageOrdinal);
       }
       return art;
    }
@@ -168,6 +172,14 @@ public class WorkPageDefinition extends WorkItemWithChildrenDefinition implement
    @Override
    public Integer getDefaultPercent() {
       return null;
+   }
+
+   public Integer getWorkPageOrdinal() {
+      return workPageOrdinal;
+   }
+
+   public void setWorkPageOrdinal(Integer workPageOrdinal) {
+      this.workPageOrdinal = workPageOrdinal;
    }
 
 }

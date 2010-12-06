@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.NoteType;
 import org.eclipse.osee.ats.actions.wizard.NewNoteWizard;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -36,10 +37,12 @@ import org.eclipse.ui.PlatformUI;
 public class AddNoteAction extends Action {
 
    private final AbstractWorkflowArtifact sma;
+   private final SMAEditor editor;
 
-   public AddNoteAction(AbstractWorkflowArtifact sma) {
+   public AddNoteAction(AbstractWorkflowArtifact sma, SMAEditor editor) {
       super();
       this.sma = sma;
+      this.editor = editor;
       setText("Add Note");
       setToolTipText(getText());
    }
@@ -72,7 +75,7 @@ public class AddNoteAction extends Action {
             sma.getNotes().addNote(
                NoteType.getType(noteWizard.mainPage.typeList.getSelected().iterator().next().getName()), state,
                noteWizard.mainPage.noteText.get(), UserManager.getUser());
-            sma.getEditor().onDirtied();
+            editor.onDirtied();
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);

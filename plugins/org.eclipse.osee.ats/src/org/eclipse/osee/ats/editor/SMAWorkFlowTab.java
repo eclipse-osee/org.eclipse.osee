@@ -67,7 +67,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactStoredWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ExceptionComposite;
-import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -107,9 +106,11 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    private SMAHistorySection smaHistorySection;
    private LoadingComposite loadingComposite;
    public final static String ID = "ats.workflow.tab";
+   private final SMAEditor editor;
 
-   public SMAWorkFlowTab(AbstractWorkflowArtifact sma) {
-      super(sma.getEditor(), ID, "Workflow");
+   public SMAWorkFlowTab(SMAEditor editor, AbstractWorkflowArtifact sma) {
+      super(editor, ID, "Workflow");
+      this.editor = editor;
       this.sma = sma;
    }
 
@@ -147,7 +148,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    }
 
    private void updateTitleBar() throws OseeCoreException {
-      String titleString = sma.getEditor().getTitleStr();
+      String titleString = editor.getTitleStr();
       String displayableTitle = Strings.escapeAmpersands(titleString);
       managedForm.getForm().setText(displayableTitle);
       managedForm.getForm().setImage(ArtifactImageManager.getImage(sma));
@@ -162,16 +163,16 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    }
 
    public void refreshData() {
-      Operations.executeAsJob(AtsBulkLoad.getConfigLoadingOperation(), true, Job.LONG,
-         new ReloadJobChangeAdapter(sma.getEditor()));
+      Operations.executeAsJob(AtsBulkLoad.getConfigLoadingOperation(), true, Job.LONG, new ReloadJobChangeAdapter(
+         editor));
       // Don't put in operation cause doesn't have to be loaded before editor displays
       OseeDictionary.load();
    }
    private final class ReloadJobChangeAdapter extends JobChangeAdapter {
 
-      private final IDirtiableEditor editor;
+      private final SMAEditor editor;
 
-      private ReloadJobChangeAdapter(IDirtiableEditor editor) {
+      private ReloadJobChangeAdapter(SMAEditor editor) {
          this.editor = editor;
          showBusy(true);
       }
@@ -189,7 +190,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
                   setLoading(false);
                   createAtsBody();
                   addMessageDecoration(managedForm.getForm());
-                  FormsUtil.addHeadingGradient(sma.getEditor().getToolkit(), managedForm.getForm(), true);
+                  FormsUtil.addHeadingGradient(editor.getToolkit(), managedForm.getForm(), true);
                   editor.onDirtied();
                } catch (OseeCoreException ex) {
                   handleException(ex);
@@ -229,7 +230,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       if (Widgets.isAccessible(atsBody)) {
          atsBody.dispose();
       }
-      atsBody = sma.getEditor().getToolkit().createComposite(bodyComp);
+      atsBody = editor.getToolkit().createComposite(bodyComp);
       atsBody.setLayoutData(new GridData(GridData.FILL_BOTH));
       atsBody.setLayout(new GridLayout(1, false));
 
@@ -254,7 +255,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
 
    private void createDetailsSection() {
       try {
-         smaDetailsSection = new SMADetailsSection(sma.getEditor(), atsBody, sma.getEditor().getToolkit(), SWT.NONE);
+         smaDetailsSection = new SMADetailsSection(editor, atsBody, editor.getToolkit(), SWT.NONE);
          managedForm.addPart(smaDetailsSection);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
@@ -264,7 +265,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    private void createOperationsSection() {
       try {
          SMAOperationsSection smaOperationsSection =
-            new SMAOperationsSection(sma.getEditor(), atsBody, sma.getEditor().getToolkit(), SWT.NONE);
+            new SMAOperationsSection(editor, atsBody, editor.getToolkit(), SWT.NONE);
          managedForm.addPart(smaOperationsSection);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
@@ -273,8 +274,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
 
    private void createRelationsSection() {
       try {
-         smaRelationsSection =
-            new SMARelationsSection(sma.getEditor(), atsBody, sma.getEditor().getToolkit(), SWT.NONE);
+         smaRelationsSection = new SMARelationsSection(editor, atsBody, editor.getToolkit(), SWT.NONE);
          managedForm.addPart(smaRelationsSection);
 
       } catch (Exception ex) {
@@ -284,7 +284,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
 
    private void createHistorySection() {
       try {
-         smaHistorySection = new SMAHistorySection(sma.getEditor(), atsBody, sma.getEditor().getToolkit(), SWT.NONE);
+         smaHistorySection = new SMAHistorySection(editor, atsBody, editor.getToolkit(), SWT.NONE);
          managedForm.addPart(smaHistorySection);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
@@ -294,8 +294,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    private void createGoalSection() {
       try {
          if (sma instanceof GoalArtifact) {
-            smaGoalMembersSection =
-               new SMAGoalMembersSection(sma.getEditor(), atsBody, sma.getEditor().getToolkit(), SWT.NONE);
+            smaGoalMembersSection = new SMAGoalMembersSection(editor, atsBody, editor.getToolkit(), SWT.NONE);
             managedForm.addPart(smaGoalMembersSection);
          }
       } catch (Exception ex) {
@@ -316,8 +315,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
                   if (atsWorkPage.isCancelledPage() && !sma.isCancelled()) {
                      continue;
                   }
-                  SMAWorkFlowSection section =
-                     new SMAWorkFlowSection(atsBody, sma.getEditor().getToolkit(), SWT.NONE, atsWorkPage, sma);
+                  SMAWorkFlowSection section = new SMAWorkFlowSection(atsBody, SWT.NONE, atsWorkPage, sma, editor);
                   managedForm.addPart(section);
                   control = section.getMainComp();
                   sections.add(section);
@@ -333,7 +331,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    }
 
    private void createHeaderSection(AtsWorkPage currentAtsWorkPage) {
-      Composite headerComp = sma.getEditor().getToolkit().createComposite(atsBody);
+      Composite headerComp = editor.getToolkit().createComposite(atsBody);
       GridData gd = new GridData(GridData.FILL_HORIZONTAL);
       gd.widthHint = 100;
       headerComp.setLayoutData(gd);
@@ -342,24 +340,24 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
 
       // Display relations
       try {
-         createCurrentStateAndTeamHeaders(headerComp, sma.getEditor().getToolkit());
-         createTargetVersionAndAssigneeHeader(headerComp, currentAtsWorkPage, sma.getEditor().getToolkit());
+         createCurrentStateAndTeamHeaders(headerComp, editor.getToolkit());
+         createTargetVersionAndAssigneeHeader(headerComp, currentAtsWorkPage, editor.getToolkit());
 
-         createLatestHeader(headerComp, sma.getEditor().getToolkit());
+         createLatestHeader(headerComp, editor.getToolkit());
          if (sma.isTeamWorkflow()) {
-            actionableItemHeader = new SMAActionableItemHeader(headerComp, sma.getEditor().getToolkit(), sma);
+            actionableItemHeader = new SMAActionableItemHeader(headerComp, editor.getToolkit(), sma);
          }
-         workflowMetricsHeader = new SMAWorkflowMetricsHeader(headerComp, sma.getEditor().getToolkit(), sma);
+         workflowMetricsHeader = new SMAWorkflowMetricsHeader(headerComp, editor.getToolkit(), sma);
          int headerCompColumns = 4;
-         createSMANotesHeader(headerComp, sma.getEditor().getToolkit(), sma, headerCompColumns);
-         createStateNotesHeader(headerComp, sma.getEditor().getToolkit(), sma, headerCompColumns, null);
-         createAnnotationsHeader(headerComp, sma.getEditor().getToolkit());
+         createSMANotesHeader(headerComp, editor.getToolkit(), sma, headerCompColumns);
+         createStateNotesHeader(headerComp, editor.getToolkit(), sma, headerCompColumns, null);
+         createAnnotationsHeader(headerComp, editor.getToolkit());
 
          sections.clear();
          atsWorkPages.clear();
 
          if (SMARelationsHyperlinkComposite.relationExists(sma)) {
-            smaRelationsComposite = new SMARelationsHyperlinkComposite(atsBody, sma.getEditor().getToolkit(), SWT.NONE);
+            smaRelationsComposite = new SMARelationsHyperlinkComposite(atsBody, SWT.NONE, editor);
             smaRelationsComposite.create(sma);
          }
       } catch (Exception ex) {
@@ -384,12 +382,12 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
 
       // Targeted Version
       if (isShowTargetedVersion) {
-         new SMATargetedVersionHeader(comp, SWT.NONE, sma, toolkit);
+         new SMATargetedVersionHeader(comp, SWT.NONE, sma, editor);
          toolkit.createLabel(comp, "    ");
       }
 
       // Create Privileged Edit label
-      if (sma.getEditor().isPriviledgedEditModeEnabled()) {
+      if (editor.isPriviledgedEditModeEnabled()) {
          Label label = toolkit.createLabel(comp, "(Priviledged Edit Enabled)");
          label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
          label.setToolTipText("Priviledged Edit Mode is Enabled.  Editing any field in any state is authorized.  Select icon to disable");
@@ -401,13 +399,13 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          // and access control writeable
          sma.isAccessControlWrite() && //
 
-         (SMAWorkFlowSection.isEditable(sma, page) || //
+         (SMAWorkFlowSection.isEditable(sma, page, editor) || //
          // page is define to allow anyone to edit
          sma.getWorkPageDefinition().hasWorkRule(AtsWorkDefinitions.RuleWorkItemId.atsAllowAssigneeToAll.name()) ||
          // team definition has allowed anyone to edit
          sma.teamDefHasWorkRule(AtsWorkDefinitions.RuleWorkItemId.atsAllowAssigneeToAll.name()));
 
-         new SMAAssigneesHeader(comp, SWT.NONE, sma, toolkit, editable);
+         new SMAAssigneesHeader(comp, SWT.NONE, sma, editable, editor);
       }
    }
 
@@ -440,24 +438,24 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          toolBarMgr.add(new ShowMergeManagerAction((TeamWorkFlowArtifact) sma));
          toolBarMgr.add(new ShowChangeReportAction((TeamWorkFlowArtifact) sma));
       }
-      toolBarMgr.add(new FavoriteAction(sma.getEditor()));
+      toolBarMgr.add(new FavoriteAction(editor));
       if (sma.getParentSMA() != null) {
          toolBarMgr.add(new OpenParentAction(sma));
       }
-      toolBarMgr.add(new EmailActionAction(sma.getEditor()));
-      toolBarMgr.add(new AddNoteAction(sma));
+      toolBarMgr.add(new EmailActionAction(editor));
+      toolBarMgr.add(new AddNoteAction(sma, editor));
       toolBarMgr.add(new OpenInAtsWorldAction(sma));
       if (AtsUtil.isAtsAdmin()) {
-         toolBarMgr.add(new OpenInArtifactEditorAction(sma.getEditor()));
+         toolBarMgr.add(new OpenInArtifactEditorAction(editor));
       }
       toolBarMgr.add(new OpenVersionArtifactAction(sma));
       toolBarMgr.add(new OpenTeamDefinitionAction(sma));
       toolBarMgr.add(new CopyActionDetailsAction(sma));
-      toolBarMgr.add(new PrivilegedEditAction(sma));
+      toolBarMgr.add(new PrivilegedEditAction(sma, editor));
       toolBarMgr.add(new ResourceHistoryAction(sma));
       toolBarMgr.add(new ReloadAction(sma));
 
-      OseeUiActions.addButtonToEditorToolBar(sma.getEditor(), this, AtsPlugin.PLUGIN_ID,
+      OseeUiActions.addButtonToEditorToolBar(editor, this, AtsPlugin.PLUGIN_ID,
          managedForm.getForm().getToolBarManager(), SMAEditor.EDITOR_ID, "ATS Editor");
 
       managedForm.getForm().updateToolBar();
@@ -518,8 +516,8 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          section.dispose();
       }
 
-      if (sma.getEditor().getToolkit() != null) {
-         sma.getEditor().getToolkit().dispose();
+      if (editor.getToolkit() != null) {
+         editor.getToolkit().dispose();
       }
    }
 
@@ -588,7 +586,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
 
-      new SMAOriginatorHeader(topLineComp, SWT.NONE, sma, toolkit);
+      new SMAOriginatorHeader(topLineComp, SWT.NONE, sma, editor);
 
       try {
          if (sma.isTeamWorkflow()) {
@@ -645,7 +643,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    }
 
    public void refresh() {
-      if (sma.getEditor() != null && !sma.isInTransition()) {
+      if (editor != null && !sma.isInTransition()) {
          // remove all pages
          for (SMAWorkFlowSection section : sections) {
             section.dispose();

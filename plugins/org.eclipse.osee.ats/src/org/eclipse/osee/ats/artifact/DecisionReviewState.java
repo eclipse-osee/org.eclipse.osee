@@ -1,6 +1,6 @@
 package org.eclipse.osee.ats.artifact;
 
-import java.util.Set;
+import java.util.List;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageAdapter;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageType;
 
@@ -18,7 +18,7 @@ public class DecisionReviewState extends WorkPageAdapter {
       return WorkPageAdapter.valueOfPage(DecisionReviewState.class, pageName);
    }
 
-   public static Set<DecisionReviewState> values() {
+   public static List<DecisionReviewState> values() {
       return WorkPageAdapter.pages(DecisionReviewState.class);
    }
 

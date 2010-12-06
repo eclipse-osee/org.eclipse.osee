@@ -14,10 +14,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import org.eclipse.osee.ats.actions.wizard.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.actions.wizard.AtsTeamWorkflowAdapter;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -27,7 +26,7 @@ import org.eclipse.osee.support.test.util.TestUtil;
 /**
  * @author Donald G. Dunne
  */
-public class DemoTeamWorkflows implements IAtsTeamWorkflow {
+public class DemoTeamWorkflows extends AtsTeamWorkflowAdapter {
 
    private static List<? extends IArtifactType> workflowArtifactTypes;
 
@@ -49,11 +48,6 @@ public class DemoTeamWorkflows implements IAtsTeamWorkflow {
    }
 
    @Override
-   public void teamWorkflowCreated(TeamWorkFlowArtifact teamArt) {
-      return;
-   }
-
-   @Override
    public Collection<? extends IArtifactType> getTeamWorkflowArtifactNames() throws OseeCoreException {
       if (workflowArtifactTypes == null) {
          if (TestUtil.isDemoDb()) {
@@ -67,8 +61,4 @@ public class DemoTeamWorkflows implements IAtsTeamWorkflow {
       return workflowArtifactTypes;
    }
 
-   @Override
-   public void teamWorkflowDuplicating(TeamWorkFlowArtifact teamArt, TeamWorkFlowArtifact dupTeamArt) {
-      // do nothing
-   }
 }

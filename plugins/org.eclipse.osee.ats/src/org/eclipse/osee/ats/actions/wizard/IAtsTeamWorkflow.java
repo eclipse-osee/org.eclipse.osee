@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.actions.wizard;
 
 import java.util.Collection;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
@@ -56,4 +57,8 @@ public interface IAtsTeamWorkflow {
     * @return collection of all team workflow artifact type names
     */
    public Collection<? extends IArtifactType> getTeamWorkflowArtifactNames() throws OseeCoreException;
+
+   public String getWorkflowDefinitionId(AbstractWorkflowArtifact artifact) throws OseeCoreException;
+
+   public String getRelatedTaskWorkflowDefinitionId(AbstractWorkflowArtifact artifact) throws OseeCoreException;
 }

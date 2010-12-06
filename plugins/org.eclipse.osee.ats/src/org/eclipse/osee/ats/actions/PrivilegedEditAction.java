@@ -17,6 +17,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.PriviledgedUserManager;
@@ -35,10 +36,12 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 public class PrivilegedEditAction extends Action {
 
    private final AbstractWorkflowArtifact sma;
+   private final SMAEditor editor;
 
-   public PrivilegedEditAction(AbstractWorkflowArtifact sma) {
+   public PrivilegedEditAction(AbstractWorkflowArtifact sma, SMAEditor editor) {
       super();
       this.sma = sma;
+      this.editor = editor;
       setText("Privileged Edit");
       setToolTipText(getText());
    }
@@ -53,10 +56,10 @@ public class PrivilegedEditAction extends Action {
          if (sma.isReadOnly()) {
             new ReadOnlyHyperlinkListener(sma).linkActivated(null);
          }
-         if (sma.getEditor().isPriviledgedEditModeEnabled()) {
+         if (editor.isPriviledgedEditModeEnabled()) {
             if (MessageDialog.openQuestion(Displays.getActiveShell(), "Diable Privileged Edit",
                "Privileged Edit Mode Enabled.\n\nDisable?\n\nNote: (changes will be saved)")) {
-               sma.getEditor().setPriviledgedEditMode(false);
+               editor.setPriviledgedEditMode(false);
             }
          } else {
             Set<User> users = PriviledgedUserManager.getPrivilegedUsers(sma);
@@ -84,7 +87,7 @@ public class PrivilegedEditAction extends Action {
                   MessageDialog.QUESTION, buttons, 0);
             int result = dialog.open();
             if (iAmPrivileged && result == 0) {
-               sma.getEditor().setPriviledgedEditMode(true);
+               editor.setPriviledgedEditMode(true);
             }
          }
       } catch (OseeCoreException ex) {

@@ -32,7 +32,7 @@ public class AtsLogWorkPage extends AtsWorkPage {
 
    public AtsLogWorkPage(String title) {
       super(new EmptyWorkFlowDefinition(title, PAGE_ID), new WorkPageDefinition(title, PAGE_ID, null,
-         WorkPageType.Working), null, null);
+         WorkPageType.Working, 99), null, null);
    }
 
 }

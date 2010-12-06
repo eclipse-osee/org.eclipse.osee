@@ -1,6 +1,6 @@
 package org.eclipse.osee.framework.ui.skynet.test.widgets.workflow;
 
-import java.util.Set;
+import java.util.List;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageAdapter;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageType;
 
@@ -23,7 +23,7 @@ public class OrderedStates extends WorkPageAdapter {
       return WorkPageAdapter.valueOfPage(OrderedStates.class, pageName);
    }
 
-   public static Set<OrderedStates> values() {
+   public static List<OrderedStates> values() {
       return WorkPageAdapter.pages(OrderedStates.class);
    }
 

@@ -26,12 +26,12 @@ public class AtsDecisionDecisionWorkPageDefinition extends WorkPageDefinition {
    public final static String DECISION_QUESTION_LABEL = "ats.Decision Question";
    public final static String DECISION_ANSWER_LABEL = "ats.Decision Answer";
 
-   public AtsDecisionDecisionWorkPageDefinition() {
-      this(DecisionReviewState.Decision.getPageName(), ID, null);
+   public AtsDecisionDecisionWorkPageDefinition(int ordinal) {
+      this(DecisionReviewState.Decision.getPageName(), ID, null, ordinal);
    }
 
-   public AtsDecisionDecisionWorkPageDefinition(String name, String pageId, String parentId) {
-      super(name, pageId, parentId, WorkPageType.Working);
+   public AtsDecisionDecisionWorkPageDefinition(String name, String pageId, String parentId, int ordinal) {
+      super(name, pageId, parentId, WorkPageType.Working, ordinal);
       addWorkItem(AtsDecisionDecisionWorkPageDefinition.DECISION_QUESTION_LABEL);
       addWorkItem(AtsAttributeTypes.Decision);
       addWorkItem(AtsWorkDefinitions.ATS_DESCRIPTION_NOT_REQUIRED_ID);

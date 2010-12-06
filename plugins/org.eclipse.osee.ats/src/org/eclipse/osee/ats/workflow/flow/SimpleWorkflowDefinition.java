@@ -86,12 +86,12 @@ public class SimpleWorkflowDefinition extends WorkFlowDefinition {
       List<WorkItemDefinition> workItems = new ArrayList<WorkItemDefinition>();
 
       workItems.add(new WorkPageDefinition(SimpleState.Endorse.name(), SimpleWorkflowDefinition.ENDORSE_STATE_ID,
-         AtsEndorseWorkPageDefinition.ID, WorkPageType.Working));
-      workItems.add(new AtsSimpleInWorkWorkPageDefinition());
+         AtsEndorseWorkPageDefinition.ID, WorkPageType.Working, 1));
+      workItems.add(new AtsSimpleInWorkWorkPageDefinition(2));
       workItems.add(new WorkPageDefinition(TeamState.Completed.getPageName(),
-         SimpleWorkflowDefinition.COMPLETED_STATE_ID, AtsCompletedWorkPageDefinition.ID, WorkPageType.Completed));
+         SimpleWorkflowDefinition.COMPLETED_STATE_ID, AtsCompletedWorkPageDefinition.ID, WorkPageType.Completed, 3));
       workItems.add(new WorkPageDefinition(TeamState.Cancelled.getPageName(),
-         SimpleWorkflowDefinition.CANCELLED_STATE_ID, AtsCancelledWorkPageDefinition.ID, WorkPageType.Cancelled));
+         SimpleWorkflowDefinition.CANCELLED_STATE_ID, AtsCancelledWorkPageDefinition.ID, WorkPageType.Cancelled, 4));
       workItems.add(new SimpleWorkflowDefinition());
 
       return workItems;

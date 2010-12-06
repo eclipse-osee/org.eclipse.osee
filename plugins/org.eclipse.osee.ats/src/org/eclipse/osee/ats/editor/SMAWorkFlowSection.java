@@ -101,21 +101,20 @@ public class SMAWorkFlowSection extends SectionPart {
    protected final AbstractWorkflowArtifact sma;
    private final AtsWorkPage atsWorkPage;
    private final boolean isEditable, isCurrentState, isGlobalEditable;
-   private final XFormToolkit toolkit;
    private Composite mainComp;
    private final List<XWidget> allXWidgets = new ArrayList<XWidget>();
    private boolean sectionCreated = false;
    private Section section;
+   private final SMAEditor editor;
 
-   public SMAWorkFlowSection(Composite parent, XFormToolkit toolkit, int style, AtsWorkPage page, AbstractWorkflowArtifact sma) throws OseeCoreException {
-      super(parent, toolkit, style | ExpandableComposite.TWISTIE | ExpandableComposite.TITLE_BAR);
-      this.toolkit = toolkit;
+   public SMAWorkFlowSection(Composite parent, int style, AtsWorkPage page, AbstractWorkflowArtifact sma, final SMAEditor editor) throws OseeCoreException {
+      super(parent, editor.getToolkit(), style | ExpandableComposite.TWISTIE | ExpandableComposite.TITLE_BAR);
       this.atsWorkPage = page;
       this.sma = sma;
+      this.editor = editor;
 
-      isEditable = isEditable(sma, page);
-      isGlobalEditable =
-         !sma.isReadOnly() && sma.isAccessControlWrite() && sma.getEditor().isPriviledgedEditModeEnabled();
+      isEditable = isEditable(sma, page, editor);
+      isGlobalEditable = !sma.isReadOnly() && sma.isAccessControlWrite() && editor.isPriviledgedEditModeEnabled();
       isCurrentState = sma.isInState(page);
       // parent.setBackground(Displays.getSystemColor(SWT.COLOR_CYAN));
    }
@@ -171,18 +170,18 @@ public class SMAWorkFlowSection extends SectionPart {
          return;
       }
 
-      mainComp = toolkit.createClientContainer(section, 2);
+      mainComp = editor.getToolkit().createClientContainer(section, 2);
       mainComp.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING));
       mainComp.setLayout(ALayout.getZeroMarginLayout(1, false));
       // mainComp.setBackground(Displays.getSystemColor(SWT.COLOR_DARK_YELLOW));
       mainComp.layout();
 
-      SMAWorkFlowTab.createStateNotesHeader(mainComp, toolkit, sma, 2, atsWorkPage.getPageName());
+      SMAWorkFlowTab.createStateNotesHeader(mainComp, editor.getToolkit(), sma, 2, atsWorkPage.getPageName());
 
-      Composite workComp = createWorkArea(mainComp, atsWorkPage, toolkit);
+      Composite workComp = createWorkArea(mainComp, atsWorkPage, editor.getToolkit());
 
       if (isCurrentState) {
-         createCurrentPageTransitionLine(mainComp, atsWorkPage, toolkit);
+         createCurrentPageTransitionLine(mainComp, atsWorkPage, editor.getToolkit());
       }
 
       GridData gridData = new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING);
@@ -268,7 +267,7 @@ public class SMAWorkFlowSection extends SectionPart {
       xWidget.createWidgets(parent, 1);
       allXWidgets.add(xWidget);
 
-      if (sma.getEditor().isPriviledgedEditModeEnabled()) {
+      if (editor.isPriviledgedEditModeEnabled()) {
          xWidget = new XCancellationReasonTextWidget(sma);
          xWidget.addXModifiedListener(xModListener);
       } else {
@@ -293,9 +292,9 @@ public class SMAWorkFlowSection extends SectionPart {
          comp.setLayout(layout);
          comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
          allXWidgets.add(new StatePercentCompleteXWidget(getManagedForm(), atsWorkPage, sma, comp, 2, xModListener,
-            isCurrentState));
+            isCurrentState, editor));
          allXWidgets.add(new StateHoursSpentXWidget(getManagedForm(), atsWorkPage, sma, comp, 2, xModListener,
-            isCurrentState));
+            isCurrentState, editor));
       }
    }
 
@@ -305,7 +304,8 @@ public class SMAWorkFlowSection extends SectionPart {
          GridLayout layout = new GridLayout(1, false);
          comp.setLayout(layout);
          comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-         allXWidgets.add(new ReviewInfoXWidget(getManagedForm(), toolkit, (TeamWorkFlowArtifact) sma, forState, comp, 1));
+         allXWidgets.add(new ReviewInfoXWidget(getManagedForm(), editor.getToolkit(), (TeamWorkFlowArtifact) sma,
+            forState, comp, 1));
       }
    }
 
@@ -435,7 +435,7 @@ public class SMAWorkFlowSection extends SectionPart {
             }
             updateTransitionToState();
             updateTransitionToAssignees();
-            sma.getEditor().onDirtied();
+            editor.onDirtied();
          } catch (Exception ex) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          }
@@ -458,7 +458,7 @@ public class SMAWorkFlowSection extends SectionPart {
             }
             transitionAssigneesLabel.getParent().layout();
          }
-         sma.getEditor().onDirtied();
+         editor.onDirtied();
          for (XWidget xWidget : allXWidgets) {
             xWidget.refresh();
          }
@@ -493,7 +493,7 @@ public class SMAWorkFlowSection extends SectionPart {
       }
       sma.setTransitionAssignees(users);
       refresh();
-      sma.getEditor().onDirtied();
+      editor.onDirtied();
    }
 
    private void createCurrentPageTransitionLine(Composite parent, AtsWorkPage atsWorkPage, XFormToolkit toolkit) throws OseeCoreException {
@@ -516,7 +516,7 @@ public class SMAWorkFlowSection extends SectionPart {
 
       transitionToStateCombo = new XComboViewer("Transition To State Combo");
       transitionToStateCombo.setDisplayLabel(false);
-      ArrayList<Object> allPages = new ArrayList<Object>();
+      List<Object> allPages = new ArrayList<Object>();
       for (WorkPageDefinition nextPage : sma.getToWorkPages()) {
          allPages.add(nextPage);
       }
@@ -600,7 +600,7 @@ public class SMAWorkFlowSection extends SectionPart {
       // If override set and isn't the same as already selected, update
       if (assignees != null && !sma.getTransitionAssignees().equals(assignees)) {
          sma.setTransitionAssignees(assignees);
-         sma.getEditor().onDirtied();
+         editor.onDirtied();
       }
       refresh();
    }
@@ -661,7 +661,7 @@ public class SMAWorkFlowSection extends SectionPart {
          }
 
          sma.setInTransition(true);
-         sma.getEditor().doSave(null);
+         editor.doSave(null);
 
          // Get transition to state
          WorkPageDefinition toWorkPageDefinition = (WorkPageDefinition) transitionToStateCombo.getSelected();
@@ -799,7 +799,7 @@ public class SMAWorkFlowSection extends SectionPart {
          return;
       }
       sma.setInTransition(false);
-      sma.getEditor().refreshPages();
+      editor.refreshPages();
    }
 
    private boolean isWorkingBranchTransitionable() throws OseeCoreException {
@@ -898,7 +898,7 @@ public class SMAWorkFlowSection extends SectionPart {
       return widgets;
    }
 
-   public static boolean isEditable(AbstractWorkflowArtifact sma, AtsWorkPage page) throws OseeCoreException {
+   public static boolean isEditable(AbstractWorkflowArtifact sma, AtsWorkPage page, SMAEditor editor) throws OseeCoreException {
       // must be writeable
       return !sma.isReadOnly() &&
       // and access control writeable
@@ -912,7 +912,7 @@ public class SMAWorkFlowSection extends SectionPart {
       // team definition has allowed anyone to edit
       sma.teamDefHasWorkRule(AtsWorkDefinitions.RuleWorkItemId.atsAllowEditToAll.name()) ||
       // priviledged edit mode is on
-      sma.getEditor().isPriviledgedEditModeEnabled() ||
+      editor.isPriviledgedEditModeEnabled() ||
       // current user is assigned
       sma.isAssigneeMe() ||
       // current user is ats admin

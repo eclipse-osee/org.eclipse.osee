@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.actions;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -24,16 +25,18 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 public class DirtyReportAction extends Action {
 
    private final AbstractWorkflowArtifact sma;
+   private final SMAEditor editor;
 
-   public DirtyReportAction(AbstractWorkflowArtifact sma) {
+   public DirtyReportAction(AbstractWorkflowArtifact sma, SMAEditor editor) {
       super("Show Artifact Dirty Report");
       this.sma = sma;
+      this.editor = editor;
       setToolTipText("Show what attribute or relation making editor dirty.");
    }
 
    @Override
    public void run() {
-      Result result = sma.getEditor().isDirtyResult();
+      Result result = editor.isDirtyResult();
       AWorkbench.popup("Dirty Report", result.isFalse() ? "Not Dirty" : "Dirty -> " + result.getText());
    }
 

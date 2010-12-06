@@ -28,7 +28,7 @@ public class CancelledWorkPageShape extends WorkPageShape {
    }
 
    public CancelledWorkPageShape() {
-      super(new WorkPageDefinition("Cancelled", "NEW", AtsCancelledWorkPageDefinition.ID, WorkPageType.Cancelled));
+      super(new WorkPageDefinition("Cancelled", "NEW", AtsCancelledWorkPageDefinition.ID, WorkPageType.Cancelled, 3));
    }
 
    @Override

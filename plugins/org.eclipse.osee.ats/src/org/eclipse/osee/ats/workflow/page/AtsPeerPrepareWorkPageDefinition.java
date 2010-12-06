@@ -24,12 +24,12 @@ public class AtsPeerPrepareWorkPageDefinition extends WorkPageDefinition {
 
    public final static String ID = PeerToPeerWorkflowDefinition.ID + "." + PeerToPeerReviewState.Prepare.getPageName();
 
-   public AtsPeerPrepareWorkPageDefinition() {
-      this(PeerToPeerReviewState.Prepare.getPageName(), ID, null);
+   public AtsPeerPrepareWorkPageDefinition(int ordinal) {
+      this(PeerToPeerReviewState.Prepare.getPageName(), ID, null, ordinal);
    }
 
-   public AtsPeerPrepareWorkPageDefinition(String name, String pageId, String parentId) {
-      super(name, pageId, parentId, WorkPageType.Working);
+   public AtsPeerPrepareWorkPageDefinition(String name, String pageId, String parentId, int ordinal) {
+      super(name, pageId, parentId, WorkPageType.Working, ordinal);
       addWorkItem("ats.Title");
       addWorkItem(AtsAttributeTypes.RelatedToState);
       addWorkItem(AtsAttributeTypes.LegacyPcrId);

@@ -128,7 +128,6 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
          return;
       }
       try {
-         sma.setEditor(this);
          SMAEditorArtifactEventManager.add(this);
          SMAEditorBranchEventManager.add(this);
 
@@ -153,7 +152,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
     */
    private void createWorkflowTab() {
       try {
-         workFlowTab = new SMAWorkFlowTab(sma);
+         workFlowTab = new SMAWorkFlowTab(this, sma);
          addPage(workFlowTab);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
@@ -351,7 +350,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
       OseeUiActions.addButtonToEditorToolBar(this, SkynetGuiPlugin.PLUGIN_ID, toolBar, EDITOR_ID, "ATS Editor");
       AtsUtil.actionToToolItem(toolBar, new ResourceHistoryAction(sma), FrameworkImage.EDIT_BLUE);
       AtsUtil.actionToToolItem(toolBar, new AccessControlAction(sma), FrameworkImage.AUTHENTICATED);
-      AtsUtil.actionToToolItem(toolBar, new DirtyReportAction(sma), FrameworkImage.DIRTY);
+      AtsUtil.actionToToolItem(toolBar, new DirtyReportAction(sma, this), FrameworkImage.DIRTY);
       new ToolItem(toolBar, SWT.SEPARATOR);
       Text artifactInfoLabel = new Text(toolBar.getParent(), SWT.END);
       artifactInfoLabel.setEditable(false);
@@ -372,7 +371,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
          if (attributesComposite != null) {
             attributesComposite.refreshArtifact(sma);
          }
-         sma.getEditor().onDirtied();
+         onDirtied();
          updatePartName();
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);

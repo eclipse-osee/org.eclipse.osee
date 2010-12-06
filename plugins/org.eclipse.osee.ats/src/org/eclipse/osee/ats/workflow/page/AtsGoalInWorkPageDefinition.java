@@ -25,12 +25,12 @@ public class AtsGoalInWorkPageDefinition extends WorkPageDefinition {
 
    public final static String ID = GoalWorkflowDefinition.ID + "." + GoalState.InWork.getPageName();
 
-   public AtsGoalInWorkPageDefinition() {
-      this(GoalState.InWork.getPageName(), ID, null);
+   public AtsGoalInWorkPageDefinition(int ordinal) {
+      this(GoalState.InWork.getPageName(), ID, null, ordinal);
    }
 
-   public AtsGoalInWorkPageDefinition(String name, String pageId, String parentId) {
-      super(name, pageId, parentId, WorkPageType.Working);
+   public AtsGoalInWorkPageDefinition(String name, String pageId, String parentId, int ordinal) {
+      super(name, pageId, parentId, WorkPageType.Working, ordinal);
       addWorkItem("ats.Title");
       addWorkItem(AtsWorkDefinitions.ATS_DESCRIPTION_NOT_REQUIRED_ID);
       addWorkItem(EstimatedHoursXWidget.ATS_ESTIMATED_HOURS_NOT_REQUIRED_ID);
