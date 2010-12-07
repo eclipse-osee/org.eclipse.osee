@@ -60,7 +60,7 @@ public final class ExcelXmlWriterTest {
    @Test
    public void testNullStyle() throws Exception {
       buildSampleExcelXmlFile(null);
-      Assert.assertTrue("No Styles found.", resultBuffer.toString().contains("Styles"));
+      Assert.assertFalse("Styles unexpectedly found.", resultBuffer.toString().contains("Styles"));
    }
 
    private void buildSampleExcelXmlFile(String style) throws IOException {

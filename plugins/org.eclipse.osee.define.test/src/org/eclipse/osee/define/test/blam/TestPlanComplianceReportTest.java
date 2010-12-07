@@ -154,6 +154,6 @@ public final class TestPlanComplianceReportTest {
             testProcedure.persist();
          }
       }
-      return new VariableMap("artifacts", dummyArtifactList);
+      return new VariableMap(TestPlanComplianceReport.TEST_PLANS, dummyArtifactList);
    }
 }

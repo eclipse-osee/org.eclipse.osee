@@ -44,6 +44,7 @@ import org.eclipse.swt.program.Program;
  * @author: Karol M. Wilk
  */
 public final class TestPlanComplianceReport extends AbstractBlam {
+   public static final String TEST_PLANS = "Test Plans";
    private static final String BLANK_SPACE = " ";
    private static int initCase = -1;
    private int previousArtifactId = initCase;
@@ -327,14 +328,16 @@ public final class TestPlanComplianceReport extends AbstractBlam {
    }
 
    private void init(VariableMap variableMap) throws OseeCoreException, IOException {
-      inputArtifacts = variableMap.getArtifacts("artifacts");
+      inputArtifacts = variableMap.getArtifacts(TEST_PLANS);
       initReport();
       load();
    }
 
    private void initReport() throws IOException {
-      excelWriter = new ExcelXmlWriter(defaultWriter);
+      excelWriter = new ExcelXmlWriter(defaultWriter, ExcelXmlWriter.DEFAULT_STYLE);
       excelWriter.startSheet(getName(), 200);
+      excelWriter.setRowHeight(80.0);
+      excelWriter.setColumnWidth(150.0);
       excelWriter.writeRow(columnHeaders);
    }
 
@@ -351,7 +354,8 @@ public final class TestPlanComplianceReport extends AbstractBlam {
 
    @Override
    public String getXWidgetsXml() {
-      return "<xWidgets><XWidget xwidgetType=\"XListDropViewer\" displayName=\"artifacts\" /></xWidgets>";
+      return String.format("<xWidgets><XWidget xwidgetType=\"XListDropViewer\" displayName=\"%s\" /></xWidgets>",
+         TEST_PLANS);
    }
 
    @Override

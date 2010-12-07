@@ -18,6 +18,7 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 
 /**
@@ -48,7 +49,7 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
       " xmlns:ss=\"urn:schemas-microsoft-com:office:spreadsheet\"\n" + //
       " xmlns:html=\"http://www.w3.org/TR/REC-html40\">\n";
 
-   private static final String defaultStyle = //
+   public static final String DEFAULT_STYLE = //
       "<Styles>\n" + //
       "<Style ss:ID=\"Default\" ss:Name=\"Normal\">\n" + //
       "<Alignment ss:Vertical=\"Top\" ss:WrapText=\"1\"/>\n" + //
@@ -74,6 +75,9 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
    private boolean applyStyle = false;
    private final Map<Integer, STYLE> mStyleMap;
 
+   private double rowHeight;
+   private double columnWidth;
+
    public ExcelXmlWriter(Writer writer) throws IOException {
       this(writer, null);
    }
@@ -96,9 +100,7 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
       emptyStringRepresentation = defaultEmptyStringXmlRep;
       out.write(XML_HEADER);
 
-      if (style == null) {
-         out.write(defaultStyle);
-      } else {
+      if (Strings.isValid(style)) {
          if (stylePattern.matcher(style).matches()) {
             out.write(style);
          } else {
@@ -142,7 +144,11 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
    protected void startRow() throws IOException {
       startTableIfNecessary();
 
-      out.write("   <Row ss:AutoFitHeight=\"0\" ss:Height=\"80.0\">\n");
+      out.write("   <Row");
+      if (rowHeight != 0.0) {
+         out.write(String.format(" ss:AutoFitHeight=\"0\" ss:Height=\"%f\"", rowHeight));
+      }
+      out.write(">\n");
       previousCellIndex = -1;
    }
 
@@ -154,8 +160,11 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
    private void startTableIfNecessary() throws IOException {
       if (startTable) {
          out.write("  <Table x:FullColumns=\"1\" x:FullRows=\"1\" ss:ExpandedColumnCount=\"" + columnCount + "\">\n");
-         for (int i = 0; i < columnCount; i++) {
-            out.write("   <Column ss:Width=\"150\"/>\n");
+
+         if (columnWidth != 0.0) {
+            for (int i = 0; i < columnCount; i++) {
+               out.write(String.format("   <Column ss:Width=\"%f\"/>\n", columnWidth));
+            }
          }
 
          startTable = false;
@@ -208,6 +217,14 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
    public void setCellStyle(ExcelXmlWriter.STYLE style, int cellIndex) {
       applyStyle = true;
       mStyleMap.put(cellIndex, style);
+   }
+
+   public void setRowHeight(double rowHeight) {
+      this.rowHeight = rowHeight;
+   }
+
+   public void setColumnWidth(double columnWidth) {
+      this.columnWidth = columnWidth;
    }
 
    private void applyStyleToCell(int cellIndex) throws IOException {
