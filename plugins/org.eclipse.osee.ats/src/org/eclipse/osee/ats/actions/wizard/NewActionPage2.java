@@ -41,7 +41,7 @@ public class NewActionPage2 extends WizardPage {
    private boolean debugPopulated = false;
    private final static String DESCRIPTION = "Description";
 
-   protected NewActionPage2(NewActionWizard wizard) {
+   public NewActionPage2(NewActionWizard wizard) {
       super("Create new ATS Action", "Create ATS Action", null);
       this.wizard = wizard;
       setMessage("Enter description, priority, change type and select Finish.");

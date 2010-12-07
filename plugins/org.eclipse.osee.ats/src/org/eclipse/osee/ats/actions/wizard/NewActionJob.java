@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -45,8 +46,9 @@ public class NewActionJob extends Job {
    private ActionArtifact actionArt;
    private final Set<ActionableItemArtifact> actionableItems;
    private final NewActionWizard wizard;
+   private final INewActionListener newActionListener;
 
-   public NewActionJob(String title, String desc, ChangeType changeType, String priority, Date needByDate, boolean validationRequired, Set<ActionableItemArtifact> actionableItems, NewActionWizard wizard) {
+   public NewActionJob(String title, String desc, ChangeType changeType, String priority, Date needByDate, boolean validationRequired, Set<ActionableItemArtifact> actionableItems, NewActionWizard wizard, INewActionListener newActionListener) {
       super("Creating New Action");
       this.title = title;
       this.desc = desc;
@@ -56,6 +58,7 @@ public class NewActionJob extends Job {
       this.validationRequired = validationRequired;
       this.actionableItems = actionableItems;
       this.wizard = wizard;
+      this.newActionListener = newActionListener;
    }
 
    @Override
@@ -68,6 +71,14 @@ public class NewActionJob extends Job {
          actionArt =
             ActionManager.createAction(monitor, title, desc, changeType, priority, validationRequired, needByDate,
                actionableItems, new Date(), UserManager.getUser(), transaction);
+         if (newActionListener != null) {
+            newActionListener.actionCreated(actionArt);
+            for (TeamWorkFlowArtifact teamArt : actionArt.getTeamWorkFlowArtifacts()) {
+               newActionListener.teamCreated(teamArt);
+               teamArt.clearCaches();
+               teamArt.persist(transaction);
+            }
+         }
 
          if (wizard != null) {
             wizard.notifyAtsWizardItemExtensions(actionArt, transaction);

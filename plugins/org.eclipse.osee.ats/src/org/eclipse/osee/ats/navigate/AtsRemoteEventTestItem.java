@@ -92,7 +92,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       NewActionJob job = null;
       job =
          new NewActionJob("tt", "description", ChangeType.Improvement, "1", null, false,
-            ActionableItemArtifact.getActionableItems(Arrays.asList("ATS")), null);
+            ActionableItemArtifact.getActionableItems(Arrays.asList("ATS")), null, null);
       job.setUser(true);
       job.setPriority(Job.LONG);
       job.schedule();

@@ -90,7 +90,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    protected TeamWorkFlowArtifact parentTeamArt;
    protected ActionArtifact parentAction;
    private StateManager stateMgr;
-   private SMAEditor editor;
    private AtsLog atsLog;
    private AtsNote atsNote;
    private boolean inTransition = false;
@@ -235,6 +234,12 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
          return null;
       }
       return FrameworkArtifactImageProvider.getUserImage(getStateMgr().getAssignees());
+   }
+
+   public void clearCaches() {
+      workFlowDefinition = null;
+      implementersStr = null;
+      stateToWeight = null;
    }
 
    public WorkFlowDefinition getWorkFlowDefinition() {

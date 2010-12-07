@@ -37,11 +37,13 @@ import org.eclipse.ui.IWorkbench;
  * @author Donald G. Dunne
  */
 public class NewActionWizard extends Wizard implements INewWizard {
-   private NewActionPage1 page1;
-   private NewActionPage2 page2;
-   private NewActionPage3 page3;
+   protected NewActionPage1 page1;
+   protected NewActionPage2 page2;
+   protected NewActionPage3 page3;
    private Collection<ActionableItemArtifact> initialAias;
    private String initialDescription;
+   private NewActionJob job = null;
+   private INewActionListener newActionListener;
 
    @Override
    public boolean performFinish() {
@@ -51,10 +53,9 @@ public class NewActionWizard extends Wizard implements INewWizard {
             result.popup();
             return false;
          }
-         NewActionJob job = null;
          job =
             new NewActionJob(getTitle(), getDescription(), getChangeType(), getPriority(), getNeedBy(),
-               getValidation(), getSelectedActionableItemArtifacts(), this);
+               getValidation(), getSelectedActionableItemArtifacts(), this, newActionListener);
          job.setUser(true);
          job.setPriority(Job.LONG);
          job.schedule();
@@ -159,4 +160,13 @@ public class NewActionWizard extends Wizard implements INewWizard {
    public void setInitialAias(Collection<ActionableItemArtifact> initialAias) {
       this.initialAias = initialAias;
    }
+
+   public INewActionListener getNewActionListener() {
+      return newActionListener;
+   }
+
+   public void setNewActionListener(INewActionListener newActionListener) {
+      this.newActionListener = newActionListener;
+   }
+
 }

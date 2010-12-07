@@ -56,7 +56,7 @@ import org.eclipse.ui.dialogs.PatternFilter;
 public class NewActionPage1 extends WizardPage {
    private final NewActionWizard wizard;
    private WorkPage page;
-   private OSEECheckedFilteredTree treeViewer;
+   protected OSEECheckedFilteredTree treeViewer;
    private static PatternFilter patternFilter = new PatternFilter();
    private Text descriptionLabel;
 

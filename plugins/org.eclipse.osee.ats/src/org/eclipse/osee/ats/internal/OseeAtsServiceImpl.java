@@ -141,7 +141,7 @@ public class OseeAtsServiceImpl implements IOseeCmService {
          if (aias.size() == 0) {
             throw new OseeArgumentException("Can not resolve productNames to Actionable Items");
          }
-         NewActionJob job = new NewActionJob(title, description, cType, priority, needByDate, false, aias, null);
+         NewActionJob job = new NewActionJob(title, description, cType, priority, needByDate, false, aias, null, null);
          job.schedule();
          job.join();
          return job.getActionArt();

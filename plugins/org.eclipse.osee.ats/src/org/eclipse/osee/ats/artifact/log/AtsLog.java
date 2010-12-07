@@ -247,6 +247,7 @@ public class AtsLog {
             item.setUser(newItem.getUser());
             item.setDate(newItem.getDate());
             item.setMsg(newItem.getMsg());
+            item.setState(newItem.getState());
             putLogItems(logItems);
             return;
          }

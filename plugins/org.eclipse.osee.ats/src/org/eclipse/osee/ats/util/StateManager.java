@@ -426,4 +426,11 @@ public class StateManager {
       return users;
    }
 
+   public void internalSetCurrentStateName(String stateName) throws OseeCoreException {
+      SMAState state = currentStateDam.getState();
+      if (state != null && !state.getName().equals(stateName)) {
+         state.setName(stateName);
+      }
+      currentStateDam.setState(state);
+   }
 }
