@@ -13,10 +13,11 @@ package org.eclipse.osee.framework.core.model.cache;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.enums.TransactionVersion;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -24,6 +25,7 @@ import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.util.Conditions;
+import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Roberto E. Escobar
@@ -31,13 +33,15 @@ import org.eclipse.osee.framework.core.util.Conditions;
 public class TransactionCache implements IOseeCache<TransactionRecord> {
    private ITransactionDataAccessor accessor;
 
-   private final Map<Integer, TransactionRecord> transactionIdCache = new HashMap<Integer, TransactionRecord>();
+   private final Map<Integer, TransactionRecord> transactionIdCache =
+      new ConcurrentHashMap<Integer, TransactionRecord>();
 
    private final OseeCacheEnum cacheId;
    private boolean ensurePopulatedRanOnce;
    private long lastLoaded;
 
    public TransactionCache() {
+      this.lastLoaded = 0;
       this.cacheId = OseeCacheEnum.TRANSACTION_CACHE;
       this.ensurePopulatedRanOnce = false;
    }
@@ -53,7 +57,6 @@ public class TransactionCache implements IOseeCache<TransactionRecord> {
    @Override
    public void cache(TransactionRecord... types) throws OseeCoreException {
       Conditions.checkNotNull(types, "types to cache");
-      ensurePopulated();
       for (TransactionRecord type : types) {
          cache(type);
       }
@@ -90,11 +93,10 @@ public class TransactionCache implements IOseeCache<TransactionRecord> {
    }
 
    public TransactionRecord getOrLoad(int txId) throws OseeCoreException {
-      ensurePopulated();
-      TransactionRecord transactionRecord = transactionIdCache.get(txId);
+      TransactionRecord transactionRecord = getById(txId);
       if (transactionRecord == null) {
          loadTransactions(Collections.singletonList(txId));
-         transactionRecord = transactionIdCache.get(txId);
+         transactionRecord = getById(txId);
          if (transactionRecord == null) {
             if (txId == 1) { // handle bootstrap case for system root branch creation
                return null;
@@ -151,7 +153,6 @@ public class TransactionCache implements IOseeCache<TransactionRecord> {
       }
       if (toReturn == null) {
          toReturn = getDataAccessor().loadTransactionRecord(this, branch, revision);
-
       }
       return toReturn;
    }
@@ -161,6 +162,7 @@ public class TransactionCache implements IOseeCache<TransactionRecord> {
    }
 
    public void loadTransactions(Collection<Integer> transactionIds) throws OseeCoreException {
+      ensurePopulated();
       getDataAccessor().loadTransactionRecord(this, transactionIds);
    }
 
@@ -184,11 +186,14 @@ public class TransactionCache implements IOseeCache<TransactionRecord> {
    @Override
    public synchronized boolean reloadCache() throws OseeCoreException {
       getDataAccessor().load(this);
+      OseeLog.log(this.getClass(), Level.INFO, "Loaded " + getCacheId().toString().toLowerCase());
       setLastLoaded(System.currentTimeMillis());
       return true;
    }
 
    @Override
    public void decacheAll() {
+      transactionIdCache.clear();
+      this.ensurePopulatedRanOnce = false;
    }
 }

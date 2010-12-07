@@ -12,9 +12,11 @@ package org.eclipse.osee.framework.core.message;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.BranchFactory;
@@ -55,6 +57,8 @@ public final class BranchCacheUpdateUtil {
 
       Map<Integer, Integer> branchToAssocArt = cacheMessage.getBranchToAssocArt();
 
+      preLoadTransactions(cacheMessage);
+
       for (BranchRow srcItem : cacheMessage.getBranchRows()) {
          int branchId = srcItem.getBranchId();
          Branch updated =
@@ -63,13 +67,13 @@ public final class BranchCacheUpdateUtil {
                srcItem.getBranchArchived().isArchived());
          updatedItems.add(updated);
 
-         updated.setBaseTransaction(getTx(cacheMessage.getBranchToBaseTx(), branchId));
-         updated.setSourceTransaction(getTx(cacheMessage.getBranchToSourceTx(), branchId));
-
          Integer artifactId = branchToAssocArt.get(branchId);
          if (artifactId != null) {
             updated.setAssociatedArtifactId(artifactId);
          }
+
+         updated.setBaseTransaction(getTx(cacheMessage.getBranchToBaseTx(), branchId));
+         updated.setSourceTransaction(getTx(cacheMessage.getBranchToSourceTx(), branchId));
       }
 
       for (Entry<Integer, Integer> entry : cacheMessage.getChildToParent().entrySet()) {
@@ -89,6 +93,21 @@ public final class BranchCacheUpdateUtil {
          mergeBranch.setDestinationBranch(destinationBranch);
       }
       return updatedItems;
+   }
+
+   private void preLoadTransactions(AbstractBranchCacheMessage cacheMessage) throws OseeCoreException {
+      Set<Integer> txIdsToLoad = new HashSet<Integer>();
+      addValidTxIds(cacheMessage.getBranchToBaseTx().values(), txIdsToLoad);
+      addValidTxIds(cacheMessage.getBranchToSourceTx().values(), txIdsToLoad);
+      txCache.loadTransactions(txIdsToLoad);
+   }
+
+   private void addValidTxIds(Collection<Integer> source, Collection<Integer> destination) {
+      for (Integer txId : source) {
+         if (txId != null && txId > 0) {
+            destination.add(txId);
+         }
+      }
    }
 
    private TransactionRecord getTx(Map<Integer, Integer> branchToTx, Integer branchId) throws OseeCoreException {
