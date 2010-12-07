@@ -11,15 +11,22 @@
 package org.eclipse.osee.framework.core.util;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethodBase;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
@@ -28,13 +35,17 @@ import org.apache.commons.httpclient.methods.InputStreamRequestEntity;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.PutMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.eclipse.core.net.proxy.IProxyChangeEvent;
+import org.eclipse.core.net.proxy.IProxyChangeListener;
 import org.eclipse.core.net.proxy.IProxyData;
 import org.eclipse.core.net.proxy.IProxyService;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.internal.Activator;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
@@ -44,9 +55,16 @@ import org.osgi.framework.ServiceReference;
 public class HttpProcessor {
    private static final String CONTENT_TYPE = "content-type";
    private static final String CONTENT_ENCODING = "content-encoding";
+   private static final long CHECK_WINDOW = 5000;
 
    private static final MultiThreadedHttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager();
    private static IProxyService proxyService;
+
+   private static final Map<String, IProxyData[]> proxiedData = new ConcurrentHashMap<String, IProxyData[]>();
+   private static int requests = 0;
+
+   private static final Map<String, Pair<Integer, Long>> isAliveMap =
+      new ConcurrentHashMap<String, Pair<Integer, Long>>();
 
    private HttpProcessor() {
       // Static class
@@ -64,11 +82,25 @@ public class HttpProcessor {
          BundleContext context = Activator.getBundleContext();
          ServiceReference reference = context.getServiceReference(IProxyService.class.getName());
          proxyService = (IProxyService) context.getService(reference);
+         proxyService.addProxyChangeListener(new IProxyChangeListener() {
+
+            @Override
+            public void proxyInfoChanged(IProxyChangeEvent event) {
+               proxiedData.clear();
+            }
+         });
       }
-      IProxyData[] datas = proxyService.select(uri);
+
+      String key = String.format("%s_%s", uri.getScheme(), uri.getHost());
+      IProxyData[] datas = proxiedData.get(key);
+      if (datas == null) {
+         datas = proxyService.select(uri);
+         proxiedData.put(key, datas);
+      }
       for (IProxyData data : datas) {
          config.setProxy(data.getHost(), data.getPort());
       }
+      OseeLog.format(Activator.class, Level.INFO, "Http-Request: [%s] [%s]", requests++, uri.toASCIIString());
    }
 
    public static String acquireString(URL url) throws Exception {
@@ -84,31 +116,84 @@ public class HttpProcessor {
       return null;
    }
 
-   public static boolean isAlive(String serverAddress, int port) {
-      boolean result = false;
-      try {
-         String portString = Strings.emptyString();
-         if (port > -1) {
-            portString = String.format(":%s", String.valueOf(port));
-         }
-         URL url = new URL(String.format("http://%s%s", serverAddress, portString));
-         GetMethod method = new GetMethod(url.toString());
+   private static void cacheAlive(URL url, int code) {
+      String key = toIsAliveKey(url);
+      isAliveMap.put(key, new Pair<Integer, Long>(code, System.currentTimeMillis()));
+   }
 
+   private static int executeMethod(URL url, HttpMethodBase method) throws HttpException, IOException, URISyntaxException {
+      int statusCode = -1;
+      try {
+         statusCode = getHttpClient(url.toURI()).executeMethod(method);
+      } finally {
+         cacheAlive(url, statusCode);
+      }
+      return statusCode;
+   }
+
+   private static String toIsAliveKey(URL url) {
+      String host = url.getHost();
+      int port = url.getPort();
+      return String.format("%s_%s", host, port);
+   }
+
+   public static boolean isAlive(URL url) {
+      boolean isAlive = false;
+      boolean recheck = true;
+      String key = toIsAliveKey(url);
+      Pair<Integer, Long> lastChecked = isAliveMap.get(key);
+      if (lastChecked != null) {
+         long checkedOffset = System.currentTimeMillis() - lastChecked.getSecond().longValue();
+         if (checkedOffset < CHECK_WINDOW) {
+            recheck = false;
+            isAlive = lastChecked.getFirst() != -1;
+         }
+      }
+
+      if (recheck) {
          try {
-            HttpMethodParams params = new HttpMethodParams();
-            params.setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(0, false));
-            method.setParams(params);
-            int responseCode = getHttpClient(url.toURI()).executeMethod(method);
-            if (responseCode == HttpURLConnection.HTTP_NOT_FOUND) {
-               result = true;
+            GetMethod method = new GetMethod(url.toString());
+            try {
+               HttpMethodParams params = new HttpMethodParams();
+               params.setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(0, false));
+               method.setParams(params);
+               int responseCode = executeMethod(url, method);
+               if (responseCode == HttpURLConnection.HTTP_NOT_FOUND) {
+                  isAlive = true;
+               }
+            } finally {
+               method.releaseConnection();
             }
-         } finally {
-            method.releaseConnection();
+         } catch (Exception ex) {
+            // Do Nothing
+         }
+      }
+      return isAlive;
+   }
+
+   public static boolean isAlive(String serverAddress, int port) {
+      boolean isAlive = false;
+      String urlString = null;
+      int internalPort = port < -1 ? -1 : port;
+      try {
+         if (internalPort > -1) {
+            urlString = String.format("http://%s:%s", serverAddress, String.valueOf(internalPort));
+         } else {
+            urlString = String.format("http://%s", serverAddress);
          }
       } catch (Exception ex) {
          // Do Nothing
       }
-      return result;
+
+      if (urlString != null) {
+         try {
+            URL url = new URL(urlString);
+            isAlive = isAlive(url);
+         } catch (MalformedURLException ex) {
+            // Do Nothing
+         }
+      }
+      return isAlive;
    }
 
    public static URI save(URL url, InputStream inputStream, String contentType, String encoding) throws Exception {
@@ -129,7 +214,7 @@ public class HttpProcessor {
 
          method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));
 
-         statusCode = getHttpClient(url.toURI()).executeMethod(method);
+         statusCode = executeMethod(url, method);
          responseInputStream = method.getResponseBodyAsStream();
          result.setContentType(getContentType(method));
          result.setEncoding(method.getResponseCharSet());
@@ -170,7 +255,7 @@ public class HttpProcessor {
 
          method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));
 
-         statusCode = getHttpClient(url.toURI()).executeMethod(method);
+         statusCode = executeMethod(url, method);
          httpInputStream = method.getResponseBodyAsStream();
          result.setContentType(getContentType(method));
          result.setEncoding(method.getResponseCharSet());
@@ -210,7 +295,7 @@ public class HttpProcessor {
 
          method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));
 
-         statusCode = getHttpClient(url.toURI()).executeMethod(method);
+         statusCode = executeMethod(url, method);
          httpInputStream = method.getResponseBodyAsStream();
          result.setContentType(getContentType(method));
          result.setEncoding(method.getResponseCharSet());
@@ -248,7 +333,7 @@ public class HttpProcessor {
       try {
          method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));
 
-         statusCode = getHttpClient(url.toURI()).executeMethod(method);
+         statusCode = executeMethod(url, method);
          responseInputStream = method.getResponseBodyAsStream();
          result.setContentType(getContentType(method));
          result.setEncoding(method.getResponseCharSet());
@@ -298,7 +383,7 @@ public class HttpProcessor {
       try {
          method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));
 
-         statusCode = getHttpClient(url.toURI()).executeMethod(method);
+         statusCode = executeMethod(url, method);
          if (statusCode == HttpStatus.SC_OK || statusCode == HttpStatus.SC_ACCEPTED) {
             inputStream = method.getResponseBodyAsStream();
             result.setEncoding(method.getResponseCharSet());
@@ -330,7 +415,7 @@ public class HttpProcessor {
       InputStream responseInputStream = null;
       try {
          method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));
-         statusCode = getHttpClient(url.toURI()).executeMethod(method);
+         statusCode = executeMethod(url, method);
          if (statusCode == HttpStatus.SC_ACCEPTED) {
             responseInputStream = method.getResponseBodyAsStream();
             response = Lib.inputStreamToString(responseInputStream);
