@@ -137,7 +137,8 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
          }
       }
       if (smas.isEmpty()) {
-         AWorkbench.popup(String.format("No selected items valid for attribute [%s] editing", getAttributeType()));
+         AWorkbench.popup("Invalid Selection",
+            String.format("No selected items valid for attribute [%s] editing", getAttributeType()));
          return;
       }
       PromptChangeUtil.promptChangeAttribute(smas, getAttributeType(), isPersistViewer(getXViewer()),

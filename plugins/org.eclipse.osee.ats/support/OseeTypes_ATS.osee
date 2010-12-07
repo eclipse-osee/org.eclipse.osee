@@ -8,6 +8,7 @@ abstract artifactType "ats.Release Artifact" extends "Artifact" {
 abstract artifactType "ats.Ats Artifact" extends "Artifact" {
    guid "ABMaLS0jvw92SE+4ZJQA"
    attribute "ats.Description"
+   attribute "ats.Goal Order Vote"
 }
 
 artifactType "ats.Review" extends "ats.State Machine" {
@@ -111,7 +112,6 @@ artifactType "Goal" extends "ats.State Machine" {
    attribute "ats.Change Type"
    attribute "ats.Need By"
    attribute "ats.Priority"
-   attribute "ats.Goal Order Vote"
 }
 
 artifactType "Team Workflow" extends "ats.State Machine", "Abstract Access Controlled" {
