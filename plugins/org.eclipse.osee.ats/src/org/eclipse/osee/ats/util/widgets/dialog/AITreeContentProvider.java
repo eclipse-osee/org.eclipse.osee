@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 public class AITreeContentProvider implements ITreeContentProvider {
 
    private final Active active;
+   private boolean showChildren;
 
    public AITreeContentProvider(Active active) {
       super();
@@ -39,12 +40,14 @@ public class AITreeContentProvider implements ITreeContentProvider {
       if (parentElement instanceof Collection) {
          return ((Collection) parentElement).toArray();
       } else if (parentElement instanceof ActionableItemArtifact) {
-         try {
-            ActionableItemArtifact ai = (ActionableItemArtifact) parentElement;
-            return AtsUtil.getActive(Artifacts.getChildrenOfTypeSet(ai, ActionableItemArtifact.class, false), active,
-               ActionableItemArtifact.class).toArray();
-         } catch (Exception ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         if (showChildren) {
+            try {
+               ActionableItemArtifact ai = (ActionableItemArtifact) parentElement;
+               return AtsUtil.getActive(Artifacts.getChildrenOfTypeSet(ai, ActionableItemArtifact.class, false),
+                  active, ActionableItemArtifact.class).toArray();
+            } catch (Exception ex) {
+               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            }
          }
       }
       return new Object[] {};
@@ -80,6 +83,14 @@ public class AITreeContentProvider implements ITreeContentProvider {
    @Override
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
       // do nothing
+   }
+
+   public boolean isShowChildren() {
+      return showChildren;
+   }
+
+   public void setShowChildren(boolean showChildren) {
+      this.showChildren = showChildren;
    }
 
 }
