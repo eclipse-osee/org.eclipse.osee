@@ -44,6 +44,8 @@ import org.eclipse.osee.ote.core.framework.prompt.PassFailPromptImpl;
 import org.eclipse.osee.ote.core.framework.prompt.PassFailPromptResult;
 import org.eclipse.osee.ote.core.framework.prompt.ScriptPausePromptImpl;
 import org.eclipse.osee.ote.core.framework.prompt.UserInputPromptImpl;
+import org.eclipse.osee.ote.core.framework.prompt.YesNoPromptImpl;
+import org.eclipse.osee.ote.core.framework.prompt.YesNoPromptResult;
 import org.eclipse.osee.ote.core.framework.testrun.ITestRunListener;
 import org.eclipse.osee.ote.core.framework.testrun.ITestRunListenerProvider;
 import org.eclipse.osee.ote.core.log.ITestPointTally;
@@ -330,6 +332,20 @@ public abstract class TestScript implements ITimeout {
                      new TestPointRecord(getTestEnvironment(), new CheckPoint("Pass/Fail Prompt", prompt.toString(),
                         returnValue, result.isPass()), true);
                   break;
+               case YES_NO:
+                   YesNoPromptImpl yesNoPrompt = new YesNoPromptImpl(connector, this, "", prompt.toString());
+                   YesNoPromptResult yesNo = yesNoPrompt.open(promptInitWorker);
+                   if(yesNo.isYes()){
+                	   returnValue = "YES";
+                   } else {
+                	   returnValue = "NO";
+                   }
+                   logOutput =
+                       String.format("PROMPT [%s]\n{%s}\n\tRETURN VALUE : %s", PromptResponseType.YES_NO.name(),
+                          prompt.toString(), returnValue);
+                   yesNoPrompt.close();
+                   testRecord = new AttentionRecord(getTestEnvironment(), logOutput, true);
+                   break;
                case SCRIPT_PAUSE:
                   ScriptPausePromptImpl scriptPausePrompt =
                      new ScriptPausePromptImpl(connector, this, "", prompt.toString());

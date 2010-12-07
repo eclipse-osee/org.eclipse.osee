@@ -30,6 +30,7 @@ import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
 import org.eclipse.osee.ote.core.framework.prompt.IPassFailPromptResponse;
 import org.eclipse.osee.ote.core.framework.prompt.IResumeResponse;
 import org.eclipse.osee.ote.core.framework.prompt.IUserInputPromptResponse;
+import org.eclipse.osee.ote.core.framework.prompt.IYesNoPromptResponse;
 import org.eclipse.osee.ote.service.Activator;
 import org.eclipse.osee.ote.service.SessionDelegate;
 
@@ -191,4 +192,14 @@ public class ClientSession extends AbstractRemoteSession {
    public void sendMessageToClient(Message message) throws RemoteException {
       receive.receivedMessage(message);
    }
+
+	@Override
+	public void initiateYesNoPrompt(IYesNoPromptResponse prompt) throws Exception {
+		assert sessionDelegate != null : "delegate is null";
+		try {
+			sessionDelegate.handleYesNo(prompt);
+		} catch (Exception ex) {
+			throw new RemoteException("exception initiating prompt", ex);
+		}
+	}
 }

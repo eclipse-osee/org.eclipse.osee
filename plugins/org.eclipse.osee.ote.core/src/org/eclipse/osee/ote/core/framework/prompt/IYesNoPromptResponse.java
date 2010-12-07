@@ -8,25 +8,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ote.core.enums;
+package org.eclipse.osee.ote.core.framework.prompt;
 
-/**
- * @author Andrew M. Finkbeiner
- */
-public enum PromptResponseType {
+import java.rmi.RemoteException;
 
-   NONE,
-   /**
-    * Wait for the a response from the user confirming that they have started the debug ofp.
-    */
-   OFP_DEBUG_RESPONSE,
-   /**
-    * Pause script execution until a response is recieved from a client.
-    */
-   SCRIPT_PAUSE,
-   PASS_FAIL,
-   SCRIPT_STEP,
-   USER_INPUT,
-   YES_NO;
-
+public interface IYesNoPromptResponse extends IPromptHandle {
+   void respond(boolean yes) throws RemoteException;
 }

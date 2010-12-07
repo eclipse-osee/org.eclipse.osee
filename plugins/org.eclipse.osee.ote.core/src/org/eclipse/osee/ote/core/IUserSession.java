@@ -14,6 +14,7 @@ import org.eclipse.osee.framework.messaging.Message;
 import org.eclipse.osee.ote.core.framework.prompt.IPassFailPromptResponse;
 import org.eclipse.osee.ote.core.framework.prompt.IResumeResponse;
 import org.eclipse.osee.ote.core.framework.prompt.IUserInputPromptResponse;
+import org.eclipse.osee.ote.core.framework.prompt.IYesNoPromptResponse;
 
 public interface IUserSession {
 
@@ -33,6 +34,8 @@ public interface IUserSession {
    public void initiateInformationalPrompt(String message) throws Exception;
 
    public void initiatePassFailPrompt(IPassFailPromptResponse prompt) throws Exception;
+   
+   public void initiateYesNoPrompt(IYesNoPromptResponse prompt) throws Exception;
 
    public void initiateUserInputPrompt(IUserInputPromptResponse prompt) throws Exception;
 

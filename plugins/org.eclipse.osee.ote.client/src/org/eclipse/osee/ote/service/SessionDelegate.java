@@ -14,6 +14,7 @@ import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
 import org.eclipse.osee.ote.core.framework.prompt.IPassFailPromptResponse;
 import org.eclipse.osee.ote.core.framework.prompt.IResumeResponse;
 import org.eclipse.osee.ote.core.framework.prompt.IUserInputPromptResponse;
+import org.eclipse.osee.ote.core.framework.prompt.IYesNoPromptResponse;
 
 /**
  * Test sessions will delegate responsibilities to sub classes of this interface.
@@ -23,6 +24,8 @@ import org.eclipse.osee.ote.core.framework.prompt.IUserInputPromptResponse;
 public interface SessionDelegate {
    void handlePassFail(IPassFailPromptResponse prompt) throws Exception;
 
+   void handleYesNo(IYesNoPromptResponse prompt) throws Exception;
+   
    void handlePause(IResumeResponse prompt) throws Exception;
 
    void handleInformationPrompt(String message) throws Exception;
