@@ -1,19 +1,29 @@
 [core]
         autocrlf = false
         eol = lf
+
 [color]
         ui = auto
+
 [http]
         proxy = www-slb-proxy.boeing.com:31060
         sslcainfo = bin/curl-ca-bundle.crt
         sslverify = false
         postbuffer = 524288000
+
 [merge]
         tool = kdiff3
+
 [mergetool "kdiff3"]
         path = "/c/Program Files/KDiff3/kdiff3.exe"
         trustExitCode = false
         keepBackup = false
+
+[diff]
+	guitool = kdiff3
+	
+[difftool "kdiff3"]
+	path = c:/Program Files/KDiff3/kdiff3.exe        
 
 [alias]
         lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
