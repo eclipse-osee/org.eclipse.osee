@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 public class AITreeContentProvider implements ITreeContentProvider {
 
    private final Active active;
-   private boolean showChildren;
+   private boolean showChildren = true;
 
    public AITreeContentProvider(Active active) {
       super();
