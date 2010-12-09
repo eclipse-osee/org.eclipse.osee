@@ -166,6 +166,7 @@ public class NavigateView extends ViewPart implements IActionable {
                   xNavComp.getFilteredTree().getFilterControl().setFocus();
 
                   parent.getParent().layout(true);
+                  parent.layout(true);
 
                   OseeStatusContributionItemFactory.addTo(navView, false);
                   addExtensionPointListenerBecauseOfWorkspaceLoading();
