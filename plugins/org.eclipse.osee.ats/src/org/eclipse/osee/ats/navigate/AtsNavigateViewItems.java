@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
@@ -91,17 +92,18 @@ import org.osgi.framework.Bundle;
 /**
  * @author Donald G. Dunne
  */
-public final class AtsNavigateViewItems extends XNavigateViewItems {
-   private static AtsNavigateViewItems navigateItems = new AtsNavigateViewItems();
-   private final List<XNavigateItem> items = new ArrayList<XNavigateItem>();
+public final class AtsNavigateViewItems implements XNavigateViewItems {
+   private final List<XNavigateItem> items = new CopyOnWriteArrayList<XNavigateItem>();
    private boolean ensurePopulatedRanOnce = false;
+
+   private final static AtsNavigateViewItems instance = new AtsNavigateViewItems();
 
    private AtsNavigateViewItems() {
       super();
    }
 
    public static AtsNavigateViewItems getInstance() {
-      return navigateItems;
+      return instance;
    }
 
    @Override

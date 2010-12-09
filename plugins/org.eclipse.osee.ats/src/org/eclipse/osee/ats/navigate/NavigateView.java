@@ -78,6 +78,10 @@ public class NavigateView extends ViewPart implements IActionable {
 
    public static final String VIEW_ID = "org.eclipse.osee.ats.navigate.NavigateView";
    public static final String HELP_CONTEXT_ID = "atsNavigator";
+   private static final String INPUT = "filter";
+   private static final String FILTER_STR = "filterStr";
+
+   private String savedFilterStr;
    private AtsNavigateComposite xNavComp;
    private Composite parent;
    private LoadingComposite loadingComposite;
@@ -107,20 +111,20 @@ public class NavigateView extends ViewPart implements IActionable {
 
       @Override
       public void done(IJobChangeEvent event) {
-         super.done(event);
          Job job = new UIJob("Load ATS Navigator") {
 
             @Override
             public IStatus runInUIThread(IProgressMonitor monitor) {
                try {
                   showBusy(false);
+                  if (Widgets.isAccessible(loadingComposite)) {
+                     loadingComposite.dispose();
+                  }
+
                   if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
                      return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, "Navigate View - !dbConnectionIsOk");
                   }
 
-                  if (Widgets.isAccessible(loadingComposite)) {
-                     loadingComposite.dispose();
-                  }
                   xNavComp = new AtsNavigateComposite(AtsNavigateViewItems.getInstance(), parent, SWT.NONE);
 
                   HelpUtil.setHelp(xNavComp, HELP_CONTEXT_ID, "org.eclipse.osee.ats.help.ui");
@@ -136,12 +140,6 @@ public class NavigateView extends ViewPart implements IActionable {
                      }
                   });
 
-                  if (savedFilterStr != null) {
-                     xNavComp.getFilteredTree().getFilterControl().setText(savedFilterStr);
-                  }
-                  xNavComp.refresh();
-                  xNavComp.getFilteredTree().getFilterControl().setFocus();
-
                   Label label = new Label(xNavComp, SWT.None);
                   String str = getWhoAmI();
                   if (AtsUtil.isAtsAdmin()) {
@@ -156,13 +154,20 @@ public class NavigateView extends ViewPart implements IActionable {
                   }
                   label.setText(str);
                   label.setToolTipText(str);
-                  GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_CENTER | GridData.VERTICAL_ALIGN_CENTER);
+
+                  GridData gridData = new GridData(SWT.CENTER, SWT.CENTER, true, false);
                   gridData.heightHint = 15;
                   label.setLayoutData(gridData);
 
-                  OseeStatusContributionItemFactory.addTo(navView, false);
-                  xNavComp.layout();
+                  if (savedFilterStr != null) {
+                     xNavComp.getFilteredTree().getFilterControl().setText(savedFilterStr);
+                  }
+                  xNavComp.refresh();
+                  xNavComp.getFilteredTree().getFilterControl().setFocus();
 
+                  parent.getParent().layout(true);
+
+                  OseeStatusContributionItemFactory.addTo(navView, false);
                   addExtensionPointListenerBecauseOfWorkspaceLoading();
 
                } catch (Exception ex) {
@@ -252,9 +257,6 @@ public class NavigateView extends ViewPart implements IActionable {
       return "";
    }
 
-   private static final String INPUT = "filter";
-   private static final String FILTER_STR = "filterStr";
-
    @Override
    public void saveState(IMemento memento) {
       super.saveState(memento);
@@ -265,7 +267,6 @@ public class NavigateView extends ViewPart implements IActionable {
          memento.putString(FILTER_STR, filterStr);
       }
    }
-   private String savedFilterStr = null;
 
    @Override
    public void init(IViewSite site, IMemento memento) throws PartInitException {

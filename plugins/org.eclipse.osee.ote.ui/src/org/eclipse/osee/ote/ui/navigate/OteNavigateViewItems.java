@@ -28,15 +28,10 @@ import org.eclipse.osee.ote.ui.internal.TestCoreGuiPlugin;
 /**
  * @author Donald G. Dunne
  */
-public class OteNavigateViewItems extends XNavigateViewItems {
-   private static OteNavigateViewItems navigateItems = new OteNavigateViewItems();
+public class OteNavigateViewItems implements XNavigateViewItems {
 
    public OteNavigateViewItems() {
       super();
-   }
-
-   public static OteNavigateViewItems getInstance() {
-      return navigateItems;
    }
 
    @Override

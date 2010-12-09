@@ -10,26 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.plugin.xnavigate;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author Donald G. Dunne
  */
-public class XNavigateViewItems {
-   private static XNavigateViewItems navigateSearches = new XNavigateViewItems();
+public interface XNavigateViewItems {
 
-   protected XNavigateViewItems() {
-      super();
-   }
-
-   public static XNavigateViewItems getInstance() {
-      return navigateSearches;
-   }
-
-   public List<XNavigateItem> getSearchNavigateItems() {
-      List<XNavigateItem> items = new ArrayList<XNavigateItem>();
-      return items;
-   }
+   List<XNavigateItem> getSearchNavigateItems();
 
 }

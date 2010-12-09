@@ -40,15 +40,10 @@ import org.osgi.framework.Bundle;
 /**
  * @author Donald G. Dunne
  */
-public class CoverageNavigateViewItems extends XNavigateViewItems {
-   private static CoverageNavigateViewItems navigateItems = new CoverageNavigateViewItems();
+public class CoverageNavigateViewItems implements XNavigateViewItems {
 
    public CoverageNavigateViewItems() {
       super();
-   }
-
-   public static CoverageNavigateViewItems getInstance() {
-      return navigateItems;
    }
 
    @Override

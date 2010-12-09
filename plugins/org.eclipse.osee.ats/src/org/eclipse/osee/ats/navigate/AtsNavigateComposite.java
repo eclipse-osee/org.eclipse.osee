@@ -59,11 +59,12 @@ public class AtsNavigateComposite extends XNavigateComposite {
    public void refresh() {
       super.refresh();
       if (AtsUtil.isAtsAdmin()) {
-         for (XNavigateItem item : getItems()) {
+         for (XNavigateItem item : getInput()) {
             if (item.getName().equals("Admin")) {
                filteredTree.getViewer().expandToLevel(item, 1);
             }
          }
       }
+      layout(true);
    }
 }

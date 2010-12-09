@@ -37,15 +37,10 @@ import org.osgi.framework.Bundle;
 /**
  * @author Donald G. Dunne
  */
-public class DefineNavigateViewItems extends XNavigateViewItems {
-   private static DefineNavigateViewItems navigateItems = new DefineNavigateViewItems();
+public class DefineNavigateViewItems implements XNavigateViewItems {
 
    public DefineNavigateViewItems() {
       super();
-   }
-
-   public static DefineNavigateViewItems getInstance() {
-      return navigateItems;
    }
 
    @Override
@@ -71,7 +66,7 @@ public class DefineNavigateViewItems extends XNavigateViewItems {
       return items;
    }
 
-   public void addExtensionPointItems(List<XNavigateItem> items) {
+   private void addExtensionPointItems(List<XNavigateItem> items) {
       IExtensionPoint point =
          Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.define.DefineNavigateItem");
       if (point == null) {
