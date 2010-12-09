@@ -12,6 +12,7 @@ package org.eclipse.osee.ote.core.log.record;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironmentAccessor;
 import org.eclipse.osee.ote.core.log.TestLevel;
@@ -67,7 +68,7 @@ public class AttentionRecord extends TestRecord {
    @Override
    public void toXml(XMLStreamWriter writer) throws XMLStreamException {
       writer.writeStartElement(getLevel().getName());
-      writeLocation(writer);
+      writeLocationCheckLocationLoggingOn(writer);
       writeMessage(writer);
       writer.writeEndElement();
    }

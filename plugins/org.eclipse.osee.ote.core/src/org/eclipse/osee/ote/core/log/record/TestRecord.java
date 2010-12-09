@@ -14,8 +14,10 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.regex.Pattern;
+
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 import org.eclipse.osee.framework.jdk.core.persistence.XmlizableStream;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
@@ -175,7 +177,7 @@ public abstract class TestRecord extends LogRecord implements Xmlizable, Xmlizab
    @Override
    public void toXml(XMLStreamWriter writer) throws XMLStreamException {
       writer.writeStartElement(getLevel().getName());
-      writeLocation(writer);
+      writeLocationCheckLocationLoggingOn(writer);
       writeMessage(writer);
       writer.writeEndElement();
    }
@@ -195,18 +197,18 @@ public abstract class TestRecord extends LogRecord implements Xmlizable, Xmlizab
       return locationElement;
    }
 
-   private void getLocation(XMLStreamWriter writer) throws XMLStreamException {
+   protected void writeLocation(XMLStreamWriter writer) throws XMLStreamException {
       calc(writer);
       writeTime(writer);
       writer.writeEndElement();
    }
 
-   protected void writeLocation(XMLStreamWriter writer) throws XMLStreamException {
+   protected void writeLocationCheckLocationLoggingOn(XMLStreamWriter writer) throws XMLStreamException {
       if (TestRecord.getLocationLoggingOn()) {
-         getLocation(writer);
+    	  writeLocation(writer);
       }
    }
-
+   
    protected void writeTime(XMLStreamWriter writer) throws XMLStreamException {
       if (this.printTimeStamp) {
          writer.writeStartElement("Time");

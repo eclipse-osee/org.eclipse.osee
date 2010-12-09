@@ -11,8 +11,10 @@
 package org.eclipse.osee.ote.core.log.record;
 
 import java.util.ArrayList;
+
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 import org.eclipse.osee.framework.jdk.core.persistence.XmlizableStream;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
@@ -108,6 +110,6 @@ public class TraceRecord extends TestRecord implements Xmlizable {
          }
          writer.writeEndElement();
       }
-      writeLocation(writer);
+      writeLocationCheckLocationLoggingOn(writer);
    }
 }
