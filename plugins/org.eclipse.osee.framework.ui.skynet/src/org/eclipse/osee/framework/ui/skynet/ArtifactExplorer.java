@@ -271,7 +271,8 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
          if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
             return;
          }
-
+         // TODO: Trigger User Loading to prevent lock up -- Need to remove this once service based
+         UserManager.getUser();
          GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
          gridData.heightHint = 1000;
          gridData.widthHint = 1000;
