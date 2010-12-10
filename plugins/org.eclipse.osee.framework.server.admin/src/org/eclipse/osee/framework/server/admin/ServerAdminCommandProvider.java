@@ -14,9 +14,11 @@ import java.util.Arrays;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.branch.management.TxCurrentsAndModTypesCommand;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.operation.CommandInterpreterReporter;
 import org.eclipse.osee.framework.core.operation.OperationReporter;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.server.admin.internal.Activator;
 import org.eclipse.osee.framework.server.admin.management.AdminCommands;
 import org.eclipse.osee.framework.server.admin.management.ConsolidateArtifactVersionsCommand;
 import org.eclipse.osee.framework.server.admin.management.FinishPartiallyArchivedBranchesCommand;
@@ -86,6 +88,12 @@ public class ServerAdminCommandProvider implements CommandProvider {
       return Operations.executeAsJob(new TxCurrentsAndModTypesCommand(reporter, archived), false);
    }
 
+   public Job _duplicate_attr(CommandInterpreter ci) throws OseeDataStoreException {
+      OperationReporter reporter = new CommandInterpreterReporter(ci);
+      return Operations.executeAsJob(new DuplicateAttributesOperation(reporter, Activator.getOseeDatabaseService()),
+         false);
+   }
+
    public void _osee_shutdown(CommandInterpreter ci) {
       adminCommands.oseeShutdown(ci);
    }
@@ -102,6 +110,7 @@ public class ServerAdminCommandProvider implements CommandProvider {
       sb.append("        finish_partial_archives - move txs addressing to osee_txs_archived for archived branches\n");
       sb.append("        consolidate_artifact_versions - migrate to 0.9.2 database schema\n");
       sb.append("        tx_currents [true | false] - detect and fix tx current and mod types inconsistencies on archive txs or txs\n");
+      sb.append("        duplicate_attr - detect and fix duplicate attributes\n");
       sb.append("        osee_shutdown [-oseeOnly] - immediately release the listening port then waits for all existing operations to finish. \n");
       sb.append("        gc - run java garbage collecction\n");
       sb.append("        schedule <delay seconds> <iterations> <command> - runs the command after the specified delay and repeat given number of times\n");
