@@ -140,7 +140,7 @@ public class XStackedDam extends XStackedWidget<String> implements IAttributeWid
    @Override
    public Result isDirty() throws OseeCoreException {
       try {
-         Collection<String> enteredValues = new ArrayList<String>();//getSelected();
+         Collection<String> enteredValues = getInput();
          Collection<String> storedValues = getStored();
          if (!Collections.isEqual(enteredValues, storedValues)) {
             return new Result(true, getAttributeType() + " is dirty");
