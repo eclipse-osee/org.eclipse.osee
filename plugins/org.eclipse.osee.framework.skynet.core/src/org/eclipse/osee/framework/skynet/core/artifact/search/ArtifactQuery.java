@@ -335,6 +335,17 @@ public class ArtifactQuery {
       return getArtifactListFromTypes(artifactTypes, branch, allowDeleted);
    }
 
+   public static int getArtifactCountFromTypeWithInheritence(IArtifactType artifactType, IOseeBranch branch, DeletionFlag allowDeleted) throws OseeCoreException {
+      ArtifactType artifactTypeFull = ArtifactTypeManager.getType(artifactType);
+      Collection<ArtifactType> artifactTypes = artifactTypeFull.getAllDescendantTypes();
+      artifactTypes.add(artifactTypeFull);
+      return getArtifactCountFromTypes(artifactTypes, branch, allowDeleted);
+   }
+
+   public static int getArtifactCountFromTypes(Collection<? extends IArtifactType> artifactTypes, IOseeBranch branch, DeletionFlag allowDeleted) throws OseeCoreException {
+      return new ArtifactQueryBuilder(artifactTypes, branch, FULL, allowDeleted).countArtifacts();
+   }
+
    /**
     * search for artifacts of the given type on a particular branch that satisfy the given criteria
     * 

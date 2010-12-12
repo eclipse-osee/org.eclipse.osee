@@ -39,7 +39,7 @@ public class ChangeArtifactTypeBlam extends AbstractBlam {
    public String getXWidgetsXml() {
       return "<xWidgets><XWidget xwidgetType=\"XListDropViewer\" displayName=\"artifacts\" />" +
       //
-      "<XWidget xwidgetType=\"XArtifactTypeListViewer\" displayName=\"New Artifact Type\" /></xWidgets>";
+      "<XWidget xwidgetType=\"XArtifactTypeComboViewer\" displayName=\"New Artifact Type\" /></xWidgets>";
    }
 
    @Override

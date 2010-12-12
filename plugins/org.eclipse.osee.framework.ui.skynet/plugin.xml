@@ -265,7 +265,7 @@
  <extension
        point="org.eclipse.osee.framework.ui.skynet.XWidgetProvider">
     <XWidgetProvider
-          classname="org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidgetProvider">
+          classname="org.eclipse.osee.framework.ui.skynet.widgets.FrameworkWidgetProvider">
     </XWidgetProvider>
  </extension>
  <extension
@@ -1792,6 +1792,14 @@
          point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
       <Operation
             className="org.eclipse.osee.framework.ui.skynet.blam.operation.PopulateUserGroupBlam">
+      </Operation>
+   </extension>
+   <extension
+         id="CountArtifactsOfTypeBlam"
+         name="CountArtifactsOfTypeBlam"
+         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+      <Operation
+            className="org.eclipse.osee.framework.ui.skynet.blam.operation.CountArtifactsOfTypeBlam">
       </Operation>
    </extension>
 </plugin>

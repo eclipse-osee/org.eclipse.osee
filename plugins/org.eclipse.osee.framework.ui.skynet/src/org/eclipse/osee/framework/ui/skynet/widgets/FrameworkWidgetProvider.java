@@ -21,8 +21,9 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IXWidgetProvider;
 
 /**
  * @author Roberto E. Escobar
+ * @author Donald G. Dunne
  */
-public class XBranchSelectWidgetProvider implements IXWidgetProvider {
+public class FrameworkWidgetProvider implements IXWidgetProvider {
 
    @Override
    public XWidget createXWidget(String widgetName, String name, DynamicXWidgetLayoutData widgetLayoutData) {
@@ -38,6 +39,9 @@ public class XBranchSelectWidgetProvider implements IXWidgetProvider {
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
+         toReturn = widget;
+      } else if (widgetName.equals(XArtifactTypeComboViewer.WIDGET_ID)) {
+         XArtifactTypeComboViewer widget = new XArtifactTypeComboViewer();
          toReturn = widget;
       }
       return toReturn;
