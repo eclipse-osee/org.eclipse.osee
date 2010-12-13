@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Ats Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.ats;singleton:=true
-Bundle-Version: 0.9.7.qualifier
+Bundle-Version: 0.9.8.qualifier
 Eclipse-ExtensibleAPI: true
 Bundle-Activator: org.eclipse.osee.ats.internal.AtsPlugin
 Bundle-Vendor: Eclipse Open System Engineering Environment

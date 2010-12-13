@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.osee.client.all.feature.test"
       label="%featureName"
-      version="0.9.7.qualifier"
+      version="0.9.8.qualifier"
       provider-name="%providerName">
 
    <description>
@@ -30,7 +30,7 @@
          version="0.0.0"/>
 
    <requires>
-      <import feature="org.eclipse.osee.client.all.feature" version="0.9.7.qualifier" match="greaterOrEqual"/>
+      <import feature="org.eclipse.osee.client.all.feature" version="0.9.8.qualifier" match="greaterOrEqual"/>
       <import feature="org.eclipse.test" version="3.5.0" match="greaterOrEqual"/>
       <import feature="org.eclipse.sdk" version="3.6.0" match="greaterOrEqual"/>
    </requires>

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Branch Management Plug-in
 Bundle-SymbolicName: org.eclipse.osee.framework.branch.management;singleton:=true
-Bundle-Version: 0.9.7.qualifier
+Bundle-Version: 0.9.8.qualifier
 Eclipse-ExtensibleAPI: true
 Bundle-Activator: org.eclipse.osee.framework.branch.management.internal.Activator
 Import-Package: org.eclipse.core.runtime,
