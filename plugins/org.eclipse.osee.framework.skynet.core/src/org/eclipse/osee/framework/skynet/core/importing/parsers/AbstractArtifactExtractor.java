@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.importing.parsers;
 import java.net.URI;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.operation.OperationReporter;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
 
@@ -21,13 +22,15 @@ import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifact
  */
 public abstract class AbstractArtifactExtractor implements IArtifactExtractor {
 
-   private IArtifactExtractorDelegate delegate;
+   private static final IArtifactExtractorDelegate NULL_DELEGATE = new NullDelegate();
+
+   private IArtifactExtractorDelegate delegate = NULL_DELEGATE;
 
    protected AbstractArtifactExtractor() {
-      this.delegate = null;
+      // Protect Constructor
    }
 
-   protected abstract void extractFromSource(URI source, RoughArtifactCollector collector) throws Exception;
+   protected abstract void extractFromSource(OperationReporter reporter, URI source, RoughArtifactCollector collector) throws Exception;
 
    @Override
    public String toString() {
@@ -40,40 +43,37 @@ public abstract class AbstractArtifactExtractor implements IArtifactExtractor {
    }
 
    @Override
-   public void setDelegate(IArtifactExtractorDelegate delegate) {
-      this.delegate = delegate;
+   public final void setDelegate(IArtifactExtractorDelegate delegate) {
+      this.delegate = delegate != null ? delegate : NULL_DELEGATE;
    }
 
    @Override
-   public IArtifactExtractorDelegate getDelegate() {
+   public final IArtifactExtractorDelegate getDelegate() {
       return delegate;
    }
 
    @Override
-   public boolean hasDelegate() {
-      return getDelegate() != null;
+   public final boolean hasDelegate() {
+      return delegate instanceof NullDelegate ? false : true;
    }
 
    private void checkDelegate() throws OseeCoreException {
       if (isDelegateRequired() && !hasDelegate()) {
-         throw new OseeStateException("Delegate is required but is null");
+         throw new OseeStateException("Delegate is required but is null delegate");
       }
    }
 
    @Override
-   public final void process(URI source, RoughArtifactCollector collector) throws Exception {
+   public final void process(OperationReporter reporter, URI source, RoughArtifactCollector collector) throws Exception {
       checkDelegate();
-      if (hasDelegate()) {
-         getDelegate().initialize();
-      }
+
+      delegate.initialize();
       try {
-         extractFromSource(source, collector);
+         extractFromSource(reporter, source, collector);
          connectParentChildRelations(collector);
          connectCollectorParent(collector);
       } finally {
-         if (hasDelegate()) {
-            getDelegate().dispose();
-         }
+         delegate.dispose();
       }
    }
 

@@ -23,6 +23,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.operation.OperationReporter;
 import org.eclipse.osee.framework.jdk.core.util.Readers;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
@@ -56,27 +57,21 @@ public class WordOutlineExtractor extends AbstractArtifactExtractor {
    private static final int ATTRIBUTE_BLOCK_GROUP = 4;
    private static final int CONTENT_GROUP = 8;
 
-   private final Matcher reqNumberMatcher;
-   private final Matcher reqListMatcher;
-   private final Stack<String> currentListStack;
-   private final int maxExtractionDepth;
+   private final Matcher reqNumberMatcher = Pattern.compile("(\\d+\\.)*(\\d+\\.?)\\s*").matcher("");
+   private final Matcher reqListMatcher = Pattern.compile("\\w+\\)", Pattern.CASE_INSENSITIVE).matcher("");
+   private final Stack<String> currentListStack = new Stack<String>();
+   private final int maxExtractionDepth = 0;
 
-   private Stack<String> clonedCurrentListStack;
+   private Stack<String> clonedCurrentListStack = new Stack<String>();
    private int lastDepthNumber;
-   private String headerNumber;
-   private String listIdentifier;
+   private String headerNumber = "";
+   private String listIdentifier = "";
    private boolean forceBody;
    private boolean forcePrimaryType;
    private String paragraphStyle;
 
    public WordOutlineExtractor() {
-      this.headerNumber = "";
-      this.listIdentifier = "";
-      this.reqNumberMatcher = Pattern.compile("(\\d+\\.)*(\\d+\\.?)\\s*").matcher("");
-      this.reqListMatcher = Pattern.compile("\\w+\\)", Pattern.CASE_INSENSITIVE).matcher("");
-      this.currentListStack = new Stack<String>();
-      this.clonedCurrentListStack = new Stack<String>();
-      this.maxExtractionDepth = 0;
+      //
    }
 
    @Override
@@ -114,7 +109,7 @@ public class WordOutlineExtractor extends AbstractArtifactExtractor {
    }
 
    @Override
-   protected void extractFromSource(URI source, RoughArtifactCollector collector) throws OseeCoreException, IOException {
+   protected void extractFromSource(OperationReporter reporter, URI source, RoughArtifactCollector collector) throws OseeCoreException, IOException {
       Reader reader = null;
       try {
          reader = new BufferedReader(new InputStreamReader(source.toURL().openStream(), "UTF-8"));
@@ -167,7 +162,7 @@ public class WordOutlineExtractor extends AbstractArtifactExtractor {
                listIdentifier = "";
                paragraphStyle = null;
                parseContentDetails(content, new Stack<String>());
-               delegate.processContent(collector, forceBody, forcePrimaryType, headerNumber, listIdentifier,
+               delegate.processContent(reporter, collector, forceBody, forcePrimaryType, headerNumber, listIdentifier,
                   paragraphStyle, content.toString(), element == PARAGRAPH_TAG);
             }
          }
@@ -181,18 +176,14 @@ public class WordOutlineExtractor extends AbstractArtifactExtractor {
    }
 
    private void parseContentDetails(CharSequence content, Stack<String> parentElementNames) {
-
       Matcher matcher = internalAttributeElementsPattern.matcher(content);
 
-      String elementNamespace;
-      String elementName;
-      String elementAttributes;
-      String elementContent;
       while (matcher.find()) {
-         elementName = matcher.group(ELEMENT_NAME_GROUP);
-         elementNamespace = matcher.group(NAMESPACE_GROUP);
-         elementAttributes = matcher.group(ATTRIBUTE_BLOCK_GROUP) == null ? "" : matcher.group(ATTRIBUTE_BLOCK_GROUP);
-         elementContent = matcher.group(CONTENT_GROUP) == null ? "" : matcher.group(CONTENT_GROUP);
+         String elementName = matcher.group(ELEMENT_NAME_GROUP);
+         String elementNamespace = matcher.group(NAMESPACE_GROUP);
+         String elementAttributes =
+            matcher.group(ATTRIBUTE_BLOCK_GROUP) == null ? "" : matcher.group(ATTRIBUTE_BLOCK_GROUP);
+         String elementContent = matcher.group(CONTENT_GROUP) == null ? "" : matcher.group(CONTENT_GROUP);
 
          if (elementName.equals("forceBodyOn")) {
             forceBody = true;

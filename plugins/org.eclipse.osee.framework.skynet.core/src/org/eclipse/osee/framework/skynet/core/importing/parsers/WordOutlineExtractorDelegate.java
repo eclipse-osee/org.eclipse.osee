@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.operation.OperationReporter;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
@@ -33,7 +34,7 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 
 /**
- * Test: @link: WordOutlineTest
+ * Test: @link WordOutlineTest
  * 
  * @author Karol M. Wilk
  */
@@ -44,12 +45,21 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
    // Node: <wx:t wx:val="1.1.1 "/>
    private static final Pattern LIST_ITEM_REGEX = Pattern.compile("<wx:t wx:val=\"([0-9.]+\\s*)\".*/>");
    private static final Pattern OUTLINE_NUMBER = Pattern.compile("((?>\\d+\\.)+\\d*)\\s*");
-   private static final Pattern HYPERLINK_PATTERN = Pattern.compile("<w:hlink .*>.*?</w:hlink>", Pattern.DOTALL);
+
+   // This assumes that the user uses a generated Table of Contents from Word and does not come up with
+   // his/hers own version of of a style can call it "TOC\d+"
+   private static final Pattern TOC_HYPERLINK_PATTERN = Pattern.compile(".*<w:pStyle w:val=\"TOC\\d+?\"/>.*",
+      Pattern.DOTALL);
+   private boolean possibleTableOfContents;
+
+   private static String detectedTableOfContentsReportError =
+      "Table of Contents found in document. Please remove per the spec on: \n http://wiki.eclipse.org/OSEE/HowTo/ImportArtifactsFromWordML";
 
    public enum ContentType {
       CONTENT,
       OUTLINE_TITLE
    };
+
    /**
     * Keeps state whether on what user decided last
     */
@@ -57,7 +67,7 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
    /**
     * Keeps state whether user was asked for help.
     */
-   private boolean userAskedForHelp = false;
+   private boolean userAskedForHelp;
 
    private Map<String, RoughArtifact> duplicateCatcher;
 
@@ -69,7 +79,7 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
    private StringBuffer lastHeaderName;
    private StringBuffer lastContent;
 
-   private boolean initalized = false;
+   private boolean initalized;
 
    private final OutlineResolution outlineResolution = new OutlineResolution();
    private IConflictResolvingGui conflictResolvingGui = null;
@@ -122,7 +132,8 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
       roughArtifact = null;
       wordFormattedContent = new StringBuilder();
       initalized = true;
-
+      possibleTableOfContents = false;
+      userAskedForHelp = false;
    }
 
    /**
@@ -137,12 +148,20 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
       lastHeaderName = null;
       lastContent = null;
       initalized = false;
+      userAskedForHelp = false;
+      possibleTableOfContents = false;
    }
 
    @Override
-   public final void processContent(RoughArtifactCollector collector, boolean forceBody, boolean forcePrimaryType, String headerNumber, String listIdentifier, String paragraphStyle, String content, boolean isParagraph) throws OseeCoreException {
+   public final void processContent(OperationReporter opReporter, RoughArtifactCollector collector, boolean forceBody, boolean forcePrimaryType, String headerNumber, String listIdentifier, String paragraphStyle, String content, boolean isParagraph) throws OseeCoreException {
+      if (Strings.isValid(content) && initalized) {
+         if (!possibleTableOfContents) {
+            possibleTableOfContents = TOC_HYPERLINK_PATTERN.matcher(content).matches();
+            if (possibleTableOfContents && opReporter != null) {
+               opReporter.report(detectedTableOfContentsReportError);
+            }
+         }
 
-      if (Strings.isValid(content) && initalized && !HYPERLINK_PATTERN.matcher(content).find()) {
          StringBuilder outlineNumber = new StringBuilder(); //Number i.e. 1.1
          StringBuilder outlineName = new StringBuilder(); //Title i.e. Scope
          StringBuilder outlineContent = null; // Content, text, table content, etc.
@@ -165,9 +184,8 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
       } else {
          throw new OseeCoreException(
             "%s::processContent() Either passed in content is invalid or *Delegate hasn't been initialized...",
-            this.toString());
+            toString());
       }
-
    }
 
    /**
@@ -196,7 +214,6 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
    /**
     * Gets content and attempts to extract outline number and title, if it fails with regular regex, it tries
     * specializedOutlineNumberTitleExtract()
-    * 
     */
    private boolean processOutlineNumberAndName(String content, StringBuilder outlineNumber, StringBuilder outlineName) throws OseeCoreException {
       Matcher listItemMatcher = LIST_ITEM_REGEX.matcher(content);
@@ -344,31 +361,31 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
 
    @Override
    public String getName() {
-      return "QuickSilver ICDs and General Outline Documents";
+      return "General Outline Documents";
    }
 
    public String getLastHeaderNumber() {
       return getBufferString(lastHeaderNumber);
    }
 
-   private void setLastHeaderNumber(String lastHeaderNumber) {
-      this.lastHeaderNumber.append(lastHeaderNumber);
+   private void setLastHeaderNumber(String headerNumber) {
+      lastHeaderNumber.append(headerNumber);
    }
 
    public String getLastHeaderName() {
       return getBufferString(lastHeaderName);
    }
 
-   private void setLastHeaderName(String lastHeaderName) {
-      this.lastHeaderName.append(lastHeaderName);
+   private void setLastHeaderName(String headerName) {
+      lastHeaderName.append(headerName);
    }
 
    public String getLastContent() {
       return getBufferString(lastContent);
    }
 
-   private void setLastContent(String lastContent) {
-      this.lastContent.append(lastContent);
+   private void setLastContent(String content) {
+      lastContent.append(content);
    }
 
    private String getBufferString(StringBuffer builder) {
@@ -376,14 +393,15 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
    }
 
    private void resetLastHeaderNumber() {
-      this.lastHeaderNumber.setLength(0);
+      lastHeaderNumber.setLength(0);
    }
 
    private void resetLastHeaderName() {
-      this.lastHeaderName.setLength(0);
+      lastHeaderName.setLength(0);
    }
 
    private void resetLastContent() {
-      this.lastContent.setLength(0);
+      lastContent.setLength(0);
    }
+
 }

@@ -15,42 +15,51 @@ import java.io.InputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import junit.framework.Assert;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.operation.OperationReporter;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.WordOutlineExtractorDelegate;
 import org.junit.Test;
 
 /**
- * Tests for if table of contents links pass as valid outline numbers, outline titles, ultimately forming artifacts.
+ * Tests if a table of contents with hlinks gets detected, if it does, warning should be enabled.
  * 
- * @link:WordOutlineExtractorDelegate
+ * @link WordOutlineExtractorDelegate
  * @author Karol M. Wilk
  */
-public class WordMLExtractorDelegateTableOfContentsTest {
+public final class WordMLExtractorDelegateTableOfContentsTest {
 
    private static final Pattern PARAGRAPHREGEX = Pattern.compile("<w:p[ >].*?</w:p>", Pattern.DOTALL);
 
    private static final String TABLE_OF_CONTENTS_FILE = "tableOfContentsHyperlinkTest.xml";
    private final WordOutlineExtractorDelegate delegate = new WordOutlineExtractorDelegate();
 
+   private class TestOperationReporter extends OperationReporter {
+      public final StringBuilder warningMsgs = new StringBuilder();
+
+      @Override
+      public void report(String... row) {
+         for (String warningMessage : row) {
+            warningMsgs.append(warningMessage);
+         }
+      }
+   }
+
    @Test
    public void tableOfContentsLinksInput() throws Exception {
       delegate.initialize();
+
+      TestOperationReporter reporter = new TestOperationReporter();
+
       Matcher matcher = PARAGRAPHREGEX.matcher(getFileAsString(TABLE_OF_CONTENTS_FILE));
       boolean foundSomething = false;
-      if (matcher.find()) {
+      while (matcher.find()) {
          foundSomething = true;
-         try {
-            delegate.processContent(null, false, false, null, null, null, matcher.group(), false);
-         } catch (OseeCoreException ex) {
-            //we should get an exception because
-            Assert.assertTrue(true);
-         }
+         delegate.processContent(reporter, null, false, false, null, null, null, matcher.group(), false);
       }
+
+      Assert.assertTrue("Warnings generated and Table of Contents in WordML should be detected",
+         reporter.warningMsgs.length() > 0);
       Assert.assertTrue(foundSomething);
-      Assert.assertTrue(delegate.getLastHeaderNumber().isEmpty());
-      Assert.assertTrue(delegate.getLastHeaderName().isEmpty());
-      Assert.assertTrue(delegate.getLastContent().isEmpty());
    }
 
    private static String getFileAsString(String nameOfFile) {

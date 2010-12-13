@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
+import org.eclipse.osee.framework.core.operation.OperationReporter;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -72,7 +73,7 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
    }
 
    @Override
-   protected void extractFromSource(URI source, RoughArtifactCollector collector) throws Exception {
+   protected void extractFromSource(OperationReporter reporter, URI source, RoughArtifactCollector collector) throws Exception {
       XMLReader xmlReader = XMLReaderFactory.createXMLReader();
       xmlReader.setContentHandler(new ExcelSaxHandler(new ExcelRowProcessor(collector), true));
       xmlReader.parse(new InputSource(new InputStreamReader(source.toURL().openStream(), "UTF-8")));

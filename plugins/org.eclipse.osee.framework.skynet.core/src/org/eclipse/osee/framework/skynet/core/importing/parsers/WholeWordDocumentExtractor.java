@@ -15,6 +15,7 @@ import java.io.FileFilter;
 import java.net.URI;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.operation.OperationReporter;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
@@ -27,7 +28,7 @@ public class WholeWordDocumentExtractor extends AbstractArtifactExtractor {
    }
 
    @Override
-   protected void extractFromSource(URI source, RoughArtifactCollector collector) throws Exception {
+   protected void extractFromSource(OperationReporter reporter, URI source, RoughArtifactCollector collector) throws Exception {
       if (source == null) {
          throw new OseeArgumentException("importFile can not be null");
       }
@@ -56,4 +57,5 @@ public class WholeWordDocumentExtractor extends AbstractArtifactExtractor {
    public boolean usesTypeList() {
       return true;
    }
+
 }

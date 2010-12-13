@@ -18,12 +18,14 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.OperationReporter;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -83,6 +85,8 @@ public class ArtifactImportPage extends WizardDataTransferPage {
    private final SelectionLatch selectionLatch;
    private final Collection<IArtifactType> selectedArtifactTypes;
 
+   private static StringBuilder operationReportMessages;
+
    protected ArtifactImportPage() {
       super(PAGE_NAME);
       selectedArtifactTypes = new ArrayList<IArtifactType>();
@@ -106,6 +110,8 @@ public class ArtifactImportPage extends WizardDataTransferPage {
       setTitle("Import artifacts into OSEE");
       setDescription("Import artifacts into Define");
       setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.ARTIFACT_IMPORT_WIZARD));
+
+      operationReportMessages = new StringBuilder();
 
    }
 
@@ -428,9 +434,18 @@ public class ArtifactImportPage extends WizardDataTransferPage {
          final File sourceFile = selectionLatch.currentSelected.sourceFile;
          final IArtifactExtractor extractor = selectionLatch.currentSelected.extractor;
 
+         operationReportMessages.setLength(0);
+
          IOperation op =
             ArtifactImportOperationFactory.createArtifactsCompOperation("Extracting data from source", sourceFile,
-               destinationArtifact, extractor, collector, selectedArtifactTypes, true);
+               destinationArtifact, new OperationReporter() {
+                  @Override
+                  public void report(String... row) {
+                     for (String warningMessage : row) {
+                        operationReportMessages.append(warningMessage);
+                     }
+                  };
+               }, extractor, collector, selectedArtifactTypes, true);
 
          selectedArtifactTypes.clear();
 
@@ -471,6 +486,13 @@ public class ArtifactImportPage extends WizardDataTransferPage {
       } catch (InvocationTargetException e) {
          displayErrorDialog(e.getTargetException());
          return false;
+      }
+
+      //grab the error here and
+      if (operationReportMessages.length() != 0) {
+         setMessage(operationReportMessages.toString(), IMessageProvider.WARNING);
+      } else {
+         setMessage("", IMessageProvider.NONE);
       }
 
       if (status[0].isOK()) {

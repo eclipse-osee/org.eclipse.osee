@@ -75,7 +75,7 @@ public class WordMlResolutionGuiTest {
          foundSomething = true;
          String singleWp = matcher.group();
          //TODO: pass in the real testCollector
-         delegate.processContent(null, false, false, null, null, null, singleWp, false);
+         delegate.processContent(null, null, false, false, null, null, null, singleWp, false);
       }
 
       //TODO:

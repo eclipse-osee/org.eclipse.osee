@@ -123,7 +123,7 @@ public final class ArtifactImportWizardTest {
       collector.reset();
 
       IOperation operation =
-         ArtifactImportOperationFactory.createArtifactAndRoughToRealOperation(inputExcelFile, myRootArtifact,
+         ArtifactImportOperationFactory.createArtifactAndRoughToRealOperation(inputExcelFile, myRootArtifact, null,
             new ExcelArtifactExtractor(), resolver, collector, Arrays.asList(CoreArtifactTypes.SystemRequirement),
             true, true, false);
       Operations.executeWork(operation);

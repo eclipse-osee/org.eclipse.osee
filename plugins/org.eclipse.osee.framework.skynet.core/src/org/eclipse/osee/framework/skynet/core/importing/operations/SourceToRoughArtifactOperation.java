@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.core.operation.OperationReporter;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactExtractor;
@@ -26,15 +27,17 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
  */
 public class SourceToRoughArtifactOperation extends AbstractOperation {
 
+   private final OperationReporter reporter;
    private final IArtifactExtractor extractor;
    private final File sourceFile;
    private final RoughArtifactCollector collector;
 
-   public SourceToRoughArtifactOperation(IArtifactExtractor extractor, File sourceFile, RoughArtifactCollector collector) {
+   public SourceToRoughArtifactOperation(OperationReporter reporter, IArtifactExtractor extractor, File sourceFile, RoughArtifactCollector collector) {
       super("Extract artifact data from source", Activator.PLUGIN_ID);
       this.extractor = extractor;
       this.sourceFile = sourceFile;
       this.collector = collector;
+      this.reporter = reporter;
    }
 
    @Override
@@ -75,7 +78,7 @@ public class SourceToRoughArtifactOperation extends AbstractOperation {
    private void processFile(File file, RoughArtifactCollector collector, RoughArtifact parent) throws OseeCoreException {
       RoughArtifactCollector tempCollector = new RoughArtifactCollector(parent);
       try {
-         extractor.process(file.toURI(), tempCollector);
+         extractor.process(reporter, file.toURI(), tempCollector);
       } catch (Exception ex) {
          OseeExceptions.wrapAndThrow(ex);
       }
@@ -83,5 +86,4 @@ public class SourceToRoughArtifactOperation extends AbstractOperation {
       collector.addAllRoughArtifacts(tempCollector.getRoughArtifacts());
       collector.addAllRoughRelations(tempCollector.getRoughRelations());
    }
-
 }

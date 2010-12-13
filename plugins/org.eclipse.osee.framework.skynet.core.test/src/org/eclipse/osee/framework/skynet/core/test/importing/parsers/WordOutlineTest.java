@@ -113,7 +113,7 @@ public final class WordOutlineTest {
       while (matcher.find()) {
          foundSomething = true;
          String data = matcher.group();
-         delegate.processContent(null, false, false, null, null, null, data, false);
+         delegate.processContent(null, null, false, false, null, null, null, data, false);
 
          String headerNumber = delegate.getLastHeaderNumber().trim();
          String headerName = delegate.getLastHeaderName().trim();
@@ -159,15 +159,15 @@ public final class WordOutlineTest {
       }
 
       public String getHeaderNumber() {
-         return this.headerNumber;
+         return headerNumber;
       }
 
       public String getHeaderName() {
-         return this.headerName;
+         return headerName;
       }
 
       public String getContent() {
-         return this.content;
+         return content;
       }
 
       @Override
@@ -218,8 +218,8 @@ public final class WordOutlineTest {
 
       @Override
       public String toString() {
-         return "DelegateData [headerNumber=" + headerNumber + ", headerName=" + headerName + ", content=" + content + "]";
+         return String.format("DelegateData [headerNumber=[%s], headerName=[%s], content=[%s]]", headerNumber,
+            headerName, content);
       }
-
    }
 }

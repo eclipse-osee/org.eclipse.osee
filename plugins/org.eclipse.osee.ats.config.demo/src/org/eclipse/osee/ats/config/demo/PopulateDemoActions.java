@@ -501,7 +501,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
       extractor.setDelegate(new WordOutlineExtractorDelegate());
 
       IOperation operation =
-         ArtifactImportOperationFactory.createOperation(file, systemReq, extractor, artifactResolver, false);
+         ArtifactImportOperationFactory.createOperation(file, systemReq, null, extractor, artifactResolver, false);
       Operations.executeWorkAndCheckStatus(operation);
 
       // Validate that something was imported

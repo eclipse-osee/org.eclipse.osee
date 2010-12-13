@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.importing.parsers;
 
 import java.io.FileFilter;
 import java.net.URI;
+import org.eclipse.osee.framework.core.operation.OperationReporter;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
 
 /**
@@ -23,7 +24,7 @@ public interface IArtifactExtractor {
 
    public abstract String getDescription();
 
-   public abstract void process(URI source, RoughArtifactCollector collector) throws Exception;
+   public abstract void process(OperationReporter reporter, URI source, RoughArtifactCollector collector) throws Exception;
 
    public abstract FileFilter getFileFilter();
 
@@ -36,4 +37,5 @@ public interface IArtifactExtractor {
    public IArtifactExtractorDelegate getDelegate();
 
    public boolean hasDelegate();
+
 }

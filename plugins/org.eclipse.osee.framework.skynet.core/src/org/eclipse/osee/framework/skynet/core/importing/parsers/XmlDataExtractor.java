@@ -14,8 +14,8 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.InputStreamReader;
 import java.net.URI;
-
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.operation.OperationReporter;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
@@ -29,7 +29,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
 public class XmlDataExtractor extends AbstractArtifactExtractor {
 
    @Override
-   protected void extractFromSource(URI source, RoughArtifactCollector collector) throws Exception {
+   protected void extractFromSource(OperationReporter reporter, URI source, RoughArtifactCollector collector) throws Exception {
       IArtifactType primaryArtifactType = ArtifactTypeManager.getType(Lib.removeExtension(new File(source).getName()));
       XMLReader xmlReader = XMLReaderFactory.createXMLReader();
       xmlReader.setContentHandler(new XmlDataSaxHandler(collector, primaryArtifactType));

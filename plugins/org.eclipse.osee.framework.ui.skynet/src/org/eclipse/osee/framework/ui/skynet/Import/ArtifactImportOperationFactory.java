@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.OperationReporter;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
@@ -45,24 +46,24 @@ public final class ArtifactImportOperationFactory {
       super();
    }
 
-   public static IOperation createOperation(File sourceFile, Artifact destinationArtifact, IArtifactExtractor extractor, IArtifactImportResolver resolver, boolean stopOnError) throws OseeCoreException {
+   public static IOperation createOperation(File sourceFile, Artifact destinationArtifact, OperationReporter reporter, IArtifactExtractor extractor, IArtifactImportResolver resolver, boolean stopOnError) throws OseeCoreException {
       SkynetTransaction transaction =
          new SkynetTransaction(destinationArtifact.getBranch(), "Artifact Import Wizard transaction");
       RoughArtifactCollector collector = new RoughArtifactCollector(new RoughArtifact(RoughArtifactKind.PRIMARY));
 
       List<IOperation> ops = new ArrayList<IOperation>();
-      ops.add(new SourceToRoughArtifactOperation(extractor, sourceFile, collector));
+      ops.add(new SourceToRoughArtifactOperation(reporter, extractor, sourceFile, collector));
       ops.add(new RoughToRealArtifactOperation(transaction, destinationArtifact, collector, resolver, false));
       ops.add(new ArtifactValidationCheckOperation(destinationArtifact.getDescendants(), stopOnError));
       ops.add(new CompleteArtifactImportOperation(transaction, destinationArtifact));
       return new CompositeOperation("Artifact Import", SkynetGuiPlugin.PLUGIN_ID, ops);
    }
 
-   public static IOperation createArtifactAndRoughToRealOperation(File sourceFile, Artifact destinationArtifact, IArtifactExtractor extractor, IArtifactImportResolver resolver, RoughArtifactCollector collector, Collection<IArtifactType> selectionArtifactTypes, boolean stopOnError, boolean deleteUnMatched, boolean runFilterByAttributes) {
+   public static IOperation createArtifactAndRoughToRealOperation(File sourceFile, Artifact destinationArtifact, OperationReporter reporter, IArtifactExtractor extractor, IArtifactImportResolver resolver, RoughArtifactCollector collector, Collection<IArtifactType> selectionArtifactTypes, boolean stopOnError, boolean deleteUnMatched, boolean runFilterByAttributes) {
       List<IOperation> ops = new ArrayList<IOperation>();
       ops.add(createArtifactsCompOperation(
          "Artifact Import - SourceToRoughArtifact, FilterArtifactTypesByAttributeTypes", sourceFile,
-         destinationArtifact, extractor, collector, selectionArtifactTypes, runFilterByAttributes));
+         destinationArtifact, reporter, extractor, collector, selectionArtifactTypes, runFilterByAttributes));
       ops.add(createRoughToRealOperation(
          "Artifact Import - RoughToRealArtifactOperation, ArtifactValidationCheckOperation, CompleteArtifactImportOperation",
          destinationArtifact, resolver, stopOnError, collector, deleteUnMatched));
@@ -73,9 +74,9 @@ public final class ArtifactImportOperationFactory {
    /**
     * @see ArtifactImportPage
     */
-   public static IOperation createArtifactsCompOperation(String opDescription, File sourceFile, Artifact destinationArtifact, IArtifactExtractor extractor, RoughArtifactCollector collector, Collection<IArtifactType> selectionArtifactTypes, boolean runFilterByAttributes) {
+   public static IOperation createArtifactsCompOperation(String opDescription, File sourceFile, Artifact destinationArtifact, OperationReporter reporter, IArtifactExtractor extractor, RoughArtifactCollector collector, Collection<IArtifactType> selectionArtifactTypes, boolean runFilterByAttributes) {
       List<IOperation> ops = new ArrayList<IOperation>();
-      ops.add(new SourceToRoughArtifactOperation(extractor, sourceFile, collector));
+      ops.add(new SourceToRoughArtifactOperation(reporter, extractor, sourceFile, collector));
       if (runFilterByAttributes) {
          ops.add(new FilterArtifactTypesByAttributeTypes(destinationArtifact.getBranch(), collector,
             selectionArtifactTypes));

@@ -58,7 +58,7 @@ public class WordMLProducer extends Producer {
    private static final String DEFAULT_FONT = "Times New Roman";
 
    public WordMLProducer(Appendable str) {
-      this.strB = str;
+      strB = str;
       outlineNumber = new int[10]; // word supports 9 levels of outlining; index this array from 1 to 9
       outlineLevel = 0;
       flattenedLevelCount = 0;
@@ -88,7 +88,7 @@ public class WordMLProducer extends Producer {
          OseeLog.log(SkynetGuiPlugin.class, Level.WARNING, "Outline level flattened, outline can only go 9 levels deep");
          return startOutlineSubSection(font, headingText, outlineType);
       }
-   };
+   }
 
    private void append(CharSequence value) throws OseeCoreException {
       try {
@@ -99,7 +99,6 @@ public class WordMLProducer extends Producer {
    }
 
    public void startOutlineSubSection(CharSequence style, CharSequence outlineNumber, CharSequence font, CharSequence headingText) throws OseeCoreException {
-      //startSubSection();
       append("<wx:sub-section>");
       if (Strings.isValid(headingText)) {
          startParagraph();

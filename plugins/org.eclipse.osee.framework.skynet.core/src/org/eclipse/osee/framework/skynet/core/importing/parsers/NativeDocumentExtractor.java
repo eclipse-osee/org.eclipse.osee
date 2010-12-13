@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.net.URI;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.operation.OperationReporter;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
@@ -27,7 +28,7 @@ public class NativeDocumentExtractor extends AbstractArtifactExtractor {
    }
 
    @Override
-   protected void extractFromSource(URI source, RoughArtifactCollector collector) {
+   protected void extractFromSource(OperationReporter reporter, URI source, RoughArtifactCollector collector) {
       String extension = Lib.getExtension(source.toASCIIString());
       String name = Lib.removeExtension(new File(source).getName());
 
@@ -56,4 +57,5 @@ public class NativeDocumentExtractor extends AbstractArtifactExtractor {
    public boolean usesTypeList() {
       return true;
    }
+
 }

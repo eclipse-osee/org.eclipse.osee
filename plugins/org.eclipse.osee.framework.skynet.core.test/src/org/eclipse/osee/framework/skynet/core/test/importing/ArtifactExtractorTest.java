@@ -179,7 +179,7 @@ public class ArtifactExtractorTest {
          RoughArtifactUtil.resetCollector(expectedCollector);
 
          URL url = Lib.getUrlFromString(BASE_DATA_PATH + testData.getSourceData());
-         extractor.process(url.toURI(), actualCollector);
+         extractor.process(null, url.toURI(), actualCollector);
 
          URL expectedData = Lib.getUrlFromString(BASE_DATA_PATH + testData.getExpectedData());
          RoughArtifactUtil.loadDataFrom(expectedData, expectedCollector);

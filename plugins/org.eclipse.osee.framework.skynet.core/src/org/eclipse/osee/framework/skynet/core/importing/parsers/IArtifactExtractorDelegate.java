@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.importing.parsers;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.operation.OperationReporter;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
 
 /**
@@ -49,7 +50,8 @@ public interface IArtifactExtractorDelegate {
     * and initialize it with data from the content, or to append the content to the last, or a prior created
     * RoughArtifact.
     */
-   public void processContent(RoughArtifactCollector collector, boolean forceBody, boolean forcePrimaryType, String headerNumber, String listIdentifier, String paragraphStyle, String content, boolean isParagraph) throws OseeCoreException;
+   public void processContent(OperationReporter reporter, RoughArtifactCollector collector, boolean forceBody, boolean forcePrimaryType, String headerNumber, String listIdentifier, String paragraphStyle, String content, boolean isParagraph) throws OseeCoreException;
 
    public void finish();
+
 }
