@@ -10,17 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 
-import java.util.Collection;
-import java.util.logging.Level;
-import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.accessProviders.ArtifactTypeAccessProvder;
-import org.eclipse.osee.framework.ui.skynet.artifact.IAccessPolicyHandlerService;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -34,26 +25,10 @@ public class ArtifactTypeFilteredTreeEntryDialog extends ArtifactTypeFilteredTre
    private String entryValue = null;
    private final String entryName;
    private XText xText = null;
-   private final Branch branch;
-   private final IAccessPolicyHandlerService accessService;
-   private final ArtifactTypeAccessProvder artifactTypeAccessProvder;
 
-   public ArtifactTypeFilteredTreeEntryDialog(ArtifactTypeAccessProvder artifactTypeAccessProvder, IAccessPolicyHandlerService accessService, Branch branch, String title, String message, String entryName) {
+   public ArtifactTypeFilteredTreeEntryDialog(String title, String message, String entryName) {
       super(title, message);
       this.entryName = entryName;
-      this.branch = branch;
-      this.accessService = accessService;
-      this.artifactTypeAccessProvder = artifactTypeAccessProvder;
-   }
-
-   @Override
-   public void setInput(Collection<? extends IArtifactType> input) {
-      try {
-         input = artifactTypeAccessProvder.getWritableTypes(accessService, branch, input);
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-      }
-      super.setInput(input);
    }
 
    @Override

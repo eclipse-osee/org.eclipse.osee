@@ -46,9 +46,11 @@ import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.access.PermissionStatus;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -86,10 +88,10 @@ import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.plugin.util.SelectionCountChangeListener;
 import org.eclipse.osee.framework.ui.skynet.access.PolicyDialog;
 import org.eclipse.osee.framework.ui.skynet.accessProviders.ArtifactAccessProvider;
-import org.eclipse.osee.framework.ui.skynet.accessProviders.ArtifactTypeAccessProvder;
 import org.eclipse.osee.framework.ui.skynet.action.OpenAssociatedArtifactFromBranchProvider;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactNameConflictHandler;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPasteOperation;
+import org.eclipse.osee.framework.ui.skynet.artifact.IAccessPolicyHandlerService;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectionDialog;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiUtil;
 import org.eclipse.osee.framework.ui.skynet.dialogs.ArtifactPasteSpecialDialog;
@@ -610,24 +612,30 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
       createMenuItem.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
-            super.widgetSelected(e);
             try {
                ArtifactTypeFilteredTreeEntryDialog dialog = getDialog();
                Artifact parent = getParent();
 
-               if (dialog.open() == Window.OK) {
-                  IArtifactType type = dialog.getSelection();
-                  String name = dialog.getEntryValue();
+               IAccessPolicyHandlerService policy = SkynetGuiPlugin.getInstance().getPolicyHandlerService();
 
-                  SkynetTransaction transaction =
-                     new SkynetTransaction(branch, String.format("Created new %s \"%s\" in artifact explorer",
-                        type.getName(), name));
-                  parent.addNewChild(null, type, name);
-                  parent.persist(transaction);
-                  transaction.execute();
+               PermissionStatus status =
+                  policy.hasArtifactPermission(java.util.Collections.singleton(parent), PermissionEnum.WRITE, Level.FINE);
 
-                  treeViewer.refresh();
-                  treeViewer.refresh(false);
+               if (status.matched()) {
+                  if (dialog.open() == Window.OK) {
+                     IArtifactType type = dialog.getSelection();
+                     String name = dialog.getEntryValue();
+
+                     SkynetTransaction transaction =
+                        new SkynetTransaction(branch, String.format("Created new %s \"%s\" in artifact explorer",
+                           type.getName(), name));
+                     parent.addNewChild(null, type, name);
+                     parent.persist(transaction);
+                     transaction.execute();
+
+                     treeViewer.refresh();
+                     treeViewer.refresh(false);
+                  }
                }
             } catch (Exception ex) {
                OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -641,9 +649,8 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
             artifactTypes.remove(CoreArtifactTypes.RootArtifact);
 
             ArtifactTypeFilteredTreeEntryDialog dialog =
-               new ArtifactTypeFilteredTreeEntryDialog(new ArtifactTypeAccessProvder(),
-                  SkynetGuiPlugin.getInstance().getPolicyHandlerService(), branch, "New Child",
-                  "Enter name and select Artifact type to create", "Artifact Name");
+               new ArtifactTypeFilteredTreeEntryDialog("New Child", "Enter name and select Artifact type to create",
+                  "Artifact Name");
             dialog.setInput(artifactTypes);
             return dialog;
          }

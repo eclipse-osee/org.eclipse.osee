@@ -95,6 +95,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
 
    private MenuItem openMenuItem, wordPreviewItem, editMenuItem, viewRelationTreeItem, deleteRelationMenuItem,
       massEditMenuItem, deleteArtifactMenuItem, revealInArtifactExporerMenuItem;
+
    private final Artifact artifact;
    private final RelationLabelProvider relationLabelProvider;
    private final ToolBar toolBar;
@@ -113,9 +114,9 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
       this.artifact = artifact;
       this.editor = editor;
       this.relationLabelProvider = new RelationLabelProvider(artifact);
+      this.toolBar = toolBar;
 
       createPartControl();
-      this.toolBar = toolBar;
    }
 
    public TreeViewer getTreeViewer() {
@@ -479,7 +480,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
          boolean valid = selection.getFirstElement() instanceof WrapperForRelationLink;
 
          for (MenuItem item : accessControlitems) {
-            item.setEnabled(valid && !artifact.isReadOnly());
+            item.setEnabled(valid && !checkLinksReadOnly());
          }
 
          for (MenuItem item : artEnabledOnlyitems) {
@@ -542,7 +543,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
     * Performs the deletion functionality
     */
    private void performDeleteRelation(IStructuredSelection selection) {
-      if (artifact.isReadOnly()) {
+      if (checkLinksReadOnly()) {
          MessageDialog.openError(
             Displays.getActiveShell(),
             "Delete Relation Error",
@@ -619,6 +620,10 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
       refresh();
    }
 
+   private boolean checkLinksReadOnly() {
+      return artifact.isReadOnly();
+   }
+
    private class RelationSkynetDragAndDrop extends SkynetDragAndDrop {
       boolean isFeedbackAfter = false;
 
@@ -652,7 +657,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
          event.detail = DND.DROP_NONE;
 
          if (selected != null && selected.getData() instanceof RelationTypeSideSorter) {
-            if (artifact.isReadOnly()) {
+            if (checkLinksReadOnly()) {
                event.detail = DND.DROP_NONE;
 
                MessageDialog.openError(
@@ -671,7 +676,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
             if (obj instanceof WrapperForRelationLink) {
                WrapperForRelationLink dropTarget = (WrapperForRelationLink) obj;
 
-               if (artifact.isReadOnly()) {
+               if (checkLinksReadOnly()) {
                   event.detail = DND.DROP_NONE;
                   MessageDialog.openError(
                      Displays.getActiveShell(),

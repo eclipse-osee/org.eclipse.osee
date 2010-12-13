@@ -10,20 +10,24 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet;
 
+import java.util.Collections;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.RelationTypeSide;
+import org.eclipse.osee.framework.core.model.access.PermissionStatus;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
+import org.eclipse.osee.framework.ui.skynet.artifact.IAccessPolicyHandlerService;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 
@@ -31,6 +35,8 @@ import org.eclipse.swt.graphics.Image;
  * @author Ryan D. Brooks
  */
 public class RelationLabelProvider implements ITableLabelProvider, ILabelProvider {
+   private static final Image LOCK_IMAGE = ImageManager.getImage(FrameworkImage.LOCK_OVERLAY);
+
    private Artifact artifact;
 
    public RelationLabelProvider(Artifact artifact) {
@@ -39,39 +45,64 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
 
    @Override
    public Image getColumnImage(Object element, int columnIndex) {
+      Image toReturn = null;
       if (element instanceof RelationType && columnIndex == 0) {
-         return ImageManager.getImage(FrameworkImage.RELATION);
+         toReturn = ImageManager.getImage(FrameworkImage.RELATION);
       } else if (element instanceof WrapperForRelationLink && columnIndex == 0) {
-         WrapperForRelationLink artifact = (WrapperForRelationLink) element;
+         WrapperForRelationLink relationLinkWrapper = (WrapperForRelationLink) element;
          try {
-            return ArtifactImageManager.getImage(artifact.getOther());
+            toReturn = ArtifactImageManager.getImage(relationLinkWrapper.getOther());
          } catch (Exception ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
       } else if (element instanceof RelationTypeSide && columnIndex == 0) {
-         try {
-            RelationTypeSide relationTypeSide = (RelationTypeSide) element;
-            RelationSide side = relationTypeSide.getSide();
-            RelationTypeMultiplicity multiplicity = RelationTypeManager.getType(relationTypeSide).getMultiplicity();
-
-            if (side == RelationSide.SIDE_A) {
-               if (multiplicity.getSideALimit() == 1) {
-                  return ImageManager.getImage(FrameworkImage.LEFT_ARROW_1);
-               } else {
-                  return ImageManager.getImage(FrameworkImage.LEFT_ARROW_N);
-               }
-            } else {
-               if (multiplicity.getSideBLimit() == 1) {
-                  return ImageManager.getImage(FrameworkImage.RIGHT_ARROW_1);
-               } else {
-                  return ImageManager.getImage(FrameworkImage.RIGHT_ARROW_N);
-               }
-            }
-         } catch (OseeCoreException ex) {
-            return null;
-         }
+         toReturn = getImage((RelationTypeSide) element);
       }
-      return null;
+      return toReturn;
+   }
+
+   private boolean isLocked(RelationTypeSide relationTypeSide) {
+      boolean isLocked = true;
+      IAccessPolicyHandlerService policyHandlerService;
+      try {
+         policyHandlerService = SkynetGuiPlugin.getInstance().getPolicyHandlerService();
+         PermissionStatus permissionStatus =
+            policyHandlerService.hasRelationSidePermission(Collections.singleton(relationTypeSide),
+               PermissionEnum.WRITE, Level.FINE);
+         isLocked = !permissionStatus.matched();
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+      }
+      return isLocked;
+   }
+
+   private Image getImage(RelationTypeSide relationTypeSide) {
+      boolean isLocked = isLocked(relationTypeSide);
+      if (isLocked) {
+         return LOCK_IMAGE;
+      }
+
+      RelationSide side = relationTypeSide.getSide();
+      try {
+         RelationType type = RelationTypeManager.getType(relationTypeSide);
+         RelationTypeMultiplicity multiplicity = type.getMultiplicity();
+
+         if (side == RelationSide.SIDE_A) {
+            if (multiplicity.getSideALimit() == 1) {
+               return ImageManager.getImage(FrameworkImage.LEFT_ARROW_1);
+            } else {
+               return ImageManager.getImage(FrameworkImage.LEFT_ARROW_N);
+            }
+         } else {
+            if (multiplicity.getSideBLimit() == 1) {
+               return ImageManager.getImage(FrameworkImage.RIGHT_ARROW_1);
+            } else {
+               return ImageManager.getImage(FrameworkImage.RIGHT_ARROW_N);
+            }
+         }
+      } catch (OseeCoreException ex) {
+         return null;
+      }
    }
 
    @Override

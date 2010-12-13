@@ -123,4 +123,9 @@ public class AccessPolicyHandlerServiceImpl implements IAccessPolicyHandlerServi
       }
       return permissionStatus;
    }
+
+   @Override
+   public IAccessControlService getAccessService() {
+      return accessControlService;
+   }
 }

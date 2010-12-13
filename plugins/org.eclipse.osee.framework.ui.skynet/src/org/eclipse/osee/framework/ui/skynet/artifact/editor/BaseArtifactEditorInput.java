@@ -57,7 +57,8 @@ public abstract class BaseArtifactEditorInput implements IEditorInput {
       if (artifact == null) {
          return "No Artifact Input Provided";
       }
-      return String.format("%s%s", artifact.getVersionedName(), artifact.isReadOnly() ? " (Read-Only)" : "");
+      //      return String.format("%s%s", artifact.getVersionedName(), artifact.isReadOnly() ? " (Read-Only)" : "");
+      return artifact.getVersionedName();
    }
 
    @Override
