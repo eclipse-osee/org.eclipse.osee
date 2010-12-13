@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.cellEditor;
 
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.nebula.widgets.calendarcombo.CalendarCombo;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -36,7 +37,12 @@ public class UniversalCellEditor extends CellEditor {
       super(parent, style);
       this.comboBox = new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
       this.textBox = new Text(parent, SWT.SINGLE);
-      this.datePicker = new CalendarCombo(parent, SWT.BORDER);
+
+      int cstyle = SWT.BORDER;
+      if (!Lib.isWindows()) {
+         cstyle |= SWT.FLAT;
+      }
+      this.datePicker = new CalendarCombo(parent, cstyle);
 
       setValueValid(true);
    }

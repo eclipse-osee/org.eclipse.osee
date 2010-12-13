@@ -23,6 +23,7 @@ import org.eclipse.nebula.widgets.calendarcombo.CalendarCombo;
 import org.eclipse.nebula.widgets.calendarcombo.CalendarListenerAdapter;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
@@ -95,7 +96,12 @@ public class XDate extends XWidget {
 
       labelWidget = new Label(parent, SWT.NONE);
       labelWidget.setText(getLabel() + ": ");
-      dateCombo = new CalendarCombo(parent, SWT.BORDER);
+
+      int style = SWT.BORDER;
+      if (!Lib.isWindows()) {
+         style |= SWT.FLAT;
+      }
+      dateCombo = new CalendarCombo(parent, style);
       dateCombo.setEnabled(isEditable());
       GridData gd = new GridData();
       gd.widthHint = 100;
