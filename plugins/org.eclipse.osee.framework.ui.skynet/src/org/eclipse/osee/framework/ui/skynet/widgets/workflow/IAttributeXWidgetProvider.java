@@ -20,5 +20,8 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  */
 public interface IAttributeXWidgetProvider {
 
+   /**
+    * Return widget layout data or empty list if this provider doesn't provide for this attribute type
+    */
    public List<DynamicXWidgetLayoutData> getDynamicXWidgetLayoutData(IAttributeType attributeType) throws OseeCoreException;
 }

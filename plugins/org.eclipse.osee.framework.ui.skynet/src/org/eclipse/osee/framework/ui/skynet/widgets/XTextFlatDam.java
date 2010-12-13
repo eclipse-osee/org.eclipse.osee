@@ -42,13 +42,18 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.progress.UIJob;
 
-public class XFlatDam extends XFlatWidget<String> implements IAttributeWidget {
+public class XTextFlatDam extends XFlatWidget<String> implements IAttributeWidget {
    private Artifact artifact;
    private IAttributeType attributeType;
    private final Map<String, XWidget> xWidgets;
    private final XModifiedListener xModifiedListener;
+   public static final String WIDGET_ID = XTextFlatDam.class.getSimpleName();
 
-   public XFlatDam(String displayLabel) {
+   public XTextFlatDam() {
+      this("");
+   }
+
+   public XTextFlatDam(String displayLabel) {
       super(displayLabel);
       this.xWidgets = new LinkedHashMap<String, XWidget>();
       this.artifact = null;

@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.util.widgets;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
@@ -39,11 +38,12 @@ public class AtsAttributeXWidgetProvider extends DefaultAttributeXWidgetProvider
 
    @Override
    public List<DynamicXWidgetLayoutData> getDynamicXWidgetLayoutData(IAttributeType attributeType) throws OseeCoreException {
-      List<DynamicXWidgetLayoutData> layouts = super.getDynamicXWidgetLayoutData(attributeType);
-      DynamicXWidgetLayoutData layoutData = layouts.get(0);
+      List<DynamicXWidgetLayoutData> layouts = new ArrayList<DynamicXWidgetLayoutData>();
       if (XFLAT_ATTRIBUTE_TYPES.contains(attributeType)) {
-         layoutData.setXWidgetName("XFlatDam");
+         layouts = super.getDynamicXWidgetLayoutData(attributeType);
+         DynamicXWidgetLayoutData layoutData = layouts.get(0);
+         layoutData.setXWidgetName("XTextFlatDam");
       }
-      return Arrays.asList(layoutData);
+      return layouts;
    }
 }

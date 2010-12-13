@@ -50,7 +50,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDateDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XFileTextWithSelectionDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XFileTextWithSelectionDialog.Type;
-import org.eclipse.osee.framework.ui.skynet.widgets.XFlatDam;
+import org.eclipse.osee.framework.ui.skynet.widgets.XTextFlatDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XFloat;
 import org.eclipse.osee.framework.ui.skynet.widgets.XFloatDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlabelMemberSelDam;
@@ -220,7 +220,7 @@ public final class XWidgetFactory {
       } else if (xWidgetName.startsWith("XStackedDam")) {
          xWidget = new XStackedDam(name);
       } else if (xWidgetName.startsWith("XFlatDam")) {
-         xWidget = new XFlatDam(name);
+         xWidget = new XTextFlatDam(name);
       } else if (xWidgetName.startsWith("XComboBooleanDam")) {
          xWidget = new XComboBooleanDam(name);
          XComboBooleanDam combo = new XComboBooleanDam(name);

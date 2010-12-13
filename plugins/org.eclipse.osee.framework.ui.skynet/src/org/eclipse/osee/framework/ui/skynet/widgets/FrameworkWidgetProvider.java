@@ -43,6 +43,9 @@ public class FrameworkWidgetProvider implements IXWidgetProvider {
       } else if (widgetName.equals(XArtifactTypeComboViewer.WIDGET_ID)) {
          XArtifactTypeComboViewer widget = new XArtifactTypeComboViewer();
          toReturn = widget;
+      } else if (widgetName.equals(XTextFlatDam.WIDGET_ID)) {
+         XTextFlatDam widget = new XTextFlatDam();
+         toReturn = widget;
       }
       return toReturn;
    }
