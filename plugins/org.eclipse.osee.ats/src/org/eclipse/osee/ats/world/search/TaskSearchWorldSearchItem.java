@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
@@ -27,6 +28,7 @@ import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.task.ITaskEditorProvider;
 import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.task.TaskEditorParameterSearchItem;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.XHyperlabelTeamDefinitionSelection;
@@ -41,6 +43,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -108,6 +111,13 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
       // If user selected, handle that case separately cause it's faster to start with assigned
       if (user != null) {
          Set<TaskArtifact> userTaskArts = getUserAssignedTaskArtifacts();
+         if (isIncludeCompletedCheckbox() || isIncludeCancelledCheckbox()) {
+            // If include cancelled or completed, need to perform extra search
+            // Note: Don't need to do this for Originator, Subscribed or Favorites, cause it does completed canceled in it's own searches
+            userTaskArts.addAll(Collections.castMatching(TaskArtifact.class,
+               ArtifactQuery.getArtifactListFromTypeAndAttribute(AtsArtifactTypes.Task, AtsAttributeTypes.State,
+                  "%<" + user.getUserId() + ">%", AtsUtil.getAtsBranch())));
+         }
          Set<TaskArtifact> removeTaskArts = new HashSet<TaskArtifact>();
          for (TaskArtifact taskArt : userTaskArts) {
             if (verArt != null && !verArt.equals(taskArt.getParentTeamWorkflow().getTargetedVersion())) {
