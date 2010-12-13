@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.ui.skynet.results;
 
 import org.eclipse.osee.framework.core.operation.OperationReporter;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsEditorTableTab;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsXViewerRow;
 
@@ -25,10 +24,5 @@ public class ResultsReporter extends OperationReporter {
    @Override
    public void report(String... row) {
       resultsTab.addRow(new ResultsXViewerRow(row));
-   }
-
-   @Override
-   public void report(Throwable th) {
-      report(Lib.exceptionToString(th));
    }
 }

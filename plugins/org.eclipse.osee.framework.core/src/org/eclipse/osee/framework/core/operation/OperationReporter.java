@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.core.operation;
 
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
  * @author Ryan D. Brooks
@@ -19,7 +20,9 @@ public abstract class OperationReporter {
 
    public abstract void report(String... row);
 
-   public abstract void report(Throwable th);
+   public void report(Throwable th) {
+      report(Lib.exceptionToString(th));
+   }
 
    public void report(IStatus status) {
       if (status.getSeverity() == IStatus.ERROR) {
