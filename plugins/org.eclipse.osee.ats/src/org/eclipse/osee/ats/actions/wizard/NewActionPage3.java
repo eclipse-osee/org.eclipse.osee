@@ -45,11 +45,15 @@ import org.osgi.framework.Bundle;
 public class NewActionPage3 extends WizardPage {
    private WorkPage page;
    private Composite comp;
-   private final NewActionWizard wizard;
+   protected final NewActionWizard wizard;
    private static Set<IAtsWizardItem> wizardExtensionItems = new HashSet<IAtsWizardItem>();
 
    public NewActionPage3(NewActionWizard wizard) {
-      super("Create new ATS Action", "Create ATS Action", null);
+      this(wizard, "Create new ATS Action", "Create ATS Action");
+   }
+
+   public NewActionPage3(NewActionWizard wizard, String pageName, String title) {
+      super(pageName, title, null);
       this.wizard = wizard;
       setMessage("Enter requested information and select Finish.");
       getWizardXWidgetExtensions();

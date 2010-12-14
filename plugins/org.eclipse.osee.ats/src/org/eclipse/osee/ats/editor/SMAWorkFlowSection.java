@@ -518,7 +518,9 @@ public class SMAWorkFlowSection extends SectionPart {
       transitionToStateCombo.setDisplayLabel(false);
       List<Object> allPages = new ArrayList<Object>();
       for (WorkPageDefinition nextPage : sma.getToWorkPages()) {
-         allPages.add(nextPage);
+         if (!allPages.contains(nextPage)) {
+            allPages.add(nextPage);
+         }
       }
       transitionToStateCombo.setInput(allPages);
       transitionToStateCombo.setLabelProvider(new WorkPageDefinitionLabelProvider());
@@ -773,7 +775,8 @@ public class SMAWorkFlowSection extends SectionPart {
                return false;
             }
          } catch (Exception ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Exception occurred during transition; Aborting.", ex);
+            return false;
          }
       }
 
@@ -830,6 +833,10 @@ public class SMAWorkFlowSection extends SectionPart {
    }
 
    public boolean handlePopulateStateMetrics() throws OseeCoreException {
+      // Don't log metrics for completed / cancelled states
+      if (atsWorkPage.isCompletedOrCancelledPage()) {
+         return true;
+      }
 
       // Page has the ability to override the autofill of the metrics
       if (!atsWorkPage.isRequireStateHoursSpentPrompt() && sma.getStateMgr().getHoursSpent() == 0) {
