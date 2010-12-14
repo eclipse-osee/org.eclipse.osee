@@ -139,7 +139,7 @@
 				${line.separator}
 				&lt;ConnectionDescription id=&quot;h2.db.connection&quot;&gt;${line.separator}
 					&lt;Driver&gt;org.h2.Driver&lt;/Driver&gt;${line.separator}
-					&lt;Url&gt;#PREFIX#:tcp://#HOST#:#PORT#/#DBHOME##DBNAME#;IGNORECASE=TRUE;SCHEMA_SEARCH_PATH=@{dbUser}, PUBLIC&lt;/Url&gt;${line.separator}
+					&lt;Url&gt;#PREFIX#:tcp://#HOST#:#PORT#/#DBHOME##DBNAME#;IGNORECASE=TRUE;SCHEMA_SEARCH_PATH=@{dbUser}, PUBLIC;MVCC=TRUE&lt;/Url&gt;${line.separator}
 				&lt;/ConnectionDescription&gt;${line.separator}
 				${line.separator}				
 				&lt;ConnectionDescription id=&quot;postgresql.db.connection&quot;&gt;${line.separator}
