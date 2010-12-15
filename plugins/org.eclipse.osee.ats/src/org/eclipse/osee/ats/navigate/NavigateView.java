@@ -36,6 +36,7 @@ import org.eclipse.osee.ats.actions.OpenChangeReportByIdAction;
 import org.eclipse.osee.ats.actions.OpenWorkflowByIdAction;
 import org.eclipse.osee.ats.actions.OpenWorldByIdAction;
 import org.eclipse.osee.ats.config.AtsBulkLoad;
+import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
@@ -77,7 +78,6 @@ import org.eclipse.ui.progress.UIJob;
 public class NavigateView extends ViewPart implements IActionable {
 
    public static final String VIEW_ID = "org.eclipse.osee.ats.navigate.NavigateView";
-   public static final String HELP_CONTEXT_ID = "atsNavigator";
    private static final String INPUT = "filter";
    private static final String FILTER_STR = "filterStr";
 
@@ -127,7 +127,7 @@ public class NavigateView extends ViewPart implements IActionable {
 
                   xNavComp = new AtsNavigateComposite(AtsNavigateViewItems.getInstance(), parent, SWT.NONE);
 
-                  HelpUtil.setHelp(xNavComp, HELP_CONTEXT_ID, "org.eclipse.osee.ats.help.ui");
+                  HelpUtil.setHelp(xNavComp, AtsHelpContext.NAVIGATOR);
                   createToolBar();
 
                   // add search text box

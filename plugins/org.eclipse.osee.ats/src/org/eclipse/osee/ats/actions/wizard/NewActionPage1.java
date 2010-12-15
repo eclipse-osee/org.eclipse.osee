@@ -22,6 +22,7 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.dialog.AITreeContentProvider;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
@@ -160,7 +161,7 @@ public class NewActionPage1 extends WizardPage {
    }
 
    private void setHelpContexts() {
-      HelpUtil.setHelp(this.getControl(), "new_action_wizard_page_1", "org.eclipse.osee.ats.help.ui");
+      HelpUtil.setHelp(this.getControl(), AtsHelpContext.NEW_ACTION_PAGE_1);
    }
 
    public Set<ActionableItemArtifact> getSelectedActionableItemArtifacts() {

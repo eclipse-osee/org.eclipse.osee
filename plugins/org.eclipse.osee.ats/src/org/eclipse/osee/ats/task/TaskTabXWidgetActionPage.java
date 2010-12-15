@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.actions.TaskDeleteAction;
 import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.export.AtsExportManager;
+import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.world.AtsXWidgetActionFormPage;
 import org.eclipse.osee.ats.world.WorldAssigneeFilter;
@@ -63,7 +64,6 @@ public class TaskTabXWidgetActionPage extends AtsXWidgetActionFormPage implement
 
    private final SMAEditor smaEditor;
    private TaskComposite taskComposite;
-   private final static String HELP_CONTEXT_ID = "atsWorkflowEditorTaskTab";
    private final WorldCompletedFilter worldCompletedFilter = new WorldCompletedFilter();
    private WorldAssigneeFilter worldAssigneeFilter = null;
    private Action filterCompletedAction, filterMyAssigneeAction;
@@ -81,7 +81,7 @@ public class TaskTabXWidgetActionPage extends AtsXWidgetActionFormPage implement
 
       resultsContainer = toolkit.createClientContainer(resultsSection, 1);
       taskComposite = new TaskComposite(smaEditor, resultsContainer, SWT.BORDER);
-      HelpUtil.setHelp(taskComposite, HELP_CONTEXT_ID, "org.eclipse.osee.ats.help.ui");
+      HelpUtil.setHelp(taskComposite, AtsHelpContext.WORKFLOW_EDITOR__TASK_TAB);
       taskComposite.loadTable();
       return resultsSection;
    }

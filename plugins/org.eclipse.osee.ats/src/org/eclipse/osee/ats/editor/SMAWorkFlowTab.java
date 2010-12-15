@@ -137,7 +137,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
 
          setLoading(true);
          if (sma.getHelpContext() != null) {
-            HelpUtil.setHelp(managedForm.getForm(), sma.getHelpContext(), "org.eclipse.osee.ats.help.ui");
+            HelpUtil.setHelp(managedForm.getForm(), sma.getHelpContext());
          }
 
          refreshData();

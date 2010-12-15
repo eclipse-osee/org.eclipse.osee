@@ -36,6 +36,7 @@ import org.eclipse.gef.ui.parts.GraphicalViewerKeyHandler;
 import org.eclipse.gef.ui.parts.TreeViewer;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.util.TransferDropTargetListener;
+import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
@@ -121,7 +122,7 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
       ContextMenuProvider cmProvider = new AtsWorkflowConfigEditorContextMenuProvider(viewer, getActionRegistry());
       viewer.setContextMenu(cmProvider);
       getSite().registerContextMenu(cmProvider, viewer);
-      HelpUtil.setHelp(viewer.getControl(), "atsConfigureWorkflow", "org.eclipse.osee.ats.help.ui");
+      HelpUtil.setHelp(viewer.getControl(), AtsHelpContext.CONFIGURE_WORKFLOW);
 
    }
 

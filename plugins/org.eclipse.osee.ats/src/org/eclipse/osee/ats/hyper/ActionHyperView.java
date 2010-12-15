@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.config.AtsBulkLoad;
 import org.eclipse.osee.ats.editor.SMAEditor;
+import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -62,7 +63,6 @@ import org.eclipse.ui.PlatformUI;
 public class ActionHyperView extends HyperView implements IActionable, IArtifactEventListener, IPerspectiveListener2 {
 
    public final static String VIEW_ID = "org.eclipse.osee.ats.hyper.ActionHyperView";
-   private final static String HELP_CONTEXT_ID = "atsActionView";
    private AbstractAtsArtifact currentArtifact;
    private Cursor cursor;
 
@@ -85,8 +85,8 @@ public class ActionHyperView extends HyperView implements IActionable, IArtifact
       AtsBulkLoad.loadConfig(false);
       super.createPartControl(top);
       OseeUiActions.addBugToViewToolbar(this, this, AtsPlugin.PLUGIN_ID, VIEW_ID, "SkyWalker");
-      HelpUtil.setHelp(top, HELP_CONTEXT_ID, "org.eclipse.osee.ats.help.ui");
-      HelpUtil.setHelp(composite, HELP_CONTEXT_ID, "org.eclipse.osee.ats.help.ui");
+      HelpUtil.setHelp(top, AtsHelpContext.ACTION_VIEW);
+      HelpUtil.setHelp(composite, AtsHelpContext.ACTION_VIEW);
       OseeEventManager.addListener(this);
    }
 

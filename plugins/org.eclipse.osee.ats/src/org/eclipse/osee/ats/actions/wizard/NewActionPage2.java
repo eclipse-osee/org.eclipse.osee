@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.actions.wizard;
 
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
+import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -108,7 +109,7 @@ public class NewActionPage2 extends WizardPage {
    }
 
    private void setHelpContexts() {
-      HelpUtil.setHelp(this.getControl(), "new_action_wizard_page_2", "org.eclipse.osee.ats.help.ui");
+      HelpUtil.setHelp(this.getControl(), AtsHelpContext.NEW_ACTION_PAGE_2);
    }
 
    private void handlePopulateWithDebugInfo() {

@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorAction;
 import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorSelected;
 import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.export.AtsExportManager;
+import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.SMAMetrics;
 import org.eclipse.osee.ats.world.AtsXWidgetActionFormPage;
@@ -64,7 +65,6 @@ public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage implem
 
    private final TaskEditor taskEditor;
    private TaskComposite taskComposite;
-   private final static String HELP_CONTEXT_ID = "atsWorkflowEditorTaskTab";
    private final WorldCompletedFilter worldCompletedFilter = new WorldCompletedFilter();
    private WorldAssigneeFilter worldAssigneeFilter = null;
    private Action filterCompletedAction, filterMyAssigneeAction, selectionMetricsAction;
@@ -82,7 +82,7 @@ public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage implem
 
       resultsContainer = toolkit.createClientContainer(resultsSection, 1);
       taskComposite = new TaskComposite(taskEditor, resultsContainer, SWT.BORDER);
-      HelpUtil.setHelp(taskComposite, HELP_CONTEXT_ID, "org.eclipse.osee.ats.help.ui");
+      HelpUtil.setHelp(taskComposite, AtsHelpContext.WORKFLOW_EDITOR__TASK_TAB);
       return resultsSection;
    }
 

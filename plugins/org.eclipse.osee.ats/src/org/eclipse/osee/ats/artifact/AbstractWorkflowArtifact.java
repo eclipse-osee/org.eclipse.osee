@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.artifact.note.ArtifactNote;
 import org.eclipse.osee.ats.artifact.note.AtsNote;
 import org.eclipse.osee.ats.column.TargetedVersionColumn;
 import org.eclipse.osee.ats.editor.SMAEditor;
+import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.notify.AtsNotification;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
@@ -66,6 +67,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
+import org.eclipse.osee.framework.ui.plugin.util.HelpContext;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FrameworkArtifactImageProvider;
 import org.eclipse.osee.framework.ui.skynet.group.IGroupExplorerProvider;
@@ -159,8 +161,8 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return ((TeamWorkFlowArtifact) this).getTeamDefinition().getTeamDefinitionHoldingVersions() != null && ((TeamWorkFlowArtifact) this).getTeamDefinition().getTeamDefinitionHoldingVersions().isTeamUsesVersions();
    }
 
-   public String getHelpContext() {
-      return "atsWorkflowEditorWorkflowTab";
+   public HelpContext getHelpContext() {
+      return AtsHelpContext.WORKFLOW_EDITOR__WORKFLOW_TAB;
    }
 
    public String getArtifactSuperTypeName() {

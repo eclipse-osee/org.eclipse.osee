@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
@@ -50,7 +51,6 @@ import org.eclipse.ui.part.MultiPageEditorPart;
 public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableEditor, IAtsMetricsProvider, IActionable {
    public static final String EDITOR_ID = "org.eclipse.osee.ats.world.WorldEditor";
    private WorldXWidgetActionPage worldXWidgetActionPage;
-   public static final String HELP_CONTEXT_ID = "atsWorldView";
    public static final int TITLE_MAX_LENGTH = 80;
 
    @Override
@@ -156,8 +156,7 @@ public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableE
          setPartName(provider.getSelectedName(SearchType.Search));
 
          // Until WorldEditor has different help, just use WorldView's help
-         HelpUtil.setHelp(worldXWidgetActionPage.getWorldComposite().getControl(), HELP_CONTEXT_ID,
-            "org.eclipse.osee.ats.help.ui");
+         HelpUtil.setHelp(worldXWidgetActionPage.getWorldComposite().getControl(), AtsHelpContext.WORLD_VIEW);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }

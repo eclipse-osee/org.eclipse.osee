@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.artifact;
 
 import java.util.Collection;
+import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.util.StateManager;
 import org.eclipse.osee.ats.util.widgets.XDecisionOptions;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -19,6 +20,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
+import org.eclipse.osee.framework.ui.plugin.util.HelpContext;
 
 /**
  * @author Donald G. Dunne
@@ -33,8 +35,8 @@ public class DecisionReviewArtifact extends AbstractReviewArtifact implements IR
    }
 
    @Override
-   public String getHelpContext() {
-      return "decisionReview";
+   public HelpContext getHelpContext() {
+      return AtsHelpContext.DECISION_REVIEW;
    }
 
    @Override
