@@ -150,7 +150,7 @@ public class AttributeTypeManager {
             attributeCount);
       }
 
-      new DbTransaction() {
+      DbTransaction dbTransaction = new DbTransaction() {
          @Override
          protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
             int attributeTypeId = attributeType.getId();
@@ -158,6 +158,7 @@ public class AttributeTypeManager {
             ConnectionHandler.runPreparedUpdate(connection, DELETE_ATTRIBUTE_TYPE, attributeTypeId);
          }
       };
+      dbTransaction.execute();
    }
 
    public static void persist() throws OseeCoreException {
