@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.artifact.editor.sections;
 
+import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
+import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
@@ -71,6 +73,9 @@ public class DetailsFormSection extends ArtifactEditorFormSection {
          getSection().setClient(composite);
          toolkit.paintBordersFor(composite);
          sectionCreated = true;
+
+         HelpUtil.setHelp(composite, OseeHelpContext.ARTIFACT_EDITOR__DETAILS);
+         HelpUtil.setHelp(formText, OseeHelpContext.ARTIFACT_EDITOR__DETAILS);
       }
 
       if (Widgets.isAccessible(formText)) {

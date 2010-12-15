@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.RelationType;
+import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -128,7 +129,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
          setControl(parent);
          aContainer.setPerformActionEnabled(false);
 
-         HelpUtil.setHelp(mainComposite, "artifact_search", "org.eclipse.osee.framework.help.ui");
+         HelpUtil.setHelp(mainComposite, OseeHelpContext.ARTIFACT_SEARCH);
 
          updateWidgets();
 

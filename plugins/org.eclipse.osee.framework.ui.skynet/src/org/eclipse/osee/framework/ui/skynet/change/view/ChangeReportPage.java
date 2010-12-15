@@ -28,9 +28,11 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeReportEditorInput;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiData;
@@ -116,6 +118,7 @@ public class ChangeReportPage extends FormPage {
       bindMenu();
 
       recomputeChangeReport(uiData.isLoadOnOpenEnabled());
+      HelpUtil.setHelp(form.getBody(), OseeHelpContext.CHANGE_REPORT_EDITOR);
    }
 
    private void bindMenu() {

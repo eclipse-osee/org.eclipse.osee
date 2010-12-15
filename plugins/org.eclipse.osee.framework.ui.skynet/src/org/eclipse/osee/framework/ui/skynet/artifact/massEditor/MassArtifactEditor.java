@@ -21,6 +21,7 @@ import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
@@ -223,7 +224,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IActio
          setPartName(((MassArtifactEditorInput) editorInput).getName());
       }
 
-      HelpUtil.setHelp(getContainer(), "mass_artifact_editor", "org.eclipse.osee.framework.help.ui");
+      HelpUtil.setHelp(getContainer(), OseeHelpContext.MASS_EDITOR);
 
       Composite comp = new Composite(getContainer(), SWT.NONE);
       comp.setLayout(new GridLayout(1, true));

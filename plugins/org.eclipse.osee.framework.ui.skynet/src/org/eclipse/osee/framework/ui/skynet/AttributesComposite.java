@@ -24,6 +24,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -115,7 +116,7 @@ public class AttributesComposite extends Composite {
       mainSash.setWeights(new int[] {8, 2});
       sashForm.setWeights(new int[] {5, 5});
 
-      setHelpContexts();
+      HelpUtil.setHelp(tableViewer.getControl(), OseeHelpContext.ARTIFACT_EDITOR__ATTRIBUTES);
    }
 
    private void createTableArea(Composite parent) {
@@ -346,10 +347,6 @@ public class AttributesComposite extends Composite {
       for (ModifyAttributesListener listener : modifyAttrListeners) {
          listener.handleEvent();
       }
-   }
-
-   private void setHelpContexts() {
-      HelpUtil.setHelp(tableViewer.getControl(), "artifact_editor", "org.eclipse.osee.framework.help.ui");
    }
 
    /**

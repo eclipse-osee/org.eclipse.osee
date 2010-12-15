@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
@@ -84,7 +85,6 @@ import org.eclipse.ui.part.ViewPart;
 public class HistoryView extends ViewPart implements IActionable, IBranchEventListener, ITransactionRecordSelectionProvider, IRebuildMenuListener {
 
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView";
-   private static String HELP_CONTEXT_ID = "HistoryView";
    private XHistoryWidget xHistoryWidget;
    private Artifact artifact;
 
@@ -169,7 +169,9 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
       getSite().registerContextMenu(VIEW_ID, menuManager, xHistoryWidget.getXViewer());
 
       getSite().setSelectionProvider(xHistoryWidget.getXViewer());
-      HelpUtil.setHelp(parent, HELP_CONTEXT_ID, "org.eclipse.osee.framework.help.ui");
+
+      HelpUtil.setHelp(parent, OseeHelpContext.HISTORY_VIEW);
+
       OseeStatusContributionItemFactory.addTo(this, true);
 
       setupMenus();

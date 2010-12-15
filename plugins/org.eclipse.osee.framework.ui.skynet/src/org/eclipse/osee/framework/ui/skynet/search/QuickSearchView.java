@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.SearchOptions;
 import org.eclipse.osee.framework.core.message.SearchRequest;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -62,8 +63,6 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener {
    private static final String LAST_QUERY_KEY_ID = "lastQuery";
    private static final String LAST_BRANCH_GUID = "lastBranch";
    private static final String QUERY_HISTORY_KEY_ID = "queryHistory";
-
-   private static final String MAIN_HELP_CONTEXT = "quick_search_text";
 
    private Label branchLabel;
    private XBranchSelectWidget branchSelect;
@@ -182,7 +181,7 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener {
 
       loadState();
       compositeEnablement(searchComposite, false);
-      searchComposite.setHelpContext(MAIN_HELP_CONTEXT);
+      searchComposite.setHelpContext(OseeHelpContext.QUICK_SEARCH);
 
       branchLabel = new Label(parent, SWT.NONE);
       branchLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));

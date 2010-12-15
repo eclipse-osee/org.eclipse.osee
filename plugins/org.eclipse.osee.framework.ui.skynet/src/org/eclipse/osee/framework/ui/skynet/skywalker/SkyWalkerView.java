@@ -25,6 +25,7 @@ import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.data.SystemUser;
+import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.util.AFile;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -36,6 +37,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.ArtifactDoubleClick;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -111,7 +113,7 @@ public class SkyWalkerView extends ViewPart {
 
       Composite child1 = new Composite(sashForm, SWT.BORDER);
       child1.setLayout(new FillLayout());
-      new SkyWalkerTabOptions(child1, SWT.NONE, options);
+      SkyWalkerTabOptions tabOptions = new SkyWalkerTabOptions(child1, SWT.NONE, options);
 
       options.addSkyWalkerOptionsChangeListener(new ISkyWalkerOptionsChangeListener() {
          @Override
@@ -158,6 +160,9 @@ public class SkyWalkerView extends ViewPart {
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
+
+      HelpUtil.setHelp(viewer.getControl(), OseeHelpContext.SKY_WALKER_VIEW);
+      HelpUtil.setHelp(tabOptions.getControl(), OseeHelpContext.SKY_WALKER_VIEW);
    }
 
    protected void createActions() {

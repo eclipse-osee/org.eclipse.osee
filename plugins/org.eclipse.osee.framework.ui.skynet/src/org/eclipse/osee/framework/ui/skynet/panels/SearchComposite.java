@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.ui.plugin.util.HelpContext;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
@@ -273,11 +274,11 @@ public class SearchComposite extends Composite implements Listener {
       }
    }
 
-   public void setHelpContext(String helpContext) {
+   public void setHelpContext(HelpContext helpContext) {
       if (Widgets.isAccessible(this.searchArea) && Widgets.isAccessible(this.executeSearch) && Widgets.isAccessible(this.clear)) {
-         HelpUtil.setHelp(searchArea, helpContext, "org.eclipse.osee.framework.help.ui");
-         HelpUtil.setHelp(executeSearch, helpContext, "org.eclipse.osee.framework.help.ui");
-         HelpUtil.setHelp(clear, helpContext, "org.eclipse.osee.framework.help.ui");
+         HelpUtil.setHelp(searchArea, helpContext);
+         HelpUtil.setHelp(executeSearch, helpContext);
+         HelpUtil.setHelp(clear, helpContext);
       }
    }
 

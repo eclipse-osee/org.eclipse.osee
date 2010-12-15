@@ -7,3 +7,5 @@ Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.apache.ant;bundle-version="1.7.1"
 Bundle-ActivationPolicy: lazy
+Import-Package: org.eclipse.osee.framework.ui.plugin.util
+Export-Package: org.eclipse.osee.framework.help.ui

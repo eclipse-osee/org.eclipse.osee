@@ -19,11 +19,13 @@ import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
+import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
@@ -121,6 +123,7 @@ public class AttributeFormPart extends AbstractFormPart {
             internalComposite = createAttributeTypeControls(composite, artifact, attributeType, isEditable, false, 20);
          }
          setLabelFonts(internalComposite, FontManager.getDefaultLabelFont());
+         HelpUtil.setHelp(internalComposite, OseeHelpContext.ARTIFACT_EDITOR__ATTRIBUTES);
          xWidgetsMap.put(attributeType, internalComposite);
       }
       refresh();

@@ -13,6 +13,8 @@ package org.eclipse.osee.framework.ui.skynet.artifact.editor.sections;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.ToolBarManager;
+import org.eclipse.osee.framework.help.ui.OseeHelpContext;
+import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.IActionContributor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.parts.AttributeFormPart;
@@ -102,6 +104,8 @@ public class AttributesFormSection extends ArtifactEditorFormSection {
 
       section.layout(true);
       form.getForm().getBody().layout(true);
+
+      HelpUtil.setHelp(sectionBody, OseeHelpContext.ARTIFACT_EDITOR__ATTRIBUTES);
    }
 
    private void updateToolBarVisibility() {

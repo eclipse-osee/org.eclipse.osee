@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
@@ -63,7 +64,6 @@ import org.eclipse.ui.part.ViewPart;
 public class BranchView extends ViewPart implements IActionable, IBranchEventListener, ITransactionEventListener, ITransactionRecordSelectionProvider {
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView";
    private BranchViewPresentationPreferences branchViewPresentationPreferences;
-   private static String HELP_CONTEXT_ID = "BranchView";
    public static final String BRANCH_ID = "branchId";
    private XBranchWidget xBranchWidget;
    private final Clipboard clipboard = new Clipboard(null);
@@ -137,7 +137,9 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
       getSite().registerContextMenu(VIEW_ID, menuManager, xBranchWidget.getXViewer());
 
       getSite().setSelectionProvider(xBranchWidget.getXViewer());
-      HelpUtil.setHelp(parent, HELP_CONTEXT_ID, "org.eclipse.osee.framework.help.ui");
+
+      HelpUtil.setHelp(parent, OseeHelpContext.BRANCH_MANAGER);
+
       OseeStatusContributionItemFactory.addTo(this, true);
       getViewSite().getActionBars().updateActionBars();
 

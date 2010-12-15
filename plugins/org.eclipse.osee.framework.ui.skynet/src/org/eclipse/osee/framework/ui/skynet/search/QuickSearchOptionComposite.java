@@ -29,9 +29,11 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
+import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.ui.plugin.util.HelpContext;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -318,10 +320,10 @@ public class QuickSearchOptionComposite extends Composite {
       }
    }
 
-   private void setHelpContextForOption(String optionId, String helpContext) {
+   private void setHelpContextForOption(String optionId, HelpContext helpContext) {
       Control control = getOrCreateOptionsButton(optionId);
       if (Widgets.isAccessible(control)) {
-         HelpUtil.setHelp(control, helpContext, "org.eclipse.osee.framework.help.ui");
+         HelpUtil.setHelp(control, helpContext);
       }
    }
 
@@ -350,27 +352,27 @@ public class QuickSearchOptionComposite extends Composite {
    }
 
    private enum SearchOption {
-      Attribute_Type_Filter("quick_search_attribute_type_filter", "When selected, searches only through the artifact's containing the selected attribute types.", true, new AttributeTypeFilterConfigHandler()),
-      By_Id("quick_search_by_id_option", "When selected, searches by GUID(s) or HRID(s). Accepts comma or space separated ids.", true),
-      Include_Deleted("quick_search_deleted_option", "When selected, does not filter out deleted artifacts from search results.", false),
-      Match_Word_Order("quick_search_word_order_option", "When selected, search will match query word order.", false),
-      All_Match_Locations("quick_search_all_match_locations_option", "When selected, returns all match locations. NOTE: If the search matches many artifacts, performance may be slow.", false),
-      Case_Sensitive("quick_search_case_sensitive_option", "When selected, performs a case sensitive search. NOTE: This is only applicable if match word order is also selected.", false);
+      Attribute_Type_Filter(OseeHelpContext.QUICK_SEARCH_TYPE_FILTER, "When selected, searches only through the artifact's containing the selected attribute types.", true, new AttributeTypeFilterConfigHandler()),
+      By_Id(OseeHelpContext.QUICK_SEARCH_BY_ID, "When selected, searches by GUID(s) or HRID(s). Accepts comma or space separated ids.", true),
+      Include_Deleted(OseeHelpContext.QUICK_SEARCH_INCLUDE_DELETED, "When selected, does not filter out deleted artifacts from search results.", false),
+      Match_Word_Order(OseeHelpContext.QUICK_SEARCH_WORD_ORDER, "When selected, search will match query word order.", false),
+      All_Match_Locations(OseeHelpContext.QUICK_SEARCH_MATCH_ALL, "When selected, returns all match locations. NOTE: If the search matches many artifacts, performance may be slow.", false),
+      Case_Sensitive(OseeHelpContext.QUICK_SEARCH_CASE_SENSITIVE, "When selected, performs a case sensitive search. NOTE: This is only applicable if match word order is also selected.", false);
 
       private static String[] labels = null;
       private static String[] mutuallyExclusive = null;
       private static Map<String, IOptionConfigurationHandler<?>> configurable = null;
-      private final String helpContext;
+      private final HelpContext helpContext;
       private final String toolTip;
       private final boolean isRadio;
       private final IOptionConfigurationHandler<?> configHandler;
 
-      SearchOption(String helpContext, String toolTip, boolean isRadio) {
+      SearchOption(HelpContext helpContext, String toolTip, boolean isRadio) {
          this(helpContext, toolTip, isRadio, null);
       }
 
-      SearchOption(String helpContext, String toolTip, boolean isRadio, IOptionConfigurationHandler<?> configHandler) {
-         this.helpContext = "";
+      SearchOption(HelpContext helpContext, String toolTip, boolean isRadio, IOptionConfigurationHandler<?> configHandler) {
+         this.helpContext = helpContext;
          this.toolTip = toolTip;
          this.isRadio = isRadio;
          this.configHandler = configHandler;
@@ -380,7 +382,7 @@ public class QuickSearchOptionComposite extends Composite {
          return name().replaceAll("_", " ");
       }
 
-      public String getHelpContext() {
+      public HelpContext getHelpContext() {
          return helpContext;
       }
 

@@ -30,4 +30,8 @@ public class SkyWalkerTabOptions {
       new SkyWalkerShowAttributeTabItem(tabFolder, options);
    }
 
+   public TabFolder getControl() {
+      return tabFolder;
+   }
+
 }

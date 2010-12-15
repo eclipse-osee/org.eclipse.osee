@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.define.DefinePlugin;
+import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
@@ -38,7 +39,6 @@ import org.eclipse.ui.part.ViewPart;
 public class DefineNavigateView extends ViewPart implements IActionable {
 
    public static final String VIEW_ID = "org.eclipse.osee.define.DefineNavigateView";
-   public static final String HELP_CONTEXT_ID = "defineNavigator";
    private XNavigateComposite xNavComp;
 
    /**
@@ -63,7 +63,7 @@ public class DefineNavigateView extends ViewPart implements IActionable {
       xNavComp = new XNavigateComposite(new DefineNavigateViewItems(), parent, SWT.NONE);
       xNavComp.getFilteredTree().getViewer().setSorter(new DefineNavigateViewerSorter());
 
-      HelpUtil.setHelp(xNavComp, HELP_CONTEXT_ID, "org.eclipse.osee.define.help.ui");
+      HelpUtil.setHelp(xNavComp, OseeHelpContext.DEFINE_NAVIGATOR);
       createActions();
       xNavComp.refresh();
       addExtensionPointListenerBecauseOfWorkspaceLoading();

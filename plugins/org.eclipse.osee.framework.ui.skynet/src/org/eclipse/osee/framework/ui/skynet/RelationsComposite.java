@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.RelationTypeSide;
 import org.eclipse.osee.framework.core.model.type.RelationType;
+import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -806,7 +807,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
    }
 
    private void setHelpContexts() {
-      HelpUtil.setHelp(treeViewer.getControl(), "relation_page_tree_viewer", "org.eclipse.osee.framework.help.ui");
+      HelpUtil.setHelp(treeViewer.getControl(), OseeHelpContext.ARTIFACT_EDITOR__RELATIONS);
    }
 
    public ToolBar getToolBar() {

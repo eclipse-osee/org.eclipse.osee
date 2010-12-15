@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
-
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -33,6 +32,7 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
@@ -88,7 +88,6 @@ import org.eclipse.ui.part.ViewPart;
  */
 public class MergeView extends ViewPart implements IActionable, IBranchEventListener, IArtifactEventListener {
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView";
-   public static final String HELP_CONTEXT_ID = "Merge_Manager_View";
    private MergeXWidget mergeXWidget;
    private IHandlerService handlerService;
    private Branch sourceBranch;
@@ -230,7 +229,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
          mergeXWidget.getXViewer());
 
       getSite().setSelectionProvider(mergeXWidget.getXViewer());
-      HelpUtil.setHelp(parent, HELP_CONTEXT_ID, "org.eclipse.osee.framework.help.ui");
+      HelpUtil.setHelp(parent, OseeHelpContext.MERGE_MANAGER);
 
       OseeEventManager.addListener(this);
       OseeEventManager.addListener(this);

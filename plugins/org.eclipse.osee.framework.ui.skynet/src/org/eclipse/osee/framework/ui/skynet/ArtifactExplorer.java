@@ -47,6 +47,7 @@ import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Conditions;
+import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -363,7 +364,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
 
          updateEnablementsEtAl();
          trees.add(tree);
-         setHelpContexts();
+         HelpUtil.setHelp(treeViewer.getControl(), OseeHelpContext.ARTIFACT_EXPLORER);
 
          checkBranchReadable();
          getViewSite().getActionBars().updateActionBars();
@@ -1279,10 +1280,6 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
    @Override
    public void setSelection(ISelection selection) {
       treeViewer.setSelection(selection);
-   }
-
-   private void setHelpContexts() {
-      HelpUtil.setHelp(treeViewer.getControl(), "artifact_explorer_tree_viewer", "org.eclipse.osee.framework.help.ui");
    }
 
    @Override

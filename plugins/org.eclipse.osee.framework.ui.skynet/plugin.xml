@@ -129,23 +129,6 @@
     </page>
  </extension>
 
-	<extension point="org.eclipse.help.contexts">
-		<contexts file="contexts/artifactExplorerContexts.xml"/>
-		<contexts file="contexts/artifactSearchContexts.xml"/>
-		<contexts file="contexts/branchManagerContexts.xml"/>
-		<contexts file="contexts/changeReportContexts.xml"/>
-		<contexts file="contexts/contexts.xml"/>
-		<contexts file="contexts/relationPageContexts.xml"/>
-		<contexts file="contexts/revisionHistoryContexts.xml"/>
-		<contexts file="reference/queryLog/contexts.xml"/>
-		<contexts file="reference/quickSearch/contexts.xml"/>
-		<contexts file="reference/contexts.xml"/>
-  		<contexts file="contexts/mergeMangerContexts.xml">
-  </contexts>
-    <contexts
-          file="../org.eclipse.osee.framework.help.ui/contexts/contexts.xml">
-    </contexts>
-	</extension>
 	<extension id="org.eclipse.osee.framework.ui.skynet" name="OSEE" point="org.eclipse.ui.views">
 		<view allowMultiple="true" category="osee.jdk.core.category" class="org.eclipse.osee.framework.ui.skynet.ArtifactExplorer" icon="images/artifact_explorer.gif" id="org.eclipse.osee.framework.ui.skynet.ArtifactExplorer" name="Artifact Explorer"/>
 		<view allowMultiple="true" category="osee.jdk.core.category" class="org.eclipse.osee.framework.ui.skynet.group.GroupExplorer" icon="images/group.gif" id="org.eclipse.osee.framework.ui.skynet.group.GroupExplorer" name="OSEE Group Explorer"/>

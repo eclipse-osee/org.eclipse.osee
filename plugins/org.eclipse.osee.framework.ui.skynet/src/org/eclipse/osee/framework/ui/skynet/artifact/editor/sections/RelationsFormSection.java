@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.artifact.editor.sections;
 
+import org.eclipse.osee.framework.help.ui.OseeHelpContext;
+import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.RelationsComposite;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
@@ -85,6 +87,8 @@ public class RelationsFormSection extends ArtifactEditorFormSection {
 
       section.setClient(sectionBody);
       toolkit.paintBordersFor(section);
+
+      HelpUtil.setHelp(sectionBody, OseeHelpContext.ARTIFACT_EDITOR__RELATIONS);
 
       relationComposite.getTreeViewer().getTree().addMouseListener(new MouseListener() {
 

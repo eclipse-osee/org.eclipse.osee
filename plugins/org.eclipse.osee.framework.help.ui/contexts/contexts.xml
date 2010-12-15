@@ -1,96 +1,153 @@
 <contexts>
-	<context id="table_customization" title="Table Customization">
-		<description>Allows the table to be customized, saved and loaded.</description>
-		<topic label="Table Customization" href="userguide/OSEE Features.html#Table_Customizations"/>
-	</context>
-	<context id="mass_artifact_editor" title="Mass Artifact Editor">
-		<description>Allows viewing and editing of attributes from multiple artifacts.</description>
-		<topic label="Mass Artifact Editor" href="userguide/OSEE Features.html#Mass_Artifact_Editor"/>
-		<topic label="Table Customization" href="userguide/OSEE Features.html#Table_Customizations"/>
-		<topic label="Table Customization" href="userguide/OSEE Features.html#Table_Customizations"/>
-	</context>
-	
+
 	<context id="artifact_editor" title="Artifact Editor">
-		<description>Artifact Editor</description>
-		<topic href="userguide/Views-and-Editors.html#Artifact Editor" label="Details"/>
-<!--	<topic href="reference/creating_new_links.html" label="Creating a new Link"/>
-		<topic href="reference/reorder_links.html" label="Reordering links"/>
-		<topic label="Report a bug" href="../osee.ats/reference/report_a_bug.html"/>-->
+	   <description>The Artifact Editor provides specialized features for editing artifacts (this is the default editor for editing attributes and relations).</description>
+	   <topic href="OSEE/Users_Guide/Features/Views-and-Editors.html#Artifact_Editor" label="Artifact Editor"/>
+	</context>  
+	
+	<context id="artifact_editor_attributes"  title="Artifact Editor - Attributes">
+	   <description>The attributes area allows for editing and viewing of attribute values contained by the artifact being edited.</description>
+	   <topic href="OSEE/Users_Guide/Features/Views-and-Editors.html#Attributes_Section" label="Artifact Editor - Attributes Section"/>
+	   <topic href="OSEE/Users_Guide/Features/Views-and-Editors.html#Artifact_Editor" label="Artifact Editor"/>
 	</context>
 	
-	<context id="artifact_explorer_tree" title="Artifact Explorer">
-		<description>Displays artifacts in a relational hierarchy for navigation.</description>
-		<topic href="userguide/Views-and-Editors.html#Artifact Explorer View" label="Details"/>
-<!--	<topic label="Report a bug" href="../osee.ats/reference/report_a_bug.html"/>-->
-	</context>
-	
-	<context id="xResultView" title="Result View">
-		<description>Show reports, errors, metrics and other data in a multi-paged view with print, email and exporting capabilities.</description>
-		<topic href="userguide/Views-and-Editors.html#Result View" label="Result View"/>
+	<context id="artifact_editor_relations"  title="Artifact Editor - Relations">
+	   <description>The relations area allows for editing and viewing of artifacts related to the artifact being edited.</description>	
+	   <topic href="OSEE/Users_Guide/Features/Views-and-Editors.html#Relations_Section" label="Artifact Editor - Relations Section"/>
+	   <topic href="OSEE/Users_Guide/Features/Views-and-Editors.html#Artifact_Editor" label="Artifact Editor"/>
 	</context>
 
+	<context id="artifact_editor_details"  title="Artifact Editor - Details">
+	   <description>The details area displays artifact metadata such as guid, version, branch etc...</description>	
+	   <topic href="OSEE/Users_Guide/Features/Views-and-Editors.html#Details_Section" label="Artifact Editor - Details Section"/>
+	   <topic href="OSEE/Users_Guide/Features/Views-and-Editors.html#Artifact_Editor" label="Artifact Editor"/>
+	</context>
+	
+	<context id="artifact_explorer" title="Artifact Explorer">
+	   <description>Shows the artifact hierarchy of the selected branch for navigation.</description>
+	   <topic href="OSEE/Users_Guide/Features/Views-and-Editors.html#Artifact_Explorer_View" label="Artifact Explorer"/>
+	</context>
+	
+	<context id="artifact_search" title="Artifact Search">
+	   <description>The advanced artifact search allows users to create custom searches.</description>
+	   <topic href="OSEE/Users_Guide/Features/Search.html" label="Advanced Artifact Search"/>
+	</context>
+	
+	<context id="branch_manager" title="Branch Manager">
+	   <description>Shows all branches and transactions on each branch managed by OSEE in a hierarchical fashion.</description>
+	   <topic href="OSEE/Users_Guide/Features/Views-and-Editors.html#Branch_Manager_View" label="Branch Manager"/>
+	   <topic href="OSEE/Users_Guide/Concepts/Branches.html" label="Concepts - Branches"/>
+	</context>
+	
+	<context id="define_navigator" title="Define Navigator">
+	   <description>The Define Navigator, shown by default in the Define Perspective, provides a central location to launch frequently user define operations.</description>
+	   <topic href="OSEE/Users_Guide/Features/Views-and-Editors.html#Define_Navigator" label="Define Navigator"/>
+	</context>
+	
+	<context id="resource_history_view" title="Resource History View">
+		<description>Shows a detailed view of the changes made to an artifact over time.</description>
+	   <topic href="OSEE/Users_Guide/Features/Views-and-Editors.html#Resource_History_View" label="Resource History"/>
+	</context>
+	
+	<context id="mass_artifact_editor" title="Mass Artifact Editor">
+	   <description>The Mass Artifact Editor allows the easy view and editing of multiple artifacts.</description>
+	   <topic href="OSEE/Users_Guide/Features/Views-and-Editors.html#Mass_Artifact_Editor" label="Mass Artifact Editor"/>
+	</context>
+	
+	<context id="merge_manager" title="Artifact Merge Manager">
+	   <description>The Merge Manager allows users to resolve artifact conflicts detected during branch commits.</description>	
+	   <topic href="OSEE/Users_Guide/Features/Views-and-Editors.html#Merge_Manager" label="Merge Manager"/>
+	</context>
+	
+	<context id="quick_search_view"  title="Quick Search">
+	   <description>The Quick Search view allows users to perform searches for information contained by artifact attributes in a selected branch.</description>
+		<topic href="OSEE/Users_Guide/Features/Views-and-Editors.html#Quick_Search_View" label="Quick Search View"/>
+		<topic href="OSEE/Users_Guide/Features/Services.html#Attribute_Tagging_for_Quick_Search" label="Attribute Tagging"/>
+	</context>
+
+	<context id="quick_search_attribute_type_filter"  title="Quick Search - Attribute Type Filter Option">
+	   <description>Search for artifacts by searching specific attribute types for work matches on the selected branch.</description>
+	   <topic href="OSEE/Users_Guide/Features/Views-and-Editors.html#Quick_Search_Options" label="Attribute Type Filter Option"/>
+		<topic href="OSEE/Users_Guide/Features/Views-and-Editors.html#Quick_Search_View" label="Quick Search View"/>
+		<topic href="OSEE/Users_Guide/Features/Services.html#Attribute_Tagging_for_Quick_Search" label="Attribute Tagging"/>		
+	</context>
+
+	<context id="quick_search_by_id_option"  title="Quick Search - By Id Option">
+	   <description>Search for artifacts with a particular GUID or HRID on the selected branch.</description>
+	   <topic href="OSEE/Users_Guide/Features/Views-and-Editors.html#Quick_Search_Options" label="By Id Option"/> 
+		<topic href="OSEE/Users_Guide/Features/Views-and-Editors.html#Quick_Search_View" label="Quick Search View"/>	
+		<topic href="OSEE/Users_Guide/Features/Services.html#Attribute_Tagging_for_Quick_Search" label="Attribute Tagging"/>		
+	</context>
+	
+	<context id="quick_search_deleted_option"  title="Quick Search - Include Deleted Option">
+      <description>Include deleted artifacts in the search.</description>
+	   <topic href="OSEE/Users_Guide/Features/Views-and-Editors.html#Quick_Search_Options" label="Include Deleted Option"/> 
+		<topic href="OSEE/Users_Guide/Features/Views-and-Editors.html#Quick_Search_View" label="Quick Search View"/>	
+		<topic href="OSEE/Users_Guide/Features/Services.html#Attribute_Tagging_for_Quick_Search" label="Attribute Tagging"/>		
+	</context>
+	
+	<context id="quick_search_word_order_option"  title="Quick Search - Match Word Order Option">
+	   <description>Match the phrase instead of the existence of words in the search.</description>
+	   <topic href="OSEE/Users_Guide/Features/Views-and-Editors.html#Quick_Search_Options" label="Match Word Order Option"/> 
+		<topic href="OSEE/Users_Guide/Features/Views-and-Editors.html#Quick_Search_View" label="Quick Search View"/>	
+		<topic href="OSEE/Users_Guide/Features/Services.html#Attribute_Tagging_for_Quick_Search" label="Attribute Tagging"/>		
+	</context>
+	
+	<context id="quick_search_all_match_locations_option"  title="Quick Search - Match All Locations Option">
+	   <description>During a word order match, gather all matches locations to display a summary in the search results.</description>
+	   <topic href="OSEE/Users_Guide/Features/Views-and-Editors.html#Quick_Search_Options" label="Match All Locations Option"/> 
+		<topic href="OSEE/Users_Guide/Features/Views-and-Editors.html#Quick_Search_View" label="Quick Search View"/>	
+		<topic href="OSEE/Users_Guide/Features/Services.html#Attribute_Tagging_for_Quick_Search" label="Attribute Tagging"/>		
+	</context>
+	
+	<context id="quick_search_case_sensitive_option"  title="Quick Search - Match Case Sensitive Option">
+	   <description>During a word order match, makes the search for the phrase case sensitive.</description>
+	   <topic href="OSEE/Users_Guide/Features/Views-and-Editors.html#Quick_Search_Options" label="Match Case Sensitive Option"/>
+		<topic href="OSEE/Users_Guide/Features/Views-and-Editors.html#Quick_Search_View" label="Quick Search View"/>	
+		<topic href="OSEE/Users_Guide/Features/Services.html#Attribute_Tagging_for_Quick_Search" label="Attribute Tagging"/>		
+	</context>
+	
+	<context id="sky_walker_view"  title="Sky Walker View">
+	   <description>Displays a graphical representation of artifacts and their relations for navigation.</description>
+	   <topic href="OSEE/Users_Guide/Features/Views-and-Editors.html#Sky_Walker_View" label="Sky Walker View"/>
+   </context>
+   
+   <context id="change_report_editor"  title="Change Report Editor">
+	   <description>Shows all changes made to a branch.</description>
+	   <topic href="OSEE/Users_Guide/Features/Views-and-Editors.html#Change_Report_Editor" label="Change Report Editor"/>
+   </context>
+
+	<context id="xviewer_table_customization"  title="XViewer - Table Customizations">
+	   <description>Allows the table to be customized, saved and loaded.</description>
+	   <topic href="OSEE/Users_Guide/Features/Custom-Widgets.html#Table_Customizations" label="XViewer - Table Customizations"/>
+	</context>
+	
+	<context id="xviewer_xresult_view"  title="XViewer - Results View">
+		<description>Show reports, errors, metrics and other data in a multi-paged view with print, email and exporting capabilities.</description>
+		<topic href="OSEE/Users_Guide/Features/Custom-Widgets.html#HTML_Report_and_CSV_Export" label="XViewer - Results View"/>
+	   <topic href="OSEE/Users_Guide/Features/Custom-Widgets.html#Table_Customizations" label="XViewer - Table Customizations"/>
+	</context>
+	
+   <!-- ////////////////////////////////////////////////////////////////////////////////////////////// -->
 <!--
 	<context id="oseeBranchGraph" title="OSEE Branch Graph">
 		<description>Shows a graphical representation of branches in the system</description>
 		<topic href="help/oseeBranchGraph.html" label="OSEE Branch Graph"/>
 	</context>
--->
-<!--
 	<context id="oseeDataModelEditor" title="OSEE Data Model Editor">
 		<description>Create and modify OSEE Data Types</description>
 		<topic href="help/oseeDataModelEditor.html" label="OSEE Data Model Editor"/>
 	</context>
 -->
-<!--	<context id="artifact_editor" title="Artifact Editor">
-		<description>Artifact Editor</description>
-		<topic href="reference/creating_new_links.html" label="Creating a new Link"/>
-		<topic href="reference/reorder_links.html" label="Reordering links"/>
-		<topic label="Report a bug" href="../osee.ats/reference/report_a_bug.html"/>
-	</context>
-	<context id="artifact_explorer_tree" title="Artifact Explorer">
-		<description>Displays artifacts in a relational hierarchy for navigation.</description>
-		<topic href="reference/artifact_explorer_tree.html" label="Drag and Drop"/>
-		<topic label="Report a bug" href="../osee.ats/reference/report_a_bug.html"/>
-	</context>
-	<context id="xResultView" title="Result View">
-		<description>Show reports, errors, metrics and other data in a multi-paged view with print, email and exporting capabilities.</description>
-		<topic href="reference/result_view.html" label="Result View"/>
-	</context>-->
-
-	<context id="table_customization" title="Table Customization">
-		<description>Allows the table to be customized, saved and loaded.</description>
-		<topic label="Table Customization" href="userguide/OSEE Features.html#Table_Customizations"/>
-	</context>
-	
-	<context id="mass_artifact_editor" title="Mass Artifact Editor">
-		<description>Allows viewing and editing of attributes from multiple artifacts.</description>
-		<topic label="Mass Artifact Editor" href="userguide/OSEE Features.html#Mass_Artifact_Editor"/>
-		<topic label="Table Customization" href="userguide/OSEE Features.html#Table_Customizations"/>
-	</context>
-
-	<context id="quick_search_text" title="Quick Search">
-		<description>Provides quick access to search for artifacts</description>
-		<topic label="Quick Search" href="userguide/Views-and-Editors.html#Quick_Search_View"/>
-	</context>
-	
-	<context id="query_log_table" title="Query Log">
-		<description>Displays queries that have been run, along with their run time, bind variables, and the time when they were ran. If a SQLException occurred during execution then it will also be shown.</description>
-		<topic label="Query Log" href="userguide/Views-and-Editors.html#Query Log View"/>
-		<topic label="Refreshing the log" href="userguide/Views-and-Editors.html#Refresh_Query_Log"/>
-		<topic label="Deleting the log" href="userguide/Views-and-Editors.html#Delete_Query_Log"/>
-	</context>-
-
+<!-- OTE STUFF
 	<context id="oteNavigator" title="OTE Navigator">
 		<description>Shortcut view to common OTE tasks.</description>
 		<topic href="src/org/eclipse/osee/ote/ui/navigate/package.html" label="OTE Navigator"/>
 	</context>
-<!--
 	<context id="testRunView" title="Test Run View">
 		<description>View current and saved test runs.</description>
 		<topic href="help/testRunView.html" label="Test Run View"/>
 	</context>
--->
-<!--	
 	<context id="messageView" title="Message View">
 		<description>Message View</description>
 		<topic href="reference/messageView/index.html" label="Message View Overview"/>
@@ -107,7 +164,6 @@
 		<topic href="reference/messageView/watch.html" label="Watching Messages/Elements"/>
 		<topic href="reference/messageView/index.html" label="Message View Overview"/>
 	</context>
-	
 	<context id="messageWatch" title="Message Watch">
 		<description>Message View Right-Click Menu</description>
 		<topic href="reference/messageWatch/index.html" label="Message Watch Overview"/>
@@ -116,25 +172,11 @@
 		<topic href="reference/messageWatch/set.html" label="Set Value"/>
 		<topic href="reference/messageWatch/add.html" label="Add Elements"/>
 		<topic href="reference/messageWatch/remove.html" label="Removing Items"/>
-	</context>-->
-	
-	<!--
+	</context>
 	<context id="muxView" title="Mux View">
 		<description>Mux View</description>
 		<topic href="help/package.html" label="Mux View"/>
 	</context>
 	-->
-	<!--
-	<context id="artifact_explorer_tree_viewer" title="Artifact Explorer">
-		<description>Displays artifacts in a relational hierarchy for navigation.</description>
-		<topic href="reference/creating_new_artifact.html" label="Creating a new artifact"/>
-		<topic href="reference/deleting_artifacts.html" label="Deleting artifacts"/>
-		<topic href="reference/go_into.html" label="Rooting on an artifact"/>
-		<topic label="Report a bug" href="../org.eclipse.osee.ats/reference/report_a_bug.html"/>
-	</context>
--->
-	<context id="defineNavigator" title="Define Navigator View">
-		<description>Perform Define navigation capabilities.</description>
-		<topic href="userguide/OSEE Define Concepts.html" label="Define Navigator View"/>
-	</context>
+
 </contexts>
