@@ -12,23 +12,23 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
+import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.widgets.Composite;
 
 /**
- * Single section for artifact type
+ * Single select of attribute type via combo box
  * 
  * @author Donald G. Dunne
  */
-public class XArtifactTypeComboViewer extends XComboViewer {
-   public static final String WIDGET_ID = XArtifactTypeComboViewer.class.getSimpleName();
-   private ArtifactType selectedArtifactType = null;
+public class XAttributeTypeComboViewer extends XComboViewer {
+   public static final String WIDGET_ID = XAttributeTypeComboViewer.class.getSimpleName();
+   private AttributeType selectedAttributeType = null;
 
-   public XArtifactTypeComboViewer() {
-      super("Artifact Type");
+   public XAttributeTypeComboViewer() {
+      super("AttributeType Type");
    }
 
    @Override
@@ -36,9 +36,9 @@ public class XArtifactTypeComboViewer extends XComboViewer {
       super.createControls(parent, horizontalSpan);
 
       try {
-         Collection<ArtifactType> artifactTypes = ArtifactTypeManager.getAllTypes();
-         List<ArtifactType> sortedArtifatTypes = new ArrayList<ArtifactType>();
-         sortedArtifatTypes.addAll(artifactTypes);
+         Collection<AttributeType> AttributeTypes = AttributeTypeManager.getAllTypes();
+         List<AttributeType> sortedArtifatTypes = new ArrayList<AttributeType>();
+         sortedArtifatTypes.addAll(AttributeTypes);
          Collections.sort(sortedArtifatTypes);
          getComboViewer().setInput(sortedArtifatTypes);
       } catch (OseeCoreException ex) {
@@ -51,18 +51,18 @@ public class XArtifactTypeComboViewer extends XComboViewer {
 
          @Override
          public void widgetModified(XWidget widget) {
-            selectedArtifactType = (ArtifactType) getSelected();
+            selectedAttributeType = (AttributeType) getSelected();
          }
       });
    }
 
-   public ArtifactType getSelectedTeamDef() {
-      return selectedArtifactType;
+   public AttributeType getSelectedTeamDef() {
+      return selectedAttributeType;
    }
 
    @Override
    public Object getData() {
-      return Arrays.asList(selectedArtifactType);
+      return Arrays.asList(selectedAttributeType);
    }
 
 }

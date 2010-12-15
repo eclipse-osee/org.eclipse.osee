@@ -73,7 +73,8 @@ public class PurgeDeletedAttributes extends AbstractBlam {
 
    @Override
    public String getXWidgetsXml() {
-      return "<xWidgets><XWidget xwidgetType=\"XBranchSelectWidget\"  defaultValue=\"" + CoreBranches.COMMON.getGuid() + "\" displayName=\"Branch\" /><XWidget xwidgetType=\"XAttributeTypeListViewer\" displayName=\"Attribute Type(s) to purge\" multiSelect=\"true\" /></xWidgets>";
+      return "<xWidgets><XWidget xwidgetType=\"XBranchSelectWidget\"  defaultValue=\"" + CoreBranches.COMMON.getGuid() + "\" displayName=\"Branch\" />" + //
+      "<XWidget xwidgetType=\"XAttributeTypeMultiChoiceSelect\" displayName=\"Attribute Type(s) to purge\" multiSelect=\"true\" /></xWidgets>";
    }
 
    @Override

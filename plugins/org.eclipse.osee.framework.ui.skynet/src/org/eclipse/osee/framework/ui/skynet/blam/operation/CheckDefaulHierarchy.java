@@ -53,7 +53,7 @@ public class CheckDefaulHierarchy extends AbstractBlam {
    public String getXWidgetsXml() {
       return "<xWidgets><XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Branch\" />" +
       //
-      "<XWidget xwidgetType=\"XArtifactTypeListViewer\" displayName=\"Artifact Type\" /></xWidgets>";
+      "<XWidget xwidgetType=\"XArtifactTypeComboViewer\" displayName=\"Artifact Type\" /></xWidgets>";
    }
 
    @Override

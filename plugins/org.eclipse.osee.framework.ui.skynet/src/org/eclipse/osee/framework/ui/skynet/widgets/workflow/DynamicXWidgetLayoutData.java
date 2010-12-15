@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
  */
 public class DynamicXWidgetLayoutData implements Cloneable {
 
-   private static final XWidgetFactory xWidgetFactory = XWidgetFactory.getInstance();
+   private static final FrameworkXWidgetProvider xWidgetFactory = FrameworkXWidgetProvider.getInstance();
    private static final String UNKNOWN = "Unknown";
    private static final int DEFAULT_HEIGHT = 9999;
 

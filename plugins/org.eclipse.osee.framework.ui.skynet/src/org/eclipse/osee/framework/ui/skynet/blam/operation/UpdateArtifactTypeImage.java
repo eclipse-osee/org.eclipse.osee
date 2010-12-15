@@ -79,7 +79,7 @@ public final class UpdateArtifactTypeImage extends AbstractBlam {
    public String getXWidgetsXml() {
       StringBuffer buffer = new StringBuffer("<xWidgets>");
       buffer.append("<XWidget xwidgetType=\"XFileSelectionDialog\" displayName=\"" + SELECT_IMAGE + "\" />");
-      buffer.append("<XWidget xwidgetType=\"XArtifactTypeListViewer\" displayName=\"" + ARTIFACT_TYPE_NAME + "\" />");
+      buffer.append("<XWidget xwidgetType=\"XArtifactTypeComboViewer\" displayName=\"" + ARTIFACT_TYPE_NAME + "\" />");
       buffer.append("</xWidgets>");
       return buffer.toString();
    }

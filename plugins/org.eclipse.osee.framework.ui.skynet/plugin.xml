@@ -263,12 +263,6 @@
     </TemplateProvider>
  </extension>
  <extension
-       point="org.eclipse.osee.framework.ui.skynet.XWidgetProvider">
-    <XWidgetProvider
-          classname="org.eclipse.osee.framework.ui.skynet.widgets.FrameworkWidgetProvider">
-    </XWidgetProvider>
- </extension>
- <extension
        point="org.eclipse.osee.framework.ui.skynet.SimpleTemplateProviderTemplate">
     <Template
           File="support/templates/PREVIEW_ALL.xml">

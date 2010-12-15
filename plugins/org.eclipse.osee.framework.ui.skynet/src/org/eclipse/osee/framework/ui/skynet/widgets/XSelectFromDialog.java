@@ -65,8 +65,8 @@ public abstract class XSelectFromDialog<T> extends XText {
       }
 
       if (maxSelectionRequired < minSelectionRequired) {
-         throw new OseeArgumentException("Invalid required number of selections [%s] < [%s]",
-            maxSelectionRequired, minSelectionRequired);
+         throw new OseeArgumentException("Invalid required number of selections [%s] < [%s]", maxSelectionRequired,
+            minSelectionRequired);
       }
       this.minSelectionRequired = minSelectionRequired;
       this.maxSelectionRequired = maxSelectionRequired;
@@ -111,7 +111,7 @@ public abstract class XSelectFromDialog<T> extends XText {
       super.createControls(composite, horizontalSpan, fillText);
 
       getStyledText().setEditable(false);
-      getStyledText().setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
+      getStyledText().setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING | GridData.FILL_HORIZONTAL));
 
       selectionButton = new Button(composite, SWT.PUSH);
       selectionButton.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));

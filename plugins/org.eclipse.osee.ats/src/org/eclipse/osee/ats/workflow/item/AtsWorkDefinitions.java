@@ -67,7 +67,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionF
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkWidgetDefinition;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.XWidgetFactory;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.FrameworkXWidgetProvider;
 
 /**
  * Create all the default ATS work items. This keeps from having to create a class for each of these. Also implement
@@ -378,7 +378,7 @@ public final class AtsWorkDefinitions implements IWorkDefinitionProvider {
          if (workItemDefinition instanceof WorkWidgetDefinition) {
             WorkWidgetDefinition workWidgetDefinition = (WorkWidgetDefinition) workItemDefinition;
             DynamicXWidgetLayoutData dynamicXWidgetLayoutData = workWidgetDefinition.get();
-            XWidget xWidget = XWidgetFactory.getInstance().createXWidget(dynamicXWidgetLayoutData);
+            XWidget xWidget = FrameworkXWidgetProvider.getInstance().createXWidget(dynamicXWidgetLayoutData);
             if (xWidget == null) {
                throw new OseeStateException("XWidget.createXWidget came back null");
             }

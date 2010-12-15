@@ -246,7 +246,9 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
 
    @Override
    public String getXWidgetsXml() {
-      return "<xWidgets><XWidget xwidgetType=\"XListDropViewer\" displayName=\"Lower Level Requirements\" /><XWidget xwidgetType=\"XListDropViewer\" displayName=\"Allocation Components\" /><XWidget xwidgetType=\"XArtifactTypeListViewer\" displayName=\"Low Level Requirement Type(s)\" multiSelect=\"true\" /></xWidgets>";
+      return "<xWidgets><XWidget xwidgetType=\"XListDropViewer\" displayName=\"Lower Level Requirements\" />" + //
+      "<XWidget xwidgetType=\"XListDropViewer\" displayName=\"Allocation Components\" />" + //
+      "<XWidget xwidgetType=\"XArtifactTypeMultiChoiceSelect\" displayName=\"Low Level Requirement Type(s)\" multiSelect=\"true\" /></xWidgets>";
    }
 
    @Override

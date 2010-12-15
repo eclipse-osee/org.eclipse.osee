@@ -15,7 +15,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -27,7 +26,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
@@ -36,8 +34,11 @@ import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.IAttributeWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.SkynetSpellModifyDictionary;
 import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactList;
-import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactTypeListViewer;
-import org.eclipse.osee.framework.ui.skynet.widgets.XAttributeTypeListViewer;
+import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactTypeComboViewer;
+import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactTypeMultiChoiceSelect;
+import org.eclipse.osee.framework.ui.skynet.widgets.XAttributeTypeComboViewer;
+import org.eclipse.osee.framework.ui.skynet.widgets.XAttributeTypeMultiChoiceSelect;
+import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XButton;
 import org.eclipse.osee.framework.ui.skynet.widgets.XButtonPush;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
@@ -50,7 +51,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDateDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XFileTextWithSelectionDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XFileTextWithSelectionDialog.Type;
-import org.eclipse.osee.framework.ui.skynet.widgets.XTextFlatDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XFloat;
 import org.eclipse.osee.framework.ui.skynet.widgets.XFloatDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlabelMemberSelDam;
@@ -69,21 +69,23 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XSelectFromMultiChoiceDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XStackedDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextDam;
+import org.eclipse.osee.framework.ui.skynet.widgets.XTextFlatDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextResourceDropDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 
 /**
  * @author Jeff C. Phillips
+ * @author Donald G. Dunne
  */
-public final class XWidgetFactory {
+public final class FrameworkXWidgetProvider {
 
-   private static final XWidgetFactory reference = new XWidgetFactory();
+   private static final FrameworkXWidgetProvider reference = new FrameworkXWidgetProvider();
 
-   private XWidgetFactory() {
+   private FrameworkXWidgetProvider() {
       // Hide Constructor to enforce singleton pattern
    }
 
-   public static XWidgetFactory getInstance() {
+   public static FrameworkXWidgetProvider getInstance() {
       return reference;
    }
 
@@ -283,21 +285,6 @@ public final class XWidgetFactory {
          xWidget = new XHyperlabelMemberSelDam(name);
       } else if (xWidgetName.startsWith("XListDropViewer")) {
          xWidget = new XListDropViewer(name);
-      } else if (xWidgetName.equals("XArtifactTypeListViewer")) {
-         IArtifactType artifactType = null;
-         String artifactTypeString = xWidgetLayoutData.getDefaultValue();
-         if (artifactTypeString != null) {
-            artifactType = ArtifactTypeManager.getType(artifactTypeString);
-         }
-         xWidget = new XArtifactTypeListViewer(xWidgetLayoutData.getKeyedBranchName(), artifactType);
-         ((XArtifactTypeListViewer) xWidget).setMultiSelect(xWidgetLayoutData.getXOptionHandler().contains(
-            XOption.MULTI_SELECT));
-      } else if (xWidgetName.equals("XAttributeTypeListViewer")) {
-         xWidget =
-            new XAttributeTypeListViewer(xWidgetLayoutData.getKeyedBranchName(), xWidgetLayoutData.getDefaultValue());
-         ((XAttributeTypeListViewer) xWidget).setMultiSelect(xWidgetLayoutData.getXOptionHandler().contains(
-            XOption.MULTI_SELECT));
-
       } else if (xWidgetName.startsWith("XList")) {
          String values[] =
             xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(xWidgetLayoutData);
@@ -316,6 +303,33 @@ public final class XWidgetFactory {
          XArtifactList artifactList = new XArtifactList(name);
          artifactList.setMultiSelect(xWidgetLayoutData.getXOptionHandler().contains(XOption.MULTI_SELECT));
          xWidget = artifactList;
+      } else if (xWidgetName.equals(XBranchSelectWidget.WIDGET_ID)) {
+         XBranchSelectWidget widget = new XBranchSelectWidget(name);
+         widget.setToolTip(xWidgetLayoutData.getToolTip());
+         try {
+            String branchGuid = xWidgetLayoutData.getDefaultValue();
+            if (branchGuid != null) {
+               widget.setSelection(BranchManager.getBranchByGuid(branchGuid));
+            }
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         }
+         xWidget = widget;
+      } else if (xWidgetName.equals(XArtifactTypeComboViewer.WIDGET_ID)) {
+         XArtifactTypeComboViewer widget = new XArtifactTypeComboViewer();
+         xWidget = widget;
+      } else if (xWidgetName.equals(XAttributeTypeComboViewer.WIDGET_ID)) {
+         XAttributeTypeComboViewer widget = new XAttributeTypeComboViewer();
+         xWidget = widget;
+      } else if (xWidgetName.equals(XAttributeTypeMultiChoiceSelect.WIDGET_ID)) {
+         XAttributeTypeMultiChoiceSelect widget = new XAttributeTypeMultiChoiceSelect();
+         xWidget = widget;
+      } else if (xWidgetName.equals(XArtifactTypeMultiChoiceSelect.WIDGET_ID)) {
+         XArtifactTypeMultiChoiceSelect widget = new XArtifactTypeMultiChoiceSelect();
+         xWidget = widget;
+      } else if (xWidgetName.equals(XTextFlatDam.WIDGET_ID)) {
+         XTextFlatDam widget = new XTextFlatDam();
+         xWidget = widget;
       } else {
          xWidget = new XLabel("Error: Unhandled XWidget \"" + xWidgetName + "\"");
       }
