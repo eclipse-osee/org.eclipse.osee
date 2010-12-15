@@ -90,6 +90,11 @@ public class XTextFlatDam extends XFlatWidget<String> implements IAttributeWidge
    }
 
    @Override
+   protected int getTotalItems() {
+      return xWidgets.size();
+   }
+
+   @Override
    protected void createControls(Composite parent, int horizontalSpan) {
       super.createControls(parent, horizontalSpan);
       final Collection<String> values = new ArrayList<String>();
@@ -118,6 +123,7 @@ public class XTextFlatDam extends XFlatWidget<String> implements IAttributeWidge
             }
             values.clear();
             setNotificationsAllowed(true);
+            refresh();
             return Status.OK_STATUS;
          }
       };

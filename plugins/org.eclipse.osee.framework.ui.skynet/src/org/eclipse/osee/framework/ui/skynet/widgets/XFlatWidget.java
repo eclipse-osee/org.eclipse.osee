@@ -210,12 +210,16 @@ public abstract class XFlatWidget<T> extends XLabel {
       }
    }
 
+   protected int getTotalItems() {
+      return flatControl.getTotalPages();
+   }
+
    private void updateCurrentPageLabel() {
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
             if (Widgets.isAccessible(currentPageLabel)) {
-               int totalPages = flatControl.getTotalPages();
+               int totalPages = getTotalItems();
                currentPageLabel.setText(String.format("%s Items", totalPages));
             }
          }
