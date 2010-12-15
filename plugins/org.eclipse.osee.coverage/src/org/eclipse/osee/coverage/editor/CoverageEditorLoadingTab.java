@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.editor;
 
+import org.eclipse.osee.coverage.help.ui.CoverageHelpContext;
 import org.eclipse.osee.coverage.util.CoverageImage;
+import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction.IRefreshActionHandler;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
@@ -59,6 +61,8 @@ public class CoverageEditorLoadingTab extends FormPage implements IRefreshAction
       xResultsComp.setLayoutData(gd);
       coverageEditor.getToolkit().adapt(xResultsComp);
       getManagedForm().getForm().getForm().setBusy(true);
+
+      HelpUtil.setHelp(xResultsComp, CoverageHelpContext.EDITOR__LOADING_TAB);
 
       refreshHtml();
    }

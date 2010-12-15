@@ -17,12 +17,14 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.coverage.action.GenerateDetailedCoverageReportAction;
 import org.eclipse.osee.coverage.action.ICoveragePackageHandler;
+import org.eclipse.osee.coverage.help.ui.CoverageHelpContext;
 import org.eclipse.osee.coverage.model.CoverageOption;
 import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.CoveragePackageBase;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction.IRefreshActionHandler;
 import org.eclipse.osee.framework.ui.skynet.action.browser.BrowserPrintAction;
@@ -78,6 +80,8 @@ public class CoverageEditorOverviewTab extends FormPage implements IRefreshActio
       gd.heightHint = 500;
       xResultsComp.setLayoutData(gd);
       coverageEditor.getToolkit().adapt(xResultsComp);
+
+      HelpUtil.setHelp(xResultsComp, CoverageHelpContext.EDITOR__OVERVIEW_TAB);
 
       refreshHtml();
    }

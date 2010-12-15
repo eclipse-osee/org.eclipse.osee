@@ -19,6 +19,7 @@ import org.eclipse.osee.coverage.editor.params.CoverageParametersComposite;
 import org.eclipse.osee.coverage.editor.params.CoverageParametersTextFilter;
 import org.eclipse.osee.coverage.editor.xcover.XCoverageViewer;
 import org.eclipse.osee.coverage.editor.xcover.XCoverageViewer.TableType;
+import org.eclipse.osee.coverage.help.ui.CoverageHelpContext;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.CoveragePackageBase;
@@ -35,6 +36,7 @@ import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.action.CollapseAllAction;
@@ -112,6 +114,10 @@ public class CoverageEditorCoverageTab extends FormPage implements ISaveable, IR
       xCoverageViewer.getXViewer().getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
 
       createToolbar();
+
+      HelpUtil.setHelp(xCoverageViewer.getControl(), CoverageHelpContext.EDITOR__COVERAGE_TAB);
+      HelpUtil.setHelp(tableComp, CoverageHelpContext.EDITOR__COVERAGE_TAB);
+
    }
 
    private void handleSearchButtonPressed() {

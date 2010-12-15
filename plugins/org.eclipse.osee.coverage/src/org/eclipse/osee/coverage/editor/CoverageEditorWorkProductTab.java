@@ -17,6 +17,7 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.osee.coverage.action.OpenMultipleWorkProductsAction;
 import org.eclipse.osee.coverage.action.RemoveRelatedWorkProductAction;
+import org.eclipse.osee.coverage.help.ui.CoverageHelpContext;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoveragePackage;
@@ -34,6 +35,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
@@ -87,6 +89,9 @@ public class CoverageEditorWorkProductTab extends FormPage implements ISaveable 
       addDropSupportToListViewer();
 
       createToolbar();
+
+      HelpUtil.setHelp(actionListViewer.getControl(), CoverageHelpContext.EDITOR__WORK_PRODUCT_TAB);
+
       refresh();
    }
 

@@ -28,6 +28,7 @@ import org.eclipse.osee.coverage.editor.xcover.XCoverageViewer.TableType;
 import org.eclipse.osee.coverage.editor.xmerge.CoverageMergeXViewerFactoryImport;
 import org.eclipse.osee.coverage.editor.xmerge.CoverageMergeXViewerFactoryPackage;
 import org.eclipse.osee.coverage.editor.xmerge.XCoverageMergeViewer;
+import org.eclipse.osee.coverage.help.ui.CoverageHelpContext;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.merge.IMergeItem;
 import org.eclipse.osee.coverage.merge.MergeImportManager;
@@ -52,6 +53,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.action.CollapseAllAction;
@@ -149,6 +151,9 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
 
       createLeftComposite(managedForm, leftComp);
       createRightComposite(managedForm, rightComp);
+
+      HelpUtil.setHelp(leftComp, CoverageHelpContext.EDITOR__MERGE_TAB);
+      HelpUtil.setHelp(rightComp, CoverageHelpContext.EDITOR__MERGE_TAB);
 
       createEditorToolbar();
       updateTitles();

@@ -21,6 +21,7 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.osee.coverage.CoverageManager;
 import org.eclipse.osee.coverage.blam.AbstractCoverageBlam;
+import org.eclipse.osee.coverage.help.ui.CoverageHelpContext;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoveragePackage;
@@ -35,6 +36,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
+import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
@@ -116,6 +118,7 @@ public class CoverageEditorImportTab extends FormPage {
 
       createDestroyableComposite();
 
+      HelpUtil.setHelp(combo.getControl(), CoverageHelpContext.EDITOR__IMPORT_TAB);
    }
 
    public void simulateImport(String importName) throws OseeCoreException {

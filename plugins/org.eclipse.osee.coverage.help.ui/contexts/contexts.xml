@@ -1,12 +1,62 @@
 <contexts>
-	<context id="coverageUsersGuide">
-	   <description>Users Guide for Coverage</description>
-	   <topic href="userguide/ATS-Workflow-Configuration-Editor.html" label="Workflow Configuration Editor"/>
-	   <topic href="userguide/Workflow-Configuration.html" label="Workflow Configuration"/>
-	   <topic href="userguide/Work-Page-Definition-Artifact.html" label="Work Page Definition"/>
-	   <topic href="userguide/Work-Rule-Widget-Artifact.html" label="Work Widget Definition"/>
-	   <topic href="userguide/Work-Rule-Definition-Artifact.html" label="Work Rule Definition"/>
+	
+	<context id="coverage_navigator">
+		<description>Perform coverage navigation capabilities. Provides the main launch point for common coverage tasks.</description>
+		<topic href="OSEE/Coverage/Users_Guide/Views/Views.html" label="Coverage Navigator"/>
+		<topic href="OSEE/Coverage/Users_Guide/Usage/Open-Coverage-Package.html" label="Coverage - Open Package" />			
+		<topic href="OSEE/Coverage/Users_Guide/Usage/Delete-Coverage-Package.html" label="Coverage - Delete Package" />
+		<topic href="OSEE/Coverage/Users_Guide/Usage/Usage.html" label="Using Coverage" />
+		<topic href="OSEE/Coverage/Users_Guide/Tips/Tips.html" label="Coverage Tips"/>
 	</context>
 
+	<context id="coverage_editor">
+		<description>The Coverage Editor is the central interface for the user to import, save, disposition and report coverage for a project.</description>
+		<topic href="OSEE/Coverage/Users_Guide/Views/Coverage-Editor.html" label="Coverage Editor"/>
+		<topic href="OSEE/Coverage/Users_Guide/Usage/Usage.html" label="Using Coverage" />
+		<topic href="OSEE/Coverage/Users_Guide/Tips/Tips.html" label="Coverage Tips"/>		
+	</context>
+
+	<context id="coverage_editor_coverage_tab">
+		<description>This tab allows the searching and navigation of currently stored Coverage Units and Coverage Items.</description>
+		<topic href="OSEE/Coverage/Users_Guide/Views/Coverage-Editor.html#Coverage_Items_Tab" label="Coverage Editor - Coverage Tab"/>
+		<topic href="OSEE/Coverage/Users_Guide/Usage/Usage.html" label="Using Coverage" />
+		<topic href="OSEE/Coverage/Users_Guide/Tips/Tips.html" label="Coverage Tips"/>		
+	</context>
+
+	<context id="coverage_editor_import_tab">
+		<description>Allows for the import of coverage results into coverage application.</description>
+		<topic href="OSEE/Coverage/Users_Guide/Views/Coverage-Editor.html#Import_Tab" label="Coverage Editor - Import Tab"/>
+		<topic href="OSEE/Coverage/Users_Guide/Usage/Usage.html" label="Using Coverage" />
+		<topic href="OSEE/Coverage/Users_Guide/Tips/Tips.html" label="Coverage Tips"/>		
+	</context>
+
+	<context id="coverage_editor_loading_tab">
+		<description>Provides coverage loading information.</description>
+		<topic href="OSEE/Coverage/Users_Guide/Views/Coverage-Editor.html#Loading_Tab" label="Coverage Editor - Loading Tab"/>
+		<topic href="OSEE/Coverage/Users_Guide/Usage/Usage.html" label="Using Coverage" />
+		<topic href="OSEE/Coverage/Users_Guide/Tips/Tips.html" label="Coverage Tips"/>
+	</context>
+
+	<context id="coverage_editor_merge_tab">
+		<description>Assists the user in performing import merges.</description>
+		<topic href="OSEE/Coverage/Users_Guide/Views/Coverage-Editor.html#Import_Merge_Tab" label="Coverage Editor - Merge Tab"/>
+		<topic href="OSEE/Coverage/Users_Guide/Usage/Usage.html" label="Using Coverage" />
+		<topic href="OSEE/Coverage/Users_Guide/Tips/Tips.html" label="Coverage Tips"/>			
+	</context>
+
+	<context id="coverage_editor_overview_tab">
+		<description>Displays a summary of coverage items.</description>
+		<topic href="OSEE/Coverage/Users_Guide/Views/Coverage-Editor.html#Overview_Tab" label="Coverage Editor - Overview Tab"/>
+		<topic href="OSEE/Coverage/Users_Guide/Usage/Usage.html" label="Using Coverage" />
+		<topic href="OSEE/Coverage/Users_Guide/Tips/Tips.html" label="Coverage Tips"/>			
+	</context>
+
+	<context id="coverage_editor_work_product_tab">
+		<description>While the Coverage Editor provides a way to track and disposition coverage results over time, there is still the need to track changes to work products based on the disposition results.</description>
+		<topic href="OSEE/Coverage/Users_Guide/Views/Coverage-Editor.html#Coverage_Work_Product_Tab" label="Coverage Editor - Work Product Tab"/>
+		<topic href="OSEE/Coverage/Users_Guide/Usage/Usage.html" label="Using Coverage" />
+		<topic href="OSEE/Coverage/Users_Guide/Usage/Tracking-changes-to-Work-Product-based-on-Disposition-results.html" label="Coverage Work Product Disposition"/>
+		<topic href="OSEE/Coverage/Users_Guide/Tips/Tips.html" label="Coverage Tips"/>			
+	</context>
 	
 </contexts>
