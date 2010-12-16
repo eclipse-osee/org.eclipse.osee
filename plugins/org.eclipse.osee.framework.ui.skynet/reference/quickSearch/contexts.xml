@@ -1,9 +1,0 @@
-<contexts>
-<!--
-	<context id="quick_search_text" title="Quick Search">
-		<description>Provides quick access to search for artifacts</description>
-		<topic label="Quick Search" href="userguide/OSEE Features.html#Quick_Search_View"/>
-		<topic label="Report a bug" href="userguide/OSEE ATS Usage.html"/>
-	</context>
--->
-</contexts>

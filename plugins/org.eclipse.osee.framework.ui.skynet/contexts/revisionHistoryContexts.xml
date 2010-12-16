@@ -1,8 +1,0 @@
-<contexts>
-	<context id="HistoryView" title="Revision History">
-		<description>Displays the history on an artifact.</description>
-				<topic href="reference/revision_history_view.html" label="Resource History"/>
-		<topic href="reference/compare_two_artifacts.html" label="Compare two Artifacts"/>
-		<topic label="Report a bug" href="../org.eclipse.osee.ats/reference/report_a_bug.html"/>
-	</context>
-</contexts>
