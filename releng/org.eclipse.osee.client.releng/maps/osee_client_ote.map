@@ -17,3 +17,4 @@ plugin@org.eclipse.osee.ote.ui.mux=SVN,,http://dev.eclipse.org/svnroot/technolog
 plugin@org.eclipse.osee.ote.ui.test.manager=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.ote.ui.test.manager
 plugin@org.eclipse.osee.ote.ui.message=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.ote.ui.message
 plugin@org.eclipse.osee.ote.ui.message.util=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.ote.ui.message.util
+plugin@org.eclipse.osee.ote.help.ui=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.ote.help.ui

@@ -1,0 +1,48 @@
+<contexts>
+	
+	<context id="test_manager">
+		<description></description>
+	</context>
+	<context id="message_view" title="Message View">
+		<description>Message View</description>
+<!--	<topic href="reference/messageView/index.html" label="Message View Overview"/>
+		<topic href="reference/messageView/watch.html" label="Watching Messages/Elements"/>
+		<topic href="reference/messageView/search.html" label="Search"/>-->
+	</context>
+	<context id="message_watch" title="Message Watch">
+		<description>Message View Right-Click Menu</description>
+		<!--<topic href="reference/messageWatch/index.html" label="Message Watch Overview"/>
+		<topic href="reference/messageWatch/sort.html" label="Sorting the Table"/>
+		<topic href="reference/messageWatch/read_vs_write.html" label="Reader vs. Writer"/>
+		<topic href="reference/messageWatch/set.html" label="Set Value"/>
+		<topic href="reference/messageWatch/add.html" label="Add Elements"/>
+		<topic href="reference/messageWatch/remove.html" label="Removing Items"/>-->
+	</context>	
+	<context id="ote_navigator" title="OTE Navigator">
+		<description>Shortcut view to common OTE tasks.</description>
+		<!--<topic href="src/org/eclipse/osee/ote/ui/navigate/package.html" label="OTE Navigator"/>-->
+	</context>
+	<context id="mux_view" title="Mux View">
+		<description>Mux View</description>
+<!--		<topic href="help/package.html" label="Mux View"/>-->
+	</context>
+	
+<!-- OTE STUFF
+
+	<context id="testRunView" title="Test Run View">
+		<description>View current and saved test runs.</description>
+		<topic href="help/testRunView.html" label="Test Run View"/>
+	</context>
+	<context id="messageViewSearch" title="Search">
+		<description>Message View Search</description>
+		<topic href="reference/messageView/search.html" label="Search"/>
+		<topic href="reference/messageView/index.html" label="Message View Overview"/>
+	</context>
+	<context id="messageViewWatch" title="Watch">
+		<description>Message View Right-Click Menu</description>
+		<topic href="reference/messageView/watch.html" label="Watching Messages/Elements"/>
+		<topic href="reference/messageView/index.html" label="Message View Overview"/>
+	</context>
+
+	-->
+</contexts>

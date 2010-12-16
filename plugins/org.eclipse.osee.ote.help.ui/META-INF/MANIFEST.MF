@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: OSEE OTE Help
+Bundle-SymbolicName: org.eclipse.osee.ote.help.ui;singleton:=true
+Bundle-Version: 0.9.8.qualifier
+Bundle-Vendor: Eclipse Open System Engineering Environment
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
+Require-Bundle: org.eclipse.help
+Export-Package: org.eclipse.osee.ote.help.ui
+Import-Package: org.eclipse.osee.framework.ui.plugin.util
