@@ -129,7 +129,7 @@ public class TaskMetrics extends AbstractBlam {
 
    @Override
    public String getXWidgetsXml() {
-      return "<xWidgets><XWidget xwidgetType=\"XArtifactTypeListViewer\" displayName=\"Artifact Type\" keyedBranch=\"Common\"/></xWidgets>";
+      return "<xWidgets><XWidget xwidgetType=\"XArtifactTypeComboViewer\" displayName=\"Artifact Type\" keyedBranch=\"Common\"/></xWidgets>";
    }
 
    @Override
