@@ -141,7 +141,8 @@ public class MessageView extends ViewPart implements IActionable, IMessageDictio
                   contextMenu.setLocation(p);
                   contextMenu.setVisible(true);
 
-                  HelpUtil.setHelp(contextMenu, "messageViewWatch", "org.eclipse.osee.framework.help.ui");
+                  // TODO: Change to use OteHelpContext
+                  HelpUtil.setHelp(contextMenu, "message_view_watch", "org.eclipse.osee.ote.help.ui");
                }
             }
          }
@@ -222,9 +223,10 @@ public class MessageView extends ViewPart implements IActionable, IMessageDictio
    }
 
    private void setHelpContexts() {
-      HelpUtil.setHelp(parentComposite.getParent(), "messageView", "org.eclipse.osee.framework.help.ui");
-      HelpUtil.setHelp(searchButton, "messageViewSearch", "org.eclipse.osee.framework.help.ui");
-      HelpUtil.setHelp(searchText, "messageViewSearch", "org.eclipse.osee.framework.help.ui");
+      // TODO: Change to use OteHelpContext
+      HelpUtil.setHelp(parentComposite.getParent(), "message_view", "org.eclipse.osee.ote.help.ui");
+      HelpUtil.setHelp(searchButton, "message_view_search", "org.eclipse.osee.ote.help.ui");
+      HelpUtil.setHelp(searchText, "message_view_search", "org.eclipse.osee.ote.help.ui");
    }
 
    /**
@@ -535,7 +537,9 @@ public class MessageView extends ViewPart implements IActionable, IMessageDictio
                dictionary.generateMessageIndex(treeBuilder);
                numMessages = treeBuilder.getNumMessages();
                numElements = treeBuilder.getNumElements();
-               treeViewer.getTree().setToolTipText(String.format("#Messages: %d, #Elements: %d\n\nProviders:\n%s", numMessages, numElements, dictionary.getMessageLibraryVersion()));
+               treeViewer.getTree().setToolTipText(
+                  String.format("#Messages: %d, #Elements: %d\n\nProviders:\n%s", numMessages, numElements,
+                     dictionary.getMessageLibraryVersion()));
                searchText.setEnabled(true);
                startLabel.setText("Ready for query");
             } catch (Exception e) {

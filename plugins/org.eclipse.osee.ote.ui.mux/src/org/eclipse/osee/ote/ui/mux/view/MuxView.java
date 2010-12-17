@@ -28,6 +28,7 @@ import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.framework.jdk.core.util.network.PortUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.PeriodicDisplayTask;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironment;
@@ -75,7 +76,6 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
 /**
@@ -457,7 +457,9 @@ public class MuxView extends ViewPart implements ITestConnectionListener, IInstr
          }
       };
       task.start();
-      PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, "org.eclipse.osee.ote.ui.mux.muxView");
+
+      // TODO: Change to use OteHelpContext
+      HelpUtil.setHelp(parent, "mux_view", "org.eclipse.osee.ote.help.ui");
       MuxToolPlugin.getDefault().getOteClientService().addConnectionListener(this);
    }
 

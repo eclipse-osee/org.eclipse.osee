@@ -20,6 +20,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
+import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -27,7 +28,6 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.ote.ui.internal.TestCoreGuiPlugin;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
 /**
@@ -55,7 +55,6 @@ public class OteNavigateView extends ViewPart implements IActionable {
     */
    @Override
    public void createPartControl(Composite parent) {
-      PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, "org.eclipse.osee.ote.ui.oteNavigator");
       xNavComp = new XNavigateComposite(new OteNavigateViewItems(), parent, SWT.NONE);
 
       xNavComp.getFilteredTree().getViewer().setSorter(new OteNavigateViewerSorter());
@@ -64,6 +63,10 @@ public class OteNavigateView extends ViewPart implements IActionable {
       xNavComp.refresh();
 
       addExtensionPointListenerBecauseOfWorkspaceLoading();
+
+      // TODO: Change to use OteHelpContext
+      HelpUtil.setHelp(parent, "ote_navigator", "org.eclipse.osee.ote.help.ui");
+      HelpUtil.setHelp(xNavComp, "ote_navigator", "org.eclipse.osee.ote.help.ui");
    }
 
    private void addExtensionPointListenerBecauseOfWorkspaceLoading() {

@@ -26,7 +26,9 @@ public class HostPage extends TestManagerPage {
    public HostPage(Composite parent, int style, TestManagerEditor parentTestManager) {
       super(parent, style, parentTestManager);
       createPage();
-      HelpUtil.setHelp(this, "tm_hosts_page", "org.eclipse.osee.framework.help.ui");
+
+      // TODO: Change to use OteHelpContext
+      HelpUtil.setHelp(this, "test_manager_hosts_page", "org.eclipse.osee.ote.help.ui");
    }
 
    @Override

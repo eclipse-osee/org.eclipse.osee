@@ -67,7 +67,9 @@ public class OverviewPage extends TestManagerPage implements IActionable {
       createPage();
       updateLabelText();
       computeScrollSize();
-      HelpUtil.setHelp(this, "tm_overview_page", "org.eclipse.osee.framework.help.ui");
+
+      // TODO: Change to use OteHelpContext
+      HelpUtil.setHelp(this, "test_manager_overview_page", "org.eclipse.osee.ote.help.ui");
    }
 
    /**

@@ -80,7 +80,9 @@ public class AdvancedPage extends TestManagerPage {
 
       createBlankArea(parent, 0, true);
       computeScrollSize();
-      HelpUtil.setHelp(this, "tm_advanced_page", "org.eclipse.osee.framework.help.ui");
+
+      // TODO: Change to use OteHelpContext
+      HelpUtil.setHelp(this, "test_manager_advanced_page", "org.eclipse.osee.ote.help.ui");
    }
 
    @Override

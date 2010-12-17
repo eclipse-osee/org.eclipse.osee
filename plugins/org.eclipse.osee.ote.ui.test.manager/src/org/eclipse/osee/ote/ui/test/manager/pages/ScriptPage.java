@@ -103,7 +103,8 @@ public abstract class ScriptPage extends TestManagerPage {
       sashForm.setWeights(new int[] {8, 2});
       computeScrollSize();
 
-      HelpUtil.setHelp(this, "tm_scripts_page", "org.eclipse.osee.framework.help.ui");
+      // TODO: Change to use OteHelpContext
+      HelpUtil.setHelp(this, "test_manager_scripts_page", "org.eclipse.osee.framework.help.ui");
    }
 
    public void loadStorageString() {
