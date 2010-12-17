@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -83,7 +84,6 @@ import org.eclipse.ui.menus.CommandContributionItem;
 import org.eclipse.ui.part.ViewPart;
 
 /**
- * @see ViewPart
  * @author Donald G. Dunne
  */
 public class MergeView extends ViewPart implements IActionable, IBranchEventListener, IArtifactEventListener {
@@ -97,16 +97,14 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
    private boolean showConflicts;
 
    public static void openView(final Branch sourceBranch, final Branch destBranch, final TransactionRecord tranId) {
-      if (sourceBranch == null && destBranch == null && tranId == null) {
+      if (Conditions.allNull(sourceBranch, destBranch, tranId)) {
          throw new IllegalArgumentException("Branch's and Transaction ID can't be null");
       }
       openViewUpon(sourceBranch, destBranch, tranId, null, true);
    }
 
-   public static void openView(final TransactionRecord commitTrans) {
-      if (commitTrans == null) {
-         throw new IllegalArgumentException("Commit Transaction ID can't be null");
-      }
+   public static void openView(final TransactionRecord commitTrans) throws OseeCoreException {
+      Conditions.checkNotNull(commitTrans, "Commit Transaction ID");
       openViewUpon(null, null, null, commitTrans, true);
    }
 
@@ -164,10 +162,6 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
 
    @Override
    public void createPartControl(Composite parent) {
-      /*
-       * Create a grid layout object so the text and treeviewer are laid out the way I want.
-       */
-
       PlatformUI.getWorkbench().getService(IHandlerService.class);
       handlerService = (IHandlerService) getSite().getService(IHandlerService.class);
 
@@ -299,9 +293,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
    }
 
    private String addEditArtifactMenuItem(MenuManager menuManager) {
-      CommandContributionItem editArtifactCommand;
-      //RendererManager.getBestFileRenderer(PresentationType.SPECIALIZED_EDIT, attributeConflict.getArtifact()).getImage(attributeConflict.getArtifact());
-      editArtifactCommand =
+      CommandContributionItem editArtifactCommand =
          Commands.getLocalCommandContribution(getSite(), "editArtifactCommand", "Edit Merge Artifact", null, null,
             null, "E", null, "edit_Merge_Artifact");
       menuManager.add(editArtifactCommand);
@@ -309,8 +301,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
    }
 
    private String addSourceResourceHistoryMenuItem(MenuManager menuManager) {
-      CommandContributionItem sourecResourceCommand;
-      sourecResourceCommand =
+      CommandContributionItem sourecResourceCommand =
          Commands.getLocalCommandContribution(getSite(), "sourceResourceHistory",
             "Show Source Artifact Resource History", null, null,
             ImageManager.getImageDescriptor(FrameworkImage.DB_ICON_BLUE_EDIT), null, null, "source_Resource_History");
@@ -319,8 +310,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
    }
 
    private String addDestResourceHistoryMenuItem(MenuManager menuManager) {
-      CommandContributionItem sourecResourceCommand;
-      sourecResourceCommand =
+      CommandContributionItem sourecResourceCommand =
          Commands.getLocalCommandContribution(getSite(), "destResourceHistory", "Show Dest Artifact Resource History",
             null, null, ImageManager.getImageDescriptor(FrameworkImage.DB_ICON_BLUE_EDIT), null, null,
             "dest_Resource_History");
@@ -329,8 +319,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
    }
 
    private String addSourceRevealMenuItem(MenuManager menuManager) {
-      CommandContributionItem sourceReveal;
-      sourceReveal =
+      CommandContributionItem sourceReveal =
          Commands.getLocalCommandContribution(getSite(), "sourceRevealArtifactExplorer",
             "Reveal Source Artifact in Artifact Explorer", null, null,
             ImageManager.getImageDescriptor(FrameworkImage.MAGNIFY), null, null, "source_Reveal");
@@ -339,8 +328,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
    }
 
    private String addDestRevealMenuItem(MenuManager menuManager) {
-      CommandContributionItem destReveal;
-      destReveal =
+      CommandContributionItem destReveal =
          Commands.getLocalCommandContribution(getSite(), "destRevealArtifactExplorer",
             "Reveal Dest Artifact in Artifact Explorer", null, null,
             ImageManager.getImageDescriptor(FrameworkImage.MAGNIFY), null, null, "dest_Reveal");
@@ -349,8 +337,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
    }
 
    private String addRevertUnresolvableConflictsMenuItem(MenuManager menuManager) {
-      CommandContributionItem revertSelected;
-      revertSelected =
+      CommandContributionItem revertSelected =
          Commands.getLocalCommandContribution(getSite(), "revertSelected",
             "Revert Source Artifacts for Unresolvable Conflicts", null, null, null, null, null, null);
       menuManager.add(revertSelected);
@@ -570,8 +557,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
    }
 
    private String addMergeMenuItem(MenuManager menuManager) {
-      CommandContributionItem mergeArtifactCommand;
-      mergeArtifactCommand =
+      CommandContributionItem mergeArtifactCommand =
          Commands.getLocalCommandContribution(getSite(), "mergeArtifactCommand",
             "Generate Three Way Merge (Developmental)", null, null, null, "E", null,
             "Merge_Source_Destination_Artifact");
@@ -764,11 +750,8 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
    }
 
    private boolean isApplicableEvent(String branchGuid) {
-      return sourceBranch != null && destBranch != null &&
-      //
-      (sourceBranch.getGuid().equals(branchGuid) ||
-      //
-      destBranch.getGuid().equals(branchGuid));
+      return Conditions.notNull(sourceBranch, destBranch) && Conditions.in(branchGuid, sourceBranch.getGuid(),
+         destBranch.getGuid());
    }
 
    @Override
@@ -791,9 +774,13 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
       return null;
    }
 
+   private boolean isDisposed() {
+      return Conditions.anyNull(mergeXWidget.getXViewer(), mergeXWidget.getXViewer().getTree()) || mergeXWidget.getXViewer().getTree().isDisposed();
+   }
+
    @Override
    public void handleArtifactEvent(ArtifactEvent artifactEvent, final Sender sender) {
-      if (mergeXWidget.getXViewer() == null || mergeXWidget.getXViewer().getTree() == null || mergeXWidget.getXViewer().getTree().isDisposed()) {
+      if (isDisposed()) {
          OseeEventManager.removeListener(this);
          return;
       }
@@ -818,7 +805,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
-            if (mergeXWidget.getXViewer() == null || mergeXWidget.getXViewer().getTree() == null || mergeXWidget.getXViewer().getTree().isDisposed()) {
+            if (isDisposed()) {
                return;
             }
             for (Artifact artifact : modifiedArts) {
