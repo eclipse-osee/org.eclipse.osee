@@ -32,19 +32,6 @@
       </wizard>
    </extension>
    <extension
-         point="org.eclipse.help.toc">
-      <toc
-            file="help/toc.xml"
-            primary="false">
-      </toc>
-      <toc
-            file="help/training.xml">
-      </toc>
-      <toc
-            file="help/testing.xml">
-      </toc>
-   </extension>
-   <extension
          point="org.eclipse.ui.popupMenus">
       <objectContribution
             objectClass="org.eclipse.jdt.core.ICompilationUnit"
@@ -136,13 +123,6 @@
             class="org.eclipse.osee.ote.ui.test.manager.preferences.TestManagerPreferencePage"
             id="org.eclipse.osee.ote.ui.test.manager.PreferencePage"
             name="Test Manager"/>
-   </extension>
-   <extension
-         point="org.eclipse.help.contexts">
-      <contexts file="contexts/tmAdvancedPage.xml"/>
-      <contexts file="contexts/tmHostsPage.xml"/>
-      <contexts file="contexts/tmScriptsPage.xml"/>
-      <contexts file="contexts/tmOverviewPage.xml"/>
    </extension>
    <extension
          point="org.eclipse.osee.framework.ui.plugin.PropertyStoreControl">

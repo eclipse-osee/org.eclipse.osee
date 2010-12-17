@@ -1,10 +1,16 @@
 <?xml version='1.0' encoding='utf-8' ?>
 <toc topic="OSEE/OTE/Users_Guide/Getting_Started/Getting-Started.html" label="OSEE OTE User's Guide">
 	<topic href="OSEE/OTE/Users_Guide/Getting_Started/Getting-Started.html" label="Getting Started">
-		<topic href="OSEE/OTE/Users_Guide/Getting_Started/Getting-Started.html" label="Updating This Document"></topic>
+		<topic href="OSEE/OTE/Users_Guide/Getting_Started/Getting-Started.html" label="Overview"></topic>
+		<topic href="OSEE/OTE/Users_Guide/Getting_Started/Related-Documentation.html" label="Related Documentation"></topic>
+		<topic href="OSEE/OTE/Users_Guide/Getting_Started/Updating-This-Document.html" label="Updating This Document"></topic>
 	</topic>
 	<topic href="OSEE/OTE/Users_Guide/Concepts/Concepts.html" label="Concepts">
-		<topic href="OSEE/OTE/Users_Guide/Concepts/Concepts.html" label="Concepts"></topic>
+		<topic href="OSEE/OTE/Users_Guide/Concepts/Concepts.html" label="Concepts">
+			<topic href="OSEE/OTE/Users_Guide/Concepts/Concepts.html#Core_Test_Enviroment" label="Core Test Enviroment"></topic>
+			<topic href="OSEE/OTE/Users_Guide/Concepts/Concepts.html#Message_System_Test_Enviroment" label="Message System Test Enviroment"></topic>
+			<topic href="OSEE/OTE/Users_Guide/Concepts/Concepts.html#Model" label="Model"></topic>
+		</topic>
 		<topic href="OSEE/OTE/Users_Guide/Concepts/Updating-This-Document.html" label="Updating This Document"></topic>
 	</topic>
 	<topic href="OSEE/OTE/Users_Guide/Features/Features.html" label="Features">
@@ -20,10 +26,19 @@
 		</topic>
 		<topic href="OSEE/OTE/Users_Guide/Features/Perspective.html" label="Perspective"></topic>
 		<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html" label="Views And Editors">
-			<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html#Test_Manager" label="Test Manager"></topic>
+			<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html#OTE_Navigator" label="OTE Navigator"></topic>
+			<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html#Test_Manager" label="Test Manager">
+				<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html#Overview_Page" label="Overview Page"></topic>
+				<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html#Hosts_Page" label="Hosts Page"></topic>
+				<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html#Scripts_Page" label="Scripts Page"></topic>
+				<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html#Advanced_Page" label="Advanced Page"></topic>
+				<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html#Source_Page" label="Source Page"></topic>
+			</topic>
 			<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html#Message_View" label="Message View"></topic>
 			<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html#Message_Watch" label="Message Watch"></topic>
+			<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html#Mux_View" label="Mux View"></topic>
 		</topic>
+		<topic href="OSEE/OTE/Users_Guide/Features/Models.html" label="Models"></topic>
 		<topic href="OSEE/OTE/Users_Guide/Features/Updating-This-Document.html" label="Updating This Document"></topic>
 	</topic>
 	<topic href="OSEE/OTE/Users_Guide/Tips/Tips.html" label="Tips and Tricks">

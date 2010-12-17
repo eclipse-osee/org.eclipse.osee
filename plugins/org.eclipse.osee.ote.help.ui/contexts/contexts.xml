@@ -45,4 +45,59 @@
 	</context>
 
 	-->
+	
+	<!--	<context id="messageView" title="Message View">
+		<description>Message View</description>
+		<topic href="reference/messageView/index.html" label="Message View Overview"/>
+		<topic href="reference/messageView/watch.html" label="Watching Messages/Elements"/>
+		<topic href="reference/messageView/search.html" label="Search"/>
+	</context>
+	<context id="messageViewSearch" title="Search">
+		<description>Message View Search</description>
+		<topic href="reference/messageView/search.html" label="Search"/>
+		<topic href="reference/messageView/index.html" label="Message View Overview"/>
+	</context>
+	<context id="messageViewWatch" title="Watch">
+		<description>Message View Right-Click Menu</description>
+		<topic href="reference/messageView/watch.html" label="Watching Messages/Elements"/>
+		<topic href="reference/messageView/index.html" label="Message View Overview"/>
+	</context>
+	
+	<context id="messageWatch" title="Message Watch">
+		<description>Message View Right-Click Menu</description>
+		<topic href="reference/messageWatch/index.html" label="Message Watch Overview"/>
+		<topic href="reference/messageWatch/sort.html" label="Sorting the Table"/>
+		<topic href="reference/messageWatch/read_vs_write.html" label="Reader vs. Writer"/>
+		<topic href="reference/messageWatch/set.html" label="Set Value"/>
+		<topic href="reference/messageWatch/add.html" label="Add Elements"/>
+		<topic href="reference/messageWatch/remove.html" label="Removing Items"/>
+	</context>-->
+	
+		<context id="tm_advanced_page" title="Test Manager Advanced Page">
+		<description>Provides options of the execution and analysis of OSEE test programs.</description>
+		<topic href="references/tm_advancedPage_scriptOptions.html" label="Script Options"/>
+		<topic href="references/tm_advancedPage_executionOptions.html" label="Execution Options"/>
+		<topic href="references/tm_advancedPage_markerOptions.html" label="Marker Options"/>
+	</context>
+	
+		<context id="tm_hosts_page" title="Test Manager Hosts Page">
+		<description>Displays available test servers, and allows you to connect to them and look at there current status.</description>
+		<topic href="references/tm_hostsPage.html" label="Connecting to and Viewing Test Servers"/>
+	</context>
+		<context id="tm_overview_page" title="Test Manager Overview Page">
+		<description>Displays overview information and provides a bug report mechanism.</description>
+		<topic label="Report a bug" href="../osee.ats/reference/report_a_bug.html"/>
+	</context>
+	
+		<context id="tm_scripts_page" title="Test Manager Scripts Page">
+		<description>Controls the exections of test programs.</description>
+		<topic href="references/tm_scriptsPage.html" label="Running Test Programs"/>
+	</context>
+	
+	<!--
+	<context id="oteNavigator" title="OTE Navigator">
+		<description>Shortcut view to common OTE tasks.</description>
+		<topic href="src/org/eclipse/osee/ote/ui/navigate/package.html" label="OTE Navigator"/>
+	</context>
+-->
 </contexts>

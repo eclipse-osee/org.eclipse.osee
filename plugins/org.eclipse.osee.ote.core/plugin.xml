@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
 <plugin>
-  
      <extension
          id="TestInterface"
          name="TestInterface"
@@ -21,12 +20,4 @@
          point="org.eclipse.osee.framework.jini.JiniInterface">
       <RegisterBundle/>
    </extension>
-   <extension
-         point="org.eclipse.help.toc">
-      <toc
-            file="help/toc.xml"
-            primary="true">
-      </toc>
-   </extension>
-
 </plugin>

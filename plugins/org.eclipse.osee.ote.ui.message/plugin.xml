@@ -39,7 +39,6 @@
       viewId="org.eclipse.osee.ote.ui.navigate.OteNavigateView">
       </XNavigateItem>
    </extension>
-
 <extension
          point="org.eclipse.ui.perspectiveExtensions">
       <perspectiveExtension
@@ -54,7 +53,6 @@
          </viewShortcut>
       </perspectiveExtension>
    </extension>
-
 <extension
          point="org.eclipse.ui.perspectiveExtensions">
       <perspectiveExtension
@@ -69,11 +67,6 @@
          </viewShortcut>
       </perspectiveExtension>
    </extension>
-
-
-   <extension point="org.eclipse.help.contexts">
-      <contexts file="reference/contexts.xml"/>
-   </extension>
    <extension
          id="CsvTransform"
          name="CsvTransform"
@@ -83,15 +76,4 @@
             Label="Csv Transform"
             Tooltip="Transform the base CSV format."/>
    </extension>
-   <extension
-         point="org.eclipse.help.toc">
-      <toc
-            file="reference/msgViewtoc.xml"
-            primary="false">
-      </toc>
-      <toc
-            file="reference/msgWatchtoc.xml"
-            primary="false">
-      </toc>
-   </extension> 
 </plugin>

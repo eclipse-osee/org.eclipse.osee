@@ -33,17 +33,4 @@
             viewId="org.eclipse.osee.ote.ui.navigate.OteNavigateView">
       </XNavigateItem>
    </extension>
-   <extension
-         point="org.eclipse.help.toc">
-      <toc
-            file="help/toc.xml"
-            primary="false">
-      </toc>
-   </extension>
-   <extension
-         point="org.eclipse.help.contexts">
-      <contexts
-            file="help/contexts.xml">
-      </contexts>
-   </extension>
 </plugin>
