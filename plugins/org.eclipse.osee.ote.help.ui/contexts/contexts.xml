@@ -1,103 +1,74 @@
 <contexts>
+	<context id="ote_navigator" title="OTE Navigator">
+		<description>OTE navigator is a view that provides quick navigation to many of the GUI's and features of OTE.</description>
+		<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html#OTE_Navigator" label="OTE Navigator"/>
+	</context>
 	
 	<context id="test_manager">
-		<description></description>
+		<description>The Test Manager is the application that is used to run test programs in OTE.</description>
+		<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html#Test_Manager" label="Test Manager"/>
+		<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html#Overview_Page" label="Test Manager - Overview Page"/>
+		<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html#Hosts_Page" label="Test Manager - Hosts Page"/>
+		<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html#Scripts_Page" label="Test Manager - Scripts Page"/>
+		<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html#Advanced_Page" label="Test Manager - Advanced Page"/>
+		<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html#Source_Page" label="Test Manager - Source Page"/>
 	</context>
-	<context id="message_view" title="Message View">
-		<description>Message View</description>
-<!--	<topic href="reference/messageView/index.html" label="Message View Overview"/>
-		<topic href="reference/messageView/watch.html" label="Watching Messages/Elements"/>
-		<topic href="reference/messageView/search.html" label="Search"/>-->
+	<context id="test_manager_overview_page" title="Test Manager - Overview Page">
+		<description>The Overview page of Test Manager allows for some brief overview information related to the configuration of the Test Manager.</description>
+		<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html#Overview_Page" label="Test Manager - Overview Page"/>
+		<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html#Test_Manager" label="Test Manager"/>
 	</context>
-	<context id="message_watch" title="Message Watch">
-		<description>Message View Right-Click Menu</description>
-		<!--<topic href="reference/messageWatch/index.html" label="Message Watch Overview"/>
-		<topic href="reference/messageWatch/sort.html" label="Sorting the Table"/>
-		<topic href="reference/messageWatch/read_vs_write.html" label="Reader vs. Writer"/>
-		<topic href="reference/messageWatch/set.html" label="Set Value"/>
-		<topic href="reference/messageWatch/add.html" label="Add Elements"/>
-		<topic href="reference/messageWatch/remove.html" label="Removing Items"/>-->
-	</context>	
-	<context id="ote_navigator" title="OTE Navigator">
-		<description>Shortcut view to common OTE tasks.</description>
-		<!--<topic href="src/org/eclipse/osee/ote/ui/navigate/package.html" label="OTE Navigator"/>-->
-	</context>
-	<context id="mux_view" title="Mux View">
-		<description>Mux View</description>
-<!--		<topic href="help/package.html" label="Mux View"/>-->
-	</context>
-	
-<!-- OTE STUFF
-
-	<context id="testRunView" title="Test Run View">
-		<description>View current and saved test runs.</description>
-		<topic href="help/testRunView.html" label="Test Run View"/>
-	</context>
-	<context id="messageViewSearch" title="Search">
-		<description>Message View Search</description>
-		<topic href="reference/messageView/search.html" label="Search"/>
-		<topic href="reference/messageView/index.html" label="Message View Overview"/>
-	</context>
-	<context id="messageViewWatch" title="Watch">
-		<description>Message View Right-Click Menu</description>
-		<topic href="reference/messageView/watch.html" label="Watching Messages/Elements"/>
-		<topic href="reference/messageView/index.html" label="Message View Overview"/>
-	</context>
-
-	-->
-	
-	<!--	<context id="messageView" title="Message View">
-		<description>Message View</description>
-		<topic href="reference/messageView/index.html" label="Message View Overview"/>
-		<topic href="reference/messageView/watch.html" label="Watching Messages/Elements"/>
-		<topic href="reference/messageView/search.html" label="Search"/>
-	</context>
-	<context id="messageViewSearch" title="Search">
-		<description>Message View Search</description>
-		<topic href="reference/messageView/search.html" label="Search"/>
-		<topic href="reference/messageView/index.html" label="Message View Overview"/>
-	</context>
-	<context id="messageViewWatch" title="Watch">
-		<description>Message View Right-Click Menu</description>
-		<topic href="reference/messageView/watch.html" label="Watching Messages/Elements"/>
-		<topic href="reference/messageView/index.html" label="Message View Overview"/>
-	</context>
-	
-	<context id="messageWatch" title="Message Watch">
-		<description>Message View Right-Click Menu</description>
-		<topic href="reference/messageWatch/index.html" label="Message Watch Overview"/>
-		<topic href="reference/messageWatch/sort.html" label="Sorting the Table"/>
-		<topic href="reference/messageWatch/read_vs_write.html" label="Reader vs. Writer"/>
-		<topic href="reference/messageWatch/set.html" label="Set Value"/>
-		<topic href="reference/messageWatch/add.html" label="Add Elements"/>
-		<topic href="reference/messageWatch/remove.html" label="Removing Items"/>
-	</context>-->
-	
-		<context id="tm_advanced_page" title="Test Manager Advanced Page">
-		<description>Provides options of the execution and analysis of OSEE test programs.</description>
-		<topic href="references/tm_advancedPage_scriptOptions.html" label="Script Options"/>
-		<topic href="references/tm_advancedPage_executionOptions.html" label="Execution Options"/>
-		<topic href="references/tm_advancedPage_markerOptions.html" label="Marker Options"/>
-	</context>
-	
-		<context id="tm_hosts_page" title="Test Manager Hosts Page">
+	<context id="test_manager_hosts_page" title="Test Manager - Hosts Page">
 		<description>Displays available test servers, and allows you to connect to them and look at there current status.</description>
-		<topic href="references/tm_hostsPage.html" label="Connecting to and Viewing Test Servers"/>
+		<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html#Hosts_Page" label="Test Manager - Hosts Page"/>
+		<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html#Test_Manager" label="Test Manager"/>
 	</context>
-		<context id="tm_overview_page" title="Test Manager Overview Page">
-		<description>Displays overview information and provides a bug report mechanism.</description>
-		<topic label="Report a bug" href="../osee.ats/reference/report_a_bug.html"/>
+	<context id="test_manager_scripts_page" title="Test Manager - Scripts Page">
+		<description>Controls the execution of test programs.</description>
+		<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html#Scripts_Page" label="Test Manager - Scripts Page"/>
+		<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html#Test_Manager" label="Test Manager"/>		
 	</context>
+	<context id="test_manager_advanced_page" title="Test Manager - Advanced Page">
+		<description>The Advanced Page of the Test Manager is the page where configuration options can be set.</description>
+		<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html#Advanced_Page" label="Test Manager - Advanced Page"/>
+		<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html#Test_Manager" label="Test Manager"/>		
+	</context>	
+	<context id="test_manager_source_page" title="Test Manager - Source Page">
+		<description>The Source page of Test Manager allows the user to enter source code location to run against.</description>
+		<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html#Source_Page" label="Test Manager - Source Page"/>
+		<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html#Test_Manager" label="Test Manager"/>		
+	</context>	
 	
-		<context id="tm_scripts_page" title="Test Manager Scripts Page">
-		<description>Controls the exections of test programs.</description>
-		<topic href="references/tm_scriptsPage.html" label="Running Test Programs"/>
+	<context id="message_view" title="Message View">
+		<description>The Message View tool provides a listing of all messages in the currently checked out Messages.jar file.</description>
+		<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html#Message_View" label="Message View"/>
+		<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html#Search" label="Message View - Search"/>
+		<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html#Watch" label="Message View - Watch"/>
 	</context>
+	<context id="message_view_search" title="Message View - Search">
+		<description>The Message View search text box allows users to search for messages.</description>
+		<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html#Search" label="Message View - Search"/>
+		<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html#Message_View" label="Message View"/>		
+	</context>
+	<context id="message_view_watch" title="Message View - Watch">
+		<description>The Message View Right-Click Menu allows users to select messages and message elements to watch.</description>
+		<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html#Watch" label="Message View - Watch"/>
+		<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html#Message_View" label="Message View"/>		
+	</context>	
 	
-	<!--
-	<context id="oteNavigator" title="OTE Navigator">
-		<description>Shortcut view to common OTE tasks.</description>
-		<topic href="src/org/eclipse/osee/ote/ui/navigate/package.html" label="OTE Navigator"/>
+	<context id="message_watch" title="Message Watch">
+		<description>The Message Watch tool provides capability to monitor and simulate messages and element values.</description>
+		<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html#Message_Watch" label="Message Watch"/>
+		<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html#Adding Elements" label="Message Watch - Adding Elements"/>
+		<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html#Removing Elements" label="Message Watch - Removing Elements"/>
+		<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html#Setting Elements" label="Message Watch - Setting Elements"/>
+		<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html#Read vs Write Buffer" label="Message Watch - Read vs Write Buffer"/>
+		<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html#Sort" label="Message Watch - Sort"/>			
 	</context>
--->
+
+	<context id="mux_view" title="Mux View">
+		<description>The mux view allows the user to monitor and simulate mux messages</description>
+		<topic href="OSEE/OTE/Users_Guide/Features/Views-And-Editors.html#Mux_View" label="Mux View"/>
+	</context>
+
 </contexts>
