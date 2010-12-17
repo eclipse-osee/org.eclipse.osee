@@ -25,6 +25,55 @@ public final class Conditions {
       // Utility Class
    }
 
+   /**
+    * @return true if any of the objects are equal to the equalTo object, otherwise returns false.
+    */
+   public static boolean in(Object equalTo, Object... objects) {
+      for (Object object : objects) {
+         if (equalTo.equals(object)) {
+            return true;
+         }
+      }
+      return false;
+   }
+
+   /**
+    * @return false if any of the parameters are null, otherwise returns true.
+    */
+   public static boolean notNull(Object... objects) {
+      for (Object object : objects) {
+         if (object == null) {
+            return false;
+         }
+      }
+      return true;
+   }
+
+   /**
+    * @return true if any of the parameters are null, otherwise returns false.
+    */
+   public static boolean anyNull(Object... objects) {
+      for (Object object : objects) {
+         if (object == null) {
+            return true;
+         }
+      }
+      return false;
+   }
+
+   /**
+    * @return true if all of the parameters are null, otherwise returns false. Also returns true when objects is an
+    * empty array
+    */
+   public static boolean allNull(Object... objects) {
+      for (Object object : objects) {
+         if (object != null) {
+            return false;
+         }
+      }
+      return true;
+   }
+
    public static void checkNotNull(Object object, String objectName) throws OseeCoreException {
       if (object == null) {
          throw new OseeArgumentException("%s cannot be null", objectName);

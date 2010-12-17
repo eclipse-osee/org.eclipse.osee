@@ -17,7 +17,8 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
    AbstractOperationTest.class,
    AbstractTrackingHandlerTest.class,
-   ServiceDependencyTrackerTest.class,})
+   ServiceDependencyTrackerTest.class,
+   ConditionsTest.class})
 /**
  * @author Roberto E. Escobar
  */
