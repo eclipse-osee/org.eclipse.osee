@@ -12,7 +12,6 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xmerge;
 
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
@@ -21,7 +20,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -32,6 +30,7 @@ import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.util.AFile;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -45,6 +44,7 @@ import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.skynet.core.conflict.ArtifactConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
+import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
@@ -55,7 +55,6 @@ import org.eclipse.osee.framework.ui.skynet.revert.RevertWizard;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.NonmodalWizardDialog;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Theron Virgin
@@ -265,8 +264,7 @@ public class MergeUtility {
                response++;
             }
             if (response == 2) {
-               PlatformUI.getWorkbench().getHelpSystem().displayHelpResource(
-                  "/org.eclipse.osee.framework.ui.skynet/reference/Merge_Manager.html");
+               HelpUtil.displayHelp(OseeHelpContext.MERGE_MANAGER);
             } else if (response == 1) {
 
                Job job = new Job("Generate 3 Way Merge") {

@@ -39,6 +39,11 @@
 	   <topic href="OSEE/Users_Guide/Concepts/Branches.html" label="Concepts - Branches"/>
 	</context>
 	
+	<context id="blam_editor" title="Blam Editor">
+		<description>The BLAM (BLAM Lightweight Artifact Manipulation) Editor allows non-programmers to graphically construct workflows to automate repetitive tasks.</description>
+	   <topic href="OSEE/Users_Guide/Features/Views-and-Editors.html#Blam_Editor" label="Blam Editor"/>
+	</context>
+	
 	<context id="define_navigator" title="Define Navigator">
 	   <description>The Define Navigator, shown by default in the Define Perspective, provides a central location to launch frequently user define operations.</description>
 	   <topic href="OSEE/Users_Guide/Features/Views-and-Editors.html#Define_Navigator" label="Define Navigator"/>

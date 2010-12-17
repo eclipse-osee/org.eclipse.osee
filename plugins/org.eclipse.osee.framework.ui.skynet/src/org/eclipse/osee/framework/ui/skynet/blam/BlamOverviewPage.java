@@ -13,7 +13,8 @@ package org.eclipse.osee.framework.ui.skynet.blam;
 import java.util.Collection;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
-import org.eclipse.osee.framework.ui.skynet.IHelpContextIds;
+import org.eclipse.osee.framework.help.ui.OseeHelpContext;
+import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.blam.sections.BlamInputSection;
 import org.eclipse.osee.framework.ui.skynet.blam.sections.BlamOutputSection;
 import org.eclipse.osee.framework.ui.skynet.blam.sections.BlamUsageSection;
@@ -22,7 +23,6 @@ import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.IFormPart;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
@@ -69,7 +69,7 @@ public class BlamOverviewPage extends FormPage {
       updateImage(form);
       addToolBar(toolkit, form, true);
       managedForm.getMessageManager().setAutoUpdate(false);
-      PlatformUI.getWorkbench().getHelpSystem().setHelp(form.getBody(), IHelpContextIds.MAIN_WORKFLOW_PAGE);
+      HelpUtil.setHelp(form.getBody(), OseeHelpContext.BLAM_EDITOR);
 
       int sectionStyle = ExpandableComposite.TITLE_BAR | ExpandableComposite.EXPANDED | ExpandableComposite.TWISTIE;
 

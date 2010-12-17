@@ -49,7 +49,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IWorkbenchActionConstants;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.IFormPart;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
@@ -62,7 +61,6 @@ import org.eclipse.ui.progress.UIJob;
  * @author Ryan D. Brooks
  */
 public class ChangeReportPage extends FormPage {
-   private static String HELP_CONTEXT_ID = "ChangeView";
 
    private ChangeReportTable changeReportTable;
    private ChangeReportInfoPresenter infoPresenter;
@@ -113,8 +111,6 @@ public class ChangeReportPage extends FormPage {
       addToolBar(toolkit, form, true);
       form.reflow(true);
 
-      PlatformUI.getWorkbench().getHelpSystem().setHelp(form.getBody(),
-         "org.eclipse.osee.framework.help.ui." + HELP_CONTEXT_ID);
       bindMenu();
 
       recomputeChangeReport(uiData.isLoadOnOpenEnabled());

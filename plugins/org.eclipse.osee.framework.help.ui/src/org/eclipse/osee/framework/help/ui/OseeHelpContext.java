@@ -31,6 +31,7 @@ public final class OseeHelpContext {
 
    public static final HelpContext ARTIFACT_EXPLORER = toContext("artifact_explorer");
    public static final HelpContext ARTIFACT_SEARCH = toContext("artifact_search");
+   public static final HelpContext BLAM_EDITOR = toContext("blam_editor");
    public static final HelpContext CHANGE_REPORT_EDITOR = toContext("change_report_editor");
    public static final HelpContext BRANCH_MANAGER = toContext("branch_manager");
    public static final HelpContext DEFINE_NAVIGATOR = toContext("define_navigator");
