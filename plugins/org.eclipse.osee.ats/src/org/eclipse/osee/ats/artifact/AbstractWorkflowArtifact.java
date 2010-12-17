@@ -38,8 +38,12 @@ import org.eclipse.osee.ats.util.SimpleTeamState;
 import org.eclipse.osee.ats.util.StateManager;
 import org.eclipse.osee.ats.util.TeamState;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
+import org.eclipse.osee.ats.workdef.RuleDefinition;
+import org.eclipse.osee.ats.workdef.StateDefinition;
+import org.eclipse.osee.ats.workdef.StateXWidgetPage;
+import org.eclipse.osee.ats.workdef.WorkDefinition;
+import org.eclipse.osee.ats.workdef.WorkDefinitionFactory;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
-import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.ats.workflow.TransitionManager;
 import org.eclipse.osee.ats.workflow.item.AtsStatePercentCompleteWeightRule;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
@@ -72,12 +76,7 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FrameworkArtifactImageProvider;
 import org.eclipse.osee.framework.ui.skynet.group.IGroupExplorerProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkPage;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinitionFactory;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageType;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -87,7 +86,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    private final Set<IRelationEnumeration> atsWorldRelations = new HashSet<IRelationEnumeration>();
    private Collection<User> transitionAssignees;
-   protected WorkFlowDefinition workFlowDefinition;
+   protected WorkDefinition workDefinition;
    protected AbstractWorkflowArtifact parentSma;
    protected TeamWorkFlowArtifact parentTeamArt;
    protected ActionArtifact parentAction;
@@ -144,8 +143,8 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    public void initializeNewStateMachine(Collection<User> assignees, Date createdDate, User createdBy) throws OseeCoreException {
-      WorkPageDefinition startPage = getWorkFlowDefinition().getStartPage();
-      initializeNewStateMachine(startPage, assignees, createdDate, createdBy);
+      StateDefinition startState = getWorkDefinition().getStartState();
+      initializeNewStateMachine(startState, assignees, createdDate, createdBy);
    }
 
    public void initializeNewStateMachine(IWorkPage state, Collection<User> assignees, Date createdDate, User createdBy) throws OseeCoreException {
@@ -239,20 +238,21 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    public void clearCaches() {
-      workFlowDefinition = null;
+      workDefinition = null;
       implementersStr = null;
       stateToWeight = null;
    }
 
-   public WorkFlowDefinition getWorkFlowDefinition() {
-      if (workFlowDefinition == null) {
+   public WorkDefinition getWorkDefinition() {
+      if (workDefinition == null) {
          try {
-            workFlowDefinition = WorkFlowDefinitionFactory.getWorkFlowDefinition(this);
+            workDefinition = WorkDefinitionFactory.getWorkDefinition(this);
          } catch (Exception ex) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          }
       }
-      return workFlowDefinition;
+      return workDefinition;
+
    }
 
    @Override
@@ -433,7 +433,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
     * to transition.
     */
    @SuppressWarnings("unused")
-   public void transitioned(WorkPageDefinition fromPage, WorkPageDefinition toPage, Collection<User> toAssignees, boolean persist, SkynetTransaction transaction) throws OseeCoreException {
+   public void transitioned(StateDefinition fromState, StateDefinition toState, Collection<User> toAssignees, boolean persist, SkynetTransaction transaction) throws OseeCoreException {
       // provided for subclass implementation
    }
 
@@ -567,22 +567,22 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       if (!stateToWeightMap.isEmpty()) {
          // Calculate total percent using configured weighting
          int percent = 0;
-         for (WorkPageDefinition workPage : getWorkFlowDefinition().getPages()) {
-            if (!workPage.isCompletedPage() && !workPage.isCancelledPage()) {
-               Double weight = stateToWeightMap.get(workPage);
+         for (StateDefinition state : getWorkDefinition().getStates()) {
+            if (!state.isCompletedPage() && !state.isCancelledPage()) {
+               Double weight = stateToWeightMap.get(state);
                if (weight == null) {
                   weight = 0.0;
                }
-               percent += weight * getPercentCompleteSMAStateTotal(workPage);
+               percent += weight * getPercentCompleteSMAStateTotal(state);
             }
          }
          return percent;
       } else {
          int percent = 0;
          int numStates = 0;
-         for (WorkPageDefinition workPage : getWorkFlowDefinition().getPages()) {
-            if (!workPage.isCompletedPage() && !workPage.isCancelledPage()) {
-               percent += getPercentCompleteSMAStateTotal(workPage);
+         for (StateDefinition state : getWorkDefinition().getStates()) {
+            if (!state.isCompletedPage() && !state.isCancelledPage()) {
+               percent += getPercentCompleteSMAStateTotal(state);
                numStates++;
             }
          }
@@ -599,7 +599,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    public Map<String, Double> getStatePercentCompleteWeight() throws OseeCoreException {
       if (stateToWeight == null) {
          stateToWeight = new HashMap<String, Double>();
-         Collection<WorkRuleDefinition> workRuleDefs = getWorkRulesStartsWith(AtsStatePercentCompleteWeightRule.ID);
+         Collection<RuleDefinition> workRuleDefs = getRulesStartsWith(AtsStatePercentCompleteWeightRule.ID);
          // Log error if multiple of same rule found, but keep going
          if (workRuleDefs.size() > 1) {
             OseeLog.log(
@@ -733,35 +733,31 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return Result.FalseResult;
    }
 
-   public WorkPageDefinition getWorkPageDefinition() throws OseeCoreException {
+   public StateDefinition getStateDefinition() {
       if (getStateMgr().getCurrentStateName() == null) {
          return null;
       }
-      return getWorkFlowDefinition().getWorkPageDefinitionByName(getStateMgr().getCurrentStateName());
+      return getWorkDefinition().getStateByName(getStateMgr().getCurrentStateName());
    }
 
-   public WorkPageDefinition getWorkPageDefinitionByName(String name) throws OseeCoreException {
-      return getWorkFlowDefinition().getWorkPageDefinitionByName(name);
-   }
-
-   public WorkPageDefinition getWorkPageDefinitionById(String id) throws OseeCoreException {
-      return getWorkFlowDefinition().getWorkPageDefinitionById(id);
+   public StateDefinition getStateDefinitionByName(String name) {
+      return getWorkDefinition().getStateByName(name);
    }
 
    public boolean isHistoricalVersion() {
       return isHistorical();
    }
 
-   public List<WorkPageDefinition> getToWorkPages() throws OseeCoreException {
-      return getWorkFlowDefinition().getToPages(getWorkPageDefinition());
+   public List<StateDefinition> getToStates() {
+      return getStateDefinition().getToStates();
    }
 
-   public List<WorkPageDefinition> getReturnPages() throws OseeCoreException {
-      return getWorkFlowDefinition().getReturnPages(getWorkPageDefinition());
+   public List<StateDefinition> getReturnPages() {
+      return getStateDefinition().getReturnStates();
    }
 
-   public boolean isReturnPage(WorkPageDefinition workPageDefinition) throws OseeCoreException {
-      return getWorkFlowDefinition().isReturnPage(getWorkPageDefinition(), workPageDefinition);
+   public boolean isReturnPage(StateDefinition stateDefinition) {
+      return getReturnPages().contains(stateDefinition);
    }
 
    public boolean isAccessControlWrite() throws OseeCoreException {
@@ -806,31 +802,26 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       }
    }
 
-   public boolean workPageHasWorkRule(String ruleId) throws OseeCoreException {
-      return getWorkPageDefinition().hasWorkRule(AtsWorkDefinitions.RuleWorkItemId.atsRequireTargetedVersion.name());
+   public boolean workPageHasWorkRule(String ruleId) {
+      return getStateDefinition().hasRule(AtsWorkDefinitions.RuleWorkItemId.atsRequireTargetedVersion.name());
    }
 
-   public Collection<WorkRuleDefinition> getWorkRulesStartsWith(String ruleId) throws OseeCoreException {
-      Set<WorkRuleDefinition> workRules = new HashSet<WorkRuleDefinition>();
-      if (!Strings.isValid(ruleId)) {
+   public Collection<RuleDefinition> getRulesStartsWith(String ruleName) throws OseeCoreException {
+      Set<RuleDefinition> workRules = new HashSet<RuleDefinition>();
+      if (!Strings.isValid(ruleName)) {
          return workRules;
       }
       if (isTeamWorkflow()) {
          // Get rules from team definition
-         workRules.addAll(((TeamWorkFlowArtifact) this).getTeamDefinition().getWorkRulesStartsWith(ruleId));
+         workRules.addAll(((TeamWorkFlowArtifact) this).getTeamDefinition().getRulesStartsWith(ruleName));
       }
       // Get work rules from workflow
-      WorkFlowDefinition workFlowDefinition = getWorkFlowDefinition();
-      if (workFlowDefinition != null) {
+      if (workDefinition != null) {
          // Get rules from workflow definitions
-         workRules.addAll(getWorkFlowDefinition().getWorkRulesStartsWith(ruleId));
+         workRules.addAll(workDefinition.getRulesStartsWith(ruleName));
       }
       // Add work rules from page
-      for (WorkItemDefinition wid : getWorkPageDefinition().getWorkItems(false)) {
-         if (!wid.getId().equals("") && wid.getId().startsWith(ruleId)) {
-            workRules.add((WorkRuleDefinition) wid);
-         }
-      }
+      workRules.addAll(getStateDefinition().getRulesStartsWith(ruleName));
       return workRules;
    }
 
@@ -1101,28 +1092,27 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return this instanceof AbstractReviewArtifact;
    }
 
-   public AtsWorkPage getCurrentAtsWorkPage() throws OseeCoreException {
-      for (AtsWorkPage atsWorkPage : getAtsWorkPages()) {
-         if (getStateMgr().isInState(atsWorkPage)) {
-            return atsWorkPage;
+   public StateXWidgetPage getCurrentAtsWorkPage() throws OseeCoreException {
+      for (StateXWidgetPage statePage : getStatePages()) {
+         if (getStateMgr().isInState(statePage)) {
+            return statePage;
          }
       }
       return null;
    }
 
-   public List<AtsWorkPage> getAtsWorkPages() throws OseeCoreException {
-      List<AtsWorkPage> atsWorkPages = new ArrayList<AtsWorkPage>();
-      for (WorkPageDefinition workPageDefinition : getWorkFlowDefinition().getPagesOrdered()) {
+   public List<StateXWidgetPage> getStatePages() throws OseeCoreException {
+      List<StateXWidgetPage> statePages = new ArrayList<StateXWidgetPage>();
+      for (StateDefinition stateDefinition : getWorkDefinition().getStatesOrdered()) {
          try {
-            AtsWorkPage atsWorkPage =
-               new AtsWorkPage(getWorkFlowDefinition(), workPageDefinition, null,
-                  ATSXWidgetOptionResolver.getInstance());
-            atsWorkPages.add(atsWorkPage);
+            StateXWidgetPage statePage =
+               new StateXWidgetPage(getWorkDefinition(), stateDefinition, null, ATSXWidgetOptionResolver.getInstance());
+            statePages.add(statePage);
          } catch (Exception ex) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          }
       }
-      return atsWorkPages;
+      return statePages;
    }
 
    /**

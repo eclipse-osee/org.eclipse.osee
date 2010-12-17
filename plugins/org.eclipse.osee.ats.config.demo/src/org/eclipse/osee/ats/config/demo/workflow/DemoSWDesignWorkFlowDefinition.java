@@ -48,6 +48,7 @@ public class DemoSWDesignWorkFlowDefinition extends TeamWorkflowDefinition {
       DemoAddPeerToPeerReviewRule peerCommitBranchRule =
          new DemoAddPeerToPeerReviewRule(TeamState.Implement.getPageName(), ReviewBlockType.None,
             StateEventType.CommitBranch);
+
       // Import decision and peer rules into database
       AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(writeType, null,
          Arrays.asList(decisionTransitionToRule, decisionCreateBranchRule, peerTransitionToRule, peerCommitBranchRule));
@@ -60,14 +61,14 @@ public class DemoSWDesignWorkFlowDefinition extends TeamWorkflowDefinition {
 
       // Add Non-blocking createBranch decision review to Implement state
       WorkItemDefinitionFactory.relateWorkItemDefinitions(ID + "." + TeamState.Analyze.getPageName(),
-         decisionTransitionToRule.getId());
+         decisionTransitionToRule.getName());
       WorkItemDefinitionFactory.relateWorkItemDefinitions(ID + "." + TeamState.Implement.getPageName(),
-         decisionCreateBranchRule.getId());
+         decisionCreateBranchRule.getName());
 
       // Add Non-blocking commitBranch peerToPeer review to Implement state
       WorkItemDefinitionFactory.relateWorkItemDefinitions(ID + "." + TeamState.Authorize.getPageName(),
-         peerTransitionToRule.getId());
+         peerTransitionToRule.getName());
       WorkItemDefinitionFactory.relateWorkItemDefinitions(ID + "." + TeamState.Implement.getPageName(),
-         peerCommitBranchRule.getId());
+         peerCommitBranchRule.getName());
    }
 }

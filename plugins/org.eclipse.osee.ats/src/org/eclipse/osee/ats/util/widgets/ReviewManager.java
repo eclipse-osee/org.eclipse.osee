@@ -62,7 +62,7 @@ public class ReviewManager {
     */
    public static DecisionReviewArtifact createValidateReview(TeamWorkFlowArtifact teamArt, boolean force, Date createdDate, User createdBy, SkynetTransaction transaction) throws OseeCoreException {
       // If not validate page, don't do anything
-      if (!force && !AtsWorkDefinitions.isValidatePage(teamArt.getWorkPageDefinition())) {
+      if (!force && !AtsWorkDefinitions.isValidatePage(teamArt.getStateDefinition())) {
          return null;
       }
       // If validate review already created for this state, return
@@ -79,7 +79,7 @@ public class ReviewManager {
          DecisionReviewArtifact decRev =
             ReviewManager.createNewDecisionReview(
                teamArt,
-               AtsWorkDefinitions.isValidateReviewBlocking(teamArt.getWorkPageDefinition()) ? ReviewBlockType.Transition : ReviewBlockType.None,
+               AtsWorkDefinitions.isValidateReviewBlocking(teamArt.getStateDefinition()) ? ReviewBlockType.Transition : ReviewBlockType.None,
                true, createdDate, createdBy);
          decRev.setName(VALIDATE_REVIEW_TITLE);
          decRev.setSoleAttributeValue(AtsAttributeTypes.DecisionReviewOptions,

@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.artifact.log.LogItem;
 import org.eclipse.osee.ats.artifact.log.LogType;
 import org.eclipse.osee.ats.health.ValidateAtsDatabase;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.workdef.StateDefinition;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -221,8 +222,8 @@ public class ConvertAtsFor097Database extends XNavigateItemAction {
          if (item == null) {
             // If transition to complete was with new completed state, internalGetCompletedLogItem won't work, try
             // to get from work page definition page name
-            WorkPageDefinition page = aba.getWorkPageDefinition();
-            item = aba.getLog().getStateEvent(LogType.StateEntered, page.getPageName());
+            StateDefinition state = aba.getStateDefinition();
+            item = aba.getLog().getStateEvent(LogType.StateEntered, state.getPageName());
          }
          if (!item.getUserId().equals(aba.getSoleAttributeValue(AtsAttributeTypes.CompletedBy, ""))) {
             aba.setSoleAttributeValue(AtsAttributeTypes.CompletedBy, item.getUserId());
@@ -248,9 +249,9 @@ public class ConvertAtsFor097Database extends XNavigateItemAction {
    private static void setCurrentStateType(HashCollection<String, String> testNameToResultsMap, AbstractWorkflowArtifact aba) throws OseeCoreException {
       String stateType = aba.getSoleAttributeValueAsString(AtsAttributeTypes.CurrentStateType, "");
       boolean set = false;
-      WorkPageDefinition page = aba.getWorkPageDefinition();
-      boolean currentStateIsCompleted = aba.getCurrentStateName().equals("Completed") || page.isCompletedPage();
-      boolean currentStateIsCancelled = aba.getCurrentStateName().equals("Cancelled") || page.isCancelledPage();
+      StateDefinition state = aba.getStateDefinition();
+      boolean currentStateIsCompleted = aba.getCurrentStateName().equals("Completed") || state.isCompletedPage();
+      boolean currentStateIsCancelled = aba.getCurrentStateName().equals("Cancelled") || state.isCancelledPage();
       if (currentStateIsCompleted && !stateType.equals(WorkPageType.Completed.name())) {
          aba.setSoleAttributeValue(AtsAttributeTypes.CurrentStateType, WorkPageType.Completed.name());
          set = true;

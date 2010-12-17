@@ -12,11 +12,9 @@ package org.eclipse.osee.ats.workflow.editor.model;
 
 import java.util.logging.Level;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.workflow.page.AtsCompletedWorkPageDefinition;
+import org.eclipse.osee.ats.workdef.StateDefinition;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageType;
 
 /**
  * @author Donald G. Dunne
@@ -24,7 +22,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageType;
 public class CompletedWorkPageShape extends WorkPageShape {
 
    public CompletedWorkPageShape() {
-      super(new WorkPageDefinition("Completed", "NEW", AtsCompletedWorkPageDefinition.ID, WorkPageType.Completed, 2));
+      //    super(new WorkPageDefinition("Completed", "NEW", AtsCompletedWorkPageDefinition.ID, WorkPageType.Completed, 2));
+      super(new StateDefinition("Completed"));
    }
 
    @Override
@@ -39,7 +38,7 @@ public class CompletedWorkPageShape extends WorkPageShape {
       return super.equals(obj);
    }
 
-   public CompletedWorkPageShape(WorkPageDefinition workPageDefinition) {
+   public CompletedWorkPageShape(StateDefinition workPageDefinition) {
       super(workPageDefinition);
    }
 

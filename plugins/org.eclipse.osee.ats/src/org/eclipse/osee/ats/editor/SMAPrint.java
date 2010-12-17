@@ -28,7 +28,7 @@ import org.eclipse.osee.ats.editor.widget.ReviewInfoXWidget;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.Overview;
-import org.eclipse.osee.ats.workflow.AtsWorkPage;
+import org.eclipse.osee.ats.workdef.StateXWidgetPage;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -37,7 +37,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPage;
 
 /**
  * @author Donald G. Dunne
@@ -152,42 +151,42 @@ public class SMAPrint extends Action {
 
    private void getWorkFlowHtml(XResultData rd) throws OseeCoreException {
       // Only display current or past states
-      for (AtsWorkPage atsWorkPage : sma.getAtsWorkPages()) {
-         if (sma.isInState(atsWorkPage) || sma.getStateMgr().isStateVisited(atsWorkPage)) {
+      for (StateXWidgetPage statePage : sma.getStatePages()) {
+         if (sma.isInState(statePage) || sma.getStateMgr().isStateVisited(statePage)) {
             // Don't show completed or cancelled state if not currently those state
-            if (atsWorkPage.isCompletedPage() && !sma.isCompleted()) {
+            if (statePage.isCompletedPage() && !sma.isCompleted()) {
                continue;
             }
-            if (atsWorkPage.isCancelledPage() && !sma.isCancelled()) {
+            if (statePage.isCancelledPage() && !sma.isCancelled()) {
                continue;
             }
             StringBuffer notesSb = new StringBuffer();
             for (NoteItem note : sma.getNotes().getNoteItems()) {
-               if (note.getState().equals(atsWorkPage.getPageName())) {
+               if (note.getState().equals(statePage.getPageName())) {
                   notesSb.append(note.toHTML());
                   notesSb.append(AHTML.newline());
                }
             }
-            if (sma.isInState(atsWorkPage) || sma.getStateMgr().isStateVisited(atsWorkPage) && sma.isTeamWorkflow()) {
-               atsWorkPage.generateLayoutDatas(sma);
-               rd.addRaw(atsWorkPage.getHtml(sma.isInState(atsWorkPage) ? AtsUtil.activeColor : AtsUtil.normalColor,
-                  notesSb.toString(), getStateHoursSpentHtml(atsWorkPage) + getReviewData(sma, atsWorkPage)));
+            if (sma.isInState(statePage) || sma.getStateMgr().isStateVisited(statePage) && sma.isTeamWorkflow()) {
+               statePage.generateLayoutDatas(sma);
+               rd.addRaw(statePage.getHtml(sma.isInState(statePage) ? AtsUtil.activeColor : AtsUtil.normalColor,
+                  notesSb.toString(), getStateHoursSpentHtml(statePage) + getReviewData(sma, statePage)));
                rd.addRaw(AHTML.newline());
             }
          }
       }
    }
 
-   private String getReviewData(AbstractWorkflowArtifact sma, AtsWorkPage page) throws OseeCoreException {
+   private String getReviewData(AbstractWorkflowArtifact sma, StateXWidgetPage page) throws OseeCoreException {
       if (sma instanceof TeamWorkFlowArtifact) {
          return ReviewInfoXWidget.toHTML((TeamWorkFlowArtifact) sma, page);
       }
       return "";
    }
 
-   private String getStateHoursSpentHtml(WorkPage page) throws OseeCoreException {
+   private String getStateHoursSpentHtml(StateXWidgetPage statePage) throws OseeCoreException {
       return AHTML.getLabelValueStr("State Hours Spent",
-         AtsUtil.doubleToI18nString(sma.getStateMgr().getHoursSpent(page)) + "<br>");
+         AtsUtil.doubleToI18nString(sma.getStateMgr().getHoursSpent(statePage)) + "<br>");
    }
 
    public boolean isIncludeTaskList() {

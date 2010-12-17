@@ -16,7 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
-import org.eclipse.osee.ats.workflow.AtsWorkPage;
+import org.eclipse.osee.ats.workdef.StateXWidgetPage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -85,7 +85,7 @@ public abstract class AtsStateItem implements IAtsStateItem {
 
    @SuppressWarnings("unused")
    @Override
-   public Result pageCreated(FormToolkit toolkit, AtsWorkPage page, AbstractWorkflowArtifact sma, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
+   public Result pageCreated(FormToolkit toolkit, StateXWidgetPage page, AbstractWorkflowArtifact sma, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
       return Result.TrueResult;
    }
 
@@ -109,13 +109,13 @@ public abstract class AtsStateItem implements IAtsStateItem {
 
    @SuppressWarnings("unused")
    @Override
-   public void xWidgetCreated(XWidget xWidget, FormToolkit toolkit, AtsWorkPage page, Artifact art, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
+   public void xWidgetCreated(XWidget xWidget, FormToolkit toolkit, StateXWidgetPage page, Artifact art, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
       // provided for subclass implementation
    }
 
    @SuppressWarnings("unused")
    @Override
-   public Result xWidgetCreating(XWidget xWidget, FormToolkit toolkit, AtsWorkPage page, Artifact art, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
+   public Result xWidgetCreating(XWidget xWidget, FormToolkit toolkit, StateXWidgetPage page, Artifact art, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
       return Result.TrueResult;
    }
 

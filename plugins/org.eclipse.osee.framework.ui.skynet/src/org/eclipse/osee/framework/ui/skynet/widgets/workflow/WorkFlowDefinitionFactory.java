@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -18,7 +19,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public class WorkFlowDefinitionFactory {
 
-   public static WorkFlowDefinition getWorkFlowDefinition(Artifact artifact) throws Exception {
+   public static WorkFlowDefinition getWorkFlowDefinition(Artifact artifact) throws OseeCoreException {
 
       // Check extensions for WorkFlowDefinition for given artifact
       for (IWorkDefinitionProvider provider : WorkDefinitionProvider.getWorkDefinitionProviders()) {

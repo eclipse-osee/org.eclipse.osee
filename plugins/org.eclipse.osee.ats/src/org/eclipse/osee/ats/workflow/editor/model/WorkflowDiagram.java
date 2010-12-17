@@ -15,19 +15,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
+import org.eclipse.osee.ats.workdef.StateDefinition;
+import org.eclipse.osee.ats.workdef.WorkDefinition;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition.TransitionType;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition.WriteType;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 
 /**
  * A container for multiple shapes. This is the "root" of the model data structure.
@@ -42,9 +37,9 @@ public class WorkflowDiagram extends ModelElement {
    public static final String CHILD_REMOVED_PROP = "WorkflowDiagram.ChildRemoved";
    private final List<Shape> shapes = new ArrayList<Shape>();
    private final List<Shape> deletedShapes = new ArrayList<Shape>();
-   private final WorkFlowDefinition workFlowDefinition;
+   private final WorkDefinition workFlowDefinition;
 
-   public WorkflowDiagram(WorkFlowDefinition workFlowDefinition) {
+   public WorkflowDiagram(WorkDefinition workFlowDefinition) {
       super();
       this.workFlowDefinition = workFlowDefinition;
    }
@@ -70,7 +65,7 @@ public class WorkflowDiagram extends ModelElement {
                WorkPageShape workPageShape = (WorkPageShape) shape;
                if (workPageShape.getArtifact() != null) {
                   workPageShape.getArtifact().deleteAndPersist(transaction);
-                  workFlowDefinition.removeWorkItem(((WorkPageShape) shape).getId());
+                  //                  workFlowDefinition.removeWorkItem(((WorkPageShape) shape).getId());
                }
             }
          }
@@ -86,31 +81,31 @@ public class WorkflowDiagram extends ModelElement {
          // Set start page
          for (WorkPageShape workPageShape : workPageShapes) {
             if (workPageShape.isStartPage()) {
-               workFlowDefinition.setStartPageId(workPageShape.getWorkPageDefinition().getPageName());
+               //               workFlowDefinition.setStartPageId(workPageShape.getWorkPageDefinition().getPageName());
                break;
             }
          }
 
          // Validate transitions
          validateTransitions();
-         workFlowDefinition.loadPageData(true);
+         //         workFlowDefinition.loadPageData(true);
 
-         Artifact artifact = workFlowDefinition.toArtifact(WriteType.Update);
-         AtsWorkDefinitions.addUpdateWorkItemToDefaultHeirarchy(artifact, transaction);
-         artifact.persist(transaction);
+         //         Artifact artifact = workFlowDefinition.toArtifact(WriteType.Update);
+         //         AtsWorkDefinitions.addUpdateWorkItemToDefaultHeirarchy(artifact, transaction);
+         //         artifact.persist(transaction);
 
-         WorkItemDefinitionFactory.deCache(workFlowDefinition);
+         //         WorkItemDefinitionFactory.deCache(workFlowDefinition);
 
          // Validate saved workflows and all corresponding workItemDefinitions
          // prior to completion of save
-         result = AtsWorkDefinitions.validateWorkItemDefinition(workFlowDefinition);
-         if (result.isFalse()) {
-            return result;
-         }
+         //         result = AtsWorkDefinitions.validateWorkItemDefinition(workFlowDefinition);
+         //         if (result.isFalse()) {
+         //            return result;
+         //         }
          for (Shape shape : getChildren()) {
             if (WorkPageShape.class.isAssignableFrom(shape.getClass())) {
-               WorkPageDefinition workPageDefinition = ((WorkPageShape) shape).getWorkPageDefinition();
-               result = AtsWorkDefinitions.validateWorkItemDefinition(workPageDefinition);
+               StateDefinition workPageDefinition = ((WorkPageShape) shape).getWorkPageDefinition();
+               //               result = AtsWorkDefinitions.validateWorkItemDefinition(workPageDefinition);
                if (result.isFalse()) {
                   return result;
                }
@@ -124,28 +119,27 @@ public class WorkflowDiagram extends ModelElement {
    }
 
    private void validateTransitions() {
-      workFlowDefinition.clearTransitions();
-      for (Relation connection : getConnections()) {
-         if (TransitionConnection.class.isAssignableFrom(connection.getClass())) {
-            TransitionConnection transConn = (TransitionConnection) connection;
-            if (transConn instanceof DefaultTransitionConnection) {
-               workFlowDefinition.addPageTransition(
-                  ((WorkPageShape) transConn.getSource()).getWorkPageDefinition().getPageName(),
-                  ((WorkPageShape) transConn.getTarget()).getWorkPageDefinition().getPageName(),
-                  TransitionType.ToPageAsDefault);
-            } else if (transConn instanceof ReturnTransitionConnection) {
-               workFlowDefinition.addPageTransition(
-                  ((WorkPageShape) transConn.getSource()).getWorkPageDefinition().getPageName(),
-                  ((WorkPageShape) transConn.getTarget()).getWorkPageDefinition().getPageName(),
-                  TransitionType.ToPageAsReturn);
-            } else {
-               workFlowDefinition.addPageTransition(
-                  ((WorkPageShape) transConn.getSource()).getWorkPageDefinition().getPageName(),
-                  ((WorkPageShape) transConn.getTarget()).getWorkPageDefinition().getPageName(),
-                  TransitionType.ToPage);
-            }
-         }
-      }
+      //      workFlowDefinition.clearTransitions();
+      //      for (Relation connection : getConnections()) {
+      //         if (TransitionConnection.class.isAssignableFrom(connection.getClass())) {
+      //            TransitionConnection transConn = (TransitionConnection) connection;
+      //            if (transConn instanceof DefaultTransitionConnection) {
+      //               workFlowDefinition.addPageTransition(
+      //                  ((WorkPageShape) transConn.getSource()).getWorkPageDefinition().getPageName(),
+      //                  ((WorkPageShape) transConn.getTarget()).getWorkPageDefinition().getPageName(),
+      //                  TransitionType.ToPageAsDefault);
+      //            } else if (transConn instanceof ReturnTransitionConnection) {
+      //               workFlowDefinition.addPageTransition(
+      //                  ((WorkPageShape) transConn.getSource()).getWorkPageDefinition().getPageName(),
+      //                  ((WorkPageShape) transConn.getTarget()).getWorkPageDefinition().getPageName(),
+      //                  TransitionType.ToPageAsReturn);
+      //            } else {
+      //               workFlowDefinition.addPageTransition(
+      //                  ((WorkPageShape) transConn.getSource()).getWorkPageDefinition().getPageName(),
+      //                  ((WorkPageShape) transConn.getTarget()).getWorkPageDefinition().getPageName(), TransitionType.ToPage);
+      //            }
+      //         }
+      //      }
    }
 
    @Override
@@ -288,7 +282,7 @@ public class WorkflowDiagram extends ModelElement {
    /**
     * @return the workFlowDefinition
     */
-   public WorkFlowDefinition getWorkFlowDefinition() {
+   public WorkDefinition getWorkFlowDefinition() {
       return workFlowDefinition;
    }
 

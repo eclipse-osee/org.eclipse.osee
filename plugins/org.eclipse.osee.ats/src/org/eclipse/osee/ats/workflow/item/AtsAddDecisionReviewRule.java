@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.log.LogType;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
+import org.eclipse.osee.ats.workdef.RuleDefinition;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -80,14 +81,18 @@ public class AtsAddDecisionReviewRule extends WorkRuleDefinition {
       return workRuleDefinition.getWorkDataValue(decisionParameter.name());
    }
 
+   public static String getDecisionParameterValue(RuleDefinition ruleDefinition, DecisionParameter decisionParameter) {
+      return ruleDefinition.getWorkDataValue(decisionParameter.name());
+   }
+
    /**
     * Creates decision review if one of same name doesn't already exist
     * 
     * @param createdDate TODO
     * @param createdUser TODO
     */
-   public static DecisionReviewArtifact createNewDecisionReview(WorkRuleDefinition atsAddDecisionReviewRule, SkynetTransaction transaction, TeamWorkFlowArtifact teamArt, Date createdDate, User createdBy, DecisionRuleOption... decisionRuleOption) throws OseeCoreException {
-      if (!atsAddDecisionReviewRule.getId().startsWith(AtsAddDecisionReviewRule.ID)) {
+   public static DecisionReviewArtifact createNewDecisionReview(RuleDefinition atsAddDecisionReviewRule, SkynetTransaction transaction, TeamWorkFlowArtifact teamArt, Date createdDate, User createdBy, DecisionRuleOption... decisionRuleOption) throws OseeCoreException {
+      if (!atsAddDecisionReviewRule.getName().startsWith(AtsAddDecisionReviewRule.ID)) {
          throw new OseeArgumentException("WorkRuleDefinition must be AtsAddDecisionReviewRule.ID");
       }
       String title = getValueOrDefault(teamArt, atsAddDecisionReviewRule, DecisionParameter.title);
@@ -114,12 +119,12 @@ public class AtsAddDecisionReviewRule extends WorkRuleDefinition {
                getAssigneesOrDefault(teamArt, atsAddDecisionReviewRule), createdDate, createdBy, transaction);
       }
 
-      decArt.getLog().addLog(LogType.Note, null, "Review auto-generated off rule " + atsAddDecisionReviewRule.getId());
+      decArt.getLog().addLog(LogType.Note, null, "Review auto-generated off rule " + atsAddDecisionReviewRule.getName());
       return decArt;
    }
 
-   public static ReviewBlockType getReviewBlockTypeOrDefault(TeamWorkFlowArtifact teamArt, WorkRuleDefinition workRuleDefinition) {
-      String value = getDecisionParameterValue(workRuleDefinition, DecisionParameter.reviewBlockingType);
+   public static ReviewBlockType getReviewBlockTypeOrDefault(TeamWorkFlowArtifact teamArt, RuleDefinition ruleDefinition) {
+      String value = getDecisionParameterValue(ruleDefinition, DecisionParameter.reviewBlockingType);
       if (!Strings.isValid(value)) {
          return null;
       }
@@ -134,8 +139,16 @@ public class AtsAddDecisionReviewRule extends WorkRuleDefinition {
       return StateEventType.valueOf(value);
    }
 
-   private static String getValueOrDefault(TeamWorkFlowArtifact teamArt, WorkRuleDefinition workRuleDefinition, DecisionParameter decisionParameter) throws OseeCoreException {
-      String value = getDecisionParameterValue(workRuleDefinition, decisionParameter);
+   public static StateEventType getStateEventType(TeamWorkFlowArtifact teamArt, RuleDefinition ruleDefinition) {
+      String value = getDecisionParameterValue(ruleDefinition, DecisionParameter.forEvent);
+      if (!Strings.isValid(value)) {
+         return null;
+      }
+      return StateEventType.valueOf(value);
+   }
+
+   private static String getValueOrDefault(TeamWorkFlowArtifact teamArt, RuleDefinition ruleDefinition, DecisionParameter decisionParameter) throws OseeCoreException {
+      String value = getDecisionParameterValue(ruleDefinition, decisionParameter);
       if (!Strings.isValid(value)) {
          if (decisionParameter == DecisionParameter.title) {
             return "Decide on \"" + teamArt.getName() + "\"";
@@ -150,8 +163,8 @@ public class AtsAddDecisionReviewRule extends WorkRuleDefinition {
       return value;
    }
 
-   public static Collection<User> getAssigneesOrDefault(TeamWorkFlowArtifact teamArt, WorkRuleDefinition workRuleDefinition) throws OseeCoreException {
-      String value = getDecisionParameterValue(workRuleDefinition, DecisionParameter.assignees);
+   public static Collection<User> getAssigneesOrDefault(TeamWorkFlowArtifact teamArt, RuleDefinition ruleDefinition) throws OseeCoreException {
+      String value = getDecisionParameterValue(ruleDefinition, DecisionParameter.assignees);
       if (!Strings.isValid(value)) {
          return Arrays.asList(new User[] {UserManager.getUser()});
       }

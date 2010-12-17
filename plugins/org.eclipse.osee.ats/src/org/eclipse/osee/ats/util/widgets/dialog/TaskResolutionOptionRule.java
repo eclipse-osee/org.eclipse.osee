@@ -12,14 +12,14 @@ package org.eclipse.osee.ats.util.widgets.dialog;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.ats.workdef.RuleDefinition;
+import org.eclipse.osee.ats.workdef.StateDefinition;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -46,24 +46,28 @@ public class TaskResolutionOptionRule extends WorkRuleDefinition {
       fromXml(artifact.getSoleAttributeValue(CoreAttributeTypes.WorkParentId, ""));
    }
 
-   public static List<TaskResOptionDefinition> getTaskResolutionOptions(WorkPageDefinition workPageDefinition) throws OseeCoreException {
-      TaskResolutionOptionRule taskResolutionOptionRule = getTaskResolutionOptionRule(workPageDefinition);
+   public static List<TaskResOptionDefinition> getTaskResolutionOptions(StateDefinition stateDefinition) throws OseeCoreException {
+      TaskResolutionOptionRule taskResolutionOptionRule = getTaskResolutionOptionRule(stateDefinition);
       if (taskResolutionOptionRule != null) {
          return taskResolutionOptionRule.getOptions();
       }
       return EMPTY_TASK_RESOLUTION_OPTIONS;
    }
 
-   public static TaskResolutionOptionRule getTaskResolutionOptionRule(WorkPageDefinition workPageDefinition) throws OseeCoreException {
-      List<WorkItemDefinition> wids =
-         workPageDefinition.getWorkItemDefinitionsByType(TaskResolutionOptionRule.WORK_TYPE);
+   public static TaskResolutionOptionRule getTaskResolutionOptionRule(StateDefinition stateDefinition) throws OseeCoreException {
+      List<RuleDefinition> wids = new ArrayList<RuleDefinition>();
+      for (RuleDefinition ruleDef : stateDefinition.getRules()) {
+         if (ruleDef.getName().contains("taskResolutionOptions")) {
+            wids.add(ruleDef);
+         }
+      }
       if (wids.isEmpty()) {
          return null;
       }
-      WorkItemDefinition workItemDefinition = wids.iterator().next();
-      if (workItemDefinition != null) {
+      RuleDefinition ruleDefinition = wids.iterator().next();
+      if (ruleDefinition != null) {
          TaskResolutionOptionRule taskResolutionOptionRule = new TaskResolutionOptionRule(null, GUID.create(), null);
-         taskResolutionOptionRule.fromXml(workItemDefinition.getWorkDataValue(ATS_TASK_OPTIONS_TAG));
+         taskResolutionOptionRule.fromXml(ruleDefinition.getWorkDataValue(ATS_TASK_OPTIONS_TAG));
          return taskResolutionOptionRule;
       }
       return null;

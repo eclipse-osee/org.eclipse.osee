@@ -41,6 +41,7 @@ import org.eclipse.osee.ats.util.AtsFolderUtil.AtsFolder;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.XWorkingBranch;
 import org.eclipse.osee.ats.util.widgets.commit.XCommitManager;
+import org.eclipse.osee.ats.workdef.StateDefinition;
 import org.eclipse.osee.ats.workflow.flow.DecisionWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.flow.GoalWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.flow.PeerToPeerWorkflowDefinition;
@@ -59,6 +60,7 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.FrameworkXWidgetProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkDefinitionProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition;
@@ -67,7 +69,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionF
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkWidgetDefinition;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.FrameworkXWidgetProvider;
 
 /**
  * Create all the default ATS work items. This keeps from having to create a class for each of these. Also implement
@@ -281,38 +282,38 @@ public final class AtsWorkDefinitions implements IWorkDefinitionProvider {
       return null;
    }
 
-   public static boolean isValidatePage(WorkPageDefinition workPageDefinition) throws OseeCoreException {
-      if (workPageDefinition.getWorkItemDefinition(AtsWorkDefinitions.RuleWorkItemId.atsAddDecisionValidateBlockingReview.name()) != null) {
+   public static boolean isValidatePage(StateDefinition stateDefinition) {
+      if (stateDefinition.hasRule(AtsWorkDefinitions.RuleWorkItemId.atsAddDecisionValidateBlockingReview.name())) {
          return true;
       }
-      if (workPageDefinition.getWorkItemDefinition(AtsWorkDefinitions.RuleWorkItemId.atsAddDecisionValidateNonBlockingReview.name()) != null) {
+      if (stateDefinition.hasRule(AtsWorkDefinitions.RuleWorkItemId.atsAddDecisionValidateNonBlockingReview.name())) {
          return true;
       }
       return false;
    }
 
-   public static boolean isValidateReviewBlocking(WorkPageDefinition workPageDefinition) throws OseeCoreException {
-      return workPageDefinition.getWorkItemDefinition(AtsWorkDefinitions.RuleWorkItemId.atsAddDecisionValidateBlockingReview.name()) != null;
+   public static boolean isValidateReviewBlocking(StateDefinition stateDefinition) {
+      return stateDefinition.hasRule(AtsWorkDefinitions.RuleWorkItemId.atsAddDecisionValidateBlockingReview.name());
    }
 
-   public static boolean isForceAssigneesToTeamLeads(WorkPageDefinition workPageDefinition) throws OseeCoreException {
-      return workPageDefinition.getWorkItemDefinition(AtsWorkDefinitions.RuleWorkItemId.atsForceAssigneesToTeamLeads.name()) != null;
+   public static boolean isForceAssigneesToTeamLeads(StateDefinition stateDefinition) {
+      return stateDefinition.hasRule(AtsWorkDefinitions.RuleWorkItemId.atsForceAssigneesToTeamLeads.name());
    }
 
-   public static boolean isAllowTransitionWithWorkingBranch(WorkPageDefinition workPageDefinition) throws OseeCoreException {
-      return workPageDefinition.getWorkItemDefinition(AtsWorkDefinitions.RuleWorkItemId.atsAllowTransitionWithWorkingBranch.name()) != null;
+   public static boolean isAllowTransitionWithWorkingBranch(StateDefinition stateDefinition) {
+      return stateDefinition.hasRule(AtsWorkDefinitions.RuleWorkItemId.atsAllowTransitionWithWorkingBranch.name());
    }
 
-   public static boolean isRequireStateHoursSpentPrompt(WorkPageDefinition workPageDefinition) throws OseeCoreException {
-      return workPageDefinition.getWorkItemDefinition(AtsWorkDefinitions.RuleWorkItemId.atsRequireStateHourSpentPrompt.name()) != null;
+   public static boolean isRequireStateHoursSpentPrompt(StateDefinition stateDefinition) {
+      return stateDefinition.hasRule(AtsWorkDefinitions.RuleWorkItemId.atsRequireStateHourSpentPrompt.name());
    }
 
-   public static boolean isAllowCreateBranch(WorkPageDefinition workPageDefinition) throws OseeCoreException {
-      return workPageDefinition.getWorkItemDefinition(ATSAttributes.WORKING_BRANCH_WIDGET.getWorkItemId()) != null;
+   public static boolean isAllowCreateBranch(StateDefinition stateDefinition) {
+      return stateDefinition.hasRule(ATSAttributes.WORKING_BRANCH_WIDGET.getWorkItemId());
    }
 
-   public static boolean isAllowCommitBranch(WorkPageDefinition workPageDefinition) throws OseeCoreException {
-      return workPageDefinition.getWorkItemDefinition(ATSAttributes.COMMIT_MANAGER_WIDGET.getWorkItemId()) != null;
+   public static boolean isAllowCommitBranch(StateDefinition stateDefinition) {
+      return stateDefinition.hasRule(ATSAttributes.COMMIT_MANAGER_WIDGET.getWorkItemId());
    }
 
    public static void importWorkItemDefinitionsIntoDb(WriteType writeType, XResultData resultData, WorkItemDefinition workItemDefinition) throws OseeCoreException {

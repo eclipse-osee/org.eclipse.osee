@@ -103,7 +103,7 @@ public class SMATargetVersionInfoComposite extends Composite {
       String str = "";
       // Don't transition without targeted version if so configured
       boolean required =
-         sma.teamDefHasWorkRule(AtsWorkDefinitions.RuleWorkItemId.atsRequireTargetedVersion.name()) || sma.getWorkPageDefinition().hasWorkRule(
+         sma.teamDefHasWorkRule(AtsWorkDefinitions.RuleWorkItemId.atsRequireTargetedVersion.name()) || sma.getStateDefinition().hasRule(
             AtsWorkDefinitions.RuleWorkItemId.atsRequireTargetedVersion.name());
 
       if (sma.getTargetedVersion() != null) {

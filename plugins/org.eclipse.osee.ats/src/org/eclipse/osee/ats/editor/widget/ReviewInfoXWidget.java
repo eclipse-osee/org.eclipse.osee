@@ -121,7 +121,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                   StateListAndTitleDialog dialog =
                      new StateListAndTitleDialog("Create Decision Review",
                         "Select state to that review will be associated with.",
-                        teamArt.getWorkFlowDefinition().getPageNames());
+                        teamArt.getWorkDefinition().getStateNames());
                   dialog.setInitialSelections(new Object[] {forState.getPageName()});
                   if (dialog.open() == 0) {
                      if (!Strings.isValid(dialog.getReviewTitle())) {
@@ -161,7 +161,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                   StateListAndTitleDialog dialog =
                      new StateListAndTitleDialog("Add Peer to Peer Review",
                         "Select state to that review will be associated with.",
-                        teamArt.getWorkFlowDefinition().getPageNames());
+                        teamArt.getWorkDefinition().getStateNames());
                   dialog.setInitialSelections(new Object[] {forState.getPageName()});
                   dialog.setReviewTitle(PeerToPeerReviewArtifact.getDefaultReviewTitle(teamArt));
                   if (dialog.open() == 0) {

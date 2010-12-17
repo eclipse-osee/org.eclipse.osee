@@ -45,7 +45,7 @@ import org.eclipse.osee.ats.artifact.note.NoteItem;
 import org.eclipse.osee.ats.config.AtsBulkLoad;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.workflow.AtsWorkPage;
+import org.eclipse.osee.ats.workdef.StateXWidgetPage;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -92,7 +92,7 @@ import org.eclipse.ui.progress.UIJob;
 public class SMAWorkFlowTab extends FormPage implements IActionable {
    private final AbstractWorkflowArtifact sma;
    private final List<SMAWorkFlowSection> sections = new ArrayList<SMAWorkFlowSection>();
-   private final List<AtsWorkPage> atsWorkPages = new ArrayList<AtsWorkPage>();
+   private final List<StateXWidgetPage> statePages = new ArrayList<StateXWidgetPage>();
    private static Map<String, Integer> guidToScrollLocation = new HashMap<String, Integer>();
    private SMARelationsHyperlinkComposite smaRelationsComposite;
    private IManagedForm managedForm;
@@ -305,21 +305,21 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    private void createPageSections() {
       try {
          // Only display current or past states
-         for (AtsWorkPage atsWorkPage : sma.getAtsWorkPages()) {
+         for (StateXWidgetPage statePage : sma.getStatePages()) {
             try {
-               if (sma.isInState(atsWorkPage) || sma.getStateMgr().isStateVisited(atsWorkPage)) {
+               if (sma.isInState(statePage) || sma.getStateMgr().isStateVisited(statePage)) {
                   // Don't show completed or cancelled state if not currently those state
-                  if (atsWorkPage.isCompletedPage() && !sma.isCompleted()) {
+                  if (statePage.isCompletedPage() && !sma.isCompleted()) {
                      continue;
                   }
-                  if (atsWorkPage.isCancelledPage() && !sma.isCancelled()) {
+                  if (statePage.isCancelledPage() && !sma.isCancelled()) {
                      continue;
                   }
-                  SMAWorkFlowSection section = new SMAWorkFlowSection(atsBody, SWT.NONE, atsWorkPage, sma, editor);
+                  SMAWorkFlowSection section = new SMAWorkFlowSection(atsBody, SWT.NONE, statePage, sma, editor);
                   managedForm.addPart(section);
                   control = section.getMainComp();
                   sections.add(section);
-                  atsWorkPages.add(atsWorkPage);
+                  statePages.add(statePage);
                }
             } catch (Exception ex) {
                OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
@@ -330,7 +330,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       }
    }
 
-   private void createHeaderSection(AtsWorkPage currentAtsWorkPage) {
+   private void createHeaderSection(StateXWidgetPage currentStateXWidgetPage) {
       Composite headerComp = editor.getToolkit().createComposite(atsBody);
       GridData gd = new GridData(GridData.FILL_HORIZONTAL);
       gd.widthHint = 100;
@@ -341,7 +341,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       // Display relations
       try {
          createCurrentStateAndTeamHeaders(headerComp, editor.getToolkit());
-         createTargetVersionAndAssigneeHeader(headerComp, currentAtsWorkPage, editor.getToolkit());
+         createTargetVersionAndAssigneeHeader(headerComp, currentStateXWidgetPage, editor.getToolkit());
 
          createLatestHeader(headerComp, editor.getToolkit());
          if (sma.isTeamWorkflow()) {
@@ -354,7 +354,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          createAnnotationsHeader(headerComp, editor.getToolkit());
 
          sections.clear();
-         atsWorkPages.clear();
+         statePages.clear();
 
          if (SMARelationsHyperlinkComposite.relationExists(sma)) {
             smaRelationsComposite = new SMARelationsHyperlinkComposite(atsBody, SWT.NONE, editor);
@@ -369,7 +369,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       return sma.isTargetedVersionable();
    }
 
-   private void createTargetVersionAndAssigneeHeader(Composite parent, AtsWorkPage page, XFormToolkit toolkit) throws OseeCoreException {
+   private void createTargetVersionAndAssigneeHeader(Composite parent, StateXWidgetPage page, XFormToolkit toolkit) throws OseeCoreException {
       boolean isShowTargetedVersion = isShowTargetedVersion();
       boolean isCurrentNonCompleteCanceledState = page.isCurrentNonCompleteCancelledState(sma);
       if (!isShowTargetedVersion && !isCurrentNonCompleteCanceledState) {
@@ -401,7 +401,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
 
          (SMAWorkFlowSection.isEditable(sma, page, editor) || //
          // page is define to allow anyone to edit
-         sma.getWorkPageDefinition().hasWorkRule(AtsWorkDefinitions.RuleWorkItemId.atsAllowAssigneeToAll.name()) ||
+         sma.getStateDefinition().hasRule(AtsWorkDefinitions.RuleWorkItemId.atsAllowAssigneeToAll.name()) ||
          // team definition has allowed anyone to edit
          sma.teamDefHasWorkRule(AtsWorkDefinitions.RuleWorkItemId.atsAllowAssigneeToAll.name()));
 
@@ -653,8 +653,8 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       }
    }
 
-   public List<AtsWorkPage> getPages() {
-      return atsWorkPages;
+   public List<StateXWidgetPage> getPages() {
+      return statePages;
    }
 
    public List<SMAWorkFlowSection> getSections() {

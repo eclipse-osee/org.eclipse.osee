@@ -10,29 +10,26 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor.stateItem;
 
-import org.eclipse.osee.ats.workflow.AtsWorkPage;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageType;
+import org.eclipse.osee.ats.workdef.StateDefinition;
+import org.eclipse.osee.ats.workdef.StateXWidgetPage;
+import org.eclipse.osee.ats.workdef.WorkDefinition;
 
 /**
  * @author Donald G. Dunne
  */
-public class AtsLogWorkPage extends AtsWorkPage {
+public class AtsLogWorkPage extends StateXWidgetPage {
 
    public final static String PAGE_ID = "ats.Log";
 
-   public static class EmptyWorkFlowDefinition extends WorkFlowDefinition {
+   public static class EmptyWorkFlowDefinition extends WorkDefinition {
 
-      public EmptyWorkFlowDefinition(String name, String id) {
-         super(name, id, null);
+      public EmptyWorkFlowDefinition(String name) {
+         super(name);
       }
-
    }
 
    public AtsLogWorkPage(String title) {
-      super(new EmptyWorkFlowDefinition(title, PAGE_ID), new WorkPageDefinition(title, PAGE_ID, null,
-         WorkPageType.Working, 99), null, null);
+      super(new EmptyWorkFlowDefinition(PAGE_ID), new StateDefinition(PAGE_ID), null, null);
    }
 
 }

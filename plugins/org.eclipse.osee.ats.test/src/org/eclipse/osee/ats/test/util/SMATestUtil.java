@@ -56,6 +56,6 @@ public class SMATestUtil {
    }
 
    public static boolean isCompletedCancelledState(AbstractWorkflowArtifact aba, String stateName) throws OseeCoreException {
-      return aba.getWorkFlowDefinition().getWorkPageDefinitionByName(stateName).isCompletedOrCancelledPage();
+      return aba.getWorkDefinition().getStateByName(stateName).isCompletedOrCancelledPage();
    }
 }

@@ -27,6 +27,8 @@ import org.eclipse.osee.ats.util.AtsFolderUtil.AtsFolder;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.commit.ICommitConfigArtifact;
+import org.eclipse.osee.ats.workdef.RuleDefinition;
+import org.eclipse.osee.ats.workdef.WorkDefinitionFactory;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions.RuleWorkItemId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -50,7 +52,6 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
 
 /**
  * @author Donald G. Dunne
@@ -306,29 +307,30 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
     * Return rules associated with team definition . Use StateMachineArtifact.getWorkRulesStartsWith to acquire these
     * and work page rules and workflow rules.
     */
-   public Collection<WorkRuleDefinition> getWorkRulesStartsWith(String ruleId) throws OseeCoreException {
-      Set<WorkRuleDefinition> workRules = new HashSet<WorkRuleDefinition>();
-      if (!Strings.isValid(ruleId)) {
+   public Collection<RuleDefinition> getRulesStartsWith(String ruleName) throws OseeCoreException {
+      Set<RuleDefinition> workRules = new HashSet<RuleDefinition>();
+      if (!Strings.isValid(ruleName)) {
          return workRules;
       }
       // Get work rules from team definition
-      for (WorkRuleDefinition workRuleDefinition : getWorkRules()) {
-         if (!workRuleDefinition.getId().equals("") && workRuleDefinition.getId().startsWith(ruleId)) {
-            workRules.add(workRuleDefinition);
+      for (RuleDefinition ruleDefinition : getWorkRules()) {
+         if (!ruleDefinition.getName().equals("") && ruleDefinition.getName().startsWith(ruleName)) {
+            workRules.add(ruleDefinition);
          }
       }
 
       return workRules;
    }
 
-   public Collection<WorkRuleDefinition> getWorkRules() throws OseeCoreException {
-      Set<WorkRuleDefinition> workRules = new HashSet<WorkRuleDefinition>();
+   public Collection<RuleDefinition> getWorkRules() throws OseeCoreException {
+      Set<RuleDefinition> workRules = new HashSet<RuleDefinition>();
       // Get work rules from team definition
       for (Artifact art : getRelatedArtifacts(CoreRelationTypes.WorkItem__Child)) {
          if (art.isOfType(CoreArtifactTypes.WorkRuleDefinition)) {
             String id = art.getSoleAttributeValue(CoreAttributeTypes.WorkId, "");
             if (Strings.isValid(id)) {
-               workRules.add((WorkRuleDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(id));
+               // Note: This may skip any complex rules (more than name), but don't think teamdefs have them
+               workRules.add(WorkDefinitionFactory.getRuleById(id));
             }
          }
       }

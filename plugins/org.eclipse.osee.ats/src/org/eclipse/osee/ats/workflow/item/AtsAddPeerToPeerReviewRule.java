@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.log.LogType;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
+import org.eclipse.osee.ats.workdef.RuleDefinition;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -68,15 +69,15 @@ public class AtsAddPeerToPeerReviewRule extends WorkRuleDefinition {
       workRuleDefinition.addWorkDataKeyValue(decisionParameter.name(), value);
    }
 
-   public static String getPeerToPeerParameterValue(WorkRuleDefinition workRuleDefinition, PeerToPeerParameter decisionParameter) {
-      return workRuleDefinition.getWorkDataValue(decisionParameter.name());
+   public static String getPeerToPeerParameterValue(RuleDefinition ruleDefinition, PeerToPeerParameter decisionParameter) {
+      return ruleDefinition.getWorkDataValue(decisionParameter.name());
    }
 
    /**
     * Creates PeerToPeer review if one of same name doesn't already exist
     */
-   public static PeerToPeerReviewArtifact createNewPeerToPeerReview(WorkRuleDefinition atsAddPeerToPeerReviewRule, TeamWorkFlowArtifact teamArt, SkynetTransaction transaction) throws OseeCoreException {
-      if (!atsAddPeerToPeerReviewRule.getId().startsWith(AtsAddPeerToPeerReviewRule.ID)) {
+   public static PeerToPeerReviewArtifact createNewPeerToPeerReview(RuleDefinition atsAddPeerToPeerReviewRule, TeamWorkFlowArtifact teamArt, SkynetTransaction transaction) throws OseeCoreException {
+      if (!atsAddPeerToPeerReviewRule.getName().startsWith(AtsAddPeerToPeerReviewRule.ID)) {
          throw new OseeArgumentException("WorkRuleDefinition must be AtsAddPeerToPeerReviewRule.ID");
       }
       String title = getValueOrDefault(teamArt, atsAddPeerToPeerReviewRule, PeerToPeerParameter.title);
@@ -106,12 +107,12 @@ public class AtsAddPeerToPeerReviewRule extends WorkRuleDefinition {
          peerArt.getStateMgr().setAssignees(assignees);
       }
       peerArt.getLog().addLog(LogType.Note, null,
-         "Review auto-generated off rule " + atsAddPeerToPeerReviewRule.getId());
+         "Review auto-generated off rule " + atsAddPeerToPeerReviewRule.getName());
       return peerArt;
    }
 
-   private static String getValueOrDefault(TeamWorkFlowArtifact teamArt, WorkRuleDefinition workRuleDefinition, PeerToPeerParameter peerToPeerParameter) {
-      String value = getPeerToPeerParameterValue(workRuleDefinition, peerToPeerParameter);
+   private static String getValueOrDefault(TeamWorkFlowArtifact teamArt, RuleDefinition ruleDefinition, PeerToPeerParameter peerToPeerParameter) {
+      String value = getPeerToPeerParameterValue(ruleDefinition, peerToPeerParameter);
       if (!Strings.isValid(value)) {
          if (peerToPeerParameter == PeerToPeerParameter.title) {
             return PeerToPeerReviewArtifact.getDefaultReviewTitle(teamArt);

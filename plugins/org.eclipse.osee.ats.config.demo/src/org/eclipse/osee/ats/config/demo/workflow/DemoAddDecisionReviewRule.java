@@ -22,13 +22,13 @@ import org.eclipse.osee.framework.logging.OseeLog;
  */
 public class DemoAddDecisionReviewRule extends AtsAddDecisionReviewRule {
 
-   public static String ID = "atsAddDecisionReview.test.addDecisionReview";
+   public static String NAME = "atsAddDecisionReview.test.addDecisionReview";
 
    public DemoAddDecisionReviewRule(String forState, ReviewBlockType reviewBlockType, StateEventType stateEventType) {
-      super(ID + "." + forState + "." + reviewBlockType.name() + "." + stateEventType,
-         ID + "." + forState + "." + reviewBlockType.name() + "." + stateEventType);
+      super(NAME + "." + forState + "." + reviewBlockType.name() + "." + stateEventType,
+         NAME + "." + forState + "." + reviewBlockType.name() + "." + stateEventType);
       setDescription("This is a rule created to test the Review rules.");
-      setDecisionParameterValue(this, DecisionParameter.title, "Auto-created Decision Review from ruleId: " + getId());
+      setDecisionParameterValue(this, DecisionParameter.title, "Auto-created Decision Review from ruleId: " + getName());
       setDecisionParameterValue(this, DecisionParameter.reviewBlockingType, reviewBlockType.name());
       setDecisionParameterValue(this, DecisionParameter.forState, forState);
       setDecisionParameterValue(this, DecisionParameter.forEvent, stateEventType.name());

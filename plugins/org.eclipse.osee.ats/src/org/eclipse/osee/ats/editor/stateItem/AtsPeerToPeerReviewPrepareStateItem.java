@@ -14,7 +14,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.AbstractReviewArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.workflow.AtsWorkPage;
+import org.eclipse.osee.ats.workdef.StateXWidgetPage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -34,7 +34,7 @@ public class AtsPeerToPeerReviewPrepareStateItem extends AtsStateItem {
    }
 
    @Override
-   public void xWidgetCreated(XWidget widget, FormToolkit toolkit, AtsWorkPage page, Artifact art, XModifiedListener modListener, boolean isEditable) throws OseeCoreException {
+   public void xWidgetCreated(XWidget widget, FormToolkit toolkit, StateXWidgetPage page, Artifact art, XModifiedListener modListener, boolean isEditable) throws OseeCoreException {
       super.xWidgetCreated(widget, toolkit, page, art, modListener, isEditable);
       try {
          if (art instanceof AbstractReviewArtifact && ((AbstractReviewArtifact) art).getParentSMA() == null && widget.getLabel().equals(

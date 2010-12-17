@@ -76,9 +76,14 @@ public class DynamicXWidgetLayoutData implements Cloneable {
    }
 
    public boolean isRequired() {
-      return xOptionHandler.contains(XOption.REQUIRED) || //
-      dynamicXWidgetLayout.isOrRequired(getStoreName()) || //
-      dynamicXWidgetLayout.isXOrRequired(getStoreName());
+      if (xOptionHandler.contains(XOption.REQUIRED)) {
+         return true;
+      }
+      if (dynamicXWidgetLayout != null) {
+         return dynamicXWidgetLayout.isOrRequired(getStoreName()) || //
+         dynamicXWidgetLayout.isXOrRequired(getStoreName());
+      }
+      return false;
    }
 
    public String getXWidgetName() {

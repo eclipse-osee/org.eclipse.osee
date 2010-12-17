@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.workdef.StateDefinition;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.ats.workflow.page.AtsCancelledWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsCompletedWorkPageDefinition;
@@ -24,10 +25,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition.WriteType;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageType;
 import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
@@ -44,7 +42,7 @@ public class WorkPageShape extends RectangleShape {
          CoreAttributeTypes.WorkParentId.getName(),//
       };
 
-   private final WorkPageDefinition workPageDefinition;
+   private final StateDefinition workPageDefinition;
 
    public final static String START_PAGE = "Start Page";
    private Artifact artifact;
@@ -54,17 +52,18 @@ public class WorkPageShape extends RectangleShape {
    };
 
    public WorkPageShape() {
-      this(new WorkPageDefinition("New" + AtsUtil.getAtsDeveloperIncrementingNum(), "NEW", null, WorkPageType.Working,
-         AtsUtil.getAtsDeveloperIncrementingNum()));
+      //      this(new WorkPageDefinition("New" + AtsUtil.getAtsDeveloperIncrementingNum(), "NEW", null, WorkPageType.Working,
+      //         AtsUtil.getAtsDeveloperIncrementingNum()));
+      this(new StateDefinition("New" + AtsUtil.getAtsDeveloperIncrementingNum()));
    }
 
-   public WorkPageShape(WorkPageDefinition workPageDefinition) {
+   public WorkPageShape(StateDefinition workPageDefinition) {
       this.workPageDefinition = workPageDefinition;
-      try {
-         artifact = WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(workPageDefinition.getId());
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-      }
+      //      try {
+      //         //         artifact = WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(workPageDefinition.getId());
+      //      } catch (OseeCoreException ex) {
+      //         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      //      }
    }
 
    @Override
@@ -73,7 +72,7 @@ public class WorkPageShape extends RectangleShape {
       if (getId().equals("NEW")) {
          setPropertyValue(
             CoreAttributeTypes.WorkId.getName(),
-            workflowDiagram.getWorkFlowDefinition().getId() + "." + getPropertyValue(CoreAttributeTypes.WorkPageName.getName()));
+            workflowDiagram.getWorkFlowDefinition().getName() + "." + getPropertyValue(CoreAttributeTypes.WorkPageName.getName()));
       }
    }
 
@@ -93,9 +92,9 @@ public class WorkPageShape extends RectangleShape {
       if (propertyValues == null) {
          super.initializePropertyValues();
          super.setPropertyValue(CoreAttributeTypes.WorkPageName.getName(), workPageDefinition.getPageName());
-         super.setPropertyValue(CoreAttributeTypes.WorkId.getName(), workPageDefinition.getId());
+         super.setPropertyValue(CoreAttributeTypes.WorkId.getName(), workPageDefinition.getName());
          super.setPropertyValue(CoreAttributeTypes.WorkParentId.getName(),
-            workPageDefinition.getParentId() == null ? "" : workPageDefinition.getParentId());
+            workPageDefinition.getName() == null ? "" : workPageDefinition.getName());
       }
    }
 
@@ -127,7 +126,7 @@ public class WorkPageShape extends RectangleShape {
    /**
     * @return the workPageDefinition
     */
-   public WorkPageDefinition getWorkPageDefinition() {
+   public StateDefinition getWorkPageDefinition() {
       return workPageDefinition;
    }
 
@@ -156,13 +155,13 @@ public class WorkPageShape extends RectangleShape {
       return isInstanceofRecurse(workPageDefinition, workPageDefinitionId);
    }
 
-   private boolean isInstanceofRecurse(WorkPageDefinition workPageDefinition, String workPageDefinitionId) throws OseeCoreException {
-      if (workPageDefinition.getId().equals(workPageDefinitionId)) {
+   private boolean isInstanceofRecurse(StateDefinition workPageDefinition, String workPageDefinitionId) throws OseeCoreException {
+      if (workPageDefinition.getName().equals(workPageDefinitionId)) {
          return true;
       }
-      if (workPageDefinition.getParent() != null) {
-         return isInstanceofRecurse((WorkPageDefinition) workPageDefinition.getParent(), workPageDefinitionId);
-      }
+      //      if (workPageDefinition.getParent() != null) {
+      //         return isInstanceofRecurse((StateDefinition) workPageDefinition.getParent(), workPageDefinitionId);
+      //      }
       return false;
    }
 
@@ -214,7 +213,7 @@ public class WorkPageShape extends RectangleShape {
             super.setPropertyValue(CoreAttributeTypes.WorkPageName.getName(), value);
             firePropertyChange(CoreAttributeTypes.WorkPageName.getName(), null, value);
             setPropertyValue(CoreAttributeTypes.WorkId.getName(),
-               getWorkflowDiagram().getWorkFlowDefinition().getId() + "." + value);
+               getWorkflowDiagram().getWorkFlowDefinition().getName() + "." + value);
          } else if (CoreAttributeTypes.WorkId.getName().equals(propertyId)) {
             super.setPropertyValue(CoreAttributeTypes.WorkId.getName(), value);
             firePropertyChange(CoreAttributeTypes.WorkId.getName(), null, value);
@@ -238,12 +237,10 @@ public class WorkPageShape extends RectangleShape {
       String workId = (String) getPropertyValue(CoreAttributeTypes.WorkId.getName());
       String parentWorkId = (String) getPropertyValue(CoreAttributeTypes.WorkParentId.getName());
 
-      workPageDefinition.setPageName(name);
-      workPageDefinition.setId(workId);
-      workPageDefinition.setParentId(parentWorkId);
+      workPageDefinition.setName(name);
       Artifact artifact = getArtifact();
       if (artifact == null) {
-         artifact = workPageDefinition.toArtifact(WriteType.New);
+         //         artifact = workPageDefinition.toArtifact(WriteType.New);
       } else {
          artifact.setSoleAttributeValue(CoreAttributeTypes.WorkPageName, name);
          artifact.setSoleAttributeValue(CoreAttributeTypes.WorkId, workId);
@@ -255,7 +252,7 @@ public class WorkPageShape extends RectangleShape {
       }
       artifact.setName(workId);
       AtsWorkDefinitions.addUpdateWorkItemToDefaultHeirarchy(artifact, transaction);
-      WorkItemDefinitionFactory.deCache(workPageDefinition);
+      //      WorkItemDefinitionFactory.deCache(workPageDefinition);
       artifact.persist(transaction);
       return Result.TrueResult;
    }

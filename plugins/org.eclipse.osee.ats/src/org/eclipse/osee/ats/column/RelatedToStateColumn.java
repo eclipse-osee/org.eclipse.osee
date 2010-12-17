@@ -113,7 +113,7 @@ public class RelatedToStateColumn extends XViewerAtsAttributeValueColumn {
 
    private static List<String> getValidStates(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       List<String> names = new ArrayList<String>();
-      names.addAll(teamArt.getWorkFlowDefinition().getPageNames());
+      names.addAll(teamArt.getWorkDefinition().getStateNames());
       Collections.sort(names);
       return names;
    }

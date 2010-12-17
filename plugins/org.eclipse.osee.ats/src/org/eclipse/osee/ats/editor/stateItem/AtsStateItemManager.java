@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.workdef.StateDefinition;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -31,7 +32,11 @@ public class AtsStateItemManager {
 
    private final static List<IAtsStateItem> stateItems = new ArrayList<IAtsStateItem>();
 
-   public static List<IAtsStateItem> getStateItems(String stateId) throws OseeCoreException {
+   public static List<IAtsStateItem> getStateItems(StateDefinition stateDef) throws OseeCoreException {
+      return getStateItems(stateDef.getFullName());
+   }
+
+   private static List<IAtsStateItem> getStateItems(String stateId) throws OseeCoreException {
       loadAllStateItems();
       List<IAtsStateItem> items = new ArrayList<IAtsStateItem>();
       for (IAtsStateItem item : stateItems) {
@@ -43,7 +48,7 @@ public class AtsStateItemManager {
    }
 
    public static List<IAtsStateItem> getCurrentPageStateItems(AbstractWorkflowArtifact sma) throws OseeCoreException {
-      return getStateItems(sma.getWorkPageDefinition().getId());
+      return getStateItems(sma.getStateDefinition().getFullName());
    }
 
    @SuppressWarnings({"rawtypes"})

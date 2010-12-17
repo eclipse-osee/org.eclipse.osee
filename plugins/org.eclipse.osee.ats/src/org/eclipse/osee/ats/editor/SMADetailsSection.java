@@ -99,7 +99,7 @@ public class SMADetailsSection extends SectionPart {
 
    private Map<String, String> getSMADetails(AbstractWorkflowArtifact workflow) throws OseeCoreException {
       Map<String, String> details = Artifacts.getDetailsKeyValues(workflow);
-      details.put("Workflow Definition", workflow.getWorkFlowDefinition().getName());
+      details.put("Workflow Definition", workflow.getWorkDefinition().getName());
       if (workflow.getParentActionArtifact() != null) {
          details.put("Action Id", workflow.getParentActionArtifact().getHumanReadableId());
       }

@@ -21,7 +21,6 @@ import java.util.Set;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -427,7 +426,7 @@ public class DynamicXWidgetLayout {
       xorRequired.add(names);
    }
 
-   protected void processlayoutDatas(String xWidgetXml) throws OseeCoreException {
+   public void processlayoutDatas(String xWidgetXml) throws OseeCoreException {
       try {
          Document document = Jaxp.readXmlDocument(xWidgetXml);
          Element rootElement = document.getDocumentElement();
@@ -442,7 +441,7 @@ public class DynamicXWidgetLayout {
       }
    }
 
-   protected void processLayoutDatas(Element element) throws OseeCoreException {
+   public void processLayoutDatas(Element element) throws OseeCoreException {
       List<DynamicXWidgetLayoutData> layoutDatas = XWidgetParser.extractlayoutDatas(this, element);
       for (DynamicXWidgetLayoutData layoutData : layoutDatas) {
          nameToLayoutData.put(layoutData.getName(), layoutData);

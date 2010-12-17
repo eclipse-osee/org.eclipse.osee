@@ -139,7 +139,8 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
       resolvedStartPageId = getResolvedStartPageId(this, getId());
       if (pageNameToPageId == null) {
          pageNameToPageId = new HashMap<String, String>();
-         for (String pageNameOrId : inheritedPageIdToPageIdsViaTransitionType.keySet()) {
+         Set<String> pageIds = getAllPageIds();
+         for (String pageNameOrId : pageIds) {
             WorkPageDefinition workPageDefinition =
                (WorkPageDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(getFullPageId(pageNameOrId));
             pages.add(workPageDefinition);
@@ -157,6 +158,18 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
             }
          }
       }
+   }
+
+   private Set<String> getAllPageIds() {
+      Set<String> pageIds = new HashSet<String>(inheritedPageIdToPageIdsViaTransitionType.keySet());
+      for (Map<TransitionType, Set<String>> transTypeToPageIds : inheritedPageIdToPageIdsViaTransitionType.values()) {
+         for (TransitionType transType : transTypeToPageIds.keySet()) {
+            for (String pageId2 : transTypeToPageIds.get(transType)) {
+               pageIds.add(pageId2);
+            }
+         }
+      }
+      return pageIds;
    }
 
    /**

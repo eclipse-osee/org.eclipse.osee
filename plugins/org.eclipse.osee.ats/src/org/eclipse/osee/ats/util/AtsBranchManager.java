@@ -34,6 +34,7 @@ import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.commit.CommitStatus;
 import org.eclipse.osee.ats.util.widgets.commit.ICommitConfigArtifact;
+import org.eclipse.osee.ats.workdef.RuleDefinition;
 import org.eclipse.osee.ats.workflow.item.AtsAddDecisionReviewRule;
 import org.eclipse.osee.ats.workflow.item.AtsAddDecisionReviewRule.DecisionRuleOption;
 import org.eclipse.osee.ats.workflow.item.AtsAddPeerToPeerReviewRule;
@@ -72,7 +73,6 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiUtil;
 import org.eclipse.osee.framework.ui.skynet.util.TransactionIdLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.util.filteredTree.SimpleCheckFilteredTreeDialog;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -664,19 +664,19 @@ public class AtsBranchManager {
       }
       // Create any decision and peerToPeer reviews for createBranch and commitBranch
       for (String ruleId : Arrays.asList(AtsAddDecisionReviewRule.ID, AtsAddPeerToPeerReviewRule.ID)) {
-         for (WorkRuleDefinition workRuleDef : teamArt.getWorkRulesStartsWith(ruleId)) {
-            StateEventType eventType = AtsAddDecisionReviewRule.getStateEventType(teamArt, workRuleDef);
+         for (RuleDefinition ruleDef : teamArt.getRulesStartsWith(ruleId)) {
+            StateEventType eventType = AtsAddDecisionReviewRule.getStateEventType(teamArt, ruleDef);
             if (eventType != null && eventType.equals(stateEventType)) {
                if (ruleId.equals(AtsAddDecisionReviewRule.ID)) {
                   DecisionReviewArtifact decArt =
-                     AtsAddDecisionReviewRule.createNewDecisionReview(workRuleDef, transaction, teamArt, createdDate,
+                     AtsAddDecisionReviewRule.createNewDecisionReview(ruleDef, transaction, teamArt, createdDate,
                         createdBy, DecisionRuleOption.TransitionToDecision);
                   if (decArt != null) {
                      decArt.persist(transaction);
                   }
                } else if (ruleId.equals(AtsAddPeerToPeerReviewRule.ID)) {
                   PeerToPeerReviewArtifact peerArt =
-                     AtsAddPeerToPeerReviewRule.createNewPeerToPeerReview(workRuleDef, teamArt, transaction);
+                     AtsAddPeerToPeerReviewRule.createNewPeerToPeerReview(ruleDef, teamArt, transaction);
                   if (peerArt != null) {
                      peerArt.persist(transaction);
                   }

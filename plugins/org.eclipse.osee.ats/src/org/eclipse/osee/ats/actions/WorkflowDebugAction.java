@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.actions;
 
+import java.util.List;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
@@ -17,14 +18,16 @@ import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.workdef.CompositeStateItem;
+import org.eclipse.osee.ats.workdef.RuleDefinition;
+import org.eclipse.osee.ats.workdef.StateDefinition;
+import org.eclipse.osee.ats.workdef.StateItem;
+import org.eclipse.osee.ats.workdef.WidgetDefinition;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
@@ -54,29 +57,38 @@ public class WorkflowDebugAction extends Action {
       XResultData rd = new XResultData();
       if (sma.isTeamWorkflow()) {
          TeamDefinitionArtifact teamDef = ((TeamWorkFlowArtifact) sma).getTeamDefinition();
-         rd.log("Team Definition: " + teamDef);
-         for (WorkRuleDefinition workItemDefinition : teamDef.getWorkRules()) {
-            rd.log("        " + workItemDefinition.toString());
+         rd.log(AHTML.bold("Team Definition: " + teamDef));
+         for (RuleDefinition ruleDefinition : teamDef.getWorkRules()) {
+            rd.log(AHTML.addSpace(6) + "Rule: " + ruleDefinition.toString());
          }
       }
 
       // Display workflows
-      rd.log("WorkflowId: " + sma.getWorkFlowDefinition().getId());
-      if (Strings.isValid(sma.getWorkFlowDefinition().getParentId())) {
-         rd.log("Inherit Workflow from Parent Id: " + sma.getWorkFlowDefinition().getParentId());
-      }
-      for (WorkRuleDefinition workItemDefinition : sma.getWorkFlowDefinition().getWorkRules()) {
-         rd.log("        " + workItemDefinition.toString());
+      rd.log(AHTML.newline() + AHTML.bold("WorkDefinition id: " + sma.getWorkDefinition().getName()) + AHTML.newline());
+      for (RuleDefinition ruleDefinition : sma.getWorkDefinition().getRules()) {
+         rd.log(AHTML.addSpace(6) + "Rule: " + ruleDefinition.toString());
       }
 
       // Display pages
-      for (WorkPageDefinition atsPage : sma.getWorkFlowDefinition().getPagesOrdered()) {
-         rd.log(atsPage.toString());
-         for (WorkItemDefinition wid : atsPage.getWorkItems(true)) {
-            rd.log("        " + wid.toString());
+      for (StateDefinition state : sma.getWorkDefinition().getStatesOrdered()) {
+         rd.log(AHTML.bold(state.toString()));
+         processStateItems(state.getStateItems(), rd, 1);
+         for (RuleDefinition rule : state.getRules()) {
+            rd.log(AHTML.addSpace(6) + "Rule: " + rule.toString());
          }
       }
       return rd;
+   }
+
+   private void processStateItems(List<StateItem> stateItems, XResultData rd, int level) {
+      for (StateItem stateItem : stateItems) {
+         if (stateItem instanceof WidgetDefinition) {
+            rd.log(AHTML.addSpace(6 * level) + "Widget: " + stateItem.toString());
+         } else if (stateItem instanceof CompositeStateItem) {
+            rd.log(AHTML.addSpace(6 * level) + AHTML.bold("Composite - numColumns = " + ((CompositeStateItem) stateItem).getNumColumns()));
+            processStateItems(((CompositeStateItem) stateItem).getStateItems(), rd, level + 1);
+         }
+      }
    }
 
    @Override

@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.workdef.StateDefinition;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -36,7 +37,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkPage;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 
 /**
  * @author Donald G. Dunne
@@ -63,10 +63,10 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
    }
 
    @Override
-   public void transitioned(WorkPageDefinition fromPage, WorkPageDefinition toPage, Collection<User> toAssignees, boolean persist, SkynetTransaction transaction) throws OseeCoreException {
-      super.transitioned(fromPage, toPage, toAssignees, persist, transaction);
+   public void transitioned(StateDefinition fromState, StateDefinition toState, Collection<User> toAssignees, boolean persist, SkynetTransaction transaction) throws OseeCoreException {
+      super.transitioned(fromState, toState, toAssignees, persist, transaction);
       for (TaskArtifact taskArt : getTaskArtifacts()) {
-         taskArt.parentWorkFlowTransitioned(fromPage, toPage, toAssignees, persist, transaction);
+         taskArt.parentWorkFlowTransitioned(fromState, toState, toAssignees, persist, transaction);
       }
    }
 

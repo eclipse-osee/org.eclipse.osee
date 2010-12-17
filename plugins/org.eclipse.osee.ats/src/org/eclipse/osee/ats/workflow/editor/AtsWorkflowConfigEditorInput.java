@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.workflow.editor;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
+import org.eclipse.osee.ats.workdef.WorkDefinition;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
 
@@ -19,9 +19,9 @@ import org.eclipse.ui.IPersistableElement;
  * @author Donald G. Dunne
  */
 public class AtsWorkflowConfigEditorInput implements IEditorInput {
-   protected WorkFlowDefinition workflow;
+   protected WorkDefinition workflow;
 
-   public AtsWorkflowConfigEditorInput(WorkFlowDefinition workflow) {
+   public AtsWorkflowConfigEditorInput(WorkDefinition workflow) {
       this.workflow = workflow;
    }
 
@@ -29,14 +29,14 @@ public class AtsWorkflowConfigEditorInput implements IEditorInput {
    public boolean equals(Object obj) {
       if (obj instanceof AtsWorkflowConfigEditorInput) {
          AtsWorkflowConfigEditorInput otherEdInput = (AtsWorkflowConfigEditorInput) obj;
-         return workflow.getId().equals(otherEdInput.workflow.getId());
+         return workflow.getName().equals(otherEdInput.workflow.getName());
       }
       return false;
    }
 
    @Override
    public int hashCode() {
-      return workflow.getId().hashCode();
+      return workflow.getName().hashCode();
    }
 
    @Override

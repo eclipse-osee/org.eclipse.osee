@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
-import org.eclipse.osee.ats.workflow.AtsWorkPage;
+import org.eclipse.osee.ats.workdef.StateXWidgetPage;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelValueSelection;
@@ -33,11 +33,11 @@ import org.eclipse.ui.forms.IManagedForm;
 public class StateHoursSpentXWidget extends XHyperlinkLabelValueSelection {
 
    private final AbstractWorkflowArtifact sma;
-   private final AtsWorkPage page;
+   private final StateXWidgetPage page;
    private final boolean isCurrentState;
    private final SMAEditor editor;
 
-   public StateHoursSpentXWidget(IManagedForm managedForm, AtsWorkPage page, final AbstractWorkflowArtifact sma, Composite composite, int horizontalSpan, XModifiedListener xModListener, boolean isCurrentState, SMAEditor editor) {
+   public StateHoursSpentXWidget(IManagedForm managedForm, StateXWidgetPage page, final AbstractWorkflowArtifact sma, Composite composite, int horizontalSpan, XModifiedListener xModListener, boolean isCurrentState, SMAEditor editor) {
       super("\"" + page.getPageName() + "\"" + " State Hours Spent");
       this.page = page;
       this.sma = sma;

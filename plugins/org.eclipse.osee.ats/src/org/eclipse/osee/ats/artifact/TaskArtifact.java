@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.util.TeamState;
 import org.eclipse.osee.ats.util.TransitionOption;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResolutionOptionRule;
+import org.eclipse.osee.ats.workdef.StateDefinition;
 import org.eclipse.osee.ats.workflow.TransitionManager;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -37,7 +38,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 
 /**
  * @author Donald G. Dunne
@@ -62,7 +62,7 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IATSStateM
       if (team == null) {
          return TaskResolutionOptionRule.EMPTY_TASK_RESOLUTION_OPTIONS;
       }
-      return TaskResolutionOptionRule.getTaskResolutionOptions(team.getWorkPageDefinition());
+      return TaskResolutionOptionRule.getTaskResolutionOptions(team.getStateDefinition());
    }
 
    public TaskResOptionDefinition getTaskResolutionOptionDefinition(String optionName) throws OseeCoreException {
@@ -79,7 +79,7 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IATSStateM
       if (team == null) {
          return TaskResolutionOptionRule.EMPTY_TASK_RESOLUTION_OPTIONS;
       }
-      return TaskResolutionOptionRule.getTaskResolutionOptions(team.getWorkPageDefinitionByName(stateName));
+      return TaskResolutionOptionRule.getTaskResolutionOptions(team.getStateDefinitionByName(stateName));
    }
 
    public TaskResOptionDefinition getTaskResolutionOptionDefinition(String stateName, String optionName) throws OseeCoreException {
@@ -163,11 +163,11 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IATSStateM
       }
    }
 
-   public void parentWorkFlowTransitioned(WorkPageDefinition fromWorkPageDefinition, WorkPageDefinition toWorkPageDefinition, Collection<User> toAssignees, boolean persist, SkynetTransaction transaction, TransitionOption... transitionOption) throws OseeCoreException {
-      if (toWorkPageDefinition.getPageName().equals(TeamState.Cancelled.getPageName()) && isInWork()) {
+   public void parentWorkFlowTransitioned(StateDefinition fromState, StateDefinition toState, Collection<User> toAssignees, boolean persist, SkynetTransaction transaction, TransitionOption... transitionOption) throws OseeCoreException {
+      if (toState.getPageName().equals(TeamState.Cancelled.getPageName()) && isInWork()) {
          TransitionManager transitionMgr = new TransitionManager(this);
          transitionMgr.transitionToCancelled("Parent Cancelled", transaction, transitionOption);
-      } else if (fromWorkPageDefinition.getPageName().equals(TeamState.Cancelled.getPageName()) && isCancelled()) {
+      } else if (fromState.getPageName().equals(TeamState.Cancelled.getPageName()) && isCancelled()) {
          transitionToInWork(UserManager.getUser(), 99, 0, transaction, transitionOption);
       }
    }

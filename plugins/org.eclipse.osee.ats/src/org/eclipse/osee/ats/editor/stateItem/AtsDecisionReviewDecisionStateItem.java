@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.artifact.DecisionReviewState;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.util.widgets.DecisionOption;
 import org.eclipse.osee.ats.util.widgets.XDecisionOptions;
-import org.eclipse.osee.ats.workflow.AtsWorkPage;
+import org.eclipse.osee.ats.workdef.StateXWidgetPage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -42,7 +42,7 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
    }
 
    @Override
-   public Result xWidgetCreating(XWidget xWidget, FormToolkit toolkit, AtsWorkPage page, Artifact art, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
+   public Result xWidgetCreating(XWidget xWidget, FormToolkit toolkit, StateXWidgetPage page, Artifact art, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
       if (xWidget == null) {
          throw new OseeStateException("Can't retrieve decision review combo widget to set.");
       }

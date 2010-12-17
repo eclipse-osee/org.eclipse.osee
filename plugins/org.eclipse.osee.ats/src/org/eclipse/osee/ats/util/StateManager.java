@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.internal.workflow.SMAState;
 import org.eclipse.osee.ats.internal.workflow.XCurrentStateDam;
 import org.eclipse.osee.ats.internal.workflow.XStateDam;
+import org.eclipse.osee.ats.workdef.StateDefinition;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -35,7 +36,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkPage;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageType;
 
 /**
@@ -305,7 +305,7 @@ public class StateManager {
       return getVisitedStateNames().contains(state.getPageName());
    }
 
-   public void transitionHelper(Collection<User> toAssignees, WorkPageDefinition fromPage, WorkPageDefinition toPage, IWorkPage toState, String cancelReason) throws OseeCoreException {
+   public void transitionHelper(Collection<User> toAssignees, StateDefinition fromState, StateDefinition toState, String cancelReason) throws OseeCoreException {
       // Set XCurrentState info to XState
       stateDam.setState(currentStateDam.getState());
 
@@ -319,7 +319,7 @@ public class StateManager {
          }
          currentStateDam.setState(previousState);
       }
-      sma.setSoleAttributeValue(AtsAttributeTypes.CurrentStateType, toPage.getWorkPageType().name());
+      sma.setSoleAttributeValue(AtsAttributeTypes.CurrentStateType, toState.getWorkPageType().name());
    }
 
    /**

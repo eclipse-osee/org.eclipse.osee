@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.util.AtsNotifyUsers;
 import org.eclipse.osee.ats.util.TeamState;
 import org.eclipse.osee.ats.util.TransitionOption;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
+import org.eclipse.osee.ats.workdef.StateDefinition;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -34,7 +35,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkPage;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 
 public class TransitionManager {
 
@@ -60,40 +60,39 @@ public class TransitionManager {
       }
 
       // Validate toState name
-      final WorkPageDefinition fromWorkPageDefinition = aba.getWorkPageDefinition();
-      final WorkPageDefinition toWorkPageDefinition = aba.getWorkPageDefinitionByName(toState.getPageName());
-      if (toWorkPageDefinition == null) {
+      final StateDefinition fromStateDefinition = aba.getStateDefinition();
+      final StateDefinition toStateDefinition = aba.getStateDefinitionByName(toState.getPageName());
+      if (toStateDefinition == null) {
          return new Result("Invalid toState \"" + toState + "\"");
       }
 
       // Validate transition from fromPage to toPage
-      if (!overrideTransitionCheck && !aba.getWorkFlowDefinition().getToPages(fromWorkPageDefinition).contains(
-         toWorkPageDefinition)) {
+      if (!overrideTransitionCheck && !fromStateDefinition.getToStates().contains(toStateDefinition)) {
          String errStr =
-            "Not configured to transition to \"" + toState + "\" from \"" + fromWorkPageDefinition.getPageName() + "\"";
+            "Not configured to transition to \"" + toState + "\" from \"" + fromStateDefinition.getPageName() + "\"";
          OseeLog.log(AtsPlugin.class, Level.SEVERE, errStr);
          return new Result(errStr);
       }
       // Don't transition with existing working branch
-      if (toWorkPageDefinition.isCancelledPage() && aba.isTeamWorkflow() && ((TeamWorkFlowArtifact) aba).getBranchMgr().isWorkingBranchInWork()) {
+      if (toStateDefinition.isCancelledPage() && aba.isTeamWorkflow() && ((TeamWorkFlowArtifact) aba).getBranchMgr().isWorkingBranchInWork()) {
          return new Result("Working Branch exists.  Please delete working branch before cancelling.");
       }
 
       // Don't transition with uncommitted branch if this is a commit state
-      if (AtsWorkDefinitions.isAllowCommitBranch(aba.getWorkPageDefinition()) && aba.isTeamWorkflow() && ((TeamWorkFlowArtifact) aba).getBranchMgr().isWorkingBranchInWork()) {
+      if (AtsWorkDefinitions.isAllowCommitBranch(aba.getStateDefinition()) && aba.isTeamWorkflow() && ((TeamWorkFlowArtifact) aba).getBranchMgr().isWorkingBranchInWork()) {
          return new Result("Working Branch exists.  Please commit or delete working branch before transition.");
       }
 
       // Check extension points for valid transition
-      List<IAtsStateItem> atsStateItems = AtsStateItemManager.getStateItems(fromWorkPageDefinition.getId());
+      List<IAtsStateItem> atsStateItems = AtsStateItemManager.getStateItems(fromStateDefinition);
       for (IAtsStateItem item : atsStateItems) {
-         Result result = item.transitioning(aba, fromWorkPageDefinition, toState, toAssignees);
+         Result result = item.transitioning(aba, fromStateDefinition, toState, toAssignees);
          if (result.isFalse()) {
             return result;
          }
       }
       for (IAtsStateItem item : atsStateItems) {
-         Result result = item.transitioning(aba, fromWorkPageDefinition, toState, toAssignees);
+         Result result = item.transitioning(aba, fromStateDefinition, toState, toAssignees);
          if (result.isFalse()) {
             return result;
          }
@@ -124,11 +123,11 @@ public class TransitionManager {
             return result;
          }
 
-         final WorkPageDefinition fromWorkPageDefinition = aba.getWorkPageDefinition();
-         final WorkPageDefinition toWorkPageDefinition = aba.getWorkPageDefinitionByName(toState.getPageName());
+         final StateDefinition fromStateDefinition = aba.getStateDefinition();
+         final StateDefinition toStateDefinition = aba.getStateDefinitionByName(toState.getPageName());
 
-         transitionHelper(toAssignees, persist, fromWorkPageDefinition, toWorkPageDefinition, toState,
-            completeOrCancelReason, transaction);
+         transitionHelper(toAssignees, persist, fromStateDefinition, toStateDefinition, completeOrCancelReason,
+            transaction);
          if (persist) {
             OseeNotificationManager.getInstance().sendNotifications();
          }
@@ -139,28 +138,28 @@ public class TransitionManager {
       return Result.TrueResult;
    }
 
-   private void transitionHelper(Collection<User> toAssignees, boolean persist, WorkPageDefinition fromPage, WorkPageDefinition toPage, IWorkPage toState, String completeOrCancelReason, SkynetTransaction transaction) throws OseeCoreException {
+   private void transitionHelper(Collection<User> toAssignees, boolean persist, StateDefinition fromState, StateDefinition toState, String completeOrCancelReason, SkynetTransaction transaction) throws OseeCoreException {
       Date transitionDate = new Date();
       User transitionUser = UserManager.getUser();
       // Log transition
-      if (toPage.isCancelledPage()) {
+      if (toState.isCancelledPage()) {
          logWorkflowCancelledEvent(aba.getStateMgr().getCurrentStateName(), completeOrCancelReason, transitionDate,
             transitionUser);
-      } else if (toPage.isCompletedPage()) {
+      } else if (toState.isCompletedPage()) {
          logWorkflowCompletedEvent(aba.getStateMgr().getCurrentStateName(), completeOrCancelReason, transitionDate,
             transitionUser);
       } else {
          logStateCompletedEvent(aba.getStateMgr().getCurrentStateName(), completeOrCancelReason, transitionDate,
             transitionUser);
       }
-      if (fromPage.isCancelledPage()) {
+      if (fromState.isCancelledPage()) {
          logWorkflowUnCancelledEvent();
-      } else if (fromPage.isCompletedPage()) {
+      } else if (fromState.isCompletedPage()) {
          logWorkflowUnCompletedEvent();
       }
       logStateStartedEvent(toState, transitionDate, transitionUser);
 
-      aba.getStateMgr().transitionHelper(toAssignees, fromPage, toPage, toState, completeOrCancelReason);
+      aba.getStateMgr().transitionHelper(toAssignees, fromState, toState, completeOrCancelReason);
 
       if (aba.isValidationRequired() && aba.isTeamWorkflow()) {
          ReviewManager.createValidateReview((TeamWorkFlowArtifact) aba, false, transitionDate, transitionUser,
@@ -175,14 +174,14 @@ public class TransitionManager {
          aba.persist(transaction);
       }
 
-      aba.transitioned(fromPage, toPage, toAssignees, true, transaction);
+      aba.transitioned(fromState, toState, toAssignees, true, transaction);
 
       // Notify extension points of transition
-      for (IAtsStateItem item : AtsStateItemManager.getStateItems(fromPage.getId())) {
-         item.transitioned(aba, fromPage, toState, toAssignees, transaction);
+      for (IAtsStateItem item : AtsStateItemManager.getStateItems(fromState)) {
+         item.transitioned(aba, fromState, toState, toAssignees, transaction);
       }
-      for (IAtsStateItem item : AtsStateItemManager.getStateItems(toPage.getId())) {
-         item.transitioned(aba, fromPage, toState, toAssignees, transaction);
+      for (IAtsStateItem item : AtsStateItemManager.getStateItems(toState)) {
+         item.transitioned(aba, fromState, toState, toAssignees, transaction);
       }
    }
 

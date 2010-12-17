@@ -15,6 +15,8 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.workdef.StateDefinition;
+import org.eclipse.osee.ats.workdef.WorkDefinition;
 import org.eclipse.osee.ats.workflow.editor.model.WorkPageShape;
 import org.eclipse.osee.ats.workflow.editor.model.WorkflowDiagram;
 import org.eclipse.osee.ats.workflow.editor.parts.DiagramEditPart;
@@ -25,9 +27,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 
 /**
  * @author Donald G. Dunne
@@ -61,20 +61,20 @@ public class EditAction extends Action {
                   WorkflowDiagram diagram = (WorkflowDiagram) ((DiagramEditPart) obj).getModel();
                   Artifact artifact = null;
                   if (diagram.getWorkFlowDefinition() != null) {
-                     WorkFlowDefinition def = diagram.getWorkFlowDefinition();
-                     artifact = WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(def.getId());
+                     WorkDefinition def = diagram.getWorkFlowDefinition();
+                     //                     artifact = WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(def.getId());
                   }
-                  if (artifact != null) {
-                     RendererManager.open(artifact, PresentationType.GENERALIZED_EDIT);
-                     return;
-                  }
+                  //                  if (artifact != null) {
+                  //                     RendererManager.open(artifact, PresentationType.GENERALIZED_EDIT);
+                  //                     return;
+                  //                  }
                }
                if (obj instanceof WorkPageEditPart && ((WorkPageEditPart) obj).getModel() instanceof WorkPageShape) {
                   WorkPageShape shape = (WorkPageShape) ((WorkPageEditPart) obj).getModel();
                   Artifact artifact = null;
                   if (shape.getWorkPageDefinition() != null) {
-                     WorkPageDefinition def = shape.getWorkPageDefinition();
-                     artifact = WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(def.getId());
+                     StateDefinition def = shape.getWorkPageDefinition();
+                     artifact = WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(def.getName());
                   } else {
                      String id = shape.getId();
                      artifact = WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(id);

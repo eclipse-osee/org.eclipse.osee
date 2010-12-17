@@ -10,6 +10,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.workdef.StateDefinition;
+import org.eclipse.osee.ats.workdef.WorkDefinition;
+import org.eclipse.osee.ats.workdef.WorkDefinitionFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
@@ -39,6 +42,11 @@ public class XStateCombo extends XComboViewer {
                   if (!validStates.contains(((WorkPageDefinition) wid).getPageName())) {
                      validStates.add(((WorkPageDefinition) wid).getPageName());
                   }
+               }
+            }
+            for (WorkDefinition workDef : WorkDefinitionFactory.getWorkdefinitions()) {
+               for (StateDefinition state : workDef.getStates()) {
+                  validStates.add(state.getName());
                }
             }
          } catch (OseeCoreException ex) {

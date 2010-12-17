@@ -11,6 +11,7 @@
    <extension-point id="AtsHealthCheck" name="AtsHealthCheck" schema="schema/AtsHealthCheck.exsd"/>
    <extension-point id="AtsAdvancedOperationAction" name="AtsAdvancedOperationAction" schema="schema/AtsAdvancedOperationAction.exsd"/>
    <extension-point id="AtsMenuAction" name="AtsMenuAction" schema="schema/AtsMenuAction.exsd"/>
+   <extension-point id="AtsWorkDefinitionProvider" name="AtsWorkDefinitionProvider" schema="schema/AtsWorkDefinitionProvider.exsd"/>
          <extension
          point="org.eclipse.ui.editors">
          <editor

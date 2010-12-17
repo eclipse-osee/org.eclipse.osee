@@ -39,8 +39,10 @@ import org.eclipse.jface.util.TransferDropTargetListener;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.workdef.StateDefinition;
+import org.eclipse.osee.ats.workdef.StateXWidgetPage;
+import org.eclipse.osee.ats.workdef.WorkDefinition;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
-import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.ats.workflow.editor.actions.EditAction;
 import org.eclipse.osee.ats.workflow.editor.model.CancelledWorkPageShape;
 import org.eclipse.osee.ats.workflow.editor.model.CompletedWorkPageShape;
@@ -67,8 +69,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -173,7 +173,7 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
             return;
          }
          transaction.execute();
-         diagram.getWorkFlowDefinition().loadPageData(true);
+         //         diagram.getWorkFlowDefinition().loadPageData(true);
          getCommandStack().markSaveLocation();
 
       } catch (OseeCoreException ex) {
@@ -242,23 +242,23 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
       super.setInput(input);
       if (input instanceof AtsWorkflowConfigEditorInput) {
          AtsWorkflowConfigEditorInput editorInput = (AtsWorkflowConfigEditorInput) input;
-         WorkFlowDefinition workflowDef = editorInput.workflow;
+         WorkDefinition workflowDef = editorInput.workflow;
          try {
             setPartName(workflowDef.getName());
             diagram = new WorkflowDiagram(workflowDef);
             int yLoc = 0;
-            WorkPageDefinition startPage = workflowDef.getStartPage();
+            StateDefinition startPage = workflowDef.getStartState();
             if (startPage == null || startPage.getName().equals("")) {
                throw new OseeArgumentException("StartPage null for workflow [%s]", workflowDef);
             }
             // Create states
-            List<WorkPageDefinition> pages = workflowDef.getPagesOrdered();
-            for (WorkPageDefinition page : workflowDef.getPages()) {
+            List<StateDefinition> pages = workflowDef.getStatesOrdered();
+            for (StateDefinition page : workflowDef.getStates()) {
                if (!pages.contains(page)) {
                   pages.add(page);
                }
             }
-            for (WorkPageDefinition pageDef : pages) {
+            for (StateDefinition pageDef : pages) {
                WorkPageShape pageShape = null;
                if (pageDef.isCancelledPage()) {
                   pageShape = new CancelledWorkPageShape(pageDef);
@@ -270,8 +270,8 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
                   pageShape = new WorkPageShape(pageDef);
                   pageShape.setLocation(new Point(50, yLoc += 90));
                }
-               pageShape.setStartPage(startPage.getId().equals(pageShape.getId()) || pageShape.getId().endsWith(
-                  startPage.getId()));
+               pageShape.setStartPage(startPage.getName().equals(pageShape.getId()) || pageShape.getId().endsWith(
+                  startPage.getName()));
                diagram.addChild(pageShape);
             }
 
@@ -287,42 +287,42 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
 
    }
 
-   private void createTransitions(WorkFlowDefinition workflowDef) throws OseeCoreException {
-      for (WorkPageDefinition workPageDefinition : workflowDef.getPagesOrdered()) {
+   private void createTransitions(WorkDefinition workflowDef) throws OseeCoreException {
+      for (StateDefinition workPageDefinition : workflowDef.getStatesOrdered()) {
          WorkPageShape pageShape = getWorkPageShape(workPageDefinition);
-         AtsWorkPage atsWorkPage =
-            new AtsWorkPage(workflowDef, workPageDefinition, null, ATSXWidgetOptionResolver.getInstance());
+         StateXWidgetPage statePage =
+            new StateXWidgetPage(workflowDef, workPageDefinition, null, ATSXWidgetOptionResolver.getInstance());
          // Handle to pages
-         Set<WorkPageDefinition> toPages = new HashSet<WorkPageDefinition>();
-         toPages.addAll(atsWorkPage.getToPages());
-         List<WorkPageDefinition> returnPages = atsWorkPage.getReturnPages();
-         for (WorkPageDefinition toPageDef : toPages) {
+         Set<StateDefinition> toPages = new HashSet<StateDefinition>();
+         toPages.addAll(statePage.getToPages());
+         List<StateDefinition> returnPages = statePage.getReturnStates();
+         for (StateDefinition toPageDef : toPages) {
             // Don't want to show return pages twice
             if (returnPages.contains(toPageDef)) {
                continue;
             }
             WorkPageShape toPageShape = getWorkPageShape(toPageDef);
-            if (toPageDef.equals(atsWorkPage.getDefaultToPage())) {
+            if (toPageDef.equals(statePage.getDefaultToPage())) {
                new DefaultTransitionConnection(pageShape, toPageShape);
-               //                  System.out.println("Default: " + atsWorkPage.getName() + " -> " + toPageShape.getName());
+               //                  System.out.println("Default: " + statePage.getName() + " -> " + toPageShape.getName());
             } else {
                new TransitionConnection(pageShape, toPageShape);
-               //                  System.out.println("To: " + atsWorkPage.getName() + " -> " + toPageShape.getName());
+               //                  System.out.println("To: " + statePage.getName() + " -> " + toPageShape.getName());
             }
          }
          // Handle return pages
-         for (WorkPageDefinition toPageDef : returnPages) {
+         for (StateDefinition toPageDef : returnPages) {
             WorkPageShape toPageShape = getWorkPageShape(toPageDef);
             new ReturnTransitionConnection(pageShape, toPageShape);
-            //               System.out.println("Return: " + atsWorkPage.getName() + " -> " + toPageShape.getName());
+            //               System.out.println("Return: " + statePage.getName() + " -> " + toPageShape.getName());
          }
       }
    }
 
-   private WorkPageShape getWorkPageShape(WorkPageDefinition page) {
+   private WorkPageShape getWorkPageShape(StateDefinition page) {
       for (Object object : getModel().getChildren()) {
-         if (object instanceof WorkPageShape && (((WorkPageShape) object).getId().equals(page.getId()) || page.getParentId() != null && ((WorkPageShape) object).getId().equals(
-            page.getParentId()))) {
+         if (object instanceof WorkPageShape && (((WorkPageShape) object).getId().equals(page.getName()) || page.getName() != null && ((WorkPageShape) object).getId().equals(
+            page.getName()))) {
             return (WorkPageShape) object;
          }
       }

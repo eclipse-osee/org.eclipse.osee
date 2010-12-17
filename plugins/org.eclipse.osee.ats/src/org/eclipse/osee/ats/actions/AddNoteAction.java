@@ -23,11 +23,11 @@ import org.eclipse.osee.ats.actions.wizard.NewNoteWizard;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.workdef.StateDefinition;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.ui.PlatformUI;
 
@@ -57,10 +57,10 @@ public class AddNoteAction extends Action {
          ArrayList<String> artifactNames = new ArrayList<String>();
          Map<String, String> selectedToStateName = new HashMap<String, String>();
          artifactNames.add("Whole \"" + sma.getArtifactTypeName() + "\"");
-         for (WorkPageDefinition workPageDefinition : sma.getWorkFlowDefinition().getPagesOrdered()) {
-            String displayName = "\"" + workPageDefinition.getPageName() + "\" State";
+         for (StateDefinition stateDefinition : sma.getWorkDefinition().getStatesOrdered()) {
+            String displayName = "\"" + stateDefinition.getPageName() + "\" State";
             artifactNames.add(displayName);
-            selectedToStateName.put(displayName, workPageDefinition.getPageName());
+            selectedToStateName.put(displayName, stateDefinition.getPageName());
          }
          NewNoteWizard noteWizard = new NewNoteWizard(artifactNames);
          WizardDialog dialog =

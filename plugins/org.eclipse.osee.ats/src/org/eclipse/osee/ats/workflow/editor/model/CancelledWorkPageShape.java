@@ -12,23 +12,22 @@ package org.eclipse.osee.ats.workflow.editor.model;
 
 import java.util.logging.Level;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.workflow.page.AtsCancelledWorkPageDefinition;
+import org.eclipse.osee.ats.workdef.StateDefinition;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageType;
 
 /**
  * @author Donald G. Dunne
  */
 public class CancelledWorkPageShape extends WorkPageShape {
 
-   public CancelledWorkPageShape(WorkPageDefinition workPageDefinition) {
+   public CancelledWorkPageShape(StateDefinition workPageDefinition) {
       super(workPageDefinition);
    }
 
    public CancelledWorkPageShape() {
-      super(new WorkPageDefinition("Cancelled", "NEW", AtsCancelledWorkPageDefinition.ID, WorkPageType.Cancelled, 3));
+      //      super(new WorkPageDefinition("Cancelled", "NEW", AtsCancelledWorkPageDefinition.ID, WorkPageType.Cancelled, 3));
+      super(new StateDefinition("Cancelled"));
    }
 
    @Override

@@ -28,7 +28,7 @@ public class DemoAddPeerToPeerReviewRule extends AtsAddDecisionReviewRule {
       super(ID + "." + forState + "." + reviewBlockType.name() + "." + stateEventType,
          ID + "." + forState + "." + reviewBlockType.name() + "." + stateEventType);
       setDescription("This is a rule created to test the Review rules.");
-      setDecisionParameterValue(this, DecisionParameter.title, "Auto-created Decision Review from ruleId " + getId());
+      setDecisionParameterValue(this, DecisionParameter.title, "Auto-created Decision Review from ruleId " + getName());
       setDecisionParameterValue(this, DecisionParameter.reviewBlockingType, reviewBlockType.name());
       setDecisionParameterValue(this, DecisionParameter.forState, forState);
       setDecisionParameterValue(this, DecisionParameter.forEvent, stateEventType.name());

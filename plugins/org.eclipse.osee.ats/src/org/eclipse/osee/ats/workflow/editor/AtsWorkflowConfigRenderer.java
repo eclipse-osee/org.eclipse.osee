@@ -17,6 +17,7 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.workdef.WorkDefinition;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -25,7 +26,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
@@ -78,7 +78,7 @@ public class AtsWorkflowConfigRenderer extends DefaultArtifactRenderer {
          public void run() {
             for (Artifact artifact : artifacts) {
                try {
-                  IEditorInput input = new AtsWorkflowConfigEditorInput(new WorkFlowDefinition(artifact));
+                  IEditorInput input = new AtsWorkflowConfigEditorInput(new WorkDefinition("This"));
                   AWorkbench.getActivePage().openEditor(input, AtsWorkflowConfigEditor.EDITOR_ID);
                } catch (CoreException ex) {
                   OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);

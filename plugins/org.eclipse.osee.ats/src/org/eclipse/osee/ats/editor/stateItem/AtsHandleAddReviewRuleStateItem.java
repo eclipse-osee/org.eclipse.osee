@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.workdef.RuleDefinition;
 import org.eclipse.osee.ats.workflow.item.AtsAddDecisionReviewRule;
 import org.eclipse.osee.ats.workflow.item.AtsAddDecisionReviewRule.DecisionParameter;
 import org.eclipse.osee.ats.workflow.item.AtsAddDecisionReviewRule.DecisionRuleOption;
@@ -29,7 +30,6 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkPage;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
 
 /**
  * @author Donald G. Dunne
@@ -54,27 +54,26 @@ public class AtsHandleAddReviewRuleStateItem extends AtsStateItem {
    public static void runRule(AbstractWorkflowArtifact sma, IWorkPage toState, String ruleId, SkynetTransaction transaction) throws OseeCoreException {
       Date createdDate = new Date();
       User createdBy = UserManager.getUser(SystemUser.OseeSystem);
-      for (WorkRuleDefinition workRuleDef : sma.getWorkRulesStartsWith(ruleId)) {
+      for (RuleDefinition ruleDef : sma.getRulesStartsWith(ruleId)) {
          if (!sma.isTeamWorkflow()) {
             continue;
          }
-         StateEventType eventType = AtsAddDecisionReviewRule.getStateEventType((TeamWorkFlowArtifact) sma, workRuleDef);
-         String forState = workRuleDef.getWorkDataValue(DecisionParameter.forState.name());
+         StateEventType eventType = AtsAddDecisionReviewRule.getStateEventType((TeamWorkFlowArtifact) sma, ruleDef);
+         String forState = ruleDef.getWorkDataValue(DecisionParameter.forState.name());
          if (!Strings.isValid(forState)) {
             continue;
          }
          if (eventType != null && toState.getPageName().equals(forState) && eventType == StateEventType.TransitionTo) {
             if (ruleId.startsWith(AtsAddDecisionReviewRule.ID)) {
                DecisionReviewArtifact decArt =
-                  AtsAddDecisionReviewRule.createNewDecisionReview(workRuleDef, transaction,
-                     (TeamWorkFlowArtifact) sma, createdDate, createdBy, DecisionRuleOption.TransitionToDecision);
+                  AtsAddDecisionReviewRule.createNewDecisionReview(ruleDef, transaction, (TeamWorkFlowArtifact) sma,
+                     createdDate, createdBy, DecisionRuleOption.TransitionToDecision);
                if (decArt != null) {
                   decArt.persist(transaction);
                }
             } else if (ruleId.startsWith(AtsAddPeerToPeerReviewRule.ID)) {
                PeerToPeerReviewArtifact peerArt =
-                  AtsAddPeerToPeerReviewRule.createNewPeerToPeerReview(workRuleDef, (TeamWorkFlowArtifact) sma,
-                     transaction);
+                  AtsAddPeerToPeerReviewRule.createNewPeerToPeerReview(ruleDef, (TeamWorkFlowArtifact) sma, transaction);
                if (peerArt != null) {
                   peerArt.persist(transaction);
                }
