@@ -19,8 +19,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.jdk.core.util.io.FileWatcher;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.utility.FileWatcher;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchListener;
@@ -31,12 +31,13 @@ final class ArtifactFileMonitor {
    private final FileWatcher watcher;
    private boolean firstTime;
 
-   public ArtifactFileMonitor(IArtifactUpdateOperationFactory jobFactory) {
+   public ArtifactFileMonitor(IArtifactUpdateOperationFactory opFactory) {
       firstTime = true;
       readonlyfileAttributes = new ResourceAttributes();
       readonlyfileAttributes.setReadOnly(true);
 
-      watcher = new ArtifactEditFileWatcher(jobFactory, 3, TimeUnit.SECONDS);
+      watcher = new FileWatcher(3, TimeUnit.SECONDS);
+      watcher.addListener(new ArtifactFileWatcherListener(opFactory));
       watcher.start();
    }
 

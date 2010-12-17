@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.utility;
+package org.eclipse.osee.framework.jdk.core.util.io;
 
 import java.util.Collection;
 
@@ -17,5 +17,7 @@ import java.util.Collection;
  */
 public interface IFileWatcherListener {
 
-   void filesModified(Collection<FileChangeEvent> fileChangeEvents);
+   public void filesModified(Collection<FileChangeEvent> fileChangeEvents);
+
+   public void handleExcpetion(Exception ex);
 }
