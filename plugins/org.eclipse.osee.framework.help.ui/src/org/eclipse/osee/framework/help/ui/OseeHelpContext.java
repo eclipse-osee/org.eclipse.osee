@@ -49,6 +49,8 @@ public final class OseeHelpContext {
 
    public static final HelpContext SKY_WALKER_VIEW = toContext("sky_walker_view");
 
+   public static final HelpContext TEST_RUN_VIEW = toContext("test_run_view");
+
    public static final HelpContext TABLE_CUSTOMIZATIONS = toContext("xviewer_table_customization");
    public static final HelpContext RESULTS_VIEW = toContext("xviewer_xresult_view");
 

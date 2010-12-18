@@ -170,19 +170,6 @@
       </PropertyStoreControl>
    </extension>
    <extension
-         point="org.eclipse.help.contexts">
-      <contexts
-            file="help/contexts.xml">
-      </contexts>
-   </extension>
-   <extension
-         point="org.eclipse.help.toc">
-      <toc
-            file="help/toc.xml"
-            primary="false">
-      </toc>
-   </extension>
-        <extension
            point="org.eclipse.osee.framework.ui.skynet.ArtifactImageProvider">
         <ArtifactImageProvider
               class="org.eclipse.osee.ote.ui.define.OteArtifactImageProvider">

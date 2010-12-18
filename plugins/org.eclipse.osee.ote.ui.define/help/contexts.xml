@@ -1,8 +1,0 @@
-<contexts>
-<!--
-	<context id="testRunView" title="Test Run View">
-		<description>View current and saved test runs.</description>
-		<topic href="help/testRunView.html" label="Test Run View"/>
-	</context>
--->
-</contexts>

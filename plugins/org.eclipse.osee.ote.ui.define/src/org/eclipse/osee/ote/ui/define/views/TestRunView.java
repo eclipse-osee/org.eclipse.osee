@@ -23,10 +23,12 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
+import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
+import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.ote.ui.define.OteDefineImage;
@@ -104,11 +106,13 @@ public class TestRunView extends ViewPart implements IActionable, IDataChangedLi
       });
       onDataChanged();
 
-      PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, "org.eclipse.osee.ote.ui.define.testRunView");
+      HelpUtil.setHelp(parent, OseeHelpContext.TEST_RUN_VIEW);
+      HelpUtil.setHelp(viewer.getTree(), OseeHelpContext.TEST_RUN_VIEW);
    }
 
    @Override
    public void setFocus() {
+      //
    }
 
    @Override

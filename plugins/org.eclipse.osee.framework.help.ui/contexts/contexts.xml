@@ -117,6 +117,11 @@
 	   <topic href="OSEE/Users_Guide/Features/Views-and-Editors.html#Sky_Walker_View" label="Sky Walker View"/>
    </context>
    
+   <context id="test_run_view"  title="Test Run View">
+	   <description>The Test Run View provides an integration point with OTE (OSEE Test Environment).</description>
+	   <topic href="OSEE/Users_Guide/Features/Views-and-Editors.html#Test_Run_View" label="Test Run View"/>
+   </context>
+   
    <context id="change_report_editor"  title="Change Report Editor">
 	   <description>Shows all changes made to a branch.</description>
 	   <topic href="OSEE/Users_Guide/Features/Views-and-Editors.html#Change_Report_Editor" label="Change Report Editor"/>
