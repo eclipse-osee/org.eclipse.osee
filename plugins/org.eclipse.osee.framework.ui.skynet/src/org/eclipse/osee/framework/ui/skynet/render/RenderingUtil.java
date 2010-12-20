@@ -89,7 +89,7 @@ public final class RenderingUtil {
    public static String getFilenameFromArtifact(FileSystemRenderer renderer, Artifact artifact, PresentationType presentationType) throws OseeCoreException {
       String fileName = renderer.getStringOption(IRenderer.FILE_NAME_OPTION);
       if (Strings.isValid(fileName)) {
-         return fileName;
+         //         return fileName;
       }
 
       StringBuilder name = new StringBuilder(100);
