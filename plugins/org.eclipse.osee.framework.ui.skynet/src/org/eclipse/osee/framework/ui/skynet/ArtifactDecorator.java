@@ -88,7 +88,7 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
          saveAction(showArtVersion, "artifact.decorator.show.artVersion");
          if (attributesAction != null) {
             Collection<IAttributeType> items = attributesAction.getSelected();
-            UserManager.setSetting(asKey(storageKey, "artifact.decorator.attrTypes"), Collections.toString(",", items));
+            saveSetting("artifact.decorator.attrTypes", Collections.toString(",", items));
             saveAction(attributesAction, "artifact.decorator.show.attrTypes");
          }
       } catch (OseeCoreException ex) {
@@ -103,7 +103,7 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
          loadAction(showArtBranch, "artifact.decorator.show.artBranch");
          loadAction(showArtVersion, "artifact.decorator.show.artVersion");
          if (attributesAction != null) {
-            String value = UserManager.getSetting("artifact.decorator.attrTypes");
+            String value = getSetting("artifact.decorator.attrTypes");
             if (Strings.isValid(value)) {
                String[] entries = value.split(",");
                attributesAction.setSelected(Arrays.asList(entries));
@@ -117,14 +117,22 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
 
    private void loadAction(Action action, String key) throws OseeCoreException {
       if (action != null) {
-         boolean isChecked = UserManager.getBooleanSetting(asKey(storageKey, key));
+         boolean isChecked = Boolean.parseBoolean(getSetting(key));
          action.setChecked(isChecked);
       }
    }
 
    private void saveAction(Action action, String key) throws OseeCoreException {
       boolean isChecked = action != null && action.isChecked();
-      UserManager.setSetting(asKey(storageKey, key), String.valueOf(isChecked));
+      saveSetting(key, String.valueOf(isChecked));
+   }
+
+   private void saveSetting(String key, String value) throws OseeCoreException {
+      UserManager.setSetting(asKey(storageKey, key), value);
+   }
+
+   private String getSetting(String key) throws OseeCoreException {
+      return UserManager.getSetting(asKey(storageKey, key));
    }
 
    private void checkActionsCreated(IBranchProvider branchProvider) {
