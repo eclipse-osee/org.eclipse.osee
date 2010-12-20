@@ -136,7 +136,7 @@ public final class TransactionManager {
     */
    public static void clearCommitArtifactCacheForAssociatedArtifact(IArtifact associatedArtifact) {
       if (associatedArtifact != null) {
-         commitArtifactIdMap.remove(associatedArtifact);
+         commitArtifactIdMap.remove(associatedArtifact.getArtId());
       }
    }
 
