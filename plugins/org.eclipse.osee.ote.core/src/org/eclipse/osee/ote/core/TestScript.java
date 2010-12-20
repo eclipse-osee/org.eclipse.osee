@@ -21,7 +21,6 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
-
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 import org.eclipse.osee.framework.jdk.core.persistence.XmlizableStream;
@@ -333,19 +332,19 @@ public abstract class TestScript implements ITimeout {
                         returnValue, result.isPass()), true);
                   break;
                case YES_NO:
-                   YesNoPromptImpl yesNoPrompt = new YesNoPromptImpl(connector, this, "", prompt.toString());
-                   YesNoPromptResult yesNo = yesNoPrompt.open(promptInitWorker);
-                   if(yesNo.isYes()){
-                	   returnValue = "YES";
-                   } else {
-                	   returnValue = "NO";
-                   }
-                   logOutput =
-                       String.format("PROMPT [%s]\n{%s}\n\tRETURN VALUE : %s", PromptResponseType.YES_NO.name(),
-                          prompt.toString(), returnValue);
-                   yesNoPrompt.close();
-                   testRecord = new AttentionRecord(getTestEnvironment(), logOutput, true);
-                   break;
+                  YesNoPromptImpl yesNoPrompt = new YesNoPromptImpl(connector, this, "", prompt.toString());
+                  YesNoPromptResult yesNo = yesNoPrompt.open(promptInitWorker);
+                  if (yesNo.isYes()) {
+                     returnValue = "YES";
+                  } else {
+                     returnValue = "NO";
+                  }
+                  logOutput =
+                     String.format("PROMPT [%s]\n{%s}\n\tRETURN VALUE : %s", PromptResponseType.YES_NO.name(),
+                        prompt.toString(), returnValue);
+                  yesNoPrompt.close();
+                  testRecord = new AttentionRecord(getTestEnvironment(), logOutput, true);
+                  break;
                case SCRIPT_PAUSE:
                   ScriptPausePromptImpl scriptPausePrompt =
                      new ScriptPausePromptImpl(connector, this, "", prompt.toString());
@@ -492,6 +491,9 @@ public abstract class TestScript implements ITimeout {
     * {@link java.lang.Object#notifyAll()}method for this object.
     */
    public synchronized void testWait(int milliseconds) throws InterruptedException {
+      if (milliseconds < 2) {
+         return;
+      }
       environment.getLogger().methodCalled(this.environment, new MethodFormatter().add(milliseconds));
       environment.setTimerFor(this, milliseconds);
       wait();
@@ -500,6 +502,9 @@ public abstract class TestScript implements ITimeout {
    }
 
    public synchronized void testWaitNoLog(int milliseconds) throws InterruptedException {
+      if (milliseconds < 2) {
+         return;
+      }
       environment.setTimerFor(this, milliseconds);
       wait();
       this.getTestEnvironment().getScriptCtrl().lock();
@@ -666,9 +671,10 @@ public abstract class TestScript implements ITimeout {
    }
 
    public boolean addTestRunListener(ITestRunListener listener) {
-      if( listenerProvider == null )
-      {
-         String message = String.format("Could not add run listener %s since listener provider is null.", listener.getClass().getName());
+      if (listenerProvider == null) {
+         String message =
+            String.format("Could not add run listener %s since listener provider is null.",
+               listener.getClass().getName());
          OseeLog.log(getClass(), Level.WARNING, message, new Exception());
          return false;
       }
@@ -676,9 +682,10 @@ public abstract class TestScript implements ITimeout {
    }
 
    public boolean removeTestRunListener(ITestRunListener listener) {
-      if( listenerProvider == null )
-      {
-         String message = String.format("Could not remove run listener %s since listener provider is null.", listener.getClass().getName());
+      if (listenerProvider == null) {
+         String message =
+            String.format("Could not remove run listener %s since listener provider is null.",
+               listener.getClass().getName());
          OseeLog.log(getClass(), Level.WARNING, message, new Exception());
          return false;
       }
