@@ -43,10 +43,6 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
    private ArtifactFormPage formPage;
    private ArtifactEditorOutlinePage outlinePage;
 
-   public ArtifactEditor() {
-      super();
-   }
-
    public IActionContributor getActionBarContributor() {
       if (actionBarContributor == null) {
          actionBarContributor = new ArtifactEditorActionBarContributor(this);

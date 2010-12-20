@@ -68,7 +68,7 @@ public class ArtifactFormPage extends FormPage {
 
    public ArtifactFormPage(FormEditor editor, String id, String title) {
       super(editor, id, title);
-      this.sectionParts = new LinkedHashMap<SectionEnum, SectionPart>();
+      sectionParts = new LinkedHashMap<SectionEnum, SectionPart>();
    }
 
    @Override

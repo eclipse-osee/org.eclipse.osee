@@ -19,7 +19,6 @@ import org.eclipse.swt.graphics.Image;
 public abstract class AbstractEventArtifactEditor extends AbstractArtifactEditor implements IArtifactEditorEventHandler {
 
    public AbstractEventArtifactEditor() {
-      super();
       ArtifactEditorEventManager.add(this);
    }
 
