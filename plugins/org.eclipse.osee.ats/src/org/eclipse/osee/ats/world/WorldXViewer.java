@@ -37,6 +37,7 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.actions.ConvertActionableItemsAction;
 import org.eclipse.osee.ats.actions.DeletePurgeAtsArtifactsAction;
+import org.eclipse.osee.ats.actions.EditAssigneeAction;
 import org.eclipse.osee.ats.actions.EditStatusAction;
 import org.eclipse.osee.ats.actions.EmailActionAction;
 import org.eclipse.osee.ats.actions.FavoriteAction;
@@ -118,6 +119,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
 
    Action editAction, editActionableItemsAction;
    EditStatusAction editStatusAction;
+   EditAssigneeAction editAssigneeAction;
    ConvertActionableItemsAction convertActionableItemsAction;
    Action openInAtsWorldEditorAction, openInAtsTaskEditorAction;
    OpenInAtsWorkflowEditor openInAtsWorkflowEditorAction;
@@ -140,6 +142,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       deletePurgeAtsObjectAction = new DeletePurgeAtsArtifactsAction(this);
       emailAction = new EmailActionAction(this);
       editStatusAction = new EditStatusAction(this, this);
+      editAssigneeAction = new EditAssigneeAction(this, this);
 
       editAction = new Action("Edit", IAction.AS_PUSH_BUTTON) {
          @Override
@@ -397,6 +400,9 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
 
       mm.insertBefore(MENU_GROUP_PRE, editStatusAction);
       editStatusAction.setEnabled(getSelectedSMAArtifacts().size() > 0);
+
+      mm.insertBefore(MENU_GROUP_PRE, editAssigneeAction);
+      editAssigneeAction.setEnabled(getSelectedSMAArtifacts().size() > 0);
 
       mm.insertBefore(MENU_GROUP_PRE, editActionableItemsAction);
       editActionableItemsAction.setEnabled(getSelectedActionArtifacts().size() == 1 || getSelectedTeamWorkflowArtifacts().size() == 1);

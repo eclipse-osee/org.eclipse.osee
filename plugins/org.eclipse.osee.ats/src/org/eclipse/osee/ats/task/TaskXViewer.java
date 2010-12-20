@@ -20,13 +20,12 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
-import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
+import org.eclipse.osee.ats.actions.EditAssigneeAction;
+import org.eclipse.osee.ats.actions.EditStatusAction;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.column.ResolutionColumn;
-import org.eclipse.osee.ats.editor.SMAPromptChangeHoursSpent;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.PromptChangeUtil;
 import org.eclipse.osee.ats.world.AtsWorldEditorItems;
 import org.eclipse.osee.ats.world.IAtsWorldEditorItem;
 import org.eclipse.osee.ats.world.WorldXViewer;
@@ -111,57 +110,15 @@ public class TaskXViewer extends WorldXViewer {
       return true;
    }
 
-   Action editTaskTitleAction, editTaskStatusAction, editTaskHoursSpentAction;
+   Action editStatusAction, editAssigneeAction;
    Action addNewTaskAction, deleteTasksAction;
 
    @Override
    public void createMenuActions() {
       super.createMenuActions();
 
-      editTaskTitleAction = new Action("Edit Task Title", IAction.AS_PUSH_BUTTON) {
-         @Override
-         public void run() {
-            try {
-               boolean success =
-                  PromptChangeUtil.promptChangeAttribute(getSelectedTaskArtifact(), AtsAttributeTypes.Title, false,
-                     false);
-               if (success) {
-                  editor.onDirtied();
-                  update(getSelectedTaskArtifacts().toArray(), null);
-               }
-            } catch (Exception ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         }
-      };
-
-      editTaskStatusAction = new Action("Edit Task Status", IAction.AS_PUSH_BUTTON) {
-         @Override
-         public void run() {
-            try {
-               if (SMAPromptChangeStatus.promptChangeStatus(getSelectedTaskArtifacts(), false)) {
-                  editor.onDirtied();
-                  update(getSelectedTaskArtifacts().toArray(), null);
-               }
-            } catch (Exception ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         }
-      };
-
-      editTaskHoursSpentAction = new Action("Edit Task Hours Spent", IAction.AS_PUSH_BUTTON) {
-         @Override
-         public void run() {
-            try {
-               if (SMAPromptChangeHoursSpent.promptChangeStatus(getSelectedTaskArtifacts(), false)) {
-                  editor.onDirtied();
-                  update(getSelectedTaskArtifacts().toArray(), null);
-               }
-            } catch (Exception ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         }
-      };
+      editStatusAction = new EditStatusAction(this, this);
+      editAssigneeAction = new EditAssigneeAction(this, this);
 
       addNewTaskAction = new Action("New Task", IAction.AS_PUSH_BUTTON) {
          @Override
@@ -195,19 +152,11 @@ public class TaskXViewer extends WorldXViewer {
       MenuManager editMenuManager = updateEditMenu(mm);
       mm.insertBefore(MENU_GROUP_ATS_WORLD_EDIT, editMenuManager);
 
-      // EDIT MENU BLOCK
-      mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_EDIT, editTaskTitleAction);
-      try {
-         editTaskTitleAction.setEnabled(isTasksEditable() && getSelectedArtifacts().size() == 1 && isSelectedTaskArtifactsAreInWork());
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-      }
+      mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_EDIT, editStatusAction);
+      editStatusAction.setEnabled(isTasksEditable() && getSelectedArtifacts().size() > 0);
 
-      mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_EDIT, editTaskStatusAction);
-      editTaskStatusAction.setEnabled(isTasksEditable() && getSelectedArtifacts().size() > 0);
-
-      mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_EDIT, editTaskHoursSpentAction);
-      editTaskHoursSpentAction.setEnabled(isTasksEditable() && getSelectedArtifacts().size() > 0);
+      mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_EDIT, editAssigneeAction);
+      editAssigneeAction.setEnabled(isTasksEditable() && getSelectedArtifacts().size() > 0);
 
    }
 
