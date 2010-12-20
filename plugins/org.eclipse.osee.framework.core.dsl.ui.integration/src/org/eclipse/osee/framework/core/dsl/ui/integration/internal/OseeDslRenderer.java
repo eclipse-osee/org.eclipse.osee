@@ -21,6 +21,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osee.framework.core.dsl.integration.util.OseeDslSegmentParser;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -39,7 +40,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.program.Program;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 
@@ -120,9 +120,7 @@ public final class OseeDslRenderer extends FileSystemRenderer {
                      IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
                      IDE.openEditor(page, file);
                   }
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-               } catch (PartInitException ex) {
+               } catch (CoreException ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }
             }
