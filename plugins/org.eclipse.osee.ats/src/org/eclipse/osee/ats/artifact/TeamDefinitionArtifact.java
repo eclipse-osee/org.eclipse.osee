@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.commit.ICommitConfigArtifact;
 import org.eclipse.osee.ats.workdef.RuleDefinition;
+import org.eclipse.osee.ats.workdef.WorkDefinition;
 import org.eclipse.osee.ats.workdef.WorkDefinitionFactory;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions.RuleWorkItemId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -285,6 +286,14 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
       if (teamDef == null) {
          return null;
       }
+      Artifact workFlowArt = getWorkflowArtifact(teamDef);
+      if (workFlowArt == null) {
+         return null;
+      }
+      return (WorkFlowDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(workFlowArt.getName());
+   }
+
+   public Artifact getWorkflowArtifact(Artifact teamDef) throws OseeCoreException {
       Artifact workFlowArt = null;
       for (Artifact artifact : teamDef.getRelatedArtifacts(CoreRelationTypes.WorkItem__Child, Artifact.class)) {
          if (artifact.isOfType(CoreArtifactTypes.WorkFlowDefinition)) {
@@ -297,10 +306,19 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
             workFlowArt = artifact;
          }
       }
+      return workFlowArt;
+   }
+
+   public WorkDefinition getWorkDefinition() throws OseeCoreException {
+      Artifact teamDef = getTeamDefinitionHoldingWorkFlow();
+      if (teamDef == null) {
+         return null;
+      }
+      Artifact workFlowArt = getWorkflowArtifact(teamDef);
       if (workFlowArt == null) {
          return null;
       }
-      return (WorkFlowDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(workFlowArt.getName());
+      return WorkDefinitionFactory.getWorkDefinition(workFlowArt.getName());
    }
 
    /**

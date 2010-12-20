@@ -21,6 +21,7 @@ public class StateDefinition extends AbstractWorkDefItem implements IWorkPage {
    private final List<StateDefinition> toStates = new ArrayList<StateDefinition>(5);
    private final List<StateDefinition> defaultToStates = new ArrayList<StateDefinition>(5);
    private final List<StateDefinition> returnStates = new ArrayList<StateDefinition>(5);
+   private final List<StateDefinition> overrideAttributeValidationStates = new ArrayList<StateDefinition>(5);
    private WorkDefinition workDefinition;
    protected TaskResolutionOptionRule taskResolutionOptions;
 
@@ -139,6 +140,13 @@ public class StateDefinition extends AbstractWorkDefItem implements IWorkPage {
     * Returns fully qualified name of <work definition name>.<this state name
     */
    public String getFullName() {
-      return workDefinition.getName() + "." + getName();
+      if (workDefinition != null) {
+         return workDefinition.getName() + "." + getName();
+      }
+      return getName();
+   }
+
+   public List<StateDefinition> getOverrideAttributeValidationStates() {
+      return overrideAttributeValidationStates;
    }
 }

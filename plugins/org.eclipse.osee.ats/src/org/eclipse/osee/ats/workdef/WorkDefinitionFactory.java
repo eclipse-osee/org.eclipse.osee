@@ -98,7 +98,7 @@ public class WorkDefinitionFactory {
          WorkDefinition workDef = new WorkDefinition(workFlowDef.getId());
          for (WorkPageDefinition workPage : workFlowDef.getPages()) {
             // not using ids anymore for states, widgets or rules
-            StateDefinition stateDef = getOrCreateState(workDef, workPage.getPageName());
+            StateDefinition stateDef = workDef.getOrCreateState(workPage.getPageName());
             workDef.getStates().add(stateDef);
             stateDef.setOrdinal(workPage.getWorkPageOrdinal());
             if (workPage.getPageName().equals(startWorkPageName)) {
@@ -111,16 +111,16 @@ public class WorkDefinitionFactory {
             }
             stateDef.setWorkPageType(workPage.getWorkPageType());
             for (WorkPageDefinition returnPageDefinition : workFlowDef.getReturnPages(workPage)) {
-               StateDefinition returnStateDef = getOrCreateState(workDef, returnPageDefinition.getPageName());
+               StateDefinition returnStateDef = workDef.getOrCreateState(returnPageDefinition.getPageName());
                stateDef.getReturnStates().add(returnStateDef);
             }
             for (WorkPageDefinition toPageDefinition : workFlowDef.getToPages(workPage)) {
-               StateDefinition toStateDef = getOrCreateState(workDef, toPageDefinition.getPageName());
+               StateDefinition toStateDef = workDef.getOrCreateState(toPageDefinition.getPageName());
                stateDef.getToStates().add(toStateDef);
             }
             WorkPageDefinition defaultToPageDefinition = workFlowDef.getDefaultToPage(workPage);
             if (defaultToPageDefinition != null) {
-               StateDefinition defaultToStateDef = getOrCreateState(workDef, defaultToPageDefinition.getPageName());
+               StateDefinition defaultToStateDef = workDef.getOrCreateState(defaultToPageDefinition.getPageName());
                stateDef.getDefaultToStates().add(defaultToStateDef);
             }
 
@@ -196,15 +196,6 @@ public class WorkDefinitionFactory {
       return null;
    }
 
-   private static StateDefinition getOrCreateState(WorkDefinition workDef, String name) {
-      StateDefinition stateDef = workDef.getStateByName(name);
-      if (stateDef == null) {
-         stateDef = new StateDefinition(name);
-         workDef.getStates().add(stateDef);
-      }
-      return stateDef;
-   }
-
    private static void copyKeyValuePair(AbstractWorkDefItem itemDef, WorkItemDefinition workItem) {
       for (Entry<String, String> entry : workItem.getWorkDataKeyValueMap().entrySet()) {
          itemDef.addWorkDataKeyValue(entry.getKey(), entry.getValue());
@@ -269,7 +260,7 @@ public class WorkDefinitionFactory {
          // Otherwise, use workflow defined by attribute of WorkflowDefinition
          // Note: This is new.  Old TeamDefs got workflow off relation
          if (artifact instanceof TeamWorkFlowArtifact) {
-            return getWorkDefinitionFromArtifactsAttributeValue(((TeamWorkFlowArtifact) artifact).getTeamDefinition());
+            return ((TeamWorkFlowArtifact) artifact).getTeamDefinition().getWorkDefinition();
          }
          if (artifact instanceof GoalArtifact) {
             return getWorkDefinition(GoalWorkflowDefinition.ID);
