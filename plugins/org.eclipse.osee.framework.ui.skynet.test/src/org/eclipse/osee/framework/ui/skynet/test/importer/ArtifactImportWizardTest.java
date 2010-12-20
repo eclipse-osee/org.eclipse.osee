@@ -10,19 +10,25 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.test.importer;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
+import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -109,26 +115,41 @@ public final class ArtifactImportWizardTest {
    }
 
    private void buildAndRunCoreTest(String nameOfExcelImportFile) throws Exception {
+      File inputExcelFile = OseeData.getFile("artifact.import.wizard.test." + nameOfExcelImportFile);
+
       URL url = ArtifactImportWizardTest.class.getResource(nameOfExcelImportFile);
       Assert.assertNotNull(url);
-      URL fileURL = FileLocator.resolve(url);
-      Assert.assertNotNull(fileURL);
-      File inputExcelFile = new File(fileURL.toURI());
+
+      // Copy input file from jar file during build and test 
+      InputStream inputStream = null;
+      OutputStream outputStream = null;
+      try {
+         inputStream = new BufferedInputStream(url.openStream());
+         outputStream = new BufferedOutputStream(new FileOutputStream(inputExcelFile));
+         Lib.inputStreamToOutputStream(inputStream, outputStream);
+      } finally {
+         Lib.close(inputStream);
+         Lib.close(outputStream);
+      }
+
       Assert.assertTrue(inputExcelFile.exists());
+      try {
+         IArtifactImportResolver resolver =
+            MatchingStrategy.GUID.getResolver(CoreArtifactTypes.SystemRequirement, null, true, true);
 
-      IArtifactImportResolver resolver =
-         MatchingStrategy.GUID.getResolver(CoreArtifactTypes.SystemRequirement, null, true, true);
+         RoughArtifactCollector collector = new RoughArtifactCollector(new RoughArtifact(RoughArtifactKind.PRIMARY));
+         collector.reset();
 
-      RoughArtifactCollector collector = new RoughArtifactCollector(new RoughArtifact(RoughArtifactKind.PRIMARY));
-      collector.reset();
+         IOperation operation =
+            ArtifactImportOperationFactory.createArtifactAndRoughToRealOperation(inputExcelFile, myRootArtifact, null,
+               new ExcelArtifactExtractor(), resolver, collector, Arrays.asList(CoreArtifactTypes.SystemRequirement),
+               true, true, false);
+         Operations.executeWork(operation);
 
-      IOperation operation =
-         ArtifactImportOperationFactory.createArtifactAndRoughToRealOperation(inputExcelFile, myRootArtifact, null,
-            new ExcelArtifactExtractor(), resolver, collector, Arrays.asList(CoreArtifactTypes.SystemRequirement),
-            true, true, false);
-      Operations.executeWork(operation);
-
-      Assert.assertFalse(collector.getRoughArtifacts().size() == 0);
+         Assert.assertFalse(collector.getRoughArtifacts().size() == 0);
+      } finally {
+         inputExcelFile.delete();
+      }
    }
 
    @Before
