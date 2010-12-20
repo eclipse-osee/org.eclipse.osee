@@ -63,7 +63,7 @@ public class ArtifactFileWatcherListener implements IFileWatcherListener {
    }
 
    @Override
-   public void handleExcpetion(Exception ex) {
+   public void handleException(Exception ex) {
       OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
    }
 }

@@ -19,5 +19,5 @@ public interface IFileWatcherListener {
 
    public void filesModified(Collection<FileChangeEvent> fileChangeEvents);
 
-   public void handleExcpetion(Exception ex);
+   public void handleException(Exception ex);
 }

@@ -62,7 +62,7 @@ final class FileWatcherTimerTask extends TimerTask {
          }
       } catch (Exception ex) {
          for (IFileWatcherListener listener : listeners) {
-            listener.handleExcpetion(ex);
+            listener.handleException(ex);
          }
       }
    }
