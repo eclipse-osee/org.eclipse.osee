@@ -149,4 +149,35 @@ public class StateDefinition extends AbstractWorkDefItem implements IWorkPage {
    public List<StateDefinition> getOverrideAttributeValidationStates() {
       return overrideAttributeValidationStates;
    }
+
+   @Override
+   public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((getFullName() == null) ? 0 : getFullName().hashCode());
+      return result;
+   }
+
+   @Override
+   public boolean equals(Object obj) {
+      if (this == obj) {
+         return true;
+      }
+      if (obj == null) {
+         return false;
+      }
+      if (getClass() != obj.getClass()) {
+         return false;
+      }
+      StateDefinition other = (StateDefinition) obj;
+      if (getFullName() == null) {
+         if (other.getFullName() != null) {
+            return false;
+         }
+      } else if (!getFullName().equals(other.getFullName())) {
+         return false;
+      }
+      return true;
+   }
+
 }

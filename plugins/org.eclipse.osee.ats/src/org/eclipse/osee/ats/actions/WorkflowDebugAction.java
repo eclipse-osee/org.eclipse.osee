@@ -66,7 +66,7 @@ public class WorkflowDebugAction extends Action {
       // Display workflows
       rd.log(AHTML.newline() + AHTML.bold("WorkDefinition id: " + sma.getWorkDefinition().getName()) + AHTML.newline());
       for (RuleDefinition ruleDefinition : sma.getWorkDefinition().getRules()) {
-         rd.log(AHTML.addSpace(6) + "Rule: " + ruleDefinition.toString());
+         rd.log(AHTML.addSpace(6) + AHTML.color("green", "Rule: ") + ruleDefinition.toString());
       }
 
       // Display pages
@@ -74,7 +74,14 @@ public class WorkflowDebugAction extends Action {
          rd.log(AHTML.bold(state.toString()));
          processStateItems(state.getStateItems(), rd, 1);
          for (RuleDefinition rule : state.getRules()) {
-            rd.log(AHTML.addSpace(6) + "Rule: " + rule.toString());
+            rd.log(AHTML.addSpace(6) + AHTML.color("cyan", "Rule: ") + rule.toString());
+         }
+         for (StateDefinition toState : state.getToStates()) {
+            boolean isDefault = state.getDefaultToStates().contains(toState);
+            rd.log(AHTML.addSpace(6) + AHTML.color("blue", "Transition ToState: ") + toState.getPageName() + (isDefault ? " (Default)" : ""));
+         }
+         for (StateDefinition toState : state.getReturnStates()) {
+            rd.log(AHTML.addSpace(6) + AHTML.color("blue", "Transition ReturnState: ") + toState.getReturnStates());
          }
       }
       return rd;
@@ -83,7 +90,7 @@ public class WorkflowDebugAction extends Action {
    private void processStateItems(List<StateItem> stateItems, XResultData rd, int level) {
       for (StateItem stateItem : stateItems) {
          if (stateItem instanceof WidgetDefinition) {
-            rd.log(AHTML.addSpace(6 * level) + "Widget: " + stateItem.toString());
+            rd.log(AHTML.addSpace(6 * level) + AHTML.color("green", "Widget: ") + stateItem.toString());
          } else if (stateItem instanceof CompositeStateItem) {
             rd.log(AHTML.addSpace(6 * level) + AHTML.bold("Composite - numColumns = " + ((CompositeStateItem) stateItem).getNumColumns()));
             processStateItems(((CompositeStateItem) stateItem).getStateItems(), rd, level + 1);

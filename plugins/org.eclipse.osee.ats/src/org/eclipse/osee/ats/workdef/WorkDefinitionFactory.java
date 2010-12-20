@@ -110,6 +110,7 @@ public class WorkDefinitionFactory {
                stateDef.setStartState(true);
             }
             stateDef.setWorkPageType(workPage.getWorkPageType());
+
             for (WorkPageDefinition returnPageDefinition : workFlowDef.getReturnPages(workPage)) {
                StateDefinition returnStateDef = workDef.getOrCreateState(returnPageDefinition.getPageName());
                stateDef.getReturnStates().add(returnStateDef);

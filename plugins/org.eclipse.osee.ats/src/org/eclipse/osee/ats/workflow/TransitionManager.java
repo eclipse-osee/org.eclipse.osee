@@ -63,13 +63,13 @@ public class TransitionManager {
       final StateDefinition fromStateDefinition = aba.getStateDefinition();
       final StateDefinition toStateDefinition = aba.getStateDefinitionByName(toState.getPageName());
       if (toStateDefinition == null) {
-         return new Result("Invalid toState \"" + toState + "\"");
+         return new Result("Invalid toState \"" + toState.getPageName() + "\"");
       }
 
       // Validate transition from fromPage to toPage
       if (!overrideTransitionCheck && !fromStateDefinition.getToStates().contains(toStateDefinition)) {
          String errStr =
-            "Not configured to transition to \"" + toState + "\" from \"" + fromStateDefinition.getPageName() + "\"";
+            "Not configured to transition to \"" + toState.getPageName() + "\" from \"" + fromStateDefinition.getPageName() + "\"";
          OseeLog.log(AtsPlugin.class, Level.SEVERE, errStr);
          return new Result(errStr);
       }
