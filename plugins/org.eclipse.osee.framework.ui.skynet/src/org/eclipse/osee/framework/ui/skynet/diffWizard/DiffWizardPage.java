@@ -79,8 +79,6 @@ public class DiffWizardPage extends WizardPage {
    private final Listener listener = new Listener() {
       @Override
       public void handleEvent(Event event) {
-         // ...
-
          try {
             if (event.widget == editButton) {
                RendererManager.openInJob(conflict.getArtifact(), PresentationType.SPECIALIZED_EDIT);
@@ -109,18 +107,12 @@ public class DiffWizardPage extends WizardPage {
                   "Source_Destination_Diff_For_" + conflict.getArtifact().getSafeName() + new Date().toString().replaceAll(
                      ":", ";") + ".xml");
             } else if (event.widget == sourceMergeDiffButton) {
-               //               if (conflict.wordMarkupPresent()) {
-               //                  throw new OseeCoreException(AttributeConflict.DIFF_MERGE_MARKUP);
-               //               }
                MergeUtility.showCompareFile(
                   conflict.getSourceArtifact(),
                   conflict.getArtifact(),
                   "Source_Merge_Diff_For_" + conflict.getArtifact().getSafeName() + new Date().toString().replaceAll(
                      ":", ";") + ".xml");
             } else if (event.widget == destMergeDiffButton) {
-               //               if (conflict.wordMarkupPresent()) {
-               //                  throw new OseeCoreException(AttributeConflict.DIFF_MERGE_MARKUP);
-               //               }
                MergeUtility.showCompareFile(
                   conflict.getDestArtifact(),
                   conflict.getArtifact(),

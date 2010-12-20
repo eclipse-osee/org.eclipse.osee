@@ -44,11 +44,6 @@ public class OtherEditorHandler extends AbstractEditorHandler {
 
             NativeRenderer renderer = new NativeRenderer();
 
-            //            String dummyName = renderer.getAssociatedExtension(artifacts.iterator().next());
-            //            IEditorDescriptor[] editorDescriptors = getEditorDescriptorFilters(dummyName);
-            //            if (editorDescriptors != null) {
-            //               //               dialog.setEditorsToFilter(editorDescriptors);
-            //            }
             if (dialog.open() == Window.OK) {
                IEditorDescriptor editor = dialog.getSelectedEditor();
                if (editor != null) {
