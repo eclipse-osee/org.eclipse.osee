@@ -243,10 +243,8 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       stateToWeight = null;
    }
 
-   private final boolean forceReloadDefinition = true;
-
    public WorkDefinition getWorkDefinition() {
-      if (forceReloadDefinition || workDefinition == null) {
+      if (AtsUtil.isForceReloadWorkDefinitions() || workDefinition == null) {
          try {
             workDefinition = WorkDefinitionFactory.getWorkDefinition(this);
          } catch (Exception ex) {

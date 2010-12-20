@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workflow.flow.DecisionWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.flow.GoalWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.flow.PeerToPeerWorkflowDefinition;
@@ -43,6 +44,7 @@ public class WorkDefinitionFactory {
 
    private static final Map<String, RuleDefinition> idToRule = new HashMap<String, RuleDefinition>();
    private static final Set<WorkDefinition> workDefinitions = new HashSet<WorkDefinition>();
+   private static final Map<String, WorkDefinition> idToWorkDefintion = new HashMap<String, WorkDefinition>();
 
    public static RuleDefinition getRuleById(String id) {
       ensureRulesLoaded();
@@ -77,25 +79,29 @@ public class WorkDefinitionFactory {
    }
 
    public static WorkDefinition getWorkDefinition(String id) throws OseeCoreException {
-      WorkDefinition workDef = null;
-      for (IAtsWorkDefinitionProvider provider : AtsWorkDefinitionProviders.getAtsTeamWorkflowExtensions()) {
-         workDef = provider.getWorkFlowDefinition(id);
-         if (workDef != null) {
-            break;
+      if (!idToWorkDefintion.containsKey(id) || AtsUtil.isForceReloadWorkDefinitions()) {
+         WorkDefinition workDef = null;
+         for (IAtsWorkDefinitionProvider provider : AtsWorkDefinitionProviders.getAtsTeamWorkflowExtensions()) {
+            workDef = provider.getWorkFlowDefinition(id);
+            if (workDef != null) {
+               break;
+            }
          }
+         if (workDef == null) {
+            workDef =
+               translateToWorkDefinition((WorkFlowDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(id));
+         }
+         workDefinitions.add(workDef);
+         idToWorkDefintion.put(id, workDef);
       }
-      if (workDef == null) {
-         workDef = translateToWorkDefinition((WorkFlowDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(id));
-      }
-      workDefinitions.add(workDef);
-      return workDef;
+      return idToWorkDefintion.get(id);
    }
 
    private static WorkDefinition translateToWorkDefinition(WorkFlowDefinition workFlowDef) {
       ensureRulesLoaded();
       try {
          String startWorkPageName = workFlowDef.getStartPageId();
-         WorkDefinition workDef = new WorkDefinition(workFlowDef.getId());
+         WorkDefinition workDef = new WorkDefinition(workFlowDef.getId(), "1.0");
          for (WorkPageDefinition workPage : workFlowDef.getPages()) {
             // not using ids anymore for states, widgets or rules
             StateDefinition stateDef = workDef.getOrCreateState(workPage.getPageName());

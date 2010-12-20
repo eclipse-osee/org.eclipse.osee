@@ -24,7 +24,7 @@ public class AtsLogWorkPage extends StateXWidgetPage {
    public static class EmptyWorkFlowDefinition extends WorkDefinition {
 
       public EmptyWorkFlowDefinition(String name) {
-         super(name);
+         super(name, "1.0");
       }
    }
 

@@ -78,7 +78,7 @@ public class AtsWorkflowConfigRenderer extends DefaultArtifactRenderer {
          public void run() {
             for (Artifact artifact : artifacts) {
                try {
-                  IEditorInput input = new AtsWorkflowConfigEditorInput(new WorkDefinition("This"));
+                  IEditorInput input = new AtsWorkflowConfigEditorInput(new WorkDefinition("This", "1.0"));
                   AWorkbench.getActivePage().openEditor(input, AtsWorkflowConfigEditor.EDITOR_ID);
                } catch (CoreException ex) {
                   OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);

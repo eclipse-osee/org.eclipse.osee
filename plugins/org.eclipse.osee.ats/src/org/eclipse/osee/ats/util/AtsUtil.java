@@ -497,4 +497,8 @@ public final class AtsUtil {
    public static Set<Artifact> getAssigned(String userId, Class<?> clazz) throws OseeCoreException {
       return StateManager.getAssigned(userId, clazz);
    }
+
+   public static boolean isForceReloadWorkDefinitions() {
+      return Boolean.valueOf(System.getProperty("ats.forceReloadWorkDefinitions"));
+   }
 }

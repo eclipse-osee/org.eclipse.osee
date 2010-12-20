@@ -14,9 +14,11 @@ public class WorkDefinition extends AbstractWorkDefItem {
 
    private final List<StateDefinition> states = new ArrayList<StateDefinition>(5);
    private final List<RuleDefinition> rules = new ArrayList<RuleDefinition>(5);
+   private String version;
 
-   public WorkDefinition(String id) {
+   public WorkDefinition(String id, String version) {
       super(id);
+      this.version = version;
    }
 
    public List<StateDefinition> getStates() {
@@ -159,6 +161,14 @@ public class WorkDefinition extends AbstractWorkDefItem {
          getStates().add(stateDef);
       }
       return stateDef;
+   }
+
+   public String getVersion() {
+      return version;
+   }
+
+   public void setVersion(String version) {
+      this.version = version;
    }
 
 }
