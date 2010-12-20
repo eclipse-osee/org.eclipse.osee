@@ -109,4 +109,9 @@ public class VariableMap {
    public Object getValue(String variableName) {
       return variableMap.get(variableName);
    }
+
+   @Override
+   public String toString() {
+      return variableMap.toString();
+   }
 }
