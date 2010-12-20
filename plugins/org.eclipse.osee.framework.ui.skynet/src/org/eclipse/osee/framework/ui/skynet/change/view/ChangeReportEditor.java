@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.listener.ITransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
-import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionChange;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionEvent;
@@ -180,10 +179,14 @@ public class ChangeReportEditor extends FormEditor implements IChangeReportView 
          }
          for (Branch branch : branches) {
             if (branch != null && branch.getGuid().equals(branchEvent.getBranchGuid())) {
-               if (branchEvent.getEventType() == BranchEventType.Deleted && branchEvent.getEventType() == BranchEventType.Purged) {
-                  close(false);
-               } else if (branchEvent.getEventType() == BranchEventType.Committed) {
-                  recomputeChangeReport();
+               switch (branchEvent.getEventType()) {
+                  case Deleted:
+                  case Purged:
+                  case Committed:
+                     close(false);
+                     break;
+                  default:
+                     break;
                }
             }
          }
