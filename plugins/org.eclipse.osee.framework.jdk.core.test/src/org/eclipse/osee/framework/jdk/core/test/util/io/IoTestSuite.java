@@ -8,10 +8,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.jdk.core.test.util;
+package org.eclipse.osee.framework.jdk.core.test.util.io;
 
-import org.eclipse.osee.framework.jdk.core.test.util.io.IoTestSuite;
-import org.eclipse.osee.framework.jdk.core.test.util.xml.XmlTestSuite;
+import org.eclipse.osee.framework.jdk.core.test.util.io.xml.IoXmlTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -20,15 +19,11 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-   IoTestSuite.class,
-   XmlTestSuite.class,
-   CollectionsTest.class,
-   CompareTest.class,
-   GUIDTest.class,
-   HashCollectionTest.class,
-   HumanReadableIdTest.class,
-   ReservedCharactersTest.class,
-   StringsTest.class,})
-public class JdkCoreUtilTestSuite {
+//@formatter:off
+   IoXmlTestSuite.class,
+   FileWatcherTest.class
+//@formatter:on
+})
+public class IoTestSuite {
    // Test Suite Class
 }
