@@ -138,9 +138,6 @@ public class MergeUtility {
     * This is not in the AttributeConflict because it relies on the renderer that is in not in the skynet core package.
     */
    public static void showCompareFile(Artifact art1, Artifact art2, String fileName) throws Exception {
-      if (art1 == null || art2 == null) {
-         return; // TODO: this if statement should probably be removed, regardless silently returning is no good.
-      }
       RendererManager.diffInJob(new ArtifactDelta(art1, art2), new VariableMap(IRenderer.FILE_NAME_OPTION, fileName));
    }
 
