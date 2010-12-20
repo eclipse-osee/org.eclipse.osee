@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
+import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.widgets.Item;
 
 /**
@@ -25,11 +26,11 @@ import org.eclipse.swt.widgets.Item;
  */
 public class RelationCellModifier implements ICellModifier {
    private final TreeViewer treeViewer;
+   private final IDirtiableEditor editor;
 
-   public RelationCellModifier(TreeViewer treeViewer) {
-      super();
+   public RelationCellModifier(TreeViewer treeViewer, IDirtiableEditor editor) {
       this.treeViewer = treeViewer;
-      //      pList.addPermission(Permission.PermPermissionEnum.EDITREQUIREMENT);
+      this.editor = editor;
    }
 
    @Override
@@ -60,6 +61,7 @@ public class RelationCellModifier implements ICellModifier {
          link.setRationale(value.toString());
       }
       treeViewer.update(element, null);
+      editor.onDirtied();
    }
 
    private RelationLink getRelationLink(WrapperForRelationLink relLink) {

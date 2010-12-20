@@ -121,8 +121,8 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
    }
 
    public void createPartControl() {
-      this.setLayout(new GridLayout());
-      this.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+      setLayout(new GridLayout());
+      setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
       createTreeArea(this);
       createColumns();
@@ -142,7 +142,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
       CellEditor[] editors = new CellEditor[columnNames.length];
       editors[1] = new TextCellEditor(tree);
       treeViewer.setCellEditors(editors);
-      treeViewer.setCellModifier(new RelationCellModifier(treeViewer));
+      treeViewer.setCellModifier(new RelationCellModifier(treeViewer, editor));
       treeViewer.setColumnProperties(columnNames);
       treeViewer.setContentProvider(new RelationContentProvider());
       treeViewer.setLabelProvider(relationLabelProvider);
@@ -150,7 +150,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
       treeViewer.setInput(artifact);
 
       treeViewer.addDoubleClickListener(new DoubleClickListener());
-      treeViewer.getTree().addMouseListener(new MouseListener() {
+      tree.addMouseListener(new MouseListener() {
 
          @Override
          public void mouseUp(MouseEvent e) {
@@ -514,8 +514,8 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
       Collection<MenuItem> artEnabledOnlyitems;
 
       public NeedSelectedArtifactListener() {
-         this.accessControlitems = new LinkedList<MenuItem>();
-         this.artEnabledOnlyitems = new LinkedList<MenuItem>();
+         accessControlitems = new LinkedList<MenuItem>();
+         artEnabledOnlyitems = new LinkedList<MenuItem>();
       }
 
       public void addArtifactEnabled(MenuItem item) {
@@ -568,7 +568,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
       while (iter.hasNext()) {
          treeViewer.expandToLevel(iter.next(), AbstractTreeViewer.ALL_LEVELS);
       }
-      this.packColumnData();
+      packColumnData();
    }
 
    /**
