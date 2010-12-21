@@ -922,7 +922,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return date;
    }
 
-   public User internalGetCancelledBy() throws OseeCoreException {
+   public User getCancelledBy() throws OseeCoreException {
       String userId = getSoleAttributeValue(AtsAttributeTypes.CancelledBy, null);
       if (!Strings.isValid(userId)) {
          // Keep this for backward compatibility

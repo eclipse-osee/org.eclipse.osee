@@ -416,7 +416,7 @@ public class StateManager {
 
    public static Collection<User> getImplementersByState(AbstractWorkflowArtifact workflow, IWorkPage state) throws OseeCoreException {
       if (workflow.isCancelled()) {
-         return Arrays.asList(workflow.internalGetCancelledBy());
+         return Arrays.asList(workflow.getCancelledBy());
       }
       Collection<User> users = new HashSet<User>(workflow.getStateMgr().getAssignees(state));
       User user = workflow.getCompletedBy();
