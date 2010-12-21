@@ -43,6 +43,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ISelectedArtifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSideSorter;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
+import org.eclipse.osee.framework.ui.skynet.RelationOrderContributionItem.SelectionListener;
 import org.eclipse.osee.framework.ui.skynet.action.RevealInExplorerAction;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.relation.explorer.RelationExplorerWindow;
@@ -52,6 +53,7 @@ import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetEvent;
@@ -63,11 +65,9 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
@@ -88,11 +88,12 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
    public static final String VIEW_ID = "osee.define.relation.RelationExplorer";
    public static final String[] columnNames = new String[] {" ", "Rationale"};
    public static final Integer[] columnLengths = new Integer[] {500, 50};
+
    // the index of column order
    private static int COLUMN_ORDER = 1;
 
-   private MenuItem openMenuItem, wordPreviewItem, editMenuItem, viewRelationTreeItem, orderRelationMenuItem,
-      deleteRelationMenuItem, massEditMenuItem, deleteArtifactMenuItem, revealInArtifactExporerMenuItem;
+   private MenuItem openMenuItem, wordPreviewItem, editMenuItem, viewRelationTreeItem, deleteRelationMenuItem,
+      massEditMenuItem, deleteArtifactMenuItem, revealInArtifactExporerMenuItem;
    private final Artifact artifact;
    private final RelationLabelProvider relationLabelProvider;
    private final ToolBar toolBar;
@@ -216,7 +217,25 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
       new MenuItem(popupMenu, SWT.SEPARATOR);
       createViewRelationTreeMenuItem(popupMenu);
       new MenuItem(popupMenu, SWT.SEPARATOR);
-      createOrderRelationTreeMenuItem(popupMenu);
+
+      if (Widgets.isAccessible(popupMenu)) {
+         RelationOrderContributionItem contributionItem = new RelationOrderContributionItem(treeViewer);
+         contributionItem.addListener(new SelectionListener() {
+
+            @Override
+            public void onSelected(RelationTypeSideSorter sorter, IRelationSorterId wasId, IRelationSorterId isId) {
+               editor.onDirtied();
+               Object parent = ((ITreeContentProvider) treeViewer.getContentProvider()).getParent(sorter);
+               if (parent != null) {
+                  treeViewer.refresh(parent);
+               } else {
+                  treeViewer.refresh();
+               }
+            }
+         });
+         contributionItem.fill(popupMenu, 0);
+      }
+
       new MenuItem(popupMenu, SWT.SEPARATOR);
       createDeleteRelationMenuItem(popupMenu);
       new MenuItem(popupMenu, SWT.SEPARATOR);
@@ -234,85 +253,6 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
       @Override
       public void doubleClick(DoubleClickEvent event) {
          openViewer((IStructuredSelection) event.getSelection());
-      }
-   }
-
-   private void createOrderRelationTreeMenuItem(final Menu parentMenu) {
-
-      orderRelationMenuItem = new MenuItem(parentMenu, SWT.CASCADE);
-      orderRelationMenuItem.setText("&Order Relations");
-      needSelectedArtifactListener.add(orderRelationMenuItem);
-
-      Menu subMenu = new Menu(parentMenu);
-      orderRelationMenuItem.setMenu(subMenu);
-
-      List<IRelationSorterId> orderTypes = RelationManager.getRelationOrderTypes();
-      for (IRelationSorterId id : orderTypes) {
-         MenuItem idMenu = new MenuItem(subMenu, SWT.CASCADE | SWT.CHECK);
-         idMenu.setText(id.getName());
-         idMenu.addSelectionListener(new SelectionId(id));
-      }
-
-      parentMenu.addListener(SWT.Show, new Listener() {
-
-         @Override
-         public void handleEvent(Event event) {
-            IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
-            Object[] objects = selection.toArray();
-            if (objects.length == 1 && objects[0] instanceof RelationTypeSideSorter) {
-               orderRelationMenuItem.setEnabled(true);
-               try {
-                  checkCurrentOrderStrategy(orderRelationMenuItem.getMenu(), (RelationTypeSideSorter) objects[0]);
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-               }
-            } else {
-               orderRelationMenuItem.setEnabled(false);
-            }
-         }
-
-      });
-      orderRelationMenuItem.setEnabled(true);
-   }
-
-   private void checkCurrentOrderStrategy(Menu menu, RelationTypeSideSorter rts) throws OseeCoreException {
-      String relationOrderName = rts.getSorterName();
-
-      for (MenuItem item : menu.getItems()) {
-         String itemName = item.getText();
-         if (itemName.equals(relationOrderName)) {
-            item.setSelection(true);
-         } else {
-            item.setSelection(false);
-         }
-      }
-   }
-
-   private class SelectionId implements SelectionListener {
-
-      private final IRelationSorterId id;
-
-      SelectionId(IRelationSorterId id) {
-         this.id = id;
-      }
-
-      @Override
-      public void widgetDefaultSelected(SelectionEvent e) {
-         // do nothing
-      }
-
-      @Override
-      public void widgetSelected(SelectionEvent e) {
-         IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
-         Object[] objects = selection.toArray();
-         if (objects.length == 1 && objects[0] instanceof RelationTypeSideSorter) {
-            RelationTypeSideSorter typeSide = (RelationTypeSideSorter) objects[0];
-            try {
-               typeSide.getArtifact().setRelationOrder(typeSide, id);
-            } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-            }
-         }
       }
    }
 
