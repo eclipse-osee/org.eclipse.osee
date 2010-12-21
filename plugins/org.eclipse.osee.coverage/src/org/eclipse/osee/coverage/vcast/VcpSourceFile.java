@@ -26,7 +26,6 @@ public class VcpSourceFile {
 
    private final Map<SourceValue, String> sourceValues = new HashMap<SourceValue, String>(20);
    Pattern valuePattern = Pattern.compile("(.*?):(.*?)$");
-   private VcpSourceLineFile vcpSourceLineFile = null;
    private VcpSourceLisFile vcpSourceLisFile = null;
    private CoverageDataFile coverageDataFile = null;
    private final String vcastDirectory;
@@ -68,13 +67,6 @@ public class VcpSourceFile {
       } else {
          OseeLog.log(Activator.class, Level.SEVERE, String.format("Unhandled VcpSourceFile line [%s]", line));
       }
-   }
-
-   public VcpSourceLineFile getVcpSourceLineFile() throws OseeCoreException {
-      if (vcpSourceLineFile == null) {
-         vcpSourceLineFile = new VcpSourceLineFile(vcastDirectory, this);
-      }
-      return vcpSourceLineFile;
    }
 
    public VcpSourceLisFile getVcpSourceLisFile() throws OseeCoreException {
