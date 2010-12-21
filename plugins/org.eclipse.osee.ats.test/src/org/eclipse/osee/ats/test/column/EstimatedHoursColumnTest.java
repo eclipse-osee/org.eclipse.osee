@@ -23,7 +23,7 @@ import org.junit.BeforeClass;
 
 /**
  * @tests EstimatedHoursColumn
- * @author Donald G Dunne
+ * @author Donald G. Dunne
  */
 public class EstimatedHoursColumnTest {
 

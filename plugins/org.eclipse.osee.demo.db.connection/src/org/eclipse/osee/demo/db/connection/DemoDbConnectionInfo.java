@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.database.core.DatabaseInfoManager;
 import org.eclipse.osee.framework.database.core.IDbConnectionInformationContributor;
 
 /**
- * @author Andrew M Finkbeiner
+ * @author Andrew M. Finkbeiner
  */
 public class DemoDbConnectionInfo implements IDbConnectionInformationContributor {
 

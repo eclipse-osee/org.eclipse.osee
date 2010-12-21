@@ -34,7 +34,7 @@ import org.junit.BeforeClass;
 
 /**
  * @tests CancelledDateColumn
- * @author Donald G Dunne
+ * @author Donald G. Dunne
  */
 public class PeerToPeerReviewColumnsTest {
 

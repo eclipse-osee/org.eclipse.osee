@@ -23,7 +23,7 @@ import org.junit.BeforeClass;
 
 /**
  * @tests CompletedDateColumn
- * @author Donald G Dunne
+ * @author Donald G. Dunne
  */
 public class CompletedDateColumnTest {
 

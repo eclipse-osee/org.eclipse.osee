@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.junit.Ignore;
 
 /**
- * @author Andrew M Finkbeiner
+ * @author Andrew M. Finkbeiner
  */
 public class ArtifactQueryPerformanceTests {
 

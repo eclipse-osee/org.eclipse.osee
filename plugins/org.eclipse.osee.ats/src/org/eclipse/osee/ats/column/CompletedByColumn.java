@@ -48,11 +48,17 @@ public class CompletedByColumn extends XViewerAtsColumn implements IXViewerValue
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
          if (element instanceof AbstractWorkflowArtifact) {
-            return ((AbstractWorkflowArtifact) element).getCompletedBy().getName();
+            User user = ((AbstractWorkflowArtifact) element).getCompletedBy();
+            if (user != null) {
+               return user.getName();
+            }
          } else if (element instanceof ActionArtifact) {
             Set<User> users = new HashSet<User>();
             for (TeamWorkFlowArtifact team : ((ActionArtifact) element).getTeamWorkFlowArtifacts()) {
-               users.add(team.getCompletedBy());
+               User user = team.getCompletedBy();
+               if (user != null) {
+                  users.add(user);
+               }
             }
             return Artifacts.toString(";", users);
 

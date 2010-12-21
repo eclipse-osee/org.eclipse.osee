@@ -16,7 +16,7 @@ import org.eclipse.osee.support.test.util.DemoWorkType;
 
 /**
  * @tests ActionableItemsColumn
- * @author Donald G Dunne
+ * @author Donald G. Dunne
  */
 public class ActionableItemsColumnTest {
 

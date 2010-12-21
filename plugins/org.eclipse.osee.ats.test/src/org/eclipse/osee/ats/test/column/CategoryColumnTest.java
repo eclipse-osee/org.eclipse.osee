@@ -20,7 +20,7 @@ import org.junit.BeforeClass;
 
 /**
  * @tests CategoryColumn
- * @author Donald G Dunne
+ * @author Donald G. Dunne
  */
 public class CategoryColumnTest {
 

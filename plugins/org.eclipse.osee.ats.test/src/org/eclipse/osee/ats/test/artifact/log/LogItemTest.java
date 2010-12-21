@@ -20,6 +20,9 @@ import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.junit.Test;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class LogItemTest {
 
    @Test

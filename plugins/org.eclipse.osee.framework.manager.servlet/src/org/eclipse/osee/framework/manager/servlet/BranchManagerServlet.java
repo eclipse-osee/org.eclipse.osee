@@ -37,7 +37,7 @@ import org.eclipse.osee.framework.manager.servlet.function.PurgeBranchFunction;
 import org.eclipse.osee.framework.manager.servlet.internal.Activator;
 
 /**
- * @author Andrew M Finkbeiner
+ * @author Andrew M. Finkbeiner
  */
 public class BranchManagerServlet extends SecureOseeHttpServlet {
 

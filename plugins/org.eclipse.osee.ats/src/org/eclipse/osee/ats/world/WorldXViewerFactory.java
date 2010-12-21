@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.column.CancelledDateColumn;
 import org.eclipse.osee.ats.column.CategoryColumn;
 import org.eclipse.osee.ats.column.ChangeTypeColumn;
 import org.eclipse.osee.ats.column.CompletedByColumn;
+import org.eclipse.osee.ats.column.CompletedCancelledByColumn;
 import org.eclipse.osee.ats.column.CompletedDateColumn;
 import org.eclipse.osee.ats.column.CreatedDateColumn;
 import org.eclipse.osee.ats.column.DaysInCurrentStateColumn;
@@ -200,6 +201,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       CompletedByColumn.getInstance(),
       CancelledDateColumn.getInstance(),
       CancelledByColumn.getInstance(),
+      CompletedCancelledByColumn.getInstance(),
       WorkDaysNeededColumn.getInstance(),
       PercentReworkColumn.getInstance(),
       BranchStatusColumn.getInstance(),

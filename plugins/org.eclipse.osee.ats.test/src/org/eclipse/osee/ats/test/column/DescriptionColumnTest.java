@@ -15,7 +15,7 @@ import org.eclipse.osee.support.test.util.DemoWorkType;
 
 /**
  * @tests DescriptionColumn
- * @author Donald G Dunne
+ * @author Donald G. Dunne
  */
 public class DescriptionColumnTest {
 

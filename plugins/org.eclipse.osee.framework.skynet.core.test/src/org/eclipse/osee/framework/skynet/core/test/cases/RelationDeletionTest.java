@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.junit.Before;
 
 /**
- * @author Andrew M Finkbeiner
+ * @author Andrew M. Finkbeiner
  */
 public class RelationDeletionTest {
 

@@ -21,7 +21,7 @@ import org.junit.BeforeClass;
 
 /**
  * @tests ChangeTypeColumn
- * @author Donald G Dunne
+ * @author Donald G. Dunne
  */
 public class ChangeTypeColumnTest {
 

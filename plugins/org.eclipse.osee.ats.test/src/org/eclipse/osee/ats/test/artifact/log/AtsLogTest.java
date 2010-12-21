@@ -20,6 +20,9 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.junit.Test;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class AtsLogTest {
 
    @Test

@@ -15,7 +15,7 @@ import org.eclipse.osee.support.test.util.DemoWorkType;
 
 /**
  * @tests TeamColumn
- * @author Donald G Dunne
+ * @author Donald G. Dunne
  */
 public class TeamColumnTest {
 

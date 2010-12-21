@@ -20,7 +20,7 @@ import org.eclipse.osee.support.test.util.DemoWorkType;
 /**
  * @tests ParentStateColumn
  * @tests ParentIdColumn
- * @author Donald G Dunne
+ * @author Donald G. Dunne
  */
 public class ParentStateAndIdColumnTest {
 

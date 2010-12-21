@@ -25,7 +25,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * @author Donald G Dunne
+ * @author Donald G. Dunne
  */
 public class StringsTest {
 

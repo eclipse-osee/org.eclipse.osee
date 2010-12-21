@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
 /**
  * A container for multiple shapes. This is the "root" of the model data structure.
  * 
- * @author Donald G Dunne
+ * @author Donald G. Dunne
  */
 public class WorkflowDiagram extends ModelElement {
 
