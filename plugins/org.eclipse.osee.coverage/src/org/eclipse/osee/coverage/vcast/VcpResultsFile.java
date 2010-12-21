@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.vcast;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -61,7 +62,7 @@ public class VcpResultsFile {
       }
    }
 
-   public VcpResultsDatFile getVcpResultsDatFile() throws OseeCoreException {
+   public VcpResultsDatFile getVcpResultsDatFile() throws OseeCoreException, IOException {
       if (vcpResultsDatFile == null) {
          vcpResultsDatFile = new VcpResultsDatFile(vcastDirectory, this);
       }

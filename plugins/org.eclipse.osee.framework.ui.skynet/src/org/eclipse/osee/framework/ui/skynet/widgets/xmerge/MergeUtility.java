@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
-import org.eclipse.osee.framework.jdk.core.util.AFile;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.AIFile;
@@ -323,7 +323,8 @@ public class MergeUtility {
    }
 
    protected static void changeAuthorinWord(String newAuthor, String fileName, int revisionNumber, String rsidNumber, String baselineRsid) throws Exception {
-      String fileValue = AFile.readFile(fileName);
+      File file = new File(fileName);
+      String fileValue = Lib.fileToString(file);
 
       Matcher m = authorPattern.matcher(fileValue);
       while (m.find()) {
@@ -352,10 +353,10 @@ public class MergeUtility {
          fileValue = fileValue.replace(rev, "wsp:rsidRDefault=\"" + baselineRsid + "\"");
       }
 
-      resetRsidIds(fileValue, rsidNumber, baselineRsid, fileName);
+      resetRsidIds(fileValue, rsidNumber, baselineRsid, file);
    }
 
-   private static void resetRsidIds(String fileValue, String rsidNumber, String baselineRsid, String fileName) throws IOException {
+   private static void resetRsidIds(String fileValue, String rsidNumber, String baselineRsid, File file) throws IOException {
       ChangeSet changeSet = new ChangeSet(fileValue);
       Matcher matcher = annotationTag.matcher(fileValue);
 
@@ -386,6 +387,6 @@ public class MergeUtility {
          changeSet.replace(m.start(), m.end() - 1, "<wsp:rsid wsp:val=\"" + baselineRsid + "\"/></wsp:rsids>");
       }
 
-      changeSet.applyChanges(new File(fileName));
+      changeSet.applyChanges(file);
    }
 }

@@ -11,12 +11,13 @@
 package org.eclipse.osee.coverage.vcast;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.coverage.vcast.VcpSourceFile.SourceValue;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.AFile;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
  * @author Donald G. Dunne
@@ -27,7 +28,7 @@ public class VCastVcp {
    List<VcpResultsFile> resultsFiles = new ArrayList<VcpResultsFile>();
    private final String vcastDirectory;
 
-   public VCastVcp(String vcastDirectory) throws OseeCoreException {
+   public VCastVcp(String vcastDirectory) throws OseeCoreException, IOException {
       this.vcastDirectory = vcastDirectory;
       File vCastVcpFile = getFile();
       if (!vCastVcpFile.exists()) {
@@ -35,7 +36,7 @@ public class VCastVcp {
       }
       VcpSourceFile vcpSourceFile = null;
       VcpResultsFile vcpResultsFile = null;
-      for (String line : AFile.readFile(vCastVcpFile).split("\n")) {
+      for (String line : Lib.fileToString(vCastVcpFile).split("\n")) {
          if (line.startsWith("SOURCE_FILE_BEGIN")) {
             vcpSourceFile = new VcpSourceFile(vcastDirectory);
          } else if (line.startsWith("SOURCE_FILE_END")) {

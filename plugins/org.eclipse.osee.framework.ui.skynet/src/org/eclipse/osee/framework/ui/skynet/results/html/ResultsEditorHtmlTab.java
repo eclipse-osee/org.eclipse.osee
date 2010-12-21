@@ -10,12 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.results.html;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
-import org.eclipse.osee.framework.jdk.core.util.AFile;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -152,7 +153,7 @@ public class ResultsEditorHtmlTab implements IResultsEditorHtmlTab, IBrowserActi
                if (!Strings.isValid(filename)) {
                   return;
                }
-               String html = AFile.readFile(filename);
+               String html = Lib.fileToString(new File(filename));
                if (html == null) {
                   throw new IllegalStateException("Can't load file");
                }

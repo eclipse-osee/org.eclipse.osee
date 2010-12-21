@@ -49,7 +49,7 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
-import org.eclipse.osee.framework.jdk.core.util.AFile;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.benchmark.Benchmark;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
@@ -681,10 +681,11 @@ public final class WatchView extends ViewPart implements IActionable, IMessageDi
 
             @Override
             protected IStatus run(IProgressMonitor monitor) {
-               String text = AFile.readFile(watchFile);
-               final String[] msgs = text.split("\n");
-               monitor.beginTask("loading watch elements", msgs.length + 10);
                try {
+                  String text = Lib.fileToString(watchFile);
+                  final String[] msgs = text.split("\n");
+                  monitor.beginTask("loading watch elements", msgs.length + 10);
+
                   if (msgs.length > 0) {
                      if (msgs[0].equals("version=2.0")) {
                         final Map<String, ArrayList<ElementPath>> pathsToAdd =

@@ -10,11 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.workflow.vue;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.AFile;
 
 /**
  * @author Donald G. Dunne
@@ -33,19 +31,10 @@ public class DiagramFactory {
       return instance;
    }
 
-   public Diagram getWorkFlowFromFilename(String workFlowFilename) throws OseeCoreException {
-      if (!objToAtsWorkFlowXml.containsKey(workFlowFilename)) {
-         String vueXml = AFile.readFile(new File(workFlowFilename));
-         objToAtsWorkFlowXml.put(workFlowFilename, vueXml);
-      }
-      return new VueDiagram(workFlowFilename, objToAtsWorkFlowXml.get(workFlowFilename)).getWorkflow();
-   }
-
    public Diagram getWorkFlowFromFileContents(String name, String vueXml) throws OseeCoreException {
       if (!objToAtsWorkFlowXml.containsKey(name)) {
          objToAtsWorkFlowXml.put(name, vueXml);
       }
       return new VueDiagram(name, objToAtsWorkFlowXml.get(name)).getWorkflow();
    }
-
 }

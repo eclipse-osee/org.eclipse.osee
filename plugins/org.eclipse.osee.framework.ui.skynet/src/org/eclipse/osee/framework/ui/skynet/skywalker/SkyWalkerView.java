@@ -26,7 +26,6 @@ import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
-import org.eclipse.osee.framework.jdk.core.util.AFile;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -269,14 +268,18 @@ public class SkyWalkerView extends ViewPart {
       }
    }
 
-   public void handleLoadOptions() {
+   private void handleLoadOptions() {
       final FileDialog dialog = new FileDialog(Displays.getActiveShell().getShell(), SWT.OPEN);
       dialog.setFilterExtensions(new String[] {"*.sky"});
       String filename = dialog.open();
       if (filename != null) {
-         String xml = AFile.readFile(filename);
-         options.fromXml(xml);
-         explore(options.getArtifact());
+         try {
+            String xml = Lib.fileToString(new File(filename));
+            options.fromXml(xml);
+            explore(options.getArtifact());
+         } catch (IOException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         }
       }
    }
 

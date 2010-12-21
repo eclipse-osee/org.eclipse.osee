@@ -13,7 +13,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.jdk.core.type.MutableInteger;
-import org.eclipse.osee.framework.jdk.core.util.AFile;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.MatchFilter;
@@ -70,7 +69,7 @@ public class UnitTestCounter {
          }
       }
       if (file.getAbsolutePath().endsWith(".java") && !file.getName().contains("UnitTestCounter")) {
-         String text = AFile.readFile(file);
+         String text = Lib.fileToString(file);
          if (text.contains("@Test") || text.contains("@org.junit.Test")) {
             System.err.println("Found java test file " + file.getName());
             sb.append(file.getName() + ", ");

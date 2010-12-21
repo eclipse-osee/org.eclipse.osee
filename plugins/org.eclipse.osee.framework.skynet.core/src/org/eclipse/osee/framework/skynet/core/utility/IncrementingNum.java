@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.skynet.core.utility;
 
 import java.io.File;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.jdk.core.util.AFile;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
@@ -33,7 +32,7 @@ public class IncrementingNum {
          File numFile = OseeData.getFile("atsDevNum.txt");
          if (numFile.exists() && atsDevNum == 0) {
             try {
-               atsDevNum = new Integer(AFile.readFile(numFile).replaceAll("\\s", ""));
+               atsDevNum = new Integer(Lib.fileToString(numFile).replaceAll("\\s", ""));
             } catch (NumberFormatException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             } catch (NullPointerException ex) {

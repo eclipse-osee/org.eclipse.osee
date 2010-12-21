@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.ui.test.manager.core;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import org.eclipse.osee.framework.jdk.core.util.AFile;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.ui.test.manager.internal.TestManagerPlugin;
 import org.w3c.dom.Document;
@@ -159,10 +160,11 @@ public class TestManagerModel {
     * load model from filename
     * 
     * @param filename the Name of the file to be read
+    * @throws IOException
     */
-   public void setFromXmlFile(String filename) {
+   public void setFromXmlFile(String filename) throws IOException {
       this.filename = filename;
-      setFromXml(AFile.readFile(filename));
+      setFromXml(Lib.fileToString(new File(filename)));
    }
 
    /**

@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 import org.eclipse.osee.coverage.vcast.CoverageDataUnit.CoverageDataType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.AFile;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -37,11 +37,11 @@ public class CoverageDataFile {
       this.coverageDataFilename = coverageDataFilename;
       File coverageDataFile = getFile();
       if (!coverageDataFile.exists()) {
-         throw new OseeArgumentException("VectorCast coverage data file doesn't exist [%s]",
-            coverageDataFilename);
+         throw new OseeArgumentException("VectorCast coverage data file doesn't exist [%s]", coverageDataFilename);
       }
-      String fileStr = AFile.readFile(coverageDataFile);
+
       try {
+         String fileStr = Lib.fileToString(coverageDataFile);
          Document document = Jaxp.readXmlDocument(fileStr);
          List<Element> unitElements = Jaxp.findElements(document.getDocumentElement(), "unit");
          for (Element unitElement : unitElements) {

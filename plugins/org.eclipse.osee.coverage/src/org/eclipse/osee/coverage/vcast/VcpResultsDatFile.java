@@ -11,6 +11,7 @@
 package org.eclipse.osee.coverage.vcast;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -24,7 +25,7 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
-import org.eclipse.osee.framework.jdk.core.util.AFile;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -40,14 +41,14 @@ public class VcpResultsDatFile {
    Pattern valuePattern = Pattern.compile("\\s*([0-9]+)\\s+([0-9]+)\\s+([0-9]+)");
    String resultFilename = null;
 
-   public VcpResultsDatFile(String vcastDirectory, VcpResultsFile vcpResultsFile) throws OseeCoreException {
+   public VcpResultsDatFile(String vcastDirectory, VcpResultsFile vcpResultsFile) throws OseeCoreException, IOException {
       resultFilename = vcastDirectory + "/vcast/results/" + vcpResultsFile.getValue(ResultsValue.FILENAME);
       File resultsFile = getFile();
       if (!resultsFile.exists()) {
          throw new OseeArgumentException(
             String.format("VectorCast resultsFile file doesn't exist [%s]", resultFilename));
       }
-      for (String resultsLine : AFile.readFile(resultsFile).split("\n")) {
+      for (String resultsLine : Lib.fileToString(resultsFile).split("\n")) {
          if (Strings.isValid(resultsLine)) {
             addLine(resultsLine);
          }

@@ -11,6 +11,7 @@
 package org.eclipse.osee.coverage.vcast;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -18,7 +19,7 @@ import org.eclipse.osee.coverage.vcast.VcpSourceFile.SourceValue;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
-import org.eclipse.osee.framework.jdk.core.util.AFile;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
  * Reads <filename>.LIS file associated with a source file
@@ -32,7 +33,7 @@ public class VcpSourceLisFile {
    String text = null;
    String lisFilename = null;
 
-   public VcpSourceLisFile(String vcastDirectory, VcpSourceFile vcpSourceFile) throws OseeCoreException {
+   public VcpSourceLisFile(String vcastDirectory, VcpSourceFile vcpSourceFile) throws OseeCoreException, IOException {
       lisFilename =
          vcastDirectory + "/vcast/" + vcpSourceFile.getValue(SourceValue.SOURCE_FILENAME).replaceFirst("(.*)\\..*",
             "$1") + ".LIS";
@@ -41,7 +42,7 @@ public class VcpSourceLisFile {
          throw new OseeArgumentException(
             String.format("VectorCast <filename>.LIS file doesn't exist [%s]", lisFilename));
       }
-      text = AFile.readFile(listFile);
+      text = Lib.fileToString(listFile);
       lines = text.split("\n");
    }
 

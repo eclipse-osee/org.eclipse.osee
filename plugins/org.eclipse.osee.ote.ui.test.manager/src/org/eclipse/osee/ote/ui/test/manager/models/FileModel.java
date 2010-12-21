@@ -11,13 +11,14 @@
 package org.eclipse.osee.ote.ui.test.manager.models;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.logging.Level;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.framework.jdk.core.util.AFile;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.ws.AWorkspace;
 import org.eclipse.osee.ote.ui.test.manager.internal.TestManagerPlugin;
@@ -71,7 +72,7 @@ public class FileModel {
     * @return Returns the name.
     */
    public String getName() {
-      return AFile.justFilename(rawFilename);
+      return new File(rawFilename).getName();
    }
 
    /**
@@ -104,7 +105,7 @@ public class FileModel {
       }
    }
 
-   public String getText() {
+   public String getText() throws IOException {
       if (iFile == null) {
          getIFile();
       }
@@ -112,7 +113,7 @@ public class FileModel {
          return "";
       }
       if (text == null || iFile.getModificationStamp() != lastModified) {
-         text = AFile.readFile(rawFilename);
+         text = Lib.fileToString(new File(rawFilename));
          OseeLog.log(TestManagerPlugin.class, Level.INFO, "getText: Reading file " + getName());
       } else {
          OseeLog.log(TestManagerPlugin.class, Level.INFO, "getText: Using buffered file " + getName());
