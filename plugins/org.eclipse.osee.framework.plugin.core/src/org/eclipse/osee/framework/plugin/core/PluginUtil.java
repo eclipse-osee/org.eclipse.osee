@@ -19,6 +19,7 @@ import java.util.Enumeration;
 import java.util.List;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.osgi.framework.Bundle;
 
 /**
@@ -54,6 +55,19 @@ public class PluginUtil {
          return null;
       }
       return result;
+   }
+
+   /**
+    * @param path plugin relative path to resource in plugin
+    * @param resultPath osee data relative path of the resultant file
+    * @return File object of the copied file
+    * @throws IOException
+    */
+   public File copyPluginFileToOseeData(String path, String resultPath) throws IOException {
+      InputStream inStream = getInputStream(path);
+      File resultFile = OseeData.getFile(resultPath);
+      Lib.inputStreamToFile(inStream, resultFile);
+      return resultFile;
    }
 
    public InputStream getInputStream(String resource) throws IOException {
