@@ -6,7 +6,7 @@
 		<DatabaseType key="#TYPE#" value="h2" />
 		<Prefix key="#PREFIX#" value="jdbc:h2:tcp" />
 		<UserName key="#USERNAME#" value="osee" />
-		<Password key="#PASSWORD#" value="oseeadmin" />
+		<Password key="#PASSWORD#" value="osee" />
 		<Host key="#HOST#" value="@AvailableDbServices.hostAddress" />
 		<Port key="#PORT#" value="@AvailableDbServices.port" />
 	</DatabaseInfo>
@@ -22,7 +22,7 @@
 		<DatabaseType key="#TYPE#" value="derby" />
 		<Prefix key="#PREFIX#" value="jdbc:derby" />
 		<UserName key="#USERNAME#" value="osee" />
-		<Password key="#PASSWORD#" value="oseeadmin" />
+		<Password key="#PASSWORD#" value="osee" />
 		<Host key="#HOST#" value="@AvailableDbServices.hostAddress" />
 		<Port key="#PORT#" value="@AvailableDbServices.port" />
 	</DatabaseInfo>
