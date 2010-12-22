@@ -168,7 +168,7 @@ public class WorkDefinitionFactory {
                   if (Strings.isValid(data.getName()) && !widgetDef.getName().equals(data.getName())) {
                      widgetDef.setName(data.getName());
                   }
-                  widgetDef.setStoreName(data.getStoreName());
+                  widgetDef.setAttributeName(data.getStoreName());
                   widgetDef.setDefaultValue(data.getDefaultValue());
                   widgetDef.setHeight(data.getHeight());
                   widgetDef.setToolTip(data.getToolTip());

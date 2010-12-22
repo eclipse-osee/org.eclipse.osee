@@ -7,7 +7,7 @@ package org.eclipse.osee.ats.workdef;
 
 public class WidgetDefinition extends StateItem {
 
-   private String storeName;
+   private String attributeName;
    private String toolTip;
    private String description;
    private int height;
@@ -19,12 +19,12 @@ public class WidgetDefinition extends StateItem {
       super(name);
    }
 
-   public String getStoreName() {
-      return storeName;
+   public String getAtrributeName() {
+      return attributeName;
    }
 
-   public void setStoreName(String storeName) {
-      this.storeName = storeName;
+   public void setAttributeName(String storeName) {
+      this.attributeName = storeName;
    }
 
    public String getToolTip() {
@@ -79,7 +79,7 @@ public class WidgetDefinition extends StateItem {
 
    @Override
    public String toString() {
-      return String.format("[%s][%s]", getName(), getStoreName());
+      return String.format("[%s][%s]", getName(), getAtrributeName());
    }
 
    public WidgetOptionHandler getOptions() {

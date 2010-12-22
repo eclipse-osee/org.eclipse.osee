@@ -427,7 +427,7 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IWorkPage
       DynamicXWidgetLayoutData data = new DynamicXWidgetLayoutData(getDynamicXWidgetLayout());
       data.setDefaultValue(widgetDef.getDefaultValue());
       data.setHeight(widgetDef.getHeight());
-      data.setStoreName(widgetDef.getStoreName());
+      data.setStoreName(widgetDef.getAtrributeName());
       data.setToolTip(widgetDef.getToolTip());
       data.setId(widgetDef.getName());
       data.setXWidgetName(widgetDef.getXWidgetName());
