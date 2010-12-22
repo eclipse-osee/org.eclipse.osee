@@ -15,6 +15,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.File;
@@ -71,6 +72,7 @@ import org.eclipse.osee.framework.jdk.core.util.io.MatchFilter;
  * @author Ryan D. Brooks
  */
 public final class Lib {
+   @Deprecated
    public final static Runtime runtime = Runtime.getRuntime();
 
    public final static String jarPath = getJarPath(Lib.class);
@@ -224,10 +226,10 @@ public final class Lib {
                position += in.transferTo(position, size, out);
             }
          } finally {
-            out.close();
+            Lib.close(out);
          }
       } finally {
-         in.close();
+         Lib.close(in);
       }
    }
 
@@ -250,21 +252,25 @@ public final class Lib {
       }
    }
 
+   @Deprecated
    public static Image createImage(String path) {
       return createImageIcon(path).getImage();
    }
 
+   @Deprecated
    public static ImageIcon createImageIcon(Class<?> clasaRef, String path) {
+      ImageIcon toReturn = null;
       URL imgURL = clasaRef.getResource(path);
       if (imgURL != null) {
-         return new ImageIcon(imgURL);
+         toReturn = new ImageIcon(imgURL);
       } else {
          System.err.println("Couldn't find the resource: " + path);
-         return null;
       }
+      return toReturn;
    }
 
    /** Returns an ImageIcon, or null if the path was invalid. */
+   @Deprecated
    public static ImageIcon createImageIcon(String path) {
       return createImageIcon(Lib.class, path);
    }
@@ -390,42 +396,40 @@ public final class Lib {
       try {
          inputStreamToOutputStream(inputStream, outputStream);
       } finally {
-         if (inputStream != null) {
-            inputStream.close();
-         }
+         Lib.close(inputStream);
       }
       return outputStream.toByteArray();
    }
 
    public static void inputStreamToFile(InputStream inputStream, File outFile) throws IOException {
-      byte[] bytes = new byte[2024];
-      FileOutputStream out = new FileOutputStream(outFile);
-
-      int numBytesRead;
-      while ((numBytesRead = inputStream.read(bytes)) != -1) {
-         out.write(bytes, 0, numBytesRead);
+      OutputStream outputStream = null;
+      try {
+         outputStream = new FileOutputStream(outFile);
+         inputStreamToOutputStream(inputStream, outputStream);
+      } finally {
+         Lib.close(outputStream);
       }
-      out.close();
    }
 
    public static CharBuffer inputStreamToCharBuffer(InputStream in) throws IOException {
       return CharBuffer.wrap(inputStreamToChangeSet(in).toCharArray());
    }
 
-   public static java.io.InputStream stringToInputStream(String value) throws Exception {
-      if (value == null) {
-         return null;
+   public static InputStream stringToInputStream(String value) throws Exception {
+      InputStream stream = null;
+      if (value != null) {
+         String data = value.trim();
+         stream = new ByteArrayInputStream(data.getBytes("UTF-8"));
       }
-      value = value.trim();
-      java.io.InputStream in = new java.io.ByteArrayInputStream(value.getBytes("UTF-8"));
-      return in;
+      return stream;
+
    }
 
    public static InputStream byteBufferToInputStream(final ByteBuffer byteBuffer) {
 
       return new InputStream() {
          @Override
-         public synchronized int read() throws IOException {
+         public synchronized int read() {
             if (!byteBuffer.hasRemaining()) {
                return -1;
             }
@@ -433,7 +437,7 @@ public final class Lib {
          }
 
          @Override
-         public synchronized int read(byte[] bytes, int off, int len) throws IOException {
+         public synchronized int read(byte[] bytes, int off, int len) {
             len = Math.min(len, byteBuffer.remaining());
             if (off != len) {
                byteBuffer.get(bytes, off, len);
@@ -444,7 +448,7 @@ public final class Lib {
          }
 
          @Override
-         public synchronized void reset() throws IOException {
+         public synchronized void reset() {
             byteBuffer.rewind();
          }
 
@@ -454,12 +458,12 @@ public final class Lib {
    public static OutputStream byteBufferToOutputStream(final ByteBuffer byteBuffer) {
       return new OutputStream() {
          @Override
-         public synchronized void write(int b) throws IOException {
+         public synchronized void write(int b) {
             byteBuffer.put((byte) b);
          }
 
          @Override
-         public synchronized void write(byte[] bytes, int off, int len) throws IOException {
+         public synchronized void write(byte[] bytes, int off, int len) {
             byteBuffer.put(bytes, off, len);
          }
       };
@@ -477,26 +481,30 @@ public final class Lib {
    }
 
    public static String fileToString(File file) throws IOException {
-      StringBuffer buffer = new StringBuffer();
-      Reader inStream = new InputStreamReader(new FileInputStream(file), "UTF-8");
-      Reader in = new BufferedReader(inStream);
-      int ch;
-      while ((ch = in.read()) > -1) {
-         buffer.append((char) ch);
+      StringBuilder builder = new StringBuilder();
+      Reader reader = null;
+      try {
+         reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
+         int ch;
+         while ((ch = reader.read()) > -1) {
+            builder.append((char) ch);
+         }
+      } finally {
+         Lib.close(reader);
       }
-      in.close();
-      return buffer.toString();
+      return builder.toString();
    }
 
    public static byte[] fileToBytes(File file) throws IOException {
-      InputStream inputStream = new FileInputStream(file);
+      byte[] bytes = new byte[(int) file.length()];
+      InputStream inputStream = null;
       try {
-         byte[] bytes = new byte[(int) file.length()];
+         inputStream = new FileInputStream(file);
          inputStream.read(bytes);
-         return bytes;
       } finally {
          inputStream.close();
       }
+      return bytes;
    }
 
    /**
@@ -504,19 +512,20 @@ public final class Lib {
     * File file = (File)iter.next(); buf = Lib.fileToChars(file, buf);
     */
    public static char[] fileToChars(File file, char[] buf) throws IOException {
-      FileReader in = new FileReader(file);
-      int size = (int) file.length();
-
-      if (buf == null) {
-         buf = new char[size];
-      } else if (size > buf.length) {
-         buf = null;
-         System.gc(); // since the currently allocated buf might already be quite large
-         buf = new char[size];
+      FileReader inputReader = new FileReader(file);
+      try {
+         int size = (int) file.length();
+         if (buf == null) {
+            buf = new char[size];
+         } else if (size > buf.length) {
+            buf = null;
+            System.gc(); // since the currently allocated buf might already be quite large
+            buf = new char[size];
+         }
+         inputReader.read(buf);
+      } finally {
+         Lib.close(inputReader);
       }
-
-      in.read(buf);
-      in.close();
       return buf;
    }
 
@@ -525,10 +534,14 @@ public final class Lib {
    }
 
    public static CharBuffer fileToCharBuffer(File file, String charset) throws IOException {
-      InputStreamReader in = new InputStreamReader(new FileInputStream(file), charset);
       char[] chars = new char[(int) file.length()];
-      in.read(chars);
-      in.close();
+      InputStreamReader inputStream = null;
+      try {
+         inputStream = new InputStreamReader(new FileInputStream(file), charset);
+         inputStream.read(chars);
+      } finally {
+         Lib.close(inputStream);
+      }
       return CharBuffer.wrap(chars);
    }
 
@@ -752,7 +765,9 @@ public final class Lib {
       return printAndExec(callAndArgs, dir, new PrintWriter(System.out, true));
    }
 
-   public static int printAndExec(String[] callAndArgs, File dir, Writer output) {
+   public static int printAndExec(String[] callAndArgs, File directory, Writer output) {
+      int result = -1;
+      Process process = null;
       try {
          for (int j = 0; j < callAndArgs.length; j++) {
             output.write(callAndArgs[j] + " ");
@@ -760,11 +775,20 @@ public final class Lib {
          output.write("\n");
          output.flush();
 
-         return Lib.handleProcess(runtime.exec(callAndArgs, null, dir), output);
+         ProcessBuilder builder = new ProcessBuilder(callAndArgs);
+         builder.directory(directory);
+         process = builder.start();
+
+         result = Lib.handleProcess(process, output);
       } catch (IOException ex) {
-         System.err.println("error: " + ex);
-         return -1;
+         System.err.print("error: ");
+         System.err.println(ex);
+      } finally {
+         if (process != null) {
+            process.destroy();
+         }
       }
+      return result;
    }
 
    public static ArrayList<String> readListFromDir(File directory, FilenameFilter filter, boolean keepExtension) {
@@ -802,21 +826,25 @@ public final class Lib {
    }
 
    public static ArrayList<String> readListFromFile(File file, boolean keepExtension) throws IOException {
-      BufferedReader in = new BufferedReader(new FileReader(file));
       ArrayList<String> list = new ArrayList<String>(120);
 
-      String line = null;
+      BufferedReader in = null;
+      try {
+         in = new BufferedReader(new FileReader(file));
 
-      if (keepExtension) {
-         while ((line = in.readLine()) != null) {
-            list.add(line);
+         String line = null;
+         if (keepExtension) {
+            while ((line = in.readLine()) != null) {
+               list.add(line);
+            }
+         } else {
+            while ((line = in.readLine()) != null) {
+               list.add(Lib.removeExtension(line));
+            }
          }
-      } else {
-         while ((line = in.readLine()) != null) {
-            list.add(Lib.removeExtension(line));
-         }
+      } finally {
+         Lib.close(in);
       }
-      in.close();
       return list;
    }
 
@@ -1010,16 +1038,24 @@ public final class Lib {
    }
 
    public static void writeCharsToFile(char[] chars, File outFile) throws IOException {
-      FileWriter out = new FileWriter(outFile);
-      out.write(chars, 0, chars.length);
-      out.close();
+      FileWriter out = null;
+      try {
+         out = new FileWriter(outFile);
+         out.write(chars, 0, chars.length);
+      } finally {
+         Lib.close(out);
+      }
    }
 
    public static void writeStringToFile(String str, File outFile) throws IOException {
-      OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(outFile), "UTF-8");
-      char[] chars = str.toCharArray();
-      out.write(chars, 0, chars.length);
-      out.close();
+      OutputStreamWriter out = null;
+      try {
+         out = new OutputStreamWriter(new FileOutputStream(outFile), "UTF-8");
+         char[] chars = str.toCharArray();
+         out.write(chars, 0, chars.length);
+      } finally {
+         Lib.close(out);
+      }
    }
 
    public static String getBasePath() {
@@ -1126,21 +1162,34 @@ public final class Lib {
    }
 
    public static String determineGroup() {
+      String toReturn = "no group";
+
+      Process process = null;
       try {
-         Process proc =
-            Runtime.getRuntime().exec(
-               new String[] {"/usr/bin/bash", "-c", "touch whichGroup; ls -g whichGroup; rm whichGroup"}, null,
-               new File("/tmp"));
-         BufferedReader inOutput = new BufferedReader(new InputStreamReader(proc.getInputStream()));
-         String line = inOutput.readLine();
-         return line.substring(15, line.indexOf(' ', 16)); // 15 based on
-         // format of
-         // line printed
-         // by ls
+         ProcessBuilder builder =
+            new ProcessBuilder("/usr/bin/bash", "-c", "touch", "whichGroup;", "ls", "-g", "whichGroup;", "rm",
+               "whichGroup");
+         builder.directory(new File("/tmp"));
+         process = builder.start();
+
+         InputStream inputStream = null;
+         try {
+            inputStream = process.getInputStream();
+            String line = inputStreamToString(inputStream);
+
+            // 15 based on format of line printed  by ls
+            toReturn = line.substring(15, line.indexOf(' ', 16));
+         } finally {
+            Lib.close(inputStream);
+         }
       } catch (IOException ex) {
-         System.out.println(ex);
-         return "no group";
+         ex.printStackTrace();
+      } finally {
+         if (process != null) {
+            process.destroy();
+         }
       }
+      return toReturn;
    }
 
    /**
@@ -1417,11 +1466,12 @@ public final class Lib {
    }
 
    public static void writeBytesToFile(byte[] data, File file) throws IOException {
-      OutputStream os = new FileOutputStream(file);
+      OutputStream os = null;
       try {
+         os = new FileOutputStream(file);
          os.write(data);
       } finally {
-         os.close();
+         Lib.close(os);
       }
    }
 
@@ -1429,27 +1479,26 @@ public final class Lib {
       if (!destination.getParentFile().exists()) {
          destination.getParentFile().mkdirs();
       }
-      int BUFFER = 2048;
+
+      InputStream inputStream = null;
+      OutputStream outputStream = null;
       try {
          JarFile jarfile = new JarFile(jarFile.getAbsolutePath());
          JarEntry jarEntry = jarfile.getJarEntry(entry);
-         BufferedInputStream is = new BufferedInputStream(jarfile.getInputStream(jarEntry));
-         int count;
-         long total = 0;
-         byte data[] = new byte[BUFFER];
-         FileOutputStream fos = new FileOutputStream(destination);
-         BufferedOutputStream dest = new BufferedOutputStream(fos, BUFFER);
-         while ((count = is.read(data, 0, BUFFER)) != -1) {
-            dest.write(data, 0, count);
-            total += BUFFER;
-         }
-         dest.flush();
-         dest.close();
-         is.close();
+
+         inputStream = new BufferedInputStream(jarfile.getInputStream(jarEntry));
+         outputStream = new BufferedOutputStream(new FileOutputStream(destination));
+         inputStreamToOutputStream(inputStream, outputStream);
+
+         outputStream.flush();
       } catch (Exception ex) {
          String information =
-            "JarFile: " + jarFile.getAbsolutePath() + "\n" + "Entry: " + (entry != null ? entry.toString() : "NULL") + "\n" + "Destination: " + (destination != null ? destination.getAbsoluteFile().toString() : "NULL") + "\n";
+            String.format("JarFile: %s\nEntry: %s\nDestination: %s\n", jarFile.getAbsolutePath(), entry,
+               destination.getAbsolutePath());
          throw new IOException(information + ex.getMessage());
+      } finally {
+         Lib.close(outputStream);
+         Lib.close(inputStream);
       }
    }
 
@@ -1461,21 +1510,25 @@ public final class Lib {
          // Add ZIP entry to output stream.
          out.putNextEntry(new ZipEntry(name));
          inputStreamToOutputStream(in, out);
+         out.closeEntry();
       } finally {
-         if (out != null) {
-            out.closeEntry();
-            out.close();
-         }
+         Lib.close(out);
       }
       return bos.toByteArray();
    }
 
    public static byte[] compressFile(File file) throws IOException {
       ByteArrayOutputStream bos = new ByteArrayOutputStream();
-      ZipOutputStream outputStream = new ZipOutputStream(bos);
-      compressFile(null, file, outputStream);
-      outputStream.closeEntry();
-      outputStream.close();
+
+      ZipOutputStream outputStream = null;
+      try {
+         outputStream = new ZipOutputStream(bos);
+         compressFile(null, file, outputStream);
+         outputStream.closeEntry();
+      } finally {
+         Lib.close(outputStream);
+         Lib.close(bos);
+      }
       return bos.toByteArray();
    }
 
@@ -1483,13 +1536,17 @@ public final class Lib {
       if (Strings.isValid(zipTarget) != true) {
          throw new IllegalArgumentException("Error target zip filename is invalid");
       }
-      ZipOutputStream out = new ZipOutputStream(new FileOutputStream(zipTarget));
-      for (File file : files) {
-         if (file.isDirectory() != true) {
-            Lib.compressFile(basePath, file, out);
+      ZipOutputStream out = null;
+      try {
+         out = new ZipOutputStream(new FileOutputStream(zipTarget));
+         for (File file : files) {
+            if (file.isDirectory() != true) {
+               Lib.compressFile(basePath, file, out);
+            }
          }
+      } finally {
+         Lib.close(out);
       }
-      out.close();
    }
 
    private static void compressFile(String basePath, File file, ZipOutputStream outputStream) throws IOException {
@@ -1507,9 +1564,7 @@ public final class Lib {
          outputStream.putNextEntry(entry);
          inputStreamToOutputStream(inputStream, outputStream);
       } finally {
-         if (inputStream != null) {
-            inputStream.close();
-         }
+         Lib.close(inputStream);
       }
    }
 
@@ -1552,9 +1607,7 @@ public final class Lib {
          // Transfer bytes from the ZIP file to the output file
          inputStreamToOutputStream(zipInputStream, outputStream);
       } finally {
-         if (zipInputStream != null) {
-            zipInputStream.close();
-         }
+         Lib.close(zipInputStream);
       }
       return zipEntryName;
    }
@@ -1573,7 +1626,7 @@ public final class Lib {
             OutputStream outputStream = null;
             try {
                File target = new File(targetDirectory, zipEntryName);
-               if (target != null && !entry.isDirectory()) {
+               if (!entry.isDirectory()) {
                   File parent = target.getParentFile();
                   if (parent != null && !parent.exists()) {
                      parent.mkdirs();
@@ -1582,49 +1635,44 @@ public final class Lib {
                   inputStreamToOutputStream(zipInputStream, outputStream);
                }
             } finally {
-               if (outputStream != null) {
-                  outputStream.close();
-               }
+               Lib.close(outputStream);
             }
          }
       } finally {
-         if (zipInputStream != null) {
-            zipInputStream.close();
-         }
+         Lib.close(zipInputStream);
       }
    }
 
    public static byte[] decompressBytes(InputStream inputStream) throws IOException {
-      ByteArrayOutputStream out = null;
-      // Open the ZIP file
-      ZipInputStream in = new ZipInputStream(inputStream);
+      ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-      // Get the first entry
-      in.getNextEntry();
-
-      // Open the output file
-      out = new ByteArrayOutputStream();
-
-      inputStreamToOutputStream(in, out);
-
-      // Close the streams
-      out.close();
-      in.close();
+      ZipInputStream in = null;
+      try {
+         in = new ZipInputStream(inputStream);
+         in.getNextEntry();
+         inputStreamToOutputStream(in, out);
+      } finally {
+         Lib.close(in);
+         Lib.close(out);
+      }
       return out.toByteArray();
    }
 
    public static void chmod777(File file) {
-      if (file == null || !file.exists()) {
-         return;
-      }
-      try {
-         String command = "chmod 777 " + file.getAbsolutePath();
-         Runtime r = Runtime.getRuntime();
-         Process p = r.exec(command);
+      if (file != null && file.exists()) {
+         Process process = null;
+         try {
+            ProcessBuilder builder = new ProcessBuilder("chmod", "777", file.getAbsolutePath());
+            process = builder.start();
 
-         Lib.handleProcess(p);
-      } catch (IOException ioe) {
-         ioe.printStackTrace();
+            Lib.handleProcess(process);
+         } catch (IOException ioe) {
+            ioe.printStackTrace();
+         } finally {
+            if (process != null) {
+               process.destroy();
+            }
+         }
       }
    }
 
