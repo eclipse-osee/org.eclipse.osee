@@ -164,8 +164,6 @@ public class WordTemplateProcessor {
       this.outlineNumber =
          outlineNumber == null ? peekAtFirstArtifactToGetParagraphNumber(template, null, artifacts) : outlineNumber;
       template = wordMl.setHeadingNumbers(this.outlineNumber, template, outlineType);
-      template = WordUtil.stripSpellCheck(template);
-
       Matcher matcher = headElementsPattern.matcher(template);
 
       int lastEndIndex = 0;
@@ -425,7 +423,7 @@ public class WordTemplateProcessor {
       }
    }
 
-	private void processAttributes(VariableMap variableMap, Artifact artifact, WordMLProducer wordMl, PresentationType presentationType, boolean multipleArtifacts, boolean publishInLine) throws OseeCoreException {
+   private void processAttributes(VariableMap variableMap, Artifact artifact, WordMLProducer wordMl, PresentationType presentationType, boolean multipleArtifacts, boolean publishInLine) throws OseeCoreException {
       for (AttributeElement attributeElement : attributeElements) {
          String attributeName = attributeElement.getAttributeName();
 

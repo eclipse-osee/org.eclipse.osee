@@ -23,7 +23,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -38,10 +37,8 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.Streams;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
  * Provides utility methods for parsing wordML.
@@ -53,8 +50,6 @@ public class WordUtil {
    private static final String AML_ANNOTATION = "<.??aml:annotation.*?>";
    private static final String AML_CONTENT = "<.??aml:content.*?>";
    private static final String DELETIONS = "<w:delText>.*?</w:delText>";
-   private static final String PROOF_ERROR_CHECK = "<.??w:proofErr.*?>";
-
    public static final String BODY_START = "<w:body>";
    public static final String BODY_END = "</w:body>";
    private static final String[] NUMBER = new String[] {
@@ -285,20 +280,8 @@ public class WordUtil {
       return newTemplate;
    }
 
-   public final static String stripSpellCheck(String content) {
-      String response = content;
-      if (Strings.isValid(response)) {
-         try {
-            response = response.replaceAll(PROOF_ERROR_CHECK, "");
-         } catch (Exception ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
-         }
-      }
-      return response;
-   }
-
    public static boolean containsWordAnnotations(String wordml) {
-      return wordml.contains("w:proofErr") || wordml.contains("<w:delText>") || wordml.contains("w:type=\"Word.Insertion\"") || wordml.contains("w:type=\"Word.Formatting\"") || wordml.contains("w:type=\"Word.Deletion\"");
+      return wordml.contains("<w:delText>") || wordml.contains("w:type=\"Word.Insertion\"") || wordml.contains("w:type=\"Word.Formatting\"") || wordml.contains("w:type=\"Word.Deletion\"");
    }
 
    public static String removeAnnotations(String wordml) {
@@ -307,7 +290,6 @@ public class WordUtil {
          response = response.replaceAll(AML_ANNOTATION, "");
          response = response.replaceAll(AML_CONTENT, "");
          response = response.replaceAll(DELETIONS, "");
-         response = response.replaceAll(PROOF_ERROR_CHECK, "");
       }
       return response;
    }

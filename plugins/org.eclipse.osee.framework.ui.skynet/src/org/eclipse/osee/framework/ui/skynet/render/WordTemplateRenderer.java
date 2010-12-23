@@ -14,7 +14,6 @@ package org.eclipse.osee.framework.ui.skynet.render;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERALIZED_EDIT;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERAL_REQUESTED;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.SPECIALIZED_EDIT;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,9 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-
 import javax.xml.namespace.QName;
-
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -152,7 +149,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
 
    @Override
    public void renderAttribute(IAttributeType attributeType, Artifact artifact, PresentationType presentationType, Producer producer, VariableMap map, AttributeElement attributeElement) throws OseeCoreException {
-      String value = "";
+      //      String value = "";
       WordMLProducer wordMl = (WordMLProducer) producer;
 
       if (attributeType.equals(CoreAttributeTypes.WordTemplateContent)) {
@@ -164,23 +161,22 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
          }
 
          if (data != null) {
-            value = WordUtil.stripSpellCheck(data);//TODO what is the best way to get at unknown attribute types? (because this isn't it)
             //Change the BinData Id so images do not get overridden by the other images
-            value = WordUtil.reassignBinDataID(value);
+            data = WordUtil.reassignBinDataID(data);
 
             LinkType linkType = (LinkType) map.getValue("linkType");
-            value = WordMlLinkHandler.link(linkType, artifact, value);
-            value = WordUtil.reassignBookMarkID(value);
+            data = WordMlLinkHandler.link(linkType, artifact, data);
+            data = WordUtil.reassignBookMarkID(data);
          }
 
          if (presentationType == PresentationType.SPECIALIZED_EDIT || presentationType == PresentationType.MERGE_EDIT) {
             OseeLinkBuilder linkBuilder = new OseeLinkBuilder();
             wordMl.addEditParagraphNoEscape(linkBuilder.getStartEditImage(artifact.getGuid()));
-            wordMl.addWordMl(value);
+            wordMl.addWordMl(data);
             wordMl.addEditParagraphNoEscape(linkBuilder.getEndEditImage(artifact.getGuid()));
 
          } else {
-            wordMl.addWordMl(value);
+            wordMl.addWordMl(data);
          }
          if (presentationType != PresentationType.MERGE && presentationType != PresentationType.MERGE_EDIT) {
             wordMl.resetListValue();
