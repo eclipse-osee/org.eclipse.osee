@@ -108,4 +108,8 @@ public final class WordUiUtil {
       }
    }
 
+   public static IVbaDiffGenerator createScriptGenerator() {
+      return new VbaWordDiffGenerator();
+   }
+
 }

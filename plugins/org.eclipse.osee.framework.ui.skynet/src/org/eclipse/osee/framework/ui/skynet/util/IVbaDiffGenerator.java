@@ -8,9 +8,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.render;
+package org.eclipse.osee.framework.ui.skynet.util;
 
-import java.io.File;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
@@ -24,5 +23,4 @@ public interface IVbaDiffGenerator {
 
    public void finish(String vbaScriptPath, boolean show) throws OseeCoreException;
 
-   public File getFile(String path) throws OseeCoreException;
 }

@@ -22,7 +22,8 @@ import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
-import org.eclipse.osee.framework.ui.skynet.render.VbaWordDiffGenerator;
+import org.eclipse.osee.framework.ui.skynet.util.IVbaDiffGenerator;
+import org.eclipse.osee.framework.ui.skynet.util.WordUiUtil;
 
 /**
  * @author Roberto E. Escobar
@@ -65,7 +66,7 @@ public abstract class AbstractWordCompare implements IComparator {
    public String compare(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, PresentationType presentationType) throws OseeCoreException {
       String diffPath = getComparePath(baseVersion, newerVersion, baseFile, newerFile);
 
-      VbaWordDiffGenerator diffGenerator = new VbaWordDiffGenerator();
+      IVbaDiffGenerator diffGenerator = WordUiUtil.createScriptGenerator();
       diffGenerator.initialize(presentationType == PresentationType.DIFF,
          presentationType == PresentationType.MERGE_EDIT);
 
@@ -82,7 +83,7 @@ public abstract class AbstractWordCompare implements IComparator {
       return diffPath;
    }
 
-   private void launchCompareVbs(VbaWordDiffGenerator diffGenerator, String diffPath, String vbsScriptName) throws OseeCoreException {
+   private void launchCompareVbs(IVbaDiffGenerator diffGenerator, String diffPath, String vbsScriptName) throws OseeCoreException {
       boolean show = !renderer.getBooleanOption(IRenderer.NO_DISPLAY);
       String vbsPath = diffPath.substring(0, diffPath.lastIndexOf('\\')) + vbsScriptName;
       if (RenderingUtil.arePopupsAllowed()) {

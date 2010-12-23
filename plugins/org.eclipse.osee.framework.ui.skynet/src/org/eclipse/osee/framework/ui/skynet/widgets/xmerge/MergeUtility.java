@@ -50,8 +50,9 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
-import org.eclipse.osee.framework.ui.skynet.render.VbaWordDiffGenerator;
 import org.eclipse.osee.framework.ui.skynet.revert.RevertWizard;
+import org.eclipse.osee.framework.ui.skynet.util.IVbaDiffGenerator;
+import org.eclipse.osee.framework.ui.skynet.util.WordUiUtil;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.NonmodalWizardDialog;
 import org.eclipse.swt.widgets.Shell;
@@ -271,7 +272,7 @@ public class MergeUtility {
                      try {
                         int gamma = attributeConflict.getAttribute().getGammaId();
                         monitor.beginTask("Generate 3 Way Merge", 100);
-                        VbaWordDiffGenerator generator = new VbaWordDiffGenerator();
+                        IVbaDiffGenerator generator = WordUiUtil.createScriptGenerator();
                         generator.initialize(false, false);
                         monitor.worked(5);
                         String sourceChangeFile =

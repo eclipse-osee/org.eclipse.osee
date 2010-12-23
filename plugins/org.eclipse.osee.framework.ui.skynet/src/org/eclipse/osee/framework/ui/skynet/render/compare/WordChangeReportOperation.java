@@ -38,8 +38,8 @@ import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
-import org.eclipse.osee.framework.ui.skynet.render.VbaWordDiffGenerator;
 import org.eclipse.osee.framework.ui.skynet.render.WordImageChecker;
+import org.eclipse.osee.framework.ui.skynet.util.IVbaDiffGenerator;
 import org.eclipse.osee.framework.ui.skynet.util.WordUiUtil;
 
 public final class WordChangeReportOperation extends AbstractOperation {
@@ -79,7 +79,7 @@ public final class WordChangeReportOperation extends AbstractOperation {
       if (!artifactDeltas.isEmpty()) {
          double workPercentage = 0.70 / artifactDeltas.size();
 
-         VbaWordDiffGenerator generator = new VbaWordDiffGenerator();
+         IVbaDiffGenerator generator = WordUiUtil.createScriptGenerator();
          generator.initialize(false, false);
 
          String baseFileStr = getChangeReportFolder().getLocation().toOSString();

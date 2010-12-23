@@ -8,20 +8,21 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.render;
+package org.eclipse.osee.framework.ui.skynet.util;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.streams.StreamCatcher;
 
 /**
  * @author Theron Virgin
  */
 public class VbaWordDiffGenerator implements IVbaDiffGenerator {
+
    private final static String header =
       "Option Explicit\n\nDim oWord\nDim baseDoc\nDim compareDoc\nDim authorName\nDim detectFormatChanges\nDim ver1\nDim ver2\nDim diffPath\nDim wdCompareTargetSelectedDiff\nDim wdCompareTargetSelectedMerge\nDim wdFormattingFromCurrent\nDim wdFormatXML\nDim wdDoNotSaveChanges\nDim visible\nDim mainDoc\n\nPublic Sub main()\n On error resume next\n    wdCompareTargetSelectedDiff = 0\n    wdCompareTargetSelectedMerge = 1\n    wdDoNotSaveChanges = 0\n    wdFormattingFromCurrent = 3\n    wdFormatXML = 11\n\n    authorName = \"OSEE Doc compare\"\n\n    detectFormatChanges = True\n\n    set oWord = WScript.CreateObject(\"Word.Application\")\n    oWord.Visible = False\n\n";
 
@@ -122,38 +123,42 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
          builder.append("         mainDoc.SaveAs diffPath, wdFormatXML, , , False\n\n");
       }
       builder.append(tail2);
-      compare(getFile(vbScriptPath));
+      executeScript(getFile(vbScriptPath));
    }
 
-   @Override
-   public File getFile(String path) throws OseeCoreException {
+   private File getFile(String path) throws OseeCoreException {
       if (!finalized) {
          return null;
       }
+      String output = path != null ? path : "c:\\UserData\\compareDocs.vbs";
+      File file = new File(output);
       try {
-         FileOutputStream out = new FileOutputStream(path != null ? path : "c:\\UserData\\compareDocs.vbs");
-         out.write(builder.toString().getBytes(), 0, builder.toString().getBytes().length);
-         out.close();
+         Lib.writeStringToFile(builder.toString(), file);
       } catch (IOException ex) {
          OseeExceptions.wrapAndThrow(ex);
       }
-      return new File(path != null ? path : "c:\\UserData\\compareDocs.vbs");
+      return file;
    }
 
-   private void compare(File vbDiffScript) throws OseeCoreException {
+   private void executeScript(File vbDiffScript) throws OseeCoreException {
+      Process process = null;
       try {
-         String cmd[] = {"cmd", "/s /c", "\"" + vbDiffScript.getPath() + "\""};
+         String cmd[] = {"cmd", "/s", "/c", "\"" + vbDiffScript.getPath() + "\""};
+         ProcessBuilder builder = new ProcessBuilder(cmd);
+         process = builder.start();
 
-         Process proc = Runtime.getRuntime().exec(cmd);
-
-         StreamCatcher errorCatcher = new StreamCatcher(proc.getErrorStream(), "ERROR");
-         StreamCatcher outputCatcher = new StreamCatcher(proc.getInputStream(), "OUTPUT");
-
+         StreamCatcher errorCatcher = new StreamCatcher(process.getErrorStream(), "ERROR");
+         StreamCatcher outputCatcher = new StreamCatcher(process.getInputStream(), "OUTPUT");
          errorCatcher.start();
          outputCatcher.start();
-         proc.waitFor();
+
+         process.waitFor();
       } catch (Exception ex) {
          OseeExceptions.wrapAndThrow(ex);
+      } finally {
+         if (process != null) {
+            process.destroy();
+         }
       }
    }
 }
