@@ -143,15 +143,17 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
          for (String pageNameOrId : pageIds) {
             WorkPageDefinition workPageDefinition =
                (WorkPageDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(getFullPageId(pageNameOrId));
-            pages.add(workPageDefinition);
-            pageNameToPageId.put(workPageDefinition.getPageName(), workPageDefinition.id);
-            for (Map<TransitionType, Set<String>> transTypeToPageIds : inheritedPageIdToPageIdsViaTransitionType.values()) {
-               for (TransitionType transType : transTypeToPageIds.keySet()) {
-                  for (String pageId2 : transTypeToPageIds.get(transType)) {
-                     if (!pageId2.endsWith(WorkFlowDefinition.TO_ANY_PAGE)) {
-                        workPageDefinition =
-                           (WorkPageDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(getFullPageId(pageId2));
-                        pageNameToPageId.put(workPageDefinition.getPageName(), workPageDefinition.id);
+            if (workPageDefinition != null) {
+               pages.add(workPageDefinition);
+               pageNameToPageId.put(workPageDefinition.getPageName(), workPageDefinition.id);
+               for (Map<TransitionType, Set<String>> transTypeToPageIds : inheritedPageIdToPageIdsViaTransitionType.values()) {
+                  for (TransitionType transType : transTypeToPageIds.keySet()) {
+                     for (String pageId2 : transTypeToPageIds.get(transType)) {
+                        if (!pageId2.endsWith(WorkFlowDefinition.TO_ANY_PAGE)) {
+                           workPageDefinition =
+                              (WorkPageDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(getFullPageId(pageId2));
+                           pageNameToPageId.put(workPageDefinition.getPageName(), workPageDefinition.id);
+                        }
                      }
                   }
                }
