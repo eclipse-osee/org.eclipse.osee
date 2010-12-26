@@ -1706,12 +1706,6 @@
                  class="org.eclipse.osee.framework.ui.skynet.OseeUiEarlyStartup"></startup>
         </extension>
         <extension
-              point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-           <Operation
-                 className="org.eclipse.osee.framework.ui.skynet.blam.operation.PurgeArchivedBranch">
-           </Operation>
-        </extension> 
-        <extension
               id="DatabaseIntegrityCheck"
               point="org.eclipse.core.runtime.applications">
            <application
