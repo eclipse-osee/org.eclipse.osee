@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.server.admin.internal.Activator;
 import org.eclipse.osee.framework.server.admin.management.AdminCommands;
 import org.eclipse.osee.framework.server.admin.management.ConsolidateArtifactVersionsCommand;
-import org.eclipse.osee.framework.server.admin.management.FinishPartiallyArchivedBranchesCommand;
 import org.eclipse.osee.framework.server.admin.management.GarbageCollectionCommand;
 import org.eclipse.osee.framework.server.admin.management.SchedulingCommand;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
@@ -64,10 +63,6 @@ public class ServerAdminCommandProvider implements CommandProvider {
 
    public Job _clear_cache(CommandInterpreter ci) {
       return adminCommands.clearCache(ci);
-   }
-
-   public Job _finish_partial_archives(CommandInterpreter ci) {
-      return Operations.executeAsJob(new FinishPartiallyArchivedBranchesCommand(ci), false);
    }
 
    public Job _consolidate_artifact_versions(CommandInterpreter ci) {
