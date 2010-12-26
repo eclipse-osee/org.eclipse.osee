@@ -156,19 +156,16 @@ public class AtsBranchManager {
    }
 
    public CommitStatus getCommitStatus(ICommitConfigArtifact configArt) throws OseeCoreException {
-      Branch branch = configArt.getParentBranch();
-      if (branch == null) {
+      Branch desinationBranch = configArt.getParentBranch();
+      if (desinationBranch == null) {
          return CommitStatus.Branch_Not_Configured;
       }
 
-      if (branch.getBranchState().isCommitted()) {
-         return CommitStatus.Committed;
-      }
       Collection<TransactionRecord> transactions = TransactionManager.getCommittedArtifactTransactionIds(teamArt);
-      boolean mergeBranchExists = teamArt.getBranchMgr().isMergeBranchExists(branch);
+      boolean mergeBranchExists = teamArt.getBranchMgr().isMergeBranchExists(desinationBranch);
 
       for (TransactionRecord transId : transactions) {
-         if (transId.getBranchId() == branch.getId()) {
+         if (desinationBranch.equals(transId.getBranch())) {
             if (mergeBranchExists) {
                return CommitStatus.Committed_With_Merge;
             } else {
