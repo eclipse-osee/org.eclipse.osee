@@ -194,7 +194,8 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IWorkPage
             stateDefinition.getPageName() + (stateDefinition.getName() != null ? " (" + stateDefinition.getName() + ") " : "") + "\n");
       try {
          for (StateDefinition page : stateDefinition.getToStates()) {
-            sb.append("-> " + page.getPageName() + (stateDefinition.getReturnStates().contains(page) ? " (return)" : "") + "\n");
+            sb.append("-> " + page.getPageName() + (stateDefinition.getOverrideAttributeValidationStates().contains(
+               page) ? " (return)" : "") + "\n");
          }
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
@@ -252,17 +253,9 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IWorkPage
       return stateDefinition.getToStates();
    }
 
-   public List<StateDefinition> getReturnStates() {
-      return stateDefinition.getReturnStates();
-   }
-
-   public boolean isReturnPage(StateDefinition page) {
-      return getReturnStates().contains(page);
-   }
-
    public StateDefinition getDefaultToPage() {
-      if (!stateDefinition.getDefaultToStates().isEmpty()) {
-         return stateDefinition.getDefaultToStates().iterator().next();
+      if (stateDefinition.getDefaultToState() != null) {
+         return stateDefinition.getDefaultToState();
       }
       return null;
    }
@@ -332,10 +325,6 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IWorkPage
 
    public boolean isUsingTaskResolutionOptions() {
       return this.taskResolutionOptions != null;
-   }
-
-   public boolean isStartPage() {
-      return getStateDefinition().isStartState();
    }
 
    public boolean isCurrentState(AbstractWorkflowArtifact sma) {

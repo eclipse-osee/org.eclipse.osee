@@ -97,29 +97,27 @@ public class WorkDefinitionFactory {
       return idToWorkDefintion.get(id);
    }
 
-   private static WorkDefinition translateToWorkDefinition(WorkFlowDefinition workFlowDef) {
+   public static WorkDefinition translateToWorkDefinition(WorkFlowDefinition workFlowDef) {
       ensureRulesLoaded();
       try {
-         String startWorkPageName = workFlowDef.getStartPageId();
-         WorkDefinition workDef = new WorkDefinition(workFlowDef.getId(), "1.0");
+         String startWorkPageName = workFlowDef.getResolvedStartPageId();
+         WorkDefinition workDef = new WorkDefinition(workFlowDef.getId());
          for (WorkPageDefinition workPage : workFlowDef.getPages()) {
             // not using ids anymore for states, widgets or rules
             StateDefinition stateDef = workDef.getOrCreateState(workPage.getPageName());
             workDef.getStates().add(stateDef);
             stateDef.setOrdinal(workPage.getWorkPageOrdinal());
-            if (workPage.getPageName().equals(startWorkPageName)) {
-               stateDef.setStartState(true);
+            if (workPage.getId().equals(startWorkPageName)) {
+               workDef.setStartState(stateDef);
             }
             copyKeyValuePair(stateDef, workPage);
             stateDef.setWorkDefinition(workDef);
-            if (workFlowDef.getStartPage().getId().equals(workPage.getId())) {
-               stateDef.setStartState(true);
-            }
             stateDef.setWorkPageType(workPage.getWorkPageType());
 
             for (WorkPageDefinition returnPageDefinition : workFlowDef.getReturnPages(workPage)) {
+               // new model doesn't have AsReturn, instead it uses OverrideAttributeValidation
                StateDefinition returnStateDef = workDef.getOrCreateState(returnPageDefinition.getPageName());
-               stateDef.getReturnStates().add(returnStateDef);
+               stateDef.getOverrideAttributeValidationStates().add(returnStateDef);
             }
             for (WorkPageDefinition toPageDefinition : workFlowDef.getToPages(workPage)) {
                StateDefinition toStateDef = workDef.getOrCreateState(toPageDefinition.getPageName());
@@ -128,7 +126,7 @@ public class WorkDefinitionFactory {
             WorkPageDefinition defaultToPageDefinition = workFlowDef.getDefaultToPage(workPage);
             if (defaultToPageDefinition != null) {
                StateDefinition defaultToStateDef = workDef.getOrCreateState(defaultToPageDefinition.getPageName());
-               stateDef.getDefaultToStates().add(defaultToStateDef);
+               stateDef.setDefaultToState(defaultToStateDef);
             }
 
             CompositeStateItem compStateItem = null;
@@ -189,13 +187,14 @@ public class WorkDefinitionFactory {
                } else if (itemDef instanceof WorkRuleDefinition) {
                   WorkRuleDefinition workRule = (WorkRuleDefinition) itemDef;
                   RuleDefinition ruleDef = getRuleById(workRule.getId());
-                  stateDef.getRules().add(ruleDef);
+                  stateDef.addRule(ruleDef, "From related WorkItemDefintion");
                } else {
                   OseeLog.log(AtsPlugin.class, Level.SEVERE,
                      "Unexpected item type as page child -> " + itemDef.getType());
                }
             }
          }
+
          return workDef;
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);

@@ -6,21 +6,22 @@
 package org.eclipse.osee.ats.workdef;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResolutionOptionRule;
+import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkPage;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageType;
 
 public class StateDefinition extends AbstractWorkDefItem implements IWorkPage {
 
-   private boolean startState = false;
    private WorkPageType workPageType;
    private int ordinal = 0;
    private final List<StateItem> stateItems = new ArrayList<StateItem>(5);
    private final List<RuleDefinition> rules = new ArrayList<RuleDefinition>(5);
+   private final HashCollection<RuleDefinition, String> ruleToLocations = new HashCollection<RuleDefinition, String>();
    private final List<StateDefinition> toStates = new ArrayList<StateDefinition>(5);
-   private final List<StateDefinition> defaultToStates = new ArrayList<StateDefinition>(5);
-   private final List<StateDefinition> returnStates = new ArrayList<StateDefinition>(5);
+   private StateDefinition defaultToState;
    private final List<StateDefinition> overrideAttributeValidationStates = new ArrayList<StateDefinition>(5);
    private WorkDefinition workDefinition;
    protected TaskResolutionOptionRule taskResolutionOptions;
@@ -29,16 +30,17 @@ public class StateDefinition extends AbstractWorkDefItem implements IWorkPage {
       super(name);
    }
 
-   public boolean isStartState() {
-      return startState;
-   }
-
-   public void setStartState(boolean startState) {
-      this.startState = startState;
-   }
-
    public List<StateItem> getStateItems() {
       return stateItems;
+   }
+
+   public void addRule(RuleDefinition ruleDef, String location) {
+      rules.add(ruleDef);
+      ruleToLocations.put(ruleDef, location);
+   }
+
+   public Collection<String> getRuleLocations(RuleDefinition ruleDef) {
+      return ruleToLocations.getValues(ruleDef);
    }
 
    public List<RuleDefinition> getRules() {
@@ -104,10 +106,6 @@ public class StateDefinition extends AbstractWorkDefItem implements IWorkPage {
       this.workDefinition = workDefinition;
    }
 
-   public List<StateDefinition> getReturnStates() {
-      return returnStates;
-   }
-
    public boolean hasRule(String name) {
       for (RuleDefinition rule : rules) {
          if (rule.getName().equals(name)) {
@@ -125,10 +123,6 @@ public class StateDefinition extends AbstractWorkDefItem implements IWorkPage {
          }
       }
       return results;
-   }
-
-   public List<StateDefinition> getDefaultToStates() {
-      return defaultToStates;
    }
 
    @Override
@@ -178,6 +172,14 @@ public class StateDefinition extends AbstractWorkDefItem implements IWorkPage {
          return false;
       }
       return true;
+   }
+
+   public StateDefinition getDefaultToState() {
+      return defaultToState;
+   }
+
+   public void setDefaultToState(StateDefinition defaultToState) {
+      this.defaultToState = defaultToState;
    }
 
 }

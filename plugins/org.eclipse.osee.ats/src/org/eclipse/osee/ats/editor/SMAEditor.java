@@ -68,6 +68,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -82,6 +83,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.MultiPageEditorPart;
+import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
 /**
  * @author Donald G. Dunne
@@ -96,6 +98,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
    private Action printAction;
    private TaskTabXWidgetActionPage taskTabXWidgetActionPage;
    private final List<ISMAEditorListener> editorListeners = new ArrayList<ISMAEditorListener>();
+   SMAEditorOutlinePage outlinePage;
 
    public SMAEditor() {
       super();
@@ -147,6 +150,24 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
       enableGlobalPrint();
    }
 
+   @SuppressWarnings("rawtypes")
+   @Override
+   public Object getAdapter(Class adapter) {
+      if (adapter == IContentOutlinePage.class) {
+         SMAEditorOutlinePage page = getOutlinePage();
+         page.setInput(this);
+         return page;
+      }
+      return super.getAdapter(adapter);
+   }
+
+   public SMAEditorOutlinePage getOutlinePage() {
+      if (outlinePage == null) {
+         outlinePage = new SMAEditorOutlinePage();
+      }
+      return outlinePage;
+   }
+
    /**
     * Do not throw exception here, want to create other tabs if this one fails
     */
@@ -168,7 +189,6 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
 
    private void updatePartName() throws OseeCoreException {
       setPartName(getTitleStr());
-      setTitleImage(ArtifactImageManager.getImage(sma));
    }
 
    public String getTitleStr() throws OseeCoreException {
@@ -612,6 +632,11 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
       List<Artifact> arts = new ArrayList<Artifact>();
       arts.add(sma);
       return arts;
+   }
+
+   @Override
+   public Image getTitleImage() {
+      return ArtifactImageManager.getImage(sma);
    }
 
 }

@@ -52,4 +52,8 @@ public class AbstractWorkDefItem {
       return workDataKeyValueMap;
    }
 
+   @Override
+   public String toString() {
+      return getName();
+   }
 }

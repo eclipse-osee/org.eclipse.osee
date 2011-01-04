@@ -752,14 +752,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return getStateDefinition().getToStates();
    }
 
-   public List<StateDefinition> getReturnPages() {
-      return getStateDefinition().getReturnStates();
-   }
-
-   public boolean isReturnPage(StateDefinition stateDefinition) {
-      return getReturnPages().contains(stateDefinition);
-   }
-
    public boolean isAccessControlWrite() throws OseeCoreException {
       return AccessControlManager.hasPermission(this, PermissionEnum.WRITE);
    }

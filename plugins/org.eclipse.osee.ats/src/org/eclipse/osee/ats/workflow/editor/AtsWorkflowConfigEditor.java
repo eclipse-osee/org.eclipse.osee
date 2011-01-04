@@ -47,7 +47,6 @@ import org.eclipse.osee.ats.workflow.editor.actions.EditAction;
 import org.eclipse.osee.ats.workflow.editor.model.CancelledWorkPageShape;
 import org.eclipse.osee.ats.workflow.editor.model.CompletedWorkPageShape;
 import org.eclipse.osee.ats.workflow.editor.model.DefaultTransitionConnection;
-import org.eclipse.osee.ats.workflow.editor.model.ReturnTransitionConnection;
 import org.eclipse.osee.ats.workflow.editor.model.TransitionConnection;
 import org.eclipse.osee.ats.workflow.editor.model.WorkPageShape;
 import org.eclipse.osee.ats.workflow.editor.model.WorkflowDiagram;
@@ -295,12 +294,7 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
          // Handle to pages
          Set<StateDefinition> toPages = new HashSet<StateDefinition>();
          toPages.addAll(statePage.getToPages());
-         List<StateDefinition> returnPages = statePage.getReturnStates();
          for (StateDefinition toPageDef : toPages) {
-            // Don't want to show return pages twice
-            if (returnPages.contains(toPageDef)) {
-               continue;
-            }
             WorkPageShape toPageShape = getWorkPageShape(toPageDef);
             if (toPageDef.equals(statePage.getDefaultToPage())) {
                new DefaultTransitionConnection(pageShape, toPageShape);
@@ -311,11 +305,11 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
             }
          }
          // Handle return pages
-         for (StateDefinition toPageDef : returnPages) {
-            WorkPageShape toPageShape = getWorkPageShape(toPageDef);
-            new ReturnTransitionConnection(pageShape, toPageShape);
-            //               System.out.println("Return: " + statePage.getName() + " -> " + toPageShape.getName());
-         }
+         //         for (StateDefinition toPageDef : returnPages) {
+         //            WorkPageShape toPageShape = getWorkPageShape(toPageDef);
+         //            new ReturnTransitionConnection(pageShape, toPageShape);
+         //            //               System.out.println("Return: " + statePage.getName() + " -> " + toPageShape.getName());
+         //         }
       }
    }
 

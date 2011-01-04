@@ -522,6 +522,17 @@ public class SMAWorkFlowSection extends SectionPart {
             allPages.add(nextState);
          }
       }
+      StateDefinition currState = sma.getStateDefinition();
+      if (currState.isCompletedPage()) {
+         if (!allPages.contains(sma.getCompletedFromState())) {
+            allPages.add(sma.getWorkDefinition().getStateByName(sma.getCompletedFromState()));
+         }
+      }
+      if (currState.isCancelledPage()) {
+         if (!allPages.contains(sma.getCancelledFromState())) {
+            allPages.add(sma.getWorkDefinition().getStateByName(sma.getCancelledFromState()));
+         }
+      }
       transitionToStateCombo.setInput(allPages);
       transitionToStateCombo.setLabelProvider(new StateDefinitionLabelProvider());
       transitionToStateCombo.setContentProvider(new ArrayContentProvider());
@@ -697,8 +708,9 @@ public class SMAWorkFlowSection extends SectionPart {
             }
          }
 
-         // If this is a return transition, don't require page/tasks to be complete
-         if (!sma.isReturnPage(toStateDefinition) && !isStateTransitionable(toStateDefinition, toAssignees)) {
+         // If overrideAttributeValidation state, don't require page/tasks to be complete
+         if (!sma.getStateDefinition().getOverrideAttributeValidationStates().contains(toStateDefinition) && !isStateTransitionable(
+            toStateDefinition, toAssignees)) {
             return;
          }
 
@@ -854,18 +866,23 @@ public class SMAWorkFlowSection extends SectionPart {
          }
       }
 
-      // Otherwise, open dialog to ask for hours complete
-      String msg =
-         sma.getStateMgr().getCurrentStateName() + " State\n\n" + AtsUtil.doubleToI18nString(sma.getStateMgr().getHoursSpent()) + " hours already spent on this state.\n" + "Enter the additional number of hours you spent on this state.";
-      SMAStatusDialog tsd =
-         new SMAStatusDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Enter Hours Spent", msg,
-            false, Arrays.asList(sma));
-      int result = tsd.open();
-      if (result == 0) {
-         sma.getStateMgr().updateMetrics(tsd.getHours().getFloat(), 100, true);
+      if (statePage.isRequireStateHoursSpentPrompt()) {
+         // Otherwise, open dialog to ask for hours complete
+         String msg =
+            sma.getStateMgr().getCurrentStateName() + " State\n\n" + AtsUtil.doubleToI18nString(sma.getStateMgr().getHoursSpent()) + " hours already spent on this state.\n" + "Enter the additional number of hours you spent on this state.";
+         SMAStatusDialog tsd =
+            new SMAStatusDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Enter Hours Spent",
+               msg, false, Arrays.asList(sma));
+         int result = tsd.open();
+         if (result == 0) {
+            sma.getStateMgr().updateMetrics(tsd.getHours().getFloat(), 100, true);
+            return true;
+         } else {
+            return false;
+         }
+      } else {
          return true;
       }
-      return false;
    }
 
    public int getCreationToNowDateDeltaMinutes() throws OseeCoreException {

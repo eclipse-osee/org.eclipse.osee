@@ -30,7 +30,7 @@ public class StateDefinitionLabelProvider implements ILabelProvider {
    }
 
    private String getCompletedAppend(StateDefinition page) {
-      if (page.isCompletedPage()) {
+      if (page.isCompletedPage() && !page.getName().startsWith("Complete")) {
          if (!page.getPageName().equals("Completed")) {
             return " (Completed)";
          }

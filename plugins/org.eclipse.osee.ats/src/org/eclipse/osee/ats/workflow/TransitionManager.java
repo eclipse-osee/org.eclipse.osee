@@ -67,7 +67,7 @@ public class TransitionManager {
       }
 
       // Validate transition from fromPage to toPage
-      if (!overrideTransitionCheck && !fromStateDefinition.getToStates().contains(toStateDefinition)) {
+      if (!overrideTransitionCheck && !fromStateDefinition.getToStates().contains(toStateDefinition) && !fromStateDefinition.isCompletedOrCancelledPage()) {
          String errStr =
             "Not configured to transition to \"" + toState.getPageName() + "\" from \"" + fromStateDefinition.getPageName() + "\"";
          OseeLog.log(AtsPlugin.class, Level.SEVERE, errStr);

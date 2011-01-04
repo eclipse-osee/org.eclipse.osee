@@ -34,4 +34,8 @@ public class CompositeStateItem extends StateItem {
       return stateItems;
    }
 
+   @Override
+   public String toString() {
+      return "Composite " + numColumns;
+   }
 }

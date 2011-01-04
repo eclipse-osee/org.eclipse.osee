@@ -64,7 +64,12 @@ public class WorkflowDebugAction extends Action {
       }
 
       // Display workflows
-      rd.log(AHTML.newline() + AHTML.bold("WorkDefinition id: " + sma.getWorkDefinition().getName()) + AHTML.newline());
+      rd.log(AHTML.newline() + AHTML.bold("WorkDefinition name: " + sma.getWorkDefinition().getName()) + AHTML.newline());
+      if (sma.getWorkDefinition().getIds().size() > 1) {
+         for (String id : sma.getWorkDefinition().getIds()) {
+            rd.log(AHTML.bold("WorkDefinition id: ") + id + AHTML.newline());
+         }
+      }
       for (RuleDefinition ruleDefinition : sma.getWorkDefinition().getRules()) {
          rd.log(AHTML.addSpace(6) + AHTML.color("green", "Rule: ") + ruleDefinition.toString());
       }
@@ -77,11 +82,13 @@ public class WorkflowDebugAction extends Action {
             rd.log(AHTML.addSpace(6) + AHTML.color("cyan", "Rule: ") + rule.toString());
          }
          for (StateDefinition toState : state.getToStates()) {
-            boolean isDefault = state.getDefaultToStates().contains(toState);
+            boolean isDefault = state.getDefaultToState().getFullName().contains(toState.getFullName());
             rd.log(AHTML.addSpace(6) + AHTML.color("blue", "Transition ToState: ") + toState.getPageName() + (isDefault ? " (Default)" : ""));
          }
-         for (StateDefinition toState : state.getReturnStates()) {
-            rd.log(AHTML.addSpace(6) + AHTML.color("blue", "Transition ReturnState: ") + toState.getReturnStates());
+         if (!state.getOverrideAttributeValidationStates().isEmpty()) {
+            for (StateDefinition toState : state.getOverrideAttributeValidationStates()) {
+               rd.log(AHTML.addSpace(6) + AHTML.color("blue", "Transition OverrideAttributeValidationStates: ") + toState.getOverrideAttributeValidationStates());
+            }
          }
       }
       return rd;

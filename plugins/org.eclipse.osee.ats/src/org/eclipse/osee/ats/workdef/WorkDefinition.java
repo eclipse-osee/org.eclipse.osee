@@ -7,18 +7,22 @@ package org.eclipse.osee.ats.workdef;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 public class WorkDefinition extends AbstractWorkDefItem {
 
    private final List<StateDefinition> states = new ArrayList<StateDefinition>(5);
    private final List<RuleDefinition> rules = new ArrayList<RuleDefinition>(5);
+   private final Set<String> ids = new HashSet<String>();
+   private StateDefinition startState;
    private String version;
 
-   public WorkDefinition(String id, String version) {
-      super(id);
-      this.version = version;
+   public WorkDefinition(String name) {
+      super(name);
+      ids.add(name);
    }
 
    public List<StateDefinition> getStates() {
@@ -26,7 +30,6 @@ public class WorkDefinition extends AbstractWorkDefItem {
    }
 
    public List<StateDefinition> getStatesOrdered() throws OseeCoreException {
-      StateDefinition startState = getStartState();
       if (startState == null) {
          throw new IllegalArgumentException("Can't locate Start State for workflow " + getName());
       }
@@ -52,12 +55,14 @@ public class WorkDefinition extends AbstractWorkDefItem {
    }
 
    private void getOrderedStates(StateDefinition stateDefinition, List<StateDefinition> pages) throws OseeCoreException {
-      // Add this page first
-      if (!pages.contains(stateDefinition)) {
-         pages.add(stateDefinition);
+      if (pages.contains(stateDefinition)) {
+         return;
       }
+      // Add this page first
+      pages.add(stateDefinition);
       // Add default page
-      if (getDefaultToState(stateDefinition) != null) {
+      StateDefinition defaultToState = getDefaultToState(stateDefinition);
+      if (defaultToState != null && !defaultToState.getName().equals(stateDefinition.getName())) {
          getOrderedStates(getDefaultToState(stateDefinition), pages);
       }
       // Add remaining pages
@@ -69,10 +74,7 @@ public class WorkDefinition extends AbstractWorkDefItem {
    }
 
    public StateDefinition getDefaultToState(StateDefinition stateDefinition) {
-      if (!stateDefinition.getDefaultToStates().isEmpty()) {
-         return stateDefinition.getDefaultToStates().iterator().next();
-      }
-      return null;
+      return stateDefinition.getDefaultToState();
    }
 
    public Collection<String> getStateNames() {
@@ -86,15 +88,6 @@ public class WorkDefinition extends AbstractWorkDefItem {
    public StateDefinition getStateByName(String name) {
       for (StateDefinition state : states) {
          if (state.getName().equals(name)) {
-            return state;
-         }
-      }
-      return null;
-   }
-
-   public StateDefinition getStartState() {
-      for (StateDefinition state : states) {
-         if (state.isStartState()) {
             return state;
          }
       }
@@ -169,6 +162,18 @@ public class WorkDefinition extends AbstractWorkDefItem {
 
    public void setVersion(String version) {
       this.version = version;
+   }
+
+   public StateDefinition getStartState() {
+      return startState;
+   }
+
+   public void setStartState(StateDefinition startState) {
+      this.startState = startState;
+   }
+
+   public Set<String> getIds() {
+      return ids;
    }
 
 }
