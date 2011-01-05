@@ -109,7 +109,7 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
     */
    public String getAsFormattedString(DateFormat dateFormat) throws OseeCoreException {
       Date date = getValue();
-      return date != null ? dateFormat.format(getValue()) : "";
+      return date != null ? dateFormat.format(date) : "";
    }
 
 }
