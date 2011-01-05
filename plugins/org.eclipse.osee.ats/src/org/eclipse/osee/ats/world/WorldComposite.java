@@ -82,7 +82,7 @@ public class WorldComposite extends ScrolledComposite implements IWorldViewerEve
 
       worldXViewer =
          new WorldXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION,
-            xViewerFactory != null ? xViewerFactory : new WorldXViewerFactory());
+            xViewerFactory != null ? xViewerFactory : new WorldXViewerFactory(), null);
       worldXViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
 
       worldXViewer.setContentProvider(new WorldContentProvider(worldXViewer));

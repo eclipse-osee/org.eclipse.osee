@@ -75,6 +75,7 @@ import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.AttributeColumn;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -88,7 +89,7 @@ import org.eclipse.ui.PartInitException;
 /**
  * @author Donald G. Dunne
  */
-public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPersistAltLeftClickProvider, ISelectedTeamWorkflowArtifacts, ISelectedArtifacts {
+public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPersistAltLeftClickProvider, ISelectedTeamWorkflowArtifacts, ISelectedArtifacts, IDirtiableEditor {
    private String title;
    private String extendedStatusString = "";
    public static final String MENU_GROUP_ATS_WORLD_EDIT = "ATS WORLD EDIT";
@@ -100,9 +101,11 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
    public static final String UN_SUBSCRIBE = "Un-Subscribe for Notifications";
    public final WorldXViewer thisXViewer = this;
    public List<IMenuActionProvider> menuActionProviders = new ArrayList<IMenuActionProvider>();
+   protected final IDirtiableEditor editor;
 
-   public WorldXViewer(Composite parent, int style, IXViewerFactory xViewerFactory) {
+   public WorldXViewer(Composite parent, int style, IXViewerFactory xViewerFactory, IDirtiableEditor editor) {
       super(parent, style, xViewerFactory);
+      this.editor = editor;
    }
 
    @Override
@@ -118,7 +121,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
    }
 
    Action editAction, editActionableItemsAction;
-   EditStatusAction editStatusAction;
+   protected EditStatusAction editStatusAction;
    EditAssigneeAction editAssigneeAction;
    ConvertActionableItemsAction convertActionableItemsAction;
    Action openInAtsWorldEditorAction, openInAtsTaskEditorAction;
@@ -141,7 +144,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       openInArtifactEditorAction = new OpenInArtifactEditorAction(this);
       deletePurgeAtsObjectAction = new DeletePurgeAtsArtifactsAction(this);
       emailAction = new EmailActionAction(this);
-      editStatusAction = new EditStatusAction(this, this);
+      editStatusAction = new EditStatusAction(this, this, this, true);
       editAssigneeAction = new EditAssigneeAction(this, this);
 
       editAction = new Action("Edit", IAction.AS_PUSH_BUTTON) {
@@ -710,5 +713,12 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
    @Override
    public boolean isAltLeftClickPersist() {
       return true;
+   }
+
+   @Override
+   public void onDirtied() {
+      if (editor != null) {
+         editor.onDirtied();
+      }
    }
 }

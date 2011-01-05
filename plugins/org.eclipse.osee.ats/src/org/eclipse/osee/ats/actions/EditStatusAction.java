@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
@@ -30,11 +31,15 @@ public class EditStatusAction extends Action {
 
    private final ISelectedAtsArtifacts selectedAtsArtifacts;
    private final XViewer xViewer;
+   private final boolean persist;
+   private final IDirtiableEditor editor;
 
-   public EditStatusAction(ISelectedAtsArtifacts selectedAtsArtifacts, XViewer xViewer) {
+   public EditStatusAction(ISelectedAtsArtifacts selectedAtsArtifacts, IDirtiableEditor editor, XViewer xViewer, boolean persist) {
       super("Edit Status", IAction.AS_PUSH_BUTTON);
       this.selectedAtsArtifacts = selectedAtsArtifacts;
+      this.editor = editor;
       this.xViewer = xViewer;
+      this.persist = persist;
       setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.EDIT));
    }
 
@@ -43,9 +48,12 @@ public class EditStatusAction extends Action {
       try {
          Collection<AbstractWorkflowArtifact> smaArts =
             Collections.castMatching(AbstractWorkflowArtifact.class, selectedAtsArtifacts.getSelectedSMAArtifacts());
-         if (SMAPromptChangeStatus.promptChangeStatus(smaArts, true)) {
+         if (SMAPromptChangeStatus.promptChangeStatus(smaArts, persist)) {
             if (xViewer != null) {
                xViewer.update(selectedAtsArtifacts.getSelectedSMAArtifacts().toArray(), null);
+            }
+            if (editor != null) {
+               editor.onDirtied();
             }
          }
       } catch (Exception ex) {

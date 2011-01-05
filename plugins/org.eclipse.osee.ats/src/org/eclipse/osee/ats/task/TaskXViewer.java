@@ -45,14 +45,12 @@ import org.eclipse.swt.widgets.TreeItem;
 public class TaskXViewer extends WorldXViewer {
 
    private final TaskComposite taskComposite;
-   private final IDirtiableEditor editor;
    private boolean tasksEditable = true;
    private boolean newTaskSelectionEnabled = false;
    private static String viewerId = GUID.create();
 
    public TaskXViewer(TaskComposite taskComposite, int style, IDirtiableEditor editor) {
-      super(taskComposite, style, new TaskXViewerFactory());
-      this.editor = editor;
+      super(taskComposite, style, new TaskXViewerFactory(), editor);
       this.taskComposite = taskComposite;
    }
 
@@ -110,14 +108,14 @@ public class TaskXViewer extends WorldXViewer {
       return true;
    }
 
-   Action editStatusAction, editAssigneeAction;
+   Action editAssigneeAction;
    Action addNewTaskAction, deleteTasksAction;
 
    @Override
    public void createMenuActions() {
       super.createMenuActions();
 
-      editStatusAction = new EditStatusAction(this, this);
+      editStatusAction = new EditStatusAction(this, this, this, false);
       editAssigneeAction = new EditAssigneeAction(this, this);
 
       addNewTaskAction = new Action("New Task", IAction.AS_PUSH_BUTTON) {
