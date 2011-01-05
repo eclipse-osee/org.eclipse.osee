@@ -36,7 +36,7 @@ public class ArtifactNameColumn extends XViewerValueColumn {
    @Override
    public ArtifactNameColumn copy() {
       ArtifactNameColumn newXCol = new ArtifactNameColumn(isShow());
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 

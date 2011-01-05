@@ -36,7 +36,7 @@ public class LastStatusedColumn extends XViewerAtsColumn implements IXViewerValu
    @Override
    public LastStatusedColumn copy() {
       LastStatusedColumn newXCol = new LastStatusedColumn();
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 

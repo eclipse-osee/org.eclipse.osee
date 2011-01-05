@@ -30,7 +30,7 @@ public class WeeklyBenefitHrsColumn extends XViewerAtsAttributeValueColumn {
    @Override
    public WeeklyBenefitHrsColumn copy() {
       WeeklyBenefitHrsColumn newXCol = new WeeklyBenefitHrsColumn();
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 

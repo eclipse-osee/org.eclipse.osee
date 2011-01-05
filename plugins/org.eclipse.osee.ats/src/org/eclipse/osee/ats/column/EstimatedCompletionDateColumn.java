@@ -48,7 +48,7 @@ public class EstimatedCompletionDateColumn extends XViewerAtsAttributeValueColum
    @Override
    public EstimatedCompletionDateColumn copy() {
       EstimatedCompletionDateColumn newXCol = new EstimatedCompletionDateColumn();
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 

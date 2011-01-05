@@ -35,7 +35,7 @@ public class TeamColumn extends XViewerAtsColumn implements IXViewerValueColumn 
    @Override
    public TeamColumn copy() {
       TeamColumn newXCol = new TeamColumn();
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 

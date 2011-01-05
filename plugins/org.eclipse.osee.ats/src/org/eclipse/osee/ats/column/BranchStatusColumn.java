@@ -39,7 +39,7 @@ public class BranchStatusColumn extends XViewerAtsColumn implements IXViewerValu
    @Override
    public BranchStatusColumn copy() {
       BranchStatusColumn newXCol = new BranchStatusColumn();
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 

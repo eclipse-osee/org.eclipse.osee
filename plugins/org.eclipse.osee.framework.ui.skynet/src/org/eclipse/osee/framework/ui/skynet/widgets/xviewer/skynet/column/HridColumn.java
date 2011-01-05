@@ -43,7 +43,7 @@ public class HridColumn extends XViewerValueColumn {
    @Override
    public HridColumn copy() {
       HridColumn newXCol = new HridColumn(isShow());
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 

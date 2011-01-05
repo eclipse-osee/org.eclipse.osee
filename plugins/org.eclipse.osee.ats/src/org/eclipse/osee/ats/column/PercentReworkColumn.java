@@ -30,7 +30,7 @@ public class PercentReworkColumn extends XViewerAtsAttributeValueColumn {
    @Override
    public PercentReworkColumn copy() {
       PercentReworkColumn newXCol = new PercentReworkColumn();
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 

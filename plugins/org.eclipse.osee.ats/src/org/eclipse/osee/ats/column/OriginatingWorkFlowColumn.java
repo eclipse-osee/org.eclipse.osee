@@ -43,7 +43,7 @@ public class OriginatingWorkFlowColumn extends XViewerAtsColumn implements IXVie
    @Override
    public OriginatingWorkFlowColumn copy() {
       OriginatingWorkFlowColumn newXCol = new OriginatingWorkFlowColumn();
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 

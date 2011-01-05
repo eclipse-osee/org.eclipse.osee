@@ -28,7 +28,7 @@ public class UserCommunityColumn extends XViewerAtsAttributeValueColumn {
    @Override
    public UserCommunityColumn copy() {
       UserCommunityColumn newXCol = new UserCommunityColumn();
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 

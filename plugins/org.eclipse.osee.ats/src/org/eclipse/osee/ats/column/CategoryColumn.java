@@ -43,7 +43,7 @@ public class CategoryColumn extends XViewerAtsAttributeValueColumn {
    @Override
    public CategoryColumn copy() {
       CategoryColumn newXCol = new CategoryColumn();
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 

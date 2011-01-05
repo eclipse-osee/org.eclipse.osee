@@ -47,7 +47,7 @@ public class GoalOrderColumn extends XViewerAtsColumn implements IXViewerValueCo
    @Override
    public GoalOrderColumn copy() {
       GoalOrderColumn newXCol = new GoalOrderColumn();
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 

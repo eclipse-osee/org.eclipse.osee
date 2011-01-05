@@ -40,7 +40,7 @@ public class CompletedByColumn extends XViewerAtsColumn implements IXViewerValue
    @Override
    public CompletedByColumn copy() {
       CompletedByColumn newXCol = new CompletedByColumn();
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 

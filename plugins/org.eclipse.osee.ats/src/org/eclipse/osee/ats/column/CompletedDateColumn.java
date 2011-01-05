@@ -45,7 +45,7 @@ public class CompletedDateColumn extends XViewerAtsColumn implements IXViewerVal
    @Override
    public CompletedDateColumn copy() {
       CompletedDateColumn newXCol = new CompletedDateColumn();
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 

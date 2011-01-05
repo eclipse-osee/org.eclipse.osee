@@ -57,7 +57,7 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
    @Override
    public OriginatorColumn copy() {
       OriginatorColumn newXCol = new OriginatorColumn();
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 

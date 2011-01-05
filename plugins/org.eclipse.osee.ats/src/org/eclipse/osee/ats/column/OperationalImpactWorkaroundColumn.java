@@ -42,7 +42,7 @@ public class OperationalImpactWorkaroundColumn extends XViewerValueColumn {
    @Override
    public OperationalImpactWorkaroundColumn copy() {
       OperationalImpactWorkaroundColumn newXCol = new OperationalImpactWorkaroundColumn();
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.xviewer.column;
 
+import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -32,9 +33,12 @@ public class XViewerAtsAttributeColumn extends XViewerAtsColumn {
       return newXCol;
    }
 
-   private void copy(XViewerAtsAttributeColumn fromXCol, XViewerAtsAttributeColumn toXCol) {
+   @Override
+   public void copy(XViewerColumn fromXCol, XViewerColumn toXCol) {
       super.copy(fromXCol, toXCol);
-      toXCol.setAttributeType(fromXCol.attributeType);
+      if (fromXCol instanceof XViewerAtsAttributeColumn && toXCol instanceof XViewerAtsAttributeColumn) {
+         ((XViewerAtsAttributeColumn) toXCol).setAttributeType(((XViewerAtsAttributeColumn) fromXCol).getAttributeType());
+      }
    }
 
    protected XViewerAtsAttributeColumn() {

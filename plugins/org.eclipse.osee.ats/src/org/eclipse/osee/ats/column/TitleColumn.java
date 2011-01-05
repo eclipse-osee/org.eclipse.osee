@@ -31,7 +31,7 @@ public class TitleColumn extends XViewerAtsAttributeValueColumn {
    @Override
    public TitleColumn copy() {
       TitleColumn newXCol = new TitleColumn();
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 

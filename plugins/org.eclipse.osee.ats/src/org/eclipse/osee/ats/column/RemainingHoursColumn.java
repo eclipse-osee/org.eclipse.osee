@@ -48,7 +48,7 @@ public class RemainingHoursColumn extends XViewerAtsColumn implements IXViewerVa
    @Override
    public RemainingHoursColumn copy() {
       RemainingHoursColumn newXCol = new RemainingHoursColumn();
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 

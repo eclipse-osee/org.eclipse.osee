@@ -40,7 +40,7 @@ public class CompletedCancelledByColumn extends XViewerAtsColumn implements IXVi
    @Override
    public CompletedCancelledByColumn copy() {
       CompletedCancelledByColumn newXCol = new CompletedCancelledByColumn();
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 

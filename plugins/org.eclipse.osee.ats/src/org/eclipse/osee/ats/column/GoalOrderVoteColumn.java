@@ -33,7 +33,7 @@ public class GoalOrderVoteColumn extends XViewerAtsAttributeValueColumn {
    @Override
    public GoalOrderVoteColumn copy() {
       GoalOrderVoteColumn newXCol = new GoalOrderVoteColumn();
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 

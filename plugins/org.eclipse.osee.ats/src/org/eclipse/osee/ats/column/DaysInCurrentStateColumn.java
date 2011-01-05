@@ -42,7 +42,7 @@ public class DaysInCurrentStateColumn extends XViewerAtsColumn implements IXView
    @Override
    public DaysInCurrentStateColumn copy() {
       DaysInCurrentStateColumn newXCol = new DaysInCurrentStateColumn();
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 

@@ -43,7 +43,7 @@ public class DeadlineColumn extends XViewerAtsAttributeValueColumn {
    @Override
    public DeadlineColumn copy() {
       DeadlineColumn newXCol = new DeadlineColumn();
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 

@@ -34,7 +34,7 @@ public class ReviewNumMajorDefectsColumn extends XViewerAtsColumn implements IXV
    @Override
    public ReviewNumMajorDefectsColumn copy() {
       ReviewNumMajorDefectsColumn newXCol = new ReviewNumMajorDefectsColumn();
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 

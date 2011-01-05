@@ -38,7 +38,7 @@ public class TypeColumn extends XViewerAtsColumn implements IXViewerValueColumn 
    @Override
    public TypeColumn copy() {
       TypeColumn newXCol = new TypeColumn();
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 

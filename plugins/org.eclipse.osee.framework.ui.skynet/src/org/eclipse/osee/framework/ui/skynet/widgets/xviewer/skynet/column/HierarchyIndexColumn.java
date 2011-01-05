@@ -47,7 +47,7 @@ public class HierarchyIndexColumn extends XViewerValueColumn {
    @Override
    public HierarchyIndexColumn copy() {
       HierarchyIndexColumn newXCol = new HierarchyIndexColumn();
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 

@@ -31,7 +31,7 @@ public class ValidationRequiredColumn extends XViewerAtsAttributeValueColumn {
    @Override
    public ValidationRequiredColumn copy() {
       ValidationRequiredColumn newXCol = new ValidationRequiredColumn();
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 

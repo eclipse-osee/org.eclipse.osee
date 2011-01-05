@@ -40,7 +40,7 @@ public class CancelledByColumn extends XViewerAtsColumn implements IXViewerValue
    @Override
    public CancelledByColumn copy() {
       CancelledByColumn newXCol = new CancelledByColumn();
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 

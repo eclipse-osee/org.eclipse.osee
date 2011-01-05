@@ -28,7 +28,7 @@ public class DescriptionColumn extends XViewerAtsAttributeValueColumn {
    @Override
    public DescriptionColumn copy() {
       DescriptionColumn newXCol = new DescriptionColumn();
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 

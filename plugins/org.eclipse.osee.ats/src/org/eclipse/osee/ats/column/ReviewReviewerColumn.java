@@ -36,7 +36,7 @@ public class ReviewReviewerColumn extends XViewerAtsColumn implements IXViewerVa
    @Override
    public ReviewReviewerColumn copy() {
       ReviewReviewerColumn newXCol = new ReviewReviewerColumn();
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 

@@ -46,7 +46,7 @@ public class ArtifactTypeColumn extends XViewerValueColumn {
    @Override
    public ArtifactTypeColumn copy() {
       ArtifactTypeColumn newXCol = new ArtifactTypeColumn();
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 

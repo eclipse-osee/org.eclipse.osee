@@ -40,7 +40,7 @@ public class NumberOfTasksColumn extends XViewerAtsColumn implements IXViewerVal
    @Override
    public NumberOfTasksColumn copy() {
       NumberOfTasksColumn newXCol = new NumberOfTasksColumn();
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 

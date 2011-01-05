@@ -56,7 +56,7 @@ public class AssigneeColumn extends XViewerAtsColumn implements IXViewerValueCol
    @Override
    public AssigneeColumn copy() {
       AssigneeColumn newXCol = new AssigneeColumn();
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 

@@ -34,13 +34,16 @@ public class AttributeColumn extends XViewerValueColumn {
    @Override
    public AttributeColumn copy() {
       AttributeColumn newXCol = new AttributeColumn(this.getXViewer(), this.toXml());
-      copy(this, newXCol);
+      this.copy(this, newXCol);
       return newXCol;
    }
 
-   private void copy(AttributeColumn fromXCol, AttributeColumn toXCol) {
+   @Override
+   protected void copy(XViewerColumn fromXCol, XViewerColumn toXCol) {
       super.copy(fromXCol, toXCol);
-      toXCol.setAttributeType(fromXCol.attributeType);
+      if (fromXCol instanceof AttributeColumn && toXCol instanceof AttributeColumn) {
+         ((AttributeColumn) toXCol).setAttributeType(((AttributeColumn) fromXCol).getAttributeType());
+      }
    }
 
    protected AttributeColumn(XViewer xViewer, String xml) {
@@ -57,14 +60,13 @@ public class AttributeColumn extends XViewerValueColumn {
       try {
          if (element instanceof Artifact) {
             return ((Artifact) element).getAttributesToString(getAttributeType());
-         }
-         if (element instanceof Change) {
+         } else if (element instanceof Change) {
             return ((Change) element).getChangeArtifact().getAttributesToString(getAttributeType());
-         }
-         if (element instanceof Conflict) {
+         } else if (element instanceof Conflict) {
             return ((Conflict) element).getArtifact().getAttributesToString(getAttributeType());
+         } else {
+            return "";
          }
-         return "";
       } catch (OseeCoreException ex) {
          throw new XViewerException(ex);
       }

@@ -36,7 +36,7 @@ public class WorkPackageColumn extends XViewerAtsAttributeValueColumn {
    @Override
    public WorkPackageColumn copy() {
       WorkPackageColumn newXCol = new WorkPackageColumn();
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 

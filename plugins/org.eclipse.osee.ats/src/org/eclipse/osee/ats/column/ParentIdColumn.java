@@ -35,7 +35,7 @@ public class ParentIdColumn extends XViewerAtsColumn implements IXViewerValueCol
    @Override
    public ParentIdColumn copy() {
       ParentIdColumn newXCol = new ParentIdColumn();
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 

@@ -44,7 +44,7 @@ public class ActionableItemsColumn extends XViewerAtsAttributeValueColumn {
    @Override
    public ActionableItemsColumn copy() {
       ActionableItemsColumn newXCol = new ActionableItemsColumn();
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 

@@ -54,7 +54,7 @@ public class RelatedToStateColumn extends XViewerAtsAttributeValueColumn {
    @Override
    public RelatedToStateColumn copy() {
       RelatedToStateColumn newXCol = new RelatedToStateColumn();
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 
@@ -111,7 +111,7 @@ public class RelatedToStateColumn extends XViewerAtsAttributeValueColumn {
       }
    }
 
-   private static List<String> getValidStates(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
+   private static List<String> getValidStates(TeamWorkFlowArtifact teamArt) {
       List<String> names = new ArrayList<String>();
       names.addAll(teamArt.getWorkDefinition().getStateNames());
       Collections.sort(names);

@@ -45,7 +45,7 @@ public class CancelledDateColumn extends XViewerAtsColumn implements IXViewerVal
    @Override
    public CancelledDateColumn copy() {
       CancelledDateColumn newXCol = new CancelledDateColumn();
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 

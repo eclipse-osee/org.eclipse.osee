@@ -32,7 +32,7 @@ public class GuidColumn extends XViewerValueColumn {
    @Override
    public GuidColumn copy() {
       GuidColumn newXCol = new GuidColumn(isShow());
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 

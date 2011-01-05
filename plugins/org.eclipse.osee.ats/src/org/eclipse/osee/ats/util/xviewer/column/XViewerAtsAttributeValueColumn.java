@@ -152,4 +152,16 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
    public boolean isMultiLineStringAttribute() {
       return false;
    }
+
+   /**
+    * XViewer uses copies of column definitions so originals that are registered are not corrupted. Classes extending
+    * XViewerValueColumn need to extend this constructor to copy extra stored fields
+    */
+   @Override
+   public XViewerAtsAttributeValueColumn copy() {
+      XViewerAtsAttributeValueColumn newXCol = new XViewerAtsAttributeValueColumn();
+      copy(this, newXCol);
+      return newXCol;
+   }
+
 }

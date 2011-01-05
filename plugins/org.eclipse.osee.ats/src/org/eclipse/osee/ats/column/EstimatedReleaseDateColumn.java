@@ -30,7 +30,7 @@ public class EstimatedReleaseDateColumn extends AbstractWorkflowVersionDateColum
    @Override
    public EstimatedReleaseDateColumn copy() {
       EstimatedReleaseDateColumn newXCol = new EstimatedReleaseDateColumn();
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 

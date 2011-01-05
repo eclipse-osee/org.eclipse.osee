@@ -40,7 +40,7 @@ public class ImplementorColumn extends XViewerAtsColumn implements IXViewerValue
    @Override
    public ImplementorColumn copy() {
       ImplementorColumn newXCol = new ImplementorColumn();
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 

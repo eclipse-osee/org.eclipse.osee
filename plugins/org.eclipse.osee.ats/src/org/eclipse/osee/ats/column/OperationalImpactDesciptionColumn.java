@@ -37,7 +37,7 @@ public class OperationalImpactDesciptionColumn extends XViewerValueColumn {
    @Override
    public OperationalImpactDesciptionColumn copy() {
       OperationalImpactDesciptionColumn newXCol = new OperationalImpactDesciptionColumn();
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 

@@ -30,7 +30,7 @@ public class NotesColumn extends XViewerAtsAttributeValueColumn {
    @Override
    public NotesColumn copy() {
       NotesColumn newXCol = new NotesColumn();
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 

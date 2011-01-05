@@ -39,7 +39,7 @@ public class EstimatedHoursColumn extends XViewerAtsAttributeValueColumn {
    @Override
    public EstimatedHoursColumn copy() {
       EstimatedHoursColumn newXCol = new EstimatedHoursColumn();
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 

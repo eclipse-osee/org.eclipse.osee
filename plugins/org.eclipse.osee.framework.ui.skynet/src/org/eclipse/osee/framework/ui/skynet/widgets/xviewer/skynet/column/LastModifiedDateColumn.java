@@ -37,7 +37,7 @@ public class LastModifiedDateColumn extends XViewerValueColumn {
    @Override
    public LastModifiedDateColumn copy() {
       LastModifiedDateColumn newXCol = new LastModifiedDateColumn(isShow());
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 

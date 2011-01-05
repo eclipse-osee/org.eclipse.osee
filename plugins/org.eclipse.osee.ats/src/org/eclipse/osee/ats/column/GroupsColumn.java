@@ -55,7 +55,7 @@ public class GroupsColumn extends XViewerAtsColumn implements IXViewerValueColum
    @Override
    public GroupsColumn copy() {
       GroupsColumn newXCol = new GroupsColumn();
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 

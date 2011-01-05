@@ -45,7 +45,7 @@ public class WorkDaysNeededColumn extends XViewerAtsColumn implements IXViewerVa
    @Override
    public WorkDaysNeededColumn copy() {
       WorkDaysNeededColumn newXCol = new WorkDaysNeededColumn();
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 

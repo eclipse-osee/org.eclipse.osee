@@ -46,7 +46,7 @@ public class PriorityColumn extends XViewerAtsAttributeValueColumn {
    @Override
    public PriorityColumn copy() {
       PriorityColumn newXCol = new PriorityColumn();
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 

@@ -50,7 +50,7 @@ public class AnnualCostAvoidanceColumn extends XViewerAtsColumn implements IXVie
    @Override
    public AnnualCostAvoidanceColumn copy() {
       AnnualCostAvoidanceColumn newXCol = new AnnualCostAvoidanceColumn();
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 

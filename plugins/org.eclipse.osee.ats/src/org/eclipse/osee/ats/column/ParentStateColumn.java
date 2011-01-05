@@ -34,7 +34,7 @@ public class ParentStateColumn extends XViewerAtsColumn implements IXViewerValue
    @Override
    public ParentStateColumn copy() {
       ParentStateColumn newXCol = new ParentStateColumn();
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 

@@ -36,7 +36,7 @@ public class LegacyPcrIdColumn extends XViewerAtsAttributeValueColumn {
    @Override
    public LegacyPcrIdColumn copy() {
       LegacyPcrIdColumn newXCol = new LegacyPcrIdColumn();
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 

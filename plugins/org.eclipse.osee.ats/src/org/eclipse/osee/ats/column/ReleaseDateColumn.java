@@ -30,7 +30,7 @@ public class ReleaseDateColumn extends AbstractWorkflowVersionDateColumn {
    @Override
    public ReleaseDateColumn copy() {
       ReleaseDateColumn newXCol = new ReleaseDateColumn();
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 

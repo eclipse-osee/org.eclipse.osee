@@ -53,7 +53,7 @@ public class ChangeTypeColumn extends XViewerAtsAttributeValueColumn {
    @Override
    public ChangeTypeColumn copy() {
       ChangeTypeColumn newXCol = new ChangeTypeColumn();
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 

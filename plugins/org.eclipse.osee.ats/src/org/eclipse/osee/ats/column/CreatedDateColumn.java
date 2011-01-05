@@ -41,7 +41,7 @@ public class CreatedDateColumn extends XViewerAtsColumn implements IXViewerValue
    @Override
    public CreatedDateColumn copy() {
       CreatedDateColumn newXCol = new CreatedDateColumn();
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 

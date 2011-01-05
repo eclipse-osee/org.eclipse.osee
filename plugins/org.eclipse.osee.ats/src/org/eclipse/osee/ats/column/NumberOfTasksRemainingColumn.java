@@ -40,7 +40,7 @@ public class NumberOfTasksRemainingColumn extends XViewerAtsColumn implements IX
    @Override
    public NumberOfTasksRemainingColumn copy() {
       NumberOfTasksRemainingColumn newXCol = new NumberOfTasksRemainingColumn();
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 

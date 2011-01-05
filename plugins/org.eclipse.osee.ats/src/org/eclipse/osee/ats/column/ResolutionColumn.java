@@ -48,7 +48,7 @@ public class ResolutionColumn extends XViewerAtsAttributeValueColumn {
    @Override
    public ResolutionColumn copy() {
       ResolutionColumn newXCol = new ResolutionColumn();
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 

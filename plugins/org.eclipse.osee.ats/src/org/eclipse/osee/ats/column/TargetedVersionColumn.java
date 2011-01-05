@@ -67,7 +67,7 @@ public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerV
    @Override
    public TargetedVersionColumn copy() {
       TargetedVersionColumn newXCol = new TargetedVersionColumn();
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 

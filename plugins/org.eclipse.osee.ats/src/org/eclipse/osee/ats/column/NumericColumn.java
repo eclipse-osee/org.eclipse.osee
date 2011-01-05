@@ -38,7 +38,7 @@ public class NumericColumn extends XViewerAtsAttributeValueColumn {
    @Override
    public NumericColumn copy() {
       NumericColumn newXCol = new NumericColumn();
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 

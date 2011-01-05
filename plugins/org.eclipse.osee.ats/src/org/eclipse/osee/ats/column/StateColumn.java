@@ -39,7 +39,7 @@ public class StateColumn extends XViewerAtsColumn implements IXViewerValueColumn
    @Override
    public StateColumn copy() {
       StateColumn newXCol = new StateColumn();
-      copy(this, newXCol);
+      super.copy(this, newXCol);
       return newXCol;
    }
 
