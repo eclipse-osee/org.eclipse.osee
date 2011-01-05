@@ -105,7 +105,6 @@ public class WorkDefinitionFactory {
          for (WorkPageDefinition workPage : workFlowDef.getPages()) {
             // not using ids anymore for states, widgets or rules
             StateDefinition stateDef = workDef.getOrCreateState(workPage.getPageName());
-            workDef.getStates().add(stateDef);
             stateDef.setOrdinal(workPage.getWorkPageOrdinal());
             if (workPage.getId().equals(startWorkPageName)) {
                workDef.setStartState(stateDef);

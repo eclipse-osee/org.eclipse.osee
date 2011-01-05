@@ -187,7 +187,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
             for (String id : ((WorkDefinition) element).getIds()) {
                items.add("Id: " + id);
             }
-            items.addAll(((WorkDefinition) element).getStates());
+            items.addAll(((WorkDefinition) element).getStatesOrdered());
             items.addAll(((WorkDefinition) element).getRules());
          } else if (element instanceof StateDefinition) {
             StateDefinition stateDef = (StateDefinition) element;
@@ -286,7 +286,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
 
       @Override
       public String toString() {
-         return "Rules";
+         return "Rules" + (getRuleAndLocations().isEmpty() ? " (Empty)" : "");
       }
 
       public Collection<RuleAndLocation> getRuleAndLocations() {
@@ -344,7 +344,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
 
       @Override
       public String toString() {
-         return name;
+         return name + (states.isEmpty() ? " (Empty)" : "");
       }
 
       public Collection<StateDefinition> getStates() {
@@ -361,7 +361,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
 
       @Override
       public String toString() {
-         return "Layout";
+         return "Layout" + (stateItems.isEmpty() ? " (Empty)" : "");
       }
 
       public Collection<StateItem> getStateItems() {
@@ -392,7 +392,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
 
       @Override
       public String toString() {
-         return "Transitions";
+         return "Transitions" + (stateDef.getToStates().isEmpty() ? " (Empty)" : "");
       }
 
    }

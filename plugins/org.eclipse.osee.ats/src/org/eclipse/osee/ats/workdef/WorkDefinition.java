@@ -10,7 +10,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 public class WorkDefinition extends AbstractWorkDefItem {
 
@@ -29,7 +28,7 @@ public class WorkDefinition extends AbstractWorkDefItem {
       return states;
    }
 
-   public List<StateDefinition> getStatesOrdered() throws OseeCoreException {
+   public List<StateDefinition> getStatesOrdered() {
       if (startState == null) {
          throw new IllegalArgumentException("Can't locate Start State for workflow " + getName());
       }
@@ -54,7 +53,7 @@ public class WorkDefinition extends AbstractWorkDefItem {
       return orderedPages;
    }
 
-   private void getOrderedStates(StateDefinition stateDefinition, List<StateDefinition> pages) throws OseeCoreException {
+   private void getOrderedStates(StateDefinition stateDefinition, List<StateDefinition> pages) {
       if (pages.contains(stateDefinition)) {
          return;
       }
