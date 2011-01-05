@@ -16,7 +16,6 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.database.core.CharJoinQuery;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -65,20 +64,12 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
       this(attributeType, null, validate(values), false, Operator.EQUAL);
    }
 
-   public AttributeCriteria(String attributeTypeName, Collection<String> values) throws OseeCoreException {
-      this(toAttributeType(attributeTypeName), null, validate(values), false, Operator.EQUAL);
-   }
-
    /**
     * Constructor for search criteria that finds an attribute of the given type with its current value exactly equal (or
     * not equal) to any one of the given literal values. If the list only contains one value, then the search is
     * conducted exactly as if the single value constructor was called. This search does not support the wildcard for
     * multiple values.
     */
-   public AttributeCriteria(String attributeTypeName, Collection<String> values, Operator operator) throws OseeCoreException {
-      this(toAttributeType(attributeTypeName), null, validate(values), false, operator);
-   }
-
    public AttributeCriteria(IAttributeType attributeType, Collection<String> values, Operator operator) throws OseeCoreException {
       this(attributeType, null, validate(values), false, operator);
    }
@@ -90,12 +81,8 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
     * @param value to search; supports % wildcard
     * @param historical if true will search on any branch and any attribute revision
     */
-   public AttributeCriteria(String attributeTypeName, String value, boolean historical) throws OseeCoreException {
-      this(toAttributeType(attributeTypeName), value, null, historical, Operator.EQUAL);
-   }
-
-   private static AttributeType toAttributeType(String attributeTypeName) throws OseeCoreException {
-      return attributeTypeName == null ? null : AttributeTypeManager.getType(attributeTypeName);
+   public AttributeCriteria(IAttributeType attributeType, String value, boolean historical) throws OseeCoreException {
+      this(attributeType, value, null, historical, Operator.EQUAL);
    }
 
    private static Collection<String> validate(Collection<String> values) throws OseeArgumentException {
