@@ -59,6 +59,14 @@ public class VariableMap {
       return getSingleCollectionValue(AttributeType.class, parameterName);
    }
 
+   public List<AttributeType> getAttributeTypes(String parameterName) throws OseeArgumentException {
+      Collection<AttributeType> attrTypes = getCollection(AttributeType.class, parameterName);
+      if (attrTypes == null) {
+         return new ArrayList<AttributeType>();
+      }
+      return new ArrayList<AttributeType>(attrTypes);
+   }
+
    public String getString(String parameterName) throws OseeArgumentException {
       return getValue(String.class, parameterName);
    }

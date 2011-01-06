@@ -1773,4 +1773,12 @@
             className="org.eclipse.osee.framework.ui.skynet.blam.operation.CountArtifactsOfTypeBlam">
       </Operation>
    </extension>
+   <extension
+         id="KeywordSearchBlam"
+         name="KeywordSearchBlam"
+         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+      <Operation
+            className="org.eclipse.osee.framework.ui.skynet.blam.operation.AdvancedKeywordSearchBlam">
+      </Operation>
+   </extension>
 </plugin>
