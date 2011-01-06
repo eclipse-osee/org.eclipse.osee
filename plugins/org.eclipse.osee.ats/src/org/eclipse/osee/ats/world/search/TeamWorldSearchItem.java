@@ -38,7 +38,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AbstractArtifactSearchCriteria;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeCriteria;
-import org.eclipse.osee.framework.skynet.core.artifact.search.Operator;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
@@ -228,7 +227,7 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
                if (includeCancelled) {
                   cancelOrComplete.add(WorkPageType.Cancelled.name());
                }
-               criteria.add(new AttributeCriteria(AtsAttributeTypes.CurrentStateType, cancelOrComplete, Operator.EQUAL));
+               criteria.add(new AttributeCriteria(AtsAttributeTypes.CurrentStateType, cancelOrComplete));
             }
          }
       } catch (OseeTypeDoesNotExist ex) {
@@ -242,7 +241,7 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
             cancelOrComplete.add(TeamState.Completed.getPageName() + ";;;");
          }
          if (cancelOrComplete.size() > 0) {
-            criteria.add(new AttributeCriteria(AtsAttributeTypes.CurrentState, cancelOrComplete, Operator.NOT_EQUAL));
+            criteria.add(new AttributeCriteria(AtsAttributeTypes.CurrentState, cancelOrComplete));
          }
       }
    }

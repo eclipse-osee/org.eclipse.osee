@@ -12,7 +12,9 @@ package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 public enum Operator {
    EQUAL("="),
-   NOT_EQUAL("<>");
+   NOT_EQUAL("<>"),
+   LESS_THAN("<"),
+   GREATER_THAN(">");
 
    private String expression;
 

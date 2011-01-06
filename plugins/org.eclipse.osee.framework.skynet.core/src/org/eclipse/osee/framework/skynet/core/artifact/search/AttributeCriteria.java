@@ -15,7 +15,6 @@ import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.CharJoinQuery;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -42,7 +41,7 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
     * 
     * @param value to search; supports % wildcard
     */
-   public AttributeCriteria(IAttributeType attributeType, String value) throws OseeDataStoreException {
+   public AttributeCriteria(IAttributeType attributeType, String value) throws OseeCoreException {
       this(attributeType, value, null, false, Operator.EQUAL);
    }
 
@@ -62,6 +61,14 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
     */
    public AttributeCriteria(IAttributeType attributeType, Collection<String> values) throws OseeCoreException {
       this(attributeType, null, validate(values), false, Operator.EQUAL);
+   }
+
+   /**
+    * Constructor for search criteria that finds an attribute of the given type with its current value relative to the
+    * given value based on the operator provided.
+    */
+   public AttributeCriteria(IAttributeType attributeType, String value, Operator operator) throws OseeCoreException {
+      this(attributeType, value, null, false, operator);
    }
 
    /**
@@ -92,11 +99,16 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
       return values;
    }
 
-   public AttributeCriteria(IAttributeType attributeType, String value, Collection<String> values, boolean historical, Operator operator) throws OseeDataStoreException {
+   public AttributeCriteria(IAttributeType attributeType, String value, Collection<String> values, boolean historical, Operator operator) throws OseeCoreException {
       this.attributeType = attributeType;
 
       if (values == null) {
          this.value = value;
+         if (value != null && value.contains("%") && (operator != Operator.EQUAL && operator != Operator.NOT_EQUAL)) {
+            throw new OseeArgumentException(
+               "when value contains %%, one of the following operators must be used: %s, %s", Operator.EQUAL,
+               Operator.NOT_EQUAL);
+         }
       } else {
          if (values.size() == 1) {
             this.value = values.iterator().next();
@@ -181,14 +193,13 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
    public String toString() {
       StringBuilder strB = new StringBuilder();
       if (attributeType != null) {
-         strB.append(attributeType.getName());
+         strB.append(attributeType);
       } else {
          strB.append("*");
       }
-      if (operator == Operator.NOT_EQUAL) {
-         strB.append(" NOT ");
-      }
-      strB.append("=");
+      strB.append(" ");
+      strB.append(operator);
+      strB.append(" ");
       if (value != null) {
          strB.append(value);
       }
@@ -206,5 +217,4 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
          joinQuery.delete();
       }
    }
-
 }
