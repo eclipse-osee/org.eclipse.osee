@@ -95,9 +95,6 @@ public class SMARelationsHyperlinkComposite extends Composite {
          if (smaArt.getRelatedArtifacts(side).size() > 0) {
             return true;
          }
-         if (smaArt.getParentActionArtifact() != null && smaArt.getParentActionArtifact().getRelatedArtifacts(side).size() > 0) {
-            return true;
-         }
       }
       if (smaArt instanceof AbstractReviewArtifact && ((AbstractReviewArtifact) smaArt).getActionableItemsDam().getActionableItemGuids().size() > 0) {
          return true;
