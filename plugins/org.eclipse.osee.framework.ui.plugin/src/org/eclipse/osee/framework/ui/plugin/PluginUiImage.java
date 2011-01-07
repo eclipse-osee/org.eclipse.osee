@@ -25,6 +25,7 @@ public enum PluginUiImage implements KeyedImage {
    REFRESH("refresh.gif"),
    CHECKBOX_ENABLED("chkbox_enabled.gif"),
    CHECKBOX_DISABLED("chkbox_disabled.gif"),
+   OSEE_16("osee_16.png"),
    URL("www.gif");
 
    private final String fileName;
