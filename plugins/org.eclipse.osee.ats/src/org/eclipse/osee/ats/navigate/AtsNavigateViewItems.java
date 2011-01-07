@@ -39,6 +39,7 @@ import org.eclipse.osee.ats.util.ConvertAtsFor096Database;
 import org.eclipse.osee.ats.util.ConvertAtsFor097Database;
 import org.eclipse.osee.ats.util.ConvertAtsSingleFor097Database;
 import org.eclipse.osee.ats.util.DoesNotWorkItemAts;
+import org.eclipse.osee.ats.util.Import.ImportActionsViaSpreadsheetBlam;
 import org.eclipse.osee.ats.world.search.ActionableItemWorldSearchItem;
 import org.eclipse.osee.ats.world.search.ArtifactTypeSearchItem;
 import org.eclipse.osee.ats.world.search.ArtifactTypeWithInheritenceSearchItem;
@@ -87,6 +88,7 @@ import org.eclipse.osee.framework.ui.skynet.results.example.ResultsEditorExample
 import org.eclipse.osee.framework.ui.skynet.results.example.XResultDataExample;
 import org.eclipse.osee.framework.ui.skynet.results.example.XViewerExample;
 import org.eclipse.osee.framework.ui.skynet.util.email.EmailUserGroups;
+import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemBlam;
 import org.osgi.framework.Bundle;
 
 /**
@@ -201,6 +203,7 @@ public final class AtsNavigateViewItems implements XNavigateViewItems {
             AtsArtifactTypes.TeamWorkflow));
          new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all Tasks", AtsArtifactTypes.Task));
          new CreateGoalTestArtifacts(adminItems);
+         new CreateNewUsersByNameItem(adminItems);
 
          new DoesNotWorkItemAts(adminItems);
 
@@ -228,7 +231,7 @@ public final class AtsNavigateViewItems implements XNavigateViewItems {
 
    private void createUtilItems(List<XNavigateItem> items) {
       XNavigateItem utilItems = new XNavigateItem(null, "Util", FrameworkImage.GEAR);
-      new ImportActionsViaSpreadsheet(utilItems);
+      new XNavigateItemBlam(utilItems, new ImportActionsViaSpreadsheetBlam());
       new XNavigateItemAction(utilItems, new CompareTwoStringsAction(), FrameworkImage.EDIT);
       new GenerateGuid(utilItems);
       new XNavigateItemOperation(utilItems, FrameworkImage.GEAR, MassEditDirtyArtifactOperation.NAME,

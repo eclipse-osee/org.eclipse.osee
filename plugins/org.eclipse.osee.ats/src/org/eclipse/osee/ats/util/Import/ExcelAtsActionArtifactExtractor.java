@@ -13,12 +13,23 @@ package org.eclipse.osee.ats.util.Import;
 import java.io.FileFilter;
 import java.io.InputStreamReader;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
+import org.eclipse.osee.ats.artifact.ActionArtifact.CreateTeamOption;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
+import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.internal.AtsPlugin;
@@ -29,6 +40,7 @@ import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
@@ -38,9 +50,11 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
@@ -49,17 +63,20 @@ import org.xml.sax.helpers.XMLReaderFactory;
  */
 public class ExcelAtsActionArtifactExtractor {
 
-   private final Set<ActionData> actionDatas;
-   private final Set<ActionArtifact> actionArts;
+   private final List<ActionData> actionDatas = new ArrayList<ActionData>();
+   private final Set<ActionArtifact> actionArts = new HashSet<ActionArtifact>();
+   private final Map<String, ActionArtifact> actionNameToAction = new HashMap<String, ActionArtifact>(100);
    private final boolean emailPOCs;
+   private boolean dataIsValid = true;
 
    public ExcelAtsActionArtifactExtractor(boolean emailPOCs) {
       this.emailPOCs = emailPOCs;
-      this.actionDatas = new HashSet<ActionData>();
-      this.actionArts = new HashSet<ActionArtifact>();
    }
 
-   public boolean dataIsValid() throws OseeCoreException {
+   public XResultData dataIsValid() throws OseeCoreException {
+      if (!dataIsValid) {
+         return new XResultData(false);
+      }
       XResultData rd = new XResultData();
       int rowNum = 1; // Header is row 1
       for (ActionData aData : actionDatas) {
@@ -72,9 +89,22 @@ public class ExcelAtsActionArtifactExtractor {
          } else {
             for (String actionableItemName : aData.actionableItems) {
                try {
-                  if (AtsCacheManager.getArtifactsByName(AtsArtifactTypes.ActionableItem, actionableItemName).size() > 0) {
+                  Collection<Artifact> aias =
+                     AtsCacheManager.getArtifactsByName(AtsArtifactTypes.ActionableItem, actionableItemName);
+                  if (aias.size() == 0) {
                      rd.logError("Row " + rowNum + ": Couldn't find actionable item for \"" + actionableItemName + "\"");
+                  } else if (aias.size() > 1) {
+                     rd.logError("Row " + rowNum + ": Duplicate actionable items found with name \"" + actionableItemName + "\"");
                   }
+                  ActionableItemArtifact aia = (ActionableItemArtifact) aias.iterator().next();
+                  Collection<TeamDefinitionArtifact> teamDefs =
+                     ActionableItemArtifact.getImpactedTeamDefs(Arrays.asList(aia));
+                  if (teamDefs.size() == 0) {
+                     rd.logError("Row " + rowNum + ": No related Team Definition for Actionable Item\"" + actionableItemName + "\"");
+                  } else if (teamDefs.size() > 1) {
+                     rd.logError("Row " + rowNum + ": Duplicate Team Definitions found for Actionable Item\"" + actionableItemName + "\"");
+                  }
+
                } catch (Exception ex) {
                   rd.logError("Row " + rowNum + " - " + ex.getLocalizedMessage());
                   OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
@@ -95,20 +125,22 @@ public class ExcelAtsActionArtifactExtractor {
          // Else if assignees, confirm that they are valid
          if (aData.assigneeStrs.size() > 0) {
             for (String assignee : aData.assigneeStrs) {
-               User user = UserManager.getUserByName(assignee);
-               if (user == null) {
-                  rd.logError("Row " + rowNum + ": Couldn't retrieve user \"" + assignee + "\"");
-               } else {
-                  aData.assignees.add(user);
+               try {
+                  assignee = assignee.replaceFirst("^ *", "");
+                  assignee = assignee.replaceFirst(" *$", "");
+                  User user = UserManager.getUserByName(assignee);
+                  if (user == null) {
+                     rd.logError("Row " + rowNum + ": Couldn't retrieve user \"" + assignee + "\"");
+                  } else {
+                     aData.assignees.add(user);
+                  }
+               } catch (UserNotInDatabase ex) {
+                  rd.logError("Row " + rowNum + ": " + ex.getLocalizedMessage());
                }
             }
          }
       }
-      if (!rd.toString().equals("")) {
-         rd.report("Ats Action Import Errors");
-         return false;
-      }
-      return true;
+      return rd;
    }
 
    public void createArtifactsAndNotify(SkynetTransaction transaction) {
@@ -118,27 +150,53 @@ public class ExcelAtsActionArtifactExtractor {
       try {
          User createdBy = UserManager.getUser();
          for (ActionData aData : actionDatas) {
-            ActionArtifact actionArt =
-               ActionManager.createAction(null, aData.title, aData.desc, ChangeType.getChangeType(aData.changeType),
-                  aData.priorityStr, false, null, ActionableItemArtifact.getActionableItems(aData.actionableItems),
-                  createdDate, createdBy, transaction);
-            actionArts.add(actionArt);
+            ActionArtifact actionArt = actionNameToAction.get(aData.title);
+            Collection<TeamWorkFlowArtifact> newTeamArts = new HashSet<TeamWorkFlowArtifact>();
+            if (actionArt == null) {
+               actionArt =
+                  ActionManager.createAction(null, aData.title, aData.desc, ChangeType.getChangeType(aData.changeType),
+                     aData.priorityStr, false, null, ActionableItemArtifact.getActionableItems(aData.actionableItems),
+                     createdDate, createdBy, transaction);
+               newTeamArts = actionArt.getTeamWorkFlowArtifacts();
+               actionNameToAction.put(aData.title, actionArt);
+               actionArts.add(actionArt);
+            } else {
+               Set<ActionableItemArtifact> aias = ActionableItemArtifact.getActionableItems(aData.actionableItems);
+               Map<TeamDefinitionArtifact, Collection<ActionableItemArtifact>> teamDefToAias = getTeamDefToAias(aias);
+               for (Entry<TeamDefinitionArtifact, Collection<ActionableItemArtifact>> entry : teamDefToAias.entrySet()) {
+
+                  TeamWorkFlowArtifact teamWorkflow =
+                     ActionManager.createTeamWorkflow(actionArt, entry.getKey(), entry.getValue(), aData.assignees,
+                        transaction, createdDate, createdBy, CreateTeamOption.Duplicate_If_Exists);
+                  teamWorkflow.setSoleAttributeValue(AtsAttributeTypes.Description, aData.desc);
+                  if (Strings.isValid(aData.priorityStr) && !aData.priorityStr.equals("<Select>")) {
+                     teamWorkflow.setSoleAttributeValue(AtsAttributeTypes.PriorityType, aData.priorityStr);
+                  }
+                  teamWorkflow.setSoleAttributeValue(AtsAttributeTypes.ChangeType, aData.changeType);
+                  newTeamArts.add(teamWorkflow);
+               }
+            }
             if (!aData.version.equals("")) {
                Artifact verArt = AtsCacheManager.getSoleArtifactByName(AtsArtifactTypes.Version, aData.version);
 
-               for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts()) {
+               for (TeamWorkFlowArtifact team : newTeamArts) {
                   verArt.addRelation(AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow, team);
                }
             }
+            if (aData.estimatedHours != null) {
+               for (TeamWorkFlowArtifact team : newTeamArts) {
+                  team.setSoleAttributeValue(AtsAttributeTypes.EstimatedHours, aData.estimatedHours);
+               }
+            }
             if (aData.assigneeStrs.size() > 0) {
-               for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts()) {
+               for (TeamWorkFlowArtifact team : newTeamArts) {
                   team.getStateMgr().setAssignees(aData.assignees);
                }
             }
-            for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts()) {
+            for (TeamWorkFlowArtifact team : newTeamArts) {
                team.persist(transaction);
             }
-            teamWfs.addAll(actionArt.getTeamWorkFlowArtifacts());
+            teamWfs.addAll(newTeamArts);
          }
          AtsUtil.setEmailEnabled(true);
          if (emailPOCs) {
@@ -147,17 +205,44 @@ public class ExcelAtsActionArtifactExtractor {
             }
          }
       } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       } finally {
          AtsUtil.setEmailEnabled(true);
       }
    }
 
+   public Map<TeamDefinitionArtifact, Collection<ActionableItemArtifact>> getTeamDefToAias(Collection<ActionableItemArtifact> aias) throws OseeCoreException {
+      Map<TeamDefinitionArtifact, Collection<ActionableItemArtifact>> teamDefToAias =
+         new HashMap<TeamDefinitionArtifact, Collection<ActionableItemArtifact>>();
+      for (ActionableItemArtifact aia : aias) {
+         TeamDefinitionArtifact teamDef =
+            TeamDefinitionArtifact.getImpactedTeamDefs(Arrays.asList(aia)).iterator().next();
+         if (teamDefToAias.containsKey(teamDef)) {
+            teamDefToAias.get(teamDef).add(aia);
+         } else {
+            teamDefToAias.put(teamDef, Arrays.asList(aia));
+         }
+      }
+      return teamDefToAias;
+   }
+
    public void process(URI source) throws OseeCoreException {
       try {
          XMLReader xmlReader = XMLReaderFactory.createXMLReader();
-         xmlReader.setContentHandler(new ExcelSaxHandler(new InternalRowProcessor(actionDatas), true));
-         xmlReader.parse(new InputSource(new InputStreamReader(source.toURL().openStream(), "UTF-8")));
+         XResultData rd = new XResultData();
+         try {
+            xmlReader.setContentHandler(new ExcelSaxHandler(new InternalRowProcessor(actionDatas, rd), true));
+            xmlReader.parse(new InputSource(new InputStreamReader(source.toURL().openStream(), "UTF-8")));
+         } catch (SAXException ex) {
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            rd.logError("Exception in parsing import (see log for details) " + (Strings.isValid(ex.getLocalizedMessage()) ? ex.getLocalizedMessage() : ""));
+         }
+         if (!rd.isEmpty()) {
+            rd.report("Action Import Validation Errors");
+            dataIsValid =
+               MessageDialog.openConfirm(AWorkbench.getDisplay().getActiveShell(), "Validation Results",
+                  "Validation Issues Reported, Continue Anyway?");
+         }
       } catch (Exception ex) {
          OseeExceptions.wrapAndThrow(ex);
       }
@@ -192,6 +277,7 @@ public class ExcelAtsActionArtifactExtractor {
       protected Set<User> assignees = new HashSet<User>();
       protected Set<String> actionableItems = new HashSet<String>();
       protected String version = "";
+      protected Double estimatedHours = null;
    }
 
    private final static class InternalRowProcessor implements RowProcessor {
@@ -204,15 +290,19 @@ public class ExcelAtsActionArtifactExtractor {
          Priority,
          ChangeType,
          UserCommunity,
-         Version
+         Version,
+         EstimatedHours,
+         Goal
       };
 
       private String[] headerRow;
       private int rowNum = 0;
-      private final Set<ActionData> actionDatas;
+      private final List<ActionData> actionDatas;
+      private final XResultData resultData;
 
-      protected InternalRowProcessor(Set<ActionData> actionDatas) {
+      protected InternalRowProcessor(List<ActionData> actionDatas, XResultData resultData) {
          this.actionDatas = actionDatas;
+         this.resultData = resultData;
       }
 
       @Override
@@ -257,35 +347,39 @@ public class ExcelAtsActionArtifactExtractor {
             }
          }
          if (!fullRow) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, "Empty Row Found => " + rowNum + " skipping...");
+            resultData.logWarning("Empty Row Found => " + rowNum + " skipping...");
             return;
          }
 
          ActionData aData = new ActionData();
          for (int i = 0; i < cols.length; i++) {
-            if (headerRow[i] == null) {
-               OseeLog.log(AtsPlugin.class, Level.SEVERE, "Null header column => " + i);
-            } else if (headerRow[i].equalsIgnoreCase(Columns.Title.name())) {
-               if (cols[i].equals("")) {
-                  return;
+            if (headerRow[i] != null) {
+               if (headerRow[i].equalsIgnoreCase(Columns.Title.name())) {
+                  if (cols[i].equals("")) {
+                     return;
+                  }
+                  aData.title = cols[i];
+               } else if (headerRow[i].equalsIgnoreCase(Columns.Priority.name())) {
+                  aData.priorityStr = cols[i];
+               } else if (headerRow[i].equalsIgnoreCase(Columns.Version.name())) {
+                  aData.version = cols[i] == null ? "" : cols[i];
+               } else if (headerRow[i].equalsIgnoreCase(Columns.ChangeType.name())) {
+                  aData.changeType = cols[i];
+               } else if (headerRow[i].equalsIgnoreCase(Columns.Description.name())) {
+                  aData.desc = cols[i] == null ? "" : cols[i];
+               } else if (headerRow[i].equalsIgnoreCase(Columns.UserCommunity.name())) {
+                  processUserCommunities(cols, aData, i);
+               } else if (headerRow[i].equalsIgnoreCase(Columns.EstimatedHours.name())) {
+                  if (Strings.isValid(cols[i])) {
+                     aData.estimatedHours = new Double(cols[i]);
+                  }
+               } else if (headerRow[i].equalsIgnoreCase(Columns.ActionableItems.name())) {
+                  processActionableItems(cols, aData, i);
+               } else if (headerRow[i].equalsIgnoreCase(Columns.Assignees.name())) {
+                  processAssignees(cols, aData, i);
+               } else {
+                  resultData.logError("Unhandled column => " + headerRow[i]);
                }
-               aData.title = cols[i];
-            } else if (headerRow[i].equalsIgnoreCase(Columns.Priority.name())) {
-               aData.priorityStr = cols[i];
-            } else if (headerRow[i].equalsIgnoreCase(Columns.Version.name())) {
-               aData.version = cols[i] == null ? "" : cols[i];
-            } else if (headerRow[i].equalsIgnoreCase(Columns.ChangeType.name())) {
-               aData.changeType = cols[i];
-            } else if (headerRow[i].equalsIgnoreCase(Columns.Description.name())) {
-               aData.desc = cols[i] == null ? "" : cols[i];
-            } else if (headerRow[i].equalsIgnoreCase(Columns.UserCommunity.name())) {
-               processUserCommunities(cols, aData, i);
-            } else if (headerRow[i].equalsIgnoreCase(Columns.ActionableItems.name())) {
-               processActionableItems(cols, aData, i);
-            } else if (headerRow[i].equalsIgnoreCase(Columns.Assignees.name())) {
-               processAssignees(cols, aData, i);
-            } else {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Unhandled column => " + headerRow[i]);
             }
          }
          actionDatas.add(aData);

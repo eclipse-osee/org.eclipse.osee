@@ -6,14 +6,8 @@
  xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
  xmlns:html="http://www.w3.org/TR/REC-html40">
  <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
-  <LastAuthor>Donald G. Dunne</LastAuthor>
-  <Created>1996-10-14T23:33:28Z</Created>
-  <LastSaved>2007-03-08T19:22:23Z</LastSaved>
-  <Version>11.8132</Version>
+  <Version>11.9999</Version>
  </DocumentProperties>
- <OfficeDocumentSettings xmlns="urn:schemas-microsoft-com:office:office">
-  <DoNotRelyOnCSS/>
- </OfficeDocumentSettings>
  <ExcelWorkbook xmlns="urn:schemas-microsoft-com:office:excel">
   <WindowHeight>9300</WindowHeight>
   <WindowWidth>15135</WindowWidth>
@@ -34,15 +28,13 @@
   </Style>
  </Styles>
  <Worksheet ss:Name="Sheet1">
-  <Table ss:ExpandedColumnCount="8" ss:ExpandedRowCount="3" x:FullColumns="1"
+  <Table ss:ExpandedColumnCount="8" ss:ExpandedRowCount="6" x:FullColumns="1"
    x:FullRows="1">
-   <Column ss:Width="78"/>
-   <Column ss:Width="102"/>
-   <Column ss:Width="75.75"/>
-   <Column ss:AutoFitWidth="0" ss:Width="113.25"/>
+   <Column ss:AutoFitWidth="0" ss:Width="117"/>
+   <Column ss:AutoFitWidth="0" ss:Width="171.75" ss:Span="1"/>
+   <Column ss:Index="4" ss:AutoFitWidth="0" ss:Width="113.25"/>
    <Column ss:Width="60"/>
-   <Column ss:Index="7" ss:Width="75.75"/>
-   <Column ss:AutoFitWidth="0" ss:Width="78.75"/>
+   <Column ss:Index="7" ss:AutoFitWidth="0" ss:Width="78.75"/>
    <Row>
     <Cell><Data ss:Type="String">Title</Data></Cell>
     <Cell><Data ss:Type="String">Description</Data></Cell>
@@ -50,27 +42,55 @@
     <Cell><Data ss:Type="String">Assignees</Data></Cell>
     <Cell><Data ss:Type="String">ChangeType</Data></Cell>
     <Cell><Data ss:Type="String">Priority</Data></Cell>
-    <Cell><Data ss:Type="String">UserCommunity</Data></Cell>
     <Cell><Data ss:Type="String">Version</Data></Cell>
+    <Cell><Data ss:Type="String">EstimatedHours</Data></Cell>
    </Row>
    <Row>
-    <Cell><Data ss:Type="String">This is the name</Data></Cell>
-    <Cell><Data ss:Type="String">This is the description</Data></Cell>
-    <Cell><Data ss:Type="String">ATS Editor</Data></Cell>
-    <Cell><Data ss:Type="String">Dunne, Donald G</Data></Cell>
+    <Cell><Data ss:Type="String">Fix the SAW Editor</Data></Cell>
+    <Cell><Data ss:Type="String">Phase 1 of what needs to be fixed</Data></Cell>
+    <Cell><Data ss:Type="String">SAW Code</Data></Cell>
+    <Cell><Data ss:Type="String">Joe Smith</Data></Cell>
+    <Cell><Data ss:Type="String">Improvement</Data></Cell>
+    <Cell><Data ss:Type="Number">2</Data></Cell>
+    <Cell><Data ss:Type="String">SAW_Bld_2</Data></Cell>
+    <Cell><Data ss:Type="Number">23</Data></Cell>
+   </Row>
+   <Row>
+    <Cell><Data ss:Type="String">Fix the SAW Editor</Data></Cell>
+    <Cell><Data ss:Type="String">Phase 2 targeted for different version</Data></Cell>
+    <Cell><Data ss:Type="String">SAW Code</Data></Cell>
+    <Cell><Data ss:Type="String">Joe Smith</Data></Cell>
     <Cell><Data ss:Type="String">Improvement</Data></Cell>
     <Cell><Data ss:Type="Number">3</Data></Cell>
-    <Cell><Data ss:Type="String">Eclipse Community</Data></Cell>
-    <Cell><Data ss:Type="String">2.5.7</Data></Cell>
+    <Cell><Data ss:Type="String">SAW_Bld_2</Data></Cell>
+    <Cell><Data ss:Type="Number">3</Data></Cell>
    </Row>
    <Row>
-    <Cell><Data ss:Type="String">2nd Action</Data></Cell>
-    <Cell><Data ss:Type="String">2nd Description</Data></Cell>
-    <Cell><Data ss:Type="String">Define</Data></Cell>
-    <Cell><Data ss:Type="String">Dunne, Donald G</Data></Cell>
+    <Cell><Data ss:Type="String">Fix the SAW Editor</Data></Cell>
+    <Cell><Data ss:Type="String">What needs to be done by Test team</Data></Cell>
+    <Cell><Data ss:Type="String">SAW Test</Data></Cell>
+    <Cell><Data ss:Type="String">Joe Smith</Data></Cell>
+    <Cell><Data ss:Type="String">Improvement</Data></Cell>
+    <Cell><Data ss:Type="Number">5</Data></Cell>
+    <Cell><Data ss:Type="String">SAW_Bld_3</Data></Cell>
+    <Cell><Data ss:Type="Number">4</Data></Cell>
+   </Row>
+   <Row>
+    <Cell><Data ss:Type="String">Add the new feature</Data></Cell>
+    <Cell><Data ss:Type="String">This is the description of what to do</Data></Cell>
+    <Cell><Data ss:Type="String">Backups</Data></Cell>
+    <Cell><Data ss:Type="String">Joe Smith</Data></Cell>
     <Cell><Data ss:Type="String">Problem</Data></Cell>
     <Cell><Data ss:Type="Number">4</Data></Cell>
-    <Cell><Data ss:Type="String">Eclipse Community</Data></Cell>
+   </Row>
+   <Row>
+    <Cell><Data ss:Type="String">Help the users</Data></Cell>
+    <Cell><Data ss:Type="String">Support what they need</Data></Cell>
+    <Cell><Data ss:Type="String">Timesheet</Data></Cell>
+    <Cell><Data ss:Type="String">Joe Smith</Data></Cell>
+    <Cell><Data ss:Type="String">Support</Data></Cell>
+    <Cell><Data ss:Type="Number">1</Data></Cell>
+    <Cell ss:Index="8"><Data ss:Type="Number">2</Data></Cell>
    </Row>
   </Table>
   <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
@@ -78,8 +98,8 @@
    <Panes>
     <Pane>
      <Number>3</Number>
-     <ActiveRow>3</ActiveRow>
-     <ActiveCol>6</ActiveCol>
+     <ActiveRow>1</ActiveRow>
+     <ActiveCol>5</ActiveCol>
     </Pane>
    </Panes>
    <ProtectObjects>False</ProtectObjects>

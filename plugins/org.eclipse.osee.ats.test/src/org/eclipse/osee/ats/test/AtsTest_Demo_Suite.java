@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.test.util.AtsDeleteManagerTest;
 import org.eclipse.osee.ats.test.util.AtsImageTest;
 import org.eclipse.osee.ats.test.util.AtsNotifyUsersTest;
 import org.eclipse.osee.ats.test.util.AtsPurgeTest;
+import org.eclipse.osee.ats.test.util.ImportActionsViaSpreadsheetTest;
 import org.eclipse.osee.ats.test.workflow.SMAPromptChangeStatusTest;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.junit.BeforeClass;
@@ -37,6 +38,7 @@ import org.junit.runners.Suite;
    AtsNavigateItemsToMassEditorTest.class,
    AtsNavigateItemsToTaskEditorTest.class,
    AtsNavigateItemsToWorldViewTest.class,
+   ImportActionsViaSpreadsheetTest.class,
    AtsTest_Demo_Column_Suite.class,
    LogItemTest.class,
    AtsLogTest.class,
