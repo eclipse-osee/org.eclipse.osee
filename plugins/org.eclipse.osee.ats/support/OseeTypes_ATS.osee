@@ -23,6 +23,10 @@ artifactType "PeerToPeer Review" extends "ats.Review" {
    attribute "ats.Location"
    attribute "ats.Review Defect"
    attribute "ats.Role"
+   attribute "ats.LOC Changed"
+   attribute "ats.LOC Reviewed"
+   attribute "ats.Pages Changed"
+   attribute "ats.Pages Reviewed"
 }
 
 artifactType "Decision Review" extends "ats.Review" {
@@ -608,6 +612,34 @@ attributeType "ats.Work Package" extends StringAttribute {
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "ats.LOC Changed" extends IntegerAttribute {
+   guid "AQR27biJiQlOKTEKCvwA"
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "ats.LOC Reviewed" extends IntegerAttribute {
+   guid "AQR5ckRsrh4PpayYGAgA"
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "ats.Pages Changed" extends IntegerAttribute {
+   guid "AQR8yMuv4W84UwvSJAQA"
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "ats.Pages Reviewed" extends IntegerAttribute {
+   guid "AQR9qM8TTyCMb7sf4cQA"
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
 }
 
 attributeType "ats.Goal Order Vote" extends StringAttribute {

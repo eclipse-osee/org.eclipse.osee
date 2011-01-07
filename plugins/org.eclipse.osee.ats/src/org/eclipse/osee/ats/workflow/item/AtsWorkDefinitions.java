@@ -116,6 +116,11 @@ public final class AtsWorkDefinitions implements IWorkDefinitionProvider {
       getWorkItemRules(workItems);
 
       // Create XWidget work items
+      workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.LocChanged, "XIntegerDam",
+         XOption.BEGIN_COMPOSITE_8));
+      workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.LocReviewed, "XIntegerDam"));
+      workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.PagesChanged, "XIntegerDam"));
+      workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.PagesReviewed, "XIntegerDam"));
       workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.Location, "XTextDam", XOption.REQUIRED,
          FILL_VERTICALLY));
       workItems.add(new AtsAttributeXWidgetWorkItem(AtsAttributeTypes.LegacyPcrId, "XTextDam"));

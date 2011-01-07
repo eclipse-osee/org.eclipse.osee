@@ -18,6 +18,8 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.attribute.IntegerAttribute;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 
@@ -72,16 +74,20 @@ public class StringHandlePromptChange implements IHandlePromptChange {
    private static void updateSmaAttributes(final Collection<? extends Artifact> artifacts, IAttributeType attributeType, NumberFormat format, EntryDialog entryDialog) throws OseeCoreException {
       for (Artifact artifact : artifacts) {
          String value = entryDialog.getEntry();
-         String safeValue = getSafeValue(value, format);
+         String safeValue = getSafeValue(value, format, attributeType);
          artifact.setSoleAttributeFromString(attributeType, safeValue);
       }
    }
 
-   private static String getSafeValue(String value, NumberFormat format) throws OseeCoreException {
+   private static String getSafeValue(String value, NumberFormat format, IAttributeType attributeType) throws OseeCoreException {
       String toReturn = value;
       if (format != null) {
          try {
-            toReturn = String.valueOf(format.parse(value).doubleValue()); // TODO check for dot in integers
+            if (AttributeTypeManager.isBaseTypeCompatible(IntegerAttribute.class, attributeType)) {
+               toReturn = String.valueOf(format.parse(value).intValue());
+            } else {
+               toReturn = String.valueOf(format.parse(value).doubleValue()); // TODO check for dot in integers
+            }
          } catch (ParseException ex) {
             OseeExceptions.wrapAndThrow(ex);
          }

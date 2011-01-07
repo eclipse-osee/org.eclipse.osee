@@ -62,6 +62,8 @@ public class AtsAttributeTypes extends NamedIdentity implements IAttributeType {
    public static final IAttributeType HoursPerWorkDay = new AtsAttributeTypes("AAMFEdGlqFsZp22RMdAA", "Hours Per Work Day");
    public static final IAttributeType LegacyPcrId = new AtsAttributeTypes("AAMFEd3TakphMtQX1zgA", "Legacy PCR Id", "Field to register problem change report id from legacy items imported into ATS.");
    public static final IAttributeType Location = new AtsAttributeTypes("AAMFEeAW4QBlesdfacwA", "Location", "Enter location of materials to review.");
+   public static final IAttributeType LocChanged= new AtsAttributeTypes("AQR27biJiQlOKTEKCvwA", "LOC Changed", "Total Lines of Code Changed");
+   public static final IAttributeType LocReviewed = new AtsAttributeTypes("AQR5ckRsrh4PpayYGAgA", "LOC Reviewed", "Total Lines of Code Reviewed");
    public static final IAttributeType Log = new AtsAttributeTypes("AAMFEdgB1DX3eJSZb0wA", "Log");
    public static final IAttributeType NeedBy = new AtsAttributeTypes("AAMFEcxAGzHAKfDNAIwA", "Need By", "Hard schedule date that workflow must be completed.");
    public static final IAttributeType NextVersion = new AtsAttributeTypes("AAMFEcpH8Xb72hsF5AwA", "Next Version", "True if version artifact is \"Next\" version to be released.");
@@ -71,6 +73,8 @@ public class AtsAttributeTypes extends NamedIdentity implements IAttributeType {
    public static final IAttributeType OperationalImpactDescription = new AtsAttributeTypes("ADTfjCDvUF5PtiKdQ3wA", "Operational Impact Description");
    public static final IAttributeType OperationalImpactWorkaround = new AtsAttributeTypes("AbMqFfIwQHRbmzT_VTAA", "Operational Impact Workaround");
    public static final IAttributeType OperationalImpactWorkaroundDescription = new AtsAttributeTypes("AbMo7PoIukFDhQFJxKwA", "Operational Impact Workaround Description");
+   public static final IAttributeType PagesChanged= new AtsAttributeTypes("AQR8yMuv4W84UwvSJAQA", "Pages Changed", "Total Pages of Changed");
+   public static final IAttributeType PagesReviewed = new AtsAttributeTypes("AQR9qM8TTyCMb7sf4cQA", "Pages Reviewed", "Total Pages Reviewed");
    public static final IAttributeType PercentRework = new AtsAttributeTypes("AAMFEdKfjl2TII9+tuwA", "Percent Rework");
    public static final IAttributeType Points = new AtsAttributeTypes("AY2EeqhzcDEGtXtREkAA", "Points", "Abstract value that describes risk, complexity, and size of Actions.");
    public static final IAttributeType PriorityType = new AtsAttributeTypes("AAMFEc8JzH1U6XGD59QA", "Priority", "1 = High; 5 = Low");

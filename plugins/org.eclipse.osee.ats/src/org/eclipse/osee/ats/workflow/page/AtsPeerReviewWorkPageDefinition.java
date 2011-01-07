@@ -32,6 +32,10 @@ public class AtsPeerReviewWorkPageDefinition extends WorkPageDefinition {
       super(name, pageId, parentId, WorkPageType.Working, ordinal);
       addWorkItem(AtsAttributeTypes.Role);
       addWorkItem(AtsAttributeTypes.ReviewDefect);
+      addWorkItem(AtsAttributeTypes.LocChanged);
+      addWorkItem(AtsAttributeTypes.LocReviewed);
+      addWorkItem(AtsAttributeTypes.PagesChanged);
+      addWorkItem(AtsAttributeTypes.PagesReviewed);
       addWorkItem(AtsAttributeTypes.Resolution);
       addWorkItem(AtsWorkDefinitions.ATS_DESCRIPTION_NOT_REQUIRED_ID);
    }

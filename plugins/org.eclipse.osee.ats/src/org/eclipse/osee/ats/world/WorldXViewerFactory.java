@@ -42,6 +42,8 @@ import org.eclipse.osee.ats.column.GroupsColumn;
 import org.eclipse.osee.ats.column.ImplementorColumn;
 import org.eclipse.osee.ats.column.LastStatusedColumn;
 import org.eclipse.osee.ats.column.LegacyPcrIdColumn;
+import org.eclipse.osee.ats.column.LocChangedColumn;
+import org.eclipse.osee.ats.column.LocReviewedColumn;
 import org.eclipse.osee.ats.column.NotesColumn;
 import org.eclipse.osee.ats.column.NumberOfTasksColumn;
 import org.eclipse.osee.ats.column.NumberOfTasksRemainingColumn;
@@ -52,6 +54,8 @@ import org.eclipse.osee.ats.column.OperationalImpactWorkaroundColumn;
 import org.eclipse.osee.ats.column.OperationalImpactWorkaroundDesciptionColumn;
 import org.eclipse.osee.ats.column.OriginatingWorkFlowColumn;
 import org.eclipse.osee.ats.column.OriginatorColumn;
+import org.eclipse.osee.ats.column.PagesChangedColumn;
+import org.eclipse.osee.ats.column.PagesReviewedColumn;
 import org.eclipse.osee.ats.column.ParentIdColumn;
 import org.eclipse.osee.ats.column.ParentStateColumn;
 import org.eclipse.osee.ats.column.PercentReworkColumn;
@@ -222,6 +226,10 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       PointsColumn.getInstance(),
       NumericColumn.getNumeric1Instance(),
       NumericColumn.getNumeric2Instance(),
+      LocChangedColumn.getInstance(),
+      LocReviewedColumn.getInstance(),
+      PagesChangedColumn.getInstance(),
+      PagesReviewedColumn.getInstance(),
       new GuidColumn(false)};
    private final static String NAMESPACE = "org.eclipse.osee.ats.WorldXViewer";
 
