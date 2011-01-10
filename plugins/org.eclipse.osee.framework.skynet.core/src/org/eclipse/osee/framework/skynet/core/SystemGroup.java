@@ -24,7 +24,7 @@ public enum SystemGroup {
    private final OseeGroup group;
 
    SystemGroup() {
-      this.group = new OseeGroup(this.name());
+      group = new OseeGroup(name());
    }
 
    public Artifact getArtifact() throws OseeCoreException {
@@ -32,14 +32,14 @@ public enum SystemGroup {
    }
 
    public void addMember(User user) throws OseeCoreException {
-      this.group.addMember(user);
+      group.addMember(user);
    }
 
    public boolean isMember(User user) throws OseeCoreException {
-      return this.group.isMember(user);
+      return group.isMember(user);
    }
 
    public boolean isCurrentUserMember() throws OseeCoreException {
-      return this.group.isCurrentUserMember();
+      return group.isCurrentUserMember();
    }
 }

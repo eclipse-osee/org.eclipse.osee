@@ -78,27 +78,38 @@ public class XBranchWidget extends XWidget implements IActionable {
       this.searchRealTime = false;
    }
 
-   public void setBranchOptions(BranchOptions... options) {
-      for (BranchOptions option : options) {
-
-         switch (option) {
-            case FAVORITES_FIRST:
-               setFavoritesFirst(true);
-               break;
-            case FLAT:
-               setPresentation(true);
-               break;
-            case SHOW_MERGE_BRANCHES:
-               setShowMergeBranches(true);
-               break;
-            case SHOW_TRANSACTIONS:
-               setShowMergeBranches(true);
-               break;
-            case SHOW_ARCHIVED:
-               setShowMergeBranches(true);
-               break;
+   public void setBranchOptions(boolean state, BranchOptionsEnum... options) {
+      for (BranchOptionsEnum option : options) {
+         if (branchContentProvider != null) {
+            switch (option) {
+               case FAVORITE_KEY:
+                  sorter.setFavoritesFirst(state);
+                  break;
+               case FLAT_KEY:
+                  branchContentProvider.setPresentation(state);
+                  break;
+               case SHOW_MERGE_BRANCHES:
+                  branchContentProvider.setShowMergeBranches(state);
+                  break;
+               case SHOW_TRANSACTIONS:
+                  branchContentProvider.setShowTransactions(state);
+                  break;
+               case SHOW_ARCHIVED_BRANCHES:
+                  branchContentProvider.setShowArchivedBranches(state);
+                  break;
+               case SHOW_WORKING_BRANCHES_ONLY:
+                  branchContentProvider.setShowOnlyWorkingBranches(state);
+                  break;
+            }
          }
+         refresh();
       }
+   }
+
+   public void reveal(Branch branch) {
+      branchXViewer.reveal(branch);
+      branchXViewer.setSelection(new StructuredSelection(branch), true);
+      refresh();
    }
 
    @Override
@@ -188,10 +199,7 @@ public class XBranchWidget extends XWidget implements IActionable {
 
    public ArrayList<Branch> getSelectedBranches() {
       ArrayList<Branch> items = new ArrayList<Branch>();
-      if (branchXViewer == null) {
-         return items;
-      }
-      if (branchXViewer.getSelection().isEmpty()) {
+      if (branchXViewer == null || branchXViewer.getSelection().isEmpty()) {
          return items;
       }
       Iterator<?> i = ((IStructuredSelection) branchXViewer.getSelection()).iterator();
@@ -208,10 +216,7 @@ public class XBranchWidget extends XWidget implements IActionable {
    @SuppressWarnings("rawtypes")
    public ArrayList<TransactionRecord> getSelectedTransactionRecords() {
       ArrayList<TransactionRecord> items = new ArrayList<TransactionRecord>();
-      if (branchXViewer == null) {
-         return items;
-      }
-      if (branchXViewer.getSelection().isEmpty()) {
+      if (branchXViewer == null || branchXViewer.getSelection().isEmpty()) {
          return items;
       }
       Iterator i = ((IStructuredSelection) branchXViewer.getSelection()).iterator();
@@ -323,53 +328,5 @@ public class XBranchWidget extends XWidget implements IActionable {
    @Override
    public String getActionDescription() {
       return null;
-   }
-
-   public void setFavoritesFirst(boolean favoritesFirst) {
-      if (branchContentProvider != null) {
-         sorter.setFavoritesFirst(favoritesFirst);
-         refresh();
-      }
-   }
-
-   public void setPresentation(boolean flat) {
-      if (branchContentProvider != null) {
-         branchContentProvider.setPresentation(flat);
-         refresh();
-      }
-   }
-
-   public void setShowMergeBranches(boolean showMergeBranches) {
-      if (branchContentProvider != null) {
-         branchContentProvider.setShowMergeBranches(showMergeBranches);
-         refresh();
-      }
-   }
-
-   public void setShowArchivedBranches(boolean showArchivedBranches) {
-      if (branchContentProvider != null) {
-         branchContentProvider.setShowArchivedBranches(showArchivedBranches);
-         refresh();
-      }
-   }
-
-   public void setShowTransactions(boolean showTransactions) {
-      if (branchContentProvider != null) {
-         branchContentProvider.setShowTransactions(showTransactions);
-         refresh();
-      }
-   }
-
-   public void setShowWorkingBranchesOnly(boolean allowOnlyWorkingBranches) {
-      if (branchContentProvider != null) {
-         branchContentProvider.setShowOnlyWorkingBranches(allowOnlyWorkingBranches);
-         refresh();
-      }
-   }
-
-   public void reveal(Branch branch) {
-      branchXViewer.reveal(branch);
-      branchXViewer.setSelection(new StructuredSelection(branch), true);
-      refresh();
    }
 }

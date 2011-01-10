@@ -71,6 +71,6 @@ public class PurgeTransactionHandler extends CommandHandler {
    @Override
    public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
       List<TransactionRecord> transactions = Handlers.getTransactionsFromStructuredSelection(structuredSelection);
-      return transactions.size() == 1 && AccessControlManager.isOseeAdmin();
+      return transactions.size() > 0 && AccessControlManager.isOseeAdmin();
    }
 }

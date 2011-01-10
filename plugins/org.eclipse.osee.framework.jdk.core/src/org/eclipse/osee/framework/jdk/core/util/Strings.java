@@ -11,6 +11,8 @@
 
 package org.eclipse.osee.framework.jdk.core.util;
 
+import java.util.List;
+
 /**
  * @author Jeff C. Phillips
  * @author Don Dunne
@@ -94,4 +96,26 @@ public class Strings {
       return toReturn;
    }
 
+   /**
+    * @return string of form "apple, banana and orange" or "apple and banana" depending on size of list
+    */
+   public static String buildItemizedStatment(List<?> items) {
+      StringBuilder niceList = new StringBuilder();
+      if (items.size() >= 2) {
+         int andIndex = items.size() - 2;
+         for (int branchIndex = 0; branchIndex < items.size(); branchIndex++) {
+            niceList.append(items.get(branchIndex));
+            if (branchIndex == andIndex) {
+               niceList.append(" and ");
+            } else if (branchIndex < andIndex) {
+               niceList.append(", ");
+            }
+         }
+      } else {
+         if (!items.isEmpty()) {
+            niceList.append(items.get(0));
+         }
+      }
+      return niceList.toString();
+   }
 }

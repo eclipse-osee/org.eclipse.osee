@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
+import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Conditions;
@@ -225,6 +226,18 @@ public class BranchManager {
       Operations.executeWorkAndCheckStatus(new PurgeBranchHttpRequestOperation(branch));
    }
 
+   /**
+    * Purges branches from the system. (sets branch state to purged. operation is undo-able)
+    */
+   public static Job purgeBranch(final List<Branch> branches) {
+      List<IOperation> ops = new ArrayList<IOperation>();
+      for (Branch branch : branches) {
+         ops.add(new PurgeBranchHttpRequestOperation(branch)); //can this be done in one http request?
+      }
+      return Operations.executeAsJob(new CompositeOperation("Purging multiple branches...", Activator.PLUGIN_ID, ops),
+         true);
+   }
+
    public static void updateBranchType(IProgressMonitor monitor, final int branchId, String branchGuid, final BranchType type) throws OseeCoreException {
       IOperation operation = new UpdateBranchTypeHttpRequestOperation(branchId, branchGuid, type);
       Operations.executeWorkAndCheckStatus(operation, monitor);
@@ -246,6 +259,18 @@ public class BranchManager {
     */
    public static Job deleteBranch(final Branch branch) {
       return Operations.executeAsJob(new DeleteBranchOperation(branch), true);
+   }
+
+   /**
+    * Delete branches from the system. (sets branch state to deleted. operation is undo-able)
+    */
+   public static Job deleteBranch(final List<Branch> branches) {
+      List<IOperation> ops = new ArrayList<IOperation>();
+      for (Branch branch : branches) {
+         ops.add(new DeleteBranchOperation(branch));
+      }
+      return Operations.executeAsJob(new CompositeOperation("Deleting multiple branches...", Activator.PLUGIN_ID, ops),
+         true);
    }
 
    /**

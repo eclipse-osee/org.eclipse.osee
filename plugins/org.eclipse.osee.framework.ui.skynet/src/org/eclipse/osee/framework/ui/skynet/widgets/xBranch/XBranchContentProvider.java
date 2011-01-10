@@ -34,13 +34,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
  */
 public class XBranchContentProvider implements ITreeContentProvider {
 
-   /**
-    * @param showOnlyWorkingBranches the showOnlyWorkingBranches to set
-    */
-   public void setShowOnlyWorkingBranches(boolean showOnlyWorkingBranches) {
-      this.showOnlyWorkingBranches = showOnlyWorkingBranches;
-   }
-
    private final BranchXViewer changeXViewer;
    private boolean showChildBranchesAtMainLevel;
    private boolean showMergeBranches;
@@ -242,6 +235,14 @@ public class XBranchContentProvider implements ITreeContentProvider {
    public void setPresentation(boolean flat) {
       showChildBranchesAtMainLevel = flat;
       showChildBranchesUnderParents = !flat;
+   }
+
+   //TODO: get rid of this and replace with hashset<branchoptenum, bool>
+   /**
+    * @param showOnlyWorkingBranches the showOnlyWorkingBranches to set
+    */
+   public void setShowOnlyWorkingBranches(boolean showOnlyWorkingBranches) {
+      this.showOnlyWorkingBranches = showOnlyWorkingBranches;
    }
 
    public void setShowMergeBranches(boolean showMergeBranches) {

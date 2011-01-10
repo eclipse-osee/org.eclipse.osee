@@ -16,8 +16,8 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchOptionsEnum;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView;
-import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchViewPresentationPreferences;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.commands.IElementUpdater;
@@ -39,7 +39,8 @@ public final class ShowTransactionPresentationHandler extends AbstractHandler im
 
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
-      ((BranchView) HandlerUtil.getActivePartChecked(event)).changeTransactionPresentation(!itemChk);
+      ((BranchView) HandlerUtil.getActivePartChecked(event)).changePresentation(BranchOptionsEnum.SHOW_TRANSACTIONS,
+         !itemChk);
       return null;
    }
 
@@ -48,7 +49,7 @@ public final class ShowTransactionPresentationHandler extends AbstractHandler im
    public void updateElement(UIElement element, Map parameters) {
       itemChk =
          Platform.getPreferencesService().getRootNode().node(InstanceScope.SCOPE).node(BranchView.VIEW_ID).getBoolean(
-            BranchViewPresentationPreferences.SHOW_TRANSACTIONS, true);
+            BranchOptionsEnum.SHOW_TRANSACTIONS.origKeyName, true);
       element.setChecked(itemChk);
    }
 

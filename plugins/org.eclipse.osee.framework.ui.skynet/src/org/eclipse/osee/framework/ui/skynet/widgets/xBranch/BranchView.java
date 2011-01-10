@@ -75,7 +75,6 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
    @Override
    public void dispose() {
       super.dispose();
-
       branchViewPresentationPreferences.setDisposed(true);
       OseeEventManager.removeListener(this);
       clipboard.dispose();
@@ -106,23 +105,25 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
       xBranchWidget.loadData();
       final BranchView fBranchView = this;
 
+      final XViewer branchWidget = xBranchWidget.getXViewer();
+
       MenuManager menuManager = new MenuManager();
       menuManager.setRemoveAllWhenShown(true);
       menuManager.addMenuListener(new IMenuListener() {
          @Override
          public void menuAboutToShow(IMenuManager manager) {
             MenuManager menuManager = (MenuManager) manager;
-            xBranchWidget.getXViewer().setColumnMultiEditEnabled(true);
+            branchWidget.setColumnMultiEditEnabled(true);
             menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
             menuManager.add(new EditTransactionComment(fBranchView));
             menuManager.add(new Separator());
-            menuManager.add(new TableCustomizationAction(xBranchWidget.getXViewer()));
-            menuManager.add(new ViewTableReportAction(xBranchWidget.getXViewer()));
-            menuManager.add(new ViewSelectedCellDataAction(xBranchWidget.getXViewer(), clipboard, Option.Copy));
-            menuManager.add(new ViewSelectedCellDataAction(xBranchWidget.getXViewer(), null, Option.View));
+            menuManager.add(new TableCustomizationAction(branchWidget));
+            menuManager.add(new ViewTableReportAction(branchWidget));
+            menuManager.add(new ViewSelectedCellDataAction(branchWidget, clipboard, Option.Copy));
+            menuManager.add(new ViewSelectedCellDataAction(branchWidget, null, Option.View));
             try {
                if (AccessControlManager.isOseeAdmin()) {
-                  menuManager.add(new ColumnMultiEditAction(xBranchWidget.getXViewer()));
+                  menuManager.add(new ColumnMultiEditAction(branchWidget));
                }
             } catch (OseeCoreException ex) {
                OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -131,13 +132,10 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
       });
 
       menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-      xBranchWidget.getXViewer().getTree().setMenu(menuManager.createContextMenu(xBranchWidget.getXViewer().getTree()));
-      getSite().registerContextMenu(VIEW_ID, menuManager, xBranchWidget.getXViewer());
-
-      getSite().setSelectionProvider(xBranchWidget.getXViewer());
-
+      branchWidget.getTree().setMenu(menuManager.createContextMenu(branchWidget.getTree()));
+      getSite().registerContextMenu(VIEW_ID, menuManager, branchWidget);
+      getSite().setSelectionProvider(branchWidget);
       HelpUtil.setHelp(parent, OseeHelpContext.BRANCH_MANAGER);
-
       OseeStatusContributionItemFactory.addTo(this, true);
       getViewSite().getActionBars().updateActionBars();
 
@@ -195,63 +193,15 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
       }
    }
 
-   public void changeBranchPresentation(boolean flat) {
+   public void changePresentation(BranchOptionsEnum branchViewPresKey, boolean state) {
       if (branchViewPresentationPreferences != null) {
-         branchViewPresentationPreferences.getViewPreference().putBoolean(BranchViewPresentationPreferences.FLAT_KEY,
-            flat);
+         Preferences pref = branchViewPresentationPreferences.getViewPreference();
+         pref.putBoolean(branchViewPresKey.origKeyName, state);
       }
    }
 
-   public void changeTransactionPresentation(boolean showTransactions) {
-      if (branchViewPresentationPreferences != null) {
-         branchViewPresentationPreferences.getViewPreference().putBoolean(
-            BranchViewPresentationPreferences.SHOW_TRANSACTIONS, showTransactions);
-      }
-   }
-
-   public void changeMergeBranchPresentation(boolean showMergeBranches) {
-      if (branchViewPresentationPreferences != null) {
-         branchViewPresentationPreferences.getViewPreference().putBoolean(
-            BranchViewPresentationPreferences.SHOW_MERGE_BRANCHES, showMergeBranches);
-      }
-   }
-
-   public void changeArchivedBranchPresentation(boolean showArchivedBranches) {
-      if (branchViewPresentationPreferences != null) {
-         branchViewPresentationPreferences.getViewPreference().putBoolean(
-            BranchViewPresentationPreferences.SHOW_ARCHIVED_BRANCHES, showArchivedBranches);
-      }
-   }
-
-   public void changeFavoritesFirstPresentation(boolean showArchivedBranches) {
-      if (branchViewPresentationPreferences != null) {
-         branchViewPresentationPreferences.getViewPreference().putBoolean(
-            BranchViewPresentationPreferences.FAVORITE_KEY, showArchivedBranches);
-      }
-   }
-
-   /**
-    * These five methods is called by BranchViewPresentationPreferences to change the branch view data presentation. Not
-    * part of the regular API.
-    */
-   protected void setPresentation(boolean flat) {
-      xBranchWidget.setPresentation(flat);
-   }
-
-   protected void setFavoritesFirst(boolean favoritesFirst) {
-      xBranchWidget.setFavoritesFirst(favoritesFirst);
-   }
-
-   protected void setShowMergeBranches(boolean showMergeBranches) {
-      xBranchWidget.setShowMergeBranches(showMergeBranches);
-   }
-
-   protected void setShowTransactions(boolean showTransactions) {
-      xBranchWidget.setShowTransactions(showTransactions);
-   }
-
-   protected void setShowArchivedBranches(boolean showArchivedBranches) {
-      xBranchWidget.setShowArchivedBranches(showArchivedBranches);
+   public XBranchWidget getXBranchWidget() {
+      return xBranchWidget;
    }
 
    @Override

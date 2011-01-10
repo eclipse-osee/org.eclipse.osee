@@ -22,8 +22,8 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchOptionsEnum;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView;
-import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchViewPresentationPreferences;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.commands.IElementUpdater;
@@ -45,7 +45,8 @@ public final class ShowMergeBranchPresentationHandler extends AbstractHandler im
 
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
-      ((BranchView) HandlerUtil.getActivePartChecked(event)).changeMergeBranchPresentation(!itemChk);
+      ((BranchView) HandlerUtil.getActivePartChecked(event)).changePresentation(BranchOptionsEnum.SHOW_MERGE_BRANCHES,
+         !itemChk);
       return null;
    }
 
@@ -54,7 +55,7 @@ public final class ShowMergeBranchPresentationHandler extends AbstractHandler im
    public void updateElement(UIElement element, Map parameters) {
       itemChk =
          Platform.getPreferencesService().getRootNode().node(InstanceScope.SCOPE).node(BranchView.VIEW_ID).getBoolean(
-            BranchViewPresentationPreferences.SHOW_MERGE_BRANCHES, false);
+            BranchOptionsEnum.SHOW_MERGE_BRANCHES.origKeyName, false);
       element.setChecked(itemChk);
    }
 

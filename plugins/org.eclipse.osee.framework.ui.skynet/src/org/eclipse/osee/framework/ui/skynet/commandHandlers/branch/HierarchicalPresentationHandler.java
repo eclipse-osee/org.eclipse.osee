@@ -16,8 +16,8 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchOptionsEnum;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView;
-import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchViewPresentationPreferences;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.commands.IElementUpdater;
@@ -39,7 +39,7 @@ public final class HierarchicalPresentationHandler extends AbstractHandler imple
 
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
-      ((BranchView) HandlerUtil.getActivePartChecked(event)).changeBranchPresentation(false);
+      ((BranchView) HandlerUtil.getActivePartChecked(event)).changePresentation(BranchOptionsEnum.FLAT_KEY, false);
       return null;
    }
 
@@ -47,7 +47,7 @@ public final class HierarchicalPresentationHandler extends AbstractHandler imple
    @Override
    public void updateElement(UIElement element, Map parameters) {
       element.setChecked(!Platform.getPreferencesService().getRootNode().node(InstanceScope.SCOPE).node(
-         BranchView.VIEW_ID).getBoolean(BranchViewPresentationPreferences.FLAT_KEY, true));
+         BranchView.VIEW_ID).getBoolean(BranchOptionsEnum.FLAT_KEY.origKeyName, true));
    }
 
    @Override

@@ -16,8 +16,8 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchOptionsEnum;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView;
-import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchViewPresentationPreferences;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.commands.IElementUpdater;
@@ -40,7 +40,8 @@ public class ShowFavoriteBranchesFirstHandler extends AbstractHandler implements
 
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
-      ((BranchView) HandlerUtil.getActivePartChecked(event)).changeFavoritesFirstPresentation(!itemChk);
+      ((BranchView) HandlerUtil.getActivePartChecked(event)).changePresentation(BranchOptionsEnum.FAVORITE_KEY,
+         !itemChk);
       return null;
    }
 
@@ -49,7 +50,7 @@ public class ShowFavoriteBranchesFirstHandler extends AbstractHandler implements
    public void updateElement(UIElement element, Map parameters) {
       itemChk =
          Platform.getPreferencesService().getRootNode().node(InstanceScope.SCOPE).node(BranchView.VIEW_ID).getBoolean(
-            BranchViewPresentationPreferences.FAVORITE_KEY, false);
+            BranchOptionsEnum.FAVORITE_KEY.origKeyName, false);
       element.setChecked(itemChk);
    }
 

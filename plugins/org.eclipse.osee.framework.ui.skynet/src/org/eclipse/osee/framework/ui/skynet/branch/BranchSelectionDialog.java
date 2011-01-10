@@ -16,9 +16,10 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
+import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchOptions;
+import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchOptionsEnum;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.XBranchWidget;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
@@ -32,6 +33,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 
 /**
@@ -44,17 +46,17 @@ public class BranchSelectionDialog extends MessageDialog {
    private boolean allowOnlyWorkingBranches;
    private final Collection<Branch> branches;
 
-   public BranchSelectionDialog(String title, Collection<Branch> branches) {
-      super(Displays.getActiveShell(), title, null, null, MessageDialog.NONE, new String[] {"Ok", "Cancel"}, 0);
-      this.allowOnlyWorkingBranches = false;
-      this.selected = null;
-      this.branches = branches;
-      setShellStyle(getShellStyle() | SWT.RESIZE);
-   }
-
    public BranchSelectionDialog(String title, boolean allowOnlyWorkingBranches) {
       this(title, null);
       this.allowOnlyWorkingBranches = allowOnlyWorkingBranches;
+   }
+
+   public BranchSelectionDialog(String title, Collection<Branch> branches) {
+      super(Displays.getActiveShell(), title, null, null, MessageDialog.NONE, new String[] {"Ok", "Cancel"}, 0);
+      allowOnlyWorkingBranches = false;
+      selected = null;
+      this.branches = branches;
+      setShellStyle(getShellStyle() | SWT.RESIZE);
    }
 
    public Branch getSelection() {
@@ -66,16 +68,16 @@ public class BranchSelectionDialog extends MessageDialog {
       branchWidget = new XBranchWidget(true, true);
       branchWidget.setDisplayLabel(false);
       branchWidget.createWidgets(container, 1);
-      branchWidget.setBranchOptions(BranchOptions.FAVORITES_FIRST, BranchOptions.FLAT);
-      branchWidget.setShowWorkingBranchesOnly(allowOnlyWorkingBranches);
-      branchWidget.getXViewer().getFilterDataUI().addFilterTextListener(new KeyListener() {
+      branchWidget.setBranchOptions(true, BranchOptionsEnum.FAVORITE_KEY, BranchOptionsEnum.FLAT_KEY);
+      branchWidget.setBranchOptions(allowOnlyWorkingBranches, BranchOptionsEnum.SHOW_WORKING_BRANCHES_ONLY);
+      final XViewer viewer = branchWidget.getXViewer();
+      viewer.getFilterDataUI().addFilterTextListener(new KeyListener() {
 
          @Override
          public void keyReleased(KeyEvent e) {
-            Collection<TreeItem> visibleItems = branchWidget.getXViewer().getVisibleItems();
+            Collection<TreeItem> visibleItems = viewer.getVisibleItems();
             if (visibleItems.size() == 1) {
-               branchWidget.getXViewer().setSelection(
-                  new StructuredSelection(new Object[] {visibleItems.iterator().next().getData()}));
+               viewer.setSelection(new StructuredSelection(new Object[] {visibleItems.iterator().next().getData()}));
                getButton(IDialogConstants.OK_ID).setEnabled(true);
                storeSelectedBranch();
             }
@@ -95,14 +97,15 @@ public class BranchSelectionDialog extends MessageDialog {
       GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
       gd.heightHint = 500;
       gd.widthHint = 800;
-      branchWidget.getXViewer().getTree().setLayoutData(gd);
-      branchWidget.getXViewer().getTree().addListener(SWT.MouseDoubleClick, new Listener() {
+      Tree viewersTree = viewer.getTree();
+      viewersTree.setLayoutData(gd);
+      viewersTree.addListener(SWT.MouseDoubleClick, new Listener() {
          @Override
          public void handleEvent(Event event) {
             handleDoubleClick();
          }
       });
-      branchWidget.getXViewer().getTree().addSelectionListener(new SelectionAdapter() {
+      viewersTree.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
             getButton(IDialogConstants.OK_ID).setEnabled(true);

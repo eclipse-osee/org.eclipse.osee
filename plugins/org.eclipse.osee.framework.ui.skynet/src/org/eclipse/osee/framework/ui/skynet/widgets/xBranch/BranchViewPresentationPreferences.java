@@ -35,17 +35,18 @@ import org.osgi.service.prefs.Preferences;
  * @author Jeff C. Phillips
  */
 public class BranchViewPresentationPreferences {
-   public static final String FAVORITE_KEY = "favorites_first";
-   public static final String SHOW_TRANSACTIONS = "show_transactions";
-   public static final String SHOW_MERGE_BRANCHES = "show_merge_branches";
-   public static final String SHOW_ARCHIVED_BRANCHES = "show_archived_branches";
-   public static final String FLAT_KEY = "flat";
-   public static final String BRANCH_ID = "branchId";
-
    private final IPreferencesService preferencesService;
    private IPreferenceChangeListener preferenceChangeListener;
    private final BranchView branchView;
    private boolean disposed;
+
+   private static final String[] listOfCommandIds = {
+      HierarchicalPresentationHandler.COMMAND_ID,
+      FlatPresentationHandler.COMMAND_ID,
+      ShowTransactionPresentationHandler.COMMAND_ID,
+      ShowMergeBranchPresentationHandler.COMMAND_ID,
+      ShowArchivedBranchHandler.COMMAND_ID,
+      ShowFavoriteBranchesFirstHandler.COMMAND_ID};
 
    public BranchViewPresentationPreferences(BranchView branchView) {
       preferencesService = Platform.getPreferencesService();
@@ -68,15 +69,17 @@ public class BranchViewPresentationPreferences {
 
          @Override
          public void added(NodeChangeEvent event) {
-            if (event.getChild().name().equals(BranchView.VIEW_ID)) {
-               ((IEclipsePreferences) event.getChild()).addPreferenceChangeListener(singletonPreferenceChangeListener());
+            Preferences child = event.getChild();
+            if (child.name().equals(BranchView.VIEW_ID)) {
+               ((IEclipsePreferences) child).addPreferenceChangeListener(singletonPreferenceChangeListener());
             }
          }
 
          @Override
          public void removed(NodeChangeEvent event) {
-            if (event.getChild().name().equals(BranchView.VIEW_ID)) {
-               ((IEclipsePreferences) event.getChild()).removePreferenceChangeListener(singletonPreferenceChangeListener());
+            Preferences child = event.getChild();
+            if (child.name().equals(BranchView.VIEW_ID)) {
+               ((IEclipsePreferences) child).removePreferenceChangeListener(singletonPreferenceChangeListener());
             }
          }
       });
@@ -87,31 +90,18 @@ public class BranchViewPresentationPreferences {
    private synchronized IPreferenceChangeListener singletonPreferenceChangeListener() {
       if (preferenceChangeListener == null) {
          preferenceChangeListener = new IPreferenceChangeListener() {
-
             @Override
             public void preferenceChange(PreferenceChangeEvent event) {
                if (disposed) {
                   ((IEclipsePreferences) event.getNode()).removePreferenceChangeListener(this);
                } else {
-                  String propertyName = event.getKey();
+                  BranchOptionsEnum presEnum = BranchOptionsEnum.fromInitValue(event.getKey());
 
                   refreshCommands();
 
-                  if (propertyName.equals(FLAT_KEY)) {
-                     setPresentation(getViewPreference().getBoolean(FLAT_KEY, true));
-                  }
-                  if (propertyName.equals(SHOW_TRANSACTIONS)) {
-                     setShowTransactions(getViewPreference().getBoolean(SHOW_TRANSACTIONS, true));
-                  }
-                  if (propertyName.equals(SHOW_MERGE_BRANCHES)) {
-                     setShowMergeBranches(getViewPreference().getBoolean(SHOW_MERGE_BRANCHES, true));
-                  }
-                  if (propertyName.equals(SHOW_ARCHIVED_BRANCHES)) {
-                     setShowArchivedBranches(getViewPreference().getBoolean(SHOW_ARCHIVED_BRANCHES, true));
-                  }
-                  if (propertyName.equals(FAVORITE_KEY)) {
-                     setFavoritesFirst(getViewPreference().getBoolean(FAVORITE_KEY, false));
-                  }
+                  branchView.getXBranchWidget().setBranchOptions(
+                     getViewPreference().getBoolean(presEnum.origKeyName,
+                        (presEnum == BranchOptionsEnum.FAVORITE_KEY) ? false : true), presEnum);
                }
             }
          };
@@ -121,46 +111,29 @@ public class BranchViewPresentationPreferences {
    }
 
    private void refreshCommands() {
-      ((ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class)).refreshElements(
-         HierarchicalPresentationHandler.COMMAND_ID, null);
-      ((ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class)).refreshElements(
-         FlatPresentationHandler.COMMAND_ID, null);
-      ((ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class)).refreshElements(
-         ShowTransactionPresentationHandler.COMMAND_ID, null);
-      ((ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class)).refreshElements(
-         ShowMergeBranchPresentationHandler.COMMAND_ID, null);
-      ((ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class)).refreshElements(
-         ShowArchivedBranchHandler.COMMAND_ID, null);
-      ((ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class)).refreshElements(
-         ShowFavoriteBranchesFirstHandler.COMMAND_ID, null);
+      ICommandService service = (ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class);
+      for (String command : listOfCommandIds) {
+         service.refreshElements(command, null);
+         service = (ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class);
+      }
    }
 
-   private void loadPreferences() {
-      setPresentation(getViewPreference().getBoolean(FLAT_KEY, true));
-      setShowTransactions(getViewPreference().getBoolean(SHOW_TRANSACTIONS, true));
-      setShowMergeBranches(getViewPreference().getBoolean(SHOW_MERGE_BRANCHES, false));
-      setShowArchivedBranches(getViewPreference().getBoolean(SHOW_ARCHIVED_BRANCHES, false));
-      setFavoritesFirst(getViewPreference().getBoolean(FAVORITE_KEY, false));
-   }
-
-   private void setFavoritesFirst(boolean favoritesFirst) {
-      branchView.setFavoritesFirst(favoritesFirst);
-   }
-
-   private void setPresentation(boolean flat) {
-      branchView.setPresentation(flat);
-   }
-
-   private void setShowMergeBranches(boolean showMergeBranches) {
-      branchView.setShowMergeBranches(showMergeBranches);
-   }
-
-   private void setShowTransactions(boolean showTransactions) {
-      branchView.setShowTransactions(showTransactions);
-   }
-
-   private void setShowArchivedBranches(boolean showArchivedBranches) {
-      branchView.setShowArchivedBranches(showArchivedBranches);
+   public void loadPreferences() {
+      Preferences pref = getViewPreference();
+      for (BranchOptionsEnum keyEnum : BranchOptionsEnum.values()) {
+         XBranchWidget branchWidget = branchView.getXBranchWidget();
+         switch (keyEnum) {
+            case FLAT_KEY:
+            case SHOW_TRANSACTIONS:
+               branchWidget.setBranchOptions(pref.getBoolean(keyEnum.origKeyName, true), keyEnum);
+               break;
+            case SHOW_MERGE_BRANCHES:
+            case SHOW_ARCHIVED_BRANCHES:
+            case FAVORITE_KEY:
+               branchWidget.setBranchOptions(pref.getBoolean(keyEnum.origKeyName, false), keyEnum);
+               break;
+         }
+      }
    }
 
    /**

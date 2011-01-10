@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
-import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchViewPresentationPreferences;
+import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchOptionsEnum;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
@@ -142,7 +142,7 @@ public abstract class CommitHandler extends CommandHandler {
          destinationBranch = sourceBranch.getParentBranch();
       } else {
          destinationBranch =
-            BranchManager.getBranch(Integer.parseInt(event.getParameter(BranchViewPresentationPreferences.BRANCH_ID)));
+            BranchManager.getBranch(Integer.parseInt(event.getParameter(BranchOptionsEnum.BRANCH_ID.origKeyName)));
       }
       Jobs.startJob(new CommitJob(sourceBranch, destinationBranch,
          Boolean.parseBoolean(event.getParameter(CommitBranchParameter.ARCHIVE_PARENT_BRANCH))));
