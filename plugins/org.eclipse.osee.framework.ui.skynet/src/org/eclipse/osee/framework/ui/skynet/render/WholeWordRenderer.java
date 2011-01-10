@@ -49,13 +49,15 @@ public class WholeWordRenderer extends WordRenderer {
    }
 
    @Override
-   public List<String> getCommandId(PresentationType presentationType) {
+   public List<String> getCommandIds(CommandGroup commandGroup) {
       ArrayList<String> commandIds = new ArrayList<String>(1);
 
-      if (presentationType == PresentationType.SPECIALIZED_EDIT) {
-         commandIds.add("org.eclipse.osee.framework.ui.skynet.wholedocumenteditor.command");
-      } else if (presentationType == PresentationType.PREVIEW) {
+      if (commandGroup.isPreview()) {
          commandIds.add("org.eclipse.osee.framework.ui.skynet.wholewordpreview.command");
+      }
+
+      if (commandGroup.isEdit()) {
+         commandIds.add("org.eclipse.osee.framework.ui.skynet.wholedocumenteditor.command");
       }
 
       return commandIds;

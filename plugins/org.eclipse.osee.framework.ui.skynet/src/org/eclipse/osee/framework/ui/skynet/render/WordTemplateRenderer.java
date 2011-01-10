@@ -72,14 +72,15 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
    }
 
    @Override
-   public List<String> getCommandId(PresentationType presentationType) {
+   public List<String> getCommandIds(CommandGroup commandGroup) {
       ArrayList<String> commandIds = new ArrayList<String>(2);
 
-      if (presentationType == PresentationType.SPECIALIZED_EDIT) {
-         commandIds.add("org.eclipse.osee.framework.ui.skynet.wordeditor.command");
-      } else if (presentationType == PresentationType.PREVIEW) {
+      if (commandGroup.isPreview()) {
          commandIds.add("org.eclipse.osee.framework.ui.skynet.wordpreview.command");
          commandIds.add("org.eclipse.osee.framework.ui.skynet.wordpreviewChildren.command");
+      }
+      if (commandGroup.isEdit()) {
+         commandIds.add("org.eclipse.osee.framework.ui.skynet.wordeditor.command");
       }
 
       return commandIds;

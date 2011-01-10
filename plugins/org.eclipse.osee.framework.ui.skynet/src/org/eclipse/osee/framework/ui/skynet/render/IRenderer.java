@@ -12,6 +12,8 @@ package org.eclipse.osee.framework.ui.skynet.render;
 
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.core.commands.Command;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -20,7 +22,6 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
 import org.eclipse.osee.framework.ui.skynet.render.word.AttributeElement;
 import org.eclipse.osee.framework.ui.skynet.render.word.Producer;
-import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Jeff C. Phillips
@@ -39,9 +40,32 @@ public interface IRenderer {
    public static final String NO_DISPLAY = "noDisplay";
    public static final String SKIP_DIALOGS = "skipDialogs";
 
-   public List<String> getCommandId(PresentationType presentationType);
+   public static enum CommandGroup {
+      PREVIEW(PresentationType.PREVIEW),
+      EDIT(PresentationType.SPECIALIZED_EDIT);
 
-   public Image getImage(Artifact artifact) throws OseeCoreException;
+      PresentationType presentationType;
+
+      CommandGroup(PresentationType type) {
+         this.presentationType = type;
+      }
+
+      public PresentationType getPresentationType() {
+         return presentationType;
+      }
+
+      public boolean isEdit() {
+         return CommandGroup.EDIT == this;
+      }
+
+      public boolean isPreview() {
+         return CommandGroup.PREVIEW == this;
+      }
+   }
+
+   public List<String> getCommandIds(CommandGroup commandGroup);
+
+   public ImageDescriptor getCommandImageDescriptor(Command command, Artifact artifact) throws OseeCoreException;
 
    public void renderAttribute(IAttributeType attributeType, Artifact artifact, PresentationType presentationType, Producer producer, VariableMap map, AttributeElement attributeElement) throws OseeCoreException;
 

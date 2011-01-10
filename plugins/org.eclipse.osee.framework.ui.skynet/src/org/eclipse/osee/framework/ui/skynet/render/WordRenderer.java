@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.render;
 
+import org.eclipse.core.commands.Command;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.program.Program;
 
 /**
@@ -27,11 +27,7 @@ public abstract class WordRenderer extends FileSystemRenderer {
    private static final Program wordApp = Program.findProgram("doc");
 
    @Override
-   public Image getImage(Artifact artifact) {
-      return ImageManager.getProgramImage("doc");
-   }
-
-   public static ImageDescriptor getImageDescriptor() {
+   public ImageDescriptor getCommandImageDescriptor(Command command, Artifact artifact) {
       return ImageManager.getProgramImageDescriptor("doc");
    }
 

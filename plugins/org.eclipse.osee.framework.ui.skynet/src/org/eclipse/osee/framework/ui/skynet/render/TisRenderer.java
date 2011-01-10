@@ -50,10 +50,10 @@ public class TisRenderer extends WordTemplateRenderer {
    }
 
    @Override
-   public List<String> getCommandId(PresentationType presentationType) {
+   public List<String> getCommandIds(CommandGroup commandGroup) {
       ArrayList<String> commandIds = new ArrayList<String>(1);
 
-      if (presentationType == PREVIEW) {
+      if (commandGroup.isPreview()) {
          commandIds.add("org.eclipse.osee.framework.ui.skynet.tispreview.command");
       }
 

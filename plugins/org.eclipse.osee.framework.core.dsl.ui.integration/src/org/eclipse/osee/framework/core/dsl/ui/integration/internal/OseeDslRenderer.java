@@ -36,7 +36,6 @@ import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.IArtifactUpdateOperationFactory;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.swt.Displays;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.program.Program;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
@@ -85,14 +84,9 @@ public final class OseeDslRenderer extends FileSystemRenderer {
    }
 
    @Override
-   public Image getImage(Artifact artifact) {
-      return super.getImage(artifact);
-   }
-
-   @Override
-   public List<String> getCommandId(PresentationType presentationType) {
+   public List<String> getCommandIds(CommandGroup commandGroup) {
       ArrayList<String> commandIds = new ArrayList<String>(1);
-      if (presentationType == PresentationType.SPECIALIZED_EDIT) {
+      if (commandGroup.isEdit()) {
          commandIds.add(COMMAND_ID);
       }
       return commandIds;

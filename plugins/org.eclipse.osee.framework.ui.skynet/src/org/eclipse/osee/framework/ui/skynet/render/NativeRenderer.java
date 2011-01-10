@@ -16,10 +16,17 @@ import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.SPECI
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import org.eclipse.core.commands.Command;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.program.Program;
 
 /**
@@ -31,19 +38,36 @@ public class NativeRenderer extends FileSystemRenderer {
    public static final String EXTENSION_ID = "org.eclipse.osee.framework.ui.skynet.render.NativeRenderer";
 
    @Override
-   public List<String> getCommandId(PresentationType presentationType) {
+   public List<String> getCommandIds(CommandGroup commandGroup) {
       ArrayList<String> commandIds = new ArrayList<String>(1);
 
-      if (presentationType == SPECIALIZED_EDIT) {
+      if (commandGroup.isPreview()) {
+         commandIds.add("org.eclipse.osee.framework.ui.skynet.nativeprevieweditor.command");
+      }
+
+      if (commandGroup.isEdit()) {
          commandIds.add("org.eclipse.osee.framework.ui.skynet.nativeeditor.command");
          commandIds.add("org.eclipse.osee.framework.ui.skynet.othereditor.command");
       }
 
-      if (presentationType == PREVIEW) {
-         commandIds.add("org.eclipse.osee.framework.ui.skynet.nativeprevieweditor.command");
-      }
-
       return commandIds;
+   }
+
+   @Override
+   public ImageDescriptor getCommandImageDescriptor(Command command, Artifact artifact) {
+      ImageDescriptor imageDescriptor = null;
+      String fileExtension = null;
+      try {
+         fileExtension = getAssociatedExtension(artifact, null);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+      }
+      if (Strings.isValid(fileExtension)) {
+         imageDescriptor = ImageManager.getProgramImageDescriptor(fileExtension);
+      } else {
+         imageDescriptor = super.getCommandImageDescriptor(command, artifact);
+      }
+      return imageDescriptor;
    }
 
    @Override
@@ -68,7 +92,11 @@ public class NativeRenderer extends FileSystemRenderer {
 
    @Override
    public String getAssociatedExtension(Artifact artifact) throws OseeCoreException {
-      return artifact.getSoleAttributeValue(CoreAttributeTypes.Extension, "xml");
+      return getAssociatedExtension(artifact, "xml");
+   }
+
+   private String getAssociatedExtension(Artifact artifact, String defaultValue) throws OseeCoreException {
+      return artifact.getSoleAttributeValue(CoreAttributeTypes.Extension, defaultValue);
    }
 
    @Override

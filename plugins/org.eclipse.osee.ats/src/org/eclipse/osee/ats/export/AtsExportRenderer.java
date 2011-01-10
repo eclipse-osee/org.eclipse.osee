@@ -14,6 +14,8 @@ import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENER
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.PRODUCE_ATTRIBUTE;
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.core.commands.Command;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.export.AtsExportManager.ExportOption;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -22,7 +24,6 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
-import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Ryan D. Brooks
@@ -31,10 +32,10 @@ public class AtsExportRenderer extends DefaultArtifactRenderer {
    private static final String COMMAND_ID = "org.eclipse.osee.framework.ui.skynet.atsexport.command";
 
    @Override
-   public List<String> getCommandId(PresentationType presentationType) {
+   public List<String> getCommandIds(CommandGroup commandGroup) {
       ArrayList<String> commandIds = new ArrayList<String>(1);
 
-      if (presentationType == PresentationType.SPECIALIZED_EDIT) {
+      if (commandGroup.isEdit()) {
          commandIds.add(COMMAND_ID);
       }
 
@@ -42,8 +43,8 @@ public class AtsExportRenderer extends DefaultArtifactRenderer {
    }
 
    @Override
-   public Image getImage(Artifact artifact) {
-      return ImageManager.getImage(FrameworkImage.EXPORT_DATA);
+   public ImageDescriptor getCommandImageDescriptor(Command command, Artifact artifact) {
+      return ImageManager.getImageDescriptor(FrameworkImage.EXPORT_DATA);
    }
 
    @Override

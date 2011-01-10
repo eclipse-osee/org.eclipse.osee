@@ -14,6 +14,8 @@ import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENER
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.PRODUCE_ATTRIBUTE;
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.core.commands.Command;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -22,7 +24,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
-import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Jeff C. Phillips
@@ -31,8 +32,8 @@ public class AtsTaskEditorRenderer extends DefaultArtifactRenderer {
    private static final String COMMAND_ID = "org.eclipse.osee.framework.ui.skynet.atstaskeditor.command";
 
    @Override
-   public Image getImage(Artifact artifact) {
-      return ImageManager.getImage(AtsImage.TASK);
+   public ImageDescriptor getCommandImageDescriptor(Command command, Artifact artifact) {
+      return ImageManager.getImageDescriptor(AtsImage.TASK);
    }
 
    @Override
@@ -50,10 +51,10 @@ public class AtsTaskEditorRenderer extends DefaultArtifactRenderer {
    }
 
    @Override
-   public List<String> getCommandId(PresentationType presentationType) {
+   public List<String> getCommandIds(CommandGroup commandGroup) {
       ArrayList<String> commandIds = new ArrayList<String>(1);
 
-      if (presentationType == PresentationType.SPECIALIZED_EDIT) {
+      if (commandGroup.isEdit()) {
          commandIds.add(COMMAND_ID);
       }
 

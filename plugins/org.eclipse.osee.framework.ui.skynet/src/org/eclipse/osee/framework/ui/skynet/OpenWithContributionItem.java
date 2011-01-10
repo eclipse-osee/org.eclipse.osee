@@ -21,20 +21,18 @@ import org.eclipse.core.commands.Command;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
-import org.eclipse.osee.framework.ui.skynet.render.NativeRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.IRenderer.CommandGroup;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
-import org.eclipse.osee.framework.ui.skynet.render.WordRenderer;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
@@ -64,13 +62,6 @@ import org.eclipse.ui.menus.CommandContributionItemParameter;
  */
 public class OpenWithContributionItem extends CompoundContributionItem {
 
-   //@formatter:off
-   private static final PresentationType[] OPEN_WITH_PRESENTATION_TYPES = new PresentationType[] {
-      PresentationType.PREVIEW,
-      PresentationType.SPECIALIZED_EDIT
-   };
-   //@formatter:on
-
    private ICommandService commandService;
 
    public OpenWithContributionItem() {
@@ -85,17 +76,20 @@ public class OpenWithContributionItem extends CompoundContributionItem {
    protected IContributionItem[] getContributionItems() {
       ArrayList<IContributionItem> contributionItems = new ArrayList<IContributionItem>(40);
       List<Artifact> artifacts = getSelectedArtifacts();
-      if (artifacts != null && !artifacts.isEmpty()) {
+      if (!artifacts.isEmpty()) {
 
          Artifact testArtifact = artifacts.iterator().next();
 
          try {
-            for (int index = 0; index < OPEN_WITH_PRESENTATION_TYPES.length; index++) {
-               PresentationType openWithType = OPEN_WITH_PRESENTATION_TYPES[index];
-               List<IRenderer> commonRenders = RendererManager.getCommonRenderers(artifacts, openWithType);
-               contributionItems.addAll(getCommonContributionItems(openWithType, testArtifact, commonRenders));
+            CommandGroup[] groups = IRenderer.CommandGroup.values();
+            CommandGroup lastGroup = groups[groups.length - 1];
+            for (CommandGroup commandGroup : groups) {
 
-               if (index + 1 < OPEN_WITH_PRESENTATION_TYPES.length && !contributionItems.isEmpty()) {
+               List<IRenderer> commonRenders =
+                  RendererManager.getCommonRenderers(artifacts, commandGroup.getPresentationType());
+               contributionItems.addAll(getCommonContributionItems(commandGroup, testArtifact, commonRenders));
+
+               if (lastGroup != commandGroup && !contributionItems.isEmpty()) {
                   //add separator between presentation type commands
                   contributionItems.add(new Separator());
                }
@@ -104,35 +98,22 @@ public class OpenWithContributionItem extends CompoundContributionItem {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
       }
-      return contributionItems.toArray(new IContributionItem[0]);
+      return contributionItems.toArray(new IContributionItem[contributionItems.size()]);
    }
 
-   private Collection<IContributionItem> getCommonContributionItems(PresentationType presentationType, Artifact testArtifact, Collection<IRenderer> commonRenders) throws OseeCoreException {
+   private Collection<IContributionItem> getCommonContributionItems(CommandGroup commandGroup, Artifact testArtifact, Collection<IRenderer> commonRenders) throws OseeCoreException {
       Map<String, IContributionItem> contributedItems = new LinkedHashMap<String, IContributionItem>(25);
       for (IRenderer renderer : commonRenders) {
-         for (String commandId : renderer.getCommandId(presentationType)) {
+         for (String commandId : renderer.getCommandIds(commandGroup)) {
             Command command = commandService.getCommand(commandId);
             if (command != null && command.isEnabled()) {
-               ImageDescriptor imageDescriptor = getRenderImageDescriptor(renderer, testArtifact);
+               ImageDescriptor imageDescriptor = renderer.getCommandImageDescriptor(command, testArtifact);
                IContributionItem item = createContributionItem(commandId, imageDescriptor);
                contributedItems.put(commandId, item);
             }
          }
       }
       return contributedItems.values();
-   }
-
-   private ImageDescriptor getRenderImageDescriptor(IRenderer renderer, Artifact testArtifact) throws OseeCoreException {
-      ImageDescriptor imageDescriptor = null;
-      if (renderer instanceof WordRenderer) {
-         imageDescriptor = WordRenderer.getImageDescriptor();
-      } else if (renderer instanceof NativeRenderer) {
-         String fileExtension = testArtifact.getSoleAttributeValue(CoreAttributeTypes.Extension);
-         if (Strings.isValid(fileExtension)) {
-            imageDescriptor = ImageManager.getProgramImageDescriptor(fileExtension);
-         }
-      }
-      return imageDescriptor;
    }
 
    private IContributionItem createContributionItem(String commandId, ImageDescriptor imageDescriptor) {
@@ -165,48 +146,42 @@ public class OpenWithContributionItem extends CompoundContributionItem {
 
       Menu subMenu = new Menu(parent);
       item.setMenu(subMenu);
+
       createDropDownMenu(parent.getShell(), subMenu);
       item.setEnabled(isMenuEnabled(subMenu));
    }
 
-   private List<Artifact> getSelectedArtifacts() {
+   private ISelectionProvider getSelectionProvider() {
+      ISelectionProvider toReturn = null;
       IWorkbenchPage page = AWorkbench.getActivePage();
       if (page != null) {
          IWorkbenchPart part = page.getActivePart();
          if (part != null) {
             IWorkbenchPartSite site = part.getSite();
             if (site != null) {
-               ISelectionProvider selectionProvider = site.getSelectionProvider();
-               if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
-                  IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
-                  return Handlers.getArtifactsFromStructuredSelection(structuredSelection);
-               }
+               toReturn = site.getSelectionProvider();
             }
          }
       }
-      return Collections.emptyList();
+      return toReturn;
+   }
+
+   private List<Artifact> getSelectedArtifacts() {
+      List<Artifact> toReturn = Collections.emptyList();
+      ISelectionProvider selectionProvider = getSelectionProvider();
+      if (selectionProvider != null) {
+         ISelection selection = selectionProvider.getSelection();
+         if (selection instanceof IStructuredSelection) {
+            IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
+            toReturn = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
+         }
+      }
+      return toReturn;
    }
 
    private void createDropDownMenu(Shell shell, Menu previewMenu) {
-      List<Artifact> artifacts = getSelectedArtifacts();
-      boolean previewable = false;
-      try {
-         if (artifacts != null && !artifacts.isEmpty()) {
-            Artifact artifact = artifacts.iterator().next();
-
-            if (RendererManager.getApplicableRenderers(PresentationType.PREVIEW, artifact, null).size() > 1) {
-               previewable = true;
-            }
-
-            if (previewable) {
-               if (OpenWithMenuListener.loadMenuItems(previewMenu, PresentationType.PREVIEW, artifacts)) {
-                  new MenuItem(previewMenu, SWT.SEPARATOR);
-               }
-            }
-            OpenWithMenuListener.loadMenuItems(previewMenu, PresentationType.SPECIALIZED_EDIT, artifacts);
-         }
-      } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+      for (IContributionItem item : getContributionItems()) {
+         item.fill(previewMenu, -1);
       }
    }
 
