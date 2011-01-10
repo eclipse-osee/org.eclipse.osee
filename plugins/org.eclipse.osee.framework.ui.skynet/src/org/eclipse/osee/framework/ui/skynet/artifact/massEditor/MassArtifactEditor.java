@@ -234,9 +234,8 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IActio
 
       xViewer = new MassXViewer(comp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this);
       xViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
-      xViewer.setContentProvider(new org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassContentProvider(
-         xViewer));
-      xViewer.setLabelProvider(new org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassLabelProvider(xViewer));
+      xViewer.setContentProvider(new MassContentProvider(xViewer));
+      xViewer.setLabelProvider(new MassLabelProvider(xViewer));
       branchLabel.setText("Branch: " + (getBranch() == null ? "No Artifacts Returned" : getBranch().getShortName()));
       artifactsPageIndex = addPage(comp);
       setPageText(artifactsPageIndex, "Artifacts");
