@@ -30,11 +30,10 @@ public class ShowArtifactInResourceHandler extends CommandHandler {
    private List<Artifact> artifacts;
 
    @Override
-   public Object execute(ExecutionEvent event) {
+   public Object executeWithException(ExecutionEvent event) {
       for (Artifact artifact : artifacts) {
          try {
             HistoryView.open(artifact);
-
          } catch (Exception ex) {
             OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }

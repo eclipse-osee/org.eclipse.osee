@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
  */
 public class ArtifactEditorHandler extends AbstractEditorHandler {
    @Override
-   public Object execute(ExecutionEvent myExecutionEvent) {
+   public Object executeWithException(ExecutionEvent event) {
       RendererManager.openInJob(artifacts, PresentationType.GENERALIZED_EDIT);
       return null;
    }

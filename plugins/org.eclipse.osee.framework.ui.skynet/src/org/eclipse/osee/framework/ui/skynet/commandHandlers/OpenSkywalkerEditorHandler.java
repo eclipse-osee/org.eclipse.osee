@@ -10,37 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
-import java.util.List;
-import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.AbstractEditorHandler;
 import org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerView;
 
 /**
  * @author Jeff C. Phillips
  */
-public class OpenSkywalkerEditorHandler extends AbstractHandler {
+public class OpenSkywalkerEditorHandler extends AbstractEditorHandler {
+
    @Override
-   public Object execute(ExecutionEvent arg0) {
-      ISelectionProvider selectionProvider =
-         AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
-
-      if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
-         IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
-         List<Artifact> artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
-
-         if (!artifacts.isEmpty()) {
-            SkyWalkerView.exploreArtifact(artifacts.iterator().next());
-         }
-      }
+   public Object executeWithException(ExecutionEvent event) throws OseeCoreException {
+      SkyWalkerView.exploreArtifact(artifacts.iterator().next());
       return null;
-   }
-
-   @Override
-   public boolean isEnabled() {
-      return true;
    }
 }

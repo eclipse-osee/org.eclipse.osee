@@ -12,8 +12,6 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
@@ -22,17 +20,12 @@ import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 /**
  * @author Jeff C. Phillips
  */
-public class PreviewWithChildWordHandler extends PreviewWordHandler {
+public class PreviewWithChildWordHandler extends AbstractEditorHandler {
 
    @Override
-   public Object execute(ExecutionEvent event) {
-      try {
-         RendererManager.openInJob(artifacts, new VariableMap(ITemplateRenderer.PREVIEW_WITH_RECURSE_OPTION_PAIR),
-            PresentationType.PREVIEW);
-      } catch (OseeCoreException ex) {
-         OseeLog.log(PreviewWithChildWordHandler.class, OseeLevel.SEVERE_POPUP, ex);
-      }
-      dispose();
+   public Object executeWithException(ExecutionEvent event) throws OseeCoreException {
+      RendererManager.openInJob(artifacts, new VariableMap(ITemplateRenderer.PREVIEW_WITH_RECURSE_OPTION_PAIR),
+         PresentationType.PREVIEW);
       return null;
    }
 }

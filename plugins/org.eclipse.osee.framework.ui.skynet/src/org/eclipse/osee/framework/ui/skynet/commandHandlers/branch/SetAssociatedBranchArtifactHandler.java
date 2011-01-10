@@ -17,14 +17,11 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -35,31 +32,27 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 public class SetAssociatedBranchArtifactHandler extends CommandHandler {
 
    @Override
-   public Object execute(ExecutionEvent arg0) {
+   public Object executeWithException(ExecutionEvent event) throws OseeCoreException {
       IStructuredSelection selection =
          (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
       Branch selectedBranch = Handlers.getBranchesFromStructuredSelection(selection).iterator().next();
 
-      try {
-         EntryDialog ed =
-            new EntryDialog(
-               "Set Associated Artifact",
-               "Set Associated Artifact for Branch\n\n\"" + selectedBranch.getName() + "\"" + (selectedBranch.getAssociatedArtifactId() != null ? "\n\nCurrently: " + selectedBranch.getAssociatedArtifactId() : "") + "\n\nEnter new Artifact Id to associate:");
-         ed.setEntry(String.valueOf(selectedBranch.getAssociatedArtifactId()));
-         if (ed.open() == 0) {
-            String artId = ed.getEntry();
-            Artifact associatedArtifact =
-               ArtifactQuery.getArtifactFromId(Integer.parseInt(artId), BranchManager.getCommonBranch());
-            if (MessageDialog.openConfirm(
-               Displays.getActiveShell(),
-               "Set Associated Artifact",
-               "Set Associated Artifact for Branch\n\n\"" + selectedBranch.getName() + "\"\nto\nArtifact: " + associatedArtifact)) {
-               selectedBranch.setAssociatedArtifactId(Integer.parseInt(artId));
-               BranchManager.persist(selectedBranch);
-            }
+      EntryDialog ed =
+         new EntryDialog(
+            "Set Associated Artifact",
+            "Set Associated Artifact for Branch\n\n\"" + selectedBranch.getName() + "\"" + (selectedBranch.getAssociatedArtifactId() != null ? "\n\nCurrently: " + selectedBranch.getAssociatedArtifactId() : "") + "\n\nEnter new Artifact Id to associate:");
+      ed.setEntry(String.valueOf(selectedBranch.getAssociatedArtifactId()));
+      if (ed.open() == 0) {
+         String artId = ed.getEntry();
+         Artifact associatedArtifact =
+            ArtifactQuery.getArtifactFromId(Integer.parseInt(artId), BranchManager.getCommonBranch());
+         if (MessageDialog.openConfirm(
+            Displays.getActiveShell(),
+            "Set Associated Artifact",
+            "Set Associated Artifact for Branch\n\n\"" + selectedBranch.getName() + "\"\nto\nArtifact: " + associatedArtifact)) {
+            selectedBranch.setAssociatedArtifactId(Integer.parseInt(artId));
+            BranchManager.persist(selectedBranch);
          }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
 
       return null;

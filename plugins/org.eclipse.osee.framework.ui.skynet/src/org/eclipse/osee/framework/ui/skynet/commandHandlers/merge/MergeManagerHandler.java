@@ -12,7 +12,6 @@
 package org.eclipse.osee.framework.ui.skynet.commandHandlers.merge;
 
 import java.util.List;
-import java.util.logging.Level;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -36,7 +35,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView;
 public class MergeManagerHandler extends CommandHandler {
 
    @Override
-   public Object execute(ExecutionEvent arg0) {
+   public Object executeWithException(ExecutionEvent event) throws OseeCoreException {
       IStructuredSelection selection =
          (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
 
@@ -45,13 +44,9 @@ public class MergeManagerHandler extends CommandHandler {
 
          if (!branches.isEmpty()) {
             Branch selectedBranch = branches.iterator().next();
-            try {
-               Branch toBranch = BranchManager.getBranch(Integer.parseInt(arg0.getParameter(BranchView.BRANCH_ID)));
-               if (selectedBranch != null && toBranch != null) {
-                  MergeView.openView(selectedBranch, toBranch, selectedBranch.getBaseTransaction());
-               }
-            } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            Branch toBranch = BranchManager.getBranch(Integer.parseInt(event.getParameter(BranchView.BRANCH_ID)));
+            if (selectedBranch != null && toBranch != null) {
+               MergeView.openView(selectedBranch, toBranch, selectedBranch.getBaseTransaction());
             }
          }
       }

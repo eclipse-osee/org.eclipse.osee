@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 public class DeleteBranchHandler extends CommandHandler {
 
    @Override
-   public Object execute(ExecutionEvent arg0) {
+   public Object executeWithException(ExecutionEvent event) {
       IStructuredSelection selection =
          (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
       Branch selectedBranch = Handlers.getBranchesFromStructuredSelection(selection).iterator().next();

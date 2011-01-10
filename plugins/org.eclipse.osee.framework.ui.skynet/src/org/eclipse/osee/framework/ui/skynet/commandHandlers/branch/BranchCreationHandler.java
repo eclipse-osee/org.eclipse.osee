@@ -23,8 +23,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.IExceptionableRunnable;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -43,27 +41,19 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 public class BranchCreationHandler extends CommandHandler {
 
    @Override
-   public Object execute(ExecutionEvent arg0) {
+   public Object executeWithException(ExecutionEvent event) throws OseeCoreException {
       IStructuredSelection selection =
          (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
       Object backingData = selection.getFirstElement();
 
       final TransactionRecord parentTransactionId;
-      try {
-         if (backingData instanceof Branch) {
-            Branch branch = (Branch) backingData;
-            parentTransactionId = TransactionManager.getHeadTransaction(branch);
-         } else if (backingData instanceof TransactionRecord) {
-
-            parentTransactionId = (TransactionRecord) backingData;
-
-         } else {
-            throw new OseeStateException(
-               "Backing data for the jobbed node in the branchview was not of the expected type");
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-         return null;
+      if (backingData instanceof Branch) {
+         Branch branch = (Branch) backingData;
+         parentTransactionId = TransactionManager.getHeadTransaction(branch);
+      } else if (backingData instanceof TransactionRecord) {
+         parentTransactionId = (TransactionRecord) backingData;
+      } else {
+         throw new OseeStateException("Backing data for the jobbed node in the branchview was not of the expected type");
       }
       final EntryDialog dialog =
          new EntryDialog(Displays.getActiveShell(), "Branch", null, "Enter the name of the new Branch:",

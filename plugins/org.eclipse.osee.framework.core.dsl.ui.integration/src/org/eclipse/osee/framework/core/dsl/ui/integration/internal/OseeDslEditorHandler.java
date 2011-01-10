@@ -22,9 +22,8 @@ import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 public class OseeDslEditorHandler extends AbstractEditorHandler {
 
    @Override
-   public Object execute(ExecutionEvent event) {
+   public Object executeWithException(ExecutionEvent event) {
       RendererManager.openInJob(artifacts, PresentationType.SPECIALIZED_EDIT);
-      dispose();
       return null;
    }
 

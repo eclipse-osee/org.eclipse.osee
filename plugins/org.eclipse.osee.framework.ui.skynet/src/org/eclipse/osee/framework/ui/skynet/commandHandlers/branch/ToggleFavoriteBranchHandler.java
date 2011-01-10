@@ -15,15 +15,12 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 
 /**
@@ -34,19 +31,14 @@ public class ToggleFavoriteBranchHandler extends CommandHandler {
       "org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.ToggleFavoriteBranchHandler";
 
    @Override
-   public Object execute(ExecutionEvent arg0) {
+   public Object executeWithException(ExecutionEvent event) throws OseeCoreException {
       IStructuredSelection selection =
          (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
       Branch selectedBranch = Handlers.getBranchesFromStructuredSelection(selection).iterator().next();
 
-      try {
-         UserManager.getUser().toggleFavoriteBranch(selectedBranch);
-         OseeEventManager.kickBranchEvent(this,
-            new BranchEvent(BranchEventType.FavoritesUpdated, selectedBranch.getGuid()), selectedBranch.getId());
-
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      }
+      UserManager.getUser().toggleFavoriteBranch(selectedBranch);
+      OseeEventManager.kickBranchEvent(this,
+         new BranchEvent(BranchEventType.FavoritesUpdated, selectedBranch.getGuid()), selectedBranch.getId());
 
       return null;
    }

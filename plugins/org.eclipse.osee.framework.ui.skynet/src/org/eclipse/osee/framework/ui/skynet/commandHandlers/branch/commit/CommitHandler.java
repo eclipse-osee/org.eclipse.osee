@@ -130,26 +130,22 @@ public abstract class CommitHandler extends CommandHandler {
    }
 
    @Override
-   public Object execute(ExecutionEvent event) {
+   public Object executeWithException(ExecutionEvent event) throws OseeCoreException {
       IStructuredSelection selection =
          (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
 
       List<Branch> branches = Handlers.getBranchesFromStructuredSelection(selection);
       Branch sourceBranch = branches.iterator().next();
 
-      try {
-         Branch destinationBranch = null;
-         if (useParentBranch) {
-            destinationBranch = sourceBranch.getParentBranch();
-         } else {
-            destinationBranch =
-               BranchManager.getBranch(Integer.parseInt(event.getParameter(BranchViewPresentationPreferences.BRANCH_ID)));
-         }
-         Jobs.startJob(new CommitJob(sourceBranch, destinationBranch,
-            Boolean.parseBoolean(event.getParameter(CommitBranchParameter.ARCHIVE_PARENT_BRANCH))));
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      Branch destinationBranch = null;
+      if (useParentBranch) {
+         destinationBranch = sourceBranch.getParentBranch();
+      } else {
+         destinationBranch =
+            BranchManager.getBranch(Integer.parseInt(event.getParameter(BranchViewPresentationPreferences.BRANCH_ID)));
       }
+      Jobs.startJob(new CommitJob(sourceBranch, destinationBranch,
+         Boolean.parseBoolean(event.getParameter(CommitBranchParameter.ARCHIVE_PARENT_BRANCH))));
       return null;
    }
 

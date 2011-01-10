@@ -10,11 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.handlers;
 
-import java.util.logging.Level;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.osee.ats.editor.AtsTaskEditorRenderer;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.AbstractEditorHandler;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 
@@ -24,15 +22,10 @@ import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 public class AtsTaskEditorHandler extends AbstractEditorHandler {
 
    @Override
-   public Object execute(ExecutionEvent event) {
+   public Object executeWithException(ExecutionEvent event) throws OseeCoreException {
       if (!artifacts.isEmpty()) {
          AtsTaskEditorRenderer renderer = new AtsTaskEditorRenderer();
-         try {
-            renderer.open(artifacts, PresentationType.SPECIALIZED_EDIT);
-         } catch (OseeCoreException ex) {
-            OseeLog.log(AtsEditorHandler.class, Level.SEVERE, ex);
-         }
-         dispose();
+         renderer.open(artifacts, PresentationType.SPECIALIZED_EDIT);
       }
       return null;
    }

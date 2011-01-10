@@ -42,7 +42,7 @@ public class SingleNativeDiffHandler extends CommandHandler {
    }
 
    @Override
-   public Object execute(ExecutionEvent event) {
+   public Object executeWithException(ExecutionEvent event) {
       Collection<ArtifactDelta> artifactDeltas = ChangeManager.getCompareArtifacts(changes);
       RendererManager.diffInJob(artifactDeltas);
       return null;

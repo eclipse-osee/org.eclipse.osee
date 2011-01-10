@@ -60,7 +60,7 @@ public class RenameBranchHandler extends CommandHandler {
    }
 
    @Override
-   public Object execute(ExecutionEvent event) {
+   public Object executeWithException(ExecutionEvent event) {
       ISelectionProvider selectionProvider =
          AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
 

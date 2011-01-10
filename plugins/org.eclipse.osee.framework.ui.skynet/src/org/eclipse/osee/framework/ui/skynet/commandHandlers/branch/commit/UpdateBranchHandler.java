@@ -78,7 +78,7 @@ public class UpdateBranchHandler extends CommandHandler {
    }
 
    @Override
-   public Object execute(ExecutionEvent event) {
+   public Object executeWithException(ExecutionEvent event) {
       Branch branchToUpdate = getSelectedBranch();
       if (branchToUpdate != null) {
          boolean isUpdateAllowed =

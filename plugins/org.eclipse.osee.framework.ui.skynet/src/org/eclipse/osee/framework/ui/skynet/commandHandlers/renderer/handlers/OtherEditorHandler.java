@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers;
 
-import java.util.logging.Level;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.window.Window;
@@ -35,25 +34,20 @@ import org.eclipse.ui.part.FileEditorInput;
 public class OtherEditorHandler extends AbstractEditorHandler {
 
    @Override
-   public Object execute(ExecutionEvent event) {
+   public Object executeWithException(ExecutionEvent event) throws OseeCoreException {
       if (!artifacts.isEmpty()) {
-         try {
-            EditorSelectionDialog dialog =
-               new EditorSelectionDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
-            dialog.setMessage(String.format("Choose the editor for opening %s", artifacts));
+         EditorSelectionDialog dialog =
+            new EditorSelectionDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
+         dialog.setMessage(String.format("Choose the editor for opening %s", artifacts));
 
-            NativeRenderer renderer = new NativeRenderer();
+         NativeRenderer renderer = new NativeRenderer();
 
-            if (dialog.open() == Window.OK) {
-               IEditorDescriptor editor = dialog.getSelectedEditor();
-               if (editor != null) {
-                  IFile file = renderer.getRenderedFileForOpen(artifacts);
-                  openEditor(editor, file, editor.isOpenExternal());
-               }
+         if (dialog.open() == Window.OK) {
+            IEditorDescriptor editor = dialog.getSelectedEditor();
+            if (editor != null) {
+               IFile file = renderer.getRenderedFileForOpen(artifacts);
+               openEditor(editor, file, editor.isOpenExternal());
             }
-            dispose();
-         } catch (OseeCoreException ex) {
-            OseeLog.log(WordEditorHandler.class, Level.SEVERE, ex);
          }
       }
       return null;

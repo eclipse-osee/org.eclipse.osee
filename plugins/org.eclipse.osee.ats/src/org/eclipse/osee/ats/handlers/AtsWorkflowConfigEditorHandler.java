@@ -21,11 +21,10 @@ import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 public class AtsWorkflowConfigEditorHandler extends AbstractEditorHandler {
 
    @Override
-   public Object execute(ExecutionEvent event) {
+   public Object executeWithException(ExecutionEvent event) {
       if (!artifacts.isEmpty()) {
          AtsWorkflowRenderer renderer = new AtsWorkflowRenderer();
          renderer.open(artifacts, PresentationType.SPECIALIZED_EDIT);
-         dispose();
       }
       return null;
    }

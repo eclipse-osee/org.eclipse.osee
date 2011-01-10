@@ -18,13 +18,10 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
@@ -34,22 +31,18 @@ public class DeleteArtifactHandler extends CommandHandler {
    private List<Artifact> artifacts;
 
    @Override
-   public Object execute(ExecutionEvent event) {
+   public Object executeWithException(ExecutionEvent event) throws OseeCoreException {
       if (!artifacts.isEmpty()) {
-         try {
-            MessageDialog dialog =
-               new MessageDialog(Displays.getActiveShell(), "Confirm Artifact Deletion", null,
-                  " Are you sure you want to delete this artifact and all of the default hierarchy children?",
-                  MessageDialog.QUESTION, new String[] {IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL}, 1);
-            if (dialog.open() == 0) {
-               Artifact[] artifactsArray = artifacts.toArray(new Artifact[artifacts.size()]);
-               SkynetTransaction transaction =
-                  new SkynetTransaction(artifactsArray[0].getBranch(), "Delete artifact handler");
-               ArtifactPersistenceManager.deleteArtifact(transaction, false, artifactsArray);
-               transaction.execute();
-            }
-         } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         MessageDialog dialog =
+            new MessageDialog(Displays.getActiveShell(), "Confirm Artifact Deletion", null,
+               " Are you sure you want to delete this artifact and all of the default hierarchy children?",
+               MessageDialog.QUESTION, new String[] {IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL}, 1);
+         if (dialog.open() == 0) {
+            Artifact[] artifactsArray = artifacts.toArray(new Artifact[artifacts.size()]);
+            SkynetTransaction transaction =
+               new SkynetTransaction(artifactsArray[0].getBranch(), "Delete artifact handler");
+            ArtifactPersistenceManager.deleteArtifact(transaction, false, artifactsArray);
+            transaction.execute();
          }
       }
       return null;

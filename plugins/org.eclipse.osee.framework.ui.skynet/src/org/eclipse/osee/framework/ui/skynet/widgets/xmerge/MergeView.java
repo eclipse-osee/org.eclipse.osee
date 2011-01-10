@@ -352,17 +352,12 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
          private AttributeConflict attributeConflict;
 
          @Override
-         public Object execute(ExecutionEvent event) {
+         public Object executeWithException(ExecutionEvent event) throws OseeCoreException {
             if (attributeConflict != null) {
-               try {
-                  if (MergeUtility.okToOverwriteEditedValue(attributeConflict, Displays.getActiveShell().getShell(),
-                     false)) {
-                     RendererManager.openInJob(attributeConflict.getArtifact(), PresentationType.SPECIALIZED_EDIT);
+               if (MergeUtility.okToOverwriteEditedValue(attributeConflict, Displays.getActiveShell().getShell(), false)) {
+                  RendererManager.openInJob(attributeConflict.getArtifact(), PresentationType.SPECIALIZED_EDIT);
 
-                     attributeConflict.markStatusToReflectEdit();
-                  }
-               } catch (Exception ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                  attributeConflict.markStatusToReflectEdit();
                }
             }
             return null;
@@ -390,13 +385,9 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
          private AttributeConflict attributeConflict;
 
          @Override
-         public Object execute(ExecutionEvent event) {
+         public Object executeWithException(ExecutionEvent event) throws OseeCoreException {
             if (attributeConflict != null) {
-               try {
-                  HistoryView.open(attributeConflict.getSourceArtifact());
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-               }
+               HistoryView.open(attributeConflict.getSourceArtifact());
             }
             return null;
          }
@@ -422,13 +413,9 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
          private AttributeConflict attributeConflict;
 
          @Override
-         public Object execute(ExecutionEvent event) {
+         public Object executeWithException(ExecutionEvent event) throws OseeCoreException {
             if (attributeConflict != null) {
-               try {
-                  HistoryView.open(attributeConflict.getDestArtifact());
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-               }
+               HistoryView.open(attributeConflict.getDestArtifact());
             }
             return null;
          }
@@ -454,13 +441,9 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
          private AttributeConflict attributeConflict;
 
          @Override
-         public Object execute(ExecutionEvent event) {
+         public Object executeWithException(ExecutionEvent event) throws OseeCoreException {
             if (attributeConflict != null) {
-               try {
-                  ArtifactExplorer.revealArtifact(attributeConflict.getSourceArtifact());
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-               }
+               ArtifactExplorer.revealArtifact(attributeConflict.getSourceArtifact());
             }
             return null;
          }
@@ -486,13 +469,9 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
          private AttributeConflict attributeConflict;
 
          @Override
-         public Object execute(ExecutionEvent event) {
+         public Object executeWithException(ExecutionEvent event) throws OseeCoreException {
             if (attributeConflict != null) {
-               try {
-                  ArtifactExplorer.revealArtifact(attributeConflict.getDestArtifact());
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-               }
+               ArtifactExplorer.revealArtifact(attributeConflict.getDestArtifact());
             }
             return null;
          }
@@ -517,7 +496,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
             List<Conflict> selectedConflicts;
 
             @Override
-            public Object execute(ExecutionEvent event) {
+            public Object executeWithException(ExecutionEvent event) {
                RevertWizard wizard = new RevertWizard(revertList);
                NonmodalWizardDialog wizardDialog = new NonmodalWizardDialog(Displays.getActiveShell(), wizard);
                wizardDialog.create();
@@ -573,7 +552,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
          private AttributeConflict attributeConflict;
 
          @Override
-         public Object execute(ExecutionEvent event) {
+         public Object executeWithException(ExecutionEvent event) {
             if (attributeConflict != null) {
                MergeUtility.launchMerge(attributeConflict, Displays.getActiveShell().getShell());
             }
@@ -705,7 +684,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
       }
 
       @Override
-      public Object execute(ExecutionEvent event) {
+      public Object executeWithException(ExecutionEvent event) {
          RendererManager.openInJob(artifacts, PresentationType.PREVIEW);
          return null;
       }

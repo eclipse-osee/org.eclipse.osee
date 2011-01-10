@@ -11,17 +11,14 @@
 package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
 import java.util.List;
-import java.util.logging.Level;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.access.PolicyDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
@@ -32,14 +29,9 @@ public class AccessControlHandler extends CommandHandler {
    private Object object;
 
    @Override
-   public Object execute(ExecutionEvent arg0) {
-      try {
-         PolicyDialog pd = new PolicyDialog(Displays.getActiveShell(), object);
-         pd.open();
-      } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-      }
-
+   public Object executeWithException(ExecutionEvent event) {
+      PolicyDialog pd = new PolicyDialog(Displays.getActiveShell(), object);
+      pd.open();
       return null;
    }
 

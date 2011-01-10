@@ -10,31 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
-import java.util.List;
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.framework.access.AccessControlManager;
-import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.AbstractEditorHandler;
 
 /**
  * @author Jeff C. Phillips
  */
-public class OpenMassArtifactEditorHandler extends CommandHandler {
-   private List<Artifact> artifacts;
+public class OpenMassArtifactEditorHandler extends AbstractEditorHandler {
 
    @Override
-   public Object execute(ExecutionEvent arg0) {
+   public Object executeWithException(ExecutionEvent arg0) throws OseeCoreException {
       MassArtifactEditor.editArtifacts("", artifacts);
       return null;
-   }
-
-   @Override
-   public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
-      artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
-      return AccessControlManager.hasPermission(artifacts, PermissionEnum.WRITE);
    }
 }

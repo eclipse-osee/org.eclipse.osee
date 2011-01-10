@@ -12,6 +12,8 @@ package org.eclipse.osee.framework.ui.plugin.util;
 
 import java.util.logging.Level;
 import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -45,4 +47,17 @@ public abstract class CommandHandler extends AbstractHandler {
    }
 
    public abstract boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException;
+
+   @Override
+   public final Object execute(ExecutionEvent event) throws ExecutionException {
+      try {
+         return executeWithException(event);
+      } catch (OseeCoreException ex) {
+         //         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         throw new ExecutionException("Error executing command handler: ", ex);
+      }
+   }
+
+   public abstract Object executeWithException(ExecutionEvent event) throws OseeCoreException;
+
 }

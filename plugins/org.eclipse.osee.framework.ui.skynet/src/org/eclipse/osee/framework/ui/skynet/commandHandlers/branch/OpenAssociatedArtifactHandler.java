@@ -15,6 +15,7 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -37,31 +38,27 @@ import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 public class OpenAssociatedArtifactHandler extends CommandHandler {
 
    @Override
-   public Object execute(ExecutionEvent arg0) {
+   public Object executeWithException(ExecutionEvent event) throws OseeCoreException {
       IStructuredSelection selection =
          (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
       Branch selectedBranch = Handlers.getBranchesFromStructuredSelection(selection).iterator().next();
 
-      try {
-         Artifact associatedArtifact = BranchManager.getAssociatedArtifact(selectedBranch);
-         if (associatedArtifact == null) {
-            AWorkbench.popup("Open Associated Artifact", "No artifact associated with branch " + selectedBranch);
-            return null;
-         }
-         if (AccessControlManager.hasPermission(associatedArtifact, PermissionEnum.READ)) {
-            if (associatedArtifact instanceof IATSArtifact) {
-               OseeCm.getInstance().openArtifact(associatedArtifact, OseeCmEditor.CmPcrEditor);
-            } else {
-               RendererManager.open(associatedArtifact, PresentationType.DEFAULT_OPEN);
-            }
+      Artifact associatedArtifact = BranchManager.getAssociatedArtifact(selectedBranch);
+      if (associatedArtifact == null) {
+         AWorkbench.popup("Open Associated Artifact", "No artifact associated with branch " + selectedBranch);
+         return null;
+      }
+      if (AccessControlManager.hasPermission(associatedArtifact, PermissionEnum.READ)) {
+         if (associatedArtifact instanceof IATSArtifact) {
+            OseeCm.getInstance().openArtifact(associatedArtifact, OseeCmEditor.CmPcrEditor);
          } else {
-            OseeLog.log(
-               SkynetGuiPlugin.class,
-               OseeLevel.SEVERE_POPUP,
-               "The user " + UserManager.getUser() + " does not have read access to " + selectedBranch.getAssociatedArtifactId());
+            RendererManager.open(associatedArtifact, PresentationType.DEFAULT_OPEN);
          }
-      } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      } else {
+         OseeLog.log(
+            SkynetGuiPlugin.class,
+            OseeLevel.SEVERE_POPUP,
+            "The user " + UserManager.getUser() + " does not have read access to " + selectedBranch.getAssociatedArtifactId());
       }
 
       return null;

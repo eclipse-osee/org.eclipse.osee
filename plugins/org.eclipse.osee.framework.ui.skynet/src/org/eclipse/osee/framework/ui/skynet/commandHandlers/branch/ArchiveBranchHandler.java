@@ -13,21 +13,18 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers.branch;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Level;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 
 /**
@@ -42,7 +39,7 @@ public class ArchiveBranchHandler extends CommandHandler {
    }
 
    @Override
-   public Object execute(ExecutionEvent event) {
+   public Object executeWithException(ExecutionEvent event) throws OseeCoreException {
       IStructuredSelection selection =
          (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
       Collection<Branch> branches = Handlers.getBranchesFromStructuredSelection(selection);
@@ -51,15 +48,11 @@ public class ArchiveBranchHandler extends CommandHandler {
          BranchArchivedState state = branch.getArchiveState();
          branch.setArchived(!state.isArchived());
       }
-      try {
-         BranchManager.persist(branches);
+      BranchManager.persist(branches);
 
-         for (Branch branch : branches) {
-            OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.Committed, branch.getGuid()),
-               branch.getId());
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+      for (Branch branch : branches) {
+         OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.Committed, branch.getGuid()),
+            branch.getId());
       }
       return null;
    }

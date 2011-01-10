@@ -123,7 +123,7 @@ public class MergeUtility {
       }
    }
 
-   public static boolean okToOverwriteEditedValue(Conflict conflict, Shell shell, boolean prompt) throws MultipleArtifactsExist, ArtifactDoesNotExist, Exception {
+   public static boolean okToOverwriteEditedValue(Conflict conflict, Shell shell, boolean prompt) throws OseeCoreException {
       boolean proceed = true;
       if (!conflict.statusEditable()) {
          MessageDialog.openInformation(shell, "Attention", COMMITED_PROMPT);
@@ -138,7 +138,7 @@ public class MergeUtility {
    /*
     * This is not in the AttributeConflict because it relies on the renderer that is in not in the skynet core package.
     */
-   public static void showCompareFile(Artifact art1, Artifact art2, String fileName) throws Exception {
+   public static void showCompareFile(Artifact art1, Artifact art2, String fileName) throws OseeCoreException {
       RendererManager.diffInJob(new ArtifactDelta(art1, art2), new VariableMap(IRenderer.FILE_NAME_OPTION, fileName));
    }
 
