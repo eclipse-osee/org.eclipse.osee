@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.core.commands.Command;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -35,9 +36,11 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorInput;
+import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.compare.DefaultArtifactCompare;
 import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
@@ -45,6 +48,7 @@ import org.eclipse.osee.framework.ui.skynet.render.word.AttributeElement;
 import org.eclipse.osee.framework.ui.skynet.render.word.Producer;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
  * @author Ryan D. Brooks
@@ -54,6 +58,7 @@ public class DefaultArtifactRenderer implements IRenderer {
    private static final IComparator DEFAULT_COMPARATOR = new DefaultArtifactCompare();
 
    private static final String OPEN_ART_EDITOR_CMD_ID = "org.eclipse.osee.framework.ui.skynet.artifacteditor.command";
+   private static final String OPEN_MASS_EDITOR_CMD_ID = "org.eclipse.osee.framework.ui.skynet.OpenMassEditcommand";
 
    private VariableMap options;
 
@@ -156,7 +161,14 @@ public class DefaultArtifactRenderer implements IRenderer {
 
    @Override
    public ImageDescriptor getCommandImageDescriptor(Command command, Artifact artifact) {
-      return ArtifactImageManager.getImageDescriptor(artifact);
+      String id = command.getId();
+      ImageDescriptor descriptor;
+      if (OPEN_MASS_EDITOR_CMD_ID.equals(id)) {
+         descriptor = ImageManager.getImageDescriptor(FrameworkImage.ARTIFACT_EDITOR);
+      } else {
+         descriptor = ArtifactImageManager.getImageDescriptor(artifact);
+      }
+      return descriptor;
    }
 
    @Override
@@ -165,6 +177,7 @@ public class DefaultArtifactRenderer implements IRenderer {
 
       if (commandGroup.isEdit()) {
          commandIds.add(OPEN_ART_EDITOR_CMD_ID);
+         commandIds.add(OPEN_MASS_EDITOR_CMD_ID);
       }
 
       return commandIds;
@@ -201,14 +214,28 @@ public class DefaultArtifactRenderer implements IRenderer {
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
-            try {
-               for (Artifact artifact : artifacts) {
-                  AWorkbench.getActivePage().openEditor(new ArtifactEditorInput(artifact), ArtifactEditor.EDITOR_ID);
+            if (isDisplayInMassEditor()) {
+               MassArtifactEditor.editArtifacts("", artifacts);
+            } else {
+               try {
+                  for (Artifact artifact : artifacts) {
+                     AWorkbench.getActivePage().openEditor(new ArtifactEditorInput(artifact), ArtifactEditor.EDITOR_ID);
+                  }
+               } catch (Exception ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                }
-            } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       });
+   }
+
+   private boolean isDisplayInMassEditor() {
+      boolean result = false;
+      try {
+         result = getBooleanOption(IRenderer.OPEN_IN_TABLE_EDITOR);
+      } catch (OseeArgumentException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+      }
+      return result;
    }
 }

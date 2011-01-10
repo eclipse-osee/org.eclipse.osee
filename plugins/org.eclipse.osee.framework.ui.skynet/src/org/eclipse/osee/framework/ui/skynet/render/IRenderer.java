@@ -39,6 +39,7 @@ public interface IRenderer {
    public static final String FILE_NAME_OPTION = "filename";
    public static final String NO_DISPLAY = "noDisplay";
    public static final String SKIP_DIALOGS = "skipDialogs";
+   public static final String OPEN_IN_TABLE_EDITOR = "open.with.mass.artifact.editor";
 
    public static enum CommandGroup {
       PREVIEW(PresentationType.PREVIEW),

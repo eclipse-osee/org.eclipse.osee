@@ -1276,7 +1276,7 @@
        point="org.eclipse.ui.commands">
     <command
           id="org.eclipse.osee.framework.ui.skynet.OpenMassEditcommand"
-          name="Mass Edit">
+          name="Mass Editor">
     </command>
     <command
           id="org.eclipse.osee.framework.ui.skynet.skywalker.command"
