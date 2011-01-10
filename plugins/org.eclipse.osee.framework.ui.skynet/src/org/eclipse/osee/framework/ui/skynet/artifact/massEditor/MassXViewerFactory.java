@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastMo
 public class MassXViewerFactory extends SkynetXViewerFactory {
 
    private static String NAMESPACE = "org.eclipse.osee.framework.ui.skynet.massEditor.ArtifactXViewer";
-   private static ArtifactNameColumn nameCol = new ArtifactNameColumn(true);
+   private static ArtifactNameColumn nameCol = new ArtifactNameColumn(true, true);
 
    public MassXViewerFactory(Collection<? extends Artifact> artifacts) {
       super(NAMESPACE);

@@ -117,6 +117,7 @@ public enum FrameworkImage implements KeyedImage {
    LOCKED_NO_ACCESS("red_lock.gif"),
    LOCKED_WITH_ACCESS("green_lock.gif"),
    OSEE_TYPES_LINK("link_obj.gif"),
+   PURGE("purge.gif"),
    NOT_EQUAL("not_equal.gif"),
    NAV_BACKWARD("nav_backward.gif"),
    NAV_FORWARD("nav_forward.gif"),

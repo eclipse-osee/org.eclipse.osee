@@ -21,6 +21,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.swt.OverlayImage.Location;
 import org.eclipse.swt.graphics.Image;
 
 public class MassLabelProvider extends XViewerLabelProvider {
@@ -34,20 +36,27 @@ public class MassLabelProvider extends XViewerLabelProvider {
 
    @Override
    public Image getColumnImage(Object element, XViewerColumn col, int columnIndex) throws XViewerException {
-      if (col == null) {
-         return null;
+      Image image = null;
+
+      if (element instanceof Artifact) {
+         Artifact artifact = (Artifact) element;
+
+         if (columnIndex == 0) {
+            if (artifact.isDeleted()) {
+               image = ArtifactImageManager.getImage(artifact, FrameworkImage.PURGE, Location.BOT_LEFT);
+            } else if (artifact.isReadOnly()) {
+               image = ArtifactImageManager.getImage(artifact, FrameworkImage.LOCK_OVERLAY, Location.BOT_LEFT);
+            } else {
+               image = ArtifactImageManager.getImage(artifact);
+            }
+         } else {
+            if (col instanceof XViewerValueColumn) {
+               XViewerValueColumn valueColumn = (XViewerValueColumn) col;
+               return valueColumn.getColumnImage(element, col, columnIndex);
+            }
+         }
       }
-      if (columnIndex != 0 && col instanceof XViewerValueColumn) {
-         return ((XViewerValueColumn) col).getColumnImage(element, col, columnIndex);
-      }
-      Artifact artifact = (Artifact) element;
-      if (artifact == null || artifact.isDeleted()) {
-         return null;
-      }
-      if (columnIndex == 0) {
-         return ArtifactImageManager.getImage(artifact);
-      }
-      return null;
+      return image;
    }
 
    @Override

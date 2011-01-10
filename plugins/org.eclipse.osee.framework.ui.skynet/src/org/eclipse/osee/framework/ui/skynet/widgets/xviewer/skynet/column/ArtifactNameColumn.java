@@ -21,12 +21,19 @@ import org.eclipse.swt.SWT;
  */
 public class ArtifactNameColumn extends XViewerValueColumn {
 
+   private final boolean addDeletedLabel;
+
    public ArtifactNameColumn(boolean show) {
-      this("framework.artifact.name", "Name", 150, SWT.LEFT, show, SortDataType.String, false, null);
+      this(false, "framework.artifact.name", "Name", 150, SWT.LEFT, show, SortDataType.String, false, null);
    }
 
-   public ArtifactNameColumn(String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
+   public ArtifactNameColumn(boolean show, boolean addDeletedLabel) {
+      this(addDeletedLabel, "framework.artifact.name", "Name", 150, SWT.LEFT, show, SortDataType.String, false, null);
+   }
+
+   public ArtifactNameColumn(boolean addDeletedLabel, String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
       super(id, name, width, align, show, sortDataType, multiColumnEditable, description);
+      this.addDeletedLabel = addDeletedLabel;
    }
 
    /**
@@ -35,7 +42,7 @@ public class ArtifactNameColumn extends XViewerValueColumn {
     */
    @Override
    public ArtifactNameColumn copy() {
-      ArtifactNameColumn newXCol = new ArtifactNameColumn(isShow());
+      ArtifactNameColumn newXCol = new ArtifactNameColumn(isShow(), addDeletedLabel);
       super.copy(this, newXCol);
       return newXCol;
    }
@@ -43,11 +50,15 @@ public class ArtifactNameColumn extends XViewerValueColumn {
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) throws XViewerException {
       if (element instanceof Artifact) {
-         return ((Artifact) element).getName();
+         Artifact artifact = ((Artifact) element);
+         String format = "%s";
+         if (addDeletedLabel && artifact.isDeleted()) {
+            format = "<Deleted> %s";
+         }
+         return String.format(format, artifact.getName());
       } else if (element instanceof String) {
          return "";
       }
       return super.getColumnText(element, column, columnIndex);
    }
-
 }
