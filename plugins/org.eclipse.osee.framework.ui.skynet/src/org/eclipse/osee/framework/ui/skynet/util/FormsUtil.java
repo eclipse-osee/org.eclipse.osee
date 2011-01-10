@@ -82,8 +82,8 @@ public class FormsUtil {
       return text;
    }
 
-   public static void createLabelValue(XFormToolkit toolkit, Composite comp, String labelStr, String valueStr) {
-      createLabelValue(toolkit, comp, labelStr, valueStr, null);
+   public static Label createLabelValue(XFormToolkit toolkit, Composite comp, String labelStr, String valueStr) {
+      return createLabelValue(toolkit, comp, labelStr, valueStr, null);
    }
 
    public static Label createLabelValue(XFormToolkit toolkit, Composite comp, String labelStr, String valueStr, String tooltip) {

@@ -43,6 +43,7 @@ import org.eclipse.osee.ats.workdef.StateDefinition;
 import org.eclipse.osee.ats.workdef.StateXWidgetPage;
 import org.eclipse.osee.ats.workdef.WorkDefinition;
 import org.eclipse.osee.ats.workdef.WorkDefinitionFactory;
+import org.eclipse.osee.ats.workdef.WorkDefinitionMatch;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
 import org.eclipse.osee.ats.workflow.TransitionManager;
 import org.eclipse.osee.ats.workflow.item.AtsStatePercentCompleteWeightRule;
@@ -86,7 +87,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    private final Set<IRelationEnumeration> atsWorldRelations = new HashSet<IRelationEnumeration>();
    private Collection<User> transitionAssignees;
-   protected WorkDefinition workDefinition;
+   protected WorkDefinitionMatch workDefinitionMatch;
    protected AbstractWorkflowArtifact parentSma;
    protected TeamWorkFlowArtifact parentTeamArt;
    protected ActionArtifact parentAction;
@@ -238,20 +239,24 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    public void clearCaches() {
-      workDefinition = null;
+      workDefinitionMatch = null;
       implementersStr = null;
       stateToWeight = null;
    }
 
    public WorkDefinition getWorkDefinition() {
-      if (AtsUtil.isForceReloadWorkDefinitions() || workDefinition == null) {
+      return getWorkDefinitionMatch().getWorkDefinition();
+   }
+
+   public WorkDefinitionMatch getWorkDefinitionMatch() {
+      if (AtsUtil.isForceReloadWorkDefinitions() || workDefinitionMatch == null) {
          try {
-            workDefinition = WorkDefinitionFactory.getWorkDefinition(this);
+            workDefinitionMatch = WorkDefinitionFactory.getWorkDefinition(this);
          } catch (Exception ex) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          }
       }
-      return workDefinition;
+      return workDefinitionMatch;
 
    }
 
@@ -808,9 +813,9 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
          workRules.addAll(((TeamWorkFlowArtifact) this).getTeamDefinition().getRulesStartsWith(ruleName));
       }
       // Get work rules from workflow
-      if (workDefinition != null) {
+      if (workDefinitionMatch != null) {
          // Get rules from workflow definitions
-         workRules.addAll(workDefinition.getRulesStartsWith(ruleName));
+         workRules.addAll(workDefinitionMatch.getWorkDefinition().getRulesStartsWith(ruleName));
       }
       // Add work rules from page
       workRules.addAll(getStateDefinition().getRulesStartsWith(ruleName));
@@ -1084,7 +1089,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return this instanceof AbstractReviewArtifact;
    }
 
-   public StateXWidgetPage getCurrentAtsWorkPage() throws OseeCoreException {
+   public StateXWidgetPage getCurrentAtsWorkPage() {
       for (StateXWidgetPage statePage : getStatePages()) {
          if (getStateMgr().isInState(statePage)) {
             return statePage;
@@ -1093,7 +1098,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return null;
    }
 
-   public List<StateXWidgetPage> getStatePages() throws OseeCoreException {
+   public List<StateXWidgetPage> getStatePages() {
       List<StateXWidgetPage> statePages = new ArrayList<StateXWidgetPage>();
       for (StateDefinition stateDefinition : getWorkDefinition().getStatesOrdered()) {
          try {

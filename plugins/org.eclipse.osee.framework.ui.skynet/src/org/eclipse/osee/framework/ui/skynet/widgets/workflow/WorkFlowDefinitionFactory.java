@@ -19,11 +19,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public class WorkFlowDefinitionFactory {
 
-   public static WorkFlowDefinition getWorkFlowDefinition(Artifact artifact) throws OseeCoreException {
+   public static WorkFlowDefinitionMatch getWorkFlowDefinition(Artifact artifact) throws OseeCoreException {
 
       // Check extensions for WorkFlowDefinition for given artifact
       for (IWorkDefinitionProvider provider : WorkDefinitionProvider.getWorkDefinitionProviders()) {
-         WorkFlowDefinition workFlowDefinition = provider.getWorkFlowDefinition(artifact);
+         WorkFlowDefinitionMatch workFlowDefinition = provider.getWorkFlowDefinition(artifact);
          if (workFlowDefinition != null) {
             return workFlowDefinition;
          }

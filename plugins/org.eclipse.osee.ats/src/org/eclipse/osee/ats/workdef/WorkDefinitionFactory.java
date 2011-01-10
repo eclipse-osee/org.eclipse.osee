@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinitionFactory;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinitionMatch;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
@@ -43,8 +44,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkWidgetDefinitio
 public class WorkDefinitionFactory {
 
    private static final Map<String, RuleDefinition> idToRule = new HashMap<String, RuleDefinition>();
-   private static final Set<WorkDefinition> workDefinitions = new HashSet<WorkDefinition>();
-   private static final Map<String, WorkDefinition> idToWorkDefintion = new HashMap<String, WorkDefinition>();
+   private static final Set<WorkDefinitionMatch> workDefinitions = new HashSet<WorkDefinitionMatch>();
+   private static final Map<String, WorkDefinitionMatch> idToWorkDefintion = new HashMap<String, WorkDefinitionMatch>();
 
    public static RuleDefinition getRuleById(String id) {
       ensureRulesLoaded();
@@ -69,30 +70,39 @@ public class WorkDefinitionFactory {
       }
    }
 
-   public static WorkDefinition getWorkDefinition(Artifact artifact) throws OseeCoreException {
-      WorkDefinition workDef = getWorkDefinitionNew(artifact);
-      if (workDef == null) {
-         workDef = translateToWorkDefinition(WorkFlowDefinitionFactory.getWorkFlowDefinition(artifact));
+   public static WorkDefinitionMatch getWorkDefinition(Artifact artifact) throws OseeCoreException {
+      WorkDefinitionMatch match = getWorkDefinitionNew(artifact);
+      if (!match.isMatched()) {
+         WorkFlowDefinitionMatch flowMatch = WorkFlowDefinitionFactory.getWorkFlowDefinition(artifact);
+         if (flowMatch.isMatched()) {
+            WorkDefinition workDef = translateToWorkDefinition(flowMatch.getWorkFlowDefinition());
+            match = new WorkDefinitionMatch(workDef, null);
+            match.getTrace().addAll(flowMatch.getTrace());
+         }
       }
-      workDefinitions.add(workDef);
-      return workDef;
+      workDefinitions.add(match);
+      return match;
    }
 
-   public static WorkDefinition getWorkDefinition(String id) throws OseeCoreException {
+   public static WorkDefinitionMatch getWorkDefinition(String id) throws OseeCoreException {
       if (!idToWorkDefintion.containsKey(id) || AtsUtil.isForceReloadWorkDefinitions()) {
-         WorkDefinition workDef = null;
+         WorkDefinitionMatch match = new WorkDefinitionMatch();
          for (IAtsWorkDefinitionProvider provider : AtsWorkDefinitionProviders.getAtsTeamWorkflowExtensions()) {
-            workDef = provider.getWorkFlowDefinition(id);
+            WorkDefinition workDef = provider.getWorkFlowDefinition(id);
             if (workDef != null) {
-               break;
+               match.setWorkDefinition(workDef);
+               match.getTrace().add(
+                  (String.format("from provider [%s] for id [%s] ", provider.getClass().getSimpleName(), id)));
             }
          }
-         if (workDef == null) {
-            workDef =
+         if (!match.isMatched()) {
+            WorkDefinition workDef =
                translateToWorkDefinition((WorkFlowDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(id));
+            match.setWorkDefinition(workDef);
+            match.getTrace().add(String.format("from legacy WorkFlowDefinition [%s] translated for id [%s]", id, id));
          }
-         workDefinitions.add(workDef);
-         idToWorkDefintion.put(id, workDef);
+         workDefinitions.add(match);
+         idToWorkDefintion.put(id, match);
       }
       return idToWorkDefintion.get(id);
    }
@@ -167,7 +177,9 @@ public class WorkDefinitionFactory {
                   }
                   widgetDef.setAttributeName(data.getStoreName());
                   widgetDef.setDefaultValue(data.getDefaultValue());
-                  widgetDef.setHeight(data.getHeight());
+                  if (data.isHeightSet()) {
+                     widgetDef.setHeight(data.getHeight());
+                  }
                   widgetDef.setToolTip(data.getToolTip());
                   widgetDef.setXWidgetName(data.getXWidgetName());
 
@@ -186,7 +198,7 @@ public class WorkDefinitionFactory {
                } else if (itemDef instanceof WorkRuleDefinition) {
                   WorkRuleDefinition workRule = (WorkRuleDefinition) itemDef;
                   RuleDefinition ruleDef = getRuleById(workRule.getId());
-                  stateDef.addRule(ruleDef, "From related WorkItemDefintion");
+                  stateDef.addRule(ruleDef, "from related WorkItemDefintion");
                } else {
                   OseeLog.log(AtsPlugin.class, Level.SEVERE,
                      "Unexpected item type as page child -> " + itemDef.getType());
@@ -203,85 +215,98 @@ public class WorkDefinitionFactory {
 
    private static void copyKeyValuePair(AbstractWorkDefItem itemDef, WorkItemDefinition workItem) {
       for (Entry<String, String> entry : workItem.getWorkDataKeyValueMap().entrySet()) {
-         itemDef.addWorkDataKeyValue(entry.getKey(), entry.getValue());
+         // XWidget is a key of WorkWidgetDefinition and should be handled through the normal conversion process
+         if (!entry.getKey().equals("XWidget")) {
+            itemDef.addWorkDataKeyValue(entry.getKey(), entry.getValue());
+         }
       }
    }
 
-   private static WorkDefinition getWorkDefinitionFromArtifactsAttributeValue(Artifact artifact) throws OseeCoreException {
+   private static WorkDefinitionMatch getWorkDefinitionFromArtifactsAttributeValue(Artifact artifact) throws OseeCoreException {
       // If this artifact specifies it's own workflow definition, use it
       String workFlowDefId = artifact.getSoleAttributeValue(AtsAttributeTypes.WorkflowDefinition, null);
       if (Strings.isValid(workFlowDefId)) {
-         return getWorkDefinition(workFlowDefId);
+         WorkDefinitionMatch match = getWorkDefinition(workFlowDefId);
+         if (match.isMatched()) {
+            match.getTrace().add(String.format("from artifact [%s] for id [%s] ", artifact, workFlowDefId));
+         }
       }
-      return null;
+      return new WorkDefinitionMatch();
    }
 
-   private static WorkDefinition getWorkDefinitionForTask(TaskArtifact taskArt) throws OseeCoreException {
-      WorkDefinition workDef = null;
+   private static WorkDefinitionMatch getWorkDefinitionForTask(TaskArtifact taskArt) throws OseeCoreException {
+      WorkDefinitionMatch match = new WorkDefinitionMatch();
       for (IAtsTeamWorkflow provider : TeamWorkflowExtensions.getAtsTeamWorkflowExtensions()) {
          String workFlowDefId = provider.getRelatedTaskWorkflowDefinitionId(taskArt.getParentSMA());
          if (Strings.isValid(workFlowDefId)) {
-            workDef = WorkDefinitionFactory.getWorkDefinition(workFlowDefId);
+            match = WorkDefinitionFactory.getWorkDefinition(workFlowDefId);
+            match.getTrace().add(
+               (String.format("from provider [%s] for id [%s]", provider.getClass().getSimpleName(), workFlowDefId)));
             break;
          }
       }
-      if (workDef == null) {
+      if (!match.isMatched()) {
          // If task specifies it's own workflow id, use it
-         workDef = getWorkDefinitionFromArtifactsAttributeValue(taskArt);
+         match = getWorkDefinitionFromArtifactsAttributeValue(taskArt);
       }
-      if (workDef == null) {
+      if (!match.isMatched()) {
          // Else If parent SMA has a related task definition workflow id specified, use it
-         workDef = getWorkDefinitionFromArtifactsAttributeValue(taskArt.getParentSMA());
+         WorkDefinitionMatch match2 = getWorkDefinitionFromArtifactsAttributeValue(taskArt.getParentSMA());
+         if (match2.isMatched()) {
+            match2.getTrace().add(String.format("from task parent SMA [%s]", taskArt.getParentSMA()));
+            match = match2;
+         }
       }
-      if (workDef == null) {
+      if (!match.isMatched()) {
          // Else If parent TeamWorkflow's TeamDefinition has a related task definition workflow id, use it
-         workDef = getWorkDefinitionFromArtifactsAttributeValue(taskArt.getParentTeamWorkflow().getTeamDefinition());
+         match = getWorkDefinitionFromArtifactsAttributeValue(taskArt.getParentTeamWorkflow().getTeamDefinition());
       }
-      if (workDef == null) {
+      if (!match.isMatched()) {
          // Else, use default Task workflow
-         workDef = getWorkDefinition(TaskWorkflowDefinition.ID);
+         match = getWorkDefinition(TaskWorkflowDefinition.ID);
+         if (match.isMatched()) {
+            match.getTrace().add(String.format("default TaskWorkflowDefinition ID [%s]", TaskWorkflowDefinition.ID));
+         }
       }
-      return workDef;
+      return match;
    }
 
-   private static WorkDefinition getWorkDefinitionNew(Artifact artifact) throws OseeCoreException {
+   private static WorkDefinitionMatch getWorkDefinitionNew(Artifact artifact) throws OseeCoreException {
+      WorkDefinitionMatch match = new WorkDefinitionMatch();
       if (artifact instanceof TaskArtifact) {
-         return getWorkDefinitionForTask((TaskArtifact) artifact);
+         match = getWorkDefinitionForTask((TaskArtifact) artifact);
       }
-      if (artifact instanceof AbstractWorkflowArtifact) {
+      if (!match.isMatched() && artifact instanceof AbstractWorkflowArtifact) {
          AbstractWorkflowArtifact aba = (AbstractWorkflowArtifact) artifact;
          // Check extensions for definition handling
          for (IAtsTeamWorkflow provider : TeamWorkflowExtensions.getAtsTeamWorkflowExtensions()) {
             String workFlowDefId = provider.getWorkflowDefinitionId(aba);
             if (Strings.isValid(workFlowDefId)) {
-               return WorkDefinitionFactory.getWorkDefinition(workFlowDefId);
+               match = WorkDefinitionFactory.getWorkDefinition(workFlowDefId);
             }
          }
-         // If this artifact specifies it's own workflow definition, use it
-         WorkDefinition def = getWorkDefinitionFromArtifactsAttributeValue(artifact);
-         if (def != null) {
-            return def;
-         }
-         // Otherwise, use workflow defined by attribute of WorkflowDefinition
-         // Note: This is new.  Old TeamDefs got workflow off relation
-         if (artifact instanceof TeamWorkFlowArtifact) {
-            return ((TeamWorkFlowArtifact) artifact).getTeamDefinition().getWorkDefinition();
-         }
-         if (artifact instanceof GoalArtifact) {
-            return getWorkDefinition(GoalWorkflowDefinition.ID);
-         }
-         if (artifact instanceof PeerToPeerReviewArtifact) {
-            return getWorkDefinition(PeerToPeerWorkflowDefinition.ID);
-         }
-         if (artifact instanceof DecisionReviewArtifact) {
-            return getWorkDefinition(DecisionWorkflowDefinition.ID);
+         if (!match.isMatched()) {
+            // If this artifact specifies it's own workflow definition, use it
+            match = getWorkDefinitionFromArtifactsAttributeValue(artifact);
+            if (!match.isMatched()) {
+               // Otherwise, use workflow defined by attribute of WorkflowDefinition
+               // Note: This is new.  Old TeamDefs got workflow off relation
+               if (artifact instanceof TeamWorkFlowArtifact) {
+                  match = ((TeamWorkFlowArtifact) artifact).getTeamDefinition().getWorkDefinition();
+               } else if (artifact instanceof GoalArtifact) {
+                  match = getWorkDefinition(GoalWorkflowDefinition.ID);
+               } else if (artifact instanceof PeerToPeerReviewArtifact) {
+                  match = getWorkDefinition(PeerToPeerWorkflowDefinition.ID);
+               } else if (artifact instanceof DecisionReviewArtifact) {
+                  match = getWorkDefinition(DecisionWorkflowDefinition.ID);
+               }
+            }
          }
       }
-      return null;
+      return match;
    }
 
-   public static Set<WorkDefinition> getWorkdefinitions() {
+   public static Set<WorkDefinitionMatch> getWorkDefinitions() {
       return workDefinitions;
    }
-
 }

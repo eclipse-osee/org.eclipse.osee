@@ -12,5 +12,5 @@ public interface IAtsWorkDefinitionProvider {
 
    WorkDefinition getWorkFlowDefinition(String id);
 
-   void convertAndOpenAtsDsl(WorkDefinition workDef, XResultData resultData) throws OseeCoreException;
+   void convertAndOpenAtsDsl(WorkDefinition workDef, XResultData resultData, String filename) throws OseeCoreException;
 }

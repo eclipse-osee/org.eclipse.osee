@@ -46,14 +46,17 @@ import org.eclipse.osee.ats.config.AtsBulkLoad;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workdef.StateXWidgetPage;
+import org.eclipse.osee.ats.workdef.WorkDefinitionMatch;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
@@ -77,7 +80,11 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.IMessage;
 import org.eclipse.ui.forms.editor.FormPage;
@@ -349,6 +356,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          }
          workflowMetricsHeader = new SMAWorkflowMetricsHeader(headerComp, editor.getToolkit(), sma);
          int headerCompColumns = 4;
+         createWorkDefHeader(headerComp, editor.getToolkit(), sma, headerCompColumns);
          createSMANotesHeader(headerComp, editor.getToolkit(), sma, headerCompColumns);
          createStateNotesHeader(headerComp, editor.getToolkit(), sma, headerCompColumns, null);
          createAnnotationsHeader(headerComp, editor.getToolkit());
@@ -623,6 +631,25 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       if (sma.getAnnotations().size() > 0) {
          new AnnotationComposite(toolkit, comp, SWT.None, sma);
       }
+   }
+
+   public static void createWorkDefHeader(Composite comp, XFormToolkit toolkit, AbstractWorkflowArtifact sma, int horizontalSpan) {
+      // Display SMA Note
+      WorkDefinitionMatch workDefMatch = sma.getWorkDefinitionMatch();
+      Label label =
+         FormsUtil.createLabelValue(toolkit, comp, "Work Definition: ", workDefMatch.getWorkDefinition().getName());
+      label.addListener(SWT.MouseDoubleClick, new Listener() {
+
+         @Override
+         public void handleEvent(Event event) {
+            IWorkbenchPage page = AWorkbench.getActivePage();
+            try {
+               page.showView("org.eclipse.ui.views.ContentOutline", null, IWorkbenchPage.VIEW_ACTIVATE);
+            } catch (PartInitException ex) {
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            }
+         }
+      });
    }
 
    public static void createSMANotesHeader(Composite comp, XFormToolkit toolkit, AbstractWorkflowArtifact sma, int horizontalSpan) throws OseeCoreException {

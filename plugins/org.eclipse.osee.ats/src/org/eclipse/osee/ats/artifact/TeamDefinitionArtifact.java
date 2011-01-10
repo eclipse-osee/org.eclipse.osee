@@ -28,8 +28,8 @@ import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.commit.ICommitConfigArtifact;
 import org.eclipse.osee.ats.workdef.RuleDefinition;
-import org.eclipse.osee.ats.workdef.WorkDefinition;
 import org.eclipse.osee.ats.workdef.WorkDefinitionFactory;
+import org.eclipse.osee.ats.workdef.WorkDefinitionMatch;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions.RuleWorkItemId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -52,6 +52,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinitionMatch;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
 
 /**
@@ -281,16 +282,20 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
       return getHoursPerWorkDayFromItemAndChildren(this);
    }
 
-   public WorkFlowDefinition getWorkFlowDefinition() throws OseeCoreException {
+   public WorkFlowDefinitionMatch getWorkFlowDefinition() throws OseeCoreException {
       Artifact teamDef = getTeamDefinitionHoldingWorkFlow();
       if (teamDef == null) {
-         return null;
+         return new WorkFlowDefinitionMatch();
       }
       Artifact workFlowArt = getWorkflowArtifact(teamDef);
       if (workFlowArt == null) {
-         return null;
+         return new WorkFlowDefinitionMatch();
       }
-      return (WorkFlowDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(workFlowArt.getName());
+      WorkFlowDefinition workDef =
+         (WorkFlowDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(workFlowArt.getName());
+      return new WorkFlowDefinitionMatch(workDef, String.format("from teamDef [%s] related work child [%s]", teamDef,
+         workFlowArt.getName()));
+
    }
 
    public Artifact getWorkflowArtifact(Artifact teamDef) throws OseeCoreException {
@@ -309,7 +314,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
       return workFlowArt;
    }
 
-   public WorkDefinition getWorkDefinition() throws OseeCoreException {
+   public WorkDefinitionMatch getWorkDefinition() throws OseeCoreException {
       Artifact teamDef = getTeamDefinitionHoldingWorkFlow();
       if (teamDef == null) {
          return null;
@@ -318,7 +323,12 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
       if (workFlowArt == null) {
          return null;
       }
-      return WorkDefinitionFactory.getWorkDefinition(workFlowArt.getName());
+      WorkDefinitionMatch match = WorkDefinitionFactory.getWorkDefinition(workFlowArt.getName());
+      if (match.isMatched()) {
+         match.getTrace().add(
+            String.format("from teamDef [%s] related work child [%s]", teamDef, workFlowArt.getName()));
+      }
+      return match;
    }
 
    /**

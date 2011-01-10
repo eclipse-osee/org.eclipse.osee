@@ -36,6 +36,7 @@ import org.eclipse.osee.ats.workdef.StateItem;
 import org.eclipse.osee.ats.workdef.WidgetDefinition;
 import org.eclipse.osee.ats.workdef.WidgetOption;
 import org.eclipse.osee.ats.workdef.WorkDefinition;
+import org.eclipse.osee.ats.workdef.WorkDefinitionMatch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -95,15 +96,11 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
          if (getTreeViewer() != null) {
             if (editor != null) {
                getTreeViewer().setInput(editor);
-               try {
-                  StateDefinition stateDef = (editor).getSma().getCurrentAtsWorkPage().getStateDefinition();
-                  StructuredSelection newSelection = new StructuredSelection(Arrays.asList(stateDef));
-                  getTreeViewer().expandToLevel((editor).getSma(), 2);
-                  getTreeViewer().expandToLevel(stateDef, 1);
-                  getTreeViewer().setSelection(newSelection);
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-               }
+               StateDefinition stateDef = (editor).getSma().getCurrentAtsWorkPage().getStateDefinition();
+               StructuredSelection newSelection = new StructuredSelection(Arrays.asList(stateDef));
+               getTreeViewer().expandToLevel((editor).getSma(), 2);
+               getTreeViewer().expandToLevel(stateDef, 1);
+               getTreeViewer().setSelection(newSelection);
             }
          }
       }
@@ -134,7 +131,9 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
             return ArtifactImageManager.getImage((AbstractWorkflowArtifact) element);
          } else if (element instanceof StateDefinition) {
             return ImageManager.getImage(AtsImage.STATE_DEFINITION);
-         } else if (element instanceof WorkDefinition) {
+         } else if (element instanceof WrappedTrace) {
+            return ImageManager.getImage(AtsImage.TRACE);
+         } else if (element instanceof WorkDefinitionMatch) {
             return ImageManager.getImage(AtsImage.WORKFLOW_CONFIG);
          } else if (element instanceof WidgetDefinition) {
             return ImageManager.getImage(FrameworkImage.GEAR);
@@ -180,15 +179,18 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
          if (element instanceof SMAEditor) {
             items.add(((SMAEditor) element).getSma());
          } else if (element instanceof AbstractWorkflowArtifact) {
-            items.add(((AbstractWorkflowArtifact) element).getWorkDefinition());
+            items.add(((AbstractWorkflowArtifact) element).getWorkDefinitionMatch());
          } else if (element instanceof WrappedLayout) {
             items.addAll(((WrappedLayout) element).getStateItems());
-         } else if (element instanceof WorkDefinition) {
-            for (String id : ((WorkDefinition) element).getIds()) {
+         } else if (element instanceof WrappedTrace) {
+            items.addAll(((WrappedTrace) element).getTrace());
+         } else if (element instanceof WorkDefinitionMatch) {
+            for (String id : ((WorkDefinitionMatch) element).getWorkDefinition().getIds()) {
                items.add("Id: " + id);
             }
-            items.addAll(((WorkDefinition) element).getStatesOrdered());
-            items.addAll(((WorkDefinition) element).getRules());
+            items.addAll(((WorkDefinitionMatch) element).getWorkDefinition().getStatesOrdered());
+            items.addAll(((WorkDefinitionMatch) element).getWorkDefinition().getRules());
+            items.add(new WrappedTrace(((WorkDefinitionMatch) element).getTrace()));
          } else if (element instanceof StateDefinition) {
             StateDefinition stateDef = (StateDefinition) element;
             items.add(new WrappedLayout(stateDef.getStateItems()));
@@ -246,7 +248,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
             return false;
          } else if (element instanceof AbstractWorkflowArtifact) {
             return true;
-         } else if (element instanceof WorkDefinition) {
+         } else if (element instanceof WorkDefinitionMatch) {
             return true;
          } else if (element instanceof StateDefinition) {
             return true;
@@ -260,6 +262,8 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
             return true;
          } else if (element instanceof WrappedLayout) {
             return !((WrappedLayout) element).stateItems.isEmpty();
+         } else if (element instanceof WrappedTrace) {
+            return !((WrappedTrace) element).trace.isEmpty();
          } else if (element instanceof WrappedStates) {
             return !((WrappedStates) element).states.isEmpty();
          } else if (element instanceof RuleAndLocation) {
@@ -349,6 +353,23 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
 
       public Collection<StateDefinition> getStates() {
          return states;
+      }
+
+   }
+   public class WrappedTrace {
+      private final Collection<String> trace;
+
+      public WrappedTrace(Collection<String> trace) {
+         this.trace = trace;
+      }
+
+      @Override
+      public String toString() {
+         return "From" + (trace.isEmpty() ? " (Empty)" : "");
+      }
+
+      public Collection<String> getTrace() {
+         return trace;
       }
 
    }
