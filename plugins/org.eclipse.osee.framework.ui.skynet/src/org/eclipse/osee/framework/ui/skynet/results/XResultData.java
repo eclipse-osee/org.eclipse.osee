@@ -89,6 +89,10 @@ public final class XResultData {
       logStr(Type.Info, str + "\n", null);
    }
 
+   public void logWithFormat(String formatStr, Object... objs) {
+      logStr(Type.Info, String.format(formatStr, objs), null);
+   }
+
    public void log(String str, IProgressMonitor monitor) {
       logStr(Type.Info, str + "\n", monitor);
    }
@@ -97,8 +101,16 @@ public final class XResultData {
       logStr(Type.Severe, str + "\n", null);
    }
 
+   public void logErrorWithFormat(String formatStr, Object... objs) {
+      logStr(Type.Severe, String.format(formatStr, objs), null);
+   }
+
    public void logWarning(String str) {
       logStr(Type.Warning, str + "\n", null);
+   }
+
+   public void logWarningWithFormat(String formatStr, Object... objs) {
+      logStr(Type.Warning, String.format(formatStr, objs), null);
    }
 
    public boolean isEmpty() {
