@@ -33,7 +33,6 @@ import org.eclipse.osee.framework.database.core.OseeConnection;
  * @author Ryan D. Brooks
  */
 public class PurgeBranchOperation extends AbstractDbTxOperation {
-   private static final String COUNT_CHILD_BRANCHES = "select count(1) from osee_branch WHERE parent_branch_id = ?";
    private static final String SELECT_DELETABLE_GAMMAS =
       "select txs1.gamma_id from %s txs1 where txs1.branch_id = ? AND txs1.transaction_id <> ? AND NOT EXISTS (SELECT 1 FROM osee_txs txs2 WHERE txs1.gamma_id = txs2.gamma_id AND txs1.branch_id <> txs2.branch_id) AND NOT EXISTS (SELECT 1 FROM osee_txs_archived txs3 WHERE txs1.gamma_id = txs3.gamma_id AND txs1.branch_id <> txs3.branch_id)";
    private static final String SELECT_DELETABLE_TXS_REMOVED_GAMMAS =
@@ -66,9 +65,7 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
    protected void doTxWork(IProgressMonitor monitor, OseeConnection connection) throws OseeCoreException {
       this.connection = connection;
       this.monitor = monitor;
-      int numberOfChildren =
-         databaseService.runPreparedQueryFetchObject(connection, 0, COUNT_CHILD_BRANCHES, branch.getId());
-      if (numberOfChildren > 0) {
+      if (!branch.getChildBranches().isEmpty()) {
          throw new OseeArgumentException("Unable to purge a branch containing children: branchId[%s]", branch.getId());
       }
 
