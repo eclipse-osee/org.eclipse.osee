@@ -215,7 +215,7 @@ public class WordMLProducer extends Producer {
    }
 
    public void createHyperLinkDoc(String fileName) throws OseeCoreException {
-      if (Strings.isValid(fileName)) {
+      if (!Strings.isValid(fileName)) {
          throw new IllegalArgumentException("The file name can not be null or empty.");
       }
 
