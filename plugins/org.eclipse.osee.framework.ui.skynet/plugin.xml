@@ -1781,4 +1781,12 @@
             className="org.eclipse.osee.framework.ui.skynet.blam.operation.AdvancedKeywordSearchBlam">
       </Operation>
    </extension>
+   <extension
+         id="XWidgetsBlam"
+         name="XWidgetsBlam"
+         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+      <Operation
+            className="org.eclipse.osee.framework.ui.skynet.blam.operation.XWidgetsExampleBlam">
+      </Operation>
+   </extension>
 </plugin>
