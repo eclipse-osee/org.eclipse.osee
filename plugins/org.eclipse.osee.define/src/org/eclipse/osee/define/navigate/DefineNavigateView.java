@@ -41,12 +41,6 @@ public class DefineNavigateView extends ViewPart implements IActionable {
    public static final String VIEW_ID = "org.eclipse.osee.define.DefineNavigateView";
    private XNavigateComposite xNavComp;
 
-   /**
-    * The constructor.
-    */
-   public DefineNavigateView() {
-   }
-
    @Override
    public void setFocus() {
    }

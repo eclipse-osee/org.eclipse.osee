@@ -99,7 +99,7 @@ public class XText extends XWidget {
 
    @Override
    public String toString() {
-      return getLabel() + ": *" + text + "*";
+      return String.format("%s: *%s*", getLabel(), text);
    }
 
    @Override

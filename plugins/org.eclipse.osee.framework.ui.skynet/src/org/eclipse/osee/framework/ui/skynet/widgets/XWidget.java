@@ -221,7 +221,7 @@ public abstract class XWidget {
    }
 
    protected void setNotificationsAllowed(boolean areAllowed) {
-      this.isNotificationAllowed.setValue(areAllowed);
+      isNotificationAllowed.setValue(areAllowed);
    }
 
    protected void createControls(Composite parent, int horizontalSpan) {
@@ -331,7 +331,7 @@ public abstract class XWidget {
    }
 
    public void setDisplayLabel(String displayLabel) {
-      this.label = displayLabel;
+      label = displayLabel;
    }
 
    public boolean isEditable() {

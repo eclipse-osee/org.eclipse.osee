@@ -140,15 +140,14 @@ public abstract class XLabelValueBase extends XWidget {
    }
 
    /**
-    * @param valueText the valueText to set
+    * @param valueText to set
     */
-   public void setValueText(String valueText) {
-      this.valueText = valueText;
+   public void setValueText(String text) {
+      valueText = text;
       if (valueLabel != null && !valueLabel.isDisposed()) {
-         valueLabel.setText(this.valueText);
+         valueLabel.setText(valueText);
          valueLabel.update();
          valueLabel.getParent().update();
       }
-
    }
 }

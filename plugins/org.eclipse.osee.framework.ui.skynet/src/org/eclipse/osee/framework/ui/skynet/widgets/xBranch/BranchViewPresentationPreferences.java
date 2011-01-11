@@ -48,10 +48,10 @@ public class BranchViewPresentationPreferences {
    private boolean disposed;
 
    public BranchViewPresentationPreferences(BranchView branchView) {
-      this.preferencesService = Platform.getPreferencesService();
-      this.preferenceChangeListener = null;
+      preferencesService = Platform.getPreferencesService();
+      preferenceChangeListener = null;
       this.branchView = branchView;
-      this.disposed = false;
+      disposed = false;
 
       IEclipsePreferences instanceNode =
          (IEclipsePreferences) preferencesService.getRootNode().node(InstanceScope.SCOPE);

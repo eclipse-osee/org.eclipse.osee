@@ -313,7 +313,6 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
    }
 
    public void storeExpandedAndSelection() {
-      //      System.out.println("GE: storeExpandedAndSelection");
       // Store selected so can re-select after event re-draw
       selected = getSelectedItems();
       if (treeViewer != null && !treeViewer.getTree().isDisposed()) {
@@ -322,7 +321,6 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
    }
 
    public void restoreExpandedAndSelection() {
-      //      System.out.println("GE: restoreExpandedAndSelection");
       if (expanded != null && expanded.length > 0 && rootArt != null) {
          treeViewer.setExpandedElements(expanded);
       }
@@ -368,7 +366,6 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
    }
 
    public void refresh() {
-      //      System.out.println("GE: refresh");
       if (rootItem != null) {
          rootItem.dispose();
       }
@@ -387,7 +384,6 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
       } else {
          rootArt = topArt;
          rootItem = new GroupExplorerItem(treeViewer, rootArt, null, this);
-         //         rootItem.getGroupItems();
       }
 
       if (treeViewer != null) {

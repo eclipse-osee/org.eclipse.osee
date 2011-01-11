@@ -30,7 +30,6 @@ public class ResourceHistoryAction extends Action {
 
    public ResourceHistoryAction(AbstractWorkflowArtifact sma) {
       super("Resource History");
-      setToolTipText(getText());
       this.sma = sma;
       setToolTipText(getText());
    }

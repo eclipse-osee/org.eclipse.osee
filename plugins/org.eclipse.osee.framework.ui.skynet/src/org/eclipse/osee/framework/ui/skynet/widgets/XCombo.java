@@ -58,7 +58,7 @@ public class XCombo extends XWidget {
    }
 
    public void setDefaultSelectionAllowed(boolean isAllowed) {
-      this.isDefaultSelectionAllowed = isAllowed;
+      isDefaultSelectionAllowed = isAllowed;
    }
 
    public boolean isDefaultSelectionAllowed() {

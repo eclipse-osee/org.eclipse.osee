@@ -29,6 +29,7 @@ public abstract class AbstractSelectionEnabledHandler extends CommandHandler imp
 
    @Override
    public final void menuHidden(MenuEvent e) {
+      //Do nothing
    }
 
    @Override

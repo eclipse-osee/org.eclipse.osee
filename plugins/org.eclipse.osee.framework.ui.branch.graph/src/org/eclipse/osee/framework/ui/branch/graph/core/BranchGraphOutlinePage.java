@@ -40,13 +40,12 @@ public class BranchGraphOutlinePage extends Page implements IContentOutlinePage 
    private Thumbnail thumbnail;
 
    public BranchGraphOutlinePage(ScalableRootEditPart rootEditPart) {
-      super();
       this.rootEditPart = rootEditPart;
    }
 
    @Override
    public void addSelectionChangedListener(ISelectionChangedListener listener) {
-
+      //
    }
 
    @Override

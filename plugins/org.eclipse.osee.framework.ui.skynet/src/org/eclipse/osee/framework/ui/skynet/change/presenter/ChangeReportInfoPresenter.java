@@ -111,7 +111,7 @@ public class ChangeReportInfoPresenter implements EditorSection.IWidget {
    }
 
    private void addAssociated(StringBuilder sb) {
-      String message = "";
+      String message;
       Artifact associatedArtifact = changeData.getAssociatedArtifact();
       if (associatedArtifact != null) {
          message = AXml.textToXml(associatedArtifact.getName());
@@ -122,12 +122,13 @@ public class ChangeReportInfoPresenter implements EditorSection.IWidget {
    }
 
    public static void addTransactionInfo(StringBuilder sb, TransactionRecord transaction) {
-      String author = "Unknown";
+      String author;
       try {
          User user = UserManager.getUserByArtId(transaction.getAuthor());
          author = user.toString();
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         author = "Unknown";
       }
       DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG);
       sb.append(String.format("               <b>On: </b> %s<br/>", dateFormat.format(transaction.getTimeStamp())));

@@ -54,12 +54,12 @@ public class XBranchContentProvider implements ITreeContentProvider {
    public XBranchContentProvider(BranchXViewer commitXViewer) {
       super();
 
-      this.changeXViewer = commitXViewer;
-      this.showChildBranchesAtMainLevel = false;
-      this.showMergeBranches = false;
-      this.showTransactions = false;
-      this.showChildBranchesUnderParents = false;
-      this.showArchivedBranches = false;
+      changeXViewer = commitXViewer;
+      showChildBranchesAtMainLevel = false;
+      showMergeBranches = false;
+      showTransactions = false;
+      showChildBranchesUnderParents = false;
+      showArchivedBranches = false;
    }
 
    @Override

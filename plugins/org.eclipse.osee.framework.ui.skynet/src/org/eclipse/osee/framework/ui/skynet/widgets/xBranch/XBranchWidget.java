@@ -232,6 +232,7 @@ public class XBranchWidget extends XWidget implements IActionable {
 
    @Override
    public void dispose() {
+      super.dispose();
       branchXViewer.dispose();
    }
 

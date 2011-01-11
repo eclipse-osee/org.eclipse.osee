@@ -716,7 +716,6 @@ public class HyperView extends ViewPart implements IPartListener {
       }
 
       NodeFigure figure = new NodeFigure(nameLabel, infoLabel, hvi, center);
-      // System.out.println(title + " " + figure.hashCode());
       container.add(figure);
       figure.setToolTip(new Label(hvi.getToolTip()));
       return figure;
@@ -941,9 +940,6 @@ public class HyperView extends ViewPart implements IPartListener {
       refresh();
    }
 
-   /**
-    * Passing the focus request to the viewer's control.
-    */
    @Override
    public void setFocus() {
       // viewer.getControl().setFocus();
@@ -974,11 +970,6 @@ public class HyperView extends ViewPart implements IPartListener {
       if (vsb != null) {
          vsb.setSelection(verticalSelection);
       }
-   }
-
-   @Override
-   public void dispose() {
-      // do nothing
    }
 
    @Override

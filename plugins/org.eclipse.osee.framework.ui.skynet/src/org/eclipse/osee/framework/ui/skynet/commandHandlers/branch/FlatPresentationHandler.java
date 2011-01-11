@@ -33,7 +33,7 @@ public class FlatPresentationHandler extends AbstractHandler implements IElement
    private final ICommandService service;
 
    public FlatPresentationHandler() {
-      this.service = (ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class);
+      service = (ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class);
    }
 
    @Override

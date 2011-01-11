@@ -363,9 +363,7 @@ public class XList extends XWidget {
    }
 
    public void add(Collection<String> names) {
-      for (String name : names) {
-         add(name);
-      }
+      add(names.toArray(new String[0]));
    }
 
    public void addSelected(String name) {
@@ -431,13 +429,10 @@ public class XList extends XWidget {
 
    /**
     * Minimum number of selected items that makes this widget valid
-    * 
-    * @param minSelected -
-    * @param maxSelected -
     */
    public void setRequiredSelected(int minSelected, int maxSelected) {
-      this.requiredMinSelected = minSelected;
-      this.requiredMaxSelected = maxSelected;
+      requiredMinSelected = minSelected;
+      requiredMaxSelected = maxSelected;
       setRequiredEntry(true);
    }
 
@@ -445,20 +440,18 @@ public class XList extends XWidget {
    public void setRequiredEntry(boolean requiredEntry) {
       super.setRequiredEntry(requiredEntry);
       if (!requiredEntry) {
-         this.requiredMinSelected = 1;
-         this.requiredMaxSelected = 1;
+         requiredMinSelected = 1;
+         requiredMaxSelected = 1;
       }
    }
 
    @Override
    public String getReportData() {
-      String s = "\n";
+      StringBuilder builder = new StringBuilder();
+      builder.append("\n");
       for (XListItem xItem : getSelected()) {
-         s = s + "       - " + xItem + "\n";
+         builder.append(String.format("       - %s\n", xItem));
       }
-      s = s.replaceAll("\n+$", "");
-      return s;
-   }
 
    @Override
    public String toXml() {
@@ -483,12 +476,13 @@ public class XList extends XWidget {
 
    @Override
    public String toHTML(String labelFont) {
-      String s = "<dl><dt>" + AHTML.getLabelStr(labelFont, getLabel() + ": ") + "<dt><ul type=\"disc\">";
+      StringBuilder builder = new StringBuilder();
+      builder.append("<dl><dt>" + AHTML.getLabelStr(labelFont, getLabel() + ": ") + "<dt><ul type=\"disc\">");
       for (XListItem xItem : getSelected()) {
-         s += "<li>" + xItem;
+         builder.append("<li>" + xItem);
       }
-
-      return s + "</ul></dl>";
+      builder.append("</ul></dl>");
+      return builder.toString();
    }
 
    /**

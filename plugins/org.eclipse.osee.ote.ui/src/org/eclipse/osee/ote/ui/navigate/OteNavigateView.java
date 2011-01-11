@@ -40,12 +40,6 @@ public class OteNavigateView extends ViewPart implements IActionable {
    public static final String VIEW_ID = "org.eclipse.osee.ote.ui.navigate.OteNavigateView";
    private XNavigateComposite xNavComp;
 
-   /**
-    * The constructor.
-    */
-   public OteNavigateView() {
-   }
-
    @Override
    public void setFocus() {
    }

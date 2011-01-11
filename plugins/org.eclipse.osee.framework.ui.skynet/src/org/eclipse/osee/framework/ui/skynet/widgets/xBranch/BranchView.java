@@ -69,8 +69,6 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
    private final Clipboard clipboard = new Clipboard(null);
 
    public BranchView() {
-      super();
-
       OseeEventManager.addListener(this);
    }
 

@@ -64,7 +64,6 @@ public class ArtifactHyperView extends HyperView implements IArtifactEventListen
    public Artifact currentArtifact;
 
    public ArtifactHyperView() {
-      super();
       PlatformUI.getWorkbench().getActiveWorkbenchWindow().getPartService().addPartListener(this);
       PlatformUI.getWorkbench().getActiveWorkbenchWindow().addPerspectiveListener(this);
       HyperView.setNodeColor(whiteColor);

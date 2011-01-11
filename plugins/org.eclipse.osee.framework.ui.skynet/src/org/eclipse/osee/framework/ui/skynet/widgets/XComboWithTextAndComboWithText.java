@@ -92,7 +92,8 @@ public class XComboWithTextAndComboWithText extends XCombo {
       refreshComposite();
    }
 
-   private boolean isSelected() {
+   @Override
+   public boolean isSelected() {
       return get().equals(moreInfoOption);
    }
 

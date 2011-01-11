@@ -82,7 +82,8 @@ public class XComboWithText extends XCombo {
       composite.dispose();
    }
 
-   private boolean isSelected() {
+   @Override
+   public boolean isSelected() {
       return get().equals(moreInfoOption);
    }
 

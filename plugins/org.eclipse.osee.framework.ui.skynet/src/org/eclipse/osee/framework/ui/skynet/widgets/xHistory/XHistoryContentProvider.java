@@ -23,8 +23,7 @@ public class XHistoryContentProvider implements ITreeContentProvider {
    private static Object[] EMPTY_ARRAY = new Object[0];
 
    public XHistoryContentProvider(HistoryXViewer commitXViewer) {
-      super();
-      this.changeXViewer = commitXViewer;
+      changeXViewer = commitXViewer;
    }
 
    @Override

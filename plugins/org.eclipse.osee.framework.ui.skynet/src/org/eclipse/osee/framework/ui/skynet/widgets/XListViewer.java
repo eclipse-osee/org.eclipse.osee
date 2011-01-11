@@ -359,13 +359,10 @@ public class XListViewer extends XWidget {
 
    /**
     * Minimum number of selected items that makes this widget valid
-    * 
-    * @param minSelected -
-    * @param maxSelected =
     */
    public void setRequiredSelected(int minSelected, int maxSelected) {
-      this.requiredMinSelected = minSelected;
-      this.requiredMaxSelected = maxSelected;
+      requiredMinSelected = minSelected;
+      requiredMaxSelected = maxSelected;
       setRequiredEntry(true);
    }
 
@@ -373,8 +370,8 @@ public class XListViewer extends XWidget {
    public void setRequiredEntry(boolean requiredEntry) {
       super.setRequiredEntry(requiredEntry);
       if (!requiredEntry) {
-         this.requiredMinSelected = 1;
-         this.requiredMaxSelected = 1;
+         requiredMinSelected = 1;
+         requiredMaxSelected = 1;
       }
    }
 

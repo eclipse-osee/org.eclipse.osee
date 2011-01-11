@@ -40,15 +40,13 @@ import org.eclipse.swt.widgets.Label;
  */
 public abstract class XSelectFromDialog<T> extends XText {
 
-   private final List<T> selected;
-   private final List<T> input;
+   private final List<T> selected = new ArrayList<T>();
+   private final List<T> input = new ArrayList<T>();
    private int minSelectionRequired, maxSelectionRequired = 1;
    private Button selectionButton;
 
    public XSelectFromDialog(String displayLabel, String xmlRoot) {
       super(displayLabel, xmlRoot);
-      this.selected = new ArrayList<T>();
-      this.input = new ArrayList<T>();
       setToolTip("Click the button on the left to change the current selection.");
    }
 

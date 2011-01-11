@@ -34,7 +34,7 @@ public final class HierarchicalPresentationHandler extends AbstractHandler imple
    private final ICommandService service;
 
    public HierarchicalPresentationHandler() {
-      this.service = (ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class);
+      service = (ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class);
    }
 
    @Override

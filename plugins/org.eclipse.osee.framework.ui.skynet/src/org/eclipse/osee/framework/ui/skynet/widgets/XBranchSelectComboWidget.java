@@ -43,7 +43,7 @@ public class XBranchSelectComboWidget extends XWidget implements Listener {
 
    public XBranchSelectComboWidget(String label) {
       super(label);
-      this.defaultBranch = -1;
+      defaultBranch = -1;
    }
 
    @Override

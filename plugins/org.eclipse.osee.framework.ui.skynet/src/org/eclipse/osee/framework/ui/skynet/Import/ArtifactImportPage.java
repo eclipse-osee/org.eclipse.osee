@@ -120,7 +120,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
    }
 
    public void setDefaultSourceFile(File resource) {
-      this.defaultSourceFile = resource;
+      defaultSourceFile = resource;
    }
 
    public void setDefaultDestinationArtifact(Artifact destinationArtifact) {

@@ -44,8 +44,7 @@ public class ChangeReportEditor extends FormEditor implements IChangeReportView 
    private final EventRelay eventRelay;
 
    public ChangeReportEditor() {
-      super();
-      this.eventRelay = new EventRelay();
+      eventRelay = new EventRelay();
    }
 
    public ChangeReportActionBarContributor getActionBarContributor() {

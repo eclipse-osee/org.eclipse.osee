@@ -57,15 +57,10 @@ public class AdminView extends ViewPart implements IActionable {
    private final ArrayList<DbItem> dbItems;
    private final Cursor handCursor;
 
-   /**
-    * The constructor.
-    */
    public AdminView() {
       dbItems = new ArrayList<DbItem>();
       dbItems.add(new SiteGssflRpcr());
       handCursor = new Cursor(null, SWT.CURSOR_HAND);
-
-      // permissionList.addPermission(PermissionEnum.);
    }
 
    @Override

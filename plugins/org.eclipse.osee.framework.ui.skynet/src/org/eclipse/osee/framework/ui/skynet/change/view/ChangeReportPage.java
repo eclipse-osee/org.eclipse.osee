@@ -98,8 +98,8 @@ public class ChangeReportPage extends FormPage {
       managedForm.getMessageManager().setAutoUpdate(false);
 
       ChangeUiData uiData = getEditorInput().getChangeData();
-      this.changeReportTable = new ChangeReportTable(uiData);
-      this.infoPresenter = new ChangeReportInfoPresenter(new ChangeReportInfo(), uiData);
+      changeReportTable = new ChangeReportTable(uiData);
+      infoPresenter = new ChangeReportInfoPresenter(new ChangeReportInfo(), uiData);
 
       int sectionStyle = ExpandableComposite.TITLE_BAR | ExpandableComposite.EXPANDED | ExpandableComposite.TWISTIE;
 

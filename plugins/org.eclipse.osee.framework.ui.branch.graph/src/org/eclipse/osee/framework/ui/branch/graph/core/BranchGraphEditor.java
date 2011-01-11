@@ -65,7 +65,6 @@ public class BranchGraphEditor extends GraphicalEditorWithFlyoutPalette {
    private KeyHandler shareKeyHandler;
 
    public BranchGraphEditor() {
-      super();
       setEditDomain(new DefaultEditDomain(this));
    }
 
