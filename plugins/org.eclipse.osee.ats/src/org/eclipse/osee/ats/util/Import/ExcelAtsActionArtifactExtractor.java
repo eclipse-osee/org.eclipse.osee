@@ -31,6 +31,7 @@ import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.ActionManager;
@@ -38,6 +39,7 @@ import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsNotifyUsers;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
@@ -84,6 +86,7 @@ public class ExcelAtsActionArtifactExtractor {
          if (aData.title.equals("")) {
             rd.logError("Row " + rowNum + "; Invalid Title");
          }
+         Set<TeamDefinitionArtifact> teamDefs = new HashSet<TeamDefinitionArtifact>();
          if (aData.actionableItems.isEmpty()) {
             rd.logError("Row " + rowNum + ": Must have at least one ActionableItem defined");
          } else {
@@ -97,8 +100,7 @@ public class ExcelAtsActionArtifactExtractor {
                      rd.logError("Row " + rowNum + ": Duplicate actionable items found with name \"" + actionableItemName + "\"");
                   }
                   ActionableItemArtifact aia = (ActionableItemArtifact) aias.iterator().next();
-                  Collection<TeamDefinitionArtifact> teamDefs =
-                     ActionableItemArtifact.getImpactedTeamDefs(Arrays.asList(aia));
+                  teamDefs.addAll(ActionableItemArtifact.getImpactedTeamDefs(Arrays.asList(aia)));
                   if (teamDefs.size() == 0) {
                      rd.logError("Row " + rowNum + ": No related Team Definition for Actionable Item\"" + actionableItemName + "\"");
                   } else if (teamDefs.size() > 1) {
@@ -113,8 +115,15 @@ public class ExcelAtsActionArtifactExtractor {
          }
          if (!aData.version.equals("")) {
             try {
-               if (AtsCacheManager.getSoleArtifactByName(AtsArtifactTypes.Version, aData.version) == null) {
-                  rd.logError("Row " + rowNum + ": Can't find single version \"" + aData.version + "\"");
+               for (TeamDefinitionArtifact teamDef : teamDefs) {
+                  if (teamDef.getTeamDefinitionHoldingVersions() == null) {
+                     rd.logErrorWithFormat("No Team Definitions Holding Versions found for Team Definition [%s]",
+                        teamDef);
+                  }
+                  if (teamDef.getTeamDefinitionHoldingVersions().getVersionArtifact(aData.version, false) == null) {
+                     rd.logErrorWithFormat("No version [%s] configured for Team Definition [%s]", aData.version,
+                        teamDef);
+                  }
                }
             } catch (Exception ex) {
                rd.logError("Row " + rowNum + " - " + ex.getLocalizedMessage());
@@ -177,9 +186,14 @@ public class ExcelAtsActionArtifactExtractor {
                }
             }
             if (!aData.version.equals("")) {
-               Artifact verArt = AtsCacheManager.getSoleArtifactByName(AtsArtifactTypes.Version, aData.version);
-
                for (TeamWorkFlowArtifact team : newTeamArts) {
+                  VersionArtifact verArt =
+                     team.getTeamDefinition().getTeamDefinitionHoldingVersions().getVersionArtifact(aData.version,
+                        false);
+                  if (verArt == null) {
+                     throw new OseeArgumentException("No version [%s] configured for Team Definition [%s]",
+                        aData.version, team.getTeamDefinition());
+                  }
                   verArt.addRelation(AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow, team);
                }
             }
