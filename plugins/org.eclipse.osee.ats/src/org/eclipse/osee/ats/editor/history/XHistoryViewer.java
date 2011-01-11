@@ -15,12 +15,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
-import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
@@ -40,7 +39,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 /**
  * @author Donald G. Dunne
  */
-public class XHistoryViewer extends XWidget {
+public class XHistoryViewer extends GenericXWidget {
 
    private HistoryXViewer xViewer;
    private ToolBar toolBar;
@@ -169,21 +168,6 @@ public class XHistoryViewer extends XWidget {
       toolBar.setLayoutData(gd);
    }
 
-   @Override
-   public void setXmlData(String str) {
-      // do nothing
-   }
-
-   @Override
-   public String getXmlData() {
-      return null;
-   }
-
-   @Override
-   public String getReportData() {
-      return null;
-   }
-
    /**
     * @return Returns the xViewer.
     */
@@ -202,28 +186,12 @@ public class XHistoryViewer extends XWidget {
    }
 
    @Override
-   public IStatus isValid() {
-      return null;
-   }
-
-   @Override
-   public String toHTML(String labelFont) {
-      return null;
-   }
-
-   @Override
-   public Control getControl() {
-      return null;
-   }
-
-   @Override
-   public void setFocus() {
-      getXViewer().getTree().setFocus();
-   }
-
-   @Override
    public void refresh() {
       getXViewer().refresh();
    }
 
+   @Override
+   public Control getControl() {
+      return xViewer.getTree();
+   }
 }

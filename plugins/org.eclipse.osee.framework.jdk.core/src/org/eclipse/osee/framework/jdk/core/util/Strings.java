@@ -32,6 +32,17 @@ public class Strings {
       return value != null && value.length() > 0;
    }
 
+   public static boolean isValid(String... values) {
+      boolean answer = true;
+      for (String value : values) {
+         if (!isValid(value)) {
+            answer = false;
+            break;
+         }
+      }
+      return answer;
+   }
+
    public static boolean isValid(CharSequence value) {
       return value != null && value.length() > 0;
    }

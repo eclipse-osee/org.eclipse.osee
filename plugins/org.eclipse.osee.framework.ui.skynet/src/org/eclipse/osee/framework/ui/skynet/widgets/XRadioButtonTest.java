@@ -30,7 +30,7 @@ public class XRadioButtonTest extends Composite {
       c.setLayout(new GridLayout(2, false));
       c.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
 
-      final XRadioButton rb = new XRadioButton("Single Button", "singleButton");
+      final XRadioButton rb = new XRadioButton("Single Button");
       rb.createWidgets(c, 2);
       rb.addSelectionListener(new SelectionAdapter() {
 
@@ -38,7 +38,6 @@ public class XRadioButtonTest extends Composite {
          public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
             try {
                System.out.println("isSelected *" + rb.isSelected() + "*");
-               System.out.println("toXml *" + rb.toXml() + "*");
             } catch (Exception ex) {
                OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
@@ -49,7 +48,7 @@ public class XRadioButtonTest extends Composite {
       c.setLayout(new GridLayout(2, false));
       c.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
 
-      final XRadioButton rb2 = new XRadioButton("Label After", "labelAfter");
+      final XRadioButton rb2 = new XRadioButton("Label After");
       rb2.setLabelAfter(true);
       rb2.createWidgets(c, 2);
       rb2.addSelectionListener(new SelectionAdapter() {
@@ -58,7 +57,6 @@ public class XRadioButtonTest extends Composite {
          public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
             try {
                System.out.println("isSelected *" + rb2.isSelected() + "*");
-               System.out.println("toXml *" + rb2.toXml() + "*");
             } catch (Exception ex) {
                OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
@@ -69,7 +67,7 @@ public class XRadioButtonTest extends Composite {
       c.setLayout(new GridLayout(2, false));
       c.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
 
-      final XRadioButton rb3 = new XRadioButton("Check Box", "checkBox");
+      final XRadioButton rb3 = new XRadioButton("Check Box");
       rb3.setButtonType(ButtonType.Check);
       rb3.setLabelAfter(true);
       rb3.createWidgets(c, 2);
@@ -80,7 +78,6 @@ public class XRadioButtonTest extends Composite {
          public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
             try {
                System.out.println("isSelected *" + rb3.isSelected() + "*");
-               System.out.println("toXml *" + rb3.toXml() + "*");
             } catch (Exception ex) {
                OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
@@ -96,18 +93,6 @@ public class XRadioButtonTest extends Composite {
       rb4.addButton("ccccc", "2nd tool tip");
       rb4.addButton("bbbbb", "3rd tool tip");
       rb4.createWidgets(c, 1);
-      rb4.addSelectionListener(new SelectionAdapter() {
-
-         @Override
-         public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
-            try {
-               System.out.println("isSelected *" + rb4.getXmlData() + "*");
-               System.out.println("toXml *" + rb4.toXml() + "*");
-            } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-            }
-         };
-      });
 
       c = new Composite(parent, SWT.NONE);
       c.setLayout(new GridLayout(2, false));
@@ -115,18 +100,6 @@ public class XRadioButtonTest extends Composite {
       rb4.setLabel("Sorted Radios");
       rb4.setSortNames(true);
       rb4.createWidgets(c, 7);
-      rb4.addSelectionListener(new SelectionAdapter() {
-
-         @Override
-         public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
-            try {
-               System.out.println("isSelected *" + rb4.getXmlData() + "*");
-               System.out.println("toXml *" + rb4.toXml() + "*");
-            } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-            }
-         };
-      });
 
       c = new Composite(parent, SWT.NONE);
       c.setLayout(new GridLayout(1, false));
@@ -138,18 +111,6 @@ public class XRadioButtonTest extends Composite {
       rb5.addButton("ccccc", "3rd tool tip");
       rb5.setMultiSelect(true);
       rb5.createWidgets(c, 11);
-      rb5.addSelectionListener(new SelectionAdapter() {
-
-         @Override
-         public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
-            try {
-               System.out.println("isSelected *" + rb5.getXmlData() + "*");
-               System.out.println("toXml *" + rb5.toXml() + "*");
-            } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-            }
-         };
-      });
 
       c = new Composite(parent, SWT.NONE);
       c.setLayout(new GridLayout(1, false));
@@ -157,18 +118,6 @@ public class XRadioButtonTest extends Composite {
       rb5.setLabel("Sorted Multi Select");
       rb5.setSortNames(true);
       rb5.createWidgets(c, 11);
-      rb5.addSelectionListener(new SelectionAdapter() {
-
-         @Override
-         public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
-            try {
-               System.out.println("isSelected *" + rb5.getXmlData() + "*");
-               System.out.println("toXml *" + rb5.toXml() + "*");
-            } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-            }
-         };
-      });
 
       c = new Composite(parent, SWT.NONE);
       c.setLayout(new GridLayout(1, false));
@@ -178,18 +127,6 @@ public class XRadioButtonTest extends Composite {
       rb6.setSortNames(true);
       rb6.setMultiSelect(true);
       rb6.createWidgets(c, 11);
-      rb6.addSelectionListener(new SelectionAdapter() {
-
-         @Override
-         public void widgetSelected(org.eclipse.swt.events.SelectionEvent e) {
-            try {
-               System.out.println("selected *" + rb6.getXmlData() + "*");
-               System.out.println("toXml *" + rb6.toXml() + "*");
-            } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-            }
-         };
-      });
 
    }
 

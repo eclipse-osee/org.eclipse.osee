@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -29,7 +27,7 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 /**
  * @author Donald G. Dunne
  */
-public abstract class XHyperlinkLabelValueSelection extends XWidget {
+public abstract class XHyperlinkLabelValueSelection extends GenericXWidget {
 
    Hyperlink valueHyperlinkLabel;
    Label valueLabel;
@@ -154,40 +152,4 @@ public abstract class XHyperlinkLabelValueSelection extends XWidget {
    public String toHTML(String labelFont) {
       return AHTML.getLabelValueStr(AHTML.LABEL_FONT, getLabel(), getCurrentValue());
    }
-
-   @Override
-   public void dispose() {
-      // do nothing
-   }
-
-   @Override
-   public Object getData() {
-      return null;
-   }
-
-   @Override
-   public String getReportData() {
-      return null;
-   }
-
-   @Override
-   public String getXmlData() {
-      return null;
-   }
-
-   @Override
-   public IStatus isValid() {
-      return Status.OK_STATUS;
-   }
-
-   @Override
-   public void setFocus() {
-      // do nothing
-   }
-
-   @Override
-   public void setXmlData(String str) {
-      // do nothing
-   }
-
 }

@@ -15,14 +15,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.Vector;
 import java.util.logging.Level;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
-import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -49,8 +46,6 @@ public abstract class XWidget {
 
    protected Label labelWidget = null;
    private String label = "";
-   private String xmlRoot = "";
-   private String xmlSubRoot = "";
    private String toolTip = null;
    private boolean requiredEntry = false;
    private boolean editable = true;
@@ -59,10 +54,6 @@ public abstract class XWidget {
    protected boolean verticalLabel = false;
    protected boolean fillVertically = false;
    protected boolean fillHorizontally = false;
-
-   public boolean isFillHorizontally() {
-      return fillHorizontally;
-   }
 
    private boolean displayLabel = true;
    private final Set<XModifiedListener> modifiedListeners = new LinkedHashSet<XModifiedListener>();
@@ -73,21 +64,14 @@ public abstract class XWidget {
       this.label = label;
    }
 
-   public XWidget(String label, String xmlRoot) {
-      this.label = label;
-      this.xmlRoot = xmlRoot;
-   }
-
-   public XWidget(String label, String xmlRoot, String xmlSubRoot) {
-      this.label = label;
-      this.xmlRoot = xmlRoot;
-      this.xmlSubRoot = xmlSubRoot;
+   public boolean isFillHorizontally() {
+      return fillHorizontally;
    }
 
    public void setToolTip(String toolTip) {
       this.toolTip = toolTip;
-      if (this.labelWidget != null && !labelWidget.isDisposed()) {
-         this.labelWidget.setToolTipText(toolTip);
+      if (labelWidget != null && !labelWidget.isDisposed()) {
+         labelWidget.setToolTipText(toolTip);
       }
    }
 
@@ -128,11 +112,7 @@ public abstract class XWidget {
 
    public boolean isFormReady() {
       // Set to true if outside of a form;
-      boolean result = managedForm == null;
-      if (managedForm != null) {
-         result = !managedForm.getForm().isDisposed();
-      }
-      return result;
+      return (managedForm == null) ? true : !managedForm.getForm().isDisposed();
    }
 
    public void setControlCausedMessage(String messageId, String messageText, int type) {
@@ -275,59 +255,15 @@ public abstract class XWidget {
 
    public abstract void setFocus();
 
-   public abstract void refresh();
-
-   public abstract IStatus isValid();
-
-   /**
-    * Called with string found between xml tags Used by setFromXml() String will be sent through AXml.xmlToText() before
-    * being sent to setXmlData implementation. Used by: setFromXml
-    * 
-    * @param str - value to set
-    */
-   public abstract void setXmlData(String str);
-
-   /**
-    * Return string to save off between xml tags Used by call to toXml() String returned will be sent through
-    * AXml.textToXml() before being saved Used by: toXml
-    * 
-    * @return Return Xml data string.
-    */
-   protected abstract String getXmlData();
-
-   public abstract String toHTML(String labelFont);
-
-   protected String toXml() throws Exception {
-      if (xmlSubRoot.equals("")) {
-         return toXml(xmlRoot);
-      } else {
-         return toXml(xmlRoot, xmlSubRoot);
-      }
+   public void refresh() {
    }
 
-   protected String toXml(String xmlRoot) throws Exception {
-      String s = "<" + xmlRoot + ">" + AXml.textToXml(getXmlData()) + "</" + xmlRoot + ">\n";
-      return s;
+   public IStatus isValid() {
+      return Status.OK_STATUS;
    }
 
-   public String toXml(String xmlRoot, String xmlSubRoot) throws Exception {
-      String s =
-         "<" + xmlRoot + ">" + "<" + xmlSubRoot + ">" + AXml.textToXml(getXmlData()) + "</" + xmlSubRoot + ">" + "</" + xmlRoot + ">\n";
-      return s;
-   }
-
-   public void setFromXml(String xml) throws IllegalStateException {
-      Matcher m;
-      m = Pattern.compile("<" + xmlRoot + ">(.*?)</" + xmlRoot + ">", Pattern.MULTILINE | Pattern.DOTALL).matcher(xml);
-      if (m.find()) {
-         setXmlData(AXml.xmlToText(m.group(1)));
-      }
-   }
-
-   public Vector<String> getDisplayLabels() {
-      Vector<String> l = new Vector<String>();
-      l.add(label);
-      return l;
+   public String toHTML(String labelFont) {
+      return "";
    }
 
    public void setDisplayLabel(String displayLabel) {
@@ -348,22 +284,6 @@ public abstract class XWidget {
 
    public void setVerticalLabel(boolean verticalLabel) {
       this.verticalLabel = verticalLabel;
-   }
-
-   public String getXmlRoot() {
-      return xmlRoot;
-   }
-
-   public void setXmlRoot(String xmlRoot) {
-      this.xmlRoot = xmlRoot;
-   }
-
-   public String getXmlSubRoot() {
-      return xmlSubRoot;
-   }
-
-   public void setXmlSubRoot(String xmlSubRoot) {
-      this.xmlSubRoot = xmlSubRoot;
    }
 
    public String getToolTip() {
@@ -405,7 +325,9 @@ public abstract class XWidget {
       this.requiredEntry = requiredEntry;
    }
 
-   protected abstract String getReportData();
+   protected String getReportData() {
+      return "";
+   }
 
    @Override
    public String toString() {
@@ -420,7 +342,9 @@ public abstract class XWidget {
       this.fillHorizontally = fillHorizontally;
    }
 
-   public abstract Object getData();
+   public Object getData() {
+      return null;
+   }
 
    public boolean isDisplayLabel() {
       return displayLabel;

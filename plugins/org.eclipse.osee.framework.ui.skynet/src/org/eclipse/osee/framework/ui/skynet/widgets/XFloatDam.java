@@ -32,10 +32,6 @@ public class XFloatDam extends XFloat implements IAttributeWidget {
       super(displayLabel);
    }
 
-   public XFloatDam(String displayLabel, String xmlRoot) {
-      super(displayLabel, xmlRoot);
-   }
-
    @Override
    public Artifact getArtifact() {
       return artifact;

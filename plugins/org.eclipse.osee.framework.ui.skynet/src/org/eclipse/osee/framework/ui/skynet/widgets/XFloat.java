@@ -27,11 +27,7 @@ public class XFloat extends XText {
    private boolean maxValueSet = false;
 
    public XFloat(String displayLabel) {
-      super(displayLabel, "float");
-   }
-
-   public XFloat(String displayLabel, String xmlRoot) {
-      super(displayLabel, xmlRoot);
+      super(displayLabel);
    }
 
    public void setMinValue(double minValue) {

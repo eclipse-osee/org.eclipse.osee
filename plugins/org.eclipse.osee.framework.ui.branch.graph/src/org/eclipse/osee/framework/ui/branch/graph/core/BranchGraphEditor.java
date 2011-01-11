@@ -44,6 +44,7 @@ import org.eclipse.osee.framework.ui.branch.graph.model.GraphCache;
 import org.eclipse.osee.framework.ui.branch.graph.operation.LoadGraphOperation;
 import org.eclipse.osee.framework.ui.branch.graph.parts.GraphEditPartFactory;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
@@ -78,6 +79,10 @@ public class BranchGraphEditor extends GraphicalEditorWithFlyoutPalette {
 
    @Override
    public void setFocus() {
+      Control control = overviewOutlinePage.getControl();
+      if (control != null) {
+         control.setFocus();
+      }
    }
 
    public void showGraphFor(BranchGraphEditorInput editorInput) {
@@ -107,14 +112,16 @@ public class BranchGraphEditor extends GraphicalEditorWithFlyoutPalette {
 
    @Override
    public void doSave(IProgressMonitor monitor) {
+      OseeLog.log(BranchGraphEditor.class, Level.WARNING, "method not implemented!");
    }
 
    @Override
    public void doSaveAs() {
+      OseeLog.log(BranchGraphEditor.class, Level.WARNING, "method not implemented!");
    }
 
    @Override
-   public void init(IEditorSite site, IEditorInput input) throws PartInitException {
+   public void init(IEditorSite site, IEditorInput input) {
       setSite(site);
       setInput(input);
    }
@@ -204,6 +211,7 @@ public class BranchGraphEditor extends GraphicalEditorWithFlyoutPalette {
 
    @Override
    protected void initializeGraphicalViewer() {
+      OseeLog.log(BranchGraphEditor.class, Level.WARNING, "method not implemented!");
    }
 
    @Override

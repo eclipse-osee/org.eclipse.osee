@@ -38,8 +38,8 @@ import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
@@ -62,7 +62,7 @@ import org.eclipse.swt.widgets.Tree;
 /**
  * @author Donald G. Dunne
  */
-public class XCommitManager extends XWidget implements IArtifactWidget, IBranchEventListener {
+public class XCommitManager extends GenericXWidget implements IArtifactWidget, IBranchEventListener {
 
    private CommitXManager xCommitManager;
    private IDirtiableEditor editor;
@@ -253,13 +253,6 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IBranchE
    }
 
    @Override
-   public void setFocus() {
-      if (xCommitManager != null) {
-         xCommitManager.getTree().setFocus();
-      }
-   }
-
-   @Override
    public void refresh() {
       if (xCommitManager == null || xCommitManager.getTree() == null || xCommitManager.getTree().isDisposed()) {
          return;
@@ -310,26 +303,6 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IBranchE
          return new Status(IStatus.ERROR, getClass().getSimpleName(), ex.getLocalizedMessage());
       }
       return returnStatus;
-   }
-
-   @Override
-   public void setXmlData(String str) {
-      // do nothing
-   }
-
-   @Override
-   public String getXmlData() {
-      return null;
-   }
-
-   @Override
-   public String toHTML(String labelFont) {
-      return "";
-   }
-
-   @Override
-   public String getReportData() {
-      return null;
    }
 
    /**

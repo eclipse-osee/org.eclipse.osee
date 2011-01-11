@@ -11,14 +11,10 @@
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -32,7 +28,7 @@ import org.eclipse.swt.widgets.Label;
 /**
  * @author Donald G. Dunne
  */
-public class XCombo extends XWidget {
+public class XCombo extends XButtonCommon {
 
    private Combo dataCombo;
    private Composite parent;
@@ -40,21 +36,12 @@ public class XCombo extends XWidget {
    protected String[] inDataStrings; // Strings sent in for display
    //
    private final Map<String, Integer> displayDataStrings = new HashMap<String, Integer>();
-   protected Map<String, String> dataStringToXmlString;
    private String displayArray[];
    private boolean isDefaultSelectionAllowed;
 
-   public XCombo(String displayLabel, String xmlRoot, String xmlSubRoot) {
-      super(displayLabel, xmlRoot, xmlSubRoot);
-      isDefaultSelectionAllowed = true;
-   }
-
-   public XCombo(String displayLabel, String xmlRoot) {
-      this(displayLabel, xmlRoot, "");
-   }
-
    public XCombo(String displayLabel) {
-      this(displayLabel, "", "");
+      super(displayLabel);
+      isDefaultSelectionAllowed = true;
    }
 
    public void setDefaultSelectionAllowed(boolean isAllowed) {
@@ -201,57 +188,6 @@ public class XCombo extends XWidget {
    }
 
    @Override
-   public void setFocus() {
-      if (dataCombo != null) {
-         dataCombo.setFocus();
-      }
-   }
-
-   public void setDataStringToXmlTranslations(Map<String, String> dataStringToXmlString) {
-      this.dataStringToXmlString = dataStringToXmlString;
-   }
-
-   @SuppressWarnings("unchecked")
-   @Override
-   public void setFromXml(String xml) throws IllegalStateException {
-      Matcher m;
-      if (getXmlSubRoot().equals("")) {
-         m =
-            Pattern.compile("<" + getXmlRoot() + ">(.*?)</" + getXmlRoot() + ">", Pattern.MULTILINE | Pattern.DOTALL).matcher(
-               xml);
-      } else {
-         m =
-            Pattern.compile(
-               "<" + getXmlRoot() + "><" + getXmlSubRoot() + ">(.*?)</" + getXmlSubRoot() + "></" + getXmlRoot() + ">",
-               Pattern.MULTILINE | Pattern.DOTALL).matcher(xml);
-      }
-      while (m.find()) {
-         String str = m.group(1);
-         String transStr = null;
-         // If translation given, translate back to display string
-         // ie. bems number => full name
-         if (dataStringToXmlString != null) {
-            if (dataStringToXmlString.containsValue(str)) {
-               for (Iterator<?> iter = dataStringToXmlString.entrySet().iterator(); iter.hasNext();) {
-                  Map.Entry<String, String> entry = (Map.Entry<String, String>) iter.next();
-                  if (str.equals(entry.getValue())) {
-                     transStr = entry.getKey();
-                     break;
-                  }
-               }
-            }
-         }
-         if (transStr != null) {
-            set(transStr);
-         } else {
-            set(str);
-         }
-         break;
-      }
-      refresh();
-   }
-
-   @Override
    public void refresh() {
       updateComboWidget();
    }
@@ -273,35 +209,9 @@ public class XCombo extends XWidget {
       return data;
    }
 
-   /**
-    * @return returns translated xml value (eg. 727536)
-    */
-   public String getXml() {
-      String s = "";
-      if (dataStringToXmlString == null) {
-         s = data;
-      } else {
-         s = dataStringToXmlString.get(data);
-         if (s == null) {
-            s = data;
-         }
-      }
-      return s;
-   }
-
    @Override
    public String getReportData() {
       return data;
-   }
-
-   @Override
-   public String getXmlData() {
-      return getReportData();
-   }
-
-   @Override
-   public void setXmlData(String str) {
-      // do nothing
    }
 
    private void updateComboWidget() {
@@ -356,23 +266,6 @@ public class XCombo extends XWidget {
          return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, getLabel() + " must be selected.");
       }
       return Status.OK_STATUS;
-   }
-
-   @Override
-   protected String toXml() {
-      return toXml(getXmlRoot());
-   }
-
-   @Override
-   protected String toXml(String xmlRoot) {
-      String s;
-      String dataStr = getXml();
-      if (!Strings.isValid(getXmlSubRoot())) {
-         s = "<" + xmlRoot + ">" + dataStr + "</" + xmlRoot + ">\n";
-      } else {
-         s = "<" + xmlRoot + "><" + getXmlSubRoot() + ">" + dataStr + "</" + getXmlSubRoot() + "></" + xmlRoot + ">\n";
-      }
-      return s;
    }
 
    @Override

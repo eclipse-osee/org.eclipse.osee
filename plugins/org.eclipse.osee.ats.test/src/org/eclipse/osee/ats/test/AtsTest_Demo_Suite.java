@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.test.util.AtsDeleteManagerTest;
 import org.eclipse.osee.ats.test.util.AtsImageTest;
 import org.eclipse.osee.ats.test.util.AtsNotifyUsersTest;
 import org.eclipse.osee.ats.test.util.AtsPurgeTest;
+import org.eclipse.osee.ats.test.util.AtsXWidgetsExampleBlamTest;
 import org.eclipse.osee.ats.test.util.ImportActionsViaSpreadsheetTest;
 import org.eclipse.osee.ats.test.workflow.SMAPromptChangeStatusTest;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
@@ -52,7 +53,8 @@ import org.junit.runners.Suite;
    AtsPurgeTest.class,
    AtsNotifyUsersTest.class,
    AtsBranchConfigurationTest.class,
-   AtsValidateAtsDatabaseTest.class,})
+   AtsValidateAtsDatabaseTest.class,
+   AtsXWidgetsExampleBlamTest.class})
 /**
  * @author Donald G. Dunne
  */

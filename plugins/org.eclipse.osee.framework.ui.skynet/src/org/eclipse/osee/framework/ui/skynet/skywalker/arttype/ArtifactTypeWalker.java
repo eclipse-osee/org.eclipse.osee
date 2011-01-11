@@ -27,13 +27,13 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactTypeLabelProvider;
+import org.eclipse.osee.framework.ui.skynet.widgets.GenericViewPart;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.part.ViewPart;
 import org.eclipse.zest.core.viewers.GraphViewer;
 import org.eclipse.zest.core.widgets.GraphItem;
 import org.eclipse.zest.core.widgets.GraphNode;
@@ -44,7 +44,7 @@ import org.eclipse.zest.layouts.algorithms.RadialLayoutAlgorithm;
 /**
  * @author Donald G. Dunne
  */
-public class ArtifactTypeWalker extends ViewPart {
+public class ArtifactTypeWalker extends GenericViewPart {
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.skywalker.ArtifactTypeWalkerView";
    protected GraphViewer viewer;
    private Composite viewerComp;
@@ -82,6 +82,8 @@ public class ArtifactTypeWalker extends ViewPart {
       });
       createActions();
       refresh();
+
+      setFocusWidget(viewer.getControl());
    }
 
    private void explore(ArtifactType artifactType) {
@@ -132,14 +134,4 @@ public class ArtifactTypeWalker extends ViewPart {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
    }
-
-   @Override
-   public void setFocus() {
-      viewer.getControl().setFocus();
-   }
-
-   public String getActionDescription() {
-      return "";
-   }
-
 }

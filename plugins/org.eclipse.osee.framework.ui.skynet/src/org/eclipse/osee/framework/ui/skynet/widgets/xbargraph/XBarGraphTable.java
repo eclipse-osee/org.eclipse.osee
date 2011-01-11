@@ -12,10 +12,8 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xbargraph;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.XButtonCommon;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -38,7 +36,7 @@ import org.eclipse.swt.widgets.TableItem;
 /**
  * @author Donald G. Dunne
  */
-public class XBarGraphTable extends XWidget {
+public class XBarGraphTable extends XButtonCommon {
 
    private final String itemHeader;
    private final String percentHeader;
@@ -46,6 +44,7 @@ public class XBarGraphTable extends XWidget {
    private final List<XBarGraphLine> lines;
    private boolean isHeaderVisible = true;
    private boolean isLinesVisible = true;
+   private Composite compParent;
 
    public XBarGraphTable(String label, String itemHeader, String percentHeader, List<XBarGraphLine> lines) {
       super(label);
@@ -56,10 +55,12 @@ public class XBarGraphTable extends XWidget {
 
    @Override
    protected void createControls(Composite parent, int horizontalSpan) {
-      labelWidget = new Label(parent, SWT.NONE);
+      compParent = parent;
+
+      labelWidget = new Label(compParent, SWT.NONE);
       labelWidget.setText(getLabel() + ": ");
 
-      table = new Table(parent, SWT.BORDER);
+      table = new Table(compParent, SWT.BORDER);
       table.setHeaderVisible(isHeaderVisible);
       table.setLinesVisible(isLinesVisible);
       if (isFillHorizontally()) {
@@ -116,53 +117,16 @@ public class XBarGraphTable extends XWidget {
    }
 
    @Override
-   public void dispose() {
-      // do nothing
-   }
-
-   @Override
    public Control getControl() {
       return table;
    }
 
    @Override
-   public Object getData() {
-      return null;
-   }
-
-   @Override
-   public String getReportData() {
-      return null;
-   }
-
-   @Override
-   public String getXmlData() {
-      return null;
-   }
-
-   @Override
-   public IStatus isValid() {
-      return Status.OK_STATUS;
-   }
-
-   @Override
    public void refresh() {
-      // do nothing
-   }
-
-   @Override
-   public void setFocus() {
-      // do nothing
-   }
-
-   @Override
-   public void setXmlData(String str) {
-      // do nothing
-   }
-
-   @Override
-   public String toHTML(String labelFont) {
-      return null;
+      Control control = getControl();
+      if (control != null) {
+         control.setFocus();
+      }
    }
 
    public static void main(String[] args) {
@@ -195,30 +159,18 @@ public class XBarGraphTable extends XWidget {
       display.dispose();
    }
 
-   /**
-    * @return the isHeaderVisible
-    */
    public boolean isHeaderVisible() {
       return isHeaderVisible;
    }
 
-   /**
-    * @param isHeaderVisible the isHeaderVisible to set
-    */
    public void setHeaderVisible(boolean isHeaderVisible) {
       this.isHeaderVisible = isHeaderVisible;
    }
 
-   /**
-    * @return the isLinesVisible
-    */
    public boolean isLinesVisible() {
       return isLinesVisible;
    }
 
-   /**
-    * @param isLinesVisible the isLinesVisible to set
-    */
    public void setLinesVisible(boolean isLinesVisible) {
       this.isLinesVisible = isLinesVisible;
    }

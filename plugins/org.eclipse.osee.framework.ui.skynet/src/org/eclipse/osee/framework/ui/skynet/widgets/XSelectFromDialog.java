@@ -45,13 +45,9 @@ public abstract class XSelectFromDialog<T> extends XText {
    private int minSelectionRequired, maxSelectionRequired = 1;
    private Button selectionButton;
 
-   public XSelectFromDialog(String displayLabel, String xmlRoot) {
-      super(displayLabel, xmlRoot);
-      setToolTip("Click the button on the left to change the current selection.");
-   }
-
    public XSelectFromDialog(String displayLabel) {
-      this(displayLabel, "");
+      super(displayLabel);
+      setToolTip("Click the button on the left to change the current selection.");
    }
 
    public void setRequiredSelection(int minSelectionRequired, int maxSelectionRequired) throws OseeArgumentException {

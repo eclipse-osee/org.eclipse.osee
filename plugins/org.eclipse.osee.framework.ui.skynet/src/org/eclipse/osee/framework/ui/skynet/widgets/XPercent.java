@@ -19,8 +19,8 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
  */
 public class XPercent extends XText {
 
-   public XPercent(String displayLabel, String xmlRoot) {
-      super(displayLabel, xmlRoot);
+   public XPercent(String displayLabel) {
+      super(displayLabel);
    }
 
    public void set(int percent) {

@@ -12,18 +12,22 @@
 package org.eclipse.osee.framework.ui.skynet.blam;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -36,6 +40,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayou
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IDynamicWidgetLayoutListener;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.osgi.framework.Bundle;
 import org.xml.sax.SAXException;
 
 /**
@@ -56,8 +61,33 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
     */
    public abstract Collection<String> getCategories();
 
-   public String getXWidgetsXml() {
+   public String getXWidgetsXml() throws OseeCoreException {
       return AbstractBlam.branchXWidgetXml;
+   }
+
+   /**
+    * Expects the {@code <className>} of blam. Gets {@code /bundleName/ui/<className>Ui.xml } and returns its contents.
+    *
+    * @param className class name of blam
+    * @param nameOfBundle name of bundle i.e. org.eclipse.rcp.xyz
+    * @return contents of the {@code /bundleName/ui/<className>Ui.xml }
+    * @throws OseeCoreException usually {@link IOException} or {@link NullPointerException} wrapped in
+    * {@link OseeCoreException}
+    */
+   public String getXWidgetsXmlFromUiFile(String className, String nameOfBundle) throws OseeCoreException {
+      String file = String.format("ui/%sUi.xml", className);
+      Bundle bundle = Platform.getBundle(nameOfBundle);
+
+      String contents = null;
+      try {
+         InputStream inStream = bundle.getEntry(file).openStream();
+         contents = Lib.inputStreamToString(inStream);
+      } catch (IOException ex) {
+         OseeExceptions.wrapAndThrow(ex);
+         contents = "";
+      }
+
+      return contents;
    }
 
    public String getDescriptionUsage() {
@@ -81,9 +111,9 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
    }
 
    public void print(String value) {
-      if (this.output != null && value != null) {
+      if (output != null && value != null) {
          try {
-            this.output.append(value);
+            output.append(value);
          } catch (IOException ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }

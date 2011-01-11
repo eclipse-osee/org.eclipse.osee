@@ -40,7 +40,7 @@ import org.eclipse.swt.widgets.Table;
 /**
  * @author Donald G. Dunne
  */
-public class XListViewer extends XWidget {
+public class XListViewer extends GenericXWidget {
 
    // XListViewer uses a table so images can be used.  SWT doesn't support images in ListViewer
    private TableViewer listViewer;
@@ -73,16 +73,7 @@ public class XListViewer extends XWidget {
    private int heightHint;
 
    public XListViewer(String displayLabel) {
-      this(displayLabel, "list", "");
-   }
-
-   public XListViewer() {
-      this("List", "list", "");
-   }
-
-   public XListViewer(String displayLabel, String xmlRoot, String xmlSubRoot) {
-      super(displayLabel, xmlRoot, xmlSubRoot);
-      listMenu = null;
+      super(displayLabel);
    }
 
    @Override
@@ -234,27 +225,6 @@ public class XListViewer extends XWidget {
       }
    }
 
-   @Override
-   public void setFocus() {
-      // do nothing
-   }
-
-   /**
-    * Don't need this since overriding toReport and toXml
-    */
-   @Override
-   public String getXmlData() {
-      return "";
-   }
-
-   /**
-    * Don't need this since overriding setFromXml
-    */
-   @Override
-   public void setXmlData(String str) {
-      return;
-   }
-
    private void handleSelection() {
       validate();
       notifyXModifiedListeners();
@@ -277,11 +247,6 @@ public class XListViewer extends XWidget {
          selected.add(i.next());
       }
       return selected;
-   }
-
-   @Override
-   public void setFromXml(String xml) {
-      // do nothing
    }
 
    public Table getTable() {
@@ -383,16 +348,6 @@ public class XListViewer extends XWidget {
       }
       s = s.replaceAll("\n+$", "");
       return s;
-   }
-
-   @Override
-   public String toXml() {
-      return toXml(getXmlRoot(), getXmlSubRoot());
-   }
-
-   @Override
-   public String toXml(String xmlRoot, String xmlSubRoot) {
-      return "";
    }
 
    @Override

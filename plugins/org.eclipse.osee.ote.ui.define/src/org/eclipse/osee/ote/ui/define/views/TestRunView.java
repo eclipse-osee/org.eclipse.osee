@@ -25,10 +25,10 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
+import org.eclipse.osee.framework.ui.skynet.widgets.GenericViewPart;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.ote.ui.define.OteDefineImage;
@@ -48,12 +48,11 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.IHandlerService;
-import org.eclipse.ui.part.ViewPart;
 
 /**
  * @author Roberto E. Escobar
  */
-public class TestRunView extends ViewPart implements IActionable, IDataChangedListener {
+public class TestRunView extends GenericViewPart implements IDataChangedListener {
    public static final String VIEW_ID = TestRunView.class.getName();
    private static final String BEGIN_MESSAGE =
       "To begin, drag and drop a test run artifact from artifact explorer or from an artifact search result window. Alternatively, you can drag and drop a test outfile onto this view.";
@@ -69,6 +68,7 @@ public class TestRunView extends ViewPart implements IActionable, IDataChangedLi
 
    @Override
    public void createPartControl(Composite parent) {
+
       parent.setLayout(new GridLayout());
 
       PlatformUI.getWorkbench().getService(IHandlerService.class);
@@ -108,16 +108,8 @@ public class TestRunView extends ViewPart implements IActionable, IDataChangedLi
 
       HelpUtil.setHelp(parent, OseeHelpContext.TEST_RUN_VIEW);
       HelpUtil.setHelp(viewer.getTree(), OseeHelpContext.TEST_RUN_VIEW);
-   }
 
-   @Override
-   public void setFocus() {
-      //
-   }
-
-   @Override
-   public String getActionDescription() {
-      return "";
+      setFocusWidget(viewer.getControl());
    }
 
    protected void createActions() {

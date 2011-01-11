@@ -18,8 +18,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -40,7 +38,7 @@ import org.eclipse.swt.widgets.Label;
  * 
  * @author Donald G. Dunne
  */
-public class XRadioButtons extends XWidget {
+public class XRadioButtons extends GenericXWidget {
 
    private Composite comp;
    private final ArrayList<XRadioButton> xButtons = new ArrayList<XRadioButton>();
@@ -50,37 +48,30 @@ public class XRadioButtons extends XWidget {
    private boolean sortNames;
 
    public XRadioButtons(String displayLabel, String xmlRoot) {
-      super(displayLabel, xmlRoot);
-   }
-
-   @Override
-   public void setFocus() {
-      // do nothing
+      super(displayLabel);
    }
 
    @Override
    public Control getControl() {
-      return null;
+      return comp;
    }
 
    public void addButtons(String items[]) {
       xButtons.clear();
       for (String item : items) {
-         xButtons.add(new XRadioButton(item, item));
+         xButtons.add(new XRadioButton(item));
       }
    }
 
    public void addButton(String item, String toolTip) {
-      XRadioButton rb = new XRadioButton(item, item);
+      XRadioButton rb = new XRadioButton(item);
       rb.setToolTip(toolTip);
       xButtons.add(rb);
-      // System.out.println("added " + item);
    }
 
    public void addButton(String item) {
-      XRadioButton rb = new XRadioButton(item, item);
+      XRadioButton rb = new XRadioButton(item);
       xButtons.add(rb);
-      // System.out.println("added " + item);
    }
 
    public void selectAll(boolean selected) {
@@ -119,46 +110,8 @@ public class XRadioButtons extends XWidget {
    }
 
    @Override
-   public void setFromXml(String xml) throws IllegalStateException {
-      selectAll(false);
-      if (!multiSelect) {
-         super.setFromXml(xml);
-      } else {
-         Matcher m;
-         m =
-            Pattern.compile("<" + getXmlRoot() + ">(.*?)</" + getXmlRoot() + ">", Pattern.MULTILINE | Pattern.DOTALL).matcher(
-               xml);
-         if (m.find()) {
-            String str = m.group(1);
-            String strs[] = str.split(",");
-            setSelected(strs);
-         }
-      }
-      refresh();
-   }
-
-   @Override
-   public String getXmlData() {
-      String sel = "";
-      for (String str : getSelectedNames()) {
-         sel += str + ",";
-      }
-      sel = sel.replaceFirst(",$", "");
-      return sel;
-   }
-
-   public String getDisplayStr() {
-      return getXmlData();
-   }
-
-   @Override
    public String toString() {
       return getLabel() + ": " + Collections.toString(",", getSelectedNames());
-   }
-
-   @Override
-   public void setXmlData(String str) {
-      setSelected(str);
    }
 
    /**
@@ -320,12 +273,12 @@ public class XRadioButtons extends XWidget {
 
    @Override
    public String getReportData() {
-      return getXmlData();
+      return "";
    }
 
    @Override
    public String toHTML(String labelFont) {
-      return AHTML.getLabelStr(labelFont, getLabel() + ": ") + getDisplayStr();
+      return AHTML.getLabelStr(labelFont, getLabel() + ": ");
    }
 
    public boolean isMultiSelect() {

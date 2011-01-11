@@ -24,11 +24,7 @@ public class XInteger extends XText {
    private boolean maxValueSet = false;
 
    public XInteger(String displayLabel) {
-      this(displayLabel, "");
-   }
-
-   public XInteger(String displayLabel, String xmlRoot) {
-      super(displayLabel, xmlRoot);
+      super(displayLabel);
    }
 
    public void setMinValue(int minValue) {

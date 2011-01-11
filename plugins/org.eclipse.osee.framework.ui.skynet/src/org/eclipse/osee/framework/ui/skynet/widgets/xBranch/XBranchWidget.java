@@ -26,13 +26,12 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -49,9 +48,10 @@ import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Tree;
 
 /**
+ * @author Karol M. Wilk
  * @author Jeff C. Phillips
  */
-public class XBranchWidget extends XWidget implements IActionable {
+public class XBranchWidget extends GenericXWidget {
    private BranchXViewer branchXViewer;
    public final static String normalColor = "#EEEEEE";
    private static final String LOADING = "Loading ...";
@@ -60,22 +60,18 @@ public class XBranchWidget extends XWidget implements IActionable {
    private XBranchLabelProvider xBranchLabelProvider;
    private FavoriteSorter sorter;
    private static final String VIEW_ID = "BrachView";
-   private boolean filterRealTime;
-   private boolean searchRealTime;
+   private final boolean filterRealTime;
+   private final boolean searchRealTime;
    private ToolBar toolBar;
 
-   public XBranchWidget(boolean filterRealTime, boolean searchRealTime) {
-      this();
-
-      this.filterRealTime = filterRealTime;
-      this.searchRealTime = searchRealTime;
+   public XBranchWidget() {
+      this(false, false);
    }
 
-   public XBranchWidget() {
+   public XBranchWidget(boolean filterRealTime, boolean searchRealTime) {
       super(VIEW_ID);
-
-      this.filterRealTime = false;
-      this.searchRealTime = false;
+      this.filterRealTime = filterRealTime;
+      this.searchRealTime = searchRealTime;
    }
 
    public void setBranchOptions(boolean state, BranchOptionsEnum... options) {
@@ -242,11 +238,6 @@ public class XBranchWidget extends XWidget implements IActionable {
    }
 
    @Override
-   public void setFocus() {
-      branchXViewer.getTree().setFocus();
-   }
-
-   @Override
    public void refresh() {
       loadData();
       branchXViewer.refresh();
@@ -308,25 +299,5 @@ public class XBranchWidget extends XWidget implements IActionable {
          }
       };
       Jobs.startJob(job);
-   }
-
-   @Override
-   public String getReportData() {
-      return null;
-   }
-
-   @Override
-   public String getXmlData() {
-      return null;
-   }
-
-   @Override
-   public void setXmlData(String str) {
-      // do nothing
-   }
-
-   @Override
-   public String getActionDescription() {
-      return null;
    }
 }

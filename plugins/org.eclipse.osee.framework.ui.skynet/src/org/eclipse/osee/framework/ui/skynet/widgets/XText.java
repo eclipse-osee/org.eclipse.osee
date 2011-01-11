@@ -12,19 +12,15 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.text.NumberFormat;
 import java.text.ParseException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.OseeDictionary;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.SWTException;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -63,19 +59,11 @@ public class XText extends XWidget {
    Composite composite = null;
 
    public XText() {
-      super("AText", "text");
+      this("XText");
    }
 
    public XText(String displayLabel) {
-      this(displayLabel, "text");
-   }
-
-   public XText(String displayLabel, String xmlRoot) {
-      this(displayLabel, xmlRoot, "");
-   }
-
-   public XText(String displayLabel, String xmlRoot, String xmlSubRoot) {
-      super(displayLabel, xmlRoot, xmlSubRoot);
+      super(displayLabel);
    }
 
    public void setEnabled(boolean enabled) {
@@ -417,75 +405,12 @@ public class XText extends XWidget {
       return text;
    }
 
-   @Override
-   public String getXmlData() {
-      if (sText == null || sText.isDisposed()) {
-         return AXml.textToXml(text);
-      } else {
-         try {
-            return AXml.textToXml(sText.getText());
-         } catch (SWTException e) {
-            return AXml.textToXml(text);
-         }
-      }
-   }
-
-   @Override
-   protected String toXml() {
-      if (getXmlSubRoot().equals("")) {
-         return toXml(getXmlRoot());
-      } else {
-         return toXml(getXmlRoot(), getXmlSubRoot());
-      }
-   }
-
-   @Override
-   public String toXml(String xmlRoot) {
-      String s = "<" + xmlRoot + ">" + getXmlData() + "</" + xmlRoot + ">\n";
-      return s;
-   }
-
-   @Override
-   public String toXml(String xmlRoot, String xmlSubRoot) {
-      String s =
-         "<" + xmlRoot + ">" + "<" + xmlSubRoot + ">" + getXmlData() + "</" + xmlSubRoot + ">" + "</" + xmlRoot + ">\n";
-      return s;
-   }
-
-   @Override
-   public void setXmlData(String str) {
-      set(str);
-      if (debug) {
-         System.err.println("setFromXml *" + str + "*");
-      }
-   }
-
-   @Override
-   public void setFromXml(String xml) {
-      Matcher m;
-      m =
-         Pattern.compile("<" + getXmlRoot() + ">(.*?)</" + getXmlRoot() + ">", Pattern.MULTILINE | Pattern.DOTALL).matcher(
-            xml);
-
-      if (m.find()) {
-         String xmlStr = m.group(1);
-         if (debug) {
-            System.err.println("xmlStr *" + xmlStr + "*");
-         }
-         String str = AXml.xmlToText(xmlStr);
-         if (debug) {
-            System.err.println("str *" + str + "*");
-         }
-         setXmlData(str);
-      }
-   }
-
    public int getInt() {
-      Integer percent = new Integer(0);
+      Integer percent;
       try {
          percent = new Integer(text);
       } catch (NumberFormatException e) {
-         // do nothing
+         percent = 0;
       }
       return percent.intValue();
    }
@@ -518,7 +443,7 @@ public class XText extends XWidget {
    }
 
    public void append(String text) {
-      this.text = this.text + text;
+      this.text += text;
       updateTextWidget();
    }
 

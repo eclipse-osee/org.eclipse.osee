@@ -43,8 +43,8 @@ import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
@@ -70,7 +70,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 /**
  * @author Donald G. Dunne
  */
-public class XUserRoleViewer extends XWidget implements IArtifactWidget, IArtifactEventListener {
+public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, IArtifactEventListener {
 
    private UserRoleXViewer xViewer;
    private IDirtiableEditor editor;
@@ -83,7 +83,6 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IArtifa
 
    public XUserRoleViewer() {
       super("Roles");
-
       OseeEventManager.addListener(this);
    }
 
@@ -348,11 +347,6 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IArtifa
    }
 
    @Override
-   public void setFocus() {
-      xViewer.getTree().setFocus();
-   }
-
-   @Override
    public void refresh() {
       if (xViewer == null || xViewer.getTree() == null || xViewer.getTree().isDisposed()) {
          return;
@@ -388,16 +382,6 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IArtifa
    }
 
    @Override
-   public void setXmlData(String str) {
-      // do nothing
-   }
-
-   @Override
-   public String getXmlData() {
-      return null;
-   }
-
-   @Override
    public String toHTML(String labelFont) {
       StringBuffer html = new StringBuffer();
       try {
@@ -425,11 +409,6 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IArtifa
          return "User Role Item Exception - " + ex.getLocalizedMessage();
       }
       return html.toString();
-   }
-
-   @Override
-   public String getReportData() {
-      return null;
    }
 
    /**

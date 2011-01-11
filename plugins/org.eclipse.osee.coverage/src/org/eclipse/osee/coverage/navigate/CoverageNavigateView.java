@@ -54,9 +54,13 @@ public class CoverageNavigateView extends ViewPart implements IActionable {
    private XNavigateComposite xNavComp;
    private XBranchSelectWidget xBranchSelectWidget;
 
+   private Composite comp;
+
    @Override
    public void setFocus() {
-      // do nothing
+      if (comp != null) {
+         comp.setFocus();
+      }
    }
 
    @Override
@@ -67,7 +71,7 @@ public class CoverageNavigateView extends ViewPart implements IActionable {
 
       OseeStatusContributionItemFactory.addTo(this, false);
 
-      Composite comp = new Composite(parent, SWT.None);
+      comp = new Composite(parent, SWT.None);
       comp.setLayout(ALayout.getZeroMarginLayout());
       comp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 

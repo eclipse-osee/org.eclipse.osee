@@ -83,64 +83,10 @@ public class XWidgetParser {
          element.setAttribute("id", data.getId());
          element.setAttribute("xwidgetType", data.getXWidgetName());
          element.setAttribute("defaultValue", data.getDefaultValue());
+
          for (XOption xOption : data.getXOptionHandler().getXOptions()) {
-            if (xOption == XOption.ALIGN_CENTER) {
-               element.setAttribute("align", "Center");
-            } else if (xOption == XOption.NO_LABEL) {
-               element.setAttribute("displayLabel", "false");
-            } else if (xOption == XOption.ALIGN_LEFT) {
-               element.setAttribute("align", "Left");
-            } else if (xOption == XOption.ALIGN_RIGHT) {
-               element.setAttribute("align", "Right");
-            } else if (xOption == XOption.EDITABLE) {
-               element.setAttribute("editable", "true");
-            } else if (xOption == XOption.BEGIN_COMPOSITE_4) {
-               element.setAttribute("beginComposite", "4");
-            } else if (xOption == XOption.BEGIN_COMPOSITE_6) {
-               element.setAttribute("beginComposite", "6");
-            } else if (xOption == XOption.BEGIN_COMPOSITE_8) {
-               element.setAttribute("beginComposite", "8");
-            } else if (xOption == XOption.BEGIN_COMPOSITE_10) {
-               element.setAttribute("beginComposite", "10");
-            } else if (xOption == XOption.BEGIN_GROUP_COMPOSITE_4) {
-               element.setAttribute("beginGroupComposite", "4");
-            } else if (xOption == XOption.BEGIN_GROUP_COMPOSITE_6) {
-               element.setAttribute("beginGroupComposite", "6");
-            } else if (xOption == XOption.BEGIN_GROUP_COMPOSITE_8) {
-               element.setAttribute("beginGroupComposite", "8");
-            } else if (xOption == XOption.BEGIN_GROUP_COMPOSITE_10) {
-               element.setAttribute("beginGroupComposite", "10");
-            } else if (xOption == XOption.END_COMPOSITE) {
-               element.setAttribute("endComposite", "true");
-            } else if (xOption == XOption.NOT_EDITABLE) {
-               element.setAttribute("editable", "false");
-            } else if (xOption == XOption.ENABLED) {
-               element.setAttribute("enabled", "true");
-            } else if (xOption == XOption.NOT_ENABLED) {
-               element.setAttribute("enabled", "false");
-            } else if (xOption == XOption.REQUIRED) {
-               element.setAttribute("required", "true");
-            } else if (xOption == XOption.NOT_REQUIRED) {
-               element.setAttribute("required", "false");
-            } else if (xOption == XOption.FILL_HORIZONTALLY) {
-               element.setAttribute("fill", "Horizontally");
-            } else if (xOption == XOption.FILL_VERTICALLY) {
-               element.setAttribute("fill", "Vertically");
-            } else if (xOption == XOption.HORIZONTAL_LABEL) {
-               element.setAttribute("horizontalLabel", "true");
-            } else if (xOption == XOption.VERTICAL_LABEL) {
-               element.setAttribute("horizontalLabel", "false");
-            } else if (xOption == XOption.LABEL_AFTER) {
-               element.setAttribute("labelAfter", "true");
-            } else if (xOption == XOption.LABEL_BEFORE) {
-               element.setAttribute("labelAfter", "false");
-            } else if (xOption == XOption.MULTI_SELECT) {
-               element.setAttribute("multiSelect", "true");
-            } else if (xOption == XOption.NONE) {
-               // do nothing
-               ;
-            } else {
-               throw new OseeArgumentException("Unhandled xOption [%s]", xOption);
+            if (Strings.isValid(xOption.keyword, xOption.value)) {
+               element.setAttribute(xOption.keyword, xOption.value);
             }
          }
          doc.appendChild(element);

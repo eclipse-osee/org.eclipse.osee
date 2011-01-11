@@ -36,7 +36,6 @@ import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -65,6 +64,7 @@ import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.revert.RevertWizard;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetViews;
+import org.eclipse.osee.framework.ui.skynet.widgets.GenericViewPart;
 import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -81,12 +81,11 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.menus.CommandContributionItem;
-import org.eclipse.ui.part.ViewPart;
 
 /**
  * @author Donald G. Dunne
  */
-public class MergeView extends ViewPart implements IActionable, IBranchEventListener, IArtifactEventListener {
+public class MergeView extends GenericViewPart implements IBranchEventListener, IArtifactEventListener {
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView";
    private MergeXWidget mergeXWidget;
    private IHandlerService handlerService;
@@ -151,11 +150,6 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
       super.dispose();
       OseeEventManager.removeListener(this);
       OseeEventManager.removeListener(this);
-   @Override
-   public void setFocus() {
-      if (mergeXWidget != null) {
-         mergeXWidget.setFocus();
-      }
    }
 
    @Override
@@ -225,6 +219,8 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
 
       OseeEventManager.addListener(this);
       OseeEventManager.addListener(this);
+
+      setFocusWidget(mergeXWidget.getControl());
    }
 
    private void addPreviewMenuItem(MenuManager menuManager) {
@@ -589,11 +585,6 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
-   }
-
-   @Override
-   public String getActionDescription() {
-      return "";
    }
 
    @Override

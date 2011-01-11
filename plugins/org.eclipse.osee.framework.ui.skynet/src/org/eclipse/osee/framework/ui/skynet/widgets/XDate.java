@@ -15,8 +15,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.nebula.widgets.calendarcombo.CalendarCombo;
@@ -45,21 +43,13 @@ public class XDate extends XWidget {
    private Composite parent;
    protected Date date;
 
-   public XDate() {
-      this("", "");
-   }
-
    public XDate(Date date) {
-      this("", "");
+      super("");
       this.date = date;
    }
 
    public XDate(String displayLabel) {
-      this(displayLabel, "");
-   }
-
-   public XDate(String displayLabel, String xmlRoot) {
-      super(displayLabel, xmlRoot);
+      super(displayLabel);
       date = null;
    }
 
@@ -131,22 +121,6 @@ public class XDate extends XWidget {
       if (Widgets.isAccessible(parent)) {
          parent.layout();
       }
-   }
-
-   @Override
-   public void setFromXml(String xml) {
-      Matcher m =
-         Pattern.compile("<" + getXmlRoot() + ">(\\d+)</" + getXmlRoot() + ">", Pattern.MULTILINE | Pattern.DOTALL).matcher(
-            xml);
-      if (m.find()) {
-         try {
-            Long l = new Long(m.group(1));
-            date = new Date(l.longValue());
-         } catch (NumberFormatException e) {
-            e.printStackTrace();
-         }
-      }
-      refresh();
    }
 
    public void addModifyListener(ModifyListener listener) {
@@ -231,36 +205,6 @@ public class XDate extends XWidget {
    public void setFocus() {
       if (dateCombo != null) {
          dateCombo.setFocus();
-      }
-   }
-
-   /**
-    * Don't need this since overriding toReport and toXml
-    */
-   @Override
-   public String getXmlData() {
-      String dateStr = "";
-      if (date != null) {
-         dateStr = date.getTime() + "";
-      }
-      return dateStr;
-   }
-
-   /**
-    * Don't need this since overriding setFromXml
-    */
-   @Override
-   public void setXmlData(String str) {
-      if (str.equals("")) {
-         date = null;
-      } else {
-         try {
-            Long l = new Long(str);
-            date = new Date(l.longValue());
-         } catch (NumberFormatException e) {
-            e.printStackTrace();
-            date = null;
-         }
       }
    }
 

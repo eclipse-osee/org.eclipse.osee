@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xWidgets>
+	<XWidget xwidgetType="XLabel" displayName="XLabel" />
+	<XWidget xwidgetType="XButtonPush" displayName="XButtonPush"
+		displayLabel="false" />
+	<XWidget xwidgetType="XButton" displayName="XButton"
+		displayLabel="false" />
+	<XWidget xwidgetType="XCheckBox" horizontalLabel="true"
+		labelAfter="false" displayName="XCheckBox" />
+	<XWidget xwidgetType="XText" displayName="XText" />
+	<XWidget xwidgetType="XBranchSelectWidget" horizontalLabel="true"
+		displayName="Branch" />
+	<XWidget xwidgetType="XArtifactTypeComboViewer"
+		horizontalLabel="true" displayName="XArtifactTypeComboViewer" />
+	<XWidget xwidgetType="XArtifactTypeMultiChoiceSelect"
+		horizontalLabel="true" displayName="XArtifactTypeMultiChoiceSelect" />
+	<XWidget xwidgetType="XAttributeTypeComboViewer"
+		horizontalLabel="true" displayName="XAttributeTypeComboViewer" />
+	<XWidget xwidgetType="XAttributeTypeMultiChoiceSelect"
+		horizontalLabel="true" displayName="XAttributeTypeMultiChoiceSelect" />
+	<XWidget xwidgetType="XListDropViewer" displayName="artifacts" />
+	<XWidget xwidgetType="XFileSelectionDialog" displayName="Select Image GIF" />
+	<XWidget xwidgetType="XCombo(1,2,3)" displayName="Select an Option" />
+	<XWidget displayName="Problem" storageName="ats.Problem"
+		xwidgetType="XTextDam" fill="Vertically" />
+	<XWidget displayName="Submitted to Data Management"
+		storageName="lba.deliverable.Submitted to Data Management"
+		xwidgetType="XDateDam" horizontalLabel="true" />
+	<XWidget displayName="1" storageName="ats.Problem" xwidgetType="XInteger"
+		fill="Vertically" />
+	<XWidget displayName="XSelectFromMultiChoiceBranch"
+		xwidgetType="XSelectFromMultiChoiceBranch" />
+</xWidgets>

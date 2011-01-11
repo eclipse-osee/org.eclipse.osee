@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -29,7 +27,7 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 /**
  * @author Donald G. Dunne
  */
-public abstract class XHyperlinkLabelCmdValueSelection extends XWidget {
+public abstract class XHyperlinkLabelCmdValueSelection extends GenericXWidget {
 
    Label valueLabel;
    Hyperlink selectHyperLinkLabel, clearHyperLinkLabel;
@@ -186,41 +184,6 @@ public abstract class XHyperlinkLabelCmdValueSelection extends XWidget {
       return AHTML.getLabelValueStr(AHTML.LABEL_FONT, getHyperlinkLabelString(), getCurrentValue());
    }
 
-   @Override
-   public void dispose() {
-      // do nothing
-   }
-
-   @Override
-   public Object getData() {
-      return null;
-   }
-
-   @Override
-   public String getReportData() {
-      return null;
-   }
-
-   @Override
-   public String getXmlData() {
-      return null;
-   }
-
-   @Override
-   public IStatus isValid() {
-      return Status.OK_STATUS;
-   }
-
-   @Override
-   public void setFocus() {
-      // do nothing
-   }
-
-   @Override
-   public void setXmlData(String str) {
-      // do nothing
-   }
-
    public Integer getTruncateValueLength() {
       return truncateValueLength;
    }
@@ -228,5 +191,4 @@ public abstract class XHyperlinkLabelCmdValueSelection extends XWidget {
    public void setTruncateValueLength(Integer truncateValueLength) {
       this.truncateValueLength = truncateValueLength;
    }
-
 }

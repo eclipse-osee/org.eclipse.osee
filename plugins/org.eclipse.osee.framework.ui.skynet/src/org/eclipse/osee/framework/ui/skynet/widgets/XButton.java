@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.CursorManager;
@@ -27,26 +25,19 @@ import org.eclipse.swt.widgets.Listener;
 /**
  * @author Donald G. Dunne
  */
-public class XButton extends XWidget {
+public class XButton extends XButtonCommon {
 
    protected Label button;
    private Composite parent;
    private Composite bComp;
-   protected boolean selected = false;
    private boolean labelAfter = true;
-   private Image image;
-
-   public XButton(String displayLabel, String xmlRoot) {
-      super(displayLabel, xmlRoot);
-   }
 
    public XButton(String displayLabel) {
-      this(displayLabel, "");
+      super(displayLabel);
    }
 
    public XButton(String displayLabel, Image image) {
-      this(displayLabel, "");
-      this.image = image;
+      super(displayLabel, image);
    }
 
    @Override
@@ -116,7 +107,7 @@ public class XButton extends XWidget {
          }
       }
       button.setLayoutData(gd);
-      updateCheckWidget();
+      validate();
       button.setEnabled(isEditable());
       if (image != null) {
          button.setImage(image);
@@ -136,49 +127,6 @@ public class XButton extends XWidget {
    }
 
    @Override
-   public void setFocus() {
-      return;
-   }
-
-   @Override
-   public String getXmlData() {
-      return "";
-   }
-
-   @Override
-   public String getReportData() {
-      return getXmlData();
-   }
-
-   @Override
-   public void setXmlData(String set) {
-      if (set.equals("true")) {
-         set(true);
-      } else {
-         set(false);
-      }
-   }
-
-   private void updateCheckWidget() {
-      validate();
-   }
-
-   public void set(boolean selected) {
-      this.selected = selected;
-      updateCheckWidget();
-   }
-
-   @Override
-   public void refresh() {
-      updateCheckWidget();
-   }
-
-   @Override
-   public IStatus isValid() {
-      return Status.OK_STATUS;
-   }
-
-   @Override
    public String toHTML(String labelFont) {
       return AHTML.getLabelStr(labelFont, getLabel() + ": ") + selected;
    }
@@ -194,17 +142,9 @@ public class XButton extends XWidget {
       return button;
    }
 
-   public boolean isSelected() {
-      return selected;
-   }
-
    @Override
    public Object getData() {
       return Boolean.valueOf(isSelected());
-   }
-
-   public void setImage(Image image) {
-      this.image = image;
    }
 
 }

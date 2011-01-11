@@ -46,8 +46,8 @@ import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -77,7 +77,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 /**
  * @author Donald G. Dunne
  */
-public class XDefectViewer extends XWidget implements IArtifactWidget, IArtifactEventListener {
+public class XDefectViewer extends GenericXWidget implements IArtifactWidget, IArtifactEventListener {
 
    private DefectXViewer xViewer;
    private IDirtiableEditor editor;
@@ -430,11 +430,6 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IArtifact
    }
 
    @Override
-   public void setFocus() {
-      xViewer.getTree().setFocus();
-   }
-
-   @Override
    public void refresh() {
       if (xViewer == null || xViewer.getTree() == null || xViewer.getTree().isDisposed()) {
          return;
@@ -471,16 +466,6 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IArtifact
       }
       // Need this cause it removes all error items of this namespace
       return new Status(IStatus.OK, getClass().getSimpleName(), "");
-   }
-
-   @Override
-   public void setXmlData(String str) {
-      // do nothing
-   }
-
-   @Override
-   public String getXmlData() {
-      return null;
    }
 
    @Override
@@ -521,11 +506,6 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IArtifact
          return "Defect Item Exception - " + ex.getLocalizedMessage();
       }
       return html.toString();
-   }
-
-   @Override
-   public String getReportData() {
-      return null;
    }
 
    /**

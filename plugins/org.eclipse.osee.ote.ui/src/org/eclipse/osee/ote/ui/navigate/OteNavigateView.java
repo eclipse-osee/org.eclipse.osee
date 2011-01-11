@@ -42,6 +42,9 @@ public class OteNavigateView extends ViewPart implements IActionable {
 
    @Override
    public void setFocus() {
+      if (xNavComp != null) {
+         xNavComp.setFocus();
+      }
    }
 
    /*

@@ -286,7 +286,9 @@ public class NavigateView extends ViewPart implements IActionable {
 
    @Override
    public void setFocus() {
-      // do nothing
+      if (loadingComposite != null && !loadingComposite.isDisposed()) {
+         loadingComposite.setFocus();
+      }
    }
 
 }

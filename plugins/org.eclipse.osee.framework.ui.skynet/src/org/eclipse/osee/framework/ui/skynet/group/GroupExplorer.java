@@ -84,6 +84,7 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
    private GroupExplorerDragAndDrop groupExpDnd;
 
    private NeedProjectMenuListener needProjectListener;
+   private Composite parentComp;
 
    @Override
    public void createPartControl(Composite parent) {
@@ -102,13 +103,15 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
       gridData.heightHint = 1000;
       gridData.widthHint = 1000;
 
-      parent.setLayout(gridLayout);
-      parent.setLayoutData(gridData);
+      parentComp = parent;
+
+      parentComp.setLayout(gridLayout);
+      parentComp.setLayoutData(gridData);
 
       branchSelect = new XBranchSelectWidget("");
       branchSelect.setDisplayLabel(false);
       branchSelect.setSelection(branch);
-      branchSelect.createWidgets(parent, 1);
+      branchSelect.createWidgets(parentComp, 1);
 
       branchSelect.addListener(new Listener() {
          @Override
@@ -124,7 +127,7 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
 
       });
 
-      treeViewer = new GroupTreeViewer(this, parent);
+      treeViewer = new GroupTreeViewer(this, parentComp);
       treeViewer.setContentProvider(new GroupContentProvider());
       treeViewer.setLabelProvider(new GroupLabelProvider());
       treeViewer.setUseHashlookup(true);
@@ -138,20 +141,15 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
       groupExpDnd = new GroupExplorerDragAndDrop(treeViewer, VIEW_ID, branch);
 
       getSite().setSelectionProvider(treeViewer);
-      parent.layout();
+      parentComp.layout();
       createActions();
       getViewSite().getActionBars().updateActionBars();
-      setupPopupMenu();
+      rebuildMenu();
       refresh();
    }
 
    @Override
    public void rebuildMenu() {
-      setupPopupMenu();
-   }
-
-   public void setupPopupMenu() {
-
       Menu popupMenu = new Menu(treeViewer.getTree().getParent());
       needProjectListener = new NeedProjectMenuListener();
       popupMenu.addMenuListener(needProjectListener);
@@ -362,7 +360,9 @@ public class GroupExplorer extends ViewPart implements IArtifactEventListener, I
 
    @Override
    public void setFocus() {
-      // do nothing
+      if (parentComp != null) {
+         parentComp.setFocus();
+      }
    }
 
    public void refresh() {

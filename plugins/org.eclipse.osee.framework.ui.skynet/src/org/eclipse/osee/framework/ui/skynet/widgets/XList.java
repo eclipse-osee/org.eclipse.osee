@@ -18,8 +18,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -39,7 +37,7 @@ import org.eclipse.swt.widgets.Menu;
 /**
  * @author Donald G. Dunne
  */
-public class XList extends XWidget {
+public class XList extends GenericXWidget {
 
    public class XListItem {
       private String name = "";
@@ -112,15 +110,7 @@ public class XList extends XWidget {
    };
 
    public XList(String displayLabel) {
-      this(displayLabel, "list", "");
-   }
-
-   public XList() {
-      this("List", "list", "");
-   }
-
-   public XList(String displayLabel, String xmlRoot, String xmlSubRoot) {
-      super(displayLabel, xmlRoot, xmlSubRoot);
+      super(displayLabel);
       listMenu = null;
    }
 
@@ -208,27 +198,6 @@ public class XList extends XWidget {
       }
    }
 
-   @Override
-   public void setFocus() {
-      // do nothing
-   }
-
-   /**
-    * Don't need this since overriding toReport and toXml
-    */
-   @Override
-   public String getXmlData() {
-      return "";
-   }
-
-   /**
-    * Don't need this since overriding setFromXml
-    */
-   @Override
-   public void setXmlData(String str) {
-      return;
-   }
-
    private void handleSelection() {
       String sels[] = listList.getSelection();
       for (XListItem xItem : items.values()) {
@@ -262,31 +231,6 @@ public class XList extends XWidget {
          }
       }
       return sel;
-   }
-
-   @Override
-   public void setFromXml(String xml) {
-      Matcher inner, outter;
-      String outterXml;
-      items.clear();
-      outter =
-         Pattern.compile("<" + getXmlRoot() + ">(.*?)</" + getXmlRoot() + ">", Pattern.MULTILINE | Pattern.DOTALL).matcher(
-            xml);
-      while (outter.find()) {
-         outterXml = outter.group(1);
-         inner = Pattern.compile("<" + getXmlSubRoot() + ">(.*?)</" + getXmlSubRoot() + ">").matcher(outterXml);
-         while (inner.find()) {
-            String str = inner.group(1);
-            XListItem xItem = getByXmlName(str);
-            if (xItem != null) {
-               xItem.setSelected(true);
-            } else {
-               xItem = add(str);
-               xItem.setSelected(true);
-            }
-         }
-      }
-      refresh();
    }
 
    public List getList() {
@@ -452,26 +396,7 @@ public class XList extends XWidget {
       for (XListItem xItem : getSelected()) {
          builder.append(String.format("       - %s\n", xItem));
       }
-
-   @Override
-   public String toXml() {
-      return toXml(getXmlRoot(), getXmlSubRoot());
-   }
-
-   @Override
-   public String toXml(String xmlRoot, String xmlSubRoot) {
-      String s = "<" + xmlRoot + ">\n";
-      for (XListItem xItem : getSelected()) {
-         String dataStr;
-         if (xItem.getXmlValue() != null) {
-            dataStr = xItem.getXmlValue();
-         } else {
-            dataStr = xItem.getName();
-         }
-         s = s + "      <" + xmlSubRoot + ">" + dataStr + "</" + xmlSubRoot + ">\n";
-      }
-      s = s + "</" + xmlRoot + ">\n";
-      return s;
+      return builder.toString().trim();
    }
 
    @Override

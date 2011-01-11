@@ -942,7 +942,9 @@ public class HyperView extends ViewPart implements IPartListener {
 
    @Override
    public void setFocus() {
-      // viewer.getControl().setFocus();
+      if (canvas != null && !canvas.isDisposed()) {
+         canvas.setFocus();
+      }
    }
 
    public Color getCenterColor() {

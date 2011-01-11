@@ -32,7 +32,7 @@ import org.eclipse.swt.widgets.Listener;
 /**
  * @author Roberto E. Escobar
  */
-public class XBranchSelectComboWidget extends XWidget implements Listener {
+public class XBranchSelectComboWidget extends GenericXWidget implements Listener {
    public static final String WIDGET_ID = XBranchSelectWidget.class.getSimpleName();
 
    private BranchSelectSimpleComposite selectComposite;
@@ -104,38 +104,11 @@ public class XBranchSelectComboWidget extends XWidget implements Listener {
    }
 
    @Override
-   public String getXmlData() {
-      System.out.println("Get XML Data Called: ");
-      return "";
-   }
-
-   @Override
    public IStatus isValid() {
       if (selectComposite.getSelectedBranch() == null) {
          return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, "Must select a Branch");
       }
       return Status.OK_STATUS;
-   }
-
-   @Override
-   public void refresh() {
-      // do nothing
-   }
-
-   @Override
-   public void setFocus() {
-      selectComposite.setFocus();
-   }
-
-   @Override
-   public void setXmlData(String str) {
-      System.out.println("Set XML Data Called: " + str);
-   }
-
-   @Override
-   public String toHTML(String labelFont) {
-      System.out.println("Set to Html Called: " + labelFont);
-      return "";
    }
 
    @Override

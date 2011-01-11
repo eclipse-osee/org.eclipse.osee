@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
-import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -57,7 +57,7 @@ import org.eclipse.swt.widgets.Tree;
 /**
  * @author Jeff C. Phillips
  */
-public class XHistoryWidget extends XWidget implements IActionable {
+public class XHistoryWidget extends GenericXWidget implements IActionable {
 
    private HistoryXViewer xHistoryViewer;
    public final static String normalColor = "#EEEEEE";
@@ -137,7 +137,6 @@ public class XHistoryWidget extends XWidget implements IActionable {
    }
 
    public void createToolBar() {
-
       toolBar = new ToolBar(rightComp, SWT.FLAT | SWT.RIGHT);
       GridData gd = new GridData(GridData.FILL_HORIZONTAL);
       toolBar.setLayoutData(gd);
@@ -190,11 +189,6 @@ public class XHistoryWidget extends XWidget implements IActionable {
    @Override
    public void dispose() {
       xHistoryViewer.dispose();
-   }
-
-   @Override
-   public void setFocus() {
-      xHistoryViewer.getTree().setFocus();
    }
 
    @Override
@@ -266,21 +260,6 @@ public class XHistoryWidget extends XWidget implements IActionable {
          }
       };
       Jobs.startJob(job);
-   }
-
-   @Override
-   public String getReportData() {
-      return null;
-   }
-
-   @Override
-   public String getXmlData() {
-      return null;
-   }
-
-   @Override
-   public void setXmlData(String str) {
-      // do nothing
    }
 
    public class HistoryDragAndDrop extends SkynetDragAndDrop {

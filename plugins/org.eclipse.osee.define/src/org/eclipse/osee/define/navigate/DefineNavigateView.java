@@ -43,6 +43,9 @@ public class DefineNavigateView extends ViewPart implements IActionable {
 
    @Override
    public void setFocus() {
+      if (xNavComp != null) {
+         xNavComp.setFocus();
+      }
    }
 
    /*

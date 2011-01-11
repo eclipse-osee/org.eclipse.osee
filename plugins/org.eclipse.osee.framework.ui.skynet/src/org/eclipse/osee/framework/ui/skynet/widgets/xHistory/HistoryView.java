@@ -33,7 +33,6 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -58,6 +57,7 @@ import org.eclipse.osee.framework.ui.skynet.change.ChangeUiUtil;
 import org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener;
 import org.eclipse.osee.framework.ui.skynet.menu.ArtifactDiffMenu;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetViews;
+import org.eclipse.osee.framework.ui.skynet.widgets.GenericViewPart;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
@@ -74,15 +74,15 @@ import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.part.ViewPart;
 
 /**
  * Displays persisted changes made to an artifact.
  * 
  * @author Jeff C. Phillips
  */
-public class HistoryView extends ViewPart implements IActionable, IBranchEventListener, ITransactionRecordSelectionProvider, IRebuildMenuListener {
+public class HistoryView extends GenericViewPart implements IBranchEventListener, ITransactionRecordSelectionProvider, IRebuildMenuListener {
 
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView";
    private XHistoryWidget xHistoryWidget;
@@ -123,17 +123,7 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
       Jobs.startJob(job);
    }
 
-   @Override
-   public void dispose() {
-      super.dispose();
-   }
-
-   @Override
-   public void setFocus() {
-      // do nothing
-   }
-
-   /*
+   /**
     * @see IWorkbenchPart#createPartControl(Composite)
     */
    @Override
@@ -176,6 +166,8 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
       OseeStatusContributionItemFactory.addTo(this, true);
 
       setupMenus();
+
+      setFocusWidget(xHistoryWidget.getXViewer().getControl());
    }
 
    private void setupMenus() {
@@ -244,11 +236,6 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
          setPartName("History: " + artifact.getName());
          xHistoryWidget.setInputData(artifact, loadHistory);
       }
-   }
-
-   @Override
-   public String getActionDescription() {
-      return "";
    }
 
    private static final String INPUT = "input";

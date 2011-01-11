@@ -14,8 +14,6 @@ package org.eclipse.osee.coverage.editor.xcover;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.ICoverage;
@@ -26,7 +24,7 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
@@ -40,7 +38,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 /**
  * @author Donald G. Dunne
  */
-public class XCoverageViewer extends XWidget {
+public class XCoverageViewer extends GenericXWidget {
 
    protected CoverageXViewer xViewer;
    public final static String normalColor = "#EEEEEE";
@@ -177,31 +175,11 @@ public class XCoverageViewer extends XWidget {
    }
 
    @Override
-   public void setFocus() {
-      xViewer.getTree().setFocus();
-   }
-
-   @Override
    public void refresh() {
       if (xViewer == null || xViewer.getTree() == null || xViewer.getTree().isDisposed()) {
          return;
       }
       xViewer.refresh();
-   }
-
-   @Override
-   public IStatus isValid() {
-      return Status.OK_STATUS;
-   }
-
-   @Override
-   public void setXmlData(String str) {
-      // do nothing
-   }
-
-   @Override
-   public String getXmlData() {
-      return null;
    }
 
    @Override
@@ -212,11 +190,6 @@ public class XCoverageViewer extends XWidget {
       StringBuffer html = new StringBuffer();
       html.append(AHTML.addSpace(1) + AHTML.getLabelStr(AHTML.LABEL_FONT, "Coverage"));
       return html.toString();
-   }
-
-   @Override
-   public String getReportData() {
-      return null;
    }
 
    public CoverageXViewer getXViewer() {

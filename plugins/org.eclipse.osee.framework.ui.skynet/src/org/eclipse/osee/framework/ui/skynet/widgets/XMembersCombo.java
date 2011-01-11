@@ -10,14 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
-import java.util.Collection;
 import java.util.logging.Level;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -39,7 +35,7 @@ import org.eclipse.swt.widgets.Label;
 /**
  * @author Donald G. Dunne
  */
-public class XMembersCombo extends XWidget {
+public class XMembersCombo extends GenericXWidget {
    private static final String DEFAULT_SELECTION = "--select--";
    private Combo dataCombo;
    private Composite composite;
@@ -47,25 +43,13 @@ public class XMembersCombo extends XWidget {
    private Search searchControl;
    private boolean allUsers = false;
 
-   public XMembersCombo(String displayLabel) {
-      this(displayLabel, "", "");
-   }
-
    public XMembersCombo(String displayLabel, boolean allUsers) {
-      this(displayLabel, "", "");
+      super(displayLabel);
       this.allUsers = allUsers;
    }
 
-   public XMembersCombo(String displayLabel, String xmlRoot, String xmlSubRoot) {
-      super(displayLabel, xmlRoot, xmlSubRoot);
-   }
-
-   public XMembersCombo(String displayLabel, Collection<User> members) {
-      super(displayLabel, displayLabel, "user");
-   }
-
-   public XMembersCombo(String displayLabel, String xmlRoot) {
-      this(displayLabel, xmlRoot, "");
+   public XMembersCombo(String displayLabel) {
+      super(displayLabel);
    }
 
    @Override
@@ -217,39 +201,6 @@ public class XMembersCombo extends XWidget {
    }
 
    @Override
-   public void setFocus() {
-      if (dataCombo != null) {
-         dataCombo.setFocus();
-      }
-   }
-
-   @Override
-   public void setFromXml(String xml) {
-      Matcher matcher;
-      if (getXmlSubRoot().equals("")) {
-         matcher =
-            Pattern.compile("<" + getXmlRoot() + ">(.*?)</" + getXmlRoot() + ">", Pattern.MULTILINE | Pattern.DOTALL).matcher(
-               xml);
-      } else {
-         matcher =
-            Pattern.compile(
-               "<" + getXmlRoot() + "><" + getXmlSubRoot() + ">(.*?)</" + getXmlSubRoot() + "></" + getXmlRoot() + ">",
-               Pattern.MULTILINE | Pattern.DOTALL).matcher(xml);
-      }
-      while (matcher.find()) {
-         String userId = matcher.group(1);
-         User user = null;
-         try {
-            user = UserManager.getUserByUserId(userId);
-         } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-         }
-         set(user);
-      }
-      refresh();
-   }
-
-   @Override
    public void refresh() {
       updateComboWidget();
    }
@@ -272,16 +223,6 @@ public class XMembersCombo extends XWidget {
    @Override
    public String getReportData() {
       return get();
-   }
-
-   @Override
-   public String getXmlData() {
-      return get();
-   }
-
-   @Override
-   public void setXmlData(String str) {
-      // do nothing
    }
 
    private void updateComboWidget() {
@@ -310,23 +251,6 @@ public class XMembersCombo extends XWidget {
          return new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, "Must select " + getLabel());
       }
       return Status.OK_STATUS;
-   }
-
-   @Override
-   protected String toXml() throws Exception {
-      return toXml(getXmlRoot());
-   }
-
-   @Override
-   protected String toXml(String xmlRoot) throws Exception {
-      String s;
-      String dataStr = selectedUser.getUserId();
-      if (!Strings.isValid(getXmlSubRoot())) {
-         s = "<" + xmlRoot + ">" + dataStr + "</" + xmlRoot + ">\n";
-      } else {
-         s = "<" + xmlRoot + "><" + getXmlSubRoot() + ">" + dataStr + "</" + getXmlSubRoot() + "></" + xmlRoot + ">\n";
-      }
-      return s;
    }
 
    @Override

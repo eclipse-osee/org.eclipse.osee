@@ -56,6 +56,7 @@ public class AdminView extends ViewPart implements IActionable {
    private TabFolder tabFolder;
    private final ArrayList<DbItem> dbItems;
    private final Cursor handCursor;
+   private Composite parentComp;
 
    public AdminView() {
       dbItems = new ArrayList<DbItem>();
@@ -71,7 +72,9 @@ public class AdminView extends ViewPart implements IActionable {
 
    @Override
    public void setFocus() {
-      // do nothing
+      if (parentComp != null) {
+         parentComp.setFocus();
+      }
    }
 
    protected void createActions() throws OseeCoreException {
@@ -174,6 +177,7 @@ public class AdminView extends ViewPart implements IActionable {
       try {
          // IStatusLineManager slManager= getViewSite().getActionBars().getStatusLineManager();
          // slManager.setErrorMessage("error");
+         parentComp = parent;
 
          GridData gridData = new GridData();
          gridData.verticalAlignment = GridData.FILL;

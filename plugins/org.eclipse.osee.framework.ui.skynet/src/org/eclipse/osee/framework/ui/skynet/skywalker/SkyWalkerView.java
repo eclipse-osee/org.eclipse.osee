@@ -41,6 +41,7 @@ import org.eclipse.osee.framework.ui.skynet.ArtifactDoubleClick;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.ImageCapture;
+import org.eclipse.osee.framework.ui.skynet.widgets.GenericViewPart;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
@@ -54,7 +55,6 @@ import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.part.ViewPart;
 import org.eclipse.zest.core.viewers.GraphViewer;
 import org.eclipse.zest.core.widgets.GraphItem;
 import org.eclipse.zest.core.widgets.GraphNode;
@@ -64,7 +64,7 @@ import org.eclipse.zest.core.widgets.ZestStyles;
  * @author Robert A. Fisher
  * @author Donald G. Dunne
  */
-public class SkyWalkerView extends ViewPart {
+public class SkyWalkerView extends GenericViewPart {
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerView";
    protected GraphViewer viewer;
    private static final String INPUT_KEY = "input";
@@ -162,6 +162,8 @@ public class SkyWalkerView extends ViewPart {
 
       HelpUtil.setHelp(viewer.getControl(), OseeHelpContext.SKY_WALKER_VIEW);
       HelpUtil.setHelp(tabOptions.getControl(), OseeHelpContext.SKY_WALKER_VIEW);
+
+      setFocusWidget(viewer.getControl());
    }
 
    protected void createActions() {
@@ -287,15 +289,6 @@ public class SkyWalkerView extends ViewPart {
       if (viewer.getInput() != null) {
          explore((Artifact) viewer.getInput());
       }
-   }
-
-   @Override
-   public void setFocus() {
-      viewer.getControl().setFocus();
-   }
-
-   public String getActionDescription() {
-      return "";
    }
 
    public void explore(Artifact artifact) {

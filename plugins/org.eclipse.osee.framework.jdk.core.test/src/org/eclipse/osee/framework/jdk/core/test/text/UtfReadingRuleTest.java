@@ -102,7 +102,7 @@ public final class UtfReadingRuleTest extends TestCase {
       private CharSequence lastOutput;
 
       public Utf8TestRule() {
-         this.lastOutput = null;
+         lastOutput = null;
       }
 
       @Override

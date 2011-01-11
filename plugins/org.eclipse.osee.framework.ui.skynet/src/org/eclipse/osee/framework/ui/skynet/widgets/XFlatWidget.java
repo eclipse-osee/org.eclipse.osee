@@ -56,8 +56,8 @@ public abstract class XFlatWidget<T> extends XLabel {
    private int minPage;
    private int maxPage;
 
-   public XFlatWidget(String displayLabel, String xmlRoot) {
-      super(displayLabel, xmlRoot);
+   public XFlatWidget(String displayLabel) {
+      super(displayLabel);
       setToolTip("Navigate pages by clicking forward and backward buttons.");
       minPage = 0;
       maxPage = 0;
@@ -71,10 +71,6 @@ public abstract class XFlatWidget<T> extends XLabel {
 
    public Collection<String> getPageIds() {
       return flatControl.pageIds;
-   }
-
-   public XFlatWidget(String displayLabel) {
-      this(displayLabel, "");
    }
 
    protected void setPageRange(int minPage, int maxPage) throws OseeArgumentException {

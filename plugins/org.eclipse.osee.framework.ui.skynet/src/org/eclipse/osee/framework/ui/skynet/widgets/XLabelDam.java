@@ -11,8 +11,6 @@
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.util.logging.Level;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -31,7 +29,7 @@ import org.eclipse.swt.widgets.Text;
  * 
  * @author Donald G. Dunne
  */
-public class XLabelDam extends XWidget implements IAttributeWidget {
+public class XLabelDam extends GenericXWidget implements IAttributeWidget {
 
    private Artifact artifact;
    private IAttributeType attributeType;
@@ -80,7 +78,6 @@ public class XLabelDam extends XWidget implements IAttributeWidget {
    public void setAttributeType(Artifact artifact, IAttributeType attributeType) {
       this.artifact = artifact;
       this.attributeType = attributeType;
-
       refresh();
    }
 
@@ -121,36 +118,6 @@ public class XLabelDam extends XWidget implements IAttributeWidget {
    }
 
    @Override
-   public String getReportData() {
-      return null;
-   }
-
-   @Override
-   public String getXmlData() {
-      return null;
-   }
-
-   @Override
-   public IStatus isValid() {
-      return Status.OK_STATUS;
-   }
-
-   @Override
-   public void setFocus() {
-      // do nothing
-   }
-
-   @Override
-   public void setXmlData(String str) {
-      // do nothing
-   }
-
-   @Override
-   public String toHTML(String labelFont) {
-      return "";
-   }
-
-   @Override
    public Object getData() {
       return valueTextWidget.getText();
    }
@@ -159,5 +126,4 @@ public class XLabelDam extends XWidget implements IAttributeWidget {
    public void revert() {
       // Do nothing cause labelDam is read-only
    }
-
 }

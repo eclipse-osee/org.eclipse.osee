@@ -11,8 +11,6 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -36,7 +34,6 @@ public class XRadioButton extends XWidget {
 
    private Composite parent;
    private boolean selected = false;
-   private final String xmlRoot;
    private Button button;
    public static enum ButtonType {
       Check,
@@ -46,12 +43,7 @@ public class XRadioButton extends XWidget {
    private boolean labelAfter;
 
    public XRadioButton(String displayLabel) {
-      this(displayLabel, "");
-   }
-
-   public XRadioButton(String displayLabel, String xmlRoot) {
-      super(displayLabel, xmlRoot);
-      this.xmlRoot = xmlRoot;
+      super(displayLabel);
    }
 
    @Override
@@ -69,40 +61,6 @@ public class XRadioButton extends XWidget {
    @Override
    public String toString() {
       return getLabel() + ": " + selected;
-   }
-
-   @Override
-   public void setFromXml(String xml) {
-      Matcher m;
-      m = Pattern.compile("<" + xmlRoot + ">(.*?)</" + xmlRoot + ">", Pattern.MULTILINE | Pattern.DOTALL).matcher(xml);
-      if (m.find()) {
-         String str = m.group(1);
-         if (str.equals("true")) {
-            setSelected(true);
-         } else if (str.equals("false")) {
-            setSelected(false);
-         } else {
-            System.err.println("Unexpected radiobutton value " + str);
-         }
-      }
-      refresh();
-   }
-
-   @Override
-   public String getXmlData() {
-      return "" + selected;
-   }
-
-   public String getDisplayStr() {
-      return getXmlData();
-   }
-
-   /**
-    * Don't need this since overriding setFromXml
-    */
-   @Override
-   public void setXmlData(String str) {
-      // do nothing
    }
 
    /**
@@ -192,13 +150,8 @@ public class XRadioButton extends XWidget {
    }
 
    @Override
-   public String getReportData() {
-      return getXmlData();
-   }
-
-   @Override
    public String toHTML(String labelFont) {
-      return AHTML.getLabelStr(labelFont, getLabel() + ": ") + getDisplayStr();
+      return AHTML.getLabelStr(labelFont, getLabel() + ": ");
    }
 
    public boolean isLabelAfter() {

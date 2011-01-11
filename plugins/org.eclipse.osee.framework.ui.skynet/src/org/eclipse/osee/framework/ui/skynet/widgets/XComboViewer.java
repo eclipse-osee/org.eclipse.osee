@@ -40,7 +40,7 @@ import org.eclipse.swt.widgets.Label;
 /**
  * @author Donald G. Dunne
  */
-public class XComboViewer extends XWidget {
+public class XComboViewer extends GenericXWidget {
 
    private ComboViewer comboViewer;
    private Composite parent;
@@ -67,15 +67,7 @@ public class XComboViewer extends XWidget {
    private int heightHint;
 
    public XComboViewer(String displayLabel) {
-      this(displayLabel, "list", "");
-   }
-
-   public XComboViewer() {
-      this("List", "list", "");
-   }
-
-   public XComboViewer(String displayLabel, String xmlRoot, String xmlSubRoot) {
-      super(displayLabel, xmlRoot, xmlSubRoot);
+      super(displayLabel);
       contentProvider = new ArrayContentProvider();
       labelProvider = new ArtifactLabelProvider();
    }
@@ -191,27 +183,6 @@ public class XComboViewer extends XWidget {
       }
    }
 
-   @Override
-   public void setFocus() {
-      // do nothing
-   }
-
-   /**
-    * Don't need this since overriding toReport and toXml
-    */
-   @Override
-   public String getXmlData() {
-      return "";
-   }
-
-   /**
-    * Don't need this since overriding setFromXml
-    */
-   @Override
-   public void setXmlData(String str) {
-      return;
-   }
-
    private void handleSelection() {
       validate();
       notifyXModifiedListeners();
@@ -233,11 +204,6 @@ public class XComboViewer extends XWidget {
          return iter.next();
       }
       return null;
-   }
-
-   @Override
-   public void setFromXml(String xml) {
-      // do nothing
    }
 
    public Combo getCombo() {
@@ -287,16 +253,6 @@ public class XComboViewer extends XWidget {
       s = s + "       - " + obj + "\n";
       s = s.replaceAll("\n+$", "");
       return s;
-   }
-
-   @Override
-   public String toXml() {
-      return toXml(getXmlRoot(), getXmlSubRoot());
-   }
-
-   @Override
-   public String toXml(String xmlRoot, String xmlSubRoot) {
-      return "";
    }
 
    @Override

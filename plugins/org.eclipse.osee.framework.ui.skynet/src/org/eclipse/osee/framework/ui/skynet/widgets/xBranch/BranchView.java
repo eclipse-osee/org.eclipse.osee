@@ -18,6 +18,7 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.action.ColumnMultiEditAction;
 import org.eclipse.nebula.widgets.xviewer.action.TableCustomizationAction;
 import org.eclipse.nebula.widgets.xviewer.action.ViewSelectedCellDataAction;
@@ -31,7 +32,6 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IBranchEventListener;
@@ -47,6 +47,7 @@ import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.action.EditTransactionComment;
 import org.eclipse.osee.framework.ui.skynet.action.ITransactionRecordSelectionProvider;
+import org.eclipse.osee.framework.ui.skynet.widgets.GenericViewPart;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.layout.GridData;
@@ -54,14 +55,14 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.part.ViewPart;
+import org.osgi.service.prefs.Preferences;
 
 /**
  * Displays persisted changes made to an artifact.
  * 
  * @author Jeff C. Phillips
  */
-public class BranchView extends ViewPart implements IActionable, IBranchEventListener, ITransactionEventListener, ITransactionRecordSelectionProvider {
+public class BranchView extends GenericViewPart implements IBranchEventListener, ITransactionEventListener, ITransactionRecordSelectionProvider {
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView";
    private BranchViewPresentationPreferences branchViewPresentationPreferences;
    public static final String BRANCH_ID = "branchId";
@@ -78,11 +79,6 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
       branchViewPresentationPreferences.setDisposed(true);
       OseeEventManager.removeListener(this);
       clipboard.dispose();
-   }
-
-   @Override
-   public void setFocus() {
-      // do nothing
    }
 
    @Override
@@ -139,11 +135,7 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
       OseeStatusContributionItemFactory.addTo(this, true);
       getViewSite().getActionBars().updateActionBars();
 
-   }
-
-   @Override
-   public String getActionDescription() {
-      return "";
+      setFocusWidget(xBranchWidget.getControl());
    }
 
    public static void revealBranch(Branch branch) throws OseeCoreException {

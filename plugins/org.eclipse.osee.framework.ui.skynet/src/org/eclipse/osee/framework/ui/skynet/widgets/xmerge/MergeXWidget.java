@@ -32,7 +32,6 @@ import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
@@ -57,7 +56,7 @@ import org.eclipse.osee.framework.ui.skynet.cm.OseeCm;
 import org.eclipse.osee.framework.ui.skynet.cm.OseeCmEditor;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
-import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
@@ -74,7 +73,7 @@ import org.eclipse.swt.widgets.Tree;
  * @author Donald G. Dunne
  * @author Theron Virgin
  */
-public class MergeXWidget extends XWidget implements IAdaptable {
+public class MergeXWidget extends GenericXWidget implements IAdaptable {
    private static final String COMPLETE_COMMIT_ACTION_ID = "complete.commit.action.id";
    private static final String REFRESH_ACTION_ID = "refresh.action.id";
    private MergeXViewer mergeXViewer;
@@ -286,11 +285,6 @@ public class MergeXWidget extends XWidget implements IAdaptable {
       mergeXViewer.dispose();
    }
 
-   @Override
-   public void setFocus() {
-      mergeXViewer.getTree().setFocus();
-   }
-
    public Conflict[] getConflicts() {
       return mergeXViewer != null ? mergeXViewer.getConflicts() : MergeXViewer.EMPTY_CONFLICTS;
    }
@@ -335,26 +329,6 @@ public class MergeXWidget extends XWidget implements IAdaptable {
    @Override
    public IStatus isValid() {
       return Status.OK_STATUS;
-   }
-
-   @Override
-   public void setXmlData(String str) {
-      // do nothing
-   }
-
-   @Override
-   public String getXmlData() {
-      return null;
-   }
-
-   @Override
-   public String toHTML(String labelFont) {
-      return AHTML.simplePage("Unhandled");
-   }
-
-   @Override
-   public String getReportData() {
-      return null;
    }
 
    /**

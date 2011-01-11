@@ -47,8 +47,8 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.widgets.GenericXWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
@@ -67,7 +67,7 @@ import org.eclipse.swt.widgets.Listener;
  * @author Megumi Telles
  * @author Donald G. Dunne
  */
-public class XWorkingBranch extends XWidget implements IArtifactWidget, IAccessControlEventListener, IArtifactEventListener, IBranchEventListener {
+public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, IAccessControlEventListener, IArtifactEventListener, IBranchEventListener {
 
    private TeamWorkFlowArtifact teamArt;
    private Button createBranchButton;
@@ -78,6 +78,8 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IAccessC
    private Button lockBranchButton;
    private XWorkingBranchEnablement enablement;
 
+   private Composite bComp;
+
    public static enum BranchStatus {
       Not_Started,
       Changes_InProgress,
@@ -86,7 +88,7 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IAccessC
    public final static String WIDGET_ID = ATSAttributes.WORKING_BRANCH_WIDGET.getWorkItemId();
 
    public XWorkingBranch() {
-      super("Working Branch", "");
+      super("Working Branch");
       OseeEventManager.addListener(this);
    }
 
@@ -104,7 +106,7 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IAccessC
          labelWidget = new Label(parent, SWT.NONE);
       }
 
-      Composite bComp = new Composite(parent, SWT.NONE);
+      bComp = new Composite(parent, SWT.NONE);
       bComp.setLayout(new GridLayout(6, false));
       bComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       if (toolkit != null) {
@@ -309,11 +311,6 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IAccessC
    }
 
    @Override
-   public void setFocus() {
-      // do nothing
-   }
-
-   @Override
    public void dispose() {
       OseeEventManager.removeListener(this);
    }
@@ -324,29 +321,9 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IAccessC
    }
 
    @Override
-   public Object getData() {
-      return null;
-   }
-
-   @Override
-   public String getReportData() {
-      return null;
-   }
-
-   @Override
-   public String getXmlData() {
-      return null;
-   }
-
-   @Override
    public IStatus isValid() {
       // Need this cause it removes all error items of this namespace
       return new Status(IStatus.OK, getClass().getSimpleName(), "");
-   }
-
-   @Override
-   public void refresh() {
-      // don't do anything here cause to expensive to check for branch conditions during every refresh
    }
 
    public void refreshOnBranchEvent() {
@@ -371,16 +348,6 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IAccessC
       };
       Thread thread = new Thread(runnable);
       thread.start();
-   }
-
-   @Override
-   public void setXmlData(String str) {
-      // do nothing
-   }
-
-   @Override
-   public String toHTML(String labelFont) {
-      return "";
    }
 
    @Override

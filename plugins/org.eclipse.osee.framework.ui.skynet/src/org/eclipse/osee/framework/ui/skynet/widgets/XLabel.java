@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -23,7 +21,7 @@ import org.eclipse.swt.widgets.Label;
  * 
  * @author Donald G. Dunne
  */
-public class XLabel extends XWidget {
+public class XLabel extends GenericXWidget {
 
    private final String showString;
 
@@ -32,7 +30,7 @@ public class XLabel extends XWidget {
    }
 
    public XLabel(String displayLabel, String showString) {
-      super(displayLabel, "");
+      super(displayLabel);
       this.showString = showString;
    }
 
@@ -57,53 +55,7 @@ public class XLabel extends XWidget {
    }
 
    @Override
-   public void setFocus() {
-      // do nothing
-   }
-
-   @Override
-   public void dispose() {
-      // do nothing
-   }
-
-   @Override
    public Control getControl() {
       return labelWidget;
    }
-
-   @Override
-   public Object getData() {
-      return null;
-   }
-
-   @Override
-   public String getReportData() {
-      return null;
-   }
-
-   @Override
-   public String getXmlData() {
-      return null;
-   }
-
-   @Override
-   public IStatus isValid() {
-      return Status.OK_STATUS;
-   }
-
-   @Override
-   public void refresh() {
-      // do nothing
-   }
-
-   @Override
-   public void setXmlData(String str) {
-      // do nothing
-   }
-
-   @Override
-   public String toHTML(String labelFont) {
-      return "";
-   }
-
 }

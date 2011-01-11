@@ -10,9 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -26,19 +23,15 @@ import org.eclipse.swt.widgets.Label;
 /**
  * @author Donald G. Dunne
  */
-public class XCheckBox extends XWidget {
+public class XCheckBox extends XButtonCommon {
 
    protected Button checkButton;
    private Composite parent;
    protected boolean selected = false;
    private boolean labelAfter = true;
 
-   public XCheckBox(String displayLabel, String xmlRoot) {
-      super(displayLabel, xmlRoot);
-   }
-
    public XCheckBox(String displayLabel) {
-      this(displayLabel, "");
+      super(displayLabel);
    }
 
    @Override
@@ -107,34 +100,6 @@ public class XCheckBox extends XWidget {
       }
    }
 
-   @Override
-   public void setFocus() {
-      return;
-   }
-
-   @Override
-   public String getXmlData() {
-      if (isChecked()) {
-         return "true";
-      } else {
-         return "false";
-      }
-   }
-
-   @Override
-   public String getReportData() {
-      return getXmlData();
-   }
-
-   @Override
-   public void setXmlData(String set) {
-      if (set.equals("true")) {
-         set(true);
-      } else {
-         set(false);
-      }
-   }
-
    public void addSelectionListener(SelectionListener selectionListener) {
       checkButton.addSelectionListener(selectionListener);
    }
@@ -154,26 +119,6 @@ public class XCheckBox extends XWidget {
       validate();
    }
 
-   public void set(boolean selected) {
-      this.selected = selected;
-      updateCheckWidget();
-   }
-
-   @Override
-   public void refresh() {
-      updateCheckWidget();
-   }
-
-   @Override
-   public IStatus isValid() {
-      return Status.OK_STATUS;
-   }
-
-   @Override
-   public String toHTML(String labelFont) {
-      return AHTML.getLabelStr(labelFont, getLabel() + ": ") + selected;
-   }
-
    /**
     * If set, label will be displayed after the check box NOTE: Has to be set before call to createWidgets
     * 
@@ -185,14 +130,5 @@ public class XCheckBox extends XWidget {
 
    public Button getCheckButton() {
       return checkButton;
-   }
-
-   public boolean isSelected() {
-      return selected;
-   }
-
-   @Override
-   public Object getData() {
-      return Boolean.valueOf(isSelected());
    }
 }

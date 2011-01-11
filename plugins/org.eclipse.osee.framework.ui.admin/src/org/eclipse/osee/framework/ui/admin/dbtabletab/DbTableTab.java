@@ -66,7 +66,7 @@ public class DbTableTab {
       c.setLayoutData(new GridData(GridData.FILL_BOTH));
       this.parent = c;
 
-      filterCombo = new XCombo("DB Table", "");
+      filterCombo = new XCombo("DB Table");
       filterCombo.setDataStrings(getDbTableNames());
       filterCombo.createWidgets(c, 2);
       filterCombo.addModifyListener(new ModifyListener() {

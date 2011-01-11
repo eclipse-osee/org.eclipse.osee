@@ -23,18 +23,10 @@ import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
  */
 public class XArtifactList extends XListViewer {
 
-   public XArtifactList() {
-      this("ArtList", "", "");
-   }
-
    public XArtifactList(String displayLabel) {
-      this(displayLabel, "", "");
-   }
-
-   public XArtifactList(String displayLabel, String xmlRoot, String xmlSubRoot) {
-      super(displayLabel, xmlRoot, xmlSubRoot);
-      super.setLabelProvider(new ArtifactLabelProvider());
-      super.setContentProvider(new ArrayContentProvider());
+      super(displayLabel);
+      setLabelProvider(new ArtifactLabelProvider());
+      setContentProvider(new ArrayContentProvider());
    }
 
    public Collection<Artifact> getSelectedArtifacts() {

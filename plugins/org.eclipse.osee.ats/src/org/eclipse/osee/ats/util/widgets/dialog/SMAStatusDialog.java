@@ -38,8 +38,8 @@ import org.eclipse.swt.widgets.Shell;
 public class SMAStatusDialog extends MessageDialog {
 
    protected Label statusLabel;
-   protected XPercent percent = new XPercent("Percent Complete", "");
-   protected XFloat hours = new XFloat("Additional Hours Spent", "");
+   protected XPercent percent = new XPercent("Percent Complete");
+   protected XFloat hours = new XFloat("Additional Hours Spent");
    protected XRadioButton splitRadio = new XRadioButton("Split Hours Spent between Tasks");
    protected XRadioButton eachRadio = new XRadioButton("Apply Hours Spent to each Task");
    private Button okButton;

@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.core.message.SearchRequest;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -33,6 +32,7 @@ import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.panels.SearchComposite;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
+import org.eclipse.osee.framework.ui.skynet.widgets.GenericViewPart;
 import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -50,13 +50,12 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.part.ViewPart;
 
 /**
  * @author Robert A. Fisher
  * @author Ryan D. Brooks
  */
-public class QuickSearchView extends ViewPart implements IActionable, Listener {
+public class QuickSearchView extends GenericViewPart implements Listener {
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.QuickSearchView";
 
    private static final String ENTRY_SEPARATOR = "##";
@@ -188,6 +187,8 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener {
       branchLabel.setText("");
 
       createClearHistoryAction();
+
+      setFocusWidget(searchComposite);
    }
 
    private void createClearHistoryAction() {
@@ -214,18 +215,6 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener {
             cntrl.setEnabled(enable);
          }
       }
-   }
-
-   @Override
-   public void setFocus() {
-      if (searchComposite != null) {
-         searchComposite.setFocus();
-      }
-   }
-
-   @Override
-   public String getActionDescription() {
-      return "";
    }
 
    public void setBranch(Branch branch) {
@@ -267,10 +256,5 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener {
             compositeEnablement(searchComposite, true);
          }
       }
-   }
-
-   @Override
-   public void dispose() {
-      super.dispose();
    }
 }

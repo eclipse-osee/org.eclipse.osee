@@ -52,8 +52,8 @@ public abstract class XStackedWidget<T> extends XLabel {
    private int minPage;
    private int maxPage;
 
-   public XStackedWidget(String displayLabel, String xmlRoot) {
-      super(displayLabel, xmlRoot);
+   public XStackedWidget(String displayLabel) {
+      super(displayLabel);
       setToolTip("Navigate pages by clicking forward and backward buttons.");
       minPage = 0;
       maxPage = 0;
@@ -63,10 +63,6 @@ public abstract class XStackedWidget<T> extends XLabel {
    public void dispose() {
       stackedControl.dispose();
       super.dispose();
-   }
-
-   public XStackedWidget(String displayLabel) {
-      this(displayLabel, "");
    }
 
    protected void setPageRange(int minPage, int maxPage) throws OseeArgumentException {
