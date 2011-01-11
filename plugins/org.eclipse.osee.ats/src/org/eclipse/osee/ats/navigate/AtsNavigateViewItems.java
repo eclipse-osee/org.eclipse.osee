@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.actions.NewAction;
+import org.eclipse.osee.ats.actions.NewGoal;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.health.ValidateAtsDatabase;
 import org.eclipse.osee.ats.health.ValidateChangeReportByHrid;
@@ -131,6 +132,7 @@ public final class AtsNavigateViewItems implements XNavigateViewItems {
             items.add(new SearchNavigateItem(null, new MyReviewWorkflowItem("My Reviews", user, ReviewState.InWork)));
             items.add(new VisitedItems(null));
             items.add(new XNavigateItemAction(null, new NewAction(), AtsImage.NEW_ACTION));
+            items.add(new XNavigateItemAction(null, new NewGoal(), AtsImage.GOAL));
             items.add(new SearchNavigateItem(null, new MyWorldSearchItem("User's World")));
 
             items.add(new SearchNavigateItem(null, new UserSearchWorkflowSearchItem()));
