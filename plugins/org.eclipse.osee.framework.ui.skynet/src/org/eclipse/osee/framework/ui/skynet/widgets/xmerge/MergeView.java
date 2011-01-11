@@ -728,14 +728,18 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
       showConflicts = show;
    }
 
-   private boolean isApplicableEvent(String branchGuid) {
+   private boolean isApplicableEvent(String branchGuid, Branch mergeBranch) {
+      return Conditions.in(branchGuid, mergeBranch.getGuid()) || isApplicableSourceOrDestEvent(branchGuid);
+   }
+
+   private boolean isApplicableSourceOrDestEvent(String branchGuid) {
       return Conditions.notNull(sourceBranch, destBranch) && Conditions.in(branchGuid, sourceBranch.getGuid(),
          destBranch.getGuid());
    }
 
    @Override
    public void handleBranchEvent(Sender sender, BranchEvent branchEvent) {
-      if (!isApplicableEvent(branchEvent.getBranchGuid())) {
+      if (!isApplicableSourceOrDestEvent(branchEvent.getBranchGuid())) {
          return;
       }
       Displays.ensureInDisplayThread(new Runnable() {
@@ -763,16 +767,17 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
          OseeEventManager.removeListener(this);
          return;
       }
-      if (!isApplicableEvent(artifactEvent.getBranchGuid())) {
-         return;
-      }
+      Branch mergeBranch = null;
       try {
-         Branch mergeBranch = BranchManager.getMergeBranch(sourceBranch, destBranch);
+         mergeBranch = BranchManager.getMergeBranch(sourceBranch, destBranch);
          if (mergeBranch == null || !mergeBranch.getGuid().equals(artifactEvent.getBranchGuid())) {
             return;
          }
-      } catch (OseeCoreException ex) {
-         // ignore the exception for an event don't want them popping up on people for no reason
+         if (!isApplicableEvent(artifactEvent.getBranchGuid(), mergeBranch)) {
+            return;
+         }
+      } catch (OseeCoreException ex1) {
+         // Do nothing here
       }
       final Collection<Artifact> modifiedArts =
          artifactEvent.getCacheArtifacts(EventModType.Modified, EventModType.Reloaded);
