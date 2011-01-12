@@ -18,6 +18,7 @@ import org.eclipse.core.commands.Command;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.ats.editor.AtsRenderer;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.workdef.WorkDefinition;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -26,7 +27,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -35,7 +35,7 @@ import org.eclipse.ui.IEditorInput;
 /**
  * @author Donald G. Dunne
  */
-public class AtsWorkflowConfigRenderer extends DefaultArtifactRenderer {
+public class AtsWorkflowConfigRenderer extends AtsRenderer {
 
    private static final String COMMAND_ID = "org.eclipse.osee.framework.ui.skynet.atsworkflowconfigeditor.command";
 

@@ -21,14 +21,13 @@ import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
  * @author Jeff C. Phillips
  */
-public class AtsTaskEditorRenderer extends DefaultArtifactRenderer {
+public class AtsTaskEditorRenderer extends AtsRenderer {
    private static final String COMMAND_ID = "org.eclipse.osee.framework.ui.skynet.atstaskeditor.command";
 
    @Override

@@ -16,19 +16,20 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.commands.Command;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.ats.editor.AtsRenderer;
 import org.eclipse.osee.ats.export.AtsExportManager.ExportOption;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.IRenderer.CommandGroup;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
  * @author Ryan D. Brooks
  */
-public class AtsExportRenderer extends DefaultArtifactRenderer {
+public class AtsExportRenderer extends AtsRenderer {
    private static final String COMMAND_ID = "org.eclipse.osee.framework.ui.skynet.atsexport.command";
 
    @Override

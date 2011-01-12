@@ -20,17 +20,15 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
  * @author Ryan D. Brooks
  */
-public class AtsWorkflowRenderer extends DefaultArtifactRenderer {
+public class AtsWorkflowRenderer extends AtsRenderer {
    private static final String COMMAND_ID = "org.eclipse.osee.framework.ui.skynet.atseditor.command";
 
    @Override
@@ -65,15 +63,6 @@ public class AtsWorkflowRenderer extends DefaultArtifactRenderer {
          return PRESENTATION_SUBTYPE_MATCH;
       }
       return NO_MATCH;
-   }
-
-   @Override
-   public int minimumRanking() throws OseeCoreException {
-      if (AccessControlManager.isOseeAdmin()) {
-         return NO_MATCH;
-      } else {
-         return PRESENTATION_TYPE;
-      }
    }
 
    @Override

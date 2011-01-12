@@ -23,14 +23,13 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
  * @author Jeff C. Phillips
  */
-public class AtsWorldEditorRenderer extends DefaultArtifactRenderer {
+public class AtsWorldEditorRenderer extends AtsRenderer {
    private static final String COMMAND_ID = "org.eclipse.osee.framework.ui.skynet.atsworldeditor.command";
 
    @Override
