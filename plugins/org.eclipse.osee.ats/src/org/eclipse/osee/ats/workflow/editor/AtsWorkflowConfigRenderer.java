@@ -77,13 +77,11 @@ public class AtsWorkflowConfigRenderer extends AtsRenderer {
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
-            for (Artifact artifact : artifacts) {
-               try {
-                  IEditorInput input = new AtsWorkflowConfigEditorInput(new WorkDefinition("This"));
-                  AWorkbench.getActivePage().openEditor(input, AtsWorkflowConfigEditor.EDITOR_ID);
-               } catch (CoreException ex) {
-                  OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-               }
+            try {
+               IEditorInput input = new AtsWorkflowConfigEditorInput(new WorkDefinition("This"));
+               AWorkbench.getActivePage().openEditor(input, AtsWorkflowConfigEditor.EDITOR_ID);
+            } catch (CoreException ex) {
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       });
