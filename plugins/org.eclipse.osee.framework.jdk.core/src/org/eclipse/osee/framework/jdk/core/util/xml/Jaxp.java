@@ -51,6 +51,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.ProcessingInstruction;
 import org.w3c.dom.Text;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 public class Jaxp {
@@ -390,9 +391,11 @@ public class Jaxp {
       return findElement(e, Arrays.asList(elementPath.split("/")));
    }
 
-   public static Document readXmlDocument(InputStream is) throws ParserConfigurationException, SAXException, IOException {
+   public static Document readXmlDocument(InputStream is, String encoding) throws ParserConfigurationException, SAXException, IOException {
+      InputSource inputSource = new InputSource(is);
+      inputSource.setEncoding(encoding);
       DocumentBuilder builder = namespceUnawareFactory.newDocumentBuilder();
-      return builder.parse(is);
+      return builder.parse(inputSource);
    }
 
    public static Document readXmlDocument(String xmlString) throws ParserConfigurationException, SAXException, IOException {

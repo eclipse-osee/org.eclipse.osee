@@ -39,7 +39,7 @@ public final class DatabaseInfoManager {
 
    public static IDatabaseInfo[] readFromXml(InputStream inputStream) throws IOException, ParserConfigurationException, SAXException {
       try {
-         Document document = Jaxp.readXmlDocument(inputStream);
+         Document document = Jaxp.readXmlDocument(inputStream, "UTF-8");
          Element rootElement = document.getDocumentElement();
          return DbConfigParser.parse(rootElement);
       } finally {

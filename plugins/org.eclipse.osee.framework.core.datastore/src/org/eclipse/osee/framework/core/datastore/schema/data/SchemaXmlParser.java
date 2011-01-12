@@ -170,7 +170,7 @@ public class SchemaXmlParser {
    }
 
    public SchemaData parseFromInputStream(InputStream configFile) throws Exception {
-      Document document = Jaxp.readXmlDocument(configFile);
+      Document document = Jaxp.readXmlDocument(configFile, "UTF-8");
       SchemaData schemaData = new SchemaData();
       List<Element> elements = Jaxp.getChildDirects(document.getDocumentElement(), TableTags.Table.name());
       for (Element element : elements) {

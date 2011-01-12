@@ -109,7 +109,7 @@ public class UpdateArtifactOperation extends AbstractOperation {
       Document document;
       InputStream inputStream = new BufferedInputStream(new FileInputStream(workingFile));
       try {
-         document = Jaxp.readXmlDocument(inputStream);
+         document = Jaxp.readXmlDocument(inputStream, "UTF-8");
       } finally {
          Lib.close(inputStream);
       }
