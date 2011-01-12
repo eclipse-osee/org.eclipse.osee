@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.render;
 
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERALIZED_EDIT;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERAL_REQUESTED;
-import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.SPECIALIZED_EDIT;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -140,11 +139,10 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
          if (artifact.isAttributeTypeValid(CoreAttributeTypes.WordTemplateContent)) {
             return PRESENTATION_SUBTYPE_MATCH;
          }
-         if (!presentationType.matches(SPECIALIZED_EDIT, PresentationType.PRODUCE_ATTRIBUTE) && !artifact.isAttributeTypeValid(CoreAttributeTypes.NativeContent) && !artifact.isAttributeTypeValid(CoreAttributeTypes.WholeWordContent)) {
-            return PRESENTATION_TYPE;
+         if (!presentationType.matches(PresentationType.SPECIALIZED_EDIT, PresentationType.PRODUCE_ATTRIBUTE)) {
+            return IRenderer.DEFAULT_MATCH;
          }
       }
-
       return NO_MATCH;
    }
 

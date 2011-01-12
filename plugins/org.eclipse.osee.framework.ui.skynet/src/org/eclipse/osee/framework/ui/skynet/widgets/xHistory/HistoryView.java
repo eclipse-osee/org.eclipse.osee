@@ -48,7 +48,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.OpenWithMenuListener;
+import org.eclipse.osee.framework.ui.skynet.OpenContributionItem;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.action.EditTransactionComment;
@@ -164,10 +164,11 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
       });
 
       menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+
       xHistoryWidget.getXViewer().getTree().setMenu(
          menuManager.createContextMenu(xHistoryWidget.getXViewer().getTree()));
-      getSite().registerContextMenu(VIEW_ID, menuManager, xHistoryWidget.getXViewer());
 
+      getSite().registerContextMenu(VIEW_ID, menuManager, xHistoryWidget.getXViewer());
       getSite().setSelectionProvider(xHistoryWidget.getXViewer());
 
       HelpUtil.setHelp(parent, OseeHelpContext.HISTORY_VIEW);
@@ -179,7 +180,11 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
 
    private void setupMenus() {
       Menu popupMenu = new Menu(xHistoryWidget.getXViewer().getTree().getParent());
-      createOpenWithMenuItem(popupMenu);
+
+      OpenContributionItem contributionItem = new OpenContributionItem(getClass().getSimpleName() + ".open");
+      contributionItem.fill(popupMenu, -1);
+      new MenuItem(popupMenu, SWT.SEPARATOR);
+
       createChangeReportMenuItem(popupMenu);
       ArtifactDiffMenu.createDiffMenuItem(popupMenu, xHistoryWidget.getXViewer(), "Compare two Artifacts");
 
@@ -230,14 +235,6 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
          }
 
       });
-   }
-
-   private void createOpenWithMenuItem(Menu parentMenu) {
-      MenuItem openWithMenuItem = new MenuItem(parentMenu, SWT.CASCADE);
-      openWithMenuItem.setText("&Open With");
-      final Menu submenu = new Menu(openWithMenuItem);
-      openWithMenuItem.setMenu(submenu);
-      parentMenu.addMenuListener(new OpenWithMenuListener(submenu, xHistoryWidget.getXViewer(), this));
    }
 
    private void explore(final Artifact artifact, boolean loadHistory) {

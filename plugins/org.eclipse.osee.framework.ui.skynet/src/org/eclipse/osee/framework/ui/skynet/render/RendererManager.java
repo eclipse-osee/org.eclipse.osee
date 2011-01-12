@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.ui.skynet.render;
 
-import static org.eclipse.osee.framework.ui.skynet.render.IRenderer.DEFAULT_MATCH;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.DEFAULT_OPEN;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERAL_REQUESTED;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.PRODUCE_ATTRIBUTE;
@@ -152,7 +151,8 @@ public final class RendererManager {
 
    public static List<IRenderer> getApplicableRenderers(PresentationType presentationType, Artifact artifact, VariableMap options) throws OseeCoreException {
       ArrayList<IRenderer> applicableRenderers = new ArrayList<IRenderer>();
-      int minimumRank = Math.max(getBestRenderer(presentationType, artifact, options).minimumRanking(), DEFAULT_MATCH);
+      int minimumRank =
+         Math.max(getBestRenderer(presentationType, artifact, options).minimumRanking(), IRenderer.DEFAULT_MATCH);
 
       for (IRenderer prototypeRenderer : renderers) {
          // Add Catch Exception Code --

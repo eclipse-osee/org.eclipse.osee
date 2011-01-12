@@ -155,6 +155,8 @@ public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableE
 
          setPartName(provider.getSelectedName(SearchType.Search));
 
+         getSite().setSelectionProvider(getWorldComposite().getXViewer());
+
          // Until WorldEditor has different help, just use WorldView's help
          HelpUtil.setHelp(worldXWidgetActionPage.getWorldComposite().getControl(), AtsHelpContext.WORLD_VIEW);
       } catch (Exception ex) {

@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.OpenWithContributionItem;
+import org.eclipse.osee.framework.ui.skynet.OpenContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.access.PolicyDialog;
 import org.eclipse.osee.framework.ui.skynet.action.RevealInExplorerAction;
@@ -93,7 +93,7 @@ public class ArtifactEditorActionBarContributor implements IActionContributor {
    }
 
    private void addOpenWithContributionItem(IToolBarManager manager) {
-      OpenWithContributionItem contributionItem = new OpenWithContributionItem();
+      OpenContributionItem contributionItem = new OpenContributionItem(getClass().getSimpleName() + ".open");
       contributionItem.setVisible(true);
       manager.add(contributionItem);
    }

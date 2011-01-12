@@ -80,7 +80,6 @@ import org.eclipse.osee.framework.ui.skynet.access.PolicyDialog;
 import org.eclipse.osee.framework.ui.skynet.action.OpenAssociatedArtifactFromBranchProvider;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactNameConflictHandler;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPasteOperation;
-import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectionDialog;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiUtil;
 import org.eclipse.osee.framework.ui.skynet.dialogs.ArtifactPasteSpecialDialog;
@@ -89,8 +88,6 @@ import org.eclipse.osee.framework.ui.skynet.menu.ArtifactTreeViewerGlobalMenuHel
 import org.eclipse.osee.framework.ui.skynet.menu.GlobalMenu;
 import org.eclipse.osee.framework.ui.skynet.menu.GlobalMenuPermissions;
 import org.eclipse.osee.framework.ui.skynet.menu.IGlobalMenuHelper;
-import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
-import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.search.QuickSearchView;
 import org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerView;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactClipboard;
@@ -157,11 +154,8 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
    private TreeViewer treeViewer;
    private Action upAction;
    private Artifact explorerRoot;
-   private MenuItem openMenuItem;
-   private MenuItem massEditMenuItem;
    private MenuItem skywalkerMenuItem;
    private MenuItem createMenuItem;
-   private MenuItem openWithMenuItem;
    private MenuItem accessControlMenuItem;
    private MenuItem lockMenuItem;
    private MenuItem goIntoMenuItem;
@@ -387,7 +381,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
       }
    }
 
-   public void setupPopupMenu() {
+   private void setupPopupMenu() {
 
       Menu popupMenu = new Menu(treeViewer.getTree().getParent());
       needArtifactListener = new NeedArtifactMenuListener();
@@ -395,14 +389,14 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
       popupMenu.addMenuListener(needArtifactListener);
       popupMenu.addMenuListener(needProjectListener);
 
-      createOpenMenuItem(popupMenu);
-      createOpenWithMenuItem(popupMenu);
+      OpenContributionItem contrib = new OpenContributionItem(getClass().getSimpleName() + ".open");
+      contrib.fill(popupMenu, -1);
       new MenuItem(popupMenu, SWT.SEPARATOR);
+
       createFindOnDifferentBranchItem(popupMenu);
       new MenuItem(popupMenu, SWT.SEPARATOR);
       createNewChildMenuItem(popupMenu);
       createGoIntoMenuItem(popupMenu);
-      createMassEditMenuItem(popupMenu);
       createSkywalkerMenuItem(popupMenu);
       new MenuItem(popupMenu, SWT.SEPARATOR);
       new GlobalMenu(popupMenu, globalMenuHelper);
@@ -544,14 +538,6 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
       toolbarManager.add(collapseAllAction);
    }
 
-   private void createOpenWithMenuItem(Menu parentMenu) {
-      openWithMenuItem = new MenuItem(parentMenu, SWT.CASCADE);
-      openWithMenuItem.setText("&Open With");
-      final Menu submenu = new Menu(openWithMenuItem);
-      openWithMenuItem.setMenu(submenu);
-      parentMenu.addMenuListener(new OpenWithMenuListener(submenu, treeViewer, this));
-   }
-
    private void createNewChildMenuItem(Menu parentMenu) {
       createMenuItem = new MenuItem(parentMenu, SWT.PUSH);
       needProjectListener.add(createMenuItem);
@@ -643,24 +629,6 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
       });
    }
 
-   private void createOpenMenuItem(Menu parentMenu) {
-      openMenuItem = new MenuItem(parentMenu, SWT.PUSH);
-      openMenuItem.setText("&Open");
-      needArtifactListener.add(openMenuItem);
-
-      ArtifactMenuListener listener = new ArtifactMenuListener();
-      parentMenu.addMenuListener(listener);
-      openMenuItem.addSelectionListener(new SelectionAdapter() {
-
-         @Override
-         public void widgetSelected(SelectionEvent ev) {
-            LinkedList<Artifact> selectedItems = new LinkedList<Artifact>();
-            TreeViewerUtility.getPreorderSelection(treeViewer, selectedItems);
-            RendererManager.openInJob(selectedItems, PresentationType.DEFAULT_OPEN);
-         }
-      });
-   }
-
    private void createFindOnDifferentBranchItem(Menu parentMenu) {
       findOnAnotherBranch = new MenuItem(parentMenu, SWT.PUSH);
       findOnAnotherBranch.setText("Reveal On Another Branch");
@@ -672,11 +640,9 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
 
          @Override
          public void widgetSelected(SelectionEvent ev) {
-            LinkedList<Artifact> selectedItems = new LinkedList<Artifact>();
-            TreeViewerUtility.getPreorderSelection(treeViewer, selectedItems);
             Branch branch = BranchSelectionDialog.getBranchFromUser();
             if (branch != null) {
-               for (Artifact artifact : selectedItems) {
+               for (Artifact artifact : getSelection().toList()) {
                   try {
                      ArtifactExplorer.revealArtifact(ArtifactQuery.getArtifactFromId(artifact.getArtId(), branch));
                   } catch (OseeCoreException ex) {
@@ -693,24 +659,6 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
       });
    }
 
-   private void createMassEditMenuItem(Menu parentMenu) {
-      massEditMenuItem = new MenuItem(parentMenu, SWT.PUSH);
-      massEditMenuItem.setText("Mass Edit");
-      needArtifactListener.add(massEditMenuItem);
-
-      ArtifactMenuListener listener = new ArtifactMenuListener();
-      parentMenu.addMenuListener(listener);
-      massEditMenuItem.addSelectionListener(new SelectionAdapter() {
-
-         @Override
-         public void widgetSelected(SelectionEvent ev) {
-            LinkedList<Artifact> selectedItems = new LinkedList<Artifact>();
-            TreeViewerUtility.getPreorderSelection(treeViewer, selectedItems);
-            MassArtifactEditor.editArtifacts("", selectedItems);
-         }
-      });
-   }
-
    private void createRefreshMenuItem(Menu parentMenu) {
       refreshMenuItem = new MenuItem(parentMenu, SWT.PUSH);
       refreshMenuItem.setText("Refresh");
@@ -722,9 +670,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
 
          @Override
          public void widgetSelected(SelectionEvent mySelectionEvent) {
-            LinkedList<Artifact> selectedItems = new LinkedList<Artifact>();
-            TreeViewerUtility.getPreorderSelection(treeViewer, selectedItems);
-            for (Artifact artifact : selectedItems) {
+            for (Artifact artifact : getSelection().toList()) {
                treeViewer.refresh(artifact);
             }
          }
@@ -827,9 +773,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
 
          @Override
          public void widgetSelected(SelectionEvent ev) {
-            LinkedList<Artifact> selectedItems = new LinkedList<Artifact>();
-            TreeViewerUtility.getPreorderSelection(treeViewer, selectedItems);
-            SkyWalkerView.exploreArtifact(selectedItems.getFirst());
+            SkyWalkerView.exploreArtifact(getSelection().getFirstElement());
          }
       });
    }
@@ -1195,9 +1139,9 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
             lockMenuItem.setText((permiss.isLocked() ? "Unlock: (" + permiss.getSubjectFromLockedObjectName() + ")" : "Lock"));
 
             lockMenuItem.setEnabled(permiss.isWritePermission() && (!permiss.isLocked() || permiss.isAccessToRemoveLock()));
-            openMenuItem.setEnabled(permiss.isReadPermission());
+
             createMenuItem.setEnabled(permiss.isWritePermission());
-            openWithMenuItem.setEnabled(permiss.isReadPermission());
+
             goIntoMenuItem.setEnabled(permiss.isReadPermission());
             copyMenuItem.setEnabled(permiss.isReadPermission());
             pasteMenuItem.setEnabled(permiss.isWritePermission());
@@ -1268,8 +1212,10 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
    }
 
    @Override
-   public ISelection getSelection() {
-      return treeViewer.getSelection();
+   public ArtifactStructuredSelection getSelection() {
+      final List<Artifact> selectedItems = new LinkedList<Artifact>();
+      TreeViewerUtility.getPreorderSelection(treeViewer, selectedItems);
+      return new ArtifactStructuredSelection(selectedItems);
    }
 
    @Override
@@ -1444,4 +1390,42 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
       return null;
    }
 
+   public static final class ArtifactStructuredSelection implements IStructuredSelection {
+
+      private final List<Artifact> selectedItems;
+
+      public ArtifactStructuredSelection(List<Artifact> selectedItems) {
+         this.selectedItems = selectedItems;
+      }
+
+      @Override
+      public boolean isEmpty() {
+         return selectedItems.isEmpty();
+      }
+
+      @Override
+      public Artifact getFirstElement() {
+         return isEmpty() ? null : selectedItems.get(0);
+      }
+
+      @Override
+      public Iterator<Artifact> iterator() {
+         return selectedItems.iterator();
+      }
+
+      @Override
+      public int size() {
+         return selectedItems.size();
+      }
+
+      @Override
+      public Object[] toArray() {
+         return selectedItems.toArray();
+      }
+
+      @Override
+      public List<Artifact> toList() {
+         return selectedItems;
+      }
+   }
 }

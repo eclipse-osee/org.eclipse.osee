@@ -24,7 +24,6 @@ import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
@@ -33,8 +32,6 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.action.ColumnMultiEditAction;
 import org.eclipse.nebula.widgets.xviewer.customize.XViewerCustomMenu;
-import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.actions.ConvertActionableItemsAction;
 import org.eclipse.osee.ats.actions.DeletePurgeAtsArtifactsAction;
 import org.eclipse.osee.ats.actions.EditAssigneeAction;
@@ -43,9 +40,6 @@ import org.eclipse.osee.ats.actions.EmailActionAction;
 import org.eclipse.osee.ats.actions.FavoriteAction;
 import org.eclipse.osee.ats.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.actions.ISelectedTeamWorkflowArtifacts;
-import org.eclipse.osee.ats.actions.OpenInArtifactEditorAction;
-import org.eclipse.osee.ats.actions.OpenInAtsWorkflowEditor;
-import org.eclipse.osee.ats.actions.OpenInMassEditorAction;
 import org.eclipse.osee.ats.actions.SubscribedAction;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
@@ -55,9 +49,6 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.column.GoalOrderColumn;
 import org.eclipse.osee.ats.column.IPersistAltLeftClickProvider;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.task.TaskEditor;
-import org.eclipse.osee.ats.task.TaskEditorSimpleProvider;
-import org.eclipse.osee.ats.task.TaskXViewer;
 import org.eclipse.osee.ats.util.ArtifactEmailWizard;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.TeamState;
@@ -70,21 +61,19 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ISelectedArtifacts;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
+import org.eclipse.osee.framework.ui.skynet.ArtifactDoubleClick;
+import org.eclipse.osee.framework.ui.skynet.OpenContributionItem;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.AttributeColumn;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
-import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PartInitException;
 
 /**
  * @author Donald G. Dunne
@@ -124,10 +113,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
    protected EditStatusAction editStatusAction;
    EditAssigneeAction editAssigneeAction;
    ConvertActionableItemsAction convertActionableItemsAction;
-   Action openInAtsWorldEditorAction, openInAtsTaskEditorAction;
-   OpenInAtsWorkflowEditor openInAtsWorkflowEditorAction;
-   OpenInArtifactEditorAction openInArtifactEditorAction;
-   OpenInMassEditorAction openInMassEditorAction;
+
    FavoriteAction favoritesAction;
    SubscribedAction subscribedAction;
    DeletePurgeAtsArtifactsAction deletePurgeAtsObjectAction;
@@ -137,11 +123,8 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
    public void createMenuActions() {
 
       convertActionableItemsAction = new ConvertActionableItemsAction(this);
-      openInMassEditorAction = new OpenInMassEditorAction(this);
-      openInAtsWorkflowEditorAction = new OpenInAtsWorkflowEditor("Open", this);
       favoritesAction = new FavoriteAction(this);
       subscribedAction = new SubscribedAction(this);
-      openInArtifactEditorAction = new OpenInArtifactEditorAction(this);
       deletePurgeAtsObjectAction = new DeletePurgeAtsArtifactsAction(this);
       emailAction = new EmailActionAction(this);
       editStatusAction = new EditStatusAction(this, this, this, true);
@@ -175,59 +158,6 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
                OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
-      };
-
-      openInAtsWorldEditorAction = new Action("Open in ATS World Editor", IAction.AS_PUSH_BUTTON) {
-         @Override
-         public void run() {
-            if (getSelectedArtifacts().isEmpty()) {
-               AWorkbench.popup("Error", "No items selected");
-               return;
-            }
-            WorldEditorInput worldEditorInput = null;
-            if (thisXViewer instanceof TaskXViewer) {
-               worldEditorInput =
-                  new WorldEditorInput(new WorldEditorSimpleProvider("ATS World", getSelectedArtifacts(), null,
-                     TableLoadOption.None));
-            } else {
-               worldEditorInput =
-                  new WorldEditorInput(new WorldEditorSimpleProvider("ATS World", getSelectedArtifacts(),
-                     getCustomizeMgr().generateCustDataFromTable(), TableLoadOption.None));
-            }
-            IWorkbenchPage page = AWorkbench.getActivePage();
-            try {
-               page.openEditor(worldEditorInput, WorldEditor.EDITOR_ID);
-            } catch (PartInitException ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         }
-
-         @Override
-         public ImageDescriptor getImageDescriptor() {
-            return ImageManager.getImageDescriptor(AtsImage.GLOBE);
-         }
-
-      };
-
-      openInAtsTaskEditorAction = new Action("Open in ATS Task Editor", IAction.AS_PUSH_BUTTON) {
-         @Override
-         public void run() {
-            if (getSelectedTaskArtifacts().isEmpty()) {
-               AWorkbench.popup("Error", "No Tasks selected");
-               return;
-            }
-            try {
-               TaskEditor.open(new TaskEditorSimpleProvider("ATS Tasks", getSelectedTaskArtifacts()));
-            } catch (OseeCoreException ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         }
-
-         @Override
-         public ImageDescriptor getImageDescriptor() {
-            return ImageManager.getImageDescriptor(AtsImage.TASK);
-         }
-
       };
 
       resetActionArtifactAction = new Action("Reset Action off Children", IAction.AS_PUSH_BUTTON) {
@@ -423,52 +353,36 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
 
       updateEditMenuActions();
 
-      mm.insertBefore(MENU_GROUP_PRE, new Separator());
+      mm.insertBefore(XViewer.MENU_GROUP_PRE, new Separator());
 
       // OPEN MENU BLOCK
-      mm.insertBefore(MENU_GROUP_PRE, new Separator());
-      mm.insertBefore(MENU_GROUP_PRE, openInAtsWorkflowEditorAction);
-      openInAtsWorkflowEditorAction.updateEnablement();
-
-      MenuManager openWithMenuManager = new MenuManager("Open With", "openwith");
-
-      openWithMenuManager.add(openInMassEditorAction);
-      openInMassEditorAction.updateEnablement();
-
-      openWithMenuManager.add(openInAtsWorldEditorAction);
-      openInAtsWorldEditorAction.setEnabled(getSelectedArtifacts() != null);
-      openWithMenuManager.add(openInAtsTaskEditorAction);
-      openInAtsTaskEditorAction.setEnabled(getSelectedTaskArtifacts() != null);
-      if (AtsUtil.isAtsAdmin()) {
-         openWithMenuManager.add(openInArtifactEditorAction);
-         openInArtifactEditorAction.updateEnablement();
-      }
-      mm.insertBefore(MENU_GROUP_PRE, openWithMenuManager);
+      OpenContributionItem contrib = new OpenContributionItem(getClass().getSimpleName() + ".open");
+      mm.insertBefore(XViewer.MENU_GROUP_PRE, contrib);
 
       if (AtsUtil.isAtsAdmin()) {
-         mm.insertBefore(MENU_GROUP_PRE, new Separator());
-         mm.insertBefore(MENU_GROUP_PRE, deletePurgeAtsObjectAction);
+         mm.insertBefore(XViewer.MENU_GROUP_PRE, new Separator());
+         mm.insertBefore(XViewer.MENU_GROUP_PRE, deletePurgeAtsObjectAction);
          deletePurgeAtsObjectAction.updateEnablement();
       }
 
       mm.insertBefore(XViewer.MENU_GROUP_PRE, new GroupMarker(MENU_GROUP_ATS_WORLD_OPEN));
-      mm.insertBefore(MENU_GROUP_PRE, new Separator());
+      mm.insertBefore(XViewer.MENU_GROUP_PRE, new Separator());
 
       // OTHER MENU BLOCK
-      mm.insertBefore(MENU_GROUP_PRE, favoritesAction);
+      mm.insertBefore(XViewer.MENU_GROUP_PRE, favoritesAction);
       favoritesAction.updateEnablement();
 
-      mm.insertBefore(MENU_GROUP_PRE, subscribedAction);
+      mm.insertBefore(XViewer.MENU_GROUP_PRE, subscribedAction);
       subscribedAction.updateEnablement();
 
-      mm.insertBefore(MENU_GROUP_PRE, emailAction);
+      mm.insertBefore(XViewer.MENU_GROUP_PRE, emailAction);
       emailAction.updateEnablement();
 
-      mm.insertBefore(MENU_GROUP_PRE, resetActionArtifactAction);
+      mm.insertBefore(XViewer.MENU_GROUP_PRE, resetActionArtifactAction);
       resetActionArtifactAction.setEnabled(getSelectedActionArtifacts().size() > 0);
 
-      mm.insertAfter(XViewer.MENU_GROUP_PRE, new GroupMarker(MENU_GROUP_ATS_WORLD_OTHER));
-      mm.insertAfter(MENU_GROUP_PRE, new Separator());
+      mm.insertBefore(XViewer.MENU_GROUP_PRE, new GroupMarker(MENU_GROUP_ATS_WORLD_OTHER));
+      mm.insertBefore(XViewer.MENU_GROUP_PRE, new Separator());
 
       for (IMenuActionProvider provider : menuActionProviders) {
          provider.updateMenuActionsForTable();
@@ -477,11 +391,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
 
    @Override
    public void handleDoubleClick() {
-      if (getSelectedArtifactItems().isEmpty()) {
-         return;
-      }
-      Artifact art = getSelectedArtifactItems().iterator().next();
-      AtsUtil.openATSAction(art, AtsOpenOption.OpenOneOrPopupSelect);
+      ArtifactDoubleClick.openArtifact(getSelection());
    }
 
    public List<Artifact> getLoadedArtifacts() {
