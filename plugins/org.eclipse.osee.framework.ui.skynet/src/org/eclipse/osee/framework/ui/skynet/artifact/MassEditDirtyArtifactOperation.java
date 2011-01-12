@@ -37,12 +37,12 @@ public class MassEditDirtyArtifactOperation extends AbstractOperation implements
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      Collection<Artifact> dirtyArts = ArtifactCache.getDirtyArtifacts();
-      if (dirtyArts.isEmpty()) {
+      Collection<Artifact> artifacts = ArtifactCache.getDirtyArtifacts();
+      if (artifacts.isEmpty()) {
          AWorkbench.popup("No Dirty Artifacts Found");
          return;
       }
-      HashCollection<Branch, Artifact> branchMap = Artifacts.getBranchArtifactMap(ArtifactCache.getDirtyArtifacts());
+      HashCollection<Branch, Artifact> branchMap = Artifacts.getBranchArtifactMap(artifacts);
       for (Branch branch : branchMap.keySet()) {
          MassArtifactEditor.editArtifacts(String.format("Dirty Artifacts for Branch [%s]", branch),
             branchMap.getValues(branch));
