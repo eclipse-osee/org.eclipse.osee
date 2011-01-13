@@ -49,11 +49,11 @@ public class WordTemplateFileDiffer {
       variableMap.setValue(IRenderer.FILE_NAME_OPTION, fileName);
       variableMap.setValue("diffReportFolderName", ".preview" + fileName);
       variableMap.setValue("Publish With Attributes", true);
-      variableMap.setValue("Publish As Diff", true);
       variableMap.setValue("Diff Branch", variableMap.getValue("Branch"));
       variableMap.setValue("Use Artifact Names", true);
       variableMap.setValue("inPublishMode", true);
       variableMap.setValue(IRenderer.NO_DISPLAY, true);
+      variableMap.setValue("Publish As Diff", false);
 
       Branch endBranch = variableMap.getBranch("Branch");
       Branch startBranch = variableMap.getBranch("compareBranch");

@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
@@ -233,15 +234,27 @@ public class WordTemplateProcessor {
       if (Strings.isValid(outlineNumber)) {
          wordMl.setNextParagraphNumberTo(outlineNumber);
       }
-
       extractSkynetAttributeReferences(getArtifactSetXml(artifactElement));
 
-      for (Artifact artifact : artifacts) {
-         processObjectArtifact(variableMap, artifact, wordMl, outlineType, presentationType, artifacts.size() > 1);
+      if (variableMap != null && variableMap.getBoolean("Publish As Diff")) {
+         generateDiff(variableMap, artifacts, outlineType);
+      } else {
+         for (Artifact artifact : artifacts) {
+            processObjectArtifact(variableMap, artifact, wordMl, outlineType, presentationType, artifacts.size() > 1);
+         }
       }
-
       //maintain a list of artifacts that have been processed so we do not have duplicates.
       processedArtifacts.clear();
+   }
+
+   private void generateDiff(VariableMap variableMap, final List<Artifact> artifacts, final String outlineType) throws OseeArgumentException, OseeCoreException {
+      variableMap.setValue("artifacts", artifacts);
+      variableMap.setValue("Diff from Baseline", variableMap.getBoolean("Diff from Baseline"));
+      variableMap.setValue("compareBranch", variableMap.getBranch("compareBranch"));
+      variableMap.setValue("template", slaveTemplateName);
+      variableMap.setValue("linkType", variableMap.getValue("linkType"));
+      WordTemplateFileDiffer templateFileDiffer = new WordTemplateFileDiffer();
+      templateFileDiffer.generateFileDifferences(GUID.create() + ".xml", variableMap, outlineNumber, outlineType);
    }
 
    private void processExtensionTemplate(String elementValue, VariableMap variableMap, IFolder folder, WordMLProducer wordMl, PresentationType presentationType, String template) throws OseeCoreException, CoreException {
