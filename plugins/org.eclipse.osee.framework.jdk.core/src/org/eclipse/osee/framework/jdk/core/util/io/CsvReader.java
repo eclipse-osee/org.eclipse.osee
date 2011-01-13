@@ -31,7 +31,7 @@ public class CsvReader {
    /**
     * @param file a comma separate value file
     * @param totalNumFields the largest number of fields on any row (whether they are used or not)
-    * @param enabled whether to enable or disable all the feilds initially
+    * @param enabled whether to enable or disable all the fields initially
     */
    public CsvReader(File file, int totalNumFields, boolean enabled) throws IOException {
       this(new BufferedReader(new FileReader(file)), totalNumFields, enabled);
@@ -112,6 +112,7 @@ public class CsvReader {
       String[] values = new String[fieldCount];
       int fieldIndex = 0;
       int valuesIndex = 0;
+      boolean hasValueBeenRead = false;
       while (streamTokenizer.nextToken() != StreamTokenizer.TT_EOL) {
          if (streamTokenizer.ttype == ',') {
             if (fieldsUsed[fieldIndex]) {
@@ -121,9 +122,14 @@ public class CsvReader {
          } else if (streamTokenizer.ttype == StreamTokenizer.TT_WORD || streamTokenizer.ttype == '\"') {
             if (fieldsUsed[fieldIndex]) {
                values[valuesIndex] = streamTokenizer.sval;
+               hasValueBeenRead = true;
             }
          } else if (streamTokenizer.ttype == StreamTokenizer.TT_EOF) {
-            return null;
+            if (hasValueBeenRead) {
+               return values;
+            } else {
+               return null;
+            }
          } else {
             throw new IllegalArgumentException("The token type was: " + streamTokenizer.ttype);
          }
