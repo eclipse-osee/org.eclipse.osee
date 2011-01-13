@@ -119,30 +119,33 @@ public class RelationManager {
          selectedRelations = relationCache.getAllByType(artifact, RelationTypeManager.getType(relationType));
       }
 
+      List<Artifact> relatedArtifacts;
+
       if (selectedRelations == null) {
-         return Collections.emptyList();
-      }
+         relatedArtifacts = new ArrayList<Artifact>();
+      } else {
+         relatedArtifacts = new ArrayList<Artifact>(selectedRelations.size());
 
-      Collection<Artifact> bulkLoadedArtifacts =
-         ArtifactQuery.getArtifactListFromIds(
-            getRelatedArtifactIds(selectedRelations, relationSide, DeletionFlag.EXCLUDE_DELETED), artifact.getBranch());
+         Collection<Artifact> bulkLoadedArtifacts =
+            ArtifactQuery.getArtifactListFromIds(
+               getRelatedArtifactIds(selectedRelations, relationSide, DeletionFlag.EXCLUDE_DELETED),
+               artifact.getBranch());
 
-      List<Artifact> relatedArtifacts = new ArrayList<Artifact>(selectedRelations.size());
-      relatedArtifacts.clear();
-      for (RelationLink relation : selectedRelations) {
-         if (!relation.isDeleted()) {
-            try {
-               if (relation.getSide(artifact).isOppositeSide(relationSide)) {
-                  relationSide = relation.getOppositeSide(artifact);
-                  relatedArtifacts.add(relation.getArtifactOnOtherSide(artifact));
+         for (RelationLink relation : selectedRelations) {
+            if (!relation.isDeleted()) {
+               try {
+                  if (relation.getSide(artifact).isOppositeSide(relationSide)) {
+                     relationSide = relation.getOppositeSide(artifact);
+                     relatedArtifacts.add(relation.getArtifactOnOtherSide(artifact));
+                  }
+               } catch (ArtifactDoesNotExist ex) {
+                  OseeLog.log(Activator.class, Level.WARNING, ex);
                }
-            } catch (ArtifactDoesNotExist ex) {
-               OseeLog.log(Activator.class, Level.WARNING, ex);
             }
          }
-      }
-      if (sort) {
-         sort(artifact, relationType, relationSide, relatedArtifacts);
+         if (sort) {
+            sort(artifact, relationType, relationSide, relatedArtifacts);
+         }
       }
       return relatedArtifacts;
    }
