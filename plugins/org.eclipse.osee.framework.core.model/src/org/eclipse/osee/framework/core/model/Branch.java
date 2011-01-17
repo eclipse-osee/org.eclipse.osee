@@ -65,11 +65,11 @@ public class Branch extends AbstractOseeType implements IAdaptable, IOseeBranch 
    }
 
    public String getShortName() {
-      String shortName = "";
-      if (Strings.isValid(getName())) {
-         shortName = Strings.truncate(getName(), SHORT_NAME_LIMIT);
-      }
-      return shortName;
+      return getShortName(this);
+   }
+
+   public static String getShortName(IOseeBranch branch) {
+      return Strings.truncate(branch.getName(), SHORT_NAME_LIMIT);
    }
 
    public BranchType getBranchType() {
