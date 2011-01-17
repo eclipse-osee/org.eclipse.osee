@@ -12,10 +12,12 @@ package org.eclipse.osee.framework.ui.skynet.util;
 
 import java.util.logging.Level;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
+import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
  * @author Megumi Telles
@@ -36,11 +38,18 @@ public final class FileUiUtil {
       if (Lib.isWindows()) {
          String absPath = file.getLocation().toFile().getAbsolutePath();
          if (absPath.length() > FILENAME_LIMIT) {
-            String warningMessage = "Your filename: \n\n" + absPath + FILENAME_WARNING_MESSAGE;
+            final String warningMessage = "Your filename: \n\n" + absPath + FILENAME_WARNING_MESSAGE;
             // need to warn user that their filename size is large and may cause the program (Word, Excel, PPT) to error
             if (showAgain && RenderingUtil.arePopupsAllowed()) {
                //display warning once per session
-               WordUiUtil.displayWarningMessageDialog("Filename Size Warning", warningMessage);
+
+               Displays.pendInDisplayThread(new Runnable() {
+                  @Override
+                  public void run() {
+                     MessageDialog.openWarning(Displays.getActiveShell(), "Filename Size Warning", warningMessage);
+                  }
+               });
+
                showAgain = false;
             }
             //log the warning every time
