@@ -88,73 +88,84 @@ public class RendererManagerTest {
 
    private void testGetBestRendererWithOption(Artifact artifact, DefaultOption option) throws OseeCoreException {
       UserManager.setSetting(UserManager.DOUBLE_CLICK_SETTING_KEY, String.valueOf(option == On));
-      try {
-         IRenderer renderer = RendererManager.getBestRenderer(presentationType, artifact, null);
-         Assert.assertFalse(
-            "Expected an OseeStateException to be thrown since no render should be applicable in this case.",
-            clazz == null);
-         Assert.assertEquals(clazz, renderer.getClass());
-      } catch (OseeStateException ex) {
-         if (clazz != null) {
-            throw ex;
+
+      if (clazz == null) {
+         try {
+            computeRenderer(artifact);
+            Assert.fail("Expected an OseeStateException to be thrown since no render should be applicable in this case.");
+         } catch (OseeStateException ex) {
+            Assert.assertEquals("Expected message", ex.getMessage());
          }
+      } else {
+         IRenderer renderer = computeRenderer(artifact);
+         Assert.assertEquals(clazz, renderer.getClass());
       }
+   }
+
+   private IRenderer computeRenderer(Artifact artifact) throws OseeCoreException {
+      IRenderer renderer = RendererManager.getBestRenderer(presentationType, artifact, null);
+      Assert.assertNotNull(renderer);
+      return renderer;
    }
 
    @Parameters
    public static Collection<Object[]> getData() {
       Collection<Object[]> data = new ArrayList<Object[]>();
 
-      data.add(new Object[] {SoftwareRequirement, GENERALIZED_EDIT, DefaultArtifactRenderer.class, Both});
-      data.add(new Object[] {SoftwareRequirement, SPECIALIZED_EDIT, WordTemplateRenderer.class, Both});
-      data.add(new Object[] {SoftwareRequirement, DIFF, WordTemplateRenderer.class, Both});
-      data.add(new Object[] {SoftwareRequirement, PREVIEW, WordTemplateRenderer.class, Both});
-      data.add(new Object[] {SoftwareRequirement, MERGE, WordTemplateRenderer.class, Both});
-      data.add(new Object[] {SoftwareRequirement, MERGE_EDIT, WordTemplateRenderer.class, Both});
-      data.add(new Object[] {SoftwareRequirement, DEFAULT_OPEN, WordTemplateRenderer.class, Off});
-      data.add(new Object[] {SoftwareRequirement, DEFAULT_OPEN, DefaultArtifactRenderer.class, On});
-      data.add(new Object[] {SoftwareRequirement, PRODUCE_ATTRIBUTE, WordTemplateRenderer.class, Both});
+      addTest(data, SoftwareRequirement, GENERALIZED_EDIT, DefaultArtifactRenderer.class, Both);
+      addTest(data, SoftwareRequirement, SPECIALIZED_EDIT, WordTemplateRenderer.class, Both);
+      addTest(data, SoftwareRequirement, DIFF, WordTemplateRenderer.class, Both);
+      addTest(data, SoftwareRequirement, PREVIEW, WordTemplateRenderer.class, Both);
+      addTest(data, SoftwareRequirement, MERGE, WordTemplateRenderer.class, Both);
+      addTest(data, SoftwareRequirement, MERGE_EDIT, WordTemplateRenderer.class, Both);
+      addTest(data, SoftwareRequirement, DEFAULT_OPEN, WordTemplateRenderer.class, Off);
+      addTest(data, SoftwareRequirement, DEFAULT_OPEN, DefaultArtifactRenderer.class, On);
+      addTest(data, SoftwareRequirement, PRODUCE_ATTRIBUTE, WordTemplateRenderer.class, Both);
 
-      data.add(new Object[] {Action, GENERALIZED_EDIT, DefaultArtifactRenderer.class, Both});
-      data.add(new Object[] {Action, SPECIALIZED_EDIT, AtsWorkflowRenderer.class, Both});
-      data.add(new Object[] {Action, DIFF, AtsWorkflowRenderer.class, Both});
-      data.add(new Object[] {Action, PREVIEW, AtsWorkflowRenderer.class, Both});
-      data.add(new Object[] {Action, MERGE, AtsWorkflowRenderer.class, Both});
-      data.add(new Object[] {Action, MERGE_EDIT, AtsWorkflowRenderer.class, Both});
-      data.add(new Object[] {Action, DEFAULT_OPEN, AtsWorkflowRenderer.class, Off});
-      data.add(new Object[] {Action, DEFAULT_OPEN, AtsWorkflowRenderer.class, On});
-      data.add(new Object[] {Action, PRODUCE_ATTRIBUTE, DefaultArtifactRenderer.class, Both});
+      addTest(data, Action, GENERALIZED_EDIT, DefaultArtifactRenderer.class, Both);
+      addTest(data, Action, SPECIALIZED_EDIT, AtsWorkflowRenderer.class, Both);
+      addTest(data, Action, DIFF, AtsWorkflowRenderer.class, Both);
+      addTest(data, Action, PREVIEW, AtsWorkflowRenderer.class, Both);
+      addTest(data, Action, MERGE, AtsWorkflowRenderer.class, Both);
+      addTest(data, Action, MERGE_EDIT, AtsWorkflowRenderer.class, Both);
+      addTest(data, Action, DEFAULT_OPEN, AtsWorkflowRenderer.class, Off);
+      addTest(data, Action, DEFAULT_OPEN, AtsWorkflowRenderer.class, On);
+      addTest(data, Action, PRODUCE_ATTRIBUTE, DefaultArtifactRenderer.class, Both);
 
-      data.add(new Object[] {TestProcedureWML, GENERALIZED_EDIT, DefaultArtifactRenderer.class, Both});
-      data.add(new Object[] {TestProcedureWML, SPECIALIZED_EDIT, WholeWordRenderer.class, Both});
-      data.add(new Object[] {TestProcedureWML, DIFF, WholeWordRenderer.class, Both});
-      data.add(new Object[] {TestProcedureWML, PREVIEW, WholeWordRenderer.class, Both});
-      data.add(new Object[] {TestProcedureWML, MERGE, WholeWordRenderer.class, Both});
-      data.add(new Object[] {TestProcedureWML, MERGE_EDIT, WholeWordRenderer.class, Both});
-      data.add(new Object[] {TestProcedureWML, DEFAULT_OPEN, WholeWordRenderer.class, Off});
-      data.add(new Object[] {TestProcedureWML, DEFAULT_OPEN, DefaultArtifactRenderer.class, On});
-      data.add(new Object[] {TestProcedureWML, PRODUCE_ATTRIBUTE, DefaultArtifactRenderer.class, Both});
+      addTest(data, TestProcedureWML, GENERALIZED_EDIT, DefaultArtifactRenderer.class, Both);
+      addTest(data, TestProcedureWML, SPECIALIZED_EDIT, WholeWordRenderer.class, Both);
+      addTest(data, TestProcedureWML, DIFF, WholeWordRenderer.class, Both);
+      addTest(data, TestProcedureWML, PREVIEW, WholeWordRenderer.class, Both);
+      addTest(data, TestProcedureWML, MERGE, WholeWordRenderer.class, Both);
+      addTest(data, TestProcedureWML, MERGE_EDIT, WholeWordRenderer.class, Both);
+      addTest(data, TestProcedureWML, DEFAULT_OPEN, WholeWordRenderer.class, Off);
+      addTest(data, TestProcedureWML, DEFAULT_OPEN, DefaultArtifactRenderer.class, On);
+      addTest(data, TestProcedureWML, PRODUCE_ATTRIBUTE, DefaultArtifactRenderer.class, Both);
 
-      data.add(new Object[] {GeneralDocument, GENERALIZED_EDIT, DefaultArtifactRenderer.class, Both});
-      data.add(new Object[] {GeneralDocument, SPECIALIZED_EDIT, NativeRenderer.class, Both});
-      data.add(new Object[] {GeneralDocument, DIFF, null, Both});
-      data.add(new Object[] {GeneralDocument, PREVIEW, NativeRenderer.class, Both});
-      data.add(new Object[] {GeneralDocument, MERGE, null, Both});
-      data.add(new Object[] {GeneralDocument, MERGE_EDIT, null, Both});
-      data.add(new Object[] {GeneralDocument, DEFAULT_OPEN, NativeRenderer.class, Off});
-      data.add(new Object[] {GeneralDocument, DEFAULT_OPEN, DefaultArtifactRenderer.class, On});
-      data.add(new Object[] {GeneralDocument, PRODUCE_ATTRIBUTE, DefaultArtifactRenderer.class, Both});
+      addTest(data, GeneralDocument, GENERALIZED_EDIT, DefaultArtifactRenderer.class, Both);
+      addTest(data, GeneralDocument, SPECIALIZED_EDIT, NativeRenderer.class, Both);
+      addTest(data, GeneralDocument, DIFF, null, Both);
+      addTest(data, GeneralDocument, PREVIEW, NativeRenderer.class, Both);
+      addTest(data, GeneralDocument, MERGE, null, Both);
+      addTest(data, GeneralDocument, MERGE_EDIT, null, Both);
+      addTest(data, GeneralDocument, DEFAULT_OPEN, NativeRenderer.class, Off);
+      addTest(data, GeneralDocument, DEFAULT_OPEN, DefaultArtifactRenderer.class, On);
+      addTest(data, GeneralDocument, PRODUCE_ATTRIBUTE, DefaultArtifactRenderer.class, Both);
 
-      data.add(new Object[] {TestInformationSheet, GENERALIZED_EDIT, DefaultArtifactRenderer.class, Both});
-      data.add(new Object[] {TestInformationSheet, SPECIALIZED_EDIT, WordTemplateRenderer.class, Both});
-      data.add(new Object[] {TestInformationSheet, DIFF, WordTemplateRenderer.class, Both});
-      data.add(new Object[] {TestInformationSheet, PREVIEW, TisRenderer.class, Both});
-      data.add(new Object[] {TestInformationSheet, MERGE, WordTemplateRenderer.class, Both});
-      data.add(new Object[] {TestInformationSheet, MERGE_EDIT, WordTemplateRenderer.class, Both});
-      data.add(new Object[] {TestInformationSheet, DEFAULT_OPEN, TisRenderer.class, Off});
-      data.add(new Object[] {TestInformationSheet, DEFAULT_OPEN, DefaultArtifactRenderer.class, On});
-      data.add(new Object[] {TestInformationSheet, PRODUCE_ATTRIBUTE, WordTemplateRenderer.class, Both});
+      addTest(data, TestInformationSheet, GENERALIZED_EDIT, DefaultArtifactRenderer.class, Both);
+      addTest(data, TestInformationSheet, SPECIALIZED_EDIT, WordTemplateRenderer.class, Both);
+      addTest(data, TestInformationSheet, DIFF, WordTemplateRenderer.class, Both);
+      addTest(data, TestInformationSheet, PREVIEW, TisRenderer.class, Both);
+      addTest(data, TestInformationSheet, MERGE, WordTemplateRenderer.class, Both);
+      addTest(data, TestInformationSheet, MERGE_EDIT, WordTemplateRenderer.class, Both);
+      addTest(data, TestInformationSheet, DEFAULT_OPEN, TisRenderer.class, Off);
+      addTest(data, TestInformationSheet, DEFAULT_OPEN, DefaultArtifactRenderer.class, On);
+      addTest(data, TestInformationSheet, PRODUCE_ATTRIBUTE, WordTemplateRenderer.class, Both);
 
       return data;
+   }
+
+   private static void addTest(Collection<Object[]> data, Object... params) {
+      data.add(params);
    }
 }
