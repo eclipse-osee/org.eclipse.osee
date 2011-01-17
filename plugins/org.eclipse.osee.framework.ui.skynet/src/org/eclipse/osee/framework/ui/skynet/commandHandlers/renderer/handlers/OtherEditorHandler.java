@@ -53,22 +53,6 @@ public class OtherEditorHandler extends AbstractEditorHandler {
       return null;
    }
 
-   //   private IEditorDescriptor[] getEditorDescriptorFilters(String name) {
-   //      IEditorDescriptor[] toReturn;
-   //      IEditorDescriptor[] editorDescriptors = PlatformUI.getWorkbench().getEditorRegistry().getEditors(name);
-   //      if (editorDescriptors != null) {
-   //         Set<IEditorDescriptor> allEditors = new HashSet<IEditorDescriptor>();
-   //         EditorRegistry registry = (EditorRegistry) PlatformUI.getWorkbench().getEditorRegistry();
-   //         allEditors.addAll(Arrays.asList(registry.getSortedEditorsFromPlugins()));
-   //         allEditors.addAll(Arrays.asList(registry.getSortedEditorsFromOS()));
-   //         List<IEditorDescriptor> filter = Collections.setComplement(allEditors, Arrays.asList(editorDescriptors));
-   //         toReturn = filter.toArray(new IEditorDescriptor[filter.size()]);
-   //      } else {
-   //         toReturn = new IEditorDescriptor[0];
-   //      }
-   //      return toReturn;
-   //   }
-
    private void openEditor(IEditorDescriptor editor, IFile file, boolean openUsingDescriptor) {
       if (file == null) {
          return;
