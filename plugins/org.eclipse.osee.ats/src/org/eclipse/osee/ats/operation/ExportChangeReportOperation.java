@@ -35,8 +35,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
-import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
-import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 
 /**
  * @author Ryan D. Brooks
@@ -103,16 +102,14 @@ public class ExportChangeReportOperation extends AbstractOperation {
    }
 
    private void generateDiffReport(Collection<Change> changes, String legacyPcrId, IProgressMonitor monitor) throws OseeCoreException {
-      VariableMap variableMap = new VariableMap();
-      variableMap.setValue(IRenderer.NO_DISPLAY, true);
-      variableMap.setValue("diffReportFolderName", legacyPcrId);
-      variableMap.setValue(IRenderer.FILE_NAME_OPTION, legacyPcrId);
-      variableMap.setValue(IRenderer.SKIP_DIALOGS, true);
+      VariableMap options = new VariableMap();
+      options.setValue(IRenderer.NO_DISPLAY, true);
+      options.setValue("diffReportFolderName", legacyPcrId);
+      options.setValue(IRenderer.FILE_NAME_OPTION, legacyPcrId);
+      options.setValue(IRenderer.SKIP_DIALOGS, true);
 
-      Collection<ArtifactDelta> compareArtifacts = ChangeManager.getCompareArtifacts(changes);
+      Collection<ArtifactDelta> artifactDeltas = ChangeManager.getCompareArtifacts(changes);
 
-      WordTemplateRenderer renderer = new WordTemplateRenderer();
-      renderer.setOptions(variableMap);
-      renderer.getComparator().compareArtifacts(monitor, PresentationType.DIFF, compareArtifacts);
+      RendererManager.diff(artifactDeltas, options);
    }
 }
