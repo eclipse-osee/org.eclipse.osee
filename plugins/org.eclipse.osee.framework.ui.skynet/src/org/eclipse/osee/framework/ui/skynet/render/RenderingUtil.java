@@ -165,23 +165,4 @@ public final class RenderingUtil {
       }
       return toCheck;
    }
-
-   public static Set<Artifact> checkForTrackedChangesOn(Artifact artifact) throws OseeCoreException {
-      Set<Artifact> artifacts = new HashSet<Artifact>();
-
-      if (!UserManager.getBooleanSetting(MsWordPreferencePage.REMOVE_TRACKED_CHANGES)) {
-         if (artifact != null) {
-            Attribute<?> attribute = artifact.getSoleAttribute(CoreAttributeTypes.WordTemplateContent);
-            if (attribute != null) {
-               String value = attribute.getValue().toString();
-               // check for track changes
-               if (WordUtil.containsWordAnnotations(value)) {
-                  // capture those artifacts that have tracked changes on
-                  artifacts.add(artifact);
-               }
-            }
-         }
-      }
-      return artifacts;
-   }
 }

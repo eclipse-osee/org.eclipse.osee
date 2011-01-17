@@ -11,8 +11,6 @@
 package org.eclipse.osee.framework.ui.skynet.render.compare;
 
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -84,7 +82,6 @@ public final class WordChangeReportOperation extends AbstractOperation {
 
          String baseFileStr = getChangeReportFolder().getLocation().toOSString();
 
-         Set<Artifact> artifacts = new HashSet<Artifact>();
          int countSuccessful = 0;
 
          for (ArtifactDelta artifactDelta : artifactDeltas) {
@@ -94,23 +91,6 @@ public final class WordChangeReportOperation extends AbstractOperation {
                //Remove tracked changes and display image diffs
                Pair<String, Boolean> originalValue = null;
                Pair<String, Boolean> newAnnotationValue = null;
-
-               //Check for tracked changes
-               artifacts.clear();
-               artifacts.addAll(RenderingUtil.checkForTrackedChangesOn(artifactDelta.getStartArtifact()));
-               artifacts.addAll(RenderingUtil.checkForTrackedChangesOn(artifactDelta.getEndArtifact()));
-
-               if (!artifacts.isEmpty()) {
-                  if (RenderingUtil.arePopupsAllowed() || !skipDialogs) {
-                     WordUiUtil.displayWarningMessageDialog("Diff Artifacts Warning",
-                        "Detected tracked changes for some artifacts. Please refer to the results HTML report.");
-                     WordUiUtil.displayTrackedChangesOnArtifacts(artifacts);
-                  } else {
-                     OseeLog.log(SkynetGuiPlugin.class, Level.INFO, String.format(
-                        "Test - Skipping - Detected tracked changes for some artifacts for [%s]", artifacts));
-                  }
-                  continue;
-               }
 
                Artifact baseArtifact = artifactDelta.getStartArtifact();
                Artifact newerArtifact = artifactDelta.getEndArtifact();
@@ -151,13 +131,6 @@ public final class WordChangeReportOperation extends AbstractOperation {
          }
          monitor.worked(calculateWork(0.20));
          checkForCancelledStatus(monitor);
-         // Let the user know that these artifacts had tracked changes on and we are not handling them
-         // Also, list these artifacts in an artifact explorer
-         if (!artifacts.isEmpty() && (RenderingUtil.arePopupsAllowed() || !skipDialogs)) {
-            WordUiUtil.displayWarningMessageDialog("Diff Artifacts Warning",
-               "Detected tracked changes for some artifacts. Please refer to the results HTML report.");
-            WordUiUtil.displayTrackedChangesOnArtifacts(artifacts);
-         }
          monitor.worked(calculateWork(0.10));
       } else {
          monitor.worked(calculateWork(1.0));

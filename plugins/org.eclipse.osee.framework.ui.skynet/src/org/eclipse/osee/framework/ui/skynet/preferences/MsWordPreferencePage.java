@@ -29,10 +29,8 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
  */
 public class MsWordPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
    public static final String IDENTFY_IMAGE_CHANGES = "IdentifyImageChangesInWordDiff";
-   public static final String REMOVE_TRACKED_CHANGES = "RemoveTrackedChangesInWordDiff";
    public static final String MUTI_EDIT_SAVE_ALL_CHANGES = "multieditSaveAllChanges";
    private Button identifyImageChangesInWord;
-   private Button removeTrackedChangesInWord;
    private Button saveAllChanges;
 
    @Override
@@ -42,10 +40,6 @@ public class MsWordPreferencePage extends PreferencePage implements IWorkbenchPr
       identifyImageChangesInWord = new Button(parent, SWT.CHECK);
       identifyImageChangesInWord.setText("Do Not Display OSEE Detected Image Change Indication in Differences");
       identifyImageChangesInWord.setSelection(getUserBooleanSetting(IDENTFY_IMAGE_CHANGES));
-
-      removeTrackedChangesInWord = new Button(parent, SWT.CHECK);
-      removeTrackedChangesInWord.setText("Remove Word Tracked Changes prior to Diffing");
-      removeTrackedChangesInWord.setSelection(getUserBooleanSetting(REMOVE_TRACKED_CHANGES));
 
       saveAllChanges = new Button(parent, SWT.CHECK);
       saveAllChanges.setText("When multi-editing save all chaneged artifacts (even those with no textual changes)");
@@ -81,9 +75,7 @@ public class MsWordPreferencePage extends PreferencePage implements IWorkbenchPr
 
    @Override
    public boolean performOk() {
-
       setUserBooleanSetting(IDENTFY_IMAGE_CHANGES, identifyImageChangesInWord);
-      setUserBooleanSetting(REMOVE_TRACKED_CHANGES, removeTrackedChangesInWord);
       setUserBooleanSetting(MUTI_EDIT_SAVE_ALL_CHANGES, saveAllChanges);
       try {
          UserManager.getUser().persist();

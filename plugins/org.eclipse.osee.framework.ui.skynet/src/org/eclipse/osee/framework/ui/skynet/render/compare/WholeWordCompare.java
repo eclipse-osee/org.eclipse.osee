@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
-import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.skynet.preferences.MsWordPreferencePage;
 import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
@@ -43,18 +42,12 @@ public class WholeWordCompare extends AbstractWordCompare {
    public String compare(IProgressMonitor monitor, PresentationType presentationType, ArtifactDelta artifactDelta) throws OseeCoreException {
       Pair<String, Boolean> originalValue = null;
       Pair<String, Boolean> newAnnotationValue = null;
-      Pair<String, Boolean> oldAnnotationValue = null;
 
       Artifact baseArtifact = artifactDelta.getStartArtifact();
       Artifact newerArtifact = artifactDelta.getEndArtifact();
 
       Attribute<String> baseContent = getWordContent(baseArtifact, ATTRIBUTE_TYPE);
       Attribute<String> newerContent = getWordContent(newerArtifact, ATTRIBUTE_TYPE);
-
-      if (!UserManager.getBooleanSetting(MsWordPreferencePage.REMOVE_TRACKED_CHANGES)) {
-         oldAnnotationValue = removeAnnotations(baseContent);
-         newAnnotationValue = removeAnnotations(newerContent);
-      }
 
       if (!UserManager.getBooleanSetting(MsWordPreferencePage.IDENTFY_IMAGE_CHANGES)) {
          originalValue = WordImageChecker.checkForImageDiffs(baseContent, newerContent);
@@ -63,8 +56,7 @@ public class WholeWordCompare extends AbstractWordCompare {
       ArtifactDeltaToFileConverter converter = new ArtifactDeltaToFileConverter(getRenderer());
       Pair<IFile, IFile> compareFiles = converter.convertToFile(presentationType, artifactDelta);
 
-      WordImageChecker.restoreOriginalValue(baseContent,
-         oldAnnotationValue != null ? oldAnnotationValue : originalValue);
+      WordImageChecker.restoreOriginalValue(baseContent, originalValue);
       WordImageChecker.restoreOriginalValue(newerContent, newAnnotationValue);
       return compare(baseArtifact, newerArtifact, compareFiles.getFirst(), compareFiles.getSecond(), presentationType);
    }
@@ -76,18 +68,6 @@ public class WholeWordCompare extends AbstractWordCompare {
       }
    }
 
-   private Pair<String, Boolean> removeAnnotations(Attribute<String> attribute) throws OseeCoreException {
-      Pair<String, Boolean> annotation = null;
-      if (attribute != null) {
-         String value = attribute.getValue();
-         if (WordUtil.containsWordAnnotations(value)) {
-            annotation = new Pair<String, Boolean>(value, attribute.isDirty());
-            attribute.setFromString(WordUtil.removeAnnotations(value));
-         }
-      }
-      return annotation;
-   }
-
    private Attribute<String> getWordContent(Artifact artifact, IAttributeType attributeType) throws OseeCoreException {
       Attribute<String> toReturn = null;
       if (artifact != null && !artifact.isDeleted()) {
@@ -95,5 +75,4 @@ public class WholeWordCompare extends AbstractWordCompare {
       }
       return toReturn;
    }
-
 }

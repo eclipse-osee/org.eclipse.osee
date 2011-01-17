@@ -11,9 +11,6 @@
 package org.eclipse.osee.framework.ui.skynet.render.compare;
 
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.logging.Level;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -22,19 +19,14 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.preferences.MsWordPreferencePage;
 import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
-import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
-import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.osee.framework.ui.skynet.render.WordImageChecker;
-import org.eclipse.osee.framework.ui.skynet.util.WordUiUtil;
 
 public class WordTemplateCompare extends AbstractWordCompare {
    private static final IAttributeType ATTRIBUTE_TYPE = CoreAttributeTypes.WordTemplateContent;
@@ -56,38 +48,20 @@ public class WordTemplateCompare extends AbstractWordCompare {
       Artifact baseArtifact = artifactDelta.getStartArtifact();
       Artifact newerArtifact = artifactDelta.getEndArtifact();
 
-      //Check for tracked changes
-      Set<Artifact> artifacts = new HashSet<Artifact>();
-      artifacts.addAll(RenderingUtil.checkForTrackedChangesOn(baseArtifact));
-      artifacts.addAll(RenderingUtil.checkForTrackedChangesOn(newerArtifact));
+      Attribute<String> baseContent = getWordContent(baseArtifact, ATTRIBUTE_TYPE);
+      Attribute<String> newerContent = getWordContent(newerArtifact, ATTRIBUTE_TYPE);
 
-      if (!artifacts.isEmpty()) {
-         if (RenderingUtil.arePopupsAllowed() || !getRenderer().getBooleanOption(IRenderer.SKIP_DIALOGS)) {
-            WordUiUtil.displayWarningMessageDialog("Diff Artifacts Warning",
-               "Detected tracked changes for some artifacts. Please refer to the results HTML report.");
-            WordUiUtil.displayTrackedChangesOnArtifacts(artifacts);
-         } else {
-            OseeLog.log(SkynetGuiPlugin.class, Level.INFO,
-               String.format("Test - Skipping - Detected tracked changes for some artifacts for [%s]", artifacts));
-         }
-      } else {
-         Attribute<String> baseContent = getWordContent(baseArtifact, ATTRIBUTE_TYPE);
-         Attribute<String> newerContent = getWordContent(newerArtifact, ATTRIBUTE_TYPE);
-
-         if (!UserManager.getBooleanSetting(MsWordPreferencePage.IDENTFY_IMAGE_CHANGES)) {
-            originalValue = WordImageChecker.checkForImageDiffs(baseContent, newerContent);
-         }
-
-         ArtifactDeltaToFileConverter converter = new ArtifactDeltaToFileConverter(getRenderer());
-         Pair<IFile, IFile> compareFiles = converter.convertToFile(presentationType, artifactDelta);
-
-         WordImageChecker.restoreOriginalValue(baseContent, originalValue);
-         WordImageChecker.restoreOriginalValue(newerContent, newAnnotationValue);
-
-         return compare(baseArtifact, newerArtifact, compareFiles.getFirst(), compareFiles.getSecond(),
-            presentationType);
+      if (!UserManager.getBooleanSetting(MsWordPreferencePage.IDENTFY_IMAGE_CHANGES)) {
+         originalValue = WordImageChecker.checkForImageDiffs(baseContent, newerContent);
       }
-      return "";
+
+      ArtifactDeltaToFileConverter converter = new ArtifactDeltaToFileConverter(getRenderer());
+      Pair<IFile, IFile> compareFiles = converter.convertToFile(presentationType, artifactDelta);
+
+      WordImageChecker.restoreOriginalValue(baseContent, originalValue);
+      WordImageChecker.restoreOriginalValue(newerContent, newAnnotationValue);
+
+      return compare(baseArtifact, newerArtifact, compareFiles.getFirst(), compareFiles.getSecond(), presentationType);
    }
 
    private Attribute<String> getWordContent(Artifact artifact, IAttributeType attributeType) throws OseeCoreException {
