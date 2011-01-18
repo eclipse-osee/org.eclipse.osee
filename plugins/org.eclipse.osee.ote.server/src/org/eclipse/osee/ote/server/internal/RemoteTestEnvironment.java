@@ -18,8 +18,10 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.framework.jdk.core.reportdata.ReportDataListener;
@@ -57,6 +59,8 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
    private final HashMap<IRemoteCommandConsole, RemoteShell> exportedConsoles =
       new HashMap<IRemoteCommandConsole, RemoteShell>(32);
    private final boolean keepEnvAliveWithNoUsers;
+
+   private final ReentrantLock lock = new ReentrantLock();
 
    public RemoteTestEnvironment(MessageSystemTestEnvironment currentEnvironment, IServiceConnector serviceConnector, boolean keepEnvAliveWithNoUsers) {
       this.env = currentEnvironment;
@@ -166,13 +170,24 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
       } catch (Exception ex) {
          throw new RemoteException("failed to export remote console", ex);
       }
-      exportedConsoles.put(exportedConsole, shell);
+      lock.lock();
+      try {
+         exportedConsoles.put(exportedConsole, shell);
+      } finally {
+         lock.unlock();
+      }
       return exportedConsole;
    }
 
    @Override
    public void closeCommandConsole(IRemoteCommandConsole console) throws RemoteException {
-      RemoteShell shell = exportedConsoles.remove(console);
+      RemoteShell shell;
+      lock.lock();
+      try {
+         shell = exportedConsoles.remove(console);
+      } finally {
+         lock.unlock();
+      }
       if (shell != null) {
          try {
             serviceConnector.unexport(shell);
@@ -202,16 +217,13 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
       }
    }
 
-   //TODO
    @Override
    public boolean disconnect(UserTestSessionKey user) throws RemoteException {
       env.disconnect(user);
       if (!keepEnvAliveWithNoUsers && env.getSessionKeys().isEmpty()) {
          try {
             messageToolServiceTracker.close();
-            for (IRemoteCommandConsole console : exportedConsoles.keySet()) {
-               closeCommandConsole(console);
-            }
+            closeAllConsoles();
          } catch (Exception ex) {
             throw new RemoteException("failed to unexport test environment", ex);
          }
@@ -221,6 +233,19 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
       return false;
    }
 
+   private void closeAllConsoles() throws RemoteException {
+      lock.lock();
+      LinkedList<IRemoteCommandConsole> consoles;
+      try {
+         consoles = new LinkedList<IRemoteCommandConsole>(exportedConsoles.keySet());
+      } finally {
+         lock.unlock();
+      }
+      for (IRemoteCommandConsole console : consoles) {
+         closeCommandConsole(console);
+      }
+   }
+
    @Override
    public void disconnectAll() throws RemoteException {
       for (Serializable session : env.getSessionKeys()) {
@@ -228,9 +253,7 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
       }
       if (!keepEnvAliveWithNoUsers) {
          messageToolServiceTracker.close();
-         for (IRemoteCommandConsole console : exportedConsoles.keySet()) {
-            closeCommandConsole(console);
-         }
+         closeAllConsoles();
          env.shutdown();
       }
    }
