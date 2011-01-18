@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.ui.skynet;
 
+import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -23,9 +24,9 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
-import org.eclipse.search.ui.text.Match;
 
 /**
  * @author Ryan D. Brooks
@@ -37,22 +38,12 @@ public class ArtifactDoubleClick implements IDoubleClickListener {
    }
 
    public static void openArtifact(ISelection selection) {
-      IStructuredSelection structSel = (IStructuredSelection) selection;
-      Object object = structSel.getFirstElement();
-      Artifact artifact = null;
-      if (object instanceof Artifact) {
-         artifact = (Artifact) structSel.getFirstElement();
-      } else if (object instanceof Match) {
-         Match match = (Match) object;
-
-         if (match.getElement() instanceof Artifact) {
-            artifact = (Artifact) match.getElement();
-         }
-      }
-
-      if (artifact == null) {
+      IStructuredSelection structuredSelection = (IStructuredSelection) selection;
+      List<Artifact> artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
+      if (artifacts.isEmpty()) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, "The artifact associated with the double-click was null");
       } else {
+         Artifact artifact = artifacts.iterator().next();
          try {
             if (AccessControlManager.hasPermission(artifact, PermissionEnum.READ)) {
                RendererManager.openInJob(artifact, PresentationType.DEFAULT_OPEN);
