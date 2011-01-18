@@ -12,7 +12,6 @@
 package org.eclipse.osee.ats.util;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -34,11 +33,11 @@ import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.commit.CommitStatus;
 import org.eclipse.osee.ats.util.widgets.commit.ICommitConfigArtifact;
-import org.eclipse.osee.ats.workdef.RuleDefinition;
+import org.eclipse.osee.ats.workdef.DecisionReviewDefinition;
+import org.eclipse.osee.ats.workdef.PeerReviewDefinition;
+import org.eclipse.osee.ats.workdef.StateEventType;
 import org.eclipse.osee.ats.workflow.item.AtsAddDecisionReviewRule;
-import org.eclipse.osee.ats.workflow.item.AtsAddDecisionReviewRule.DecisionRuleOption;
 import org.eclipse.osee.ats.workflow.item.AtsAddPeerToPeerReviewRule;
-import org.eclipse.osee.ats.workflow.item.StateEventType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
@@ -660,24 +659,22 @@ public class AtsBranchManager {
          throw new OseeStateException("Invalid stateEventType [%s]", stateEventType);
       }
       // Create any decision and peerToPeer reviews for createBranch and commitBranch
-      for (String ruleId : Arrays.asList(AtsAddDecisionReviewRule.ID, AtsAddPeerToPeerReviewRule.ID)) {
-         for (RuleDefinition ruleDef : teamArt.getRulesStartsWith(ruleId)) {
-            StateEventType eventType = AtsAddDecisionReviewRule.getStateEventType(teamArt, ruleDef);
-            if (eventType != null && eventType.equals(stateEventType)) {
-               if (ruleId.equals(AtsAddDecisionReviewRule.ID)) {
-                  DecisionReviewArtifact decArt =
-                     AtsAddDecisionReviewRule.createNewDecisionReview(ruleDef, transaction, teamArt, createdDate,
-                        createdBy, DecisionRuleOption.TransitionToDecision);
-                  if (decArt != null) {
-                     decArt.persist(transaction);
-                  }
-               } else if (ruleId.equals(AtsAddPeerToPeerReviewRule.ID)) {
-                  PeerToPeerReviewArtifact peerArt =
-                     AtsAddPeerToPeerReviewRule.createNewPeerToPeerReview(ruleDef, teamArt, transaction);
-                  if (peerArt != null) {
-                     peerArt.persist(transaction);
-                  }
-               }
+      for (DecisionReviewDefinition decRevDef : teamArt.getStateDefinition().getDecisionReviews()) {
+         if (decRevDef.getStateEventType() != null && decRevDef.getStateEventType().equals(stateEventType)) {
+            DecisionReviewArtifact decArt =
+               AtsAddDecisionReviewRule.createNewDecisionReview(decRevDef, transaction, teamArt, createdDate, createdBy);
+            if (decArt != null) {
+               decArt.persist(transaction);
+            }
+         }
+      }
+      for (PeerReviewDefinition peerRevDef : teamArt.getStateDefinition().getPeerReviews()) {
+         if (peerRevDef.getStateEventType() != null && peerRevDef.getStateEventType().equals(stateEventType)) {
+            PeerToPeerReviewArtifact peerArt =
+               AtsAddPeerToPeerReviewRule.createNewPeerToPeerReview(peerRevDef, transaction, teamArt, createdDate,
+                  createdBy);
+            if (peerArt != null) {
+               peerArt.persist(transaction);
             }
          }
       }

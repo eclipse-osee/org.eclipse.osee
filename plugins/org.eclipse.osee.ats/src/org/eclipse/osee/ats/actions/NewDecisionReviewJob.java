@@ -13,17 +13,19 @@ package org.eclipse.osee.ats.actions;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsOpenOption;
-import org.eclipse.osee.ats.artifact.AbstractReviewArtifact.ReviewBlockType;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
+import org.eclipse.osee.ats.workdef.DecisionReviewOption;
+import org.eclipse.osee.ats.workdef.ReviewBlockType;
 import org.eclipse.osee.framework.skynet.core.User;
 
 /**
@@ -34,13 +36,13 @@ public class NewDecisionReviewJob extends Job {
    private final ReviewBlockType reviewBlockType;
    private final String reviewTitle;
    private final String againstState;
-   private final String options;
+   private final List<DecisionReviewOption> options;
    private final Collection<User> assignees;
    private final String description;
    private final Date createdDate;
    private final User createdBy;
 
-   public NewDecisionReviewJob(TeamWorkFlowArtifact teamParent, ReviewBlockType reviewBlockType, String reviewTitle, String againstState, String description, String options, Collection<User> assignees, Date createdDate, User createdBy) {
+   public NewDecisionReviewJob(TeamWorkFlowArtifact teamParent, ReviewBlockType reviewBlockType, String reviewTitle, String againstState, String description, List<DecisionReviewOption> options, Collection<User> assignees, Date createdDate, User createdBy) {
       super("Creating New Decision Review");
       this.teamParent = teamParent;
       this.reviewTitle = reviewTitle;

@@ -22,6 +22,7 @@ public class AtsArtifactTypes extends NamedIdentity implements IArtifactType {
    public static final IArtifactType PeerToPeerReview = new AtsArtifactTypes("AAMFDhh_300dpgmNtRAA", "PeerToPeer Review");
    public static final IArtifactType Task = new AtsArtifactTypes("AAMFDhbTAAB6h+06fuAA", "Task");
    public static final IArtifactType StateMachineArtifact = new AtsArtifactTypes("ABMfXC+LFBn31ZZbvjAA", "Abstract State Machine Artifact");
+   public static final IArtifactType ReviewArtifact = new AtsArtifactTypes("ABMa6P4TwzXA1b8K3RAA", "Abstract Review Artifact");
    public static final IArtifactType TeamDefinition = new AtsArtifactTypes("AAMFDhUrlytusKbaQGAA", "Team Definition");
    public static final IArtifactType TeamWorkflow = new AtsArtifactTypes("AAMFDhSiF2OD+wiUqugA", "Team Workflow");
    public static final IArtifactType Version = new AtsArtifactTypes("AAMFDhder0oETnv14xQA", "Version");

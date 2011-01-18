@@ -22,13 +22,18 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.widgets.DecisionOption;
+import org.eclipse.osee.ats.util.widgets.XDecisionOptions;
 import org.eclipse.osee.ats.workflow.flow.DecisionWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.flow.GoalWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.flow.PeerToPeerWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.flow.TaskWorkflowDefinition;
+import org.eclipse.osee.ats.workflow.item.AtsAddDecisionReviewRule;
+import org.eclipse.osee.ats.workflow.item.AtsAddPeerToPeerReviewRule;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
@@ -57,11 +62,17 @@ public class WorkDefinitionFactory {
          try {
             for (WorkItemDefinition workItem : WorkItemDefinitionFactory.getWorkItemDefinitions()) {
                if (workItem instanceof WorkRuleDefinition) {
-                  WorkRuleDefinition workRule = (WorkRuleDefinition) workItem;
-                  RuleDefinition ruleDef = new RuleDefinition(workRule.getId());
-                  ruleDef.setDescription(workRule.getDescription());
-                  copyKeyValuePair(ruleDef, workRule);
-                  idToRule.put(ruleDef.getName(), ruleDef);
+                  if (workItem.getName().startsWith("atsAddDecisionReview")) {
+                     System.err.println("skipping rule " + workItem.getName());
+                  } else if (workItem.getName().startsWith("atsAddPeerToPeerReview")) {
+                     System.err.println("skipping rule " + workItem.getName());
+                  } else {
+                     WorkRuleDefinition workRule = (WorkRuleDefinition) workItem;
+                     RuleDefinition ruleDef = new RuleDefinition(workRule.getId());
+                     ruleDef.setDescription(workRule.getDescription());
+                     copyKeyValuePair(ruleDef, workRule);
+                     idToRule.put(ruleDef.getName(), ruleDef);
+                  }
                }
             }
          } catch (OseeCoreException ex) {
@@ -85,14 +96,17 @@ public class WorkDefinitionFactory {
    }
 
    public static WorkDefinitionMatch getWorkDefinition(String id) throws OseeCoreException {
+      String translatedId = WorkDefinitionFactory.getOverrideWorkDefId(id);
       if (!idToWorkDefintion.containsKey(id) || AtsUtil.isForceReloadWorkDefinitions()) {
          WorkDefinitionMatch match = new WorkDefinitionMatch();
          for (IAtsWorkDefinitionProvider provider : AtsWorkDefinitionProviders.getAtsTeamWorkflowExtensions()) {
-            WorkDefinition workDef = provider.getWorkFlowDefinition(id);
+            WorkDefinition workDef = provider.getWorkFlowDefinition(translatedId);
             if (workDef != null) {
                match.setWorkDefinition(workDef);
                match.getTrace().add(
-                  (String.format("from provider [%s] for id [%s] ", provider.getClass().getSimpleName(), id)));
+                  (String.format("from provider [%s] for id [%s] and override translated Id [%s]",
+                     provider.getClass().getSimpleName(), id, translatedId)));
+               break;
             }
          }
          if (!match.isMatched()) {
@@ -197,8 +211,22 @@ public class WorkDefinitionFactory {
 
                } else if (itemDef instanceof WorkRuleDefinition) {
                   WorkRuleDefinition workRule = (WorkRuleDefinition) itemDef;
-                  RuleDefinition ruleDef = getRuleById(workRule.getId());
-                  stateDef.addRule(ruleDef, "from related WorkItemDefintion");
+                  if (workRule.getName().startsWith("atsAddDecisionReview")) {
+                     DecisionReviewDefinition decRevDef = convertDecisionReviewRule(workRule);
+                     if (!Strings.isValid(decRevDef.getRelatedToState())) {
+                        decRevDef.setRelatedToState(stateDef.getName());
+                     }
+                     stateDef.getDecisionReviews().add(decRevDef);
+                  } else if (workRule.getName().startsWith("atsAddPeerToPeerReview")) {
+                     PeerReviewDefinition peerRevDef = convertPeerReviewRule(workRule);
+                     if (!Strings.isValid(peerRevDef.getRelatedToState())) {
+                        peerRevDef.setRelatedToState(stateDef.getName());
+                     }
+                     stateDef.getPeerReviews().add(peerRevDef);
+                  } else {
+                     RuleDefinition ruleDef = getRuleById(workRule.getId());
+                     stateDef.addRule(ruleDef, "from related WorkItemDefintion");
+                  }
                } else {
                   OseeLog.log(AtsPlugin.class, Level.SEVERE,
                      "Unexpected item type as page child -> " + itemDef.getType());
@@ -211,6 +239,42 @@ public class WorkDefinitionFactory {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
       return null;
+   }
+
+   private static DecisionReviewDefinition convertDecisionReviewRule(WorkRuleDefinition workRule) throws OseeCoreException {
+      DecisionReviewDefinition revDef = new DecisionReviewDefinition(workRule.getName());
+      revDef.setBlockingType(AtsAddDecisionReviewRule.getReviewBlockTypeOrDefault(workRule));
+      for (User user : AtsAddDecisionReviewRule.getAssigneesOrDefault(workRule)) {
+         revDef.getAssignees().add(user.getUserId());
+      }
+      revDef.setReviewTitle(AtsAddDecisionReviewRule.getReviewTitle(workRule));
+      revDef.setRelatedToState(AtsAddDecisionReviewRule.getRelatedToState(workRule));
+      revDef.setDescription(workRule.getDescription());
+      revDef.setAutoTransitionToDecision(true);
+      revDef.setStateEventType(AtsAddDecisionReviewRule.getStateEventType(workRule));
+      for (DecisionOption decOpt : XDecisionOptions.getDecisionOptions(AtsAddDecisionReviewRule.getDecisionOptionString(workRule))) {
+         DecisionReviewOption revOpt = new DecisionReviewOption(decOpt.getName());
+         revOpt.setFollowupRequired(decOpt.isFollowupRequired());
+         for (User user : decOpt.getAssignees()) {
+            revOpt.getUserIds().add(user.getUserId());
+         }
+         revDef.getOptions().add(revOpt);
+      }
+      return revDef;
+   }
+
+   private static PeerReviewDefinition convertPeerReviewRule(WorkRuleDefinition workRule) throws OseeCoreException {
+      PeerReviewDefinition revDef = new PeerReviewDefinition(workRule.getName());
+      revDef.setBlockingType(AtsAddPeerToPeerReviewRule.getReviewBlockTypeOrDefault(workRule));
+      for (User user : AtsAddPeerToPeerReviewRule.getAssigneesOrDefault(workRule)) {
+         revDef.getAssignees().add(user.getUserId());
+      }
+      revDef.setReviewTitle(AtsAddPeerToPeerReviewRule.getReviewTitle(workRule));
+      revDef.setRelatedToState(AtsAddPeerToPeerReviewRule.getRelatedToState(workRule));
+      revDef.setDescription(workRule.getDescription());
+      revDef.setLocation(AtsAddPeerToPeerReviewRule.getLocation(workRule));
+      revDef.setStateEventType(AtsAddPeerToPeerReviewRule.getStateEventType(workRule));
+      return revDef;
    }
 
    private static void copyKeyValuePair(AbstractWorkDefItem itemDef, WorkItemDefinition workItem) {
@@ -226,9 +290,13 @@ public class WorkDefinitionFactory {
       // If this artifact specifies it's own workflow definition, use it
       String workFlowDefId = artifact.getSoleAttributeValue(AtsAttributeTypes.WorkflowDefinition, null);
       if (Strings.isValid(workFlowDefId)) {
-         WorkDefinitionMatch match = getWorkDefinition(workFlowDefId);
+         String translatedId = WorkDefinitionFactory.getOverrideWorkDefId(workFlowDefId);
+         WorkDefinitionMatch match = getWorkDefinition(translatedId);
          if (match.isMatched()) {
-            match.getTrace().add(String.format("from artifact [%s] for id [%s] ", artifact, workFlowDefId));
+            match.getTrace().add(
+               String.format("from artifact [%s] for id [%s] and override translated Id [%s]", artifact, workFlowDefId,
+                  translatedId));
+            return match;
          }
       }
       return new WorkDefinitionMatch();
@@ -239,9 +307,11 @@ public class WorkDefinitionFactory {
       for (IAtsTeamWorkflow provider : TeamWorkflowExtensions.getAtsTeamWorkflowExtensions()) {
          String workFlowDefId = provider.getRelatedTaskWorkflowDefinitionId(taskArt.getParentSMA());
          if (Strings.isValid(workFlowDefId)) {
-            match = WorkDefinitionFactory.getWorkDefinition(workFlowDefId);
+            String translatedId = getOverrideWorkDefId(workFlowDefId);
+            match = WorkDefinitionFactory.getWorkDefinition(translatedId);
             match.getTrace().add(
-               (String.format("from provider [%s] for id [%s]", provider.getClass().getSimpleName(), workFlowDefId)));
+               (String.format("from provider [%s] for id [%s] and override translated Id [%s]",
+                  provider.getClass().getSimpleName(), workFlowDefId, translatedId)));
             break;
          }
       }
@@ -263,9 +333,12 @@ public class WorkDefinitionFactory {
       }
       if (!match.isMatched()) {
          // Else, use default Task workflow
-         match = getWorkDefinition(TaskWorkflowDefinition.ID);
+         String translatedId = getOverrideWorkDefId(TaskWorkflowDefinition.ID);
+         match = getWorkDefinition(translatedId);
          if (match.isMatched()) {
-            match.getTrace().add(String.format("default TaskWorkflowDefinition ID [%s]", TaskWorkflowDefinition.ID));
+            match.getTrace().add(
+               String.format("default TaskWorkflowDefinition ID [%s] and override translated Id [%s]",
+                  TaskWorkflowDefinition.ID, translatedId));
          }
       }
       return match;
@@ -282,7 +355,8 @@ public class WorkDefinitionFactory {
          for (IAtsTeamWorkflow provider : TeamWorkflowExtensions.getAtsTeamWorkflowExtensions()) {
             String workFlowDefId = provider.getWorkflowDefinitionId(aba);
             if (Strings.isValid(workFlowDefId)) {
-               match = WorkDefinitionFactory.getWorkDefinition(workFlowDefId);
+               match =
+                  WorkDefinitionFactory.getWorkDefinition(WorkDefinitionFactory.getOverrideWorkDefId(workFlowDefId));
             }
          }
          if (!match.isMatched()) {
@@ -294,11 +368,15 @@ public class WorkDefinitionFactory {
                if (artifact instanceof TeamWorkFlowArtifact) {
                   match = ((TeamWorkFlowArtifact) artifact).getTeamDefinition().getWorkDefinition();
                } else if (artifact instanceof GoalArtifact) {
-                  match = getWorkDefinition(GoalWorkflowDefinition.ID);
+                  match = getWorkDefinition(getOverrideWorkDefId(GoalWorkflowDefinition.ID));
+                  match.getTrace().add(String.format("Override translated from id [%s]", GoalWorkflowDefinition.ID));
                } else if (artifact instanceof PeerToPeerReviewArtifact) {
-                  match = getWorkDefinition(PeerToPeerWorkflowDefinition.ID);
+                  match = getWorkDefinition(getOverrideWorkDefId(PeerToPeerWorkflowDefinition.ID));
+                  match.getTrace().add(
+                     String.format("Override translated from id [%s]", PeerToPeerWorkflowDefinition.ID));
                } else if (artifact instanceof DecisionReviewArtifact) {
-                  match = getWorkDefinition(DecisionWorkflowDefinition.ID);
+                  match = getWorkDefinition(getOverrideWorkDefId(DecisionWorkflowDefinition.ID));
+                  match.getTrace().add(String.format("Override translated from id [%s]", DecisionWorkflowDefinition.ID));
                }
             }
          }
@@ -309,4 +387,45 @@ public class WorkDefinitionFactory {
    public static Set<WorkDefinitionMatch> getWorkDefinitions() {
       return workDefinitions;
    }
+
+   public static String getOverrideWorkDefId(String id) {
+      // Don't override if no providers available (dsl plugins not released)
+      if (AtsUtil.isUseNewWorkDefinitions() && AtsWorkDefinitionProviders.getAtsTeamWorkflowExtensions().size() > 0) {
+         Map<String, String> idToName = new HashMap<String, String>();
+         // To Be Converted
+         idToName.put("ah6.common", "WorkDef_Team_Ah6i_Common");
+         idToName.put("ah6.issue", "WorkDef_Team_Ah6i_Issue");
+         idToName.put("lba.common.code", "WorkDef_Team_LbaCode");
+         idToName.put("lba.common.pids.req", "WorkDef_Team_LbaPids");
+         idToName.put("lba.common.sw_techappr", "WorkDef_Team_Lba_SwTechAppr");
+         idToName.put("lba.common.swdesign", "WorkDef_Team_Lba_SwDesign");
+         idToName.put("lba.common.test", "WorkDef_Team_Lba_Test_Default");
+         idToName.put("lba.common.test_procedures", "WorkDef_Team_Lba_Procedures");
+         idToName.put("lba.cte", "WorkDef_Team_Cte");
+         idToName.put("lba.deliverable", "WorkDef_Team_Deliverable");
+         idToName.put("lba.processTeam", "WorkDef_Team_Processes");
+         idToName.put("osee.decisionReview", "WorkDef_Review_Decision");
+         idToName.put("osee.goalWorkflow", "WorkDef_Goal");
+         idToName.put("osee.peerToPeerReview", "WorkDef_Review_PeerToPeer");
+         idToName.put("osee.simpleTeamWorkflow", "WorkDef_Team_Simple");
+         idToName.put("demo.code", "WorkDef_Team_Demo_Code");
+         idToName.put("demo.req", "WorkDef_Team_Demo_Req");
+         idToName.put("demo.swdesign", "WorkDef_Team_Demo_SwDesign");
+         idToName.put("demo.test", "WorkDef_Team_Demo_Test");
+         // Done converting
+         idToName.put("osee.taskWorkflow", "WorkDef_Task_Default");
+         idToName.put("lba.common.req", "WorkDef_Team_Lba_Req");
+         idToName.put("osee.ats.teamWorkflow", "WorkDef_Team_Default");
+         idToName.put("osee.ats.taskWorkflow", "WorkDef_Task_Default");
+         idToName.put("lba.common.test.tpcr", "WorkDef_Team_Lba_Test_Tpcr");
+
+         if (idToName.containsKey(id)) {
+            OseeLog.log(AtsPlugin.class, Level.INFO,
+               String.format("Override WorkDefinition [%s] with [%s]", id, idToName.get(id)));
+            return idToName.get(id);
+         }
+      }
+      return id;
+   }
+
 }

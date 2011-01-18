@@ -29,7 +29,11 @@ import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.workdef.CompositeStateItem;
+import org.eclipse.osee.ats.workdef.DecisionReviewDefinition;
+import org.eclipse.osee.ats.workdef.DecisionReviewOption;
+import org.eclipse.osee.ats.workdef.PeerReviewDefinition;
 import org.eclipse.osee.ats.workdef.RuleDefinition;
 import org.eclipse.osee.ats.workdef.StateDefinition;
 import org.eclipse.osee.ats.workdef.StateItem;
@@ -40,6 +44,8 @@ import org.eclipse.osee.ats.workdef.WorkDefinitionMatch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -147,6 +153,18 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
             return ImageManager.getImage(FrameworkImage.RULE);
          } else if (element instanceof RuleAndLocation) {
             return ImageManager.getImage(FrameworkImage.RULE);
+         } else if (element instanceof User) {
+            return ImageManager.getImage(FrameworkImage.USER);
+         } else if (element instanceof DecisionReviewDefinition) {
+            return ImageManager.getImage(AtsImage.REVIEW);
+         } else if (element instanceof PeerReviewDefinition) {
+            return ImageManager.getImage(AtsImage.REVIEW);
+         } else if (element instanceof WrappedDecisionReviews) {
+            return ImageManager.getImage(AtsImage.REVIEW);
+         } else if (element instanceof WrappedPeerReviews) {
+            return ImageManager.getImage(AtsImage.REVIEW);
+         } else if (element instanceof DecisionReviewOption) {
+            return ImageManager.getImage(FrameworkImage.QUESTION);
          }
          return null;
       }
@@ -185,38 +203,29 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
          } else if (element instanceof WrappedTrace) {
             items.addAll(((WrappedTrace) element).getTrace());
          } else if (element instanceof WorkDefinitionMatch) {
-            for (String id : ((WorkDefinitionMatch) element).getWorkDefinition().getIds()) {
-               items.add("Id: " + id);
-            }
-            items.addAll(((WorkDefinitionMatch) element).getWorkDefinition().getStatesOrdered());
-            items.addAll(((WorkDefinitionMatch) element).getWorkDefinition().getRules());
-            items.add(new WrappedTrace(((WorkDefinitionMatch) element).getTrace()));
+            getChildrenFromWorkDefinitionMatch(element, items);
          } else if (element instanceof StateDefinition) {
-            StateDefinition stateDef = (StateDefinition) element;
-            items.add(new WrappedLayout(stateDef.getStateItems()));
-            items.add(new WrappedRules(stateDef, awa));
-            items.add(new WrappedTransitions(stateDef));
+            getChildrenFromStateDefinition(element, items);
          } else if (element instanceof CompositeStateItem) {
             items.addAll(((CompositeStateItem) element).getStateItems());
+         } else if (element instanceof User) {
+            items.add("Assignee: " + ((User) element).getName());
          } else if (element instanceof WrappedTransitions) {
             items.addAll(((WrappedTransitions) element).getTransitions());
+         } else if (element instanceof DecisionReviewDefinition) {
+            getChildrenFromDecisionReviewDefinition(element, items);
+         } else if (element instanceof PeerReviewDefinition) {
+            getChildrenFromPeerReviewDefinition(element, items);
+         } else if (element instanceof DecisionReviewOption) {
+            getUsersFromDecisionReviewOpt((DecisionReviewOption) element, items);
+         } else if (element instanceof WrappedDecisionReviews) {
+            items.addAll(((WrappedDecisionReviews) element).getDecisionReviews());
+         } else if (element instanceof WrappedPeerReviews) {
+            items.addAll(((WrappedPeerReviews) element).getPeerReviews());
          } else if (element instanceof WrappedRules) {
             items.addAll(((WrappedRules) element).getRuleAndLocations());
          } else if (element instanceof WidgetDefinition) {
-            items.add("XWidget: " + ((WidgetDefinition) element).getXWidgetName());
-            items.add("Attribute Name: " + ((WidgetDefinition) element).getAtrributeName());
-            if (Strings.isValid(((WidgetDefinition) element).getDescription())) {
-               items.add("Description: " + ((WidgetDefinition) element).getDescription());
-            }
-            if (((WidgetDefinition) element).getHeight() > 0) {
-               items.add("Height: " + ((WidgetDefinition) element).getHeight());
-            }
-            if (Strings.isValid(((WidgetDefinition) element).getAtrributeName())) {
-               items.add("Tooltip: " + ((WidgetDefinition) element).getAtrributeName());
-            }
-            if (!((WidgetDefinition) element).getOptions().getXOptions().isEmpty()) {
-               items.addAll(((WidgetDefinition) element).getOptions().getXOptions());
-            }
+            getChildrenFromWidgetDefinition(element, items);
          } else if (element instanceof String) {
             items.add(element);
          } else if (element instanceof WrappedStates) {
@@ -224,6 +233,97 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
          }
 
          return items.toArray(new Object[items.size()]);
+      }
+
+      private void getChildrenFromWidgetDefinition(Object element, List<Object> items) {
+         items.add("XWidget: " + ((WidgetDefinition) element).getXWidgetName());
+         items.add("Attribute Name: " + ((WidgetDefinition) element).getAtrributeName());
+         if (Strings.isValid(((WidgetDefinition) element).getDescription())) {
+            items.add("Description: " + ((WidgetDefinition) element).getDescription());
+         }
+         if (((WidgetDefinition) element).getHeight() > 0) {
+            items.add("Height: " + ((WidgetDefinition) element).getHeight());
+         }
+         if (Strings.isValid(((WidgetDefinition) element).getAtrributeName())) {
+            items.add("Tooltip: " + ((WidgetDefinition) element).getAtrributeName());
+         }
+         if (!((WidgetDefinition) element).getOptions().getXOptions().isEmpty()) {
+            items.addAll(((WidgetDefinition) element).getOptions().getXOptions());
+         }
+      }
+
+      private void getChildrenFromPeerReviewDefinition(Object element, List<Object> items) {
+         if (Strings.isValid(((PeerReviewDefinition) element).getDescription())) {
+            items.add("Description: " + ((PeerReviewDefinition) element).getDescription());
+         }
+         if (Strings.isValid(((PeerReviewDefinition) element).getLocation())) {
+            items.add("Description: " + ((PeerReviewDefinition) element).getLocation());
+         }
+         items.add("On Event: " + ((PeerReviewDefinition) element).getStateEventType().name());
+         items.add("Related To State: " + ((PeerReviewDefinition) element).getRelatedToState());
+         items.add("Review Blocks: " + ((PeerReviewDefinition) element).getBlockingType().name());
+         try {
+            items.addAll(UserManager.getUsersByUserId(((PeerReviewDefinition) element).getAssignees()));
+         } catch (OseeCoreException ex) {
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         }
+      }
+
+      private void getChildrenFromDecisionReviewDefinition(Object element, List<Object> items) {
+         if (Strings.isValid(((DecisionReviewDefinition) element).getDescription())) {
+            items.add("Description: " + ((DecisionReviewDefinition) element).getDescription());
+         }
+         items.add("On Event: " + ((DecisionReviewDefinition) element).getStateEventType().name());
+         items.add("Related To State: " + ((DecisionReviewDefinition) element).getRelatedToState());
+         items.add("Review Blocks: " + ((DecisionReviewDefinition) element).getBlockingType().name());
+         items.add("Auto Transition to Decision: " + ((DecisionReviewDefinition) element).isAutoTransitionToDecision());
+         try {
+            items.addAll(UserManager.getUsersByUserId(((DecisionReviewDefinition) element).getAssignees()));
+         } catch (OseeCoreException ex) {
+            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         }
+         items.addAll(((DecisionReviewDefinition) element).getOptions());
+      }
+
+      private void getChildrenFromStateDefinition(Object element, List<Object> items) {
+         StateDefinition stateDef = (StateDefinition) element;
+         items.add(new WrappedLayout(stateDef.getStateItems()));
+         items.add(new WrappedRules(stateDef, awa));
+         if (editor.getSma().isOfType(AtsArtifactTypes.TeamWorkflow)) {
+            items.add(new WrappedDecisionReviews(stateDef.getDecisionReviews()));
+            items.add(new WrappedPeerReviews(stateDef.getPeerReviews()));
+         }
+         items.add(new WrappedTransitions(stateDef));
+      }
+
+      private void getChildrenFromWorkDefinitionMatch(Object element, List<Object> items) {
+         for (String id : ((WorkDefinitionMatch) element).getWorkDefinition().getIds()) {
+            items.add("Id: " + id);
+         }
+         items.addAll(((WorkDefinitionMatch) element).getWorkDefinition().getStatesOrdered());
+         items.addAll(((WorkDefinitionMatch) element).getWorkDefinition().getRules());
+         items.add(new WrappedTrace(((WorkDefinitionMatch) element).getTrace()));
+      }
+
+      private void getUsersFromDecisionReviewOpt(DecisionReviewOption revOpt, List<Object> items) {
+         for (String userId : revOpt.getUserIds()) {
+            try {
+               User user = UserManager.getUserByUserId(userId);
+               items.add(user);
+            } catch (OseeCoreException ex) {
+               items.add("Erroring getting user: " + ex.getLocalizedMessage());
+               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            }
+         }
+         for (String userName : revOpt.getUserNames()) {
+            try {
+               User user = UserManager.getUserByName(userName);
+               items.add(user);
+            } catch (OseeCoreException ex) {
+               items.add(String.format("Erroring getting user by name [%s] : [%s]", userName, ex.getLocalizedMessage()));
+               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            }
+         }
       }
 
       @Override
@@ -258,10 +358,20 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
             return true;
          } else if (element instanceof WidgetDefinition) {
             return true;
+         } else if (element instanceof PeerReviewDefinition) {
+            return true;
+         } else if (element instanceof DecisionReviewDefinition) {
+            return true;
+         } else if (element instanceof DecisionReviewOption) {
+            return !((DecisionReviewOption) element).getUserIds().isEmpty();
          } else if (element instanceof WrappedTransitions) {
             return true;
          } else if (element instanceof WrappedLayout) {
             return !((WrappedLayout) element).stateItems.isEmpty();
+         } else if (element instanceof WrappedDecisionReviews) {
+            return !((WrappedDecisionReviews) element).decReviews.isEmpty();
+         } else if (element instanceof WrappedPeerReviews) {
+            return !((WrappedPeerReviews) element).decReviews.isEmpty();
          } else if (element instanceof WrappedTrace) {
             return !((WrappedTrace) element).trace.isEmpty();
          } else if (element instanceof WrappedStates) {
@@ -353,6 +463,40 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
 
       public Collection<StateDefinition> getStates() {
          return states;
+      }
+
+   }
+   public class WrappedDecisionReviews {
+      private final Collection<DecisionReviewDefinition> decReviews;
+
+      public WrappedDecisionReviews(Collection<DecisionReviewDefinition> decReviews) {
+         this.decReviews = decReviews;
+      }
+
+      @Override
+      public String toString() {
+         return "Decision Reviews" + (decReviews.isEmpty() ? " (Empty)" : "");
+      }
+
+      public Collection<DecisionReviewDefinition> getDecisionReviews() {
+         return decReviews;
+      }
+
+   }
+   public class WrappedPeerReviews {
+      private final Collection<PeerReviewDefinition> decReviews;
+
+      public WrappedPeerReviews(Collection<PeerReviewDefinition> decReviews) {
+         this.decReviews = decReviews;
+      }
+
+      @Override
+      public String toString() {
+         return "Peer Reviews" + (decReviews.isEmpty() ? " (Empty)" : "");
+      }
+
+      public Collection<PeerReviewDefinition> getPeerReviews() {
+         return decReviews;
       }
 
    }

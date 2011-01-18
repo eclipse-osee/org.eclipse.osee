@@ -10,13 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.widgets;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.AbstractReviewArtifact;
-import org.eclipse.osee.ats.artifact.AbstractReviewArtifact.ReviewBlockType;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.artifact.DecisionReviewState;
@@ -28,6 +30,8 @@ import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.TeamState;
 import org.eclipse.osee.ats.util.TransitionOption;
+import org.eclipse.osee.ats.workdef.DecisionReviewOption;
+import org.eclipse.osee.ats.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.workflow.TransitionManager;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -57,8 +61,6 @@ public class ReviewManager {
     * Create a new decision review configured and transitioned to handle action validation
     * 
     * @param force will force the creation of the review without checking that a review should be created
-    * @param createdDate TODO
-    * @param createdBy TODO
     */
    public static DecisionReviewArtifact createValidateReview(TeamWorkFlowArtifact teamArt, boolean force, Date createdDate, User createdBy, SkynetTransaction transaction) throws OseeCoreException {
       // If not validate page, don't do anything
@@ -97,14 +99,14 @@ public class ReviewManager {
       return null;
    }
 
-   public static DecisionReviewArtifact createNewDecisionReview(TeamWorkFlowArtifact teamArt, String reviewTitle, String description, String againstState, ReviewBlockType reviewBlockType, String options, Collection<User> assignees, Date createdDate, User createdBy, SkynetTransaction transaction) throws OseeCoreException {
+   public static DecisionReviewArtifact createNewDecisionReview(TeamWorkFlowArtifact teamArt, String reviewTitle, String description, String againstState, ReviewBlockType reviewBlockType, Collection<DecisionReviewOption> options, Collection<User> assignees, Date createdDate, User createdBy, SkynetTransaction transaction) throws OseeCoreException {
       DecisionReviewArtifact decRev =
          ReviewManager.createNewDecisionReview(teamArt, reviewBlockType, reviewTitle, againstState, description,
             options, assignees, createdDate, createdBy);
       return decRev;
    }
 
-   public static DecisionReviewArtifact createNewDecisionReviewAndTransitionToDecision(TeamWorkFlowArtifact teamArt, String reviewTitle, String description, String againstState, ReviewBlockType reviewBlockType, String options, Collection<User> assignees, Date createdDate, User createdBy, SkynetTransaction transaction) throws OseeCoreException {
+   public static DecisionReviewArtifact createNewDecisionReviewAndTransitionToDecision(TeamWorkFlowArtifact teamArt, String reviewTitle, String description, String againstState, ReviewBlockType reviewBlockType, Collection<DecisionReviewOption> options, Collection<User> assignees, Date createdDate, User createdBy, SkynetTransaction transaction) throws OseeCoreException {
       DecisionReviewArtifact decRev =
          ReviewManager.createNewDecisionReview(teamArt, reviewBlockType, reviewTitle, againstState, description,
             options, assignees, createdDate, createdBy);
@@ -141,8 +143,6 @@ public class ReviewManager {
 
    /**
     * Return Remain Hours for all reviews
-    * 
-    * @return remain hours
     */
    public static double getRemainHours(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       double hours = 0;
@@ -157,7 +157,6 @@ public class ReviewManager {
     * Return Estimated Review Hours of "Related to State" stateName
     * 
     * @param relatedToState state name of parent workflow's state
-    * @return Returns the Estimated Hours
     */
    public static double getEstimatedHours(TeamWorkFlowArtifact teamArt, IWorkPage relatedToState) throws OseeCoreException {
       double hours = 0;
@@ -169,8 +168,6 @@ public class ReviewManager {
 
    /**
     * Return Estimated Hours for all reviews
-    * 
-    * @return estimated hours
     */
    public static double getEstimatedHours(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       double hours = 0;
@@ -244,7 +241,6 @@ public class ReviewManager {
     * Return Hours Spent for Reviews of "Related to State" stateName
     * 
     * @param relatedToState state name of parent workflow's state
-    * @return Returns the Hours Spent
     */
    public static double getHoursSpent(TeamWorkFlowArtifact teamArt, IWorkPage relatedToState) throws OseeCoreException {
       double spent = 0;
@@ -258,7 +254,6 @@ public class ReviewManager {
     * Return Total Percent Complete / # Reviews for "Related to State" stateName
     * 
     * @param relatedToState state name of parent workflow's state
-    * @return Returns the Percent Complete.
     */
    public static int getPercentComplete(TeamWorkFlowArtifact teamArt, IWorkPage relatedToState) throws OseeCoreException {
       int spent = 0;
@@ -279,11 +274,29 @@ public class ReviewManager {
          "Enter description of the decision, if any", getDefaultDecisionReviewOptions(), null, createdDate, createdBy);
    }
 
-   public static String getDefaultDecisionReviewOptions() throws OseeCoreException {
-      return "Yes;Followup;<" + UserManager.getUser().getUserId() + ">\n" + "No;Completed;";
+   public static List<DecisionReviewOption> getDefaultDecisionReviewOptions() throws OseeCoreException {
+      List<DecisionReviewOption> options = new ArrayList<DecisionReviewOption>();
+      options.add(new DecisionReviewOption("Yes", true, Arrays.asList(UserManager.getUser().getUserId())));
+      options.add(new DecisionReviewOption("No", false, null));
+      return options;
    }
 
-   public static DecisionReviewArtifact createNewDecisionReview(TeamWorkFlowArtifact teamArt, ReviewBlockType reviewBlockType, String title, String relatedToState, String description, String options, Collection<User> assignees, Date createdDate, User createdBy) throws OseeCoreException {
+   public static String getDecisionReviewOptionsString(Collection<DecisionReviewOption> options) {
+      StringBuffer sb = new StringBuffer();
+      for (DecisionReviewOption opt : options) {
+         sb.append(opt.getName());
+         sb.append(";");
+         sb.append(opt.isFollowupRequired() ? "Followup" : "Completed");
+         sb.append(";");
+         for (String userId : opt.getUserIds()) {
+            sb.append("<" + userId + ">");
+         }
+         sb.append("\n");
+      }
+      return sb.toString();
+   }
+
+   public static DecisionReviewArtifact createNewDecisionReview(TeamWorkFlowArtifact teamArt, ReviewBlockType reviewBlockType, String title, String relatedToState, String description, Collection<DecisionReviewOption> options, Collection<User> assignees, Date createdDate, User createdBy) throws OseeCoreException {
       DecisionReviewArtifact decRev =
          (DecisionReviewArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.DecisionReview,
             AtsUtil.getAtsBranch(), title);
@@ -300,9 +313,7 @@ public class ReviewManager {
       if (Strings.isValid(description)) {
          decRev.setSoleAttributeValue(AtsAttributeTypes.Description, description);
       }
-      if (Strings.isValid(options)) {
-         decRev.setSoleAttributeValue(AtsAttributeTypes.DecisionReviewOptions, options);
-      }
+      decRev.setSoleAttributeValue(AtsAttributeTypes.DecisionReviewOptions, getDecisionReviewOptionsString(options));
       if (reviewBlockType != null) {
          decRev.setSoleAttributeFromString(AtsAttributeTypes.ReviewBlocks, reviewBlockType.name());
       }

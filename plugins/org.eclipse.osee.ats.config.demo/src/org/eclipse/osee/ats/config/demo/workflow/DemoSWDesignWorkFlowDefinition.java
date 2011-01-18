@@ -11,12 +11,12 @@
 package org.eclipse.osee.ats.config.demo.workflow;
 
 import java.util.Arrays;
-import org.eclipse.osee.ats.artifact.AbstractReviewArtifact.ReviewBlockType;
 import org.eclipse.osee.ats.util.TeamState;
+import org.eclipse.osee.ats.workdef.ReviewBlockType;
+import org.eclipse.osee.ats.workdef.StateEventType;
 import org.eclipse.osee.ats.workflow.flow.TeamWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.item.AtsStatePercentCompleteWeightDefaultWorkflowRule;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
-import org.eclipse.osee.ats.workflow.item.StateEventType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;

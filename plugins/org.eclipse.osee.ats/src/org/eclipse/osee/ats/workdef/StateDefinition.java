@@ -23,6 +23,8 @@ public class StateDefinition extends AbstractWorkDefItem implements IWorkPage {
    private final List<StateDefinition> toStates = new ArrayList<StateDefinition>(5);
    private StateDefinition defaultToState;
    private final List<StateDefinition> overrideAttributeValidationStates = new ArrayList<StateDefinition>(5);
+   private final List<DecisionReviewDefinition> decisionReviews = new ArrayList<DecisionReviewDefinition>();
+   private final List<PeerReviewDefinition> peerReviews = new ArrayList<PeerReviewDefinition>();
    private WorkDefinition workDefinition;
    protected TaskResolutionOptionRule taskResolutionOptions;
 
@@ -180,6 +182,14 @@ public class StateDefinition extends AbstractWorkDefItem implements IWorkPage {
 
    public void setDefaultToState(StateDefinition defaultToState) {
       this.defaultToState = defaultToState;
+   }
+
+   public List<DecisionReviewDefinition> getDecisionReviews() {
+      return decisionReviews;
+   }
+
+   public List<PeerReviewDefinition> getPeerReviews() {
+      return peerReviews;
    }
 
 }

@@ -8,12 +8,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.workflow.item;
+package org.eclipse.osee.ats.workdef;
 
 /**
  * @author Donald G. Dunne
  */
 public enum StateEventType {
+   None,
    TransitionTo,
    CreateBranch,
    CommitBranch;

@@ -149,6 +149,7 @@ public enum FrameworkImage implements KeyedImage {
    PREVIEW_ARTIFACT("preview_artifact.gif"),
    PRINT("print.gif"),
    PURPLE("purple.gif"),
+   QUESTION("question.gif"),
    RECTANGLE_16("rectangle16.gif"),
    RECTANGLE_24("rectangle24.gif"),
    RELATION("relate.gif"),

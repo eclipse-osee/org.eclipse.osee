@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.util.widgets.defect.DefectManager;
 import org.eclipse.osee.ats.util.widgets.role.UserRole;
 import org.eclipse.osee.ats.util.widgets.role.UserRole.Role;
 import org.eclipse.osee.ats.util.widgets.role.UserRoleManager;
+import org.eclipse.osee.ats.workdef.ReviewBlockType;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -43,11 +44,6 @@ public abstract class AbstractReviewArtifact extends AbstractTaskableArtifact {
    private XActionableItemsDam actionableItemsDam;
    private Collection<UserRole> preSaveReviewRoleComplete;
    private Boolean standAlone = null;
-   public static enum ReviewBlockType {
-      None,
-      Transition,
-      Commit
-   };
 
    public AbstractReviewArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);

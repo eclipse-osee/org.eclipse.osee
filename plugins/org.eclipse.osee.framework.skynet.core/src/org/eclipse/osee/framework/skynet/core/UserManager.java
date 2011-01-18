@@ -67,6 +67,18 @@ public final class UserManager {
       ClientUser.releaseUser();
    }
 
+   public static List<User> getUsersByUserId(Collection<String> userIds) throws OseeCoreException {
+      List<User> users = new ArrayList<User>();
+      for (String userId : userIds) {
+         try {
+            users.add(getUserByUserId(userId));
+         } catch (UserNotInDatabase ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         }
+      }
+      return users;
+   }
+
    /**
     * @return shallow copy of ArrayList of all active users in the datastore sorted by user name
     */

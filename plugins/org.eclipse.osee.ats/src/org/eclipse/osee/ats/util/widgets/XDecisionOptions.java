@@ -52,7 +52,7 @@ public class XDecisionOptions {
       return smaRef.get();
    }
 
-   public Set<DecisionOption> getDecisionOptions(String decisionOptions) {
+   public static Set<DecisionOption> getDecisionOptions(String decisionOptions) {
       Set<DecisionOption> decOptions = new HashSet<DecisionOption>();
       for (String decsionOpt : decisionOptions.split("[\n\r]+")) {
          DecisionOption state = new DecisionOption();
