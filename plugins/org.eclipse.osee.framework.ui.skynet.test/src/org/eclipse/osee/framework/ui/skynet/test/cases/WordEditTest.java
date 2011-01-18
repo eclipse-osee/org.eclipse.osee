@@ -139,10 +139,10 @@ public class WordEditTest {
       OseeEventManager.addListener(listener);
       OseeEventManager.setDisableEvents(false);
       try {
-         editFile.setContents(new ByteArrayInputStream(content.getBytes("UTF-8")), IResource.FORCE,
-            new NullProgressMonitor());
          synchronized (listener) {
-            listener.wait(20000);
+            editFile.setContents(new ByteArrayInputStream(content.getBytes("UTF-8")), IResource.FORCE,
+               new NullProgressMonitor());
+            listener.wait(60000);
          }
       } finally {
          OseeEventManager.setDisableEvents(eventBoolean);
@@ -188,7 +188,7 @@ public class WordEditTest {
 
    private static final class UpdateArtifactListener implements IArtifactEventListener {
       private final EventBasicGuidArtifact artToLookFor;
-      private boolean wasUpdateReceived;
+      private volatile boolean wasUpdateReceived;
 
       public UpdateArtifactListener(EventModType modType, Artifact artifact) {
          super();
@@ -199,14 +199,14 @@ public class WordEditTest {
       public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
          List<EventBasicGuidArtifact> changes = artifactEvent.getArtifacts();
          if (changes.contains(artToLookFor)) {
-            wasUpdateReceived = true;
             synchronized (this) {
+               wasUpdateReceived = true;
                notify();
             }
          }
       }
 
-      public boolean wasUpdateReceived() {
+      public synchronized boolean wasUpdateReceived() {
          return wasUpdateReceived;
       }
 
