@@ -57,9 +57,6 @@ public final class UserManager {
     * Returns the currently authenticated user
     */
    public static User getUser() throws OseeCoreException {
-      if (duringMainUserCreation || DbUtil.isDbInit() && !BranchManager.branchExists(CoreBranches.COMMON)) {
-         return BootStrapUser.getInstance();
-      }
       return ClientUser.getMainUser();
    }
 

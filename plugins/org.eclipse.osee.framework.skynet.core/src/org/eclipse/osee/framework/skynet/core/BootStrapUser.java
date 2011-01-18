@@ -41,11 +41,6 @@ public class BootStrapUser extends User {
    }
 
    @Override
-   public String getName() {
-      return SystemUser.BootStrap.getName();
-   }
-
-   @Override
    public String getPhone() {
       return "phone home";
    }
