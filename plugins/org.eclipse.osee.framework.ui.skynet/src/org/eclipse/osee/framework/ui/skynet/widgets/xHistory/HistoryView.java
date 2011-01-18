@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.ActionContributionItem;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -55,7 +56,7 @@ import org.eclipse.osee.framework.ui.skynet.action.ITransactionRecordSelectionPr
 import org.eclipse.osee.framework.ui.skynet.action.WasIsCompareEditorAction;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiUtil;
 import org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener;
-import org.eclipse.osee.framework.ui.skynet.menu.ArtifactDiffMenu;
+import org.eclipse.osee.framework.ui.skynet.menu.CompareArtifactAction;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetViews;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericViewPart;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -178,7 +179,9 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
       new MenuItem(popupMenu, SWT.SEPARATOR);
 
       createChangeReportMenuItem(popupMenu);
-      ArtifactDiffMenu.createDiffMenuItem(popupMenu, xHistoryWidget.getXViewer(), "Compare two Artifacts");
+
+      IAction action = new CompareArtifactAction("Compare two Artifacts", xHistoryWidget.getXViewer());
+      (new ActionContributionItem(action)).fill(popupMenu, 3);
 
       (new ActionContributionItem(new EditTransactionComment(this))).fill(popupMenu, 3);
       (new ActionContributionItem(new WasIsCompareEditorAction())).fill(popupMenu, 3);
@@ -330,5 +333,4 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
    public void refreshUI(ArrayList<TransactionRecord> records) {
       xHistoryWidget.refresh();
    }
-
 }
