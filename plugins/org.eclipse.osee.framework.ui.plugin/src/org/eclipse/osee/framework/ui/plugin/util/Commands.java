@@ -29,6 +29,7 @@ public final class Commands {
 
    // This is a utility class and should not ever be instantiated
    private Commands() {
+      // Utility Class
    }
 
    /**
@@ -49,7 +50,7 @@ public final class Commands {
          mnemonic, tooltip, helpContextId);
    }
 
-   private static CommandContributionItem createCommandContributionItem(IServiceLocator site, String id, String shortCommandId, String name, IParameter[] parameterDefs, Map<String, String> parameters, ImageDescriptor image, String mnemonic, String tooltip, String helpContextId) {
+   public static CommandContributionItem createCommandContributionItem(IServiceLocator site, String id, String shortCommandId, String name, IParameter[] parameterDefs, Map<String, String> parameters, ImageDescriptor image, String mnemonic, String tooltip, String helpContextId) {
       ICommandService commandService = (ICommandService) site.getService(ICommandService.class);
       String commandId = id;
 
