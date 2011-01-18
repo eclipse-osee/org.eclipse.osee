@@ -120,12 +120,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       initializeSMA();
    }
 
-   @Override
-   public void reloadAttributesAndRelations() throws OseeCoreException {
-      super.reloadAttributesAndRelations();
-      initializeSMA();
-   }
-
    @SuppressWarnings("unused")
    protected void initializeSMA() throws OseeCoreException {
       initalizePreSaveCache();
