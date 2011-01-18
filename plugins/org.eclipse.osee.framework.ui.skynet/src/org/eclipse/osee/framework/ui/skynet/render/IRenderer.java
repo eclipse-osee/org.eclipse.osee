@@ -90,5 +90,5 @@ public interface IRenderer {
 
    public IComparator getComparator();
 
-   public List<IAttributeType> orderAttributeNames(Artifact artifact, Collection<IAttributeType> attributeTypes);
+   public List<IAttributeType> getOrderedAttributeTypes(Artifact artifact, Collection<IAttributeType> attributeTypes);
 }
