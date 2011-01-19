@@ -15,6 +15,7 @@ import java.io.Serializable;
 import java.net.URI;
 import java.rmi.server.ExportException;
 import java.util.HashSet;
+
 import org.eclipse.osee.framework.jdk.core.util.EnhancedProperties;
 
 /**
@@ -112,7 +113,11 @@ public class LocalConnector implements IServiceConnector {
 
    @Override
    public String getUniqueServerId() {
-      return id;
+	  if(properties == null){
+		  return id;
+	  } else { 
+		  return (String)properties.getProperty("id", id);  
+	  }  
    }
 
 }
