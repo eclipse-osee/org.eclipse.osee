@@ -11,50 +11,23 @@
 
 package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
-import java.util.List;
-import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
-import org.eclipse.ui.PlatformUI;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.AbstractEditorHandler;
+import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
+import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 
 /**
  * @author Jeff C. Phillips
  */
-public class RevealInArtifactExplorer extends AbstractHandler {
-   private Artifact artifact;
+public class RevealInArtifactExplorer extends AbstractEditorHandler {
 
    @Override
-   public Object execute(ExecutionEvent arg0) {
-      ArtifactExplorer.revealArtifact(artifact);
+   public Object executeWithException(ExecutionEvent event) throws OseeCoreException {
+      RendererManager.openInJob(artifacts, new VariableMap(IRenderer.OPEN_IN_EXPLORER, Boolean.TRUE),
+         PresentationType.GENERALIZED_EDIT);
       return null;
-   }
-
-   @Override
-   public boolean isEnabled() {
-      boolean isEnabled = false;
-
-      if (PlatformUI.getWorkbench().isClosing()) {
-         return false;
-      }
-
-      ISelectionProvider selectionProvider =
-         AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider();
-
-      if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
-         IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
-         List<Artifact> artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
-
-         if (artifacts.isEmpty()) {
-            return false;
-         }
-
-         artifact = artifacts.iterator().next();
-         isEnabled = true;
-      }
-      return isEnabled;
    }
 }

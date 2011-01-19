@@ -39,11 +39,16 @@ public interface IRenderer {
    public static final String FILE_NAME_OPTION = "filename";
    public static final String NO_DISPLAY = "noDisplay";
    public static final String SKIP_DIALOGS = "skipDialogs";
+
    public static final String OPEN_IN_TABLE_EDITOR = "open.with.mass.artifact.editor";
+   public static final String OPEN_IN_GRAPH = "open.with.sky.walker";
+   public static final String OPEN_IN_HISTORY = "open.with.resource.history";
+   public static final String OPEN_IN_EXPLORER = "open.with.artifact.explorer";
 
    public static enum CommandGroup {
       PREVIEW(PresentationType.PREVIEW),
-      EDIT(PresentationType.SPECIALIZED_EDIT);
+      EDIT(PresentationType.SPECIALIZED_EDIT),
+      SHOW(PresentationType.SPECIALIZED_EDIT);
 
       PresentationType presentationType;
 
@@ -61,6 +66,10 @@ public interface IRenderer {
 
       public boolean isPreview() {
          return CommandGroup.PREVIEW == this;
+      }
+
+      public boolean isShowIn() {
+         return CommandGroup.SHOW == this;
       }
    }
 

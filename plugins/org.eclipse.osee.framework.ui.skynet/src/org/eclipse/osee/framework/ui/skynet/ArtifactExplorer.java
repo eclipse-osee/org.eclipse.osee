@@ -89,14 +89,12 @@ import org.eclipse.osee.framework.ui.skynet.menu.GlobalMenu;
 import org.eclipse.osee.framework.ui.skynet.menu.GlobalMenuPermissions;
 import org.eclipse.osee.framework.ui.skynet.menu.IGlobalMenuHelper;
 import org.eclipse.osee.framework.ui.skynet.search.QuickSearchView;
-import org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerView;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactClipboard;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactPasteConfiguration;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetViews;
 import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ArtifactTypeFilteredTreeEntryDialog;
-import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.MenuItems;
@@ -154,7 +152,6 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
    private TreeViewer treeViewer;
    private Action upAction;
    private Artifact explorerRoot;
-   private MenuItem skywalkerMenuItem;
    private MenuItem createMenuItem;
    private MenuItem accessControlMenuItem;
    private MenuItem lockMenuItem;
@@ -397,13 +394,11 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
       new MenuItem(popupMenu, SWT.SEPARATOR);
       createNewChildMenuItem(popupMenu);
       createGoIntoMenuItem(popupMenu);
-      createSkywalkerMenuItem(popupMenu);
       new MenuItem(popupMenu, SWT.SEPARATOR);
       new GlobalMenu(popupMenu, globalMenuHelper);
+      new MenuItem(popupMenu, SWT.SEPARATOR);
       createRenameArtifactMenuItem(popupMenu);
       createRefreshMenuItem(popupMenu);
-      new MenuItem(popupMenu, SWT.SEPARATOR);
-      createHistoryMenuItem(popupMenu);
       new MenuItem(popupMenu, SWT.SEPARATOR);
       createImportExportMenuItems(popupMenu);
       new MenuItem(popupMenu, SWT.SEPARATOR);
@@ -412,6 +407,7 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
       createCopyMenuItem(popupMenu);
       createPasteMenuItem(popupMenu);
       createPasteSpecialMenuItem(popupMenu);
+      new MenuItem(popupMenu, SWT.SEPARATOR);
       createExpandAllMenuItem(popupMenu);
       createSelectAllMenuItem(popupMenu);
       new MenuItem(popupMenu, SWT.SEPARATOR);
@@ -762,22 +758,6 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
       treeViewer.refresh();
    }
 
-   private void createSkywalkerMenuItem(Menu parentMenu) {
-      skywalkerMenuItem = new MenuItem(parentMenu, SWT.PUSH);
-      skywalkerMenuItem.setText("Sky Walker");
-      needArtifactListener.add(skywalkerMenuItem);
-
-      ArtifactMenuListener listener = new ArtifactMenuListener();
-      parentMenu.addMenuListener(listener);
-      skywalkerMenuItem.addSelectionListener(new SelectionAdapter() {
-
-         @Override
-         public void widgetSelected(SelectionEvent ev) {
-            SkyWalkerView.exploreArtifact(getSelection().getFirstElement());
-         }
-      });
-   }
-
    private void createSelectAllMenuItem(Menu parentMenu) {
       MenuItem menuItem = new MenuItem(parentMenu, SWT.PUSH);
       menuItem.setText("&Select All\tCtrl+A");
@@ -785,25 +765,6 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
          @Override
          public void handleEvent(org.eclipse.swt.widgets.Event event) {
             treeViewer.getTree().selectAll();
-         }
-      });
-   }
-
-   private void createHistoryMenuItem(Menu parentMenu) {
-      MenuItem revisionMenuItem = new MenuItem(parentMenu, SWT.PUSH);
-      revisionMenuItem.setText("&Show Resource History ");
-      revisionMenuItem.addSelectionListener(new SelectionAdapter() {
-
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
-            Artifact selectedArtifact = (Artifact) selection.getFirstElement();
-
-            try {
-               HistoryView.open(selectedArtifact);
-            } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-            }
          }
       });
    }

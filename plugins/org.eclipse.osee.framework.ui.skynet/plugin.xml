@@ -297,45 +297,27 @@
            id="org.eclipse.osee.framework.ui.open.with">
      </dynamic>
    <separator
-         name="artifactSearchViewopenwithSeparator"
+         name="separator1"
          visible="true">
    </separator>
      <command
            commandId="org.eclipse.ui.edit.delete">
      </command>
-     <separator
-           name="artifactSearchViewDeleteSeparator"
-           visible="true">
-     </separator>
-   <command
-         commandId="org.eclipse.osee.framework.ui.skynet.revealArtifactInExplorer.command"
-         style="push">
-   </command>
-   <command
-         commandId="org.eclipse.osee.framework.ui.skynet.resource.command"
-         style="push">
-   </command>
    <separator
-         name="org.eclipse.osee.framework.ui.skynet.separator2"
-         visible="true">
-   </separator>
-			<command commandId="org.eclipse.osee.framework.ui.skynet.skywalker.command">
-         </command>
-   <separator
-         name="org.eclipse.osee.framework.ui.skynet.separator3"
-         visible="true">
-   </separator>
-			<command commandId="org.eclipse.ui.edit.copy">
-         </command>
-   <separator
-         name="artifactSearchViewPurgeSeparator"
+         name="separator2"
          visible="true">
    </separator>
    <command
          commandId="org.eclipse.osee.framework.ui.skynet.purge.command">
    </command>
    <separator
-         name="artifactSearchViewPurgeEndSeparator"
+         name="separator3"
+         visible="true">
+   </separator>
+			<command commandId="org.eclipse.ui.edit.copy">
+         </command>
+   <separator
+         name="separator4"
          visible="true">
    </separator>
    <command
@@ -343,7 +325,7 @@
          style="push">
    </command>
    <separator
-         name="org.eclipse.osee.framework.ui.skynet.resource.history.separator"
+         name="separator5"
          visible="true">
    </separator>
 		</menuContribution>
@@ -358,25 +340,7 @@
              id="org.eclipse.osee.framework.ui.open.with">
        </dynamic>
        <separator
-             name="org.eclipse.osee.framework.ui.skynet.ChangeView.wordChangesMadeTo.seperatro"
-             visible="true">
-       </separator>
-       <separator
-             name="org.eclipse.osee.framework.ui.skynet.changeReportView.publishArtifactRecurse.separator"
-             visible="true">
-       </separator>
-       <separator
-             name="org.eclipse.osee.framework.ui.skynet.changeView.publishArtifactRecurse.separator"
-             visible="true">
-       </separator>
-       <command
-             commandId="org.eclipse.osee.framework.ui.skynet.revealArtifactInExplorer.command">
-       </command>
-       <command
-             commandId="org.eclipse.osee.framework.ui.skynet.resource.command">
-       </command>
-       <separator
-             name="org.eclipse.osee.framework.ui.skynet.changeView.wordChangeReport.separator"
+             name="xChngSeparator1"
              visible="true">
        </separator>
        <command
@@ -384,7 +348,7 @@
              style="push">
        </command>
        <separator
-             name="org.eclipse.osee.framework.ui.skynet.changeView.singleNativeDiff.separator"
+             name="xChngSeparator2"
              visible="true">
        </separator>
        <command
@@ -397,14 +361,14 @@
              commandId="org.eclipse.osee.framework.ui.skynet.viewerReport">
        </command>
        <separator
-             name="org.eclipse.osee.framework.ui.skynet.ChangeView.viewerReport.separator"
+             name="xChngSeparator3"
              visible="true">
        </separator>
        <command
              commandId="org.eclipse.ui.edit.copy">
        </command>
        <separator
-             name="org.eclipse.ui.edit.ChangeView.copy.seperator"
+             name="xChngSeparator4"
              visible="true">
        </separator>
        <command
@@ -414,7 +378,7 @@
              commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.revertAttribute.command">
        </command>
        <separator
-             name="org.eclipse.ui.edit.ChangeView.revert.seperator"
+             name="xChngSeparator5"
              visible="true">
        </separator>
        <command
@@ -422,7 +386,7 @@
              style="push">
        </command>
        <separator
-             name="org.eclipse.ui.edit.ChangeView.seperator1"
+             name="xChngSeparator6"
              visible="true">
        </separator>
     </menuContribution>

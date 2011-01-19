@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.skynet.core.linking.OseeLinkBuilder;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -47,6 +48,8 @@ import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
 import org.eclipse.osee.framework.ui.skynet.render.word.AttributeElement;
 import org.eclipse.osee.framework.ui.skynet.render.word.Producer;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
+import org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerView;
+import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
@@ -59,6 +62,10 @@ public class DefaultArtifactRenderer implements IRenderer {
 
    private static final String OPEN_ART_EDITOR_CMD_ID = "org.eclipse.osee.framework.ui.skynet.artifacteditor.command";
    private static final String OPEN_MASS_EDITOR_CMD_ID = "org.eclipse.osee.framework.ui.skynet.OpenMassEditcommand";
+   private static final String OPEN_SKY_WALKER_CMD_ID = "org.eclipse.osee.framework.ui.skynet.skywalker.command";
+   private static final String OPEN_ART_HISTORY_CMD_ID = "org.eclipse.osee.framework.ui.skynet.resource.command";
+   private static final String OPEN_ART_EXPLORER_CMD_ID =
+      "org.eclipse.osee.framework.ui.skynet.revealArtifactInExplorer.command";
 
    private VariableMap options;
 
@@ -165,6 +172,12 @@ public class DefaultArtifactRenderer implements IRenderer {
       ImageDescriptor descriptor;
       if (OPEN_MASS_EDITOR_CMD_ID.equals(id)) {
          descriptor = ImageManager.getImageDescriptor(FrameworkImage.ARTIFACT_EDITOR);
+      } else if (OPEN_ART_EXPLORER_CMD_ID.equals(id)) {
+         descriptor = ImageManager.getImageDescriptor(FrameworkImage.ARTIFACT_EXPLORER);
+      } else if (OPEN_ART_HISTORY_CMD_ID.equals(id)) {
+         descriptor = ImageManager.getImageDescriptor(FrameworkImage.DB_ICON_BLUE);
+      } else if (OPEN_SKY_WALKER_CMD_ID.equals(id)) {
+         descriptor = ImageManager.getImageDescriptor(FrameworkImage.SKYWALKER);
       } else {
          descriptor = ArtifactImageManager.getImageDescriptor(artifact);
       }
@@ -179,7 +192,11 @@ public class DefaultArtifactRenderer implements IRenderer {
          commandIds.add(OPEN_ART_EDITOR_CMD_ID);
          commandIds.add(OPEN_MASS_EDITOR_CMD_ID);
       }
-
+      if (commandGroup.isShowIn()) {
+         commandIds.add(OPEN_ART_EXPLORER_CMD_ID);
+         commandIds.add(OPEN_ART_HISTORY_CMD_ID);
+         commandIds.add(OPEN_SKY_WALKER_CMD_ID);
+      }
       return commandIds;
    }
 
@@ -214,7 +231,23 @@ public class DefaultArtifactRenderer implements IRenderer {
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
-            if (isDisplayInMassEditor()) {
+            if (isRenderOption(OPEN_IN_GRAPH)) {
+               for (Artifact artifact : artifacts) {
+                  SkyWalkerView.exploreArtifact(artifact);
+               }
+            } else if (isRenderOption(OPEN_IN_HISTORY)) {
+               for (Artifact artifact : artifacts) {
+                  try {
+                     HistoryView.open(artifact);
+                  } catch (Exception ex) {
+                     OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                  }
+               }
+            } else if (isRenderOption(OPEN_IN_EXPLORER)) {
+               for (Artifact artifact : artifacts) {
+                  ArtifactExplorer.revealArtifact(artifact);
+               }
+            } else if (isRenderOption(IRenderer.OPEN_IN_TABLE_EDITOR)) {
                MassArtifactEditor.editArtifacts("", artifacts);
             } else {
                try {
@@ -229,10 +262,10 @@ public class DefaultArtifactRenderer implements IRenderer {
       });
    }
 
-   private boolean isDisplayInMassEditor() {
+   private boolean isRenderOption(String value) {
       boolean result = false;
       try {
-         result = getBooleanOption(IRenderer.OPEN_IN_TABLE_EDITOR);
+         result = getBooleanOption(value);
       } catch (OseeArgumentException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }

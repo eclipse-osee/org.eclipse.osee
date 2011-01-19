@@ -10,49 +10,23 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
-import java.util.List;
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.framework.access.AccessControlManager;
-import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView;
+import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.AbstractEditorHandler;
+import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
+import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 
 /**
  * @author Jeff C. Phillips
  */
-public class ShowArtifactInResourceHandler extends CommandHandler {
-   private List<Artifact> artifacts;
+public class ShowArtifactInResourceHandler extends AbstractEditorHandler {
 
    @Override
-   public Object executeWithException(ExecutionEvent event) {
-      for (Artifact artifact : artifacts) {
-         try {
-            HistoryView.open(artifact);
-         } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-         }
-      }
+   public Object executeWithException(ExecutionEvent event) throws OseeCoreException {
+      RendererManager.openInJob(artifacts, new VariableMap(IRenderer.OPEN_IN_HISTORY, Boolean.TRUE),
+         PresentationType.GENERALIZED_EDIT);
       return null;
-   }
-
-   @Override
-   public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
-      artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
-
-      if (artifacts.isEmpty()) {
-         return false;
-      }
-
-      boolean readPermission = true;
-      for (Artifact artifact : artifacts) {
-         readPermission &= AccessControlManager.hasPermission(artifact, PermissionEnum.READ);
-      }
-      return readPermission;
    }
 }
