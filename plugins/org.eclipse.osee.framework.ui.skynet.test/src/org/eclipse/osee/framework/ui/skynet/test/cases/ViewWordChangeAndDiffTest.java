@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -26,22 +25,16 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
-import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
-import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
-import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.Before;
@@ -78,19 +71,8 @@ public final class ViewWordChangeAndDiffTest {
       checkPermissions(asArtifacts(changes));
 
       Collection<ArtifactDelta> artifactDeltas = ChangeManager.getCompareArtifacts(changes);
-      WordTemplateRenderer renderer = new WordTemplateRenderer();
-      try {
-         VariableMap options = new VariableMap(IRenderer.NO_DISPLAY, true);
-         renderer.setOptions(options);
-         IComparator comparator = renderer.getComparator();
-         comparator.compareArtifacts(new NullProgressMonitor(), PresentationType.DIFF, artifactDeltas);
-      } catch (OseeCoreException e) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, e);
-         fail("View Word Change Report test failed");
-      }
-
-      // if we get here there were no exceptions on the compare considered successful
-      assertTrue("View Word Change Report test passed", true);
+      VariableMap options = new VariableMap(IRenderer.NO_DISPLAY, true);
+      RendererManager.diff(artifactDeltas, options);
    }
 
    @org.junit.Test
