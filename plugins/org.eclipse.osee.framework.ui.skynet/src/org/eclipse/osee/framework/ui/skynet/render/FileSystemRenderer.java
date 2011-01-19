@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.AIFile;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.util.FileUiUtil;
 import org.eclipse.swt.program.Program;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IWorkbench;
@@ -162,7 +161,7 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
             Artifact firstArtifact = artifacts.iterator().next();
             try {
                if (RenderingUtil.arePopupsAllowed()) {
-                  FileUiUtil.ensureFilenameLimit(file);
+                  RenderingUtil.ensureFilenameLimit(file);
                   Program program = getAssociatedProgram(firstArtifact);
                   program.execute(file.getLocation().toFile().getAbsolutePath());
                } else {

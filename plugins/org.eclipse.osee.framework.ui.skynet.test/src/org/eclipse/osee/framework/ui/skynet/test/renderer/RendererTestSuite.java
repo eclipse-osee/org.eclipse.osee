@@ -14,8 +14,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({//
-PresentationTypeTest.class})
+@Suite.SuiteClasses({RenderingUtilTest.class, PresentationTypeTest.class})
 /**
  * @author Roberto E. Escobar
  */

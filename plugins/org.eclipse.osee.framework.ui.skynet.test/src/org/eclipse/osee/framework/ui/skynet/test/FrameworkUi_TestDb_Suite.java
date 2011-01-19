@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.test;
 
-import org.eclipse.osee.framework.skynet.core.test.branch.BranchManagerTest;
 import org.eclipse.osee.framework.ui.skynet.test.blam.BlamXWidgetTest;
 import org.eclipse.osee.framework.ui.skynet.test.blam.operation.EmailGroupsBlamTest;
 import org.eclipse.osee.framework.ui.skynet.test.cases.PreviewAndMultiPreviewTest;
@@ -26,7 +25,6 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({//
 BlamXWidgetTest.class, //
    EmailGroupsBlamTest.class, //
-   BranchManagerTest.class, //
    WordEditTest.class, //
    WordTrackedChangesTest.class, //
    PreviewAndMultiPreviewTest.class, //

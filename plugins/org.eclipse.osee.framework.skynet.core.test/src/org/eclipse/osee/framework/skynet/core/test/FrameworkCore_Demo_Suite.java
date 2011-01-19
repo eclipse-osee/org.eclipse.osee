@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.skynet.core.test;
 
 import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.skynet.core.test.branch.BranchManagerTest;
 import org.eclipse.osee.framework.skynet.core.test.branch.BranchTestSuite;
 import org.eclipse.osee.framework.skynet.core.test.cases.ArtifactLoaderTest;
 import org.eclipse.osee.framework.skynet.core.test.cases.ArtifactPurgeTest;
@@ -72,7 +71,6 @@ import org.junit.runners.Suite;
    ArtifactQueryTestDemo.class,
    TransactionManagerTest.class,
    BranchTestSuite.class,
-   BranchManagerTest.class,
    RelationTestSuite.class,
    ArtifactTypeInheritanceTest.class,
    ArtifactPurgeTest.class,

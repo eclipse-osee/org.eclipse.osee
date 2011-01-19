@@ -57,7 +57,6 @@ import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
-import org.eclipse.osee.framework.ui.skynet.util.FileUiUtil;
 import org.eclipse.osee.framework.ui.skynet.util.WordUiUtil;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.program.Program;
@@ -138,7 +137,7 @@ public class WordTemplateProcessor {
          applyTemplate(variableMap, artifacts, masterTemplate, folder, null, null, PresentationType.PREVIEW));
 
       if (variableMap.getBoolean("OpenDocument") && file != null) {
-         FileUiUtil.ensureFilenameLimit(file);
+         RenderingUtil.ensureFilenameLimit(file);
          wordApp.execute(file.getLocation().toFile().getAbsolutePath());
       }
    }
