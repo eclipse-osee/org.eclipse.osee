@@ -260,7 +260,7 @@ public class AtsBranchManager {
       }
    }
 
-   public Collection<TransactionRecord> getFirstCommitTransaction() throws OseeCoreException {
+   private Collection<TransactionRecord> getCommitTransactionsToUnarchivedBaslineBranchs() throws OseeCoreException {
       Collection<TransactionRecord> committedTransactions =
          TransactionManager.getCommittedArtifactTransactionIds(teamArt);
 
@@ -278,19 +278,19 @@ public class AtsBranchManager {
    /**
     * @return TransactionId associated with this state machine artifact
     */
-   public Collection<TransactionRecord> getTransactionIds(boolean showMergeManager) throws OseeCoreException {
+   private Collection<TransactionRecord> getTransactionIds(boolean showMergeManager) throws OseeCoreException {
       if (showMergeManager) {
          Branch workingBranch = getWorkingBranch();
          // grab only the transaction that had merge conflicts
          Collection<TransactionRecord> transactionIds = new ArrayList<TransactionRecord>();
-         for (TransactionRecord transactionId : getFirstCommitTransaction()) {
+         for (TransactionRecord transactionId : getCommitTransactionsToUnarchivedBaslineBranchs()) {
             if (isMergeBranchExists(workingBranch, transactionId.getBranch())) {
                transactionIds.add(transactionId);
             }
          }
          return transactionIds;
       } else {
-         return getFirstCommitTransaction();
+         return getCommitTransactionsToUnarchivedBaslineBranchs();
       }
    }
 
@@ -773,11 +773,37 @@ public class AtsBranchManager {
          if (commitConfigArt == null) {
             transactionId = getEarliestTransactionId();
          } else {
-            for (TransactionRecord transId : getTransactionIds(false)) {
-               if (transId.getBranch() == commitConfigArt.getParentBranch()) {
-                  transactionId = transId;
+            Collection<TransactionRecord> transIds = getTransactionIds(false);
+            if (transIds.size() == 1) {
+               transactionId = transIds.iterator().next();
+            } else {
+               /*
+                * First, attempt to compare the currently configured commitConfigArt parent branch with transaction id's
+                * branch.
+                */
+               for (TransactionRecord transId : transIds) {
+                  if (transId.getBranch() == commitConfigArt.getParentBranch()) {
+                     transactionId = transId;
+                  }
+               }
+               /*
+                * Otherwise, fallback to getting the lowest transaction id number. This could happen if branches were
+                * rebaselined cause previous transId branch would not match currently configured parent branch. This
+                * could also happen if workflow not targeted for version and yet commits happened
+                */
+               if (transactionId == null) {
+                  TransactionRecord transactionRecord = null;
+                  for (TransactionRecord transId : transIds) {
+                     if (transactionRecord == null || transId.getId() < transactionRecord.getId()) {
+                        transactionRecord = transId;
+                     }
+                  }
+                  transactionId = transactionRecord;
                }
             }
+         }
+         if (transactionId == null) {
+            throw new OseeStateException("Unable to determine transaction id for [%s]", commitConfigArt);
          }
          operation = ChangeManager.comparedToPreviousTx(transactionId, changes);
          Operations.executeWorkAndCheckStatus(operation);

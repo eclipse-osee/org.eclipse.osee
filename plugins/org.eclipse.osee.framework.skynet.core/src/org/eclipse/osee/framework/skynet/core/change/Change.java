@@ -121,8 +121,14 @@ public abstract class Change implements IAdaptable, Comparable<Change> {
       return branch;
    }
 
+   /**
+    * @return value after change or value before if modtype == DELETED
+    */
    public abstract String getIsValue();
 
+   /**
+    * @return value before change or empty if modtype == DELETED. Use getIsValue() for modtype == DELETED.
+    */
    public abstract String getWasValue();
 
    public abstract String getItemTypeName() throws OseeCoreException;
