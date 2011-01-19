@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
 public class XTeamDefinitionCombo extends XComboViewer {
@@ -26,7 +27,7 @@ public class XTeamDefinitionCombo extends XComboViewer {
    private Artifact selectedTeamDef = null;
 
    public XTeamDefinitionCombo() {
-      super("Team Definition");
+      super("Team Definition", SWT.READ_ONLY);
    }
 
    @Override

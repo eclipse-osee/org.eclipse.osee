@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
@@ -38,7 +39,7 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class TaskOptionStatusDialog extends SMAStatusDialog {
 
-   XComboViewer resolutionCombo = new XComboViewer("Resolution");
+   XComboViewer resolutionCombo = new XComboViewer("Resolution", SWT.NONE);
    private final List<TaskResOptionDefinition> options;
    private final Map<String, TaskResOptionDefinition> nameToResDef = new HashMap<String, TaskResOptionDefinition>();
    private TaskResOptionDefinition selectedOption;

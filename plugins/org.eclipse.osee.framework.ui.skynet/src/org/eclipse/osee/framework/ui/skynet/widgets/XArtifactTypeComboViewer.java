@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
 /**
@@ -28,7 +29,7 @@ public class XArtifactTypeComboViewer extends XComboViewer {
    private ArtifactType selectedArtifactType = null;
 
    public XArtifactTypeComboViewer() {
-      super("Artifact Type");
+      super("Artifact Type", SWT.READ_ONLY);
    }
 
    @Override

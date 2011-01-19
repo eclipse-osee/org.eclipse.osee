@@ -516,7 +516,7 @@ public class SMAWorkFlowSection extends SectionPart {
       Label label = toolkit.createLabel(comp, "to");
       label.setBackground(AtsUtil.ACTIVE_COLOR);
 
-      transitionToStateCombo = new XComboViewer("Transition To State Combo");
+      transitionToStateCombo = new XComboViewer("Transition To State Combo", SWT.NONE);
       transitionToStateCombo.setDisplayLabel(false);
       List<Object> allPages = new ArrayList<Object>();
       for (StateDefinition nextState : sma.getToStates()) {

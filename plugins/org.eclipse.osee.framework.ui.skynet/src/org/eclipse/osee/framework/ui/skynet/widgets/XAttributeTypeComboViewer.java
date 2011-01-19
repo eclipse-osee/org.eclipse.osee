@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
 /**
@@ -28,7 +29,7 @@ public class XAttributeTypeComboViewer extends XComboViewer {
    private AttributeType selectedAttributeType = null;
 
    public XAttributeTypeComboViewer() {
-      super("AttributeType Type");
+      super("AttributeType Type", SWT.READ_ONLY);
    }
 
    @Override

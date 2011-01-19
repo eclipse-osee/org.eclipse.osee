@@ -39,8 +39,8 @@ import org.eclipse.ui.dialogs.SelectionDialog;
  */
 public class TeamVersionListDialog extends SelectionDialog {
 
-   XComboViewer teamCombo = new XComboViewer("Team");
-   XComboViewer versionCombo = new XComboViewer("Version");
+   XComboViewer teamCombo = new XComboViewer("Team", SWT.READ_ONLY);
+   XComboViewer versionCombo = new XComboViewer("Version", SWT.READ_ONLY);
    VersionArtifact selectedVersion = null;
    TeamDefinitionArtifact selectedTeamDef = null;
    private final Active active;

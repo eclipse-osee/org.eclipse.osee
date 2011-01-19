@@ -204,9 +204,7 @@ public abstract class XWidget {
       isNotificationAllowed.setValue(areAllowed);
    }
 
-   protected void createControls(Composite parent, int horizontalSpan) {
-      // provided for subclass implementation
-   }
+   protected abstract void createControls(Composite parent, int horizontalSpan);
 
    public final void createWidgets(Composite parent, int horizontalSpan) {
       setNotificationsAllowed(false);

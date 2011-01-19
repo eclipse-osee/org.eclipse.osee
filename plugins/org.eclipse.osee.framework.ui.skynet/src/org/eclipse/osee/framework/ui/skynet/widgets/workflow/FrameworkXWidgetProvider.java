@@ -72,6 +72,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XTextDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextFlatDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextResourceDropDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.swt.SWT;
 
 /**
  * @author Jeff C. Phillips
@@ -247,7 +248,7 @@ public final class FrameworkXWidgetProvider {
             combo.setDefaultSelectionAllowed(true);
          }
       } else if (xWidgetName.startsWith("XComboViewer")) {
-         xWidget = new XComboViewer(name);
+         xWidget = new XComboViewer(name, SWT.NONE);
       } else if (xWidgetName.startsWith("XCombo")) {
          String values[] =
             xWidgetLayoutData.getDynamicXWidgetLayout().getOptionResolver().getWidgetOptions(xWidgetLayoutData);

@@ -167,6 +167,15 @@ public class VersionArtifact extends Artifact implements ICommitConfigArtifact {
       }
    }
 
+   public Branch getBaselineBranch() throws OseeCoreException {
+      String branchGuid = getSoleAttributeValue(AtsAttributeTypes.BaselineBranchGuid, "");
+      if (Strings.isValid(branchGuid)) {
+         return BranchManager.getBranchByGuid(branchGuid);
+      } else {
+         return getTeamDefinitionArtifact().getTeamBranch();
+      }
+   }
+
    public Date getEstimatedReleaseDate() throws OseeCoreException {
       return getSoleAttributeValue(AtsAttributeTypes.EstimatedReleaseDate, null);
    }

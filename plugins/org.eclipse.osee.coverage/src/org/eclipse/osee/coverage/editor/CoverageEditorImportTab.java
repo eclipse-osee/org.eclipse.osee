@@ -103,7 +103,7 @@ public class CoverageEditorImportTab extends FormPage {
 
       managedForm.getMessageManager().setAutoUpdate(false);
 
-      combo = new XComboViewer("Select Import Blam");
+      combo = new XComboViewer("Select Import Blam", SWT.READ_ONLY);
       combo.setLabelProvider(labelProvider);
       combo.setContentProvider(new ArrayTreeContentProvider());
       combo.createWidgets(managedForm, scrolledForm.getBody(), 1);

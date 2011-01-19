@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
 public class XStateCombo extends XComboViewer {
@@ -29,7 +30,7 @@ public class XStateCombo extends XComboViewer {
    private String selectedState = null;
 
    public XStateCombo() {
-      super("State");
+      super("State", SWT.NONE);
       ensurePopulated();
    }
 

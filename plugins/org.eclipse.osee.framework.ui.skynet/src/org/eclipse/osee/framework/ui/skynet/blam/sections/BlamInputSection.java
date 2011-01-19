@@ -56,7 +56,6 @@ public class BlamInputSection extends BaseBlamSection {
       section.setText("Parameters");
       section.setLayout(new GridLayout());
       section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-      updateDataPart();
    }
 
    public VariableMap getData() throws OseeArgumentException {
@@ -113,11 +112,6 @@ public class BlamInputSection extends BaseBlamSection {
       itemsToReturn.addAll(getAbstractBlam().getLayoutDatas());
       itemsToReturn.addAll(dynamicInputLayouts);
       return itemsToReturn;
-   }
-
-   @Override
-   public void dispose() {
-      super.dispose();
    }
 
    @Override

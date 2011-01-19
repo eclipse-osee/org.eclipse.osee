@@ -41,7 +41,7 @@ import org.eclipse.swt.widgets.Label;
  * @author Donald G. Dunne
  */
 public class XComboViewer extends GenericXWidget {
-
+   private final int comboWidgetSWTStyle;
    private ComboViewer comboViewer;
    private Composite parent;
    private Composite composite;
@@ -66,10 +66,11 @@ public class XComboViewer extends GenericXWidget {
    private int widthHint;
    private int heightHint;
 
-   public XComboViewer(String displayLabel) {
+   public XComboViewer(String displayLabel, int comboWidgetSWTStyle) {
       super(displayLabel);
       contentProvider = new ArrayContentProvider();
       labelProvider = new ArtifactLabelProvider();
+      this.comboWidgetSWTStyle = comboWidgetSWTStyle;
    }
 
    @Override
@@ -106,11 +107,16 @@ public class XComboViewer extends GenericXWidget {
    }
 
    /**
-    * Create List Widgets. Widgets Created: List: horizonatalSpan takes up 2 columns; horizontalSpan must be >=2
+    * Create List Widgets. <br>
+    * <br>
+    * Widgets Created: <li>List: horizonatalSpan takes up 2 columns; <br>
+    *
+    * @param horizontalSpan horizontalSpan must be >=2
+    * @param comboWidgetSWTStyle style of the widget providing the combo, usually {@code SWT.READ_ONLY} or
+    * {@code SWT.NONE}
     */
    @Override
    protected void createControls(Composite parent, int horizontalSpan) {
-
       this.parent = parent;
       composite = null;
 
@@ -122,9 +128,8 @@ public class XComboViewer extends GenericXWidget {
 
       if (isDisplayLabel() && verticalLabel) {
          composite = new Composite(parent, SWT.NONE);
-         int numColumns = 1;
          GridLayout gridLayout = new GridLayout();
-         gridLayout.numColumns = numColumns;
+         gridLayout.numColumns = 1;
          composite.setLayout(gridLayout);
          GridData gd = new GridData(GridData.FILL_BOTH);
          gd.horizontalSpan = horizontalSpan;
@@ -142,7 +147,7 @@ public class XComboViewer extends GenericXWidget {
          }
       }
 
-      comboViewer = new ComboViewer(composite, SWT.NONE);
+      comboViewer = new ComboViewer(composite, comboWidgetSWTStyle);
       comboViewer.setContentProvider(contentProvider);
       comboViewer.setLabelProvider(labelProvider);
       if (sorter != null) {
