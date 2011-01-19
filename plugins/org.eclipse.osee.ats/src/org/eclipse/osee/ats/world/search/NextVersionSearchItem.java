@@ -41,7 +41,7 @@ public class NextVersionSearchItem extends WorldUISearchItem {
    }
 
    public NextVersionSearchItem(String name, TeamDefinitionArtifact teamDefHoldingVersions, LoadView loadView) {
-      super(name != null ? name : "Workflows Targeted-For Next Version", loadView, FrameworkImage.VERSION);
+      super(name != null ? name : "Workflows Targeted-For Next Version", loadView, FrameworkImage.VERSION_NEXT);
       this.teamDefHoldingVersions = teamDefHoldingVersions;
    }
 

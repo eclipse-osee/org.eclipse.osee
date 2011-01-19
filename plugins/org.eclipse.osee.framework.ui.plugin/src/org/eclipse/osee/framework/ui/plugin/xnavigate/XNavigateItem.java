@@ -85,6 +85,7 @@ public class XNavigateItem {
    }
 
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
+      // provided for subclass implementation
    }
 
    public boolean hasChildren() {

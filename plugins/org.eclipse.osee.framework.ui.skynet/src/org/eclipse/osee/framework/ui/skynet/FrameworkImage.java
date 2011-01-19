@@ -186,6 +186,7 @@ public enum FrameworkImage implements KeyedImage {
    USERS("users2.gif"),
    UN_ARCHIVE("unarchive.gif"),
    VERSION("version.gif"),
+   VERSION_NEXT("versionNext.gif"),
    WORKFLOW("workflow.gif"),
    WIDGET("widget.gif"),
    WARNING("warn.gif"),
