@@ -1,0 +1,51 @@
+workDefinition "WorkDef_Task_Default" {
+   id "WorkDef_Task_Default"
+   startState "InWork"
+
+   widgetDefinition "Title" {
+      attributeName "Name"
+      xWidgetName "XTextDam"
+      option REQUIRED_FOR_TRANSITION
+   }
+
+   widgetDefinition "Description" {
+      attributeName "ats.Description"
+      xWidgetName "XTextDam"
+      height 80
+      option FILL_VERTICALLY
+   }
+
+   state "InWork" {
+      type Working
+      ordinal 1
+      to "Complete" AsDefault
+      to "Cancelled" OverrideAttributeValidation
+      rule RequireStateHourSpentPrompt
+      layout {
+         widget "Title"
+         widget "Description"
+         composite {
+            numColumns 6
+            attributeWidget "ats.Estimated Hours" with REQUIRED_FOR_TRANSITION
+            attributeWidget "ats.Estimated Completion Date"
+            attributeWidget "ats.Related To State"
+         }
+         composite {
+            numColumns 4
+            attributeWidget "ats.SMA Note"
+            attributeWidget "ats.Category" 
+         }
+      }
+   }
+
+   state "Complete" {
+      type Completed
+      ordinal 2
+      rule AddDecisionValidateBlockingReview
+   }
+
+   state "Cancelled" {
+      type Cancelled
+      ordinal 3
+   }
+}

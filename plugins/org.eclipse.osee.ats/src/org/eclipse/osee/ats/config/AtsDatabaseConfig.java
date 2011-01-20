@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.config;
 
 import org.eclipse.osee.ats.util.AtsFolderUtil;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.workdef.AtsWorkDefinitionSheetProviders;
 import org.eclipse.osee.ats.workflow.flow.DecisionWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.flow.GoalWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.flow.PeerToPeerWorkflowDefinition;
@@ -30,6 +31,7 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
    public void run() throws OseeCoreException {
       AtsFolderUtil.createAtsFolders();
 
+      AtsWorkDefinitionSheetProviders.initializeDatabase();
       configWorkItemDefinitions(WriteType.New, null);
 
       AtsUtil.getAtsAdminGroup().getGroupArtifact().persist();

@@ -54,6 +54,7 @@ public class AtsAttributeTypes extends NamedIdentity implements IAttributeType {
 
    public static final IAttributeType DecisionReviewOptions = new AtsAttributeTypes("AAMFEd5hRy1+SRJRqfwA", "Decision Review Options", "Options available for selection in review.  Each line is a separate option. Format: <option name>;<state to transition to>;<assignee>");
    public static final IAttributeType Description = new AtsAttributeTypes("AAMFEdWJ_ChxX6+YKbwA", "Description", "Detailed explanation.");
+   public static final IAttributeType DslSheet = new AtsAttributeTypes("AGrqojZDowPDaLh4kBAA", "DSL Sheet", "XText DSL Sheet for ATS");
    public static final IAttributeType EstimatedCompletionDate = new AtsAttributeTypes("AAMFEc18k3Gh+GP7zqAA", "Estimated Completion Date", "Date the changes will be completed.");
    public static final IAttributeType EstimatedHours = new AtsAttributeTypes("AAMFEdCSqBh+cPyadiwA", "Estimated Hours", "Hours estimated to implement the changes associated with this Action.\nIncludes estimated hours for workflows, tasks and reviews.");
    public static final IAttributeType EstimatedReleaseDate = new AtsAttributeTypes("AAMFEcy6VB7Ble5SP1QA", "Estimated Release Date", "Date the changes will be made available to the users.");

@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.workdef.AtsWorkDefinitionProviders;
-import org.eclipse.osee.ats.workdef.IAtsWorkDefinitionProvider;
 import org.eclipse.osee.ats.workdef.WorkDefinition;
 import org.eclipse.osee.ats.workdef.WorkDefinitionFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -31,7 +30,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionF
 public class ConvertWorkFlowDefinitions extends XNavigateItemAction {
 
    public ConvertWorkFlowDefinitions(XNavigateItem parent) {
-      super(parent, "Convert Work Flow Definition(s)", AtsImage.REPORT);
+      super(parent, "Convert Work Flow Definition(s)", AtsImage.WORK_DEFINITION);
    }
 
    @Override
@@ -86,7 +85,6 @@ public class ConvertWorkFlowDefinitions extends XNavigateItemAction {
 
    private void convert(WorkFlowDefinition workFlowDef, XResultData resultData, String filename) throws OseeCoreException {
       WorkDefinition workDef = WorkDefinitionFactory.translateToWorkDefinition(workFlowDef);
-      IAtsWorkDefinitionProvider provider = AtsWorkDefinitionProviders.getAtsTeamWorkflowExtensions().iterator().next();
-      provider.convertAndOpenAtsDsl(workDef, resultData, filename);
+      AtsWorkDefinitionProviders.convertAndOpenAtsDsl(workDef, resultData, filename);
    }
 }

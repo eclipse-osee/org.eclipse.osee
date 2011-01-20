@@ -96,19 +96,19 @@ public class WorkDefinitionFactory {
    }
 
    public static WorkDefinitionMatch getWorkDefinition(String id) throws OseeCoreException {
-      String translatedId = WorkDefinitionFactory.getOverrideWorkDefId(id);
       if (!idToWorkDefintion.containsKey(id) || AtsUtil.isForceReloadWorkDefinitions()) {
          WorkDefinitionMatch match = new WorkDefinitionMatch();
-         for (IAtsWorkDefinitionProvider provider : AtsWorkDefinitionProviders.getAtsTeamWorkflowExtensions()) {
-            WorkDefinition workDef = provider.getWorkFlowDefinition(translatedId);
+         String translatedId = WorkDefinitionFactory.getOverrideWorkDefId(id);
+         // Try to get from new DSL provider if configured to use it
+         if (!match.isMatched() && AtsUtil.isUseNewWorkDefinitions()) {
+            WorkDefinition workDef = AtsWorkDefinitionProviders.getWorkFlowDefinition(translatedId);
             if (workDef != null) {
                match.setWorkDefinition(workDef);
                match.getTrace().add(
-                  (String.format("from provider [%s] for id [%s] and override translated Id [%s]",
-                     provider.getClass().getSimpleName(), id, translatedId)));
-               break;
+                  (String.format("from DSL provider loaded id [%s] and override translated Id [%s]", id, translatedId)));
             }
          }
+         // Otherwise, just translate legacy WorkFlowDefinition from artifact
          if (!match.isMatched()) {
             WorkDefinition workDef =
                translateToWorkDefinition((WorkFlowDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(id));
@@ -390,39 +390,13 @@ public class WorkDefinitionFactory {
 
    public static String getOverrideWorkDefId(String id) {
       // Don't override if no providers available (dsl plugins not released)
-      if (AtsUtil.isUseNewWorkDefinitions() && AtsWorkDefinitionProviders.getAtsTeamWorkflowExtensions().size() > 0) {
-         Map<String, String> idToName = new HashMap<String, String>();
-         // To Be Converted
-         idToName.put("ah6.common", "WorkDef_Team_Ah6i_Common");
-         idToName.put("ah6.issue", "WorkDef_Team_Ah6i_Issue");
-         idToName.put("lba.common.code", "WorkDef_Team_LbaCode");
-         idToName.put("lba.common.pids.req", "WorkDef_Team_LbaPids");
-         idToName.put("lba.common.sw_techappr", "WorkDef_Team_Lba_SwTechAppr");
-         idToName.put("lba.common.swdesign", "WorkDef_Team_Lba_SwDesign");
-         idToName.put("lba.common.test", "WorkDef_Team_Lba_Test_Default");
-         idToName.put("lba.common.test_procedures", "WorkDef_Team_Lba_Procedures");
-         idToName.put("lba.cte", "WorkDef_Team_Cte");
-         idToName.put("lba.deliverable", "WorkDef_Team_Deliverable");
-         idToName.put("lba.processTeam", "WorkDef_Team_Processes");
-         idToName.put("osee.decisionReview", "WorkDef_Review_Decision");
-         idToName.put("osee.goalWorkflow", "WorkDef_Goal");
-         idToName.put("osee.peerToPeerReview", "WorkDef_Review_PeerToPeer");
-         idToName.put("osee.simpleTeamWorkflow", "WorkDef_Team_Simple");
-         idToName.put("demo.code", "WorkDef_Team_Demo_Code");
-         idToName.put("demo.req", "WorkDef_Team_Demo_Req");
-         idToName.put("demo.swdesign", "WorkDef_Team_Demo_SwDesign");
-         idToName.put("demo.test", "WorkDef_Team_Demo_Test");
-         // Done converting
-         idToName.put("osee.taskWorkflow", "WorkDef_Task_Default");
-         idToName.put("lba.common.req", "WorkDef_Team_Lba_Req");
-         idToName.put("osee.ats.teamWorkflow", "WorkDef_Team_Default");
-         idToName.put("osee.ats.taskWorkflow", "WorkDef_Task_Default");
-         idToName.put("lba.common.test.tpcr", "WorkDef_Team_Lba_Test_Tpcr");
+      if (AtsUtil.isUseNewWorkDefinitions() && AtsWorkDefinitionProviders.providerExists()) {
 
-         if (idToName.containsKey(id)) {
+         String overrideId = AtsWorkDefinitionSheetProviders.getOverrideId(id);
+         if (Strings.isValid(overrideId)) {
             OseeLog.log(AtsPlugin.class, Level.INFO,
-               String.format("Override WorkDefinition [%s] with [%s]", id, idToName.get(id)));
-            return idToName.get(id);
+               String.format("Override WorkDefinition [%s] with [%s]", id, overrideId));
+            return overrideId;
          }
       }
       return id;

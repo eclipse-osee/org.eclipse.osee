@@ -6,11 +6,21 @@
 package org.eclipse.osee.ats.workdef;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 
 public interface IAtsWorkDefinitionProvider {
 
-   WorkDefinition getWorkFlowDefinition(String id);
+   WorkDefinition loadWorkFlowDefinitionFromFile(WorkDefinitionSheet sheet) throws OseeCoreException;
+
+   WorkDefinition getWorkFlowDefinition(String id) throws OseeCoreException;
+
+   Artifact importWorkDefinitionSheetToDb(WorkDefinitionSheet sheet) throws OseeCoreException;
 
    void convertAndOpenAtsDsl(WorkDefinition workDef, XResultData resultData, String filename) throws OseeCoreException;
+
+   public WorkDefinition loadTeamWorkDefFromFileOldWay();
+
+   public WorkDefinition loadTeamWorkDefFromFileNewWay();
+
 }

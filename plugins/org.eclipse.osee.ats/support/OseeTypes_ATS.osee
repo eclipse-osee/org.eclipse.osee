@@ -5,6 +5,11 @@ abstract artifactType "ats.Release Artifact" extends "Artifact" {
    attribute "ats.Released"
 }
 
+artifactType "Work Definition" extends "Artifact" {
+   guid "AGrU8fWa3AJ6uoWYP7wA"
+   attribute "ats.DSL Sheet"
+}
+
 abstract artifactType "ats.Ats Artifact" extends "Artifact" {
    guid "ABMaLS0jvw92SE+4ZJQA"
    attribute "ats.Description"
@@ -542,6 +547,14 @@ attributeType "ats.Description" extends StringAttribute {
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider
+   fileExtension "txt"
+}
+
+attributeType "ats.DSL Sheet" extends StringAttribute {
+   guid "AGrqojZDowPDaLh4kBAA"
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
    fileExtension "txt"
 }
 

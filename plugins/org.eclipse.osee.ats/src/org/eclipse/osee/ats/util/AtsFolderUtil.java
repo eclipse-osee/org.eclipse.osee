@@ -34,7 +34,8 @@ public class AtsFolderUtil {
       WorkFlow("Work Flows", "Work Flows", CoreArtifactTypes.Folder),
       WorkRules("Work Rules", "Work Rules", CoreArtifactTypes.Folder),
       WorkWidgets("Work Widgets", "Work Widgets", CoreArtifactTypes.Folder),
-      WorkPages("Work Pages", "Work Pages", CoreArtifactTypes.Folder);
+      WorkPages("Work Pages", "Work Pages", CoreArtifactTypes.Folder),
+      WorkDefinitions("Work Definitions", "Work Definitions", CoreArtifactTypes.Folder);
       final String displayName;
       final String staticId;
       final IArtifactType artifactType;
