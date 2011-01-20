@@ -96,8 +96,8 @@ public class ArtifactQueryPerformanceTests {
       System.out.println(String.format("testGetArtifactsByHRIDNoDeleted took %dms for %d artifacts", elapsedTime,
          result.size()));
       assertTrue("No artifacts found", result.size() > 0);
-      assertTrue(String.format("Elapsed time for artifact by hrid query took %dms.  It should take less than 50ms.",
-         elapsedTime), elapsedTime < 50);
+      assertTrue(String.format("Elapsed time for artifact by hrid query took %dms.  It should take less than 130ms.",
+         elapsedTime), elapsedTime < 130);
    }
 
    @org.junit.Test
