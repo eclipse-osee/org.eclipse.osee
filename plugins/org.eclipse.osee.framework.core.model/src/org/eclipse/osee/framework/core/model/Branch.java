@@ -14,6 +14,7 @@ package org.eclipse.osee.framework.core.model;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.IAdaptable;
@@ -58,6 +59,21 @@ public class Branch extends AbstractOseeType implements IAdaptable, IOseeBranch 
 
    public Branch getParentBranch() throws OseeCoreException {
       return getFieldValue(BranchField.PARENT_BRANCH);
+   }
+
+   public void internalRemovePurgedBranchFromParent() throws OseeCoreException {
+      if (hasParentBranch()) {
+         Branch parentBranch = getParentBranch();
+         Iterator<Branch> siblings = parentBranch.childBranches.iterator();
+
+         while (siblings.hasNext()) {
+            Branch sibling = siblings.next();
+            if (sibling.isPurged() && sibling.equals(this)) {
+               siblings.remove();
+               break;
+            }
+         }
+      }
    }
 
    public boolean hasParentBranch() throws OseeCoreException {
@@ -162,16 +178,26 @@ public class Branch extends AbstractOseeType implements IAdaptable, IOseeBranch 
 
    public Collection<Branch> getChildBranches(boolean recurse) throws OseeCoreException {
       Set<Branch> children = new HashSet<Branch>();
-      getChildBranches(this, children, recurse);
+      getChildBranches(this, children, recurse, false);
       return children;
    }
 
-   private void getChildBranches(Branch parentBranch, Collection<Branch> children, boolean recurse) throws OseeCoreException {
+   /**
+    * @return - This method returns all child branches. Including archived and merge child branches.
+    * @throws OseeCoreException
+    */
+   public Collection<Branch> getAllChildBranches(boolean recurse) throws OseeCoreException {
+      Set<Branch> children = new HashSet<Branch>();
+      getChildBranches(this, children, recurse, true);
+      return children;
+   }
+
+   private void getChildBranches(Branch parentBranch, Collection<Branch> children, boolean recurse, boolean includeAllChildBranches) throws OseeCoreException {
       for (Branch branch : parentBranch.getChildren()) {
-         if (branch.getArchiveState().isUnArchived() && !branch.getBranchType().isMergeBranch()) {
+         if (includeAllChildBranches || (branch.getArchiveState().isUnArchived() && !branch.getBranchType().isMergeBranch())) {
             children.add(branch);
             if (recurse) {
-               getChildBranches(branch, children, recurse);
+               getChildBranches(branch, children, recurse, includeAllChildBranches);
             }
          }
       }

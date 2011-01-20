@@ -65,7 +65,8 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
    protected void doTxWork(IProgressMonitor monitor, OseeConnection connection) throws OseeCoreException {
       this.connection = connection;
       this.monitor = monitor;
-      if (!branch.getChildBranches().isEmpty()) {
+
+      if (!branch.getAllChildBranches(false).isEmpty()) {
          throw new OseeArgumentException("Unable to purge a branch containing children: branchId[%s]", branch.getId());
       }
 
@@ -89,6 +90,7 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
       branch.setStorageState(StorageState.PURGED);
       branchCache.storeItems(branch);
       branchCache.decache(branch);
+      branch.internalRemovePurgedBranchFromParent();
    }
 
    private void purgeGammas(String tableName, double percentage) throws OseeCoreException {

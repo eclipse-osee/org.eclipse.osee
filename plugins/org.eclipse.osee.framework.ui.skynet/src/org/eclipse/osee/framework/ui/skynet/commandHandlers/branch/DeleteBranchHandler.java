@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.commandHandlers.branch;
 
+import java.util.List;
+import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 
 /**
  * @author Karol M. Wilk
@@ -19,5 +22,10 @@ public final class DeleteBranchHandler extends GeneralBranchHandler {
 
    public DeleteBranchHandler() {
       super(OpTypeEnum.DELETE);
+   }
+
+   @Override
+   public void performOperation(List<Branch> branches) {
+      BranchManager.deleteBranch(branches);
    }
 }

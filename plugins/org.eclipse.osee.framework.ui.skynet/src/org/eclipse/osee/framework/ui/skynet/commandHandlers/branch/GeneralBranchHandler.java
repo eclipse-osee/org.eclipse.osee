@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
@@ -28,7 +27,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 /**
  * @author Karol M. Wilk
  */
-public class GeneralBranchHandler extends CommandHandler {
+public abstract class GeneralBranchHandler extends CommandHandler {
    public enum OpTypeEnum {
       DELETE("delete", "Delete Branch"),
       PURGE("purge", "Purge Branch");
@@ -47,6 +46,8 @@ public class GeneralBranchHandler extends CommandHandler {
       this.type = type;
    }
 
+   public abstract void performOperation(final List<Branch> branches);
+
    @Override
    public Object executeWithException(ExecutionEvent arg0) {
       IStructuredSelection selections =
@@ -61,14 +62,7 @@ public class GeneralBranchHandler extends CommandHandler {
             IDialogConstants.NO_LABEL}, 1);
 
       if (dialog.open() == 0) {
-         switch (type) {
-            case DELETE:
-               BranchManager.deleteBranch(selectedBranches);
-               break;
-            case PURGE:
-               BranchManager.purgeBranch(selectedBranches);
-               break;
-         }
+         performOperation(selectedBranches);
       }
 
       return null;
