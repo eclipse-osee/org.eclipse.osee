@@ -143,7 +143,9 @@ public class TableWriterAdaptor {
       Paragraph paragraph = new Paragraph(title, font);
       paragraph.setAlignment(ElementTags.ALIGN_CENTER);
       document.add(paragraph);
-      document.add(table);
+      if (table != null) {
+         document.add(table);
+      }
    }
 
    public void addTable(Table table) throws DocumentException {
