@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.util.widgets.role;
 
 import java.lang.ref.WeakReference;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -276,7 +277,8 @@ public class UserRoleManager {
          hoursSpent += role.getHoursSpent() == null ? 0 : role.getHoursSpent();
       }
       AbstractWorkflowArtifact sma = getArtifact();
-      sma.getStateMgr().setMetrics(hoursSpent, sma.getStateMgr().getPercentComplete(), true);
+      sma.getStateMgr().setMetrics(hoursSpent, sma.getStateMgr().getPercentComplete(), true, UserManager.getUser(),
+         new Date());
       if (persist) {
          getArtifact().persist(transaction);
       }

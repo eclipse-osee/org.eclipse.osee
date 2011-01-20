@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.artifact.log.LogType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkPage;
 
 /**
@@ -56,17 +57,17 @@ public class XCurrentStateDam extends XStateAssigneesDam {
       currState.setPercentComplete(percentComplete);
       setState(currState);
       if (logMetrics) {
-         logMetrics(getArtifact().getStateMgr().getCurrentState());
+         logMetrics(getArtifact().getStateMgr().getCurrentState(), UserManager.getUser(), new Date());
       }
    }
 
-   public void setMetrics(double hours, int percentComplete, boolean logMetrics) throws OseeCoreException {
+   public void setMetrics(double hours, int percentComplete, boolean logMetrics, User user, Date date) throws OseeCoreException {
       SMAState currState = getState();
       currState.setHoursSpent(hours);
       currState.setPercentComplete(percentComplete);
       setState(currState);
       if (logMetrics) {
-         logMetrics(getArtifact().getStateMgr().getCurrentState());
+         logMetrics(getArtifact().getStateMgr().getCurrentState(), user, date);
       }
    }
 

@@ -412,7 +412,9 @@ public class SMAWorkFlowSection extends SectionPart {
    public void dispose() {
       super.dispose();
       for (XWidget xWidget : allXWidgets) {
-         xWidget.dispose();
+         if (xWidget != null) {
+            xWidget.dispose();
+         }
       }
       statePage.dispose();
    }

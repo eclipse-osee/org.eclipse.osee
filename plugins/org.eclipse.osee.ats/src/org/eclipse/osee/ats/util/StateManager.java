@@ -216,15 +216,15 @@ public class StateManager {
       }
    }
 
-   public void setMetrics(double hours, int percentComplete, boolean logMetrics) throws OseeCoreException {
-      setMetrics(getCurrentState(), hours, percentComplete, logMetrics);
+   public void setMetrics(double hours, int percentComplete, boolean logMetrics, User user, Date date) throws OseeCoreException {
+      setMetrics(getCurrentState(), hours, percentComplete, logMetrics, user, date);
    }
 
-   public void setMetrics(IWorkPage state, double hours, int percentComplete, boolean logMetrics) throws OseeCoreException {
+   public void setMetrics(IWorkPage state, double hours, int percentComplete, boolean logMetrics, User user, Date date) throws OseeCoreException {
       if (state.getPageName().equals(getCurrentStateName())) {
-         currentStateDam.setMetrics(hours, percentComplete, logMetrics);
+         currentStateDam.setMetrics(hours, percentComplete, logMetrics, user, date);
       } else {
-         stateDam.setMetrics(state, hours, percentComplete, logMetrics);
+         stateDam.setMetrics(state, hours, percentComplete, logMetrics, user, date);
       }
    }
 

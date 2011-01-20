@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.ui.skynet.widgets.XTextDam;
@@ -75,25 +76,24 @@ public abstract class XStateAssigneesDam extends XTextDam {
       smaState.setPercentComplete(percentComplete);
       setState(smaState);
       if (logMetrics) {
-         logMetrics(state);
+         logMetrics(state, UserManager.getUser(), new Date());
       }
    }
 
-   public void setMetrics(IWorkPage state, double hours, int percentComplete, boolean logMetrics) throws OseeCoreException {
+   public void setMetrics(IWorkPage state, double hours, int percentComplete, boolean logMetrics, User user, Date date) throws OseeCoreException {
       SMAState currState = getState(state, false);
       currState.setHoursSpent(hours);
       currState.setPercentComplete(percentComplete);
       setState(currState);
       if (logMetrics) {
-         logMetrics(state);
+         logMetrics(state, user, date);
       }
    }
 
-   protected void logMetrics(IWorkPage state) throws OseeCoreException {
+   protected void logMetrics(IWorkPage state, User user, Date date) throws OseeCoreException {
       AbstractWorkflowArtifact sma = getArtifact();
       String hoursSpent = AtsUtil.doubleToI18nString(sma.getHoursSpentSMATotal());
-      XCurrentStateDam.logMetrics(sma, sma.getPercentCompleteSMATotal() + "", hoursSpent, state, UserManager.getUser(),
-         new Date());
+      XCurrentStateDam.logMetrics(sma, sma.getPercentCompleteSMATotal() + "", hoursSpent, state, user, date);
    }
 
    public Set<SMAState> getStates() {
