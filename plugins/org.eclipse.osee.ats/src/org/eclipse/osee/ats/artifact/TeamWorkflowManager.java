@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.util.TransitionOption;
 import org.eclipse.osee.ats.workflow.TransitionManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkPage;
@@ -44,7 +45,7 @@ public class TeamWorkflowManager {
    public Result transitionTo(TeamState toState, User user, boolean popup, SkynetTransaction transaction) throws OseeCoreException {
       Date date = new Date();
       if (teamArt.isInState(TeamState.Endorse)) {
-         Result result = processEndorseState(popup, teamArt, user, date, transaction);
+         Result result = processEndorseState(popup, teamArt, getUserOrDefault(user), date, transaction);
          if (result.isFalse()) {
             return result;
          }
@@ -53,7 +54,7 @@ public class TeamWorkflowManager {
          return Result.TrueResult;
       }
 
-      Result result = processAnalyzeState(popup, teamArt, user, date, transaction);
+      Result result = processAnalyzeState(popup, teamArt, getUserOrDefault(user), date, transaction);
       if (result.isFalse()) {
          return result;
       }
@@ -62,7 +63,7 @@ public class TeamWorkflowManager {
          return Result.TrueResult;
       }
 
-      result = processAuthorizeState(popup, teamArt, user, date, transaction);
+      result = processAuthorizeState(popup, teamArt, getUserOrDefault(user), date, transaction);
       if (result.isFalse()) {
          return result;
       }
@@ -77,6 +78,13 @@ public class TeamWorkflowManager {
       }
       return Result.TrueResult;
 
+   }
+
+   private User getUserOrDefault(User user) throws OseeCoreException {
+      if (user == null) {
+         return UserManager.getUser();
+      }
+      return user;
    }
 
    private Result processAuthorizeState(boolean popup, TeamWorkFlowArtifact teamArt, User user, Date date, SkynetTransaction transaction) throws OseeCoreException {
