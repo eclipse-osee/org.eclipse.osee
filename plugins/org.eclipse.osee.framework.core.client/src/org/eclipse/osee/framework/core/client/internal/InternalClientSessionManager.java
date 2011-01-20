@@ -127,7 +127,7 @@ public class InternalClientSessionManager {
          try {
             authenticate(new BaseCredentialProvider() {
                @Override
-               public OseeCredential getCredential() throws OseeCoreException {
+               public OseeCredential getCredential() {
                   OseeCredential credential = super.getCredential();
                   credential.setUserName(System.getProperty("user.name"));
                   credential.setDomain("");

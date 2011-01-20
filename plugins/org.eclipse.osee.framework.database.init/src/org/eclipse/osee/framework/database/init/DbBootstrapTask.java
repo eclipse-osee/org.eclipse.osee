@@ -61,11 +61,12 @@ public class DbBootstrapTask implements IDbInitializationTask {
       Branch systemRoot = BranchManager.getSystemRootBranch();
       Conditions.checkNotNull(systemRoot, "System root was not created - ");
 
+      ClientSessionManager.releaseSession();
       ClientSessionManager.authenticate(new BaseCredentialProvider() {
 
          @Override
          public OseeCredential getCredential() {
-            OseeCredential credential = new OseeCredential();
+            OseeCredential credential = super.getCredential();
             credential.setUserName(SystemUser.BootStrap.getName());
             return credential;
          }

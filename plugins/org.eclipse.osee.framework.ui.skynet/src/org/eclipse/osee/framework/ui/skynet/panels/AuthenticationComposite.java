@@ -270,7 +270,7 @@ public class AuthenticationComposite extends Composite {
                } else {
                   ClientSessionManager.authenticate(new BaseCredentialProvider() {
                      @Override
-                     public OseeCredential getCredential() throws OseeCoreException {
+                     public OseeCredential getCredential() {
                         OseeCredential credential = super.getCredential();
                         credential.setUserName(dataMap.get(LabelEnum.UserId));
                         credential.setPassword(dataMap.get(LabelEnum.Password));

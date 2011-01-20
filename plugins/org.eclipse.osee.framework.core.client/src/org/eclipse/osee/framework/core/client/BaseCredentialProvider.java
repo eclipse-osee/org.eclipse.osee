@@ -15,7 +15,6 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.server.HttpServer;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.data.OseeCredential;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -25,7 +24,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 public abstract class BaseCredentialProvider implements ICredentialProvider {
 
    @Override
-   public OseeCredential getCredential() throws OseeCoreException {
+   public OseeCredential getCredential() {
       OseeCredential credential = new OseeCredential();
       credential.setUserName("");
       credential.setDomain("");
