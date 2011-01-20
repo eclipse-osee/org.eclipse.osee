@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.core.server.internal.session;
 
 import java.util.Timer;
 import java.util.TimerTask;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar
@@ -51,7 +50,7 @@ public class SessionDataStoreSync implements ISessionDataStoreSync {
                isCacheCurrent = true;
             }
             sessionCache.storeAllModified();
-         } catch (OseeCoreException ex) {
+         } catch (Exception ex) {
             // Do nothing;
          }
       }
