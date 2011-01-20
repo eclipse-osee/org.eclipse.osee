@@ -10,7 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.util;
 
+import java.util.logging.Level;
+import org.eclipse.osee.framework.core.internal.Activator;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.tracker.ServiceTracker;
 
@@ -25,13 +28,21 @@ public final class OsgiUtil {
 
    public static void close(ServiceTracker tracker) {
       if (tracker != null) {
-         tracker.close();
+         try {
+            tracker.close();
+         } catch (Exception ex) {
+            OseeLog.log(Activator.class, Level.WARNING, ex);
+         }
       }
    }
 
    public static void close(ServiceRegistration registration) {
       if (registration != null) {
-         registration.unregister();
+         try {
+            registration.unregister();
+         } catch (Exception ex) {
+            OseeLog.log(Activator.class, Level.WARNING, ex);
+         }
       }
    }
 

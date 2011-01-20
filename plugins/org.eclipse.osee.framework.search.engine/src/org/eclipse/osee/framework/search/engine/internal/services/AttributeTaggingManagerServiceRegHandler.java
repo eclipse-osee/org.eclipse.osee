@@ -64,12 +64,16 @@ public class AttributeTaggingManagerServiceRegHandler extends AbstractTrackingHa
 
    @Override
    public void onServiceAdded(BundleContext context, Class<?> clazz, Object services) {
-      attributeTaggerManager.addAttributeTaggerProvider((IAttributeTaggerProvider) services);
+      if (attributeTaggerManager != null) {
+         attributeTaggerManager.addAttributeTaggerProvider((IAttributeTaggerProvider) services);
+      }
    }
 
    @Override
    public void onServiceRemoved(BundleContext context, Class<?> clazz, Object services) {
-      attributeTaggerManager.removeAttributeTaggerProvider((IAttributeTaggerProvider) services);
+      if (attributeTaggerManager != null) {
+         attributeTaggerManager.removeAttributeTaggerProvider((IAttributeTaggerProvider) services);
+      }
    }
 
    @Override
