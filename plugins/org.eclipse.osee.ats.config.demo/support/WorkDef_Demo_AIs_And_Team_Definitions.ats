@@ -1,0 +1,297 @@
+
+userDefinition "Joe Smith" GetOrCreate
+userDefinition "Kay Jones" GetOrCreate
+userDefinition "Jason Michael" GetOrCreate
+userDefinition "Alex Kay" GetOrCreate
+userDefinition "Kay Jason" GetOrCreate
+userDefinition "Steven Kohn" GetOrCreate
+userDefinition "John Stevens" GetOrCreate
+userDefinition "Keith Johnson" GetOrCreate
+userDefinition "Michael Alex" GetOrCreate
+userDefinition "Janice Michael" GetOrCreate
+userDefinition "Maichael Johnson" GetOrCreate
+userDefinition "Roland Stevens" GetOrCreate
+userDefinition "Jeffery Kay" GetOrCreate
+userDefinition "Karmen John" GetOrCreate
+userDefinition "Steven Michael" GetOrCreate
+userDefinition "Jason Stevens" GetOrCreate
+userDefinition "Michael John" GetOrCreate
+userDefinition "Kay Wheeler" GetOrCreate
+userDefinition "Inactive Steve" GetOrCreate {
+	active False userId "Inactive Steve"
+	email "Inactive Steve"
+	isAdmin False
+}
+
+teamDefinition "Teams" GetOrCreate {
+	staticId "osee.ats.TopTeamDefinition"
+	children {
+
+		teamDefinition "CIS SW" {
+			staticId "cis.teamDefHoldingVersions"
+			lead named "Kay Jason"
+			member named "Steven Kohn"
+			member named "Maichael Johnson"
+			member named "Kay Jason"
+			workDefinition "osee.ats.teamWorkflow"
+			version "CIS_Bld_1" {
+				staticId "cis.teamDefHoldingVersions"
+				released True
+				baslineBranchGuid "AyH_f2sSKy3l07fIvDDD"
+			}
+			version "CIS_Bld_2" {
+				staticId "cis.teamDefHoldingVersions"
+				next True
+			}
+			version "CIS_Bld_3" {
+				staticId "cis.teamDefHoldingVersions"
+			}
+			children {
+
+				teamDefinition "CIS Code" {
+					usesVersions True
+					staticId "cis.code"
+					lead named "Jason Michael"
+					member named "Jason Michael"
+					workDefinition "demo.code"
+				}
+
+				teamDefinition "CIS Requirements" {
+					usesVersions True
+					staticId "cis.requirements"
+					lead named "Joe Smith"
+					member named "Joe Smith"
+					workDefinition "demo.req"
+				}
+
+				teamDefinition "CIS SW Design" {
+					usesVersions True
+					staticId "cis.sw_design"
+					lead named "Kay Jones"
+					member named "Kay Jones"
+					workDefinition "demo.swdesign"
+				}
+
+				teamDefinition "CIS Test" {
+					usesVersions True
+					staticId "cis.test"
+					lead named "Kay Jones"
+					member named "Kay Jones"
+					workDefinition "demo.test"
+				}
+			}
+		}
+
+		teamDefinition "Facilities Team" {
+			lead named "John Stevens"
+			member named "John Stevens"
+			member named "Steven Michael"
+			member named "Michael John"
+			member named "Jason Stevens"
+			workDefinition "osee.ats.simpleTeamWorkflow"
+			children {
+
+				teamDefinition "IT Team" {
+					lead named "Kay Wheeler"
+					member named "Steven Michael"
+					member named "Michael John"
+					member named "Jason Stevens"
+					member named "Kay Wheeler"
+					workDefinition "osee.ats.simpleTeamWorkflow"
+				}
+			}
+		}
+
+		teamDefinition "Process Team" {
+			lead named "Alex Kay"
+			member named "Keith Johnson"
+			member named "Michael Alex"
+			member named "Janice Michael"
+			member named "Alex Kay"
+			workDefinition "osee.ats.teamWorkflow"
+		}
+
+		teamDefinition "SAW SW" {
+			staticId "saw.teamDefHoldingVersions"
+			lead named "Kay Jason"
+			member named "Maichael Johnson"
+			member named "Steven Kohn"
+			member named "Kay Jason"
+			workDefinition "osee.ats.teamWorkflow"
+			version "SAW_Bld_1" {
+				staticId "saw.teamDefHoldingVersions"
+				released True
+				baslineBranchGuid "AyH_f2sSKy3l07fIvAAA"
+			}
+			version "SAW_Bld_2" {
+				staticId "saw.teamDefHoldingVersions"
+				next True allowCreateBranch True allowCommitBranch True
+				baslineBranchGuid "AyH_f2sSKy3l07fIvBBB"
+			}
+			version "SAW_Bld_3" {
+				staticId "saw.teamDefHoldingVersions"
+			}
+			children {
+
+				teamDefinition "SAW Code" {
+					usesVersions True
+					staticId "saw.code"
+					lead named "Joe Smith"
+					member named "Joe Smith"
+					workDefinition "demo.code"
+				}
+
+				teamDefinition "SAW HW" {
+					usesVersions True
+					lead named "Jason Michael"
+					member named "Jason Michael"
+					workDefinition "osee.ats.teamWorkflow"
+				}
+
+				teamDefinition "SAW Requirements" {
+					usesVersions True
+					staticId "saw.requirements"
+					lead named "Joe Smith"
+					member named "Joe Smith"
+					workDefinition "demo.req"
+				}
+
+				teamDefinition "SAW SW Design" {
+					usesVersions True
+					staticId "saw.sw_design"
+					lead named "Kay Jones"
+					member named "Kay Jones"
+					workDefinition "demo.swdesign"
+				}
+
+				teamDefinition "SAW Test" {
+					usesVersions True
+					staticId "saw.test"
+					lead named "Kay Jones"
+					member named "Kay Jones" priviledged named "Joe Smith"
+					workDefinition "demo.test"
+				}
+			}
+		}
+
+		teamDefinition "Tools Team" {
+			lead named "Jeffery Kay"
+			member named "Jeffery Kay"
+			member named "Roland Stevens"
+			workDefinition "osee.ats.teamWorkflow"
+			children {
+
+				teamDefinition "Web Team" {
+					lead named "Karmen John"
+					member named "Jeffery Kay"
+					member named "Karmen John"
+					member named "Roland Stevens"
+					workDefinition "osee.ats.simpleTeamWorkflow"
+				}
+			}
+		}
+	}
+}
+actionableItem "Actionable Items" GetOrCreate {
+	staticId "osee.ats.TopActionableItem"
+	children {
+		actionableItem "CIS CSCI" {
+			actionable False
+			children {
+				actionableItem "CIS Code" {
+					team "CIS Code"
+				}
+				actionableItem "CIS Requirements" {
+					team "CIS Requirements"
+				}
+				actionableItem "CIS SW Design" {
+					team "CIS SW Design"
+				}
+				actionableItem "CIS Test" {
+					team "CIS Test"
+				}
+			}
+		}
+		actionableItem "Facilities" {
+			team "Facilities Team"
+			children {
+				actionableItem "Backups" {
+					team "IT Team"
+				}
+				actionableItem "Break Room"
+				actionableItem "Computers" {
+					team "IT Team"
+				}
+				actionableItem "Network" {
+					team "IT Team"
+				}
+				actionableItem "Vending Machines"
+			}
+		}
+		actionableItem "Processes" {
+			team "Process Team"
+			children {
+				actionableItem "Coding Standards"
+				actionableItem "Config Mgmt"
+				actionableItem "New Employee Manual"
+				actionableItem "Reviews"
+			}
+		}
+		actionableItem "SAW CSCI" {
+			actionable False
+			children {
+				actionableItem "SAW Code" {
+					team "SAW Code"
+					children {
+						actionableItem "COMM"
+						actionableItem "MSM"
+						actionableItem "NAV"
+						actionableItem "Test Page"
+					}
+				}
+				actionableItem "SAW HW" {
+					team "SAW HW"
+					children {
+						actionableItem "Adapter"
+						actionableItem "Case"
+						actionableItem "Manual"
+						actionableItem "Screen"
+					}
+				}
+				actionableItem "SAW Requirements" {
+					team "SAW Requirements"
+					children {
+						actionableItem "COMM"
+						actionableItem "MSM"
+						actionableItem "NAV"
+					}
+				}
+				actionableItem "SAW SW Design" {
+					team "SAW SW Design"
+				}
+				actionableItem "SAW Test" {
+					team "SAW Test"
+					children {
+						actionableItem "ADT"
+						actionableItem "COMM"
+						actionableItem "MSM"
+						actionableItem "NAV"
+						actionableItem "RunLists"
+					}
+				}
+			}
+		}
+		actionableItem "Tools" {
+			team "Tools Team"
+			children {
+				actionableItem "Reader"
+				actionableItem "Results Reporter"
+				actionableItem "Timesheet"
+				actionableItem "Website" {
+					team "Web Team"
+				}
+			}
+		}
+	}
+}
+

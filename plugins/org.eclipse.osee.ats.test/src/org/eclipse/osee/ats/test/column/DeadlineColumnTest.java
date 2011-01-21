@@ -14,7 +14,9 @@ import org.eclipse.osee.ats.column.DeadlineColumn;
 import org.eclipse.osee.ats.test.util.DemoTestUtil;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
+import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
@@ -32,6 +34,8 @@ public class DeadlineColumnTest {
 
    @org.junit.Test
    public void testGetColumnText() throws Exception {
+      SevereLoggingMonitor loggingMonitor = TestUtil.severeLoggingStart();
+
       SkynetTransaction transaction =
          new SkynetTransaction(AtsUtil.getAtsBranch(), CancelledDateColumnTest.class.getSimpleName());
       TeamWorkFlowArtifact teamArt =
@@ -63,5 +67,6 @@ public class DeadlineColumnTest {
       Assert.assertTrue(DeadlineColumn.isDeadlineAlerting(teamArt).isFalse());
       Assert.assertNull(DeadlineColumn.getInstance().getColumnImage(teamArt, DeadlineColumn.getInstance(), 0));
 
+      TestUtil.severeLoggingEnd(loggingMonitor);
    }
 }

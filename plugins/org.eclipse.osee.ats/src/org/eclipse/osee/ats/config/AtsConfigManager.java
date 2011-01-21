@@ -20,13 +20,12 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
+import org.eclipse.osee.ats.artifact.AtsArtifactToken;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
-import org.eclipse.osee.ats.util.AtsFolderUtil;
-import org.eclipse.osee.ats.util.AtsFolderUtil.AtsFolder;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.TeamState;
@@ -129,7 +128,7 @@ public class AtsConfigManager extends AbstractOperation {
       }
       teamDefinition.addRelation(AtsRelationTypes.TeamLead_Lead, UserManager.getUser());
       teamDefinition.addRelation(AtsRelationTypes.TeamMember_Member, UserManager.getUser());
-      AtsFolderUtil.getFolder(AtsFolder.Teams).addChild(teamDefinition);
+      AtsArtifactToken.get(AtsArtifactToken.TopTeamDefinition).addChild(teamDefinition);
       teamDefinition.persist(transaction);
       return teamDefinition;
    }
@@ -144,7 +143,7 @@ public class AtsConfigManager extends AbstractOperation {
       topAia.setSoleAttributeValue(AtsAttributeTypes.Actionable, false);
       topAia.persist(transaction);
 
-      AtsFolderUtil.getFolder(AtsFolder.ActionableItem).addChild(topAia);
+      AtsArtifactToken.get(AtsArtifactToken.TopActionableItem).addChild(topAia);
       teamDefinition.addRelation(AtsRelationTypes.TeamActionableItem_ActionableItem, topAia);
       teamDefinition.persist(transaction);
 

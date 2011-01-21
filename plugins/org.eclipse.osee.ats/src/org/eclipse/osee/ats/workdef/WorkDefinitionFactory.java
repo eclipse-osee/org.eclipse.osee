@@ -30,11 +30,15 @@ import org.eclipse.osee.ats.workflow.flow.PeerToPeerWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.flow.TaskWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.item.AtsAddDecisionReviewRule;
 import org.eclipse.osee.ats.workflow.item.AtsAddPeerToPeerReviewRule;
+import org.eclipse.osee.ats.workflow.item.AtsStatePercentCompleteWeightRule;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
@@ -67,12 +71,21 @@ public class WorkDefinitionFactory {
                      System.err.println("skipping rule " + workItem.getName());
                   } else if (workItem.getName().startsWith("atsAddPeerToPeerReview")) {
                      System.err.println("skipping rule " + workItem.getName());
+                  } else if (workItem.getName().startsWith(AtsStatePercentCompleteWeightRule.ID)) {
+                     System.err.println("skipping rule " + workItem.getName());
                   } else {
-                     WorkRuleDefinition workRule = (WorkRuleDefinition) workItem;
-                     RuleDefinition ruleDef = new RuleDefinition(workRule.getId());
-                     ruleDef.setDescription(workRule.getDescription());
-                     copyKeyValuePair(ruleDef, workRule);
-                     idToRule.put(ruleDef.getName(), ruleDef);
+                     try {
+                        WorkRuleDefinition workRule = (WorkRuleDefinition) workItem;
+                        // All rules in DB should map to RuleDefinitionOption 
+                        RuleDefinitionOption ruleOption =
+                           RuleDefinitionOption.valueOf(workRule.getName().replaceFirst("^ats", ""));
+                        RuleDefinition ruleDef = new RuleDefinition(ruleOption);
+                        ruleDef.setDescription(workRule.getDescription());
+                        copyKeyValuePair(ruleDef, workRule);
+                        idToRule.put(ruleDef.getName(), ruleDef);
+                     } catch (Exception ex) {
+                        OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+                     }
                   }
                }
             }
@@ -161,12 +174,13 @@ public class WorkDefinitionFactory {
          for (WorkPageDefinition workPage : workFlowDef.getPages()) {
             // not using ids anymore for states, widgets or rules
             StateDefinition stateDef = workDef.getOrCreateState(workPage.getPageName());
+            stateDef.setWorkDefinition(workDef);
             stateDef.setOrdinal(workPage.getWorkPageOrdinal());
             if (workPage.getId().equals(startWorkPageName)) {
                workDef.setStartState(stateDef);
             }
+            // TODO get rid of this??
             copyKeyValuePair(stateDef, workPage);
-            stateDef.setWorkDefinition(workDef);
             stateDef.setWorkPageType(workPage.getWorkPageType());
 
             for (WorkPageDefinition returnPageDefinition : workFlowDef.getReturnPages(workPage)) {
@@ -256,8 +270,13 @@ public class WorkDefinitionFactory {
                      }
                      stateDef.getPeerReviews().add(peerRevDef);
                   } else {
-                     RuleDefinition ruleDef = getRuleById(workRule.getId());
-                     stateDef.addRule(ruleDef, "from related WorkItemDefintion");
+                     RuleDefinition ruleDef = getRuleById(workRule.getId().replaceFirst("^ats", ""));
+                     if (ruleDef == null) {
+                        OseeLog.log(AtsPlugin.class, Level.SEVERE,
+                           String.format("Null work rule for " + workRule.getId()));
+                     } else {
+                        stateDef.addRule(ruleDef, "from related WorkItemDefintion");
+                     }
                   }
                } else {
                   OseeLog.log(AtsPlugin.class, Level.SEVERE,
@@ -266,6 +285,40 @@ public class WorkDefinitionFactory {
             }
          }
 
+         // Process WeightDefinitions
+         Artifact workDefArt = workFlowDef.getArtifact();
+         for (Artifact workChild : workDefArt.getRelatedArtifacts(CoreRelationTypes.WorkItem__Child)) {
+            if (workChild.getName().startsWith(AtsStatePercentCompleteWeightRule.ID)) {
+               WorkRuleDefinition ruleDefinition = new WorkRuleDefinition(workChild);
+               for (String stateName : ruleDefinition.getWorkDataKeyValueMap().keySet()) {
+                  String value = ruleDefinition.getWorkDataValue(stateName);
+                  try {
+                     double percent = new Double(value).doubleValue();
+                     if (percent < 0.0 || percent > 1) {
+                        OseeLog.log(
+                           AtsPlugin.class,
+                           Level.SEVERE,
+                           "Invalid percent value \"" + value + "\" (must be 0..1) for rule " + ruleDefinition.getName(),
+                           new OseeArgumentException("state map exception"));
+                     } else {
+                        percent = percent * 100;
+                        workDef.getStateByName(stateName).setPercentWeight(new Double(percent).intValue());
+                     }
+                  } catch (Exception ex) {
+                     OseeLog.log(
+                        AtsPlugin.class,
+                        Level.SEVERE,
+                        "Invalid percent value \"" + value + "\" (must be float 0..1) for rule " + ruleDefinition.getName(),
+                        new OseeArgumentException("state map exception"));
+                  }
+               }
+               Result result = workDef.validateStateWeighting();
+               if (result.isFalse()) {
+                  OseeLog.log(AtsPlugin.class, Level.SEVERE,
+                     "Error translating weight definitions - " + result.getText());
+               }
+            }
+         }
          return workDef;
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
@@ -362,6 +415,21 @@ public class WorkDefinitionFactory {
       return new WorkDefinitionMatch();
    }
 
+   /**
+    * Look at team def's attribute for Work Definition setting, otherwise, walk up team tree for setting
+    */
+   private static WorkDefinitionMatch getWorkDefinitionFromTeamDefinitionAttributeInherited(TeamDefinitionArtifact teamDef) throws OseeCoreException {
+      WorkDefinitionMatch match = getWorkDefinitionFromArtifactsAttributeValue(teamDef);
+      if (match.isMatched()) {
+         return match;
+      }
+      Artifact parentArt = teamDef.getParent();
+      if (parentArt != null && parentArt instanceof TeamDefinitionArtifact) {
+         return getWorkDefinitionFromTeamDefinitionAttributeInherited((TeamDefinitionArtifact) parentArt);
+      }
+      return new WorkDefinitionMatch();
+   }
+
    private static WorkDefinitionMatch getWorkDefinitionForTask(TaskArtifact taskArt) throws OseeCoreException {
       WorkDefinitionMatch match = new WorkDefinitionMatch();
       for (IAtsTeamWorkflow provider : TeamWorkflowExtensions.getAtsTeamWorkflowExtensions()) {
@@ -427,7 +495,7 @@ public class WorkDefinitionFactory {
                // Note: This is new.  Old TeamDefs got workflow off relation
                if (artifact instanceof TeamWorkFlowArtifact) {
                   TeamDefinitionArtifact teamDef = ((TeamWorkFlowArtifact) artifact).getTeamDefinition();
-                  match = getWorkDefinitionFromArtifactsAttributeValue(teamDef);
+                  match = getWorkDefinitionFromTeamDefinitionAttributeInherited(teamDef);
                   if (!match.isMatched()) {
                      match = ((TeamWorkFlowArtifact) artifact).getTeamDefinition().getWorkDefinition();
                   }

@@ -73,8 +73,9 @@ public class XComboBooleanDam extends XCombo implements IAttributeWidget {
       if (isEditable()) {
          try {
             String enteredValue = get();
-            boolean storedValue = artifact.getSoleAttributeValue(attributeType);
-            if (enteredValue.equals("yes") != storedValue) {
+         boolean storedValueBoolean = artifact.getSoleAttributeValue(attributeType);
+         String storedValue = storedValueBoolean ? "yes" : "no";
+         if (!enteredValue.equals(storedValue)) {
                return new Result(true, attributeType + " is dirty");
             }
          } catch (AttributeDoesNotExist ex) {

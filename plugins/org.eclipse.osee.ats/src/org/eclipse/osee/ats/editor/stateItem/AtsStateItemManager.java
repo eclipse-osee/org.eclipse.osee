@@ -17,10 +17,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.workdef.StateDefinition;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.osgi.framework.Bundle;
@@ -32,23 +29,9 @@ public class AtsStateItemManager {
 
    private final static List<IAtsStateItem> stateItems = new ArrayList<IAtsStateItem>();
 
-   public static List<IAtsStateItem> getStateItems(StateDefinition stateDef) throws OseeCoreException {
-      return getStateItems(stateDef.getFullName());
-   }
-
-   private static List<IAtsStateItem> getStateItems(String stateId) throws OseeCoreException {
+   public static List<IAtsStateItem> getStateItems() {
       loadAllStateItems();
-      List<IAtsStateItem> items = new ArrayList<IAtsStateItem>();
-      for (IAtsStateItem item : stateItems) {
-         if (item.getIds().contains(AtsStateItem.ALL_STATE_IDS) || item.getIds().contains(stateId)) {
-            items.add(item);
-         }
-      }
-      return items;
-   }
-
-   public static List<IAtsStateItem> getCurrentPageStateItems(AbstractWorkflowArtifact sma) throws OseeCoreException {
-      return getStateItems(sma.getStateDefinition().getFullName());
+      return stateItems;
    }
 
    @SuppressWarnings({"rawtypes"})

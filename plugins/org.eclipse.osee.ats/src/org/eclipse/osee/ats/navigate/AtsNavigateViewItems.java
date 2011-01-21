@@ -184,6 +184,8 @@ public final class AtsNavigateViewItems implements XNavigateViewItems {
          new ConvertAtsFor097Database(dbConvertItems);
          new ConvertAtsSingleFor097Database(dbConvertItems);
          new ConvertWorkFlowDefinitions(dbConvertItems);
+         new ConvertAIsAndTeamDefinitions(dbConvertItems);
+         new ImportAIsAndTeamDefinitions(dbConvertItems);
 
          new AtsNotificationNavigateItem(adminItems);
          new AtsNotificationNavigateItem(adminItems, true);

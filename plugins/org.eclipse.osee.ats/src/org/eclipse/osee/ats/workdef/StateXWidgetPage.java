@@ -115,12 +115,12 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IWorkPage
 
    @Override
    public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, DynamicXWidgetLayout dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
-      widgetCreated(xWidget, toolkit, art, this, xModListener, isEditable);
+      widgetCreated(xWidget, toolkit, art, stateDefinition, xModListener, isEditable);
    }
 
    @Override
    public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, DynamicXWidgetLayout dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
-      widgetCreating(xWidget, toolkit, art, this, xModListener, isEditable);
+      widgetCreating(xWidget, toolkit, art, stateDefinition, xModListener, isEditable);
    }
 
    public void dispose() {
@@ -335,11 +335,11 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IWorkPage
       return isCurrentState(sma) && !isCompletedOrCancelledPage();
    }
 
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, StateXWidgetPage page, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, StateDefinition stateDef, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
       // Check extension points for page creation
       if (sma != null) {
-         for (IAtsStateItem item : AtsStateItemManager.getStateItems(page.getStateDefinition())) {
-            item.xWidgetCreated(xWidget, toolkit, page, art, xModListener, isEditable);
+         for (IAtsStateItem item : AtsStateItemManager.getStateItems()) {
+            item.xWidgetCreated(xWidget, toolkit, stateDef, art, xModListener, isEditable);
          }
       }
    }
@@ -362,11 +362,11 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IWorkPage
 
    }
 
-   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, StateXWidgetPage page, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
+   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, StateDefinition stateDefinition, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
       // Check extension points for page creation
       if (sma != null) {
-         for (IAtsStateItem item : AtsStateItemManager.getStateItems(page.getStateDefinition())) {
-            Result result = item.xWidgetCreating(xWidget, toolkit, page, art, xModListener, isEditable);
+         for (IAtsStateItem item : AtsStateItemManager.getStateItems()) {
+            Result result = item.xWidgetCreating(xWidget, toolkit, stateDefinition, art, xModListener, isEditable);
             if (result.isFalse()) {
                OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Error in page creation => " + result.getText());
             }

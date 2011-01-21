@@ -11,13 +11,10 @@
 package org.eclipse.osee.ats.editor.stateItem;
 
 import java.util.Collection;
-import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkPage;
@@ -27,29 +24,24 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkPage;
  */
 public class AtsForceAssigneesToTeamLeadsStateItem extends AtsStateItem {
 
-   @Override
-   public String getId() {
-      return AtsStateItem.ALL_STATE_IDS;
-   }
-
-   @Override
-   public void transitioned(AbstractWorkflowArtifact sma, IWorkPage fromState, IWorkPage toState, Collection<User> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
-      super.transitioned(sma, fromState, toState, toAssignees, transaction);
-      if (sma.isTeamWorkflow() && AtsWorkDefinitions.isForceAssigneesToTeamLeads(sma.getStateDefinitionByName(toState.getPageName()))) {
-         // Set Assignees to all user roles users
-         try {
-            Collection<User> teamLeads = ((TeamWorkFlowArtifact) sma).getTeamDefinition().getLeads();
-            sma.getStateMgr().setAssignees(teamLeads);
-            sma.persist(transaction);
-         } catch (Exception ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-         }
-      }
+   public AtsForceAssigneesToTeamLeadsStateItem() {
+      super(AtsForceAssigneesToTeamLeadsStateItem.class.getSimpleName());
    }
 
    @Override
    public String getDescription() {
-      return "AtsForceAssigneesToTeamLeadsStateItem";
+      return "Check if toState is configured to force assignees to leads and set leads accordingly.";
+   }
+
+   @Override
+   public void transitioned(AbstractWorkflowArtifact sma, IWorkPage fromState, IWorkPage toState, Collection<User> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
+      if (sma.isTeamWorkflow() && AtsWorkDefinitions.isForceAssigneesToTeamLeads(sma.getStateDefinitionByName(toState.getPageName()))) {
+         Collection<User> teamLeads = ((TeamWorkFlowArtifact) sma).getTeamDefinition().getLeads();
+         if (!teamLeads.isEmpty()) {
+            sma.getStateMgr().setAssignees(teamLeads);
+            sma.persist(transaction);
+         }
+      }
    }
 
 }

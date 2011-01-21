@@ -10,13 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor.stateItem;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
-import org.eclipse.osee.ats.workdef.StateXWidgetPage;
+import org.eclipse.osee.ats.workdef.StateDefinition;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -33,6 +32,11 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 public abstract class AtsStateItem implements IAtsStateItem {
 
    public final static String ALL_STATE_IDS = "ALL";
+   private final String name;
+
+   public AtsStateItem(String name) {
+      this.name = name;
+   }
 
    @SuppressWarnings("unused")
    @Override
@@ -46,17 +50,9 @@ public abstract class AtsStateItem implements IAtsStateItem {
       return null;
    }
 
-   protected String getId() {
-      return null;
-   }
-
-   @SuppressWarnings("unused")
    @Override
-   public Collection<String> getIds() throws OseeCoreException {
-      if (getId() == null) {
-         return Collections.emptyList();
-      }
-      return Arrays.asList(getId());
+   public String getName() {
+      return name;
    }
 
    @SuppressWarnings("unused")
@@ -73,20 +69,14 @@ public abstract class AtsStateItem implements IAtsStateItem {
 
    @SuppressWarnings("unused")
    @Override
-   public List<XWidget> getDynamicXWidgetsPostBody(AbstractWorkflowArtifact sma) throws OseeCoreException {
+   public List<XWidget> getDynamicXWidgetsPostBody(AbstractWorkflowArtifact sma, String stateName) throws OseeCoreException {
       return Collections.emptyList();
    }
 
    @SuppressWarnings("unused")
    @Override
-   public List<XWidget> getDynamicXWidgetsPreBody(AbstractWorkflowArtifact sma) throws OseeCoreException {
+   public List<XWidget> getDynamicXWidgetsPreBody(AbstractWorkflowArtifact sma, String stateName) throws OseeCoreException {
       return Collections.emptyList();
-   }
-
-   @SuppressWarnings("unused")
-   @Override
-   public Result pageCreated(FormToolkit toolkit, StateXWidgetPage page, AbstractWorkflowArtifact sma, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
-      return Result.TrueResult;
    }
 
    @SuppressWarnings("unused")
@@ -109,13 +99,13 @@ public abstract class AtsStateItem implements IAtsStateItem {
 
    @SuppressWarnings("unused")
    @Override
-   public void xWidgetCreated(XWidget xWidget, FormToolkit toolkit, StateXWidgetPage page, Artifact art, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
+   public void xWidgetCreated(XWidget xWidget, FormToolkit toolkit, StateDefinition stateDefinition, Artifact art, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
       // provided for subclass implementation
    }
 
    @SuppressWarnings("unused")
    @Override
-   public Result xWidgetCreating(XWidget xWidget, FormToolkit toolkit, StateXWidgetPage page, Artifact art, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
+   public Result xWidgetCreating(XWidget xWidget, FormToolkit toolkit, StateDefinition stateDefinition, Artifact art, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
       return Result.TrueResult;
    }
 
@@ -123,5 +113,15 @@ public abstract class AtsStateItem implements IAtsStateItem {
    @Override
    public boolean isAccessControlViaAssigneesEnabledForBranching() throws OseeCoreException {
       return false;
+   }
+
+   @Override
+   public String getFullName() {
+      return getClass().getName();
+   }
+
+   @Override
+   public String toString() {
+      return getName();
    }
 }

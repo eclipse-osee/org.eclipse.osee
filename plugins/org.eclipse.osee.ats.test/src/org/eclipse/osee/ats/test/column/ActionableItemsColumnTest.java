@@ -12,7 +12,9 @@ import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.column.ActionableItemsColumn;
 import org.eclipse.osee.ats.test.util.DemoTestUtil;
+import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.support.test.util.DemoWorkType;
+import org.eclipse.osee.support.test.util.TestUtil;
 
 /**
  * @tests ActionableItemsColumn
@@ -22,6 +24,8 @@ public class ActionableItemsColumnTest {
 
    @org.junit.Test
    public void testGetActionableItems() throws Exception {
+      SevereLoggingMonitor loggingMonitor = TestUtil.severeLoggingStart();
+
       TeamWorkFlowArtifact codeArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Code);
       Collection<ActionableItemArtifact> aias = ActionableItemsColumn.getActionableItems(codeArt);
@@ -32,10 +36,13 @@ public class ActionableItemsColumnTest {
       aias = ActionableItemsColumn.getActionableItems(actionArt);
       Assert.assertEquals(4, aias.size());
 
+      TestUtil.severeLoggingEnd(loggingMonitor);
    }
 
    @org.junit.Test
    public void testGetActionableItemsStr() throws Exception {
+      SevereLoggingMonitor loggingMonitor = TestUtil.severeLoggingStart();
+
       TeamWorkFlowArtifact codeArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Code);
       Assert.assertEquals("SAW Code", ActionableItemsColumn.getActionableItemsStr(codeArt));
@@ -48,6 +55,8 @@ public class ActionableItemsColumnTest {
       Assert.assertTrue(results.contains("SAW Test"));
       Assert.assertTrue(results.contains("SAW Requirements"));
       Assert.assertEquals(4, results.split(", ").length);
+
+      TestUtil.severeLoggingEnd(loggingMonitor);
    }
 
 }

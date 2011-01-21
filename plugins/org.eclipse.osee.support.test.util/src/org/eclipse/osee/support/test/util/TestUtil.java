@@ -30,7 +30,21 @@ public class TestUtil {
    private static final String DEMO_DB_TYPE = "demo";
    public static final Collection<String> ignoreLogging = Arrays.asList("No image was defined for art type",
       "Unable to load the image for [SAVED]");
-   public static boolean isInTest = false;
+   private static boolean inTest = false;
+
+   /**
+    * Need to match methods in OseeProperties
+    */
+   public static boolean isInTest() {
+      return inTest;
+   }
+
+   /**
+    * Need to match methods in OseeProperties
+    */
+   public static void setIsInTest(boolean isInTest) {
+      inTest = isInTest;
+   }
 
    public static boolean isProductionDb() throws OseeCoreException {
       return ClientSessionManager.isProductionDataStore();

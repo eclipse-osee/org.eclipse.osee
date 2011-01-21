@@ -16,12 +16,6 @@
    	</DatabaseInitializationTask>
 	</extension>
    <extension
-         point="org.eclipse.osee.ats.AtsAIandTeamConfig">
-      <AtsAIandTeamConfig
-            vueFilename="support/Osee ATS Config Demo.vue">
-      </AtsAIandTeamConfig>
-   </extension>
-   <extension
          point="org.eclipse.osee.ats.AtsNavigateItem">
       <AtsNavigateItem
             classname="org.eclipse.osee.ats.config.demo.navigate.DemoNavigateViewItems">
@@ -59,6 +53,14 @@
       <ArtifactImageProvider
             class="org.eclipse.osee.ats.config.demo.artifact.DemoArtifactImageProvider">
       </ArtifactImageProvider>
+   </extension>
+   <extension
+         id="DemoWorkDefinitionSheetProvider"
+         name="DemoWorkDefinitionSheetProvider"
+         point="org.eclipse.osee.ats.AtsWorkDefinitionSheetProvider">
+      <AtsWorkDefinitionSheetProvider
+            classname="org.eclipse.osee.ats.config.demo.config.DemoWorkDefinitionSheetProvider">
+      </AtsWorkDefinitionSheetProvider>
    </extension>
    <extension
          id="DemoTraceUnitHandler"

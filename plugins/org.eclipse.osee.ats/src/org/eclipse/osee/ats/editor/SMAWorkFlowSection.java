@@ -41,12 +41,12 @@ import org.eclipse.osee.ats.util.XCancellationReasonTextWidget;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.ats.util.widgets.dialog.SMAStatusDialog;
 import org.eclipse.osee.ats.workdef.ReviewBlockType;
+import org.eclipse.osee.ats.workdef.RuleDefinitionOption;
 import org.eclipse.osee.ats.workdef.StateDefinition;
 import org.eclipse.osee.ats.workdef.StateDefinitionLabelProvider;
 import org.eclipse.osee.ats.workdef.StateDefinitionViewSorter;
 import org.eclipse.osee.ats.workdef.StateXWidgetPage;
 import org.eclipse.osee.ats.workflow.TransitionManager;
-import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -202,8 +202,8 @@ public class SMAWorkFlowSection extends SectionPart {
       createMetricsHeader(workComp);
 
       // Add any dynamic XWidgets declared for page by IAtsStateItem extensions
-      for (IAtsStateItem item : AtsStateItemManager.getStateItems(statePage.getStateDefinition())) {
-         for (XWidget xWidget : item.getDynamicXWidgetsPreBody(sma)) {
+      for (IAtsStateItem item : AtsStateItemManager.getStateItems()) {
+         for (XWidget xWidget : item.getDynamicXWidgetsPreBody(sma, statePage.getPageName())) {
             xWidget.createWidgets(workComp, 2);
             allXWidgets.add(xWidget);
             allXWidgets.addAll(xWidget.getChildrenXWidgets());
@@ -231,8 +231,8 @@ public class SMAWorkFlowSection extends SectionPart {
       }
 
       // Add any dynamic XWidgets declared for page by IAtsStateItem extensions
-      for (IAtsStateItem item : AtsStateItemManager.getStateItems(statePage.getStateDefinition())) {
-         for (XWidget xWidget : item.getDynamicXWidgetsPostBody(sma)) {
+      for (IAtsStateItem item : AtsStateItemManager.getStateItems()) {
+         for (XWidget xWidget : item.getDynamicXWidgetsPostBody(sma, statePage.getPageName())) {
             xWidget.createWidgets(workComp, 2);
             allXWidgets.add(xWidget);
             allXWidgets.addAll(xWidget.getChildrenXWidgets());
@@ -246,15 +246,6 @@ public class SMAWorkFlowSection extends SectionPart {
       for (XWidget xWidget : allXWidgets) {
          if (xWidget.getLabelWidget() != null) {
             SMAEditor.setLabelFonts(xWidget.getLabelWidget(), FontManager.getDefaultLabelFont());
-         }
-      }
-
-      // Check extension points for page creation
-      for (IAtsStateItem item : AtsStateItemManager.getStateItems(statePage.getStateDefinition())) {
-         Result result = item.pageCreated(toolkit, statePage, sma, xModListener, isEditable || isGlobalEditable);
-         if (result.isFalse()) {
-            result.popup();
-            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Error in page creation => " + result.getText());
          }
       }
 
@@ -291,8 +282,10 @@ public class SMAWorkFlowSection extends SectionPart {
          layout.marginLeft = 2;
          comp.setLayout(layout);
          comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-         allXWidgets.add(new StatePercentCompleteXWidget(getManagedForm(), statePage, sma, comp, 2, xModListener,
-            isCurrentState, editor));
+         if (sma.getWorkDefinition().isStateWeightingEnabled()) {
+            allXWidgets.add(new StatePercentCompleteXWidget(getManagedForm(), statePage, sma, comp, 2, xModListener,
+               isCurrentState, editor));
+         }
          allXWidgets.add(new StateHoursSpentXWidget(getManagedForm(), statePage, sma, comp, 2, xModListener,
             isCurrentState, editor));
       }
@@ -428,7 +421,7 @@ public class SMAWorkFlowSection extends SectionPart {
                return;
             }
             // Notify extensions of widget modified
-            for (IAtsStateItem item : AtsStateItemManager.getStateItems(statePage.getStateDefinition())) {
+            for (IAtsStateItem item : AtsStateItemManager.getStateItems()) {
                try {
                   item.widgetModified(fSection, xWidget);
                } catch (Exception ex) {
@@ -608,7 +601,7 @@ public class SMAWorkFlowSection extends SectionPart {
    public void updateTransitionToAssignees() throws OseeCoreException {
       Collection<User> assignees = null;
       // Determine if the is an override set of assigness
-      for (IAtsStateItem item : AtsStateItemManager.getStateItems(statePage.getStateDefinition())) {
+      for (IAtsStateItem item : AtsStateItemManager.getStateItems()) {
          assignees = item.getOverrideTransitionToAssignees(this);
          if (assignees != null) {
             break;
@@ -625,7 +618,7 @@ public class SMAWorkFlowSection extends SectionPart {
    public void updateTransitionToState() throws OseeCoreException {
       // Determine if there is a transitionToStateOverride for this page
       String transitionStateOverride = null;
-      for (IAtsStateItem item : AtsStateItemManager.getStateItems(statePage.getStateDefinition())) {
+      for (IAtsStateItem item : AtsStateItemManager.getStateItems()) {
          transitionStateOverride = item.getOverrideTransitionToStateName(this);
          if (transitionStateOverride != null) {
             break;
@@ -758,10 +751,9 @@ public class SMAWorkFlowSection extends SectionPart {
       }
 
       // Don't transition without targeted version if so configured
-      boolean teamDefRequiresTargetedVersion =
-         sma.teamDefHasWorkRule(AtsWorkDefinitions.RuleWorkItemId.atsRequireTargetedVersion.name());
+      boolean teamDefRequiresTargetedVersion = sma.teamDefHasRule(RuleDefinitionOption.RequireTargetedVersion);
       boolean pageRequiresTargetedVersion =
-         sma.getStateDefinition().hasRule(AtsWorkDefinitions.RuleWorkItemId.atsRequireTargetedVersion.name());
+         sma.getStateDefinition().hasRule(RuleDefinitionOption.RequireTargetedVersion);
 
       // Only check this if TeamWorkflow, not for reviews
       if (sma instanceof TeamWorkFlowArtifact && (teamDefRequiresTargetedVersion || pageRequiresTargetedVersion) && //
@@ -783,7 +775,7 @@ public class SMAWorkFlowSection extends SectionPart {
       }
 
       // Check extension points for valid transition
-      for (IAtsStateItem item : AtsStateItemManager.getStateItems(statePage.getStateDefinition())) {
+      for (IAtsStateItem item : AtsStateItemManager.getStateItems()) {
          try {
             result = item.transitioning(sma, sma.getStateMgr().getCurrentState(), toStateDefinition, toAssignees);
             if (result.isFalse()) {
@@ -936,9 +928,9 @@ public class SMAWorkFlowSection extends SectionPart {
       // and one of these
       //
       // page is define to allow anyone to edit
-      (sma.getStateDefinition().hasRule(AtsWorkDefinitions.RuleWorkItemId.atsAllowEditToAll.name()) ||
+      (sma.getStateDefinition().hasRule(RuleDefinitionOption.AllowEditToAll) ||
       // team definition has allowed anyone to edit
-      sma.teamDefHasWorkRule(AtsWorkDefinitions.RuleWorkItemId.atsAllowEditToAll.name()) ||
+      sma.teamDefHasRule(RuleDefinitionOption.AllowEditToAll) ||
       // priviledged edit mode is on
       editor.isPriviledgedEditModeEnabled() ||
       // current user is assigned

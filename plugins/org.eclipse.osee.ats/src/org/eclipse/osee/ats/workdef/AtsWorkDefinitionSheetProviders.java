@@ -21,15 +21,19 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.ats.artifact.AtsArtifactToken;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsFolderUtil;
-import org.eclipse.osee.ats.util.AtsFolderUtil.AtsFolder;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.PluginUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.osgi.framework.Bundle;
 
@@ -64,33 +68,75 @@ public final class AtsWorkDefinitionSheetProviders {
 
    public static void initializeDatabase() throws OseeCoreException {
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Import ATS Work Definitions");
-      Artifact folder = AtsFolderUtil.getFolder(AtsFolder.WorkDefinitions);
-      folder.persist(transaction);
+      Artifact folder = AtsArtifactToken.get(AtsArtifactToken.WorkDefinitionsFolder);
       for (WorkDefinitionSheet sheet : getWorkDefinitionSheets()) {
-         Artifact artifact = AtsWorkDefinitionProviders.importWorkDefinitionSheetToDb(sheet);
-         if (artifact != null) {
-            folder.addChild(artifact);
-            artifact.persist(transaction);
+         if (isValidSheet(sheet)) {
+            String logStr = String.format("Importing ATS sheet [%s]", sheet.getName());
+            System.out.println(logStr);
+            Artifact artifact = AtsWorkDefinitionProviders.importWorkDefinitionSheetToDb(sheet, transaction);
+            if (artifact != null) {
+               folder.addChild(artifact);
+               artifact.persist(transaction);
+            }
          }
       }
       transaction.execute();
    }
 
+   public static void importAIsAndTeamsToDatabase() throws OseeCoreException {
+      SkynetTransaction transaction =
+         new SkynetTransaction(AtsUtil.getAtsBranch(), "Import ATS AIs and Team Definitions");
+      for (WorkDefinitionSheet sheet : getWorkDefinitionSheets()) {
+         if (sheet.getName().contains("AIsAndTeams") && isValidSheet(sheet)) {
+            String logStr = String.format("Importing ATS AIs and Teams sheet [%s]", sheet.getName());
+            OseeLog.log(AtsPlugin.class, Level.INFO, logStr);
+            AtsWorkDefinitionProviders.importAIsAndTeamsToDb(sheet, transaction);
+         }
+      }
+      transaction.execute();
+   }
+
+   private static boolean isValidSheet(WorkDefinitionSheet sheet) throws OseeCoreException {
+      if (!Strings.isValid(sheet.getLegacyOverrideId())) {
+         return true;
+      }
+      try {
+         Artifact artifact =
+            ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.WorkFlowDefinition, sheet.getLegacyOverrideId(),
+               AtsUtil.getAtsBranch());
+         if (artifact != null) {
+            throw new OseeStateException(
+               "WorkDefinitionSheet [%s] has legacy id that does not match an existing WorkFlowDefinition name", sheet);
+         }
+      } catch (ArtifactDoesNotExist ex) {
+         // do nothing; this is what we want
+      }
+      return true;
+   }
+
    private static List<WorkDefinitionSheet> getWorkDefinitionSheets() {
       List<WorkDefinitionSheet> sheets = new ArrayList<WorkDefinitionSheet>();
-      sheets.add(new WorkDefinitionSheet("WorkDef_Team_Default", "osee.ats.teamWorkflow",
-         getSupportFile("support/WorkDef_Team_Default.ats")));
-      sheets.add(new WorkDefinitionSheet("WorkDef_Task_Default", "osee.ats.taskWorkflow",
-         getSupportFile("support/WorkDef_Task_Default.ats")));
+      sheets.add(new WorkDefinitionSheet("WorkDef_Team_Default", "osee.ats.teamWorkflow", getSupportFile(
+         AtsPlugin.PLUGIN_ID, "support/WorkDef_Team_Default.ats")));
+      sheets.add(new WorkDefinitionSheet("WorkDef_Task_Default", "osee.ats.taskWorkflow", getSupportFile(
+         AtsPlugin.PLUGIN_ID, "support/WorkDef_Task_Default.ats")));
+      sheets.add(new WorkDefinitionSheet("WorkDef_Review_Decision", "osee.ats.decisionReview", getSupportFile(
+         AtsPlugin.PLUGIN_ID, "support/WorkDef_Review_Decision.ats")));
+      sheets.add(new WorkDefinitionSheet("WorkDef_Review_PeerToPeer", "osee.ats.peerToPeerReview", getSupportFile(
+         AtsPlugin.PLUGIN_ID, "support/WorkDef_Review_PeerToPeer.ats")));
+      sheets.add(new WorkDefinitionSheet("WorkDef_Team_Simple", "osee.ats.simpleTeamWorkflow", getSupportFile(
+         AtsPlugin.PLUGIN_ID, "support/WorkDef_Team_Simple.ats")));
+      sheets.add(new WorkDefinitionSheet("WorkDef_Goal", "osee.ats.goalWorkflow", getSupportFile(AtsPlugin.PLUGIN_ID,
+         "support/WorkDef_Goal.ats")));
       for (IAtsWorkDefinitionSheetProvider provider : getProviders()) {
          sheets.addAll(provider.getWorkDefinitionSheets());
       }
       return sheets;
    }
 
-   public static File getSupportFile(String filename) {
+   public static File getSupportFile(String pluginId, String filename) {
       try {
-         PluginUtil util = new PluginUtil(AtsPlugin.PLUGIN_ID);
+         PluginUtil util = new PluginUtil(pluginId);
          return util.getPluginFile(filename);
       } catch (IOException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE,

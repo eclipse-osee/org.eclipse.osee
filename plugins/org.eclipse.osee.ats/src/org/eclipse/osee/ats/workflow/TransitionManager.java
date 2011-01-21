@@ -63,13 +63,15 @@ public class TransitionManager {
       final StateDefinition fromStateDefinition = aba.getStateDefinition();
       final StateDefinition toStateDefinition = aba.getStateDefinitionByName(toState.getPageName());
       if (toStateDefinition == null) {
-         return new Result("Invalid toState \"" + toState.getPageName() + "\"");
+         return new Result(String.format("Transition-To State [%s] does not exist for Work Definition [%s]",
+            toState.getPageName(), aba.getWorkDefinition().getName()));
       }
 
       // Validate transition from fromPage to toPage
       if (!overrideTransitionCheck && !fromStateDefinition.getToStates().contains(toStateDefinition) && !fromStateDefinition.isCompletedOrCancelledPage()) {
          String errStr =
-            "Not configured to transition to \"" + toState.getPageName() + "\" from \"" + fromStateDefinition.getPageName() + "\"";
+            String.format("Work Definition [%s] is not configured to transition from \"[%s]\" to \"[%s]\"",
+               toStateDefinition.getName(), fromStateDefinition.getPageName(), toState.getPageName());
          OseeLog.log(AtsPlugin.class, Level.SEVERE, errStr);
          return new Result(errStr);
       }
@@ -84,7 +86,7 @@ public class TransitionManager {
       }
 
       // Check extension points for valid transition
-      List<IAtsStateItem> atsStateItems = AtsStateItemManager.getStateItems(fromStateDefinition);
+      List<IAtsStateItem> atsStateItems = AtsStateItemManager.getStateItems();
       for (IAtsStateItem item : atsStateItems) {
          Result result = item.transitioning(aba, fromStateDefinition, toState, toAssignees);
          if (result.isFalse()) {
@@ -177,10 +179,7 @@ public class TransitionManager {
       aba.transitioned(fromState, toState, toAssignees, true, transaction);
 
       // Notify extension points of transition
-      for (IAtsStateItem item : AtsStateItemManager.getStateItems(fromState)) {
-         item.transitioned(aba, fromState, toState, toAssignees, transaction);
-      }
-      for (IAtsStateItem item : AtsStateItemManager.getStateItems(toState)) {
+      for (IAtsStateItem item : AtsStateItemManager.getStateItems()) {
          item.transitioned(aba, fromState, toState, toAssignees, transaction);
       }
    }

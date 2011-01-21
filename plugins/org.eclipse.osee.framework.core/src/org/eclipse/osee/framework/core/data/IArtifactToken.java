@@ -8,16 +8,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.workflow.vue;
-
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
+package org.eclipse.osee.framework.core.data;
 
 /**
- * @author Roberto E. Escobar
+ * @author Donald G. Dunne
  */
-public class AtsDbConfig {
+public interface IArtifactToken extends Identity, FullyNamed {
 
-   protected void executeLoadAIsAndTeamsAction(String bundleId) throws OseeCoreException {
-      LoadAIsAndTeamsAction.executeForDbConfig(bundleId);
-   }
+   public IArtifactType getArtifactType();
+
+   public IOseeBranch getBranch();
 }

@@ -119,7 +119,12 @@ public class SMAPromptChangeStatus {
          if (sma instanceof TaskArtifact) {
             ((TaskArtifact) sma).statusPercentChanged(hours, percent, transaction);
          } else {
-            sma.getStateMgr().updateMetrics(hours, percent, true);
+            if (sma.getWorkDefinition().isStateWeightingEnabled()) {
+               sma.getStateMgr().updateMetrics(hours, percent, true);
+            } else {
+               sma.getStateMgr().updateMetrics(hours, percent, true);
+               sma.setSoleAttributeValue(AtsAttributeTypes.PercentComplete, percent);
+            }
          }
          if (persist) {
             sma.persist(transaction);
@@ -130,5 +135,4 @@ public class SMAPromptChangeStatus {
       }
 
    }
-
 }

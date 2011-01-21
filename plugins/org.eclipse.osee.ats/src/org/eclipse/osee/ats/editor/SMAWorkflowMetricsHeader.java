@@ -24,33 +24,42 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.forms.IManagedForm;
 
 /**
  * @author Donald G. Dunne
  */
 public class SMAWorkflowMetricsHeader extends Composite {
 
-   private final AbstractWorkflowArtifact sma;
-   private Label percentLabel, estHoursLabel, hoursSpentLabel, remainHoursLabel;
+   private final AbstractWorkflowArtifact awa;
+   private Label percentLabel, hoursSpentLabel, remainHoursLabel;
+   private SMAPercentCompleteHeader totalPercentHeader;
+   private SMAEstimatedHoursHeader estimatedHoursHeader;
 
-   public SMAWorkflowMetricsHeader(Composite parent, XFormToolkit toolkit, AbstractWorkflowArtifact sma) {
+   public SMAWorkflowMetricsHeader(Composite parent, XFormToolkit toolkit, AbstractWorkflowArtifact awa, SMAEditor editor, IManagedForm managedForm) {
       super(parent, SWT.NONE);
-      this.sma = sma;
+      this.awa = awa;
       try {
 
+         int numColumns = 8;
+         if (!awa.getWorkDefinition().isStateWeightingEnabled()) {
+            numColumns = 10;
+         }
          toolkit.adapt(this);
-         setLayout(ALayout.getZeroMarginLayout(8, false));
+         setLayout(ALayout.getZeroMarginLayout(numColumns, false));
          setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-         percentLabel =
-            FormsUtil.createLabelValue(toolkit, this, "Total Percent: ", "",
-               "Calculation: sum of percent for all states (including all tasks and reviews) / # statusable states");
-         estHoursLabel =
-            FormsUtil.createLabelValue(toolkit, this, "Total Estimated Hours: ", "",
-               "Calculation: sum estimated hours for workflow and all tasks and reviews");
+         if (awa.getWorkDefinition().isStateWeightingEnabled()) {
+            percentLabel =
+               FormsUtil.createLabelValue(toolkit, this, "Total Percent: ", "",
+                  "Calculation: Sum of percent for all states (including all tasks and reviews) / # statusable states (if configured)");
+         } else {
+            totalPercentHeader = new SMAPercentCompleteHeader(this, 2, awa, editor);
+         }
+         estimatedHoursHeader = new SMAEstimatedHoursHeader(this, 2, awa, editor);
          hoursSpentLabel =
             FormsUtil.createLabelValue(toolkit, this, "Total Hours Spent: ", "",
-               "Calculation: sum of all hours spent for all tasks, reviews and in each state");
+               "Calculation: Sum of all hours spent for all tasks, reviews and in each state");
          remainHoursLabel =
             FormsUtil.createLabelValue(toolkit, this, "Remaining Hours: ", "",
                RemainingHoursColumn.getInstance().getDescription());
@@ -62,32 +71,37 @@ public class SMAWorkflowMetricsHeader extends Composite {
    }
 
    private void refresh() {
-      if (percentLabel.isDisposed()) {
+      if (hoursSpentLabel.isDisposed()) {
          return;
       }
       try {
-         if (!percentLabel.isDisposed()) {
-            percentLabel.setText(String.valueOf(sma.getPercentCompleteSMATotal()));
+         if (totalPercentHeader != null) {
+            totalPercentHeader.refresh();
          }
-         if (estHoursLabel != null && !estHoursLabel.isDisposed()) {
-            estHoursLabel.setText(String.valueOf(AtsUtil.doubleToI18nString(sma.getEstimatedHoursTotal())));
+         if (percentLabel != null && !percentLabel.isDisposed()) {
+            percentLabel.setText(String.valueOf(awa.getPercentCompleteSMATotal()));
+         }
+         if (estimatedHoursHeader != null) {
+            estimatedHoursHeader.refresh();
          }
          if (hoursSpentLabel != null && !hoursSpentLabel.isDisposed()) {
-            hoursSpentLabel.setText(String.valueOf(AtsUtil.doubleToI18nString(sma.getHoursSpentSMATotal())));
+            hoursSpentLabel.setText(String.valueOf(AtsUtil.doubleToI18nString(awa.getHoursSpentSMATotal())));
          }
          if (hoursSpentLabel != null && !hoursSpentLabel.isDisposed()) {
-            Result result = RemainingHoursColumn.isRemainingHoursValid(sma);
+            Result result = RemainingHoursColumn.isRemainingHoursValid(awa);
             if (result.isFalse()) {
                remainHoursLabel.setText("Error" + result.getText());
             } else {
-               remainHoursLabel.setText(String.valueOf(AtsUtil.doubleToI18nString(RemainingHoursColumn.getRemainingHours(sma))));
+               remainHoursLabel.setText(String.valueOf(AtsUtil.doubleToI18nString(RemainingHoursColumn.getRemainingHours(awa))));
             }
          }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
 
-      percentLabel.update();
+      if (percentLabel != null) {
+         percentLabel.update();
+      }
       layout();
    }
 

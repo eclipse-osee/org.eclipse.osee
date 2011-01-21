@@ -86,8 +86,9 @@ workDefinition "WorkDef_Team_Default" {
       ordinal 2
       to "Cancelled"
       to "Authorize" AsDefault
-      to "Endorse" OverrideAttributeValidation
+      to "Endorse" OverrideAttributeValidation 
       rule RequireStateHourSpentPrompt
+      percentWeight 10
       layout {
          widget "Work Package"
          widget "Problem"
@@ -108,6 +109,7 @@ workDefinition "WorkDef_Team_Default" {
       to "Cancelled"
       to "Analyze" AsDefault
       rule RequireStateHourSpentPrompt
+      percentWeight 5
       layout {
          widget "Title"
          widget "Description"
@@ -139,6 +141,7 @@ workDefinition "WorkDef_Team_Default" {
       to "Cancelled"
       to "Implement" AsDefault
       to "Analyze" OverrideAttributeValidation
+      percentWeight 5
       layout {
          widget "Work Package"
          widget "Estimated Completion Date"
@@ -153,6 +156,7 @@ workDefinition "WorkDef_Team_Default" {
       to "Analyze" OverrideAttributeValidation
       to "Authorize" OverrideAttributeValidation
       rule RequireStateHourSpentPrompt
+      percentWeight 79
       layout {
          widget "Work Package"
          widget "Estimated Completion Date"
@@ -165,5 +169,6 @@ workDefinition "WorkDef_Team_Default" {
       ordinal 5
       to "Implement" OverrideAttributeValidation
       rule AddDecisionValidateBlockingReview
+      percentWeight 1
    }
 }

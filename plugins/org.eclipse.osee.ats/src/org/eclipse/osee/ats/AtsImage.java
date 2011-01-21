@@ -58,6 +58,7 @@ public enum AtsImage implements KeyedImage {
    ROLE("role.gif"),
    STATE("state.gif"),
    STATE_DEFINITION("stateDefinition.gif"),
+   STATE_ITEM("stateItem.gif"),
    SUBSCRIBED("subscribedEmail.gif"),
    SUBSCRIBED_OVERLAY("subscribed.gif"),
    TASK("task.gif"),

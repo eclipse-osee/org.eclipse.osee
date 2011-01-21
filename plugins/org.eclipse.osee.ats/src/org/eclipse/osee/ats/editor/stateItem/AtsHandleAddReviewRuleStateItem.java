@@ -16,7 +16,6 @@ import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.workdef.DecisionReviewDefinition;
 import org.eclipse.osee.ats.workdef.PeerReviewDefinition;
 import org.eclipse.osee.ats.workdef.StateEventType;
@@ -34,25 +33,23 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkPage;
  */
 public class AtsHandleAddReviewRuleStateItem extends AtsStateItem {
 
+   public AtsHandleAddReviewRuleStateItem() {
+      super(AtsHandleAddReviewRuleStateItem.class.getSimpleName());
+   }
+
    @Override
-   public String getId() {
-      return AtsStateItem.ALL_STATE_IDS;
+   public String getDescription() {
+      return "Create review if AddDecisionReviewRule or AddPeerToPeerReviewRule exists for this state.";
    }
 
    @Override
    public void transitioned(AbstractWorkflowArtifact sma, IWorkPage fromState, IWorkPage toState, Collection<User> toAssignees, SkynetTransaction transaction) throws OseeCoreException {
-      super.transitioned(sma, fromState, toState, toAssignees, transaction);
-
       // Create any decision or peerToPeer reviews for transitionTo and transitionFrom
-      runRule(sma, toState, transaction);
-   }
-
-   public static void runRule(AbstractWorkflowArtifact sma, IWorkPage toState, SkynetTransaction transaction) throws OseeCoreException {
-      Date createdDate = new Date();
-      User createdBy = UserManager.getUser(SystemUser.OseeSystem);
-      if (!sma.isOfType(AtsArtifactTypes.TeamWorkflow)) {
+      if (!sma.isTeamWorkflow()) {
          return;
       }
+      Date createdDate = new Date();
+      User createdBy = UserManager.getUser(SystemUser.OseeSystem);
       TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) sma;
 
       for (DecisionReviewDefinition decRevDef : teamArt.getStateDefinition().getDecisionReviews()) {
@@ -76,12 +73,6 @@ public class AtsHandleAddReviewRuleStateItem extends AtsStateItem {
             }
          }
       }
-
-   }
-
-   @Override
-   public String getDescription() {
-      return "AtsHandleAddReviewRuleStateItem - If AddDecisionReviewRule or AddPeerToPeerReviewRule exists for this state, create review.";
    }
 
 }

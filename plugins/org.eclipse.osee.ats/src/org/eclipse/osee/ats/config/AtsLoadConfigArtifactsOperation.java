@@ -13,9 +13,8 @@ package org.eclipse.osee.ats.config;
 import java.util.Collections;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.ats.artifact.AtsArtifactToken;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsFolderUtil;
-import org.eclipse.osee.ats.util.AtsFolderUtil.AtsFolder;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -44,7 +43,7 @@ public class AtsLoadConfigArtifactsOperation extends AbstractOperation {
       if (!loaded) {
          loaded = true;
          OseeLog.log(AtsPlugin.class, Level.INFO, "Loading ATS Configuration");
-         Artifact headingArt = AtsFolderUtil.getFolder(AtsFolder.Ats_Heading);
+         Artifact headingArt = AtsArtifactToken.get(AtsArtifactToken.HeadingFolder);
          // Loading artifacts will cache them in ArtifactCache
          RelationManager.getRelatedArtifacts(Collections.singleton(headingArt), 8,
             CoreRelationTypes.Default_Hierarchical__Child, AtsRelationTypes.TeamDefinitionToVersion_Version);

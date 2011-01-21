@@ -22,22 +22,19 @@ import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
-import org.eclipse.osee.ats.util.AtsFolderUtil;
-import org.eclipse.osee.ats.util.AtsFolderUtil.AtsFolder;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.commit.ICommitConfigArtifact;
 import org.eclipse.osee.ats.workdef.RuleDefinition;
+import org.eclipse.osee.ats.workdef.RuleDefinitionOption;
 import org.eclipse.osee.ats.workdef.WorkDefinitionFactory;
 import org.eclipse.osee.ats.workdef.WorkDefinitionMatch;
-import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions.RuleWorkItemId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -109,7 +106,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
          setSoleAttributeValue(AtsAttributeTypes.TeamUsesVersions, true);
       }
       if (teamDefOptions.contains(TeamDefinitionOptions.RequireTargetedVersion)) {
-         addWorkRule(RuleWorkItemId.atsRequireTargetedVersion.name());
+         addRule(RuleDefinitionOption.RequireTargetedVersion);
       }
 
       // Relate to actionable items
@@ -218,7 +215,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
    }
 
    public static TeamDefinitionArtifact getTopTeamDefinition() throws OseeCoreException {
-      return (TeamDefinitionArtifact) AtsFolderUtil.getFolder(AtsFolder.Teams);
+      return (TeamDefinitionArtifact) AtsArtifactToken.get(AtsArtifactToken.TopTeamDefinition);
    }
 
    public static Set<TeamDefinitionArtifact> getTeamReleaseableDefinitions(Active active) throws OseeCoreException {
@@ -358,7 +355,12 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
             String id = art.getSoleAttributeValue(CoreAttributeTypes.WorkId, "");
             if (Strings.isValid(id)) {
                // Note: This may skip any complex rules (more than name), but don't think teamdefs have them
-               workRules.add(WorkDefinitionFactory.getRuleById(id));
+               RuleDefinition ruleDef = WorkDefinitionFactory.getRuleById(id);
+               if (ruleDef == null) {
+                  OseeLog.log(AtsPlugin.class, Level.SEVERE, String.format("Null work rule for " + id));
+               } else {
+                  workRules.add(ruleDef);
+               }
             }
          }
       }
@@ -496,24 +498,22 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
       return getSoleAttributeValue(AtsAttributeTypes.Actionable, false);
    }
 
-   public void addWorkRule(String ruleId) throws OseeCoreException {
-      if (!hasWorkRule(ruleId)) {
-         Artifact artifact = WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(ruleId);
-         if (artifact == null) {
-            throw new OseeArgumentException("Rule [%s] does not exist.", ruleId);
-         } else {
-            addRelation(CoreRelationTypes.WorkItem__Child, artifact);
-         }
+   public void addRule(RuleDefinitionOption option) throws OseeCoreException {
+      addRule(option.name());
+   }
+
+   public void addRule(String ruleId) throws OseeCoreException {
+      if (!hasRule(ruleId)) {
+         addAttribute(AtsAttributeTypes.RuleDefinition, ruleId);
       }
    }
 
-   public boolean hasWorkRule(String ruleId) throws OseeCoreException {
-      for (Artifact art : getRelatedArtifacts(CoreRelationTypes.WorkItem__Child)) {
-         if (art.getName().equals(ruleId)) {
-            return true;
-         }
-      }
-      return false;
+   public boolean hasRule(RuleDefinitionOption option) throws OseeCoreException {
+      return hasRule(option.name());
+   }
+
+   public boolean hasRule(String ruleId) throws OseeCoreException {
+      return getAttributesToStringList(AtsAttributeTypes.RuleDefinition).contains(ruleId);
    }
 
    /**

@@ -45,9 +45,9 @@ import org.eclipse.osee.ats.artifact.note.NoteItem;
 import org.eclipse.osee.ats.config.AtsBulkLoad;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.workdef.RuleDefinitionOption;
 import org.eclipse.osee.ats.workdef.StateXWidgetPage;
 import org.eclipse.osee.ats.workdef.WorkDefinitionMatch;
-import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -354,7 +354,8 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          if (sma.isTeamWorkflow()) {
             actionableItemHeader = new SMAActionableItemHeader(headerComp, editor.getToolkit(), sma);
          }
-         workflowMetricsHeader = new SMAWorkflowMetricsHeader(headerComp, editor.getToolkit(), sma);
+         workflowMetricsHeader =
+            new SMAWorkflowMetricsHeader(headerComp, editor.getToolkit(), sma, editor, managedForm);
          int headerCompColumns = 4;
          createWorkDefHeader(headerComp, editor.getToolkit(), sma, headerCompColumns);
          createSMANotesHeader(headerComp, editor.getToolkit(), sma, headerCompColumns);
@@ -409,9 +410,9 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
 
          (SMAWorkFlowSection.isEditable(sma, page, editor) || //
          // page is define to allow anyone to edit
-         sma.getStateDefinition().hasRule(AtsWorkDefinitions.RuleWorkItemId.atsAllowAssigneeToAll.name()) ||
+         sma.getStateDefinition().hasRule(RuleDefinitionOption.AllowAssigneeToAll) ||
          // team definition has allowed anyone to edit
-         sma.teamDefHasWorkRule(AtsWorkDefinitions.RuleWorkItemId.atsAllowAssigneeToAll.name()));
+         sma.teamDefHasRule(RuleDefinitionOption.AllowAssigneeToAll));
 
          new SMAAssigneesHeader(comp, SWT.NONE, sma, editable, editor);
       }

@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -50,6 +51,10 @@ import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact
  * @author Ryan D. Brooks
  */
 public class ArtifactQuery {
+
+   public static Artifact getArtifactFromToken(IArtifactToken artifactToken) throws OseeCoreException {
+      return getArtifactFromId(artifactToken.getGuid(), BranchManager.getBranch(artifactToken.getBranch()));
+   }
 
    public static Artifact getArtifactFromToken(EventBasicGuidArtifact guidArt) throws OseeCoreException {
       return getArtifactFromId(guidArt.getGuid(), BranchManager.getBranchByGuid(guidArt.getBranchGuid()));

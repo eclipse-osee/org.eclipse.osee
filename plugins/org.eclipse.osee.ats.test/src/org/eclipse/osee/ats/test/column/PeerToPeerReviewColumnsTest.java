@@ -26,9 +26,11 @@ import org.eclipse.osee.ats.util.widgets.defect.DefectItem.InjectionActivity;
 import org.eclipse.osee.ats.util.widgets.defect.DefectItem.Severity;
 import org.eclipse.osee.ats.util.widgets.role.UserRole;
 import org.eclipse.osee.ats.util.widgets.role.UserRole.Role;
+import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.support.test.util.DemoUsers;
+import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
@@ -46,6 +48,8 @@ public class PeerToPeerReviewColumnsTest {
 
    @org.junit.Test
    public void testGetColumnText() throws Exception {
+      SevereLoggingMonitor loggingMonitor = TestUtil.severeLoggingStart();
+
       SkynetTransaction transaction =
          new SkynetTransaction(AtsUtil.getAtsBranch(), PeerToPeerReviewColumnsTest.class.getSimpleName());
       TeamWorkFlowArtifact teamArt =
@@ -122,5 +126,7 @@ public class PeerToPeerReviewColumnsTest {
          Arrays.asList(DemoUsers.Kay_Jones.getName() + "; " + DemoUsers.Joe_Smith.getName(),
             DemoUsers.Joe_Smith.getName() + "; " + DemoUsers.Kay_Jones.getName());
       Assert.assertTrue(results.contains(ReviewReviewerColumn.getInstance().getColumnText(peerArt, null, 0)));
+
+      TestUtil.severeLoggingEnd(loggingMonitor);
    }
 }

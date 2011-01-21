@@ -18,7 +18,7 @@ workDefinition "WorkDef_Task_Default" {
    state "InWork" {
       type Working
       ordinal 1
-      to "Complete" AsDefault
+      to "Completed" AsDefault
       to "Cancelled" OverrideAttributeValidation
       rule RequireStateHourSpentPrompt
       layout {
@@ -38,10 +38,10 @@ workDefinition "WorkDef_Task_Default" {
       }
    }
 
-   state "Complete" {
+   state "Completed" {
       type Completed
       ordinal 2
-      rule AddDecisionValidateBlockingReview
+      to "InWork" OverrideAttributeValidation
    }
 
    state "Cancelled" {

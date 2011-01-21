@@ -1,0 +1,83 @@
+workDefinition "WorkDef_Team_Simple" {
+   id "WorkDef_Team_Simple"
+   startState "Endorse"
+
+   widgetDefinition "Resolution" {
+      attributeName "ats.Resolution"
+      xWidgetName "XTextDam"
+      option FILL_VERTICALLY
+   }
+
+   widgetDefinition "Title" {
+      attributeName "Name"
+      xWidgetName "XTextDam"
+      option REQUIRED_FOR_TRANSITION
+   }
+
+   widgetDefinition "Description" {
+      attributeName "ats.Description"
+      xWidgetName "XTextDam"
+      option REQUIRED_FOR_TRANSITION
+      option FILL_VERTICALLY
+   }
+
+   widgetDefinition "Proposed Resolution" {
+      attributeName "ats.Proposed Resolution"
+      xWidgetName "XTextDam"
+      option FILL_VERTICALLY
+   }
+
+   widgetDefinition "User Community" {
+      attributeName "ats.User Community"
+      xWidgetName "XListDam(OPTIONS_FROM_ATTRIBUTE_VALIDITY)"
+      option HORIZONTAL_LABEL
+   }
+
+   state "Cancelled" {
+      type Cancelled
+      ordinal 4
+      to "InWork" OverrideAttributeValidation
+      to "Endorse" OverrideAttributeValidation
+   }
+
+   state "InWork" {
+      type Working
+      ordinal 2
+      to "Cancelled"
+      to "Completed" AsDefault
+      to "Endorse" OverrideAttributeValidation
+      rule RequireStateHourSpentPrompt
+      layout {
+         widget "Resolution"
+      }
+   }
+
+   state "Endorse" {
+      type Working
+      ordinal 1
+      to "Cancelled"
+      to "InWork" AsDefault
+      rule RequireStateHourSpentPrompt
+      layout {
+         widget "Title"
+         widget "Description"
+         widget "Proposed Resolution"
+         composite {
+            numColumns 6
+            attributeWidget "ats.Change Type"
+            attributeWidget "ats.Priority"
+            attributeWidget "ats.Need By"
+         }
+         attributeWidget "ats.Validation Required"
+         attributeWidget "ats.Work Package"
+         widget "User Community"
+      }
+   }
+
+   state "Completed" {
+      type Completed
+      ordinal 3
+      to "InWork" OverrideAttributeValidation
+      rule AddDecisionValidateBlockingReview
+   }
+}

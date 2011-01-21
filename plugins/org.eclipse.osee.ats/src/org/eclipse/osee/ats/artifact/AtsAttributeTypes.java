@@ -77,6 +77,8 @@ public class AtsAttributeTypes extends NamedIdentity implements IAttributeType {
    public static final IAttributeType PagesChanged= new AtsAttributeTypes("AQR8yMuv4W84UwvSJAQA", "Pages Changed", "Total Pages of Changed");
    public static final IAttributeType PagesReviewed = new AtsAttributeTypes("AQR9qM8TTyCMb7sf4cQA", "Pages Reviewed", "Total Pages Reviewed");
    public static final IAttributeType PercentRework = new AtsAttributeTypes("AAMFEdKfjl2TII9+tuwA", "Percent Rework");
+   public static final IAttributeType PercentComplete = new AtsAttributeTypes("AALLbOZiBBDN39YsRSAA", "Percent Complete");
+   
    public static final IAttributeType Points = new AtsAttributeTypes("AY2EeqhzcDEGtXtREkAA", "Points", "Abstract value that describes risk, complexity, and size of Actions.");
    public static final IAttributeType PriorityType = new AtsAttributeTypes("AAMFEc8JzH1U6XGD59QA", "Priority", "1 = High; 5 = Low");
    public static final IAttributeType Problem = new AtsAttributeTypes("AAMFEdQUxRyevvTu+bwA", "Problem", "Problem found during analysis.");
@@ -88,6 +90,7 @@ public class AtsAttributeTypes extends NamedIdentity implements IAttributeType {
    public static final IAttributeType ReviewBlocks = new AtsAttributeTypes("AAMFEc6G2A8jmRWJgagA", "Review Blocks", "Review Completion will block it's parent workflow in this manner.");
    public static final IAttributeType ReviewDefect = new AtsAttributeTypes("AAMFEd+MSVAb8JQ6f5gA", "Review Defect");
    public static final IAttributeType Role = new AtsAttributeTypes("AAMFEeCqMz0XCSBJ+IQA", "Role");
+   public static final IAttributeType RuleDefinition = new AtsAttributeTypes("AEqAJNnkyW4_d5_WhpgA", "Rule Definition");
    public static final IAttributeType SmaNote = new AtsAttributeTypes("AAMFEdm7ywte8qayfbAA", "SMA Note", "Notes applicable to ATS object");
    public static final IAttributeType State = new AtsAttributeTypes("AAMFEdMa3wzVvp60xLQA", "State", "States of workflow state machine.");
    public static final IAttributeType StateNotes = new AtsAttributeTypes("AAMFEdiWPm7M_xV1EswA", "State Notes");

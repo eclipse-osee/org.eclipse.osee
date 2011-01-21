@@ -18,8 +18,6 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
-import org.eclipse.osee.ats.util.AtsFolderUtil;
-import org.eclipse.osee.ats.util.AtsFolderUtil.AtsFolder;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -64,7 +62,7 @@ public class ActionableItemArtifact extends Artifact {
    }
 
    public static ActionableItemArtifact getTopActionableItem() throws OseeCoreException {
-      return (ActionableItemArtifact) AtsFolderUtil.getFolder(AtsFolder.ActionableItem);
+      return (ActionableItemArtifact) AtsArtifactToken.get(AtsArtifactToken.TopActionableItem);
    }
 
    public static List<ActionableItemArtifact> getActionableItems() throws OseeCoreException {

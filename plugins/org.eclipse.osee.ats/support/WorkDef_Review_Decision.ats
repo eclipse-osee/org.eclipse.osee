@@ -1,0 +1,110 @@
+workDefinition "WorkDef_Review_Decision" {
+   id "WorkDef_Review_Decision"
+   startState "Prepare"
+
+   widgetDefinition "Question" {
+      attributeName "Name"
+      xWidgetName "XLabelDam"
+   }
+
+   widgetDefinition "Decision" {
+      attributeName "ats.Decision"
+      xWidgetName "XComboDam(1,2,3)"
+      option REQUIRED_FOR_TRANSITION
+      option HORIZONTAL_LABEL
+   }
+
+   widgetDefinition "Description" {
+      attributeName "ats.Description"
+      xWidgetName "XTextDam"
+      option FILL_VERTICALLY
+   }
+
+   widgetDefinition "Resolution" {
+      attributeName "ats.Resolution"
+      xWidgetName "XTextDam"
+      option FILL_VERTICALLY
+   }
+
+   widgetDefinition "Title" {
+      attributeName "Name"
+      xWidgetName "XTextDam"
+      option REQUIRED_FOR_TRANSITION
+   }
+
+   widgetDefinition "Decision Review Options" {
+      attributeName "ats.Decision Review Options"
+      xWidgetName "XTextDam"
+      option FILL_VERTICALLY
+   }
+
+   widgetDefinition "Review Blocks" {
+      attributeName "ats.Review Blocks"
+      xWidgetName "XComboDam(OPTIONS_FROM_ATTRIBUTE_VALIDITY)"
+      option REQUIRED_FOR_TRANSITION
+      option HORIZONTAL_LABEL
+   }
+
+   state "Decision" {
+      type Working
+      ordinal 2
+      to "Followup"
+      to "Cancelled"
+      to "Completed" AsDefault
+      to "Prepare" OverrideAttributeValidation
+      layout {
+         widget "Question"
+         widget "Decision"
+         widget "Description"
+         widget "Resolution"
+      }
+   }
+
+   state "Prepare" {
+      type Working
+      ordinal 1
+      to "Cancelled"
+      to "Decision" AsDefault
+      layout {
+         widget "Title"
+         widget "Decision Review Options"
+         widget "Description"
+         attributeWidget "ats.Related To State"
+         widget "Review Blocks"
+         attributeWidget "ats.Need By"
+         attributeWidget "ats.Estimated Hours"
+      }
+   }
+
+   state "Followup" {
+      type Working
+      ordinal 3
+      to "Cancelled"
+      to "Completed" AsDefault
+      to "Decision" OverrideAttributeValidation
+      layout {
+         widget "Resolution"
+      }
+   }
+
+   state "Cancelled" {
+      type Cancelled
+      ordinal 5
+      to "Decision" OverrideAttributeValidation
+      to "Followup" OverrideAttributeValidation
+      to "Prepare" OverrideAttributeValidation
+   }
+
+   state "Completed" {
+      type Completed
+      ordinal 4
+      to "Decision" OverrideAttributeValidation
+      to "Followup" OverrideAttributeValidation
+      rule AddDecisionValidateBlockingReview
+      layout {
+         widget "Question"
+         widget "Decision"
+         widget "Resolution"
+      }
+   }
+}

@@ -80,7 +80,7 @@ public class AtsBranchCommitJob extends Job {
          if (!overrideStateValidation) {
             adminOverride = false;
             // Check extension points for valid commit
-            for (IAtsStateItem item : AtsStateItemManager.getStateItems(teamArt.getStateDefinition())) {
+            for (IAtsStateItem item : AtsStateItemManager.getStateItems()) {
                final Result tempResult = item.committing(teamArt);
                if (tempResult.isFalse()) {
                   // Allow Admin to override state validation

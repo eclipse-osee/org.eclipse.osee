@@ -39,8 +39,10 @@ import org.eclipse.osee.ats.world.WorldEditorSimpleProvider;
 import org.eclipse.osee.ats.world.WorldEditorUISearchItemProvider;
 import org.eclipse.osee.ats.world.search.GroupWorldSearchItem;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -69,6 +71,7 @@ import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
+import org.eclipse.osee.support.test.util.TestUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -103,7 +106,7 @@ public final class AtsUtil {
    }
 
    public static boolean isInTest() {
-      return Boolean.valueOf(System.getProperty("osee.isInTest"));
+      return TestUtil.isInTest();
    }
 
    public static long daysTillToday(Date date) {
@@ -132,6 +135,10 @@ public final class AtsUtil {
 
    public static Branch getAtsBranch() throws OseeCoreException {
       return BranchManager.getCommonBranch();
+   }
+
+   public static IOseeBranch getAtsBranchToken() {
+      return CoreBranches.COMMON;
    }
 
    public static boolean isEmailEnabled() {

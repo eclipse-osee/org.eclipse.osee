@@ -27,6 +27,7 @@ public class StateDefinition extends AbstractWorkDefItem implements IWorkPage {
    private final List<PeerReviewDefinition> peerReviews = new ArrayList<PeerReviewDefinition>();
    private WorkDefinition workDefinition;
    protected TaskResolutionOptionRule taskResolutionOptions;
+   private int percentWeight = 0;
 
    public StateDefinition(String name) {
       super(name);
@@ -106,6 +107,10 @@ public class StateDefinition extends AbstractWorkDefItem implements IWorkPage {
 
    public void setWorkDefinition(WorkDefinition workDefinition) {
       this.workDefinition = workDefinition;
+   }
+
+   public boolean hasRule(RuleDefinitionOption option) {
+      return hasRule(option.name());
    }
 
    public boolean hasRule(String name) {
@@ -190,6 +195,20 @@ public class StateDefinition extends AbstractWorkDefItem implements IWorkPage {
 
    public List<PeerReviewDefinition> getPeerReviews() {
       return peerReviews;
+   }
+
+   public int getStateWeight() {
+      return percentWeight;
+   }
+
+   /**
+    * Set how much (of 100%) this state's percent complete will contribute to the full percent complete of work
+    * definitions.
+    * 
+    * @param percentWeight int value where all stateWeights in workdefinition == 100
+    */
+   public void setPercentWeight(int percentWeight) {
+      this.percentWeight = percentWeight;
    }
 
 }

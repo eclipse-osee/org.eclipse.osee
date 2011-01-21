@@ -11,8 +11,10 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.column.AssigneeColumn;
 import org.eclipse.osee.ats.column.TargetedVersionColumn;
 import org.eclipse.osee.ats.test.util.DemoTestUtil;
+import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.DemoWorkType;
+import org.eclipse.osee.support.test.util.TestUtil;
 
 /**
  * @tests TargetedVersionColumn
@@ -22,6 +24,8 @@ public class TargetedVersionColumnTest {
 
    @org.junit.Test
    public void testGetColumnText() throws Exception {
+      SevereLoggingMonitor loggingMonitor = TestUtil.severeLoggingStart();
+
       TeamWorkFlowArtifact reqArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Requirements);
       Assert.assertEquals(DemoSawBuilds.SAW_Bld_2.getName(),
@@ -44,6 +48,7 @@ public class TargetedVersionColumnTest {
       Assert.assertEquals("",
          TargetedVersionColumn.getInstance().getColumnText(actionArt, AssigneeColumn.getInstance(), 0));
 
+      TestUtil.severeLoggingEnd(loggingMonitor);
    }
 
 }

@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.osgi.framework.Bundle;
 
@@ -38,11 +39,18 @@ public final class AtsWorkDefinitionProviders {
       return getProvider() != null;
    }
 
-   public static Artifact importWorkDefinitionSheetToDb(WorkDefinitionSheet sheet) throws OseeCoreException {
+   public static Artifact importWorkDefinitionSheetToDb(WorkDefinitionSheet sheet, SkynetTransaction transaction) throws OseeCoreException {
       if (!providerExists()) {
          return null;
       }
-      return getProvider().importWorkDefinitionSheetToDb(sheet);
+      return getProvider().importWorkDefinitionSheetToDb(sheet, transaction);
+   }
+
+   public static void importAIsAndTeamsToDb(WorkDefinitionSheet sheet, SkynetTransaction transaction) throws OseeCoreException {
+      if (!providerExists()) {
+         return;
+      }
+      getProvider().importAIsAndTeamsToDb(sheet, transaction);
    }
 
    public static WorkDefinition loadWorkFlowDefinitionFromFile(WorkDefinitionSheet sheet) throws OseeCoreException {
@@ -78,6 +86,13 @@ public final class AtsWorkDefinitionProviders {
          return;
       }
       getProvider().convertAndOpenAtsDsl(workDef, resultData, filename);
+   }
+
+   public static void convertAndOpenAIandTeamAtsDsl(XResultData resultData) throws OseeCoreException {
+      if (!providerExists()) {
+         return;
+      }
+      getProvider().convertAndOpenAIandTeamAtsDsl(resultData);
    }
 
    /*

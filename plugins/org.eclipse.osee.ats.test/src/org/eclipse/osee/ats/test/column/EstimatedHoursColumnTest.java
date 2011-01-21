@@ -16,8 +16,10 @@ import org.eclipse.osee.ats.column.EstimatedHoursColumn;
 import org.eclipse.osee.ats.test.util.DemoTestUtil;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
+import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
@@ -35,6 +37,8 @@ public class EstimatedHoursColumnTest {
 
    @org.junit.Test
    public void testGetDateAndStrAndColumnText() throws Exception {
+      SevereLoggingMonitor loggingMonitor = TestUtil.severeLoggingStart();
+
       SkynetTransaction transaction =
          new SkynetTransaction(AtsUtil.getAtsBranch(), EstimatedHoursColumnTest.class.getSimpleName());
       TeamWorkFlowArtifact teamArt1 =
@@ -107,5 +111,6 @@ public class EstimatedHoursColumnTest {
       Assert.assertEquals(0.1, EstimatedHoursColumn.getEstimatedHours(taskArt2));
       Assert.assertEquals(4.0, EstimatedHoursColumn.getEstimatedHours(peerArt));
 
+      TestUtil.severeLoggingEnd(loggingMonitor);
    }
 }

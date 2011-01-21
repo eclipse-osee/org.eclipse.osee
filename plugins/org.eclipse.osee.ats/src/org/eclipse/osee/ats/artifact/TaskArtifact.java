@@ -115,6 +115,7 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IATSStateM
             getStateMgr().setAssignee(UserManager.getUser());
          }
          getStateMgr().updateMetrics(additionalHours, 100, true);
+         setSoleAttributeValue(AtsAttributeTypes.PercentComplete, 100);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
@@ -133,6 +134,7 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IATSStateM
       Result result = transitionMgr.transition(TaskStates.InWork, toUser, transaction, transitionOption);
       if (getStateMgr().getPercentComplete() != percentComplete || additionalHours > 0) {
          getStateMgr().updateMetrics(additionalHours, percentComplete, true);
+         setSoleAttributeValue(AtsAttributeTypes.PercentComplete, percentComplete);
       }
       if (Collections.getAggregate(transitionOption).contains(TransitionOption.Persist)) {
          saveSMA(transaction);
@@ -157,9 +159,11 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IATSStateM
       else if (percentComplete == 100 && isCompleted()) {
          if (additionalHours > 0) {
             getStateMgr().updateMetrics(TaskStates.InWork, additionalHours, percentComplete, true);
+            setSoleAttributeValue(AtsAttributeTypes.PercentComplete, percentComplete);
          }
       } else {
          getStateMgr().updateMetrics(additionalHours, percentComplete, true);
+         setSoleAttributeValue(AtsAttributeTypes.PercentComplete, percentComplete);
       }
    }
 

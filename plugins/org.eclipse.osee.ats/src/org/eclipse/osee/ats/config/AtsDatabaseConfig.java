@@ -10,7 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.config;
 
-import org.eclipse.osee.ats.util.AtsFolderUtil;
+import java.util.Arrays;
+import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
+import org.eclipse.osee.ats.artifact.AtsArtifactToken;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workdef.AtsWorkDefinitionSheetProviders;
 import org.eclipse.osee.ats.workflow.flow.DecisionWorkflowDefinition;
@@ -22,6 +25,9 @@ import org.eclipse.osee.ats.workflow.flow.TeamWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.init.IDbInitializationTask;
+import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition.WriteType;
 
@@ -29,9 +35,14 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
 
    @Override
    public void run() throws OseeCoreException {
-      AtsFolderUtil.createAtsFolders();
+      createAtsFolders();
 
       AtsWorkDefinitionSheetProviders.initializeDatabase();
+
+      Artifact topAi = ActionableItemArtifact.getTopActionableItem();
+      topAi.setSoleAttributeValue(AtsAttributeTypes.Actionable, false);
+      topAi.persist("Set Top AI to Non Actionable");
+
       configWorkItemDefinitions(WriteType.New, null);
 
       AtsUtil.getAtsAdminGroup().getGroupArtifact().persist();
@@ -52,4 +63,24 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
 
    }
 
+   public static void createAtsFolders() throws OseeCoreException {
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Create ATS Folders");
+
+      Artifact headingArt = OseeSystemArtifacts.getOrCreateArtifact(AtsArtifactToken.HeadingFolder);
+      if (!headingArt.hasParent()) {
+         Artifact rootArt = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(AtsUtil.getAtsBranch());
+         rootArt.addChild(headingArt);
+         headingArt.persist(transaction);
+      }
+      for (AtsArtifactToken token : Arrays.asList(AtsArtifactToken.TopActionableItem,
+         AtsArtifactToken.TopTeamDefinition, AtsArtifactToken.ConfigFolder, //
+         AtsArtifactToken.WorkDefinitionsFolder, AtsArtifactToken.WorkFlowsFolder, //
+         AtsArtifactToken.WorkPagesFolder, AtsArtifactToken.WorkWidgetsFolder, //
+         AtsArtifactToken.WorkRulesFolder)) {
+         Artifact art = OseeSystemArtifacts.getOrCreateArtifact(token);
+         headingArt.addChild(art);
+         art.persist(transaction);
+      }
+      transaction.execute();
+   }
 }

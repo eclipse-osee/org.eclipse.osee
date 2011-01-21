@@ -21,6 +21,7 @@ import java.util.List;
 import org.eclipse.osee.ats.actions.wizard.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.artifact.AtsArtifactToken;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
@@ -36,11 +37,10 @@ import org.eclipse.osee.ats.column.OperationalImpactWithWorkaroundXWidget.XOpera
 import org.eclipse.osee.ats.column.OperationalImpactXWidget.XOperationalImpactRequiredXWidgetWorkItem;
 import org.eclipse.osee.ats.column.OperationalImpactXWidget.XOperationalImpactXWidgetWorkItem;
 import org.eclipse.osee.ats.column.PriorityXWidget;
-import org.eclipse.osee.ats.util.AtsFolderUtil;
-import org.eclipse.osee.ats.util.AtsFolderUtil.AtsFolder;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.XWorkingBranch;
 import org.eclipse.osee.ats.util.widgets.commit.XCommitManager;
+import org.eclipse.osee.ats.workdef.RuleDefinitionOption;
 import org.eclipse.osee.ats.workdef.StateDefinition;
 import org.eclipse.osee.ats.workflow.flow.DecisionWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.flow.GoalWorkflowDefinition;
@@ -323,29 +323,29 @@ public final class AtsWorkDefinitions implements IWorkDefinitionProvider {
    }
 
    public static boolean isValidatePage(StateDefinition stateDefinition) {
-      if (stateDefinition.hasRule(AtsWorkDefinitions.RuleWorkItemId.atsAddDecisionValidateBlockingReview.name())) {
+      if (stateDefinition.hasRule(RuleDefinitionOption.AddDecisionValidateBlockingReview)) {
          return true;
       }
-      if (stateDefinition.hasRule(AtsWorkDefinitions.RuleWorkItemId.atsAddDecisionValidateNonBlockingReview.name())) {
+      if (stateDefinition.hasRule(RuleDefinitionOption.AddDecisionValidateNonBlockingReview)) {
          return true;
       }
       return false;
    }
 
    public static boolean isValidateReviewBlocking(StateDefinition stateDefinition) {
-      return stateDefinition.hasRule(AtsWorkDefinitions.RuleWorkItemId.atsAddDecisionValidateBlockingReview.name());
+      return stateDefinition.hasRule(RuleDefinitionOption.AddDecisionValidateBlockingReview);
    }
 
    public static boolean isForceAssigneesToTeamLeads(StateDefinition stateDefinition) {
-      return stateDefinition.hasRule(AtsWorkDefinitions.RuleWorkItemId.atsForceAssigneesToTeamLeads.name());
+      return stateDefinition.hasRule(RuleDefinitionOption.ForceAssigneesToTeamLeads);
    }
 
    public static boolean isAllowTransitionWithWorkingBranch(StateDefinition stateDefinition) {
-      return stateDefinition.hasRule(AtsWorkDefinitions.RuleWorkItemId.atsAllowTransitionWithWorkingBranch.name());
+      return stateDefinition.hasRule(RuleDefinitionOption.AllowTransitionWithWorkingBranch);
    }
 
    public static boolean isRequireStateHoursSpentPrompt(StateDefinition stateDefinition) {
-      return stateDefinition.hasRule(AtsWorkDefinitions.RuleWorkItemId.atsRequireStateHourSpentPrompt.name());
+      return stateDefinition.hasRule(RuleDefinitionOption.RequireStateHourSpentPrompt);
    }
 
    public static boolean isAllowCreateBranch(StateDefinition stateDefinition) {
@@ -389,16 +389,16 @@ public final class AtsWorkDefinitions implements IWorkDefinitionProvider {
       // Relate if not already related
       if (art.getRelatedArtifacts(CoreRelationTypes.WorkItem__Parent, Artifact.class).isEmpty()) {
          if (art.isOfType(CoreArtifactTypes.WorkPageDefinition)) {
-            relateIfNotRelated(AtsFolderUtil.getFolder(AtsFolder.WorkPages), art, transaction);
+            relateIfNotRelated(AtsArtifactToken.get(AtsArtifactToken.WorkPagesFolder), art, transaction);
          }
          if (art.isOfType(CoreArtifactTypes.WorkRuleDefinition)) {
-            relateIfNotRelated(AtsFolderUtil.getFolder(AtsFolder.WorkRules), art, transaction);
+            relateIfNotRelated(AtsArtifactToken.get(AtsArtifactToken.WorkRulesFolder), art, transaction);
          }
          if (art.isOfType(CoreArtifactTypes.WorkWidgetDefinition)) {
-            relateIfNotRelated(AtsFolderUtil.getFolder(AtsFolder.WorkWidgets), art, transaction);
+            relateIfNotRelated(AtsArtifactToken.get(AtsArtifactToken.WorkWidgetsFolder), art, transaction);
          }
          if (art.isOfType(CoreArtifactTypes.WorkFlowDefinition)) {
-            relateIfNotRelated(AtsFolderUtil.getFolder(AtsFolder.WorkFlow), art, transaction);
+            relateIfNotRelated(AtsArtifactToken.get(AtsArtifactToken.WorkFlowsFolder), art, transaction);
          }
       }
    }

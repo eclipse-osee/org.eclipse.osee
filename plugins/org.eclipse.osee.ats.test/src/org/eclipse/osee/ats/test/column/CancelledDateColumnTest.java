@@ -16,8 +16,10 @@ import org.eclipse.osee.ats.util.TeamState;
 import org.eclipse.osee.ats.util.TransitionOption;
 import org.eclipse.osee.ats.workflow.TransitionManager;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
+import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
@@ -35,6 +37,8 @@ public class CancelledDateColumnTest {
 
    @org.junit.Test
    public void testGetDateAndStrAndColumnText() throws Exception {
+      SevereLoggingMonitor loggingMonitor = TestUtil.severeLoggingStart();
+
       SkynetTransaction transaction =
          new SkynetTransaction(AtsUtil.getAtsBranch(), CancelledDateColumnTest.class.getSimpleName());
       TeamWorkFlowArtifact teamArt =
@@ -67,5 +71,6 @@ public class CancelledDateColumnTest {
       date = CancelledDateColumn.getDate(teamArt);
       Assert.assertNull(date);
 
+      TestUtil.severeLoggingEnd(loggingMonitor);
    }
 }

@@ -13,8 +13,10 @@ package org.eclipse.osee.ats.editor.stateItem;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.AbstractReviewArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
+import org.eclipse.osee.ats.artifact.PeerToPeerReviewState;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.workdef.StateXWidgetPage;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
+import org.eclipse.osee.ats.workdef.StateDefinition;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -28,17 +30,22 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  */
 public class AtsPeerToPeerReviewPrepareStateItem extends AtsStateItem {
 
-   @Override
-   public String getId() {
-      return "osee.ats.peerToPeerReview.Prepare";
+   public AtsPeerToPeerReviewPrepareStateItem() {
+      super(AtsPeerToPeerReviewPrepareStateItem.class.getSimpleName());
    }
 
    @Override
-   public void xWidgetCreated(XWidget widget, FormToolkit toolkit, StateXWidgetPage page, Artifact art, XModifiedListener modListener, boolean isEditable) throws OseeCoreException {
-      super.xWidgetCreated(widget, toolkit, page, art, modListener, isEditable);
+   public String getDescription() {
+      return "If stand-alone review, remove blocking review enablement and required entry.";
+   }
+
+   @Override
+   public void xWidgetCreated(XWidget widget, FormToolkit toolkit, StateDefinition stateDefinition, Artifact art, XModifiedListener modListener, boolean isEditable) {
       try {
-         if (art instanceof AbstractReviewArtifact && ((AbstractReviewArtifact) art).getParentSMA() == null && widget.getLabel().equals(
-            AtsAttributeTypes.ReviewBlocks.getUnqualifiedName())) {
+         if (art.isOfType(AtsArtifactTypes.PeerToPeerReview) && //
+         stateDefinition.getPageName().equals(PeerToPeerReviewState.Prepare.getPageName()) && //
+         ((AbstractReviewArtifact) art).getParentSMA() == null && //
+         widget.getLabel().equals(AtsAttributeTypes.ReviewBlocks.getUnqualifiedName())) {
             XComboDam decisionComboDam = (XComboDam) widget;
             decisionComboDam.setEnabled(false);
             decisionComboDam.setRequiredEntry(false);
@@ -46,11 +53,6 @@ public class AtsPeerToPeerReviewPrepareStateItem extends AtsStateItem {
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
-   }
-
-   @Override
-   public String getDescription() {
-      return "AtsPeerToPeerReviewPrepareStateItem - If stand-alone review, remove blocking review enablement and required entry.";
    }
 
 }

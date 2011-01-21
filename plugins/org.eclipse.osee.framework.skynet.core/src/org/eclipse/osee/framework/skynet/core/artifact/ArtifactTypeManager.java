@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -172,6 +173,11 @@ public class ArtifactTypeManager {
     */
    public static Artifact addArtifact(IArtifactType artifactType, Branch branch, String guid, String humandReadableId) throws OseeCoreException {
       return makeNewArtifact(artifactType, branch, guid, humandReadableId);
+   }
+
+   public static Artifact addArtifact(IArtifactToken artifactToken) throws OseeCoreException {
+      return getFactory(artifactToken.getArtifactType()).makeNewArtifact(artifactToken.getBranch(),
+         artifactToken.getArtifactType(), artifactToken.getName(), artifactToken.getGuid(), null);
    }
 
    private static final String DELETE_VALID_ATTRIBUTE =

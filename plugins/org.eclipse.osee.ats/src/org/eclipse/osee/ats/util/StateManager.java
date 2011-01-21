@@ -66,6 +66,18 @@ public class StateManager {
       }
    }
 
+   public boolean isAnyStateHavePercentEntered() throws OseeCoreException {
+      if (currentStateDam.getState().getPercentComplete() > 0) {
+         return true;
+      }
+      for (SMAState state : stateDam.getStates()) {
+         if (state.getPercentComplete() > 0) {
+            return true;
+         }
+      }
+      return false;
+   }
+
    public boolean isInState(IWorkPage state) {
       return (getCurrentStateName().equals(state.getPageName()));
    }

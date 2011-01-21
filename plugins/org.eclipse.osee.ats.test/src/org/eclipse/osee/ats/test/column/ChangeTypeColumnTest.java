@@ -13,9 +13,11 @@ import org.eclipse.osee.ats.column.ChangeTypeColumn;
 import org.eclipse.osee.ats.test.util.DemoTestUtil;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.support.test.util.DemoWorkType;
+import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
@@ -39,6 +41,8 @@ public class ChangeTypeColumnTest {
 
    @org.junit.Test
    public void getChangeTypeStrAndImage() throws Exception {
+      SevereLoggingMonitor loggingMonitor = TestUtil.severeLoggingStart();
+
       TeamWorkFlowArtifact codeArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Code);
       Assert.assertEquals(ChangeType.Problem, ChangeTypeColumn.getChangeType(codeArt));
@@ -75,6 +79,8 @@ public class ChangeTypeColumnTest {
       Assert.assertEquals(ChangeType.Problem, ChangeTypeColumn.getChangeType(actionArt));
       Assert.assertEquals("Problem; Improvement",
          ChangeTypeColumn.getInstance().getColumnText(actionArt, ChangeTypeColumn.getInstance(), 0));
+
+      TestUtil.severeLoggingEnd(loggingMonitor);
    }
 
 }

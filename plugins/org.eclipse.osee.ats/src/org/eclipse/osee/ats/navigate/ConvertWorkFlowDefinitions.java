@@ -54,6 +54,7 @@ public class ConvertWorkFlowDefinitions extends XNavigateItemAction {
       idToName.put("lba.common.code", "WorkDef_Team_LbaCode.ats");
       idToName.put("lba.common.pids.req", "WorkDef_Team_LbaPids.ats");
       idToName.put("lba.common.req", "WorkDef_Team_Lba_Req.ats");
+      idToName.put("lba.common.sw_ta", "WorkDef_Team_Lba_SwTechAppr.ats");
       idToName.put("lba.common.sw_techappr", "WorkDef_Team_Lba_SwTechAppr.ats");
       idToName.put("lba.common.swdesign", "WorkDef_Team_Lba_SwDesign.ats");
       idToName.put("lba.common.test", "WorkDef_Team_Lba_Test_Default.ats");

@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 
 public class WorkDefinition extends AbstractWorkDefItem {
 
@@ -173,6 +174,29 @@ public class WorkDefinition extends AbstractWorkDefItem {
 
    public Set<String> getIds() {
       return ids;
+   }
+
+   public boolean isStateWeightingEnabled() {
+      for (StateDefinition stateDef : getStates()) {
+         if (stateDef.getStateWeight() != 0) {
+            return true;
+         }
+      }
+      return false;
+   }
+
+   public Result validateStateWeighting() {
+      if (!isStateWeightingEnabled()) {
+         return Result.TrueResult;
+      }
+      int total = 0;
+      for (StateDefinition stateDef : getStates()) {
+         total += stateDef.getStateWeight();
+      }
+      if (total != 100) {
+         return new Result(String.format("Total weight only %d, needs to equal 100 for all states", total));
+      }
+      return Result.TrueResult;
    }
 
 }

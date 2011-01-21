@@ -11,9 +11,11 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.column.AssigneeColumn;
 import org.eclipse.osee.ats.column.OriginatorColumn;
 import org.eclipse.osee.ats.test.util.DemoTestUtil;
+import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.support.test.util.DemoUsers;
 import org.eclipse.osee.support.test.util.DemoWorkType;
+import org.eclipse.osee.support.test.util.TestUtil;
 
 /**
  * @tests OriginatorColumn
@@ -23,6 +25,8 @@ public class OriginatorColumnTest {
 
    @org.junit.Test
    public void testGetColumnText() throws Exception {
+      SevereLoggingMonitor loggingMonitor = TestUtil.severeLoggingStart();
+
       TeamWorkFlowArtifact reqArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Requirements);
       Assert.assertEquals(UserManager.getUser(DemoUsers.Joe_Smith).getName(),
@@ -32,6 +36,7 @@ public class OriginatorColumnTest {
       Assert.assertEquals(UserManager.getUser(DemoUsers.Joe_Smith).getName(),
          OriginatorColumn.getInstance().getColumnText(actionArt, AssigneeColumn.getInstance(), 0));
 
+      TestUtil.severeLoggingEnd(loggingMonitor);
    }
 
 }

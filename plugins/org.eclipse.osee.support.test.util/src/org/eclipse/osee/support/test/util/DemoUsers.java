@@ -27,57 +27,40 @@ import org.eclipse.osee.framework.core.data.IOseeUserInfo;
  * @author Donald G. Dunne
  */
 public enum DemoUsers implements IOseeUserInfo {
-   Joe_Smith("Joe Smith", "Joe Smith", "Joe Smith", true),
-   Kay_Jones("Kay Jones", "Kay Jones", "Kay Jones", true),
-   Jason_Michael("Jason Michael", "Jason Michael", "Jason Michael", true),
-   Alex_Kay("Alex Kay", "Alex Kay", "Alex Kay", true),
-   Inactive_Steve("Inactive Steve", "Inactive Steve", "Inactive Steve", false);
+   Joe_Smith("Joe Smith"),
+   Kay_Jones("Kay Jones"),
+   Jason_Michael("Jason Michael"),
+   Alex_Kay("Alex Kay"),
+   Inactive_Steve("Inactive Steve");
    private final String name;
-   private final String email;
-   private final String userID;
-   private final boolean active;
 
-   DemoUsers(String name, String email, String userId, boolean active) {
+   DemoUsers(String name) {
       this.name = name;
-      this.email = email;
-      this.userID = userId;
-      this.active = active;
    }
 
-   /**
-    * @return Returns the email.
-    */
-   @Override
-   public String getEmail() {
-      return email;
-   }
-
-   /**
-    * @return Returns the name.
-    */
    @Override
    public String getName() {
       return name;
    }
 
-   /**
-    * @return Returns the userID.
-    */
    @Override
    public String getUserID() {
-      return userID;
+      return name;
    }
 
-   /**
-    * @return Returns the active.
-    */
+   @Override
+   public String getEmail() {
+      return name;
+   }
+
    @Override
    public boolean isActive() {
-      return active;
+      return name.contains("Inactive");
    }
 
    @Override
    public boolean isCreationRequired() {
       return false;
    }
+
 }

@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.column.TargetedVersionColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.ReadOnlyHyperlinkListener;
-import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
+import org.eclipse.osee.ats.workdef.RuleDefinitionOption;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -103,8 +103,8 @@ public class SMATargetVersionInfoComposite extends Composite {
       String str = "";
       // Don't transition without targeted version if so configured
       boolean required =
-         sma.teamDefHasWorkRule(AtsWorkDefinitions.RuleWorkItemId.atsRequireTargetedVersion.name()) || sma.getStateDefinition().hasRule(
-            AtsWorkDefinitions.RuleWorkItemId.atsRequireTargetedVersion.name());
+         sma.teamDefHasRule(RuleDefinitionOption.RequireTargetedVersion) || sma.getStateDefinition().hasRule(
+            RuleDefinitionOption.RequireTargetedVersion);
 
       if (sma.getTargetedVersion() != null) {
          str = sma.getTargetedVersion() + "";

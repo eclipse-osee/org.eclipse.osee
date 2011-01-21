@@ -30,7 +30,7 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 public abstract class XHyperlinkLabelValueSelection extends GenericXWidget {
 
    Hyperlink valueHyperlinkLabel;
-   Label valueLabel;
+   protected Label valueLabel;
 
    public XHyperlinkLabelValueSelection(String label) {
       super(label);

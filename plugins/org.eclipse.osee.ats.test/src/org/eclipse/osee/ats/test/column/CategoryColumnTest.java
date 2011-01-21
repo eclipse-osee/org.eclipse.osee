@@ -13,8 +13,10 @@ import org.eclipse.osee.ats.column.CategoryColumn;
 import org.eclipse.osee.ats.test.util.DemoTestUtil;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.support.test.util.DemoWorkType;
+import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
@@ -46,6 +48,8 @@ public class CategoryColumnTest {
 
    @org.junit.Test
    public void testGetDateAndStrAndColumnText() throws Exception {
+      SevereLoggingMonitor loggingMonitor = TestUtil.severeLoggingStart();
+
       TeamWorkFlowArtifact codeArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Code);
       TeamWorkFlowArtifact reqArt =
@@ -105,5 +109,6 @@ public class CategoryColumnTest {
       Assert.assertEquals("",
          CategoryColumn.getCategory1Instance().getColumnText(actionArt, CategoryColumn.getCategory1Instance(), 0));
 
+      TestUtil.severeLoggingEnd(loggingMonitor);
    }
 }

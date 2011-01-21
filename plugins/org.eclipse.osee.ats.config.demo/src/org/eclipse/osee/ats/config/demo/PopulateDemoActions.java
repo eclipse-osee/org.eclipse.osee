@@ -25,7 +25,6 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowManager;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.config.AtsBulkLoad;
-import org.eclipse.osee.ats.config.demo.config.DemoDatabaseConfig;
 import org.eclipse.osee.ats.config.demo.config.DemoDbActionData;
 import org.eclipse.osee.ats.config.demo.config.DemoDbActionData.CreateReview;
 import org.eclipse.osee.ats.config.demo.config.DemoDbGroups;
@@ -34,8 +33,6 @@ import org.eclipse.osee.ats.config.demo.config.DemoDbTasks;
 import org.eclipse.osee.ats.config.demo.config.DemoDbUtil;
 import org.eclipse.osee.ats.config.demo.config.DemoDbUtil.SoftwareRequirementStrs;
 import org.eclipse.osee.ats.config.demo.internal.OseeAtsConfigDemoActivator;
-import org.eclipse.osee.ats.config.demo.util.DemoTeams;
-import org.eclipse.osee.ats.config.demo.util.DemoTeams.Team;
 import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
@@ -222,12 +219,6 @@ public class PopulateDemoActions extends XNavigateItemAction {
             BranchType.BASELINE.getValue(),
             childBranch.getId()});
          BranchManager.refreshBranches();
-         // Map team definitions versions to their related branches
-         SkynetTransaction transaction =
-            new SkynetTransaction(AtsUtil.getAtsBranch(), "Populate Demo DB - Create Branch");
-         DemoDatabaseConfig.mapTeamVersionToBranch(DemoTeams.getInstance().getTeamDef(Team.SAW_SW),
-            DemoSawBuilds.SAW_Bld_2.getName(), DemoSawBuilds.SAW_Bld_2.getName(), transaction);
-         transaction.execute();
       } catch (Exception ex) {
          OseeLog.log(OseeAtsConfigDemoActivator.class, Level.SEVERE, ex);
       }

@@ -15,7 +15,9 @@ import org.eclipse.osee.ats.column.ParentStateColumn;
 import org.eclipse.osee.ats.test.util.DemoTestUtil;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.TeamState;
+import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.support.test.util.DemoWorkType;
+import org.eclipse.osee.support.test.util.TestUtil;
 
 /**
  * @tests ParentStateColumn
@@ -26,6 +28,8 @@ public class ParentStateAndIdColumnTest {
 
    @org.junit.Test
    public void testGetColumnText() throws Exception {
+      SevereLoggingMonitor loggingMonitor = TestUtil.severeLoggingStart();
+
       TeamWorkFlowArtifact codeArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Code);
       ActionArtifact actionArt = codeArt.getParentActionArtifact();
@@ -43,6 +47,7 @@ public class ParentStateAndIdColumnTest {
 
       Assert.assertEquals("", ParentStateColumn.getInstance().getColumnText(actionArt, AssigneeColumn.getInstance(), 0));
 
+      TestUtil.severeLoggingEnd(loggingMonitor);
    }
 
 }

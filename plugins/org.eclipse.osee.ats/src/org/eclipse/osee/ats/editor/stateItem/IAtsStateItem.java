@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
-import org.eclipse.osee.ats.workdef.StateXWidgetPage;
+import org.eclipse.osee.ats.workdef.StateDefinition;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -30,11 +30,13 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  */
 public interface IAtsStateItem {
 
-   public Result pageCreated(FormToolkit toolkit, StateXWidgetPage page, AbstractWorkflowArtifact sma, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException;
+   public String getName();
 
-   public Result xWidgetCreating(XWidget xWidget, FormToolkit toolkit, StateXWidgetPage page, Artifact art, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException;
+   public String getFullName();
 
-   public void xWidgetCreated(XWidget xWidget, FormToolkit toolkit, StateXWidgetPage page, Artifact art, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException;
+   public Result xWidgetCreating(XWidget xWidget, FormToolkit toolkit, StateDefinition stateDefinition, Artifact art, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException;
+
+   public void xWidgetCreated(XWidget xWidget, FormToolkit toolkit, StateDefinition stateDefinition, Artifact art, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException;
 
    public void widgetModified(SMAWorkFlowSection section, XWidget xWidget) throws OseeCoreException;
 
@@ -42,13 +44,11 @@ public interface IAtsStateItem {
 
    public Collection<User> getOverrideTransitionToAssignees(SMAWorkFlowSection section) throws OseeCoreException;
 
-   public String getDescription() throws OseeCoreException;
+   public String getDescription();
 
    public String getBranchShortName(AbstractWorkflowArtifact sma) throws OseeCoreException;
 
    public boolean isAccessControlViaAssigneesEnabledForBranching() throws OseeCoreException;
-
-   public Collection<String> getIds() throws OseeCoreException;
 
    /**
     * @return Result of operation. If Result.isFalse(), transition will not continue and Result.popup will occur.
@@ -62,8 +62,8 @@ public interface IAtsStateItem {
     */
    public Result committing(AbstractWorkflowArtifact sma) throws OseeCoreException;
 
-   public List<XWidget> getDynamicXWidgetsPostBody(AbstractWorkflowArtifact sma) throws OseeCoreException;
+   public List<XWidget> getDynamicXWidgetsPostBody(AbstractWorkflowArtifact sma, String stateName) throws OseeCoreException;
 
-   public List<XWidget> getDynamicXWidgetsPreBody(AbstractWorkflowArtifact sma) throws OseeCoreException;
+   public List<XWidget> getDynamicXWidgetsPreBody(AbstractWorkflowArtifact sma, String stateName) throws OseeCoreException;
 
 }

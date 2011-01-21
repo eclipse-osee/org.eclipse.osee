@@ -15,9 +15,11 @@ import org.eclipse.osee.ats.column.NumberOfTasksRemainingColumn;
 import org.eclipse.osee.ats.test.util.DemoTestUtil;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.TransitionOption;
+import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.support.test.util.DemoWorkType;
+import org.eclipse.osee.support.test.util.TestUtil;
 
 /**
  * @tests NumberOfTasksColumn
@@ -28,6 +30,8 @@ public class NumberOfTasksAndInWorkTasksColumnsTest {
 
    @org.junit.Test
    public void getColumnText() throws Exception {
+      SevereLoggingMonitor loggingMonitor = TestUtil.severeLoggingStart();
+
       TeamWorkFlowArtifact codeArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Code);
       Assert.assertEquals("6", NumberOfTasksColumn.getInstance().getColumnText(codeArt, null, 0));
@@ -60,5 +64,6 @@ public class NumberOfTasksAndInWorkTasksColumnsTest {
       ActionArtifact actionArt = codeArt.getParentActionArtifact();
       Assert.assertEquals("6", NumberOfTasksColumn.getInstance().getColumnText(actionArt, null, 0));
 
+      TestUtil.severeLoggingEnd(loggingMonitor);
    }
 }

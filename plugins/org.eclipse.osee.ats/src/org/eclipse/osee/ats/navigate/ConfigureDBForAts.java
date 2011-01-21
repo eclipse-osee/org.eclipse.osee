@@ -18,7 +18,6 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
-import org.eclipse.osee.ats.workflow.vue.LoadAIsAndTeamsAction;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
@@ -66,7 +65,6 @@ public class ConfigureDBForAts extends XNavigateItemAction {
             AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(WriteType.New, null,
                AtsWorkDefinitions.getAtsWorkDefinitions());
             monitor.subTask("Loading Actionable Items and Teams for " + pluginId);
-            LoadAIsAndTeamsAction.executeForAtsRuntimeConfig(false, pluginId);
          } catch (Exception ex) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
             return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);

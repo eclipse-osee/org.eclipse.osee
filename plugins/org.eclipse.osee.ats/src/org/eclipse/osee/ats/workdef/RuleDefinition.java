@@ -11,6 +11,10 @@ public class RuleDefinition extends AbstractWorkDefItem {
       super(id);
    }
 
+   public RuleDefinition(RuleDefinitionOption ruleOption) {
+      super(ruleOption.name());
+   }
+
    @Override
    public String toString() {
       return String.format("[%s]", getName());

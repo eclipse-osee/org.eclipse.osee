@@ -14,7 +14,9 @@ import org.eclipse.osee.ats.column.AssigneeColumn;
 import org.eclipse.osee.ats.column.RelatedToStateColumn;
 import org.eclipse.osee.ats.test.util.DemoTestUtil;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
+import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.support.test.util.DemoWorkType;
+import org.eclipse.osee.support.test.util.TestUtil;
 
 /**
  * @tests RelatedToStateColumn
@@ -24,6 +26,7 @@ public class RelatedToStateColumnTest {
 
    @org.junit.Test
    public void testGetColumnText() throws Exception {
+      SevereLoggingMonitor loggingMonitor = TestUtil.severeLoggingStart();
 
       TeamWorkFlowArtifact codeArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Code);
@@ -47,6 +50,7 @@ public class RelatedToStateColumnTest {
       Assert.assertEquals("",
          RelatedToStateColumn.getInstance().getColumnText(actionArt, AssigneeColumn.getInstance(), 0));
 
+      TestUtil.severeLoggingEnd(loggingMonitor);
    }
 
 }

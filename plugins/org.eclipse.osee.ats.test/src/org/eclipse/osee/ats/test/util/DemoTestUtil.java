@@ -111,9 +111,17 @@ public class DemoTestUtil {
       return teamArt;
    }
 
+   public static Set<ActionableItemArtifact> getActionableItems(DemoActionableItems demoAI) throws OseeCoreException {
+      return ActionableItemArtifact.getActionableItems(Arrays.asList(demoAI.getName()));
+   }
+
+   public static ActionableItemArtifact getActionableItem(DemoActionableItems demoAI) throws OseeCoreException {
+      return getActionableItems(demoAI).iterator().next();
+   }
+
    public static TeamWorkFlowArtifact addTeamWorkflow(ActionArtifact actionArt, String title, SkynetTransaction transaction) throws OseeCoreException {
-      Set<ActionableItemArtifact> actionableItems =
-         ActionableItemArtifact.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Test.getName()));
+      Set<ActionableItemArtifact> actionableItems = getActionableItems(DemoActionableItems.SAW_Test);
+      ;
       Collection<TeamDefinitionArtifact> teamDefs = TeamDefinitionArtifact.getImpactedTeamDefs(actionableItems);
 
       ActionManager.createTeamWorkflow(actionArt, teamDefs.iterator().next(), actionableItems,

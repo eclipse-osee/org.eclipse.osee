@@ -35,6 +35,7 @@ import org.eclipse.osee.ats.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.workflow.TransitionManager;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -113,8 +114,12 @@ public class ReviewManager {
       decRev.persist(transaction);
 
       TransitionManager transitionMgr = new TransitionManager(decRev);
-      transitionMgr.transition(DecisionReviewState.Decision, assignees, transaction, TransitionOption.Persist,
-         TransitionOption.OverrideAssigneeCheck);
+      Result result =
+         transitionMgr.transition(DecisionReviewState.Decision, assignees, transaction, TransitionOption.Persist,
+            TransitionOption.OverrideAssigneeCheck);
+      if (result.isFalse()) {
+         throw new OseeStateException("Error auto-transitioning review %s to Decision state", decRev.toStringWithId());
+      }
       return decRev;
    }
 

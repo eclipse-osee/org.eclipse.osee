@@ -3,7 +3,6 @@
 <plugin>
    <extension-point id="AtsNavigateItem" name="AtsNavigateItem" schema="schema/AtsNavigateItem.exsd"/>
    <extension-point id="AtsStateItem" name="AtsStateItem" schema="schema/AtsStateItem.exsd"/>
-   <extension-point id="AtsAIandTeamConfig" name="AtsAIandTeamConfig" schema="schema/AtsAIandTeamConfig.exsd"/>
    <extension-point id="AtsWizardItem" name="AtsWizardItem" schema="schema/AtsWizardItem.exsd"/>
    <extension-point id="AtsTeamWorkflow" name="AtsTeamWorkflow" schema="schema/AtsTeamWorkflow.exsd"/>
    <extension-point id="AtsNotification" name="AtsNotification" schema="schema/AtsNotification.exsd"/>

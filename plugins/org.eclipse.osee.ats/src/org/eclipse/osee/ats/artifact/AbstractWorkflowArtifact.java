@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +38,7 @@ import org.eclipse.osee.ats.util.SimpleTeamState;
 import org.eclipse.osee.ats.util.StateManager;
 import org.eclipse.osee.ats.util.TeamState;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
-import org.eclipse.osee.ats.workdef.RuleDefinition;
+import org.eclipse.osee.ats.workdef.RuleDefinitionOption;
 import org.eclipse.osee.ats.workdef.StateDefinition;
 import org.eclipse.osee.ats.workdef.StateXWidgetPage;
 import org.eclipse.osee.ats.workdef.WorkDefinition;
@@ -47,8 +46,6 @@ import org.eclipse.osee.ats.workdef.WorkDefinitionFactory;
 import org.eclipse.osee.ats.workdef.WorkDefinitionMatch;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
 import org.eclipse.osee.ats.workflow.TransitionManager;
-import org.eclipse.osee.ats.workflow.item.AtsStatePercentCompleteWeightRule;
-import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -237,7 +234,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    public void clearCaches() {
       implementersStr = null;
-      stateToWeight = null;
    }
 
    public WorkDefinition getWorkDefinition() {
@@ -555,61 +551,75 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    /**
     * Return Percent Complete on all things (including children SMAs) for this SMA<br>
     * <br>
-    * percent = all state's percents / number of states (minus completed/cancelled)
+    * percent = all state's percents / number of states (minus completed/canceled)
     */
    public int getPercentCompleteSMATotal() throws OseeCoreException {
       if (isCompletedOrCancelled()) {
          return 100;
       }
-      Map<String, Double> stateToWeightMap = getStatePercentCompleteWeight();
-      if (!stateToWeightMap.isEmpty()) {
+      if (getWorkDefinition().isStateWeightingEnabled()) {
          // Calculate total percent using configured weighting
          int percent = 0;
-         for (StateDefinition state : getWorkDefinition().getStates()) {
-            if (!state.isCompletedPage() && !state.isCancelledPage()) {
-               Double weight = stateToWeightMap.get(state.getPageName());
-               if (weight == null) {
-                  weight = 0.0;
-               }
-               percent += weight * getPercentCompleteSMAStateTotal(state);
+         for (StateDefinition stateDef : getWorkDefinition().getStates()) {
+            if (!stateDef.isCompletedPage() && !stateDef.isCancelledPage()) {
+               double stateWeightInt = stateDef.getStateWeight();
+               double weight = stateWeightInt / 100;
+               int percentCompleteForState = getPercentCompleteSMAStateTotal(stateDef);
+               percent += weight * percentCompleteForState;
             }
          }
          return percent;
       } else {
-         int percent = 0;
-         int numStates = 0;
-         for (StateDefinition state : getWorkDefinition().getStates()) {
-            if (!state.isCompletedPage() && !state.isCancelledPage()) {
-               percent += getPercentCompleteSMAStateTotal(state);
-               numStates++;
+         int percent = getPercentCompleteSMASinglePercent();
+         if (percent > 0) {
+            return percent;
+         }
+         if (isCompletedOrCancelled()) {
+            return 100;
+         }
+         if (getStateMgr().isAnyStateHavePercentEntered()) {
+            int numStates = 0;
+            for (StateDefinition state : getWorkDefinition().getStates()) {
+               if (!state.isCompletedPage() && !state.isCancelledPage()) {
+                  percent += getPercentCompleteSMAStateTotal(state);
+                  numStates++;
+               }
             }
+            if (numStates == 0) {
+               return 0;
+            }
+            return percent / numStates;
          }
-         if (numStates == 0) {
-            return 0;
-         }
-         return percent / numStates;
+
       }
+      return 0;
    }
 
-   // Cache stateToWeight mapping
-   private Map<String, Double> stateToWeight = null;
-
-   public Map<String, Double> getStatePercentCompleteWeight() throws OseeCoreException {
-      if (stateToWeight == null) {
-         stateToWeight = new HashMap<String, Double>();
-         Collection<RuleDefinition> workRuleDefs = getRulesStartsWith(AtsStatePercentCompleteWeightRule.ID);
-         // Log error if multiple of same rule found, but keep going
-         if (workRuleDefs.size() > 1) {
-            OseeLog.log(
-               AtsPlugin.class,
-               Level.SEVERE,
-               "Team Definition has multiple rules of type " + AtsStatePercentCompleteWeightRule.ID + ".  Only 1 allowed.  Defaulting to first found.");
-         }
-         if (workRuleDefs.size() == 1) {
-            stateToWeight = AtsStatePercentCompleteWeightRule.getStateWeightMap(workRuleDefs.iterator().next());
+   /**
+    * Add percent represented by percent attribute, percent for reviews and tasks divided by number of objects.
+    */
+   private int getPercentCompleteSMASinglePercent() throws OseeCoreException {
+      int numObjects = 1;
+      int percent = getSoleAttributeValue(AtsAttributeTypes.PercentComplete, 0);
+      if (this instanceof TeamWorkFlowArtifact) {
+         for (AbstractReviewArtifact revArt : ReviewManager.getReviews((TeamWorkFlowArtifact) this)) {
+            percent += revArt.getPercentCompleteSMATotal();
+            numObjects++;
          }
       }
-      return stateToWeight;
+      if (this instanceof AbstractTaskableArtifact) {
+         for (TaskArtifact taskArt : ((AbstractTaskableArtifact) this).getTaskArtifacts()) {
+            percent += taskArt.getPercentCompleteSMATotal();
+            numObjects++;
+         }
+      }
+      if (percent > 0) {
+         if (numObjects == 0) {
+            return 0;
+         }
+         return percent / numObjects;
+      }
+      return percent;
    }
 
    private StateMetricsData getStateMetricsData(IWorkPage teamState) throws OseeCoreException {
@@ -773,7 +783,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
     * Return true if sma is TeamWorkflowArtifact or review of a team workflow and it's TeamDefinitionArtifact has rule
     * set
     */
-   public boolean teamDefHasWorkRule(String ruleId) throws OseeCoreException {
+   public boolean teamDefHasRule(RuleDefinitionOption option) throws OseeCoreException {
       TeamWorkFlowArtifact teamArt = null;
       if (isTeamWorkflow()) {
          teamArt = (TeamWorkFlowArtifact) this;
@@ -785,34 +795,11 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
          return false;
       }
       try {
-         return teamArt.getTeamDefinition().hasWorkRule(ruleId);
+         return teamArt.getTeamDefinition().hasRule(option);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          return false;
       }
-   }
-
-   public boolean workPageHasWorkRule(String ruleId) {
-      return getStateDefinition().hasRule(AtsWorkDefinitions.RuleWorkItemId.atsRequireTargetedVersion.name());
-   }
-
-   public Collection<RuleDefinition> getRulesStartsWith(String ruleName) throws OseeCoreException {
-      Set<RuleDefinition> workRules = new HashSet<RuleDefinition>();
-      if (!Strings.isValid(ruleName)) {
-         return workRules;
-      }
-      if (isTeamWorkflow()) {
-         // Get rules from team definition
-         workRules.addAll(((TeamWorkFlowArtifact) this).getTeamDefinition().getRulesStartsWith(ruleName));
-      }
-      // Get work rules from workflow
-      if (getWorkDefinition() != null) {
-         // Get rules from workflow definitions
-         workRules.addAll(getWorkDefinition().getRulesStartsWith(ruleName));
-      }
-      // Add work rules from page
-      workRules.addAll(getStateDefinition().getRulesStartsWith(ruleName));
-      return workRules;
    }
 
    /**
