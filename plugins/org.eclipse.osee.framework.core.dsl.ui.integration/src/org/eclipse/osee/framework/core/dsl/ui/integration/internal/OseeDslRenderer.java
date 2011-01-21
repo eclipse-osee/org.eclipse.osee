@@ -27,13 +27,13 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
-import org.eclipse.osee.framework.ui.skynet.render.IArtifactUpdateOperationFactory;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.program.Program;
@@ -46,22 +46,8 @@ import org.eclipse.ui.ide.IDE;
  * @author Roberto E. Escobar
  */
 public final class OseeDslRenderer extends FileSystemRenderer {
-
    private static final String COMMAND_ID = "org.eclipse.osee.framework.core.dsl.OseeDsl.editor.command";
-
    private static final OseeDslSegmentParser parser = new OseeDslSegmentParser();
-   private static final class OseeDslArtifactUpdateOperationFactory implements IArtifactUpdateOperationFactory {
-
-      @SuppressWarnings("unused")
-      @Override
-      public IOperation createUpdateOp(File file) throws OseeCoreException {
-         return new OseeDslArtifactUpdateOperation(parser, file);
-      }
-   };
-
-   public OseeDslRenderer() {
-      super(new OseeDslArtifactUpdateOperationFactory());
-   }
 
    @Override
    public String getName() {
@@ -149,5 +135,10 @@ public final class OseeDslRenderer extends FileSystemRenderer {
    @Override
    public Program getAssociatedProgram(Artifact artifact) throws OseeCoreException {
       throw new OseeCoreException("should not be called");
+   }
+
+   @Override
+   protected IOperation getUpdateOperation(File file, List<Artifact> artifacts, Branch branch, PresentationType presentationType) {
+      return new OseeDslArtifactUpdateOperation(parser, file);
    }
 }

@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -167,7 +168,7 @@ public final class RenderingUtil {
    }
 
    public static String toFileName(IOseeBranch branch) throws OseeCoreException {
-      return encode(branch.getGuid());
+      return encode(Branch.getShortName(branch));
    }
 
    private static String encode(String name) throws OseeCoreException {

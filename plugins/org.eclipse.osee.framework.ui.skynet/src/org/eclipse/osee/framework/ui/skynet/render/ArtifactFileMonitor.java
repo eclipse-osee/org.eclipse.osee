@@ -11,38 +11,52 @@
 package org.eclipse.osee.framework.ui.skynet.render;
 
 import java.io.File;
+import java.util.Collection;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourceAttributes;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.jdk.core.util.io.FileChangeEvent;
+import org.eclipse.osee.framework.jdk.core.util.io.FileChangeType;
 import org.eclipse.osee.framework.jdk.core.util.io.FileWatcher;
+import org.eclipse.osee.framework.jdk.core.util.io.IFileWatcherListener;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchListener;
 import org.eclipse.ui.PlatformUI;
 
-final class ArtifactFileMonitor {
+final class ArtifactFileMonitor implements IFileWatcherListener {
    private final ResourceAttributes readonlyfileAttributes;
    private final FileWatcher watcher;
    private boolean firstTime;
+   private final Map<File, IOperation> fileMap = new ConcurrentHashMap<File, IOperation>(128);
 
-   public ArtifactFileMonitor(IArtifactUpdateOperationFactory opFactory) {
+   public ArtifactFileMonitor() {
       firstTime = true;
       readonlyfileAttributes = new ResourceAttributes();
       readonlyfileAttributes.setReadOnly(true);
 
       watcher = new FileWatcher(3, TimeUnit.SECONDS);
-      watcher.addListener(new ArtifactFileWatcherListener(opFactory));
+      watcher.addListener(this);
       watcher.start();
    }
 
-   public void addFile(IFile file) {
-      monitorFile(file.getLocation().toFile());
+   public void addFile(File file, IOperation updateOperation) {
+      watcher.addFile(file);
+      fileMap.put(file, updateOperation);
    }
 
    public void markAsReadOnly(IFile file) throws OseeCoreException {
@@ -51,6 +65,33 @@ final class ArtifactFileMonitor {
       } catch (CoreException ex) {
          OseeExceptions.wrapAndThrow(ex);
       }
+   }
+
+   @Override
+   public void filesModified(Collection<FileChangeEvent> fileChangeEvents) {
+      for (FileChangeEvent event : fileChangeEvents) {
+         if (event.getChangeType() == FileChangeType.MODIFIED) {
+            processFileUpdate(event.getFile());
+         }
+      }
+   }
+
+   private void processFileUpdate(final File file) {
+      IOperation op = fileMap.get(file);
+      Operations.executeAsJob(op, false, Job.LONG, new JobChangeAdapter() {
+
+         @Override
+         public void done(IJobChangeEvent event) {
+            if (event.getResult().isOK()) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.INFO, "Updated artifact linked to: " + file.getAbsolutePath());
+            }
+         }
+      });
+   }
+
+   @Override
+   public void handleException(Exception ex) {
+      OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
    }
 
    private void monitorFile(File file) {

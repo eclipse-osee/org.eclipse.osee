@@ -14,6 +14,7 @@ package org.eclipse.osee.framework.ui.skynet.render;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERALIZED_EDIT;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERAL_REQUESTED;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -26,6 +27,8 @@ import org.apache.xml.serialize.XMLSerializer;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
@@ -148,7 +151,6 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
 
    @Override
    public void renderAttribute(IAttributeType attributeType, Artifact artifact, PresentationType presentationType, Producer producer, VariableMap map, AttributeElement attributeElement) throws OseeCoreException {
-      //      String value = "";
       WordMLProducer wordMl = (WordMLProducer) producer;
 
       if (attributeType.equals(CoreAttributeTypes.WordTemplateContent)) {
@@ -235,5 +237,10 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
    @Override
    public IComparator getComparator() {
       return comparator;
+   }
+
+   @Override
+   protected IOperation getUpdateOperation(File file, List<Artifact> artifacts, Branch branch, PresentationType presentationType) throws OseeCoreException {
+      return new UpdateArtifactOperation(file, artifacts, branch);
    }
 }

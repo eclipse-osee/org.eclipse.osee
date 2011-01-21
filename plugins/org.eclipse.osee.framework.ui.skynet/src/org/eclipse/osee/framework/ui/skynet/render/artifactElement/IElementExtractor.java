@@ -23,8 +23,7 @@ import org.xml.sax.SAXException;
  * @author Jeff C. Phillips
  */
 public interface IElementExtractor {
+   public abstract Element getOleDataElement();
 
-   public Element getOleDataElement();
-
-   public Collection<Element> extractElements() throws DOMException, ParserConfigurationException, SAXException, IOException, OseeCoreException;
+   public abstract Collection<Element> extractElements() throws DOMException, ParserConfigurationException, SAXException, IOException, OseeCoreException;
 }

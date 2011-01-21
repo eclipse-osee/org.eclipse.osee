@@ -71,9 +71,6 @@ public abstract class AbstractWordCompare implements IComparator {
          presentationType == PresentationType.MERGE_EDIT);
 
       if (presentationType == PresentationType.MERGE_EDIT && baseVersion != null) {
-         IFolder folder = RenderingUtil.getRenderFolder(baseVersion.getBranch(), PresentationType.MERGE_EDIT);
-         renderer.addFileToWatcher(folder, diffPath.substring(diffPath.lastIndexOf('\\') + 1));
-
          diffGenerator.addComparison(baseFile, newerFile, diffPath, true);
          launchCompareVbs(diffGenerator, diffPath, "mergeDocs.vbs");
       } else {

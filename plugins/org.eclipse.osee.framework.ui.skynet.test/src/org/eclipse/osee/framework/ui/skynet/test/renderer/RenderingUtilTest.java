@@ -32,13 +32,9 @@ public class RenderingUtilTest {
    @Test
    public void testBranchToFileName() throws Exception {
       AbstractOseeCache<Branch> cache = new TestCache();
-      for (int index = 0; index < 100; index++) {
-         String guid = GUID.create();
-         Branch branch = createBranch(cache, guid, String.format("Test %s", index + 1), index);
-
-         String actual = RenderingUtil.toFileName(branch);
-         Assert.assertEquals(encode(guid), actual);
-      }
+      Branch branch = createBranch(cache, GUID.create(), "Test 1", 1);
+      String actual = RenderingUtil.toFileName(branch);
+      Assert.assertEquals(encode(branch.getShortName()), actual);
    }
 
    private String encode(String guid) throws UnsupportedEncodingException {

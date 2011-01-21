@@ -16,8 +16,6 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -42,37 +40,7 @@ import org.eclipse.ui.part.FileEditorInput;
  * @author Jeff C. Phillips
  */
 public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
-
-   private static final Map<Class<? extends IArtifactUpdateOperationFactory>, ArtifactFileMonitor> FILE_MONITOR_MAP =
-      new ConcurrentHashMap<Class<? extends IArtifactUpdateOperationFactory>, ArtifactFileMonitor>();
-
-   private static final IArtifactUpdateOperationFactory DEFAULT_ARTIFACT_OP_FACTORY = new UpdateArtifactJobFactory();
-
-   private static final class UpdateArtifactJobFactory implements IArtifactUpdateOperationFactory {
-
-      @SuppressWarnings("unused")
-      @Override
-      public IOperation createUpdateOp(File file) throws OseeCoreException {
-         return new UpdateArtifactOperation(file);
-      }
-   }
-
-   private final Class<? extends IArtifactUpdateOperationFactory> monitorKey;
-
-   protected FileSystemRenderer(IArtifactUpdateOperationFactory jobFactory) {
-      super();
-      this.monitorKey = jobFactory.getClass();
-
-      ArtifactFileMonitor monitor = getFileMonitor();
-      if (monitor == null) {
-         monitor = new ArtifactFileMonitor(jobFactory);
-         FILE_MONITOR_MAP.put(monitorKey, monitor);
-      }
-   }
-
-   public FileSystemRenderer() {
-      this(DEFAULT_ARTIFACT_OP_FACTORY);
-   }
+   private static final ArtifactFileMonitor monitor = new ArtifactFileMonitor();
 
    public IFile getRenderedFileForOpen(List<Artifact> artifacts) throws OseeCoreException {
       return getRenderedFile(artifacts, PresentationType.SPECIALIZED_EDIT);
@@ -96,8 +64,7 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
       } else {
          artifacts = Collections.emptyList();
       }
-      InputStream inputStream = getRenderInputStream(presentationType, artifacts);
-      return renderToFile(baseFolder, fileName, branch, inputStream, presentationType);
+      return renderToFile(baseFolder, fileName, branch, presentationType, artifacts);
    }
 
    public IFile renderToFileSystem(IFolder baseFolder, List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
@@ -117,25 +84,21 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
          artifact = artifacts.iterator().next();
       }
       String fileName = RenderingUtil.getFilenameFromArtifact(this, artifact, presentationType);
-      InputStream inputStream = getRenderInputStream(presentationType, artifacts);
-      return renderToFile(baseFolder, fileName, initialBranch, inputStream, presentationType);
+      return renderToFile(baseFolder, fileName, initialBranch, presentationType, artifacts);
    }
 
-   public IFile renderToFile(IFolder baseFolder, String fileName, Branch branch, InputStream renderInputStream, PresentationType presentationType) throws OseeCoreException {
+   public IFile renderToFile(IFolder baseFolder, String fileName, Branch branch, PresentationType presentationType, List<Artifact> artifacts) throws OseeCoreException {
+      InputStream renderInputStream = getRenderInputStream(presentationType, artifacts);
       IFile workingFile = baseFolder.getFile(fileName);
       AIFile.writeToFile(workingFile, renderInputStream);
 
       if (presentationType == PresentationType.SPECIALIZED_EDIT || presentationType == PresentationType.MERGE_EDIT) {
-         getFileMonitor().addFile(workingFile);
+         File file = workingFile.getLocation().toFile();
+         monitor.addFile(file, getUpdateOperation(file, artifacts, branch, presentationType));
       } else if (presentationType == PresentationType.PREVIEW) {
-         getFileMonitor().markAsReadOnly(workingFile);
+         monitor.markAsReadOnly(workingFile);
       }
       return workingFile;
-   }
-
-   public void addFileToWatcher(IFolder baseFolder, String fileName) {
-      IFile workingFile = baseFolder.getFile(fileName);
-      getFileMonitor().addFile(workingFile);
    }
 
    public abstract InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts) throws OseeCoreException;
@@ -143,10 +106,6 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
    public abstract Program getAssociatedProgram(Artifact artifact) throws OseeCoreException;
 
    public abstract String getAssociatedExtension(Artifact artifact) throws OseeCoreException;
-
-   private ArtifactFileMonitor getFileMonitor() {
-      return FILE_MONITOR_MAP.get(monitorKey);
-   }
 
    @Override
    public void open(List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
@@ -185,4 +144,6 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
          }
       }
    }
+
+   protected abstract IOperation getUpdateOperation(File file, List<Artifact> artifacts, Branch branch, PresentationType presentationType) throws OseeCoreException;
 }

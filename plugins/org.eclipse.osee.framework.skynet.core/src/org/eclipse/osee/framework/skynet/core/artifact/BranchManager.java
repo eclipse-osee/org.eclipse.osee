@@ -11,8 +11,6 @@
 
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,7 +30,6 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleBranchesExist;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.MergeBranch;
@@ -46,7 +43,6 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -496,37 +492,6 @@ public class BranchManager {
 
    public static void persist(Collection<Branch> branches) throws OseeCoreException {
       getCache().storeItems(branches);
-   }
-
-   public static Branch fromFileName(String fileName) throws OseeCoreException {
-      if (!Strings.isValid(fileName)) {
-         throw new OseeArgumentException("file name cannot be null or empty");
-      }
-      Branch toReturn = null;
-      String branchGuid = decode(fileName);
-      if (GUID.isValid(branchGuid)) {
-         toReturn = getCache().getByGuid(branchGuid);
-         if (toReturn == null) {
-            throw new OseeArgumentException("Unable to find branch matching guid [%s]", branchGuid);
-         }
-      } else {
-         int branchId = Integer.parseInt(Lib.getExtension(fileName));
-         toReturn = getCache().getById(branchId);
-         if (toReturn == null) {
-            throw new OseeArgumentException("Unable to find branch matching id [%s]", branchId);
-         }
-      }
-      return toReturn;
-   }
-
-   private static String decode(String name) {
-      String toReturn = name;
-      try {
-         toReturn = URLDecoder.decode(name, "UTF-8");
-      } catch (UnsupportedEncodingException ex) {
-         // Do Nothing
-      }
-      return toReturn;
    }
 
    public static void decache(Branch branch) throws OseeCoreException {
