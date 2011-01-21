@@ -10,18 +10,26 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.render.compare;
 
+import java.util.Collections;
 import java.util.logging.Level;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
+import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.preferences.MsWordPreferencePage;
 import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
+import org.eclipse.osee.framework.ui.skynet.render.WordImageChecker;
 import org.eclipse.osee.framework.ui.skynet.util.IVbaDiffGenerator;
 import org.eclipse.osee.framework.ui.skynet.util.WordUiUtil;
 
@@ -30,9 +38,13 @@ import org.eclipse.osee.framework.ui.skynet.util.WordUiUtil;
  */
 public abstract class AbstractWordCompare implements IComparator {
    private final FileSystemRenderer renderer;
+   private final ArtifactDeltaToFileConverter converter;
+   private final IAttributeType wordAttributeType;
 
-   public AbstractWordCompare(FileSystemRenderer renderer) {
+   public AbstractWordCompare(FileSystemRenderer renderer, IAttributeType wordAttributeType) {
       this.renderer = renderer;
+      this.wordAttributeType = wordAttributeType;
+      converter = new ArtifactDeltaToFileConverter(renderer);
    }
 
    protected FileSystemRenderer getRenderer() {
@@ -40,54 +52,73 @@ public abstract class AbstractWordCompare implements IComparator {
    }
 
    protected abstract PresentationType getMergePresentationType();
-
-   private String getComparePath(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile) throws OseeCoreException {
-      String diffPath;
-      String fileName = renderer.getStringOption(IRenderer.FILE_NAME_OPTION);
-      if (!Strings.isValid(fileName)) {
-         if (baseVersion != null) {
-            String baseFileStr = baseFile.getLocation().toOSString();
-            diffPath =
-               baseFileStr.substring(0, baseFileStr.lastIndexOf(')') + 1) + " to " + (newerVersion != null ? newerVersion.getTransactionNumber() : " deleted") + baseFileStr.substring(baseFileStr.lastIndexOf(')') + 1);
-         } else {
-            String baseFileStr = newerFile.getLocation().toOSString();
-            diffPath =
-               baseFileStr.substring(0, baseFileStr.lastIndexOf('(') + 1) + "new " + baseFileStr.substring(baseFileStr.lastIndexOf('(') + 1);
-         }
-      } else {
-         PresentationType mergePresentation = getMergePresentationType();
-         IFolder folder = RenderingUtil.getRenderFolder(baseVersion.getBranch(), mergePresentation);
-         diffPath = folder.getLocation().toOSString() + '\\' + fileName;
-      }
+   @Override
+   public String compare(IProgressMonitor monitor, PresentationType presentationType, ArtifactDelta artifactDelta) throws OseeCoreException {
+      boolean show = !getRenderer().getBooleanOption(IRenderer.NO_DISPLAY);
+      IVbaDiffGenerator diffGenerator = WordUiUtil.createScriptGenerator();
+      diffGenerator.initialize(show, presentationType == PresentationType.MERGE);
+      String diffPath = addTocompare(monitor, diffGenerator, presentationType, artifactDelta);
+      finish(diffGenerator, artifactDelta.getStartArtifact().getBranch(), presentationType);
       return diffPath;
    }
 
    @Override
    public String compare(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, PresentationType presentationType) throws OseeCoreException {
-      String diffPath = getComparePath(baseVersion, newerVersion, baseFile, newerFile);
-
+      boolean show = !renderer.getBooleanOption(IRenderer.NO_DISPLAY);
       IVbaDiffGenerator diffGenerator = WordUiUtil.createScriptGenerator();
-      diffGenerator.initialize(presentationType == PresentationType.DIFF,
-         presentationType == PresentationType.MERGE_EDIT);
-
-      if (presentationType == PresentationType.MERGE_EDIT && baseVersion != null) {
-         diffGenerator.addComparison(baseFile, newerFile, diffPath, true);
-         launchCompareVbs(diffGenerator, diffPath, "mergeDocs.vbs");
-      } else {
-         diffGenerator.addComparison(baseFile, newerFile, diffPath, false);
-         launchCompareVbs(diffGenerator, diffPath, "/compareDocs.vbs");
-      }
+      diffGenerator.initialize(show, presentationType == PresentationType.MERGE);
+      String diffPath = addTocompare(diffGenerator, baseVersion, newerVersion, baseFile, newerFile, presentationType);
+      finish(diffGenerator, baseVersion.getBranch(), presentationType);
       return diffPath;
    }
 
-   private void launchCompareVbs(IVbaDiffGenerator diffGenerator, String diffPath, String vbsScriptName) throws OseeCoreException {
+   protected String addTocompare(IVbaDiffGenerator diffGenerator, Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, PresentationType presentationType) throws OseeCoreException {
+      String diffPath =
+         RenderingUtil.getRenderFile(renderer, Collections.singletonList(baseVersion), baseVersion.getBranch(),
+            presentationType).getLocation().toOSString();
+
+      diffGenerator.addComparison(baseFile, newerFile, diffPath, presentationType == PresentationType.MERGE);
+      return diffPath;
+   }
+
+   protected String addTocompare(IProgressMonitor monitor, IVbaDiffGenerator diffGenerator, PresentationType presentationType, ArtifactDelta artifactDelta) throws OseeCoreException {
+      Pair<String, Boolean> originalValue = null;
+
+      Artifact baseArtifact = artifactDelta.getStartArtifact();
+      Artifact newerArtifact = artifactDelta.getEndArtifact();
+
+      Attribute<String> baseContent = getWordContent(baseArtifact, wordAttributeType);
+      Attribute<String> newerContent = getWordContent(newerArtifact, wordAttributeType);
+
+      if (!UserManager.getBooleanSetting(MsWordPreferencePage.IDENTFY_IMAGE_CHANGES)) {
+         originalValue = WordImageChecker.checkForImageDiffs(baseContent, newerContent);
+      }
+
+      Pair<IFile, IFile> compareFiles = converter.convertToFile(presentationType, artifactDelta);
+
+      WordImageChecker.restoreOriginalValue(baseContent, originalValue);
+
+      monitor.setTaskName("Adding to Diff Script: " + (newerArtifact == null ? baseArtifact.getName() : newerArtifact.getName()));
+
+      return addTocompare(diffGenerator, baseArtifact, newerArtifact, compareFiles.getFirst(),
+         compareFiles.getSecond(), presentationType);
+   }
+
+   private Attribute<String> getWordContent(Artifact artifact, IAttributeType attributeType) throws OseeCoreException {
+      Attribute<String> toReturn = null;
+      if (artifact != null && !artifact.isDeleted()) {
+         toReturn = artifact.getSoleAttribute(attributeType);
+      }
+      return toReturn;
+   }
+
+   protected void finish(IVbaDiffGenerator diffGenerator, IOseeBranch branch, PresentationType presentationType) throws OseeCoreException {
       boolean show = !renderer.getBooleanOption(IRenderer.NO_DISPLAY);
-      String vbsPath = diffPath.substring(0, diffPath.lastIndexOf('\\')) + vbsScriptName;
+      String vbsPath = RenderingUtil.getRenderPath("compareDocs.vbs", branch, presentationType);
       if (RenderingUtil.arePopupsAllowed()) {
          diffGenerator.finish(vbsPath, show);
       } else {
-         OseeLog.log(SkynetGuiPlugin.class, Level.INFO,
-            String.format("Test - Skip launch of [%s] for [%s]", vbsScriptName, vbsPath));
+         OseeLog.log(SkynetGuiPlugin.class, Level.INFO, String.format("Test - Skip launch of [%s]", vbsPath));
       }
    }
 }

@@ -11,65 +11,28 @@
 package org.eclipse.osee.framework.ui.skynet.render.compare;
 
 import java.util.Collection;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.operation.IOperation;
-import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
-import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
-import org.eclipse.osee.framework.ui.skynet.preferences.MsWordPreferencePage;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
-import org.eclipse.osee.framework.ui.skynet.render.WordImageChecker;
+import org.eclipse.osee.framework.ui.skynet.util.IVbaDiffGenerator;
+import org.eclipse.osee.framework.ui.skynet.util.WordUiUtil;
 
 public class WordTemplateCompare extends AbstractWordCompare {
-   private static final IAttributeType ATTRIBUTE_TYPE = CoreAttributeTypes.WordTemplateContent;
 
    public WordTemplateCompare(FileSystemRenderer renderer) {
-      super(renderer);
+      super(renderer, CoreAttributeTypes.WordTemplateContent);
    }
 
    @Override
    protected PresentationType getMergePresentationType() {
       return PresentationType.MERGE_EDIT;
-   }
-
-   @Override
-   public String compare(IProgressMonitor monitor, PresentationType presentationType, ArtifactDelta artifactDelta) throws OseeCoreException {
-      Pair<String, Boolean> originalValue = null;
-      Pair<String, Boolean> newAnnotationValue = null;
-
-      Artifact baseArtifact = artifactDelta.getStartArtifact();
-      Artifact newerArtifact = artifactDelta.getEndArtifact();
-
-      Attribute<String> baseContent = getWordContent(baseArtifact, ATTRIBUTE_TYPE);
-      Attribute<String> newerContent = getWordContent(newerArtifact, ATTRIBUTE_TYPE);
-
-      if (!UserManager.getBooleanSetting(MsWordPreferencePage.IDENTFY_IMAGE_CHANGES)) {
-         originalValue = WordImageChecker.checkForImageDiffs(baseContent, newerContent);
-      }
-
-      ArtifactDeltaToFileConverter converter = new ArtifactDeltaToFileConverter(getRenderer());
-      Pair<IFile, IFile> compareFiles = converter.convertToFile(presentationType, artifactDelta);
-
-      WordImageChecker.restoreOriginalValue(baseContent, originalValue);
-      WordImageChecker.restoreOriginalValue(newerContent, newAnnotationValue);
-
-      return compare(baseArtifact, newerArtifact, compareFiles.getFirst(), compareFiles.getSecond(), presentationType);
-   }
-
-   private Attribute<String> getWordContent(Artifact artifact, IAttributeType attributeType) throws OseeCoreException {
-      Attribute<String> toReturn = null;
-      if (artifact != null && !artifact.isDeleted()) {
-         toReturn = artifact.getSoleAttribute(attributeType);
-      }
-      return toReturn;
    }
 
    /**
@@ -78,8 +41,27 @@ public class WordTemplateCompare extends AbstractWordCompare {
     */
    @Override
    public void compareArtifacts(IProgressMonitor monitor, PresentationType presentationType, Collection<ArtifactDelta> artifactDeltas) throws OseeCoreException {
-      IOperation operation = new WordChangeReportOperation(artifactDeltas, getRenderer());
-      Operations.executeWorkAndCheckStatus(operation, monitor);
-   }
+      IVbaDiffGenerator diffGenerator = WordUiUtil.createScriptGenerator();
+      diffGenerator.initialize(false, false);
 
+      for (ArtifactDelta artifactDelta : artifactDeltas) {
+         if (monitor.isCanceled()) {
+            throw new OperationCanceledException();
+         }
+
+         try {
+            addTocompare(monitor, diffGenerator, PresentationType.DIFF, artifactDelta);
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         } finally {
+            monitor.worked(1);
+         }
+      }
+
+      if (monitor.isCanceled()) {
+         throw new OperationCanceledException();
+      }
+
+      finish(diffGenerator, artifactDeltas.iterator().next().getStartArtifact().getBranch(), presentationType);
+   }
 }

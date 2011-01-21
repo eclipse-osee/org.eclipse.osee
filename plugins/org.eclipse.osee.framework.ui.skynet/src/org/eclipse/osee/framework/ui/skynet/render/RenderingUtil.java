@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.render;
 
 import java.net.URLEncoder;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
 import org.eclipse.core.resources.IFile;
@@ -88,24 +89,6 @@ public final class RenderingUtil {
       Artifact artFile1;
       Artifact artFile2;
 
-      //    if (delta.getTxDelta() == null
-      //          || !delta.getTxDelta().areOnTheSameBranch()) {
-      //       // Assumptions - when comparing data between transactions on
-      //       // different branches, the start artifact will never be null;
-      //       if (delta.getStartArtifact().getModType().isDeleted()) {
-      //          artFile1 = delta.getStartArtifact();
-      //          artFile2 = null;
-      //       } else if (delta.getEndArtifact() == null) {
-      //          artFile1 = null;
-      //          artFile2 = delta.getStartArtifact();
-      //       } else { // case where there are new, modified, or deleted attributes (are artifact is not new or deleted)
-      //          // also could be introduced in both branches
-      //          artFile1 = delta.getEndArtifact();
-      //          artFile2 = delta.getStartArtifact();
-      //       }
-      //    } else {
-      // Assumptions - when comparing data between transactions on the
-      // same branch, the end artifact will never be null;
       if (artifactDelta.getEndArtifact().getModType().isDeleted()) {
          artFile1 = artifactDelta.getStartArtifact();
          artFile2 = null;
@@ -116,8 +99,22 @@ public final class RenderingUtil {
          artFile1 = artifactDelta.getStartArtifact();
          artFile2 = artifactDelta.getEndArtifact();
       }
-      //    }
       return new Pair<Artifact, Artifact>(artFile1, artFile2);
+   }
+
+   public static IFile getRenderFile(FileSystemRenderer renderer, List<Artifact> artifacts, IOseeBranch branch, PresentationType presentationType) throws OseeCoreException {
+      Artifact aritfact = artifacts.isEmpty() ? null : artifacts.get(0);
+      String fileName = getFilenameFromArtifact(renderer, aritfact, presentationType);
+      return getRenderFile(fileName, branch, presentationType);
+   }
+
+   public static IFile getRenderFile(String fileName, IOseeBranch branch, PresentationType presentationType) throws OseeCoreException {
+      IFolder baseFolder = getRenderFolder(branch, presentationType);
+      return baseFolder.getFile(fileName);
+   }
+
+   public static String getRenderPath(String fileName, IOseeBranch branch, PresentationType presentationType) throws OseeCoreException {
+      return getRenderFile(fileName, branch, presentationType).getLocation().toOSString();
    }
 
    public static String getFilenameFromArtifact(FileSystemRenderer renderer, Artifact artifact, PresentationType presentationType) throws OseeCoreException {
