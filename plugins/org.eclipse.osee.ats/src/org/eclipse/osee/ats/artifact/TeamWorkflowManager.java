@@ -45,7 +45,7 @@ public class TeamWorkflowManager {
    public Result transitionTo(TeamState toState, User user, boolean popup, SkynetTransaction transaction) throws OseeCoreException {
       Date date = new Date();
       if (teamArt.isInState(TeamState.Endorse)) {
-         Result result = processEndorseState(popup, teamArt, getUserOrDefault(user), date, transaction);
+         Result result = processEndorseState(popup, teamArt, user, date, transaction);
          if (result.isFalse()) {
             return result;
          }
@@ -54,7 +54,7 @@ public class TeamWorkflowManager {
          return Result.TrueResult;
       }
 
-      Result result = processAnalyzeState(popup, teamArt, getUserOrDefault(user), date, transaction);
+      Result result = processAnalyzeState(popup, teamArt, user, date, transaction);
       if (result.isFalse()) {
          return result;
       }
@@ -63,7 +63,7 @@ public class TeamWorkflowManager {
          return Result.TrueResult;
       }
 
-      result = processAuthorizeState(popup, teamArt, getUserOrDefault(user), date, transaction);
+      result = processAuthorizeState(popup, teamArt, user, date, transaction);
       if (result.isFalse()) {
          return result;
       }
@@ -88,7 +88,7 @@ public class TeamWorkflowManager {
    }
 
    private Result processAuthorizeState(boolean popup, TeamWorkFlowArtifact teamArt, User user, Date date, SkynetTransaction transaction) throws OseeCoreException {
-      Result result = setAuthorizeData(popup, 100, .2, user, date);
+      Result result = setAuthorizeData(popup, 100, .2, getUserOrDefault(user), date);
       if (result.isFalse()) {
          return result;
       }
@@ -100,7 +100,7 @@ public class TeamWorkflowManager {
    }
 
    private Result processAnalyzeState(boolean popup, TeamWorkFlowArtifact teamArt, User user, Date date, SkynetTransaction transaction) throws OseeCoreException {
-      Result result = setAnalyzeData(popup, null, null, 1, 100, .2, user, date);
+      Result result = setAnalyzeData(popup, null, null, 1, 100, .2, getUserOrDefault(user), date);
       if (result.isFalse()) {
          return result;
       }
@@ -112,7 +112,7 @@ public class TeamWorkflowManager {
    }
 
    private Result processEndorseState(boolean popup, TeamWorkFlowArtifact teamArt, User user, Date date, SkynetTransaction transaction) throws OseeCoreException {
-      Result result = setEndorseData(popup, null, 100, .2, user, date);
+      Result result = setEndorseData(popup, null, 100, .2, getUserOrDefault(user), date);
       if (result.isFalse()) {
          return result;
       }
