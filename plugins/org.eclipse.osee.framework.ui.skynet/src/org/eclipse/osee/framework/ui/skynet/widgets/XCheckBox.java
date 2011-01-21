@@ -27,7 +27,6 @@ public class XCheckBox extends XButtonCommon {
 
    protected Button checkButton;
    private Composite parent;
-   protected boolean selected = false;
    private boolean labelAfter = true;
 
    public XCheckBox(String displayLabel) {

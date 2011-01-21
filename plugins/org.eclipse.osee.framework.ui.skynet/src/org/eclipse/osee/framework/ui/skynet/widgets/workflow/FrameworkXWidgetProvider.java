@@ -181,7 +181,7 @@ public final class FrameworkXWidgetProvider {
          XCheckBox checkBox = new XCheckBox(name);
          checkBox.setLabelAfter(xWidgetLayoutData.getXOptionHandler().contains(XOption.LABEL_AFTER));
          if (Strings.isValid(xWidgetLayoutData.getDefaultValue())) {
-            checkBox.set(xWidgetLayoutData.getDefaultValue().equals("true"));
+            checkBox.set(Boolean.valueOf(xWidgetLayoutData.getDefaultValue()));
          }
          xWidget = checkBox;
       } else if (xWidgetName.equals("XCheckBoxDam")) {
