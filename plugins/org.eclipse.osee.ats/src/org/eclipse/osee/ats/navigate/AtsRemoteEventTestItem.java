@@ -120,13 +120,21 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
          return;
       }
 
+      int sleepTime = 250;
       makeChanges1(teamArt);
+      sleep(sleepTime);
       makeChanges2(teamArt);
+      sleep(sleepTime);
       makeChanges3(teamArt);
+      sleep(sleepTime);
       makeChanges4(teamArt);
+      sleep(sleepTime);
       makeChanges5(teamArt);
+      sleep(sleepTime);
       makeChanges6(teamArt);
+      sleep(sleepTime);
       makeChanges7(teamArt);
+      sleep(sleepTime);
 
       validateActionAtEnd(actionArt);
 
@@ -139,6 +147,16 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       }
 
       resultData.report(title);
+   }
+
+   public static void sleep(long milliseconds) {
+      try {
+         System.out.println("Sleeping " + milliseconds);
+         Thread.sleep(milliseconds);
+         System.out.println("Awake");
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      }
    }
 
    private void makeChanges7(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
