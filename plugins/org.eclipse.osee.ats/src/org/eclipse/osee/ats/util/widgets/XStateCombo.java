@@ -47,7 +47,9 @@ public class XStateCombo extends XComboViewer {
             }
             for (WorkDefinitionMatch workDef : WorkDefinitionFactory.getWorkDefinitions()) {
                for (StateDefinition state : workDef.getWorkDefinition().getStates()) {
-                  validStates.add(state.getName());
+                  if (!validStates.contains(state.getName())) {
+                     validStates.add(state.getName());
+                  }
                }
             }
          } catch (OseeCoreException ex) {
