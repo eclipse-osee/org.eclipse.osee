@@ -78,5 +78,6 @@
 	
 	<target name="extraPackaging">
 		<ant antfile="${relengBuilderDir}/scripts/createServerRuntime.xml" target="run" inheritrefs="true" inheritall="true" />
+		<ant antfile="${relengBuilderDir}/scripts/createJavadoc.xml" target="run" inheritrefs="true" inheritall="true" />
 	</target>
 </project>

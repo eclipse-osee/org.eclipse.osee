@@ -1,0 +1,148 @@
+<project name="Generates OSEE Application Server Javadoc Bundle"
+	default="run">
+
+   <!--  Sample Variables for local setup -->
+	<!-- <property name="buildDirectory" value="C:/UserData/javadocTest/build" />
+	<property name="buildLabel" value="athena" />
+	<property name="buildDir" value="C:/UserData/javadocTest/build/athena" />
+	<property name="masterZip"
+		value="osee_server-Master-incubation-N201101250825.zip" />
+	<property name="projectid" value="OSEE TEST" />
+	<property name="targetPlatform" value="C:/UserData/OSEE_RC" /> 
+	
+	<target name="init">
+		<taskdef resource="net/sf/antcontrib/antlib.xml">
+			<classpath>
+				<pathelement path="${classpath}" />
+				<pathelement location="${buildDirectory}/3rdPartyJars/ant-contrib.jar" />
+			</classpath>
+		</taskdef>
+	</target> -->
+
+	<target name="setup">
+		<propertyregex property="updateSiteArchive" input="${masterZip}"
+			defaultvalue="${masterZip}" regexp="-Master-" replace="-Update-"
+			casesensitive="false" override="true" />
+
+		<property name="tempSource"
+			value="${buildDirectory}/${buildLabel}/${updateSiteArchive}_src_tmp" />
+		<delete dir="${tempSource}" />
+		<mkdir dir="${tempSource}" />
+
+		<unzip src="${buildDirectory}/${buildLabel}/${updateSiteArchive}"
+			dest="${tempSource}">
+			<patternset includes="plugins/*source_*" />
+		</unzip>
+
+		<property name="javadocOutput" value="${buildDir}/javadoc" />
+	</target>
+
+	<target name="unpackJars">
+		<pathconvert property="source.jars" setonempty="false"
+			pathsep=";">
+			<path>
+				<fileset dir="${tempSource}/plugins" includes="*source_*" />
+			</path>
+		</pathconvert>
+
+		<condition property="isWindows">
+			<os family="windows" />
+		</condition>
+
+
+		<var name="expSeparator" value="${file.separator}" />
+		<if>
+			<equals arg1="${isWindows}" arg2="true" />
+			<then>
+				<var name="expSeparator" value="\\\\" />
+			</then>
+		</if>
+
+		<for param="jarToProcess" delimiter=";" list="${source.jars}">
+			<sequential>
+
+				<propertyregex property="jar.name" override="true"
+					input="@{jarToProcess}" regexp="[^${expSeparator}]+$" select="\0"
+					casesensitive="false" />
+				<propertyregex property="bundle.source.name" override="true"
+					input="${jar.name}" regexp="(.*)?_" select="\1" casesensitive="false" />
+				<propertyregex property="bundle.name" override="true"
+					input="${bundle.source.name}" defaultvalue="${bundle.source.name}"
+					regexp="\.source" replace="" casesensitive="false" />
+
+				<!--<var name="source.bundle.name" value="${bundle.name}.source_${bundle.suffix}" 
+					/> -->
+				<!--<echo message="${jar.name} | ${bundle.source.name} | ${bundle.name}" 
+					/> -->
+
+				<var name="project.folder" value="${tempSource}/source/${bundle.name}" />
+				<var name="source.dest" value="${project.folder}/src" />
+
+				<delete dir="${source.dest}" />
+				<mkdir dir="${source.dest}" />
+
+				<trycatch>
+					<try>
+						<unzip src="@{jarToProcess}" dest="${source.dest}" />
+
+						<mkdir dir="${project.folder}/META-INF" />
+						<copy file="${source.dest}/META-INF/MANIFEST.MF" tofile="${project.folder}/META-INF/MANIFEST.MF" />
+						<delete dir="${source.dest}/META-INF" />
+						<copy file="${source.dest}/plugin.properties" tofile="${project.folder}/plugin.properties" />
+						<delete file="${source.dest}/plugin.properties" />
+					</try>
+					<catch>
+						<echo message="Warning: no source found for @{jarToProcess}" />
+					</catch>
+				</trycatch>
+			</sequential>
+		</for>
+	</target>
+
+	<target name="pack">
+		<propertyregex property="serverJavaDocFile" input="${masterZip}"
+			defaultvalue="javadoc.zip" regexp="-Master-" replace="-Javadoc-"
+			casesensitive="false" override="true" />
+		<zip destfile="${buildDirectory}/../${serverJavaDocFile}">
+			<fileset dir="${javadocOutput}" />
+		</zip>
+	</target>
+
+	<target name="cleanup">
+		<delete dir="${tempSource}" failonerror="false" />
+	</target>
+
+	<target name="run" depends="setup,unpackJars,create.javadoc,pack,cleanup" />
+
+	<target name="create.javadoc">
+		<property name="projectName" value="${projectid}" />
+		<property name="output" value="${javadocOutput}" />
+		<property name="sourcesLocation" value="${tempSource}/source" />
+		<property name="targetPlatform" value="${buildDir}/eclipse" />
+
+		<echo message="Source code location [${sourcesLocation}]" />
+		<echo message="Javadoc output location [${output}]" />
+		<echo message="Target platform path [${targetPlatform}]" />
+
+		<!-- Define classpath -->
+		<path id="javadoc-classpath">
+			<fileset dir="${targetPlatform}">
+				<include name="**/*.jar" />
+			</fileset>
+		</path>
+
+		<!-- Prepare dirs -->
+		<delete dir="${output}" />
+		<mkdir dir="${output}" />
+
+		<javadoc destdir="${output}" Encoding="ISO-8859-1"
+			classpathref="javadoc-classpath" maxmemory="1024m" source="1.6"
+			useexternalfile="true" author="true" version="true" use="true"
+			windowtitle="${projectName} Documentation">
+			<fileset dir="${sourcesLocation}" defaultexcludes="true">
+				<include name="**/*.java" />
+		 <!-- <exclude name="**/test/**" />-->
+			</fileset>
+		</javadoc>
+	</target>
+</project>

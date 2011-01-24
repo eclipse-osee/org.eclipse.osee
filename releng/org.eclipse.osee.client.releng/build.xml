@@ -159,6 +159,7 @@
 		<copy flatten="true" toDir="${snapshotFolder}" failonerror="true" includeemptydirs="false">
 			<fileset dir="${buildFolder}" includes="athena/*-Update-*.zip" />
 			<fileset dir="${buildFolder}" includes="athena/*-Automated-Tests-*.zip" />
+			<fileset dir="${buildFolder}" includes="athena/*-Javadoc-*.zip" />
 		</copy>
 
 		<available file="${snapshotFolder}" property="containsFile" />
@@ -172,6 +173,9 @@
 			<fileset dir="${snapshotFolder}">
 				<filename name="*-Update-*.zip" />
 			</fileset>
+		</move>
+		<move includeemptydirs="false" tofile="${snapshotFolder}/${zipPrefix}-javadoc${incubation}-${BUILDTYPE}-Snapshot.zip" filtering="true">
+			<fileset dir="${snapshotFolder}" includes="*-Javadoc-*.zip" />
 		</move>
 	</target>
 

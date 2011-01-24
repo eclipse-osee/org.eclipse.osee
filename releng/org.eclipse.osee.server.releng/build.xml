@@ -160,6 +160,7 @@
 			<fileset dir="${buildFolder}" includes="athena/*-Update-*.zip" />
 			<fileset dir="${buildFolder}" includes="athena/*-osgi-runtime-*.zip" />
 			<fileset dir="${buildFolder}" includes="athena/*-Automated-Tests-*.zip" />
+			<fileset dir="${buildFolder}" includes="athena/*-Javadoc-*.zip" />
 		</copy>
 
 		<available file="${snapshotFolder}" property="containsFile" />
@@ -169,11 +170,14 @@
 
 	<target name="doMoveZip" if="containsFile">
 		<echo>Renaming file to ${zipPrefix}${incubation}-${BUILDTYPE}-Snapshot.zip</echo>
-		<move includeemptydirs="false" tofile="${snapshotFolder}/${zipPrefix}${incubation}-update-${BUILDTYPE}-Snapshot.zip" filtering="true">
+		<move includeemptydirs="false" tofile="${snapshotFolder}/${zipPrefix}-update${incubation}-${BUILDTYPE}-Snapshot.zip" filtering="true">
 			<fileset dir="${snapshotFolder}" includes="*-Update-*.zip" />
 		</move>
-		<move includeemptydirs="false" tofile="${snapshotFolder}/${zipPrefix}${incubation}-osgi-runtime-${BUILDTYPE}-Snapshot.zip" filtering="true">
+		<move includeemptydirs="false" tofile="${snapshotFolder}/${zipPrefix}-osgi-runtime${incubation}-${BUILDTYPE}-Snapshot.zip" filtering="true">
 			<fileset dir="${snapshotFolder}" includes="*-osgi-runtime-*.zip" />
+		</move>
+		<move includeemptydirs="false" tofile="${snapshotFolder}/${zipPrefix}-javadoc${incubation}-${BUILDTYPE}-Snapshot.zip" filtering="true">
+			<fileset dir="${snapshotFolder}" includes="*-Javadoc-*.zip" />
 		</move>
 	</target>
 
