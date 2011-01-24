@@ -246,7 +246,7 @@ public abstract class XWidget {
     * Create Widgets used to display label and entry for wizards and editors
     */
    public void dispose() {
-      if (Widgets.isAccessible(managedForm.getForm())) {
+      if (managedForm != null && Widgets.isAccessible(managedForm.getForm())) {
          removeControlCausedMessageByObject();
       }
    }
@@ -254,6 +254,7 @@ public abstract class XWidget {
    public abstract void setFocus();
 
    public void refresh() {
+      // provided for subclass implementation
    }
 
    public IStatus isValid() {
