@@ -526,13 +526,15 @@ public class SMAWorkFlowSection extends SectionPart {
       }
       StateDefinition currState = sma.getStateDefinition();
       if (currState.isCompletedPage()) {
-         if (!allPages.contains(sma.getCompletedFromState())) {
-            allPages.add(sma.getWorkDefinition().getStateByName(sma.getCompletedFromState()));
+         StateDefinition completedFromState = sma.getWorkDefinition().getStateByName(sma.getCompletedFromState());
+         if (!allPages.contains(completedFromState)) {
+            allPages.add(completedFromState);
          }
       }
       if (currState.isCancelledPage()) {
-         if (!allPages.contains(sma.getCancelledFromState())) {
-            allPages.add(sma.getWorkDefinition().getStateByName(sma.getCancelledFromState()));
+         StateDefinition cancelledFromState = sma.getWorkDefinition().getStateByName(sma.getCancelledFromState());
+         if (!allPages.contains(cancelledFromState)) {
+            allPages.add(cancelledFromState);
          }
       }
       transitionToStateCombo.setInput(allPages);
