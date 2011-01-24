@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.render.NativeRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorRegistry;
 import org.eclipse.ui.IWorkbenchPage;
@@ -45,7 +46,7 @@ public class OtherEditorHandler extends AbstractEditorHandler {
          if (dialog.open() == Window.OK) {
             IEditorDescriptor editor = dialog.getSelectedEditor();
             if (editor != null) {
-               IFile file = renderer.getRenderedFileForOpen(artifacts);
+               IFile file = renderer.renderToFile(artifacts, PresentationType.SPECIALIZED_EDIT);
                openEditor(editor, file, editor.isOpenExternal());
             }
          }

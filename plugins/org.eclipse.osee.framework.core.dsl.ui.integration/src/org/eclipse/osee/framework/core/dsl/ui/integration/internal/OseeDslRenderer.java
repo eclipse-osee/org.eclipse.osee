@@ -94,7 +94,7 @@ public final class OseeDslRenderer extends FileSystemRenderer {
          public void run() {
             if (!artifacts.isEmpty()) {
                try {
-                  IFile file = getRenderedFile(artifacts, resultantpresentationType);
+                  IFile file = renderToFile(artifacts, resultantpresentationType);
                   if (file != null) {
                      IWorkbench workbench = PlatformUI.getWorkbench();
                      IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();

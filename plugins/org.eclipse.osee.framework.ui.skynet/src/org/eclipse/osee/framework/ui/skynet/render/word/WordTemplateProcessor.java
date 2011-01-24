@@ -13,10 +13,12 @@ package org.eclipse.osee.framework.ui.skynet.render.word;
 
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.WordTemplateContent;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.PREVIEW;
 import java.io.InputStream;
 import java.nio.charset.CharacterCodingException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -51,7 +53,6 @@ import org.eclipse.osee.framework.skynet.core.linking.LinkType;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
@@ -109,9 +110,9 @@ public class WordTemplateProcessor {
    final List<Artifact> nonTemplateArtifacts = new LinkedList<Artifact>();
    private final Set<String> ignoreAttributeExtensions = new HashSet<String>();
    private final Set<Artifact> processedArtifacts = new HashSet<Artifact>();
-   private final IRenderer renderer;
+   private final WordTemplateRenderer renderer;
 
-   public WordTemplateProcessor(IRenderer renderer) {
+   public WordTemplateProcessor(WordTemplateRenderer renderer) {
       this.renderer = renderer;
       loadIgnoreAttributeExtensions();
    }
@@ -130,11 +131,12 @@ public class WordTemplateProcessor {
          slaveTemplate = slaveTemplateArtifact.getSoleAttributeValue(CoreAttributeTypes.WholeWordContent, "");
       }
 
-      IFolder folder = RenderingUtil.ensureRenderFolderExists(PresentationType.PREVIEW);
+      Branch branch = variableMap.getBranch("Branch");
+      RenderingUtil.getRenderFile(renderer, Collections.singletonList(masterTemplateArtifact), branch, PREVIEW);
+      IFolder folder = RenderingUtil.ensureRenderFolderExists(PREVIEW);
       String fileName = String.format("%s_%s.xml", masterTemplateArtifact.getSafeName(), Lib.getDateTimeString());
       IFile file = folder.getFile(fileName);
-      AIFile.writeToFile(file,
-         applyTemplate(variableMap, artifacts, masterTemplate, folder, null, null, PresentationType.PREVIEW));
+      AIFile.writeToFile(file, applyTemplate(variableMap, artifacts, masterTemplate, folder, null, null, PREVIEW));
 
       if (variableMap.getBoolean("OpenDocument") && file != null) {
          RenderingUtil.ensureFilenameLimit(file);

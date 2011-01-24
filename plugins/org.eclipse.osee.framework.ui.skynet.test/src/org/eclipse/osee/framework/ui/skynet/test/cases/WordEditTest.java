@@ -127,8 +127,7 @@ public class WordEditTest {
    }
 
    private static IFile openArtifactForEdit(FileSystemRenderer renderer, Artifact artifact) throws OseeCoreException {
-      List<Artifact> artifacts = Collections.singletonList(artifact);
-      IFile editFile = renderer.getRenderedFile(artifacts, PresentationType.SPECIALIZED_EDIT);
+      IFile editFile = renderer.renderToFile(artifact, artifact.getBranch(), PresentationType.SPECIALIZED_EDIT);
       Assert.assertNotNull(editFile);
       return editFile;
    }
@@ -155,8 +154,8 @@ public class WordEditTest {
       Assert.assertNotNull(renderer);
       Assert.assertNotNull(artifact);
 
-      List<Artifact> artifacts = Collections.singletonList(artifact);
-      IFile renderedFileFromModifiedStorage = renderer.getRenderedFile(artifacts, PresentationType.SPECIALIZED_EDIT);
+      IFile renderedFileFromModifiedStorage =
+         renderer.renderToFile(artifact, artifact.getBranch(), PresentationType.SPECIALIZED_EDIT);
       Assert.assertNotNull(renderedFileFromModifiedStorage);
       InputStream inputStream = null;
       try {

@@ -12,13 +12,13 @@ package org.eclipse.osee.framework.ui.skynet.render;
 
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.DEFAULT_OPEN;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.PREVIEW;
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.SPECIALIZED_EDIT;
 import java.io.File;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -42,32 +42,17 @@ import org.eclipse.ui.part.FileEditorInput;
 public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
    private static final ArtifactFileMonitor monitor = new ArtifactFileMonitor();
 
-   public IFile getRenderedFileForOpen(List<Artifact> artifacts) throws OseeCoreException {
-      return getRenderedFile(artifacts, PresentationType.SPECIALIZED_EDIT);
-   }
-
-   public IFile getRenderedFile(List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
-      IFile toReturn = null;
-      if (!artifacts.isEmpty()) {
-         Artifact firstArtifact = artifacts.iterator().next();
-         IFolder baseFolder = RenderingUtil.getRenderFolder(firstArtifact.getBranch(), presentationType);
-         toReturn = renderToFileSystem(baseFolder, artifacts, presentationType);
-      }
-      return toReturn;
-   }
-
-   public IFile renderToFileSystem(IFolder baseFolder, Artifact artifact, Branch branch, PresentationType presentationType) throws OseeCoreException {
-      String fileName = RenderingUtil.getFilenameFromArtifact(this, artifact, presentationType);
+   public IFile renderToFile(Artifact artifact, Branch branch, PresentationType presentationType) throws OseeCoreException {
       List<Artifact> artifacts;
-      if (artifact != null) {
-         artifacts = Collections.singletonList(artifact);
-      } else {
+      if (artifact == null) {
          artifacts = Collections.emptyList();
+      } else {
+         artifacts = Collections.singletonList(artifact);
       }
-      return renderToFile(baseFolder, fileName, branch, presentationType, artifacts);
+      return renderToFile(artifacts, branch, presentationType);
    }
 
-   public IFile renderToFileSystem(IFolder baseFolder, List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
+   public IFile renderToFile(List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
       Branch initialBranch = null;
       for (Artifact artifact : artifacts) {
          if (initialBranch == null) {
@@ -79,20 +64,15 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
          }
       }
 
-      Artifact artifact = null;
-      if (artifacts.size() == 1) {
-         artifact = artifacts.iterator().next();
-      }
-      String fileName = RenderingUtil.getFilenameFromArtifact(this, artifact, presentationType);
-      return renderToFile(baseFolder, fileName, initialBranch, presentationType, artifacts);
+      return renderToFile(artifacts, initialBranch, presentationType);
    }
 
-   public IFile renderToFile(IFolder baseFolder, String fileName, Branch branch, PresentationType presentationType, List<Artifact> artifacts) throws OseeCoreException {
+   public IFile renderToFile(List<Artifact> artifacts, Branch branch, PresentationType presentationType) throws OseeCoreException {
       InputStream renderInputStream = getRenderInputStream(presentationType, artifacts);
-      IFile workingFile = baseFolder.getFile(fileName);
+      IFile workingFile = RenderingUtil.getRenderFile(this, artifacts, branch, presentationType);
       AIFile.writeToFile(workingFile, renderInputStream);
 
-      if (presentationType == PresentationType.SPECIALIZED_EDIT || presentationType == PresentationType.MERGE_EDIT) {
+      if (presentationType == SPECIALIZED_EDIT) {
          File file = workingFile.getLocation().toFile();
          monitor.addFile(file, getUpdateOperation(file, artifacts, branch, presentationType));
       } else if (presentationType == PresentationType.PREVIEW) {
@@ -113,7 +93,7 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
          presentationType = PREVIEW;
       }
 
-      IFile file = getRenderedFile(artifacts, presentationType);
+      IFile file = renderToFile(artifacts, presentationType);
       if (file != null) {
          String dummyName = file.getName();
          if (!artifacts.isEmpty()) {

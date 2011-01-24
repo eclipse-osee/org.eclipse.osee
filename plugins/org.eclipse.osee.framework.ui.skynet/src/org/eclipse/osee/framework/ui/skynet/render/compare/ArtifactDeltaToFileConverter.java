@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.ui.skynet.render.compare;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -49,21 +48,17 @@ public class ArtifactDeltaToFileConverter {
       if (artifact == null) {
          throw new IllegalArgumentException("Artifact can not be null.");
       }
-      IFolder baseFolder;
-      if (presentationType == PresentationType.MERGE_EDIT) {
-         baseFolder = RenderingUtil.getRenderFolder(artifact.getBranch(), PresentationType.MERGE_EDIT);
-      } else {
-         baseFolder = RenderingUtil.getRenderFolder(artifact.getBranch(), PresentationType.DIFF);
+      if (presentationType != PresentationType.MERGE_EDIT) {
+         presentationType = PresentationType.DIFF;
       }
-      return renderer.renderToFileSystem(baseFolder, artifact, artifact.getBranch(), presentationType);
+      return renderer.renderToFile(artifact, artifact.getBranch(), presentationType);
    }
 
    private Pair<IFile, IFile> asFiles(FileSystemRenderer renderer, PresentationType presentationType, ArtifactDelta artifactDelta) throws OseeCoreException {
       Pair<Artifact, Artifact> renderInput = RenderingUtil.asRenderInput(artifactDelta);
       Branch branch = artifactDelta.getBranch();
-      IFolder renderingFolder = RenderingUtil.getRenderFolder(branch, presentationType);
-      IFile baseFile = renderer.renderToFileSystem(renderingFolder, renderInput.getFirst(), branch, presentationType);
-      IFile newerFile = renderer.renderToFileSystem(renderingFolder, renderInput.getSecond(), branch, presentationType);
+      IFile baseFile = renderer.renderToFile(renderInput.getFirst(), branch, presentationType);
+      IFile newerFile = renderer.renderToFile(renderInput.getSecond(), branch, presentationType);
       return new Pair<IFile, IFile>(baseFile, newerFile);
    }
 }
