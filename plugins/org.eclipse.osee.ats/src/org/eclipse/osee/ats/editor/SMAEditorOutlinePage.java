@@ -16,11 +16,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -83,17 +80,6 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
             }
          });
       getSite().getActionBars().getToolBarManager().update(true);
-   }
-
-   @Override
-   public void selectionChanged(SelectionChangedEvent event) {
-      ISelection selection = event.getSelection();
-      if (selection instanceof IStructuredSelection) {
-         IStructuredSelection sSelection = (IStructuredSelection) selection;
-         if (!sSelection.isEmpty()) {
-            System.out.println("SMA Selection");
-         }
-      }
    }
 
    public void setInput(Object input) {

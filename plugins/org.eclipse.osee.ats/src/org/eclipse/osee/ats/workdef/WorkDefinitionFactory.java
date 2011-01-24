@@ -5,11 +5,10 @@
  */
 package org.eclipse.osee.ats.workdef;
 
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.actions.wizard.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
@@ -18,6 +17,7 @@ import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
+import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
 import org.eclipse.osee.ats.internal.AtsPlugin;
@@ -49,7 +49,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkWidgetDefinitio
 public class WorkDefinitionFactory {
 
    private static final Map<String, RuleDefinition> idToRule = new HashMap<String, RuleDefinition>();
-   private static final Set<WorkDefinitionMatch> workDefinitions = new HashSet<WorkDefinitionMatch>();
+   private static final Map<Artifact, WorkDefinitionMatch> artToWorkDefinitions =
+      new HashMap<Artifact, WorkDefinitionMatch>();
    private static final Map<String, WorkDefinitionMatch> idToWorkDefintion = new HashMap<String, WorkDefinitionMatch>();
 
    public static RuleDefinition getRuleById(String id) {
@@ -81,22 +82,30 @@ public class WorkDefinitionFactory {
       }
    }
 
+   public static void clearCaches() {
+      artToWorkDefinitions.clear();
+      idToRule.clear();
+      idToWorkDefintion.clear();
+   }
+
    public static WorkDefinitionMatch getWorkDefinition(Artifact artifact) throws OseeCoreException {
-      WorkDefinitionMatch match = getWorkDefinitionNew(artifact);
-      if (!match.isMatched()) {
-         WorkFlowDefinitionMatch flowMatch = WorkFlowDefinitionFactory.getWorkFlowDefinition(artifact);
-         if (flowMatch.isMatched()) {
-            WorkDefinition workDef = translateToWorkDefinition(flowMatch.getWorkFlowDefinition());
-            match = new WorkDefinitionMatch(workDef, null);
-            match.getTrace().addAll(flowMatch.getTrace());
+      if (!artToWorkDefinitions.containsKey(artifact)) {
+         WorkDefinitionMatch match = getWorkDefinitionNew(artifact);
+         if (!match.isMatched()) {
+            WorkFlowDefinitionMatch flowMatch = WorkFlowDefinitionFactory.getWorkFlowDefinition(artifact);
+            if (flowMatch.isMatched()) {
+               WorkDefinition workDef = translateToWorkDefinition(flowMatch.getWorkFlowDefinition());
+               match = new WorkDefinitionMatch(workDef, null);
+               match.getTrace().addAll(flowMatch.getTrace());
+            }
          }
+         artToWorkDefinitions.put(artifact, match);
       }
-      workDefinitions.add(match);
-      return match;
+      return artToWorkDefinitions.get(artifact);
    }
 
    public static WorkDefinitionMatch getWorkDefinition(String id) throws OseeCoreException {
-      if (!idToWorkDefintion.containsKey(id) || AtsUtil.isForceReloadWorkDefinitions()) {
+      if (!idToWorkDefintion.containsKey(id)) {
          WorkDefinitionMatch match = new WorkDefinitionMatch();
          String translatedId = WorkDefinitionFactory.getOverrideWorkDefId(id);
          // Try to get from new DSL provider if configured to use it
@@ -110,12 +119,34 @@ public class WorkDefinitionFactory {
          }
          // Otherwise, just translate legacy WorkFlowDefinition from artifact
          if (!match.isMatched()) {
-            WorkDefinition workDef =
-               translateToWorkDefinition((WorkFlowDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(id));
-            match.setWorkDefinition(workDef);
-            match.getTrace().add(String.format("from legacy WorkFlowDefinition [%s] translated for id [%s]", id, id));
+            WorkFlowDefinition workFlowDef = (WorkFlowDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(id);
+            if (workFlowDef != null) {
+               WorkDefinition workDef = translateToWorkDefinition(workFlowDef);
+               if (workDef != null) {
+                  match.setWorkDefinition(workDef);
+                  match.getTrace().add(
+                     String.format("from legacy WorkFlowDefinition [%s] translated for id [%s]", id, id));
+               }
+            }
          }
-         workDefinitions.add(match);
+         // If still no match, configuration may have new workdef id but not set to use them
+         // Attempt to get back to original id and load through WorkFlowDefinition translate
+         if (!match.isMatched()) {
+            String reverseId = AtsWorkDefinitionSheetProviders.getReverseOverrideId(id);
+            WorkFlowDefinition workFlowDef =
+               (WorkFlowDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(reverseId);
+            if (workFlowDef != null) {
+               WorkDefinition workDef = translateToWorkDefinition(workFlowDef);
+               if (workDef != null) {
+                  match.setWorkDefinition(workDef);
+                  match.getTrace().add(
+                     String.format(
+                        "from legacy WorkFlowDefinition [%s] translated for id [%s] falling back to reverse id [%s]",
+                        id, id, reverseId));
+               }
+            }
+         }
+         System.out.println("Loaded " + match);
          idToWorkDefintion.put(id, match);
       }
       return idToWorkDefintion.get(id);
@@ -366,7 +397,11 @@ public class WorkDefinitionFactory {
                // Otherwise, use workflow defined by attribute of WorkflowDefinition
                // Note: This is new.  Old TeamDefs got workflow off relation
                if (artifact instanceof TeamWorkFlowArtifact) {
-                  match = ((TeamWorkFlowArtifact) artifact).getTeamDefinition().getWorkDefinition();
+                  TeamDefinitionArtifact teamDef = ((TeamWorkFlowArtifact) artifact).getTeamDefinition();
+                  match = getWorkDefinitionFromArtifactsAttributeValue(teamDef);
+                  if (!match.isMatched()) {
+                     match = ((TeamWorkFlowArtifact) artifact).getTeamDefinition().getWorkDefinition();
+                  }
                } else if (artifact instanceof GoalArtifact) {
                   match = getWorkDefinition(getOverrideWorkDefId(GoalWorkflowDefinition.ID));
                   match.getTrace().add(String.format("Override translated from id [%s]", GoalWorkflowDefinition.ID));
@@ -384,8 +419,8 @@ public class WorkDefinitionFactory {
       return match;
    }
 
-   public static Set<WorkDefinitionMatch> getWorkDefinitions() {
-      return workDefinitions;
+   public static Collection<WorkDefinitionMatch> getWorkDefinitions() {
+      return idToWorkDefintion.values();
    }
 
    public static String getOverrideWorkDefId(String id) {

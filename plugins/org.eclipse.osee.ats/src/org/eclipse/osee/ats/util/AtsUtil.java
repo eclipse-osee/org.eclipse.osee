@@ -499,10 +499,6 @@ public final class AtsUtil {
       return StateManager.getAssigned(userId, clazz);
    }
 
-   public static boolean isForceReloadWorkDefinitions() {
-      return Boolean.valueOf(System.getProperty("ats.forceReloadWorkDefinitions"));
-   }
-
    public static Boolean useNewWorkDefintions = null;
 
    public synchronized static boolean isUseNewWorkDefinitions() {

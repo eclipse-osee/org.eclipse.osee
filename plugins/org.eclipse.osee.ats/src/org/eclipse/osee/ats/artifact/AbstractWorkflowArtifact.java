@@ -87,7 +87,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    private final Set<IRelationEnumeration> atsWorldRelations = new HashSet<IRelationEnumeration>();
    private Collection<User> transitionAssignees;
-   protected WorkDefinitionMatch workDefinitionMatch;
    protected AbstractWorkflowArtifact parentSma;
    protected TeamWorkFlowArtifact parentTeamArt;
    protected ActionArtifact parentAction;
@@ -233,7 +232,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    public void clearCaches() {
-      workDefinitionMatch = null;
       implementersStr = null;
       stateToWeight = null;
    }
@@ -243,15 +241,12 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    public WorkDefinitionMatch getWorkDefinitionMatch() {
-      if (AtsUtil.isForceReloadWorkDefinitions() || workDefinitionMatch == null) {
-         try {
-            workDefinitionMatch = WorkDefinitionFactory.getWorkDefinition(this);
-         } catch (Exception ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-         }
+      try {
+         return WorkDefinitionFactory.getWorkDefinition(this);
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
-      return workDefinitionMatch;
-
+      return null;
    }
 
    @Override
@@ -807,9 +802,9 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
          workRules.addAll(((TeamWorkFlowArtifact) this).getTeamDefinition().getRulesStartsWith(ruleName));
       }
       // Get work rules from workflow
-      if (workDefinitionMatch != null) {
+      if (getWorkDefinition() != null) {
          // Get rules from workflow definitions
-         workRules.addAll(workDefinitionMatch.getWorkDefinition().getRulesStartsWith(ruleName));
+         workRules.addAll(getWorkDefinition().getRulesStartsWith(ruleName));
       }
       // Add work rules from page
       workRules.addAll(getStateDefinition().getRulesStartsWith(ruleName));

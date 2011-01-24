@@ -121,7 +121,9 @@ public final class AtsWorkDefinitionProviders {
             }
          }
       }
-      OseeLog.log(AtsPlugin.class, Level.INFO, "No AtsWorkDefinitionProvider Loaded");
+      if (provider == null) {
+         OseeLog.log(AtsPlugin.class, Level.INFO, "No AtsWorkDefinitionProvider Loaded");
+      }
       return provider;
    }
 }

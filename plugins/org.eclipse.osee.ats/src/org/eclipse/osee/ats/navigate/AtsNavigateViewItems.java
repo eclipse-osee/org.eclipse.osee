@@ -238,6 +238,7 @@ public final class AtsNavigateViewItems implements XNavigateViewItems {
       new GenerateGuid(utilItems);
       new XNavigateItemOperation(utilItems, FrameworkImage.GEAR, MassEditDirtyArtifactOperation.NAME,
          new MassEditDirtyArtifactOperation());
+      new ClearAtsWorkDefinitionCache(utilItems);
 
       items.add(utilItems);
    }

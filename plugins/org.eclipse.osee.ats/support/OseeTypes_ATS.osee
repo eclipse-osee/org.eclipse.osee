@@ -63,6 +63,7 @@ artifactType "Team Definition" extends "ats.Ats Artifact", "Abstract Access Cont
    attribute "ats.Allow Create Branch"
    attribute "ats.Allow Commit Branch"
    attribute "ats.Related Task Workflow Definition"
+   attribute "ats.Workflow Definition"
 }
 
 artifactType "Actionable Item" extends "ats.Ats Artifact", "Abstract Access Controlled" {

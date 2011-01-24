@@ -44,10 +44,19 @@ public final class AtsWorkDefinitionSheetProviders {
       // private constructor
    }
 
-   public static String getOverrideId(String id) {
+   public static String getOverrideId(String legacyId) {
       for (WorkDefinitionSheet sheet : getWorkDefinitionSheets()) {
-         if (sheet.getLegacyOverrideId().equals(id)) {
+         if (sheet.getLegacyOverrideId().equals(legacyId)) {
             return sheet.getName();
+         }
+      }
+      return null;
+   }
+
+   public static String getReverseOverrideId(String sheetName) {
+      for (WorkDefinitionSheet sheet : getWorkDefinitionSheets()) {
+         if (sheet.getName().equals(sheetName)) {
+            return sheet.getLegacyOverrideId();
          }
       }
       return null;
