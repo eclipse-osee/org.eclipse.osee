@@ -22,7 +22,6 @@ import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.DEFAU
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.DIFF;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERALIZED_EDIT;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.MERGE;
-import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.MERGE_EDIT;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.PREVIEW;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.PRODUCE_ATTRIBUTE;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.SPECIALIZED_EDIT;
@@ -67,7 +66,7 @@ public class RendererManagerTest {
    private final Class<? extends IRenderer> clazz;
    private final DefaultOption defaultOption;
 
-   public RendererManagerTest(IArtifactType artifactType, PresentationType presentationType, Class<? extends IRenderer> clazz, DefaultOption defaultOption) throws OseeCoreException {
+   public RendererManagerTest(IArtifactType artifactType, PresentationType presentationType, Class<? extends IRenderer> clazz, DefaultOption defaultOption) {
       this.artifactType = artifactType;
       this.presentationType = presentationType;
       this.clazz = clazz;
@@ -117,7 +116,6 @@ public class RendererManagerTest {
       addTest(data, SoftwareRequirement, DIFF, WordTemplateRenderer.class, Both);
       addTest(data, SoftwareRequirement, PREVIEW, WordTemplateRenderer.class, Both);
       addTest(data, SoftwareRequirement, MERGE, WordTemplateRenderer.class, Both);
-      addTest(data, SoftwareRequirement, MERGE_EDIT, WordTemplateRenderer.class, Both);
       addTest(data, SoftwareRequirement, DEFAULT_OPEN, WordTemplateRenderer.class, Off);
       addTest(data, SoftwareRequirement, DEFAULT_OPEN, DefaultArtifactRenderer.class, On);
       addTest(data, SoftwareRequirement, PRODUCE_ATTRIBUTE, WordTemplateRenderer.class, Both);
@@ -127,7 +125,6 @@ public class RendererManagerTest {
       addTest(data, Action, DIFF, AtsWorkflowRenderer.class, Both);
       addTest(data, Action, PREVIEW, AtsWorkflowRenderer.class, Both);
       addTest(data, Action, MERGE, AtsWorkflowRenderer.class, Both);
-      addTest(data, Action, MERGE_EDIT, AtsWorkflowRenderer.class, Both);
       addTest(data, Action, DEFAULT_OPEN, AtsWorkflowRenderer.class, Off);
       addTest(data, Action, DEFAULT_OPEN, AtsWorkflowRenderer.class, On);
       addTest(data, Action, PRODUCE_ATTRIBUTE, DefaultArtifactRenderer.class, Both);
@@ -137,7 +134,6 @@ public class RendererManagerTest {
       addTest(data, TestProcedureWML, DIFF, WholeWordRenderer.class, Both);
       addTest(data, TestProcedureWML, PREVIEW, WholeWordRenderer.class, Both);
       addTest(data, TestProcedureWML, MERGE, WholeWordRenderer.class, Both);
-      addTest(data, TestProcedureWML, MERGE_EDIT, WholeWordRenderer.class, Both);
       addTest(data, TestProcedureWML, DEFAULT_OPEN, WholeWordRenderer.class, Off);
       addTest(data, TestProcedureWML, DEFAULT_OPEN, DefaultArtifactRenderer.class, On);
       addTest(data, TestProcedureWML, PRODUCE_ATTRIBUTE, DefaultArtifactRenderer.class, Both);
@@ -147,7 +143,6 @@ public class RendererManagerTest {
       addTest(data, GeneralDocument, DIFF, null, Both);
       addTest(data, GeneralDocument, PREVIEW, NativeRenderer.class, Both);
       addTest(data, GeneralDocument, MERGE, null, Both);
-      addTest(data, GeneralDocument, MERGE_EDIT, null, Both);
       addTest(data, GeneralDocument, DEFAULT_OPEN, NativeRenderer.class, Off);
       addTest(data, GeneralDocument, DEFAULT_OPEN, DefaultArtifactRenderer.class, On);
       addTest(data, GeneralDocument, PRODUCE_ATTRIBUTE, DefaultArtifactRenderer.class, Both);
@@ -157,7 +152,6 @@ public class RendererManagerTest {
       addTest(data, TestInformationSheet, DIFF, WordTemplateRenderer.class, Both);
       addTest(data, TestInformationSheet, PREVIEW, TisRenderer.class, Both);
       addTest(data, TestInformationSheet, MERGE, WordTemplateRenderer.class, Both);
-      addTest(data, TestInformationSheet, MERGE_EDIT, WordTemplateRenderer.class, Both);
       addTest(data, TestInformationSheet, DEFAULT_OPEN, TisRenderer.class, Off);
       addTest(data, TestInformationSheet, DEFAULT_OPEN, DefaultArtifactRenderer.class, On);
       addTest(data, TestInformationSheet, PRODUCE_ATTRIBUTE, WordTemplateRenderer.class, Both);

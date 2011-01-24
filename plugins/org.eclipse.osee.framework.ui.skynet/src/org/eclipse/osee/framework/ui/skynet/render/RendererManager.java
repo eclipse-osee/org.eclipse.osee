@@ -217,29 +217,24 @@ public final class RendererManager {
       open(Collections.singletonList(artifact), presentationType);
    }
 
-   public static String merge(Artifact baseVersion, Artifact newerVersion, VariableMap options) throws OseeStateException, OseeCoreException {
+   public static String merge(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, VariableMap options) throws OseeCoreException {
       IRenderer renderer = getBestRenderer(PresentationType.MERGE, baseVersion, options);
       IComparator comparator = renderer.getComparator();
-      ArtifactDelta artifactDelta = new ArtifactDelta(baseVersion, newerVersion);
-      return comparator.compare(new NullProgressMonitor(), PresentationType.MERGE, artifactDelta);
+      return comparator.compare(baseVersion, newerVersion, baseFile, newerFile, PresentationType.MERGE);
    }
 
-   public static String merge(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, VariableMap options) throws OseeCoreException {
-      IRenderer renderer = getBestRenderer(PresentationType.MERGE_EDIT, baseVersion, options);
-      IComparator comparator = renderer.getComparator();
-      return comparator.compare(baseVersion, newerVersion, baseFile, newerFile, PresentationType.MERGE_EDIT);
-   }
-
-   public static void diffInJob(ArtifactDelta artifactDelta) {
-      diff(artifactDelta, null, true);
+   public static void diffInJob(ArtifactDelta artifactDelta) throws OseeCoreException {
+      diffInJob(artifactDelta, new VariableMap(IRenderer.FILE_PREFIX_OPTION, "Diff_For"));
    }
 
    public static void diffInJob(ArtifactDelta artifactDelta, VariableMap options) {
-      diff(artifactDelta, options, true);
+      Operations.executeAsJob(new DiffUsingRenderer(artifactDelta, options), true);
    }
 
-   public static void diff(ArtifactDelta artifactDelta, VariableMap options) {
-      diff(artifactDelta, options, false);
+   public static String diff(ArtifactDelta artifactDelta, VariableMap options) {
+      DiffUsingRenderer operation = new DiffUsingRenderer(artifactDelta, options);
+      Operations.executeWork(operation);
+      return operation.getDiffResultPath();
    }
 
    public static void diffInJob(Collection<ArtifactDelta> artifactDeltas) {
@@ -254,15 +249,5 @@ public final class RendererManager {
    public static void diff(Collection<ArtifactDelta> artifactDeltas, VariableMap options) {
       IOperation operation = new DiffUsingRenderer(artifactDeltas, options);
       Operations.executeWork(operation);
-   }
-
-   private static void diff(ArtifactDelta artifactDelta, VariableMap options, boolean asynchronous) {
-      IOperation operation = new DiffUsingRenderer(artifactDelta, options);
-
-      if (asynchronous) {
-         Operations.executeAsJob(operation, true);
-      } else {
-         Operations.executeWork(operation);
-      }
    }
 }

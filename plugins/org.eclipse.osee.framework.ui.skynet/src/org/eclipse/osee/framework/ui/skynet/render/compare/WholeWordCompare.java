@@ -24,11 +24,6 @@ public class WholeWordCompare extends AbstractWordCompare {
    }
 
    @Override
-   protected PresentationType getMergePresentationType() {
-      return PresentationType.SPECIALIZED_EDIT;
-   }
-
-   @Override
    public void compareArtifacts(IProgressMonitor monitor, PresentationType presentationType, Collection<ArtifactDelta> artifactDeltas) throws OseeCoreException {
       for (ArtifactDelta entry : artifactDeltas) {
          compare(monitor, presentationType, entry);

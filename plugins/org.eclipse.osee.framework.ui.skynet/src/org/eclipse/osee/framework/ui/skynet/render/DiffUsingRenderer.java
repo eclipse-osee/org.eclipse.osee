@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
 public final class DiffUsingRenderer extends AbstractOperation {
    private final VariableMap options;
    private final Collection<ArtifactDelta> artifactDeltas;
+   private String diffResultPath;
 
    public DiffUsingRenderer(Collection<ArtifactDelta> artifactDeltas, VariableMap options) {
       super(generateOperationName(artifactDeltas), SkynetGuiPlugin.PLUGIN_ID);
@@ -58,9 +59,13 @@ public final class DiffUsingRenderer extends AbstractOperation {
       IRenderer renderer = RendererManager.getBestRenderer(PresentationType.DIFF, sampleArtifact, options);
       IComparator comparator = renderer.getComparator();
       if (artifactDeltas.size() == 1) {
-         comparator.compare(monitor, PresentationType.DIFF, firstDelta);
+         diffResultPath = comparator.compare(monitor, PresentationType.DIFF, firstDelta);
       } else {
          comparator.compareArtifacts(monitor, PresentationType.DIFF, artifactDeltas);
       }
+   }
+
+   public String getDiffResultPath() {
+      return diffResultPath;
    }
 }

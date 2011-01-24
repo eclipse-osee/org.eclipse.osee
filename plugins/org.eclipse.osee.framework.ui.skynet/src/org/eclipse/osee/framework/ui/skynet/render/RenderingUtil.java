@@ -11,6 +11,8 @@
 package org.eclipse.osee.framework.ui.skynet.render;
 
 import java.net.URLEncoder;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -24,14 +26,11 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
@@ -39,10 +38,10 @@ public final class RenderingUtil {
    private static final Random generator = new Random();
 
    private static IFolder workingFolder;
-   private static IFolder diffFolder;
+   private static IFolder compareFolder;
    private static IFolder previewFolder;
-   private static IFolder mergeEditFolder;
    private static boolean arePopupsAllowed = true;
+   private static final DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
 
    public static void setPopupsAllowed(boolean popupsAllowed) {
       arePopupsAllowed = popupsAllowed;
@@ -85,26 +84,8 @@ public final class RenderingUtil {
       return arePopupsAllowed;
    }
 
-   public static Pair<Artifact, Artifact> asRenderInput(ArtifactDelta artifactDelta) {
-      Artifact artFile1;
-      Artifact artFile2;
-
-      if (artifactDelta.getEndArtifact().getModType().isDeleted()) {
-         artFile1 = artifactDelta.getStartArtifact();
-         artFile2 = null;
-      } else if (artifactDelta.getStartArtifact() == null) {
-         artFile1 = null;
-         artFile2 = artifactDelta.getEndArtifact();
-      } else {
-         artFile1 = artifactDelta.getStartArtifact();
-         artFile2 = artifactDelta.getEndArtifact();
-      }
-      return new Pair<Artifact, Artifact>(artFile1, artFile2);
-   }
-
    public static IFile getRenderFile(FileSystemRenderer renderer, List<Artifact> artifacts, IOseeBranch branch, PresentationType presentationType) throws OseeCoreException {
-      Artifact aritfact = artifacts.isEmpty() ? null : artifacts.get(0);
-      String fileName = getFilenameFromArtifact(renderer, aritfact, presentationType);
+      String fileName = getFilenameFromArtifact(renderer, artifacts, presentationType);
       return getRenderFile(fileName, branch, presentationType);
    }
 
@@ -117,36 +98,36 @@ public final class RenderingUtil {
       return getRenderFile(fileName, branch, presentationType).getLocation().toOSString();
    }
 
-   public static String getFilenameFromArtifact(FileSystemRenderer renderer, Artifact artifact, PresentationType presentationType) throws OseeCoreException {
+   public static String getFilenameFromArtifact(FileSystemRenderer renderer, List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
       String fileName = renderer.getStringOption(IRenderer.FILE_NAME_OPTION);
+      String prefix = renderer.getStringOption(IRenderer.FILE_PREFIX_OPTION);
       if (Strings.isValid(fileName)) {
-         //         return fileName;
+         return fileName;
       }
 
-      StringBuilder name = new StringBuilder(100);
-
-      if (artifact != null) {
-         name.append(artifact.getSafeName());
-         name.append("(");
-         name.append(artifact.getGuid());
-         name.append(")");
-
-         if (artifact.isHistorical() || presentationType == PresentationType.DIFF) {
-            name.append("(");
-            name.append(artifact.getTransactionNumber());
-            name.append(")");
-         }
-
-         name.append(" ");
-         name.append(new Date().toString().replaceAll(":", ";"));
-         name.append("-");
-         name.append(generator.nextInt(99) + 1);
-         name.append(".");
-         name.append(renderer.getAssociatedExtension(artifact));
-      } else {
-         name.append(GUID.create());
-         name.append(".xml");
+      StringBuilder name = new StringBuilder(128);
+      if (Strings.isValid(prefix)) {
+         name.append(prefix);
+         name.append("_");
       }
+
+      Artifact artifact = artifacts.iterator().next();
+      name.append(artifact.getSafeName());
+
+      if (artifact.isHistorical() || presentationType == PresentationType.DIFF) {
+         name.append("_");
+         name.append(artifact.getTransactionNumber());
+      }
+      if (artifacts.size() > 1) {
+         name.append("_multi");
+      }
+
+      name.append("_");
+      name.append(dateFormat.format(new Date()));
+      name.append("-");
+      name.append(generator.nextInt(99) + 1);
+      name.append(".");
+      name.append(renderer.getAssociatedExtension(artifact));
       return name.toString();
    }
 
@@ -181,9 +162,10 @@ public final class RenderingUtil {
    public static IFolder ensureRenderFolderExists(PresentationType presentationType) throws OseeCoreException {
       IFolder toReturn = null;
       switch (presentationType) {
+         case MERGE:
          case DIFF:
-            diffFolder = getOrCreateFolder(diffFolder, ".diff");
-            toReturn = diffFolder;
+            compareFolder = getOrCreateFolder(compareFolder, ".compare");
+            toReturn = compareFolder;
             break;
          case SPECIALIZED_EDIT:
             workingFolder = getOrCreateFolder(workingFolder, ".working");
@@ -192,10 +174,6 @@ public final class RenderingUtil {
          case PREVIEW:
             previewFolder = getOrCreateFolder(previewFolder, ".preview");
             toReturn = previewFolder;
-            break;
-         case MERGE_EDIT:
-            mergeEditFolder = getOrCreateFolder(mergeEditFolder, ".mergeEdit");
-            toReturn = mergeEditFolder;
             break;
          default:
             throw new OseeArgumentException("Unexpected presentation type: %s", presentationType);

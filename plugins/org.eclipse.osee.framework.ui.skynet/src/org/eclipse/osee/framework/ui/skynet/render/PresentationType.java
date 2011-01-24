@@ -19,7 +19,6 @@ public enum PresentationType {
    DIFF,
    PREVIEW, // open read-only using application specific editor
    MERGE,
-   MERGE_EDIT,
    DEFAULT_OPEN, // up to the renderer to determine what is used for default
    GENERAL_REQUESTED, // this is the case where default open is selected and the preference "Default Presentation opens in Artifact Editor if applicable" is true
    PRODUCE_ATTRIBUTE; // used in conjunction with renderAttribute()

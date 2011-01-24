@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
-import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 
 public class ArtifactDeltaToFileConverter {
    private final FileSystemRenderer renderer;
@@ -32,33 +31,14 @@ public class ArtifactDeltaToFileConverter {
    }
 
    public Pair<IFile, IFile> convertToFile(PresentationType presentationType, ArtifactDelta artifactDelta) throws OseeCoreException {
-      Pair<IFile, IFile> toReturn;
-      if (presentationType == PresentationType.MERGE || presentationType == PresentationType.MERGE_EDIT) {
-         Branch branch = artifactDelta.getBranch();
-         IFile baseFile = renderForMerge(renderer, artifactDelta.getStartArtifact(), branch, presentationType);
-         IFile newerFile = renderForMerge(renderer, artifactDelta.getEndArtifact(), branch, presentationType);
-         toReturn = new Pair<IFile, IFile>(baseFile, newerFile);
-      } else {
-         toReturn = asFiles(renderer, presentationType, artifactDelta);
+      Artifact baseArtifact = artifactDelta.getStartArtifact();
+      Artifact newerArtifact = artifactDelta.getEndArtifact();
+      if (newerArtifact.getModType().isDeleted()) {
+         newerArtifact = null;
       }
-      return toReturn;
-   }
-
-   private IFile renderForMerge(FileSystemRenderer renderer, Artifact artifact, Branch branch, PresentationType presentationType) throws OseeCoreException {
-      if (artifact == null) {
-         throw new IllegalArgumentException("Artifact can not be null.");
-      }
-      if (presentationType != PresentationType.MERGE_EDIT) {
-         presentationType = PresentationType.DIFF;
-      }
-      return renderer.renderToFile(artifact, artifact.getBranch(), presentationType);
-   }
-
-   private Pair<IFile, IFile> asFiles(FileSystemRenderer renderer, PresentationType presentationType, ArtifactDelta artifactDelta) throws OseeCoreException {
-      Pair<Artifact, Artifact> renderInput = RenderingUtil.asRenderInput(artifactDelta);
       Branch branch = artifactDelta.getBranch();
-      IFile baseFile = renderer.renderToFile(renderInput.getFirst(), branch, presentationType);
-      IFile newerFile = renderer.renderToFile(renderInput.getSecond(), branch, presentationType);
+      IFile baseFile = renderer.renderToFile(baseArtifact, branch, presentationType);
+      IFile newerFile = renderer.renderToFile(newerArtifact, branch, presentationType);
       return new Pair<IFile, IFile>(baseFile, newerFile);
    }
 }

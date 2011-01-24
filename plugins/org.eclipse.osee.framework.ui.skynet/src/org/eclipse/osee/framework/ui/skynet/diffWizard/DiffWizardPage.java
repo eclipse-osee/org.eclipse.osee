@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.diffWizard;
 
-import java.util.Date;
 import java.util.logging.Level;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -90,34 +89,20 @@ public class DiffWizardPage extends WizardPage {
             } else if (event.widget == destButton) {
                MergeUtility.setToDest(conflict, getShell(), true);
             } else if (event.widget == sourceDiffButton) {
-               MergeUtility.showCompareFile(
-                  MergeUtility.getStartArtifact(conflict),
-                  conflict.getSourceArtifact(),
-                  "Source_Diff_For_" + conflict.getArtifact().getSafeName() + new Date().toString().replaceAll(":", ";") + ".xml");
+               MergeUtility.showCompareFile(MergeUtility.getStartArtifact(conflict), conflict.getSourceArtifact(),
+                  "Source_Diff_For");
             } else if (event.widget == destDiffButton) {
-               MergeUtility.showCompareFile(
-                  MergeUtility.getStartArtifact(conflict),
-                  conflict.getDestArtifact(),
-                  "Destination_Diff_For_" + conflict.getArtifact().getSafeName() + new Date().toString().replaceAll(
-                     ":", ";") + ".xml");
+               MergeUtility.showCompareFile(MergeUtility.getStartArtifact(conflict), conflict.getDestArtifact(),
+                  "Destination_Diff_For");
             } else if (event.widget == sourceDestDiffButton) {
-               MergeUtility.showCompareFile(
-                  conflict.getSourceArtifact(),
-                  conflict.getDestArtifact(),
-                  "Source_Destination_Diff_For_" + conflict.getArtifact().getSafeName() + new Date().toString().replaceAll(
-                     ":", ";") + ".xml");
+               MergeUtility.showCompareFile(conflict.getSourceArtifact(), conflict.getDestArtifact(),
+                  "Source_Destination_Diff_For");
             } else if (event.widget == sourceMergeDiffButton) {
-               MergeUtility.showCompareFile(
-                  conflict.getSourceArtifact(),
-                  conflict.getArtifact(),
-                  "Source_Merge_Diff_For_" + conflict.getArtifact().getSafeName() + new Date().toString().replaceAll(
-                     ":", ";") + ".xml");
+               MergeUtility.showCompareFile(conflict.getSourceArtifact(), conflict.getArtifact(),
+                  "Source_Merge_Diff_For");
             } else if (event.widget == destMergeDiffButton) {
-               MergeUtility.showCompareFile(
-                  conflict.getDestArtifact(),
-                  conflict.getArtifact(),
-                  "Destination_Merge_Diff_For_" + conflict.getArtifact().getSafeName() + new Date().toString().replaceAll(
-                     ":", ";") + ".xml");
+               MergeUtility.showCompareFile(conflict.getDestArtifact(), conflict.getArtifact(),
+                  "Destination_Merge_Diff_For");
             } else if (event.widget == mergeButton) {
                // MergeUtility.launchMerge(conflict, getShell());
             }

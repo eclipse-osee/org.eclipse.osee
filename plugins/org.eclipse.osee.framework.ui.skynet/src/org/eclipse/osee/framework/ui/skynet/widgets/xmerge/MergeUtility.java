@@ -12,31 +12,19 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xmerge;
 
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
-import java.io.File;
-import java.io.IOException;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
-import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.util.AIFile;
-import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
@@ -51,8 +39,6 @@ import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.revert.RevertWizard;
-import org.eclipse.osee.framework.ui.skynet.util.IVbaDiffGenerator;
-import org.eclipse.osee.framework.ui.skynet.util.WordUiUtil;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.NonmodalWizardDialog;
 import org.eclipse.swt.widgets.Shell;
@@ -76,25 +62,6 @@ public class MergeUtility {
       "This Item has been deleted on the Source Branch, but has been changed on the destination branch.  This conflict is informational only and will not prevent your from commiting, however when you commit it will delete the item on the destination branch.";
    public static final String OPEN_MERGE_DIALOG =
       "This will open a window that will allow in-document merging in Word.  You will need to right click on every difference and either accept or reject the change.  If you begin an in-document merge you will not be able to finalize the conflict until you resolve every change in the document.\n Computing a Merge will wipe out any merge changes you have made and start with a fresh diff of the two files.  If you want to only view the changes use the difference options.\n Change that touch the entire file are better handled using copy and paste. \n\nWARNING:  Word will occasionaly show incorrect changes especially when users have both modified the same block of text.  Check your final version.";
-
-   private static final Pattern authorPattern = Pattern.compile("aml:author=\".*?\"",
-      Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
-   private static final Pattern rsidRootPattern = Pattern.compile("\\</wsp:rsids\\>",
-      Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
-   private static final Pattern findSetRsids = Pattern.compile("wsp:rsidR=\".*?\"",
-      Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
-   private static final Pattern findSetRsidRPR = Pattern.compile("wsp:rsidRPr=\".*?\"",
-      Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
-   private static final Pattern findSetRsidP = Pattern.compile("wsp:rsidP=\".*?\"",
-      Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
-   private static final Pattern findSetRsidRDefault = Pattern.compile("wsp:rsidRDefault=\".*?\"",
-      Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
-   private static final Pattern annotationTag = Pattern.compile(
-      "(<aml:annotation[^\\>]*?[^/]\\>)|(</aml:annotation\\>)",
-      Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
-
-   private static final Pattern rsidPattern = Pattern.compile("wsp:rsid(RPr|P|R)=\"(.*?)\"",
-      Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
 
    public static void clearValue(Conflict conflict, Shell shell, boolean prompt) throws MultipleArtifactsExist, ArtifactDoesNotExist, Exception {
       if (conflict == null) {
@@ -135,48 +102,9 @@ public class MergeUtility {
       return proceed;
    }
 
-   /*
-    * This is not in the AttributeConflict because it relies on the renderer that is in not in the skynet core package.
-    */
-   public static void showCompareFile(Artifact art1, Artifact art2, String fileName) throws OseeCoreException {
-      RendererManager.diffInJob(new ArtifactDelta(art1, art2), new VariableMap(IRenderer.FILE_NAME_OPTION, fileName));
-   }
-
-   /*
-    * This is not in the AttributeConflict because it relies on the renderer that is in not in the skynet core package.
-    */
-   private static String createMergeDiffFile(Artifact art1, Artifact art2) throws Exception {
-      if (art1 == null || art2 == null) {
-         return " ";
-      }
-      VariableMap options = new VariableMap(IRenderer.NO_DISPLAY, true);
-      return RendererManager.merge(art1, art2, options);
-   }
-
-   /*
-    * This is not in the AttributeConflict because it relies on the renderer that is in not in the skynet core package.
-    */
-   private static void mergeEditableDiffFiles(Artifact art1, String art1FileName, String art2FileName, String fileName) throws Exception {
-      if (art1 == null) {
-         return;
-      }
-      VariableMap options = new VariableMap(IRenderer.FILE_NAME_OPTION, fileName, IRenderer.NO_DISPLAY, true);
-      RendererManager.merge(art1, null, AIFile.constructIFile(art1FileName), AIFile.constructIFile(art2FileName),
-         options);
-   }
-
-   public static Artifact getStartArtifact(Conflict conflict) {
-      try {
-         if (conflict.getSourceBranch() == null) {
-            return null;
-         }
-         TransactionRecord baseTransaction = conflict.getSourceBranch().getBaseTransaction();
-         return ArtifactQuery.getHistoricalArtifactFromId(conflict.getArtifact().getGuid(), baseTransaction,
-            INCLUDE_DELETED);
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-      }
-      return null;
+   public static void showCompareFile(Artifact art1, Artifact art2, String filePrefix) throws OseeCoreException {
+      RendererManager.diffInJob(new ArtifactDelta(art1, art2),
+         new VariableMap(IRenderer.FILE_PREFIX_OPTION, filePrefix));
    }
 
    public static boolean showDeletedConflict(Conflict conflict, Shell shell) {
@@ -240,7 +168,6 @@ public class MergeUtility {
    }
 
    public static void launchMerge(final AttributeConflict attributeConflict, Shell shell) {
-
       try {
          if (attributeConflict.getAttribute() instanceof WordAttribute) {
             if (!attributeConflict.statusEditable()) {
@@ -264,55 +191,7 @@ public class MergeUtility {
             if (response == 2) {
                HelpUtil.displayHelp(OseeHelpContext.MERGE_MANAGER);
             } else if (response == 1) {
-
-               Job job = new Job("Generate 3 Way Merge") {
-
-                  @Override
-                  protected IStatus run(final IProgressMonitor monitor) {
-                     try {
-                        int gamma = attributeConflict.getAttribute().getGammaId();
-                        monitor.beginTask("Generate 3 Way Merge", 100);
-                        IVbaDiffGenerator generator = WordUiUtil.createScriptGenerator();
-                        generator.initialize(false, false);
-                        monitor.worked(5);
-                        String sourceChangeFile =
-                           createMergeDiffFile(getStartArtifact(attributeConflict),
-                              attributeConflict.getSourceArtifact());
-                        monitor.worked(15);
-                        String destChangeFile =
-                           createMergeDiffFile(getStartArtifact(attributeConflict), attributeConflict.getDestArtifact());
-                        monitor.worked(15);
-                        changeAuthorinWord("Source", sourceChangeFile, 2, "12345678", "55555555");
-                        changeAuthorinWord("Destination", destChangeFile, 2, "56781234", "55555555");
-                        monitor.worked(15);
-
-                        String fileName =
-                           "Source_Dest_Merge_" + attributeConflict.getArtifact().getSafeName() + "(" + attributeConflict.getArtifact().getGuid() + ")" + new Date().toString().replaceAll(
-                              ":", ";") + ".xml";
-                        mergeEditableDiffFiles(attributeConflict.getArtifact(), sourceChangeFile, destChangeFile,
-                           fileName);
-
-                        monitor.worked(40);
-                        attributeConflict.markStatusToReflectEdit();
-
-                        int maxCount = 5;
-                        int counter = 0;
-                        while (gamma == attributeConflict.getAttribute().getGammaId() && counter++ != maxCount) {
-                           Thread.sleep(500);
-                        }
-                        monitor.done();
-                        RendererManager.openInJob(attributeConflict.getArtifact(), PresentationType.SPECIALIZED_EDIT);
-
-                     } catch (Exception ex) {
-                        OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-                     }
-                     monitor.done();
-                     return Status.OK_STATUS;
-                  }
-               };
-
-               Jobs.startJob(job);
-
+               Operations.executeAsJob(new ThreeWayWordMergeOperation(attributeConflict), true);
             } else if (response == 0) {
                RendererManager.openInJob(attributeConflict.getArtifact(), PresentationType.SPECIALIZED_EDIT);
                attributeConflict.markStatusToReflectEdit();
@@ -323,71 +202,17 @@ public class MergeUtility {
       }
    }
 
-   protected static void changeAuthorinWord(String newAuthor, String fileName, int revisionNumber, String rsidNumber, String baselineRsid) throws Exception {
-      File file = new File(fileName);
-      String fileValue = Lib.fileToString(file);
-
-      Matcher m = authorPattern.matcher(fileValue);
-      while (m.find()) {
-         String name = m.group();
-         fileValue = fileValue.replace(name, "aml:author=\"" + newAuthor + "\"");
-      }
-
-      m = findSetRsids.matcher(fileValue);
-      while (m.find()) {
-         String rev = m.group();
-         fileValue = fileValue.replace(rev, "wsp:rsidR=\"" + baselineRsid + "\"");
-      }
-      m = findSetRsidRPR.matcher(fileValue);
-      while (m.find()) {
-         String rev = m.group();
-         fileValue = fileValue.replace(rev, "wsp:rsidRPr=\"" + baselineRsid + "\"");
-      }
-      m = findSetRsidP.matcher(fileValue);
-      while (m.find()) {
-         String rev = m.group();
-         fileValue = fileValue.replace(rev, "wsp:rsidP=\"" + baselineRsid + "\"");
-      }
-      m = findSetRsidRDefault.matcher(fileValue);
-      while (m.find()) {
-         String rev = m.group();
-         fileValue = fileValue.replace(rev, "wsp:rsidRDefault=\"" + baselineRsid + "\"");
-      }
-
-      resetRsidIds(fileValue, rsidNumber, baselineRsid, file);
-   }
-
-   private static void resetRsidIds(String fileValue, String rsidNumber, String baselineRsid, File file) throws IOException {
-      ChangeSet changeSet = new ChangeSet(fileValue);
-      Matcher matcher = annotationTag.matcher(fileValue);
-
-      while (matcher.find()) {
-         int startIndex = matcher.start();
-         int level = 1;
-
-         do {
-            matcher.find();
-
-            if (matcher.group().startsWith("<aml:annotation")) {
-               level++;
-            } else {
-               level--;
-            }
-         } while (level != 0);
-
-         Matcher rsidMatcher = rsidPattern.matcher(fileValue);
-
-         while (rsidMatcher.find(startIndex) && rsidMatcher.end() <= matcher.end()) {
-            changeSet.replace(rsidMatcher.start(2), rsidMatcher.end(2) - 1, rsidNumber);
-            startIndex = rsidMatcher.end();
+   public static Artifact getStartArtifact(Conflict conflict) {
+      try {
+         if (conflict.getSourceBranch() == null) {
+            return null;
          }
+         TransactionRecord baseTransaction = conflict.getSourceBranch().getBaseTransaction();
+         return ArtifactQuery.getHistoricalArtifactFromId(conflict.getArtifact().getGuid(), baseTransaction,
+            INCLUDE_DELETED);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
-
-      Matcher m = rsidRootPattern.matcher(fileValue);
-      while (m.find()) {
-         changeSet.replace(m.start(), m.end() - 1, "<wsp:rsid wsp:val=\"" + baselineRsid + "\"/></wsp:rsids>");
-      }
-
-      changeSet.applyChanges(file);
+      return null;
    }
 }

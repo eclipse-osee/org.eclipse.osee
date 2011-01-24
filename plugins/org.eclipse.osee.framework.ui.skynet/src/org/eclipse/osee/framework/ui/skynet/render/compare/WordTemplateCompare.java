@@ -30,11 +30,6 @@ public class WordTemplateCompare extends AbstractWordCompare {
       super(renderer, CoreAttributeTypes.WordTemplateContent);
    }
 
-   @Override
-   protected PresentationType getMergePresentationType() {
-      return PresentationType.MERGE_EDIT;
-   }
-
    /**
     * Creates a difference report for each artifact between baseArtifact and newerArtifact. Then produces a single
     * report by combining each of the difference reports together for a single report.

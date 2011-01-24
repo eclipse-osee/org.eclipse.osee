@@ -170,7 +170,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
             data = WordUtil.reassignBookMarkID(data);
          }
 
-         if (presentationType == PresentationType.SPECIALIZED_EDIT || presentationType == PresentationType.MERGE_EDIT) {
+         if (presentationType == PresentationType.SPECIALIZED_EDIT) {
             OseeLinkBuilder linkBuilder = new OseeLinkBuilder();
             wordMl.addEditParagraphNoEscape(linkBuilder.getStartEditImage(artifact.getGuid()));
             wordMl.addWordMl(data);
@@ -179,10 +179,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
          } else {
             wordMl.addWordMl(data);
          }
-         if (presentationType != PresentationType.MERGE && presentationType != PresentationType.MERGE_EDIT) {
-            wordMl.resetListValue();
-         }
-
+         wordMl.resetListValue();
       } else {
          super.renderAttribute(attributeType, artifact, PresentationType.SPECIALIZED_EDIT, wordMl, map,
             attributeElement);

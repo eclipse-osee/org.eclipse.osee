@@ -51,7 +51,6 @@ public abstract class AbstractWordCompare implements IComparator {
       return renderer;
    }
 
-   protected abstract PresentationType getMergePresentationType();
    @Override
    public String compare(IProgressMonitor monitor, PresentationType presentationType, ArtifactDelta artifactDelta) throws OseeCoreException {
       boolean show = !getRenderer().getBooleanOption(IRenderer.NO_DISPLAY);
