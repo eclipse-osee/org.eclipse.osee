@@ -55,10 +55,10 @@ public final class RendererManager {
     * @return Returns the intersection of renderers applicable for all of the artifacts
     */
    public static List<IRenderer> getCommonRenderers(Collection<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
-      List<IRenderer> commonRenders = getApplicableRenderers(presentationType, artifacts.iterator().next(), null);
+      List<IRenderer> commonRenders = getApplicableRenderers(presentationType, artifacts.iterator().next());
 
       for (Artifact artifact : artifacts) {
-         List<IRenderer> applicableRenders = getApplicableRenderers(presentationType, artifact, null);
+         List<IRenderer> applicableRenders = getApplicableRenderers(presentationType, artifact);
 
          Iterator<?> commIterator = commonRenders.iterator();
 
@@ -149,10 +149,10 @@ public final class RendererManager {
          artifact.getAttributeTypes());
    }
 
-   public static List<IRenderer> getApplicableRenderers(PresentationType presentationType, Artifact artifact, VariableMap options) throws OseeCoreException {
+   private static List<IRenderer> getApplicableRenderers(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
       ArrayList<IRenderer> applicableRenderers = new ArrayList<IRenderer>();
       int minimumRank =
-         Math.max(getBestRenderer(presentationType, artifact, options).minimumRanking(), IRenderer.DEFAULT_MATCH);
+         Math.max(getBestRenderer(presentationType, artifact, null).minimumRanking(), IRenderer.DEFAULT_MATCH);
 
       for (IRenderer prototypeRenderer : renderers) {
          // Add Catch Exception Code --
@@ -160,7 +160,6 @@ public final class RendererManager {
          int rating = prototypeRenderer.getApplicabilityRating(presentationType, artifact);
          if (rating >= minimumRank) {
             IRenderer renderer = prototypeRenderer.newInstance();
-            renderer.setOptions(options);
             applicableRenderers.add(renderer);
          }
       }
