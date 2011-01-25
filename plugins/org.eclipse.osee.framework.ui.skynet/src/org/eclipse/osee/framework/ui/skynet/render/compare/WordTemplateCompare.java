@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
@@ -57,6 +58,13 @@ public class WordTemplateCompare extends AbstractWordCompare {
          throw new OperationCanceledException();
       }
 
-      finish(diffGenerator, artifactDeltas.iterator().next().getStartArtifact().getBranch(), presentationType);
+      if (!artifactDeltas.isEmpty()) {
+         ArtifactDelta artifactDelta1 = artifactDeltas.iterator().next();
+         Artifact testArtifact = artifactDelta1.getStartArtifact();
+         if (testArtifact == null) {
+            testArtifact = artifactDelta1.getEndArtifact();
+         }
+         finish(diffGenerator, testArtifact.getBranch(), presentationType);
+      }
    }
 }

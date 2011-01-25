@@ -111,23 +111,30 @@ public final class RenderingUtil {
          name.append("_");
       }
 
-      Artifact artifact = artifacts.iterator().next();
-      name.append(artifact.getSafeName());
+      Artifact artifact = null;
+      if (!artifacts.isEmpty()) {
+         artifact = artifacts.iterator().next();
+         name.append(artifact.getSafeName());
 
-      if (artifact.isHistorical() || presentationType == PresentationType.DIFF) {
-         name.append("_");
-         name.append(artifact.getTransactionNumber());
-      }
-      if (artifacts.size() > 1) {
-         name.append("_multi");
+         if (artifact.isHistorical() || presentationType == PresentationType.DIFF) {
+            name.append("_");
+            name.append(artifact.getTransactionNumber());
+         }
+         if (artifacts.size() > 1) {
+            name.append("_multi");
+         }
       }
 
       name.append("_");
       name.append(dateFormat.format(new Date()));
       name.append("-");
       name.append(generator.nextInt(99) + 1);
-      name.append(".");
-      name.append(renderer.getAssociatedExtension(artifact));
+      if (artifact != null) {
+         name.append(".");
+         name.append(renderer.getAssociatedExtension(artifact));
+      } else {
+         name.append(".xml");
+      }
       return name.toString();
    }
 

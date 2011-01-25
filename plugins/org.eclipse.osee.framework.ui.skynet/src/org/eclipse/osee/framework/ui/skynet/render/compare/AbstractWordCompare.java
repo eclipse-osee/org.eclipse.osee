@@ -57,7 +57,12 @@ public abstract class AbstractWordCompare implements IComparator {
       IVbaDiffGenerator diffGenerator = WordUiUtil.createScriptGenerator();
       diffGenerator.initialize(show, presentationType == PresentationType.MERGE);
       String diffPath = addTocompare(monitor, diffGenerator, presentationType, artifactDelta);
-      finish(diffGenerator, artifactDelta.getStartArtifact().getBranch(), presentationType);
+
+      Artifact testArtifact = artifactDelta.getStartArtifact();
+      if (testArtifact == null) {
+         testArtifact = artifactDelta.getEndArtifact();
+      }
+      finish(diffGenerator, testArtifact.getBranch(), presentationType);
       return diffPath;
    }
 
@@ -72,8 +77,9 @@ public abstract class AbstractWordCompare implements IComparator {
    }
 
    protected String addTocompare(IVbaDiffGenerator diffGenerator, Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, PresentationType presentationType) throws OseeCoreException {
+      Artifact testArtifact = baseVersion != null ? baseVersion : newerVersion;
       String diffPath =
-         RenderingUtil.getRenderFile(renderer, Collections.singletonList(baseVersion), baseVersion.getBranch(),
+         RenderingUtil.getRenderFile(renderer, Collections.singletonList(testArtifact), testArtifact.getBranch(),
             presentationType).getLocation().toOSString();
 
       diffGenerator.addComparison(baseFile, newerFile, diffPath, presentationType == PresentationType.MERGE);
