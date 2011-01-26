@@ -16,6 +16,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -51,11 +52,16 @@ public abstract class AbstractWordCompare implements IComparator {
       return renderer;
    }
 
-   @Override
-   public String compare(IProgressMonitor monitor, PresentationType presentationType, ArtifactDelta artifactDelta) throws OseeCoreException {
+   protected IVbaDiffGenerator createGenerator(PresentationType presentationType) throws OseeArgumentException {
       boolean show = !getRenderer().getBooleanOption(IRenderer.NO_DISPLAY);
       IVbaDiffGenerator diffGenerator = WordUiUtil.createScriptGenerator();
       diffGenerator.initialize(show, presentationType == PresentationType.MERGE);
+      return diffGenerator;
+   }
+
+   @Override
+   public String compare(IProgressMonitor monitor, PresentationType presentationType, ArtifactDelta artifactDelta) throws OseeCoreException {
+      IVbaDiffGenerator diffGenerator = createGenerator(presentationType);
       String diffPath = addTocompare(monitor, diffGenerator, presentationType, artifactDelta);
 
       Artifact testArtifact = artifactDelta.getStartArtifact();
@@ -68,11 +74,11 @@ public abstract class AbstractWordCompare implements IComparator {
 
    @Override
    public String compare(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, PresentationType presentationType) throws OseeCoreException {
-      boolean show = !renderer.getBooleanOption(IRenderer.NO_DISPLAY);
-      IVbaDiffGenerator diffGenerator = WordUiUtil.createScriptGenerator();
-      diffGenerator.initialize(show, presentationType == PresentationType.MERGE);
+      IVbaDiffGenerator diffGenerator = createGenerator(presentationType);
       String diffPath = addTocompare(diffGenerator, baseVersion, newerVersion, baseFile, newerFile, presentationType);
-      finish(diffGenerator, baseVersion.getBranch(), presentationType);
+
+      Artifact testArtifact = baseVersion != null ? baseVersion : newerVersion;
+      finish(diffGenerator, testArtifact.getBranch(), presentationType);
       return diffPath;
    }
 

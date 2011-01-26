@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.util.IVbaDiffGenerator;
-import org.eclipse.osee.framework.ui.skynet.util.WordUiUtil;
 
 public class WordTemplateCompare extends AbstractWordCompare {
 
@@ -37,8 +36,7 @@ public class WordTemplateCompare extends AbstractWordCompare {
     */
    @Override
    public void compareArtifacts(IProgressMonitor monitor, PresentationType presentationType, Collection<ArtifactDelta> artifactDeltas) throws OseeCoreException {
-      IVbaDiffGenerator diffGenerator = WordUiUtil.createScriptGenerator();
-      diffGenerator.initialize(false, false);
+      IVbaDiffGenerator diffGenerator = createGenerator(presentationType);
 
       for (ArtifactDelta artifactDelta : artifactDeltas) {
          if (monitor.isCanceled()) {
