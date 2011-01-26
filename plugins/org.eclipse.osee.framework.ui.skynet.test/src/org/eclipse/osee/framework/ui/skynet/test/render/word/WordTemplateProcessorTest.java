@@ -18,6 +18,7 @@ import java.io.InputStream;
 import java.util.Collections;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
@@ -41,18 +42,18 @@ import org.junit.Test;
  * @link: WordTemplateProcessor
  */
 public class WordTemplateProcessorTest {
-   private static Artifact myRootArtifact = null;
-   private static String ERROR_MESSAGE =
+   private final static String F_STRING_TO_WRAP_IN_WORDML = "F's body content";
+   private final static String ERROR_MESSAGE =
       "Found improper %s's WordML in result file. Testing for %s PublishInLine set to true.";
-   private static SevereLoggingMonitor monitorLog = null;
-   private static String C_WITH_PUBLISH_INLINE = null;
-   private static String C_WITHOUT_PUBLISH_INLINE = null;
-   private static String A_WITH_PUBLISH_INLINE = null;
-   private static String A_WITHOUT_PUBLISH_INLINE = null;
 
-   private static String F_STRING_TO_WRAP_IN_WORDML = "F's body content";
-   private static String F_WITH_PUBLISH_INLINE = null;
-   private static String F_WITHOUT_PUBLISH_INLINE = null;
+   private static Artifact myRootArtifact;
+   private static SevereLoggingMonitor monitorLog;
+   private static String A_WITH_PUBLISH_INLINE;
+   private static String A_WITHOUT_PUBLISH_INLINE;
+   private static String C_WITH_PUBLISH_INLINE;
+   private static String C_WITHOUT_PUBLISH_INLINE;
+   private static String F_WITH_PUBLISH_INLINE;
+   private static String F_WITHOUT_PUBLISH_INLINE;
 
    @Test
    public void publishInLineOnChild() throws Exception {
@@ -61,17 +62,7 @@ public class WordTemplateProcessorTest {
       artifact_C.setSoleAttributeValue(CoreAttributeTypes.WordTemplateContent, C_WITH_PUBLISH_INLINE);
       artifact_C.persist();
 
-      String fileName = String.format("WordTemplateProcessorTest_%s_%s.xml", artifact_C, Lib.getDateTimeString());
-      String fullPath = RenderingUtil.getRenderFolder(SAW_Bld_1, PresentationType.PREVIEW).getLocation().toOSString();
-
-      RenderingUtil.setPopupsAllowed(false);
-      RendererManager.open(myRootArtifact, PresentationType.PREVIEW, new VariableMap(ITemplateRenderer.TEMPLATE_OPTION,
-         ITemplateRenderer.PREVIEW_WITH_RECURSE_VALUE, IRenderer.FILE_NAME_OPTION, fileName));
-
-      String fileContents = Lib.fileToString(new File(fullPath, fileName));
-      Assert.assertTrue(String.format(ERROR_MESSAGE, artifact_C, "with"), fileContents.contains(C_WITH_PUBLISH_INLINE));
-      Assert.assertTrue(String.format(ERROR_MESSAGE, artifact_C, "without"),
-         !fileContents.contains(C_WITHOUT_PUBLISH_INLINE));
+      checkPreviewContents(artifact_C, C_WITH_PUBLISH_INLINE, C_WITHOUT_PUBLISH_INLINE);
    }
 
    @Test
@@ -81,17 +72,7 @@ public class WordTemplateProcessorTest {
       artifact_A.setSoleAttributeValue(CoreAttributeTypes.WordTemplateContent, A_WITH_PUBLISH_INLINE);
       artifact_A.persist();
 
-      String fileName = String.format("WordTemplateProcessorTest_%s_%s.xml", artifact_A, Lib.getDateTimeString());
-      String fullPath = RenderingUtil.getRenderFolder(SAW_Bld_1, PresentationType.PREVIEW).getLocation().toOSString();
-
-      RenderingUtil.setPopupsAllowed(false);
-      RendererManager.open(myRootArtifact, PresentationType.PREVIEW, new VariableMap(ITemplateRenderer.TEMPLATE_OPTION,
-         ITemplateRenderer.PREVIEW_WITH_RECURSE_VALUE, IRenderer.FILE_NAME_OPTION, fileName));
-
-      String fileContents = Lib.fileToString(new File(fullPath, fileName));
-      Assert.assertTrue(String.format(ERROR_MESSAGE, artifact_A, "with"), fileContents.contains(A_WITH_PUBLISH_INLINE));
-      Assert.assertTrue(String.format(ERROR_MESSAGE, artifact_A, "without"),
-         !fileContents.contains(A_WITHOUT_PUBLISH_INLINE));
+      checkPreviewContents(artifact_A, A_WITH_PUBLISH_INLINE, A_WITHOUT_PUBLISH_INLINE);
    }
 
    /**
@@ -105,7 +86,11 @@ public class WordTemplateProcessorTest {
       artifact_F.setSoleAttributeValue(CoreAttributeTypes.GeneralStringData, F_STRING_TO_WRAP_IN_WORDML);
       artifact_F.persist();
 
-      String fileName = String.format("WordTemplateProcessorTest_%s_%s.xml", artifact_F, Lib.getDateTimeString());
+      checkPreviewContents(artifact_F, F_WITH_PUBLISH_INLINE, F_WITHOUT_PUBLISH_INLINE);
+   }
+
+   private void checkPreviewContents(Artifact artifact, String expected, String notExpected) throws OseeCoreException, IOException {
+      String fileName = String.format("WordTemplateProcessorTest_%s_%s.xml", artifact, Lib.getDateTimeString());
       String fullPath = RenderingUtil.getRenderFolder(SAW_Bld_1, PresentationType.PREVIEW).getLocation().toOSString();
 
       RenderingUtil.setPopupsAllowed(false);
@@ -113,9 +98,8 @@ public class WordTemplateProcessorTest {
          ITemplateRenderer.PREVIEW_WITH_RECURSE_VALUE, IRenderer.FILE_NAME_OPTION, fileName));
 
       String fileContents = Lib.fileToString(new File(fullPath, fileName));
-      Assert.assertTrue(String.format(ERROR_MESSAGE, artifact_F, "with"), fileContents.contains(F_WITH_PUBLISH_INLINE));
-      Assert.assertTrue(String.format(ERROR_MESSAGE, artifact_F, "without"),
-         !fileContents.contains(F_WITHOUT_PUBLISH_INLINE));
+      Assert.assertTrue(String.format(ERROR_MESSAGE, artifact, "with"), fileContents.contains(expected));
+      Assert.assertTrue(String.format(ERROR_MESSAGE, artifact, "without"), !fileContents.contains(notExpected));
    }
 
    @BeforeClass
