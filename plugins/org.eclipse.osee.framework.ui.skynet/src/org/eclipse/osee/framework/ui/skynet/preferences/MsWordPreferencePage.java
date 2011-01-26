@@ -42,7 +42,7 @@ public class MsWordPreferencePage extends PreferencePage implements IWorkbenchPr
       identifyImageChangesInWord.setSelection(getUserBooleanSetting(IDENTFY_IMAGE_CHANGES));
 
       saveAllChanges = new Button(parent, SWT.CHECK);
-      saveAllChanges.setText("When multi-editing save all chaneged artifacts (even those with no textual changes)");
+      saveAllChanges.setText("When multi-editing, save all changed artifacts (even those with no textual changes)");
       saveAllChanges.setSelection(getUserBooleanSetting(MUTI_EDIT_SAVE_ALL_CHANGES));
 
       return parent;
