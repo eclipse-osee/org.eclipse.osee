@@ -10,13 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.util;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.logging.Level;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.jdk.core.util.io.streams.StreamCatcher;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 /**
  * @author Theron Virgin
@@ -143,12 +149,31 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
    private void executeScript(File vbDiffScript) throws OseeCoreException {
       Process process = null;
       try {
-         String cmd[] = {"cmd", "/s", "/c", "\"" + vbDiffScript.getPath() + "\""};
+         String target = vbDiffScript.getName();
+         String cmd[] = {"cmd", "/s", "/c", "\"" + target + "\""};
          ProcessBuilder builder = new ProcessBuilder(cmd);
+
+         File parentDir = vbDiffScript.getParentFile();
+         if (parentDir != null) {
+            builder.directory(parentDir);
+         }
          process = builder.start();
 
-         StreamCatcher errorCatcher = new StreamCatcher(process.getErrorStream(), "ERROR");
-         StreamCatcher outputCatcher = new StreamCatcher(process.getInputStream(), "OUTPUT");
+         Thread errorCatcher = new StreamLogger(process.getErrorStream()) {
+
+            @Override
+            protected void log(String message) {
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, message);
+            }
+
+         };
+         Thread outputCatcher = new StreamLogger(process.getInputStream()) {
+
+            @Override
+            protected void log(String message) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.INFO, message);
+            }
+         };
          errorCatcher.start();
          outputCatcher.start();
 
@@ -161,4 +186,36 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
          }
       }
    }
+
+   private static abstract class StreamLogger extends Thread {
+
+      private final InputStream inputStream;
+
+      protected StreamLogger(InputStream inputStream) {
+         this.inputStream = inputStream;
+      }
+
+      @Override
+      public void run() {
+         InputStreamReader isr = new InputStreamReader(inputStream);
+         BufferedReader br = new BufferedReader(isr);
+         try {
+            StringBuilder message = new StringBuilder();
+
+            String line = null;
+            while ((line = br.readLine()) != null) {
+               message.append(line);
+               message.append("\n");
+            }
+            if (message.length() > 0) {
+               log(message.toString());
+            }
+         } catch (IOException ioe) {
+            ioe.printStackTrace();
+         }
+      }
+
+      protected abstract void log(String message);
+   }
+
 }

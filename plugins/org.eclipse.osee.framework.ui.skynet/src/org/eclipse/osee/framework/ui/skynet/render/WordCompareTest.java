@@ -17,7 +17,6 @@ import java.security.CodeSource;
 import java.security.ProtectionDomain;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
-import org.eclipse.osee.framework.jdk.core.util.io.streams.StreamCatcher;
 
 /**
  * @author Donald G. Dunne
@@ -102,45 +101,45 @@ public class WordCompareTest {
       return toReturn;
    }
 
-   public static void main(String[] args) {
-
-      try {
-         String diffPath = System.getProperty("user.home") + File.separator + "DiffResults";
-         File baseFile = getFile("Select Base Xml File To Compare");
-         if (!baseFile.exists()) {
-            throw new IllegalStateException("baseFile doesn't exist => " + baseFile);
-         }
-
-         File newerFile = getFile("Select Newer Xml File To Compare");
-         if (!newerFile.exists()) {
-            throw new IllegalStateException("newerFile doesn't exist => " + newerFile);
-         }
-
-         File vbDiffScript = getFileSystemPath("support" + File.separator + "compareDocs.vbs");
-         if (!vbDiffScript.exists()) {
-            throw new IllegalStateException("vbDiffScript doesn't exist => " + vbDiffScript);
-         }
-
-         // quotes are neccessary because of Runtime.exec wraps the last element in quotes...crazy
-         String cmd[] =
-            {
-               "cmd",
-               "/s /c",
-               "\"" + vbDiffScript.getPath() + "\"",
-               "/author:CoolOseeUser\" /diffPath:\"" + diffPath + "\" /detectFormatChanges:true /ver1:\"" + baseFile.getAbsolutePath() + "\" /ver2:\"" + newerFile.getAbsolutePath()};
-
-         Process proc = Runtime.getRuntime().exec(cmd);
-
-         StreamCatcher errorCatcher = new StreamCatcher(proc.getErrorStream(), "ERROR");
-         StreamCatcher outputCatcher = new StreamCatcher(proc.getInputStream(), "OUTPUT");
-
-         errorCatcher.start();
-         outputCatcher.start();
-         proc.waitFor();
-      } catch (Exception ex) {
-         ex.printStackTrace();
-      }
-
-   }
+   //   public static void main(String[] args) {
+   //
+   //      try {
+   //         String diffPath = System.getProperty("user.home") + File.separator + "DiffResults";
+   //         File baseFile = getFile("Select Base Xml File To Compare");
+   //         if (!baseFile.exists()) {
+   //            throw new IllegalStateException("baseFile doesn't exist => " + baseFile);
+   //         }
+   //
+   //         File newerFile = getFile("Select Newer Xml File To Compare");
+   //         if (!newerFile.exists()) {
+   //            throw new IllegalStateException("newerFile doesn't exist => " + newerFile);
+   //         }
+   //
+   //         File vbDiffScript = getFileSystemPath("support" + File.separator + "compareDocs.vbs");
+   //         if (!vbDiffScript.exists()) {
+   //            throw new IllegalStateException("vbDiffScript doesn't exist => " + vbDiffScript);
+   //         }
+   //
+   //         // quotes are neccessary because of Runtime.exec wraps the last element in quotes...crazy
+   //         String cmd[] =
+   //            {
+   //               "cmd",
+   //               "/s /c",
+   //               "\"" + vbDiffScript.getPath() + "\"",
+   //               "/author:CoolOseeUser\" /diffPath:\"" + diffPath + "\" /detectFormatChanges:true /ver1:\"" + baseFile.getAbsolutePath() + "\" /ver2:\"" + newerFile.getAbsolutePath()};
+   //
+   //         Process proc = Runtime.getRuntime().exec(cmd);
+   //
+   //         StreamCatcher errorCatcher = new StreamCatcher(proc.getErrorStream(), "ERROR");
+   //         StreamCatcher outputCatcher = new StreamCatcher(proc.getInputStream(), "OUTPUT");
+   //
+   //         errorCatcher.start();
+   //         outputCatcher.start();
+   //         proc.waitFor();
+   //      } catch (Exception ex) {
+   //         ex.printStackTrace();
+   //      }
+   //
+   //   }
 
 }

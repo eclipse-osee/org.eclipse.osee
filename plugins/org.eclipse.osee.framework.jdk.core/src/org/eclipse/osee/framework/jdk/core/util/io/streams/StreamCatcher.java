@@ -20,6 +20,7 @@ import java.util.logging.Logger;
 /**
  * @author Jeff C. Phillips
  */
+@Deprecated
 public class StreamCatcher extends Thread {
    private final InputStream is;
    private final String type;
