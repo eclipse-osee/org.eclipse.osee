@@ -71,7 +71,7 @@ public class AdvancedKeywordSearchBlam extends AbstractBlam {
       resultData.log(String.format("[%s] on branch [%s] (keyword groups listed below results)", getName(), branch));
       resultData.addRaw(AHTML.beginMultiColumnTable(100, 1));
       List<String> headerList = new ArrayList<String>();
-      headerList.addAll(Arrays.asList("Artifact", "Keywords matched", "Guid", "Link"));
+      headerList.addAll(Arrays.asList("Artifact", "Keywords matched", "Guid", "Link", "Artifact Type"));
       for (AttributeType attrType : attrTypes) {
          headerList.add(attrType.getName());
       }
@@ -79,7 +79,8 @@ public class AdvancedKeywordSearchBlam extends AbstractBlam {
       for (Entry<Artifact, Collection<String>> entry : artifactToMatch.entrySet()) {
          List<String> valueList = new ArrayList<String>();
          valueList.addAll(Arrays.asList(entry.getKey().getName(), Collections.toString(";", entry.getValue()),
-            entry.getKey().getGuid(), XResultData.getHyperlink("open", entry.getKey())));
+            entry.getKey().getGuid(), XResultData.getHyperlink("open", entry.getKey()),
+            entry.getKey().getArtifactTypeName()));
          for (AttributeType attrType : attrTypes) {
             valueList.add(entry.getKey().getAttributesToString(attrType));
          }
