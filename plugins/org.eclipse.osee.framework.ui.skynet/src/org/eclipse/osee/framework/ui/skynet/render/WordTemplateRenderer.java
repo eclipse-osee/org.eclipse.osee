@@ -238,6 +238,6 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
 
    @Override
    protected IOperation getUpdateOperation(File file, List<Artifact> artifacts, Branch branch, PresentationType presentationType) throws OseeCoreException {
-      return new UpdateArtifactOperation(file, artifacts, branch);
+      return new UpdateArtifactOperation(file, artifacts, branch, false);
    }
 }

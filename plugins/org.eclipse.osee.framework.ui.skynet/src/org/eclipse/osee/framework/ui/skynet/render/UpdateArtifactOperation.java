@@ -60,19 +60,21 @@ public class UpdateArtifactOperation extends AbstractOperation {
    private final File workingFile;
    private final List<Artifact> artifacts;
    private final Branch branch;
+   private final boolean threeWayMerge;
 
-   public UpdateArtifactOperation(File workingFile, List<Artifact> artifacts, Branch branch) {
+   public UpdateArtifactOperation(File workingFile, List<Artifact> artifacts, Branch branch, boolean threeWayMerge) {
       super("Update Artifact", SkynetGuiPlugin.PLUGIN_ID);
       this.workingFile = workingFile;
       this.artifacts = artifacts;
       this.branch = branch;
+      this.threeWayMerge = threeWayMerge;
    }
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
       IElementExtractor elementExtractor;
       Document document = extractJaxpDocument();
-      if (branch.getBranchType().isMergeBranch()) {
+      if (threeWayMerge) {
          elementExtractor = new MergeEditArtifactElementExtractor(document);
       } else {
          elementExtractor = new WordImageArtifactElementExtractor(document);

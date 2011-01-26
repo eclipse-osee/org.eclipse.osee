@@ -90,7 +90,8 @@ public class ThreeWayWordMergeOperation extends AbstractOperation {
       attributeConflict.markStatusToReflectEdit();
 
       IOperation op =
-         new UpdateArtifactOperation(mergedFile, Collections.singletonList(mergeArtifact), mergeArtifact.getBranch());
+         new UpdateArtifactOperation(mergedFile, Collections.singletonList(mergeArtifact), mergeArtifact.getBranch(),
+            true);
       Operations.executeWork(op, monitor);
 
       monitor.done();
