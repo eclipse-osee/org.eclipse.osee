@@ -124,10 +124,10 @@ public class DefaultArtifactRenderer implements IRenderer {
    }
 
    @Override
-   public void renderAttribute(IAttributeType attributeType, Artifact artifact, PresentationType presentationType, Producer producer, VariableMap map, AttributeElement attributeElement) throws OseeCoreException {
+   public void renderAttribute(IAttributeType attributeType, Artifact artifact, PresentationType presentationType, Producer producer, AttributeElement attributeElement) throws OseeCoreException {
       WordMLProducer wordMl = (WordMLProducer) producer;
       String format = attributeElement.getFormat();
-      boolean allAttrs = map.getBoolean("allAttrs");
+      boolean allAttrs = getBooleanOption("allAttrs");
 
       wordMl.startParagraph();
 
@@ -270,5 +270,10 @@ public class DefaultArtifactRenderer implements IRenderer {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
       return result;
+   }
+
+   @Override
+   public Object getOption(String key) {
+      return options.getValue(key);
    }
 }

@@ -78,7 +78,7 @@ public interface IRenderer {
 
    public ImageDescriptor getCommandImageDescriptor(Command command, Artifact artifact) throws OseeCoreException;
 
-   public void renderAttribute(IAttributeType attributeType, Artifact artifact, PresentationType presentationType, Producer producer, VariableMap map, AttributeElement attributeElement) throws OseeCoreException;
+   public void renderAttribute(IAttributeType attributeType, Artifact artifact, PresentationType presentationType, Producer producer, AttributeElement attributeElement) throws OseeCoreException;
 
    public int minimumRanking() throws OseeCoreException;
 
@@ -91,6 +91,8 @@ public interface IRenderer {
    public void setOptions(VariableMap options) throws OseeArgumentException;
 
    public String getStringOption(String key) throws OseeArgumentException;
+
+   public Object getOption(String key) throws OseeArgumentException;
 
    public boolean getBooleanOption(String key) throws OseeArgumentException;
 

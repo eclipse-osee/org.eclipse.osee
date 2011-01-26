@@ -141,7 +141,7 @@ public final class RendererManager {
 
    public static void renderAttribute(IAttributeType attributeType, PresentationType presentationType, Artifact artifact, VariableMap options, Producer producer, AttributeElement attributeElement) throws OseeCoreException {
       getBestRenderer(PRODUCE_ATTRIBUTE, artifact, options).renderAttribute(attributeType, artifact, presentationType,
-         producer, options, attributeElement);
+         producer, attributeElement);
    }
 
    public static Collection<IAttributeType> getAttributeTypeOrderList(Artifact artifact) throws OseeCoreException {

@@ -150,7 +150,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
    }
 
    @Override
-   public void renderAttribute(IAttributeType attributeType, Artifact artifact, PresentationType presentationType, Producer producer, VariableMap map, AttributeElement attributeElement) throws OseeCoreException {
+   public void renderAttribute(IAttributeType attributeType, Artifact artifact, PresentationType presentationType, Producer producer, AttributeElement attributeElement) throws OseeCoreException {
       WordMLProducer wordMl = (WordMLProducer) producer;
 
       if (attributeType.equals(CoreAttributeTypes.WordTemplateContent)) {
@@ -165,7 +165,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
             //Change the BinData Id so images do not get overridden by the other images
             data = WordUtil.reassignBinDataID(data);
 
-            LinkType linkType = (LinkType) map.getValue("linkType");
+            LinkType linkType = (LinkType) getOption("linkType");
             data = WordMlLinkHandler.link(linkType, artifact, data);
             data = WordUtil.reassignBookMarkID(data);
          }
@@ -181,8 +181,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
          }
          wordMl.resetListValue();
       } else {
-         super.renderAttribute(attributeType, artifact, PresentationType.SPECIALIZED_EDIT, wordMl, map,
-            attributeElement);
+         super.renderAttribute(attributeType, artifact, PresentationType.SPECIALIZED_EDIT, wordMl, attributeElement);
       }
    }
 
