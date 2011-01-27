@@ -30,40 +30,38 @@ import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 
 /**
  * @author Jeff C. Phillips
  */
-public class WordTemplateFileDiffer {
-   private String nextParagraphNumber;
-   private String outlineType;
+public final class WordTemplateFileDiffer {
+   private final DefaultArtifactRenderer renderer;
 
-   public void generateFileDifferences(String fileName, VariableMap variableMap, String nextParagraphNumber, String outlineType) throws OseeArgumentException, OseeCoreException {
-      this.nextParagraphNumber = nextParagraphNumber;
-      this.outlineType = outlineType;
+   public WordTemplateFileDiffer(DefaultArtifactRenderer renderer) {
+      this.renderer = renderer;
+   }
 
-      List<Artifact> endArtifacts = variableMap.getArtifacts("artifacts");
-      variableMap.setValue(IRenderer.FILE_NAME_OPTION, fileName);
-      variableMap.setValue("diffReportFolderName", ".preview" + fileName);
-      variableMap.setValue("Publish With Attributes", true);
-      variableMap.setValue("Diff Branch", variableMap.getValue("Branch"));
-      variableMap.setValue("Use Artifact Names", true);
-      variableMap.setValue("inPublishMode", true);
-      variableMap.setValue(IRenderer.NO_DISPLAY, true);
-      variableMap.setValue("Publish As Diff", false);
+   public void generateFileDifferences(List<Artifact> endArtifacts, String fileName, String nextParagraphNumber, String outlineType) throws OseeArgumentException, OseeCoreException {
+      renderer.setOption("paragraphNumber", nextParagraphNumber);
+      renderer.setOption("outlineType", outlineType);
+      renderer.setOption(IRenderer.FILE_NAME_OPTION, fileName);
+      renderer.setOption("diffReportFolderName", ".preview" + fileName);
+      renderer.setOption("Publish With Attributes", true);
+      renderer.setOption("Use Artifact Names", true);
+      renderer.setOption("inPublishMode", true);
+      renderer.setOption(IRenderer.NO_DISPLAY, true);
+      renderer.setOption("Publish As Diff", false);
 
-      Branch endBranch = variableMap.getBranch("Branch");
-      Branch startBranch = variableMap.getBranch("compareBranch");
+      Branch endBranch = renderer.getBranchOption("Branch");
+      renderer.setOption("Diff Branch", endBranch);
 
-      if (endBranch == null || startBranch == null && !variableMap.getBoolean("Diff from Baseline")) {
-         throw new OseeCoreException("Must Select a %s to diff against when publishing as Diff",
-            endBranch == null ? "Branch" : "Date");
-      }
+      Branch startBranch = renderer.getBranchOption("compareBranch");
+
       TransactionRecord startTransaction;
-      boolean isDiffFromBaseline = false;//variableMap.getBoolean("Diff from Baseline");
+      boolean isDiffFromBaseline = false;
 
       if (isDiffFromBaseline) {
          startTransaction = endBranch.getBaseTransaction();
@@ -78,14 +76,14 @@ public class WordTemplateFileDiffer {
       for (Artifact artifact : endArtifacts) {
          try {
             diff(isDiffFromBaseline, txDelta, startBranch,
-               ArtifactCache.getActive(artifact.getArtId(), artifact.getBranch()), variableMap);
+               ArtifactCache.getActive(artifact.getArtId(), artifact.getBranch()));
          } catch (Exception ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
       }
    }
 
-   private void diff(boolean isDiffFromBaseline, TransactionDelta txDelta, Branch startBranch, Artifact artifact, VariableMap options) throws OseeCoreException {
+   private void diff(boolean isDiffFromBaseline, TransactionDelta txDelta, Branch startBranch, Artifact artifact) throws OseeCoreException {
       List<Artifact> endArtifacts = Arrays.asList(artifact);
       List<Artifact> startArtifacts = getStartArtifacts(endArtifacts, startBranch);
 
@@ -103,10 +101,8 @@ public class WordTemplateFileDiffer {
             artifactDeltas.add(new ArtifactDelta(txDelta, start, end));
          }
       }
-      options.setValue("paragraphNumber", nextParagraphNumber);
-      options.setValue("outlineType", outlineType);
 
-      RendererManager.diff(artifactDeltas, options.getValues());
+      RendererManager.diff(artifactDeltas, renderer.getValues());
    }
 
    private List<Artifact> getStartArtifacts(List<Artifact> artifacts, Branch startBranch) throws OseeCoreException {

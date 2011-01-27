@@ -80,6 +80,10 @@ public class WordMlLinkHandler {
 
    private static final OseeLinkBuilder linkBuilder = new OseeLinkBuilder();
 
+   private static LinkType checkLinkType(LinkType value) {
+      return value != null ? value : LinkType.OSEE_SERVER_LINK;
+   }
+
    /**
     * Remove WordML hyperlinks and replace with OSEE_LINK marker. It is assumed that an unlink call will be made after a
     * link call. Therefore we expect the input to have links that are recognized by this handler as identified by the
@@ -90,10 +94,11 @@ public class WordMlLinkHandler {
     * @return processed input
     */
    public static String unlink(LinkType sourceLinkType, Artifact source, String content) throws OseeCoreException {
+      LinkType linkType = checkLinkType(sourceLinkType);
       String modified = content;
       HashCollection<String, MatchRange> matchMap = parseOseeWordMLLinks(content);
       if (!matchMap.isEmpty()) {
-         modified = modifiedContent(sourceLinkType, source, content, matchMap, true);
+         modified = modifiedContent(linkType, source, content, matchMap, true);
       }
       return modified;
    }
@@ -107,6 +112,7 @@ public class WordMlLinkHandler {
     * @return processed input
     */
    public static String link(LinkType destLinkType, Artifact source, String content) throws OseeCoreException {
+      LinkType linkType = checkLinkType(destLinkType);
       String modified = content;
 
       // Detect legacy links
@@ -123,10 +129,10 @@ public class WordMlLinkHandler {
       OSEE_LINK_PATTERN.reset();
 
       if (!matchMap.isEmpty()) {
-         modified = modifiedContent(destLinkType, source, content, matchMap, false);
+         modified = modifiedContent(linkType, source, content, matchMap, false);
       }
 
-      if (destLinkType != LinkType.OSEE_SERVER_LINK) {
+      if (linkType != LinkType.OSEE_SERVER_LINK) {
          // Add a bookmark to the start of the content so internal links can link later
          modified = linkBuilder.getWordMlBookmark(source) + modified;
       }

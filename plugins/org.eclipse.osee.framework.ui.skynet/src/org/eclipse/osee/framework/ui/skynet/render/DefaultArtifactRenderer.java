@@ -81,8 +81,8 @@ public class DefaultArtifactRenderer implements IRenderer {
    }
 
    @Deprecated
-   public VariableMap getOptions() {
-      return options;
+   public Object[] getValues() {
+      return options.getValues();
    }
 
    @Override
@@ -287,5 +287,10 @@ public class DefaultArtifactRenderer implements IRenderer {
    @Override
    public void setOptions(Object... options) throws OseeArgumentException {
       this.options.setValues(options);
+   }
+
+   @Override
+   public List<Artifact> getArtifactsOption(String key) throws OseeArgumentException {
+      return options.getArtifacts(key);
    }
 }

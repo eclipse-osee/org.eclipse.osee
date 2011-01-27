@@ -96,6 +96,8 @@ public interface IRenderer {
 
    public Object getOption(String key) throws OseeArgumentException;
 
+   public List<Artifact> getArtifactsOption(String key) throws OseeArgumentException;
+
    public boolean getBooleanOption(String key) throws OseeArgumentException;
 
    public Branch getBranchOption(String key) throws OseeArgumentException;

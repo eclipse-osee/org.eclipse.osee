@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.skynet.core.linking.LinkType;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.templates.TemplateManager;
@@ -42,7 +43,6 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       populateTemplateList();
-      Boolean updateParagraphNumber = variableMap.getBoolean("Update Paragraph Numbers");
 
       boolean useArtifactNameInLinks = variableMap.getBoolean("Use Artifact Names");
       boolean useParagraphNumbersInLinks = variableMap.getBoolean("Use Paragraph Numbers");
@@ -78,20 +78,17 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
             branch,
             "compareBranch",
             variableMap.getBranch("Compare Against Another Branch"),
-            "Update Paragraph Numbers",
-            updateParagraphNumber,
             "Publish As Diff",
             variableMap.getValue("Publish As Diff"),
             "linkType",
             linkType,
-            "OpenDocument",
-            variableMap.getValue("Open Document in Word"),
+            IRenderer.NO_DISPLAY,
+            !variableMap.getBoolean("Open Document in Word"),
             WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION,
-            updateParagraphNumber,
+            variableMap.getBoolean("Update Paragraph Numbers"),
             ITemplateRenderer.TRANSACTION_OPTION,
             transaction};
-      renderer.setOptions(options);
-      renderer.publish(renderer.getOptions(), master, slave, artifacts);
+      renderer.publish(master, slave, artifacts, options);
 
       transaction.execute();
    }

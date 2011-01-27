@@ -36,7 +36,6 @@ import org.eclipse.osee.framework.skynet.core.linking.LinkType;
 import org.eclipse.osee.framework.skynet.core.linking.OseeLinkBuilder;
 import org.eclipse.osee.framework.skynet.core.linking.WordMlLinkHandler;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
-import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
 import org.eclipse.osee.framework.ui.skynet.render.compare.WordTemplateCompare;
 import org.eclipse.osee.framework.ui.skynet.render.word.AttributeElement;
@@ -93,9 +92,9 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
       return new WordTemplateRenderer();
    }
 
-   public void publish(VariableMap variableMap, Artifact masterTemplateArtifact, Artifact slaveTemplateArtifact, List<Artifact> artifacts) throws OseeCoreException {
-      templateProcessor.publishWithExtensionTemplates(variableMap, masterTemplateArtifact, slaveTemplateArtifact,
-         artifacts);
+   public void publish(Artifact masterTemplateArtifact, Artifact slaveTemplateArtifact, List<Artifact> artifacts, Object... options) throws OseeCoreException {
+      setOptions(options);
+      templateProcessor.publishWithExtensionTemplates(masterTemplateArtifact, slaveTemplateArtifact, artifacts);
    }
 
    /**
@@ -219,8 +218,8 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
       }
 
       template = WordUtil.removeGUIDFromTemplate(template);
-      return templateProcessor.applyTemplate(getOptions(), artifacts, template, null,
-         getStringOption("paragraphNumber"), getStringOption("outlineType"), presentationType);
+      return templateProcessor.applyTemplate(artifacts, template, null, getStringOption("paragraphNumber"),
+         getStringOption("outlineType"), presentationType);
    }
 
    protected String getTemplate(Artifact artifact, PresentationType presentationType) throws OseeCoreException {
