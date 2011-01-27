@@ -90,8 +90,12 @@ public class RendererManagerTest {
 
       if (clazz == null) {
          try {
-            computeRenderer(artifact);
-            Assert.fail("Expected an OseeStateException to be thrown since no render should be applicable in this case.");
+            IRenderer renderer = computeRenderer(artifact);
+            String message =
+               String.format(
+                  "Expected an OseeStateException to be thrown since no render should be applicable in this case.\nRenderer: [%s]",
+                  renderer);
+            Assert.fail(message);
          } catch (OseeStateException ex) {
             Assert.assertEquals("Expected message", ex.getMessage());
          }
