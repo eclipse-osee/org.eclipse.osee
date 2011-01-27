@@ -1,0 +1,85 @@
+/*******************************************************************************
+ * Copyright (c) 2011 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.osee.framework.ui.skynet.widgets.xmerge;
+
+import java.util.Collection;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.enums.ConflictStatus;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.core.util.Conditions;
+import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+
+/**
+ * @author Karol M. Wilk
+ */
+public final class ConflictHandlingOperation extends AbstractOperation {
+
+   public static enum ConflictOperationEnum {
+      RESET,
+      SET_DST_AND_RESOLVE,
+      SET_SRC_AND_RESOLVE,
+      MARK_RESOLVED,
+      MARK_UNRESOLVED
+   }
+
+   private final Collection<Conflict> conflicts;
+   private final ConflictOperationEnum operation;
+
+   public ConflictHandlingOperation(ConflictOperationEnum operation, Collection<Conflict> conflicts) {
+      super("Updating conflicts", SkynetGuiPlugin.PLUGIN_ID);
+      this.conflicts = conflicts;
+      this.operation = operation;
+   }
+
+   @Override
+   protected void doWork(IProgressMonitor monitor) throws OseeCoreException {
+      Conditions.checkNotNullOrEmpty(conflicts, "conflicts");
+      for (Conflict conflict : conflicts) {
+         if (conflict.isResolvable()) {
+            switch (operation) {
+               case RESET:
+                  if (conflict.statusResolved()) {
+                     MergeUtility.clearValue(conflict, null, false);
+                     conflict.setStatus(ConflictStatus.EDITED);
+                  }
+                  break;
+               case SET_DST_AND_RESOLVE:
+                  if (!conflict.statusResolved()) {
+                     MergeUtility.setToDest(conflict, null, false);
+                     conflict.setStatus(ConflictStatus.RESOLVED);
+                  }
+                  break;
+               case SET_SRC_AND_RESOLVE:
+                  if (!conflict.statusResolved()) {
+                     MergeUtility.setToSource(conflict, null, false);
+                     conflict.setStatus(ConflictStatus.RESOLVED);
+                  }
+                  break;
+               case MARK_RESOLVED:
+                  if (!conflict.statusUntouched()) {
+                     conflict.setStatus(ConflictStatus.RESOLVED);
+                  }
+                  break;
+               case MARK_UNRESOLVED:
+                  if (!conflict.statusUntouched()) {
+                     conflict.setStatus(ConflictStatus.EDITED);
+                  }
+                  break;
+               default:
+                  throw new OseeArgumentException("Invalid operation [%s]", operation);
+            }
+         }
+      }
+   }
+}

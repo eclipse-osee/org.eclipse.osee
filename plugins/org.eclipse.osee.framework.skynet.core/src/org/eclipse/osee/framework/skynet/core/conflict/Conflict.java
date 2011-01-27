@@ -48,7 +48,6 @@ public abstract class Conflict implements IAdaptable {
    private String destDiffFile = null;
 
    protected Conflict(int sourceGamma, int destGamma, int artId, TransactionRecord toTransactionId, TransactionRecord commitTransactionId, Branch mergeBranch, Branch sourceBranch, Branch destBranch) {
-      super();
       this.sourceGamma = sourceGamma;
       this.destGamma = destGamma;
       this.artId = artId;
@@ -214,6 +213,10 @@ public abstract class Conflict implements IAdaptable {
 
    public boolean statusEditable() {
       return !(status.equals(ConflictStatus.RESOLVED) || status.equals(ConflictStatus.COMMITTED) || status.equals(ConflictStatus.INFORMATIONAL) || status.equals(ConflictStatus.NOT_RESOLVABLE));
+   }
+
+   public boolean isResolvable() {
+      return !statusNotResolvable() && !statusInformational();
    }
 
    public int getMergeBranchID() {

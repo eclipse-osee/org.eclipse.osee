@@ -17,10 +17,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.IHandler;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -32,6 +35,8 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -66,6 +71,7 @@ import org.eclipse.osee.framework.ui.skynet.revert.RevertWizard;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetViews;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericViewPart;
 import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView;
+import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.ConflictHandlingOperation.ConflictOperationEnum;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.NonmodalWizardDialog;
@@ -86,7 +92,9 @@ import org.eclipse.ui.menus.CommandContributionItem;
  * @author Donald G. Dunne
  */
 public class MergeView extends GenericViewPart implements IBranchEventListener, IArtifactEventListener {
+
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView";
+
    private MergeXWidget mergeXWidget;
    private IHandlerService handlerService;
    private Branch sourceBranch;
@@ -94,6 +102,46 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
    private TransactionRecord transactionId;
    private TransactionRecord commitTrans;
    private boolean showConflicts;
+
+   private final class MergeManagerConflictHandler extends AbstractSelectionEnabledHandler {
+      private final String dialogString;
+      private final ConflictOperationEnum kindOfOperation;
+      private List<Conflict> conflicts;
+
+      public MergeManagerConflictHandler(MenuManager menuManager, String dialogString, ConflictOperationEnum kindOfOperation) {
+         super(menuManager);
+         this.dialogString = dialogString;
+         this.kindOfOperation = kindOfOperation;
+      }
+
+      @Override
+      public Object executeWithException(ExecutionEvent event) {
+         boolean confirm =
+            MessageDialog.openConfirm(Displays.getActiveShell().getShell(), "Confirm",
+               String.format(dialogString, conflicts.size()));
+         if (confirm) {
+            IOperation operation = new ConflictHandlingOperation(kindOfOperation, conflicts);
+            Operations.executeAsJob(operation, true, Job.SHORT, new JobChangeAdapter() {
+               @Override
+               public void done(IJobChangeEvent event) {
+                  Displays.ensureInDisplayThread(new Runnable() {
+                     @Override
+                     public void run() {
+                        mergeXWidget.refresh();
+                     }
+                  });
+               }
+            });
+         }
+         return null;
+      }
+
+      @Override
+      public boolean isEnabledWithException(IStructuredSelection structuredSelection) {
+         conflicts = mergeXWidget.getSelectedConflicts();
+         return !conflicts.isEmpty();
+      }
+   }
 
    public static void openView(final Branch sourceBranch, final Branch destBranch, final TransactionRecord tranId) {
       if (Conditions.allNull(sourceBranch, destBranch, tranId)) {
@@ -181,6 +229,14 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
             addEditArtifactMenuItem(menuManager);
             addMergeMenuItem(menuManager);
             menuManager.add(new Separator());
+            addMarkAsResolvedMenuItem(menuManager);
+            addMarkAsUnResolvedMenuItem(menuManager);
+            menuManager.add(new Separator());
+            addSourceAsMergeValueMenuItem(menuManager);
+            addDestinationAsMergeValueMenuItem(menuManager);
+            menuManager.add(new Separator());
+            addResetConflictMenuItem(menuManager);
+            menuManager.add(new Separator());
             addPreviewMenuItem(menuManager);
             addDiffMenuItem(menuManager);
             menuManager.add(new Separator());
@@ -198,6 +254,14 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
 
       createEditArtifactMenuItem(menuManager);
       createMergeMenuItem(menuManager);
+      menuManager.add(new Separator());
+      createMarkResolvedMenuItem(menuManager);
+      createMarkUnResolvedMenuItem(menuManager);
+      menuManager.add(new Separator());
+      createSourceAsMergeMenuItem(menuManager);
+      createDestinationAsMergeMenuItem(menuManager);
+      menuManager.add(new Separator());
+      createResetConflictMenuItem(menuManager);
       menuManager.add(new Separator());
       createPreviewMenuItem(menuManager);
       createDiffMenuItem(menuManager);
@@ -336,6 +400,46 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
             "Revert Source Artifacts for Unresolvable Conflicts", null, null, null, null, null, null);
       menuManager.add(revertSelected);
       return revertSelected.getId();
+   }
+
+   private String addMarkAsResolvedMenuItem(MenuManager menuManager) {
+      CommandContributionItem markAsResolvedSelected =
+         Commands.getLocalCommandContribution(getSite(), "markAsResolvedSelected", "Mark as Resolved", null, null,
+            null, null, null, null);
+      menuManager.add(markAsResolvedSelected);
+      return markAsResolvedSelected.getId();
+   }
+
+   private String addMarkAsUnResolvedMenuItem(MenuManager menuManager) {
+      CommandContributionItem markAsUnResolvedSelected =
+         Commands.getLocalCommandContribution(getSite(), "markAsUnResolvedSelected", "Mark as Unresolved", null, null,
+            null, null, null, null);
+      menuManager.add(markAsUnResolvedSelected);
+      return markAsUnResolvedSelected.getId();
+   }
+
+   private String addSourceAsMergeValueMenuItem(MenuManager menuManager) {
+      CommandContributionItem mergeValueSourcePickerSelected =
+         Commands.getLocalCommandContribution(getSite(), "mergeValueSourcePickerSelected",
+            "Resolve using Source Value", null, null, null, null, null, null);
+      menuManager.add(mergeValueSourcePickerSelected);
+      return mergeValueSourcePickerSelected.getId();
+   }
+
+   private String addDestinationAsMergeValueMenuItem(MenuManager menuManager) {
+      CommandContributionItem mergeValueDestinationPickerSelected =
+         Commands.getLocalCommandContribution(getSite(), "mergeValueDestinationPickerSelected",
+            "Resolve using Destination Value", null, null, null, null, null, null);
+      menuManager.add(mergeValueDestinationPickerSelected);
+      return mergeValueDestinationPickerSelected.getId();
+   }
+
+   private String addResetConflictMenuItem(MenuManager menuManager) {
+      CommandContributionItem resetConflictMenuItem =
+         Commands.getLocalCommandContribution(getSite(), "resetConflictMenuItem", "Reset Conflict", null, null, null,
+            null, null, null);
+      menuManager.add(resetConflictMenuItem);
+      return resetConflictMenuItem.getId();
    }
 
    private void createEditArtifactMenuItem(MenuManager menuManager) {
@@ -527,6 +631,50 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
                revertList.add(ins);
             }
          });
+   }
+
+   private void createMarkResolvedMenuItem(MenuManager menuManager) {
+      String commandId = addMarkAsResolvedMenuItem(menuManager);
+      IHandler handler =
+         new MergeManagerConflictHandler(menuManager,
+            "Are you sure you want to Mark the selected [%s] conflict(s) as Resolved?",
+            ConflictOperationEnum.MARK_RESOLVED);
+      handlerService.activateHandler(commandId, handler);
+   }
+
+   private void createMarkUnResolvedMenuItem(MenuManager menuManager) {
+      String commandId = addMarkAsUnResolvedMenuItem(menuManager);
+      IHandler handler =
+         new MergeManagerConflictHandler(menuManager,
+            "Are you sure you want to Mark the selected [%s] conflict(s) as UnResolved?",
+            ConflictOperationEnum.MARK_UNRESOLVED);
+      handlerService.activateHandler(commandId, handler);
+   }
+
+   private void createSourceAsMergeMenuItem(MenuManager menuManager) {
+      String commandId = addSourceAsMergeValueMenuItem(menuManager);
+      IHandler handler =
+         new MergeManagerConflictHandler(menuManager,
+            "Are you sure you want to set the Merge value to the Source value for the selected [%s] conflict(s)?",
+            ConflictOperationEnum.SET_SRC_AND_RESOLVE);
+      handlerService.activateHandler(commandId, handler);
+   }
+
+   private void createDestinationAsMergeMenuItem(MenuManager menuManager) {
+      String commandId = addDestinationAsMergeValueMenuItem(menuManager);
+      IHandler handler =
+         new MergeManagerConflictHandler(menuManager,
+            "Are you sure you want to set the Merge value to the Destination value for the selected [%s] conflict(s)?",
+            ConflictOperationEnum.SET_DST_AND_RESOLVE);
+      handlerService.activateHandler(commandId, handler);
+   }
+
+   private void createResetConflictMenuItem(MenuManager menuManager) {
+      String commandId = addResetConflictMenuItem(menuManager);
+      IHandler handler =
+         new MergeManagerConflictHandler(menuManager, "Are you sure you want to reset %s conflict(s)?",
+            ConflictOperationEnum.RESET);
+      handlerService.activateHandler(commandId, handler);
    }
 
    private String addMergeMenuItem(MenuManager menuManager) {
@@ -842,4 +990,5 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
       });
 
    }
+
 }

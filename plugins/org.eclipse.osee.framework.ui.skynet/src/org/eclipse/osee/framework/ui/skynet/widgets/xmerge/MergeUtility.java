@@ -17,8 +17,6 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.enums.ConflictType;
-import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -62,7 +60,7 @@ public class MergeUtility {
    public static final String OPEN_MERGE_DIALOG =
       "This will open a window that will allow in-document merging in Word.  You will need to right click on every difference and either accept or reject the change.  If you begin an in-document merge you will not be able to finalize the conflict until you resolve every change in the document.\n Computing a Merge will wipe out any merge changes you have made and start with a fresh diff of the two files.  If you want to only view the changes use the difference options.\n Change that touch the entire file are better handled using copy and paste. \n\nWARNING:  Word will occasionaly show incorrect changes especially when users have both modified the same block of text.  Check your final version.";
 
-   public static void clearValue(Conflict conflict, Shell shell, boolean prompt) throws MultipleArtifactsExist, ArtifactDoesNotExist, Exception {
+   public static void clearValue(Conflict conflict, Shell shell, boolean prompt) throws OseeCoreException {
       if (conflict == null) {
          return;
       }
@@ -71,7 +69,7 @@ public class MergeUtility {
       }
    }
 
-   public static void setToDest(Conflict conflict, Shell shell, boolean prompt) throws MultipleArtifactsExist, ArtifactDoesNotExist, Exception {
+   public static void setToDest(Conflict conflict, Shell shell, boolean prompt) throws OseeCoreException {
       if (conflict == null) {
          return;
       }
@@ -80,7 +78,7 @@ public class MergeUtility {
       }
    }
 
-   public static void setToSource(Conflict conflict, Shell shell, boolean prompt) throws MultipleArtifactsExist, ArtifactDoesNotExist, Exception {
+   public static void setToSource(Conflict conflict, Shell shell, boolean prompt) throws OseeCoreException {
       if (conflict == null) {
          return;
       }
@@ -92,7 +90,11 @@ public class MergeUtility {
    public static boolean okToOverwriteEditedValue(Conflict conflict, Shell shell, boolean prompt) throws OseeCoreException {
       boolean proceed = true;
       if (!conflict.statusEditable()) {
-         MessageDialog.openInformation(shell, "Attention", COMMITED_PROMPT);
+         if (shell != null) {
+            MessageDialog.openInformation(shell, "Attention", COMMITED_PROMPT);
+         } else {
+            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, "Attention: " + COMMITED_PROMPT);
+         }
          return false;
       }
       if (!(conflict.mergeEqualsDestination() || conflict.mergeEqualsSource() || conflict.statusUntouched()) && prompt) {
