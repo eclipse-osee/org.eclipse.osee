@@ -563,7 +563,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
          int percent = 0;
          for (StateDefinition state : getWorkDefinition().getStates()) {
             if (!state.isCompletedPage() && !state.isCancelledPage()) {
-               Double weight = stateToWeightMap.get(state);
+               Double weight = stateToWeightMap.get(state.getPageName());
                if (weight == null) {
                   weight = 0.0;
                }

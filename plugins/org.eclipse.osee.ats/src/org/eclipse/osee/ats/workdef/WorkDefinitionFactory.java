@@ -157,6 +157,7 @@ public class WorkDefinitionFactory {
       try {
          String startWorkPageName = workFlowDef.getResolvedStartPageId();
          WorkDefinition workDef = new WorkDefinition(workFlowDef.getId());
+         addRulesToWorkDefinition(workFlowDef, workDef);
          for (WorkPageDefinition workPage : workFlowDef.getPages()) {
             // not using ids anymore for states, widgets or rules
             StateDefinition stateDef = workDef.getOrCreateState(workPage.getPageName());
@@ -270,6 +271,18 @@ public class WorkDefinitionFactory {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
       return null;
+   }
+
+   private static void addRulesToWorkDefinition(WorkFlowDefinition workFlowDef, WorkDefinition workDef) {
+      try {
+         for (WorkRuleDefinition workRule : workFlowDef.getWorkRules()) {
+            RuleDefinition ruleDef = getRuleById(workRule.getId());
+            workDef.getRules().add(ruleDef);
+         }
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE,
+            "Error processing WorkRuleDefinition for workflow " + workDef.getName(), ex);
+      }
    }
 
    private static DecisionReviewDefinition convertDecisionReviewRule(WorkRuleDefinition workRule) throws OseeCoreException {
