@@ -64,7 +64,7 @@
 	<target name="generateDemoLaunch">
 		<createLaunch 
 			filepath="${tempAppServerFolder}/runDemo.sh" 
-			connection.id="h2" 
+			connection.id="osee.demo.h2"
 			serverport="8089" 
 			launcher="${launcherJar}" 
 			extraVMArgs="-Dosee.db.embedded.server=0.0.0.0:8088 \${line.separator}-Dosee.connection.info.uri=&quot;demo/osee.demo.db.connection.xml&quot; \${line.separator}-Dosee.application.server.data=&quot;demo/binary_data&quot;" />
