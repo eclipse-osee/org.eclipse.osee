@@ -100,6 +100,8 @@ public interface IRenderer {
 
    public IRenderer newInstance() throws OseeCoreException;
 
+   public boolean supportsCompare();
+
    public IComparator getComparator();
 
    public List<IAttributeType> getOrderedAttributeTypes(Artifact artifact, Collection<IAttributeType> attributeTypes);

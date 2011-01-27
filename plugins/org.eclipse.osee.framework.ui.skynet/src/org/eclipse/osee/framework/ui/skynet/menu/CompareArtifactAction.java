@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 
@@ -74,7 +74,7 @@ public final class CompareArtifactAction extends Action {
          try {
             Artifact toCheck = change.getChangeArtifact();
             if (toCheck != null) {
-               FileSystemRenderer renderer = RendererManager.getBestFileRenderer(PresentationType.DIFF, toCheck);
+               IRenderer renderer = RendererManager.getBestRenderer(PresentationType.DIFF, toCheck, null);
                isValidSelection = renderer.supportsCompare();
             }
          } catch (OseeCoreException ex) {
