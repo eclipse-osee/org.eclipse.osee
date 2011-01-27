@@ -138,9 +138,8 @@ public class PreviewAndMultiPreviewTest {
 
             parentArtifact.persist();
 
-            WordTemplateRenderer renderer = new WordTemplateRenderer();
-            renderer.setOptions(new VariableMap(ITemplateRenderer.PREVIEW_WITH_RECURSE_OPTION_PAIR));
-            renderer.open(Arrays.asList(parentArtifact), PresentationType.PREVIEW);
+            RendererManager.open(parentArtifact, PresentationType.PREVIEW, new VariableMap(
+               ITemplateRenderer.PREVIEW_WITH_RECURSE_OPTION_PAIR));
          }
       };
       template.test();
@@ -181,9 +180,8 @@ public class PreviewAndMultiPreviewTest {
 
       parentArtifact.persist();
 
-      WordTemplateRenderer renderer = new WordTemplateRenderer();
-      renderer.setOptions(new VariableMap(ITemplateRenderer.PREVIEW_WITH_RECURSE_OPTION_PAIR));
-      renderer.open(Arrays.asList(parentArtifact), PresentationType.PREVIEW);
+      RendererManager.open(parentArtifact, PresentationType.PREVIEW, new VariableMap(
+         ITemplateRenderer.PREVIEW_WITH_RECURSE_OPTION_PAIR));
 
       // should get one warning since the child is a general document
       Collection<IHealthStatus> warnings = monitorLog.getLogsAtLevel(Level.WARNING);
