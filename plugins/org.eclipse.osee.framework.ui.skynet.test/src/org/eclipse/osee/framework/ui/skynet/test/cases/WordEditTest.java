@@ -42,7 +42,6 @@ import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.test.util.FrameworkTestUtil;
 import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
-import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
@@ -88,27 +87,6 @@ public class WordEditTest {
       String expected = replaceGuidMarkers(testData, artifact.getGuid());
 
       FileSystemRenderer renderer = new WordTemplateRenderer();
-
-      IFile editFile = openArtifactForEdit(renderer, artifact);
-
-      writeNewContentAndWaitForSave(artifact, editFile, expected);
-
-      String actual = getRenderedStoredContent(renderer, artifact);
-      Assert.assertEquals(expected, actual);
-      TestUtil.severeLoggingEnd(monitorLog);
-   }
-
-   @org.junit.Test
-   public void testEditUsingRenderManager() throws Exception {
-      SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
-      Artifact artifact = createArtifact(branch, ARTIFACT_NAME_2);
-      artifact.persist();
-
-      String testData = getExpectedContent();
-      Assert.assertNotNull(testData);
-      String expected = replaceGuidMarkers(testData, artifact.getGuid());
-
-      FileSystemRenderer renderer = RendererManager.getBestFileRenderer(PresentationType.SPECIALIZED_EDIT, artifact);
 
       IFile editFile = openArtifactForEdit(renderer, artifact);
 

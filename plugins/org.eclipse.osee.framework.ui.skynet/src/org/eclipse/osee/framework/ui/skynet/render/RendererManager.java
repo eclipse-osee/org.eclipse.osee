@@ -24,7 +24,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -97,19 +96,6 @@ public final class RendererManager {
       for (IRenderer renderer : contributions.getObjects()) {
          renderers.add(renderer);
       }
-   }
-
-   public static FileSystemRenderer getBestFileRenderer(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
-      return getBestFileRenderer(presentationType, artifact, null);
-   }
-
-   public static FileSystemRenderer getBestFileRenderer(PresentationType presentationType, Artifact artifact, VariableMap options) throws OseeCoreException {
-      IRenderer bestRenderer = getBestRenderer(presentationType, artifact, options);
-      if (bestRenderer instanceof FileSystemRenderer) {
-         return (FileSystemRenderer) bestRenderer;
-      }
-      throw new OseeArgumentException("No FileRenderer found for [%s] of type [%s]", artifact,
-         artifact.getArtifactType());
    }
 
    public static IRenderer getBestRenderer(PresentationType presentationType, Artifact artifact, VariableMap options) throws OseeCoreException {

@@ -12,9 +12,7 @@
 package org.eclipse.osee.framework.ui.skynet.export;
 
 import java.io.File;
-import java.io.InputStream;
 import java.util.Collection;
-import java.util.Collections;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -22,12 +20,10 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 
@@ -54,7 +50,7 @@ public class ArtifactExportJob extends Job {
             if (monitor.isCanceled()) {
                return new Status(IStatus.CANCEL, SkynetGuiPlugin.PLUGIN_ID, "User Cancled the operation.");
             }
-            writeArtifactPreview(rootExportPath, monitor, artifact, PresentationType.PREVIEW);
+            writeArtifactPreview(rootExportPath, monitor, artifact);
          }
 
          toReturn = Status.OK_STATUS;
@@ -74,20 +70,16 @@ public class ArtifactExportJob extends Job {
       return total;
    }
 
-   private void writeArtifactPreview(File exportPath, IProgressMonitor monitor, Artifact artifact, PresentationType presentationType) throws Exception {
+   private void writeArtifactPreview(File exportPath, IProgressMonitor monitor, Artifact artifact) throws Exception {
       if (artifact.isOfType(CoreArtifactTypes.Folder)) {
          File folder = new File(exportPath, artifact.getName());
          folder.mkdir();
          for (Artifact child : artifact.getChildren()) {
-            writeArtifactPreview(folder, monitor, child, presentationType);
+            writeArtifactPreview(folder, monitor, child);
          }
       } else {
          try {
-            FileSystemRenderer fileRenderer = RendererManager.getBestFileRenderer(presentationType, artifact, null);
-            String fileName = artifact.getSafeName() + "." + fileRenderer.getAssociatedExtension(artifact);
-            InputStream inputStream =
-               fileRenderer.getRenderInputStream(presentationType, Collections.singletonList(artifact));
-            Lib.inputStreamToFile(inputStream, new File(exportPath, fileName));
+            RendererManager.open(artifact, PresentationType.PREVIEW);
          } catch (OseeArgumentException ex) {
             OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
