@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
-import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
@@ -71,8 +70,7 @@ public final class ViewWordChangeAndDiffTest {
       checkPermissions(asArtifacts(changes));
 
       Collection<ArtifactDelta> artifactDeltas = ChangeManager.getCompareArtifacts(changes);
-      VariableMap options = new VariableMap(IRenderer.NO_DISPLAY, true);
-      RendererManager.diff(artifactDeltas, options);
+      RendererManager.diff(artifactDeltas, IRenderer.NO_DISPLAY, true);
    }
 
    @org.junit.Test
@@ -84,7 +82,7 @@ public final class ViewWordChangeAndDiffTest {
 
       Collection<ArtifactDelta> artifactDeltas = ChangeManager.getCompareArtifacts(changes);
       ArtifactDelta artifactDelta = artifactDeltas.iterator().next();
-      RendererManager.diff(artifactDelta, new VariableMap(IRenderer.NO_DISPLAY, true));
+      RendererManager.diff(artifactDelta, IRenderer.NO_DISPLAY, true);
       assertTrue("Single Native Diff test passed", true);
    }
 
@@ -99,8 +97,7 @@ public final class ViewWordChangeAndDiffTest {
          Artifact newerArtifact = loadHistorical(artifacts.get(0));
          Artifact baseArtifact = loadHistorical(artifacts.get(1));
 
-         RendererManager.diff(new ArtifactDelta(txDelta, baseArtifact, newerArtifact), new VariableMap(
-            IRenderer.NO_DISPLAY, true));
+         RendererManager.diff(new ArtifactDelta(txDelta, baseArtifact, newerArtifact), IRenderer.NO_DISPLAY, true);
 
          assertTrue("Compare Two Artifacts test passed", true);
       } catch (Exception ex) {

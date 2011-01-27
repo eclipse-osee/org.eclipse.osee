@@ -17,8 +17,8 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
 import org.eclipse.osee.framework.ui.skynet.render.word.AttributeElement;
 import org.eclipse.osee.framework.ui.skynet.render.word.Producer;
@@ -88,7 +88,9 @@ public interface IRenderer {
 
    public String getName();
 
-   public void setOptions(VariableMap options) throws OseeArgumentException;
+   public void setOptions(Object... options) throws OseeArgumentException;
+
+   public void setOption(String optionName, Object value);
 
    public String getStringOption(String key) throws OseeArgumentException;
 
@@ -96,7 +98,7 @@ public interface IRenderer {
 
    public boolean getBooleanOption(String key) throws OseeArgumentException;
 
-   public VariableMap getOptions();
+   public Branch getBranchOption(String key) throws OseeArgumentException;
 
    public IRenderer newInstance() throws OseeCoreException;
 

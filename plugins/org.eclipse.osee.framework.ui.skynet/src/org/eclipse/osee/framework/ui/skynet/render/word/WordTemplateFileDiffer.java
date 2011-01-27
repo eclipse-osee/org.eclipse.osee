@@ -106,7 +106,7 @@ public class WordTemplateFileDiffer {
       options.setValue("paragraphNumber", nextParagraphNumber);
       options.setValue("outlineType", outlineType);
 
-      RendererManager.diff(artifactDeltas, options);
+      RendererManager.diff(artifactDeltas, options.getValues());
    }
 
    private List<Artifact> getStartArtifacts(List<Artifact> artifacts, Branch startBranch) throws OseeCoreException {

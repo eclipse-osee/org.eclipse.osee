@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.AbstractEditorHandler;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
@@ -25,8 +24,7 @@ public class ShowArtifactInResourceHandler extends AbstractEditorHandler {
 
    @Override
    public Object executeWithException(ExecutionEvent event) throws OseeCoreException {
-      RendererManager.openInJob(artifacts, new VariableMap(IRenderer.OPEN_IN_HISTORY, Boolean.TRUE),
-         PresentationType.GENERALIZED_EDIT);
+      RendererManager.openInJob(artifacts, PresentationType.GENERALIZED_EDIT, IRenderer.OPEN_IN_HISTORY, Boolean.TRUE);
       return null;
    }
 }

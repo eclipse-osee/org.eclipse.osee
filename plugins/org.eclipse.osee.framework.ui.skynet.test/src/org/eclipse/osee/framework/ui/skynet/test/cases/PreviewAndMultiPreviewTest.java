@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.test.util.FrameworkTestUtil;
-import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
@@ -138,8 +137,8 @@ public class PreviewAndMultiPreviewTest {
 
             parentArtifact.persist();
 
-            RendererManager.open(parentArtifact, PresentationType.PREVIEW, new VariableMap(
-               ITemplateRenderer.PREVIEW_WITH_RECURSE_OPTION_PAIR));
+            RendererManager.open(parentArtifact, PresentationType.PREVIEW,
+               ITemplateRenderer.PREVIEW_WITH_RECURSE_OPTION_PAIR);
          }
       };
       template.test();
@@ -180,8 +179,7 @@ public class PreviewAndMultiPreviewTest {
 
       parentArtifact.persist();
 
-      RendererManager.open(parentArtifact, PresentationType.PREVIEW, new VariableMap(
-         ITemplateRenderer.PREVIEW_WITH_RECURSE_OPTION_PAIR));
+      RendererManager.open(parentArtifact, PresentationType.PREVIEW, ITemplateRenderer.PREVIEW_WITH_RECURSE_OPTION_PAIR);
 
       // should get one warning since the child is a general document
       Collection<IHealthStatus> warnings = monitorLog.getLogsAtLevel(Level.WARNING);

@@ -220,8 +220,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
 
       template = WordUtil.removeGUIDFromTemplate(template);
       return templateProcessor.applyTemplate(getOptions(), artifacts, template, null,
-         getOptions() != null ? getOptions().getString("paragraphNumber") : null,
-         getOptions() != null ? getOptions().getString("outlineType") : null, presentationType);
+         getStringOption("paragraphNumber"), getStringOption("outlineType"), presentationType);
    }
 
    protected String getTemplate(Artifact artifact, PresentationType presentationType) throws OseeCoreException {

@@ -33,7 +33,6 @@ import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
-import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 
@@ -102,14 +101,8 @@ public class ExportChangeReportOperation extends AbstractOperation {
    }
 
    private void generateDiffReport(Collection<Change> changes, String legacyPcrId, IProgressMonitor monitor) throws OseeCoreException {
-      VariableMap options = new VariableMap();
-      options.setValue(IRenderer.NO_DISPLAY, true);
-      options.setValue("diffReportFolderName", legacyPcrId);
-      options.setValue(IRenderer.FILE_NAME_OPTION, legacyPcrId);
-      options.setValue(IRenderer.SKIP_DIALOGS, true);
-
       Collection<ArtifactDelta> artifactDeltas = ChangeManager.getCompareArtifacts(changes);
-
-      RendererManager.diff(artifactDeltas, options);
+      RendererManager.diff(artifactDeltas, IRenderer.NO_DISPLAY, true, "diffReportFolderName", legacyPcrId,
+         IRenderer.FILE_NAME_OPTION, legacyPcrId, IRenderer.SKIP_DIALOGS, true);
    }
 }

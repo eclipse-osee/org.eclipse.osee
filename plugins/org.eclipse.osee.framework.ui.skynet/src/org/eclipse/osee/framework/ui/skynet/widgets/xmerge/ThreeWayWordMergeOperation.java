@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xmerge;
 
+import static org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer.TEMPLATE_OPTION;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
@@ -28,7 +29,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
@@ -83,7 +83,7 @@ public class ThreeWayWordMergeOperation extends AbstractOperation {
          "Source_Dest_Merge_" + mergeArtifact.getSafeName() + "(" + mergeArtifact.getGuid() + ")" + new Date().toString().replaceAll(
             ":", ";") + ".xml";
 
-      VariableMap options = new VariableMap(IRenderer.FILE_NAME_OPTION, fileName, IRenderer.NO_DISPLAY, true);
+      Object[] options = new Object[] {IRenderer.FILE_NAME_OPTION, fileName, IRenderer.NO_DISPLAY, true};
       File mergedFile = new File(RendererManager.merge(mergeArtifact, null, sourceChangeFile, destChangeFile, options));
 
       monitor.worked(40);
@@ -100,11 +100,9 @@ public class ThreeWayWordMergeOperation extends AbstractOperation {
    }
 
    private static IFile createMergeDiffFile(Artifact baseVersion, Artifact newerVersion) throws Exception {
-      VariableMap options =
-         new VariableMap(IRenderer.NO_DISPLAY, true, ITemplateRenderer.TEMPLATE_OPTION,
-            ITemplateRenderer.DIFF_NO_ATTRIBUTES_VALUE);
       ArtifactDelta artifactDelta = new ArtifactDelta(baseVersion, newerVersion);
-      return AIFile.constructIFile(RendererManager.diff(artifactDelta, options));
+      return AIFile.constructIFile(RendererManager.diff(artifactDelta, IRenderer.NO_DISPLAY, true, TEMPLATE_OPTION,
+         ITemplateRenderer.DIFF_NO_ATTRIBUTES_VALUE));
    }
 
    private static void changeAuthorinWord(String newAuthor, IFile iFile, int revisionNumber, String rsidNumber, String baselineRsid) throws Exception {

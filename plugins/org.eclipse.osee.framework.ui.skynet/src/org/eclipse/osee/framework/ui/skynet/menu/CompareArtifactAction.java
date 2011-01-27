@@ -74,7 +74,7 @@ public final class CompareArtifactAction extends Action {
          try {
             Artifact toCheck = change.getChangeArtifact();
             if (toCheck != null) {
-               IRenderer renderer = RendererManager.getBestRenderer(PresentationType.DIFF, toCheck, null);
+               IRenderer renderer = RendererManager.getBestRenderer(PresentationType.DIFF, toCheck);
                isValidSelection = renderer.supportsCompare();
             }
          } catch (OseeCoreException ex) {
@@ -92,7 +92,7 @@ public final class CompareArtifactAction extends Action {
          Object selectionB = selections[1];
          ArtifactDelta artifactDelta = asArtifactDelta(selectionA, selectionB);
          if (artifactDelta != null) {
-            RendererManager.diffInJob(artifactDelta);
+            RendererManager.diffInJob(artifactDelta, IRenderer.FILE_PREFIX_OPTION, "Diff_For");
          }
       }
    }

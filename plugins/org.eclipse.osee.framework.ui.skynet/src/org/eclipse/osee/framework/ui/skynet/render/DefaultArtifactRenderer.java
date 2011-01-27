@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -67,23 +68,19 @@ public class DefaultArtifactRenderer implements IRenderer {
    private static final String OPEN_ART_EXPLORER_CMD_ID =
       "org.eclipse.osee.framework.ui.skynet.revealArtifactInExplorer.command";
 
-   private VariableMap options;
+   private final VariableMap options = new VariableMap();
 
    @Override
    public String getName() {
       return "Artifact Editor";
    }
 
+   @Override
    public boolean supportsCompare() {
       return false;
    }
 
-   @Override
-   public void setOptions(VariableMap options) {
-      this.options = options;
-   }
-
-   @Override
+   @Deprecated
    public VariableMap getOptions() {
       return options;
    }
@@ -275,5 +272,20 @@ public class DefaultArtifactRenderer implements IRenderer {
    @Override
    public Object getOption(String key) {
       return options.getValue(key);
+   }
+
+   @Override
+   public Branch getBranchOption(String key) throws OseeArgumentException {
+      return options.getBranch(key);
+   }
+
+   @Override
+   public void setOption(String optionName, Object value) {
+      options.setValue(optionName, value);
+   }
+
+   @Override
+   public void setOptions(Object... options) throws OseeArgumentException {
+      this.options.setValues(options);
    }
 }

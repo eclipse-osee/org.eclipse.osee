@@ -20,21 +20,20 @@ import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
 
 public final class DiffUsingRenderer extends AbstractOperation {
-   private final VariableMap options;
+   private final Object[] options;
    private final Collection<ArtifactDelta> artifactDeltas;
    private String diffResultPath;
 
-   public DiffUsingRenderer(Collection<ArtifactDelta> artifactDeltas, VariableMap options) {
+   public DiffUsingRenderer(Collection<ArtifactDelta> artifactDeltas, Object... options) {
       super(generateOperationName(artifactDeltas), SkynetGuiPlugin.PLUGIN_ID);
       this.artifactDeltas = artifactDeltas;
       this.options = options;
    }
 
-   public DiffUsingRenderer(ArtifactDelta artifactDelta, VariableMap options) {
+   public DiffUsingRenderer(ArtifactDelta artifactDelta, Object... options) {
       this(Collections.singletonList(artifactDelta), options);
    }
 

@@ -395,11 +395,10 @@ public class WordTemplateProcessor {
                   paragraphNumber = wordMl.startOutlineSubSection("Times New Roman", headingText, outlineType);
                }
 
-               VariableMap options = renderer.getOptions();
                if (renderer.getBooleanOption(WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION)) {
                   if (artifact.isAttributeTypeValid(CoreAttributeTypes.ParagraphNumber)) {
                      artifact.setSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, paragraphNumber.toString());
-                     artifact.persist((SkynetTransaction) options.getValue(ITemplateRenderer.TRANSACTION_OPTION));
+                     artifact.persist((SkynetTransaction) renderer.getOption(ITemplateRenderer.TRANSACTION_OPTION));
                   }
                }
             }
@@ -496,13 +495,13 @@ public class WordTemplateProcessor {
          }
 
          if (!(publishInLine && artifact.isAttributeTypeValid(WordTemplateContent)) || attributeType.equals(WordTemplateContent)) {
-            RendererManager.renderAttribute(attributeType, presentationType, artifact, variableMap, wordMl,
-               attributeElement);
+            RendererManager.renderAttribute(attributeType, presentationType, artifact, wordMl, attributeElement,
+               variableMap.getValues());
          }
       }
    }
 
-   private VariableMap ensureMapIsSetForDocLinks(VariableMap variableMap, boolean allAttrs) throws OseeArgumentException {
+   private VariableMap ensureMapIsSetForDocLinks(VariableMap variableMap, boolean allAttrs) {
       //Do not try to use a null map
       VariableMap theMap = variableMap;
       if (theMap == null) {

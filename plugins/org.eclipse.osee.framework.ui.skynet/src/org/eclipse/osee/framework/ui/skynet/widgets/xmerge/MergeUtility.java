@@ -34,7 +34,6 @@ import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
@@ -103,8 +102,7 @@ public class MergeUtility {
    }
 
    public static void showCompareFile(Artifact art1, Artifact art2, String filePrefix) throws OseeCoreException {
-      RendererManager.diffInJob(new ArtifactDelta(art1, art2),
-         new VariableMap(IRenderer.FILE_PREFIX_OPTION, filePrefix));
+      RendererManager.diffInJob(new ArtifactDelta(art1, art2), IRenderer.FILE_PREFIX_OPTION, filePrefix);
    }
 
    public static boolean showDeletedConflict(Conflict conflict, Shell shell) {

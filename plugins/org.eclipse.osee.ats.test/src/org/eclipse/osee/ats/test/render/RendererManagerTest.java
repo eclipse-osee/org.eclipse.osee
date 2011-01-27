@@ -106,7 +106,7 @@ public class RendererManagerTest {
    }
 
    private IRenderer computeRenderer(Artifact artifact) throws OseeCoreException {
-      IRenderer renderer = RendererManager.getBestRenderer(presentationType, artifact, null);
+      IRenderer renderer = RendererManager.getBestRenderer(presentationType, artifact);
       Assert.assertNotNull(renderer);
       return renderer;
    }

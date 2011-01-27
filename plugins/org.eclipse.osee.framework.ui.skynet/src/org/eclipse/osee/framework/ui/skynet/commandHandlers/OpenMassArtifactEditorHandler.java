@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.AbstractEditorHandler;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
@@ -25,8 +24,8 @@ public class OpenMassArtifactEditorHandler extends AbstractEditorHandler {
 
    @Override
    public Object executeWithException(ExecutionEvent arg0) throws OseeCoreException {
-      RendererManager.openInJob(artifacts, new VariableMap(IRenderer.OPEN_IN_TABLE_EDITOR, Boolean.TRUE),
-         PresentationType.GENERALIZED_EDIT);
+      RendererManager.openInJob(artifacts, PresentationType.GENERALIZED_EDIT, IRenderer.OPEN_IN_TABLE_EDITOR,
+         Boolean.TRUE);
       return null;
    }
 }

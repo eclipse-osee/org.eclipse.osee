@@ -69,21 +69,29 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
       if (artifacts != null && artifacts.isEmpty()) {
          artifacts = null;
       }
-      VariableMap newVariableMap = new VariableMap();
-      newVariableMap.setValue("Branch", branch);
-      newVariableMap.setValue("compareBranch", variableMap.getBranch("Compare Against Another Branch"));
-      newVariableMap.setValue("Update Paragraph Numbers", updateParagraphNumber);
-      newVariableMap.setValue("Publish As Diff", variableMap.getValue("Publish As Diff"));
-      //      newVariableMap.setValue("Diff from Baseline", variableMap.getValue("Diff from Baseline"));
-      newVariableMap.setValue("linkType", linkType);
-      newVariableMap.setValue("OpenDocument", variableMap.getValue("Open Document in Word"));
 
       WordTemplateRenderer renderer = new WordTemplateRenderer();
       SkynetTransaction transaction = new SkynetTransaction(branch, "BLAM: Publish with specified template");
-
-      renderer.setOptions(new VariableMap(WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION, updateParagraphNumber,
-         ITemplateRenderer.TRANSACTION_OPTION, transaction));
-      renderer.publish(newVariableMap, master, slave, artifacts);
+      Object[] options =
+         new Object[] {
+            "Branch",
+            branch,
+            "compareBranch",
+            variableMap.getBranch("Compare Against Another Branch"),
+            "Update Paragraph Numbers",
+            updateParagraphNumber,
+            "Publish As Diff",
+            variableMap.getValue("Publish As Diff"),
+            "linkType",
+            linkType,
+            "OpenDocument",
+            variableMap.getValue("Open Document in Word"),
+            WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION,
+            updateParagraphNumber,
+            ITemplateRenderer.TRANSACTION_OPTION,
+            transaction};
+      renderer.setOptions(options);
+      renderer.publish(renderer.getOptions(), master, slave, artifacts);
 
       transaction.execute();
    }

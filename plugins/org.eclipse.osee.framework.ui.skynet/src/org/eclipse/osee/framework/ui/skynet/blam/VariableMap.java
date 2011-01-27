@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -29,7 +30,15 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 public class VariableMap {
    private final Map<String, Object> variableMap = new HashMap<String, Object>();
 
+   public VariableMap() {
+      // provides a constructor that does not throw OseeArgumentException
+   }
+
    public VariableMap(Object... optionArgs) throws OseeArgumentException {
+      setValues(optionArgs);
+   }
+
+   public void setValues(Object... optionArgs) throws OseeArgumentException {
       for (int i = 0; i < optionArgs.length; i += 2) {
          Object object = optionArgs[i];
          if (object instanceof String) {
@@ -41,6 +50,16 @@ public class VariableMap {
                optionArgs[i].getClass().getName());
          }
       }
+   }
+
+   public Object[] getValues() {
+      Object[] values = new Object[variableMap.size() * 2];
+      int index = 0;
+      for (Entry<String, Object> entry : variableMap.entrySet()) {
+         values[index++] = entry.getKey();
+         values[index++] = entry.getValue();
+      }
+      return values;
    }
 
    public void setValue(String variableName, Object value) {

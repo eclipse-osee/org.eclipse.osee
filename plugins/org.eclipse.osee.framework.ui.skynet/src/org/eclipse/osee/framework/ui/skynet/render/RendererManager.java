@@ -34,7 +34,6 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
 import org.eclipse.osee.framework.ui.skynet.render.word.AttributeElement;
 import org.eclipse.osee.framework.ui.skynet.render.word.Producer;
@@ -98,7 +97,7 @@ public final class RendererManager {
       }
    }
 
-   public static IRenderer getBestRenderer(PresentationType presentationType, Artifact artifact, VariableMap options) throws OseeCoreException {
+   public static IRenderer getBestRenderer(PresentationType presentationType, Artifact artifact, Object... options) throws OseeCoreException {
       IRenderer bestRenderer = getBestRendererPrototype(presentationType, artifact).newInstance();
       bestRenderer.setOptions(options);
       return bestRenderer;
@@ -125,20 +124,19 @@ public final class RendererManager {
       return bestRendererPrototype;
    }
 
-   public static void renderAttribute(IAttributeType attributeType, PresentationType presentationType, Artifact artifact, VariableMap options, Producer producer, AttributeElement attributeElement) throws OseeCoreException {
+   public static void renderAttribute(IAttributeType attributeType, PresentationType presentationType, Artifact artifact, Producer producer, AttributeElement attributeElement, Object... options) throws OseeCoreException {
       getBestRenderer(PRODUCE_ATTRIBUTE, artifact, options).renderAttribute(attributeType, artifact, presentationType,
          producer, attributeElement);
    }
 
    public static Collection<IAttributeType> getAttributeTypeOrderList(Artifact artifact) throws OseeCoreException {
-      return getBestRenderer(PresentationType.PRODUCE_ATTRIBUTE, artifact, null).getOrderedAttributeTypes(artifact,
+      return getBestRenderer(PresentationType.PRODUCE_ATTRIBUTE, artifact).getOrderedAttributeTypes(artifact,
          artifact.getAttributeTypes());
    }
 
    private static List<IRenderer> getApplicableRenderers(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
       ArrayList<IRenderer> applicableRenderers = new ArrayList<IRenderer>();
-      int minimumRank =
-         Math.max(getBestRenderer(presentationType, artifact, null).minimumRanking(), IRenderer.DEFAULT_MATCH);
+      int minimumRank = Math.max(getBestRenderer(presentationType, artifact).minimumRanking(), IRenderer.DEFAULT_MATCH);
 
       for (IRenderer prototypeRenderer : renderers) {
          // Add Catch Exception Code --
@@ -152,7 +150,7 @@ public final class RendererManager {
       return applicableRenderers;
    }
 
-   public static HashCollection<IRenderer, Artifact> createRenderMap(PresentationType presentationType, Collection<Artifact> artifacts, VariableMap options) throws OseeCoreException {
+   public static HashCollection<IRenderer, Artifact> createRenderMap(PresentationType presentationType, Collection<Artifact> artifacts, Object... options) throws OseeCoreException {
       HashCollection<IRenderer, Artifact> prototypeRendererArtifactMap =
          new HashCollection<IRenderer, Artifact>(false, LinkedList.class);
       for (Artifact artifact : artifacts) {
@@ -171,67 +169,55 @@ public final class RendererManager {
    }
 
    public static void openInJob(Artifact artifact, PresentationType presentationType) {
-      openInJob(Collections.singletonList(artifact), null, presentationType);
+      openInJob(Collections.singletonList(artifact), presentationType);
    }
 
-   public static void openInJob(Collection<Artifact> artifacts, PresentationType presentationType) {
-      openInJob(artifacts, null, presentationType);
+   public static void openInJob(Collection<Artifact> artifacts, PresentationType presentationType, Object... options) {
+      Operations.executeAsJob(new OpenUsingRenderer(artifacts, presentationType, options), true);
    }
 
-   public static void openInJob(Collection<Artifact> artifacts, VariableMap options, PresentationType presentationType) {
-      Operations.executeAsJob(new OpenUsingRenderer(artifacts, options, presentationType), true);
-   }
-
-   public static void open(Collection<Artifact> artifacts, PresentationType presentationType, VariableMap options, IProgressMonitor monitor) throws OseeCoreException {
-      Operations.executeWorkAndCheckStatus(new OpenUsingRenderer(artifacts, options, presentationType), monitor);
+   public static void open(Collection<Artifact> artifacts, PresentationType presentationType, IProgressMonitor monitor, Object... options) throws OseeCoreException {
+      Operations.executeWorkAndCheckStatus(new OpenUsingRenderer(artifacts, presentationType, options), monitor);
    }
 
    public static void open(Collection<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
-      open(artifacts, presentationType, null, new NullProgressMonitor());
+      open(artifacts, presentationType, new NullProgressMonitor());
    }
 
-   public static void open(Artifact artifact, PresentationType presentationType, VariableMap options) throws OseeCoreException {
-      open(Collections.singletonList(artifact), presentationType, options, new NullProgressMonitor());
+   public static void open(Artifact artifact, PresentationType presentationType, Object... options) throws OseeCoreException {
+      open(Collections.singletonList(artifact), presentationType, new NullProgressMonitor(), options);
    }
 
-   public static void open(Artifact artifact, final PresentationType presentationType, IProgressMonitor monitor) throws OseeCoreException {
-      open(Collections.singletonList(artifact), presentationType, null, monitor);
+   public static void open(Artifact artifact, PresentationType presentationType, IProgressMonitor monitor) throws OseeCoreException {
+      open(Collections.singletonList(artifact), presentationType, monitor);
    }
 
-   public static void open(Artifact artifact, final PresentationType presentationType) throws OseeCoreException {
+   public static void open(Artifact artifact, PresentationType presentationType) throws OseeCoreException {
       open(Collections.singletonList(artifact), presentationType);
    }
 
-   public static String merge(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, VariableMap options) throws OseeCoreException {
+   public static String merge(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, Object... options) throws OseeCoreException {
       IRenderer renderer = getBestRenderer(PresentationType.MERGE, baseVersion, options);
       IComparator comparator = renderer.getComparator();
       return comparator.compare(baseVersion, newerVersion, baseFile, newerFile, PresentationType.MERGE);
    }
 
-   public static void diffInJob(ArtifactDelta artifactDelta) throws OseeCoreException {
-      diffInJob(artifactDelta, new VariableMap(IRenderer.FILE_PREFIX_OPTION, "Diff_For"));
-   }
-
-   public static void diffInJob(ArtifactDelta artifactDelta, VariableMap options) {
+   public static void diffInJob(ArtifactDelta artifactDelta, Object... options) {
       Operations.executeAsJob(new DiffUsingRenderer(artifactDelta, options), true);
    }
 
-   public static String diff(ArtifactDelta artifactDelta, VariableMap options) {
+   public static String diff(ArtifactDelta artifactDelta, Object... options) {
       DiffUsingRenderer operation = new DiffUsingRenderer(artifactDelta, options);
       Operations.executeWork(operation);
       return operation.getDiffResultPath();
    }
 
-   public static void diffInJob(Collection<ArtifactDelta> artifactDeltas) {
-      diffInJob(artifactDeltas, null);
-   }
-
-   public static void diffInJob(Collection<ArtifactDelta> artifactDeltas, VariableMap options) {
+   public static void diffInJob(Collection<ArtifactDelta> artifactDeltas, Object... options) {
       IOperation operation = new DiffUsingRenderer(artifactDeltas, options);
       Operations.executeAsJob(operation, true);
    }
 
-   public static void diff(Collection<ArtifactDelta> artifactDeltas, VariableMap options) {
+   public static void diff(Collection<ArtifactDelta> artifactDeltas, Object... options) {
       IOperation operation = new DiffUsingRenderer(artifactDeltas, options);
       Operations.executeWork(operation);
    }

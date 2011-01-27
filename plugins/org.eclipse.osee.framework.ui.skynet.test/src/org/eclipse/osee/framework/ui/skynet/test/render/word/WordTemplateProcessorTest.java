@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
-import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
@@ -94,8 +93,8 @@ public class WordTemplateProcessorTest {
       String fullPath = RenderingUtil.getRenderFolder(SAW_Bld_1, PresentationType.PREVIEW).getLocation().toOSString();
 
       RenderingUtil.setPopupsAllowed(false);
-      RendererManager.open(myRootArtifact, PresentationType.PREVIEW, new VariableMap(ITemplateRenderer.TEMPLATE_OPTION,
-         ITemplateRenderer.PREVIEW_WITH_RECURSE_VALUE, IRenderer.FILE_NAME_OPTION, fileName));
+      RendererManager.open(myRootArtifact, PresentationType.PREVIEW, ITemplateRenderer.TEMPLATE_OPTION,
+         ITemplateRenderer.PREVIEW_WITH_RECURSE_VALUE, IRenderer.FILE_NAME_OPTION, fileName);
 
       String fileContents = Lib.fileToString(new File(fullPath, fileName));
       Assert.assertTrue(String.format(ERROR_MESSAGE, artifact, "with"), fileContents.contains(expected));

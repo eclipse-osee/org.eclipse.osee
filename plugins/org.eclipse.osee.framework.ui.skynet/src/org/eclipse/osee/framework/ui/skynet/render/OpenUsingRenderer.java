@@ -18,17 +18,16 @@ import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
 /**
  * @author Ryan D. Brooks
  */
 public final class OpenUsingRenderer extends AbstractOperation {
    private final Collection<Artifact> artifacts;
-   private final VariableMap options;
+   private final Object[] options;
    private final PresentationType presentationType;
 
-   public OpenUsingRenderer(Collection<Artifact> artifacts, VariableMap options, PresentationType presentationType) {
+   public OpenUsingRenderer(Collection<Artifact> artifacts, PresentationType presentationType, Object... options) {
       super(String.format("Open for %s using renderer", presentationType), SkynetGuiPlugin.PLUGIN_ID);
       this.artifacts = artifacts;
       this.options = options;
