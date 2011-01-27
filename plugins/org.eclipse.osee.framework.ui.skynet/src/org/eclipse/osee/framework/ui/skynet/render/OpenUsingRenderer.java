@@ -26,6 +26,7 @@ public final class OpenUsingRenderer extends AbstractOperation {
    private final Collection<Artifact> artifacts;
    private final Object[] options;
    private final PresentationType presentationType;
+   private String resutPath;
 
    public OpenUsingRenderer(Collection<Artifact> artifacts, PresentationType presentationType, Object... options) {
       super(String.format("Open for %s using renderer", presentationType), SkynetGuiPlugin.PLUGIN_ID);
@@ -44,6 +45,12 @@ public final class OpenUsingRenderer extends AbstractOperation {
 
       for (IRenderer renderer : rendererArtifactMap.keySet()) {
          renderer.open((LinkedList<Artifact>) rendererArtifactMap.getValues(renderer), presentationType);
+         resutPath = renderer.getStringOption(IRenderer.RESULT_PATH_RETURN);
       }
+
+   }
+
+   public String getResultPath() {
+      return resutPath;
    }
 }

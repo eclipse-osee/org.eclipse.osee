@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.test.render.word;
 
+import static org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer.PREVIEW_WITH_RECURSE_OPTION_PAIR;
 import static org.eclipse.osee.support.test.util.DemoSawBuilds.SAW_Bld_1;
 import java.io.File;
 import java.io.IOException;
@@ -25,11 +26,8 @@ import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
-import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
-import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
-import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -89,14 +87,10 @@ public class WordTemplateProcessorTest {
    }
 
    private void checkPreviewContents(Artifact artifact, String expected, String notExpected) throws OseeCoreException, IOException {
-      String fileName = String.format("WordTemplateProcessorTest_%s_%s.xml", artifact, Lib.getDateTimeString());
-      String fullPath = RenderingUtil.getRenderFolder(SAW_Bld_1, PresentationType.PREVIEW).getLocation().toOSString();
+      String filePath =
+         RendererManager.open(myRootArtifact, PresentationType.PREVIEW, PREVIEW_WITH_RECURSE_OPTION_PAIR);
 
-      RenderingUtil.setPopupsAllowed(false);
-      RendererManager.open(myRootArtifact, PresentationType.PREVIEW, ITemplateRenderer.TEMPLATE_OPTION,
-         ITemplateRenderer.PREVIEW_WITH_RECURSE_VALUE, IRenderer.FILE_NAME_OPTION, fileName);
-
-      String fileContents = Lib.fileToString(new File(fullPath, fileName));
+      String fileContents = Lib.fileToString(new File(filePath));
       Assert.assertTrue(String.format(ERROR_MESSAGE, artifact, "with"), fileContents.contains(expected));
       Assert.assertTrue(String.format(ERROR_MESSAGE, artifact, "without"), !fileContents.contains(notExpected));
    }

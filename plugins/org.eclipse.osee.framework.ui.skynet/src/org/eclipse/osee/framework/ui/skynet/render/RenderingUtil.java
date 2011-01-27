@@ -86,7 +86,9 @@ public final class RenderingUtil {
 
    public static IFile getRenderFile(FileSystemRenderer renderer, List<Artifact> artifacts, IOseeBranch branch, PresentationType presentationType) throws OseeCoreException {
       String fileName = getFilenameFromArtifact(renderer, artifacts, presentationType);
-      return getRenderFile(fileName, branch, presentationType);
+      IFile file = getRenderFile(fileName, branch, presentationType);
+      renderer.setOption(IRenderer.RESULT_PATH_RETURN, file.getLocation().toOSString());
+      return file;
    }
 
    public static IFile getRenderFile(String fileName, IOseeBranch branch, PresentationType presentationType) throws OseeCoreException {
@@ -94,11 +96,7 @@ public final class RenderingUtil {
       return baseFolder.getFile(fileName);
    }
 
-   public static String getRenderPath(String fileName, IOseeBranch branch, PresentationType presentationType) throws OseeCoreException {
-      return getRenderFile(fileName, branch, presentationType).getLocation().toOSString();
-   }
-
-   public static String getFilenameFromArtifact(FileSystemRenderer renderer, List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
+   private static String getFilenameFromArtifact(FileSystemRenderer renderer, List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
       String fileName = renderer.getStringOption(IRenderer.FILE_NAME_OPTION);
       String prefix = renderer.getStringOption(IRenderer.FILE_PREFIX_OPTION);
       if (Strings.isValid(fileName)) {
@@ -138,7 +136,7 @@ public final class RenderingUtil {
       return name.toString();
    }
 
-   public static IFolder getRenderFolder(IOseeBranch branch, PresentationType presentationType) throws OseeCoreException {
+   private static IFolder getRenderFolder(IOseeBranch branch, PresentationType presentationType) throws OseeCoreException {
       try {
          IFolder baseFolder = ensureRenderFolderExists(presentationType);
          IFolder renderFolder = baseFolder.getFolder(toFileName(branch));

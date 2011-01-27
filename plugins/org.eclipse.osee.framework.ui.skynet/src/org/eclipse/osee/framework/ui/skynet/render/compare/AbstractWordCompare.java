@@ -125,7 +125,8 @@ public abstract class AbstractWordCompare implements IComparator {
 
    protected void finish(IVbaDiffGenerator diffGenerator, IOseeBranch branch, PresentationType presentationType) throws OseeCoreException {
       boolean show = !renderer.getBooleanOption(IRenderer.NO_DISPLAY);
-      String vbsPath = RenderingUtil.getRenderPath("compareDocs.vbs", branch, presentationType);
+      String vbsPath =
+         RenderingUtil.getRenderFile("compareDocs.vbs", branch, presentationType).getLocation().toOSString();
       if (RenderingUtil.arePopupsAllowed()) {
          diffGenerator.finish(vbsPath, show);
       } else {

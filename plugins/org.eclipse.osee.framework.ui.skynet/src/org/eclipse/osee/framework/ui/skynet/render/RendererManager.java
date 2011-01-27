@@ -176,24 +176,26 @@ public final class RendererManager {
       Operations.executeAsJob(new OpenUsingRenderer(artifacts, presentationType, options), true);
    }
 
-   public static void open(Collection<Artifact> artifacts, PresentationType presentationType, IProgressMonitor monitor, Object... options) throws OseeCoreException {
-      Operations.executeWorkAndCheckStatus(new OpenUsingRenderer(artifacts, presentationType, options), monitor);
+   public static String open(Collection<Artifact> artifacts, PresentationType presentationType, IProgressMonitor monitor, Object... options) throws OseeCoreException {
+      OpenUsingRenderer operation = new OpenUsingRenderer(artifacts, presentationType, options);
+      Operations.executeWorkAndCheckStatus(operation, monitor);
+      return operation.getResultPath();
    }
 
-   public static void open(Collection<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
-      open(artifacts, presentationType, new NullProgressMonitor());
+   public static String open(Collection<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
+      return open(artifacts, presentationType, new NullProgressMonitor());
    }
 
-   public static void open(Artifact artifact, PresentationType presentationType, Object... options) throws OseeCoreException {
-      open(Collections.singletonList(artifact), presentationType, new NullProgressMonitor(), options);
+   public static String open(Artifact artifact, PresentationType presentationType, Object... options) throws OseeCoreException {
+      return open(Collections.singletonList(artifact), presentationType, new NullProgressMonitor(), options);
    }
 
-   public static void open(Artifact artifact, PresentationType presentationType, IProgressMonitor monitor) throws OseeCoreException {
-      open(Collections.singletonList(artifact), presentationType, monitor);
+   public static String open(Artifact artifact, PresentationType presentationType, IProgressMonitor monitor) throws OseeCoreException {
+      return open(Collections.singletonList(artifact), presentationType, monitor);
    }
 
-   public static void open(Artifact artifact, PresentationType presentationType) throws OseeCoreException {
-      open(Collections.singletonList(artifact), presentationType);
+   public static String open(Artifact artifact, PresentationType presentationType) throws OseeCoreException {
+      return open(Collections.singletonList(artifact), presentationType);
    }
 
    public static String merge(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, Object... options) throws OseeCoreException {
