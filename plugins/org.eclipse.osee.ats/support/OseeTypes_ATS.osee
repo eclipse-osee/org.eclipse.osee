@@ -419,6 +419,7 @@ oseeEnumType "enum.ats.change.type" {
    entry "Improvement" entryGuid "CArJmSBzfx4jvQ5vEtAA"
    entry "Problem" entryGuid "CArJmPw6F3bP1V5B59gA"
    entry "Support" entryGuid "CArJmSDgGAG4aKsU+KAA"
+   entry "Refinement" entryGuid "ADTfjCHhk0KoDVpUpagA"
 }
 
 attributeType "ats.Change Type" extends EnumeratedAttribute {

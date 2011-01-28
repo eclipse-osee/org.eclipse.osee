@@ -25,7 +25,8 @@ public enum ChangeType {
    None,
    Support,
    Problem,
-   Improvement;
+   Improvement,
+   Refinement;
 
    public static String[] getChangeTypes() {
       ArrayList<String> types = new ArrayList<String>();
@@ -53,6 +54,8 @@ public enum ChangeType {
          return ImageManager.getImage(FrameworkImage.GREEN_PLUS);
       } else if (this == ChangeType.Support) {
          return ImageManager.getImage(FrameworkImage.SUPPORT);
+      } else if (this == ChangeType.Refinement) {
+         return ImageManager.getImage(FrameworkImage.REFINEMENT);
       }
       return null;
    }
