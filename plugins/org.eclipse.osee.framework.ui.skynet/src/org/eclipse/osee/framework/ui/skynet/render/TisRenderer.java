@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
 import org.eclipse.osee.framework.ui.skynet.render.word.template.BasicTemplateAttributeHandler;
 import org.eclipse.osee.framework.ui.skynet.render.word.template.ITemplateAttributeHandler;
@@ -67,7 +66,6 @@ public class TisRenderer extends WordTemplateRenderer {
 
    @Override
    public InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts) throws OseeCoreException {
-      final VariableMap variableMap = new VariableMap();
       String template;
 
       if (artifacts.isEmpty()) {
@@ -77,8 +75,6 @@ public class TisRenderer extends WordTemplateRenderer {
          Artifact firstArtifact = artifacts.iterator().next();
          template = getTemplate(firstArtifact, presentationType);
       }
-
-      variableMap.setValue(DEFAULT_SET_NAME, artifacts);
 
       List<ITemplateAttributeHandler> handlers = new ArrayList<ITemplateAttributeHandler>();
       handlers.add(new SRSSpecialPublishingAttributeHandler());
@@ -90,7 +86,7 @@ public class TisRenderer extends WordTemplateRenderer {
       try {
          charBak = new CharBackedInputStream();
          WordMLProducer wordMl = new WordMLProducer(charBak);
-         wtm.processArtifacts(wordMl, variableMap.getArtifacts(wtm.getArtifactSet()));
+         wtm.processArtifacts(wordMl, artifacts);
       } catch (CharacterCodingException ex) {
          OseeExceptions.wrapAndThrow(ex);
       }
