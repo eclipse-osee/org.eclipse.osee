@@ -62,7 +62,7 @@ public abstract class AbstractWordCompare implements IComparator {
    @Override
    public String compare(IProgressMonitor monitor, PresentationType presentationType, ArtifactDelta artifactDelta) throws OseeCoreException {
       IVbaDiffGenerator diffGenerator = createGenerator(presentationType);
-      String diffPath = addTocompare(monitor, diffGenerator, presentationType, artifactDelta);
+      String diffPath = addToCompare(monitor, diffGenerator, presentationType, artifactDelta);
 
       Artifact testArtifact = artifactDelta.getStartArtifact();
       if (testArtifact == null) {
@@ -75,14 +75,14 @@ public abstract class AbstractWordCompare implements IComparator {
    @Override
    public String compare(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, PresentationType presentationType) throws OseeCoreException {
       IVbaDiffGenerator diffGenerator = createGenerator(presentationType);
-      String diffPath = addTocompare(diffGenerator, baseVersion, newerVersion, baseFile, newerFile, presentationType);
+      String diffPath = addToCompare(diffGenerator, baseVersion, newerVersion, baseFile, newerFile, presentationType);
 
       Artifact testArtifact = baseVersion != null ? baseVersion : newerVersion;
       finish(diffGenerator, testArtifact.getBranch(), presentationType);
       return diffPath;
    }
 
-   protected String addTocompare(IVbaDiffGenerator diffGenerator, Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, PresentationType presentationType) throws OseeCoreException {
+   protected String addToCompare(IVbaDiffGenerator diffGenerator, Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, PresentationType presentationType) throws OseeCoreException {
       Artifact testArtifact = baseVersion != null ? baseVersion : newerVersion;
       String diffPath =
          RenderingUtil.getRenderFile(renderer, Collections.singletonList(testArtifact), testArtifact.getBranch(),
@@ -92,7 +92,7 @@ public abstract class AbstractWordCompare implements IComparator {
       return diffPath;
    }
 
-   protected String addTocompare(IProgressMonitor monitor, IVbaDiffGenerator diffGenerator, PresentationType presentationType, ArtifactDelta artifactDelta) throws OseeCoreException {
+   protected String addToCompare(IProgressMonitor monitor, IVbaDiffGenerator diffGenerator, PresentationType presentationType, ArtifactDelta artifactDelta) throws OseeCoreException {
       Pair<String, Boolean> originalValue = null;
 
       Artifact baseArtifact = artifactDelta.getStartArtifact();
@@ -111,7 +111,7 @@ public abstract class AbstractWordCompare implements IComparator {
 
       monitor.setTaskName("Adding to Diff Script: " + (newerArtifact == null ? baseArtifact.getName() : newerArtifact.getName()));
 
-      return addTocompare(diffGenerator, baseArtifact, newerArtifact, compareFiles.getFirst(),
+      return addToCompare(diffGenerator, baseArtifact, newerArtifact, compareFiles.getFirst(),
          compareFiles.getSecond(), presentationType);
    }
 

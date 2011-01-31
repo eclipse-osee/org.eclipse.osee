@@ -44,7 +44,7 @@ public class WordTemplateCompare extends AbstractWordCompare {
          }
 
          try {
-            addTocompare(monitor, diffGenerator, PresentationType.DIFF, artifactDelta);
+            addToCompare(monitor, diffGenerator, PresentationType.DIFF, artifactDelta);
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          } finally {
