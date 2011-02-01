@@ -23,10 +23,8 @@ import org.eclipse.osee.framework.core.message.internal.translation.BranchCommit
 import org.eclipse.osee.framework.core.message.internal.translation.BranchCreationRequestTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.BranchCreationResponseTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.CacheUpdateRequestTranslator;
-import org.eclipse.osee.framework.core.message.internal.translation.ChangeItemTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.ChangeReportRequestTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.ChangeReportResponseTranslator;
-import org.eclipse.osee.framework.core.message.internal.translation.ChangeVersionTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.DatastoreInitRequestTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.OseeEnumTypeCacheUpdateResponseTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.OseeImportModelRequestTranslator;
@@ -64,8 +62,7 @@ public class DataTranslationServiceFactoryTest {
 
       checkExists(srvc, BranchCommitRequestTranslator.class, CoreTranslatorId.BRANCH_COMMIT_REQUEST);
       checkExists(srvc, BranchCommitResponseTranslator.class, CoreTranslatorId.BRANCH_COMMIT_RESPONSE);
-      checkExists(srvc, ChangeVersionTranslator.class, CoreTranslatorId.CHANGE_VERSION);
-      checkExists(srvc, ChangeItemTranslator.class, CoreTranslatorId.CHANGE_ITEM);
+
       checkExists(srvc, ChangeReportRequestTranslator.class, CoreTranslatorId.CHANGE_REPORT_REQUEST);
       checkExists(srvc, ChangeReportResponseTranslator.class, CoreTranslatorId.CHANGE_REPORT_RESPONSE);
 

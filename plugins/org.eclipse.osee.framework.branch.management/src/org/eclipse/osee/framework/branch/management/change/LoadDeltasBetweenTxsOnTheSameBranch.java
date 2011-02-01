@@ -75,12 +75,17 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends AbstractOperation {
       loadChangesAtEndTx(monitor, txJoin);
 
       int txJoinId = txJoin.getQueryId();
-
-      loadByItemId(monitor, txJoinId, changeItemLoader.createArtifactChangeItemFactory());
-      loadByItemId(monitor, txJoinId, changeItemLoader.createAttributeChangeItemFactory());
-      loadByItemId(monitor, txJoinId, changeItemLoader.createRelationChangeItemFactory());
-
-      txJoin.delete();
+      try {
+         loadByItemId(monitor, txJoinId, changeItemLoader.createArtifactChangeItemFactory());
+         loadByItemId(monitor, txJoinId, changeItemLoader.createAttributeChangeItemFactory());
+         loadByItemId(monitor, txJoinId, changeItemLoader.createRelationChangeItemFactory());
+      } finally {
+         try {
+            txJoin.delete();
+         } finally {
+            changeByGammaId.clear();
+         }
+      }
    }
 
    private void loadChangesAtEndTx(IProgressMonitor monitor, TransactionJoinQuery txJoin) throws OseeCoreException {

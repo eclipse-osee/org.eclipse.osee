@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.branch.management.IOseeBranchService;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.ChangeReportRequest;
 import org.eclipse.osee.framework.core.message.ChangeReportResponse;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -47,15 +48,20 @@ public class ChangeReportFunction extends AbstractOperation {
       ChangeReportRequest request =
          translationService.convert(req.getInputStream(), CoreTranslatorId.CHANGE_REPORT_REQUEST);
 
-      ChangeReportResponse response = new ChangeReportResponse();
-      IOperation subOp = branchService.getChanges(monitor, request, response);
-      doSubWork(subOp, monitor, 0.90);
-
       resp.setStatus(HttpServletResponse.SC_ACCEPTED);
       resp.setContentType("text/xml");
       resp.setCharacterEncoding("UTF-8");
-      InputStream inputStream = translationService.convertToStream(response, CoreTranslatorId.CHANGE_REPORT_RESPONSE);
+
+      InputStream inputStream = getChanges(monitor, request);
       Lib.inputStreamToOutputStream(inputStream, resp.getOutputStream());
+
       monitor.worked(calculateWork(0.10));
+   }
+
+   private InputStream getChanges(IProgressMonitor monitor, ChangeReportRequest request) throws OseeCoreException {
+      ChangeReportResponse response = new ChangeReportResponse();
+      IOperation subOp = branchService.getChanges(monitor, request, response);
+      doSubWork(subOp, monitor, 0.90);
+      return translationService.convertToStream(response, CoreTranslatorId.CHANGE_REPORT_RESPONSE);
    }
 }

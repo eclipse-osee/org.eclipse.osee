@@ -11,12 +11,18 @@
 package org.eclipse.osee.framework.core.message.internal.translation;
 
 import java.util.List;
-import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
+import org.eclipse.osee.framework.core.enums.ChangeItemType;
+import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.message.ArtifactChangeItem;
+import org.eclipse.osee.framework.core.message.AttributeChangeItem;
 import org.eclipse.osee.framework.core.message.ChangeItem;
 import org.eclipse.osee.framework.core.message.ChangeReportResponse;
+import org.eclipse.osee.framework.core.message.ChangeVersion;
+import org.eclipse.osee.framework.core.message.RelationChangeItem;
 import org.eclipse.osee.framework.core.message.TranslationUtil;
-import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.core.translation.ITranslator;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 
@@ -24,43 +30,142 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
  * @author Jeff C. Phillips
  */
 public class ChangeReportResponseTranslator implements ITranslator<ChangeReportResponse> {
-   private static enum Entry {
-      CHANGE_ITEM,
-      COUNT;
+
+   private enum Fields {
+      COUNT,
+      ROW,
+      CURR,
+      BASE,
+      FIRST,
+      DEST,
+      NET;
    }
 
-   private final IDataTranslationService service;
-
-   public ChangeReportResponseTranslator(IDataTranslationService service) {
+   public ChangeReportResponseTranslator() {
       super();
-      this.service = service;
    }
 
    @Override
-   public ChangeReportResponse convert(PropertyStore propertyStore) throws OseeCoreException {
-      ChangeReportResponse data = new ChangeReportResponse();
-      int numberOfItems = propertyStore.getInt(Entry.COUNT.name());
+   public ChangeReportResponse convert(PropertyStore store) throws OseeCoreException {
+      ChangeReportResponse response = new ChangeReportResponse();
 
-      for (int index = 0; index < numberOfItems; index++) {
-         String key = TranslationUtil.createKey(Entry.CHANGE_ITEM, index);
-         PropertyStore innerStore = propertyStore.getPropertyStore(key);
-         ChangeItem changeItem = service.convert(innerStore, CoreTranslatorId.CHANGE_ITEM);
-         data.addItem(changeItem);
+      int rowCount = store.getInt(Fields.COUNT.name());
+      for (int index = 0; index < rowCount; index++) {
+         String key = TranslationUtil.createKey(Fields.ROW, index);
+         String[] rowData = store.getArray(key);
+
+         ChangeItem item = fromArray(rowData);
+         load(store, Fields.CURR, index, item.getCurrentVersion());
+         load(store, Fields.BASE, index, item.getBaselineVersion());
+         load(store, Fields.FIRST, index, item.getFirstNonCurrentChange());
+         load(store, Fields.DEST, index, item.getDestinationVersion());
+         load(store, Fields.NET, index, item.getNetChange());
+
+         response.addItem(item);
       }
-      return data;
+      return response;
    }
 
    @Override
-   public PropertyStore convert(ChangeReportResponse changeReportResponseData) throws OseeCoreException {
+   public PropertyStore convert(ChangeReportResponse data) throws OseeCoreException {
       PropertyStore store = new PropertyStore();
-      List<ChangeItem> items = changeReportResponseData.getChangeItems();
 
+      List<ChangeItem> items = data.getChangeItems();
       for (int index = 0; index < items.size(); index++) {
-         ChangeItem changeItem = items.get(index);
-         PropertyStore innerStore = service.convert(changeItem, CoreTranslatorId.CHANGE_ITEM);
-         store.put(TranslationUtil.createKey(Entry.CHANGE_ITEM, index), innerStore);
+         ChangeItem item = items.get(index);
+         String key = TranslationUtil.createKey(Fields.ROW, index);
+         store.put(key, toArray(item));
+
+         store(store, Fields.CURR, index, item.getCurrentVersion());
+         store(store, Fields.BASE, index, item.getBaselineVersion());
+         store(store, Fields.FIRST, index, item.getFirstNonCurrentChange());
+         store(store, Fields.DEST, index, item.getDestinationVersion());
+         store(store, Fields.NET, index, item.getNetChange());
       }
-      store.put(Entry.COUNT.name(), items.size());
+      store.put(Fields.COUNT.name(), items.size());
       return store;
+   }
+
+   private static void load(PropertyStore store, Enum<?> prefix, int index, ChangeVersion version) throws OseeArgumentException, NumberFormatException {
+      String key = TranslationUtil.createKey(prefix, index);
+      String[] data = store.getArray(key);
+      if (data != null && data.length > 0) {
+         Long gammaId = Long.parseLong(data[0]);
+         ModificationType modificationType = ModificationType.getMod(Integer.parseInt(data[1]));
+         String value = data[2];
+
+         version.setGammaId(gammaId);
+         version.setModType(modificationType);
+         version.setValue(value);
+      }
+   }
+
+   private static void store(PropertyStore store, Enum<?> prefix, int index, ChangeVersion version) {
+      if (version != null && version.isValid()) {
+         String[] row = new String[3];
+         row[0] = String.valueOf(version.getGammaId());
+         row[1] = String.valueOf(version.getModType().getValue());
+         row[2] = version.getValue();
+
+         String key = TranslationUtil.createKey(prefix, index);
+         store.put(key, row);
+      }
+   }
+
+   private static String[] toArray(ChangeItem item) throws OseeStateException {
+      String[] row;
+      if (item instanceof ArtifactChangeItem) {
+         row = new String[3];
+         row[0] = ChangeItemType.ARTIFACT.name();
+         row[1] = String.valueOf(item.getItemId());
+         row[2] = String.valueOf(item.getItemTypeId());
+      } else if (item instanceof AttributeChangeItem) {
+         row = new String[4];
+         row[0] = ChangeItemType.ATTRIBUTE.name();
+         row[1] = String.valueOf(item.getItemId());
+         row[2] = String.valueOf(item.getItemTypeId());
+         row[3] = String.valueOf(item.getArtId());
+      } else if (item instanceof RelationChangeItem) {
+         row = new String[6];
+         RelationChangeItem relationChangeItem = (RelationChangeItem) item;
+         row[0] = ChangeItemType.RELATION.name();
+         row[1] = String.valueOf(item.getItemId());
+         row[2] = String.valueOf(item.getItemTypeId());
+         row[3] = String.valueOf(relationChangeItem.getArtId());
+         row[4] = String.valueOf(relationChangeItem.getBArtId());
+         row[5] = relationChangeItem.getRationale();
+      } else {
+         throw new OseeStateException("Invalid change item type");
+      }
+      return row;
+
+   }
+
+   private static ChangeItem fromArray(String[] row) throws OseeStateException {
+      ChangeItem changeItem = null;
+
+      ChangeItemType type = ChangeItemType.getType(row[0]);
+      int itemId = Integer.parseInt(row[1]);
+      int itemTypeId = Integer.parseInt(row[2]);
+      switch (type) {
+         case ARTIFACT:
+            changeItem = new ArtifactChangeItem(itemId, itemTypeId, -1, ModificationType.NEW);
+            break;
+         case ATTRIBUTE:
+            int artId = Integer.parseInt(row[3]);
+            changeItem = new AttributeChangeItem(itemId, itemTypeId, artId, -1, ModificationType.NEW, null);
+            break;
+         case RELATION:
+            int aArtId = Integer.parseInt(row[3]);
+            int bArtId = Integer.parseInt(row[4]);
+            String rationale = row[5];
+
+            changeItem =
+               new RelationChangeItem(itemId, itemTypeId, -1, ModificationType.NEW, aArtId, bArtId, rationale);
+            break;
+         default:
+            throw new OseeStateException("Invalid change item type");
+      }
+      return changeItem;
    }
 }

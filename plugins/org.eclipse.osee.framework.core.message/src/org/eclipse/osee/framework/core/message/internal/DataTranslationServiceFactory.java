@@ -24,10 +24,8 @@ import org.eclipse.osee.framework.core.message.internal.translation.BranchCommit
 import org.eclipse.osee.framework.core.message.internal.translation.BranchCreationRequestTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.BranchCreationResponseTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.CacheUpdateRequestTranslator;
-import org.eclipse.osee.framework.core.message.internal.translation.ChangeItemTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.ChangeReportRequestTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.ChangeReportResponseTranslator;
-import org.eclipse.osee.framework.core.message.internal.translation.ChangeVersionTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.DatastoreInitRequestTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.OseeEnumTypeCacheUpdateResponseTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.OseeImportModelRequestTranslator;
@@ -69,10 +67,8 @@ public class DataTranslationServiceFactory {
       service.addTranslator(new BranchChangeArchivedStateRequestTranslator(),
          CoreTranslatorId.CHANGE_BRANCH_ARCHIVE_STATE);
 
-      service.addTranslator(new ChangeVersionTranslator(), CoreTranslatorId.CHANGE_VERSION);
-      service.addTranslator(new ChangeItemTranslator(service), CoreTranslatorId.CHANGE_ITEM);
       service.addTranslator(new ChangeReportRequestTranslator(), CoreTranslatorId.CHANGE_REPORT_REQUEST);
-      service.addTranslator(new ChangeReportResponseTranslator(service), CoreTranslatorId.CHANGE_REPORT_RESPONSE);
+      service.addTranslator(new ChangeReportResponseTranslator(), CoreTranslatorId.CHANGE_REPORT_RESPONSE);
       service.addTranslator(new PurgeBranchRequestTranslator(), CoreTranslatorId.PURGE_BRANCH_REQUEST);
 
       service.addTranslator(new CacheUpdateRequestTranslator(), CoreTranslatorId.OSEE_CACHE_UPDATE_REQUEST);

@@ -14,14 +14,10 @@ package org.eclipse.osee.framework.core.message.test.translation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.ChangeItem;
 import org.eclipse.osee.framework.core.message.ChangeReportResponse;
-import org.eclipse.osee.framework.core.message.internal.DataTranslationService;
-import org.eclipse.osee.framework.core.message.internal.translation.ChangeItemTranslator;
 import org.eclipse.osee.framework.core.message.internal.translation.ChangeReportResponseTranslator;
-import org.eclipse.osee.framework.core.message.internal.translation.ChangeVersionTranslator;
 import org.eclipse.osee.framework.core.message.test.mocks.DataAsserts;
 import org.eclipse.osee.framework.core.message.test.mocks.MockRequestFactory;
 import org.eclipse.osee.framework.core.translation.ITranslator;
@@ -53,18 +49,13 @@ public class ChangeReportResponseTranslatorTest extends BaseTranslatorTest<Chang
 
    @Parameters
    public static Collection<Object[]> data() throws OseeCoreException {
-      DataTranslationService dataTranslationService = new DataTranslationService();
-      dataTranslationService.addTranslator(new ChangeItemTranslator(dataTranslationService),
-         CoreTranslatorId.CHANGE_ITEM);
-      dataTranslationService.addTranslator(new ChangeVersionTranslator(), CoreTranslatorId.CHANGE_VERSION);
-
       ChangeReportResponse response = new ChangeReportResponse();
       response.addItem(MockRequestFactory.createArtifactChangeItem());
       response.addItem(MockRequestFactory.createArtifactChangeItem());
       response.addItem(MockRequestFactory.createArtifactChangeItem());
 
       List<Object[]> data = new ArrayList<Object[]>();
-      ITranslator<ChangeReportResponse> translator = new ChangeReportResponseTranslator(dataTranslationService);
+      ITranslator<ChangeReportResponse> translator = new ChangeReportResponseTranslator();
 
       data.add(new Object[] {response, translator});
       return data;
