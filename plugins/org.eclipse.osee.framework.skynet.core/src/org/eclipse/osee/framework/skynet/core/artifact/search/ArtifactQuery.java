@@ -484,8 +484,9 @@ public class ArtifactQuery {
    }
 
    public static Artifact reloadArtifactFromId(int artId, IOseeBranch branch) throws OseeCoreException {
-      Artifact artifact = new ArtifactQueryBuilder(artId, branch, INCLUDE_DELETED, FULL).reloadArtifact();
-      OseeEventManager.kickLocalArtifactReloadEvent(new ArtifactQuery(), Collections.singleton(artifact));
+      ArtifactQueryBuilder query = new ArtifactQueryBuilder(artId, branch, INCLUDE_DELETED, FULL);
+      Artifact artifact = query.reloadArtifact();
+      OseeEventManager.kickLocalArtifactReloadEvent(query, Collections.singleton(artifact));
       return artifact;
    }
 
@@ -503,10 +504,10 @@ public class ArtifactQuery {
          }
          artIds.add(artifact.getArtId());
       }
+      ArtifactQueryBuilder query = new ArtifactQueryBuilder(artIds, branch, INCLUDE_DELETED, FULL);
 
-      Collection<Artifact> reloadedArts =
-         new ArtifactQueryBuilder(artIds, branch, INCLUDE_DELETED, FULL).reloadArtifacts(artifacts.size());
-      OseeEventManager.kickLocalArtifactReloadEvent(new ArtifactQuery(), artifacts);
+      Collection<Artifact> reloadedArts = query.reloadArtifacts(artifacts.size());
+      OseeEventManager.kickLocalArtifactReloadEvent(query, reloadedArts);
       return reloadedArts;
    }
 }

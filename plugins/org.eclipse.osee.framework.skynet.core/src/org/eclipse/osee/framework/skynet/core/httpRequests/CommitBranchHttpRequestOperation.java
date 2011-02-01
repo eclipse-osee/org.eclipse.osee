@@ -11,7 +11,9 @@
 package org.eclipse.osee.framework.skynet.core.httpRequests;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
@@ -25,6 +27,8 @@ import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.HttpClientMessage;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -92,6 +96,7 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
       Branch txBranch = BranchManager.getBranch(newTransaction.getBranchId());
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
+         Set<Artifact> artifacts = new HashSet<Artifact>();
          Object[] queryData =
             new Object[] {
                newTransaction.getBranchId(),
@@ -103,8 +108,12 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
          chStmt.runPreparedQuery(ARTIFACT_CHANGES, queryData);
          while (chStmt.next()) {
             int artId = chStmt.getInt("art_id");
-            ArtifactQuery.reloadArtifactFromId(artId, txBranch);
+            Artifact artifact = ArtifactCache.getActive(artId, txBranch);
+            if (artifact != null) {
+               artifacts.add(artifact);
+            }
          }
+         ArtifactQuery.reloadArtifacts(artifacts);
       } finally {
          chStmt.close();
       }
