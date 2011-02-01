@@ -413,7 +413,8 @@ public class AttributeConflict extends Conflict {
       try {
          getDestAttribute();
       } catch (AttributeDoesNotExist ex) {
-         passedStatus = ConflictStatus.NOT_RESOLVABLE;
+         passedStatus = ConflictStatus.INFORMATIONAL;
+
       }
       return super.computeStatus(attrId, passedStatus);
    }
