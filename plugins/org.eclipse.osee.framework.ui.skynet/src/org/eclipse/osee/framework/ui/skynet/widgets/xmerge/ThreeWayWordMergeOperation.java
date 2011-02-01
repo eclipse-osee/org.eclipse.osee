@@ -102,7 +102,7 @@ public class ThreeWayWordMergeOperation extends AbstractOperation {
    private static IFile createMergeDiffFile(Artifact baseVersion, Artifact newerVersion) throws Exception {
       ArtifactDelta artifactDelta = new ArtifactDelta(baseVersion, newerVersion);
       return AIFile.constructIFile(RendererManager.diff(artifactDelta, IRenderer.NO_DISPLAY, true, TEMPLATE_OPTION,
-         ITemplateRenderer.DIFF_NO_ATTRIBUTES_VALUE));
+         ITemplateRenderer.THREE_WAY_MERGE));
    }
 
    private static void changeAuthorinWord(String newAuthor, IFile iFile, int revisionNumber, String rsidNumber, String baselineRsid) throws Exception {
