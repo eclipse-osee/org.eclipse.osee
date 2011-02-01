@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.text.NumberFormat;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -68,10 +69,18 @@ public class XFloatDam extends XFloat implements IAttributeWidget {
 
    @Override
    public Result isDirty() throws OseeCoreException {
-      Double enteredValue = getFloat();
-      Double storedValue = getArtifact().getSoleAttributeValue(getAttributeType(), 0.0);
-      if (enteredValue.doubleValue() != storedValue.doubleValue()) {
-         return new Result(true, getAttributeType() + " is dirty");
+      try {
+         Double enteredValue = getFloat();
+         Double storedValue = getArtifact().getSoleAttributeValue(getAttributeType());
+         if (enteredValue.doubleValue() != storedValue.doubleValue()) {
+            return new Result(true, getAttributeType() + " is dirty");
+         }
+      } catch (AttributeDoesNotExist ex) {
+         if (!get().equals("")) {
+            return new Result(true, getAttributeType() + " is dirty");
+         }
+      } catch (NumberFormatException ex) {
+         // do nothing
       }
       return Result.FalseResult;
    }
