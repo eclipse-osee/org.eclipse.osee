@@ -49,9 +49,10 @@ public final class ConflictHandlingOperation extends AbstractOperation {
          if (conflict.isResolvable()) {
             switch (operation) {
                case RESET:
-                  if (conflict.statusResolved()) {
-                     MergeUtility.clearValue(conflict, null, false);
+                  if (conflict.statusResolved() || conflict.statusEdited()) {
+                     // Status must be set before clearing the conflict
                      conflict.setStatus(ConflictStatus.EDITED);
+                     MergeUtility.clearValue(conflict, null, false);
                   }
                   break;
                case SET_DST_AND_RESOLVE:
