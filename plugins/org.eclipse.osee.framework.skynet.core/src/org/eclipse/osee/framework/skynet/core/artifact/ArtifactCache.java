@@ -119,7 +119,7 @@ public final class ArtifactCache {
 
    public static void cacheByStaticId(Artifact artifact) throws OseeCoreException {
       for (String staticId : artifact.getAttributesToStringList(CoreAttributeTypes.StaticId)) {
-         ACTIVE_CACHE.cacheByStaticId(staticId, artifact);
+         cacheByStaticId(staticId, artifact);
       }
    }
 
