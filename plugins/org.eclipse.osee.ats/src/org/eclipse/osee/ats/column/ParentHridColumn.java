@@ -9,22 +9,23 @@ import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.swt.SWT;
 
-public class ParentIdColumn extends XViewerAtsColumn implements IXViewerValueColumn {
+public class ParentHridColumn extends XViewerAtsColumn implements IXViewerValueColumn {
 
-   public static ParentIdColumn instance = new ParentIdColumn();
+   public static ParentHridColumn instance = new ParentHridColumn();
 
-   public static ParentIdColumn getInstance() {
+   public static ParentHridColumn getInstance() {
       return instance;
    }
 
-   private ParentIdColumn() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".parentid", "Parent Id", 75, SWT.LEFT, false, SortDataType.String,
-         false, "ID of Parent Action or Team Workflow");
+   private ParentHridColumn() {
+      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".parenthrid", "Parent HRID", 75, SWT.LEFT, false,
+         SortDataType.String, false, "Human Readable ID of Parent Action or Team Workflow");
    }
 
    /**
@@ -32,8 +33,8 @@ public class ParentIdColumn extends XViewerAtsColumn implements IXViewerValueCol
     * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
     */
    @Override
-   public ParentIdColumn copy() {
-      ParentIdColumn newXCol = new ParentIdColumn();
+   public ParentHridColumn copy() {
+      ParentHridColumn newXCol = new ParentHridColumn();
       super.copy(this, newXCol);
       return newXCol;
    }
@@ -41,9 +42,12 @@ public class ParentIdColumn extends XViewerAtsColumn implements IXViewerValueCol
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
-         if (element instanceof AbstractWorkflowArtifact && ((AbstractWorkflowArtifact) element).getParentSMA() != null) {
-            return ((AbstractWorkflowArtifact) element).getParentSMA().getPcrId();
+         if (element instanceof TeamWorkFlowArtifact) {
+            return ((TeamWorkFlowArtifact) element).getParentActionArtifact().getHumanReadableId();
+         } else if (element instanceof AbstractWorkflowArtifact && ((AbstractWorkflowArtifact) element).getParentSMA() != null) {
+            return ((AbstractWorkflowArtifact) element).getParentSMA().getHumanReadableId();
          }
+
       } catch (OseeCoreException ex) {
          return XViewerCells.getCellExceptionString(ex);
       }
