@@ -334,6 +334,7 @@ public final class ArtifactLoader {
       return artifact;
    }
 
+   @SuppressWarnings("unchecked")
    static void loadArtifactData(Artifact artifact, LoadLevel loadLevel) throws OseeCoreException {
       int queryId = getNewQueryId();
       Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();

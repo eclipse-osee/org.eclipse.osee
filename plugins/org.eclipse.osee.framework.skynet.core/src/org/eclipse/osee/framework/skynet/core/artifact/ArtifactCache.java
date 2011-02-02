@@ -59,7 +59,7 @@ public final class ArtifactCache {
       cache.deCache(artifact);
    }
 
-   public static List<Artifact> getArtifactsByName(IArtifactType artifactType, String name) throws OseeCoreException {
+   public static List<Artifact> getArtifactsByName(IArtifactType artifactType, String name) {
       List<Artifact> arts = new ArrayList<Artifact>();
       for (Artifact artifact : getArtifactsByType(artifactType)) {
          if (artifact.getName().equals(name)) {
@@ -131,7 +131,7 @@ public final class ArtifactCache {
       return ACTIVE_CACHE.getByStaticId(staticId, branch);
    }
 
-   public static List<Artifact> getArtifactsByType(IArtifactType artifactType) throws OseeCoreException {
+   public static List<Artifact> getArtifactsByType(IArtifactType artifactType) {
       return ACTIVE_CACHE.getByType(artifactType);
    }
 
