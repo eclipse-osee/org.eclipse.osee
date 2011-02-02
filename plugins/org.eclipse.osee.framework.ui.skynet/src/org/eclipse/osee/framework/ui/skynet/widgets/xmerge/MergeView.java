@@ -245,8 +245,15 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
             menuManager.add(new Separator());
             addDestResourceHistoryMenuItem(menuManager);
             addDestRevealMenuItem(menuManager);
-            menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-            addRevertUnresolvableConflictsMenuItem(menuManager);
+
+            try {
+               if (AccessControlManager.isOseeAdmin()) {
+                  menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+                  addRevertUnresolvableConflictsMenuItem(menuManager);
+               }
+            } catch (OseeCoreException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            }
          }
       });
 
