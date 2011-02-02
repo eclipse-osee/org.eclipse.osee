@@ -1235,11 +1235,11 @@
     </command>
     <command
           id="org.eclipse.osee.framework.ui.skynet.skywalker.command"
-          name="SKy Walker">
+          name="Sky Walker">
     </command>
     <command
           id="org.eclipse.osee.framework.ui.skynet.revealArtifactInExplorer.command"
-          name="Reveal Artifact in Explorer">
+          name="Artifact Explorer">
     </command>
     <command
           id="org.eclipse.osee.framework.ui.skynet.resource.command"
@@ -1410,17 +1410,6 @@
         name="Open Artifact Editor">
   </command>
 	</extension>
- <extension
-       id="org.eclipse.osee.framework.ui.skynet.expandtree.binding"
-       name="Expand Tree"
-       point="org.eclipse.ui.bindings">
-    <key
-          commandId="org.eclipse.osee.framework.ui.skynet.expandTree.command"
-          contextId="org.eclipse.ui.contexts.window"
-          schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-          sequence="M1++">
-    </key>
- </extension>
  <extension
        id="DatastoreStatistics"
        name="DatastoreStatistics"
@@ -1743,5 +1732,32 @@
       <Operation
             className="org.eclipse.osee.framework.ui.skynet.blam.operation.XWidgetsExampleBlam">
       </Operation>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="org.eclipse.osee.framework.ui.skynet.revealArtifactInExplorer.command"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="CTRL+E">
+      </key>
+      <key
+            commandId="org.eclipse.osee.framework.ui.skynet.resource.command"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="CTRL+H">
+      </key>
+      <key
+            commandId="org.eclipse.osee.framework.ui.skynet.skywalker.command"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="CTRL+W">
+      </key>
+      <key
+            commandId="org.eclipse.osee.framework.ui.skynet.expandTree.command"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1++">
+      </key>
    </extension>
 </plugin>
