@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.core.exception.MultipleBranchesExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.MergeBranch;
+import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.BranchFilter;
@@ -515,5 +516,20 @@ public class BranchManager {
          return UserManager.getUser(SystemUser.OseeSystem);
       }
       return ArtifactQuery.getArtifactFromId(branch.getAssociatedArtifactId(), BranchManager.getCommonBranch());
+   }
+
+   public static Artifact getAssociatedArtifact(TransactionDelta txDelta) throws OseeCoreException {
+      Artifact associatedArtifact = null;
+      if (txDelta.areOnTheSameBranch()) {
+         TransactionRecord txRecord = txDelta.getEndTx();
+         int commitArtId = txRecord.getCommit();
+         if (commitArtId != 0) {
+            associatedArtifact = ArtifactQuery.getArtifactFromId(commitArtId, BranchManager.getCommonBranch());
+         }
+      } else {
+         Branch sourceBranch = txDelta.getStartTx().getBranch();
+         associatedArtifact = BranchManager.getAssociatedArtifact(sourceBranch);
+      }
+      return associatedArtifact;
    }
 }

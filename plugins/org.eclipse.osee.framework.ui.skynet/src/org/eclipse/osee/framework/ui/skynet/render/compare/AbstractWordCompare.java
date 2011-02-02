@@ -11,12 +11,12 @@
 package org.eclipse.osee.framework.ui.skynet.render.compare;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -52,41 +52,48 @@ public abstract class AbstractWordCompare implements IComparator {
       return renderer;
    }
 
-   protected IVbaDiffGenerator createGenerator(PresentationType presentationType) throws OseeArgumentException {
+   protected IVbaDiffGenerator createGenerator(List<Artifact> artifacts, IOseeBranch branch, PresentationType presentationType, String pathPrefix) throws OseeCoreException {
       boolean show = !getRenderer().getBooleanOption(IRenderer.NO_DISPLAY);
-      IVbaDiffGenerator diffGenerator = WordUiUtil.createScriptGenerator();
-      diffGenerator.initialize(show, presentationType == PresentationType.MERGE);
+      String resultPath =
+         RenderingUtil.getRenderPath(renderer, artifacts, branch, presentationType, pathPrefix, ".xml");
+      IVbaDiffGenerator diffGenerator =
+         WordUiUtil.createScriptGenerator(show, presentationType == PresentationType.MERGE, resultPath);
       return diffGenerator;
    }
 
    @Override
-   public String compare(IProgressMonitor monitor, PresentationType presentationType, ArtifactDelta artifactDelta) throws OseeCoreException {
-      IVbaDiffGenerator diffGenerator = createGenerator(presentationType);
+   public String compare(IProgressMonitor monitor, PresentationType presentationType, ArtifactDelta artifactDelta, String pathPrefix) throws OseeCoreException {
+      Artifact artifact = artifactDelta.getStartArtifact();
+      if (artifact == null) {
+         artifact = artifactDelta.getEndArtifact();
+      }
+      IOseeBranch branch = artifact.getBranch();
+
+      IVbaDiffGenerator diffGenerator =
+         createGenerator(Collections.singletonList(artifact), branch, presentationType, pathPrefix);
       String diffPath = addToCompare(monitor, diffGenerator, presentationType, artifactDelta);
 
-      Artifact testArtifact = artifactDelta.getStartArtifact();
-      if (testArtifact == null) {
-         testArtifact = artifactDelta.getEndArtifact();
-      }
-      finish(diffGenerator, testArtifact.getBranch(), presentationType);
+      finish(diffGenerator, artifact.getBranch(), presentationType);
       return diffPath;
    }
 
    @Override
-   public String compare(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, PresentationType presentationType) throws OseeCoreException {
-      IVbaDiffGenerator diffGenerator = createGenerator(presentationType);
+   public String compare(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, PresentationType presentationType, String pathPrefix) throws OseeCoreException {
+      IOseeBranch branch = (baseVersion != null ? baseVersion : newerVersion).getBranch();
+
+      IVbaDiffGenerator diffGenerator =
+         createGenerator(Collections.singletonList(newerVersion), branch, presentationType, pathPrefix);
       String diffPath = addToCompare(diffGenerator, baseVersion, newerVersion, baseFile, newerFile, presentationType);
 
-      Artifact testArtifact = baseVersion != null ? baseVersion : newerVersion;
-      finish(diffGenerator, testArtifact.getBranch(), presentationType);
+      finish(diffGenerator, branch, presentationType);
       return diffPath;
    }
 
    protected String addToCompare(IVbaDiffGenerator diffGenerator, Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, PresentationType presentationType) throws OseeCoreException {
-      Artifact testArtifact = baseVersion != null ? baseVersion : newerVersion;
+      Artifact artifact = baseVersion != null ? baseVersion : newerVersion;
+      List<Artifact> artifacts = Collections.singletonList(artifact);
       String diffPath =
-         RenderingUtil.getRenderFile(renderer, Collections.singletonList(testArtifact), testArtifact.getBranch(),
-            presentationType).getLocation().toOSString();
+         RenderingUtil.getRenderPath(renderer, artifacts, artifact.getBranch(), presentationType, null, ".xml");
 
       diffGenerator.addComparison(baseFile, newerFile, diffPath, presentationType == PresentationType.MERGE);
       return diffPath;
@@ -124,11 +131,9 @@ public abstract class AbstractWordCompare implements IComparator {
    }
 
    protected void finish(IVbaDiffGenerator diffGenerator, IOseeBranch branch, PresentationType presentationType) throws OseeCoreException {
-      boolean show = !renderer.getBooleanOption(IRenderer.NO_DISPLAY);
-      String vbsPath =
-         RenderingUtil.getRenderFile("compareDocs.vbs", branch, presentationType).getLocation().toOSString();
+      String vbsPath = RenderingUtil.getRenderPath(renderer, branch, presentationType, null, "compareDocs", ".vbs");
       if (RenderingUtil.arePopupsAllowed()) {
-         diffGenerator.finish(vbsPath, show);
+         diffGenerator.finish(vbsPath);
       } else {
          OseeLog.log(SkynetGuiPlugin.class, Level.INFO, String.format("Test - Skip launch of [%s]", vbsPath));
       }

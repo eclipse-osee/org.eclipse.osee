@@ -14,7 +14,6 @@ import static org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer.TEMP
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
-import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.core.resources.IFile;
@@ -79,12 +78,9 @@ public class ThreeWayWordMergeOperation extends AbstractOperation {
       changeAuthorinWord("Destination", destChangeFile, 2, "56781234", "55555555");
       monitor.worked(15);
 
-      String fileName =
-         "Source_Dest_Merge_" + mergeArtifact.getSafeName() + "(" + mergeArtifact.getGuid() + ")" + new Date().toString().replaceAll(
-            ":", ";") + ".xml";
-
-      Object[] options = new Object[] {IRenderer.FILE_NAME_OPTION, fileName, IRenderer.NO_DISPLAY, true};
-      File mergedFile = new File(RendererManager.merge(mergeArtifact, null, sourceChangeFile, destChangeFile, options));
+      File mergedFile =
+         new File(RendererManager.merge(mergeArtifact, null, sourceChangeFile, destChangeFile, "Source_Dest_Merge",
+            IRenderer.NO_DISPLAY, true));
 
       monitor.worked(40);
       attributeConflict.markStatusToReflectEdit();
@@ -101,8 +97,8 @@ public class ThreeWayWordMergeOperation extends AbstractOperation {
 
    private static IFile createMergeDiffFile(Artifact baseVersion, Artifact newerVersion) throws Exception {
       ArtifactDelta artifactDelta = new ArtifactDelta(baseVersion, newerVersion);
-      return AIFile.constructIFile(RendererManager.diff(artifactDelta, IRenderer.NO_DISPLAY, true, TEMPLATE_OPTION,
-         ITemplateRenderer.THREE_WAY_MERGE));
+      return AIFile.constructIFile(RendererManager.diff(artifactDelta, "", IRenderer.NO_DISPLAY, true,
+         TEMPLATE_OPTION, ITemplateRenderer.THREE_WAY_MERGE));
    }
 
    private static void changeAuthorinWord(String newAuthor, IFile iFile, int revisionNumber, String rsidNumber, String baselineRsid) throws Exception {

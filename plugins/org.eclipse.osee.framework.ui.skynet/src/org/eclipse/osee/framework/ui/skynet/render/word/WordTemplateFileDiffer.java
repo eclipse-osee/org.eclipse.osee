@@ -44,11 +44,9 @@ public final class WordTemplateFileDiffer {
       this.renderer = renderer;
    }
 
-   public void generateFileDifferences(List<Artifact> endArtifacts, String fileName, String nextParagraphNumber, String outlineType) throws OseeArgumentException, OseeCoreException {
+   public void generateFileDifferences(List<Artifact> endArtifacts, String diffPrefix, String nextParagraphNumber, String outlineType) throws OseeArgumentException, OseeCoreException {
       renderer.setOption("paragraphNumber", nextParagraphNumber);
       renderer.setOption("outlineType", outlineType);
-      renderer.setOption(IRenderer.FILE_NAME_OPTION, fileName);
-      renderer.setOption("diffReportFolderName", ".preview" + fileName);
       renderer.setOption("Publish With Attributes", true);
       renderer.setOption("Use Artifact Names", true);
       renderer.setOption("inPublishMode", true);
@@ -76,14 +74,14 @@ public final class WordTemplateFileDiffer {
       for (Artifact artifact : endArtifacts) {
          try {
             diff(isDiffFromBaseline, txDelta, startBranch,
-               ArtifactCache.getActive(artifact.getArtId(), artifact.getBranch()));
+               ArtifactCache.getActive(artifact.getArtId(), artifact.getBranch()), diffPrefix);
          } catch (Exception ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
       }
    }
 
-   private void diff(boolean isDiffFromBaseline, TransactionDelta txDelta, Branch startBranch, Artifact artifact) throws OseeCoreException {
+   private void diff(boolean isDiffFromBaseline, TransactionDelta txDelta, Branch startBranch, Artifact artifact, String diffPrefix) throws OseeCoreException {
       List<Artifact> endArtifacts = Arrays.asList(artifact);
       List<Artifact> startArtifacts = getStartArtifacts(endArtifacts, startBranch);
 
@@ -102,7 +100,7 @@ public final class WordTemplateFileDiffer {
          }
       }
 
-      RendererManager.diff(artifactDeltas, renderer.getValues());
+      RendererManager.diff(artifactDeltas, diffPrefix, renderer.getValues());
    }
 
    private List<Artifact> getStartArtifacts(List<Artifact> artifacts, Branch startBranch) throws OseeCoreException {

@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
+import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.ui.PlatformUI;
 
 /**
@@ -35,8 +36,6 @@ import org.eclipse.ui.PlatformUI;
  * @author Jeff C. Phillips
  */
 public class ViewWordChangeReportHandler extends AbstractHandler {
-
-   private Collection<Change> changes;
 
    @Override
    public Object execute(ExecutionEvent event) {
@@ -49,8 +48,7 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
 
             List<Change> localChanges = Handlers.getArtifactChangesFromStructuredSelection(structuredSelection);
 
-            changes = new ArrayList<Change>(localChanges.size());
-
+            Collection<Change> changes = new ArrayList<Change>(localChanges.size());
             Set<Artifact> artifacts = new HashSet<Artifact>();
             for (Change change : localChanges) {
                Artifact artifact = change.getChangeArtifact();
@@ -60,7 +58,9 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
                }
             }
             Collection<ArtifactDelta> artifactDeltas = ChangeManager.getCompareArtifacts(changes);
-            RendererManager.diffInJob(artifactDeltas);
+
+            String pathPrefix = RenderingUtil.getAssociatedArtifactName(localChanges);
+            RendererManager.diffInJob(artifactDeltas, pathPrefix);
          }
       } catch (Exception ex) {
          OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);

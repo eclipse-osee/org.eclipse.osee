@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.render;
 /**
  * @author Ryan D. Brooks
  */
+import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.DIFF;
 import java.util.Collection;
 import java.util.Collections;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -25,16 +26,18 @@ import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
 public final class DiffUsingRenderer extends AbstractOperation {
    private final Object[] options;
    private final Collection<ArtifactDelta> artifactDeltas;
+   private final String pathPrefix;
    private String diffResultPath;
 
-   public DiffUsingRenderer(Collection<ArtifactDelta> artifactDeltas, Object... options) {
+   public DiffUsingRenderer(Collection<ArtifactDelta> artifactDeltas, String pathPrefix, Object... options) {
       super(generateOperationName(artifactDeltas), SkynetGuiPlugin.PLUGIN_ID);
       this.artifactDeltas = artifactDeltas;
+      this.pathPrefix = pathPrefix;
       this.options = options;
    }
 
-   public DiffUsingRenderer(ArtifactDelta artifactDelta, Object... options) {
-      this(Collections.singletonList(artifactDelta), options);
+   public DiffUsingRenderer(ArtifactDelta artifactDelta, String diffPrefix, Object... options) {
+      this(Collections.singletonList(artifactDelta), diffPrefix, options);
    }
 
    private static String generateOperationName(Collection<ArtifactDelta> artifactDeltas) {
@@ -55,12 +58,12 @@ public final class DiffUsingRenderer extends AbstractOperation {
       Artifact sampleArtifact =
          firstDelta.getStartArtifact() != null ? firstDelta.getStartArtifact() : firstDelta.getEndArtifact();
 
-      IRenderer renderer = RendererManager.getBestRenderer(PresentationType.DIFF, sampleArtifact, options);
+      IRenderer renderer = RendererManager.getBestRenderer(DIFF, sampleArtifact, options);
       IComparator comparator = renderer.getComparator();
       if (artifactDeltas.size() == 1) {
-         diffResultPath = comparator.compare(monitor, PresentationType.DIFF, firstDelta);
+         diffResultPath = comparator.compare(monitor, DIFF, firstDelta, pathPrefix);
       } else {
-         comparator.compareArtifacts(monitor, PresentationType.DIFF, artifactDeltas);
+         comparator.compareArtifacts(monitor, DIFF, artifactDeltas, pathPrefix);
       }
    }
 

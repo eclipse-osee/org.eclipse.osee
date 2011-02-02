@@ -20,10 +20,10 @@ import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 
 public interface IComparator {
 
-   String compare(IProgressMonitor monitor, PresentationType presentationType, ArtifactDelta artifactDelta) throws OseeCoreException;
+   String compare(IProgressMonitor monitor, PresentationType presentationType, ArtifactDelta artifactDelta, String pathPrefix) throws OseeCoreException;
 
-   String compare(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, PresentationType presentationType) throws OseeCoreException;
+   String compare(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, PresentationType presentationType, String pathPrefix) throws OseeCoreException;
 
-   void compareArtifacts(IProgressMonitor monitor, PresentationType presentationType, Collection<ArtifactDelta> artifactDeltas) throws OseeCoreException;
+   void compareArtifacts(IProgressMonitor monitor, PresentationType presentationType, Collection<ArtifactDelta> artifactDeltas, String pathPrefix) throws OseeCoreException;
 
 }

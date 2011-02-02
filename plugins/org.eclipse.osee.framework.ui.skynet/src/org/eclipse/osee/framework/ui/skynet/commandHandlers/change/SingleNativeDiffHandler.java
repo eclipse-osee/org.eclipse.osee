@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
+import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 
 /**
  * @author Jeff C. Phillips
@@ -42,9 +43,10 @@ public class SingleNativeDiffHandler extends CommandHandler {
    }
 
    @Override
-   public Object executeWithException(ExecutionEvent event) {
+   public Object executeWithException(ExecutionEvent event) throws OseeCoreException {
       Collection<ArtifactDelta> artifactDeltas = ChangeManager.getCompareArtifacts(changes);
-      RendererManager.diffInJob(artifactDeltas);
+      String pathPrefix = RenderingUtil.getAssociatedArtifactName(changes);
+      RendererManager.diffInJob(artifactDeltas, pathPrefix);
       return null;
    }
 }

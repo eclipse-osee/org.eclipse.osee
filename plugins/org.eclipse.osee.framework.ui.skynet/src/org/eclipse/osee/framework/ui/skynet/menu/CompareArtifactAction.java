@@ -92,7 +92,7 @@ public final class CompareArtifactAction extends Action {
          Object selectionB = selections[1];
          ArtifactDelta artifactDelta = asArtifactDelta(selectionA, selectionB);
          if (artifactDelta != null) {
-            RendererManager.diffInJob(artifactDelta, IRenderer.FILE_PREFIX_OPTION, "Diff_For");
+            RendererManager.diffInJob(artifactDelta, "Diff_For");
          }
       }
    }

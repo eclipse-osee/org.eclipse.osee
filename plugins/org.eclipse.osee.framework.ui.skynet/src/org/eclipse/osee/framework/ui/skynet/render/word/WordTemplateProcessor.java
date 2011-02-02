@@ -38,7 +38,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
@@ -126,7 +125,6 @@ public class WordTemplateProcessor {
          slaveTemplate = slaveTemplateArtifact.getSoleAttributeValue(CoreAttributeTypes.WholeWordContent, "");
       }
 
-      //  RenderingUtil.getRenderFile(renderer, Collections.singletonList(masterTemplateArtifact), branch, PREVIEW);
       IFolder folder = RenderingUtil.ensureRenderFolderExists(PREVIEW);
       String fileName = String.format("%s_%s.xml", masterTemplateArtifact.getSafeName(), Lib.getDateTimeString());
       IFile file = folder.getFile(fileName);
@@ -226,7 +224,7 @@ public class WordTemplateProcessor {
 
       if (renderer.getBooleanOption("Publish As Diff")) {
          WordTemplateFileDiffer templateFileDiffer = new WordTemplateFileDiffer(renderer);
-         templateFileDiffer.generateFileDifferences(artifacts, GUID.create() + ".xml", outlineNumber, outlineType);
+         templateFileDiffer.generateFileDifferences(artifacts, "", outlineNumber, outlineType);
       } else {
          for (Artifact artifact : artifacts) {
             processObjectArtifact(artifact, wordMl, outlineType, presentationType, artifacts.size() > 1);

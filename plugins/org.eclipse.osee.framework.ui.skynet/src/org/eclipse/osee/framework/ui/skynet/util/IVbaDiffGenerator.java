@@ -12,15 +12,13 @@ package org.eclipse.osee.framework.ui.skynet.util;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 
 /**
  * @author Theron Virgin
  */
 public interface IVbaDiffGenerator {
-   public boolean initialize(boolean visible, boolean detectFormatChanges);
+   public void addComparison(IFile baseFile, IFile newerFile, String diffPath, boolean merge) throws OseeStateException;
 
-   public boolean addComparison(IFile baseFile, IFile newerFile, String diffPath, boolean merge);
-
-   public void finish(String vbaScriptPath, boolean show) throws OseeCoreException;
-
+   public void finish(String vbaScriptPath) throws OseeCoreException;
 }

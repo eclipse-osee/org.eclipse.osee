@@ -100,9 +100,8 @@ public class ExportChangeReportOperation extends AbstractOperation {
       return TransactionManager.getTransactionId(minTransactionId);
    }
 
-   private void generateDiffReport(Collection<Change> changes, String legacyPcrId, IProgressMonitor monitor) throws OseeCoreException {
+   private void generateDiffReport(Collection<Change> changes, String legacyPcrId, IProgressMonitor monitor) {
       Collection<ArtifactDelta> artifactDeltas = ChangeManager.getCompareArtifacts(changes);
-      RendererManager.diff(artifactDeltas, IRenderer.NO_DISPLAY, true, "diffReportFolderName", legacyPcrId,
-         IRenderer.FILE_NAME_OPTION, legacyPcrId, IRenderer.SKIP_DIALOGS, true);
+      RendererManager.diff(artifactDeltas, "/" + legacyPcrId, IRenderer.NO_DISPLAY, true, IRenderer.SKIP_DIALOGS, true);
    }
 }

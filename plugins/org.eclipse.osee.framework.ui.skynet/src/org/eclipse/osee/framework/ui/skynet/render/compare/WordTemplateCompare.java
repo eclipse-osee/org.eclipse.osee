@@ -11,9 +11,13 @@
 package org.eclipse.osee.framework.ui.skynet.render.compare;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -35,9 +39,26 @@ public class WordTemplateCompare extends AbstractWordCompare {
     * report by combining each of the difference reports together for a single report.
     */
    @Override
-   public void compareArtifacts(IProgressMonitor monitor, PresentationType presentationType, Collection<ArtifactDelta> artifactDeltas) throws OseeCoreException {
-      IVbaDiffGenerator diffGenerator = createGenerator(presentationType);
+   public void compareArtifacts(IProgressMonitor monitor, PresentationType presentationType, Collection<ArtifactDelta> artifactDeltas, String pathPrefix) throws OseeCoreException {
+      if (artifactDeltas.isEmpty()) {
+         throw new OseeArgumentException("The artifactDelts must not be empty");
+      }
 
+      ArtifactDelta artifactDelta1 = artifactDeltas.iterator().next();
+      Artifact artifact = artifactDelta1.getStartArtifact();
+      if (artifact == null) {
+         artifact = artifactDelta1.getEndArtifact();
+      }
+      IOseeBranch branch = artifact.getBranch();
+      List<Artifact> artifacts = Collections.emptyList();
+
+      IVbaDiffGenerator diffGenerator = createGenerator(artifacts, branch, presentationType, pathPrefix);
+      addArtifactDeltas(monitor, artifactDeltas, diffGenerator);
+
+      finish(diffGenerator, branch, presentationType);
+   }
+
+   private void addArtifactDeltas(IProgressMonitor monitor, Collection<ArtifactDelta> artifactDeltas, IVbaDiffGenerator diffGenerator) {
       for (ArtifactDelta artifactDelta : artifactDeltas) {
          if (monitor.isCanceled()) {
             throw new OperationCanceledException();
@@ -54,15 +75,6 @@ public class WordTemplateCompare extends AbstractWordCompare {
 
       if (monitor.isCanceled()) {
          throw new OperationCanceledException();
-      }
-
-      if (!artifactDeltas.isEmpty()) {
-         ArtifactDelta artifactDelta1 = artifactDeltas.iterator().next();
-         Artifact testArtifact = artifactDelta1.getStartArtifact();
-         if (testArtifact == null) {
-            testArtifact = artifactDelta1.getEndArtifact();
-         }
-         finish(diffGenerator, testArtifact.getBranch(), presentationType);
       }
    }
 }

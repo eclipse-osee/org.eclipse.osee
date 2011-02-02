@@ -47,7 +47,6 @@ public final class OpenUsingRenderer extends AbstractOperation {
          renderer.open((LinkedList<Artifact>) rendererArtifactMap.getValues(renderer), presentationType);
          resutPath = renderer.getStringOption(IRenderer.RESULT_PATH_RETURN);
       }
-
    }
 
    public String getResultPath() {

@@ -36,9 +36,7 @@ public interface IRenderer {
    public static final int DEFAULT_MATCH = 10;
    public static final int NO_MATCH = -1;
 
-   public static final String FILE_NAME_OPTION = "filename";
    public static final String RESULT_PATH_RETURN = "resultPath";
-   public static final String FILE_PREFIX_OPTION = "filePrefix";
    public static final String NO_DISPLAY = "noDisplay";
    public static final String SKIP_DIALOGS = "skipDialogs";
 
