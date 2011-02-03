@@ -216,7 +216,7 @@ public abstract class Conflict implements IAdaptable {
    }
 
    public boolean isResolvable() {
-      return !statusNotResolvable() && !statusInformational();
+      return !statusNotResolvable() && !statusInformational() && !statusCommitted();
    }
 
    public int getMergeBranchID() {
