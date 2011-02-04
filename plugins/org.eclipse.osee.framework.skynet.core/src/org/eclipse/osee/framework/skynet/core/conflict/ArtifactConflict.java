@@ -89,7 +89,7 @@ public class ArtifactConflict extends Conflict {
 
    @Override
    public String getDestDisplayData() {
-      return sourceModType.isDeleted() ? ARTIFACT_DELETED : ARTIFACT_MODIFIED;
+      return destModType.isDeleted() ? ARTIFACT_DELETED : ARTIFACT_MODIFIED;
    }
 
    @Override
