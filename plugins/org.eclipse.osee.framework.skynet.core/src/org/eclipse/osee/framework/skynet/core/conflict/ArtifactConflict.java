@@ -65,11 +65,7 @@ public class ArtifactConflict extends Conflict {
 
    @Override
    public ConflictStatus computeStatus() throws OseeCoreException {
-      if (!sourceModType.isDeleted()) {
-         return super.computeStatus(getObjectId(), ConflictStatus.NOT_RESOLVABLE);
-      } else {
-         return super.computeStatus(getObjectId(), ConflictStatus.INFORMATIONAL);
-      }
+      return super.computeStatus(getObjectId(), ConflictStatus.INFORMATIONAL);
    }
 
    @Override
