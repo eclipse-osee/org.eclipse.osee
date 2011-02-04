@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xmerge;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
+import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -73,34 +74,35 @@ public class XMergeLabelProvider extends XViewerLabelProvider {
       if (element instanceof Conflict) {
          Conflict conflict = (Conflict) element;
          if (aCol.equals(MergeXViewerFactory.Conflict_Resolved)) {
-            if (conflict.statusResolved()) {
+            ConflictStatus status = conflict.getStatus();
+            if (status.isResolved()) {
                return ConflictState.RESOLVED.getText();
             }
-            if (conflict.statusEdited()) {
+            if (status.isEdited()) {
                return ConflictState.MODIFIED.getText();
             }
-            if (conflict.statusOutOfDate()) {
+            if (status.isOutOfDate()) {
                return ConflictState.CHANGED_EDIT.getText();
             }
-            if (conflict.statusOutOfDateCommitted()) {
+            if (status.isOutOfDateCommitted()) {
                return ConflictState.CHANGED.getText();
             }
-            if (conflict.statusUntouched()) {
+            if (status.isUntouched()) {
                return ConflictState.UNTOUCHED.getText();
             }
-            if (conflict.statusNotResolvable()) {
+            if (status.isNotResolvable()) {
                return ConflictState.REVERT.getText();
             }
-            if (conflict.statusInformational()) {
+            if (status.isInformational()) {
                return ConflictState.INFORMATIONAL.getText();
             }
-            if (conflict.statusCommitted()) {
+            if (status.isCommitted()) {
                return ConflictState.COMMITTED.getText();
             }
-            if (conflict.statusPreviousMergeAppliedSuccess()) {
+            if (status.isPreviousMergeSuccessfullyApplied()) {
                return ConflictState.MERGE_SUCCESS.getText();
             }
-            if (conflict.statusPreviousMergeAppliedCaution()) {
+            if (status.isPreviousMergeAppliedWithCaution()) {
                return ConflictState.MERGE_CAUTION.getText();
             }
          } else if (aCol.equals(MergeXViewerFactory.Artifact_Name)) {
@@ -167,31 +169,32 @@ public class XMergeLabelProvider extends XViewerLabelProvider {
             } else if (dCol.equals(MergeXViewerFactory.Merged)) {
                return getMergeImage(conflict);
             } else if (dCol.equals(MergeXViewerFactory.Conflict_Resolved)) {
-               if (conflict.statusUntouched()) {
+               ConflictStatus status = conflict.getStatus();
+               if (status.isUntouched()) {
                   return null;
                }
-               if (conflict.statusEdited()) {
+               if (status.isEdited()) {
                   return ImageManager.getImage(FrameworkImage.MERGE_EDITED);
                }
-               if (conflict.statusResolved() || conflict.statusCommitted()) {
+               if (status.isResolved() || status.isCommitted()) {
                   return ImageManager.getImage(FrameworkImage.MERGE_MARKED);
                }
-               if (conflict.statusOutOfDate()) {
+               if (status.isOutOfDate()) {
                   return ImageManager.getImage(FrameworkImage.MERGE_OUT_OF_DATE);
                }
-               if (conflict.statusOutOfDateCommitted()) {
+               if (status.isOutOfDateCommitted()) {
                   return ImageManager.getImage(FrameworkImage.MERGE_OUT_OF_DATE_COMMITTED);
                }
-               if (conflict.statusPreviousMergeAppliedSuccess()) {
+               if (status.isPreviousMergeSuccessfullyApplied()) {
                   return ImageManager.getImage(FrameworkImage.MERGE_SUCCESS);
                }
-               if (conflict.statusPreviousMergeAppliedCaution()) {
+               if (status.isPreviousMergeAppliedWithCaution()) {
                   return ImageManager.getImage(FrameworkImage.MERGE_CAUTION);
                }
-               if (conflict.statusNotResolvable()) {
+               if (status.isNotResolvable()) {
                   return ImageManager.getImage(FrameworkImage.MERGE_NOT_RESOLVEABLE);
                }
-               if (conflict.statusInformational()) {
+               if (status.isInformational()) {
                   return ImageManager.getImage(FrameworkImage.MERGE_INFO);
                }
             }
@@ -203,16 +206,17 @@ public class XMergeLabelProvider extends XViewerLabelProvider {
    }
 
    public static Image getMergeImage(Conflict conflict) throws OseeCoreException {
-      if (conflict.statusInformational()) {
+      ConflictStatus status = conflict.getStatus();
+      if (status.isInformational()) {
          return null;
       }
-      if (conflict.statusNotResolvable()) {
+      if (status.isNotResolvable()) {
          return ImageManager.getImage(FrameworkImage.MERGE_START);
       }
       if (conflict.sourceEqualsDestination() && conflict.mergeEqualsSource()) {
          return ImageManager.getImage(FrameworkImage.MERGE_NO_CONFLICT);
       }
-      if (conflict.statusUntouched()) {
+      if (status.isUntouched()) {
          return ImageManager.getImage(FrameworkImage.MERGE_START);
       }
       if (conflict.mergeEqualsDestination()) {

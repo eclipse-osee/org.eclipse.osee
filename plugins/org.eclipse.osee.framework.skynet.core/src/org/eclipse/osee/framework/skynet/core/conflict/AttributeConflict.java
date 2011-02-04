@@ -271,7 +271,7 @@ public class AttributeConflict extends Conflict {
    }
 
    public boolean setStringAttributeValue(String value) throws OseeCoreException {
-      if (!okToOverwriteMerge()) {
+      if (!getStatus().isOverwriteAllowed()) {
          if (DEBUG) {
             System.out.println(String.format("AttributeConflict: Failed setting the Merge Value for attr_id %d",
                getAttrId()));
@@ -288,7 +288,7 @@ public class AttributeConflict extends Conflict {
    }
 
    public boolean setAttributeValue(Object value) throws OseeCoreException {
-      if (!okToOverwriteMerge()) {
+      if (!getStatus().isOverwriteAllowed()) {
          if (DEBUG) {
             System.out.println(String.format("AttributeConflict: Failed setting the Merge Value for attr_id %d",
                getAttrId()));
@@ -306,7 +306,7 @@ public class AttributeConflict extends Conflict {
 
    @Override
    public boolean setToSource() throws OseeCoreException {
-      if (!okToOverwriteMerge() || getSourceObject() == null) {
+      if (!getStatus().isOverwriteAllowed() || getSourceObject() == null) {
          if (DEBUG) {
             System.out.println(String.format(
                "AttributeConflict: Failed setting the Merge Value to the Source Value for attr_id %d", getAttrId()));
@@ -325,7 +325,7 @@ public class AttributeConflict extends Conflict {
 
    @Override
    public boolean setToDest() throws OseeCoreException {
-      if (!okToOverwriteMerge() || getDestObject() == null) {
+      if (!getStatus().isOverwriteAllowed() || getDestObject() == null) {
          if (DEBUG) {
             System.out.println(String.format(
                "AttributeConflict: Failed setting the Merge Value to the Dest Value for attr_id %d", getAttrId()));
@@ -344,7 +344,7 @@ public class AttributeConflict extends Conflict {
 
    @Override
    public boolean clearValue() throws OseeCoreException {
-      if (!okToOverwriteMerge()) {
+      if (!getStatus().isOverwriteAllowed()) {
          if (DEBUG) {
             System.out.println(String.format("AttributeConflict: Failed to clear the Merge Value for attr_id %d",
                getAttrId()));
@@ -426,7 +426,8 @@ public class AttributeConflict extends Conflict {
 
    @Override
    public String getMergeDisplayData() throws OseeCoreException {
-      if (statusUntouched() && !(sourceEqualsDestination() && mergeEqualsSource()) || statusNotResolvable() || statusInformational()) {
+      ConflictStatus status = getStatus();
+      if (status.isUntouched() && !(sourceEqualsDestination() && mergeEqualsSource()) || status.isNotResolvable() || status.isInformational()) {
          return NO_VALUE;
       }
       if (!isWordAttribute) {
@@ -481,7 +482,7 @@ public class AttributeConflict extends Conflict {
       if (DEBUG) {
          System.out.println("Apply the merge using the merge branch value " + mergeBranchId);
       }
-      if (!statusResolved()) {
+      if (!getStatus().isResolved()) {
          Artifact mergeArtifact;
          Artifact destArtifact;
          try {

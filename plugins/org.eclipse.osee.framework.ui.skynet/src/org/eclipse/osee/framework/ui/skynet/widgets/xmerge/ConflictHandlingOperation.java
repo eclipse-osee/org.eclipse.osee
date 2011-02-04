@@ -46,34 +46,35 @@ public final class ConflictHandlingOperation extends AbstractOperation {
    protected void doWork(IProgressMonitor monitor) throws OseeCoreException {
       Conditions.checkNotNullOrEmpty(conflicts, "conflicts");
       for (Conflict conflict : conflicts) {
-         if (conflict.isResolvable()) {
+         ConflictStatus status = conflict.getStatus();
+         if (status.isResolvable()) {
             switch (operation) {
                case RESET:
-                  if (conflict.statusResolved() || conflict.statusEdited()) {
+                  if (status.isResolved() || status.isEdited()) {
                      // Status must be set before clearing the conflict
                      conflict.setStatus(ConflictStatus.EDITED);
                      MergeUtility.clearValue(conflict, null, false);
                   }
                   break;
                case SET_DST_AND_RESOLVE:
-                  if (!conflict.statusResolved()) {
+                  if (!status.isResolved()) {
                      MergeUtility.setToDest(conflict, null, false);
                      conflict.setStatus(ConflictStatus.RESOLVED);
                   }
                   break;
                case SET_SRC_AND_RESOLVE:
-                  if (!conflict.statusResolved()) {
+                  if (!status.isResolved()) {
                      MergeUtility.setToSource(conflict, null, false);
                      conflict.setStatus(ConflictStatus.RESOLVED);
                   }
                   break;
                case MARK_RESOLVED:
-                  if (!conflict.statusUntouched()) {
+                  if (!status.isUntouched()) {
                      conflict.setStatus(ConflictStatus.RESOLVED);
                   }
                   break;
                case MARK_UNRESOLVED:
-                  if (!conflict.statusUntouched()) {
+                  if (!status.isUntouched()) {
                      conflict.setStatus(ConflictStatus.EDITED);
                   }
                   break;

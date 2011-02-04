@@ -88,7 +88,7 @@ public class MergeUtility {
 
    public static boolean okToOverwriteEditedValue(Conflict conflict, Shell shell, boolean prompt) throws OseeCoreException {
       boolean proceed = true;
-      if (!conflict.statusEditable()) {
+      if (!conflict.getStatus().isEditable()) {
          if (shell != null) {
             MessageDialog.openInformation(shell, "Attention", COMMITED_PROMPT);
          } else {
@@ -96,7 +96,7 @@ public class MergeUtility {
          }
          return false;
       }
-      if (!(conflict.mergeEqualsDestination() || conflict.mergeEqualsSource() || conflict.statusUntouched()) && prompt) {
+      if (!(conflict.mergeEqualsDestination() || conflict.mergeEqualsSource() || conflict.getStatus().isUntouched()) && prompt) {
          proceed = MessageDialog.openConfirm(shell, "Confirm", CLEAR_PROMPT);
       }
       return proceed;
@@ -169,12 +169,12 @@ public class MergeUtility {
    public static void launchMerge(final AttributeConflict attributeConflict, Shell shell) {
       try {
          if (attributeConflict.getAttribute() instanceof WordAttribute) {
-            if (!attributeConflict.statusEditable()) {
+            if (!attributeConflict.getStatus().isEditable()) {
                MessageDialog.openInformation(shell, "Attention", COMMITED_PROMPT);
                return;
             }
             String[] buttons;
-            if (attributeConflict.mergeEqualsSource() || attributeConflict.mergeEqualsDestination() || attributeConflict.statusUntouched()) {
+            if (attributeConflict.mergeEqualsSource() || attributeConflict.mergeEqualsDestination() || attributeConflict.getStatus().isUntouched()) {
                buttons = new String[] {"Begin New Merge", "Show Help", "Cancel"};
             } else {
                buttons = new String[] {"Continue with last Merge", "Begin New Merge", "Show Help", "Cancel"};

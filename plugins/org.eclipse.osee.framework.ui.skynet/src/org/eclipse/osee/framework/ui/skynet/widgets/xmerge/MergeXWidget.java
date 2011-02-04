@@ -29,6 +29,7 @@ import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.data.SystemUser;
+import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -299,10 +300,11 @@ public class MergeXWidget extends GenericXWidget implements IAdaptable {
       Conflict[] conflicts = getConflicts();
       if (conflicts.length > 0) {
          for (Conflict conflict : conflicts) {
-            if (conflict.statusResolved() || conflict.statusCommitted()) {
+            ConflictStatus status = conflict.getStatus();
+            if (status.isResolved() || status.isCommitted()) {
                resolved++;
             }
-            if (conflict.statusInformational()) {
+            if (status.isInformational()) {
                informational++;
             }
          }
@@ -319,7 +321,8 @@ public class MergeXWidget extends GenericXWidget implements IAdaptable {
       int resolved = 0;
       Conflict[] conflicts = getConflicts();
       for (Conflict conflict : conflicts) {
-         if (conflict.statusResolved() || conflict.statusCommitted() || conflict.statusInformational()) {
+         ConflictStatus status = conflict.getStatus();
+         if (status.isConsideredResolved()) {
             resolved++;
          }
       }
@@ -431,10 +434,11 @@ public class MergeXWidget extends GenericXWidget implements IAdaptable {
       int resolved = 0;
       int informational = 0;
       for (Conflict conflict : getConflicts()) {
-         if (conflict.statusResolved() || conflict.statusCommitted()) {
+         ConflictStatus status = conflict.getStatus();
+         if (status.isResolved() || status.isCommitted()) {
             resolved++;
          }
-         if (conflict.statusInformational()) {
+         if (status.isInformational()) {
             informational++;
          }
       }

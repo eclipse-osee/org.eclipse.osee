@@ -31,6 +31,7 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -472,12 +473,15 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
          public boolean isEnabledWithException(IStructuredSelection structuredSelection) {
             List<Conflict> conflicts = mergeXWidget.getSelectedConflicts();
             attributeConflict = null;
-            if (conflicts == null || conflicts.size() != 1 || !(conflicts.get(0) instanceof AttributeConflict) || !conflicts.get(
-               0).statusEditable()) {
-               return false;
+            if (conflicts.size() == 1) {
+               Conflict conflict = conflicts.iterator().next();
+               if (conflict.getStatus().isEditable()) {
+                  if (conflict instanceof AttributeConflict) {
+                     attributeConflict = (AttributeConflict) conflict;
+                  }
+               }
             }
-            attributeConflict = (AttributeConflict) conflicts.get(0);
-            return true;
+            return attributeConflict != null;
          }
       });
    }
@@ -619,9 +623,11 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
 
             private void populateRevertList() {
                for (Conflict conflict : selectedConflicts) {
-                  ArtifactConflict artifactConflict = (ArtifactConflict) conflict;
-                  if (conflict.statusNotResolvable()) {
-                     addArtifactToRevertList(artifactConflict);
+                  if (conflict.getStatus().isNotResolvable()) {
+                     if (conflict instanceof ArtifactConflict) {
+                        ArtifactConflict artifactConflict = (ArtifactConflict) conflict;
+                        addArtifactToRevertList(artifactConflict);
+                     }
                   }
                }
             }
@@ -712,12 +718,15 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
          public boolean isEnabledWithException(IStructuredSelection structuredSelection) {
             List<Conflict> conflicts = mergeXWidget.getSelectedConflicts();
             attributeConflict = null;
-            if (conflicts == null || conflicts.size() != 1 || !(conflicts.get(0) instanceof AttributeConflict) || !conflicts.get(
-               0).statusEditable()) {
-               return false;
+            if (conflicts.size() == 1) {
+               Conflict conflict = conflicts.iterator().next();
+               if (conflict.getStatus().isEditable()) {
+                  if (conflict instanceof AttributeConflict) {
+                     attributeConflict = (AttributeConflict) conflict;
+                  }
+               }
             }
-            attributeConflict = (AttributeConflict) conflicts.get(0);
-            return attributeConflict.isWordAttribute();
+            return attributeConflict != null && attributeConflict.isWordAttribute();
          }
       });
    }
@@ -838,6 +847,7 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
          artifacts = new LinkedList<Artifact>();
          List<Conflict> conflicts = mergeXWidget.getSelectedConflicts();
          for (Conflict conflict : conflicts) {
+
             try {
                switch (partToPreview) {
                   case 1:
@@ -851,7 +861,8 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
                      }
                      break;
                   case 3:
-                     if (conflict.statusNotResolvable() || conflict.statusInformational()) {
+                     ConflictStatus status = conflict.getStatus();
+                     if (status.isNotResolvable() || status.isInformational()) {
                         return false;
                      }
                      if (conflict.getArtifact() != null) {

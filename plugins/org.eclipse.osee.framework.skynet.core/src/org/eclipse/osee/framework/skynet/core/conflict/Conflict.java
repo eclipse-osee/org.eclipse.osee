@@ -139,13 +139,6 @@ public abstract class Conflict implements IAdaptable {
       return commitTransactionId;
    }
 
-   public boolean okToOverwriteMerge() {
-      if (status.equals(ConflictStatus.RESOLVED) || status.equals(ConflictStatus.COMMITTED)) {
-         return false;
-      }
-      return true;
-   }
-
    public abstract ConflictStatus computeStatus() throws OseeCoreException;
 
    public ConflictStatus computeStatus(int objectID, ConflictStatus DefaultStatus) throws OseeCoreException {
@@ -169,54 +162,6 @@ public abstract class Conflict implements IAdaptable {
       }
       ConflictStatusManager.setStatus(status, sourceGamma, destGamma, mergeBranch.getId());
       this.status = status;
-   }
-
-   public boolean statusUntouched() {
-      return status.equals(ConflictStatus.UNTOUCHED);
-   }
-
-   public boolean statusResolved() {
-      return status.equals(ConflictStatus.RESOLVED);
-   }
-
-   public boolean statusCommitted() {
-      return status.equals(ConflictStatus.COMMITTED);
-   }
-
-   public boolean statusEdited() {
-      return status.equals(ConflictStatus.EDITED);
-   }
-
-   public boolean statusOutOfDateCommitted() {
-      return status.equals(ConflictStatus.OUT_OF_DATE_RESOLVED);
-   }
-
-   public boolean statusPreviousMergeAppliedSuccess() {
-      return status.equals(ConflictStatus.PREVIOUS_MERGE_APPLIED_SUCCESS);
-   }
-
-   public boolean statusPreviousMergeAppliedCaution() {
-      return status.equals(ConflictStatus.PREVIOUS_MERGE_APPLIED_CAUTION);
-   }
-
-   public boolean statusOutOfDate() {
-      return status.equals(ConflictStatus.OUT_OF_DATE);
-   }
-
-   public boolean statusNotResolvable() {
-      return status.equals(ConflictStatus.NOT_RESOLVABLE);
-   }
-
-   public boolean statusInformational() {
-      return status.equals(ConflictStatus.INFORMATIONAL);
-   }
-
-   public boolean statusEditable() {
-      return !(status.equals(ConflictStatus.RESOLVED) || status.equals(ConflictStatus.COMMITTED) || status.equals(ConflictStatus.INFORMATIONAL) || status.equals(ConflictStatus.NOT_RESOLVABLE));
-   }
-
-   public boolean isResolvable() {
-      return !statusNotResolvable() && !statusInformational() && !statusCommitted();
    }
 
    public int getMergeBranchID() {

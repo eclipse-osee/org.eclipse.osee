@@ -163,7 +163,7 @@ public class MergeXViewer extends XViewer {
    @Override
    public boolean handleLeftClickInIconArea(TreeColumn treeColumn, TreeItem treeItem) {
       Conflict conflict = (Conflict) treeItem.getData();
-      if (!conflict.statusCommitted() && hasInteractiveIcon(treeColumn)) {
+      if (!conflict.getStatus().isCommitted() && hasInteractiveIcon(treeColumn)) {
          respondToIconClick(conflict, treeColumn);
       }
 
@@ -174,11 +174,11 @@ public class MergeXViewer extends XViewer {
       Shell shell = Displays.getActiveShell().getShell();
 
       try {
-         if (conflict.statusNotResolvable()) {
+         if (conflict.getStatus().isNotResolvable()) {
             if (MergeUtility.showDeletedConflict(conflict, shell)) {
                mergeXWidget.refreshTable();
             }
-         } else if (conflict.statusInformational()) {
+         } else if (conflict.getStatus().isInformational()) {
             MergeUtility.showInformationalConflict(shell);
          } else {
             handleResolvableConflictClick(treeColumn, conflict, shell);

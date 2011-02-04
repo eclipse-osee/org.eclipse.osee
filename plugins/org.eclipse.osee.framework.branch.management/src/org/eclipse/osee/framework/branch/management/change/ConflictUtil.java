@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.model.MergeBranch;
 public final class ConflictUtil {
 
    private ConflictUtil() {
+      // Utility Class
    }
 
    public static Conflict createConflict(MergeBranch mergeBranch, ChangeItem changeItem, ConflictStatus conflictStatus) throws OseeCoreException {
@@ -55,10 +56,10 @@ public final class ConflictUtil {
       if (storedConflict.getStatus().isIgnoreable() || newConflict.getStatus().isIgnoreable()) {
          netStatus = newConflict.getStatus();
       } else if (!areGammasEqual(newConflict, storedConflict) && !storedStatus.isCommitted()) {
-         if (storedStatus.isResolved() || storedStatus.wasPreviousMergeSuccessfullyApplied()) {
+         if (storedStatus.isResolved() || storedStatus.isPreviousMergeSuccessfullyApplied()) {
             netStatus = ConflictStatus.OUT_OF_DATE_RESOLVED;
          }
-         if (storedStatus.hasBeenEdited() || storedStatus.wasPreviousMergeAppliedWithCaution()) {
+         if (storedStatus.isEdited() || storedStatus.isPreviousMergeAppliedWithCaution()) {
             netStatus = ConflictStatus.OUT_OF_DATE;
          }
          //         ConnectionHandler.runPreparedUpdate(MERGE_UPDATE_GAMMAS, sourceGamma, destGamma, intStatus, branchID,

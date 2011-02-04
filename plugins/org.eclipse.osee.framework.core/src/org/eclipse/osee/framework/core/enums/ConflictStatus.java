@@ -57,6 +57,10 @@ public enum ConflictStatus {
       return this == COMMITTED;
    }
 
+   public boolean isOutOfDate() {
+      return this == OUT_OF_DATE;
+   }
+
    public boolean isInformational() {
       return this == INFORMATIONAL;
    }
@@ -65,23 +69,47 @@ public enum ConflictStatus {
       return this == NOT_RESOLVABLE;
    }
 
-   public boolean isIgnoreable() {
-      return isInformational() || isNotResolvable();
+   public boolean isUntouched() {
+      return this == UNTOUCHED;
+   }
+
+   public boolean isOutOfDateCommitted() {
+      return this == OUT_OF_DATE_RESOLVED;
    }
 
    public boolean isResolved() {
       return this == RESOLVED;
    }
 
-   public boolean hasBeenEdited() {
+   public boolean isEdited() {
       return this == EDITED;
    }
 
-   public boolean wasPreviousMergeAppliedWithCaution() {
+   public boolean isPreviousMergeAppliedWithCaution() {
       return this == PREVIOUS_MERGE_APPLIED_CAUTION;
    }
 
-   public boolean wasPreviousMergeSuccessfullyApplied() {
+   public boolean isPreviousMergeSuccessfullyApplied() {
       return this == PREVIOUS_MERGE_APPLIED_SUCCESS;
+   }
+
+   public boolean isIgnoreable() {
+      return isInformational() || isNotResolvable();
+   }
+
+   public boolean isEditable() {
+      return !(isResolved() || isCommitted() || isInformational() || isNotResolvable());
+   }
+
+   public boolean isResolvable() {
+      return !isNotResolvable() && !isInformational() && !isCommitted();
+   }
+
+   public boolean isOverwriteAllowed() {
+      return !isResolved() && !isCommitted();
+   }
+
+   public boolean isConsideredResolved() {
+      return isResolved() || isCommitted() || isInformational();
    }
 }

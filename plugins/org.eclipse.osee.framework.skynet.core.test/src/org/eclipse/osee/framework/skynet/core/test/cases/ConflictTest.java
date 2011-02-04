@@ -154,7 +154,8 @@ public class ConflictTest {
          int whichChange = 1;
 
          for (Conflict conflict : conflicts) {
-            if (conflict instanceof ArtifactConflict && ((ArtifactConflict) conflict).statusNotResolvable()) {
+            ConflictStatus status = conflict.getStatus();
+            if (conflict instanceof ArtifactConflict && status.isNotResolvable()) {
                ((ArtifactConflict) conflict).revertSourceArtifact();
             } else if (conflict instanceof AttributeConflict) {
                ConflictTestManager.resolveAttributeConflict((AttributeConflict) conflict);
@@ -171,9 +172,10 @@ public class ConflictTest {
                new NullProgressMonitor());
 
          for (Conflict conflict : conflicts) {
+            ConflictStatus status = conflict.getStatus();
             assertTrue(
                "This conflict was not found to be resolved ArtId = " + conflict.getArtId() + " " + conflict.getSourceDisplayData(),
-               conflict.statusResolved() || conflict.statusInformational());
+               status.isResolved() || status.isInformational());
 
          }
       } catch (Exception ex) {

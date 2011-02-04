@@ -55,7 +55,7 @@ public class EditAttributeWizardPage extends WizardPage {
       public void handleEvent(Event event) {
          // ...
          try {
-            if (conflict.okToOverwriteMerge()) {
+            if (conflict.getStatus().isOverwriteAllowed()) {
                if (event.widget == sourceButton) {
                   if (conflict.getSourceObject() != null) {
                      editor.update(conflict.getSourceObject());

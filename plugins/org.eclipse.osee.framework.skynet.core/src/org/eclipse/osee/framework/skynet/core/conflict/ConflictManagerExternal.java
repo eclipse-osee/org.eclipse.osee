@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.conflict;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal;
@@ -47,7 +48,8 @@ public class ConflictManagerExternal {
    public List<Conflict> getRemainingConflicts() throws OseeCoreException {
       List<Conflict> remainingConflicts = new ArrayList<Conflict>();
       for (Conflict conflict : getOriginalConflicts()) {
-         if (!conflict.statusResolved() && !conflict.statusCommitted() && !conflict.statusInformational()) {
+         ConflictStatus status = conflict.getStatus();
+         if (!status.isResolved() && !status.isCommitted() && !status.isInformational()) {
             remainingConflicts.add(conflict);
          }
       }

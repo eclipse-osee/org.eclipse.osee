@@ -46,42 +46,40 @@ class DiffHandler extends AbstractSelectionEnabledHandler {
       if (attributeConflict != null) {
          switch (diffToShow) {
             case 1:
-                  MergeUtility.showCompareFile(MergeUtility.getStartArtifact(attributeConflict),
-                     attributeConflict.getSourceArtifact(), "Source_Diff_For");
+               MergeUtility.showCompareFile(MergeUtility.getStartArtifact(attributeConflict),
+                  attributeConflict.getSourceArtifact(), "Source_Diff_For");
                break;
             case 2:
-                  MergeUtility.showCompareFile(MergeUtility.getStartArtifact(attributeConflict),
-                     attributeConflict.getDestArtifact(), "Destination_Diff_For");
-                  break;
-               case 3:
-                  MergeUtility.showCompareFile(attributeConflict.getSourceArtifact(),
-                     attributeConflict.getDestArtifact(), "Source_Destination_Diff_For");
-                  break;
-               case 4:
-                  if (attributeConflict.wordMarkupPresent()) {
-                     throw new OseeCoreException(AttributeConflict.DIFF_MERGE_MARKUP);
-                  }
-                  MergeUtility.showCompareFile(attributeConflict.getSourceArtifact(), attributeConflict.getArtifact(),
-                     "Source_Merge_Diff_For");
-                  break;
-               case 5:
-                  if (attributeConflict.wordMarkupPresent()) {
-                     throw new OseeCoreException(AttributeConflict.DIFF_MERGE_MARKUP);
-                  }
-                  MergeUtility.showCompareFile(attributeConflict.getDestArtifact(), attributeConflict.getArtifact(),
-                     "Destination_Merge_Diff_For");
-                  break;
-            }
-         } else if (artifactConflict != null) {
-            if (diffToShow == 1) {
-               MergeUtility.showCompareFile(artifactConflict.getSourceArtifact(),
-                  MergeUtility.getStartArtifact(artifactConflict), "Source_Diff_For");
+               MergeUtility.showCompareFile(MergeUtility.getStartArtifact(attributeConflict),
+                  attributeConflict.getDestArtifact(), "Destination_Diff_For");
+               break;
+            case 3:
+               MergeUtility.showCompareFile(attributeConflict.getSourceArtifact(), attributeConflict.getDestArtifact(),
+                  "Source_Destination_Diff_For");
+               break;
+            case 4:
+               if (attributeConflict.wordMarkupPresent()) {
+                  throw new OseeCoreException(AttributeConflict.DIFF_MERGE_MARKUP);
+               }
+               MergeUtility.showCompareFile(attributeConflict.getSourceArtifact(), attributeConflict.getArtifact(),
+                  "Source_Merge_Diff_For");
+               break;
+            case 5:
+               if (attributeConflict.wordMarkupPresent()) {
+                  throw new OseeCoreException(AttributeConflict.DIFF_MERGE_MARKUP);
+               }
+               MergeUtility.showCompareFile(attributeConflict.getDestArtifact(), attributeConflict.getArtifact(),
+                  "Destination_Merge_Diff_For");
+               break;
+         }
+      } else if (artifactConflict != null) {
+         if (diffToShow == 1) {
+            MergeUtility.showCompareFile(artifactConflict.getSourceArtifact(),
+               MergeUtility.getStartArtifact(artifactConflict), "Source_Diff_For");
          }
          if (diffToShow == 2) {
-            }
-            if (diffToShow == 2) {
-               MergeUtility.showCompareFile(artifactConflict.getDestArtifact(),
-                  MergeUtility.getStartArtifact(artifactConflict), "Destination_Diff_For");
+            MergeUtility.showCompareFile(artifactConflict.getDestArtifact(),
+               MergeUtility.getStartArtifact(artifactConflict), "Destination_Diff_For");
          }
       }
       return null;
@@ -150,7 +148,7 @@ class DiffHandler extends AbstractSelectionEnabledHandler {
          try {
             switch (diffToShow) {
                case 1:
-                  if (artifactConflict.getSourceArtifact() != null && conflicts.get(0).statusNotResolvable() && MergeUtility.getStartArtifact(artifactConflict) != null) {
+                  if (artifactConflict.getSourceArtifact() != null && conflicts.get(0).getStatus().isNotResolvable() && MergeUtility.getStartArtifact(artifactConflict) != null) {
                      artifacts.add(artifactConflict.getSourceArtifact());
                      artifacts.add(MergeUtility.getStartArtifact(artifactConflict));
                   } else {
@@ -158,7 +156,7 @@ class DiffHandler extends AbstractSelectionEnabledHandler {
                   }
                   break;
                case 2:
-                  if (artifactConflict.getDestArtifact() != null && conflicts.get(0).statusInformational() && MergeUtility.getStartArtifact(artifactConflict) != null) {
+                  if (artifactConflict.getDestArtifact() != null && conflicts.get(0).getStatus().isInformational() && MergeUtility.getStartArtifact(artifactConflict) != null) {
                      artifacts.add(artifactConflict.getDestArtifact());
                      artifacts.add(MergeUtility.getStartArtifact(artifactConflict));
                   } else {
