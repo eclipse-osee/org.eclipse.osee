@@ -26,16 +26,18 @@ public class ArtifactConflict extends Conflict {
    private static final String CHANGE_ITEM = "Artifact State";
    private static final String ARTIFACT_DELETED = "DELETED";
    private static final String ARTIFACT_MODIFIED = "MODIFIED";
-   private final boolean sourceDeleted;
+   private final ModificationType sourceModType;
+   private final ModificationType destModType;
 
-   public ArtifactConflict(int sourceGamma, int destGamma, int artId, TransactionRecord toTransactionId, Branch mergeBranch, Branch sourceBranch, Branch destBranch, int sourceModType, int destModType, int artTypeId) {
+   public ArtifactConflict(int sourceGamma, int destGamma, int artId, TransactionRecord toTransactionId, Branch mergeBranch, Branch sourceBranch, Branch destBranch, ModificationType sourceModType, ModificationType destModType, int artTypeId) {
       super(sourceGamma, destGamma, artId, toTransactionId, null, mergeBranch, sourceBranch, destBranch);
-      sourceDeleted = sourceModType == ModificationType.DELETED.getValue();
+      this.sourceModType = sourceModType;
+      this.destModType = destModType;
    }
 
    @Override
    public String getArtifactName() throws OseeCoreException {
-      if (sourceDeleted) {
+      if (sourceModType.isDeleted()) {
          return getDestArtifact().getName();
       } else {
          return getSourceArtifact().getName();
@@ -63,12 +65,11 @@ public class ArtifactConflict extends Conflict {
 
    @Override
    public ConflictStatus computeStatus() throws OseeCoreException {
-      if (!sourceDeleted) {
+      if (!sourceModType.isDeleted()) {
          return super.computeStatus(getObjectId(), ConflictStatus.NOT_RESOLVABLE);
       } else {
          return super.computeStatus(getObjectId(), ConflictStatus.INFORMATIONAL);
       }
-
    }
 
    @Override
@@ -88,11 +89,7 @@ public class ArtifactConflict extends Conflict {
 
    @Override
    public String getDestDisplayData() {
-      if (sourceDeleted) {
-         return ARTIFACT_MODIFIED;
-      } else {
-         return ARTIFACT_DELETED;
-      }
+      return sourceModType.isDeleted() ? ARTIFACT_DELETED : ARTIFACT_MODIFIED;
    }
 
    @Override
@@ -106,11 +103,7 @@ public class ArtifactConflict extends Conflict {
 
    @Override
    public String getSourceDisplayData() {
-      if (sourceDeleted) {
-         return ARTIFACT_DELETED;
-      } else {
-         return ARTIFACT_MODIFIED;
-      }
+      return sourceModType.isDeleted() ? ARTIFACT_DELETED : ARTIFACT_MODIFIED;
    }
 
    @Override

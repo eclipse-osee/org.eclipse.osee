@@ -12,6 +12,7 @@
 package org.eclipse.osee.framework.skynet.core.conflict;
 
 import java.util.Set;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 
@@ -19,11 +20,11 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
  * @author Theron Virgin
  */
 public class ArtifactConflictBuilder extends ConflictBuilder {
-   private final int sourceModType;
-   private final int destModType;
+   private final ModificationType sourceModType;
+   private final ModificationType destModType;
    private final int artTypeId;
 
-   public ArtifactConflictBuilder(int sourceGamma, int destGamma, int artId, TransactionRecord toTransactionId, Branch sourceBranch, Branch destBranch, int sourceModType, int destModType, int artTypeId) {
+   public ArtifactConflictBuilder(int sourceGamma, int destGamma, int artId, TransactionRecord toTransactionId, Branch sourceBranch, Branch destBranch, ModificationType sourceModType, ModificationType destModType, int artTypeId) {
       super(sourceGamma, destGamma, artId, toTransactionId, sourceBranch, destBranch);
       this.artTypeId = artTypeId;
       this.sourceModType = sourceModType;

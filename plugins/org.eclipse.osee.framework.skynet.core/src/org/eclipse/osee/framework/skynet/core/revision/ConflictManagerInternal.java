@@ -193,14 +193,15 @@ public class ConflictManagerInternal {
             int nextArtId = chStmt.getInt("art_id");
             int sourceGamma = chStmt.getInt("source_gamma");
             int destGamma = chStmt.getInt("dest_gamma");
-            int sourceModType = chStmt.getInt("source_mod_type");
-            int destModType = chStmt.getInt("dest_mod_type");
+            ModificationType sourceModType = ModificationType.getMod(chStmt.getInt("source_mod_type"));
+            ModificationType destModType = ModificationType.getMod(chStmt.getInt("dest_mod_type"));
             int artTypeId = chStmt.getInt("art_type_id");
 
             if (artId != nextArtId) {
                artId = nextArtId;
 
-               if (destModType == ModificationType.DELETED.getValue() && sourceModType == ModificationType.MODIFIED.getValue() || destModType == ModificationType.MODIFIED.getValue() && sourceModType == ModificationType.DELETED.getValue()) {
+               if (destModType == ModificationType.DELETED && sourceModType == ModificationType.MODIFIED || //
+               destModType == ModificationType.MODIFIED && sourceModType == ModificationType.DELETED) {
 
                   artifactConflictBuilder =
                      new ArtifactConflictBuilder(sourceGamma, destGamma, artId, baselineTransaction, sourceBranch,
@@ -208,7 +209,7 @@ public class ConflictManagerInternal {
 
                   conflictBuilders.add(artifactConflictBuilder);
                   artIdSet.add(artId);
-               } else if (destModType == ModificationType.DELETED.getValue() && sourceModType == ModificationType.DELETED.getValue()) {
+               } else if (destModType == ModificationType.DELETED && sourceModType == ModificationType.DELETED) {
                   artIdSetDontShow.add(artId);
                   artIdSetDontAdd.add(artId);
                }
