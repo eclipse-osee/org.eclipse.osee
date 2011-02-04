@@ -141,8 +141,8 @@ public abstract class Conflict implements IAdaptable {
 
    public abstract ConflictStatus computeStatus() throws OseeCoreException;
 
-   public ConflictStatus computeStatus(int objectID, ConflictStatus DefaultStatus) throws OseeCoreException {
-      ConflictStatus passedStatus = DefaultStatus;
+   protected ConflictStatus computeStatus(int objectID, ConflictStatus defaultStatus) throws OseeCoreException {
+      ConflictStatus passedStatus = defaultStatus;
       try {
          if (sourceEqualsDestination() && mergeEqualsSource()) {
             passedStatus = ConflictStatus.RESOLVED;
