@@ -17,10 +17,13 @@ import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.coverage.internal.Activator;
+import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
+ * Represents a single SOURCE block found in the <dir>.wrk/vcast.vcp file.
+ * 
  * @author Donald G. Dunne
  */
 public class VcpSourceFile {
@@ -77,11 +80,12 @@ public class VcpSourceFile {
       return vcpSourceLisFile;
    }
 
-   public CoverageDataFile getCoverageDataFile() throws OseeCoreException {
+   public CoverageDataFile getCoverageDataFile(CoverageImport coverageImport) throws OseeCoreException {
       if (coverageDataFile == null) {
          coverageDataFile =
-            new CoverageDataFile(vcastDirectory + "/vcast/" + getValue(SourceValue.SOURCE_FILENAME).replaceAll(
-               "\\.(ada|adb|c)$", "\\.xml"));
+            new CoverageDataFile(coverageImport,
+               vcastDirectory + "/vcast/" + getValue(SourceValue.SOURCE_FILENAME).replaceAll("\\.(ada|adb|c)$",
+                  "\\.xml"));
       }
       return coverageDataFile;
    }

@@ -21,6 +21,8 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
+ * Represents a single RESULTS block found in the <dir>.wrk/vcast.vcp file.
+ * 
  * @author Donald G. Dunne
  */
 public class VcpResultsFile {

@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Represents a single <coverage_data></coverage_data> unit as specified in the CoverageDataFile <code file>.xml
+ * 
  * @author Donald G. Dunne
  */
 public class CoverageDataUnit {

@@ -20,6 +20,9 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
+ * Represents the <dir>.wrk/vcast.vcp file which lists all the source files and results files specified in this
+ * directory.
+ * 
  * @author Donald G. Dunne
  */
 public class VCastVcp {

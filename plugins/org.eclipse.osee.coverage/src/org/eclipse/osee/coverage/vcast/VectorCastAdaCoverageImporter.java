@@ -32,6 +32,7 @@ import org.eclipse.osee.coverage.vcast.VcpResultsFile.ResultsValue;
 import org.eclipse.osee.coverage.vcast.VcpSourceFile.SourceValue;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.MatchFilter;
@@ -107,6 +108,8 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
          progressMonitor.beginTask("Importing Source File Data", vcpSourceFiles.size());
       }
       int x = 1;
+      // Loop through all the source blocks found in <dir>.wrk/vcast.vcp file and create
+      // CoverageDataFile for each item
       for (VcpSourceFile vcpSourceFile : vCastVcp.sourceFiles) {
          String str =
             String.format("Processing VcpSourceFile %d/%d [%s]...", x++, vcpSourceFiles.size(), vcpSourceFile);
@@ -118,19 +121,25 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
          try {
             CoverageDataFile coverageDataFile = null;
             try {
-               coverageDataFile = vcpSourceFile.getCoverageDataFile();
+               coverageDataFile = vcpSourceFile.getCoverageDataFile(coverageImport);
             } catch (Exception ex) {
-               coverageImport.getLog().logError(
-                  String.format("Can't find .xml file for source file [%s] exception [%s]",
-                     vcpSourceFile.getValue(SourceValue.SOURCE_FILENAME), ex));
+               String errorStr =
+                  String.format(
+                     "Can't process vcast/<code file>.xml file for source file [%s] exception [%s] (see Error Log)",
+                     vcpSourceFile.getValue(SourceValue.SOURCE_FILENAME), ex.getLocalizedMessage());
+               coverageImport.getLog().logError(AHTML.textToHtml(errorStr));
+               OseeLog.log(Activator.class, Level.SEVERE, errorStr, ex);
                continue;
             }
             try {
                coverageImport.addImportRecordFile(coverageDataFile.getFile());
             } catch (Exception ex) {
-               coverageImport.getLog().logError("Error Adding Import Record File: " + ex.getLocalizedMessage());
+               coverageImport.getLog().logError(
+                  "Error Adding Import Record File (see Error Log): " + ex.getLocalizedMessage());
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
             for (CoverageDataUnit coverageDataUnit : coverageDataFile.getCoverageDataUnits()) {
+               // Create CoverageUnit object to represent single <code file>.xml
                CoverageUnit fileCoverageUnit =
                   coverageImport.createCoverageUnit(null, vcpSourceFile.getValue(SourceValue.SOURCE_FILENAME), "");
                String fileNamespace = vectorCastCoverageImportProvider.getFileNamespace(coverageDataUnit.getName());
@@ -145,7 +154,9 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
                try {
                   coverageImport.addImportRecordFile(vcpSourceLisFile.getFile());
                } catch (Exception ex) {
-                  coverageImport.getLog().logError("Error Adding Import Record File: " + ex.getLocalizedMessage());
+                  coverageImport.getLog().logError(
+                     "Error Adding Import Record File (see Error Log): " + ex.getLocalizedMessage());
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
 
                fileCoverageUnit.setFileContents(vcpSourceLisFile.getText());
@@ -229,7 +240,8 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
                      CoverageItem coverageItem = coverageUnit.getCoverageItem(methodNum, executeNum);
                      if (coverageItem == null) {
                         coverageImport.getLog().logError(
-                           String.format("Can't retrieve method [%s] from coverageUnit [%s] for test unit [%s]",
+                           String.format(
+                              "Method [%s] doesn't exist for Coverage Unit [%s] found in test unit vcast/results/.dat file [%s]",
                               methodNum, coverageUnit, testUnitName));
                      } else {
                         coverageItem.setCoverageMethod(CoverageOptionManager.Test_Unit);
@@ -259,7 +271,8 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
             new MatchFilter(".*\\.DAT"), false);
       if (numVcastVcpDatFiles != filenames.size()) {
          coverageImport.getLog().logError(
-            String.format("Vcast.vcp num results files [%d] doesn't match number of vcast/results/*.dat files [%d]",
+            String.format(
+               "Number of results files in Vcast.vcp [%d] doesn't match number of vcast/results/*.dat files [%d]",
                numVcastVcpDatFiles, filenames.size()));
       } else {
          coverageImport.getLog().log("Ok");
