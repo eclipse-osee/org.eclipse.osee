@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer;
-import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 
 /**
@@ -45,12 +44,12 @@ public final class WordTemplateFileDiffer {
    }
 
    public void generateFileDifferences(List<Artifact> endArtifacts, String diffPrefix, String nextParagraphNumber, String outlineType) throws OseeArgumentException, OseeCoreException {
+      renderer.setOption("artifacts", endArtifacts);
       renderer.setOption("paragraphNumber", nextParagraphNumber);
       renderer.setOption("outlineType", outlineType);
       renderer.setOption("Publish With Attributes", true);
       renderer.setOption("Use Artifact Names", true);
       renderer.setOption("inPublishMode", true);
-      renderer.setOption(IRenderer.NO_DISPLAY, true);
       renderer.setOption("Publish As Diff", false);
 
       Branch endBranch = renderer.getBranchOption("Branch");

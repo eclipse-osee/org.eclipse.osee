@@ -106,6 +106,7 @@ public class WordTemplateProcessor {
    private final Set<String> ignoreAttributeExtensions = new HashSet<String>();
    private final Set<Artifact> processedArtifacts = new HashSet<Artifact>();
    private final WordTemplateRenderer renderer;
+   private boolean isDiff;
 
    public WordTemplateProcessor(WordTemplateRenderer renderer) {
       this.renderer = renderer;
@@ -120,6 +121,7 @@ public class WordTemplateProcessor {
       String masterTemplate = masterTemplateArtifact.getSoleAttributeValue(CoreAttributeTypes.WholeWordContent, "");
       slaveTemplate = "";
 
+      isDiff = renderer.getBooleanOption("Publish As Diff");
       if (slaveTemplateArtifact != null) {
          renderer.setOption(ITemplateRenderer.TEMPLATE_OPTION, slaveTemplateArtifact.getSafeName());
          slaveTemplate = slaveTemplateArtifact.getSoleAttributeValue(CoreAttributeTypes.WholeWordContent, "");
@@ -130,7 +132,7 @@ public class WordTemplateProcessor {
       IFile file = folder.getFile(fileName);
       AIFile.writeToFile(file, applyTemplate(artifacts, masterTemplate, folder, null, null, PREVIEW));
 
-      if (!renderer.getBooleanOption(IRenderer.NO_DISPLAY)) {
+      if (!renderer.getBooleanOption(IRenderer.NO_DISPLAY) && !isDiff) {
          RenderingUtil.ensureFilenameLimit(file);
          wordApp.execute(file.getLocation().toFile().getAbsolutePath());
       }
@@ -224,7 +226,7 @@ public class WordTemplateProcessor {
 
       if (renderer.getBooleanOption("Publish As Diff")) {
          WordTemplateFileDiffer templateFileDiffer = new WordTemplateFileDiffer(renderer);
-         templateFileDiffer.generateFileDifferences(artifacts, "", outlineNumber, outlineType);
+         templateFileDiffer.generateFileDifferences(artifacts, "/results/", outlineNumber, outlineType);
       } else {
          for (Artifact artifact : artifacts) {
             processObjectArtifact(artifact, wordMl, outlineType, presentationType, artifacts.size() > 1);
@@ -279,9 +281,10 @@ public class WordTemplateProcessor {
 
       String subDocFileName = subdocumentName + ".xml";
 
-      if (renderer.getBooleanOption("Publish As Diff")) {
+      if (isDiff) {
          WordTemplateFileDiffer templateFileDiffer = new WordTemplateFileDiffer(renderer);
-         templateFileDiffer.generateFileDifferences(artifacts, subDocFileName, nextParagraphNumber, outlineType);
+         templateFileDiffer.generateFileDifferences(artifacts, "/results/" + subDocFileName, nextParagraphNumber,
+            outlineType);
       } else {
          AIFile.writeToFile(folder.getFile(subDocFileName),
             applyTemplate(artifacts, slaveTemplate, folder, nextParagraphNumber, outlineType, presentationType));
