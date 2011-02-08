@@ -391,6 +391,11 @@ public class Jaxp {
       return findElement(e, Arrays.asList(elementPath.split("/")));
    }
 
+   @Deprecated
+   public static Document readXmlDocument(InputStream is) throws ParserConfigurationException, SAXException, IOException {
+      return readXmlDocument(is, "UTF-8");
+   }
+
    public static Document readXmlDocument(InputStream is, String encoding) throws ParserConfigurationException, SAXException, IOException {
       InputSource inputSource = new InputSource(is);
       inputSource.setEncoding(encoding);
