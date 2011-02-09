@@ -21,6 +21,7 @@ ArtifactTypeTest.class, //
    BranchTest.class, //
    OseeEnumTypeTest.class, //
    RelationTypeTest.class, //
+   TransactionRecordTest.class, //
 })
 /**
  * @author Roberto E. Escobar
