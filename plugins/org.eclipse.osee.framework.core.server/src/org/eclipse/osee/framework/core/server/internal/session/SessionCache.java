@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.core.model.cache.IOseeDataAccessor;
 public final class SessionCache extends AbstractOseeCache<Session> {
 
    public SessionCache(IOseeDataAccessor<Session> dataAccessor) {
-      super(OseeCacheEnum.SESSION_CACHE, dataAccessor, true);
+      super(OseeCacheEnum.SESSION_CACHE, dataAccessor, false);
    }
 
    @Override

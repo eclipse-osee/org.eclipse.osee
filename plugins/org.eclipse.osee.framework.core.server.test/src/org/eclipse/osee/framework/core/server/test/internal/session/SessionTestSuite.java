@@ -17,11 +17,12 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({ //
 SessionTest.class, //
    SessionCacheTest.class, //
+   SessionFactoryTest.class, //
    SessionManagerTest.class, //
 })
 /**
  * @author Roberto E. Escobar
  */
 public class SessionTestSuite {
-
+   // Test Suite
 }

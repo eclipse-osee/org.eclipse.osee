@@ -58,7 +58,7 @@ public final class SessionFactory implements IOseeTypeFactory {
    }
 
    public Session create(String guid, String userId, Date creationDate, String managedByServerId, String clientVersion, String clientMachineName, String clientAddress, int clientPort, Date lastInteractionDate, String lastInteractionDetails) {
-      return new Session(guid, guid, userId, creationDate, managedByServerId, clientVersion, clientMachineName,
+      return new Session(guid, userId, userId, creationDate, managedByServerId, clientVersion, clientMachineName,
          clientAddress, clientPort, lastInteractionDate, lastInteractionDetails);
    }
 

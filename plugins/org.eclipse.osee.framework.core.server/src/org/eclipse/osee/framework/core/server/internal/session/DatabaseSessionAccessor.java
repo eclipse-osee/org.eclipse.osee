@@ -66,7 +66,7 @@ public final class DatabaseSessionAccessor implements IOseeDataAccessor<Session>
       return new Object[] {
          session.getManagedByServerId(),
          session.getGuid(),
-         session.getName(),
+         session.getUserId(),
          session.getClientMachineName(),
          session.getClientAddress(),
          session.getClientPort(),
