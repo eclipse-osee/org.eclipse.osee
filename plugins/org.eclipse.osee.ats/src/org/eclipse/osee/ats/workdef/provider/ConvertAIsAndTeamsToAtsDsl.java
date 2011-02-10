@@ -3,7 +3,7 @@
  *
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
-package org.eclipse.osee.ats.dsl.integration;
+package org.eclipse.osee.ats.workdef.provider;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.dsl.atsDsl.TeamDef;
 import org.eclipse.osee.ats.dsl.atsDsl.UserByName;
 import org.eclipse.osee.ats.dsl.atsDsl.VersionDef;
 import org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslFactoryImpl;
-import org.eclipse.osee.ats.dsl.integration.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
@@ -59,7 +59,7 @@ public class ConvertAIsAndTeamsToAtsDsl {
 
       } catch (OseeCoreException ex) {
          resultData.logError("Exception: " + ex.getLocalizedMessage());
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return atsDsl;
    }

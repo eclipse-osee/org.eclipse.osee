@@ -3,7 +3,7 @@
  *
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
-package org.eclipse.osee.ats.dsl.integration;
+package org.eclipse.osee.ats.workdef.provider;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -45,13 +45,12 @@ import org.eclipse.osee.ats.dsl.atsDsl.UserByUserId;
 import org.eclipse.osee.ats.dsl.atsDsl.UserRef;
 import org.eclipse.osee.ats.dsl.atsDsl.WidgetDef;
 import org.eclipse.osee.ats.dsl.atsDsl.WidgetRef;
-import org.eclipse.osee.ats.dsl.integration.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workdef.CompositeStateItem;
 import org.eclipse.osee.ats.workdef.DecisionReviewDefinition;
 import org.eclipse.osee.ats.workdef.DecisionReviewOption;
-import org.eclipse.osee.ats.workdef.IAtsWorkDefinitionProvider;
 import org.eclipse.osee.ats.workdef.PeerReviewDefinition;
 import org.eclipse.osee.ats.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.workdef.RuleDefinition;
@@ -88,17 +87,23 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageType;
 import org.eclipse.osee.framework.ui.ws.AWorkspace;
 
 /**
+ * Loads Work Definitions from database or file ATS DSL
+ * 
  * @author Donald G. Dunne
  */
-public class AtsDslWorkDefinitionProvider implements IAtsWorkDefinitionProvider {
+public class AtsWorkDefinitionProvider {
 
-   @Override
+   private static AtsWorkDefinitionProvider provider = new AtsWorkDefinitionProvider();
+
+   public static AtsWorkDefinitionProvider get() {
+      return provider;
+   }
+
    public WorkDefinition getWorkFlowDefinition(String id) throws OseeCoreException {
       WorkDefinition workDef = loadWorkDefinitionFromArtifact(id);
       return workDef;
    }
 
-   @Override
    public void importAIsAndTeamsToDb(WorkDefinitionSheet sheet, SkynetTransaction transaction) throws OseeCoreException {
       String modelName = sheet.getFile().getName();
       AtsDsl atsDsl = loadAtsDslFromFile(modelName, sheet);
@@ -106,7 +111,6 @@ public class AtsDslWorkDefinitionProvider implements IAtsWorkDefinitionProvider 
       importer.execute();
    }
 
-   @Override
    public Artifact importWorkDefinitionSheetToDb(WorkDefinitionSheet sheet, SkynetTransaction transaction) throws OseeCoreException {
       String modelName = sheet.getFile().getName();
       AtsDsl atsDsl = loadAtsDslFromFile(modelName, sheet);
@@ -146,7 +150,7 @@ public class AtsDslWorkDefinitionProvider implements IAtsWorkDefinitionProvider 
 
    public String loadWorkFlowDefinitionStringFromFile(WorkDefinitionSheet sheet) throws OseeCoreException {
       if (!sheet.getFile().exists()) {
-         OseeLog.log(Activator.class, Level.SEVERE, String.format("WorkDefinition [%s]", sheet));
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, String.format("WorkDefinition [%s]", sheet));
          return null;
       }
       try {
@@ -156,7 +160,6 @@ public class AtsDslWorkDefinitionProvider implements IAtsWorkDefinitionProvider 
       }
    }
 
-   @Override
    public WorkDefinition loadTeamWorkDefFromFileOldWay() {
       WorkDefinition oldWorkDef = loadWorkDefinitionFromFileOld("WorkDef_Team_Default.ats");
       if (oldWorkDef == null) {
@@ -167,7 +170,6 @@ public class AtsDslWorkDefinitionProvider implements IAtsWorkDefinitionProvider 
       return oldWorkDef;
    }
 
-   @Override
    public WorkDefinition loadTeamWorkDefFromFileNewWay() {
       WorkDefinition oldWorkDef = loadWorkDefinitionFromFileNew("WorkDef_Team_Default.ats");
       if (oldWorkDef == null) {
@@ -225,7 +227,6 @@ public class AtsDslWorkDefinitionProvider implements IAtsWorkDefinitionProvider 
       }
    }
 
-   @Override
    public WorkDefinition loadWorkFlowDefinitionFromFile(WorkDefinitionSheet sheet) {
       try {
          String modelName = sheet.getFile().getName();
@@ -377,7 +378,7 @@ public class AtsDslWorkDefinitionProvider implements IAtsWorkDefinitionProvider 
       try {
          blockType = ReviewBlockType.valueOf(dslBlockType);
       } catch (IllegalArgumentException ex) {
-         OseeLog.log(Activator.class, Level.WARNING,
+         OseeLog.log(AtsPlugin.class, Level.WARNING,
             String.format("Unknown ReviewBlockType [%s]; Defaulting to None", dslBlockType));
       }
       revDef.setBlockingType(blockType);
@@ -387,7 +388,7 @@ public class AtsDslWorkDefinitionProvider implements IAtsWorkDefinitionProvider 
       try {
          eventType = StateEventType.valueOf(dslEventType);
       } catch (IllegalArgumentException ex) {
-         OseeLog.log(Activator.class, Level.WARNING,
+         OseeLog.log(AtsPlugin.class, Level.WARNING,
             String.format("Unknown StateEventType [%s]; Defaulting to None", dslEventType));
       }
       revDef.setStateEventType(eventType);
@@ -403,32 +404,32 @@ public class AtsDslWorkDefinitionProvider implements IAtsWorkDefinitionProvider 
             UserByName byName = (UserByName) UserRef;
             String name = byName.getName();
             if (!Strings.isValid(name)) {
-               OseeLog.log(Activator.class, Level.WARNING, String.format("Unhandled UserByName name [%s]", name));
+               OseeLog.log(AtsPlugin.class, Level.WARNING, String.format("Unhandled UserByName name [%s]", name));
                continue;
             }
             try {
                User user = UserManager.getUserByName(name);
                userIds.add(user.getUserId());
             } catch (OseeCoreException ex) {
-               OseeLog.log(Activator.class, Level.WARNING,
+               OseeLog.log(AtsPlugin.class, Level.WARNING,
                   String.format("No user by name [%s] [%s]", name, ex.getLocalizedMessage()));
             }
          } else if (UserRef instanceof UserByUserId) {
             UserByUserId byUserId = (UserByUserId) UserRef;
             String userId = byUserId.getUserId();
             if (!Strings.isValid(userId)) {
-               OseeLog.log(Activator.class, Level.WARNING, String.format("Unhandled UserByUserId id [%s]", userId));
+               OseeLog.log(AtsPlugin.class, Level.WARNING, String.format("Unhandled UserByUserId id [%s]", userId));
                continue;
             }
             try {
                User user = UserManager.getUserByUserId(userId);
                userIds.add(user.getUserId());
             } catch (OseeCoreException ex) {
-               OseeLog.log(Activator.class, Level.WARNING,
+               OseeLog.log(AtsPlugin.class, Level.WARNING,
                   String.format("No user by id [%s] [%s]", userId, ex.getLocalizedMessage()));
             }
          } else {
-            OseeLog.log(Activator.class, Level.WARNING, String.format("Unhandled UserRef type [%s]", UserRef));
+            OseeLog.log(AtsPlugin.class, Level.WARNING, String.format("Unhandled UserRef type [%s]", UserRef));
          }
       }
       return userIds;
@@ -444,7 +445,7 @@ public class AtsDslWorkDefinitionProvider implements IAtsWorkDefinitionProvider 
       try {
          blockType = ReviewBlockType.valueOf(dslBlockType);
       } catch (IllegalArgumentException ex) {
-         OseeLog.log(Activator.class, Level.WARNING,
+         OseeLog.log(AtsPlugin.class, Level.WARNING,
             String.format("Unknown ReviewBlockType [%s]; Defaulting to None", dslBlockType));
       }
       revDef.setBlockingType(blockType);
@@ -454,7 +455,7 @@ public class AtsDslWorkDefinitionProvider implements IAtsWorkDefinitionProvider 
       try {
          eventType = StateEventType.valueOf(dslEventType);
       } catch (IllegalArgumentException ex) {
-         OseeLog.log(Activator.class, Level.WARNING,
+         OseeLog.log(AtsPlugin.class, Level.WARNING,
             String.format("Unknown StateEventType [%s]; Defaulting to None", dslEventType));
       }
       revDef.setStateEventType(eventType);
@@ -492,7 +493,7 @@ public class AtsDslWorkDefinitionProvider implements IAtsWorkDefinitionProvider 
                }
             }
             if (!found) {
-               OseeLog.log(Activator.class, Level.SEVERE,
+               OseeLog.log(AtsPlugin.class, Level.SEVERE,
                   String.format("Could not find WidgetRef [%s] in WidgetDefs", widgetName));
             }
          } else if (layoutItem instanceof AttrWidget) {
@@ -501,7 +502,7 @@ public class AtsDslWorkDefinitionProvider implements IAtsWorkDefinitionProvider 
             try {
                AttributeType attributeType = AttributeTypeManager.getType(attributeName);
                if (attributeType == null) {
-                  OseeLog.log(Activator.class, Level.SEVERE,
+                  OseeLog.log(AtsPlugin.class, Level.SEVERE,
                      String.format("Invalid attribute name [%s] in WorkDefinition [%s]", attributeName, SHEET_NAME));
                } else {
                   WidgetDefinition widgetDef = new WidgetDefinition(attributeType.getUnqualifiedName());
@@ -512,7 +513,7 @@ public class AtsDslWorkDefinitionProvider implements IAtsWorkDefinitionProvider 
                   stateItems.add(widgetDef);
                }
             } catch (Exception ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, ex,
+               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex,
                   "Error resolving attribute [%s] to WorkDefinition in [%s]", attributeName, SHEET_NAME);
             }
          } else if (layoutItem instanceof Composite) {
@@ -554,19 +555,19 @@ public class AtsDslWorkDefinitionProvider implements IAtsWorkDefinitionProvider 
             try {
                AttributeType attributeType = AttributeTypeManager.getType(attributeName);
                if (attributeType == null) {
-                  OseeLog.log(Activator.class, Level.SEVERE,
+                  OseeLog.log(AtsPlugin.class, Level.SEVERE,
                      String.format("Invalid attribute name [%s] in WorkDefinition [%s]", attributeName, SHEET_NAME));
                } else {
                   setXWidgetNameBasedOnAttribute(attributeType, widgetDef);
                }
             } catch (OseeCoreException ex) {
                OseeLog.log(
-                  Activator.class,
+                  AtsPlugin.class,
                   Level.SEVERE,
                   String.format("Error resolving attribute name [%s] in WorkDefinition [%s]", attributeName, SHEET_NAME));
             }
          } else {
-            OseeLog.log(Activator.class, Level.SEVERE,
+            OseeLog.log(AtsPlugin.class, Level.SEVERE,
                String.format("Invalid attribute name [%s] in WorkDefinition [%s]", attributeName, SHEET_NAME));
          }
       }
@@ -584,13 +585,12 @@ public class AtsDslWorkDefinitionProvider implements IAtsWorkDefinitionProvider 
             option = WidgetOption.valueOf(value);
             widgetDef.getOptions().add(option);
          } catch (IllegalArgumentException ex) {
-            OseeLog.log(Activator.class, Level.WARNING, ex, "Unexpected value [%s] in WorkDefinition [%s] ", value,
+            OseeLog.log(AtsPlugin.class, Level.WARNING, ex, "Unexpected value [%s] in WorkDefinition [%s] ", value,
                SHEET_NAME);
          }
       }
    }
 
-   @Override
    public void convertAndOpenAtsDsl(WorkDefinition workDef, XResultData resultData, String filename) throws OseeCoreException {
       ConvertWorkDefinitionToAtsDsl converter = new ConvertWorkDefinitionToAtsDsl(workDef, resultData);
       AtsDsl atsDsl = converter.convert(filename.replaceFirst("\\.ats", ""));
@@ -610,7 +610,6 @@ public class AtsDslWorkDefinitionProvider implements IAtsWorkDefinitionProvider 
       }
    }
 
-   @Override
    public void convertAndOpenAIandTeamAtsDsl(XResultData resultData) throws OseeCoreException {
       ConvertAIsAndTeamsToAtsDsl converter = new ConvertAIsAndTeamsToAtsDsl(resultData);
       AtsDsl atsDsl = converter.convert("AIsAndTeams");

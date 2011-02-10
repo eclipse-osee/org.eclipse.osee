@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.dsl.integration;
+package org.eclipse.osee.ats.workdef.provider;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

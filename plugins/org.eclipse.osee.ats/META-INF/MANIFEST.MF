@@ -69,8 +69,12 @@ Export-Package: org.eclipse.osee.ats,
  org.eclipse.osee.ats.workflow.vue,
  org.eclipse.osee.ats.world,
  org.eclipse.osee.ats.world.search
-Import-Package: javax.mail,
+Import-Package: com.google.inject,
+ javax.mail,
  javax.mail.internet,
+ org.eclipse.osee.ats.dsl,
+ org.eclipse.osee.ats.dsl.atsDsl,
+ org.eclipse.osee.ats.dsl.atsDsl.impl,
  org.eclipse.osee.framework.access,
  org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.core.client.server,
@@ -93,5 +97,6 @@ Import-Package: javax.mail,
  org.eclipse.osee.framework.logging,
  org.eclipse.osee.framework.ui.swt,
  org.eclipse.osee.framework.ui.ws,
- org.eclipse.osee.support.test.util
+ org.eclipse.osee.support.test.util,
+ org.eclipse.xtext.resource
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

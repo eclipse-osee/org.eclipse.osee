@@ -13,9 +13,9 @@ package org.eclipse.osee.ats.navigate;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.workdef.AtsWorkDefinitionProviders;
 import org.eclipse.osee.ats.workdef.WorkDefinition;
 import org.eclipse.osee.ats.workdef.WorkDefinitionFactory;
+import org.eclipse.osee.ats.workdef.provider.AtsWorkDefinitionProvider;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
@@ -86,6 +86,6 @@ public class ConvertWorkFlowDefinitions extends XNavigateItemAction {
 
    private void convert(WorkFlowDefinition workFlowDef, XResultData resultData, String filename) throws OseeCoreException {
       WorkDefinition workDef = WorkDefinitionFactory.translateToWorkDefinition(workFlowDef);
-      AtsWorkDefinitionProviders.convertAndOpenAtsDsl(workDef, resultData, filename);
+      AtsWorkDefinitionProvider.get().convertAndOpenAtsDsl(workDef, resultData, filename);
    }
 }

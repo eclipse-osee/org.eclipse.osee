@@ -3,7 +3,7 @@
  *
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
-package org.eclipse.osee.ats.dsl.integration;
+package org.eclipse.osee.ats.workdef.provider;
 
 import java.util.HashMap;
 import java.util.Map;

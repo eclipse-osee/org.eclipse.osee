@@ -14,8 +14,8 @@ import java.io.File;
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.workdef.AtsWorkDefinitionProviders;
 import org.eclipse.osee.ats.workdef.WorkDefinitionSheet;
+import org.eclipse.osee.ats.workdef.provider.AtsWorkDefinitionProvider;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.PluginUtil;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
@@ -39,8 +39,8 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
       if (!MessageDialog.openConfirm(Displays.getActiveShell(), getName(), getName())) {
          return;
       }
-      AtsWorkDefinitionProviders.loadTeamWorkDefFromFileOldWay();
-      AtsWorkDefinitionProviders.loadTeamWorkDefFromFileNewWay();
+      AtsWorkDefinitionProvider.get().loadTeamWorkDefFromFileOldWay();
+      AtsWorkDefinitionProvider.get().loadTeamWorkDefFromFileNewWay();
 
       PluginUtil util = new PluginUtil("org.eclipse.osee.ats");
       String filename = "support/WorkDef_Team_Default.ats";
@@ -51,7 +51,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
          }
 
          WorkDefinitionSheet sheet = new WorkDefinitionSheet("WorkDef_Team_Default", "osee.ats.teamWorkflow", file);
-         AtsWorkDefinitionProviders.loadWorkFlowDefinitionFromFile(sheet);
+         AtsWorkDefinitionProvider.get().loadWorkFlowDefinitionFromFile(sheet);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }

@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.ats.artifact.AtsArtifactToken;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.workdef.provider.AtsWorkDefinitionProvider;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -73,7 +74,7 @@ public final class AtsWorkDefinitionSheetProviders {
          if (isValidSheet(sheet)) {
             String logStr = String.format("Importing ATS sheet [%s]", sheet.getName());
             System.out.println(logStr);
-            Artifact artifact = AtsWorkDefinitionProviders.importWorkDefinitionSheetToDb(sheet, transaction);
+            Artifact artifact = AtsWorkDefinitionProvider.get().importWorkDefinitionSheetToDb(sheet, transaction);
             if (artifact != null) {
                folder.addChild(artifact);
                artifact.persist(transaction);
@@ -90,7 +91,7 @@ public final class AtsWorkDefinitionSheetProviders {
          if (sheet.getName().contains("AIsAndTeams") && isValidSheet(sheet)) {
             String logStr = String.format("Importing ATS AIs and Teams sheet [%s]", sheet.getName());
             OseeLog.log(AtsPlugin.class, Level.INFO, logStr);
-            AtsWorkDefinitionProviders.importAIsAndTeamsToDb(sheet, transaction);
+            AtsWorkDefinitionProvider.get().importAIsAndTeamsToDb(sheet, transaction);
          }
       }
       transaction.execute();

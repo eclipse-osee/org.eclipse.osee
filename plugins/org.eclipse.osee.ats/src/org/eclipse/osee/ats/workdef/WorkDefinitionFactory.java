@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.DecisionOption;
 import org.eclipse.osee.ats.util.widgets.XDecisionOptions;
+import org.eclipse.osee.ats.workdef.provider.AtsWorkDefinitionProvider;
 import org.eclipse.osee.ats.workflow.flow.DecisionWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.flow.GoalWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.flow.PeerToPeerWorkflowDefinition;
@@ -123,7 +124,7 @@ public class WorkDefinitionFactory {
          String translatedId = WorkDefinitionFactory.getOverrideWorkDefId(id);
          // Try to get from new DSL provider if configured to use it
          if (!match.isMatched() && AtsUtil.isUseNewWorkDefinitions()) {
-            WorkDefinition workDef = AtsWorkDefinitionProviders.getWorkFlowDefinition(translatedId);
+            WorkDefinition workDef = AtsWorkDefinitionProvider.get().getWorkFlowDefinition(translatedId);
             if (workDef != null) {
                match.setWorkDefinition(workDef);
                match.getTrace().add(
@@ -522,7 +523,7 @@ public class WorkDefinitionFactory {
 
    public static String getOverrideWorkDefId(String id) {
       // Don't override if no providers available (dsl plugins not released)
-      if (AtsUtil.isUseNewWorkDefinitions() && AtsWorkDefinitionProviders.providerExists()) {
+      if (AtsUtil.isUseNewWorkDefinitions()) {
 
          String overrideId = AtsWorkDefinitionSheetProviders.getOverrideId(id);
          if (Strings.isValid(overrideId)) {
