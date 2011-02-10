@@ -1,0 +1,260 @@
+grammar org.eclipse.osee.ats.dsl.AtsDsl with org.eclipse.xtext.common.Terminals
+
+generate atsDsl "http://www.eclipse.org/osee/ats/dsl/AtsDsl"
+
+AtsDsl:
+	('workDefinition' workDef=WorkDef)?
+	('userDefinition' userDef+=UserDef)*
+	('teamDefinition' teamDef+=TeamDef)*
+	('actionableItem' actionableItemDef+=ActionableItemDef)*;
+
+UserDef:
+	name=STRING (userDefOption+=UserDefOption)*
+	('{'
+		('active' active=BooleanDef)?
+		('userId' userId=STRING)?
+		('email' email=STRING)?
+		('isAdmin' admin=BooleanDef)?
+	'}')?;
+
+TeamDef:
+	name=STRING (teamDefOption+=TeamDefOption)*
+	'{'
+		('active' active=BooleanDef)?
+		('usesVersions' usesVersions=BooleanDef)?
+		('staticId' staticId+=STRING)*
+		('lead' lead+=UserRef)*
+		('member' member+=UserRef)*
+		('priviledged' priviledged+=UserRef)*
+		('workDefinition' workDefinition=STRING)?
+		('version' version+=VersionDef)*
+		('children' '{'
+		   ('teamDefinition' children+=TeamDef)+
+		   '}'
+		 )?
+	'}';
+
+ActionableItemDef:
+	name=STRING (aiDefOption+=ActionableItemOption)*
+	('{'
+		('active' active=BooleanDef)?
+		('actionable' actionable=BooleanDef)?
+		('lead' lead+=UserRef)*
+		('staticId' staticId+=STRING)*
+		('team' teamDef=STRING)?
+		('children' '{'
+		   ('actionableItem' children+=ActionableItemDef)+
+		   '}'
+		 )?
+	'}')?;
+
+VersionDef:
+	name=STRING
+	'{'
+		('active' active=BooleanDef)?
+		('staticId' staticId+=STRING)*
+		('next' next=BooleanDef)?
+		('released' released=BooleanDef)?
+		('allowCreateBranch' allowCreateBranch=BooleanDef)?
+		('allowCommitBranch' allowCommitBranch=BooleanDef)?
+		('baslineBranchGuid' baselineBranchGuid=STRING)?
+	'}';
+
+WorkDef:
+	name=WORK_DEFINITION_NAME_REFERENCE
+	'{'
+	('id' id+=STRING)+
+	('startState' startState=[StateDef|STATE_NAME_REFERENCE])
+	(widgetDefs+=WidgetDef)*
+	(decisionReviewDefs+=DecisionReviewDef)*
+	(peerReviewDefs+=PeerReviewDef)*
+	(states+=StateDef)+
+	'}';
+
+WidgetDef:
+	'widgetDefinition' name=WIDGET_NAME_REFERENCE
+	'{'
+	('attributeName' attributeName=STRING)?
+	('description' description=STRING)?
+	('xWidgetName' xWidgetName=STRING)?
+	('defaultValue' defaultValue=STRING)?
+	('height' height=INT)?
+	('option' option+=WidgetOption)*
+	'}';
+
+WidgetRef:
+	'widget' widget=[WidgetDef|WIDGET_NAME_REFERENCE];
+
+AttrWidget:
+	'attributeWidget' attributeName=STRING ('with' option+=WidgetOption)*;
+
+StateDef:
+	'state' name=STATE_NAME_REFERENCE
+	'{'
+	('description' description=STRING)?
+	'type' pageType=PageType
+	'ordinal' ordinal=INT
+	(transitionStates+=ToState)*
+	('rule' rules+=Rule)*
+	(decisionReviews+=DecisionReviewRef)*
+	(peerReviews+=PeerReviewRef)*
+	('percentWeight' percentWeight=INT)?
+	(layout=LayoutType)?
+	'}';
+
+DecisionReviewRef:
+	'decisionReview' decisionReview=[DecisionReviewDef|DECISION_REVIEW_NAME_REFERENCE];
+
+DecisionReviewDef:
+	'decisionReviewDefinition' name=DECISION_REVIEW_NAME_REFERENCE
+	'{'
+	'title' title=STRING
+	'description' description=STRING
+	('relatedToState' relatedToState=[StateDef|STATE_NAME_REFERENCE])?
+	'blockingType' blockingType=ReviewBlockingType
+	'onEvent' stateEvent=WorkflowEventType
+	('assignee' assigneeRefs+=UserRef)*
+	('autoTransitionToDecision' autoTransitionToDecision=BooleanDef)?
+	(options+=DecisionReviewOpt)+
+	'}';
+
+DecisionReviewOpt:
+	'option' name=STRING (followup=FollowupRef)?;
+
+PeerReviewRef:
+	'peerReview' peerReview=[PeerReviewDef|PEER_REVIEW_NAME_REFERENCE];
+
+PeerReviewDef:
+	'peerReviewDefinition' name=PEER_REVIEW_NAME_REFERENCE
+	'{'
+	('title' title=STRING)?
+	'description' description=STRING
+	('location' location=STRING)?
+	('relatedToState' relatedToState=[StateDef|STATE_NAME_REFERENCE])?
+	'blockingType' blockingType=ReviewBlockingType
+	'onEvent' stateEvent=WorkflowEventType
+	('assignee' assigneeRefs+=UserRef)*
+	'}';
+
+FollowupRef:
+	'followup by' ('assignee' assigneeRefs+=UserRef)+;
+
+UserRef:
+	UserByUserId | UserByName;
+
+UserByUserId:
+	'userId' userId=STRING;
+
+UserByName:
+	'named' name=STRING;
+
+enum BooleanDef:
+	None | True | False;
+
+enum WorkflowEventType:
+	TransitionTo | CreateBranch | CommitBranch;
+
+enum ReviewBlockingType:
+	Transition | Commit;
+
+DECISION_REVIEW_NAME_REFERENCE:
+	STRING;
+
+PEER_REVIEW_NAME_REFERENCE:
+	STRING;
+
+STATE_NAME_REFERENCE:
+	STRING;
+
+WIDGET_NAME_REFERENCE:
+	STRING;
+
+WORK_DEFINITION_NAME_REFERENCE:
+	STRING;
+	
+ToState:
+	'to' state=[StateDef|STATE_NAME_REFERENCE] (options+=TransitionOption)*;
+
+LayoutType:
+	LayoutDef | LayoutCopy;
+
+LayoutDef:
+	'layout' '{' (layoutItems+=LayoutItem)+ '}';
+
+LayoutCopy:
+	'layoutCopyFrom' state=[StateDef|STATE_NAME_REFERENCE];
+
+LayoutItem:
+	WidgetRef | AttrWidget | Composite;
+
+Composite:
+	'composite' '{'
+	'numColumns' numColumns=INT
+	(layoutItems+=LayoutItem)+
+	('option' options+=CompositeOption)*
+	'}';
+
+UserDefOption:
+	'GetOrCreate' | STRING;
+	
+TeamDefOption:
+	'GetOrCreate' | STRING;
+	
+ActionableItemOption:
+	'GetOrCreate' | STRING;
+
+// STRING option used below for future expansion of options.  Since sheet will be
+// in databse and read by old code, new value can be entered as "NewOption" with quotes.
+// Old grammar and code will ignore; New code needs to process string and resolve to new
+// value.  After release, instance sheets can be updated and remove the " because NewOption
+// will be a supported value.
+
+// STRING is for future expansion; Composite has no options, provide this block so some
+// can be added later
+CompositeOption:
+	'None' | STRING;
+
+	// STRING is for future expansion
+// WARNING: Any new TransitionOption need to be added to AtsDslProposalProvider for content assist
+TransitionOption:
+	'AsDefault' | 'OverrideAttributeValidation' | STRING;
+
+	// STRING is for future expansion
+// WARNING: Any new rules need to be added to AtsDslProposalProvider for content assist
+Rule:
+	'RequireStateHourSpentPrompt' |
+	'AddDecisionValidateBlockingReview' |
+	'AddDecisionValidateNonBlockingReview' |
+	'AllowTransitionWithWorkingBranch' |
+	'ForceAssigneesToTeamLeads' |
+	'RequireTargetedVersion' |
+	'AllowPriviledgedEditToTeamMember' |
+	'AllowPriviledgedEditToTeamMemberAndOriginator' |
+	'AllowPriviledgedEditToAll' |
+	'AllowEditToAll' |
+	'AllowAssigneeToAll' |
+	STRING;
+
+	// STRING is for future expansion
+// WARNING: Any new WidgetOption need to be added to AtsDslProposalProvider for content assist
+WidgetOption:
+	'REQUIRED_FOR_TRANSITION' | 'NOT_REQUIRED_FOR_TRANSITION' |
+	'REQUIRED_FOR_COMPLETION' | 'NOT_REQUIRED_FOR_COMPLETION' |
+	'ENABLED' | 'NOT_ENABLED' |
+	'EDITABLE' | 'NOT_EDITABLE' |
+	'MULTI_SELECT' |
+	'HORIZONTAL_LABEL' | 'VERTICAL_LABEL' |
+	'LABEL_AFTER' | 'LABEL_BEFORE' | 'NO_LABEL' |
+	'SORTED' |
+	'ADD_DEFAULT_VALUE' | 'NO_DEFAULT_VALUE' |
+	'BEGIN_COMPOSITE_4' | 'BEGIN_COMPOSITE_6' | 'BEGIN_COMPOSITE_8' | 'BEGIN_COMPOSITE_10' |
+	'END_COMPOSITE' |
+	'FILL_NONE' | 'FILL_HORIZONTALLY' | 'FILL_VERTICALLY' |
+	'ALIGN_LEFT' | 'ALIGN_RIGHT' | 'ALIGN_CENTER' | STRING;
+
+	// STRING is for future expansion
+// WARNING: Any new PageType need to be added to AtsDslProposalProvider for content assist
+PageType:
+	'Working' | 'Completed' | 'Cancelled' | STRING;
+	
+	

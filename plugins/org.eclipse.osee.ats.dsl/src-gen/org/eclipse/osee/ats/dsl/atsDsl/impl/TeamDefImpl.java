@@ -1,0 +1,643 @@
+/**
+ * <copyright>
+ * </copyright>
+ *
+
+ */
+package org.eclipse.osee.ats.dsl.atsDsl.impl;
+
+import java.util.Collection;
+
+import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.notify.NotificationChain;
+
+import org.eclipse.emf.common.util.EList;
+
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.InternalEObject;
+
+import org.eclipse.emf.ecore.impl.ENotificationImpl;
+import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
+
+import org.eclipse.emf.ecore.util.EDataTypeEList;
+import org.eclipse.emf.ecore.util.EObjectContainmentEList;
+import org.eclipse.emf.ecore.util.InternalEList;
+
+import org.eclipse.osee.ats.dsl.atsDsl.AtsDslPackage;
+import org.eclipse.osee.ats.dsl.atsDsl.BooleanDef;
+import org.eclipse.osee.ats.dsl.atsDsl.TeamDef;
+import org.eclipse.osee.ats.dsl.atsDsl.UserRef;
+import org.eclipse.osee.ats.dsl.atsDsl.VersionDef;
+
+/**
+ * <!-- begin-user-doc -->
+ * An implementation of the model object '<em><b>Team Def</b></em>'.
+ * <!-- end-user-doc -->
+ * <p>
+ * The following features are implemented:
+ * <ul>
+ *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.TeamDefImpl#getName <em>Name</em>}</li>
+ *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.TeamDefImpl#getTeamDefOption <em>Team Def Option</em>}</li>
+ *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.TeamDefImpl#getActive <em>Active</em>}</li>
+ *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.TeamDefImpl#getUsesVersions <em>Uses Versions</em>}</li>
+ *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.TeamDefImpl#getStaticId <em>Static Id</em>}</li>
+ *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.TeamDefImpl#getLead <em>Lead</em>}</li>
+ *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.TeamDefImpl#getMember <em>Member</em>}</li>
+ *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.TeamDefImpl#getPriviledged <em>Priviledged</em>}</li>
+ *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.TeamDefImpl#getWorkDefinition <em>Work Definition</em>}</li>
+ *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.TeamDefImpl#getVersion <em>Version</em>}</li>
+ *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.TeamDefImpl#getChildren <em>Children</em>}</li>
+ * </ul>
+ * </p>
+ *
+ * @generated
+ */
+public class TeamDefImpl extends MinimalEObjectImpl.Container implements TeamDef
+{
+  /**
+   * The default value of the '{@link #getName() <em>Name</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getName()
+   * @generated
+   * @ordered
+   */
+  protected static final String NAME_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getName()
+   * @generated
+   * @ordered
+   */
+  protected String name = NAME_EDEFAULT;
+
+  /**
+   * The cached value of the '{@link #getTeamDefOption() <em>Team Def Option</em>}' attribute list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getTeamDefOption()
+   * @generated
+   * @ordered
+   */
+  protected EList<String> teamDefOption;
+
+  /**
+   * The default value of the '{@link #getActive() <em>Active</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getActive()
+   * @generated
+   * @ordered
+   */
+  protected static final BooleanDef ACTIVE_EDEFAULT = BooleanDef.NONE;
+
+  /**
+   * The cached value of the '{@link #getActive() <em>Active</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getActive()
+   * @generated
+   * @ordered
+   */
+  protected BooleanDef active = ACTIVE_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getUsesVersions() <em>Uses Versions</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getUsesVersions()
+   * @generated
+   * @ordered
+   */
+  protected static final BooleanDef USES_VERSIONS_EDEFAULT = BooleanDef.NONE;
+
+  /**
+   * The cached value of the '{@link #getUsesVersions() <em>Uses Versions</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getUsesVersions()
+   * @generated
+   * @ordered
+   */
+  protected BooleanDef usesVersions = USES_VERSIONS_EDEFAULT;
+
+  /**
+   * The cached value of the '{@link #getStaticId() <em>Static Id</em>}' attribute list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getStaticId()
+   * @generated
+   * @ordered
+   */
+  protected EList<String> staticId;
+
+  /**
+   * The cached value of the '{@link #getLead() <em>Lead</em>}' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getLead()
+   * @generated
+   * @ordered
+   */
+  protected EList<UserRef> lead;
+
+  /**
+   * The cached value of the '{@link #getMember() <em>Member</em>}' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getMember()
+   * @generated
+   * @ordered
+   */
+  protected EList<UserRef> member;
+
+  /**
+   * The cached value of the '{@link #getPriviledged() <em>Priviledged</em>}' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getPriviledged()
+   * @generated
+   * @ordered
+   */
+  protected EList<UserRef> priviledged;
+
+  /**
+   * The default value of the '{@link #getWorkDefinition() <em>Work Definition</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getWorkDefinition()
+   * @generated
+   * @ordered
+   */
+  protected static final String WORK_DEFINITION_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getWorkDefinition() <em>Work Definition</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getWorkDefinition()
+   * @generated
+   * @ordered
+   */
+  protected String workDefinition = WORK_DEFINITION_EDEFAULT;
+
+  /**
+   * The cached value of the '{@link #getVersion() <em>Version</em>}' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getVersion()
+   * @generated
+   * @ordered
+   */
+  protected EList<VersionDef> version;
+
+  /**
+   * The cached value of the '{@link #getChildren() <em>Children</em>}' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getChildren()
+   * @generated
+   * @ordered
+   */
+  protected EList<TeamDef> children;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  protected TeamDefImpl()
+  {
+    super();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  protected EClass eStaticClass()
+  {
+    return AtsDslPackage.Literals.TEAM_DEF;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String getName()
+  {
+    return name;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setName(String newName)
+  {
+    String oldName = name;
+    name = newName;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, AtsDslPackage.TEAM_DEF__NAME, oldName, name));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EList<String> getTeamDefOption()
+  {
+    if (teamDefOption == null)
+    {
+      teamDefOption = new EDataTypeEList<String>(String.class, this, AtsDslPackage.TEAM_DEF__TEAM_DEF_OPTION);
+    }
+    return teamDefOption;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BooleanDef getActive()
+  {
+    return active;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setActive(BooleanDef newActive)
+  {
+    BooleanDef oldActive = active;
+    active = newActive == null ? ACTIVE_EDEFAULT : newActive;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, AtsDslPackage.TEAM_DEF__ACTIVE, oldActive, active));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public BooleanDef getUsesVersions()
+  {
+    return usesVersions;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setUsesVersions(BooleanDef newUsesVersions)
+  {
+    BooleanDef oldUsesVersions = usesVersions;
+    usesVersions = newUsesVersions == null ? USES_VERSIONS_EDEFAULT : newUsesVersions;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, AtsDslPackage.TEAM_DEF__USES_VERSIONS, oldUsesVersions, usesVersions));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EList<String> getStaticId()
+  {
+    if (staticId == null)
+    {
+      staticId = new EDataTypeEList<String>(String.class, this, AtsDslPackage.TEAM_DEF__STATIC_ID);
+    }
+    return staticId;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EList<UserRef> getLead()
+  {
+    if (lead == null)
+    {
+      lead = new EObjectContainmentEList<UserRef>(UserRef.class, this, AtsDslPackage.TEAM_DEF__LEAD);
+    }
+    return lead;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EList<UserRef> getMember()
+  {
+    if (member == null)
+    {
+      member = new EObjectContainmentEList<UserRef>(UserRef.class, this, AtsDslPackage.TEAM_DEF__MEMBER);
+    }
+    return member;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EList<UserRef> getPriviledged()
+  {
+    if (priviledged == null)
+    {
+      priviledged = new EObjectContainmentEList<UserRef>(UserRef.class, this, AtsDslPackage.TEAM_DEF__PRIVILEDGED);
+    }
+    return priviledged;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String getWorkDefinition()
+  {
+    return workDefinition;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setWorkDefinition(String newWorkDefinition)
+  {
+    String oldWorkDefinition = workDefinition;
+    workDefinition = newWorkDefinition;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, AtsDslPackage.TEAM_DEF__WORK_DEFINITION, oldWorkDefinition, workDefinition));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EList<VersionDef> getVersion()
+  {
+    if (version == null)
+    {
+      version = new EObjectContainmentEList<VersionDef>(VersionDef.class, this, AtsDslPackage.TEAM_DEF__VERSION);
+    }
+    return version;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EList<TeamDef> getChildren()
+  {
+    if (children == null)
+    {
+      children = new EObjectContainmentEList<TeamDef>(TeamDef.class, this, AtsDslPackage.TEAM_DEF__CHILDREN);
+    }
+    return children;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
+  {
+    switch (featureID)
+    {
+      case AtsDslPackage.TEAM_DEF__LEAD:
+        return ((InternalEList<?>)getLead()).basicRemove(otherEnd, msgs);
+      case AtsDslPackage.TEAM_DEF__MEMBER:
+        return ((InternalEList<?>)getMember()).basicRemove(otherEnd, msgs);
+      case AtsDslPackage.TEAM_DEF__PRIVILEDGED:
+        return ((InternalEList<?>)getPriviledged()).basicRemove(otherEnd, msgs);
+      case AtsDslPackage.TEAM_DEF__VERSION:
+        return ((InternalEList<?>)getVersion()).basicRemove(otherEnd, msgs);
+      case AtsDslPackage.TEAM_DEF__CHILDREN:
+        return ((InternalEList<?>)getChildren()).basicRemove(otherEnd, msgs);
+    }
+    return super.eInverseRemove(otherEnd, featureID, msgs);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public Object eGet(int featureID, boolean resolve, boolean coreType)
+  {
+    switch (featureID)
+    {
+      case AtsDslPackage.TEAM_DEF__NAME:
+        return getName();
+      case AtsDslPackage.TEAM_DEF__TEAM_DEF_OPTION:
+        return getTeamDefOption();
+      case AtsDslPackage.TEAM_DEF__ACTIVE:
+        return getActive();
+      case AtsDslPackage.TEAM_DEF__USES_VERSIONS:
+        return getUsesVersions();
+      case AtsDslPackage.TEAM_DEF__STATIC_ID:
+        return getStaticId();
+      case AtsDslPackage.TEAM_DEF__LEAD:
+        return getLead();
+      case AtsDslPackage.TEAM_DEF__MEMBER:
+        return getMember();
+      case AtsDslPackage.TEAM_DEF__PRIVILEDGED:
+        return getPriviledged();
+      case AtsDslPackage.TEAM_DEF__WORK_DEFINITION:
+        return getWorkDefinition();
+      case AtsDslPackage.TEAM_DEF__VERSION:
+        return getVersion();
+      case AtsDslPackage.TEAM_DEF__CHILDREN:
+        return getChildren();
+    }
+    return super.eGet(featureID, resolve, coreType);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @SuppressWarnings("unchecked")
+  @Override
+  public void eSet(int featureID, Object newValue)
+  {
+    switch (featureID)
+    {
+      case AtsDslPackage.TEAM_DEF__NAME:
+        setName((String)newValue);
+        return;
+      case AtsDslPackage.TEAM_DEF__TEAM_DEF_OPTION:
+        getTeamDefOption().clear();
+        getTeamDefOption().addAll((Collection<? extends String>)newValue);
+        return;
+      case AtsDslPackage.TEAM_DEF__ACTIVE:
+        setActive((BooleanDef)newValue);
+        return;
+      case AtsDslPackage.TEAM_DEF__USES_VERSIONS:
+        setUsesVersions((BooleanDef)newValue);
+        return;
+      case AtsDslPackage.TEAM_DEF__STATIC_ID:
+        getStaticId().clear();
+        getStaticId().addAll((Collection<? extends String>)newValue);
+        return;
+      case AtsDslPackage.TEAM_DEF__LEAD:
+        getLead().clear();
+        getLead().addAll((Collection<? extends UserRef>)newValue);
+        return;
+      case AtsDslPackage.TEAM_DEF__MEMBER:
+        getMember().clear();
+        getMember().addAll((Collection<? extends UserRef>)newValue);
+        return;
+      case AtsDslPackage.TEAM_DEF__PRIVILEDGED:
+        getPriviledged().clear();
+        getPriviledged().addAll((Collection<? extends UserRef>)newValue);
+        return;
+      case AtsDslPackage.TEAM_DEF__WORK_DEFINITION:
+        setWorkDefinition((String)newValue);
+        return;
+      case AtsDslPackage.TEAM_DEF__VERSION:
+        getVersion().clear();
+        getVersion().addAll((Collection<? extends VersionDef>)newValue);
+        return;
+      case AtsDslPackage.TEAM_DEF__CHILDREN:
+        getChildren().clear();
+        getChildren().addAll((Collection<? extends TeamDef>)newValue);
+        return;
+    }
+    super.eSet(featureID, newValue);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public void eUnset(int featureID)
+  {
+    switch (featureID)
+    {
+      case AtsDslPackage.TEAM_DEF__NAME:
+        setName(NAME_EDEFAULT);
+        return;
+      case AtsDslPackage.TEAM_DEF__TEAM_DEF_OPTION:
+        getTeamDefOption().clear();
+        return;
+      case AtsDslPackage.TEAM_DEF__ACTIVE:
+        setActive(ACTIVE_EDEFAULT);
+        return;
+      case AtsDslPackage.TEAM_DEF__USES_VERSIONS:
+        setUsesVersions(USES_VERSIONS_EDEFAULT);
+        return;
+      case AtsDslPackage.TEAM_DEF__STATIC_ID:
+        getStaticId().clear();
+        return;
+      case AtsDslPackage.TEAM_DEF__LEAD:
+        getLead().clear();
+        return;
+      case AtsDslPackage.TEAM_DEF__MEMBER:
+        getMember().clear();
+        return;
+      case AtsDslPackage.TEAM_DEF__PRIVILEDGED:
+        getPriviledged().clear();
+        return;
+      case AtsDslPackage.TEAM_DEF__WORK_DEFINITION:
+        setWorkDefinition(WORK_DEFINITION_EDEFAULT);
+        return;
+      case AtsDslPackage.TEAM_DEF__VERSION:
+        getVersion().clear();
+        return;
+      case AtsDslPackage.TEAM_DEF__CHILDREN:
+        getChildren().clear();
+        return;
+    }
+    super.eUnset(featureID);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public boolean eIsSet(int featureID)
+  {
+    switch (featureID)
+    {
+      case AtsDslPackage.TEAM_DEF__NAME:
+        return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
+      case AtsDslPackage.TEAM_DEF__TEAM_DEF_OPTION:
+        return teamDefOption != null && !teamDefOption.isEmpty();
+      case AtsDslPackage.TEAM_DEF__ACTIVE:
+        return active != ACTIVE_EDEFAULT;
+      case AtsDslPackage.TEAM_DEF__USES_VERSIONS:
+        return usesVersions != USES_VERSIONS_EDEFAULT;
+      case AtsDslPackage.TEAM_DEF__STATIC_ID:
+        return staticId != null && !staticId.isEmpty();
+      case AtsDslPackage.TEAM_DEF__LEAD:
+        return lead != null && !lead.isEmpty();
+      case AtsDslPackage.TEAM_DEF__MEMBER:
+        return member != null && !member.isEmpty();
+      case AtsDslPackage.TEAM_DEF__PRIVILEDGED:
+        return priviledged != null && !priviledged.isEmpty();
+      case AtsDslPackage.TEAM_DEF__WORK_DEFINITION:
+        return WORK_DEFINITION_EDEFAULT == null ? workDefinition != null : !WORK_DEFINITION_EDEFAULT.equals(workDefinition);
+      case AtsDslPackage.TEAM_DEF__VERSION:
+        return version != null && !version.isEmpty();
+      case AtsDslPackage.TEAM_DEF__CHILDREN:
+        return children != null && !children.isEmpty();
+    }
+    return super.eIsSet(featureID);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public String toString()
+  {
+    if (eIsProxy()) return super.toString();
+
+    StringBuffer result = new StringBuffer(super.toString());
+    result.append(" (name: ");
+    result.append(name);
+    result.append(", teamDefOption: ");
+    result.append(teamDefOption);
+    result.append(", active: ");
+    result.append(active);
+    result.append(", usesVersions: ");
+    result.append(usesVersions);
+    result.append(", staticId: ");
+    result.append(staticId);
+    result.append(", workDefinition: ");
+    result.append(workDefinition);
+    result.append(')');
+    return result.toString();
+  }
+
+} //TeamDefImpl
