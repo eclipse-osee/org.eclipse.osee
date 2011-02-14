@@ -169,6 +169,8 @@ public class TaskEditor extends AbstractArtifactEditor implements IActionable, I
          setActivePage(mainPageIndex);
          loadTable();
 
+         getSite().setSelectionProvider(getTaskActionPage().getTaskComposite().getTaskXViewer());
+
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       } catch (PartInitException ex) {
