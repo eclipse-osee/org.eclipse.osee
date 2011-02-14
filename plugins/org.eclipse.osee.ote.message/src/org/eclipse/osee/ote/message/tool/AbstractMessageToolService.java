@@ -703,18 +703,11 @@ public class AbstractMessageToolService implements IRemoteMessageService {
             List<List<Object>> headerElementNames = details.getHeaderElementNames();
             ArrayList<Element> headerElementsToRecord = new ArrayList<Element>(headerElementNames.size());
             Element[] headerElements = reader.getActiveDataSource(type).getMsgHeader().getElements();
-            if (headerElements != null && headerElementNames != null) {
+            if (headerElements != null) {
                for (List<Object> elementName : headerElementNames) {
-                  if (elementName.size() == 2) {
-                     Object obj = elementName.get(1);
-                     if (obj instanceof String) {
-                        String headerName = (String) obj;
-                        for (Element element : headerElements) {
-                           if (element.getElementName().equals(headerName)) {
-                              headerElementsToRecord.add(element);
-                           }
-                        }
-                     }
+                  Element element = reader.getElement(elementName);
+                  if (element != null) {
+                     headerElementsToRecord.add(element);
                   }
                }
             }
