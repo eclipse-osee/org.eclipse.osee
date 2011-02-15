@@ -18,7 +18,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -30,12 +32,13 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.database.core.AbstractJoinQuery;
 import org.eclipse.osee.framework.database.core.CharJoinQuery;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
+import org.eclipse.osee.framework.database.core.IdJoinQuery;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.OseeSql;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
@@ -67,7 +70,10 @@ public class ArtifactQueryBuilder {
    private boolean firstTable = true;
    private final boolean tableOrderForward;
    private final TransactionRecord transactionId;
-   private CharJoinQuery guidJoinQuery;
+   private AbstractJoinQuery guidJoinQuery;
+   private AbstractJoinQuery hridJoinQuery;
+   private AbstractJoinQuery idJoinQuery;
+   private AbstractJoinQuery idTypeJoinQuery;
 
    /**
     * @param allowDeleted set whether deleted artifacts should be included in the resulting artifact list
@@ -188,6 +194,7 @@ public class ArtifactQueryBuilder {
       nextAliases.put("osee_attribute", new NextAlias("att"));
       nextAliases.put("osee_relation_link", new NextAlias("rel"));
       nextAliases.put("osee_join_char_id", new NextAlias("jch"));
+      nextAliases.put("osee_join_id", new NextAlias("jid"));
    }
 
    private static AbstractArtifactSearchCriteria[] toArray(List<AbstractArtifactSearchCriteria> criteria) {
@@ -228,8 +235,20 @@ public class ArtifactQueryBuilder {
 
       String artAlias, txsAlias;
       String jguidAlias = "";
+      String jIdAlias = "";
+      String jTypeIdAlias = "";
+      String jHridAlias = "";
       if (tableOrderForward) {
-         if (guids != null && !guids.isEmpty()) {
+         if (hasValues(artifactTypes)) {
+            jTypeIdAlias = appendAliasedTable("osee_join_id");
+         }
+         if (hasValues(hrids)) {
+            jHridAlias = appendAliasedTable("osee_join_char_id");
+         }
+         if (hasValues(artifactIds)) {
+            jIdAlias = appendAliasedTable("osee_join_id");
+         }
+         if (hasValues(guids)) {
             jguidAlias = appendAliasedTable("osee_join_char_id");
          }
          artAlias = appendAliasedTable("osee_artifact");
@@ -237,8 +256,17 @@ public class ArtifactQueryBuilder {
       } else {
          txsAlias = appendAliasedTable("osee_txs");
          artAlias = appendAliasedTable("osee_artifact");
-         if (guids != null && guids.size() > 0) {
+         if (hasValues(guids)) {
             jguidAlias = appendAliasedTable("osee_join_char_id");
+         }
+         if (hasValues(artifactIds)) {
+            jIdAlias = appendAliasedTable("osee_join_id");
+         }
+         if (hasValues(hrids)) {
+            jHridAlias = appendAliasedTable("osee_join_char_id");
+         }
+         if (hasValues(artifactTypes)) {
+            jTypeIdAlias = appendAliasedTable("osee_join_id");
          }
       }
       sql.append("\n");
@@ -251,25 +279,30 @@ public class ArtifactQueryBuilder {
          addParameter(artifactId);
       }
 
-      if (artifactIds != null) {
+      if (hasValues(artifactIds)) {
+         idJoinQuery = addToIdJoin(artifactIds);
          sql.append(artAlias);
-         sql.append(".art_id IN (" + Collections.toString(",", artifactIds) + ") AND ");
+         sql.append(".art_id = ");
+         sql.append(jIdAlias);
+         sql.append(".id AND ");
+         sql.append(jIdAlias);
+         sql.append(".query_id = ? AND ");
+         addParameter(idJoinQuery.getQueryId());
       }
-      if (artifactTypes != null) {
-         sql.append(artAlias);
-         sql.append(".art_type_id");
-         if (artifactTypes.size() == 1) {
-            sql.append("=? AND ");
-            addParameter(ArtifactTypeManager.getTypeId(artifactTypes.iterator().next()));
-         } else {
-            sql.append(" IN (");
-            for (IArtifactType artifactType : artifactTypes) {
-               sql.append(ArtifactTypeManager.getTypeId(artifactType));
-               sql.append(",");
-            }
-            sql.deleteCharAt(sql.length() - 1);
-            sql.append(") AND ");
+
+      if (hasValues(artifactTypes)) {
+         Set<Integer> artTypeIds = new HashSet<Integer>();
+         for (IArtifactType artifactType : artifactTypes) {
+            artTypeIds.add(ArtifactTypeManager.getTypeId(artifactType));
          }
+         idTypeJoinQuery = addToIdJoin(artTypeIds);
+         sql.append(artAlias);
+         sql.append(".art_type_id = ");
+         sql.append(jTypeIdAlias);
+         sql.append(".id AND ");
+         sql.append(jTypeIdAlias);
+         sql.append(".query_id = ? AND ");
+         addParameter(idTypeJoinQuery.getQueryId());
       }
 
       if (guidOrHrid != null) {
@@ -283,8 +316,8 @@ public class ArtifactQueryBuilder {
          addParameter(guidOrHrid);
       }
 
-      if (guids != null && guids.size() > 0) {
-         addToGuidJoin();
+      if (hasValues(guids)) {
+         guidJoinQuery = addToGuidJoin(guids);
          sql.append(artAlias);
          sql.append(".guid = ");
          sql.append(jguidAlias);
@@ -294,9 +327,15 @@ public class ArtifactQueryBuilder {
          addParameter(guidJoinQuery.getQueryId());
       }
 
-      if (hrids != null && hrids.size() > 0) {
+      if (hasValues(hrids)) {
+         hridJoinQuery = addToGuidJoin(hrids);
          sql.append(artAlias);
-         sql.append(".human_readable_id IN ('" + Collections.toString("','", hrids) + "') AND ");
+         sql.append(".human_readable_id = ");
+         sql.append(jHridAlias);
+         sql.append(".id AND ");
+         sql.append(jHridAlias);
+         sql.append(".query_id = ? AND ");
+         addParameter(hridJoinQuery.getQueryId());
       }
 
       sql.append("\n");
@@ -374,12 +413,26 @@ public class ArtifactQueryBuilder {
       return query;
    }
 
-   private void addToGuidJoin() throws OseeCoreException {
-      guidJoinQuery = JoinUtility.createCharJoinQuery(ClientSessionManager.getSessionId());
-      for (String guid : guids) {
-         guidJoinQuery.add(guid);
+   private static boolean hasValues(Collection<?> toCheck) {
+      return toCheck != null && !toCheck.isEmpty();
+   }
+
+   private AbstractJoinQuery addToIdJoin(Collection<Integer> ids) throws OseeCoreException {
+      IdJoinQuery idJoinQuery = JoinUtility.createIdJoinQuery();
+      for (Integer id : ids) {
+         idJoinQuery.add(id);
       }
-      guidJoinQuery.store();
+      idJoinQuery.store();
+      return idJoinQuery;
+   }
+
+   private AbstractJoinQuery addToGuidJoin(Collection<String> ids) throws OseeCoreException {
+      CharJoinQuery joinQuery = JoinUtility.createCharJoinQuery(ClientSessionManager.getSessionId());
+      for (String id : ids) {
+         joinQuery.add(id);
+      }
+      joinQuery.store();
+      return joinQuery;
    }
 
    public void append(String sqlSnippet) {
@@ -476,9 +529,16 @@ public class ArtifactQueryBuilder {
 
    private void cleanup() throws OseeCoreException {
       clearCriteria();
-      if (guidJoinQuery != null) {
-         guidJoinQuery.delete();
-         guidJoinQuery = null;
+      cleanUp(guidJoinQuery);
+      cleanUp(hridJoinQuery);
+      cleanUp(idJoinQuery);
+      cleanUp(idTypeJoinQuery);
+   }
+
+   private static void cleanUp(AbstractJoinQuery query) throws OseeCoreException {
+      if (query != null) {
+         query.delete();
+         query = null;
       }
    }
 
