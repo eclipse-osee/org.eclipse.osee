@@ -46,11 +46,11 @@ public class MergeManager {
       this.coverageImport = coverageImport;
    }
 
-   public List<IMergeItem> getMergeItems() throws OseeCoreException {
+   public List<IMergeItem> getMergeItems(XResultData resultData) throws OseeCoreException {
       List<IMergeItem> mergeItems = new ArrayList<IMergeItem>();
       processedImportCoverages.clear();
       for (ICoverage importCoverage : coverageImport.getChildren()) {
-         processImportCoverage(importCoverage, mergeItems, null);
+         processImportCoverage(importCoverage, mergeItems, resultData);
       }
       if (mergeItems.isEmpty()) {
          mergeItems.add(new MessageMergeItem("Nothing to Import"));

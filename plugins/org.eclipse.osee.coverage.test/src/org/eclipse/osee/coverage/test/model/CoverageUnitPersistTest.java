@@ -108,7 +108,7 @@ public class CoverageUnitPersistTest {
          new CoveragePackage("CU Test", CoverageOptionManagerDefault.instance(), new SimpleWorkProductTaskProvider());
       MergeManager mergeManager = new MergeManager(saveCoveragePackage, coverageImport);
       List<IMergeItem> mergeItems = new ArrayList<IMergeItem>();
-      for (IMergeItem mergeItem : mergeManager.getMergeItems()) {
+      for (IMergeItem mergeItem : mergeManager.getMergeItems(null)) {
          mergeItem.setChecked(true);
       }
       MergeImportManager importer = new MergeImportManager(mergeManager);

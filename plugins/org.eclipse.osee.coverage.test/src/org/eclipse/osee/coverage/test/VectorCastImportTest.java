@@ -136,8 +136,8 @@ public class VectorCastImportTest {
          new CoveragePackage("Test Coverage Package", CoverageOptionManagerDefault.instance(),
             new SimpleWorkProductTaskProvider());
       MergeManager mergeManager = new MergeManager(coveragePackage, coverageImport);
-      Assert.assertEquals(1, mergeManager.getMergeItems().size());
-      Assert.assertEquals(MergeType.Add, mergeManager.getMergeItems().iterator().next().getMergeType());
+      Assert.assertEquals(1, mergeManager.getMergeItems(null).size());
+      Assert.assertEquals(MergeType.Add, mergeManager.getMergeItems(null).iterator().next().getMergeType());
 
       MergeImportManager importManager = new MergeImportManager(mergeManager);
       XResultData resultData = importManager.importItems(new ISaveable() {
@@ -167,7 +167,7 @@ public class VectorCastImportTest {
             return CoverageTestUtil.getTestBranch();
          }
 
-      }, mergeManager.getMergeItems());
+      }, mergeManager.getMergeItems(null));
       Assert.assertEquals(0, resultData.getNumErrors());
 
       // Ensure all coverageItems have valid name

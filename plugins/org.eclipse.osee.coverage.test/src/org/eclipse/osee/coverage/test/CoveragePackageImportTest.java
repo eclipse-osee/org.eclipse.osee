@@ -126,8 +126,8 @@ public class CoveragePackageImportTest {
          new CoveragePackage("Test Coverage Package", CoverageOptionManagerDefault.instance(),
             new SimpleWorkProductTaskProvider());
       MergeManager mergeManager = new MergeManager(coveragePackage, coverageImport);
-      Assert.assertEquals(4, mergeManager.getMergeItems().size());
-      for (IMergeItem mergeItem : mergeManager.getMergeItems()) {
+      Assert.assertEquals(4, mergeManager.getMergeItems(null).size());
+      for (IMergeItem mergeItem : mergeManager.getMergeItems(null)) {
          Assert.assertEquals(MergeType.Add, mergeItem.getMergeType());
       }
 
@@ -160,7 +160,7 @@ public class CoveragePackageImportTest {
             return CoverageTestUtil.getTestBranch();
          }
 
-      }, mergeManager.getMergeItems());
+      }, mergeManager.getMergeItems(null));
       Assert.assertEquals(1, resultData.getNumErrors());
 
       resultData = importManager.importItems(new ISaveable() {
@@ -190,7 +190,7 @@ public class CoveragePackageImportTest {
             return CoverageTestUtil.getTestBranch();
          }
 
-      }, mergeManager.getMergeItems());
+      }, mergeManager.getMergeItems(null));
       Assert.assertEquals(0, resultData.getNumErrors());
 
       // Ensure all coverageItems have valid name
@@ -272,9 +272,9 @@ public class CoveragePackageImportTest {
       // Test MergeManager
       Assert.assertNotNull(coveragePackage);
       MergeManager mergeManager = new MergeManager(coveragePackage, coverageImport);
-      Assert.assertEquals(1, mergeManager.getMergeItems().size());
+      Assert.assertEquals(1, mergeManager.getMergeItems(null).size());
       // Merge item will be the "Nothing to Import" message item
-      Assert.assertTrue(mergeManager.getMergeItems().iterator().next() instanceof MessageMergeItem);
+      Assert.assertTrue(mergeManager.getMergeItems(null).iterator().next() instanceof MessageMergeItem);
    }
 
    @Test
@@ -288,8 +288,8 @@ public class CoveragePackageImportTest {
       // Test MergeManager
       Assert.assertNotNull(coveragePackage);
       MergeManager mergeManager = new MergeManager(coveragePackage, coverageImport);
-      Assert.assertEquals(2, mergeManager.getMergeItems().size());
-      for (IMergeItem mergeItem : mergeManager.getMergeItems()) {
+      Assert.assertEquals(2, mergeManager.getMergeItems(null).size());
+      for (IMergeItem mergeItem : mergeManager.getMergeItems(null)) {
          Assert.assertEquals(MergeType.Add, mergeItem.getMergeType());
       }
       MergeImportManager importManager = new MergeImportManager(mergeManager);
@@ -320,7 +320,7 @@ public class CoveragePackageImportTest {
             return CoverageTestUtil.getTestBranch();
          }
 
-      }, mergeManager.getMergeItems());
+      }, mergeManager.getMergeItems(null));
       Assert.assertEquals(0, resultData.getNumErrors());
 
       // CoveragePackage should now have imported results
@@ -392,8 +392,8 @@ public class CoveragePackageImportTest {
       // Test MergeManager
       Assert.assertNotNull(coveragePackage);
       MergeManager mergeManager = new MergeManager(coveragePackage, coverageImport);
-      Assert.assertEquals(1, mergeManager.getMergeItems().size());
-      for (IMergeItem mergeItem : mergeManager.getMergeItems()) {
+      Assert.assertEquals(1, mergeManager.getMergeItems(null).size());
+      for (IMergeItem mergeItem : mergeManager.getMergeItems(null)) {
          Assert.assertEquals(MergeType.Add, mergeItem.getMergeType());
       }
       MergeImportManager importManager = new MergeImportManager(mergeManager);
@@ -424,7 +424,7 @@ public class CoveragePackageImportTest {
             return CoverageTestUtil.getTestBranch();
          }
 
-      }, mergeManager.getMergeItems());
+      }, mergeManager.getMergeItems(null));
       Assert.assertEquals(0, resultData.getNumErrors());
 
       // CoveragePackage should now have imported results
@@ -511,8 +511,8 @@ public class CoveragePackageImportTest {
       // Test MergeManager
       Assert.assertNotNull(coveragePackage);
       MergeManager mergeManager = new MergeManager(coveragePackage, coverageImport);
-      Assert.assertEquals(1, mergeManager.getMergeItems().size());
-      for (IMergeItem mergeItem : mergeManager.getMergeItems()) {
+      Assert.assertEquals(1, mergeManager.getMergeItems(null).size());
+      for (IMergeItem mergeItem : mergeManager.getMergeItems(null)) {
          Assert.assertEquals(MergeType.Add_With_Moves, mergeItem.getMergeType());
       }
       MergeImportManager importManager = new MergeImportManager(mergeManager);
@@ -543,7 +543,7 @@ public class CoveragePackageImportTest {
             return CoverageTestUtil.getTestBranch();
          }
 
-      }, mergeManager.getMergeItems());
+      }, mergeManager.getMergeItems(null));
       Assert.assertEquals(0, resultData.getNumErrors());
 
       // CoveragePackage should now have imported results
@@ -636,10 +636,10 @@ public class CoveragePackageImportTest {
       // Test MergeManager
       Assert.assertNotNull(coveragePackage);
       MergeManager mergeManager = new MergeManager(coveragePackage, coverageImport);
-      Assert.assertEquals(1, mergeManager.getMergeItems().size());
-      Assert.assertTrue(mergeManager.getMergeItems().iterator().next() instanceof MergeItemGroup);
-      Assert.assertTrue(((MergeItemGroup) mergeManager.getMergeItems().iterator().next()).getMergeType() == MergeType.CI_Changes);
-      Assert.assertEquals(2, ((MergeItemGroup) mergeManager.getMergeItems().iterator().next()).getMergeItems().size());
+      Assert.assertEquals(1, mergeManager.getMergeItems(null).size());
+      Assert.assertTrue(mergeManager.getMergeItems(null).iterator().next() instanceof MergeItemGroup);
+      Assert.assertTrue(((MergeItemGroup) mergeManager.getMergeItems(null).iterator().next()).getMergeType() == MergeType.CI_Changes);
+      Assert.assertEquals(2, ((MergeItemGroup) mergeManager.getMergeItems(null).iterator().next()).getMergeItems().size());
 
       MergeImportManager importManager = new MergeImportManager(mergeManager);
       XResultData resultData = importManager.importItems(new ISaveable() {
@@ -669,7 +669,7 @@ public class CoveragePackageImportTest {
             return CoverageTestUtil.getTestBranch();
          }
 
-      }, mergeManager.getMergeItems());
+      }, mergeManager.getMergeItems(null));
       Assert.assertEquals(0, resultData.getNumErrors());
 
       // CoveragePackage should now have imported results
@@ -745,10 +745,10 @@ public class CoveragePackageImportTest {
       // Test MergeManager
       Assert.assertNotNull(coveragePackage);
       MergeManager mergeManager = new MergeManager(coveragePackage, coverageImport);
-      Assert.assertEquals(1, mergeManager.getMergeItems().size());
-      Assert.assertTrue(mergeManager.getMergeItems().iterator().next() instanceof MergeItemGroup);
+      Assert.assertEquals(1, mergeManager.getMergeItems(null).size());
+      Assert.assertTrue(mergeManager.getMergeItems(null).iterator().next() instanceof MergeItemGroup);
       int numDelete = 0, numMoveDueToDelete = 0;
-      for (IMergeItem mergeItem : ((MergeItemGroup) mergeManager.getMergeItems().iterator().next()).getMergeItems()) {
+      for (IMergeItem mergeItem : ((MergeItemGroup) mergeManager.getMergeItems(null).iterator().next()).getMergeItems()) {
          if (mergeItem.getMergeType() == MergeType.Delete) {
             numDelete++;
          } else if (mergeItem.getMergeType() == MergeType.Moved_Due_To_Delete) {
@@ -788,7 +788,7 @@ public class CoveragePackageImportTest {
             return CoverageTestUtil.getTestBranch();
          }
 
-      }, mergeManager.getMergeItems());
+      }, mergeManager.getMergeItems(null));
       Assert.assertEquals(0, resultData.getNumErrors());
 
       // Make sure clear is not there anymore
@@ -918,10 +918,10 @@ public class CoveragePackageImportTest {
       // Test MergeManager
       Assert.assertNotNull(coveragePackage);
       MergeManager mergeManager = new MergeManager(coveragePackage, coverageImport);
-      Assert.assertEquals(1, mergeManager.getMergeItems().size());
-      Assert.assertTrue(mergeManager.getMergeItems().iterator().next() instanceof MergeItemGroup);
+      Assert.assertEquals(1, mergeManager.getMergeItems(null).size());
+      Assert.assertTrue(mergeManager.getMergeItems(null).iterator().next() instanceof MergeItemGroup);
       int numRename = 0;
-      for (IMergeItem mergeItem : ((MergeItemGroup) mergeManager.getMergeItems().iterator().next()).getMergeItems()) {
+      for (IMergeItem mergeItem : ((MergeItemGroup) mergeManager.getMergeItems(null).iterator().next()).getMergeItems()) {
          if (mergeItem.getMergeType() == MergeType.CI_Renamed) {
             numRename++;
          } else {
@@ -959,7 +959,7 @@ public class CoveragePackageImportTest {
             return CoverageTestUtil.getTestBranch();
          }
 
-      }, mergeManager.getMergeItems());
+      }, mergeManager.getMergeItems(null));
       Assert.assertEquals(0, resultData.getNumErrors());
 
       // CoveragePackage should now have imported results
@@ -1069,10 +1069,10 @@ public class CoveragePackageImportTest {
       // Test MergeManager
       Assert.assertNotNull(coveragePackage);
       MergeManager mergeManager = new MergeManager(coveragePackage, coverageImport);
-      Assert.assertEquals(1, mergeManager.getMergeItems().size());
-      Assert.assertTrue(mergeManager.getMergeItems().iterator().next() instanceof MergeItemGroup);
+      Assert.assertEquals(1, mergeManager.getMergeItems(null).size());
+      Assert.assertTrue(mergeManager.getMergeItems(null).iterator().next() instanceof MergeItemGroup);
       int numRename = 0, numDeleted = 0;
-      for (IMergeItem mergeItem : ((MergeItemGroup) mergeManager.getMergeItems().iterator().next()).getMergeItems()) {
+      for (IMergeItem mergeItem : ((MergeItemGroup) mergeManager.getMergeItems(null).iterator().next()).getMergeItems()) {
          if (mergeItem.getMergeType() == MergeType.CI_Renamed) {
             numRename++;
          } else if (mergeItem.getMergeType() == MergeType.CI_Delete) {
@@ -1112,7 +1112,7 @@ public class CoveragePackageImportTest {
             return CoverageTestUtil.getTestBranch();
          }
 
-      }, mergeManager.getMergeItems());
+      }, mergeManager.getMergeItems(null));
       Assert.assertEquals(0, resultData.getNumErrors());
 
       // CoveragePackage should now have imported results
@@ -1196,10 +1196,10 @@ public class CoveragePackageImportTest {
       // Test MergeManager
       Assert.assertNotNull(coveragePackage);
       MergeManager mergeManager = new MergeManager(coveragePackage, coverageImport);
-      Assert.assertEquals(1, mergeManager.getMergeItems().size());
-      Assert.assertTrue(mergeManager.getMergeItems().iterator().next() instanceof MergeItemGroup);
+      Assert.assertEquals(1, mergeManager.getMergeItems(null).size());
+      Assert.assertTrue(mergeManager.getMergeItems(null).iterator().next() instanceof MergeItemGroup);
       int numUpdateMethod = 0;
-      for (IMergeItem mergeItem : ((MergeItemGroup) mergeManager.getMergeItems().iterator().next()).getMergeItems()) {
+      for (IMergeItem mergeItem : ((MergeItemGroup) mergeManager.getMergeItems(null).iterator().next()).getMergeItems()) {
          if (mergeItem.getMergeType() == MergeType.CI_Method_Update) {
             numUpdateMethod++;
          } else {
@@ -1236,7 +1236,7 @@ public class CoveragePackageImportTest {
             return CoverageTestUtil.getTestBranch();
          }
 
-      }, mergeManager.getMergeItems());
+      }, mergeManager.getMergeItems(null));
       Assert.assertEquals(0, resultData.getNumErrors());
 
       // CoveragePackage should now have imported results

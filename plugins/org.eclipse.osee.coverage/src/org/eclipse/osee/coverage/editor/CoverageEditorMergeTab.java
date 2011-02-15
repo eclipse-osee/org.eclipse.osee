@@ -251,6 +251,7 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
       showMergeDetailsAction.setPackageXViewer(xPackageViewer1, coveragePackage);
       showMergeDetailsAction.setImportXViewer(xImportViewer2, coverageImport);
       new ActionContributionItem(showMergeDetailsAction).fill(rightToolBar, 0);
+      new ActionContributionItem(reloadAndDebugAction).fill(rightToolBar, 0);
       new ActionContributionItem(reloadAction).fill(rightToolBar, 0);
       new ActionContributionItem(new RefreshAction(xPackageViewer1)).fill(rightToolBar, 0);
       new ActionContributionItem(xImportViewer2.getXViewer().getCustomizeAction()).fill(rightToolBar, 0);
@@ -258,7 +259,7 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
       new ActionContributionItem(new ExpandAllAction(xImportViewer2.getXViewer())).fill(rightToolBar, 0);
       new ActionContributionItem(importAction).fill(rightToolBar, 0);
 
-      loadImportViewer(false);
+      loadImportViewer(false, false);
    }
 
    private class ImportJobChangeListener implements IJobChangeListener {
@@ -297,7 +298,7 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
 
    }
 
-   private void loadImportViewer(boolean force) {
+   private void loadImportViewer(boolean force, boolean debugReport) {
       if (loading) {
          AWorkbench.popup("Already Loading");
          return;
@@ -308,22 +309,29 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
       xImportViewer2.getXViewer().setInput(new MessageMergeItem("Loading..."));
       xImportViewer2.getXViewer().refresh();
       loading = true;
-      Operations.executeAsJob(new LoadImportViewerJob(), true, Job.LONG, new ImportJobChangeListener());
+      Operations.executeAsJob(new LoadImportViewerJob(debugReport), true, Job.LONG, new ImportJobChangeListener());
    }
 
    public class LoadImportViewerJob extends AbstractOperation {
 
-      public LoadImportViewerJob() {
+      private final boolean debugReport;
+
+      public LoadImportViewerJob(boolean debugReport) {
          super("Loading Coverage Import Viewer", Activator.PLUGIN_ID);
+         this.debugReport = debugReport;
       }
 
       @Override
       protected void doWork(IProgressMonitor monitor) throws Exception {
-         final List<IMergeItem> mergeItems = mergeManager.getMergeItems();
+         final XResultData resultData = new XResultData();
+         final List<IMergeItem> mergeItems = mergeManager.getMergeItems(resultData);
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
             public void run() {
                xImportViewer2.getXViewer().setInput(mergeItems);
+               if (debugReport) {
+                  resultData.report("Re-Load");
+               }
             }
          });
       }
@@ -332,7 +340,7 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
    private final Action reloadAction = new Action() {
       @Override
       public void run() {
-         loadImportViewer(true);
+         loadImportViewer(true, false);
       }
 
       @Override
@@ -343,6 +351,24 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
       @Override
       public String getToolTipText() {
          return "Re-Load";
+      }
+
+   };
+
+   private final Action reloadAndDebugAction = new Action() {
+      @Override
+      public void run() {
+         loadImportViewer(true, true);
+      }
+
+      @Override
+      public ImageDescriptor getImageDescriptor() {
+         return ImageManager.getImageDescriptor(FrameworkImage.GEAR);
+      }
+
+      @Override
+      public String getToolTipText() {
+         return "Re-Load and show Debug Report";
       }
 
    };
@@ -361,7 +387,7 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
                }
             }
             handleImportSelected();
-            loadImportViewer(true);
+            loadImportViewer(true, false);
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
