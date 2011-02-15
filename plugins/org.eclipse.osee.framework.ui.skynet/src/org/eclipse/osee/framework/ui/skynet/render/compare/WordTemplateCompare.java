@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
+import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.osee.framework.ui.skynet.util.IVbaDiffGenerator;
 
 public class WordTemplateCompare extends AbstractWordCompare {
@@ -39,7 +40,7 @@ public class WordTemplateCompare extends AbstractWordCompare {
     * report by combining each of the difference reports together for a single report.
     */
    @Override
-   public void compareArtifacts(IProgressMonitor monitor, PresentationType presentationType, Collection<ArtifactDelta> artifactDeltas, String pathPrefix) throws OseeCoreException {
+   public void compareArtifacts(IProgressMonitor monitor, CompareDataCollector collector, PresentationType presentationType, Collection<ArtifactDelta> artifactDeltas, String pathPrefix) throws OseeCoreException {
       if (artifactDeltas.isEmpty()) {
          throw new OseeArgumentException("The artifactDelts must not be empty");
       }
@@ -52,20 +53,29 @@ public class WordTemplateCompare extends AbstractWordCompare {
       IOseeBranch branch = artifact.getBranch();
       List<Artifact> artifacts = Collections.emptyList();
 
-      IVbaDiffGenerator diffGenerator = createGenerator(artifacts, branch, presentationType, pathPrefix);
-      addArtifactDeltas(monitor, artifactDeltas, diffGenerator);
+      IVbaDiffGenerator diffGenerator = createGenerator(artifacts, branch, presentationType);
 
-      finish(diffGenerator, branch, presentationType);
+      String resultPath =
+         getDiffPath(artifactDelta1.getStartArtifact(), artifactDelta1.getEndArtifact(), presentationType, pathPrefix);
+      String vbsPath =
+         RenderingUtil.getRenderPath(getRenderer(), branch, presentationType, null, "compareDocs", ".vbs");
+
+      CompareData data = new CompareData(resultPath, vbsPath);
+
+      addArtifactDeltas(monitor, artifactDeltas, data);
+      diffGenerator.generate(data);
+
+      collector.onCompare(data);
    }
 
-   private void addArtifactDeltas(IProgressMonitor monitor, Collection<ArtifactDelta> artifactDeltas, IVbaDiffGenerator diffGenerator) {
+   private void addArtifactDeltas(IProgressMonitor monitor, Collection<ArtifactDelta> artifactDeltas, CompareData data) {
       for (ArtifactDelta artifactDelta : artifactDeltas) {
          if (monitor.isCanceled()) {
             throw new OperationCanceledException();
          }
 
          try {
-            addToCompare(monitor, diffGenerator, PresentationType.DIFF, artifactDelta);
+            addToCompare(monitor, data, PresentationType.DIFF, artifactDelta);
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          } finally {

@@ -11,19 +11,22 @@
 package org.eclipse.osee.framework.ui.skynet.util;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Writer;
+import java.util.Map.Entry;
 import java.util.logging.Level;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
-import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.render.compare.CompareData;
 
 /**
  * @author Theron Virgin
@@ -31,7 +34,7 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 public class VbaWordDiffGenerator implements IVbaDiffGenerator {
 
    private final static String header =
-      "Option Explicit\n\nDim oWord\nDim baseDoc\nDim compareDoc\nDim authorName\nDim detectFormatChanges\nDim ver1\nDim ver2\nDim diffPath\nDim wdCompareTargetSelectedDiff\nDim wdCompareTargetSelectedMerge\nDim wdFormattingFromCurrent\nDim wdFormatXML\nDim wdDoNotSaveChanges\nDim mainDoc\n\nPublic Sub main()\n On error resume next\n    wdCompareTargetSelectedDiff = 0\n    wdCompareTargetSelectedMerge = 1\n    wdDoNotSaveChanges = 0\n    wdFormattingFromCurrent = 3\n    wdFormatXML = 11\n\n    authorName = \"OSEE Doc compare\"\n    set oWord = WScript.CreateObject(\"Word.Application\")\n    oWord.Visible = False\n    detectFormatChanges = ";
+      "Option Explicit\n\nDim oWord\nDim baseDoc\nDim compareDoc\nDim authorName\nDim detectFormatChanges\nDim ver1\nDim ver2\nDim wdCompareTargetSelectedDiff\nDim wdCompareTargetSelectedMerge\nDim wdFormattingFromCurrent\nDim wdFormatXML\nDim wdDoNotSaveChanges\nDim mainDoc\n\nPublic Sub main()\n On error resume next\n    wdCompareTargetSelectedDiff = 0\n    wdCompareTargetSelectedMerge = 1\n    wdDoNotSaveChanges = 0\n    wdFormattingFromCurrent = 3\n    wdFormatXML = 11\n\n    authorName = \"OSEE Doc compare\"\n    set oWord = WScript.CreateObject(\"Word.Application\")\n    oWord.Visible = False\n    detectFormatChanges = ";
 
    private final static String comparisonCommand =
       "    baseDoc.Compare ver2, authorName, wdCompareTargetSelectedDiff, detectFormatChanges, False, False\n    set compareDoc = oWord.ActiveDocument\n\n";
@@ -42,85 +45,86 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
       "    mainDoc.Range(mainDoc.Range.End-1, mainDoc.Range.End-1).FormattedText =  compareDoc.Range.FormattedText\n\n    baseDoc.close wdDoNotSaveChanges\n    set baseDoc = Nothing\n\n    compareDoc.close wdDoNotSaveChanges\n    set compareDoc = Nothing\n\n";
 
    private final static String mergeCommand =
-      "    baseDoc.Merge ver2, wdCompareTargetSelectedMerge, detectFormatChanges, wdFormattingFromCurrent, False\n    oWord.ActiveDocument.SaveAs diffPath, wdFormatXML, , , False\n\n";
+      "    baseDoc.Merge ver2, wdCompareTargetSelectedMerge, detectFormatChanges, wdFormattingFromCurrent, False\n    oWord.ActiveDocument.SaveAs %s, wdFormatXML, , , False\n\n";
 
-   private boolean finalized;
-   private final String resultPath;
-   private boolean first;
-   private final StringBuilder builder;
+   private final boolean merge;
    private final boolean show;
+   private final boolean detectFormatChanges;
+   private final boolean executeVbScript;
 
-   public VbaWordDiffGenerator(boolean show, boolean detectFormatChanges, String resultPath) {
-      finalized = false;
-      first = true;
+   public VbaWordDiffGenerator(boolean merge, boolean show, boolean detectFormatChanges, boolean executeVbScript) {
+      this.merge = merge;
       this.show = show;
-      this.resultPath = resultPath;
-
-      builder = new StringBuilder();
-      builder.append(header);
-
-      builder.append("");
-      builder.append(Boolean.toString(detectFormatChanges));
-      builder.append("\n\n");
+      this.detectFormatChanges = detectFormatChanges;
+      this.executeVbScript = executeVbScript;
    }
 
    @Override
-   public void addComparison(IFile baseFile, IFile newerFile, String diffPath, boolean merge) throws OseeStateException {
-      if (finalized) {
-         throw new OseeStateException("Diff generation has already been finalized.");
-      }
-      builder.append("    ver1 = \"");
-      builder.append(baseFile.getLocation().toOSString());
-
-      builder.append("\"\n    ver2 = \"");
-      builder.append(newerFile.getLocation().toOSString());
-
-      builder.append("\"\n    diffPath = \"");
-      builder.append(diffPath);
-
-      builder.append("\"\n\n    set baseDoc = oWord.Documents.Open (ver1)\n");
-
-      if (merge) {
-         builder.append(mergeCommand);
-      } else {
-         builder.append(comparisonCommand);
-         if (first) {
-            builder.append(comparisonCommandFirst);
-            first = false;
-         } else {
-            builder.append(comparisonCommandOthers);
-         }
-      }
-   }
-
-   @Override
-   public void finish(String vbScriptPath) throws OseeCoreException {
-      finalized = true;
-      builder.append("    oWord.NormalTemplate.Saved = True\n");
-
-      if (show) {
-         builder.append("oWord.Visible = True\n");
-      }
-
-      builder.append("    mainDoc.SaveAs \"" + resultPath + "\", wdFormatXML, , , False\n\n");
-
-      if (!show) {
-         builder.append("        oWord.Quit()\n");
-         builder.append("        set oWord = Nothing\n");
-      }
-
-      builder.append("End Sub\n\nmain");
-      executeScript(getFile(vbScriptPath));
-   }
-
-   private File getFile(String path) throws OseeCoreException {
-      File file = new File(path);
+   public void generate(CompareData compareData) throws OseeCoreException {
+      Writer writer = null;
       try {
-         Lib.writeStringToFile(builder.toString(), file);
+         writer = new BufferedWriter(new FileWriter(compareData.getGeneratorScriptPath()));
+
+         writer.append(header);
+
+         writer.append("");
+         writer.append(Boolean.toString(detectFormatChanges));
+         writer.append("\n\n");
+
+         addComparison(writer, compareData, merge);
+         writer.append("    oWord.NormalTemplate.Saved = True\n");
+
+         if (show) {
+            writer.append("oWord.Visible = True\n");
+         }
+
+         writer.append("    mainDoc.SaveAs \"" + compareData.getOutputPath() + "\", wdFormatXML, , , False\n\n");
+
+         if (!show) {
+            writer.append("        oWord.Quit()\n");
+            writer.append("        set oWord = Nothing\n");
+         }
+
+         writer.append("End Sub\n\nmain");
+
       } catch (IOException ex) {
          OseeExceptions.wrapAndThrow(ex);
+      } finally {
+         Lib.close(writer);
       }
-      return file;
+
+      if (executeVbScript) {
+         executeScript(new File(compareData.getGeneratorScriptPath()));
+      } else {
+         OseeLog.format(SkynetGuiPlugin.class, Level.INFO, "Test - Skip launch of [%s]",
+            compareData.getGeneratorScriptPath());
+      }
+   }
+
+   private void addComparison(Appendable appendable, CompareData compareData, boolean merge) throws IOException {
+      boolean first = true;
+      for (Entry<String, String> entry : compareData.entrySet()) {
+
+         appendable.append("    ver1 = \"");
+         appendable.append(entry.getKey());
+
+         appendable.append("\"\n    ver2 = \"");
+         appendable.append(entry.getValue());
+
+         appendable.append("\"\n\n    set baseDoc = oWord.Documents.Open (ver1)\n");
+
+         if (merge) {
+            appendable.append(String.format(mergeCommand, "\"" + compareData.getOutputPath() + "\""));
+         } else {
+            appendable.append(comparisonCommand);
+            if (first) {
+               appendable.append(comparisonCommandFirst);
+               first = false;
+            } else {
+               appendable.append(comparisonCommandOthers);
+            }
+         }
+      }
    }
 
    private void executeScript(File vbDiffScript) throws OseeCoreException {

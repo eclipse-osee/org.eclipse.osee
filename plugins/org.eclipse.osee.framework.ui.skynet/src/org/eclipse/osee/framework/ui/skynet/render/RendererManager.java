@@ -34,7 +34,9 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.render.compare.CompareDataCollector;
 import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
+import org.eclipse.osee.framework.ui.skynet.render.compare.NoOpCompareDataCollector;
 import org.eclipse.osee.framework.ui.skynet.render.word.AttributeElement;
 import org.eclipse.osee.framework.ui.skynet.render.word.Producer;
 
@@ -198,29 +200,31 @@ public final class RendererManager {
       return open(Collections.singletonList(artifact), presentationType);
    }
 
-   public static String merge(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, String pathPrefix, Object... options) throws OseeCoreException {
+   public static void merge(CompareDataCollector collector, Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, String pathPrefix, Object... options) throws OseeCoreException {
       IRenderer renderer = getBestRenderer(PresentationType.MERGE, baseVersion, options);
       IComparator comparator = renderer.getComparator();
-      return comparator.compare(baseVersion, newerVersion, baseFile, newerFile, PresentationType.MERGE, pathPrefix);
+      comparator.compare(collector, baseVersion, newerVersion, baseFile, newerFile, PresentationType.MERGE, pathPrefix);
    }
 
    public static void diffInJob(ArtifactDelta artifactDelta, String pathPrefix, Object... options) {
-      Operations.executeAsJob(new DiffUsingRenderer(artifactDelta, pathPrefix, options), true);
+      CompareDataCollector collector = new NoOpCompareDataCollector();
+      Operations.executeAsJob(new DiffUsingRenderer(collector, artifactDelta, pathPrefix, options), true);
    }
 
-   public static String diff(ArtifactDelta artifactDelta, String pathPrefix, Object... options) {
-      DiffUsingRenderer operation = new DiffUsingRenderer(artifactDelta, pathPrefix, options);
+   public static void diff(CompareDataCollector collector, ArtifactDelta artifactDelta, String pathPrefix, Object... options) {
+      DiffUsingRenderer operation = new DiffUsingRenderer(collector, artifactDelta, pathPrefix, options);
       Operations.executeWork(operation);
-      return operation.getDiffResultPath();
    }
 
    public static void diffInJob(Collection<ArtifactDelta> artifactDeltas, String pathPrefix, Object... options) {
-      IOperation operation = new DiffUsingRenderer(artifactDeltas, pathPrefix, options);
+      CompareDataCollector collector = new NoOpCompareDataCollector();
+      IOperation operation = new DiffUsingRenderer(collector, artifactDeltas, pathPrefix, options);
       Operations.executeAsJob(operation, true);
    }
 
    public static void diff(Collection<ArtifactDelta> artifactDeltas, String diffPrefix, Object... options) {
-      IOperation operation = new DiffUsingRenderer(artifactDeltas, diffPrefix, options);
+      CompareDataCollector collector = new NoOpCompareDataCollector();
+      IOperation operation = new DiffUsingRenderer(collector, artifactDeltas, diffPrefix, options);
       Operations.executeWork(operation);
    }
 }

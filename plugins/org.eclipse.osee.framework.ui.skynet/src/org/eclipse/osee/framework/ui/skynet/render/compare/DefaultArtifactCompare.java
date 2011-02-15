@@ -21,17 +21,17 @@ import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 public class DefaultArtifactCompare implements IComparator {
 
    @Override
-   public String compare(IProgressMonitor monitor, PresentationType presentationType, ArtifactDelta artifactDelta, String pathPrefix) throws OseeCoreException {
+   public void compare(IProgressMonitor monitor, CompareDataCollector collector, PresentationType presentationType, ArtifactDelta artifactDelta, String pathPrefix) throws OseeCoreException {
       throw new OseeCoreException("The default renderer does not support the compare operation");
    }
 
    @Override
-   public String compare(Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, PresentationType presentationType, String pathPrefix) throws OseeCoreException {
+   public void compare(CompareDataCollector collector, Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, PresentationType presentationType, String pathPrefix) throws OseeCoreException {
       throw new OseeCoreException("The default renderer does not support the compare operation");
    }
 
    @Override
-   public void compareArtifacts(IProgressMonitor monitor, PresentationType presentationType, Collection<ArtifactDelta> artifactDeltas, String diffPrefix) throws OseeCoreException {
+   public void compareArtifacts(IProgressMonitor monitor, CompareDataCollector collector, PresentationType presentationType, Collection<ArtifactDelta> artifactDeltas, String pathPrefix) throws OseeCoreException {
       throw new OseeCoreException("The default renderer does not support the compare operation");
    }
 }

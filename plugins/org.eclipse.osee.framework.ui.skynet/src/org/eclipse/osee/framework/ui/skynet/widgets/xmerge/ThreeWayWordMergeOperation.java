@@ -13,14 +13,19 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xmerge;
 import static org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer.TEMPLATE_OPTION;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.plugin.core.util.AIFile;
@@ -33,6 +38,8 @@ import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.UpdateArtifactOperation;
+import org.eclipse.osee.framework.ui.skynet.render.compare.CompareData;
+import org.eclipse.osee.framework.ui.skynet.render.compare.CompareDataCollector;
 
 /**
  * @author Ryan D. Brooks
@@ -65,40 +72,60 @@ public class ThreeWayWordMergeOperation extends AbstractOperation {
    }
 
    @Override
-   protected void doWork(IProgressMonitor monitor) throws Exception {
-      Artifact mergeArtifact = attributeConflict.getArtifact();
+   protected void doWork(final IProgressMonitor monitor) throws Exception {
+      final Artifact mergeArtifact = attributeConflict.getArtifact();
 
       Artifact startArtifact = MergeUtility.getStartArtifact(attributeConflict);
       monitor.worked(5);
-      IFile sourceChangeFile = createMergeDiffFile(startArtifact, attributeConflict.getSourceArtifact());
+
+      List<IFile> outputFiles = new ArrayList<IFile>();
+
+      createMergeDiffFile(outputFiles, startArtifact, attributeConflict.getSourceArtifact());
       monitor.worked(15);
-      IFile destChangeFile = createMergeDiffFile(startArtifact, attributeConflict.getDestArtifact());
+      createMergeDiffFile(outputFiles, startArtifact, attributeConflict.getDestArtifact());
       monitor.worked(15);
+
+      Conditions.checkExpressionFailOnTrue(outputFiles.size() != 2, "No compare outputfiles found");
+
+      IFile sourceChangeFile = outputFiles.get(0);
+      IFile destChangeFile = outputFiles.get(1);
+
       changeAuthorinWord("Source", sourceChangeFile, 2, "12345678", "55555555");
       changeAuthorinWord("Destination", destChangeFile, 2, "56781234", "55555555");
       monitor.worked(15);
 
-      File mergedFile =
-         new File(RendererManager.merge(mergeArtifact, null, sourceChangeFile, destChangeFile, "Source_Dest_Merge",
-            IRenderer.NO_DISPLAY, true));
+      CompareDataCollector colletor = new CompareDataCollector() {
+         @Override
+         public void onCompare(CompareData data) throws OseeCoreException {
+            File mergedFile = new File(data.getOutputPath());
 
-      monitor.worked(40);
-      attributeConflict.markStatusToReflectEdit();
+            monitor.worked(40);
+            attributeConflict.markStatusToReflectEdit();
 
-      IOperation op =
-         new UpdateArtifactOperation(mergedFile, Collections.singletonList(mergeArtifact), mergeArtifact.getBranch(),
-            true);
-      Operations.executeWork(op, monitor);
+            IOperation op =
+               new UpdateArtifactOperation(mergedFile, Collections.singletonList(mergeArtifact),
+                  mergeArtifact.getBranch(), true);
+            Operations.executeWork(op, monitor);
 
-      monitor.done();
-      RendererManager.openInJob(mergeArtifact, PresentationType.SPECIALIZED_EDIT);
-
+            monitor.done();
+            RendererManager.openInJob(mergeArtifact, PresentationType.SPECIALIZED_EDIT);
+         }
+      };
+      RendererManager.merge(colletor, mergeArtifact, null, sourceChangeFile, destChangeFile, "Source_Dest_Merge",
+         IRenderer.NO_DISPLAY, true);
    }
 
-   private static IFile createMergeDiffFile(Artifact baseVersion, Artifact newerVersion) throws Exception {
+   private static void createMergeDiffFile(final Collection<IFile> outputFiles, Artifact baseVersion, Artifact newerVersion) throws Exception {
       ArtifactDelta artifactDelta = new ArtifactDelta(baseVersion, newerVersion);
-      return AIFile.constructIFile(RendererManager.diff(artifactDelta, "", IRenderer.NO_DISPLAY, true,
-         TEMPLATE_OPTION, ITemplateRenderer.THREE_WAY_MERGE));
+
+      CompareDataCollector colletor = new CompareDataCollector() {
+         @Override
+         public void onCompare(CompareData data) {
+            outputFiles.add(AIFile.constructIFile(data.getOutputPath()));
+         }
+      };
+      RendererManager.diff(colletor, artifactDelta, "", IRenderer.NO_DISPLAY, true, TEMPLATE_OPTION,
+         ITemplateRenderer.THREE_WAY_MERGE);
    }
 
    private static void changeAuthorinWord(String newAuthor, IFile iFile, int revisionNumber, String rsidNumber, String baselineRsid) throws Exception {

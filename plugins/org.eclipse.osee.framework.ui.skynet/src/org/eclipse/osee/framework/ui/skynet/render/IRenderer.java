@@ -45,6 +45,8 @@ public interface IRenderer {
    public static final String OPEN_IN_HISTORY = "open.with.resource.history";
    public static final String OPEN_IN_EXPLORER = "open.with.artifact.explorer";
 
+   public static final String EXECUTE_VB_SCRIPT = "execute.vb.script";
+
    public static enum CommandGroup {
       PREVIEW(PresentationType.PREVIEW),
       EDIT(PresentationType.SPECIALIZED_EDIT),
