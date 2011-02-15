@@ -1,8 +1,0 @@
-Open System Engineering Environment: An Integrated Solution
-Presenters: Ryan and Don
-
-The <a href="http://www.eclipse.org/osee">Open System Engineering Environment</a> (OSEE) eclipse project supports lean engineering across 
-the full product life-cycle by providing an integrated and data-centric application framework. At its core is a persistence layer that provides a 
-dynamic data model, advanced version control capabilities, and powerful search capabilities. This talk provides an overview of the OSEE Application 
-Framework and tools that extend it, including; a powerful requirements and document management solution, OSEE Define, and a full featured change 
-management system, OSEE ATS.
