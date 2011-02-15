@@ -144,11 +144,13 @@ public class ImportAIsAndTeamDefinitionsToDb {
    }
 
    public void importVersionDefinitions(EList<VersionDef> versionDefs, TeamDefinitionArtifact teamDef) throws OseeCoreException {
+      Map<String, Artifact> nameToVerArt = new HashMap<String, Artifact>();
       for (VersionDef dslVersionDef : versionDefs) {
          System.out.println("   - Importing Version " + dslVersionDef.getName());
          Artifact newVer =
             ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version, AtsUtil.getAtsBranch(), dslVersionDef.getName());
          teamDef.addRelation(AtsRelationTypes.TeamDefinitionToVersion_Version, newVer);
+         nameToVerArt.put(newVer.getName(), newVer);
          newVersions.put(newVer.getName(), newVer);
          newVer.setSoleAttributeValue(CoreAttributeTypes.Active, BooleanDefUtil.get(dslVersionDef.getActive(), true));
          newVer.setSoleAttributeValue(AtsAttributeTypes.AllowCommitBranch,
@@ -161,6 +163,16 @@ public class ImportAIsAndTeamDefinitionsToDb {
          }
          for (String staticId : dslVersionDef.getStaticId()) {
             StaticIdManager.setSingletonAttributeValue(newVer, staticId);
+         }
+      }
+      // Handle parallel versions
+      for (VersionDef dslVersionDef : versionDefs) {
+         Artifact verArt = nameToVerArt.get(dslVersionDef.getName());
+         for (String parallelVerStr : dslVersionDef.getParallelVersion()) {
+            System.out.println(String.format("   - Importing Parallel Version [%s] -> Child [%s]",
+               dslVersionDef.getName(), parallelVerStr));
+            Artifact childArt = nameToVerArt.get(parallelVerStr);
+            verArt.addRelation(AtsRelationTypes.ParallelVersion_Child, childArt);
          }
       }
    }

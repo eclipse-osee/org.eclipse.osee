@@ -594,17 +594,23 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cBaslineBranchGuidKeyword_8_0 = (Keyword)cGroup_8.eContents().get(0);
 		private final Assignment cBaselineBranchGuidAssignment_8_1 = (Assignment)cGroup_8.eContents().get(1);
 		private final RuleCall cBaselineBranchGuidSTRINGTerminalRuleCall_8_1_0 = (RuleCall)cBaselineBranchGuidAssignment_8_1.eContents().get(0);
-		private final Keyword cRightCurlyBracketKeyword_9 = (Keyword)cGroup.eContents().get(9);
+		private final Group cGroup_9 = (Group)cGroup.eContents().get(9);
+		private final Keyword cParallelVersionKeyword_9_0 = (Keyword)cGroup_9.eContents().get(0);
+		private final Assignment cParallelVersionAssignment_9_1 = (Assignment)cGroup_9.eContents().get(1);
+		private final RuleCall cParallelVersionSTRINGTerminalRuleCall_9_1_0 = (RuleCall)cParallelVersionAssignment_9_1.eContents().get(0);
+		private final Keyword cRightCurlyBracketKeyword_10 = (Keyword)cGroup.eContents().get(10);
 		
 		//VersionDef:
 		//	name=STRING "{" ("active" active=BooleanDef)? ("staticId" staticId+=STRING)* ("next" next=BooleanDef)? ("released"
 		//	released=BooleanDef)? ("allowCreateBranch" allowCreateBranch=BooleanDef)? ("allowCommitBranch"
-		//	allowCommitBranch=BooleanDef)? ("baslineBranchGuid" baselineBranchGuid=STRING)? "}";
+		//	allowCommitBranch=BooleanDef)? ("baslineBranchGuid" baselineBranchGuid=STRING)? ("parallelVersion"
+		//	parallelVersion+=STRING)* "}";
 		public ParserRule getRule() { return rule; }
 
 		//name=STRING "{" ("active" active=BooleanDef)? ("staticId" staticId+=STRING)* ("next" next=BooleanDef)? ("released"
 		//released=BooleanDef)? ("allowCreateBranch" allowCreateBranch=BooleanDef)? ("allowCommitBranch"
-		//allowCommitBranch=BooleanDef)? ("baslineBranchGuid" baselineBranchGuid=STRING)? "}"
+		//allowCommitBranch=BooleanDef)? ("baslineBranchGuid" baselineBranchGuid=STRING)? ("parallelVersion"
+		//parallelVersion+=STRING)* "}"
 		public Group getGroup() { return cGroup; }
 
 		//name=STRING
@@ -700,8 +706,20 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 		//STRING
 		public RuleCall getBaselineBranchGuidSTRINGTerminalRuleCall_8_1_0() { return cBaselineBranchGuidSTRINGTerminalRuleCall_8_1_0; }
 
+		//("parallelVersion" parallelVersion+=STRING)*
+		public Group getGroup_9() { return cGroup_9; }
+
+		//"parallelVersion"
+		public Keyword getParallelVersionKeyword_9_0() { return cParallelVersionKeyword_9_0; }
+
+		//parallelVersion+=STRING
+		public Assignment getParallelVersionAssignment_9_1() { return cParallelVersionAssignment_9_1; }
+
+		//STRING
+		public RuleCall getParallelVersionSTRINGTerminalRuleCall_9_1_0() { return cParallelVersionSTRINGTerminalRuleCall_9_1_0; }
+
 		//"}"
-		public Keyword getRightCurlyBracketKeyword_9() { return cRightCurlyBracketKeyword_9; }
+		public Keyword getRightCurlyBracketKeyword_10() { return cRightCurlyBracketKeyword_10; }
 	}
 
 	public class WorkDefElements extends AbstractParserRuleElementFinder {
@@ -2439,7 +2457,8 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 	//VersionDef:
 	//	name=STRING "{" ("active" active=BooleanDef)? ("staticId" staticId+=STRING)* ("next" next=BooleanDef)? ("released"
 	//	released=BooleanDef)? ("allowCreateBranch" allowCreateBranch=BooleanDef)? ("allowCommitBranch"
-	//	allowCommitBranch=BooleanDef)? ("baslineBranchGuid" baselineBranchGuid=STRING)? "}";
+	//	allowCommitBranch=BooleanDef)? ("baslineBranchGuid" baselineBranchGuid=STRING)? ("parallelVersion"
+	//	parallelVersion+=STRING)* "}";
 	public VersionDefElements getVersionDefAccess() {
 		return (pVersionDef != null) ? pVersionDef : (pVersionDef = new VersionDefElements());
 	}

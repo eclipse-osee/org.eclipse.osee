@@ -58,6 +58,7 @@ VersionDef:
 		('allowCreateBranch' allowCreateBranch=BooleanDef)?
 		('allowCommitBranch' allowCommitBranch=BooleanDef)?
 		('baslineBranchGuid' baselineBranchGuid=STRING)?
+		('parallelVersion' parallelVersion+=STRING)*
 	'}';
 
 WorkDef:

@@ -481,13 +481,22 @@ public interface AtsDslPackage extends EPackage
   int VERSION_DEF__BASELINE_BRANCH_GUID = 7;
 
   /**
+   * The feature id for the '<em><b>Parallel Version</b></em>' attribute list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int VERSION_DEF__PARALLEL_VERSION = 8;
+
+  /**
    * The number of structural features of the '<em>Version Def</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int VERSION_DEF_FEATURE_COUNT = 8;
+  int VERSION_DEF_FEATURE_COUNT = 9;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.ats.dsl.atsDsl.impl.WorkDefImpl <em>Work Def</em>}' class.
@@ -1880,6 +1889,17 @@ public interface AtsDslPackage extends EPackage
   EAttribute getVersionDef_BaselineBranchGuid();
 
   /**
+   * Returns the meta object for the attribute list '{@link org.eclipse.osee.ats.dsl.atsDsl.VersionDef#getParallelVersion <em>Parallel Version</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute list '<em>Parallel Version</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.VersionDef#getParallelVersion()
+   * @see #getVersionDef()
+   * @generated
+   */
+  EAttribute getVersionDef_ParallelVersion();
+
+  /**
    * Returns the meta object for class '{@link org.eclipse.osee.ats.dsl.atsDsl.WorkDef <em>Work Def</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -3115,6 +3135,14 @@ public interface AtsDslPackage extends EPackage
      * @generated
      */
     EAttribute VERSION_DEF__BASELINE_BRANCH_GUID = eINSTANCE.getVersionDef_BaselineBranchGuid();
+
+    /**
+     * The meta object literal for the '<em><b>Parallel Version</b></em>' attribute list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute VERSION_DEF__PARALLEL_VERSION = eINSTANCE.getVersionDef_ParallelVersion();
 
     /**
      * The meta object literal for the '{@link org.eclipse.osee.ats.dsl.atsDsl.impl.WorkDefImpl <em>Work Def</em>}' class.

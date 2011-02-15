@@ -38,6 +38,7 @@ import org.eclipse.osee.ats.dsl.atsDsl.VersionDef;
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.VersionDefImpl#getAllowCreateBranch <em>Allow Create Branch</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.VersionDefImpl#getAllowCommitBranch <em>Allow Commit Branch</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.VersionDefImpl#getBaselineBranchGuid <em>Baseline Branch Guid</em>}</li>
+ *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.VersionDefImpl#getParallelVersion <em>Parallel Version</em>}</li>
  * </ul>
  * </p>
  *
@@ -194,6 +195,16 @@ public class VersionDefImpl extends MinimalEObjectImpl.Container implements Vers
    * @ordered
    */
   protected String baselineBranchGuid = BASELINE_BRANCH_GUID_EDEFAULT;
+
+  /**
+   * The cached value of the '{@link #getParallelVersion() <em>Parallel Version</em>}' attribute list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getParallelVersion()
+   * @generated
+   * @ordered
+   */
+  protected EList<String> parallelVersion;
 
   /**
    * <!-- begin-user-doc -->
@@ -396,6 +407,20 @@ public class VersionDefImpl extends MinimalEObjectImpl.Container implements Vers
    * <!-- end-user-doc -->
    * @generated
    */
+  public EList<String> getParallelVersion()
+  {
+    if (parallelVersion == null)
+    {
+      parallelVersion = new EDataTypeEList<String>(String.class, this, AtsDslPackage.VERSION_DEF__PARALLEL_VERSION);
+    }
+    return parallelVersion;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   @Override
   public Object eGet(int featureID, boolean resolve, boolean coreType)
   {
@@ -417,6 +442,8 @@ public class VersionDefImpl extends MinimalEObjectImpl.Container implements Vers
         return getAllowCommitBranch();
       case AtsDslPackage.VERSION_DEF__BASELINE_BRANCH_GUID:
         return getBaselineBranchGuid();
+      case AtsDslPackage.VERSION_DEF__PARALLEL_VERSION:
+        return getParallelVersion();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -457,6 +484,10 @@ public class VersionDefImpl extends MinimalEObjectImpl.Container implements Vers
       case AtsDslPackage.VERSION_DEF__BASELINE_BRANCH_GUID:
         setBaselineBranchGuid((String)newValue);
         return;
+      case AtsDslPackage.VERSION_DEF__PARALLEL_VERSION:
+        getParallelVersion().clear();
+        getParallelVersion().addAll((Collection<? extends String>)newValue);
+        return;
     }
     super.eSet(featureID, newValue);
   }
@@ -495,6 +526,9 @@ public class VersionDefImpl extends MinimalEObjectImpl.Container implements Vers
       case AtsDslPackage.VERSION_DEF__BASELINE_BRANCH_GUID:
         setBaselineBranchGuid(BASELINE_BRANCH_GUID_EDEFAULT);
         return;
+      case AtsDslPackage.VERSION_DEF__PARALLEL_VERSION:
+        getParallelVersion().clear();
+        return;
     }
     super.eUnset(featureID);
   }
@@ -525,6 +559,8 @@ public class VersionDefImpl extends MinimalEObjectImpl.Container implements Vers
         return allowCommitBranch != ALLOW_COMMIT_BRANCH_EDEFAULT;
       case AtsDslPackage.VERSION_DEF__BASELINE_BRANCH_GUID:
         return BASELINE_BRANCH_GUID_EDEFAULT == null ? baselineBranchGuid != null : !BASELINE_BRANCH_GUID_EDEFAULT.equals(baselineBranchGuid);
+      case AtsDslPackage.VERSION_DEF__PARALLEL_VERSION:
+        return parallelVersion != null && !parallelVersion.isEmpty();
     }
     return super.eIsSet(featureID);
   }
@@ -556,6 +592,8 @@ public class VersionDefImpl extends MinimalEObjectImpl.Container implements Vers
     result.append(allowCommitBranch);
     result.append(", baselineBranchGuid: ");
     result.append(baselineBranchGuid);
+    result.append(", parallelVersion: ");
+    result.append(parallelVersion);
     result.append(')');
     return result.toString();
   }

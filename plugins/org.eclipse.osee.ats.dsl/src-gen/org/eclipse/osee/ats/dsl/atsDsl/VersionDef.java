@@ -26,6 +26,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.VersionDef#getAllowCreateBranch <em>Allow Create Branch</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.VersionDef#getAllowCommitBranch <em>Allow Commit Branch</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.VersionDef#getBaselineBranchGuid <em>Baseline Branch Guid</em>}</li>
+ *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.VersionDef#getParallelVersion <em>Parallel Version</em>}</li>
  * </ul>
  * </p>
  *
@@ -247,5 +248,21 @@ public interface VersionDef extends EObject
    * @generated
    */
   void setBaselineBranchGuid(String value);
+
+  /**
+   * Returns the value of the '<em><b>Parallel Version</b></em>' attribute list.
+   * The list contents are of type {@link java.lang.String}.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Parallel Version</em>' attribute list isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Parallel Version</em>' attribute list.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.AtsDslPackage#getVersionDef_ParallelVersion()
+   * @model unique="false"
+   * @generated
+   */
+  EList<String> getParallelVersion();
 
 } // VersionDef

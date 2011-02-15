@@ -1000,9 +1000,31 @@ ruleVersionDef returns [EObject current=null]
 	    }
 
 )
-))?	otherlv_16='}' 
+))?(	otherlv_16='parallelVersion' 
     {
-    	newLeafNode(otherlv_16, grammarAccess.getVersionDefAccess().getRightCurlyBracketKeyword_9());
+    	newLeafNode(otherlv_16, grammarAccess.getVersionDefAccess().getParallelVersionKeyword_9_0());
+    }
+(
+(
+		lv_parallelVersion_17_0=RULE_STRING
+		{
+			newLeafNode(lv_parallelVersion_17_0, grammarAccess.getVersionDefAccess().getParallelVersionSTRINGTerminalRuleCall_9_1_0()); 
+		}
+		{
+	        if ($current==null) {
+	            $current = createModelElement(grammarAccess.getVersionDefRule());
+	        }
+       		addWithLastConsumed(
+       			$current, 
+       			"parallelVersion",
+        		lv_parallelVersion_17_0, 
+        		"STRING");
+	    }
+
+)
+))*	otherlv_18='}' 
+    {
+    	newLeafNode(otherlv_18, grammarAccess.getVersionDefAccess().getRightCurlyBracketKeyword_10());
     }
 )
 ;
