@@ -19,6 +19,9 @@
         trustExitCode = false
         keepBackup = false
 
+[pack]
+        packSizeLimit = 2g
+
 [diff]
 	guitool = kdiff3
 	
