@@ -101,6 +101,7 @@ public final class AtsUtil {
       teamWorkflowArtifactTypesFilter, workItemArtifactTypesFilter;
    private static List<IEventFilter> atsObjectEventFilter = new ArrayList<IEventFilter>(2);
    public final static double DEFAULT_HOURS_PER_WORK_DAY = 8;
+   public final static boolean dbInitWorkItemDefs = false;
 
    private AtsUtil() {
       super();
@@ -507,6 +508,9 @@ public final class AtsUtil {
       return StateManager.getAssigned(userId, clazz);
    }
 
+   public static boolean dbInitWorkItemDefs() {
+      return dbInitWorkItemDefs;
+   }
    public static Boolean useNewWorkDefintions = null;
 
    public synchronized static boolean isUseNewWorkDefinitions() {

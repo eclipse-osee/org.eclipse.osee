@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
@@ -61,10 +62,12 @@ public class ConfigureDBForAts extends XNavigateItemAction {
       @Override
       protected IStatus run(IProgressMonitor monitor) {
          try {
-            monitor.subTask("Loading Work Item Definitions for " + pluginId);
-            AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(WriteType.New, null,
-               AtsWorkDefinitions.getAtsWorkDefinitions());
-            monitor.subTask("Loading Actionable Items and Teams for " + pluginId);
+            if (AtsUtil.dbInitWorkItemDefs()) {
+               monitor.subTask("Loading Work Item Definitions for " + pluginId);
+               AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(WriteType.New, null,
+                  AtsWorkDefinitions.getAtsWorkDefinitions());
+               monitor.subTask("Loading Actionable Items and Teams for " + pluginId);
+            }
          } catch (Exception ex) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
             return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);

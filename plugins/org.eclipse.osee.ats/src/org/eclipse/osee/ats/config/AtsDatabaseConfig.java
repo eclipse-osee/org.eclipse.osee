@@ -44,7 +44,9 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
       topAi.setSoleAttributeValue(AtsAttributeTypes.Actionable, false);
       topAi.persist("Set Top AI to Non Actionable");
 
-      configWorkItemDefinitions(WriteType.New, null);
+      if (AtsUtil.dbInitWorkItemDefs()) {
+         configWorkItemDefinitions(WriteType.New, null);
+      }
 
       AtsUtil.getAtsAdminGroup().getGroupArtifact().persist();
    }

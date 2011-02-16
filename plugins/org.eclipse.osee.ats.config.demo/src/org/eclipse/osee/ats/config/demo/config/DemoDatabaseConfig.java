@@ -16,6 +16,7 @@ import org.eclipse.osee.ats.config.demo.workflow.DemoCodeWorkFlowDefinition;
 import org.eclipse.osee.ats.config.demo.workflow.DemoReqWorkFlowDefinition;
 import org.eclipse.osee.ats.config.demo.workflow.DemoSWDesignWorkFlowDefinition;
 import org.eclipse.osee.ats.config.demo.workflow.DemoTestWorkFlowDefinition;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -40,10 +41,12 @@ public class DemoDatabaseConfig implements IDbInitializationTask {
    @Override
    public void run() throws OseeCoreException {
 
-      new DemoCodeWorkFlowDefinition().config(WriteType.New, null);
-      new DemoTestWorkFlowDefinition().config(WriteType.New, null);
-      new DemoReqWorkFlowDefinition().config(WriteType.New, null);
-      new DemoSWDesignWorkFlowDefinition().config(WriteType.New, null);
+      if (AtsUtil.dbInitWorkItemDefs()) {
+         new DemoCodeWorkFlowDefinition().config(WriteType.New, null);
+         new DemoTestWorkFlowDefinition().config(WriteType.New, null);
+         new DemoReqWorkFlowDefinition().config(WriteType.New, null);
+         new DemoSWDesignWorkFlowDefinition().config(WriteType.New, null);
+      }
 
       // Create SAW_Bld_1 branch
       BranchManager.createTopLevelBranch(DemoSawBuilds.SAW_Bld_1);

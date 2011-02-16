@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.navigate;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.config.AtsDatabaseConfig;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -42,7 +43,9 @@ public class UpdateAtsWorkItemDefinitions extends XNavigateItemAction {
       }
 
       XResultData xResultData = new XResultData();
-      AtsDatabaseConfig.configWorkItemDefinitions(WriteType.Update, xResultData);
+      if (AtsUtil.dbInitWorkItemDefs()) {
+         AtsDatabaseConfig.configWorkItemDefinitions(WriteType.Update, xResultData);
+      }
       if (xResultData.isEmpty()) {
          xResultData.log("Nothing updated");
       }
