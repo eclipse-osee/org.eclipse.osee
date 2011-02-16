@@ -11,19 +11,29 @@
 package org.eclipse.osee.ats.util;
 
 import java.io.File;
-import java.util.logging.Level;
-import org.eclipse.jface.dialogs.MessageDialog;
+import java.io.FileOutputStream;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.workdef.WorkDefinitionSheet;
-import org.eclipse.osee.ats.workdef.provider.AtsWorkDefinitionProvider;
+import org.eclipse.osee.ats.workdef.AtsWorkDefinitionSheetProviders;
+import org.eclipse.osee.ats.workdef.WorkDefinition;
+import org.eclipse.osee.ats.workdef.WorkDefinitionFactory;
+import org.eclipse.osee.ats.workdef.provider.ConvertWorkDefinitionToAtsDsl;
+import org.eclipse.osee.ats.workdef.provider.ModelUtil;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.PluginUtil;
+import org.eclipse.osee.framework.plugin.core.util.OseeData;
+import org.eclipse.osee.framework.skynet.core.utility.IncrementingNum;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
-import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.skynet.results.XResultData;
+import org.eclipse.osee.framework.ui.ws.AWorkspace;
 
 /**
  * @author Donald G. Dunne
@@ -31,30 +41,59 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 public class DoesNotWorkItemAts extends XNavigateItemAction {
 
    public DoesNotWorkItemAts(XNavigateItem parent) {
-      super(parent, "Does Not Work - ATS - Load WorkDef_Team_Default.ats old/new way", PluginUiImage.ADMIN);
+      super(parent, "Does Not Work - ATS - ConvertSaveAndOpenWorkDefToAtsDsl", PluginUiImage.ADMIN);
    }
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) {
-      if (!MessageDialog.openConfirm(Displays.getActiveShell(), getName(), getName())) {
-         return;
-      }
-      AtsWorkDefinitionProvider.get().loadTeamWorkDefFromFileOldWay();
-      AtsWorkDefinitionProvider.get().loadTeamWorkDefFromFileNewWay();
+      //      if (!MessageDialog.openConfirm(Displays.getActiveShell(), getName(), getName())) {
+      //         return;
+      //      }
 
-      PluginUtil util = new PluginUtil("org.eclipse.osee.ats");
-      String filename = "support/WorkDef_Team_Default.ats";
       try {
-         File file = util.getPluginFile(filename);
-         if (!file.exists()) {
-            System.err.println("File " + filename + " doesn't exist");
+         WorkDefinition workDef =
+            WorkDefinitionFactory.getWorkDefinition(AtsWorkDefinitionSheetProviders.WORK_DEF_TEAM_DEFAULT).getWorkDefinition();
+
+         XResultData resultData = new XResultData();
+         ConvertWorkDefinitionToAtsDsl converter = new ConvertWorkDefinitionToAtsDsl(workDef, resultData);
+         AtsDsl atsDsl = converter.convert(workDef.getName());
+
+         String filename = workDef.getName() + IncrementingNum.get() + ".ats";
+         File file = OseeData.getFile(filename);
+         try {
+            FileOutputStream outputStream = new FileOutputStream(file);
+            ModelUtil.saveModel(atsDsl, "ats:/ats_fileanme" + Lib.getDateTimeString() + ".ats", outputStream, true);
+            String contents = Lib.fileToString(file);
+
+            //            contents = cleanupContents(atsDsl, workDef, contents);
+
+            Lib.writeStringToFile(contents, file);
+            IFile iFile = OseeData.getIFile(filename);
+            AWorkspace.openEditor(iFile);
+         } catch (Exception ex) {
+            throw new OseeWrappedException(ex);
          }
 
-         WorkDefinitionSheet sheet = new WorkDefinitionSheet("WorkDef_Team_Default", "osee.ats.teamWorkflow", file);
-         AtsWorkDefinitionProvider.get().loadWorkFlowDefinitionFromFile(sheet);
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
+
+      //      AtsWorkDefinitionProvider.get().loadTeamWorkDefFromFileOldWay();
+      //      AtsWorkDefinitionProvider.get().loadTeamWorkDefFromFileNewWay();
+
+      //      PluginUtil util = new PluginUtil("org.eclipse.osee.ats");
+      //      String filename = "support/WorkDef_Team_Default.ats";
+      //      try {
+      //         File file = util.getPluginFile(filename);
+      //         if (!file.exists()) {
+      //            System.err.println("File " + filename + " doesn't exist");
+      //         }
+      //
+      //         WorkDefinitionSheet sheet = new WorkDefinitionSheet("WorkDef_Team_Default", "osee.ats.teamWorkflow", file);
+      //         AtsWorkDefinitionProvider.get().loadWorkFlowDefinitionFromFile(sheet);
+      //      } catch (Exception ex) {
+      //         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      //      }
 
       //      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Admin Cleanup");
       //      Artifact verArt =

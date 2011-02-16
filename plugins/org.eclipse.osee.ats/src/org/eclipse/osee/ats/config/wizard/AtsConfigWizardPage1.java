@@ -15,12 +15,12 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.utility.IncrementingNum;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -51,10 +51,6 @@ public class AtsConfigWizardPage1 extends WizardPage {
       }
    };
 
-   public String getNamespace() throws OseeCoreException {
-      return (String) getXWidget(CONFIG_NAMESPACE).getData();
-   }
-
    public String getTeamDefName() throws OseeCoreException {
       return (String) getXWidget(TEAMDEF_NAME).getData();
    }
@@ -83,23 +79,20 @@ public class AtsConfigWizardPage1 extends WizardPage {
       return versions;
    }
 
-   public String getWorkflowId() throws OseeCoreException {
+   public String getWorkDefinitionName() throws OseeCoreException {
       return (String) getXWidget(WORKFLOW_ID).getData();
    }
 
-   private final static String CONFIG_NAMESPACE = "Configuration Namespace";
    private final static String TEAMDEF_NAME = "Team Definition Name";
    private final static String ACTIONABLE_ITEMS = "Actionable Item(s) (comma delim)";
    private final static String VERSIONS = "Versions (comma delim)";
-   private final static String WORKFLOW_ID = "Workflow Id (blank to create default)";
+   private final static String WORKFLOW_ID = "WorkDefinition Name";
 
    @Override
    public void createControl(Composite parent) {
 
       try {
          String xWidgetXml = "<WorkPage>" +
-         //
-         "<XWidget displayName=\"" + CONFIG_NAMESPACE + "\" required=\"true\" xwidgetType=\"XText\"/>" +
          //
          "<XWidget displayName=\"" + TEAMDEF_NAME + "\" required=\"true\" xwidgetType=\"XText\"/>" +
          //
@@ -123,21 +116,18 @@ public class AtsConfigWizardPage1 extends WizardPage {
             @Override
             public void widgetSelected(SelectionEvent e) {
                super.widgetSelected(e);
-               String namespace = "org.trex.saw.labs" + AtsUtil.getAtsDeveloperIncrementingNum();
                try {
-                  ((XText) getXWidget(CONFIG_NAMESPACE)).set(namespace);
                   ((XText) getXWidget(TEAMDEF_NAME)).set("SAW Labs");
                   ((XText) getXWidget(ACTIONABLE_ITEMS)).set("Lab Station, Lab Computer, Lab Fire System");
                   ((XText) getXWidget(VERSIONS)).set("SAW 1.0, SAW 2.0, SAW 3.0");
-                  ((XText) getXWidget(WORKFLOW_ID)).setText("osee.ats.teamWorkflow");
+                  ((XText) getXWidget(WORKFLOW_ID)).setText("WorkDef_Team_SawLabs" + IncrementingNum.get());
                } catch (OseeCoreException ex) {
                   OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                }
             }
          });
          setControl(comp);
-         ((XText) getXWidget(CONFIG_NAMESPACE)).setFocus();
-         ((XText) getXWidget(WORKFLOW_ID)).setText("osee.ats.teamWorkflow");
+         ((XText) getXWidget(WORKFLOW_ID)).setText("WorkDef_Team_SawLabs" + IncrementingNum.get());
 
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);

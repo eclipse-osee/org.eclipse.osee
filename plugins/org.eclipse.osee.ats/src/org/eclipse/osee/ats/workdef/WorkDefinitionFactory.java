@@ -147,23 +147,31 @@ public class WorkDefinitionFactory {
          // Attempt to get back to original id and load through WorkFlowDefinition translate
          if (!match.isMatched()) {
             String reverseId = AtsWorkDefinitionSheetProviders.getReverseOverrideId(id);
-            WorkFlowDefinition workFlowDef =
-               (WorkFlowDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(reverseId);
-            if (workFlowDef != null) {
-               WorkDefinition workDef = translateToWorkDefinition(workFlowDef);
-               if (workDef != null) {
-                  match.setWorkDefinition(workDef);
-                  match.getTrace().add(
-                     String.format(
-                        "from legacy WorkFlowDefinition [%s] translated for id [%s] falling back to reverse id [%s]",
-                        id, id, reverseId));
+            if (reverseId != null) {
+               WorkFlowDefinition workFlowDef =
+                  (WorkFlowDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(reverseId);
+               if (workFlowDef != null) {
+                  WorkDefinition workDef = translateToWorkDefinition(workFlowDef);
+                  if (workDef != null) {
+                     match.setWorkDefinition(workDef);
+                     match.getTrace().add(
+                        String.format(
+                           "from legacy WorkFlowDefinition [%s] translated for id [%s] falling back to reverse id [%s]",
+                           id, id, reverseId));
+                  }
                }
             }
          }
-         System.out.println("Loaded " + match);
-         idToWorkDefintion.put(id, match);
+         if (match.isMatched()) {
+            System.out.println("Loaded " + match);
+            idToWorkDefintion.put(id, match);
+         }
       }
-      return idToWorkDefintion.get(id);
+      WorkDefinitionMatch match = idToWorkDefintion.get(id);
+      if (match == null) {
+         match = new WorkDefinitionMatch();
+      }
+      return match;
    }
 
    public static WorkDefinition translateToWorkDefinition(WorkFlowDefinition workFlowDef) {

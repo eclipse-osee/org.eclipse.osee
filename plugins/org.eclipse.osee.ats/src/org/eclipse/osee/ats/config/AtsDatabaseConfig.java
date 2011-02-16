@@ -76,22 +76,21 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
          rootArt.addChild(headingArt);
          headingArt.persist(transaction);
       }
-
-      IArtifactToken[] tokens =
-         new IArtifactToken[] {
-            AtsArtifactToken.TopActionableItem,
-            AtsArtifactToken.TopTeamDefinition,
-            AtsArtifactToken.ConfigFolder,
-            AtsArtifactToken.WorkDefinitionsFolder,
-            AtsArtifactToken.WorkFlowsFolder,
-            AtsArtifactToken.WorkPagesFolder,
-            AtsArtifactToken.WorkWidgetsFolder,
-            AtsArtifactToken.WorkRulesFolder};
-
-      for (IArtifactToken token : tokens) {
-         Artifact art = OseeSystemArtifacts.getOrCreateArtifact(token, atsBranch);
+      for (AtsArtifactToken token : Arrays.asList(AtsArtifactToken.TopActionableItem,
+         AtsArtifactToken.TopTeamDefinition, AtsArtifactToken.ConfigFolder, //
+         AtsArtifactToken.WorkDefinitionsFolder)) {
+         Artifact art = OseeSystemArtifacts.getOrCreateArtifact(token);
          headingArt.addChild(art);
          art.persist(transaction);
+      }
+      if (AtsUtil.dbInitWorkItemDefs()) {
+         for (AtsArtifactToken token : Arrays.asList(AtsArtifactToken.WorkFlowsFolder, //
+            AtsArtifactToken.WorkPagesFolder, AtsArtifactToken.WorkWidgetsFolder, //
+            AtsArtifactToken.WorkRulesFolder)) {
+            Artifact art = OseeSystemArtifacts.getOrCreateArtifact(token);
+            headingArt.addChild(art);
+            art.persist(transaction);
+         }
       }
       transaction.execute();
    }

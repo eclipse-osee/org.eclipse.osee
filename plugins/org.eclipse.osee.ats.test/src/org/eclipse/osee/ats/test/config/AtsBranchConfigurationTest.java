@@ -16,7 +16,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
@@ -33,12 +32,12 @@ import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.TeamState;
+import org.eclipse.osee.ats.workdef.WorkDefinition;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -56,8 +55,6 @@ import org.eclipse.osee.framework.skynet.core.revision.ChangeData.KindType;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.After;
 import org.junit.Assert;
@@ -109,7 +106,7 @@ public class AtsBranchConfigurationTest {
       String namespace = asNamespace(BRANCH_VIA_VERSIONS);
       Collection<String> versions = appendToName(BRANCH_VIA_VERSIONS, "Ver1", "Ver2");
       Collection<String> actionableItems = appendToName(BRANCH_VIA_VERSIONS, "A1", "A2");
-      configureAts(namespace, name, versions, actionableItems, namespace);
+      configureAts(namespace, name, versions, actionableItems);
 
       // create main branch
       OseeLog.log(AtsPlugin.class, Level.INFO, "Creating root branch");
@@ -136,9 +133,6 @@ public class AtsBranchConfigurationTest {
       verArtToTarget.persist();
 
       TestUtil.sleep(2000);
-
-      // setup workflow page to have create/commit branch widgets
-      setupWorkflowPageToHaveCreateCommitBranchWidgets(namespace);
 
       // create action and target for version
       OseeLog.log(AtsPlugin.class, Level.INFO, "Create new Action and target for version " + verArtToTarget);
@@ -212,7 +206,7 @@ public class AtsBranchConfigurationTest {
       String namespace = asNamespace(BRANCH_VIA_TEAM_DEFINITION);
       Collection<String> versions = null;
       Collection<String> actionableItems = appendToName(BRANCH_VIA_TEAM_DEFINITION, "A1", "A2");
-      configureAts(namespace, name, versions, actionableItems, namespace);
+      configureAts(namespace, name, versions, actionableItems);
 
       // create main branch
       OseeLog.log(AtsPlugin.class, Level.INFO, "Creating root branch");
@@ -234,9 +228,6 @@ public class AtsBranchConfigurationTest {
       teamDef.persist();
 
       TestUtil.sleep(2000);
-
-      // setup workflow page to have create/commit branch widgets
-      setupWorkflowPageToHaveCreateCommitBranchWidgets(namespace);
 
       // create action,
       OseeLog.log(AtsPlugin.class, Level.INFO, "Create new Action");
@@ -339,17 +330,8 @@ public class AtsBranchConfigurationTest {
          transaction.execute();
       }
 
-      arts = ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.WorkPageDefinition, AtsUtil.getAtsBranch());
-      if (arts.size() > 0) {
-         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
-         for (Artifact workArt : arts) {
-            if (workArt.getName().startsWith(namespace)) {
-               workArt.deleteAndPersist(transaction, true);
-            }
-         }
-         transaction.execute();
-      }
-      arts = ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.WorkFlowDefinition, AtsUtil.getAtsBranch());
+      // Work Definition
+      arts = ArtifactQuery.getArtifactListFromType(AtsArtifactTypes.WorkDefinition, AtsUtil.getAtsBranch());
       if (arts.size() > 0) {
          SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
          for (Artifact workArt : arts) {
@@ -404,35 +386,23 @@ public class AtsBranchConfigurationTest {
       TestUtil.sleep(4000);
    }
 
-   private void setupWorkflowPageToHaveCreateCommitBranchWidgets(String namespace) throws Exception {
-      OseeLog.log(AtsPlugin.class, Level.INFO, "Setup new workflow page to have create/commit branch widgets");
-      String implementPageId = namespace + ".Implement";
-      Artifact implementPageDef = WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(implementPageId);
-      implementPageDef.addRelation(CoreRelationTypes.WorkItem__Child,
-         WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(ATSAttributes.WORKING_BRANCH_WIDGET.getWorkItemId()));
-      implementPageDef.addRelation(CoreRelationTypes.WorkItem__Child,
-         WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(ATSAttributes.COMMIT_MANAGER_WIDGET.getWorkItemId()));
-      implementPageDef.persist();
-      WorkItemDefinitionFactory.updateDefinitions(Collections.singleton(implementPageDef));
-   }
-
    @After
    public void tearDown() throws Exception {
       cleanupBranchTest(BRANCH_VIA_VERSIONS);
       cleanupBranchTest(BRANCH_VIA_TEAM_DEFINITION);
    }
 
-   public static void configureAts(String namespace, String teamDefName, Collection<String> versionNames, Collection<String> actionableItems, String workflowId) throws Exception {
+   public static void configureAts(String workDefinitionName, String teamDefName, Collection<String> versionNames, Collection<String> actionableItems) throws Exception {
       AtsConfigManager.Display noDisplay = new MockAtsConfigDisplay();
       IOperation operation =
-         new AtsConfigManager(noDisplay, namespace, teamDefName, versionNames, actionableItems, workflowId);
+         new AtsConfigManager(noDisplay, workDefinitionName, teamDefName, versionNames, actionableItems);
       Operations.executeWorkAndCheckStatus(operation);
       TestUtil.sleep(2000);
    }
 
    private static final class MockAtsConfigDisplay implements AtsConfigManager.Display {
       @Override
-      public void openAtsConfigurationEditors(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> aias, WorkFlowDefinition workFlowDefinition) {
+      public void openAtsConfigurationEditors(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> aias, WorkDefinition workDefinition) {
          // Nothing to do - we have no display during testing
       }
    }

@@ -35,7 +35,7 @@ public class NewWorkflowConfigPage1 extends WizardPage {
 
    public NewWorkflowConfigPage1() {
       super("Create new ATS Workflow Configuration", "Create ATS Workflow Configuration", null);
-      setMessage("Enter workflow namespace.");
+      setMessage("Enter Work Definition name.");
    }
 
    private final XModifiedListener xModListener = new XModifiedListener() {
@@ -45,26 +45,19 @@ public class NewWorkflowConfigPage1 extends WizardPage {
       }
    };
 
-   public String getNamespace() throws OseeCoreException {
-      return (String) getXWidget("Namespace").getData();
-   }
-
-   public String getStartingWorkflow() throws OseeCoreException {
-      return (String) getXWidget("Starting Workflow").getData();
+   public String getWorkDefName() throws OseeCoreException {
+      return (String) getXWidget("Name").getData();
    }
 
    @Override
    public void createControl(Composite parent) {
 
       try {
-         String xWidgetXml =
-            "<WorkPage>" +
-            //
-            "<XWidget displayName=\"Namespace\" required=\"true\" xwidgetType=\"XText\"/>" +
-            //
-            "<XWidget displayName=\"Starting Workflow\" required=\"true\" xwidgetType=\"XCombo(Simple: Implement-Complete,Default: Analyze-Authorize-Implement-Complete)\"/>" +
-            //
-            "</WorkPage>";
+         String xWidgetXml = "<WorkPage>" +
+         //
+         "<XWidget displayName=\"Name\" required=\"true\" xwidgetType=\"XText\"/>" +
+         //
+         "</WorkPage>";
          Composite comp = new Composite(parent, SWT.NONE);
          comp.setLayout(new GridLayout(1, false));
          comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -73,7 +66,7 @@ public class NewWorkflowConfigPage1 extends WizardPage {
          page.createBody(null, comp, null, xModListener, true);
 
          setControl(comp);
-         ((XText) getXWidget("Namespace")).setFocus();
+         ((XText) getXWidget("Name")).setFocus();
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }

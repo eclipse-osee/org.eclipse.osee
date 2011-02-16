@@ -24,16 +24,18 @@ import org.eclipse.osee.ats.artifact.AtsArtifactToken;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.TeamState;
-import org.eclipse.osee.ats.workflow.editor.wizard.AtsWorkflowConfigCreationWizard.WorkflowData;
-import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.ats.workdef.AtsWorkDefinitionSheetProviders;
+import org.eclipse.osee.ats.workdef.WorkDefinition;
+import org.eclipse.osee.ats.workdef.WorkDefinitionFactory;
+import org.eclipse.osee.ats.workdef.WorkDefinitionMatch;
+import org.eclipse.osee.ats.workdef.provider.AtsWorkDefinitionProvider;
+import org.eclipse.osee.ats.workdef.provider.ConvertAtsDslToWorkDefinition;
+import org.eclipse.osee.ats.workdef.provider.ConvertWorkDefinitionToAtsDsl;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -44,15 +46,11 @@ import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
+import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.ui.progress.UIJob;
 
 /**
@@ -64,36 +62,34 @@ import org.eclipse.ui.progress.UIJob;
 public class AtsConfigManager extends AbstractOperation {
 
    public static interface Display {
-      public void openAtsConfigurationEditors(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> aias, WorkFlowDefinition workFlowDefinition);
+      public void openAtsConfigurationEditors(TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> aias, WorkDefinition workDefinition);
    }
 
-   private final String namespace;
+   private final String name;
    private final String teamDefName;
    private final Collection<String> versionNames;
    private final Collection<String> actionableItems;
-   private final String workflowId;
    private final Display display;
 
    /**
     * @param teamDefName - name of team definition to use
     * @param versionNames - list of version names (if team is using versions)
     * @param actionableItems - list of actionable items
-    * @param workflowId - workflowId to use (if null, workflow will be created)
     */
-   public AtsConfigManager(Display display, String namespace, String teamDefName, Collection<String> versionNames, Collection<String> actionableItems, String workflowId) {
+   public AtsConfigManager(Display display, String name, String teamDefName, Collection<String> versionNames, Collection<String> actionableItems) {
       super("Configure Ats", AtsPlugin.PLUGIN_ID);
-      this.namespace = namespace;
+      this.name = name;
       this.teamDefName = teamDefName;
       this.versionNames = versionNames;
       this.actionableItems = actionableItems;
-      this.workflowId = workflowId;
       this.display = display;
    }
 
    private void checkWorkItemNamespaceUnique() throws OseeCoreException {
-      WorkItemDefinition definitionCheck = WorkItemDefinitionFactory.getWorkItemDefinition(namespace);
-      if (definitionCheck != null) {
-         throw new OseeArgumentException("Configuration Namespace already used, choose a unique namespace.");
+      WorkDefinitionMatch match = WorkDefinitionFactory.getWorkDefinition(name);
+      if (match.isMatched()) {
+         throw new OseeArgumentException(String.format(
+            "Configuration Namespace [%s] already used, choose a unique namespace.", name));
       }
    }
 
@@ -110,12 +106,13 @@ public class AtsConfigManager extends AbstractOperation {
 
       createVersions(transaction, teamDefinition);
 
-      WorkFlowDefinition workFlowDefinition = createWorkflow(transaction, teamDefinition);
+      XResultData resultData = new XResultData();
+      WorkDefinition workDefinition = createWorkflow(transaction, resultData, teamDefinition);
 
       transaction.execute();
       monitor.worked(calculateWork(0.30));
 
-      display.openAtsConfigurationEditors(teamDefinition, actionableItems, workFlowDefinition);
+      display.openAtsConfigurationEditors(teamDefinition, actionableItems, workDefinition);
       monitor.worked(calculateWork(0.10));
    }
 
@@ -175,71 +172,51 @@ public class AtsConfigManager extends AbstractOperation {
       }
    }
 
-   private WorkFlowDefinition createWorkflow(SkynetTransaction transaction, TeamDefinitionArtifact teamDefinition) throws OseeCoreException {
-      Artifact workflowArt =
-         ArtifactQuery.checkArtifactFromTypeAndName(CoreArtifactTypes.WorkFlowDefinition, workflowId,
-            AtsUtil.getAtsBranch());
-      WorkFlowDefinition workFlowDefinition;
+   private WorkDefinition createWorkflow(SkynetTransaction transaction, XResultData resultData, TeamDefinitionArtifact teamDefinition) throws OseeCoreException {
+      WorkDefinitionMatch workDefMatch = WorkDefinitionFactory.getWorkDefinition(name);
+      WorkDefinition workDef = null;
       // If can't be found, create a new one
-      if (workflowArt == null) {
-         WorkflowData workflowData = generateDefaultWorkflow(namespace, transaction, teamDefinition);
-         workFlowDefinition = workflowData.getWorkDefinition();
-         workflowArt = workflowData.getWorkFlowArtifact();
-         workflowArt.persist(transaction);
-      }
-      // Else, use existing one
-      else {
-         workFlowDefinition = (WorkFlowDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(workflowId);
+      if (!workDefMatch.isMatched()) {
+         workDef = generateDefaultWorkflow(name, resultData, transaction, teamDefinition);
+         Artifact workDefArt =
+            AtsWorkDefinitionProvider.get().importWorkDefinitionToDb(workDef, name, resultData, transaction);
+
+         Artifact folder = ArtifactQuery.getArtifactFromToken(AtsArtifactToken.WorkDefinitionsFolder);
+         folder.addChild(workDefArt);
+         folder.persist(transaction);
+      } else {
+         workDef = workDefMatch.getWorkDefinition();
       }
       // Relate new team def to workflow artifact
-      teamDefinition.addRelation(CoreRelationTypes.WorkItem__Child, workflowArt);
+      teamDefinition.setSoleAttributeValue(AtsAttributeTypes.WorkflowDefinition, workDef.getIds().iterator().next());
       teamDefinition.persist(transaction);
-      return workFlowDefinition;
+
+      return workDef;
    }
 
-   public static WorkflowData generateDefaultWorkflow(String namespace, SkynetTransaction transaction, TeamDefinitionArtifact teamDef) throws OseeCoreException {
-      // Duplicate default workflow artifact w/ namespace changes
-      Artifact defaultWorkflow = WorkItemDefinitionFactory.getWorkItemDefinitionArtifact("osee.ats.teamWorkflow");
-      Artifact newWorkflowArt = defaultWorkflow.duplicate(AtsUtil.getAtsBranch());
-      for (Attribute<?> attr : newWorkflowArt.getAttributes()) {
-         if (attr instanceof StringAttribute) {
-            attr.setFromString(attr.getDisplayableString().replaceAll("osee.ats.teamWorkflow", namespace));
-         }
-      }
+   public static WorkDefinition generateDefaultWorkflow(String name, XResultData resultData, SkynetTransaction transaction, TeamDefinitionArtifact teamDef) throws OseeCoreException {
 
-      AtsWorkDefinitions.addUpdateWorkItemToDefaultHeirarchy(newWorkflowArt, transaction);
-      newWorkflowArt.persist(transaction);
+      WorkDefinition defaultWorkDef =
+         WorkDefinitionFactory.getWorkDefinition(AtsWorkDefinitionSheetProviders.WORK_DEF_TEAM_DEFAULT).getWorkDefinition();
 
-      // Duplicate work pages w/ namespace changes
-      for (TeamState state : TeamState.values()) {
-         Artifact defaultStateArt =
-            WorkItemDefinitionFactory.getWorkItemDefinitionArtifact("osee.ats.teamWorkflow." + state.getPageName());
-         Artifact newStateArt = defaultStateArt.duplicate(AtsUtil.getAtsBranch());
-         for (Attribute<?> attr : newStateArt.getAttributes()) {
-            if (attr instanceof StringAttribute) {
-               attr.setFromString(attr.getDisplayableString().replaceAll("osee.ats.teamWorkflow", namespace));
-            }
-         }
-         if (state.isCompletedOrCancelledPage()) {
-            newStateArt.setSoleAttributeFromString(CoreAttributeTypes.WorkParentId,
-               "osee.ats.teamWorkflow." + state.getPageName());
-         }
+      // Duplicate default team workflow definition w/ namespace changes
+      ConvertWorkDefinitionToAtsDsl converter = new ConvertWorkDefinitionToAtsDsl(defaultWorkDef, resultData);
+      AtsDsl atsDsl = converter.convert(name);
 
-         // Add same relations as default work pages to new work pages (widgets and rules)
-         for (Artifact art : defaultStateArt.getRelatedArtifacts(CoreRelationTypes.WorkItem__Child)) {
-            newStateArt.addRelation(CoreRelationTypes.WorkItem__Child, art);
-         }
-
-         AtsWorkDefinitions.addUpdateWorkItemToDefaultHeirarchy(newStateArt, transaction);
-         newStateArt.persist(transaction);
-      }
-      return new WorkflowData(new WorkFlowDefinition(newWorkflowArt), newWorkflowArt);
+      // Convert back to WorkDefinition
+      ConvertAtsDslToWorkDefinition converter2 = new ConvertAtsDslToWorkDefinition(name, atsDsl);
+      WorkDefinition newWorkDef = converter2.convert();
+      newWorkDef.getIds().clear();
+      newWorkDef.getIds().add(name);
+      newWorkDef.setName(name);
+      return newWorkDef;
 
    }
+
    public static final class OpenAtsConfigEditors implements Display {
 
       @Override
-      public void openAtsConfigurationEditors(final TeamDefinitionArtifact teamDef, final Collection<ActionableItemArtifact> aias, final WorkFlowDefinition workFlowDefinition) {
+      public void openAtsConfigurationEditors(final TeamDefinitionArtifact teamDef, final Collection<ActionableItemArtifact> aias, final WorkDefinition workDefinition) {
          Job job = new UIJob("Open Ats Configuration Editors") {
             @Override
             public IStatus runInUIThread(IProgressMonitor monitor) {
@@ -248,7 +225,8 @@ public class AtsConfigManager extends AbstractOperation {
                   AtsUtil.openATSAction(aia, AtsOpenOption.OpenAll);
                }
                try {
-                  RendererManager.open(workFlowDefinition.getArtifact(), PresentationType.SPECIALIZED_EDIT, monitor);
+                  RendererManager.open(ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.WorkDefinition,
+                     workDefinition.getName(), AtsUtil.getAtsBranch()), PresentationType.SPECIALIZED_EDIT, monitor);
                } catch (OseeCoreException ex) {
                   OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                }
@@ -259,8 +237,7 @@ public class AtsConfigManager extends AbstractOperation {
       }
    }
 
-   public static IOperation createAtsConfigOperation(String namespace, String teamDefName, Collection<String> versionNames, Collection<String> actionableItems, String workflowId) {
-      return new AtsConfigManager(new OpenAtsConfigEditors(), namespace, teamDefName, versionNames, actionableItems,
-         workflowId);
+   public static IOperation createAtsConfigOperation(String name, String teamDefName, Collection<String> versionNames, Collection<String> actionableItems) {
+      return new AtsConfigManager(new OpenAtsConfigEditors(), name, teamDefName, versionNames, actionableItems);
    }
 }

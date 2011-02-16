@@ -34,27 +34,23 @@ public class AtsConfigWizard extends Wizard implements INewWizard {
 
    @Override
    public void addPages() {
-      // add pages to this wizard
       addPage(page1);
    }
 
    @Override
    public void init(IWorkbench workbench, IStructuredSelection selection) {
-      // create pages for this wizard
       page1 = new AtsConfigWizardPage1();
    }
 
    @Override
    public boolean performFinish() {
       try {
-         String namespace = page1.getNamespace();
          String teamDefName = page1.getTeamDefName();
          Collection<String> aias = page1.getActionableItems();
          Collection<String> versionNames = page1.getVersions();
-         String workflowId = page1.getWorkflowId();
+         String workDefName = page1.getWorkDefinitionName();
 
-         IOperation operation =
-            AtsConfigManager.createAtsConfigOperation(namespace, teamDefName, versionNames, aias, workflowId);
+         IOperation operation = AtsConfigManager.createAtsConfigOperation(workDefName, teamDefName, versionNames, aias);
          Operations.executeAsJob(operation, true);
 
       } catch (OseeCoreException ex) {

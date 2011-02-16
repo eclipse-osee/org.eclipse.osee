@@ -190,6 +190,7 @@
          id="ats"
          point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
       <Renderer classname="org.eclipse.osee.ats.editor.AtsWorkflowRenderer"/>
+      <Renderer classname="org.eclipse.osee.ats.workdef.editor.AtsWorkDefinitionRenderer"/>
       <Renderer
             classname="org.eclipse.osee.ats.workflow.editor.AtsWorkflowConfigRenderer">
       </Renderer>
@@ -284,6 +285,10 @@
             name="ATS Workflow Config Editor">
       </command>
       <command
+            id="org.eclipse.osee.framework.ui.skynet.atsworkdef.command"
+            name="ATS Work Definition Editor">
+      </command>
+      <command
             id="org.eclipse.osee.framework.ui.skynet.atstaskeditor.command"
             name="ATS Task Editor">
       </command>
@@ -301,6 +306,18 @@
       <handler
             class="org.eclipse.osee.ats.handlers.AtsEditorHandler"
             commandId="org.eclipse.osee.framework.ui.skynet.atseditor.command">
+         <enabledWhen>
+            <with
+                  variable="selection">
+               <count
+                     value="+">
+               </count>
+            </with>
+         </enabledWhen>
+      </handler>
+      <handler
+            class="org.eclipse.osee.ats.workdef.editor.AtsWorkDefinitionHandler"
+            commandId="org.eclipse.osee.framework.ui.skynet.atsworkdef.command">
          <enabledWhen>
             <with
                   variable="selection">

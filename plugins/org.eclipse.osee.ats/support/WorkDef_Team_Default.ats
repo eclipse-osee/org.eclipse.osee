@@ -9,7 +9,7 @@ workDefinition "WorkDef_Team_Default" {
    }
 
    widgetDefinition "Problem" {
-      attributeName "ats.Problem"
+      attributeName "ats.Problem" 
       xWidgetName "XTextDam"
       option FILL_VERTICALLY
    }

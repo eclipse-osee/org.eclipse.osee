@@ -44,6 +44,7 @@ import org.osgi.framework.Bundle;
 public final class AtsWorkDefinitionSheetProviders {
 
    private static Set<IAtsWorkDefinitionSheetProvider> teamWorkflowExtensionItems;
+   public static String WORK_DEF_TEAM_DEFAULT = "WorkDef_Team_Default";
 
    private AtsWorkDefinitionSheetProviders() {
       // private constructor
@@ -117,7 +118,7 @@ public final class AtsWorkDefinitionSheetProviders {
 
    private static List<WorkDefinitionSheet> getWorkDefinitionSheets() {
       List<WorkDefinitionSheet> sheets = new ArrayList<WorkDefinitionSheet>();
-      sheets.add(new WorkDefinitionSheet("WorkDef_Team_Default", "osee.ats.teamWorkflow", getSupportFile(
+      sheets.add(new WorkDefinitionSheet(WORK_DEF_TEAM_DEFAULT, "osee.ats.teamWorkflow", getSupportFile(
          AtsPlugin.PLUGIN_ID, "support/WorkDef_Team_Default.ats")));
       sheets.add(new WorkDefinitionSheet("WorkDef_Task_Default", "osee.ats.taskWorkflow", getSupportFile(
          AtsPlugin.PLUGIN_ID, "support/WorkDef_Task_Default.ats")));

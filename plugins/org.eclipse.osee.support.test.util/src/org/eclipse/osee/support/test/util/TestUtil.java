@@ -32,16 +32,10 @@ public class TestUtil {
       "Unable to load the image for [SAVED]");
    private static boolean inTest = false;
 
-   /**
-    * Need to match methods in OseeProperties
-    */
    public static boolean isInTest() {
       return inTest;
    }
 
-   /**
-    * Need to match methods in OseeProperties
-    */
    public static void setIsInTest(boolean isInTest) {
       inTest = isInTest;
    }
