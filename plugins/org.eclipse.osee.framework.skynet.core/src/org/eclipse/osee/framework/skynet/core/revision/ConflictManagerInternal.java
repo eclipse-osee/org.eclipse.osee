@@ -122,9 +122,7 @@ public class ConflictManagerInternal {
          monitor, commonTransaction);
       loadAttributeConflictsNew(sourceBranch, destinationBranch, baselineTransaction, conflictBuilders, artIdSet,
          monitor, commonTransaction);
-      for (Integer integer : artIdSetDontAdd) {
-         artIdSet.remove(integer);
-      }
+      artIdSet.removeAll(artIdSetDontAdd);
       if (artIdSet.isEmpty()) {
          return conflicts;
       }
@@ -140,7 +138,6 @@ public class ConflictManagerInternal {
 
       bulkLoadedArtifacts = preloadConflictArtifacts(sourceBranch, destinationBranch, mergeBranch, artIdSet, monitor);
 
-      System.currentTimeMillis();
       // Don't create the conflicts for attributes on an artifact that is
       // deleted etc.
       for (ConflictBuilder conflictBuilder : conflictBuilders) {
@@ -156,11 +153,7 @@ public class ConflictManagerInternal {
    private static Conflict getConflict(ConflictBuilder conflictBuilder, Branch mergeBranch, Set<Integer> artIdSetDontShow) throws OseeCoreException {
       Conflict conflict = conflictBuilder.getConflict(mergeBranch, artIdSetDontShow);
       if (conflict != null) {
-         try {
-            conflict.computeStatus();
-         } catch (OseeCoreException ex) {
-            throw ex;
-         }
+         conflict.computeStatus();
       }
       return conflict;
    }
