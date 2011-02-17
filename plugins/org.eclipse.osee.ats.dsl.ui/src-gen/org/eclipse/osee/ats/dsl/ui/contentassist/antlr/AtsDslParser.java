@@ -217,7 +217,7 @@ public class AtsDslParser extends AbstractContentAssistParser {
 					put(grammarAccess.getPeerReviewDefAccess().getAssigneeRefsAssignment_12_1(), "rule__PeerReviewDef__AssigneeRefsAssignment_12_1");
 					put(grammarAccess.getFollowupRefAccess().getAssigneeRefsAssignment_1_1(), "rule__FollowupRef__AssigneeRefsAssignment_1_1");
 					put(grammarAccess.getUserByUserIdAccess().getUserIdAssignment_1(), "rule__UserByUserId__UserIdAssignment_1");
-					put(grammarAccess.getUserByNameAccess().getNameAssignment_1(), "rule__UserByName__NameAssignment_1");
+					put(grammarAccess.getUserByNameAccess().getUserNameAssignment_1(), "rule__UserByName__UserNameAssignment_1");
 					put(grammarAccess.getToStateAccess().getStateAssignment_1(), "rule__ToState__StateAssignment_1");
 					put(grammarAccess.getToStateAccess().getOptionsAssignment_2(), "rule__ToState__OptionsAssignment_2");
 					put(grammarAccess.getLayoutDefAccess().getLayoutItemsAssignment_2(), "rule__LayoutDef__LayoutItemsAssignment_2");

@@ -54,18 +54,18 @@ public class ImportAIsAndTeamDefinitionsToDb {
 
    public void importUserDefinitions(EList<UserDef> userDefs) throws OseeCoreException {
       for (UserDef dslUserDef : userDefs) {
-         System.out.println("   - Importing User " + dslUserDef.getName());
+         String dslUserName = Strings.unquote(dslUserDef.getName());
+         System.out.println("   - Importing User " + dslUserName);
          Artifact userArt = null;
          if (dslUserDef.getUserDefOption().contains("GetOrCreate")) {
             userArt = UserManager.createUser(getOseeUser(dslUserDef), transaction);
          }
          if (userArt == null) {
-            userArt =
-               ArtifactTypeManager.addArtifact(CoreArtifactTypes.User, AtsUtil.getAtsBranch(), dslUserDef.getName());
+            userArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.User, AtsUtil.getAtsBranch(), dslUserName);
          }
          if (userArt == null) {
-            throw new OseeStateException(String.format("No user found in datbase with name [%s] from [%s]",
-               dslUserDef.getName(), modelName));
+            throw new OseeStateException(
+               String.format("No user found in datbase with name [%s] from [%s]", dslUserName), modelName);
          }
       }
    }
@@ -82,32 +82,32 @@ public class ImportAIsAndTeamDefinitionsToDb {
 
          @Override
          public String getUserID() {
-            return Strings.isValid(dslUserDef.getUserId()) ? dslUserDef.getUserId() : dslUserDef.getName();
+            return Strings.isValid(dslUserDef.getUserId()) ? dslUserDef.getUserId() : Strings.unquote(dslUserDef.getName());
          }
 
          @Override
          public String getName() {
-            return dslUserDef.getName();
+            return Strings.unquote(dslUserDef.getName());
          }
 
          @Override
          public String getEmail() {
-            return Strings.isValid(dslUserDef.getEmail()) ? dslUserDef.getEmail() : dslUserDef.getName();
+            return Strings.isValid(dslUserDef.getEmail()) ? dslUserDef.getEmail() : Strings.unquote(dslUserDef.getName());
          }
       };
    }
 
    public void importTeamDefinitions(EList<TeamDef> teamDefs, Artifact parentArtifact) throws OseeCoreException {
       for (TeamDef dslTeamDef : teamDefs) {
-         System.out.println("   - Importing Team " + dslTeamDef.getName());
+         String dslTeamName = Strings.unquote(dslTeamDef.getName());
+         System.out.println("   - Importing Team " + dslTeamName);
          Artifact newTeam = null;
          if (dslTeamDef.getTeamDefOption().contains("GetOrCreate")) {
-            newTeam = getOrCreate(dslTeamDef.getName(), true, parentArtifact);
+            newTeam = getOrCreate(dslTeamName, true, parentArtifact);
          }
          if (newTeam == null) {
             newTeam =
-               ArtifactTypeManager.addArtifact(AtsArtifactTypes.TeamDefinition, AtsUtil.getAtsBranch(),
-                  dslTeamDef.getName());
+               ArtifactTypeManager.addArtifact(AtsArtifactTypes.TeamDefinition, AtsUtil.getAtsBranch(), dslTeamName);
          }
          if (parentArtifact != null && !parentArtifact.equals(newTeam)) {
             parentArtifact.addChild(newTeam);
@@ -146,9 +146,10 @@ public class ImportAIsAndTeamDefinitionsToDb {
    public void importVersionDefinitions(EList<VersionDef> versionDefs, TeamDefinitionArtifact teamDef) throws OseeCoreException {
       Map<String, Artifact> nameToVerArt = new HashMap<String, Artifact>();
       for (VersionDef dslVersionDef : versionDefs) {
-         System.out.println("   - Importing Version " + dslVersionDef.getName());
+         String dslVerName = Strings.unquote(dslVersionDef.getName());
+         System.out.println("   - Importing Version " + dslVerName);
          Artifact newVer =
-            ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version, AtsUtil.getAtsBranch(), dslVersionDef.getName());
+            ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version, AtsUtil.getAtsBranch(), dslVerName);
          teamDef.addRelation(AtsRelationTypes.TeamDefinitionToVersion_Version, newVer);
          nameToVerArt.put(newVer.getName(), newVer);
          newVersions.put(newVer.getName(), newVer);
@@ -167,10 +168,11 @@ public class ImportAIsAndTeamDefinitionsToDb {
       }
       // Handle parallel versions
       for (VersionDef dslVersionDef : versionDefs) {
-         Artifact verArt = nameToVerArt.get(dslVersionDef.getName());
+         String aiName = Strings.unquote(dslVersionDef.getName());
+         Artifact verArt = nameToVerArt.get(aiName);
          for (String parallelVerStr : dslVersionDef.getParallelVersion()) {
-            System.out.println(String.format("   - Importing Parallel Version [%s] -> Child [%s]",
-               dslVersionDef.getName(), parallelVerStr));
+            System.out.println(String.format("   - Importing Parallel Version [%s] -> Child [%s]", aiName,
+               parallelVerStr));
             Artifact childArt = nameToVerArt.get(parallelVerStr);
             verArt.addRelation(AtsRelationTypes.ParallelVersion_Child, childArt);
          }
@@ -179,15 +181,14 @@ public class ImportAIsAndTeamDefinitionsToDb {
 
    public void importActionableItems(EList<ActionableItemDef> aiDefs, Artifact parentArtifact) throws OseeCoreException {
       for (ActionableItemDef dslAIDef : aiDefs) {
-         System.out.println("   - Importing Actionable Item" + dslAIDef.getName());
+         String dslAIName = Strings.unquote(dslAIDef.getName());
+         System.out.println("   - Importing Actionable Item " + dslAIName);
          Artifact newAi = null;
          if (dslAIDef.getAiDefOption().contains("GetOrCreate")) {
-            newAi = getOrCreate(dslAIDef.getName(), false, parentArtifact);
+            newAi = getOrCreate(dslAIName, false, parentArtifact);
          }
          if (newAi == null) {
-            newAi =
-               ArtifactTypeManager.addArtifact(AtsArtifactTypes.ActionableItem, AtsUtil.getAtsBranch(),
-                  dslAIDef.getName());
+            newAi = ArtifactTypeManager.addArtifact(AtsArtifactTypes.ActionableItem, AtsUtil.getAtsBranch(), dslAIName);
          }
          if (parentArtifact != null && !parentArtifact.equals(newAi)) {
             parentArtifact.addChild(newAi);
@@ -206,7 +207,7 @@ public class ImportAIsAndTeamDefinitionsToDb {
          if (dslAIDef.getTeamDef() != null) {
             if (dslAIDef.getTeamDef() == null) {
                throw new OseeStateException(String.format("No Team Definition defined for Actionable Item [%s]",
-                  dslAIDef.getName()));
+                  dslAIName));
             }
             newAi.addRelation(AtsRelationTypes.TeamActionableItem_Team, newTeams.get(dslAIDef.getTeamDef()));
          }

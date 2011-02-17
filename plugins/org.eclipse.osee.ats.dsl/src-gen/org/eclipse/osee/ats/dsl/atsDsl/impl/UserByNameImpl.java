@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.dsl.atsDsl.UserByName;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.UserByNameImpl#getName <em>Name</em>}</li>
+ *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.UserByNameImpl#getUserName <em>User Name</em>}</li>
  * </ul>
  * </p>
  *
@@ -31,24 +31,24 @@ import org.eclipse.osee.ats.dsl.atsDsl.UserByName;
 public class UserByNameImpl extends UserRefImpl implements UserByName
 {
   /**
-   * The default value of the '{@link #getName() <em>Name</em>}' attribute.
+   * The default value of the '{@link #getUserName() <em>User Name</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getName()
+   * @see #getUserName()
    * @generated
    * @ordered
    */
-  protected static final String NAME_EDEFAULT = null;
+  protected static final String USER_NAME_EDEFAULT = null;
 
   /**
-   * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
+   * The cached value of the '{@link #getUserName() <em>User Name</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getName()
+   * @see #getUserName()
    * @generated
    * @ordered
    */
-  protected String name = NAME_EDEFAULT;
+  protected String userName = USER_NAME_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
@@ -76,9 +76,9 @@ public class UserByNameImpl extends UserRefImpl implements UserByName
    * <!-- end-user-doc -->
    * @generated
    */
-  public String getName()
+  public String getUserName()
   {
-    return name;
+    return userName;
   }
 
   /**
@@ -86,12 +86,12 @@ public class UserByNameImpl extends UserRefImpl implements UserByName
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setName(String newName)
+  public void setUserName(String newUserName)
   {
-    String oldName = name;
-    name = newName;
+    String oldUserName = userName;
+    userName = newUserName;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, AtsDslPackage.USER_BY_NAME__NAME, oldName, name));
+      eNotify(new ENotificationImpl(this, Notification.SET, AtsDslPackage.USER_BY_NAME__USER_NAME, oldUserName, userName));
   }
 
   /**
@@ -104,8 +104,8 @@ public class UserByNameImpl extends UserRefImpl implements UserByName
   {
     switch (featureID)
     {
-      case AtsDslPackage.USER_BY_NAME__NAME:
-        return getName();
+      case AtsDslPackage.USER_BY_NAME__USER_NAME:
+        return getUserName();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -120,8 +120,8 @@ public class UserByNameImpl extends UserRefImpl implements UserByName
   {
     switch (featureID)
     {
-      case AtsDslPackage.USER_BY_NAME__NAME:
-        setName((String)newValue);
+      case AtsDslPackage.USER_BY_NAME__USER_NAME:
+        setUserName((String)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -137,8 +137,8 @@ public class UserByNameImpl extends UserRefImpl implements UserByName
   {
     switch (featureID)
     {
-      case AtsDslPackage.USER_BY_NAME__NAME:
-        setName(NAME_EDEFAULT);
+      case AtsDslPackage.USER_BY_NAME__USER_NAME:
+        setUserName(USER_NAME_EDEFAULT);
         return;
     }
     super.eUnset(featureID);
@@ -154,8 +154,8 @@ public class UserByNameImpl extends UserRefImpl implements UserByName
   {
     switch (featureID)
     {
-      case AtsDslPackage.USER_BY_NAME__NAME:
-        return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
+      case AtsDslPackage.USER_BY_NAME__USER_NAME:
+        return USER_NAME_EDEFAULT == null ? userName != null : !USER_NAME_EDEFAULT.equals(userName);
     }
     return super.eIsSet(featureID);
   }
@@ -171,8 +171,8 @@ public class UserByNameImpl extends UserRefImpl implements UserByName
     if (eIsProxy()) return super.toString();
 
     StringBuffer result = new StringBuffer(super.toString());
-    result.append(" (name: ");
-    result.append(name);
+    result.append(" (userName: ");
+    result.append(userName);
     result.append(')');
     return result.toString();
   }

@@ -1387,7 +1387,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getUserByName_Name()
+  public EAttribute getUserByName_UserName()
   {
     return (EAttribute)userByNameEClass.getEStructuralFeatures().get(0);
   }
@@ -1707,7 +1707,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
     createEAttribute(userByUserIdEClass, USER_BY_USER_ID__USER_ID);
 
     userByNameEClass = createEClass(USER_BY_NAME);
-    createEAttribute(userByNameEClass, USER_BY_NAME__NAME);
+    createEAttribute(userByNameEClass, USER_BY_NAME__USER_NAME);
 
     toStateEClass = createEClass(TO_STATE);
     createEReference(toStateEClass, TO_STATE__STATE);
@@ -1897,7 +1897,7 @@ public class AtsDslPackageImpl extends EPackageImpl implements AtsDslPackage
     initEAttribute(getUserByUserId_UserId(), ecorePackage.getEString(), "userId", null, 0, 1, UserByUserId.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(userByNameEClass, UserByName.class, "UserByName", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getUserByName_Name(), ecorePackage.getEString(), "name", null, 0, 1, UserByName.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getUserByName_UserName(), ecorePackage.getEString(), "userName", null, 0, 1, UserByName.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(toStateEClass, ToState.class, "ToState", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getToState_State(), this.getStateDef(), null, "state", null, 0, 1, ToState.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

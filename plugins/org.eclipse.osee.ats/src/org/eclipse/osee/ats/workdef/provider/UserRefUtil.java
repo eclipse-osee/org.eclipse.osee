@@ -12,6 +12,7 @@ import org.eclipse.osee.ats.dsl.atsDsl.UserByName;
 import org.eclipse.osee.ats.dsl.atsDsl.UserByUserId;
 import org.eclipse.osee.ats.dsl.atsDsl.UserRef;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -29,13 +30,13 @@ public class UserRefUtil {
    }
 
    public static Set<String> getUserNames(EList<UserRef> userRefs) {
-      Set<String> userIds = new HashSet<String>();
+      Set<String> userNames = new HashSet<String>();
       for (UserRef UserRef : userRefs) {
          if (UserRef instanceof UserByName) {
-            userIds.add(((UserByName) UserRef).getName());
+            userNames.add(Strings.unquote(((UserByName) UserRef).getUserName()));
          }
       }
-      return userIds;
+      return userNames;
    }
 
    public static Set<Artifact> getUsers(EList<UserRef> userRefs) throws OseeCoreException {
@@ -46,7 +47,7 @@ public class UserRefUtil {
             users.add(user);
          }
          for (String userName : getUserNames(userRefs)) {
-            User user = UserManager.getUserByName(userName);
+            User user = UserManager.getUserByName(Strings.unquote(userName));
             users.add(user);
          }
       }

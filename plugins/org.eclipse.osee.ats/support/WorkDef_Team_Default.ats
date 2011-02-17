@@ -1,6 +1,6 @@
 workDefinition "WorkDef_Team_Default" {
 	id "WorkDef_Team_Default"
-   startState "Endorse"
+   startState "Endorse" 
 
    widgetDefinition "Work Package" {
       attributeName "ats.Work Package"
@@ -8,7 +8,7 @@ workDefinition "WorkDef_Team_Default" {
       option HORIZONTAL_LABEL
    }
 
-   widgetDefinition "Problem" {
+   widgetDefinition "Problem" { 
       attributeName "ats.Problem" 
       xWidgetName "XTextDam"
       option FILL_VERTICALLY

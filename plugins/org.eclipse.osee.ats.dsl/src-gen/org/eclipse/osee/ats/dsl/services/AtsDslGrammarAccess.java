@@ -95,11 +95,23 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 		public RuleCall getActionableItemDefActionableItemDefParserRuleCall_3_1_0() { return cActionableItemDefActionableItemDefParserRuleCall_3_1_0; }
 	}
 
+	public class USER_DEF_REFERENCEElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "USER_DEF_REFERENCE");
+		private final RuleCall cSTRINGTerminalRuleCall = (RuleCall)rule.eContents().get(1);
+		
+		//USER_DEF_REFERENCE:
+		//	STRING;
+		public ParserRule getRule() { return rule; }
+
+		//STRING
+		public RuleCall getSTRINGTerminalRuleCall() { return cSTRINGTerminalRuleCall; }
+	}
+
 	public class UserDefElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "UserDef");
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Assignment cNameAssignment_0 = (Assignment)cGroup.eContents().get(0);
-		private final RuleCall cNameSTRINGTerminalRuleCall_0_0 = (RuleCall)cNameAssignment_0.eContents().get(0);
+		private final RuleCall cNameUSER_DEF_REFERENCEParserRuleCall_0_0 = (RuleCall)cNameAssignment_0.eContents().get(0);
 		private final Assignment cUserDefOptionAssignment_1 = (Assignment)cGroup.eContents().get(1);
 		private final RuleCall cUserDefOptionUserDefOptionParserRuleCall_1_0 = (RuleCall)cUserDefOptionAssignment_1.eContents().get(0);
 		private final Group cGroup_2 = (Group)cGroup.eContents().get(2);
@@ -123,19 +135,19 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cRightCurlyBracketKeyword_2_5 = (Keyword)cGroup_2.eContents().get(5);
 		
 		//UserDef:
-		//	name=STRING userDefOption+=UserDefOption* ("{" ("active" active=BooleanDef)? ("userId" userId=STRING)? ("email"
-		//	email=STRING)? ("isAdmin" admin=BooleanDef)? "}")?;
+		//	name=USER_DEF_REFERENCE userDefOption+=UserDefOption* ("{" ("active" active=BooleanDef)? ("userId" userId=STRING)?
+		//	("email" email=STRING)? ("isAdmin" admin=BooleanDef)? "}")?;
 		public ParserRule getRule() { return rule; }
 
-		//name=STRING userDefOption+=UserDefOption* ("{" ("active" active=BooleanDef)? ("userId" userId=STRING)? ("email"
-		//email=STRING)? ("isAdmin" admin=BooleanDef)? "}")?
+		//name=USER_DEF_REFERENCE userDefOption+=UserDefOption* ("{" ("active" active=BooleanDef)? ("userId" userId=STRING)?
+		//("email" email=STRING)? ("isAdmin" admin=BooleanDef)? "}")?
 		public Group getGroup() { return cGroup; }
 
-		//name=STRING
+		//name=USER_DEF_REFERENCE
 		public Assignment getNameAssignment_0() { return cNameAssignment_0; }
 
-		//STRING
-		public RuleCall getNameSTRINGTerminalRuleCall_0_0() { return cNameSTRINGTerminalRuleCall_0_0; }
+		//USER_DEF_REFERENCE
+		public RuleCall getNameUSER_DEF_REFERENCEParserRuleCall_0_0() { return cNameUSER_DEF_REFERENCEParserRuleCall_0_0; }
 
 		//userDefOption+=UserDefOption*
 		public Assignment getUserDefOptionAssignment_1() { return cUserDefOptionAssignment_1; }
@@ -201,11 +213,23 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 		public Keyword getRightCurlyBracketKeyword_2_5() { return cRightCurlyBracketKeyword_2_5; }
 	}
 
+	public class TEAM_DEF_REFERENCEElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "TEAM_DEF_REFERENCE");
+		private final RuleCall cSTRINGTerminalRuleCall = (RuleCall)rule.eContents().get(1);
+		
+		//TEAM_DEF_REFERENCE:
+		//	STRING;
+		public ParserRule getRule() { return rule; }
+
+		//STRING
+		public RuleCall getSTRINGTerminalRuleCall() { return cSTRINGTerminalRuleCall; }
+	}
+
 	public class TeamDefElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "TeamDef");
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Assignment cNameAssignment_0 = (Assignment)cGroup.eContents().get(0);
-		private final RuleCall cNameSTRINGTerminalRuleCall_0_0 = (RuleCall)cNameAssignment_0.eContents().get(0);
+		private final RuleCall cNameTEAM_DEF_REFERENCEParserRuleCall_0_0 = (RuleCall)cNameAssignment_0.eContents().get(0);
 		private final Assignment cTeamDefOptionAssignment_1 = (Assignment)cGroup.eContents().get(1);
 		private final RuleCall cTeamDefOptionTeamDefOptionParserRuleCall_1_0 = (RuleCall)cTeamDefOptionAssignment_1.eContents().get(0);
 		private final Keyword cLeftCurlyBracketKeyword_2 = (Keyword)cGroup.eContents().get(2);
@@ -252,23 +276,23 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cRightCurlyBracketKeyword_12 = (Keyword)cGroup.eContents().get(12);
 		
 		//TeamDef:
-		//	name=STRING teamDefOption+=TeamDefOption* "{" ("active" active=BooleanDef)? ("usesVersions" usesVersions=BooleanDef)?
-		//	("staticId" staticId+=STRING)* ("lead" lead+=UserRef)* ("member" member+=UserRef)* ("priviledged"
-		//	priviledged+=UserRef)* ("workDefinition" workDefinition=STRING)? ("version" version+=VersionDef)* ("children" "{"
-		//	("teamDefinition" children+=TeamDef)+ "}")? "}";
+		//	name=TEAM_DEF_REFERENCE teamDefOption+=TeamDefOption* "{" ("active" active=BooleanDef)? ("usesVersions"
+		//	usesVersions=BooleanDef)? ("staticId" staticId+=STRING)* ("lead" lead+=UserRef)* ("member" member+=UserRef)*
+		//	("priviledged" priviledged+=UserRef)* ("workDefinition" workDefinition=STRING)? ("version" version+=VersionDef)*
+		//	("children" "{" ("teamDefinition" children+=TeamDef)+ "}")? "}";
 		public ParserRule getRule() { return rule; }
 
-		//name=STRING teamDefOption+=TeamDefOption* "{" ("active" active=BooleanDef)? ("usesVersions" usesVersions=BooleanDef)?
-		//("staticId" staticId+=STRING)* ("lead" lead+=UserRef)* ("member" member+=UserRef)* ("priviledged"
-		//priviledged+=UserRef)* ("workDefinition" workDefinition=STRING)? ("version" version+=VersionDef)* ("children" "{"
-		//("teamDefinition" children+=TeamDef)+ "}")? "}"
+		//name=TEAM_DEF_REFERENCE teamDefOption+=TeamDefOption* "{" ("active" active=BooleanDef)? ("usesVersions"
+		//usesVersions=BooleanDef)? ("staticId" staticId+=STRING)* ("lead" lead+=UserRef)* ("member" member+=UserRef)*
+		//("priviledged" priviledged+=UserRef)* ("workDefinition" workDefinition=STRING)? ("version" version+=VersionDef)*
+		//("children" "{" ("teamDefinition" children+=TeamDef)+ "}")? "}"
 		public Group getGroup() { return cGroup; }
 
-		//name=STRING
+		//name=TEAM_DEF_REFERENCE
 		public Assignment getNameAssignment_0() { return cNameAssignment_0; }
 
-		//STRING
-		public RuleCall getNameSTRINGTerminalRuleCall_0_0() { return cNameSTRINGTerminalRuleCall_0_0; }
+		//TEAM_DEF_REFERENCE
+		public RuleCall getNameTEAM_DEF_REFERENCEParserRuleCall_0_0() { return cNameTEAM_DEF_REFERENCEParserRuleCall_0_0; }
 
 		//teamDefOption+=TeamDefOption*
 		public Assignment getTeamDefOptionAssignment_1() { return cTeamDefOptionAssignment_1; }
@@ -403,11 +427,23 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 		public Keyword getRightCurlyBracketKeyword_12() { return cRightCurlyBracketKeyword_12; }
 	}
 
+	public class AI_DEF_REFERENCEElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "AI_DEF_REFERENCE");
+		private final RuleCall cSTRINGTerminalRuleCall = (RuleCall)rule.eContents().get(1);
+		
+		//AI_DEF_REFERENCE:
+		//	STRING;
+		public ParserRule getRule() { return rule; }
+
+		//STRING
+		public RuleCall getSTRINGTerminalRuleCall() { return cSTRINGTerminalRuleCall; }
+	}
+
 	public class ActionableItemDefElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "ActionableItemDef");
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Assignment cNameAssignment_0 = (Assignment)cGroup.eContents().get(0);
-		private final RuleCall cNameSTRINGTerminalRuleCall_0_0 = (RuleCall)cNameAssignment_0.eContents().get(0);
+		private final RuleCall cNameAI_DEF_REFERENCEParserRuleCall_0_0 = (RuleCall)cNameAssignment_0.eContents().get(0);
 		private final Assignment cAiDefOptionAssignment_1 = (Assignment)cGroup.eContents().get(1);
 		private final RuleCall cAiDefOptionActionableItemOptionParserRuleCall_1_0 = (RuleCall)cAiDefOptionAssignment_1.eContents().get(0);
 		private final Group cGroup_2 = (Group)cGroup.eContents().get(2);
@@ -443,21 +479,21 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cRightCurlyBracketKeyword_2_7 = (Keyword)cGroup_2.eContents().get(7);
 		
 		//ActionableItemDef:
-		//	name=STRING aiDefOption+=ActionableItemOption* ("{" ("active" active=BooleanDef)? ("actionable"
+		//	name=AI_DEF_REFERENCE aiDefOption+=ActionableItemOption* ("{" ("active" active=BooleanDef)? ("actionable"
 		//	actionable=BooleanDef)? ("lead" lead+=UserRef)* ("staticId" staticId+=STRING)* ("team" teamDef=STRING)? ("children"
 		//	"{" ("actionableItem" children+=ActionableItemDef)+ "}")? "}")?;
 		public ParserRule getRule() { return rule; }
 
-		//name=STRING aiDefOption+=ActionableItemOption* ("{" ("active" active=BooleanDef)? ("actionable" actionable=BooleanDef)?
-		//("lead" lead+=UserRef)* ("staticId" staticId+=STRING)* ("team" teamDef=STRING)? ("children" "{" ("actionableItem"
-		//children+=ActionableItemDef)+ "}")? "}")?
+		//name=AI_DEF_REFERENCE aiDefOption+=ActionableItemOption* ("{" ("active" active=BooleanDef)? ("actionable"
+		//actionable=BooleanDef)? ("lead" lead+=UserRef)* ("staticId" staticId+=STRING)* ("team" teamDef=STRING)? ("children" "{"
+		//("actionableItem" children+=ActionableItemDef)+ "}")? "}")?
 		public Group getGroup() { return cGroup; }
 
-		//name=STRING
+		//name=AI_DEF_REFERENCE
 		public Assignment getNameAssignment_0() { return cNameAssignment_0; }
 
-		//STRING
-		public RuleCall getNameSTRINGTerminalRuleCall_0_0() { return cNameSTRINGTerminalRuleCall_0_0; }
+		//AI_DEF_REFERENCE
+		public RuleCall getNameAI_DEF_REFERENCEParserRuleCall_0_0() { return cNameAI_DEF_REFERENCEParserRuleCall_0_0; }
 
 		//aiDefOption+=ActionableItemOption*
 		public Assignment getAiDefOptionAssignment_1() { return cAiDefOptionAssignment_1; }
@@ -560,11 +596,23 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 		public Keyword getRightCurlyBracketKeyword_2_7() { return cRightCurlyBracketKeyword_2_7; }
 	}
 
+	public class VERSION_DEF_REFERENCEElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "VERSION_DEF_REFERENCE");
+		private final RuleCall cSTRINGTerminalRuleCall = (RuleCall)rule.eContents().get(1);
+		
+		//VERSION_DEF_REFERENCE:
+		//	STRING;
+		public ParserRule getRule() { return rule; }
+
+		//STRING
+		public RuleCall getSTRINGTerminalRuleCall() { return cSTRINGTerminalRuleCall; }
+	}
+
 	public class VersionDefElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "VersionDef");
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Assignment cNameAssignment_0 = (Assignment)cGroup.eContents().get(0);
-		private final RuleCall cNameSTRINGTerminalRuleCall_0_0 = (RuleCall)cNameAssignment_0.eContents().get(0);
+		private final RuleCall cNameVERSION_DEF_REFERENCEParserRuleCall_0_0 = (RuleCall)cNameAssignment_0.eContents().get(0);
 		private final Keyword cLeftCurlyBracketKeyword_1 = (Keyword)cGroup.eContents().get(1);
 		private final Group cGroup_2 = (Group)cGroup.eContents().get(2);
 		private final Keyword cActiveKeyword_2_0 = (Keyword)cGroup_2.eContents().get(0);
@@ -601,23 +649,23 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cRightCurlyBracketKeyword_10 = (Keyword)cGroup.eContents().get(10);
 		
 		//VersionDef:
-		//	name=STRING "{" ("active" active=BooleanDef)? ("staticId" staticId+=STRING)* ("next" next=BooleanDef)? ("released"
-		//	released=BooleanDef)? ("allowCreateBranch" allowCreateBranch=BooleanDef)? ("allowCommitBranch"
+		//	name=VERSION_DEF_REFERENCE "{" ("active" active=BooleanDef)? ("staticId" staticId+=STRING)* ("next" next=BooleanDef)?
+		//	("released" released=BooleanDef)? ("allowCreateBranch" allowCreateBranch=BooleanDef)? ("allowCommitBranch"
 		//	allowCommitBranch=BooleanDef)? ("baslineBranchGuid" baselineBranchGuid=STRING)? ("parallelVersion"
 		//	parallelVersion+=STRING)* "}";
 		public ParserRule getRule() { return rule; }
 
-		//name=STRING "{" ("active" active=BooleanDef)? ("staticId" staticId+=STRING)* ("next" next=BooleanDef)? ("released"
-		//released=BooleanDef)? ("allowCreateBranch" allowCreateBranch=BooleanDef)? ("allowCommitBranch"
+		//name=VERSION_DEF_REFERENCE "{" ("active" active=BooleanDef)? ("staticId" staticId+=STRING)* ("next" next=BooleanDef)?
+		//("released" released=BooleanDef)? ("allowCreateBranch" allowCreateBranch=BooleanDef)? ("allowCommitBranch"
 		//allowCommitBranch=BooleanDef)? ("baslineBranchGuid" baselineBranchGuid=STRING)? ("parallelVersion"
 		//parallelVersion+=STRING)* "}"
 		public Group getGroup() { return cGroup; }
 
-		//name=STRING
+		//name=VERSION_DEF_REFERENCE
 		public Assignment getNameAssignment_0() { return cNameAssignment_0; }
 
-		//STRING
-		public RuleCall getNameSTRINGTerminalRuleCall_0_0() { return cNameSTRINGTerminalRuleCall_0_0; }
+		//VERSION_DEF_REFERENCE
+		public RuleCall getNameVERSION_DEF_REFERENCEParserRuleCall_0_0() { return cNameVERSION_DEF_REFERENCEParserRuleCall_0_0; }
 
 		//"{"
 		public Keyword getLeftCurlyBracketKeyword_1() { return cLeftCurlyBracketKeyword_1; }
@@ -1334,30 +1382,42 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 		public Keyword getRightCurlyBracketKeyword_15() { return cRightCurlyBracketKeyword_15; }
 	}
 
+	public class DECISION_REVIEW_OPT_REFElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "DECISION_REVIEW_OPT_REF");
+		private final RuleCall cSTRINGTerminalRuleCall = (RuleCall)rule.eContents().get(1);
+		
+		//DECISION_REVIEW_OPT_REF:
+		//	STRING;
+		public ParserRule getRule() { return rule; }
+
+		//STRING
+		public RuleCall getSTRINGTerminalRuleCall() { return cSTRINGTerminalRuleCall; }
+	}
+
 	public class DecisionReviewOptElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "DecisionReviewOpt");
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Keyword cOptionKeyword_0 = (Keyword)cGroup.eContents().get(0);
 		private final Assignment cNameAssignment_1 = (Assignment)cGroup.eContents().get(1);
-		private final RuleCall cNameSTRINGTerminalRuleCall_1_0 = (RuleCall)cNameAssignment_1.eContents().get(0);
+		private final RuleCall cNameDECISION_REVIEW_OPT_REFParserRuleCall_1_0 = (RuleCall)cNameAssignment_1.eContents().get(0);
 		private final Assignment cFollowupAssignment_2 = (Assignment)cGroup.eContents().get(2);
 		private final RuleCall cFollowupFollowupRefParserRuleCall_2_0 = (RuleCall)cFollowupAssignment_2.eContents().get(0);
 		
 		//DecisionReviewOpt:
-		//	"option" name=STRING followup=FollowupRef?;
+		//	"option" name=DECISION_REVIEW_OPT_REF followup=FollowupRef?;
 		public ParserRule getRule() { return rule; }
 
-		//"option" name=STRING followup=FollowupRef?
+		//"option" name=DECISION_REVIEW_OPT_REF followup=FollowupRef?
 		public Group getGroup() { return cGroup; }
 
 		//"option"
 		public Keyword getOptionKeyword_0() { return cOptionKeyword_0; }
 
-		//name=STRING
+		//name=DECISION_REVIEW_OPT_REF
 		public Assignment getNameAssignment_1() { return cNameAssignment_1; }
 
-		//STRING
-		public RuleCall getNameSTRINGTerminalRuleCall_1_0() { return cNameSTRINGTerminalRuleCall_1_0; }
+		//DECISION_REVIEW_OPT_REF
+		public RuleCall getNameDECISION_REVIEW_OPT_REFParserRuleCall_1_0() { return cNameDECISION_REVIEW_OPT_REFParserRuleCall_1_0; }
 
 		//followup=FollowupRef?
 		public Assignment getFollowupAssignment_2() { return cFollowupAssignment_2; }
@@ -1614,24 +1674,24 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "UserByName");
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Keyword cNamedKeyword_0 = (Keyword)cGroup.eContents().get(0);
-		private final Assignment cNameAssignment_1 = (Assignment)cGroup.eContents().get(1);
-		private final RuleCall cNameSTRINGTerminalRuleCall_1_0 = (RuleCall)cNameAssignment_1.eContents().get(0);
+		private final Assignment cUserNameAssignment_1 = (Assignment)cGroup.eContents().get(1);
+		private final RuleCall cUserNameSTRINGTerminalRuleCall_1_0 = (RuleCall)cUserNameAssignment_1.eContents().get(0);
 		
 		//UserByName:
-		//	"named" name=STRING;
+		//	"named" userName=STRING;
 		public ParserRule getRule() { return rule; }
 
-		//"named" name=STRING
+		//"named" userName=STRING
 		public Group getGroup() { return cGroup; }
 
 		//"named"
 		public Keyword getNamedKeyword_0() { return cNamedKeyword_0; }
 
-		//name=STRING
-		public Assignment getNameAssignment_1() { return cNameAssignment_1; }
+		//userName=STRING
+		public Assignment getUserNameAssignment_1() { return cUserNameAssignment_1; }
 
 		//STRING
-		public RuleCall getNameSTRINGTerminalRuleCall_1_0() { return cNameSTRINGTerminalRuleCall_1_0; }
+		public RuleCall getUserNameSTRINGTerminalRuleCall_1_0() { return cUserNameSTRINGTerminalRuleCall_1_0; }
 	}
 
 	public class DECISION_REVIEW_NAME_REFERENCEElements extends AbstractParserRuleElementFinder {
@@ -1894,91 +1954,151 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 		public Keyword getRightCurlyBracketKeyword_6() { return cRightCurlyBracketKeyword_6; }
 	}
 
+	public class USER_DEF_OPTION_NAMEElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "USER_DEF_OPTION_NAME");
+		private final RuleCall cSTRINGTerminalRuleCall = (RuleCall)rule.eContents().get(1);
+		
+		//USER_DEF_OPTION_NAME:
+		//	STRING;
+		public ParserRule getRule() { return rule; }
+
+		//STRING
+		public RuleCall getSTRINGTerminalRuleCall() { return cSTRINGTerminalRuleCall; }
+	}
+
 	public class UserDefOptionElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "UserDefOption");
 		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
 		private final Keyword cGetOrCreateKeyword_0 = (Keyword)cAlternatives.eContents().get(0);
-		private final RuleCall cSTRINGTerminalRuleCall_1 = (RuleCall)cAlternatives.eContents().get(1);
+		private final RuleCall cUSER_DEF_OPTION_NAMEParserRuleCall_1 = (RuleCall)cAlternatives.eContents().get(1);
 		
 		//UserDefOption:
-		//	"GetOrCreate" | STRING;
+		//	"GetOrCreate" | USER_DEF_OPTION_NAME;
 		public ParserRule getRule() { return rule; }
 
-		//"GetOrCreate" | STRING
+		//"GetOrCreate" | USER_DEF_OPTION_NAME
 		public Alternatives getAlternatives() { return cAlternatives; }
 
 		//"GetOrCreate"
 		public Keyword getGetOrCreateKeyword_0() { return cGetOrCreateKeyword_0; }
 
+		//USER_DEF_OPTION_NAME
+		public RuleCall getUSER_DEF_OPTION_NAMEParserRuleCall_1() { return cUSER_DEF_OPTION_NAMEParserRuleCall_1; }
+	}
+
+	public class TEAM_DEF_OPTION_NAMEElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "TEAM_DEF_OPTION_NAME");
+		private final RuleCall cSTRINGTerminalRuleCall = (RuleCall)rule.eContents().get(1);
+		
+		//TEAM_DEF_OPTION_NAME:
+		//	STRING;
+		public ParserRule getRule() { return rule; }
+
 		//STRING
-		public RuleCall getSTRINGTerminalRuleCall_1() { return cSTRINGTerminalRuleCall_1; }
+		public RuleCall getSTRINGTerminalRuleCall() { return cSTRINGTerminalRuleCall; }
 	}
 
 	public class TeamDefOptionElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "TeamDefOption");
 		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
 		private final Keyword cGetOrCreateKeyword_0 = (Keyword)cAlternatives.eContents().get(0);
-		private final RuleCall cSTRINGTerminalRuleCall_1 = (RuleCall)cAlternatives.eContents().get(1);
+		private final RuleCall cTEAM_DEF_OPTION_NAMEParserRuleCall_1 = (RuleCall)cAlternatives.eContents().get(1);
 		
 		//TeamDefOption:
-		//	"GetOrCreate" | STRING;
+		//	"GetOrCreate" | TEAM_DEF_OPTION_NAME;
 		public ParserRule getRule() { return rule; }
 
-		//"GetOrCreate" | STRING
+		//"GetOrCreate" | TEAM_DEF_OPTION_NAME
 		public Alternatives getAlternatives() { return cAlternatives; }
 
 		//"GetOrCreate"
 		public Keyword getGetOrCreateKeyword_0() { return cGetOrCreateKeyword_0; }
 
+		//TEAM_DEF_OPTION_NAME
+		public RuleCall getTEAM_DEF_OPTION_NAMEParserRuleCall_1() { return cTEAM_DEF_OPTION_NAMEParserRuleCall_1; }
+	}
+
+	public class AI_DEF_OPTION_NAMEElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "AI_DEF_OPTION_NAME");
+		private final RuleCall cSTRINGTerminalRuleCall = (RuleCall)rule.eContents().get(1);
+		
+		//AI_DEF_OPTION_NAME:
+		//	STRING;
+		public ParserRule getRule() { return rule; }
+
 		//STRING
-		public RuleCall getSTRINGTerminalRuleCall_1() { return cSTRINGTerminalRuleCall_1; }
+		public RuleCall getSTRINGTerminalRuleCall() { return cSTRINGTerminalRuleCall; }
 	}
 
 	public class ActionableItemOptionElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "ActionableItemOption");
 		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
 		private final Keyword cGetOrCreateKeyword_0 = (Keyword)cAlternatives.eContents().get(0);
-		private final RuleCall cSTRINGTerminalRuleCall_1 = (RuleCall)cAlternatives.eContents().get(1);
+		private final RuleCall cAI_DEF_OPTION_NAMEParserRuleCall_1 = (RuleCall)cAlternatives.eContents().get(1);
 		
 		//ActionableItemOption:
-		//	"GetOrCreate" | STRING;
+		//	"GetOrCreate" | AI_DEF_OPTION_NAME;
 		public ParserRule getRule() { return rule; }
 
-		//"GetOrCreate" | STRING
+		//"GetOrCreate" | AI_DEF_OPTION_NAME
 		public Alternatives getAlternatives() { return cAlternatives; }
 
 		//"GetOrCreate"
 		public Keyword getGetOrCreateKeyword_0() { return cGetOrCreateKeyword_0; }
 
-		//STRING
-		public RuleCall getSTRINGTerminalRuleCall_1() { return cSTRINGTerminalRuleCall_1; }
+		//AI_DEF_OPTION_NAME
+		public RuleCall getAI_DEF_OPTION_NAMEParserRuleCall_1() { return cAI_DEF_OPTION_NAMEParserRuleCall_1; }
 	}
 
-	public class CompositeOptionElements extends AbstractParserRuleElementFinder {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "CompositeOption");
-		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
-		private final Keyword cNoneKeyword_0 = (Keyword)cAlternatives.eContents().get(0);
-		private final RuleCall cSTRINGTerminalRuleCall_1 = (RuleCall)cAlternatives.eContents().get(1);
+	public class COMPOSITE_OPTION_NAMEElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "COMPOSITE_OPTION_NAME");
+		private final RuleCall cSTRINGTerminalRuleCall = (RuleCall)rule.eContents().get(1);
 		
 		//// STRING option used below for future expansion of options.  Since sheet will be
 		//// in databse and read by old code, new value can be entered as "NewOption" with quotes.
 		//// Old grammar and code will ignore; New code needs to process string and resolve to new
 		//// value.  After release, instance sheets can be updated and remove the " because NewOption
 		//// will be a supported value.
+		//COMPOSITE_OPTION_NAME:
+		//	STRING;
+		public ParserRule getRule() { return rule; }
+
+		//STRING
+		public RuleCall getSTRINGTerminalRuleCall() { return cSTRINGTerminalRuleCall; }
+	}
+
+	public class CompositeOptionElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "CompositeOption");
+		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
+		private final Keyword cNoneKeyword_0 = (Keyword)cAlternatives.eContents().get(0);
+		private final RuleCall cCOMPOSITE_OPTION_NAMEParserRuleCall_1 = (RuleCall)cAlternatives.eContents().get(1);
+		
 		//// STRING is for future expansion; Composite has no options, provide this block so some
 		//// can be added later
 		//CompositeOption:
-		//	"None" | STRING;
+		//	"None" | COMPOSITE_OPTION_NAME;
 		public ParserRule getRule() { return rule; }
 
-		//"None" | STRING
+		//"None" | COMPOSITE_OPTION_NAME
 		public Alternatives getAlternatives() { return cAlternatives; }
 
 		//"None"
 		public Keyword getNoneKeyword_0() { return cNoneKeyword_0; }
 
+		//COMPOSITE_OPTION_NAME
+		public RuleCall getCOMPOSITE_OPTION_NAMEParserRuleCall_1() { return cCOMPOSITE_OPTION_NAMEParserRuleCall_1; }
+	}
+
+	public class TRANSITION_OPTION_NAMEElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "TRANSITION_OPTION_NAME");
+		private final RuleCall cSTRINGTerminalRuleCall = (RuleCall)rule.eContents().get(1);
+		
+		//TRANSITION_OPTION_NAME:
+		//	STRING;
+		public ParserRule getRule() { return rule; }
+
 		//STRING
-		public RuleCall getSTRINGTerminalRuleCall_1() { return cSTRINGTerminalRuleCall_1; }
+		public RuleCall getSTRINGTerminalRuleCall() { return cSTRINGTerminalRuleCall; }
 	}
 
 	public class TransitionOptionElements extends AbstractParserRuleElementFinder {
@@ -1986,15 +2106,15 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
 		private final Keyword cAsDefaultKeyword_0 = (Keyword)cAlternatives.eContents().get(0);
 		private final Keyword cOverrideAttributeValidationKeyword_1 = (Keyword)cAlternatives.eContents().get(1);
-		private final RuleCall cSTRINGTerminalRuleCall_2 = (RuleCall)cAlternatives.eContents().get(2);
+		private final RuleCall cTRANSITION_OPTION_NAMEParserRuleCall_2 = (RuleCall)cAlternatives.eContents().get(2);
 		
 		//// STRING is for future expansion
 		//// WARNING: Any new TransitionOption need to be added to AtsDslProposalProvider for content assist
 		//TransitionOption:
-		//	"AsDefault" | "OverrideAttributeValidation" | STRING;
+		//	"AsDefault" | "OverrideAttributeValidation" | TRANSITION_OPTION_NAME;
 		public ParserRule getRule() { return rule; }
 
-		//"AsDefault" | "OverrideAttributeValidation" | STRING
+		//"AsDefault" | "OverrideAttributeValidation" | TRANSITION_OPTION_NAME
 		public Alternatives getAlternatives() { return cAlternatives; }
 
 		//"AsDefault"
@@ -2003,8 +2123,20 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 		//"OverrideAttributeValidation"
 		public Keyword getOverrideAttributeValidationKeyword_1() { return cOverrideAttributeValidationKeyword_1; }
 
+		//TRANSITION_OPTION_NAME
+		public RuleCall getTRANSITION_OPTION_NAMEParserRuleCall_2() { return cTRANSITION_OPTION_NAMEParserRuleCall_2; }
+	}
+
+	public class RULE_NAMEElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "RULE_NAME");
+		private final RuleCall cSTRINGTerminalRuleCall = (RuleCall)rule.eContents().get(1);
+		
+		//RULE_NAME:
+		//	STRING;
+		public ParserRule getRule() { return rule; }
+
 		//STRING
-		public RuleCall getSTRINGTerminalRuleCall_2() { return cSTRINGTerminalRuleCall_2; }
+		public RuleCall getSTRINGTerminalRuleCall() { return cSTRINGTerminalRuleCall; }
 	}
 
 	public class RuleElements extends AbstractParserRuleElementFinder {
@@ -2021,7 +2153,7 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cAllowPriviledgedEditToAllKeyword_8 = (Keyword)cAlternatives.eContents().get(8);
 		private final Keyword cAllowEditToAllKeyword_9 = (Keyword)cAlternatives.eContents().get(9);
 		private final Keyword cAllowAssigneeToAllKeyword_10 = (Keyword)cAlternatives.eContents().get(10);
-		private final RuleCall cSTRINGTerminalRuleCall_11 = (RuleCall)cAlternatives.eContents().get(11);
+		private final RuleCall cRULE_NAMEParserRuleCall_11 = (RuleCall)cAlternatives.eContents().get(11);
 		
 		//// STRING is for future expansion
 		//// WARNING: Any new rules need to be added to AtsDslProposalProvider for content assist
@@ -2029,13 +2161,13 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 		//	"RequireStateHourSpentPrompt" | "AddDecisionValidateBlockingReview" | "AddDecisionValidateNonBlockingReview" |
 		//	"AllowTransitionWithWorkingBranch" | "ForceAssigneesToTeamLeads" | "RequireTargetedVersion" |
 		//	"AllowPriviledgedEditToTeamMember" | "AllowPriviledgedEditToTeamMemberAndOriginator" | "AllowPriviledgedEditToAll" |
-		//	"AllowEditToAll" | "AllowAssigneeToAll" | STRING;
+		//	"AllowEditToAll" | "AllowAssigneeToAll" | RULE_NAME;
 		public ParserRule getRule() { return rule; }
 
 		//"RequireStateHourSpentPrompt" | "AddDecisionValidateBlockingReview" | "AddDecisionValidateNonBlockingReview" |
 		//"AllowTransitionWithWorkingBranch" | "ForceAssigneesToTeamLeads" | "RequireTargetedVersion" |
 		//"AllowPriviledgedEditToTeamMember" | "AllowPriviledgedEditToTeamMemberAndOriginator" | "AllowPriviledgedEditToAll" |
-		//"AllowEditToAll" | "AllowAssigneeToAll" | STRING
+		//"AllowEditToAll" | "AllowAssigneeToAll" | RULE_NAME
 		public Alternatives getAlternatives() { return cAlternatives; }
 
 		//"RequireStateHourSpentPrompt"
@@ -2071,8 +2203,20 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 		//"AllowAssigneeToAll"
 		public Keyword getAllowAssigneeToAllKeyword_10() { return cAllowAssigneeToAllKeyword_10; }
 
+		//RULE_NAME
+		public RuleCall getRULE_NAMEParserRuleCall_11() { return cRULE_NAMEParserRuleCall_11; }
+	}
+
+	public class WIDGET_OPTION_NAMEElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "WIDGET_OPTION_NAME");
+		private final RuleCall cSTRINGTerminalRuleCall = (RuleCall)rule.eContents().get(1);
+		
+		//WIDGET_OPTION_NAME:
+		//	STRING;
+		public ParserRule getRule() { return rule; }
+
 		//STRING
-		public RuleCall getSTRINGTerminalRuleCall_11() { return cSTRINGTerminalRuleCall_11; }
+		public RuleCall getSTRINGTerminalRuleCall() { return cSTRINGTerminalRuleCall; }
 	}
 
 	public class WidgetOptionElements extends AbstractParserRuleElementFinder {
@@ -2106,7 +2250,7 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cALIGN_LEFTKeyword_25 = (Keyword)cAlternatives.eContents().get(25);
 		private final Keyword cALIGN_RIGHTKeyword_26 = (Keyword)cAlternatives.eContents().get(26);
 		private final Keyword cALIGN_CENTERKeyword_27 = (Keyword)cAlternatives.eContents().get(27);
-		private final RuleCall cSTRINGTerminalRuleCall_28 = (RuleCall)cAlternatives.eContents().get(28);
+		private final RuleCall cWIDGET_OPTION_NAMEParserRuleCall_28 = (RuleCall)cAlternatives.eContents().get(28);
 		
 		//// STRING is for future expansion
 		//// WARNING: Any new WidgetOption need to be added to AtsDslProposalProvider for content assist
@@ -2115,14 +2259,14 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 		//	| "ENABLED" | "NOT_ENABLED" | "EDITABLE" | "NOT_EDITABLE" | "MULTI_SELECT" | "HORIZONTAL_LABEL" | "VERTICAL_LABEL" |
 		//	"LABEL_AFTER" | "LABEL_BEFORE" | "NO_LABEL" | "SORTED" | "ADD_DEFAULT_VALUE" | "NO_DEFAULT_VALUE" |
 		//	"BEGIN_COMPOSITE_4" | "BEGIN_COMPOSITE_6" | "BEGIN_COMPOSITE_8" | "BEGIN_COMPOSITE_10" | "END_COMPOSITE" | "FILL_NONE"
-		//	| "FILL_HORIZONTALLY" | "FILL_VERTICALLY" | "ALIGN_LEFT" | "ALIGN_RIGHT" | "ALIGN_CENTER" | STRING;
+		//	| "FILL_HORIZONTALLY" | "FILL_VERTICALLY" | "ALIGN_LEFT" | "ALIGN_RIGHT" | "ALIGN_CENTER" | WIDGET_OPTION_NAME;
 		public ParserRule getRule() { return rule; }
 
 		//"REQUIRED_FOR_TRANSITION" | "NOT_REQUIRED_FOR_TRANSITION" | "REQUIRED_FOR_COMPLETION" | "NOT_REQUIRED_FOR_COMPLETION" |
 		//"ENABLED" | "NOT_ENABLED" | "EDITABLE" | "NOT_EDITABLE" | "MULTI_SELECT" | "HORIZONTAL_LABEL" | "VERTICAL_LABEL" |
 		//"LABEL_AFTER" | "LABEL_BEFORE" | "NO_LABEL" | "SORTED" | "ADD_DEFAULT_VALUE" | "NO_DEFAULT_VALUE" | "BEGIN_COMPOSITE_4"
 		//| "BEGIN_COMPOSITE_6" | "BEGIN_COMPOSITE_8" | "BEGIN_COMPOSITE_10" | "END_COMPOSITE" | "FILL_NONE" |
-		//"FILL_HORIZONTALLY" | "FILL_VERTICALLY" | "ALIGN_LEFT" | "ALIGN_RIGHT" | "ALIGN_CENTER" | STRING
+		//"FILL_HORIZONTALLY" | "FILL_VERTICALLY" | "ALIGN_LEFT" | "ALIGN_RIGHT" | "ALIGN_CENTER" | WIDGET_OPTION_NAME
 		public Alternatives getAlternatives() { return cAlternatives; }
 
 		//"REQUIRED_FOR_TRANSITION"
@@ -2209,8 +2353,20 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 		//"ALIGN_CENTER"
 		public Keyword getALIGN_CENTERKeyword_27() { return cALIGN_CENTERKeyword_27; }
 
+		//WIDGET_OPTION_NAME
+		public RuleCall getWIDGET_OPTION_NAMEParserRuleCall_28() { return cWIDGET_OPTION_NAMEParserRuleCall_28; }
+	}
+
+	public class PAGE_TYPE_NAMEElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "PAGE_TYPE_NAME");
+		private final RuleCall cSTRINGTerminalRuleCall = (RuleCall)rule.eContents().get(1);
+		
+		//PAGE_TYPE_NAME:
+		//	STRING;
+		public ParserRule getRule() { return rule; }
+
 		//STRING
-		public RuleCall getSTRINGTerminalRuleCall_28() { return cSTRINGTerminalRuleCall_28; }
+		public RuleCall getSTRINGTerminalRuleCall() { return cSTRINGTerminalRuleCall; }
 	}
 
 	public class PageTypeElements extends AbstractParserRuleElementFinder {
@@ -2219,15 +2375,15 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cWorkingKeyword_0 = (Keyword)cAlternatives.eContents().get(0);
 		private final Keyword cCompletedKeyword_1 = (Keyword)cAlternatives.eContents().get(1);
 		private final Keyword cCancelledKeyword_2 = (Keyword)cAlternatives.eContents().get(2);
-		private final RuleCall cSTRINGTerminalRuleCall_3 = (RuleCall)cAlternatives.eContents().get(3);
+		private final RuleCall cPAGE_TYPE_NAMEParserRuleCall_3 = (RuleCall)cAlternatives.eContents().get(3);
 		
 		//// STRING is for future expansion
 		//// WARNING: Any new PageType need to be added to AtsDslProposalProvider for content assist
 		//PageType:
-		//	"Working" | "Completed" | "Cancelled" | STRING;
+		//	"Working" | "Completed" | "Cancelled" | PAGE_TYPE_NAME;
 		public ParserRule getRule() { return rule; }
 
-		//"Working" | "Completed" | "Cancelled" | STRING
+		//"Working" | "Completed" | "Cancelled" | PAGE_TYPE_NAME
 		public Alternatives getAlternatives() { return cAlternatives; }
 
 		//"Working"
@@ -2239,8 +2395,8 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 		//"Cancelled"
 		public Keyword getCancelledKeyword_2() { return cCancelledKeyword_2; }
 
-		//STRING
-		public RuleCall getSTRINGTerminalRuleCall_3() { return cSTRINGTerminalRuleCall_3; }
+		//PAGE_TYPE_NAME
+		public RuleCall getPAGE_TYPE_NAMEParserRuleCall_3() { return cPAGE_TYPE_NAMEParserRuleCall_3; }
 	}
 	
 	
@@ -2345,9 +2501,13 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 	}
 	
 	private AtsDslElements pAtsDsl;
+	private USER_DEF_REFERENCEElements pUSER_DEF_REFERENCE;
 	private UserDefElements pUserDef;
+	private TEAM_DEF_REFERENCEElements pTEAM_DEF_REFERENCE;
 	private TeamDefElements pTeamDef;
+	private AI_DEF_REFERENCEElements pAI_DEF_REFERENCE;
 	private ActionableItemDefElements pActionableItemDef;
+	private VERSION_DEF_REFERENCEElements pVERSION_DEF_REFERENCE;
 	private VersionDefElements pVersionDef;
 	private WorkDefElements pWorkDef;
 	private WidgetDefElements pWidgetDef;
@@ -2356,6 +2516,7 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 	private StateDefElements pStateDef;
 	private DecisionReviewRefElements pDecisionReviewRef;
 	private DecisionReviewDefElements pDecisionReviewDef;
+	private DECISION_REVIEW_OPT_REFElements pDECISION_REVIEW_OPT_REF;
 	private DecisionReviewOptElements pDecisionReviewOpt;
 	private PeerReviewRefElements pPeerReviewRef;
 	private PeerReviewDefElements pPeerReviewDef;
@@ -2377,13 +2538,21 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 	private LayoutCopyElements pLayoutCopy;
 	private LayoutItemElements pLayoutItem;
 	private CompositeElements pComposite;
+	private USER_DEF_OPTION_NAMEElements pUSER_DEF_OPTION_NAME;
 	private UserDefOptionElements pUserDefOption;
+	private TEAM_DEF_OPTION_NAMEElements pTEAM_DEF_OPTION_NAME;
 	private TeamDefOptionElements pTeamDefOption;
+	private AI_DEF_OPTION_NAMEElements pAI_DEF_OPTION_NAME;
 	private ActionableItemOptionElements pActionableItemOption;
+	private COMPOSITE_OPTION_NAMEElements pCOMPOSITE_OPTION_NAME;
 	private CompositeOptionElements pCompositeOption;
+	private TRANSITION_OPTION_NAMEElements pTRANSITION_OPTION_NAME;
 	private TransitionOptionElements pTransitionOption;
+	private RULE_NAMEElements pRULE_NAME;
 	private RuleElements pRule;
+	private WIDGET_OPTION_NAMEElements pWIDGET_OPTION_NAME;
 	private WidgetOptionElements pWidgetOption;
+	private PAGE_TYPE_NAMEElements pPAGE_TYPE_NAME;
 	private PageTypeElements pPageType;
 	
 	private final GrammarProvider grammarProvider;
@@ -2418,9 +2587,19 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 		return getAtsDslAccess().getRule();
 	}
 
+	//USER_DEF_REFERENCE:
+	//	STRING;
+	public USER_DEF_REFERENCEElements getUSER_DEF_REFERENCEAccess() {
+		return (pUSER_DEF_REFERENCE != null) ? pUSER_DEF_REFERENCE : (pUSER_DEF_REFERENCE = new USER_DEF_REFERENCEElements());
+	}
+	
+	public ParserRule getUSER_DEF_REFERENCERule() {
+		return getUSER_DEF_REFERENCEAccess().getRule();
+	}
+
 	//UserDef:
-	//	name=STRING userDefOption+=UserDefOption* ("{" ("active" active=BooleanDef)? ("userId" userId=STRING)? ("email"
-	//	email=STRING)? ("isAdmin" admin=BooleanDef)? "}")?;
+	//	name=USER_DEF_REFERENCE userDefOption+=UserDefOption* ("{" ("active" active=BooleanDef)? ("userId" userId=STRING)?
+	//	("email" email=STRING)? ("isAdmin" admin=BooleanDef)? "}")?;
 	public UserDefElements getUserDefAccess() {
 		return (pUserDef != null) ? pUserDef : (pUserDef = new UserDefElements());
 	}
@@ -2429,11 +2608,21 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 		return getUserDefAccess().getRule();
 	}
 
+	//TEAM_DEF_REFERENCE:
+	//	STRING;
+	public TEAM_DEF_REFERENCEElements getTEAM_DEF_REFERENCEAccess() {
+		return (pTEAM_DEF_REFERENCE != null) ? pTEAM_DEF_REFERENCE : (pTEAM_DEF_REFERENCE = new TEAM_DEF_REFERENCEElements());
+	}
+	
+	public ParserRule getTEAM_DEF_REFERENCERule() {
+		return getTEAM_DEF_REFERENCEAccess().getRule();
+	}
+
 	//TeamDef:
-	//	name=STRING teamDefOption+=TeamDefOption* "{" ("active" active=BooleanDef)? ("usesVersions" usesVersions=BooleanDef)?
-	//	("staticId" staticId+=STRING)* ("lead" lead+=UserRef)* ("member" member+=UserRef)* ("priviledged"
-	//	priviledged+=UserRef)* ("workDefinition" workDefinition=STRING)? ("version" version+=VersionDef)* ("children" "{"
-	//	("teamDefinition" children+=TeamDef)+ "}")? "}";
+	//	name=TEAM_DEF_REFERENCE teamDefOption+=TeamDefOption* "{" ("active" active=BooleanDef)? ("usesVersions"
+	//	usesVersions=BooleanDef)? ("staticId" staticId+=STRING)* ("lead" lead+=UserRef)* ("member" member+=UserRef)*
+	//	("priviledged" priviledged+=UserRef)* ("workDefinition" workDefinition=STRING)? ("version" version+=VersionDef)*
+	//	("children" "{" ("teamDefinition" children+=TeamDef)+ "}")? "}";
 	public TeamDefElements getTeamDefAccess() {
 		return (pTeamDef != null) ? pTeamDef : (pTeamDef = new TeamDefElements());
 	}
@@ -2442,8 +2631,18 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 		return getTeamDefAccess().getRule();
 	}
 
+	//AI_DEF_REFERENCE:
+	//	STRING;
+	public AI_DEF_REFERENCEElements getAI_DEF_REFERENCEAccess() {
+		return (pAI_DEF_REFERENCE != null) ? pAI_DEF_REFERENCE : (pAI_DEF_REFERENCE = new AI_DEF_REFERENCEElements());
+	}
+	
+	public ParserRule getAI_DEF_REFERENCERule() {
+		return getAI_DEF_REFERENCEAccess().getRule();
+	}
+
 	//ActionableItemDef:
-	//	name=STRING aiDefOption+=ActionableItemOption* ("{" ("active" active=BooleanDef)? ("actionable"
+	//	name=AI_DEF_REFERENCE aiDefOption+=ActionableItemOption* ("{" ("active" active=BooleanDef)? ("actionable"
 	//	actionable=BooleanDef)? ("lead" lead+=UserRef)* ("staticId" staticId+=STRING)* ("team" teamDef=STRING)? ("children"
 	//	"{" ("actionableItem" children+=ActionableItemDef)+ "}")? "}")?;
 	public ActionableItemDefElements getActionableItemDefAccess() {
@@ -2454,9 +2653,19 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 		return getActionableItemDefAccess().getRule();
 	}
 
+	//VERSION_DEF_REFERENCE:
+	//	STRING;
+	public VERSION_DEF_REFERENCEElements getVERSION_DEF_REFERENCEAccess() {
+		return (pVERSION_DEF_REFERENCE != null) ? pVERSION_DEF_REFERENCE : (pVERSION_DEF_REFERENCE = new VERSION_DEF_REFERENCEElements());
+	}
+	
+	public ParserRule getVERSION_DEF_REFERENCERule() {
+		return getVERSION_DEF_REFERENCEAccess().getRule();
+	}
+
 	//VersionDef:
-	//	name=STRING "{" ("active" active=BooleanDef)? ("staticId" staticId+=STRING)* ("next" next=BooleanDef)? ("released"
-	//	released=BooleanDef)? ("allowCreateBranch" allowCreateBranch=BooleanDef)? ("allowCommitBranch"
+	//	name=VERSION_DEF_REFERENCE "{" ("active" active=BooleanDef)? ("staticId" staticId+=STRING)* ("next" next=BooleanDef)?
+	//	("released" released=BooleanDef)? ("allowCreateBranch" allowCreateBranch=BooleanDef)? ("allowCommitBranch"
 	//	allowCommitBranch=BooleanDef)? ("baslineBranchGuid" baselineBranchGuid=STRING)? ("parallelVersion"
 	//	parallelVersion+=STRING)* "}";
 	public VersionDefElements getVersionDefAccess() {
@@ -2545,8 +2754,18 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 		return getDecisionReviewDefAccess().getRule();
 	}
 
+	//DECISION_REVIEW_OPT_REF:
+	//	STRING;
+	public DECISION_REVIEW_OPT_REFElements getDECISION_REVIEW_OPT_REFAccess() {
+		return (pDECISION_REVIEW_OPT_REF != null) ? pDECISION_REVIEW_OPT_REF : (pDECISION_REVIEW_OPT_REF = new DECISION_REVIEW_OPT_REFElements());
+	}
+	
+	public ParserRule getDECISION_REVIEW_OPT_REFRule() {
+		return getDECISION_REVIEW_OPT_REFAccess().getRule();
+	}
+
 	//DecisionReviewOpt:
-	//	"option" name=STRING followup=FollowupRef?;
+	//	"option" name=DECISION_REVIEW_OPT_REF followup=FollowupRef?;
 	public DecisionReviewOptElements getDecisionReviewOptAccess() {
 		return (pDecisionReviewOpt != null) ? pDecisionReviewOpt : (pDecisionReviewOpt = new DecisionReviewOptElements());
 	}
@@ -2608,7 +2827,7 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//UserByName:
-	//	"named" name=STRING;
+	//	"named" userName=STRING;
 	public UserByNameElements getUserByNameAccess() {
 		return (pUserByName != null) ? pUserByName : (pUserByName = new UserByNameElements());
 	}
@@ -2757,8 +2976,18 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 		return getCompositeAccess().getRule();
 	}
 
+	//USER_DEF_OPTION_NAME:
+	//	STRING;
+	public USER_DEF_OPTION_NAMEElements getUSER_DEF_OPTION_NAMEAccess() {
+		return (pUSER_DEF_OPTION_NAME != null) ? pUSER_DEF_OPTION_NAME : (pUSER_DEF_OPTION_NAME = new USER_DEF_OPTION_NAMEElements());
+	}
+	
+	public ParserRule getUSER_DEF_OPTION_NAMERule() {
+		return getUSER_DEF_OPTION_NAMEAccess().getRule();
+	}
+
 	//UserDefOption:
-	//	"GetOrCreate" | STRING;
+	//	"GetOrCreate" | USER_DEF_OPTION_NAME;
 	public UserDefOptionElements getUserDefOptionAccess() {
 		return (pUserDefOption != null) ? pUserDefOption : (pUserDefOption = new UserDefOptionElements());
 	}
@@ -2767,8 +2996,18 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 		return getUserDefOptionAccess().getRule();
 	}
 
+	//TEAM_DEF_OPTION_NAME:
+	//	STRING;
+	public TEAM_DEF_OPTION_NAMEElements getTEAM_DEF_OPTION_NAMEAccess() {
+		return (pTEAM_DEF_OPTION_NAME != null) ? pTEAM_DEF_OPTION_NAME : (pTEAM_DEF_OPTION_NAME = new TEAM_DEF_OPTION_NAMEElements());
+	}
+	
+	public ParserRule getTEAM_DEF_OPTION_NAMERule() {
+		return getTEAM_DEF_OPTION_NAMEAccess().getRule();
+	}
+
 	//TeamDefOption:
-	//	"GetOrCreate" | STRING;
+	//	"GetOrCreate" | TEAM_DEF_OPTION_NAME;
 	public TeamDefOptionElements getTeamDefOptionAccess() {
 		return (pTeamDefOption != null) ? pTeamDefOption : (pTeamDefOption = new TeamDefOptionElements());
 	}
@@ -2777,8 +3016,18 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 		return getTeamDefOptionAccess().getRule();
 	}
 
+	//AI_DEF_OPTION_NAME:
+	//	STRING;
+	public AI_DEF_OPTION_NAMEElements getAI_DEF_OPTION_NAMEAccess() {
+		return (pAI_DEF_OPTION_NAME != null) ? pAI_DEF_OPTION_NAME : (pAI_DEF_OPTION_NAME = new AI_DEF_OPTION_NAMEElements());
+	}
+	
+	public ParserRule getAI_DEF_OPTION_NAMERule() {
+		return getAI_DEF_OPTION_NAMEAccess().getRule();
+	}
+
 	//ActionableItemOption:
-	//	"GetOrCreate" | STRING;
+	//	"GetOrCreate" | AI_DEF_OPTION_NAME;
 	public ActionableItemOptionElements getActionableItemOptionAccess() {
 		return (pActionableItemOption != null) ? pActionableItemOption : (pActionableItemOption = new ActionableItemOptionElements());
 	}
@@ -2792,10 +3041,20 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 	//// Old grammar and code will ignore; New code needs to process string and resolve to new
 	//// value.  After release, instance sheets can be updated and remove the " because NewOption
 	//// will be a supported value.
+	//COMPOSITE_OPTION_NAME:
+	//	STRING;
+	public COMPOSITE_OPTION_NAMEElements getCOMPOSITE_OPTION_NAMEAccess() {
+		return (pCOMPOSITE_OPTION_NAME != null) ? pCOMPOSITE_OPTION_NAME : (pCOMPOSITE_OPTION_NAME = new COMPOSITE_OPTION_NAMEElements());
+	}
+	
+	public ParserRule getCOMPOSITE_OPTION_NAMERule() {
+		return getCOMPOSITE_OPTION_NAMEAccess().getRule();
+	}
+
 	//// STRING is for future expansion; Composite has no options, provide this block so some
 	//// can be added later
 	//CompositeOption:
-	//	"None" | STRING;
+	//	"None" | COMPOSITE_OPTION_NAME;
 	public CompositeOptionElements getCompositeOptionAccess() {
 		return (pCompositeOption != null) ? pCompositeOption : (pCompositeOption = new CompositeOptionElements());
 	}
@@ -2804,10 +3063,20 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 		return getCompositeOptionAccess().getRule();
 	}
 
+	//TRANSITION_OPTION_NAME:
+	//	STRING;
+	public TRANSITION_OPTION_NAMEElements getTRANSITION_OPTION_NAMEAccess() {
+		return (pTRANSITION_OPTION_NAME != null) ? pTRANSITION_OPTION_NAME : (pTRANSITION_OPTION_NAME = new TRANSITION_OPTION_NAMEElements());
+	}
+	
+	public ParserRule getTRANSITION_OPTION_NAMERule() {
+		return getTRANSITION_OPTION_NAMEAccess().getRule();
+	}
+
 	//// STRING is for future expansion
 	//// WARNING: Any new TransitionOption need to be added to AtsDslProposalProvider for content assist
 	//TransitionOption:
-	//	"AsDefault" | "OverrideAttributeValidation" | STRING;
+	//	"AsDefault" | "OverrideAttributeValidation" | TRANSITION_OPTION_NAME;
 	public TransitionOptionElements getTransitionOptionAccess() {
 		return (pTransitionOption != null) ? pTransitionOption : (pTransitionOption = new TransitionOptionElements());
 	}
@@ -2816,19 +3085,39 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 		return getTransitionOptionAccess().getRule();
 	}
 
+	//RULE_NAME:
+	//	STRING;
+	public RULE_NAMEElements getRULE_NAMEAccess() {
+		return (pRULE_NAME != null) ? pRULE_NAME : (pRULE_NAME = new RULE_NAMEElements());
+	}
+	
+	public ParserRule getRULE_NAMERule() {
+		return getRULE_NAMEAccess().getRule();
+	}
+
 	//// STRING is for future expansion
 	//// WARNING: Any new rules need to be added to AtsDslProposalProvider for content assist
 	//Rule:
 	//	"RequireStateHourSpentPrompt" | "AddDecisionValidateBlockingReview" | "AddDecisionValidateNonBlockingReview" |
 	//	"AllowTransitionWithWorkingBranch" | "ForceAssigneesToTeamLeads" | "RequireTargetedVersion" |
 	//	"AllowPriviledgedEditToTeamMember" | "AllowPriviledgedEditToTeamMemberAndOriginator" | "AllowPriviledgedEditToAll" |
-	//	"AllowEditToAll" | "AllowAssigneeToAll" | STRING;
+	//	"AllowEditToAll" | "AllowAssigneeToAll" | RULE_NAME;
 	public RuleElements getRuleAccess() {
 		return (pRule != null) ? pRule : (pRule = new RuleElements());
 	}
 	
 	public ParserRule getRuleRule() {
 		return getRuleAccess().getRule();
+	}
+
+	//WIDGET_OPTION_NAME:
+	//	STRING;
+	public WIDGET_OPTION_NAMEElements getWIDGET_OPTION_NAMEAccess() {
+		return (pWIDGET_OPTION_NAME != null) ? pWIDGET_OPTION_NAME : (pWIDGET_OPTION_NAME = new WIDGET_OPTION_NAMEElements());
+	}
+	
+	public ParserRule getWIDGET_OPTION_NAMERule() {
+		return getWIDGET_OPTION_NAMEAccess().getRule();
 	}
 
 	//// STRING is for future expansion
@@ -2838,7 +3127,7 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 	//	| "ENABLED" | "NOT_ENABLED" | "EDITABLE" | "NOT_EDITABLE" | "MULTI_SELECT" | "HORIZONTAL_LABEL" | "VERTICAL_LABEL" |
 	//	"LABEL_AFTER" | "LABEL_BEFORE" | "NO_LABEL" | "SORTED" | "ADD_DEFAULT_VALUE" | "NO_DEFAULT_VALUE" |
 	//	"BEGIN_COMPOSITE_4" | "BEGIN_COMPOSITE_6" | "BEGIN_COMPOSITE_8" | "BEGIN_COMPOSITE_10" | "END_COMPOSITE" | "FILL_NONE"
-	//	| "FILL_HORIZONTALLY" | "FILL_VERTICALLY" | "ALIGN_LEFT" | "ALIGN_RIGHT" | "ALIGN_CENTER" | STRING;
+	//	| "FILL_HORIZONTALLY" | "FILL_VERTICALLY" | "ALIGN_LEFT" | "ALIGN_RIGHT" | "ALIGN_CENTER" | WIDGET_OPTION_NAME;
 	public WidgetOptionElements getWidgetOptionAccess() {
 		return (pWidgetOption != null) ? pWidgetOption : (pWidgetOption = new WidgetOptionElements());
 	}
@@ -2847,10 +3136,20 @@ public class AtsDslGrammarAccess extends AbstractGrammarElementFinder {
 		return getWidgetOptionAccess().getRule();
 	}
 
+	//PAGE_TYPE_NAME:
+	//	STRING;
+	public PAGE_TYPE_NAMEElements getPAGE_TYPE_NAMEAccess() {
+		return (pPAGE_TYPE_NAME != null) ? pPAGE_TYPE_NAME : (pPAGE_TYPE_NAME = new PAGE_TYPE_NAMEElements());
+	}
+	
+	public ParserRule getPAGE_TYPE_NAMERule() {
+		return getPAGE_TYPE_NAMEAccess().getRule();
+	}
+
 	//// STRING is for future expansion
 	//// WARNING: Any new PageType need to be added to AtsDslProposalProvider for content assist
 	//PageType:
-	//	"Working" | "Completed" | "Cancelled" | STRING;
+	//	"Working" | "Completed" | "Cancelled" | PAGE_TYPE_NAME;
 	public PageTypeElements getPageTypeAccess() {
 		return (pPageType != null) ? pPageType : (pPageType = new PageTypeElements());
 	}

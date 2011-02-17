@@ -74,7 +74,7 @@ public class ConvertAtsDslToWorkDefinition {
       if (atsDsl.getWorkDef() == null) {
          return null;
       }
-      WorkDefinition workDef = new WorkDefinition(unQuote(atsDsl.getWorkDef().getName()));
+      WorkDefinition workDef = new WorkDefinition(Strings.unquote(atsDsl.getWorkDef().getName()));
       for (String id : atsDsl.getWorkDef().getId()) {
          workDef.getIds().add(id);
       }
@@ -266,10 +266,6 @@ public class ConvertAtsDslToWorkDefinition {
 
    }
 
-   public String unQuote(String name) {
-      return name.replaceFirst("^\"", "").replaceFirst("\"$", "");
-   }
-
    private PeerReviewDefinition convertDslPeerReview(PeerReviewDef dslRevDef) {
       PeerReviewDefinition revDef = new PeerReviewDefinition(dslRevDef.getName());
       revDef.setReviewTitle(dslRevDef.getTitle());
@@ -305,7 +301,7 @@ public class ConvertAtsDslToWorkDefinition {
       for (UserRef UserRef : UserRefs) {
          if (UserRef instanceof UserByName) {
             UserByName byName = (UserByName) UserRef;
-            String name = byName.getName();
+            String name = Strings.unquote(byName.getUserName());
             if (!Strings.isValid(name)) {
                OseeLog.log(AtsPlugin.class, Level.WARNING, String.format("Unhandled UserByName name [%s]", name));
                continue;

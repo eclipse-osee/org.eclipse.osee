@@ -9,10 +9,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Arrays;
 import java.util.logging.Level;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.emf.common.util.WrappedException;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
@@ -20,7 +17,6 @@ import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.workdef.StateDefinition;
 import org.eclipse.osee.ats.workdef.WorkDefinition;
 import org.eclipse.osee.ats.workdef.WorkDefinitionSheet;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
@@ -132,9 +128,7 @@ public class AtsWorkDefinitionProvider {
       try {
          StringOutputStream writer = new StringOutputStream();
          ModelUtil.saveModel(atsDsl, "ats:/mock" + Lib.getDateTimeString() + ".ats", writer, false);
-         String contents = writer.toString();
-         contents = cleanupContents(atsDsl, workDef, contents);
-         return contents;
+         return writer.toString();
       } catch (Exception ex) {
          throw new OseeWrappedException(ex);
       }
@@ -225,9 +219,6 @@ public class AtsWorkDefinitionProvider {
          FileOutputStream outputStream = new FileOutputStream(file);
          ModelUtil.saveModel(atsDsl, "ats:/ats_fileanme" + Lib.getDateTimeString() + ".ats", outputStream, false);
          String contents = Lib.fileToString(file);
-
-         contents = cleanupContents(atsDsl, workDef, contents);
-
          Lib.writeStringToFile(contents, file);
          IFile iFile = OseeData.getIFile(filename);
          AWorkspace.openEditor(iFile);
@@ -254,90 +245,6 @@ public class AtsWorkDefinitionProvider {
       } catch (Exception ex) {
          throw new OseeWrappedException(ex);
       }
-   }
-
-   private String cleanupContents(AtsDsl atsDsl, WorkDefinition workDef, String contents) {
-
-      String copyOfContents = new String(contents);
-
-      for (String name : Arrays.asList("workDefinition", "widgetDefinition", "state")) {
-         Matcher m = Pattern.compile(name + " (.*) \\{").matcher(copyOfContents);
-         while (m.find()) {
-            String srchStr = name + " " + m.group(1) + " \\{";
-            String replStr = name + " \"" + m.group(1) + "\" {";
-            contents = contents.replaceAll(srchStr, replStr);
-         }
-      }
-
-      // Fix lines with "<keyword> this and that $"
-      for (String name : Arrays.asList("widget", "startState", "relatedToState")) {
-         Matcher m = Pattern.compile(name + " (.*) *$", Pattern.MULTILINE).matcher(copyOfContents);
-         while (m.find()) {
-            String srchStr = name + " " + m.group(1);
-            String replStr = name + " \"" + m.group(1) + "\"";
-            contents = contents.replaceAll(srchStr, replStr);
-         }
-      }
-
-      Matcher m = Pattern.compile("widget Decision Review Options$", Pattern.MULTILINE).matcher(contents);
-      contents = m.replaceAll("widget \"Decision Review Options\"");
-
-      if (workDef != null) {
-         for (StateDefinition stateDef : workDef.getStates()) {
-            String srchStr = "to " + stateDef.getName();
-            String replStr = "to \"" + stateDef.getName() + "\"";
-            contents = contents.replaceAll(srchStr, replStr);
-         }
-      }
-
-      m = Pattern.compile("      option NONE\\s", Pattern.MULTILINE).matcher(contents);
-      contents = m.replaceAll("");
-
-      m = Pattern.compile("      option EDITABLE\\s", Pattern.MULTILINE).matcher(contents);
-      contents = m.replaceAll("");
-
-      m = Pattern.compile("      height 9999\\s", Pattern.MULTILINE).matcher(contents);
-      contents = m.replaceAll("");
-
-      m = Pattern.compile("      option ALIGN_LEFT\\s", Pattern.MULTILINE).matcher(contents);
-      contents = m.replaceAll("");
-
-      m = Pattern.compile("      defaultValue \"\"\\s", Pattern.MULTILINE).matcher(contents);
-      contents = m.replaceAll("");
-
-      m = Pattern.compile("      attributeName \"ats.Working Branch\"\\s", Pattern.MULTILINE).matcher(contents);
-      contents = m.replaceAll("");
-
-      m =
-         Pattern.compile("      attributeName \"ats.Validate Requirement Changes\"\\s", Pattern.MULTILINE).matcher(
-            contents);
-      contents = m.replaceAll("");
-
-      m = Pattern.compile("      attributeName \"ats.Commit Manager\"\\s", Pattern.MULTILINE).matcher(contents);
-      contents = m.replaceAll("");
-
-      m =
-         Pattern.compile("      attributeName \"ats.OperationalImpact.required\"\\s", Pattern.MULTILINE).matcher(
-            contents);
-      contents = m.replaceAll("");
-
-      m =
-         Pattern.compile("      attributeName \"ats.OperationalImpactWithWorkaround.required\"\\s", Pattern.MULTILINE).matcher(
-            contents);
-      contents = m.replaceAll("");
-
-      m =
-         Pattern.compile("      attributeName \"ats.Show CDB Differences Report\"\\s", Pattern.MULTILINE).matcher(
-            contents);
-      contents = m.replaceAll("");
-
-      m = Pattern.compile("      attributeName \"ats.Check Signals Via CDB\"\\s", Pattern.MULTILINE).matcher(contents);
-      contents = m.replaceAll("");
-
-      m = Pattern.compile("      attributeName \"ats.Create Code/Test Tasks\"\\s", Pattern.MULTILINE).matcher(contents);
-      contents = m.replaceAll("");
-
-      return contents;
    }
 
 }

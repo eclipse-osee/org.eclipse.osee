@@ -14,6 +14,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
 import org.eclipse.osee.ats.dsl.atsDsl.AttrWidget;
+import org.eclipse.osee.ats.dsl.atsDsl.BooleanDef;
 import org.eclipse.osee.ats.dsl.atsDsl.Composite;
 import org.eclipse.osee.ats.dsl.atsDsl.DecisionReviewDef;
 import org.eclipse.osee.ats.dsl.atsDsl.DecisionReviewOpt;
@@ -67,7 +68,7 @@ public class ConvertWorkDefinitionToAtsDsl {
 
       // Process work definition
       dslWorkDef = AtsDslFactoryImpl.init().createWorkDef();
-      dslWorkDef.setName(definitionName);
+      dslWorkDef.setName(Strings.quote(definitionName));
       dslWorkDef.getId().add(definitionName);
       if (!workDef.getWorkDataKeyValueMap().isEmpty()) {
          resultData.logError("Unhandled Key/Value for WorkDefinition");
@@ -80,7 +81,7 @@ public class ConvertWorkDefinitionToAtsDsl {
       for (StateDefinition stateDef : workDef.getStates()) {
          StateDef dslState = AtsDslFactoryImpl.init().createStateDef();
          dslWorkDef.getStates().add(dslState);
-         dslState.setName(stateDef.getName());
+         dslState.setName(Strings.quote(stateDef.getName()));
          nameToDslStateDefMap.put(stateDef.getName(), dslState);
          if (Strings.isValid(stateDef.getDescription())) {
             dslState.setDescription(stateDef.getDescription());
@@ -185,6 +186,14 @@ public class ConvertWorkDefinitionToAtsDsl {
       StateDef dslStateDef = nameToDslStateDefMap.get(revDef.getRelatedToState());
       dslRevDef.setRelatedToState(dslStateDef);
       dslRevDef.setTitle(revDef.getTitle());
+      for (String userId : revDef.getAssignees()) {
+         UserByUserId dslUserId = AtsDslFactoryImpl.init().createUserByUserId();
+         dslUserId.setUserId(userId);
+         dslRevDef.getAssigneeRefs().add(dslUserId);
+      }
+      if (revDef.isAutoTransitionToDecision()) {
+         dslRevDef.setAutoTransitionToDecision(BooleanDef.TRUE);
+      }
       for (DecisionReviewOption revOpt : revDef.getOptions()) {
          DecisionReviewOpt dslRevOpt = AtsDslFactoryImpl.init().createDecisionReviewOpt();
          dslRevDef.getOptions().add(dslRevOpt);
@@ -198,7 +207,7 @@ public class ConvertWorkDefinitionToAtsDsl {
             }
             for (String userName : revOpt.getUserNames()) {
                UserByName assigneeByName = AtsDslFactoryImpl.init().createUserByName();
-               assigneeByName.setName(userName);
+               assigneeByName.setUserName(userName);
                dslFollowupRef.getAssigneeRefs().add(assigneeByName);
             }
             dslRevOpt.setFollowup(dslFollowupRef);
@@ -217,6 +226,11 @@ public class ConvertWorkDefinitionToAtsDsl {
       }
       if (Strings.isValid(revDef.getTitle())) {
          peerRevDef.setTitle(revDef.getTitle());
+      }
+      for (String userId : revDef.getAssignees()) {
+         UserByUserId dslUserId = AtsDslFactoryImpl.init().createUserByUserId();
+         dslUserId.setUserId(userId);
+         peerRevDef.getAssigneeRefs().add(dslUserId);
       }
       peerRevDef.setStateEvent(WorkflowEventType.getByName(revDef.getStateEventType().name()));
       StateDef dslStateDef = nameToDslStateDefMap.get(revDef.getRelatedToState());
@@ -282,7 +296,7 @@ public class ConvertWorkDefinitionToAtsDsl {
          dslWidget = idToDslWidgetDefMap.get(widgetDef.getName());
       } else {
          dslWidget = AtsDslFactoryImpl.init().createWidgetDef();
-         dslWidget.setName(widgetDef.getName());
+         dslWidget.setName(Strings.quote(widgetDef.getName()));
          dslWidget.setDefaultValue(widgetDef.getDefaultValue());
          dslWidget.setDescription(widgetDef.getDescription());
          if (!widgetDef.getWorkDataKeyValueMap().isEmpty()) {

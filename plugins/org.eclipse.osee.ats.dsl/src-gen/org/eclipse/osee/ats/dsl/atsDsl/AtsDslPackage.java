@@ -1225,13 +1225,13 @@ public interface AtsDslPackage extends EPackage
   int USER_BY_NAME = 18;
 
   /**
-   * The feature id for the '<em><b>Name</b></em>' attribute.
+   * The feature id for the '<em><b>User Name</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int USER_BY_NAME__NAME = USER_REF_FEATURE_COUNT + 0;
+  int USER_BY_NAME__USER_NAME = USER_REF_FEATURE_COUNT + 0;
 
   /**
    * The number of structural features of the '<em>User By Name</em>' class.
@@ -2590,15 +2590,15 @@ public interface AtsDslPackage extends EPackage
   EClass getUserByName();
 
   /**
-   * Returns the meta object for the attribute '{@link org.eclipse.osee.ats.dsl.atsDsl.UserByName#getName <em>Name</em>}'.
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.ats.dsl.atsDsl.UserByName#getUserName <em>User Name</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Name</em>'.
-   * @see org.eclipse.osee.ats.dsl.atsDsl.UserByName#getName()
+   * @return the meta object for the attribute '<em>User Name</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.UserByName#getUserName()
    * @see #getUserByName()
    * @generated
    */
-  EAttribute getUserByName_Name();
+  EAttribute getUserByName_UserName();
 
   /**
    * Returns the meta object for class '{@link org.eclipse.osee.ats.dsl.atsDsl.ToState <em>To State</em>}'.
@@ -3685,12 +3685,12 @@ public interface AtsDslPackage extends EPackage
     EClass USER_BY_NAME = eINSTANCE.getUserByName();
 
     /**
-     * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
+     * The meta object literal for the '<em><b>User Name</b></em>' attribute feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute USER_BY_NAME__NAME = eINSTANCE.getUserByName_Name();
+    EAttribute USER_BY_NAME__USER_NAME = eINSTANCE.getUserByName_UserName();
 
     /**
      * The meta object literal for the '{@link org.eclipse.osee.ats.dsl.atsDsl.impl.ToStateImpl <em>To State</em>}' class.

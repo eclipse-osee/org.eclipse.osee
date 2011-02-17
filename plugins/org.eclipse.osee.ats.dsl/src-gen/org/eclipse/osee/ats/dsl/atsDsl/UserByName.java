@@ -15,7 +15,7 @@ package org.eclipse.osee.ats.dsl.atsDsl;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.UserByName#getName <em>Name</em>}</li>
+ *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.UserByName#getUserName <em>User Name</em>}</li>
  * </ul>
  * </p>
  *
@@ -26,29 +26,29 @@ package org.eclipse.osee.ats.dsl.atsDsl;
 public interface UserByName extends UserRef
 {
   /**
-   * Returns the value of the '<em><b>Name</b></em>' attribute.
+   * Returns the value of the '<em><b>User Name</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Name</em>' attribute isn't clear,
+   * If the meaning of the '<em>User Name</em>' attribute isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Name</em>' attribute.
-   * @see #setName(String)
-   * @see org.eclipse.osee.ats.dsl.atsDsl.AtsDslPackage#getUserByName_Name()
+   * @return the value of the '<em>User Name</em>' attribute.
+   * @see #setUserName(String)
+   * @see org.eclipse.osee.ats.dsl.atsDsl.AtsDslPackage#getUserByName_UserName()
    * @model
    * @generated
    */
-  String getName();
+  String getUserName();
 
   /**
-   * Sets the value of the '{@link org.eclipse.osee.ats.dsl.atsDsl.UserByName#getName <em>Name</em>}' attribute.
+   * Sets the value of the '{@link org.eclipse.osee.ats.dsl.atsDsl.UserByName#getUserName <em>User Name</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Name</em>' attribute.
-   * @see #getName()
+   * @param value the new value of the '<em>User Name</em>' attribute.
+   * @see #getUserName()
    * @generated
    */
-  void setName(String value);
+  void setUserName(String value);
 
 } // UserByName

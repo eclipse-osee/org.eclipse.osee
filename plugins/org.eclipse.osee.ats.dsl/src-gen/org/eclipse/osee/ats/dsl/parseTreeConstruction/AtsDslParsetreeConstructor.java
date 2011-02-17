@@ -476,16 +476,17 @@ protected class AtsDsl_ActionableItemDefAssignment_3_1 extends AssignmentToken  
 /************ end Rule AtsDsl ****************/
 
 
+
 /************ begin Rule UserDef ****************
  *
  * UserDef:
- * 	name=STRING userDefOption+=UserDefOption* ("{" ("active" active=BooleanDef)? ("userId" userId=STRING)? ("email"
- * 	email=STRING)? ("isAdmin" admin=BooleanDef)? "}")?;
+ * 	name=USER_DEF_REFERENCE userDefOption+=UserDefOption* ("{" ("active" active=BooleanDef)? ("userId" userId=STRING)?
+ * 	("email" email=STRING)? ("isAdmin" admin=BooleanDef)? "}")?;
  *
  **/
 
-// name=STRING userDefOption+=UserDefOption* ("{" ("active" active=BooleanDef)? ("userId" userId=STRING)? ("email"
-// email=STRING)? ("isAdmin" admin=BooleanDef)? "}")?
+// name=USER_DEF_REFERENCE userDefOption+=UserDefOption* ("{" ("active" active=BooleanDef)? ("userId" userId=STRING)?
+// ("email" email=STRING)? ("isAdmin" admin=BooleanDef)? "}")?
 protected class UserDef_Group extends GroupToken {
 	
 	public UserDef_Group(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
@@ -516,7 +517,7 @@ protected class UserDef_Group extends GroupToken {
 
 }
 
-// name=STRING
+// name=USER_DEF_REFERENCE
 protected class UserDef_NameAssignment_0 extends AssignmentToken  {
 	
 	public UserDef_NameAssignment_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
@@ -539,9 +540,9 @@ protected class UserDef_NameAssignment_0 extends AssignmentToken  {
 	public IEObjectConsumer tryConsume() {
 		if((value = eObjectConsumer.getConsumable("name",true)) == null) return null;
 		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("name");
-		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getUserDefAccess().getNameSTRINGTerminalRuleCall_0_0(), value, null)) {
-			type = AssignmentType.TERMINAL_RULE_CALL;
-			element = grammarAccess.getUserDefAccess().getNameSTRINGTerminalRuleCall_0_0();
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getUserDefAccess().getNameUSER_DEF_REFERENCEParserRuleCall_0_0(), value, null)) {
+			type = AssignmentType.DATATYPE_RULE_CALL;
+			element = grammarAccess.getUserDefAccess().getNameUSER_DEF_REFERENCEParserRuleCall_0_0();
 			return obj;
 		}
 		return null;
@@ -981,20 +982,21 @@ protected class UserDef_RightCurlyBracketKeyword_2_5 extends KeywordToken  {
 /************ end Rule UserDef ****************/
 
 
+
 /************ begin Rule TeamDef ****************
  *
  * TeamDef:
- * 	name=STRING teamDefOption+=TeamDefOption* "{" ("active" active=BooleanDef)? ("usesVersions" usesVersions=BooleanDef)?
- * 	("staticId" staticId+=STRING)* ("lead" lead+=UserRef)* ("member" member+=UserRef)* ("priviledged"
- * 	priviledged+=UserRef)* ("workDefinition" workDefinition=STRING)? ("version" version+=VersionDef)* ("children" "{"
- * 	("teamDefinition" children+=TeamDef)+ "}")? "}";
+ * 	name=TEAM_DEF_REFERENCE teamDefOption+=TeamDefOption* "{" ("active" active=BooleanDef)? ("usesVersions"
+ * 	usesVersions=BooleanDef)? ("staticId" staticId+=STRING)* ("lead" lead+=UserRef)* ("member" member+=UserRef)*
+ * 	("priviledged" priviledged+=UserRef)* ("workDefinition" workDefinition=STRING)? ("version" version+=VersionDef)*
+ * 	("children" "{" ("teamDefinition" children+=TeamDef)+ "}")? "}";
  *
  **/
 
-// name=STRING teamDefOption+=TeamDefOption* "{" ("active" active=BooleanDef)? ("usesVersions" usesVersions=BooleanDef)?
-// ("staticId" staticId+=STRING)* ("lead" lead+=UserRef)* ("member" member+=UserRef)* ("priviledged"
-// priviledged+=UserRef)* ("workDefinition" workDefinition=STRING)? ("version" version+=VersionDef)* ("children" "{"
-// ("teamDefinition" children+=TeamDef)+ "}")? "}"
+// name=TEAM_DEF_REFERENCE teamDefOption+=TeamDefOption* "{" ("active" active=BooleanDef)? ("usesVersions"
+// usesVersions=BooleanDef)? ("staticId" staticId+=STRING)* ("lead" lead+=UserRef)* ("member" member+=UserRef)*
+// ("priviledged" priviledged+=UserRef)* ("workDefinition" workDefinition=STRING)? ("version" version+=VersionDef)*
+// ("children" "{" ("teamDefinition" children+=TeamDef)+ "}")? "}"
 protected class TeamDef_Group extends GroupToken {
 	
 	public TeamDef_Group(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
@@ -1023,7 +1025,7 @@ protected class TeamDef_Group extends GroupToken {
 
 }
 
-// name=STRING
+// name=TEAM_DEF_REFERENCE
 protected class TeamDef_NameAssignment_0 extends AssignmentToken  {
 	
 	public TeamDef_NameAssignment_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
@@ -1046,9 +1048,9 @@ protected class TeamDef_NameAssignment_0 extends AssignmentToken  {
 	public IEObjectConsumer tryConsume() {
 		if((value = eObjectConsumer.getConsumable("name",true)) == null) return null;
 		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("name");
-		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getTeamDefAccess().getNameSTRINGTerminalRuleCall_0_0(), value, null)) {
-			type = AssignmentType.TERMINAL_RULE_CALL;
-			element = grammarAccess.getTeamDefAccess().getNameSTRINGTerminalRuleCall_0_0();
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getTeamDefAccess().getNameTEAM_DEF_REFERENCEParserRuleCall_0_0(), value, null)) {
+			type = AssignmentType.DATATYPE_RULE_CALL;
+			element = grammarAccess.getTeamDefAccess().getNameTEAM_DEF_REFERENCEParserRuleCall_0_0();
 			return obj;
 		}
 		return null;
@@ -2051,18 +2053,19 @@ protected class TeamDef_RightCurlyBracketKeyword_12 extends KeywordToken  {
 /************ end Rule TeamDef ****************/
 
 
+
 /************ begin Rule ActionableItemDef ****************
  *
  * ActionableItemDef:
- * 	name=STRING aiDefOption+=ActionableItemOption* ("{" ("active" active=BooleanDef)? ("actionable"
+ * 	name=AI_DEF_REFERENCE aiDefOption+=ActionableItemOption* ("{" ("active" active=BooleanDef)? ("actionable"
  * 	actionable=BooleanDef)? ("lead" lead+=UserRef)* ("staticId" staticId+=STRING)* ("team" teamDef=STRING)? ("children"
  * 	"{" ("actionableItem" children+=ActionableItemDef)+ "}")? "}")?;
  *
  **/
 
-// name=STRING aiDefOption+=ActionableItemOption* ("{" ("active" active=BooleanDef)? ("actionable" actionable=BooleanDef)?
-// ("lead" lead+=UserRef)* ("staticId" staticId+=STRING)* ("team" teamDef=STRING)? ("children" "{" ("actionableItem"
-// children+=ActionableItemDef)+ "}")? "}")?
+// name=AI_DEF_REFERENCE aiDefOption+=ActionableItemOption* ("{" ("active" active=BooleanDef)? ("actionable"
+// actionable=BooleanDef)? ("lead" lead+=UserRef)* ("staticId" staticId+=STRING)* ("team" teamDef=STRING)? ("children" "{"
+// ("actionableItem" children+=ActionableItemDef)+ "}")? "}")?
 protected class ActionableItemDef_Group extends GroupToken {
 	
 	public ActionableItemDef_Group(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
@@ -2093,7 +2096,7 @@ protected class ActionableItemDef_Group extends GroupToken {
 
 }
 
-// name=STRING
+// name=AI_DEF_REFERENCE
 protected class ActionableItemDef_NameAssignment_0 extends AssignmentToken  {
 	
 	public ActionableItemDef_NameAssignment_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
@@ -2116,9 +2119,9 @@ protected class ActionableItemDef_NameAssignment_0 extends AssignmentToken  {
 	public IEObjectConsumer tryConsume() {
 		if((value = eObjectConsumer.getConsumable("name",true)) == null) return null;
 		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("name");
-		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getActionableItemDefAccess().getNameSTRINGTerminalRuleCall_0_0(), value, null)) {
-			type = AssignmentType.TERMINAL_RULE_CALL;
-			element = grammarAccess.getActionableItemDefAccess().getNameSTRINGTerminalRuleCall_0_0();
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getActionableItemDefAccess().getNameAI_DEF_REFERENCEParserRuleCall_0_0(), value, null)) {
+			type = AssignmentType.DATATYPE_RULE_CALL;
+			element = grammarAccess.getActionableItemDefAccess().getNameAI_DEF_REFERENCEParserRuleCall_0_0();
 			return obj;
 		}
 		return null;
@@ -2844,18 +2847,19 @@ protected class ActionableItemDef_RightCurlyBracketKeyword_2_7 extends KeywordTo
 /************ end Rule ActionableItemDef ****************/
 
 
+
 /************ begin Rule VersionDef ****************
  *
  * VersionDef:
- * 	name=STRING "{" ("active" active=BooleanDef)? ("staticId" staticId+=STRING)* ("next" next=BooleanDef)? ("released"
- * 	released=BooleanDef)? ("allowCreateBranch" allowCreateBranch=BooleanDef)? ("allowCommitBranch"
+ * 	name=VERSION_DEF_REFERENCE "{" ("active" active=BooleanDef)? ("staticId" staticId+=STRING)* ("next" next=BooleanDef)?
+ * 	("released" released=BooleanDef)? ("allowCreateBranch" allowCreateBranch=BooleanDef)? ("allowCommitBranch"
  * 	allowCommitBranch=BooleanDef)? ("baslineBranchGuid" baselineBranchGuid=STRING)? ("parallelVersion"
  * 	parallelVersion+=STRING)* "}";
  *
  **/
 
-// name=STRING "{" ("active" active=BooleanDef)? ("staticId" staticId+=STRING)* ("next" next=BooleanDef)? ("released"
-// released=BooleanDef)? ("allowCreateBranch" allowCreateBranch=BooleanDef)? ("allowCommitBranch"
+// name=VERSION_DEF_REFERENCE "{" ("active" active=BooleanDef)? ("staticId" staticId+=STRING)* ("next" next=BooleanDef)?
+// ("released" released=BooleanDef)? ("allowCreateBranch" allowCreateBranch=BooleanDef)? ("allowCommitBranch"
 // allowCommitBranch=BooleanDef)? ("baslineBranchGuid" baselineBranchGuid=STRING)? ("parallelVersion"
 // parallelVersion+=STRING)* "}"
 protected class VersionDef_Group extends GroupToken {
@@ -2886,7 +2890,7 @@ protected class VersionDef_Group extends GroupToken {
 
 }
 
-// name=STRING
+// name=VERSION_DEF_REFERENCE
 protected class VersionDef_NameAssignment_0 extends AssignmentToken  {
 	
 	public VersionDef_NameAssignment_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
@@ -2909,9 +2913,9 @@ protected class VersionDef_NameAssignment_0 extends AssignmentToken  {
 	public IEObjectConsumer tryConsume() {
 		if((value = eObjectConsumer.getConsumable("name",true)) == null) return null;
 		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("name");
-		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getVersionDefAccess().getNameSTRINGTerminalRuleCall_0_0(), value, null)) {
-			type = AssignmentType.TERMINAL_RULE_CALL;
-			element = grammarAccess.getVersionDefAccess().getNameSTRINGTerminalRuleCall_0_0();
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getVersionDefAccess().getNameVERSION_DEF_REFERENCEParserRuleCall_0_0(), value, null)) {
+			type = AssignmentType.DATATYPE_RULE_CALL;
+			element = grammarAccess.getVersionDefAccess().getNameVERSION_DEF_REFERENCEParserRuleCall_0_0();
 			return obj;
 		}
 		return null;
@@ -6498,14 +6502,15 @@ protected class DecisionReviewDef_RightCurlyBracketKeyword_15 extends KeywordTok
 /************ end Rule DecisionReviewDef ****************/
 
 
+
 /************ begin Rule DecisionReviewOpt ****************
  *
  * DecisionReviewOpt:
- * 	"option" name=STRING followup=FollowupRef?;
+ * 	"option" name=DECISION_REVIEW_OPT_REF followup=FollowupRef?;
  *
  **/
 
-// "option" name=STRING followup=FollowupRef?
+// "option" name=DECISION_REVIEW_OPT_REF followup=FollowupRef?
 protected class DecisionReviewOpt_Group extends GroupToken {
 	
 	public DecisionReviewOpt_Group(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
@@ -6556,7 +6561,7 @@ protected class DecisionReviewOpt_OptionKeyword_0 extends KeywordToken  {
 
 }
 
-// name=STRING
+// name=DECISION_REVIEW_OPT_REF
 protected class DecisionReviewOpt_NameAssignment_1 extends AssignmentToken  {
 	
 	public DecisionReviewOpt_NameAssignment_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
@@ -6580,9 +6585,9 @@ protected class DecisionReviewOpt_NameAssignment_1 extends AssignmentToken  {
 	public IEObjectConsumer tryConsume() {
 		if((value = eObjectConsumer.getConsumable("name",true)) == null) return null;
 		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("name");
-		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getDecisionReviewOptAccess().getNameSTRINGTerminalRuleCall_1_0(), value, null)) {
-			type = AssignmentType.TERMINAL_RULE_CALL;
-			element = grammarAccess.getDecisionReviewOptAccess().getNameSTRINGTerminalRuleCall_1_0();
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getDecisionReviewOptAccess().getNameDECISION_REVIEW_OPT_REFParserRuleCall_1_0(), value, null)) {
+			type = AssignmentType.DATATYPE_RULE_CALL;
+			element = grammarAccess.getDecisionReviewOptAccess().getNameDECISION_REVIEW_OPT_REFParserRuleCall_1_0();
 			return obj;
 		}
 		return null;
@@ -7751,11 +7756,11 @@ protected class UserByUserId_UserIdAssignment_1 extends AssignmentToken  {
 /************ begin Rule UserByName ****************
  *
  * UserByName:
- * 	"named" name=STRING;
+ * 	"named" userName=STRING;
  *
  **/
 
-// "named" name=STRING
+// "named" userName=STRING
 protected class UserByName_Group extends GroupToken {
 	
 	public UserByName_Group(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
@@ -7770,7 +7775,7 @@ protected class UserByName_Group extends GroupToken {
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new UserByName_NameAssignment_1(lastRuleCallOrigin, this, 0, inst);
+			case 0: return new UserByName_UserNameAssignment_1(lastRuleCallOrigin, this, 0, inst);
 			default: return null;
 		}	
 	}
@@ -7805,16 +7810,16 @@ protected class UserByName_NamedKeyword_0 extends KeywordToken  {
 
 }
 
-// name=STRING
-protected class UserByName_NameAssignment_1 extends AssignmentToken  {
+// userName=STRING
+protected class UserByName_UserNameAssignment_1 extends AssignmentToken  {
 	
-	public UserByName_NameAssignment_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public UserByName_UserNameAssignment_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
 	public Assignment getGrammarElement() {
-		return grammarAccess.getUserByNameAccess().getNameAssignment_1();
+		return grammarAccess.getUserByNameAccess().getUserNameAssignment_1();
 	}
 
     @Override
@@ -7827,11 +7832,11 @@ protected class UserByName_NameAssignment_1 extends AssignmentToken  {
 
     @Override	
 	public IEObjectConsumer tryConsume() {
-		if((value = eObjectConsumer.getConsumable("name",true)) == null) return null;
-		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("name");
-		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getUserByNameAccess().getNameSTRINGTerminalRuleCall_1_0(), value, null)) {
+		if((value = eObjectConsumer.getConsumable("userName",true)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("userName");
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getUserByNameAccess().getUserNameSTRINGTerminalRuleCall_1_0(), value, null)) {
 			type = AssignmentType.TERMINAL_RULE_CALL;
-			element = grammarAccess.getUserByNameAccess().getNameSTRINGTerminalRuleCall_1_0();
+			element = grammarAccess.getUserByNameAccess().getUserNameSTRINGTerminalRuleCall_1_0();
 			return obj;
 		}
 		return null;
@@ -8785,6 +8790,14 @@ protected class Composite_RightCurlyBracketKeyword_6 extends KeywordToken  {
 
 
 /************ end Rule Composite ****************/
+
+
+
+
+
+
+
+
 
 
 

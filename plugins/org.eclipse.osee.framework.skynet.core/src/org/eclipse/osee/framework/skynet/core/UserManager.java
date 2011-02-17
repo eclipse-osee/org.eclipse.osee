@@ -172,7 +172,7 @@ public final class UserManager {
             return tempUser;
          }
       }
-      throw new UserNotInDatabase("User requested by name \"%s\" was not found.", name);
+      throw new UserNotInDatabase("User requested by name [%s] was not found.", name);
    }
 
    private static User getFromCacheByUserId(String userId) throws OseeCoreException {

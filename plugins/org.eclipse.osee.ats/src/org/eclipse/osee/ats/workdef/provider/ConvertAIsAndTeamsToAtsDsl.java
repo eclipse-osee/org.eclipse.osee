@@ -167,7 +167,7 @@ public class ConvertAIsAndTeamsToAtsDsl {
 
    private UserByName getUserByName(User user) {
       UserByName userByName = AtsDslFactoryImpl.init().createUserByName();
-      userByName.setName(user.getName());
+      userByName.setUserName(user.getName());
       return userByName;
    }
 }

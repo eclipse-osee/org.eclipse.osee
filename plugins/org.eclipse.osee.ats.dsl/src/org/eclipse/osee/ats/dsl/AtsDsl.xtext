@@ -8,8 +8,11 @@ AtsDsl:
 	('teamDefinition' teamDef+=TeamDef)*
 	('actionableItem' actionableItemDef+=ActionableItemDef)*;
 
+USER_DEF_REFERENCE:
+	STRING;
+	
 UserDef:
-	name=STRING (userDefOption+=UserDefOption)*
+	name=USER_DEF_REFERENCE (userDefOption+=UserDefOption)*
 	('{'
 		('active' active=BooleanDef)?
 		('userId' userId=STRING)?
@@ -17,8 +20,11 @@ UserDef:
 		('isAdmin' admin=BooleanDef)?
 	'}')?;
 
+TEAM_DEF_REFERENCE:
+	STRING;
+	
 TeamDef:
-	name=STRING (teamDefOption+=TeamDefOption)*
+	name=TEAM_DEF_REFERENCE (teamDefOption+=TeamDefOption)*
 	'{'
 		('active' active=BooleanDef)?
 		('usesVersions' usesVersions=BooleanDef)?
@@ -34,8 +40,11 @@ TeamDef:
 		 )?
 	'}';
 
+AI_DEF_REFERENCE:
+	STRING;
+
 ActionableItemDef:
-	name=STRING (aiDefOption+=ActionableItemOption)*
+	name=AI_DEF_REFERENCE (aiDefOption+=ActionableItemOption)*
 	('{'
 		('active' active=BooleanDef)?
 		('actionable' actionable=BooleanDef)?
@@ -48,8 +57,11 @@ ActionableItemDef:
 		 )?
 	'}')?;
 
+VERSION_DEF_REFERENCE:
+	STRING;
+
 VersionDef:
-	name=STRING
+	name=VERSION_DEF_REFERENCE
 	'{'
 		('active' active=BooleanDef)?
 		('staticId' staticId+=STRING)*
@@ -119,8 +131,11 @@ DecisionReviewDef:
 	(options+=DecisionReviewOpt)+
 	'}';
 
+DECISION_REVIEW_OPT_REF:
+	STRING;
+	
 DecisionReviewOpt:
-	'option' name=STRING (followup=FollowupRef)?;
+	'option' name=DECISION_REVIEW_OPT_REF (followup=FollowupRef)?;
 
 PeerReviewRef:
 	'peerReview' peerReview=[PeerReviewDef|PEER_REVIEW_NAME_REFERENCE];
@@ -147,7 +162,7 @@ UserByUserId:
 	'userId' userId=STRING;
 
 UserByName:
-	'named' name=STRING;
+	'named' userName=STRING;
 
 enum BooleanDef:
 	None | True | False;
@@ -195,14 +210,23 @@ Composite:
 	('option' options+=CompositeOption)*
 	'}';
 
+USER_DEF_OPTION_NAME:
+	STRING;
+	
 UserDefOption:
-	'GetOrCreate' | STRING;
+	'GetOrCreate' | USER_DEF_OPTION_NAME;
+	
+TEAM_DEF_OPTION_NAME:
+	STRING;
 	
 TeamDefOption:
-	'GetOrCreate' | STRING;
+	'GetOrCreate' | TEAM_DEF_OPTION_NAME;
+	
+AI_DEF_OPTION_NAME:
+	STRING;
 	
 ActionableItemOption:
-	'GetOrCreate' | STRING;
+	'GetOrCreate' | AI_DEF_OPTION_NAME;
 
 // STRING option used below for future expansion of options.  Since sheet will be
 // in databse and read by old code, new value can be entered as "NewOption" with quotes.
@@ -210,16 +234,25 @@ ActionableItemOption:
 // value.  After release, instance sheets can be updated and remove the " because NewOption
 // will be a supported value.
 
+COMPOSITE_OPTION_NAME:
+	STRING;
+	
 // STRING is for future expansion; Composite has no options, provide this block so some
 // can be added later
 CompositeOption:
-	'None' | STRING;
+	'None' | COMPOSITE_OPTION_NAME;
 
+TRANSITION_OPTION_NAME:
+	STRING;
+	
 	// STRING is for future expansion
 // WARNING: Any new TransitionOption need to be added to AtsDslProposalProvider for content assist
 TransitionOption:
-	'AsDefault' | 'OverrideAttributeValidation' | STRING;
+	'AsDefault' | 'OverrideAttributeValidation' | TRANSITION_OPTION_NAME;
 
+RULE_NAME:
+	STRING;
+	
 	// STRING is for future expansion
 // WARNING: Any new rules need to be added to AtsDslProposalProvider for content assist
 Rule:
@@ -234,8 +267,11 @@ Rule:
 	'AllowPriviledgedEditToAll' |
 	'AllowEditToAll' |
 	'AllowAssigneeToAll' |
-	STRING;
+	RULE_NAME;
 
+WIDGET_OPTION_NAME:
+	STRING;
+	
 	// STRING is for future expansion
 // WARNING: Any new WidgetOption need to be added to AtsDslProposalProvider for content assist
 WidgetOption:
@@ -251,11 +287,14 @@ WidgetOption:
 	'BEGIN_COMPOSITE_4' | 'BEGIN_COMPOSITE_6' | 'BEGIN_COMPOSITE_8' | 'BEGIN_COMPOSITE_10' |
 	'END_COMPOSITE' |
 	'FILL_NONE' | 'FILL_HORIZONTALLY' | 'FILL_VERTICALLY' |
-	'ALIGN_LEFT' | 'ALIGN_RIGHT' | 'ALIGN_CENTER' | STRING;
+	'ALIGN_LEFT' | 'ALIGN_RIGHT' | 'ALIGN_CENTER' | WIDGET_OPTION_NAME;
 
+PAGE_TYPE_NAME:
+	STRING;
+	
 	// STRING is for future expansion
 // WARNING: Any new PageType need to be added to AtsDslProposalProvider for content assist
 PageType:
-	'Working' | 'Completed' | 'Cancelled' | STRING;
+	'Working' | 'Completed' | 'Cancelled' | PAGE_TYPE_NAME;
 	
 	
