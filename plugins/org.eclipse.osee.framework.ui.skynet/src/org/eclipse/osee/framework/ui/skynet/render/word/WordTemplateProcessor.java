@@ -12,6 +12,7 @@
 package org.eclipse.osee.framework.ui.skynet.render.word;
 
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.WordTemplateContent;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.PREVIEW;
 import java.io.InputStream;
@@ -24,12 +25,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -39,7 +41,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.plugin.core.util.AIFile;
@@ -130,10 +131,9 @@ public class WordTemplateProcessor {
          slaveTemplate = slaveTemplateArtifact.getSoleAttributeValue(CoreAttributeTypes.WholeWordContent, "");
       }
 
-      IFolder folder = RenderingUtil.ensureRenderFolderExists(PREVIEW);
-      String fileName = String.format("%s_%s.xml", masterTemplateArtifact.getSafeName(), Lib.getDateTimeString());
-      IFile file = folder.getFile(fileName);
-      AIFile.writeToFile(file, applyTemplate(artifacts, masterTemplate, folder, null, null, PREVIEW));
+      IFile file =
+         RenderingUtil.getRenderFile(renderer, COMMON, PREVIEW, "/", masterTemplateArtifact.getSafeName(), ".xml");
+      AIFile.writeToFile(file, applyTemplate(artifacts, masterTemplate, file.getParent(), null, null, PREVIEW));
 
       if (!renderer.getBooleanOption(IRenderer.NO_DISPLAY) && !isDiff) {
          RenderingUtil.ensureFilenameLimit(file);
@@ -149,7 +149,7 @@ public class WordTemplateProcessor {
     * @param folder = null when not using an extension template
     * @param outlineNumber if null will find based on first artifact
     */
-   public InputStream applyTemplate(List<Artifact> artifacts, String template, IFolder folder, String outlineNumber, String outlineType, PresentationType presentationType) throws OseeCoreException {
+   public InputStream applyTemplate(List<Artifact> artifacts, String template, IContainer folder, String outlineNumber, String outlineType, PresentationType presentationType) throws OseeCoreException {
       excludeFolders = renderer.getBooleanOption("Exclude Folders");
       WordMLProducer wordMl = null;
       CharBackedInputStream charBak = null;
@@ -244,7 +244,7 @@ public class WordTemplateProcessor {
       processedArtifacts.clear();
    }
 
-   private void processExtensionTemplate(String elementValue, IFolder folder, WordMLProducer wordMl, PresentationType presentationType, String template) throws OseeCoreException {
+   private void processExtensionTemplate(String elementValue, IContainer folder, WordMLProducer wordMl, PresentationType presentationType, String template) throws OseeCoreException {
       String subdocumentName = null;
       String nextParagraphNumber = null;
       String outlineType = null;
@@ -294,7 +294,8 @@ public class WordTemplateProcessor {
          templateFileDiffer.generateFileDifferences(artifacts, "/results/" + subDocFileName, nextParagraphNumber,
             outlineType, recurseChildren);
       } else {
-         AIFile.writeToFile(folder.getFile(subDocFileName),
+         IFile file = folder.getFile(new Path(subDocFileName));
+         AIFile.writeToFile(file,
             applyTemplate(artifacts, slaveTemplate, folder, nextParagraphNumber, outlineType, presentationType));
       }
       wordMl.createHyperLinkDoc(subDocFileName);
