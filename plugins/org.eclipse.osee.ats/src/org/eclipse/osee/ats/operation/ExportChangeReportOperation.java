@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.operation;
 
+import static org.eclipse.osee.framework.ui.skynet.render.IRenderer.NO_DISPLAY;
+import static org.eclipse.osee.framework.ui.skynet.render.IRenderer.SKIP_DIALOGS;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -33,7 +36,6 @@ import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
-import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 
 /**
@@ -41,6 +43,7 @@ import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
  */
 public class ExportChangeReportOperation extends AbstractOperation {
    private final Collection<TeamWorkFlowArtifact> workflows;
+   private String resultFolder;
 
    public ExportChangeReportOperation(Collection<TeamWorkFlowArtifact> workflows) {
       super("Exporting Change Report(s)", AtsPlugin.PLUGIN_ID);
@@ -53,7 +56,7 @@ public class ExportChangeReportOperation extends AbstractOperation {
          Collection<Change> changes = computeChanges(workflow, monitor);
          if (!changes.isEmpty() && changes.size() < 4000) {
             String legacyPcrId = workflow.getSoleAttributeValueAsString(AtsAttributeTypes.LegacyPcrId, null);
-            generateDiffReport(changes, legacyPcrId, monitor);
+            resultFolder = generateDiffReport(changes, legacyPcrId, monitor);
          }
          monitor.worked(calculateWork(0.50));
       }
@@ -100,8 +103,13 @@ public class ExportChangeReportOperation extends AbstractOperation {
       return TransactionManager.getTransactionId(minTransactionId);
    }
 
-   private void generateDiffReport(Collection<Change> changes, String legacyPcrId, IProgressMonitor monitor) {
+   private String generateDiffReport(Collection<Change> changes, String legacyPcrId, IProgressMonitor monitor) {
       Collection<ArtifactDelta> artifactDeltas = ChangeManager.getCompareArtifacts(changes);
-      RendererManager.diff(artifactDeltas, "/" + legacyPcrId, IRenderer.NO_DISPLAY, true, IRenderer.SKIP_DIALOGS, true);
+      String filePath = RendererManager.diff(artifactDeltas, "/" + legacyPcrId, NO_DISPLAY, true, SKIP_DIALOGS, true);
+      return filePath.substring(0, filePath.lastIndexOf(File.separator));
+   }
+
+   public String getResultFolder() {
+      return resultFolder;
    }
 }

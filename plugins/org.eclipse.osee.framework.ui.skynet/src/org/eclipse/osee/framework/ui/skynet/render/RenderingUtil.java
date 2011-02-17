@@ -162,7 +162,7 @@ public final class RenderingUtil {
       return name.toString();
    }
 
-   public static IFile getRenderFile(IRenderer renderer, String subFolder, String fileName, PresentationType presentationType) throws OseeCoreException {
+   private static IFile getRenderFile(IRenderer renderer, String subFolder, String fileName, PresentationType presentationType) throws OseeCoreException {
       try {
          IFolder baseFolder = ensureRenderFolderExists(presentationType);
          IFolder renderFolder = baseFolder.getFolder(subFolder);
