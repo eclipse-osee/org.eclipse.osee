@@ -12,14 +12,22 @@ package org.eclipse.osee.ats.util.widgets.dialog;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workdef.RuleDefinition;
 import org.eclipse.osee.ats.workdef.StateDefinition;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -67,10 +75,30 @@ public class TaskResolutionOptionRule extends WorkRuleDefinition {
       RuleDefinition ruleDefinition = wids.iterator().next();
       if (ruleDefinition != null) {
          TaskResolutionOptionRule taskResolutionOptionRule = new TaskResolutionOptionRule(null, GUID.create(), null);
-         taskResolutionOptionRule.fromXml(ruleDefinition.getWorkDataValue(ATS_TASK_OPTIONS_TAG));
+         taskResolutionOptionRule.fromXml(getTaskResolutionRuleXml(ruleDefinition));
          return taskResolutionOptionRule;
       }
       return null;
+   }
+
+   public static String getTaskResolutionRuleXml(RuleDefinition ruleDefinition) throws OseeCoreException {
+      // If this rule was converted from WorkRuleDefinition, it will have task options
+      String xml = ruleDefinition.getWorkDataValue(ATS_TASK_OPTIONS_TAG);
+      if (Strings.isValid(xml)) {
+         return xml;
+      }
+      // Else, look for a GeneralData artifact of same name as rule to retrieve options xml string
+      Artifact artifact = null;
+      try {
+         artifact =
+            ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.GeneralData, ruleDefinition.getName(),
+               AtsUtil.getAtsBranch());
+         return artifact.getSoleAttributeValue(CoreAttributeTypes.GeneralStringData, "");
+      } catch (ArtifactDoesNotExist ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex, "GeneralData artifact named [%s] does not exist",
+            ruleDefinition.getName());
+      }
+      return "";
    }
 
    public void setFromDoc(Document doc) throws OseeCoreException {

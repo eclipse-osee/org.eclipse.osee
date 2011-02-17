@@ -109,7 +109,7 @@ public class ConvertAtsDslToWorkDefinition {
 
          // process rules
          for (String ruleName : dslState.getRules()) {
-            stateDef.addRule(new RuleDefinition(ruleName), "Dsl StateDef Rule");
+            stateDef.addRule(new RuleDefinition(Strings.unquote(ruleName)), "Dsl StateDef Rule");
          }
 
       }
