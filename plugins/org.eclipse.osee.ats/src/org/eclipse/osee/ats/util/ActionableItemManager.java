@@ -110,7 +110,7 @@ public class ActionableItemManager {
          if (!teamExists) {
             TeamWorkFlowArtifact teamArt =
                ActionManager.createTeamWorkflow(actionArt, tda, Arrays.asList(aia), tda.getLeads(), transaction,
-                  createdDate, createdBy);
+                  createdDate, createdBy, null);
             teamArt.persist(transaction);
             sb.append(aia.getName() + " => added team workflow \"" + tda.getName() + "\"\n");
          }

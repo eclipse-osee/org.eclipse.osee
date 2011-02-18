@@ -100,7 +100,7 @@ public class DemoTestUtil {
       ActionArtifact actionArt =
          ActionManager.createAction(null, title, "Description", ChangeType.Improvement, "2", false, null,
             ActionableItemArtifact.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName())),
-            new Date(), UserManager.getUser(), transaction);
+            new Date(), UserManager.getUser(), null, transaction);
 
       TeamWorkFlowArtifact teamArt = null;
       for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts()) {
@@ -125,7 +125,7 @@ public class DemoTestUtil {
       Collection<TeamDefinitionArtifact> teamDefs = TeamDefinitionArtifact.getImpactedTeamDefs(actionableItems);
 
       ActionManager.createTeamWorkflow(actionArt, teamDefs.iterator().next(), actionableItems,
-         Arrays.asList(UserManager.getUser()), transaction, new Date(), UserManager.getUser());
+         Arrays.asList(UserManager.getUser()), transaction, new Date(), UserManager.getUser(), null);
 
       TeamWorkFlowArtifact teamArt = null;
       for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts()) {

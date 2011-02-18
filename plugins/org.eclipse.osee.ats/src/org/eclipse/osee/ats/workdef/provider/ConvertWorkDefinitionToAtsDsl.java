@@ -38,6 +38,7 @@ import org.eclipse.osee.ats.workdef.DecisionReviewDefinition;
 import org.eclipse.osee.ats.workdef.DecisionReviewOption;
 import org.eclipse.osee.ats.workdef.PeerReviewDefinition;
 import org.eclipse.osee.ats.workdef.RuleDefinition;
+import org.eclipse.osee.ats.workdef.RuleDefinitionOption;
 import org.eclipse.osee.ats.workdef.StateDefinition;
 import org.eclipse.osee.ats.workdef.StateItem;
 import org.eclipse.osee.ats.workdef.WidgetDefinition;
@@ -97,7 +98,15 @@ public class ConvertWorkDefinitionToAtsDsl {
 
          // Process Work Rules for States
          for (RuleDefinition ruleDef : stateDef.getRules()) {
-            dslState.getRules().add(ruleDef.getName().replaceAll("^ats", ""));
+            String ruleName = ruleDef.getName();
+            ruleName = ruleName.replaceAll("^ats", "");
+            // If not valid option, need to quote
+            try {
+               RuleDefinitionOption.valueOf(ruleName);
+            } catch (IllegalArgumentException ex) {
+               ruleName = Strings.quote(ruleName);
+            }
+            dslState.getRules().add(ruleName);
          }
 
          // Process Widgets

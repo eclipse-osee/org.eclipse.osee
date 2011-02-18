@@ -21,7 +21,6 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -70,15 +69,7 @@ public class NewActionJob extends Job {
          }
          actionArt =
             ActionManager.createAction(monitor, title, desc, changeType, priority, validationRequired, needByDate,
-               actionableItems, new Date(), UserManager.getUser(), transaction);
-         if (newActionListener != null) {
-            newActionListener.actionCreated(actionArt);
-            for (TeamWorkFlowArtifact teamArt : actionArt.getTeamWorkFlowArtifacts()) {
-               newActionListener.teamCreated(teamArt);
-               teamArt.clearCaches();
-               teamArt.persist(transaction);
-            }
-         }
+               actionableItems, new Date(), UserManager.getUser(), newActionListener, transaction);
 
          if (wizard != null) {
             wizard.notifyAtsWizardItemExtensions(actionArt, transaction);

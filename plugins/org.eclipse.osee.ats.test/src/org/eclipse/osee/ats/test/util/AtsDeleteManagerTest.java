@@ -200,7 +200,7 @@ public class AtsDeleteManagerTest {
       User createdBy = UserManager.getUser();
       ActionArtifact actionArt =
          ActionManager.createAction(null, testName.name(), "Description", ChangeType.Improvement, "2", false, null,
-            actionableItems, createdDate, createdBy, transaction);
+            actionableItems, createdDate, createdBy, null, transaction);
 
       TeamWorkFlowArtifact teamArt = null;
       for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts()) {

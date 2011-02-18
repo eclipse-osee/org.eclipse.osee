@@ -132,7 +132,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
          TeamWorkFlowArtifact newTeamArt =
             ActionManager.createTeamWorkflow(teamArt.getParentActionArtifact(), teamArt.getTeamDefinition(),
                teamArt.getActionableItemsDam().getActionableItems(), assignees, transaction, createdDate, createdBy,
-               CreateTeamOption.Duplicate_If_Exists);
+               null, CreateTeamOption.Duplicate_If_Exists);
          if (Strings.isValid(title)) {
             newTeamArt.setName(title);
          }

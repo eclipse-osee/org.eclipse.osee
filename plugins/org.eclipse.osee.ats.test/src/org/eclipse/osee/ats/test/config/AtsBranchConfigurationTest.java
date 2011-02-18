@@ -145,7 +145,7 @@ public class AtsBranchConfigurationTest {
       ActionArtifact actionArt =
          ActionManager.createAction(null, BRANCH_VIA_VERSIONS.getName() + " Req Changes", "description",
             ChangeType.Problem, "1", false, null, selectedActionableItems, new Date(), UserManager.getUser(),
-            transaction);
+            null, transaction);
       actionArt.getTeamWorkFlowArtifacts().iterator().next().addRelation(
          AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, verArtToTarget);
       actionArt.getTeamWorkFlowArtifacts().iterator().next().persist(transaction);
@@ -240,7 +240,7 @@ public class AtsBranchConfigurationTest {
       String actionTitle = BRANCH_VIA_TEAM_DEFINITION.getName() + " Req Changes";
       ActionArtifact actionArt =
          ActionManager.createAction(null, actionTitle, "description", ChangeType.Problem, "1", false, null,
-            selectedActionableItems, new Date(), UserManager.getUser(), transaction);
+            selectedActionableItems, new Date(), UserManager.getUser(), null, transaction);
       transaction.execute();
 
       final TeamWorkFlowArtifact teamWf = actionArt.getTeamWorkFlowArtifacts().iterator().next();

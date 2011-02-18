@@ -155,7 +155,7 @@ public class AtsWorkDefinitionProvider {
       }
    }
 
-   public WorkDefinition loadWorkFlowDefinitionFromFile(WorkDefinitionSheet sheet) {
+   public WorkDefinition loadWorkFlowDefinitionFromFile(WorkDefinitionSheet sheet) throws OseeWrappedException {
       try {
          String modelName = sheet.getFile().getName();
          AtsDsl atsDsl = loadAtsDslFromFile(modelName, sheet);
@@ -165,7 +165,8 @@ public class AtsWorkDefinitionProvider {
          workDef.setDescription(String.format("Loaded WorkDefinitionSheet [%s]", sheet));
          return workDef;
       } catch (Exception ex) {
-         throw new WrappedException(ex);
+         throw new OseeWrappedException(String.format("Error loading AtsDsl [%s] from file [%s]", sheet.getName(),
+            sheet.getFile()), ex);
       }
    }
 
@@ -182,6 +183,8 @@ public class AtsWorkDefinitionProvider {
          return converter.convert();
       } catch (ArtifactDoesNotExist ex) {
          // do nothing
+      } catch (Exception ex) {
+         throw new OseeWrappedException(String.format("Error loading AtsDsl [%s] from Artifact", name), ex);
       }
       return null;
    };

@@ -165,7 +165,7 @@ public class ExcelAtsActionArtifactExtractor {
                actionArt =
                   ActionManager.createAction(null, aData.title, aData.desc, ChangeType.getChangeType(aData.changeType),
                      aData.priorityStr, false, null, ActionableItemArtifact.getActionableItems(aData.actionableItems),
-                     createdDate, createdBy, transaction);
+                     createdDate, createdBy, null, transaction);
                newTeamArts = actionArt.getTeamWorkFlowArtifacts();
                actionNameToAction.put(aData.title, actionArt);
                actionArts.add(actionArt);
@@ -176,7 +176,7 @@ public class ExcelAtsActionArtifactExtractor {
 
                   TeamWorkFlowArtifact teamWorkflow =
                      ActionManager.createTeamWorkflow(actionArt, entry.getKey(), entry.getValue(), aData.assignees,
-                        transaction, createdDate, createdBy, CreateTeamOption.Duplicate_If_Exists);
+                        transaction, createdDate, createdBy, null, CreateTeamOption.Duplicate_If_Exists);
                   teamWorkflow.setSoleAttributeValue(AtsAttributeTypes.Description, aData.desc);
                   if (Strings.isValid(aData.priorityStr) && !aData.priorityStr.equals("<Select>")) {
                      teamWorkflow.setSoleAttributeValue(AtsAttributeTypes.PriorityType, aData.priorityStr);

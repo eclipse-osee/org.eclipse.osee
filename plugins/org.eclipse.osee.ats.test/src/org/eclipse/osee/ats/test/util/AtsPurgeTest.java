@@ -76,7 +76,7 @@ public class AtsPurgeTest {
             org.eclipse.osee.framework.jdk.core.util.Collections.castAll(
                ActionableItemArtifact.class,
                ArtifactQuery.getArtifactListFromTypeAndName(AtsArtifactTypes.ActionableItem, "SAW Test",
-                  AtsUtil.getAtsBranch())), new Date(), UserManager.getUser(), transaction);
+                  AtsUtil.getAtsBranch())), new Date(), UserManager.getUser(), null, transaction);
       actionArt.persist(transaction);
       transaction.execute();
 

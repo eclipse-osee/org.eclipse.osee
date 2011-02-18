@@ -96,7 +96,7 @@ public class CreateGoalTestArtifacts extends XNavigateItemAction {
    private void createAction7(SkynetTransaction transaction, GoalArtifact msaGoal) throws OseeCoreException {
       ActionArtifact action =
          ActionManager.createAction(null, "Add the Improvement", "Description", ChangeType.Improvement, "4", false,
-            null, ActionableItemArtifact.getActionableItems(Arrays.asList("REQ")), createdDate, createdBy, transaction);
+            null, ActionableItemArtifact.getActionableItems(Arrays.asList("REQ")), createdDate, createdBy, null, transaction);
       action.persist(transaction);
       msaGoal.addMember(action);
       msaGoal.persist(transaction);
@@ -107,7 +107,7 @@ public class CreateGoalTestArtifacts extends XNavigateItemAction {
          ActionArtifact action =
             ActionManager.createAction(null, "Fix " + msaTool + " button", "Description", ChangeType.Problem, "4",
                false, null, ActionableItemArtifact.getActionableItems(Arrays.asList(msaTool)), createdDate, createdBy,
-               transaction);
+               null, transaction);
          action.persist(transaction);
          msaGoal.addMember(action.getTeamWorkFlowArtifacts().iterator().next());
          teamArt = action.getTeamWorkFlowArtifacts().iterator().next();
@@ -125,7 +125,7 @@ public class CreateGoalTestArtifacts extends XNavigateItemAction {
       ActionArtifact action =
          ActionManager.createAction(null, "Remove Workflow button", "Description", ChangeType.Problem, "4", false,
             null, ActionableItemArtifact.getActionableItems(Arrays.asList("ATS", "CDB")), createdDate, createdBy,
-            transaction);
+            null, transaction);
       action.persist(transaction);
       atsGoal.addMember(action.getTeamWorkFlowArtifacts().iterator().next());
       cdbGoal.addMember(action.getTeamWorkFlowArtifacts().iterator().next());
@@ -136,7 +136,7 @@ public class CreateGoalTestArtifacts extends XNavigateItemAction {
       ActionArtifact action =
          ActionManager.createAction(null, "Add CDB Check Signals", "Description", ChangeType.Problem, "4", false, null,
             ActionableItemArtifact.getActionableItems(Arrays.asList("OTE_SW", "CDB")), createdDate, createdBy,
-            transaction);
+            null, transaction);
       action.persist(transaction);
       oteGoal.addMember(action.getTeamWorkFlowArtifacts().iterator().next());
       cdbGoal.addMember(action.getTeamWorkFlowArtifacts().iterator().next());
@@ -148,7 +148,7 @@ public class CreateGoalTestArtifacts extends XNavigateItemAction {
    private TeamWorkFlowArtifact createAction1(SkynetTransaction transaction, GoalArtifact oteGoal) throws OseeCoreException {
       ActionArtifact action =
          ActionManager.createAction(null, "Fix this model", "Description", ChangeType.Problem, "2", false, null,
-            ActionableItemArtifact.getActionableItems(Arrays.asList("OTE_SW")), createdDate, createdBy, transaction);
+            ActionableItemArtifact.getActionableItems(Arrays.asList("OTE_SW")), createdDate, createdBy, null, transaction);
       action.persist(transaction);
       oteGoal.addMember(action.getTeamWorkFlowArtifacts().iterator().next());
       TeamWorkFlowArtifact teamArt = action.getTeamWorkFlowArtifacts().iterator().next();

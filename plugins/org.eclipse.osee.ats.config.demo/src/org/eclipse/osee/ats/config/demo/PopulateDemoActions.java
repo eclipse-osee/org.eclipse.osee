@@ -431,7 +431,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
             ActionArtifact actionArt =
                ActionManager.createAction(null, prefixTitle + " " + aData.postFixTitle,
                   TITLE_PREFIX[x] + " " + aData.postFixTitle, CHANGE_TYPE[x], "1", false, null,
-                  aData.getActionableItems(), createdDate, createdBy, transaction);
+                  aData.getActionableItems(), createdDate, createdBy, null, transaction);
             actionArts.add(actionArt);
             for (TeamWorkFlowArtifact teamWf : actionArt.getTeamWorkFlowArtifacts()) {
                TeamWorkflowManager dtwm = new TeamWorkflowManager(teamWf);

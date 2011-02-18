@@ -241,6 +241,12 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       atsBody.setLayoutData(new GridData(GridData.FILL_BOTH));
       atsBody.setLayout(new GridLayout(1, false));
 
+      StateXWidgetPage page = sma.getCurrentAtsWorkPage();
+      if (page == null) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, null,
+            "Can't retrieve current page from current state [%s] of work definition [%s]", sma.getCurrentStateName(),
+            sma.getWorkDefinition().getName());
+      }
       createHeaderSection(sma.getCurrentAtsWorkPage());
       createGoalSection();
       createPageSections();
