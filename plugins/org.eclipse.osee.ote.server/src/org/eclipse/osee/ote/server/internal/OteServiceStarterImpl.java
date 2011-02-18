@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
+
 import org.apache.activemq.broker.BrokerService;
 import org.eclipse.osee.connection.service.IConnectionService;
 import org.eclipse.osee.connection.service.IServiceConnector;
@@ -91,7 +92,7 @@ public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopu
       this.serviceSideConnector = serviceSideConnector;
       brokerService = new BrokerService();
       String addressAsString = getAddress();
-      int port = PortUtil.getInstance().getValidPort();
+      int port = getServerPort();
       String strUri = String.format("tcp://%s:%d", addressAsString, port);
       if (propertyParameter.isLocalConnector()) {
          strUri = "vm://localhost?broker.persistent=false";
@@ -130,6 +131,21 @@ public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopu
          serviceSideConnector.setProperty("OTEEmbeddedBroker", nodeInfo);
       }
       return service;
+   }
+
+   private int getServerPort() throws IOException {
+      String portFromLaunch = System.getProperty("ote.server.broker.uri.port");
+      int port = 0;
+      if (portFromLaunch != null) {
+         try {
+            port = Integer.parseInt(portFromLaunch);
+         } catch (NumberFormatException ex) {
+         }
+      }
+      if (port == 0) {
+         port = PortUtil.getInstance().getValidPort();
+      }
+      return port;
    }
 
    @Override
