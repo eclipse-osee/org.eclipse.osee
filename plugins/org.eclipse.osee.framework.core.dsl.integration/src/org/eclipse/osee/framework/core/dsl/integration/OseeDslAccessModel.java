@@ -66,9 +66,7 @@ public class OseeDslAccessModel implements AccessModel {
       @Override
       public void collect(AccessDetail<?> accessDetail) {
          if (accessDetail != null) {
-            if (!accessDetails.contains(accessDetail)) {
-               accessDetails.add(accessDetail);
-            }
+            accessDetails.add(accessDetail);
          }
       }
    }
