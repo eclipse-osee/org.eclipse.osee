@@ -24,8 +24,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
-import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
@@ -161,11 +161,11 @@ public class RelationManager {
       return ret;
    }
 
-   public static Set<Artifact> getRelatedArtifacts(Collection<? extends Artifact> artifacts, int depth, IRelationEnumeration... relationEnums) throws OseeCoreException {
+   public static Set<Artifact> getRelatedArtifacts(Collection<? extends Artifact> artifacts, int depth, IRelationTypeSide... relationEnums) throws OseeCoreException {
       return getRelatedArtifacts(artifacts, depth, EXCLUDE_DELETED, relationEnums);
    }
 
-   public static Set<Artifact> getRelatedArtifacts(Collection<? extends Artifact> artifacts, int depth, DeletionFlag allowDeleted, IRelationEnumeration... relationEnums) throws OseeCoreException {
+   public static Set<Artifact> getRelatedArtifacts(Collection<? extends Artifact> artifacts, int depth, DeletionFlag allowDeleted, IRelationTypeSide... relationEnums) throws OseeCoreException {
       Set<Artifact> relatedArtifacts = new HashSet<Artifact>(artifacts.size() * 8);
       Collection<Artifact> newArtifactsToSearch = new ArrayList<Artifact>(artifacts);
       Collection<Artifact> newArtifacts = new ArrayList<Artifact>();
@@ -192,7 +192,7 @@ public class RelationManager {
                }
                relatedArtIds.addAll(getRelatedArtifactIds(selectedRelations, RelationSide.SIDE_B, allowDeleted));
             } else {
-               for (IRelationEnumeration relationEnum : relationEnums) {
+               for (IRelationTypeSide relationEnum : relationEnums) {
                   Collection<RelationLink> links = relationCache.getAllByType(artifact, relationEnum);
                   if (links != null) {
                      for (RelationLink rel : links) {
@@ -221,7 +221,7 @@ public class RelationManager {
       return relatedArtifacts;
    }
 
-   public static List<Artifact> getRelatedArtifacts(Artifact artifact, IRelationEnumeration relationEnum, DeletionFlag deletionFlag) throws OseeCoreException {
+   public static List<Artifact> getRelatedArtifacts(Artifact artifact, IRelationTypeSide relationEnum, DeletionFlag deletionFlag) throws OseeCoreException {
       List<Artifact> artifacts = getRelatedArtifacts(artifact, relationEnum, relationEnum.getSide());
       Collection<Integer> artIds = new ArrayList<Integer>();
 
@@ -253,11 +253,11 @@ public class RelationManager {
       return artifacts;
    }
 
-   public static List<Artifact> getRelatedArtifactsUnSorted(Artifact artifact, IRelationEnumeration relationEnum) throws OseeCoreException {
+   public static List<Artifact> getRelatedArtifactsUnSorted(Artifact artifact, IRelationTypeSide relationEnum) throws OseeCoreException {
       return getRelatedArtifactsUnSorted(artifact, relationEnum, relationEnum.getSide());
    }
 
-   public static List<Artifact> getRelatedArtifacts(Artifact artifact, IRelationEnumeration relationEnum) throws OseeCoreException {
+   public static List<Artifact> getRelatedArtifacts(Artifact artifact, IRelationTypeSide relationEnum) throws OseeCoreException {
       return getRelatedArtifacts(artifact, relationEnum, relationEnum.getSide());
    }
 
@@ -277,11 +277,11 @@ public class RelationManager {
       return artifacts.get(0);
    }
 
-   public static Artifact getRelatedArtifact(Artifact artifact, IRelationEnumeration relationEnum) throws OseeCoreException {
+   public static Artifact getRelatedArtifact(Artifact artifact, IRelationTypeSide relationEnum) throws OseeCoreException {
       return getRelatedArtifact(artifact, relationEnum, relationEnum.getSide());
    }
 
-   public static int getRelatedArtifactsCount(Artifact artifact, IRelationEnumeration relationTypeEnum) {
+   public static int getRelatedArtifactsCount(Artifact artifact, IRelationTypeSide relationTypeEnum) {
       return getRelatedArtifactsCount(artifact, relationTypeEnum, relationTypeEnum.getSide());
    }
 

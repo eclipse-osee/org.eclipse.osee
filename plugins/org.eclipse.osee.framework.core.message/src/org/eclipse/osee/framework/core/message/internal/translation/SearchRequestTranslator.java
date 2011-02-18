@@ -14,7 +14,7 @@ import java.util.Collection;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.NamedIdentity;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.message.SearchOptions;
 import org.eclipse.osee.framework.core.message.SearchRequest;
@@ -43,7 +43,7 @@ public class SearchRequestTranslator implements ITranslator<SearchRequest> {
    public SearchRequest convert(PropertyStore store) {
       String guid = store.get(Entry.BRANCH_GUID.name());
       String name = store.get(Entry.BRANCH_NAME.name());
-      IOseeBranch branch = new BranchToken(guid, name);
+      IOseeBranch branch = TokenFactory.createBranch(guid, name);
 
       String rawSearch = store.get(Entry.RAW_SEARCH.name());
       SearchOptions options = new SearchOptions();
@@ -61,7 +61,7 @@ public class SearchRequestTranslator implements ITranslator<SearchRequest> {
          for (int index = 0; index < typeFilterGuids.length; index++) {
             guid = typeFilterGuids[index];
             name = index < typeFilterNames.length ? typeFilterNames[index] : Strings.emptyString();
-            IAttributeType type = new AttributeTypeFilter(guid, name);
+            IAttributeType type = TokenFactory.createAttributeType(guid, name);
             options.addAttributeTypeFilter(type);
          }
       }
@@ -99,11 +99,5 @@ public class SearchRequestTranslator implements ITranslator<SearchRequest> {
          }
       }
       return store;
-   }
-
-   private static final class AttributeTypeFilter extends NamedIdentity implements IAttributeType {
-      public AttributeTypeFilter(String guid, String name) {
-         super(guid, name);
-      }
    }
 }

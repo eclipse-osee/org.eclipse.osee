@@ -26,8 +26,8 @@ import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.define.traceability.data.RequirementData;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
@@ -189,7 +189,7 @@ public class UiToTestBlam extends AbstractBlam {
       return toReturn;
    }
 
-   private void processTrace(Appendable appendable, Artifact requirement, String testType, IRelationEnumeration relationType) throws OseeCoreException {
+   private void processTrace(Appendable appendable, Artifact requirement, String testType, IRelationTypeSide relationType) throws OseeCoreException {
       String uiTitle = requirement.getName();
       String uiType = requirement.getArtifactTypeName();
 
@@ -214,7 +214,7 @@ public class UiToTestBlam extends AbstractBlam {
       }
    }
 
-   private List<String> getTrace(Artifact testUnit, IRelationEnumeration relation) throws OseeCoreException {
+   private List<String> getTrace(Artifact testUnit, IRelationTypeSide relation) throws OseeCoreException {
       List<String> toReturn = new ArrayList<String>();
       for (Artifact item : testUnit.getRelatedArtifacts(relation)) {
          toReturn.add(item.getName());

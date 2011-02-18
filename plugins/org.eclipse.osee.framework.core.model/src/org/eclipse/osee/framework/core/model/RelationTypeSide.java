@@ -12,14 +12,14 @@
 package org.eclipse.osee.framework.core.model;
 
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.NamedIdentity;
-import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 
 /**
  * @author Andrew M. Finkbeiner
  */
-public class RelationTypeSide extends NamedIdentity implements IRelationEnumeration {
+public class RelationTypeSide extends NamedIdentity implements IRelationTypeSide {
 
    private final IRelationType type;
    private final RelationSide side;

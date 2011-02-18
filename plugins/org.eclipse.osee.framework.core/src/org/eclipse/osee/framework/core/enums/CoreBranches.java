@@ -11,16 +11,18 @@
 package org.eclipse.osee.framework.core.enums;
 
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.NamedIdentity;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 
 /**
  * @author Roberto E. Escobar
  */
-public class CoreBranches extends NamedIdentity implements IOseeBranch {
-   public static final CoreBranches COMMON = new CoreBranches("AyH_fDpMERA+zDfML4gA", "Common");
-   public static final CoreBranches SYSTEM_ROOT = new CoreBranches("AyH_fDnM2RFEhyybolQA", "System Root Branch");
+public final class CoreBranches {
 
-   public CoreBranches(String guid, String name) {
-      super(guid, name);
+   public static final IOseeBranch COMMON = TokenFactory.createBranch("AyH_fDpMERA+zDfML4gA", "Common");
+   public static final IOseeBranch SYSTEM_ROOT =
+      TokenFactory.createBranch("AyH_fDnM2RFEhyybolQA", "System Root Branch");
+
+   public CoreBranches() {
+      // Constants
    }
 }

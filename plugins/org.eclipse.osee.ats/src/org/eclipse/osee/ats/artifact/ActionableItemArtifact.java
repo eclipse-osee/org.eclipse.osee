@@ -62,7 +62,7 @@ public class ActionableItemArtifact extends Artifact {
    }
 
    public static ActionableItemArtifact getTopActionableItem() throws OseeCoreException {
-      return (ActionableItemArtifact) AtsArtifactToken.get(AtsArtifactToken.TopActionableItem);
+      return (ActionableItemArtifact) AtsUtil.getFromToken(AtsArtifactToken.TopActionableItem);
    }
 
    public static List<ActionableItemArtifact> getActionableItems() throws OseeCoreException {

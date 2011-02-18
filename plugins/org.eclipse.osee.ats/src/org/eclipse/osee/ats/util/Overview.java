@@ -21,8 +21,8 @@ import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.log.AtsLog;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.AHTML.CellItem;
@@ -209,7 +209,7 @@ public class Overview {
    }
 
    @SuppressWarnings("deprecation")
-   public void addRelationTable(String name, IRelationEnumeration side, Artifact parent) {
+   public void addRelationTable(String name, IRelationTypeSide side, Artifact parent) {
       try {
          List<Artifact> arts = parent.getRelatedArtifacts(side);
          if (arts.isEmpty()) {

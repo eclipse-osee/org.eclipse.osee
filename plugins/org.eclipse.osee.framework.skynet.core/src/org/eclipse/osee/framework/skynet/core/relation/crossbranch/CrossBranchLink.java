@@ -11,8 +11,10 @@
 package org.eclipse.osee.framework.skynet.core.relation.crossbranch;
 
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
+import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.type.RelationType;
@@ -28,7 +30,7 @@ public class CrossBranchLink {
 
    public Artifact artifact;
    public DefaultBasicGuidArtifact guidArt;
-   public IRelationEnumeration relationEnum;
+   public IRelationTypeSide relationEnum;
    public boolean aSide;
    public Attribute<?> matchingAttribute;
 
@@ -42,7 +44,7 @@ public class CrossBranchLink {
       }
    }
 
-   public CrossBranchLink(IRelationEnumeration relationEnum, Artifact artifact) {
+   public CrossBranchLink(IRelationTypeSide relationEnum, Artifact artifact) {
       this.relationEnum = relationEnum;
       this.artifact = artifact;
       this.guidArt = artifact.getBasicGuidArtifact();
@@ -78,7 +80,9 @@ public class CrossBranchLink {
       String relTypeGuid = AXml.getTagData(xmlStr, "relTypeGuid");
       aSide = AXml.getTagBooleanData(xmlStr, "aSide");
       final RelationType relationType = RelationTypeManager.getTypeByGuid(relTypeGuid);
-      relationEnum = new LoadedRelationTypes(relationType, aSide);
+
+      RelationSide side = aSide ? RelationSide.SIDE_A : RelationSide.SIDE_B;
+      relationEnum = TokenFactory.createRelationTypeSide(side, relationType.getGuid(), relationType.getName());
       guidArt = new DefaultBasicGuidArtifact(branchGuid, artTypeGuid, artGuid);
    }
 
@@ -106,7 +110,7 @@ public class CrossBranchLink {
       this.artifact = artifact;
    }
 
-   public IRelationEnumeration getRelationEnum() throws OseeCoreException {
+   public IRelationTypeSide getRelationEnum() throws OseeCoreException {
       if (relationEnum == null) {
          unPack();
       }

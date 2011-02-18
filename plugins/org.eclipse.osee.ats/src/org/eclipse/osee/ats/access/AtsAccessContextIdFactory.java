@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.data.AccessContextId;
-import org.eclipse.osee.framework.core.data.NamedIdentity;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -32,7 +32,7 @@ public final class AtsAccessContextIdFactory {
    public static AccessContextId createContextId(final String guid, final String name) {
       AccessContextId context = guidToIds.get(guid);
       if (context == null) {
-         context = new AtsAccessContextId(guid, name);
+         context = TokenFactory.createAccessContextId(guid, name);
          guidToIds.put(guid, context);
       } else {
          OseeLog.log(
@@ -50,17 +50,5 @@ public final class AtsAccessContextIdFactory {
          context = createContextId(guid, "name unknown");
       }
       return context;
-   }
-
-   private final static class AtsAccessContextId extends NamedIdentity implements AccessContextId {
-
-      protected AtsAccessContextId(final String guid, final String name) {
-         super(guid, name);
-      }
-
-      @Override
-      public String toString() {
-         return String.format("%s - %s", getName(), getGuid());
-      }
    }
 }

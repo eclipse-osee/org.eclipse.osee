@@ -13,8 +13,8 @@ package org.eclipse.osee.framework.skynet.core.relation.crossbranch;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
@@ -33,14 +33,14 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
  */
 public class CrossBranchLinkManager {
 
-   public static void addRelation(Artifact artifact, IRelationEnumeration relationSide, Artifact otherArt) throws OseeCoreException {
+   public static void addRelation(Artifact artifact, IRelationTypeSide relationSide, Artifact otherArt) throws OseeCoreException {
       CrossBranchLink newLink = new CrossBranchLink(relationSide, otherArt);
       if (!getLinks(artifact).contains(newLink)) {
          newLink.store(artifact);
       }
    }
 
-   public static List<Artifact> getRelatedArtifacts(Artifact artifact, IRelationEnumeration relationEnum) throws OseeCoreException {
+   public static List<Artifact> getRelatedArtifacts(Artifact artifact, IRelationTypeSide relationEnum) throws OseeCoreException {
       List<Artifact> artifacts = new ArrayList<Artifact>();
       for (CrossBranchLink link : getLinks(artifact)) {
          if (link.getRelationType().equals(relationEnum) && link.aSide == relationEnum.getSide().isSideA()) {
@@ -50,11 +50,11 @@ public class CrossBranchLinkManager {
       return artifacts;
    }
 
-   public static int getRelatedArtifactCount(Artifact artifact, IRelationEnumeration relationEnum) throws OseeCoreException {
+   public static int getRelatedArtifactCount(Artifact artifact, IRelationTypeSide relationEnum) throws OseeCoreException {
       return getRelatedArtifacts(artifact, relationEnum).size();
    }
 
-   public static void deleteRelation(Artifact artifact, IRelationEnumeration relationSide, Artifact otherArt) throws OseeCoreException {
+   public static void deleteRelation(Artifact artifact, IRelationTypeSide relationSide, Artifact otherArt) throws OseeCoreException {
       CrossBranchLink newLink = new CrossBranchLink(relationSide, otherArt);
       for (CrossBranchLink link : getLinks(artifact)) {
          if (link.equals(newLink)) {
@@ -63,7 +63,7 @@ public class CrossBranchLinkManager {
       }
    }
 
-   public static void deleteRelations(Artifact artifact, IRelationEnumeration relationSide) throws OseeCoreException {
+   public static void deleteRelations(Artifact artifact, IRelationTypeSide relationSide) throws OseeCoreException {
       for (CrossBranchLink link : getLinks(artifact)) {
          if (link.getRelationEnum().equals(relationSide)) {
             link.getMatchingAttribute().delete();

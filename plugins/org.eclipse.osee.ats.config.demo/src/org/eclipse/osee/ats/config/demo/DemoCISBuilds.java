@@ -11,17 +11,17 @@
 package org.eclipse.osee.ats.config.demo;
 
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.NamedIdentity;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 
 /**
  * @author Donald G. Dunne
  */
-public class DemoCISBuilds extends NamedIdentity implements IOseeBranch {
-   public static final DemoCISBuilds CIS_Bld_1 = new DemoCISBuilds("AyH_f2sSKy3l07fIvDDD", "CIS_Bld_1");
-   public static final DemoCISBuilds CIS_Bld_2 = new DemoCISBuilds("AyH_f2sSKy3l07fIvEEE", "CIS_Bld_2");
-   public static final DemoCISBuilds CIS_Bld_3 = new DemoCISBuilds("AyH_f2sSKy3l07fIvFFF", "CIS_Bld_3");
+public final class DemoCISBuilds {
+   public static final IOseeBranch CIS_Bld_1 = TokenFactory.createBranch("AyH_f2sSKy3l07fIvDDD", "CIS_Bld_1");
+   public static final IOseeBranch CIS_Bld_2 = TokenFactory.createBranch("AyH_f2sSKy3l07fIvEEE", "CIS_Bld_2");
+   public static final IOseeBranch CIS_Bld_3 = TokenFactory.createBranch("AyH_f2sSKy3l07fIvFFF", "CIS_Bld_3");
 
-   private DemoCISBuilds(String guid, String name) {
-      super(guid, name);
+   private DemoCISBuilds() {
+      // Constants
    }
 }

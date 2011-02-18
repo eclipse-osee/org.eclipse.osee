@@ -29,7 +29,7 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
-import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.RelationTypeSide;
 import org.eclipse.osee.framework.core.model.type.RelationType;
@@ -731,7 +731,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
                   WrapperForRelationLink targetLink = (WrapperForRelationLink) object;
                   Artifact[] artifactsToMove = ((ArtifactData) event.data).getArtifacts();
                   for (Artifact artifactToMove : artifactsToMove) {
-                  IRelationEnumeration typeSide =
+                  IRelationTypeSide typeSide =
                         new RelationTypeSide(targetLink.getRelationType(), targetLink.getRelationSide());
                      artifact.setRelationOrder(typeSide, targetLink.getOther(), isFeedbackAfter, artifactToMove);
                   }

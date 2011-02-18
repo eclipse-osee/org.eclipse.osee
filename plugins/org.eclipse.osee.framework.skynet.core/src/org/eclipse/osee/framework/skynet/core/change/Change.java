@@ -12,6 +12,7 @@
 package org.eclipse.osee.framework.skynet.core.change;
 
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.osee.framework.core.data.HasBranch;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -22,7 +23,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 /**
  * @author Jeff C. Phillips
  */
-public abstract class Change implements IAdaptable, Comparable<Change> {
+public abstract class Change implements IAdaptable, Comparable<Change>, HasBranch {
    private final long sourceGamma;
    private final int artId;
    private final TransactionDelta txDelta;
@@ -117,6 +118,7 @@ public abstract class Change implements IAdaptable, Comparable<Change> {
       return getChangeArtifact().getArtifactType();
    }
 
+   @Override
    public IOseeBranch getBranch() {
       return branch;
    }

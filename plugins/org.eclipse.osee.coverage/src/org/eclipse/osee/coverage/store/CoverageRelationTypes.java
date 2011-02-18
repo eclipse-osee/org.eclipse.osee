@@ -10,43 +10,25 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.store;
 
-import org.eclipse.osee.framework.core.data.NamedIdentity;
-import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 
 /**
  * @author Donald G. Dunne
  */
-public class CoverageRelationTypes extends NamedIdentity implements IRelationEnumeration {
-   private final RelationSide relationSide;
+public final class CoverageRelationTypes {
 
-   public static final CoverageRelationTypes TeamWorkflowTargetedForVersion_Version = new CoverageRelationTypes(
+   public static final IRelationTypeSide TeamWorkflowTargetedForVersion_Version = TokenFactory.createRelationTypeSide(
       RelationSide.SIDE_B, "AAMFE99pzm4zSibDT9gA", "TeamWorkflowTargetedForVersion");
-   public static final CoverageRelationTypes TeamWorkflowTargetedForVersion_Workflow = new CoverageRelationTypes(
+   public static final IRelationTypeSide TeamWorkflowTargetedForVersion_Workflow = TokenFactory.createRelationTypeSide(
       RelationSide.SIDE_A, "AAMFE99pzm4zSibDT9gA", "TeamWorkflowTargetedForVersion");
-   public static final CoverageRelationTypes ActionToWorkflow_Action = new CoverageRelationTypes(RelationSide.SIDE_A,
-      "AAMFE953ixQThusHUPwA", "ActionToWorkflow");
-   public static final CoverageRelationTypes ActionToWorkflow_WorkFlow = new CoverageRelationTypes(RelationSide.SIDE_B,
-      "AAMFE953ixQThusHUPwA", "ActionToWorkflow");
+   public static final IRelationTypeSide ActionToWorkflow_Action = TokenFactory.createRelationTypeSide(
+      RelationSide.SIDE_A, "AAMFE953ixQThusHUPwA", "ActionToWorkflow");
+   public static final IRelationTypeSide ActionToWorkflow_WorkFlow = TokenFactory.createRelationTypeSide(
+      RelationSide.SIDE_B, "AAMFE953ixQThusHUPwA", "ActionToWorkflow");
 
-   private CoverageRelationTypes(RelationSide relationSide, String guid, String name) {
-      super(guid, name);
-      this.relationSide = relationSide;
+   private CoverageRelationTypes() {
+      // Constants
    }
-
-   @Override
-   public RelationSide getSide() {
-      return relationSide;
-   }
-
-   @Override
-   public int hashCode() {
-      return super.hashCode();
-   }
-
-   @Override
-   public boolean equals(Object obj) {
-      return super.equals(obj);
-   }
-
 }

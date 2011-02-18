@@ -10,12 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.message;
 
+import org.eclipse.osee.framework.core.data.HasBranch;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 
 /**
  * @author Roberto E. Escobar
  */
-public class SearchRequest {
+public class SearchRequest implements HasBranch {
 
    private final IOseeBranch branch;
    private final String rawSearch;
@@ -32,6 +33,7 @@ public class SearchRequest {
       this.options = options != null ? options : new SearchOptions();
    }
 
+   @Override
    public IOseeBranch getBranch() {
       return branch;
    }

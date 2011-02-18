@@ -10,20 +10,22 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model;
 
-import org.eclipse.osee.framework.core.data.Identity;
-import org.eclipse.osee.framework.core.data.Named;
+import org.eclipse.osee.framework.core.data.HasBranch;
+import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface IBasicArtifact<T> extends Named, Identity {
+public interface IBasicArtifact<T> extends IArtifactToken, HasBranch {
 
    int getArtId();
 
+   @Override
    Branch getBranch();
 
+   @Override
    ArtifactType getArtifactType();
 
    T getFullArtifact() throws OseeCoreException;

@@ -16,8 +16,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
-import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -65,7 +65,7 @@ public class RelationOrderMergeUtility {
       return rts;
    }
 
-   private static List<String> mergeTypeSideOrder(Artifact left, Artifact right, IRelationEnumeration rts) throws OseeCoreException {
+   private static List<String> mergeTypeSideOrder(Artifact left, Artifact right, IRelationTypeSide rts) throws OseeCoreException {
       RelationOrderMerger<String> merger = new RelationOrderMerger<String>();
       List<String> leftRelatives = getGuidList(left.getRelatedArtifacts(rts, DeletionFlag.EXCLUDE_DELETED));
       List<String> rightRelatives = getGuidList(right.getRelatedArtifacts(rts, DeletionFlag.EXCLUDE_DELETED));
@@ -74,7 +74,7 @@ public class RelationOrderMergeUtility {
       return merger.computeMergedOrder(leftRelatives, rightRelatives, mergedSet);
    }
 
-   private static Collection<String> getMergedSet(Artifact left, Artifact right, IRelationEnumeration relationTypeSide) throws OseeCoreException {
+   private static Collection<String> getMergedSet(Artifact left, Artifact right, IRelationTypeSide relationTypeSide) throws OseeCoreException {
       Collection<String> mergedSet = new HashSet<String>();
       Collection<String> deleted = new HashSet<String>();
       List<String> leftRelatives =
@@ -99,7 +99,7 @@ public class RelationOrderMergeUtility {
       return toReturn;
    }
 
-   private static Collection<String> getDeleted(Artifact art, IRelationEnumeration relationType) throws OseeCoreException {
+   private static Collection<String> getDeleted(Artifact art, IRelationTypeSide relationType) throws OseeCoreException {
       Collection<String> toReturn = new HashSet<String>();
 
       for (RelationLink link : art.getRelationsAll(DeletionFlag.INCLUDE_DELETED)) {

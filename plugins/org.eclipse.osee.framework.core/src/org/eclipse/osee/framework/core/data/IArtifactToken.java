@@ -13,9 +13,6 @@ package org.eclipse.osee.framework.core.data;
 /**
  * @author Donald G. Dunne
  */
-public interface IArtifactToken extends Identity, FullyNamed {
-
-   public IArtifactType getArtifactType();
-
-   public IOseeBranch getBranch();
+public interface IArtifactToken extends Identity, FullyNamed, HasArtifactType {
+   // composition interface requires no additional methods,fields
 }

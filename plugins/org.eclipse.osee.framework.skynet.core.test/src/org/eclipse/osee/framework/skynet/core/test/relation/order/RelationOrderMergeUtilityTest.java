@@ -16,6 +16,7 @@ import static org.eclipse.osee.framework.skynet.core.test.util.FrameworkTestUtil
 import static org.eclipse.osee.framework.skynet.core.test.util.FrameworkTestUtil.createSimpleArtifacts;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -40,7 +41,7 @@ import org.junit.Test;
  * @author Ryan Schmitt
  */
 public class RelationOrderMergeUtilityTest {
-   private final CoreRelationTypes defaultHierarchy = CoreRelationTypes.Default_Hierarchical__Child;
+   private final IRelationTypeSide defaultHierarchy = CoreRelationTypes.Default_Hierarchical__Child;
    private final IRelationSorterId ascOrder = RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC;
    private final IRelationSorterId descOrder = RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC;
 

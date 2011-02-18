@@ -55,9 +55,9 @@ public final class OseeSystemArtifacts {
       return getOrCreateCachedArtifact(artifactType, artifactName, branch, null, true);
    }
 
-   public static Artifact getOrCreateArtifact(IArtifactToken artifactToken) throws OseeCoreException {
-      return getOrCreateCachedArtifact(artifactToken.getArtifactType(), artifactToken.getName(),
-         artifactToken.getBranch(), artifactToken.getGuid(), true);
+   public static Artifact getOrCreateArtifact(IArtifactToken artifactToken, IOseeBranch branch) throws OseeCoreException {
+      return getOrCreateCachedArtifact(artifactToken.getArtifactType(), artifactToken.getName(), branch,
+         artifactToken.getGuid(), true);
    }
 
    public static Artifact getCachedArtifact(IArtifactType artifactType, String artifactName, IOseeBranch branch) throws OseeCoreException {

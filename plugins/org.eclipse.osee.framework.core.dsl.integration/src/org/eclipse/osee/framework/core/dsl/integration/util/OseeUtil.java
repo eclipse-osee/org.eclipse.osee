@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.core.dsl.integration.util;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.data.NamedIdentity;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessPermissionEnum;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.ObjectRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactType;
@@ -37,33 +37,15 @@ public final class OseeUtil {
    }
 
    public static IArtifactType toToken(XArtifactType model) {
-      return new ArtifactTypeToken(model);
+      return TokenFactory.createArtifactType(model.getTypeGuid(), Strings.unquote(model.getName()));
    }
 
    public static IAttributeType toToken(XAttributeType model) {
-      return new AttributeTypeToken(model);
+      return TokenFactory.createAttributeType(model.getTypeGuid(), Strings.unquote(model.getName()));
    }
 
    public static IRelationType toToken(XRelationType model) {
-      return new RelationTypeToken(model);
-   }
-
-   private final static class ArtifactTypeToken extends NamedIdentity implements IArtifactType {
-      public ArtifactTypeToken(XArtifactType model) {
-         super(model.getTypeGuid(), Strings.unquote(model.getName()));
-      }
-   }
-
-   private final static class AttributeTypeToken extends NamedIdentity implements IAttributeType {
-      public AttributeTypeToken(XAttributeType model) {
-         super(model.getTypeGuid(), Strings.unquote(model.getName()));
-      }
-   }
-
-   private final static class RelationTypeToken extends NamedIdentity implements IRelationType {
-      public RelationTypeToken(XRelationType model) {
-         super(model.getTypeGuid(), Strings.unquote(model.getName()));
-      }
+      return TokenFactory.createRelationType(model.getTypeGuid(), Strings.unquote(model.getName()));
    }
 
    public static boolean isRestrictedSide(XRelationSideEnum relationSideEnum, RelationSide relationSide) throws OseeCoreException {

@@ -14,9 +14,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import junit.framework.Assert;
+import org.eclipse.osee.framework.core.data.AccessContextId;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.dsl.integration.internal.AccessModelInterpreterImpl;
 import org.eclipse.osee.framework.core.dsl.integration.test.mocks.CheckAccessDetailCollectorNotCalled;
-import org.eclipse.osee.framework.core.dsl.integration.test.mocks.MockAccessContextId;
 import org.eclipse.osee.framework.core.dsl.integration.test.mocks.MockArtifactData;
 import org.eclipse.osee.framework.core.dsl.integration.test.mocks.MockArtifactDataProvider;
 import org.eclipse.osee.framework.core.dsl.integration.test.mocks.MockModel;
@@ -37,8 +38,8 @@ import org.junit.Test;
  * @author Roberto E. Escobar
  */
 public class AccessModelInterpreterImplTest {
-   private MockAccessContextId contextId1;
-   private MockAccessContextId contextId2;
+   private AccessContextId contextId1;
+   private AccessContextId contextId2;
 
    private AccessContext expectedContext1;
    private AccessContext expectedContext2;
@@ -49,8 +50,8 @@ public class AccessModelInterpreterImplTest {
    public void setup() {
       interpreterNoArtData = new AccessModelInterpreterImpl(null);
 
-      contextId1 = new MockAccessContextId(GUID.create(), "Context 1");
-      contextId2 = new MockAccessContextId(GUID.create(), "Context 2");
+      contextId1 = TokenFactory.createAccessContextId(GUID.create(), "Context 1");
+      contextId2 = TokenFactory.createAccessContextId(GUID.create(), "Context 2");
 
       expectedContext1 = MockModel.createAccessContext(contextId1.getGuid(), "c1");
       expectedContext2 = MockModel.createAccessContext(contextId2.getGuid(), "c2");

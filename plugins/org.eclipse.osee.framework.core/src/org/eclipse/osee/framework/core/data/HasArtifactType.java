@@ -11,10 +11,9 @@
 package org.eclipse.osee.framework.core.data;
 
 /**
- * @author Donald G. Dunne
+ * @author Roberto E. Escobar
  */
-public class OseeBranch extends NamedIdentity implements IOseeBranch {
-   public OseeBranch(String name, String guid) {
-      super(guid, name);
-   }
+public interface HasArtifactType {
+
+   IArtifactType getArtifactType();
 }

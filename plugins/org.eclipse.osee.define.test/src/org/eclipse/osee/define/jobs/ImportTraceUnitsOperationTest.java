@@ -18,7 +18,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.define.traceability.operations.ImportTraceUnitsOperation;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.OseeBranch;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -47,7 +47,7 @@ public final class ImportTraceUnitsOperationTest {
 
    private static final String TEST_ONE_FILE = "ImportTraceUnitsTest1.txt";
    private static final String TEST_TWO_FILE = "ImportTraceUnitsTest2.txt";
-   private static final IOseeBranch TEST_BRANCH = new OseeBranch("Trace Unit Branch", "BIkSWxVrZClFHss6FTAA");
+   private static final IOseeBranch TEST_BRANCH = TokenFactory.createBranch("BIkSWxVrZClFHss6FTAA", "Trace Unit Branch");
    private static final int RUNS = 3;
 
    private Branch importToBranch;

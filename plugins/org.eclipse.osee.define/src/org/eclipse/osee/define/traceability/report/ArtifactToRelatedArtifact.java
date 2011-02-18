@@ -13,7 +13,7 @@ package org.eclipse.osee.define.traceability.report;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
@@ -34,11 +34,11 @@ public class ArtifactToRelatedArtifact extends AbstractArtifactRelationReport {
       return toReturn.toArray(new String[toReturn.size()]);
    }
 
-   public List<String[]> getRelatedRows(IRelationEnumeration[] relations, Artifact artifact) throws OseeCoreException {
+   public List<String[]> getRelatedRows(IRelationTypeSide[] relations, Artifact artifact) throws OseeCoreException {
       List<String[]> toReturn = new ArrayList<String[]>();
       int maxSize = 0;
       List<List<String>> items = new ArrayList<List<String>>();
-      for (IRelationEnumeration relationEnum : relations) {
+      for (IRelationTypeSide relationEnum : relations) {
          List<String> entries = new ArrayList<String>();
          for (Artifact relArtifact : artifact.getRelatedArtifacts(relationEnum)) {
             entries.add(relArtifact.getName());
@@ -63,10 +63,10 @@ public class ArtifactToRelatedArtifact extends AbstractArtifactRelationReport {
    @Override
    public void process(IProgressMonitor monitor) throws OseeCoreException {
       notifyOnTableHeader(getHeader());
-      IRelationEnumeration[] relations = getRelationsToCheck();
+      IRelationTypeSide[] relations = getRelationsToCheck();
       for (Artifact artifact : getArtifactsToCheck()) {
          String name = artifact.getName();
-         for (IRelationEnumeration relationEnum : relations) {
+         for (IRelationTypeSide relationEnum : relations) {
             String typeName = relationEnum.getName();
             for (Artifact relArtifact : artifact.getRelatedArtifacts(relationEnum)) {
                notifyOnRowData(name, typeName, relArtifact.getName());

@@ -389,16 +389,16 @@ public final class AtsWorkDefinitions implements IWorkDefinitionProvider {
       // Relate if not already related
       if (art.getRelatedArtifacts(CoreRelationTypes.WorkItem__Parent, Artifact.class).isEmpty()) {
          if (art.isOfType(CoreArtifactTypes.WorkPageDefinition)) {
-            relateIfNotRelated(AtsArtifactToken.get(AtsArtifactToken.WorkPagesFolder), art, transaction);
+            relateIfNotRelated(AtsUtil.getFromToken(AtsArtifactToken.WorkPagesFolder), art, transaction);
          }
          if (art.isOfType(CoreArtifactTypes.WorkRuleDefinition)) {
-            relateIfNotRelated(AtsArtifactToken.get(AtsArtifactToken.WorkRulesFolder), art, transaction);
+            relateIfNotRelated(AtsUtil.getFromToken(AtsArtifactToken.WorkRulesFolder), art, transaction);
          }
          if (art.isOfType(CoreArtifactTypes.WorkWidgetDefinition)) {
-            relateIfNotRelated(AtsArtifactToken.get(AtsArtifactToken.WorkWidgetsFolder), art, transaction);
+            relateIfNotRelated(AtsUtil.getFromToken(AtsArtifactToken.WorkWidgetsFolder), art, transaction);
          }
          if (art.isOfType(CoreArtifactTypes.WorkFlowDefinition)) {
-            relateIfNotRelated(AtsArtifactToken.get(AtsArtifactToken.WorkFlowsFolder), art, transaction);
+            relateIfNotRelated(AtsUtil.getFromToken(AtsArtifactToken.WorkFlowsFolder), art, transaction);
          }
       }
    }

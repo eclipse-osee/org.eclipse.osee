@@ -29,8 +29,8 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
-import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -157,7 +157,7 @@ public class WorldContentProvider implements ITreeContentProvider {
       if (workflow instanceof TaskArtifact) {
          return false;
       }
-      for (IRelationEnumeration iRelationEnumeration : workflow.getAtsWorldRelations()) {
+      for (IRelationTypeSide iRelationEnumeration : workflow.getAtsWorldRelations()) {
          if (workflow.getRelatedArtifactsCount(iRelationEnumeration) > 0) {
             return true;
          }

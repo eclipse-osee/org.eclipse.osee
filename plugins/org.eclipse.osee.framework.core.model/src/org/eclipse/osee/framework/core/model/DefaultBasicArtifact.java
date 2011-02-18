@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.core.model;
 
 import org.eclipse.osee.framework.core.data.NamedIdentity;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 
 /**
@@ -33,7 +32,7 @@ public final class DefaultBasicArtifact extends NamedIdentity implements IBasicA
    }
 
    @Override
-   public Object getFullArtifact() throws OseeCoreException {
+   public Object getFullArtifact() {
       return null;
    }
 

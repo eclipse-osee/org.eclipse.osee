@@ -214,8 +214,8 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
          TeamDefinitionArtifact.class));
    }
 
-   public static TeamDefinitionArtifact getTopTeamDefinition() throws OseeCoreException {
-      return (TeamDefinitionArtifact) AtsArtifactToken.get(AtsArtifactToken.TopTeamDefinition);
+   public static TeamDefinitionArtifact getTopTeamDefinition() {
+      return (TeamDefinitionArtifact) AtsUtil.getFromToken(AtsArtifactToken.TopTeamDefinition);
    }
 
    public static Set<TeamDefinitionArtifact> getTeamReleaseableDefinitions(Active active) throws OseeCoreException {

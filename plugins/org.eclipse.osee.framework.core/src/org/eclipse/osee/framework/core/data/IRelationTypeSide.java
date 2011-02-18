@@ -8,16 +8,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.dsl.integration.test.mocks;
+package org.eclipse.osee.framework.core.data;
 
-import org.eclipse.osee.framework.core.data.AccessContextId;
-import org.eclipse.osee.framework.core.data.NamedIdentity;
+import org.eclipse.osee.framework.core.enums.RelationSide;
 
-/**
- * @author Roberto E. Escobar
- */
-public final class MockAccessContextId extends NamedIdentity implements AccessContextId {
-   public MockAccessContextId(String guid, String name) {
-      super(guid, name);
-   }
+public interface IRelationTypeSide extends IRelationType {
+   public RelationSide getSide();
 }

@@ -175,9 +175,9 @@ public class ArtifactTypeManager {
       return makeNewArtifact(artifactType, branch, guid, humandReadableId);
    }
 
-   public static Artifact addArtifact(IArtifactToken artifactToken) throws OseeCoreException {
-      return getFactory(artifactToken.getArtifactType()).makeNewArtifact(artifactToken.getBranch(),
-         artifactToken.getArtifactType(), artifactToken.getName(), artifactToken.getGuid(), null);
+   public static Artifact addArtifact(IArtifactToken artifactToken, IOseeBranch branch) throws OseeCoreException {
+      return getFactory(artifactToken.getArtifactType()).makeNewArtifact(branch, artifactToken.getArtifactType(),
+         artifactToken.getName(), artifactToken.getGuid(), null);
    }
 
    private static final String DELETE_VALID_ATTRIBUTE =

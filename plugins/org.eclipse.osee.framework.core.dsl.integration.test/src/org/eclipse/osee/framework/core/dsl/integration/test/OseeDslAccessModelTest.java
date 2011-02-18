@@ -14,9 +14,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import org.eclipse.osee.framework.core.data.AccessContextId;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.dsl.integration.AccessModelInterpreter;
 import org.eclipse.osee.framework.core.dsl.integration.OseeDslAccessModel;
-import org.eclipse.osee.framework.core.dsl.integration.test.mocks.MockAccessContextId;
 import org.eclipse.osee.framework.core.dsl.integration.test.mocks.MockDslProvider;
 import org.eclipse.osee.framework.core.dsl.integration.test.mocks.MockModel;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessContext;
@@ -44,7 +44,7 @@ public class OseeDslAccessModelTest {
 
    @BeforeClass
    public static void setUp() {
-      accessContextId = new MockAccessContextId(GUID.create(), "Context 1");
+      accessContextId = TokenFactory.createAccessContextId(GUID.create(), "Context 1");
    }
 
    @Test(expected = OseeArgumentException.class)

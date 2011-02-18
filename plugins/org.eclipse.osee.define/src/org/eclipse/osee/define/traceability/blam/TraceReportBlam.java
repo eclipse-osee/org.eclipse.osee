@@ -36,8 +36,8 @@ import org.eclipse.osee.define.traceability.report.ArtifactToRelatedArtifact;
 import org.eclipse.osee.define.traceability.report.ArtifactTraceCount;
 import org.eclipse.osee.define.traceability.report.ArtifactsWithoutRelations;
 import org.eclipse.osee.define.traceability.report.IReportDataCollector;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -330,7 +330,7 @@ public class TraceReportBlam extends AbstractBlam {
 
    private void addRelationToCheck(List<TraceTypeEnum> traceTypes, AbstractArtifactRelationReport report, boolean fromTraceUnit) {
       for (TraceTypeEnum traceTypeEnum : traceTypes) {
-         IRelationEnumeration relation =
+         IRelationTypeSide relation =
             fromTraceUnit ? traceTypeEnum.getRelatedToRequirement() : traceTypeEnum.getRelatedToTraceUnit();
          report.addRelationToCheck(relation);
       }
@@ -395,21 +395,21 @@ public class TraceReportBlam extends AbstractBlam {
       Used_By_Test_Unit_Trace(CoreRelationTypes.Uses__Requirement, CoreRelationTypes.Uses__TestUnit, true),
       Validation_By_TestProcedure(CoreRelationTypes.Validation__Requirement, CoreRelationTypes.Validation__Validator, true);
 
-      private IRelationEnumeration toReq;
-      private IRelationEnumeration toTraceUnit;
+      private IRelationTypeSide toReq;
+      private IRelationTypeSide toTraceUnit;
       private boolean isTestType;
 
-      TraceTypeEnum(IRelationEnumeration toReq, IRelationEnumeration toTraceUnit, boolean isTestType) {
+      TraceTypeEnum(IRelationTypeSide toReq, IRelationTypeSide toTraceUnit, boolean isTestType) {
          this.toReq = toReq;
          this.toTraceUnit = toTraceUnit;
          this.isTestType = isTestType;
       }
 
-      public IRelationEnumeration getRelatedToRequirement() {
+      public IRelationTypeSide getRelatedToRequirement() {
          return toReq;
       }
 
-      public IRelationEnumeration getRelatedToTraceUnit() {
+      public IRelationTypeSide getRelatedToTraceUnit() {
          return toTraceUnit;
       }
 

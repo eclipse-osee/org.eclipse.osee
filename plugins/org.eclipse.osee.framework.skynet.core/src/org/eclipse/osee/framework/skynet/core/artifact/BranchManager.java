@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.SystemUser;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -428,7 +429,8 @@ public class BranchManager {
    }
 
    public static Branch createTopLevelBranch(final String branchName) throws OseeCoreException {
-      return createTopLevelBranch(new CoreBranches(GUID.create(), branchName));
+      IOseeBranch branchToken = TokenFactory.createBranch(GUID.create(), branchName);
+      return createTopLevelBranch(branchToken);
    }
 
    public static List<Branch> getBaselineBranches() throws OseeCoreException {

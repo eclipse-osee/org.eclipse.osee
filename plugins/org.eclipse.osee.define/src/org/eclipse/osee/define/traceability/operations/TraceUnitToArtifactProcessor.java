@@ -32,11 +32,11 @@ import org.eclipse.osee.define.traceability.data.TestUnitData;
 import org.eclipse.osee.define.traceability.data.TraceMark;
 import org.eclipse.osee.define.traceability.data.TraceUnit;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
-import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -206,7 +206,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
 
          Artifact requirementArtifact = getRequirementArtifact(traceMark.getRawTraceMark(), requirementData);
          if (requirementArtifact != null) {
-            IRelationEnumeration relationType = getRelationFromTraceType(traceUnitArtifact, traceMark.getTraceType());
+            IRelationTypeSide relationType = getRelationFromTraceType(traceUnitArtifact, traceMark.getTraceType());
             if (relationType == null) {
                unknownRelationError.put(traceUnitArtifact.getArtifactTypeName(), traceMark.getTraceType());
             } else if (!requirementArtifact.isRelated(relationType, traceUnitArtifact)) {
@@ -240,7 +240,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
       return traceType.equalsIgnoreCase("USES");
    }
 
-   private IRelationEnumeration getRelationFromTraceType(Artifact traceUnitArtifact, String traceType) {
+   private IRelationTypeSide getRelationFromTraceType(Artifact traceUnitArtifact, String traceType) {
       if (traceUnitArtifact.isOfType(CoreArtifactTypes.TestUnit)) {
          if (isUsesTraceType(traceType)) {
             return CoreRelationTypes.Uses__TestUnit;

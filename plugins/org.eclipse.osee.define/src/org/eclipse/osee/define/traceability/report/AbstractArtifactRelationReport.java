@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -24,12 +24,12 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 public abstract class AbstractArtifactRelationReport extends AbstractReport {
 
    private final Set<Artifact> artifactsToCheck;
-   private final List<IRelationEnumeration> relationsToCheck;
+   private final List<IRelationTypeSide> relationsToCheck;
 
    public AbstractArtifactRelationReport() {
       super();
       this.artifactsToCheck = new HashSet<Artifact>();
-      this.relationsToCheck = new ArrayList<IRelationEnumeration>();
+      this.relationsToCheck = new ArrayList<IRelationTypeSide>();
    }
 
    public void setArtifacts(Collection<Artifact> artifacts) {
@@ -38,7 +38,7 @@ public abstract class AbstractArtifactRelationReport extends AbstractReport {
       }
    }
 
-   public void addRelationToCheck(IRelationEnumeration relation) {
+   public void addRelationToCheck(IRelationTypeSide relation) {
       if (relation != null) {
          this.relationsToCheck.add(relation);
       }
@@ -48,8 +48,8 @@ public abstract class AbstractArtifactRelationReport extends AbstractReport {
       return artifactsToCheck.toArray(new Artifact[artifactsToCheck.size()]);
    }
 
-   public IRelationEnumeration[] getRelationsToCheck() {
-      return relationsToCheck.toArray(new IRelationEnumeration[relationsToCheck.size()]);
+   public IRelationTypeSide[] getRelationsToCheck() {
+      return relationsToCheck.toArray(new IRelationTypeSide[relationsToCheck.size()]);
    }
 
    @Override

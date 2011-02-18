@@ -10,24 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.define.AUTOGEN;
 
-import org.eclipse.osee.framework.core.data.NamedIdentity;
-import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 
-public class OteRelationTypes extends NamedIdentity implements IRelationEnumeration {
-   public static final OteRelationTypes TEST_SCRIPT_TO_RUN_RELATION__TEST_SCRIPT = new OteRelationTypes(
-      RelationSide.SIDE_A, "AAMFE+jMyBDK7CV479wA", "Test Case to Run Relation");
-   public static final OteRelationTypes TEST_SCRIPT_TO_RUN_RELATION__TEST_RUN = new OteRelationTypes(
+public final class OteRelationTypes {
+
+   public static final IRelationTypeSide TEST_SCRIPT_TO_RUN_RELATION__TEST_SCRIPT =
+      TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, "AAMFE+jMyBDK7CV479wA", "Test Case to Run Relation");
+   public static final IRelationTypeSide TEST_SCRIPT_TO_RUN_RELATION__TEST_RUN = TokenFactory.createRelationTypeSide(
       RelationSide.SIDE_B, "AAMFE+jMyBDK7CV479wA", "Test Case to Run Relation");
-   private final RelationSide relationSide;
 
-   private OteRelationTypes(RelationSide relationSide, String guid, String name) {
-      super(guid, name);
-      this.relationSide = relationSide;
+   private OteRelationTypes() {
+      // Constants
    }
 
-   @Override
-   public RelationSide getSide() {
-      return relationSide;
-   }
 }

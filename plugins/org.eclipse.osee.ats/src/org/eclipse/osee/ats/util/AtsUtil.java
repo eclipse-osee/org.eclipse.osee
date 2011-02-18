@@ -39,6 +39,7 @@ import org.eclipse.osee.ats.world.WorldEditorSimpleProvider;
 import org.eclipse.osee.ats.world.WorldEditorUISearchItemProvider;
 import org.eclipse.osee.ats.world.search.GroupWorldSearchItem;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -520,5 +521,15 @@ public final class AtsUtil {
          }
       }
       return useNewWorkDefintions;
+   }
+
+   public static Artifact getFromToken(IArtifactToken token) {
+      Artifact toReturn = null;
+      try {
+         toReturn = ArtifactQuery.getArtifactFromToken(token, getAtsBranchToken());
+      } catch (OseeCoreException ex) {
+         // Do Nothing;
+      }
+      return toReturn;
    }
 }

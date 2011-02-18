@@ -14,7 +14,7 @@ import java.util.Date;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.data.AccessContextId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.NamedIdentity;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -55,16 +55,10 @@ public final class MockDataFactory {
    }
 
    public static AccessContextId createAccessContextId(String guid, String name) {
-      AccessContextId cxt = new MockAccessContextId(guid, name);
+      AccessContextId cxt = TokenFactory.createAccessContextId(guid, name);
       Assert.assertEquals(guid, cxt.getGuid());
       Assert.assertEquals(name, cxt.getName());
       return cxt;
-   }
-
-   private static final class MockAccessContextId extends NamedIdentity implements AccessContextId {
-      public MockAccessContextId(String guid, String name) {
-         super(guid, name);
-      }
    }
 
    public static <T> AccessDetail<T> createAccessDetails(T expAccessObject, PermissionEnum expPermission, String expReason) {

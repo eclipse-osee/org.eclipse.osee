@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
@@ -31,7 +31,7 @@ public class RelationCriteria extends AbstractArtifactSearchCriteria {
     * 
     * @param relationEnum the side to start following the link from
     */
-   public RelationCriteria(IRelationEnumeration relationEnum) {
+   public RelationCriteria(IRelationTypeSide relationEnum) {
       this(relationEnum, relationEnum.getSide());
    }
 

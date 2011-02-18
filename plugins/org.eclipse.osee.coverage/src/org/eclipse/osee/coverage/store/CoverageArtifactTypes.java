@@ -11,20 +11,20 @@
 package org.eclipse.osee.coverage.store;
 
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.NamedIdentity;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 
 /**
  * @author Don Dunne
  */
-public final class CoverageArtifactTypes extends NamedIdentity implements IArtifactType {
+public final class CoverageArtifactTypes {
 
    // @formatter:off
-   public static final IArtifactType CoveragePackage = new CoverageArtifactTypes("AARFcyA9zyD3uEK8akgA", "Coverage Package");
-   public static final IArtifactType CoverageUnit = new CoverageArtifactTypes("ALZS3MQdCCIUvEYlZeAA", "Coverage Unit");
-   public static final IArtifactType CoverageFolder = new CoverageArtifactTypes("ALZR_AbpJTTf6QQn2iAA", "Coverage Folder");
+   public static final IArtifactType CoveragePackage = TokenFactory.createArtifactType("AARFcyA9zyD3uEK8akgA", "Coverage Package");
+   public static final IArtifactType CoverageUnit = TokenFactory.createArtifactType("ALZS3MQdCCIUvEYlZeAA", "Coverage Unit");
+   public static final IArtifactType CoverageFolder = TokenFactory.createArtifactType("ALZR_AbpJTTf6QQn2iAA", "Coverage Folder");
    // @formatter:on
 
-   private CoverageArtifactTypes(String guid, String name) {
-      super(guid, name);
+   private CoverageArtifactTypes() {
+      // Constants
    }
 }

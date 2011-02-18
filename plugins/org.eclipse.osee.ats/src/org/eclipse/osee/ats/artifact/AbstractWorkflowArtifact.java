@@ -32,7 +32,6 @@ import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.notify.AtsNotification;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
-import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.SimpleTeamState;
 import org.eclipse.osee.ats.util.StateManager;
@@ -49,8 +48,8 @@ import org.eclipse.osee.ats.workflow.TransitionManager;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.SystemUser;
-import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -86,7 +85,7 @@ import org.osgi.framework.ServiceReference;
  */
 public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact implements HasCmAccessControl, IGroupExplorerProvider, IWorldViewArtifact {
 
-   private final Set<IRelationEnumeration> atsWorldRelations = new HashSet<IRelationEnumeration>();
+   private final Set<IRelationTypeSide> atsWorldRelations = new HashSet<IRelationTypeSide>();
    private Collection<User> transitionAssignees;
    protected AbstractWorkflowArtifact parentSma;
    protected TeamWorkFlowArtifact parentTeamArt;
@@ -220,8 +219,8 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    /**
     * Registers relation as part of the parent/child hierarchy in ATS World
     */
-   public void registerAtsWorldRelation(AtsRelationTypes side) {
-      atsWorldRelations.add(side);
+   public void registerAtsWorldRelation(IRelationTypeSide typeSideToken) {
+      atsWorldRelations.add(typeSideToken);
    }
 
    @Override
@@ -707,7 +706,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return getPercentCompleteSMATotal();
    }
 
-   public Set<IRelationEnumeration> getAtsWorldRelations() {
+   public Set<IRelationTypeSide> getAtsWorldRelations() {
       return atsWorldRelations;
    }
 

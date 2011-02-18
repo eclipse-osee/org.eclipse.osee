@@ -69,7 +69,7 @@ public final class AtsWorkDefinitionSheetProviders {
 
    public static void initializeDatabase() throws OseeCoreException {
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Import ATS Work Definitions");
-      Artifact folder = AtsArtifactToken.get(AtsArtifactToken.WorkDefinitionsFolder);
+      Artifact folder = AtsUtil.getFromToken(AtsArtifactToken.WorkDefinitionsFolder);
       for (WorkDefinitionSheet sheet : getWorkDefinitionSheets()) {
          if (isValidSheet(sheet)) {
             String logStr = String.format("Importing ATS sheet [%s]", sheet.getName());

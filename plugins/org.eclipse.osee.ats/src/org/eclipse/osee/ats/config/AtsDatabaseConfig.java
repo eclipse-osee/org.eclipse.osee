@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.config;
 
-import java.util.Arrays;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.AtsArtifactToken;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
@@ -23,7 +22,9 @@ import org.eclipse.osee.ats.workflow.flow.SimpleWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.flow.TaskWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.flow.TeamWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
+import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.database.init.IDbInitializationTask;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -64,20 +65,29 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
    }
 
    public static void createAtsFolders() throws OseeCoreException {
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Create ATS Folders");
+      Branch atsBranch = AtsUtil.getAtsBranch();
+      SkynetTransaction transaction = new SkynetTransaction(atsBranch, "Create ATS Folders");
 
-      Artifact headingArt = OseeSystemArtifacts.getOrCreateArtifact(AtsArtifactToken.HeadingFolder);
+      Artifact headingArt = OseeSystemArtifacts.getOrCreateArtifact(AtsArtifactToken.HeadingFolder, atsBranch);
       if (!headingArt.hasParent()) {
-         Artifact rootArt = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(AtsUtil.getAtsBranch());
+         Artifact rootArt = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(atsBranch);
          rootArt.addChild(headingArt);
          headingArt.persist(transaction);
       }
-      for (AtsArtifactToken token : Arrays.asList(AtsArtifactToken.TopActionableItem,
-         AtsArtifactToken.TopTeamDefinition, AtsArtifactToken.ConfigFolder, //
-         AtsArtifactToken.WorkDefinitionsFolder, AtsArtifactToken.WorkFlowsFolder, //
-         AtsArtifactToken.WorkPagesFolder, AtsArtifactToken.WorkWidgetsFolder, //
-         AtsArtifactToken.WorkRulesFolder)) {
-         Artifact art = OseeSystemArtifacts.getOrCreateArtifact(token);
+
+      IArtifactToken[] tokens =
+         new IArtifactToken[] {
+            AtsArtifactToken.TopActionableItem,
+            AtsArtifactToken.TopTeamDefinition,
+            AtsArtifactToken.ConfigFolder,
+            AtsArtifactToken.WorkDefinitionsFolder,
+            AtsArtifactToken.WorkFlowsFolder,
+            AtsArtifactToken.WorkPagesFolder,
+            AtsArtifactToken.WorkWidgetsFolder,
+            AtsArtifactToken.WorkRulesFolder};
+
+      for (IArtifactToken token : tokens) {
+         Artifact art = OseeSystemArtifacts.getOrCreateArtifact(token, atsBranch);
          headingArt.addChild(art);
          art.persist(transaction);
       }

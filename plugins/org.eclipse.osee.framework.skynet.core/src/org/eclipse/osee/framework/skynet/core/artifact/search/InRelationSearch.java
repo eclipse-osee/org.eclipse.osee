@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import java.util.List;
-import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
@@ -42,7 +42,7 @@ public class InRelationSearch implements ISearchPrimitive {
     * 
     * @throws IllegalArgumentException if the sides are a mixture of sideA and sideB relation sides.
     */
-   public InRelationSearch(IRelationEnumeration firstSide, IRelationEnumeration... sides) {
+   public InRelationSearch(IRelationTypeSide firstSide, IRelationTypeSide... sides) {
       this(null, firstSide, sides);
    }
 
@@ -53,14 +53,14 @@ public class InRelationSearch implements ISearchPrimitive {
     * 
     * @throws IllegalArgumentException if the sides are a mixture of sideA and sideB relation sides.
     */
-   public InRelationSearch(FromArtifactsSearch otherArtifacts, IRelationEnumeration firstSide, IRelationEnumeration... sides) {
+   public InRelationSearch(FromArtifactsSearch otherArtifacts, IRelationTypeSide firstSide, IRelationTypeSide... sides) {
       this.typeNames = new String[sides.length + 1];
       this.sideA = firstSide.getSide().isSideA();
       this.otherArtifactsCriteria = otherArtifacts;
 
       int count = 0;
       typeNames[count++] = firstSide.getName();
-      for (IRelationEnumeration side : sides) {
+      for (IRelationTypeSide side : sides) {
          if (side != firstSide) {
             throw new IllegalArgumentException("All links must be for the same side.");
          }

@@ -11,17 +11,18 @@
 package org.eclipse.osee.support.test.util;
 
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.NamedIdentity;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 
 /**
  * @author Donald G. Dunne
  */
-public class DemoSawBuilds extends NamedIdentity implements IOseeBranch {
-   public static final DemoSawBuilds SAW_Bld_1 = new DemoSawBuilds("AyH_f2sSKy3l07fIvAAA", "SAW_Bld_1");
-   public static final DemoSawBuilds SAW_Bld_2 = new DemoSawBuilds("AyH_f2sSKy3l07fIvBBB", "SAW_Bld_2");
-   public static final DemoSawBuilds SAW_Bld_3 = new DemoSawBuilds("AyH_f2sSKy3l07fIvCCC", "SAW_Bld_3");
+public final class DemoSawBuilds {
 
-   private DemoSawBuilds(String guid, String name) {
-      super(guid, name);
+   public static final IOseeBranch SAW_Bld_1 = TokenFactory.createBranch("AyH_f2sSKy3l07fIvAAA", "SAW_Bld_1");
+   public static final IOseeBranch SAW_Bld_2 = TokenFactory.createBranch("AyH_f2sSKy3l07fIvBBB", "SAW_Bld_2");
+   public static final IOseeBranch SAW_Bld_3 = TokenFactory.createBranch("AyH_f2sSKy3l07fIvCCC", "SAW_Bld_3");
+
+   private DemoSawBuilds() {
+      // Constants
    }
 }

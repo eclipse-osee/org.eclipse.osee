@@ -19,10 +19,10 @@ import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.AICheckTreeDialog;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -45,7 +45,7 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
  */
 public class SMARelationsHyperlinkComposite extends Composite {
 
-   private static IRelationEnumeration[] sides = new IRelationEnumeration[] {
+   private static IRelationTypeSide[] sides = new IRelationTypeSide[] {
       AtsRelationTypes.TeamWorkflowToReview_Review,
       AtsRelationTypes.TeamWorkflowToReview_Team,
       CoreRelationTypes.Supercedes_Superceded,
@@ -91,7 +91,7 @@ public class SMARelationsHyperlinkComposite extends Composite {
    }
 
    public static boolean relationExists(AbstractWorkflowArtifact smaArt) throws OseeCoreException {
-      for (IRelationEnumeration side : sides) {
+      for (IRelationTypeSide side : sides) {
          if (smaArt.getRelatedArtifacts(side).size() > 0) {
             return true;
          }
@@ -112,7 +112,7 @@ public class SMARelationsHyperlinkComposite extends Composite {
       return "";
    }
 
-   private void createArtifactRelationHyperlinks(String prefix, Artifact thisArt, String action, IRelationEnumeration relationEnum) throws OseeCoreException {
+   private void createArtifactRelationHyperlinks(String prefix, Artifact thisArt, String action, IRelationTypeSide relationEnum) throws OseeCoreException {
       for (final Artifact art : thisArt.getRelatedArtifacts(relationEnum)) {
          createLink(art, prefix, action, thisArt);
       }

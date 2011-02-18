@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.util.validate;
 
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 
 /**
@@ -20,9 +20,9 @@ import org.eclipse.osee.framework.core.model.type.ArtifactType;
 public final class RelationSetRule {
    private final IArtifactType artifactType;
    private final Integer minimumRelations;
-   private final IRelationEnumeration relationEnum;
+   private final IRelationTypeSide relationEnum;
 
-   public RelationSetRule(IArtifactType artifactType, IRelationEnumeration relationEnum, Integer minimumRelations) {
+   public RelationSetRule(IArtifactType artifactType, IRelationTypeSide relationEnum, Integer minimumRelations) {
       this.artifactType = artifactType;
       this.relationEnum = relationEnum;
       this.minimumRelations = minimumRelations;
@@ -41,7 +41,7 @@ public final class RelationSetRule {
       return "For \"" + artifactType + "\", ensure at least " + minimumRelations + " relations(s) of type \"" + relationEnum + "\" exists";
    }
 
-   public IRelationEnumeration getRelationEnum() {
+   public IRelationTypeSide getRelationEnum() {
       return relationEnum;
    }
 }

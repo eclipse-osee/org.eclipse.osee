@@ -16,7 +16,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.core.data.OseeBranch;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -246,7 +247,8 @@ public class OseeEventManager {
    public static List<IEventFilter> getEventFiltersForBranch(final String branchName, final String branchGuid) {
       try {
          List<IEventFilter> eventFilters = new ArrayList<IEventFilter>(2);
-         eventFilters.add(new BranchGuidEventFilter(new OseeBranch(branchName, branchGuid)));
+         IOseeBranch branchToken = TokenFactory.createBranch(branchGuid, branchName);
+         eventFilters.add(new BranchGuidEventFilter(branchToken));
          return eventFilters;
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

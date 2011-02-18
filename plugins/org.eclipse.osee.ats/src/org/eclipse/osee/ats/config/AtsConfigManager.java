@@ -128,7 +128,7 @@ public class AtsConfigManager extends AbstractOperation {
       }
       teamDefinition.addRelation(AtsRelationTypes.TeamLead_Lead, UserManager.getUser());
       teamDefinition.addRelation(AtsRelationTypes.TeamMember_Member, UserManager.getUser());
-      AtsArtifactToken.get(AtsArtifactToken.TopTeamDefinition).addChild(teamDefinition);
+      AtsUtil.getFromToken(AtsArtifactToken.TopTeamDefinition).addChild(teamDefinition);
       teamDefinition.persist(transaction);
       return teamDefinition;
    }
@@ -143,7 +143,7 @@ public class AtsConfigManager extends AbstractOperation {
       topAia.setSoleAttributeValue(AtsAttributeTypes.Actionable, false);
       topAia.persist(transaction);
 
-      AtsArtifactToken.get(AtsArtifactToken.TopActionableItem).addChild(topAia);
+      AtsUtil.getFromToken(AtsArtifactToken.TopActionableItem).addChild(topAia);
       teamDefinition.addRelation(AtsRelationTypes.TeamActionableItem_ActionableItem, topAia);
       teamDefinition.persist(transaction);
 
