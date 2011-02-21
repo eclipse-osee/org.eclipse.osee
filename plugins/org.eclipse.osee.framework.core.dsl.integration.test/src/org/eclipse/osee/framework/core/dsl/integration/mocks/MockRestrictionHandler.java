@@ -8,9 +8,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.dsl.integration.test.mocks;
+package org.eclipse.osee.framework.core.dsl.integration.mocks;
 
-import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider.ArtifactData;
+import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider.ArtifactProxy;
 import org.eclipse.osee.framework.core.dsl.integration.RestrictionHandler;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.ObjectRestriction;
 import org.eclipse.osee.framework.core.model.access.AccessDetailCollector;
@@ -22,14 +22,14 @@ import org.junit.Assert;
 public class MockRestrictionHandler implements RestrictionHandler<Object> {
 
    private final ObjectRestriction expectedObjectRestriction;
-   private final ArtifactData expectedArtifactData;
+   private final ArtifactProxy expectedArtifactProxy;
    private final AccessDetailCollector expectedCollector;
    private boolean wasProcessCalled;
 
-   public MockRestrictionHandler(ObjectRestriction expectedObjectRestriction, ArtifactData expectedArtifactData, AccessDetailCollector expectedCollector) {
+   public MockRestrictionHandler(ObjectRestriction expectedObjectRestriction, ArtifactProxy expectedArtifactProxy, AccessDetailCollector expectedCollector) {
       super();
       this.expectedObjectRestriction = expectedObjectRestriction;
-      this.expectedArtifactData = expectedArtifactData;
+      this.expectedArtifactProxy = expectedArtifactProxy;
       this.expectedCollector = expectedCollector;
       reset();
    }
@@ -48,10 +48,10 @@ public class MockRestrictionHandler implements RestrictionHandler<Object> {
    }
 
    @Override
-   public void process(ObjectRestriction objectRestriction, ArtifactData artifactData, AccessDetailCollector collector) {
+   public void process(ObjectRestriction objectRestriction, ArtifactProxy artifactProxy, AccessDetailCollector collector) {
       wasProcessCalled = true;
       Assert.assertEquals(expectedObjectRestriction, objectRestriction);
-      Assert.assertEquals(expectedArtifactData, artifactData);
+      Assert.assertEquals(expectedArtifactProxy, artifactProxy);
       Assert.assertEquals(expectedCollector, collector);
    }
 }

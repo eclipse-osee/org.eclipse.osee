@@ -8,18 +8,18 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.dsl.integration.test.internal;
+package org.eclipse.osee.framework.core.dsl.integration.internal;
 
 import java.util.HashSet;
 import java.util.Set;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider.ArtifactData;
+import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider.ArtifactProxy;
 import org.eclipse.osee.framework.core.dsl.integration.internal.AttributeTypeRestrictionHandler;
-import org.eclipse.osee.framework.core.dsl.integration.test.mocks.DslAsserts;
-import org.eclipse.osee.framework.core.dsl.integration.test.mocks.MockArtifactData;
-import org.eclipse.osee.framework.core.dsl.integration.test.mocks.MockModel;
+import org.eclipse.osee.framework.core.dsl.integration.mocks.DslAsserts;
+import org.eclipse.osee.framework.core.dsl.integration.mocks.MockArtifactProxy;
+import org.eclipse.osee.framework.core.dsl.integration.mocks.MockModel;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessPermissionEnum;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AttributeTypeRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactType;
@@ -57,8 +57,8 @@ public class AttributeTypeRestrictionHandlerTest extends BaseRestrictionHandlerT
       restriction.setAttributeTypeRef(attributeTypeRef);
 
       final MutableBoolean wasIsAttributeTypeValidCalled = new MutableBoolean(false);
-      ArtifactData artData = createArtifactData(null, attributeType, wasIsAttributeTypeValidCalled, false);
-      DslAsserts.assertNullAccessDetail(getRestrictionHandler(), restriction, artData);
+      ArtifactProxy artifactProxy = createArtifactProxy(null, attributeType, wasIsAttributeTypeValidCalled, false);
+      DslAsserts.assertNullAccessDetail(getRestrictionHandler(), restriction, artifactProxy);
       Assert.assertTrue(wasIsAttributeTypeValidCalled.getValue());
    }
 
@@ -74,8 +74,9 @@ public class AttributeTypeRestrictionHandlerTest extends BaseRestrictionHandlerT
       restriction.setAttributeTypeRef(attributeTypeRef);
 
       final MutableBoolean wasIsAttributeTypeValidCalled = new MutableBoolean(false);
-      ArtifactData artData = createArtifactData(null, attributeType, wasIsAttributeTypeValidCalled, true);
-      DslAsserts.assertAccessDetail(getRestrictionHandler(), restriction, artData, attributeType, PermissionEnum.WRITE);
+      ArtifactProxy artifactProxy = createArtifactProxy(null, attributeType, wasIsAttributeTypeValidCalled, true);
+      DslAsserts.assertAccessDetail(getRestrictionHandler(), restriction, artifactProxy, attributeType,
+         PermissionEnum.WRITE);
       Assert.assertTrue(wasIsAttributeTypeValidCalled.getValue());
    }
 
@@ -98,8 +99,9 @@ public class AttributeTypeRestrictionHandlerTest extends BaseRestrictionHandlerT
       ArtifactType artArtifactType = new ArtifactType(artifactType2.getGuid(), artifactType2.getName(), false);
 
       final MutableBoolean wasIsAttributeTypeValidCalled = new MutableBoolean(false);
-      ArtifactData artData = createArtifactData(artArtifactType, attributeType, wasIsAttributeTypeValidCalled, true);
-      DslAsserts.assertNullAccessDetail(getRestrictionHandler(), restriction, artData);
+      ArtifactProxy artifactProxy =
+         createArtifactProxy(artArtifactType, attributeType, wasIsAttributeTypeValidCalled, true);
+      DslAsserts.assertNullAccessDetail(getRestrictionHandler(), restriction, artifactProxy);
       Assert.assertTrue(wasIsAttributeTypeValidCalled.getValue());
    }
 
@@ -121,8 +123,10 @@ public class AttributeTypeRestrictionHandlerTest extends BaseRestrictionHandlerT
       ArtifactType artArtifactType = new ArtifactType(artifactType.getGuid(), artifactType.getName(), false);
 
       final MutableBoolean wasIsAttributeTypeValidCalled = new MutableBoolean(false);
-      ArtifactData artData = createArtifactData(artArtifactType, attributeType, wasIsAttributeTypeValidCalled, true);
-      DslAsserts.assertAccessDetail(getRestrictionHandler(), restriction, artData, attributeType, PermissionEnum.WRITE);
+      ArtifactProxy artifactProxy =
+         createArtifactProxy(artArtifactType, attributeType, wasIsAttributeTypeValidCalled, true);
+      DslAsserts.assertAccessDetail(getRestrictionHandler(), restriction, artifactProxy, attributeType,
+         PermissionEnum.WRITE);
       Assert.assertTrue(wasIsAttributeTypeValidCalled.getValue());
    }
 
@@ -150,13 +154,15 @@ public class AttributeTypeRestrictionHandlerTest extends BaseRestrictionHandlerT
       artArtifactType.setSuperTypes(superTypes);
 
       final MutableBoolean wasIsAttributeTypeValidCalled = new MutableBoolean(false);
-      ArtifactData artData = createArtifactData(artArtifactType, attributeType, wasIsAttributeTypeValidCalled, true);
-      DslAsserts.assertAccessDetail(getRestrictionHandler(), restriction, artData, attributeType, PermissionEnum.WRITE);
+      ArtifactProxy artifactProxy =
+         createArtifactProxy(artArtifactType, attributeType, wasIsAttributeTypeValidCalled, true);
+      DslAsserts.assertAccessDetail(getRestrictionHandler(), restriction, artifactProxy, attributeType,
+         PermissionEnum.WRITE);
       Assert.assertTrue(wasIsAttributeTypeValidCalled.getValue());
    }
 
-   private static ArtifactData createArtifactData(ArtifactType artifactType, final IAttributeType expectedAttributeType, final MutableBoolean wasIsAttributeTypeValidCalled, final boolean isTypeValid) {
-      MockArtifactData artData = new MockArtifactData(GUID.create(), artifactType) {
+   private static ArtifactProxy createArtifactProxy(ArtifactType artifactType, final IAttributeType expectedAttributeType, final MutableBoolean wasIsAttributeTypeValidCalled, final boolean isTypeValid) {
+      MockArtifactProxy artData = new MockArtifactProxy(GUID.create(), artifactType) {
 
          @Override
          public boolean isAttributeTypeValid(IAttributeType attributeType) {

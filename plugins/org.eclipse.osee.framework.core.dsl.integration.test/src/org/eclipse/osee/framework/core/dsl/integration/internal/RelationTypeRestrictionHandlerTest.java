@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.dsl.integration.test.internal;
+package org.eclipse.osee.framework.core.dsl.integration.internal;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,9 +19,9 @@ import junit.framework.Assert;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.dsl.integration.internal.RelationTypeRestrictionHandler;
-import org.eclipse.osee.framework.core.dsl.integration.test.mocks.DslAsserts;
-import org.eclipse.osee.framework.core.dsl.integration.test.mocks.MockArtifactData;
-import org.eclipse.osee.framework.core.dsl.integration.test.mocks.MockModel;
+import org.eclipse.osee.framework.core.dsl.integration.mocks.DslAsserts;
+import org.eclipse.osee.framework.core.dsl.integration.mocks.MockArtifactProxy;
+import org.eclipse.osee.framework.core.dsl.integration.mocks.MockModel;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessPermissionEnum;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationSideEnum;
@@ -63,7 +63,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       restriction.setRelationTypeRef(relationTypeRef);
 
       // Artifact Data has no relation types therefore relation type will not match
-      MockArtifactData artData = new MockArtifactData(GUID.create(), null);
+      MockArtifactProxy artData = new MockArtifactProxy(GUID.create(), null);
       DslAsserts.assertNullAccessDetail(getRestrictionHandler(), restriction, artData);
    }
 
@@ -83,8 +83,8 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       IArtifactType artTypeToken1 = CoreArtifactTypes.SoftwareRequirement;
       ArtifactType artArtType = new ArtifactType(artTypeToken1.getGuid(), artTypeToken1.getName(), false);
 
-      MockArtifactData artData =
-         new MockArtifactData(GUID.create(), artArtType, null, null, Collections.singleton(testRelationType));
+      MockArtifactProxy artData =
+         new MockArtifactProxy(GUID.create(), artArtType, null, null, Collections.singleton(testRelationType));
       DslAsserts.assertNullAccessDetail(getRestrictionHandler(), restriction, artData);
    }
 
@@ -107,8 +107,8 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       superTypes.add(new ArtifactType(CoreArtifactTypes.Artifact.getGuid(), CoreArtifactTypes.Artifact.getName(), false));
       artArtType.setSuperTypes(superTypes);
 
-      MockArtifactData artData =
-         new MockArtifactData(GUID.create(), artArtType, null, null, Collections.singleton(testRelationType));
+      MockArtifactProxy artData =
+         new MockArtifactProxy(GUID.create(), artArtType, null, null, Collections.singleton(testRelationType));
       RelationTypeSide expectedObject = new RelationTypeSide(testRelationType, RelationSide.SIDE_A);
       DslAsserts.assertAccessDetail(getRestrictionHandler(), restriction, artData, expectedObject, PermissionEnum.WRITE);
    }
@@ -129,8 +129,8 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       IArtifactType artTypeToken1 = CoreArtifactTypes.SoftwareRequirement;
       ArtifactType artArtType = new ArtifactType(artTypeToken1.getGuid(), artTypeToken1.getName(), false);
 
-      MockArtifactData artData =
-         new MockArtifactData(GUID.create(), artArtType, null, null, Collections.singleton(testRelationType));
+      MockArtifactProxy artData =
+         new MockArtifactProxy(GUID.create(), artArtType, null, null, Collections.singleton(testRelationType));
       DslAsserts.assertNullAccessDetail(getRestrictionHandler(), restriction, artData);
    }
 
@@ -153,8 +153,8 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       superTypes.add(new ArtifactType(CoreArtifactTypes.Artifact.getGuid(), CoreArtifactTypes.Artifact.getName(), false));
       artArtType.setSuperTypes(superTypes);
 
-      MockArtifactData artData =
-         new MockArtifactData(GUID.create(), artArtType, null, null, Collections.singleton(testRelationType));
+      MockArtifactProxy artData =
+         new MockArtifactProxy(GUID.create(), artArtType, null, null, Collections.singleton(testRelationType));
       RelationTypeSide expectedObject = new RelationTypeSide(testRelationType, RelationSide.SIDE_B);
       DslAsserts.assertAccessDetail(getRestrictionHandler(), restriction, artData, expectedObject, PermissionEnum.WRITE);
    }
@@ -178,8 +178,8 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       superTypes.add(new ArtifactType(CoreArtifactTypes.Artifact.getGuid(), CoreArtifactTypes.Artifact.getName(), false));
       artArtType.setSuperTypes(superTypes);
 
-      MockArtifactData artData =
-         new MockArtifactData(GUID.create(), artArtType, null, null, Collections.singleton(testRelationType));
+      MockArtifactProxy artData =
+         new MockArtifactProxy(GUID.create(), artArtType, null, null, Collections.singleton(testRelationType));
       RelationTypeSide expectedObject1 = new RelationTypeSide(testRelationType, RelationSide.SIDE_A);
       RelationTypeSide expectedObject2 = new RelationTypeSide(testRelationType, RelationSide.SIDE_B);
 

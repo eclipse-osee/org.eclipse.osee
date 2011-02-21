@@ -8,12 +8,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.dsl.integration.test.internal;
+package org.eclipse.osee.framework.core.dsl.integration.internal;
 
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.dsl.integration.RestrictionHandler;
-import org.eclipse.osee.framework.core.dsl.integration.test.mocks.DslAsserts;
-import org.eclipse.osee.framework.core.dsl.integration.test.mocks.MockModel;
+import org.eclipse.osee.framework.core.dsl.integration.mocks.DslAsserts;
+import org.eclipse.osee.framework.core.dsl.integration.mocks.MockModel;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.ObjectRestriction;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.junit.Test;

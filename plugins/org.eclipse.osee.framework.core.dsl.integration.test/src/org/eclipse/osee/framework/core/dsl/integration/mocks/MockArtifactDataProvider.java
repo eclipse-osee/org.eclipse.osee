@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.dsl.integration.test.mocks;
+package org.eclipse.osee.framework.core.dsl.integration.mocks;
 
 import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider;
 import org.junit.Assert;
@@ -20,14 +20,14 @@ public final class MockArtifactDataProvider implements ArtifactDataProvider {
 
    private final boolean isApplicable;
    private final Object expectedObject;
-   private final ArtifactData artifactData;
+   private final ArtifactProxy artifactProxy;
    private boolean wasIsApplicableCalled;
    private boolean wasAsCastedObjectCalled;
 
-   public MockArtifactDataProvider(boolean isApplicable, Object expectedObject, ArtifactData artifactData) {
+   public MockArtifactDataProvider(boolean isApplicable, Object expectedObject, ArtifactProxy artifactProxy) {
       this.isApplicable = isApplicable;
       this.expectedObject = expectedObject;
-      this.artifactData = artifactData;
+      this.artifactProxy = artifactProxy;
       reset();
    }
 
@@ -44,10 +44,10 @@ public final class MockArtifactDataProvider implements ArtifactDataProvider {
    }
 
    @Override
-   public ArtifactData asCastedObject(Object object) {
+   public ArtifactProxy asCastedObject(Object object) {
       wasAsCastedObjectCalled = true;
       Assert.assertEquals(expectedObject, object);
-      return artifactData;
+      return artifactProxy;
    }
 
    public boolean wasIsApplicableCalled() {

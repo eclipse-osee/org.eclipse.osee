@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.server.tests;
 
 import org.eclipse.osee.framework.branch.management.test.BranchManagementTestSuite;
 import org.eclipse.osee.framework.core.datastore.test.AllCoreDatastoreTestSuite;
-import org.eclipse.osee.framework.core.dsl.integration.test.AllDslIntegrationTestSuite;
+import org.eclipse.osee.framework.core.dsl.integration.AllDslIntegrationTestSuite;
 import org.eclipse.osee.framework.core.message.test.AllCoreMessageTestSuite;
 import org.eclipse.osee.framework.core.model.test.AllCoreModelTestSuite;
 import org.eclipse.osee.framework.core.server.test.CoreServerTestSuite;

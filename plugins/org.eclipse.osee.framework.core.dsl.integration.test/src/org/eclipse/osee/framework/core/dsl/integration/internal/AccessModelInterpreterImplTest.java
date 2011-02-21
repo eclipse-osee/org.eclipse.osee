@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.dsl.integration.test.internal;
+package org.eclipse.osee.framework.core.dsl.integration.internal;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -17,11 +17,11 @@ import junit.framework.Assert;
 import org.eclipse.osee.framework.core.data.AccessContextId;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.dsl.integration.internal.AccessModelInterpreterImpl;
-import org.eclipse.osee.framework.core.dsl.integration.test.mocks.CheckAccessDetailCollectorNotCalled;
-import org.eclipse.osee.framework.core.dsl.integration.test.mocks.MockArtifactData;
-import org.eclipse.osee.framework.core.dsl.integration.test.mocks.MockArtifactDataProvider;
-import org.eclipse.osee.framework.core.dsl.integration.test.mocks.MockModel;
-import org.eclipse.osee.framework.core.dsl.integration.test.mocks.MockRestrictionHandler;
+import org.eclipse.osee.framework.core.dsl.integration.mocks.CheckAccessDetailCollectorNotCalled;
+import org.eclipse.osee.framework.core.dsl.integration.mocks.MockArtifactDataProvider;
+import org.eclipse.osee.framework.core.dsl.integration.mocks.MockArtifactProxy;
+import org.eclipse.osee.framework.core.dsl.integration.mocks.MockModel;
+import org.eclipse.osee.framework.core.dsl.integration.mocks.MockRestrictionHandler;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessContext;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.ObjectRestriction;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -48,7 +48,7 @@ public class AccessModelInterpreterImplTest {
 
    @Before
    public void setup() {
-      interpreterNoArtData = new AccessModelInterpreterImpl(null);
+      interpreterNoArtData = new AccessModelInterpreterImpl(null, null);
 
       contextId1 = TokenFactory.createAccessContextId(GUID.create(), "Context 1");
       contextId2 = TokenFactory.createAccessContextId(GUID.create(), "Context 2");
@@ -97,7 +97,7 @@ public class AccessModelInterpreterImplTest {
    public void testComputeAccessNotApplicableObject() throws OseeCoreException {
       final Object objectToCheck = new Object();
       MockArtifactDataProvider provider = new MockArtifactDataProvider(false, objectToCheck, null);
-      AccessModelInterpreterImpl interpreter = new AccessModelInterpreterImpl(provider);
+      AccessModelInterpreterImpl interpreter = new AccessModelInterpreterImpl(provider, null);
       interpreter.computeAccessDetails(new CheckAccessDetailCollectorNotCalled(), expectedContext1, objectToCheck);
       Assert.assertTrue("Provider isApplicableCalled failed", provider.wasIsApplicableCalled());
       Assert.assertFalse("Provider asCastedObjectCalled failed", provider.wasAsCastedObjectCalled());
@@ -107,7 +107,7 @@ public class AccessModelInterpreterImplTest {
    public void testComputeAccessCastedObjectNull() throws OseeCoreException {
       final Object objectToCheck = new Object();
       MockArtifactDataProvider provider = new MockArtifactDataProvider(true, objectToCheck, null);
-      AccessModelInterpreterImpl interpreter = new AccessModelInterpreterImpl(provider);
+      AccessModelInterpreterImpl interpreter = new AccessModelInterpreterImpl(provider, null);
       try {
          interpreter.computeAccessDetails(new CheckAccessDetailCollectorNotCalled(), expectedContext1, objectToCheck);
       } finally {
@@ -120,19 +120,19 @@ public class AccessModelInterpreterImplTest {
    public void testComputeAccessCheckRestriction() throws OseeCoreException {
       AccessContext accessContext = MockModel.createAccessContext(contextId2.getGuid(), "c2");
 
-      MockArtifactData artifactData = new MockArtifactData("1234", null);
+      MockArtifactProxy artifactData = new MockArtifactProxy("1234", null);
 
       ObjectRestriction objectRestriction = null;
       assertComputeDetails(accessContext, artifactData, objectRestriction, false);
    }
 
-   private static void assertComputeDetails(AccessContext accessContext, MockArtifactData artifactData, ObjectRestriction objectRestriction, boolean expectedProcessCalled) throws OseeCoreException {
+   private static void assertComputeDetails(AccessContext accessContext, MockArtifactProxy artifactData, ObjectRestriction objectRestriction, boolean expectedProcessCalled) throws OseeCoreException {
       final Object objectToCheck = new Object();
       MockArtifactDataProvider provider = new MockArtifactDataProvider(true, objectToCheck, artifactData);
       AccessDetailCollector collector = new CheckAccessDetailCollectorNotCalled();
       MockRestrictionHandler restrictionHandler =
          new MockRestrictionHandler(objectRestriction, artifactData, collector);
-      AccessModelInterpreterImpl interpreter = new AccessModelInterpreterImpl(provider, restrictionHandler);
+      AccessModelInterpreterImpl interpreter = new AccessModelInterpreterImpl(provider, null, restrictionHandler);
       interpreter.computeAccessDetails(collector, accessContext, objectToCheck);
       Assert.assertTrue("Provider isApplicableCalled failed", provider.wasIsApplicableCalled());
       Assert.assertTrue("Provider asCastedObjectCalled failed", provider.wasAsCastedObjectCalled());

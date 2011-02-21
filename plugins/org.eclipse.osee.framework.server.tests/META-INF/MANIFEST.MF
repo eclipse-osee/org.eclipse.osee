@@ -8,7 +8,7 @@ Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.eclipse.osee.framework.branch.management.test,
  org.eclipse.osee.framework.core.datastore.test,
- org.eclipse.osee.framework.core.dsl.integration.test,
+ org.eclipse.osee.framework.core.dsl.integration,
  org.eclipse.osee.framework.core.message.test,
  org.eclipse.osee.framework.core.model.test,
  org.eclipse.osee.framework.core.server.test,

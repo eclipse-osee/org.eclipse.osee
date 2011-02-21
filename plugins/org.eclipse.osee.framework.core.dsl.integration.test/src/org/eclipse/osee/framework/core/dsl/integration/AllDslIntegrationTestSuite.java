@@ -8,20 +8,22 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.dsl.integration.test.mocks;
+package org.eclipse.osee.framework.core.dsl.integration;
 
-import org.eclipse.osee.framework.core.model.access.AccessDetail;
-import org.eclipse.osee.framework.core.model.access.AccessDetailCollector;
-import org.junit.Assert;
+import org.eclipse.osee.framework.core.dsl.integration.internal.InternalTestSuite;
+import org.eclipse.osee.framework.core.dsl.integration.util.DslUtilTestSuite;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 /**
  * @author Roberto E. Escobar
  */
-public final class CheckAccessDetailCollectorNotCalled implements AccessDetailCollector {
-
-   @Override
-   public void collect(AccessDetail<?> accessDetail) {
-      Assert.fail("Method was unexpectedly called");
-   }
-
-};
+@RunWith(Suite.class)
+@Suite.SuiteClasses({ //
+InternalTestSuite.class, //
+   DslUtilTestSuite.class, //
+   OseeDslAccessModelTest.class, //
+})
+public class AllDslIntegrationTestSuite {
+   // Test Suite
+}

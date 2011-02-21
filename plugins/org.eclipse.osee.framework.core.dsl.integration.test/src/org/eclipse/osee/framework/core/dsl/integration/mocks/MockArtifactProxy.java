@@ -8,12 +8,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.dsl.integration.test.mocks;
+package org.eclipse.osee.framework.core.dsl.integration.mocks;
 
 import java.util.Collection;
 import java.util.Collections;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider.ArtifactData;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.Identity;
+import org.eclipse.osee.framework.core.data.Named;
+import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider.ArtifactProxy;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
@@ -21,24 +24,24 @@ import org.eclipse.osee.framework.core.model.type.RelationType;
 /**
  * @author Roberto E. Escobar
  */
-public class MockArtifactData implements ArtifactData {
+public class MockArtifactProxy implements ArtifactProxy {
 
    private final String guid;
    private final ArtifactType artifactType;
-   private final Collection<String> hierarchy;
+   private final Collection<ArtifactProxy> hierarchy;
    private final Collection<RelationType> validRelationTypes;
    private final IBasicArtifact<?> artifactObject;
 
-   public MockArtifactData(IBasicArtifact<?> artifactObject) {
+   public MockArtifactProxy(IBasicArtifact<?> artifactObject) {
       this(artifactObject.getGuid(), artifactObject.getArtifactType(), artifactObject,
-         Collections.<String> emptyList(), Collections.<RelationType> emptyList());
+         Collections.<ArtifactProxy> emptyList(), Collections.<RelationType> emptyList());
    }
 
-   public MockArtifactData(String guid, ArtifactType artifactType) {
-      this(guid, artifactType, null, Collections.<String> emptyList(), Collections.<RelationType> emptyList());
+   public MockArtifactProxy(String guid, ArtifactType artifactType) {
+      this(guid, artifactType, null, Collections.<ArtifactProxy> emptyList(), Collections.<RelationType> emptyList());
    }
 
-   public MockArtifactData(String guid, ArtifactType artifactType, IBasicArtifact<?> artifactObject, Collection<String> hierarchy, Collection<RelationType> validRelationTypes) {
+   public MockArtifactProxy(String guid, ArtifactType artifactType, IBasicArtifact<?> artifactObject, Collection<ArtifactProxy> hierarchy, Collection<RelationType> validRelationTypes) {
       this.guid = guid;
       this.artifactType = artifactType;
       this.hierarchy = hierarchy;
@@ -67,12 +70,37 @@ public class MockArtifactData implements ArtifactData {
    }
 
    @Override
-   public Collection<String> getHierarchy() {
+   public Collection<ArtifactProxy> getHierarchy() {
       return hierarchy;
    }
 
    @Override
    public IBasicArtifact<?> getObject() {
       return artifactObject;
+   }
+
+   @Override
+   public IOseeBranch getBranch() {
+      return artifactObject.getBranch();
+   }
+
+   @Override
+   public String getName() {
+      return artifactObject.getName();
+   }
+
+   @Override
+   public boolean matches(Identity... identities) {
+      return artifactObject.matches(identities);
+   }
+
+   @Override
+   public String getUnqualifiedName() {
+      return artifactObject.getUnqualifiedName();
+   }
+
+   @Override
+   public int compareTo(Named o) {
+      return artifactObject.compareTo(o);
    }
 }

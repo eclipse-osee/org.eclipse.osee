@@ -10,4 +10,4 @@ Require-Bundle: org.junit
 Import-Package: org.eclipse.osee.framework.core.dsl.integration,
  org.eclipse.osee.framework.core.model.test.mocks,
  org.eclipse.osee.framework.jdk.core.type
-Export-Package: org.eclipse.osee.framework.core.dsl.integration.test
+Export-Package: org.eclipse.osee.framework.core.dsl.integration

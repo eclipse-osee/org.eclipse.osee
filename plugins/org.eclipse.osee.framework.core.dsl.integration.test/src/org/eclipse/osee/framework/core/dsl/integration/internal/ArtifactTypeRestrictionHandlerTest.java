@@ -8,15 +8,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.dsl.integration.test.internal;
+package org.eclipse.osee.framework.core.dsl.integration.internal;
 
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.dsl.integration.internal.ArtifactTypeRestrictionHandler;
-import org.eclipse.osee.framework.core.dsl.integration.test.mocks.DslAsserts;
-import org.eclipse.osee.framework.core.dsl.integration.test.mocks.MockArtifactData;
-import org.eclipse.osee.framework.core.dsl.integration.test.mocks.MockModel;
+import org.eclipse.osee.framework.core.dsl.integration.mocks.DslAsserts;
+import org.eclipse.osee.framework.core.dsl.integration.mocks.MockArtifactProxy;
+import org.eclipse.osee.framework.core.dsl.integration.mocks.MockModel;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessPermissionEnum;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.ArtifactTypeRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactType;
@@ -49,7 +49,7 @@ public class ArtifactTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       restriction.setArtifactTypeRef(artifactTypeRef);
 
       ArtifactType artifactType2 = new ArtifactType(GUID.create(), "Some Artifact Type", false);
-      MockArtifactData artData = new MockArtifactData(GUID.create(), artifactType2);
+      MockArtifactProxy artData = new MockArtifactProxy(GUID.create(), artifactType2);
       DslAsserts.assertNullAccessDetail(getRestrictionHandler(), restriction, artData);
    }
 
@@ -63,7 +63,7 @@ public class ArtifactTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       restriction.setArtifactTypeRef(artifactTypeRef);
 
       ArtifactType expectedAccessObject = new ArtifactType(artifactType.getGuid(), artifactType.getName(), false);
-      MockArtifactData artData = new MockArtifactData(GUID.create(), expectedAccessObject);
+      MockArtifactProxy artData = new MockArtifactProxy(GUID.create(), expectedAccessObject);
 
       DslAsserts.assertAccessDetail(getRestrictionHandler(), restriction, artData, expectedAccessObject,
          PermissionEnum.WRITE);
@@ -81,7 +81,7 @@ public class ArtifactTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       ArtifactType expectedAccessObject =
          new ArtifactType(CoreArtifactTypes.Requirement.getGuid(), CoreArtifactTypes.Requirement.getName(), false);
 
-      MockArtifactData artData = new MockArtifactData(GUID.create(), expectedAccessObject);
+      MockArtifactProxy artData = new MockArtifactProxy(GUID.create(), expectedAccessObject);
       DslAsserts.assertNullAccessDetail(getRestrictionHandler(), restriction, artData);
 
       // Make expectedAccessObject inherit from ArtifactType

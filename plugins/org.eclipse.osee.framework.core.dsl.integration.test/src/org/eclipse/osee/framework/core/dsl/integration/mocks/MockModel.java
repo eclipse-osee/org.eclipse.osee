@@ -8,18 +8,18 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.dsl.integration.test.mocks;
+package org.eclipse.osee.framework.core.dsl.integration.mocks;
 
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessContext;
-import org.eclipse.osee.framework.core.dsl.oseeDsl.ArtifactInstanceRestriction;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.ArtifactMatchRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.ArtifactTypeRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AttributeTypeRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.ObjectRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslFactory;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeRestriction;
-import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactRef;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactMatcher;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationType;
@@ -55,8 +55,8 @@ public final class MockModel {
       return toReturn;
    }
 
-   public static ArtifactInstanceRestriction createArtifactInstanceRestriction() {
-      ArtifactInstanceRestriction toReturn = OseeDslFactory.eINSTANCE.createArtifactInstanceRestriction();
+   public static ArtifactMatchRestriction createArtifactMatchRestriction() {
+      ArtifactMatchRestriction toReturn = OseeDslFactory.eINSTANCE.createArtifactMatchRestriction();
       Assert.assertNotNull(toReturn);
       return toReturn;
    }
@@ -79,12 +79,10 @@ public final class MockModel {
       return toReturn;
    }
 
-   public static XArtifactRef createXArtifactRef(String guid, String name) {
-      XArtifactRef toReturn = OseeDslFactory.eINSTANCE.createXArtifactRef();
+   public static XArtifactMatcher createXArtifactMatcherRef(String name) {
+      XArtifactMatcher toReturn = OseeDslFactory.eINSTANCE.createXArtifactMatcher();
       Assert.assertNotNull(toReturn);
-      toReturn.setGuid(guid);
       toReturn.setName(name);
-      Assert.assertEquals(guid, toReturn.getGuid());
       Assert.assertEquals(name, toReturn.getName());
       return toReturn;
    }
