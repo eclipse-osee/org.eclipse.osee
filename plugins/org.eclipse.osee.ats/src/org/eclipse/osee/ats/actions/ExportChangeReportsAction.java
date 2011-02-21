@@ -10,7 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.actions;
 
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.operation.ExportChangeReportOperation;
@@ -33,13 +34,15 @@ public class ExportChangeReportsAction extends Action {
       this.worldEditor = worldEditor;
    }
 
-   public Collection<TeamWorkFlowArtifact> getWorkflows() {
-      return worldEditor.getWorldComposite().getXViewer().getSelectedTeamWorkflowArtifacts();
+   public List<TeamWorkFlowArtifact> getWorkflows() {
+      ArrayList<TeamWorkFlowArtifact> workflows = new ArrayList<TeamWorkFlowArtifact>();
+      workflows.addAll(worldEditor.getWorldComposite().getXViewer().getSelectedTeamWorkflowArtifacts());
+      return workflows;
    }
 
    @Override
    public void run() {
-      IOperation operation = new ExportChangeReportOperation(getWorkflows());
+      IOperation operation = new ExportChangeReportOperation(getWorkflows(), false);
       Operations.executeAsJob(operation, true);
    }
 

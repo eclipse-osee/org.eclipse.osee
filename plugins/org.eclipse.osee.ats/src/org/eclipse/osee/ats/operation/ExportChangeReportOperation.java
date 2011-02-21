@@ -16,6 +16,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -42,16 +43,22 @@ import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
  * @author Ryan D. Brooks
  */
 public class ExportChangeReportOperation extends AbstractOperation {
-   private final Collection<TeamWorkFlowArtifact> workflows;
+   private final List<TeamWorkFlowArtifact> workflows;
    private String resultFolder;
+   private final boolean reverse;
 
-   public ExportChangeReportOperation(Collection<TeamWorkFlowArtifact> workflows) {
+   public ExportChangeReportOperation(List<TeamWorkFlowArtifact> workflows, boolean reverse) {
       super("Exporting Change Report(s)", AtsPlugin.PLUGIN_ID);
       this.workflows = workflows;
+      this.reverse = reverse;
    }
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws OseeCoreException {
+      report(workflows.size() + " workflows.");
+
+      sortWorkflows();
+
       for (Artifact workflow : workflows) {
          Collection<Change> changes = computeChanges(workflow, monitor);
          if (!changes.isEmpty() && changes.size() < 4000) {
@@ -60,6 +67,23 @@ public class ExportChangeReportOperation extends AbstractOperation {
          }
          monitor.worked(calculateWork(0.50));
       }
+   }
+
+   private void sortWorkflows() {
+      Collections.sort(workflows, new Comparator<TeamWorkFlowArtifact>() {
+         @Override
+         public int compare(TeamWorkFlowArtifact workflow1, TeamWorkFlowArtifact workflow2) {
+            try {
+               String legacyId1 = workflow1.getSoleAttributeValue(AtsAttributeTypes.LegacyPcrId, "");
+               String legacyId2 = workflow2.getSoleAttributeValue(AtsAttributeTypes.LegacyPcrId, "");
+
+               int compare = legacyId1.compareTo(legacyId2);
+               return reverse ? -1 * compare : compare;
+            } catch (OseeCoreException ex) {
+               return -1;
+            }
+         }
+      });
    }
 
    private Collection<Change> computeChanges(Artifact workflow, IProgressMonitor monitor) throws OseeCoreException {
