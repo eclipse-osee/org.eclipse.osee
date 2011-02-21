@@ -91,8 +91,11 @@ public class Strings {
 
    public static String unquote(String nameReference) {
       String toReturn = nameReference;
-      if (Strings.isValid(nameReference) && nameReference.contains("\"")) {
-         toReturn = nameReference.replaceAll("\\\"", emptyString());
+      if (toReturn != null) {
+         toReturn = toReturn.trim();
+         if (Strings.isValid(toReturn) && toReturn.startsWith("\"") && toReturn.endsWith("\"")) {
+            toReturn = toReturn.substring(1, toReturn.length() - 1);
+         }
       }
       return toReturn;
    }
