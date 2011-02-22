@@ -15,15 +15,16 @@ import java.util.HashSet;
 import org.eclipse.osee.framework.core.data.AccessContextId;
 import org.eclipse.osee.framework.core.dsl.integration.AccessModelInterpreter;
 import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider;
-import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider.ArtifactData;
+import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider.ArtifactProxy;
 import org.eclipse.osee.framework.core.dsl.integration.RestrictionHandler;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessContext;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.HierarchyRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.ObjectRestriction;
-import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactRef;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactMatcher;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.access.AccessDetailCollector;
 import org.eclipse.osee.framework.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Roberto E. Escobar
@@ -31,10 +32,12 @@ import org.eclipse.osee.framework.core.util.Conditions;
 public class AccessModelInterpreterImpl implements AccessModelInterpreter {
 
    private final ArtifactDataProvider provider;
+   private final ArtifactMatchInterpreter matcher;
    private final Collection<RestrictionHandler<?>> restrictionHandlers;
 
-   public AccessModelInterpreterImpl(ArtifactDataProvider provider, RestrictionHandler<?>... restricitionHandlers) {
+   public AccessModelInterpreterImpl(ArtifactDataProvider provider, ArtifactMatchInterpreter matcher, RestrictionHandler<?>... restricitionHandlers) {
       this.provider = provider;
+      this.matcher = matcher;
       this.restrictionHandlers = new HashSet<RestrictionHandler<?>>();
       for (RestrictionHandler<?> handler : restricitionHandlers) {
          restrictionHandlers.add(handler);
@@ -47,7 +50,7 @@ public class AccessModelInterpreterImpl implements AccessModelInterpreter {
       Conditions.checkNotNull(contextId, "accessContextId");
       AccessContext toReturn = null;
       for (AccessContext accessContext : contexts) {
-         if (contextId.getGuid().equals(accessContext.getGuid())) {
+         if (contextId.getGuid().equals(Strings.unquote(accessContext.getGuid()))) {
             toReturn = accessContext;
          }
       }
@@ -61,7 +64,7 @@ public class AccessModelInterpreterImpl implements AccessModelInterpreter {
       Conditions.checkNotNull(objectToCheck, "objectToCheck");
 
       if (provider.isApplicable(objectToCheck)) {
-         ArtifactData data = provider.asCastedObject(objectToCheck);
+         ArtifactProxy data = provider.asCastedObject(objectToCheck);
          Conditions.checkNotNull(data, "artifactData",
             "artifact data provider returned null - provider has an isApplicable error");
 
@@ -69,33 +72,33 @@ public class AccessModelInterpreterImpl implements AccessModelInterpreter {
       }
    }
 
-   private void collectApplicable(AccessDetailCollector collector, AccessContext context, ArtifactData artifactData) throws OseeCoreException {
+   private void collectApplicable(AccessDetailCollector collector, AccessContext context, ArtifactProxy artifactData) throws OseeCoreException {
       processContext(collector, context, artifactData);
       for (AccessContext superContext : context.getSuperAccessContexts()) {
          collectApplicable(collector, superContext, artifactData);
       }
    }
 
-   private void processContext(AccessDetailCollector collector, AccessContext context, ArtifactData artifactData) throws OseeCoreException {
+   private void processContext(AccessDetailCollector collector, AccessContext context, ArtifactProxy artifactData) throws OseeCoreException {
       collectRestrictions(collector, artifactData, context.getAccessRules());
       Collection<HierarchyRestriction> restrictions = context.getHierarchyRestrictions();
 
-      Collection<String> guidHierarchy = artifactData.getHierarchy();
+      Collection<ArtifactProxy> proxyHierarchy = artifactData.getHierarchy();
 
       for (HierarchyRestriction hierarchy : restrictions) {
-         XArtifactRef artifactRef = hierarchy.getArtifact();
-         boolean isInHierarchy = guidHierarchy.contains(artifactRef.getGuid());
-         if (isInHierarchy) {
+         XArtifactMatcher artifactRef = hierarchy.getArtifactMatcherRef();
+         if (matcher.matches(artifactRef, proxyHierarchy)) {
             collectRestrictions(collector, artifactData, hierarchy.getAccessRules());
          }
       }
    }
 
-   private void collectRestrictions(AccessDetailCollector collector, ArtifactData artifactData, Collection<ObjectRestriction> restrictions) throws OseeCoreException {
+   private void collectRestrictions(AccessDetailCollector collector, ArtifactProxy artifactData, Collection<ObjectRestriction> restrictions) throws OseeCoreException {
       for (ObjectRestriction objectRestriction : restrictions) {
          for (RestrictionHandler<?> restrictionHandler : restrictionHandlers) {
             restrictionHandler.process(objectRestriction, artifactData, collector);
          }
       }
    }
+
 }

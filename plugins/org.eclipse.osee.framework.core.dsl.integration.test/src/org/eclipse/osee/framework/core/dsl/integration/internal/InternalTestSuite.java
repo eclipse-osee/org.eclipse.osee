@@ -17,13 +17,13 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ //
-ArtifactInstanceRestrictionHandlerTest.class, //
-   ArtifactTypeRestrictionHandlerTest.class, //
-   AttributeTypeRestrictionHandlerTest.class, //
-   RelationTypeRestrictionHandlerTest.class, //
-   AccessModelInterpreterImplTest.class, //
-})
+@Suite.SuiteClasses({
+   AccessModelInterpreterImplTest.class,
+   ArtifactMatchInterpreterTest.class,
+   ArtifactMatchRestrictionHandlerTest.class,
+   ArtifactTypeRestrictionHandlerTest.class,
+   AttributeTypeRestrictionHandlerTest.class,
+   RelationTypeRestrictionHandlerTest.class})
 public class InternalTestSuite {
    // Test Suite
 }

@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.core.dsl.integration.internal;
 
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider.ArtifactData;
+import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider.ArtifactProxy;
 import org.eclipse.osee.framework.core.dsl.integration.RestrictionHandler;
 import org.eclipse.osee.framework.core.dsl.integration.util.OseeUtil;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AttributeTypeRestriction;
@@ -40,18 +40,18 @@ public class AttributeTypeRestrictionHandler implements RestrictionHandler<Attri
    }
 
    @Override
-   public void process(ObjectRestriction objectRestriction, ArtifactData artifactData, AccessDetailCollector collector) throws OseeCoreException {
+   public void process(ObjectRestriction objectRestriction, ArtifactProxy artifactProxy, AccessDetailCollector collector) throws OseeCoreException {
       AttributeTypeRestriction restriction = asCastedObject(objectRestriction);
       if (restriction != null) {
          XAttributeType attributeTypeRef = restriction.getAttributeTypeRef();
          IAttributeType attributeTypeToMatch = OseeUtil.toToken(attributeTypeRef);
-         boolean isApplicable = artifactData.isAttributeTypeValid(attributeTypeToMatch);
+         boolean isApplicable = artifactProxy.isAttributeTypeValid(attributeTypeToMatch);
          if (isApplicable) {
             XArtifactType artifactTypeRef = restriction.getArtifactTypeRef();
             if (artifactTypeRef != null) {
                isApplicable = false;
                IArtifactType typeToMatch = OseeUtil.toToken(artifactTypeRef);
-               ArtifactType artifactType = artifactData.getArtifactType();
+               ArtifactType artifactType = artifactProxy.getArtifactType();
                isApplicable = artifactType.inheritsFrom(typeToMatch);
             }
          }

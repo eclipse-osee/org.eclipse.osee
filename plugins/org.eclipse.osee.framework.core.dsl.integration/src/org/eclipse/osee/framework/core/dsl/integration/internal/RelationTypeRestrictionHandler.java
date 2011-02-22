@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.core.dsl.integration.internal;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider.ArtifactData;
+import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider.ArtifactProxy;
 import org.eclipse.osee.framework.core.dsl.integration.RestrictionHandler;
 import org.eclipse.osee.framework.core.dsl.integration.util.OseeUtil;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.ObjectRestriction;
@@ -43,16 +43,16 @@ public class RelationTypeRestrictionHandler implements RestrictionHandler<Relati
    }
 
    @Override
-   public void process(ObjectRestriction objectRestriction, ArtifactData artifactData, AccessDetailCollector collector) throws OseeCoreException {
+   public void process(ObjectRestriction objectRestriction, ArtifactProxy artifactProxy, AccessDetailCollector collector) throws OseeCoreException {
       RelationTypeRestriction restriction = asCastedObject(objectRestriction);
       if (restriction != null) {
          XRelationType relationTypeRef = restriction.getRelationTypeRef();
          XRelationSideEnum restrictedSide = restriction.getRestrictedToSide();
 
          IRelationType typeToMatch = OseeUtil.toToken(relationTypeRef);
-         RelationType relationType = getRelationType(typeToMatch, artifactData);
+         RelationType relationType = getRelationType(typeToMatch, artifactProxy);
          if (relationType != null) {
-            ArtifactType artifactType = artifactData.getArtifactType();
+            ArtifactType artifactType = artifactProxy.getArtifactType();
             for (RelationSide relationSide : RelationSide.values()) {
                if (OseeUtil.isRestrictedSide(restrictedSide, relationSide)) {
 
@@ -68,9 +68,9 @@ public class RelationTypeRestrictionHandler implements RestrictionHandler<Relati
       }
    }
 
-   private RelationType getRelationType(IRelationType typeToMatch, ArtifactData artifact) throws OseeCoreException {
+   private RelationType getRelationType(IRelationType typeToMatch, ArtifactProxy artifactProxy) throws OseeCoreException {
       RelationType toReturn = null;
-      Collection<RelationType> relationTypes = artifact.getValidRelationTypes();
+      Collection<RelationType> relationTypes = artifactProxy.getValidRelationTypes();
       for (RelationType relationType : relationTypes) {
          if (relationType.equals(typeToMatch)) {
             toReturn = relationType;

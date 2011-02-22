@@ -13,8 +13,25 @@ package org.eclipse.osee.framework.core.dsl.integration.mocks;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider.ArtifactProxy;
 import org.eclipse.osee.framework.core.dsl.integration.RestrictionHandler;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessContext;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessPermissionEnum;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.ArtifactTypeRestriction;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.AttributeTypeRestriction;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.CompareOp;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.Condition;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.HierarchyRestriction;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.MatchField;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.ObjectRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.RelationMultiplicityEnum;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeRestriction;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.SimpleCondition;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactMatcher;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactType;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeType;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeTypeRef;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationSideEnum;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.access.AccessDetail;
@@ -55,5 +72,101 @@ public final class DslAsserts {
       Assert.assertEquals(model1.getEnumTypes().size(), model2.getEnumTypes().size());
       Assert.assertEquals(model1.getImports().size(), model2.getImports().size());
       Assert.assertEquals(model1.getRelationTypes().size(), model2.getRelationTypes().size());
+   }
+
+   public static void assertEquals(Condition condition, MatchField expField, CompareOp expOp, String expExpression) {
+      SimpleCondition simpCondition = (SimpleCondition) condition;
+      Assert.assertEquals(expField, simpCondition.getField());
+      Assert.assertEquals(expOp, simpCondition.getOp());
+      Assert.assertEquals(expExpression, simpCondition.getExpression());
+   }
+
+   public static void assertEquals(XArtifactMatcher matcher, String name) {
+      Assert.assertEquals(name, matcher.getName());
+   }
+
+   public static void assertEquals(XArtifactType artifactType, String expName, String expGuid, String[] inheritsFrom, String... attributeNames) {
+      Assert.assertEquals(expName, artifactType.getName());
+      Assert.assertEquals(expGuid, artifactType.getTypeGuid());
+
+      int index = 0;
+      Assert.assertEquals(inheritsFrom.length, artifactType.getSuperArtifactTypes().size());
+      for (XArtifactType ref : artifactType.getSuperArtifactTypes()) {
+         Assert.assertEquals(inheritsFrom[index++], ref.getName());
+      }
+
+      index = 0;
+      Assert.assertEquals(attributeNames.length, artifactType.getValidAttributeTypes().size());
+      for (XAttributeTypeRef ref : artifactType.getValidAttributeTypes()) {
+         Assert.assertEquals(attributeNames[index++], ref.getValidAttributeType().getName());
+      }
+   }
+
+   public static void assertEquals(XAttributeType type, String expName, String expGuid, String baseType, String dataProvider, String min, String max, String tagger, String description, String defaultValue, String ext) {
+      Assert.assertEquals(expName, type.getName());
+      Assert.assertEquals(expGuid, type.getTypeGuid());
+
+      Assert.assertEquals(baseType, type.getBaseAttributeType());
+      Assert.assertEquals(dataProvider, type.getDataProvider());
+      Assert.assertEquals(min, type.getMin());
+      Assert.assertEquals(max, type.getMax());
+      Assert.assertEquals(tagger, type.getTaggerId());
+      Assert.assertEquals(description, type.getDescription());
+      Assert.assertEquals(defaultValue, type.getDefaultValue());
+      Assert.assertEquals(ext, type.getFileExtension());
+   }
+
+   public static void assertEquals(XRelationType type, String expName, String expGuid, String sideA, String aName, String aGuid, String sideB, String bName, String bGuid, String orderType, RelationMultiplicityEnum mult) {
+      Assert.assertEquals(expName, type.getName());
+      Assert.assertEquals(expGuid, type.getTypeGuid());
+
+      XArtifactType aArt = type.getSideAArtifactType();
+      Assert.assertEquals(sideA, type.getSideAName());
+      Assert.assertEquals(aName, aArt.getName());
+      Assert.assertEquals(aGuid, aArt.getTypeGuid());
+
+      XArtifactType bArt = type.getSideBArtifactType();
+      Assert.assertEquals(sideB, type.getSideBName());
+      Assert.assertEquals(bName, bArt.getName());
+      Assert.assertEquals(bGuid, bArt.getTypeGuid());
+
+      Assert.assertEquals(orderType, type.getDefaultOrderType());
+      Assert.assertEquals(mult, type.getMultiplicity());
+   }
+
+   public static void assertEquals(AccessContext context, String expName, String expGuid, String[] inheritsFrom) {
+      Assert.assertEquals(expName, context.getName());
+      Assert.assertEquals(expGuid, context.getGuid());
+
+      int index = 0;
+      Assert.assertEquals(inheritsFrom.length, context.getSuperAccessContexts().size());
+      for (AccessContext ref : context.getSuperAccessContexts()) {
+         Assert.assertEquals(inheritsFrom[index++], ref.getName());
+      }
+   }
+
+   public static void assertEquals(ArtifactTypeRestriction restriction, AccessPermissionEnum permission, String artTypeName) {
+      Assert.assertEquals(permission, restriction.getPermission());
+      XArtifactType ref = restriction.getArtifactTypeRef();
+      Assert.assertEquals(artTypeName, ref.getName());
+   }
+
+   public static void assertEquals(AttributeTypeRestriction restriction, AccessPermissionEnum permission, String attrTypeName, String artTypeName) {
+      Assert.assertEquals(permission, restriction.getPermission());
+
+      Assert.assertEquals(attrTypeName, restriction.getAttributeTypeRef().getName());
+
+      XArtifactType ref = restriction.getArtifactTypeRef();
+      Assert.assertEquals(artTypeName, ref.getName());
+   }
+
+   public static void assertEquals(RelationTypeRestriction restriction, AccessPermissionEnum permission, String relType, XRelationSideEnum sideEnum) {
+      Assert.assertEquals(permission, restriction.getPermission());
+      Assert.assertEquals(relType, restriction.getRelationTypeRef().getName());
+      Assert.assertEquals(sideEnum, restriction.getRestrictedToSide());
+   }
+
+   public static void assertEquals(HierarchyRestriction restriction, String matcherName) {
+      Assert.assertEquals(matcherName, restriction.getArtifactMatcherRef().getName());
    }
 }

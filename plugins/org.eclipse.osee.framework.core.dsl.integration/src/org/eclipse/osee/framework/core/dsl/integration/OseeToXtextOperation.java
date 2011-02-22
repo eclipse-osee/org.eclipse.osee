@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.dsl.integration.internal.Activator;
 import org.eclipse.osee.framework.core.dsl.integration.util.OseeUtil;
@@ -37,7 +36,6 @@ import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.model.type.OseeEnumType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Roberto E. Escobar
@@ -98,7 +96,7 @@ public class OseeToXtextOperation extends AbstractOperation {
          OseeDsl model = getModelByNamespace(getNamespace(enumType.getName()));
          model.getEnumTypes().add(modelType);
 
-         modelType.setName(Strings.quote(enumType.getName()));
+         modelType.setName(enumType.getName());
          modelType.setTypeGuid(enumType.getGuid());
 
          for (OseeEnumEntry entry : enumType.values()) {
@@ -106,7 +104,7 @@ public class OseeToXtextOperation extends AbstractOperation {
             XOseeEnumEntry entryModelType = getFactory().createXOseeEnumEntry();
             modelType.getEnumEntries().add(entryModelType);
 
-            entryModelType.setName(Strings.quote(entry.getName()));
+            entryModelType.setName(entry.getName());
             entryModelType.setOrdinal(String.valueOf(entry.ordinal()));
          }
       }
@@ -123,7 +121,7 @@ public class OseeToXtextOperation extends AbstractOperation {
          OseeDsl model = getModelByNamespace(getNamespace(attributeType.getName()));
          model.getAttributeTypes().add(modelType);
 
-         modelType.setName(Strings.quote(attributeType.getName()));
+         modelType.setName(attributeType.getName());
          modelType.setTypeGuid(attributeType.getGuid());
          modelType.setBaseAttributeType(asPrimitiveType(attributeType.getBaseAttributeTypeId()));
          modelType.setDataProvider(asPrimitiveType(attributeType.getAttributeProviderId()));
@@ -143,27 +141,17 @@ public class OseeToXtextOperation extends AbstractOperation {
       monitor.worked(calculateWork(workPercentage));
    }
 
-   private XOseeEnumType toModelEnumType(OseeDsl model, OseeEnumType oseeEnumType) {
-      String guid = oseeEnumType.getGuid();
-      for (XOseeEnumType type : model.getEnumTypes()) {
-         if (guid.equals(type.getTypeGuid())) {
-            return type;
-         }
-      }
-      return null;
-   }
-
    private void populateArtifactTypes(IProgressMonitor monitor, double workPercentage) throws OseeCoreException {
       monitor.setTaskName("Artifact Types");
-      Collection<? extends IArtifactType> artifactTypes = cache.getArtifactTypeCache().getAll();
-      for (IArtifactType artifactType : artifactTypes) {
+      Collection<ArtifactType> artifactTypes = cache.getArtifactTypeCache().getAll();
+      for (ArtifactType artifactType : artifactTypes) {
          checkForCancelledStatus(monitor);
          XArtifactType modelType = getFactory().createXArtifactType();
 
          OseeDsl model = getModelByNamespace(getNamespace(artifactType.getName()));
          model.getArtifactTypes().add(modelType);
 
-         modelType.setName(Strings.quote(artifactType.getName()));
+         modelType.setName(artifactType.getName());
          modelType.setTypeGuid(artifactType.getGuid());
 
       }
@@ -234,7 +222,7 @@ public class OseeToXtextOperation extends AbstractOperation {
          OseeDsl model = getModelByNamespace(getNamespace(relationType.getName()));
          model.getRelationTypes().add(modelType);
 
-         modelType.setName(Strings.quote(relationType.getName()));
+         modelType.setName(relationType.getName());
          modelType.setTypeGuid(relationType.getGuid());
 
          modelType.setDefaultOrderType(OseeUtil.getRelationOrderType(relationType.getDefaultOrderTypeGuid()));
@@ -250,18 +238,31 @@ public class OseeToXtextOperation extends AbstractOperation {
    }
 
    private XArtifactType getArtifactType(OseeDsl model, String guid) {
-      for (XArtifactType artifactType : model.getArtifactTypes()) {
-         if (guid.equals(artifactType.getTypeGuid())) {
-            return artifactType;
+      for (XArtifactType type : model.getArtifactTypes()) {
+         String normalizedGuid = type.getTypeGuid();
+         if (guid.equals(normalizedGuid)) {
+            return type;
          }
       }
       return null;
    }
 
    private XAttributeType getAttributeType(OseeDsl model, String guid) {
-      for (XAttributeType attributeType : model.getAttributeTypes()) {
-         if (guid.equals(attributeType.getTypeGuid())) {
-            return attributeType;
+      for (XAttributeType type : model.getAttributeTypes()) {
+         String normalizedGuid = type.getTypeGuid();
+         if (guid.equals(normalizedGuid)) {
+            return type;
+         }
+      }
+      return null;
+   }
+
+   private XOseeEnumType toModelEnumType(OseeDsl model, OseeEnumType oseeEnumType) {
+      String guid = oseeEnumType.getGuid();
+      for (XOseeEnumType type : model.getEnumTypes()) {
+         String normalizedGuid = type.getTypeGuid();
+         if (guid.equals(normalizedGuid)) {
+            return type;
          }
       }
       return null;

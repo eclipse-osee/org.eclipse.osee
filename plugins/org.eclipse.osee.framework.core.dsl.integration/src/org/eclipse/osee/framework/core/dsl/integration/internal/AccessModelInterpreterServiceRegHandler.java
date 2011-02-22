@@ -23,10 +23,7 @@ import org.osgi.framework.ServiceRegistration;
  */
 public class AccessModelInterpreterServiceRegHandler extends AbstractTrackingHandler {
 
-   private static final Class<?>[] SERVICE_DEPENDENCIES = new Class<?>[] {
-   //
-      ArtifactDataProvider.class, //
-      };
+   private static final Class<?>[] SERVICE_DEPENDENCIES = new Class<?>[] {ArtifactDataProvider.class};
 
    private ServiceRegistration registration;
 
@@ -39,15 +36,17 @@ public class AccessModelInterpreterServiceRegHandler extends AbstractTrackingHan
    public void onActivate(BundleContext context, Map<Class<?>, Object> services) {
       ArtifactDataProvider artifactDataProvider = getService(ArtifactDataProvider.class, services);
 
-      RestrictionHandler<?>[] restrictionHandlers = new RestrictionHandler<?>[] {
-         //
-         new ArtifactInstanceRestrictionHandler(), //
-         new ArtifactTypeRestrictionHandler(), //
-         new AttributeTypeRestrictionHandler(), //
-         new RelationTypeRestrictionHandler(), //
-      };
+      ArtifactMatchInterpreter matcher = new ArtifactMatchInterpreter();
 
-      AccessModelInterpreter service = new AccessModelInterpreterImpl(artifactDataProvider, restrictionHandlers);
+      RestrictionHandler<?>[] restrictionHandlers =
+         new RestrictionHandler<?>[] {
+            new ArtifactMatchRestrictionHandler(matcher),
+            new ArtifactTypeRestrictionHandler(),
+            new AttributeTypeRestrictionHandler(),
+            new RelationTypeRestrictionHandler()};
+
+      AccessModelInterpreter service =
+         new AccessModelInterpreterImpl(artifactDataProvider, matcher, restrictionHandlers);
       registration = context.registerService(AccessModelInterpreter.class.getName(), service, null);
    }
 

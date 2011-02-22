@@ -37,15 +37,15 @@ public final class OseeUtil {
    }
 
    public static IArtifactType toToken(XArtifactType model) {
-      return TokenFactory.createArtifactType(model.getTypeGuid(), Strings.unquote(model.getName()));
+      return TokenFactory.createArtifactType(Strings.unquote(model.getTypeGuid()), Strings.unquote(model.getName()));
    }
 
    public static IAttributeType toToken(XAttributeType model) {
-      return TokenFactory.createAttributeType(model.getTypeGuid(), Strings.unquote(model.getName()));
+      return TokenFactory.createAttributeType(Strings.unquote(model.getTypeGuid()), Strings.unquote(model.getName()));
    }
 
    public static IRelationType toToken(XRelationType model) {
-      return TokenFactory.createRelationType(model.getTypeGuid(), Strings.unquote(model.getName()));
+      return TokenFactory.createRelationType(Strings.unquote(model.getTypeGuid()), Strings.unquote(model.getName()));
    }
 
    public static boolean isRestrictedSide(XRelationSideEnum relationSideEnum, RelationSide relationSide) throws OseeCoreException {

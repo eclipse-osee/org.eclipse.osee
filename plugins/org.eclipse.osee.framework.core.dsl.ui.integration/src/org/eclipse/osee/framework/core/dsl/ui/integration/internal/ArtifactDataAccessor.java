@@ -14,6 +14,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.Identity;
+import org.eclipse.osee.framework.core.data.Named;
 import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -38,64 +41,104 @@ public final class ArtifactDataAccessor implements ArtifactDataProvider {
    }
 
    @Override
-   public ArtifactData asCastedObject(Object object) throws OseeCoreException {
-      ArtifactData wrapper = null;
+   public ArtifactProxy asCastedObject(Object object) throws OseeCoreException {
+      XArtifactProxy proxy = null;
       if (object instanceof Artifact) {
          final Artifact artifact = (Artifact) object;
-         wrapper = new ArtifactWrapper(artifact);
+         proxy = new XArtifactProxy(artifact);
       } else if (object instanceof Branch) {
          Branch branch = (Branch) object;
          final Artifact artifact = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(branch);
-         wrapper = new ArtifactWrapper(artifact);
+         proxy = new XArtifactProxy(artifact);
       }
-      return wrapper;
+      return proxy;
    }
 
-   private final class ArtifactWrapper implements ArtifactData {
-      private final Artifact artifact;
+   private final class XArtifactProxy implements ArtifactProxy {
+      private final Artifact self;
 
-      public ArtifactWrapper(Artifact artifact) {
-         this.artifact = artifact;
+      public XArtifactProxy(Artifact self) {
+         this.self = self;
       }
 
       @Override
       public String getGuid() {
-         return artifact.getGuid();
+         return self.getGuid();
       }
 
       @Override
       public ArtifactType getArtifactType() {
-         return artifact.getArtifactType();
+         return self.getArtifactType();
       }
 
       @Override
       public boolean isAttributeTypeValid(IAttributeType attributeType) throws OseeCoreException {
-         return artifact.isAttributeTypeValid(attributeType);
+         return self.isAttributeTypeValid(attributeType);
       }
 
       @Override
       public Collection<RelationType> getValidRelationTypes() throws OseeCoreException {
-         return artifact.getValidRelationTypes();
+         return self.getValidRelationTypes();
       }
 
       @Override
       public IBasicArtifact<?> getObject() {
-         return artifact;
+         return self;
       }
 
       @Override
-      public Collection<String> getHierarchy() {
-         Collection<String> hierarchy = new HashSet<String>();
+      public Collection<ArtifactProxy> getHierarchy() {
+         Collection<ArtifactProxy> hierarchy = new HashSet<ArtifactProxy>();
          try {
-            Artifact artifactPtr = artifact;
+            Artifact artifactPtr = self;
             while (artifactPtr != null) {
-               hierarchy.add(artifactPtr.getGuid());
+               hierarchy.add(new XArtifactProxy(artifactPtr));
                artifactPtr = artifactPtr.getParent();
             }
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
          return hierarchy;
+      }
+
+      @Override
+      public boolean matches(Identity... identities) {
+         return self.matches(identities);
+      }
+
+      @Override
+      public String getUnqualifiedName() {
+         return self.getUnqualifiedName();
+      }
+
+      @Override
+      public int compareTo(Named other) {
+         return self.compareTo(other);
+      }
+
+      @Override
+      public IOseeBranch getBranch() {
+         return self.getBranch();
+      }
+
+      @Override
+      public String getName() {
+         return self.getName();
+      }
+
+      @Override
+      public int hashCode() {
+         return self.hashCode();
+      }
+
+      @Override
+      public boolean equals(Object obj) {
+         return self.equals(obj);
+      }
+
+      @Override
+      public String toString() {
+         return self.toString();
       }
    }
 }

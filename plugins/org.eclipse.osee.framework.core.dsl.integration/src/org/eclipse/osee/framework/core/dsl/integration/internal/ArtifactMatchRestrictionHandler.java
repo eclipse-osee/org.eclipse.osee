@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.dsl.integration.internal;
 
-import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider.ArtifactData;
+import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider.ArtifactProxy;
 import org.eclipse.osee.framework.core.dsl.integration.RestrictionHandler;
 import org.eclipse.osee.framework.core.dsl.integration.util.OseeUtil;
-import org.eclipse.osee.framework.core.dsl.oseeDsl.ArtifactInstanceRestriction;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.ArtifactMatchRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.ObjectRestriction;
-import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactRef;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactMatcher;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
@@ -25,25 +25,31 @@ import org.eclipse.osee.framework.core.model.access.AccessDetailCollector;
 /**
  * @author Roberto E. Escobar
  */
-public class ArtifactInstanceRestrictionHandler implements RestrictionHandler<ArtifactInstanceRestriction> {
+public class ArtifactMatchRestrictionHandler implements RestrictionHandler<ArtifactMatchRestriction> {
+
+   private final ArtifactMatchInterpreter matcherInterpreter;
+
+   public ArtifactMatchRestrictionHandler(ArtifactMatchInterpreter matcherInterpreter) {
+      this.matcherInterpreter = matcherInterpreter;
+   }
 
    @Override
-   public ArtifactInstanceRestriction asCastedObject(ObjectRestriction objectRestriction) {
-      ArtifactInstanceRestriction toReturn = null;
-      if (objectRestriction instanceof ArtifactInstanceRestriction) {
-         toReturn = (ArtifactInstanceRestriction) objectRestriction;
+   public ArtifactMatchRestriction asCastedObject(ObjectRestriction objectRestriction) {
+      ArtifactMatchRestriction toReturn = null;
+      if (objectRestriction instanceof ArtifactMatchRestriction) {
+         toReturn = (ArtifactMatchRestriction) objectRestriction;
       }
       return toReturn;
    }
 
    @Override
-   public void process(ObjectRestriction objectRestriction, ArtifactData artifactData, AccessDetailCollector collector) throws OseeCoreException {
-      ArtifactInstanceRestriction restriction = asCastedObject(objectRestriction);
+   public void process(ObjectRestriction objectRestriction, ArtifactProxy artifactProxy, AccessDetailCollector collector) throws OseeCoreException {
+      ArtifactMatchRestriction restriction = asCastedObject(objectRestriction);
       if (restriction != null) {
-         XArtifactRef artifactRef = restriction.getArtifactRef();
-         if (artifactRef.getGuid().equals(artifactData.getGuid())) {
+         XArtifactMatcher artifactMatcher = restriction.getArtifactMatcherRef();
+         if (matcherInterpreter.matches(artifactMatcher, artifactProxy)) {
             PermissionEnum permission = OseeUtil.getPermission(restriction);
-            collector.collect(new AccessDetail<IBasicArtifact<?>>(artifactData.getObject(), permission));
+            collector.collect(new AccessDetail<IBasicArtifact<?>>(artifactProxy.getObject(), permission));
          }
       }
    }
