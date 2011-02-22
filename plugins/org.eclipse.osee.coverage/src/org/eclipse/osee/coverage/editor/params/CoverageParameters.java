@@ -83,7 +83,13 @@ public class CoverageParameters {
          }
       } else if (coverage instanceof CoverageUnit) {
          if (Strings.isValid(name) || Strings.isValid(namespace) || Strings.isValid(notes) || Strings.isValid(workProductTasks) || assignee != null) {
-            if (!((CoverageUnit) coverage).isFolder() && isNameMatch(coverage) && isNamespaceMatch(coverage) && isNotesMatch(coverage) && isWorkProductTasksMatch(coverage) && isAssigneeMatch(coverage)) {
+            boolean folder = ((CoverageUnit) coverage).isFolder();
+            boolean nameMatch = isNameMatch(coverage);
+            boolean namespaceMatch = isNamespaceMatch(coverage);
+            boolean notesMatch = isNotesMatch(coverage);
+            boolean workProductTasksMatch = isWorkProductTasksMatch(coverage);
+            boolean assigneeMatch = isAssigneeMatch(coverage);
+            if (!folder && nameMatch && namespaceMatch && notesMatch && workProductTasksMatch && assigneeMatch) {
                matchItems.add(coverage);
                // If CoverageUnit matches, include all coverage items in match
                for (CoverageItem coverageItem : ((CoverageUnit) coverage).getCoverageItems(true)) {
@@ -160,11 +166,16 @@ public class CoverageParameters {
       if (!Strings.isValid(workProductTasks) || !(coverage instanceof IWorkProductRelatable)) {
          return true;
       }
-      if (!Strings.isValid(((IWorkProductRelatable) coverage).getWorkProductTaskGuid())) {
-         return false;
-      }
-      if (((IWorkProductRelatable) coverage).getWorkProductTask().getName().contains(workProductTasks)) {
+      boolean guidValid = Strings.isValid(((IWorkProductRelatable) coverage).getWorkProductTaskGuid());
+      if (guidValid && ((IWorkProductRelatable) coverage).getWorkProductTask().getName().contains(workProductTasks)) {
          return true;
+      }
+      if (coverage instanceof CoverageUnit) {
+         for (CoverageItem childCoverageItem : ((CoverageUnit) coverage).getCoverageItems()) {
+            if (isWorkProductTasksMatch(childCoverageItem)) {
+               return true;
+            }
+         }
       }
       return false;
    }
