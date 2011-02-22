@@ -20,10 +20,11 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
@@ -53,7 +54,14 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
    public static final String emptyXWidgetsXml = "<xWidgets/>";
    protected IOseeDatabaseService databaseService;
 
-   public abstract void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception;
+   public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
+      throw new OseeStateException(
+         "either runOperation or createOperation but be overriden by subclesses of AbstractBlam");
+   }
+
+   public IOperation createOperation(VariableMap variableMap, Appendable appendable) throws Exception {
+      return new ExecuteBlamOperation(getName(), appendable, variableMap, this);
+   }
 
    /**
     * Return collection of categories that blam belongs to eg: ATS, ATS.Admin, ATS.Report. These will be used to create
@@ -67,7 +75,7 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
 
    /**
     * Expects the {@code <className>} of blam. Gets {@code /bundleName/ui/<className>Ui.xml } and returns its contents.
-    *
+    * 
     * @param className class name of blam
     * @param nameOfBundle name of bundle i.e. org.eclipse.rcp.xyz
     * @return contents of the {@code /bundleName/ui/<className>Ui.xml }
@@ -126,10 +134,10 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
       }
    }
 
-   public void execute(String jobName, Appendable appendable, VariableMap variableMap, JobChangeAdapter jobChangeAdapter) {
+   public void execute(Appendable appendable, VariableMap variableMap, IJobChangeListener jobChangeListener) {
       try {
-         IOperation blamOperation = new ExecuteBlamOperation(jobName, appendable, variableMap, this);
-         Operations.executeAsJob(blamOperation, true, Job.LONG, jobChangeAdapter);
+         IOperation blamOperation = createOperation(variableMap, appendable);
+         Operations.executeAsJob(blamOperation, true, Job.LONG, jobChangeListener);
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }

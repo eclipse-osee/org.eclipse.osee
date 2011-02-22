@@ -273,7 +273,7 @@ public class CoverageEditorImportTab extends FormPage {
             }
             coverageImport = null;
 
-            getBlam().execute(getBlam().getName(), blamOutputSection.getOutput(), blamInputSection.getData(),
+            getBlam().execute(blamOutputSection.getOutput(), blamInputSection.getData(),
                new BlamEditorExecutionAdapter(getBlam().getName()));
          } catch (Exception ex) {
             OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);

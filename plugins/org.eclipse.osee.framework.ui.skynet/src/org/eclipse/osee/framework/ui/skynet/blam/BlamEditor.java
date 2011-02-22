@@ -91,7 +91,7 @@ public class BlamEditor extends FormEditor implements IDirtiableEditor {
    }
 
    public void executeBlam() throws OseeArgumentException {
-      getEditorInput().getBlamOperation().execute(getPartName(), overviewPage.getOutput(), getBlamVariableMap(),
+      getEditorInput().getBlamOperation().execute(overviewPage.getOutput(), getBlamVariableMap(),
          new BlamEditorExecutionAdapter());
    }
 
