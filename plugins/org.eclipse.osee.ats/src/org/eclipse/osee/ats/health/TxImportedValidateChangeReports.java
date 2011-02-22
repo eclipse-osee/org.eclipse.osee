@@ -75,7 +75,7 @@ public class TxImportedValidateChangeReports extends AbstractBlam {
    private void setup(String databaseTargetId) throws OseeCoreException {
       List<ImportedId> importtedIds = getImportedIds();
       for (ImportedId importedId : importtedIds) {
-         print(importedId.getSequence() + "\n");
+         report(importedId.getSequence());
          importedId.load(databaseTargetId);
       }
 

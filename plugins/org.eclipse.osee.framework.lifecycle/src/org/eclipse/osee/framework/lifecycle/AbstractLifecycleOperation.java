@@ -14,6 +14,7 @@ package org.eclipse.osee.framework.lifecycle;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.lifecycle.internal.OperationPointId;
 
@@ -25,6 +26,12 @@ public abstract class AbstractLifecycleOperation extends AbstractOperation {
 
    private final ILifecycleService service;
    private final AbstractLifecyclePoint<?> lifecyclepoint;
+
+   public AbstractLifecycleOperation(ILifecycleService service, AbstractLifecyclePoint<?> lifecyclePoint, String operationName, String pluginId, OperationLogger logger) {
+      super(operationName, pluginId, logger);
+      this.service = service;
+      this.lifecyclepoint = lifecyclePoint;
+   }
 
    public AbstractLifecycleOperation(ILifecycleService service, AbstractLifecyclePoint<?> lifecyclePoint, String operationName, String pluginId) {
       super(operationName, pluginId);

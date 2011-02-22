@@ -49,14 +49,14 @@ public class RenameFiles extends AbstractBlam {
          if (rule.ruleWasApplicable()) {
             File newFile = new File(newName.toString());
             if (file.renameTo(newFile)) {
-               println(file.getPath() + " became " + newFile.getPath());
+               report(file.getPath() + " became " + newFile.getPath());
                renamedFileCount++;
             } else {
-               println(file.getPath() + " failed to become " + newFile.getPath());
+               report(file.getPath() + " failed to become " + newFile.getPath());
             }
          }
       }
-      println("Changed " + renamedFileCount + " files");
+      report("Changed " + renamedFileCount + " files");
    }
 
    @Override

@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.blam;
 
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.blam.sections.BlamInputSection;
@@ -122,7 +123,7 @@ public class BlamOverviewPage extends FormPage {
       outputSection.setText(text);
    }
 
-   public Appendable getOutput() {
+   public OperationLogger getReporter() {
       return outputSection.getOutput();
    }
 

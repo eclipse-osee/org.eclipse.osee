@@ -148,4 +148,8 @@ public abstract class AbstractOperation implements IOperation {
    protected final void log(IStatus status) {
       logger.log(status);
    }
+
+   public OperationLogger getReporter() {
+      return logger;
+   }
 }

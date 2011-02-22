@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.database.operation.InvalidTxCurrentsAndModType
  */
 public class TxCurrentsAndModTypesCommand extends CompositeOperation {
    public TxCurrentsAndModTypesCommand(OperationLogger logger, boolean archived) {
-      super("TxCurrents And Mod Types", Activator.PLUGIN_ID, buildSubOperations(logger, archived));
+      super("TxCurrents And Mod Types", Activator.PLUGIN_ID, logger, buildSubOperations(logger, archived));
    }
 
    private static List<IOperation> buildSubOperations(OperationLogger logger, boolean archived) {

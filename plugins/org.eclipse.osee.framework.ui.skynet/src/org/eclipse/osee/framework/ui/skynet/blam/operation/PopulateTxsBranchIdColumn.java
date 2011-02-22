@@ -59,7 +59,7 @@ public class PopulateTxsBranchIdColumn extends AbstractBlam {
             tableName);
 
       for (int i = 0; i < 1000000; i += blockSize) {
-         println("> " + i + " and < " + (i + blockSize + 1));
+         report("> " + i + " and < " + (i + blockSize + 1));
          ConnectionHandler.runPreparedUpdate(sql, i, i + blockSize + 1);
       }
    }
@@ -77,7 +77,7 @@ public class PopulateTxsBranchIdColumn extends AbstractBlam {
       } finally {
          chStmt.close();
       }
-      println("# of transactions: " + branchMap.size());
+      report("# of transactions: " + branchMap.size());
 
       sql = String.format("select transaction_id, branch_id from %s where branch_id is null", tableName);
       int counter = 0;
@@ -86,7 +86,7 @@ public class PopulateTxsBranchIdColumn extends AbstractBlam {
          while (chStmt.next()) {
             Integer branchId = branchMap.get(chStmt.getInt("transaction_id"));
             if (branchId == null) {
-               println("map not not have branch id for transaction id: " + chStmt.getInt("transaction_id"));
+               report("map not not have branch id for transaction id: " + chStmt.getInt("transaction_id"));
             } else {
                chStmt.updateObject("branch_id", branchId);
                chStmt.updateRow();
@@ -97,6 +97,6 @@ public class PopulateTxsBranchIdColumn extends AbstractBlam {
          chStmt.close();
       }
 
-      println("Updated " + counter + " rows");
+      report("Updated " + counter + " rows");
    }
 }

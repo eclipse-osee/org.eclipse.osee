@@ -59,10 +59,10 @@ public class ImageCaptureBlam extends AbstractBlam {
          if (event.type == SWT.MouseUp) {
             if (topLeftPoint == null) {
                topLeftPoint = event.display.getCursorLocation();
-               print("\nFirst Mouse Event " + topLeftPoint + "\n");
+               report("\nFirst Mouse Event " + topLeftPoint);
             } else {
                botRightPoint = event.display.getCursorLocation();
-               print("Second Mouse Event " + botRightPoint + "\n");
+               report("Second Mouse Event " + botRightPoint);
                GC gc = new GC(Display.getCurrent());
                Image image =
                   new Image(Display.getCurrent(), botRightPoint.x - topLeftPoint.x, botRightPoint.y - topLeftPoint.y);

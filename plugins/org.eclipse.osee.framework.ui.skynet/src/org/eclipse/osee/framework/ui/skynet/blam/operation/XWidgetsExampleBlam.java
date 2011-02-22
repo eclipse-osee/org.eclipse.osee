@@ -30,7 +30,7 @@ public class XWidgetsExampleBlam extends AbstractBlam {
 
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      println("Nothing to do here, this is only an example BLAM");
+      report("Nothing to do here, this is only an example BLAM");
    }
 
    @Override

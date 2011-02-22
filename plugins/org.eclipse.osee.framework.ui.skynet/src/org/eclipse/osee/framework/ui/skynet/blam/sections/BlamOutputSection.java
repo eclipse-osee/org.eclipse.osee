@@ -12,6 +12,8 @@ package org.eclipse.osee.framework.ui.skynet.blam.sections;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
+import org.eclipse.osee.framework.core.operation.OperationLogger;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
@@ -31,12 +33,13 @@ import org.eclipse.ui.forms.widgets.Section;
 public class BlamOutputSection extends BaseBlamSection {
 
    private Text formText;
-   private Appendable appendableOutput;
+   private final OperationLogger OperationLogger;
    private final Action executBlamAction;
 
    public BlamOutputSection(FormEditor editor, AbstractBlam abstractBlam, Composite parent, FormToolkit toolkit, int style, Action executBlamAction) {
       super(editor, abstractBlam, parent, toolkit, style);
       this.executBlamAction = executBlamAction;
+      this.OperationLogger = new InternalReporter();
    }
 
    public void simluateRun() {
@@ -100,11 +103,8 @@ public class BlamOutputSection extends BaseBlamSection {
       });
    }
 
-   public Appendable getOutput() {
-      if (appendableOutput == null) {
-         appendableOutput = new InternalAppendable();
-      }
-      return appendableOutput;
+   public OperationLogger getOutput() {
+      return OperationLogger;
    }
 
    @Override
@@ -120,34 +120,10 @@ public class BlamOutputSection extends BaseBlamSection {
       super.refresh();
    }
 
-   private final class InternalAppendable implements Appendable {
-
-      private void write(final String text) {
-         appendText(text);
-      }
-
+   private final class InternalReporter extends OperationLogger {
       @Override
-      public Appendable append(CharSequence csq) {
-         if (csq == null) {
-            write("null");
-         } else {
-            write(csq.toString());
-         }
-         return this;
+      public void log(String... row) {
+         appendText(Collections.toString(", ", (Object[]) row) + "\n");
       }
-
-      @Override
-      public Appendable append(char c) {
-         write(new String(new char[] {c}));
-         return this;
-      }
-
-      @Override
-      public Appendable append(CharSequence csq, int start, int end) {
-         CharSequence cs = csq == null ? "null" : csq;
-         write(cs.subSequence(start, end).toString());
-         return this;
-      }
-
    }
 }

@@ -18,6 +18,11 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
  */
 public abstract class OperationLogger {
 
+   /**
+    * Reports as a row. Subsequent calls are reported as a new row (i.e. new line)
+    * 
+    * @param row array of strings treated as fields of a row
+    */
    public abstract void log(String... row);
 
    public void log(Throwable th) {

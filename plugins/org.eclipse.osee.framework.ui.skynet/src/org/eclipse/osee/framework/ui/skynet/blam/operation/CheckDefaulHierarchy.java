@@ -41,10 +41,10 @@ public class CheckDefaulHierarchy extends AbstractBlam {
       for (Artifact artifact : artifacts) {
          try {
             if (!artifact.hasParent()) {
-               print("\n" + artifact.getGuid() + " has no parent\n");
+               report("\n" + artifact.getGuid() + " has no parent");
             }
          } catch (MultipleArtifactsExist ex) {
-            print("\n" + ex.getLocalizedMessage() + "\n");
+            report("\n" + ex.getLocalizedMessage());
          }
       }
    }

@@ -61,12 +61,12 @@ public class PopulateUserGroupBlam extends AbstractBlam {
          User user = emailToUser.get(emailAddress);
          count++;
          if (user == null) {
-            println("User does not exist for: " + emailAddress);
+            report("User does not exist for: " + emailAddress);
          } else {
             users.add(user);
          }
       }
-      println("addresses: " + count);
+      report("addresses: " + count);
 
       SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch(), getName());
       for (Artifact group : groups) {

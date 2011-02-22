@@ -29,18 +29,36 @@ public class CompositeOperation extends AbstractOperation {
    private final List<IOperation> operations;
    private final OperationBehavior behavior;
 
+   public CompositeOperation(String name, String pluginId, OperationBehavior behavior, OperationLogger logger, List<IOperation> operations) {
+      super(name, pluginId, logger);
+      this.operations = operations;
+      this.behavior = behavior;
+   }
+
    public CompositeOperation(String name, String pluginId, OperationBehavior behavior, List<IOperation> operations) {
       super(name, pluginId);
       this.operations = operations;
       this.behavior = behavior;
    }
 
+   public CompositeOperation(String name, String pluginId, OperationLogger logger, List<IOperation> operations) {
+      this(name, pluginId, OperationBehavior.TerminateOnError, logger, operations);
+   }
+
    public CompositeOperation(String name, String pluginId, List<IOperation> operations) {
       this(name, pluginId, OperationBehavior.TerminateOnError, operations);
    }
 
+   public CompositeOperation(String name, String pluginId, OperationBehavior behavior, OperationLogger logger, IOperation... operations) {
+      this(name, pluginId, behavior, logger, Arrays.asList(operations));
+   }
+
    public CompositeOperation(String name, String pluginId, OperationBehavior behavior, IOperation... operations) {
       this(name, pluginId, behavior, Arrays.asList(operations));
+   }
+
+   public CompositeOperation(String name, String pluginId, OperationLogger logger, IOperation... operations) {
+      this(name, pluginId, logger, Arrays.asList(operations));
    }
 
    public CompositeOperation(String name, String pluginId, IOperation... operations) {

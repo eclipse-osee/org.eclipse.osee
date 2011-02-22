@@ -112,7 +112,7 @@ public class EmailGroupsBlam extends AbstractBlam {
       emailTheadPool.shutdown();
       emailTheadPool.awaitTermination(100, TimeUnit.MINUTES);
       for (Future<String> future : futures) {
-         println(future.get());
+         report(future.get());
       }
 
    }
@@ -120,7 +120,7 @@ public class EmailGroupsBlam extends AbstractBlam {
    private void sendEmailTo(EmailGroupsData data, final User user) throws OseeCoreException {
       final String emailAddress = user.getSoleAttributeValue(CoreAttributeTypes.Email, "");
       if (!EmailUtil.isEmailValid(emailAddress)) {
-         println(String.format("The email address \"%s\" for user %s is not valid.", emailAddress, user.getName()));
+         report(String.format("The email address \"%s\" for user %s is not valid.", emailAddress, user.getName()));
          return;
       }
       final OseeEmail emailMessage = new OseeEmail(emailAddress, data.getSubject(), "", BodyType.Html);

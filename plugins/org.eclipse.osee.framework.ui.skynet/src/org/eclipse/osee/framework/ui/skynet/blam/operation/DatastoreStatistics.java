@@ -37,10 +37,7 @@ public class DatastoreStatistics extends AbstractBlam {
       try {
          chStmt.runPreparedQuery(1000, SELECT_ARTIFACT_COUNTS);
          while (chStmt.next()) {
-            print(chStmt.getString("name"));
-            print(": ");
-            print(String.valueOf(chStmt.getInt("total")));
-            print("\n");
+            report(chStmt.getString("name") + ": " + chStmt.getInt("total"));
          }
       } finally {
          chStmt.close();

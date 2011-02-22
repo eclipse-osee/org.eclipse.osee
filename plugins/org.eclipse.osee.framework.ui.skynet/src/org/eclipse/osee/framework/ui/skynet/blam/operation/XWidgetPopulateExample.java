@@ -36,12 +36,6 @@ public class XWidgetPopulateExample extends AbstractBlam {
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       //      AWorkbench.popup("Execute", "Blam is an example only.  Nothing done.");
-      print("Test Output Line\n");
-      print("Test Output Line\n");
-      print("Test Output Line\n");
-      print("Test Output Line\n");
-      print("Test Output Line\n");
-      print("Test Output Line\n");
       monitor.done();
    }
 

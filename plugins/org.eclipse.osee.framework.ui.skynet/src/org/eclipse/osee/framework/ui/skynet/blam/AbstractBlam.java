@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Level;
 import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -26,10 +25,10 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -48,19 +47,19 @@ import org.xml.sax.SAXException;
  * @author Ryan D. Brooks
  */
 public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
-   private Appendable output;
    public static final String branchXWidgetXml =
       "<xWidgets><XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Branch\" /></xWidgets>";
    public static final String emptyXWidgetsXml = "<xWidgets/>";
    protected IOseeDatabaseService databaseService;
+   private OperationLogger logger;
 
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       throw new OseeStateException(
          "either runOperation or createOperation but be overriden by subclesses of AbstractBlam");
    }
 
-   public IOperation createOperation(VariableMap variableMap, Appendable appendable) throws Exception {
-      return new ExecuteBlamOperation(getName(), appendable, variableMap, this);
+   public IOperation createOperation(VariableMap variableMap, OperationLogger logger) throws Exception {
+      return new ExecuteBlamOperation(this, variableMap, logger);
    }
 
    /**
@@ -92,7 +91,6 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
          contents = Lib.inputStreamToString(inStream);
       } catch (IOException ex) {
          OseeExceptions.wrapAndThrow(ex);
-         contents = "";
       }
 
       return contents;
@@ -106,37 +104,18 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
       return getClass().getSimpleName();
    }
 
-   public void setOutput(Appendable output) {
-      this.output = output;
-   }
-
    public void setOseeDatabaseService(IOseeDatabaseService service) {
       databaseService = service;
    }
 
-   protected Appendable getOutput() {
-      return output;
+   public void report(String... row) {
+      logger.log(row);
    }
 
-   public void print(String value) {
-      if (output != null && value != null) {
-         try {
-            output.append(value);
-         } catch (IOException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-         }
-      }
-   }
-
-   public void println(String value) {
-      if (Strings.isValid(value)) {
-         print(value + "\n");
-      }
-   }
-
-   public void execute(Appendable appendable, VariableMap variableMap, IJobChangeListener jobChangeListener) {
+   public void execute(OperationLogger logger, VariableMap variableMap, IJobChangeListener jobChangeListener) {
       try {
-         IOperation blamOperation = createOperation(variableMap, appendable);
+         this.logger = logger;
+         IOperation blamOperation = createOperation(variableMap, logger);
          Operations.executeAsJob(blamOperation, true, Job.LONG, jobChangeListener);
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
