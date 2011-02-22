@@ -13,8 +13,6 @@ import java.util.List;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 
-import org.eclipse.emf.common.util.ResourceLocator;
-
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
@@ -23,20 +21,20 @@ import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
 import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
-import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 
+import org.eclipse.osee.framework.core.dsl.oseeDsl.MatchField;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslPackage;
-import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactRef;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.SimpleCondition;
 
 /**
- * This is the item provider adapter for a {@link org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactRef} object.
+ * This is the item provider adapter for a {@link org.eclipse.osee.framework.core.dsl.oseeDsl.SimpleCondition} object.
  * <!-- begin-user-doc -->
  * <!-- end-user-doc -->
  * @generated
  */
-public class XArtifactRefItemProvider
-   extends ItemProviderAdapter
+public class SimpleConditionItemProvider
+   extends ConditionItemProvider
    implements
       IEditingDomainItemProvider,
       IStructuredItemContentProvider,
@@ -49,7 +47,7 @@ public class XArtifactRefItemProvider
     * <!-- end-user-doc -->
     * @generated
     */
-   public XArtifactRefItemProvider(AdapterFactory adapterFactory) {
+   public SimpleConditionItemProvider(AdapterFactory adapterFactory) {
       super(adapterFactory);
    }
 
@@ -64,26 +62,27 @@ public class XArtifactRefItemProvider
       if (itemPropertyDescriptors == null) {
          super.getPropertyDescriptors(object);
 
-         addNamePropertyDescriptor(object);
-         addGuidPropertyDescriptor(object);
+         addFieldPropertyDescriptor(object);
+         addOpPropertyDescriptor(object);
+         addExpressionPropertyDescriptor(object);
       }
       return itemPropertyDescriptors;
    }
 
    /**
-    * This adds a property descriptor for the Name feature.
+    * This adds a property descriptor for the Field feature.
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
     * @generated
     */
-   protected void addNamePropertyDescriptor(Object object) {
+   protected void addFieldPropertyDescriptor(Object object) {
       itemPropertyDescriptors.add
          (createItemPropertyDescriptor
             (((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
              getResourceLocator(),
-             getString("_UI_XArtifactRef_name_feature"),
-             getString("_UI_PropertyDescriptor_description", "_UI_XArtifactRef_name_feature", "_UI_XArtifactRef_type"),
-             OseeDslPackage.Literals.XARTIFACT_REF__NAME,
+             getString("_UI_SimpleCondition_field_feature"),
+             getString("_UI_PropertyDescriptor_description", "_UI_SimpleCondition_field_feature", "_UI_SimpleCondition_type"),
+             OseeDslPackage.Literals.SIMPLE_CONDITION__FIELD,
              true,
              false,
              false,
@@ -93,19 +92,19 @@ public class XArtifactRefItemProvider
    }
 
    /**
-    * This adds a property descriptor for the Guid feature.
+    * This adds a property descriptor for the Op feature.
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
     * @generated
     */
-   protected void addGuidPropertyDescriptor(Object object) {
+   protected void addOpPropertyDescriptor(Object object) {
       itemPropertyDescriptors.add
          (createItemPropertyDescriptor
             (((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
              getResourceLocator(),
-             getString("_UI_XArtifactRef_guid_feature"),
-             getString("_UI_PropertyDescriptor_description", "_UI_XArtifactRef_guid_feature", "_UI_XArtifactRef_type"),
-             OseeDslPackage.Literals.XARTIFACT_REF__GUID,
+             getString("_UI_SimpleCondition_op_feature"),
+             getString("_UI_PropertyDescriptor_description", "_UI_SimpleCondition_op_feature", "_UI_SimpleCondition_type"),
+             OseeDslPackage.Literals.SIMPLE_CONDITION__OP,
              true,
              false,
              false,
@@ -115,14 +114,36 @@ public class XArtifactRefItemProvider
    }
 
    /**
-    * This returns XArtifactRef.gif.
+    * This adds a property descriptor for the Expression feature.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   protected void addExpressionPropertyDescriptor(Object object) {
+      itemPropertyDescriptors.add
+         (createItemPropertyDescriptor
+            (((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+             getResourceLocator(),
+             getString("_UI_SimpleCondition_expression_feature"),
+             getString("_UI_PropertyDescriptor_description", "_UI_SimpleCondition_expression_feature", "_UI_SimpleCondition_type"),
+             OseeDslPackage.Literals.SIMPLE_CONDITION__EXPRESSION,
+             true,
+             false,
+             false,
+             ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+             null,
+             null));
+   }
+
+   /**
+    * This returns SimpleCondition.gif.
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
     * @generated
     */
    @Override
    public Object getImage(Object object) {
-      return overlayImage(object, getResourceLocator().getImage("full/obj16/XArtifactRef"));
+      return overlayImage(object, getResourceLocator().getImage("full/obj16/SimpleCondition"));
    }
 
    /**
@@ -133,10 +154,11 @@ public class XArtifactRefItemProvider
     */
    @Override
    public String getText(Object object) {
-      String label = ((XArtifactRef)object).getName();
+      MatchField labelValue = ((SimpleCondition)object).getField();
+      String label = labelValue == null ? null : labelValue.toString();
       return label == null || label.length() == 0 ?
-         getString("_UI_XArtifactRef_type") :
-         getString("_UI_XArtifactRef_type") + " " + label;
+         getString("_UI_SimpleCondition_type") :
+         getString("_UI_SimpleCondition_type") + " " + label;
    }
 
    /**
@@ -150,9 +172,10 @@ public class XArtifactRefItemProvider
    public void notifyChanged(Notification notification) {
       updateChildren(notification);
 
-      switch (notification.getFeatureID(XArtifactRef.class)) {
-         case OseeDslPackage.XARTIFACT_REF__NAME:
-         case OseeDslPackage.XARTIFACT_REF__GUID:
+      switch (notification.getFeatureID(SimpleCondition.class)) {
+         case OseeDslPackage.SIMPLE_CONDITION__FIELD:
+         case OseeDslPackage.SIMPLE_CONDITION__OP:
+         case OseeDslPackage.SIMPLE_CONDITION__EXPRESSION:
             fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
             return;
       }
@@ -169,17 +192,6 @@ public class XArtifactRefItemProvider
    @Override
    protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object) {
       super.collectNewChildDescriptors(newChildDescriptors, object);
-   }
-
-   /**
-    * Return the resource locator for this item provider's resources.
-    * <!-- begin-user-doc -->
-    * <!-- end-user-doc -->
-    * @generated
-    */
-   @Override
-   public ResourceLocator getResourceLocator() {
-      return OseeDslEditPlugin.INSTANCE;
    }
 
 }

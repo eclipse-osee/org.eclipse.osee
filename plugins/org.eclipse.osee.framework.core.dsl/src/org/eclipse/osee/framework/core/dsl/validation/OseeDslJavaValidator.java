@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessContext;
-import org.eclipse.osee.framework.core.dsl.oseeDsl.ArtifactInstanceRestriction;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.ArtifactMatchRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.ArtifactTypeRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AttributeTypeRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.HierarchyRestriction;
@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.ObjectRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslPackage;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeRestriction;
-import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactRef;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactMatcher;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationType;
@@ -117,19 +117,19 @@ public class OseeDslJavaValidator extends AbstractOseeDslJavaValidator {
    }
 
    private void checkHierarchyUnique(AccessContext accessContext, Collection<HierarchyRestriction> hierarchy) {
-      Map<String, XArtifactRef> references = new HashMap<String, XArtifactRef>();
+      Map<String, XArtifactMatcher> references = new HashMap<String, XArtifactMatcher>();
       for (HierarchyRestriction restriction : hierarchy) {
-         XArtifactRef artifactRef = restriction.getArtifact();
-         String guid = artifactRef.getGuid();
-         XArtifactRef reference = references.get(guid);
+         XArtifactMatcher artifactRef = restriction.getArtifactMatcherRef();
+         String name = artifactRef.getName();
+         XArtifactMatcher reference = references.get(name);
          if (reference == null) {
-            references.put(guid, artifactRef);
+            references.put(name, artifactRef);
          } else {
             String message =
                String.format("Duplicate hierarchy restriction [%s] in context[%s]", reference.toString(),
                   accessContext.getName());
             error(message, restriction, OseeDslPackage.Literals.ACCESS_CONTEXT__HIERARCHY_RESTRICTIONS,
-               OseeDslPackage.ACCESS_CONTEXT__HIERARCHY_RESTRICTIONS, NON_UNIQUE_HIERARCHY, reference.getGuid());
+               OseeDslPackage.ACCESS_CONTEXT__HIERARCHY_RESTRICTIONS, NON_UNIQUE_HIERARCHY, reference.getName());
          }
          checkObjectRestrictions(accessContext, restriction.getAccessRules());
       }
@@ -143,7 +143,7 @@ public class OseeDslJavaValidator extends AbstractOseeDslJavaValidator {
    }
 
    private final class CheckSwitch extends OseeDslSwitch<Object> {
-      private final Map<String, XArtifactRef> artInstanceRestrictions = new HashMap<String, XArtifactRef>();
+      private final Map<String, XArtifactMatcher> artInstanceRestrictions = new HashMap<String, XArtifactMatcher>();
       private final Map<String, XArtifactType> artifactTypeRestrictions = new HashMap<String, XArtifactType>();
       private final Map<String, XRelationType> relationTypeRetrictions = new HashMap<String, XRelationType>();
       private final Collection<AttributeTypeRestriction> attrTypeRetrictions = new HashSet<AttributeTypeRestriction>();
@@ -155,18 +155,18 @@ public class OseeDslJavaValidator extends AbstractOseeDslJavaValidator {
       }
 
       @Override
-      public Object caseArtifactInstanceRestriction(ArtifactInstanceRestriction restriction) {
-         String guid = restriction.getArtifactRef().getGuid();
-         XArtifactRef reference = artInstanceRestrictions.get(guid);
+      public Object caseArtifactMatchRestriction(ArtifactMatchRestriction restriction) {
+         String name = restriction.getArtifactMatcherRef().getName();
+         XArtifactMatcher reference = artInstanceRestrictions.get(name);
          if (reference == null) {
-            artInstanceRestrictions.put(guid, restriction.getArtifactRef());
+            artInstanceRestrictions.put(name, restriction.getArtifactMatcherRef());
          } else {
             String message =
                String.format("Duplicate artifact instance restriction [%s] in context[%s]", reference.toString(),
                   accessContext.getName());
-            error(message, restriction, OseeDslPackage.Literals.ARTIFACT_INSTANCE_RESTRICTION__ARTIFACT_REF,
+            error(message, restriction, OseeDslPackage.Literals.ARTIFACT_MATCH_RESTRICTION__ARTIFACT_MATCHER_REF,
                OseeDslPackage.ACCESS_CONTEXT__ACCESS_RULES, NON_UNIQUE_ARTIFACT_INSTANCE_RESTRICTION,
-               reference.getGuid());
+               reference.getName());
          }
          return restriction;
       }

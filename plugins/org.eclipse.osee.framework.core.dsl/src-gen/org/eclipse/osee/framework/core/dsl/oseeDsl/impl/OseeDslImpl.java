@@ -24,10 +24,9 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessContext;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.Import;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslPackage;
-import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactRef;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactMatcher;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeType;
-import org.eclipse.osee.framework.core.dsl.oseeDsl.XBranchRef;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumOverride;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationType;
@@ -45,8 +44,7 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationType;
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslImpl#getAttributeTypes <em>Attribute Types</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslImpl#getEnumTypes <em>Enum Types</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslImpl#getEnumOverrides <em>Enum Overrides</em>}</li>
- *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslImpl#getBranchRefs <em>Branch Refs</em>}</li>
- *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslImpl#getArtifactRefs <em>Artifact Refs</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslImpl#getArtifactMatchRefs <em>Artifact Match Refs</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslImpl#getAccessDeclarations <em>Access Declarations</em>}</li>
  * </ul>
  * </p>
@@ -116,24 +114,14 @@ public class OseeDslImpl extends MinimalEObjectImpl.Container implements OseeDsl
   protected EList<XOseeEnumOverride> enumOverrides;
 
   /**
-   * The cached value of the '{@link #getBranchRefs() <em>Branch Refs</em>}' containment reference list.
+   * The cached value of the '{@link #getArtifactMatchRefs() <em>Artifact Match Refs</em>}' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getBranchRefs()
+   * @see #getArtifactMatchRefs()
    * @generated
    * @ordered
    */
-  protected EList<XBranchRef> branchRefs;
-
-  /**
-   * The cached value of the '{@link #getArtifactRefs() <em>Artifact Refs</em>}' containment reference list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getArtifactRefs()
-   * @generated
-   * @ordered
-   */
-  protected EList<XArtifactRef> artifactRefs;
+  protected EList<XArtifactMatcher> artifactMatchRefs;
 
   /**
    * The cached value of the '{@link #getAccessDeclarations() <em>Access Declarations</em>}' containment reference list.
@@ -255,27 +243,13 @@ public class OseeDslImpl extends MinimalEObjectImpl.Container implements OseeDsl
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<XBranchRef> getBranchRefs()
+  public EList<XArtifactMatcher> getArtifactMatchRefs()
   {
-    if (branchRefs == null)
+    if (artifactMatchRefs == null)
     {
-      branchRefs = new EObjectContainmentEList<XBranchRef>(XBranchRef.class, this, OseeDslPackage.OSEE_DSL__BRANCH_REFS);
+      artifactMatchRefs = new EObjectContainmentEList<XArtifactMatcher>(XArtifactMatcher.class, this, OseeDslPackage.OSEE_DSL__ARTIFACT_MATCH_REFS);
     }
-    return branchRefs;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EList<XArtifactRef> getArtifactRefs()
-  {
-    if (artifactRefs == null)
-    {
-      artifactRefs = new EObjectContainmentEList<XArtifactRef>(XArtifactRef.class, this, OseeDslPackage.OSEE_DSL__ARTIFACT_REFS);
-    }
-    return artifactRefs;
+    return artifactMatchRefs;
   }
 
   /**
@@ -314,10 +288,8 @@ public class OseeDslImpl extends MinimalEObjectImpl.Container implements OseeDsl
         return ((InternalEList<?>)getEnumTypes()).basicRemove(otherEnd, msgs);
       case OseeDslPackage.OSEE_DSL__ENUM_OVERRIDES:
         return ((InternalEList<?>)getEnumOverrides()).basicRemove(otherEnd, msgs);
-      case OseeDslPackage.OSEE_DSL__BRANCH_REFS:
-        return ((InternalEList<?>)getBranchRefs()).basicRemove(otherEnd, msgs);
-      case OseeDslPackage.OSEE_DSL__ARTIFACT_REFS:
-        return ((InternalEList<?>)getArtifactRefs()).basicRemove(otherEnd, msgs);
+      case OseeDslPackage.OSEE_DSL__ARTIFACT_MATCH_REFS:
+        return ((InternalEList<?>)getArtifactMatchRefs()).basicRemove(otherEnd, msgs);
       case OseeDslPackage.OSEE_DSL__ACCESS_DECLARATIONS:
         return ((InternalEList<?>)getAccessDeclarations()).basicRemove(otherEnd, msgs);
     }
@@ -346,10 +318,8 @@ public class OseeDslImpl extends MinimalEObjectImpl.Container implements OseeDsl
         return getEnumTypes();
       case OseeDslPackage.OSEE_DSL__ENUM_OVERRIDES:
         return getEnumOverrides();
-      case OseeDslPackage.OSEE_DSL__BRANCH_REFS:
-        return getBranchRefs();
-      case OseeDslPackage.OSEE_DSL__ARTIFACT_REFS:
-        return getArtifactRefs();
+      case OseeDslPackage.OSEE_DSL__ARTIFACT_MATCH_REFS:
+        return getArtifactMatchRefs();
       case OseeDslPackage.OSEE_DSL__ACCESS_DECLARATIONS:
         return getAccessDeclarations();
     }
@@ -391,13 +361,9 @@ public class OseeDslImpl extends MinimalEObjectImpl.Container implements OseeDsl
         getEnumOverrides().clear();
         getEnumOverrides().addAll((Collection<? extends XOseeEnumOverride>)newValue);
         return;
-      case OseeDslPackage.OSEE_DSL__BRANCH_REFS:
-        getBranchRefs().clear();
-        getBranchRefs().addAll((Collection<? extends XBranchRef>)newValue);
-        return;
-      case OseeDslPackage.OSEE_DSL__ARTIFACT_REFS:
-        getArtifactRefs().clear();
-        getArtifactRefs().addAll((Collection<? extends XArtifactRef>)newValue);
+      case OseeDslPackage.OSEE_DSL__ARTIFACT_MATCH_REFS:
+        getArtifactMatchRefs().clear();
+        getArtifactMatchRefs().addAll((Collection<? extends XArtifactMatcher>)newValue);
         return;
       case OseeDslPackage.OSEE_DSL__ACCESS_DECLARATIONS:
         getAccessDeclarations().clear();
@@ -435,11 +401,8 @@ public class OseeDslImpl extends MinimalEObjectImpl.Container implements OseeDsl
       case OseeDslPackage.OSEE_DSL__ENUM_OVERRIDES:
         getEnumOverrides().clear();
         return;
-      case OseeDslPackage.OSEE_DSL__BRANCH_REFS:
-        getBranchRefs().clear();
-        return;
-      case OseeDslPackage.OSEE_DSL__ARTIFACT_REFS:
-        getArtifactRefs().clear();
+      case OseeDslPackage.OSEE_DSL__ARTIFACT_MATCH_REFS:
+        getArtifactMatchRefs().clear();
         return;
       case OseeDslPackage.OSEE_DSL__ACCESS_DECLARATIONS:
         getAccessDeclarations().clear();
@@ -470,10 +433,8 @@ public class OseeDslImpl extends MinimalEObjectImpl.Container implements OseeDsl
         return enumTypes != null && !enumTypes.isEmpty();
       case OseeDslPackage.OSEE_DSL__ENUM_OVERRIDES:
         return enumOverrides != null && !enumOverrides.isEmpty();
-      case OseeDslPackage.OSEE_DSL__BRANCH_REFS:
-        return branchRefs != null && !branchRefs.isEmpty();
-      case OseeDslPackage.OSEE_DSL__ARTIFACT_REFS:
-        return artifactRefs != null && !artifactRefs.isEmpty();
+      case OseeDslPackage.OSEE_DSL__ARTIFACT_MATCH_REFS:
+        return artifactMatchRefs != null && !artifactMatchRefs.isEmpty();
       case OseeDslPackage.OSEE_DSL__ACCESS_DECLARATIONS:
         return accessDeclarations != null && !accessDeclarations.isEmpty();
     }

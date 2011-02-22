@@ -149,14 +149,24 @@ public class OseeDslAdapterFactory extends AdapterFactoryImpl
         return createXRelationTypeAdapter();
       }
       @Override
-      public Adapter caseXArtifactRef(XArtifactRef object)
+      public Adapter caseCondition(Condition object)
       {
-        return createXArtifactRefAdapter();
+        return createConditionAdapter();
       }
       @Override
-      public Adapter caseXBranchRef(XBranchRef object)
+      public Adapter caseSimpleCondition(SimpleCondition object)
       {
-        return createXBranchRefAdapter();
+        return createSimpleConditionAdapter();
+      }
+      @Override
+      public Adapter caseCompoundCondition(CompoundCondition object)
+      {
+        return createCompoundConditionAdapter();
+      }
+      @Override
+      public Adapter caseXArtifactMatcher(XArtifactMatcher object)
+      {
+        return createXArtifactMatcherAdapter();
       }
       @Override
       public Adapter caseAccessContext(AccessContext object)
@@ -174,9 +184,9 @@ public class OseeDslAdapterFactory extends AdapterFactoryImpl
         return createObjectRestrictionAdapter();
       }
       @Override
-      public Adapter caseArtifactInstanceRestriction(ArtifactInstanceRestriction object)
+      public Adapter caseArtifactMatchRestriction(ArtifactMatchRestriction object)
       {
-        return createArtifactInstanceRestrictionAdapter();
+        return createArtifactMatchRestrictionAdapter();
       }
       @Override
       public Adapter caseArtifactTypeRestriction(ArtifactTypeRestriction object)
@@ -426,31 +436,61 @@ public class OseeDslAdapterFactory extends AdapterFactoryImpl
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactRef <em>XArtifact Ref</em>}'.
+   * Creates a new adapter for an object of class '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.Condition <em>Condition</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactRef
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.Condition
    * @generated
    */
-  public Adapter createXArtifactRefAdapter()
+  public Adapter createConditionAdapter()
   {
     return null;
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XBranchRef <em>XBranch Ref</em>}'.
+   * Creates a new adapter for an object of class '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.SimpleCondition <em>Simple Condition</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.XBranchRef
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.SimpleCondition
    * @generated
    */
-  public Adapter createXBranchRefAdapter()
+  public Adapter createSimpleConditionAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.CompoundCondition <em>Compound Condition</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.CompoundCondition
+   * @generated
+   */
+  public Adapter createCompoundConditionAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactMatcher <em>XArtifact Matcher</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactMatcher
+   * @generated
+   */
+  public Adapter createXArtifactMatcherAdapter()
   {
     return null;
   }
@@ -501,16 +541,16 @@ public class OseeDslAdapterFactory extends AdapterFactoryImpl
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.ArtifactInstanceRestriction <em>Artifact Instance Restriction</em>}'.
+   * Creates a new adapter for an object of class '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.ArtifactMatchRestriction <em>Artifact Match Restriction</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
    * it's useful to ignore a case when inheritance will catch all the cases anyway.
    * <!-- end-user-doc -->
    * @return the new adapter.
-   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.ArtifactInstanceRestriction
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.ArtifactMatchRestriction
    * @generated
    */
-  public Adapter createArtifactInstanceRestrictionAdapter()
+  public Adapter createArtifactMatchRestrictionAdapter()
   {
     return null;
   }

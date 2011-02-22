@@ -15,6 +15,20 @@
       <genEnumLiterals ecoreEnumLiteral="platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//RelationMultiplicityEnum/MANY_TO_ONE"/>
       <genEnumLiterals ecoreEnumLiteral="platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//RelationMultiplicityEnum/MANY_TO_MANY"/>
     </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//CompareOp">
+      <genEnumLiterals ecoreEnumLiteral="platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//CompareOp/EQ"/>
+      <genEnumLiterals ecoreEnumLiteral="platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//CompareOp/LIKE"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//XLogicOperator">
+      <genEnumLiterals ecoreEnumLiteral="platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//XLogicOperator/AND"/>
+      <genEnumLiterals ecoreEnumLiteral="platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//XLogicOperator/OR"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//MatchField">
+      <genEnumLiterals ecoreEnumLiteral="platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//MatchField/artifactName"/>
+      <genEnumLiterals ecoreEnumLiteral="platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//MatchField/artifactGuid"/>
+      <genEnumLiterals ecoreEnumLiteral="platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//MatchField/branchName"/>
+      <genEnumLiterals ecoreEnumLiteral="platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//MatchField/branchGuid"/>
+    </genEnums>
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//AccessPermissionEnum">
       <genEnumLiterals ecoreEnumLiteral="platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//AccessPermissionEnum/ALLOW"/>
       <genEnumLiterals ecoreEnumLiteral="platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//AccessPermissionEnum/DENY"/>
@@ -31,8 +45,7 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//OseeDsl/attributeTypes"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//OseeDsl/enumTypes"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//OseeDsl/enumOverrides"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//OseeDsl/branchRefs"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//OseeDsl/artifactRefs"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//OseeDsl/artifactMatchRefs"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//OseeDsl/accessDeclarations"/>
     </genClasses>
     <genClasses ecoreClass="platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//Import">
@@ -94,13 +107,20 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//XRelationType/defaultOrderType"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//XRelationType/multiplicity"/>
     </genClasses>
-    <genClasses ecoreClass="platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//XArtifactRef">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//XArtifactRef/name"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//XArtifactRef/guid"/>
+    <genClasses ecoreClass="platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//Condition"/>
+    <genClasses ecoreClass="platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//SimpleCondition">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//SimpleCondition/field"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//SimpleCondition/op"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//SimpleCondition/expression"/>
     </genClasses>
-    <genClasses ecoreClass="platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//XBranchRef">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//XBranchRef/name"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//XBranchRef/guid"/>
+    <genClasses ecoreClass="platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//CompoundCondition">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//CompoundCondition/conditions"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//CompoundCondition/operators"/>
+    </genClasses>
+    <genClasses ecoreClass="platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//XArtifactMatcher">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//XArtifactMatcher/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//XArtifactMatcher/conditions"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//XArtifactMatcher/operators"/>
     </genClasses>
     <genClasses ecoreClass="platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//AccessContext">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//AccessContext/name"/>
@@ -110,14 +130,14 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//AccessContext/hierarchyRestrictions"/>
     </genClasses>
     <genClasses ecoreClass="platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//HierarchyRestriction">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//HierarchyRestriction/artifact"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//HierarchyRestriction/artifactMatcherRef"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//HierarchyRestriction/accessRules"/>
     </genClasses>
     <genClasses ecoreClass="platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//ObjectRestriction">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//ObjectRestriction/permission"/>
     </genClasses>
-    <genClasses ecoreClass="platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//ArtifactInstanceRestriction">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//ArtifactInstanceRestriction/artifactRef"/>
+    <genClasses ecoreClass="platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//ArtifactMatchRestriction">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//ArtifactMatchRestriction/artifactMatcherRef"/>
     </genClasses>
     <genClasses ecoreClass="platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//ArtifactTypeRestriction">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//ArtifactTypeRestriction/artifactTypeRef"/>

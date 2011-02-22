@@ -87,8 +87,7 @@ public class OseeDslItemProvider
          childrenFeatures.add(OseeDslPackage.Literals.OSEE_DSL__ATTRIBUTE_TYPES);
          childrenFeatures.add(OseeDslPackage.Literals.OSEE_DSL__ENUM_TYPES);
          childrenFeatures.add(OseeDslPackage.Literals.OSEE_DSL__ENUM_OVERRIDES);
-         childrenFeatures.add(OseeDslPackage.Literals.OSEE_DSL__BRANCH_REFS);
-         childrenFeatures.add(OseeDslPackage.Literals.OSEE_DSL__ARTIFACT_REFS);
+         childrenFeatures.add(OseeDslPackage.Literals.OSEE_DSL__ARTIFACT_MATCH_REFS);
          childrenFeatures.add(OseeDslPackage.Literals.OSEE_DSL__ACCESS_DECLARATIONS);
       }
       return childrenFeatures;
@@ -147,8 +146,7 @@ public class OseeDslItemProvider
          case OseeDslPackage.OSEE_DSL__ATTRIBUTE_TYPES:
          case OseeDslPackage.OSEE_DSL__ENUM_TYPES:
          case OseeDslPackage.OSEE_DSL__ENUM_OVERRIDES:
-         case OseeDslPackage.OSEE_DSL__BRANCH_REFS:
-         case OseeDslPackage.OSEE_DSL__ARTIFACT_REFS:
+         case OseeDslPackage.OSEE_DSL__ARTIFACT_MATCH_REFS:
          case OseeDslPackage.OSEE_DSL__ACCESS_DECLARATIONS:
             fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
             return;
@@ -199,13 +197,8 @@ public class OseeDslItemProvider
 
       newChildDescriptors.add
          (createChildParameter
-            (OseeDslPackage.Literals.OSEE_DSL__BRANCH_REFS,
-             OseeDslFactory.eINSTANCE.createXBranchRef()));
-
-      newChildDescriptors.add
-         (createChildParameter
-            (OseeDslPackage.Literals.OSEE_DSL__ARTIFACT_REFS,
-             OseeDslFactory.eINSTANCE.createXArtifactRef()));
+            (OseeDslPackage.Literals.OSEE_DSL__ARTIFACT_MATCH_REFS,
+             OseeDslFactory.eINSTANCE.createXArtifactMatcher()));
 
       newChildDescriptors.add
          (createChildParameter

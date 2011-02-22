@@ -398,49 +398,95 @@ public class OseeDslItemProviderAdapterFactory extends OseeDslAdapterFactory imp
    }
 
    /**
-    * This keeps track of the one adapter used for all {@link org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactRef} instances.
+    * This keeps track of the one adapter used for all {@link org.eclipse.osee.framework.core.dsl.oseeDsl.Condition} instances.
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
     * @generated
     */
-   protected XArtifactRefItemProvider xArtifactRefItemProvider;
+   protected ConditionItemProvider conditionItemProvider;
 
    /**
-    * This creates an adapter for a {@link org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactRef}.
+    * This creates an adapter for a {@link org.eclipse.osee.framework.core.dsl.oseeDsl.Condition}.
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
     * @generated
     */
    @Override
-   public Adapter createXArtifactRefAdapter() {
-      if (xArtifactRefItemProvider == null) {
-         xArtifactRefItemProvider = new XArtifactRefItemProvider(this);
+   public Adapter createConditionAdapter() {
+      if (conditionItemProvider == null) {
+         conditionItemProvider = new ConditionItemProvider(this);
       }
 
-      return xArtifactRefItemProvider;
+      return conditionItemProvider;
    }
 
    /**
-    * This keeps track of the one adapter used for all {@link org.eclipse.osee.framework.core.dsl.oseeDsl.XBranchRef} instances.
+    * This keeps track of the one adapter used for all {@link org.eclipse.osee.framework.core.dsl.oseeDsl.SimpleCondition} instances.
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
     * @generated
     */
-   protected XBranchRefItemProvider xBranchRefItemProvider;
+   protected SimpleConditionItemProvider simpleConditionItemProvider;
 
    /**
-    * This creates an adapter for a {@link org.eclipse.osee.framework.core.dsl.oseeDsl.XBranchRef}.
+    * This creates an adapter for a {@link org.eclipse.osee.framework.core.dsl.oseeDsl.SimpleCondition}.
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
     * @generated
     */
    @Override
-   public Adapter createXBranchRefAdapter() {
-      if (xBranchRefItemProvider == null) {
-         xBranchRefItemProvider = new XBranchRefItemProvider(this);
+   public Adapter createSimpleConditionAdapter() {
+      if (simpleConditionItemProvider == null) {
+         simpleConditionItemProvider = new SimpleConditionItemProvider(this);
       }
 
-      return xBranchRefItemProvider;
+      return simpleConditionItemProvider;
+   }
+
+   /**
+    * This keeps track of the one adapter used for all {@link org.eclipse.osee.framework.core.dsl.oseeDsl.CompoundCondition} instances.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   protected CompoundConditionItemProvider compoundConditionItemProvider;
+
+   /**
+    * This creates an adapter for a {@link org.eclipse.osee.framework.core.dsl.oseeDsl.CompoundCondition}.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   @Override
+   public Adapter createCompoundConditionAdapter() {
+      if (compoundConditionItemProvider == null) {
+         compoundConditionItemProvider = new CompoundConditionItemProvider(this);
+      }
+
+      return compoundConditionItemProvider;
+   }
+
+   /**
+    * This keeps track of the one adapter used for all {@link org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactMatcher} instances.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   protected XArtifactMatcherItemProvider xArtifactMatcherItemProvider;
+
+   /**
+    * This creates an adapter for a {@link org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactMatcher}.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   @Override
+   public Adapter createXArtifactMatcherAdapter() {
+      if (xArtifactMatcherItemProvider == null) {
+         xArtifactMatcherItemProvider = new XArtifactMatcherItemProvider(this);
+      }
+
+      return xArtifactMatcherItemProvider;
    }
 
    /**
@@ -513,26 +559,26 @@ public class OseeDslItemProviderAdapterFactory extends OseeDslAdapterFactory imp
    }
 
    /**
-    * This keeps track of the one adapter used for all {@link org.eclipse.osee.framework.core.dsl.oseeDsl.ArtifactInstanceRestriction} instances.
+    * This keeps track of the one adapter used for all {@link org.eclipse.osee.framework.core.dsl.oseeDsl.ArtifactMatchRestriction} instances.
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
     * @generated
     */
-   protected ArtifactInstanceRestrictionItemProvider artifactInstanceRestrictionItemProvider;
+   protected ArtifactMatchRestrictionItemProvider artifactMatchRestrictionItemProvider;
 
    /**
-    * This creates an adapter for a {@link org.eclipse.osee.framework.core.dsl.oseeDsl.ArtifactInstanceRestriction}.
+    * This creates an adapter for a {@link org.eclipse.osee.framework.core.dsl.oseeDsl.ArtifactMatchRestriction}.
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
     * @generated
     */
    @Override
-   public Adapter createArtifactInstanceRestrictionAdapter() {
-      if (artifactInstanceRestrictionItemProvider == null) {
-         artifactInstanceRestrictionItemProvider = new ArtifactInstanceRestrictionItemProvider(this);
+   public Adapter createArtifactMatchRestrictionAdapter() {
+      if (artifactMatchRestrictionItemProvider == null) {
+         artifactMatchRestrictionItemProvider = new ArtifactMatchRestrictionItemProvider(this);
       }
 
-      return artifactInstanceRestrictionItemProvider;
+      return artifactMatchRestrictionItemProvider;
    }
 
    /**
@@ -717,12 +763,14 @@ public class OseeDslItemProviderAdapterFactory extends OseeDslAdapterFactory imp
       if (addEnumItemProvider != null) addEnumItemProvider.dispose();
       if (removeEnumItemProvider != null) removeEnumItemProvider.dispose();
       if (xRelationTypeItemProvider != null) xRelationTypeItemProvider.dispose();
-      if (xArtifactRefItemProvider != null) xArtifactRefItemProvider.dispose();
-      if (xBranchRefItemProvider != null) xBranchRefItemProvider.dispose();
+      if (conditionItemProvider != null) conditionItemProvider.dispose();
+      if (simpleConditionItemProvider != null) simpleConditionItemProvider.dispose();
+      if (compoundConditionItemProvider != null) compoundConditionItemProvider.dispose();
+      if (xArtifactMatcherItemProvider != null) xArtifactMatcherItemProvider.dispose();
       if (accessContextItemProvider != null) accessContextItemProvider.dispose();
       if (hierarchyRestrictionItemProvider != null) hierarchyRestrictionItemProvider.dispose();
       if (objectRestrictionItemProvider != null) objectRestrictionItemProvider.dispose();
-      if (artifactInstanceRestrictionItemProvider != null) artifactInstanceRestrictionItemProvider.dispose();
+      if (artifactMatchRestrictionItemProvider != null) artifactMatchRestrictionItemProvider.dispose();
       if (artifactTypeRestrictionItemProvider != null) artifactTypeRestrictionItemProvider.dispose();
       if (attributeTypeRestrictionItemProvider != null) attributeTypeRestrictionItemProvider.dispose();
       if (relationTypeRestrictionItemProvider != null) relationTypeRestrictionItemProvider.dispose();

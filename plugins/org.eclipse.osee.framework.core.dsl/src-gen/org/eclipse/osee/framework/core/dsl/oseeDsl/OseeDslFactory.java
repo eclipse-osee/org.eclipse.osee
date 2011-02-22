@@ -153,22 +153,40 @@ public interface OseeDslFactory extends EFactory
   XRelationType createXRelationType();
 
   /**
-   * Returns a new object of class '<em>XArtifact Ref</em>'.
+   * Returns a new object of class '<em>Condition</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>XArtifact Ref</em>'.
+   * @return a new object of class '<em>Condition</em>'.
    * @generated
    */
-  XArtifactRef createXArtifactRef();
+  Condition createCondition();
 
   /**
-   * Returns a new object of class '<em>XBranch Ref</em>'.
+   * Returns a new object of class '<em>Simple Condition</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>XBranch Ref</em>'.
+   * @return a new object of class '<em>Simple Condition</em>'.
    * @generated
    */
-  XBranchRef createXBranchRef();
+  SimpleCondition createSimpleCondition();
+
+  /**
+   * Returns a new object of class '<em>Compound Condition</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Compound Condition</em>'.
+   * @generated
+   */
+  CompoundCondition createCompoundCondition();
+
+  /**
+   * Returns a new object of class '<em>XArtifact Matcher</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>XArtifact Matcher</em>'.
+   * @generated
+   */
+  XArtifactMatcher createXArtifactMatcher();
 
   /**
    * Returns a new object of class '<em>Access Context</em>'.
@@ -198,13 +216,13 @@ public interface OseeDslFactory extends EFactory
   ObjectRestriction createObjectRestriction();
 
   /**
-   * Returns a new object of class '<em>Artifact Instance Restriction</em>'.
+   * Returns a new object of class '<em>Artifact Match Restriction</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return a new object of class '<em>Artifact Instance Restriction</em>'.
+   * @return a new object of class '<em>Artifact Match Restriction</em>'.
    * @generated
    */
-  ArtifactInstanceRestriction createArtifactInstanceRestriction();
+  ArtifactMatchRestriction createArtifactMatchRestriction();
 
   /**
    * Returns a new object of class '<em>Artifact Type Restriction</em>'.

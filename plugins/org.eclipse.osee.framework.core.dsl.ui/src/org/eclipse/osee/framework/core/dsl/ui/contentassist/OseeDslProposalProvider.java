@@ -69,17 +69,11 @@ public class OseeDslProposalProvider extends AbstractOseeDslProposalProvider {
       completeGuidGeneration((RuleCall) assignment.getTerminal(), context, acceptor);
    }
 
-   @Override
-   public void completeXArtifactRef_Guid(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-      super.completeXArtifactRef_Guid(model, assignment, context, acceptor);
-      completeGuidGeneration((RuleCall) assignment.getTerminal(), context, acceptor);
-   }
-
-   @Override
-   public void completeXBranchRef_Guid(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
-      super.completeXBranchRef_Guid(model, assignment, context, acceptor);
-      completeGuidGeneration((RuleCall) assignment.getTerminal(), context, acceptor);
-   }
+   //   @Override
+   //   public void completeXArtifactRef_Guid(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+   //      super.completeXArtifactRef_Guid(model, assignment, context, acceptor);
+   //      completeGuidGeneration((RuleCall) assignment.getTerminal(), context, acceptor);
+   //   }
 
    private void completeGuidGeneration(RuleCall ruleCall, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
       if (acceptor.canAcceptMoreProposals()) {

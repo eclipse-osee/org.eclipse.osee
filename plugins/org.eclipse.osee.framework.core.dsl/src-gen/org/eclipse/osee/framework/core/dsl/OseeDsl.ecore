@@ -22,11 +22,8 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="enumOverrides" upperBound="-1"
         eType="ecore:EClass platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//XOseeEnumOverride"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="branchRefs" upperBound="-1"
-        eType="ecore:EClass platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//XBranchRef"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="artifactRefs" upperBound="-1"
-        eType="ecore:EClass platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//XArtifactRef"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="artifactMatchRefs" upperBound="-1"
+        eType="ecore:EClass platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//XArtifactMatcher"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="accessDeclarations" upperBound="-1"
         eType="ecore:EClass platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//AccessContext"
@@ -104,13 +101,40 @@
     <eLiterals name="MANY_TO_ONE" value="2" literal="MANY_TO_ONE"/>
     <eLiterals name="MANY_TO_MANY" value="3" literal="MANY_TO_MANY"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="XArtifactRef">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="guid" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  <eClassifiers xsi:type="ecore:EEnum" name="CompareOp">
+    <eLiterals name="EQ" literal="EQ"/>
+    <eLiterals name="LIKE" value="1" literal="LIKE"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="XBranchRef">
+  <eClassifiers xsi:type="ecore:EEnum" name="XLogicOperator">
+    <eLiterals name="AND" literal="AND"/>
+    <eLiterals name="OR" value="1" literal="OR"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="MatchField">
+    <eLiterals name="artifactName" literal="artifactName"/>
+    <eLiterals name="artifactGuid" value="1" literal="artifactGuid"/>
+    <eLiterals name="branchName" value="2" literal="branchName"/>
+    <eLiterals name="branchGuid" value="3" literal="branchGuid"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Condition"/>
+  <eClassifiers xsi:type="ecore:EClass" name="SimpleCondition" eSuperTypes="platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//Condition">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="field" eType="ecore:EEnum platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//MatchField"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="op" eType="ecore:EEnum platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//CompareOp"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="expression" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="CompoundCondition" eSuperTypes="platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//Condition">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="conditions" upperBound="-1"
+        eType="ecore:EClass platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//SimpleCondition"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="operators" unique="false"
+        upperBound="-1" eType="ecore:EEnum platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//XLogicOperator"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="XArtifactMatcher">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="guid" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="conditions" upperBound="-1"
+        eType="ecore:EClass platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//Condition"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="operators" unique="false"
+        upperBound="-1" eType="ecore:EEnum platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//XLogicOperator"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="AccessContext">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -125,7 +149,7 @@
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="HierarchyRestriction">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="artifact" eType="ecore:EClass platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//XArtifactRef"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="artifactMatcherRef" eType="ecore:EClass platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//XArtifactMatcher"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="accessRules" upperBound="-1"
         eType="ecore:EClass platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//ObjectRestriction"
         containment="true"/>
@@ -137,8 +161,8 @@
   <eClassifiers xsi:type="ecore:EClass" name="ObjectRestriction">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="permission" eType="ecore:EEnum platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//AccessPermissionEnum"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ArtifactInstanceRestriction" eSuperTypes="platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//ObjectRestriction">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="artifactRef" eType="ecore:EClass platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//XArtifactRef"/>
+  <eClassifiers xsi:type="ecore:EClass" name="ArtifactMatchRestriction" eSuperTypes="platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//ObjectRestriction">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="artifactMatcherRef" eType="ecore:EClass platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//XArtifactMatcher"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ArtifactTypeRestriction" eSuperTypes="platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//ObjectRestriction">
     <eStructuralFeatures xsi:type="ecore:EReference" name="artifactTypeRef" eType="ecore:EClass platform:/resource/org.eclipse.osee.framework.core.dsl/src-gen/org/eclipse/osee/framework/core/dsl/OseeDsl.ecore#//XArtifactType"/>

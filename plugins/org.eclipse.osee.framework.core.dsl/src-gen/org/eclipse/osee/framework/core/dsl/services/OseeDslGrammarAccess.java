@@ -33,22 +33,19 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cEnumTypesXOseeEnumTypeParserRuleCall_1_3_0 = (RuleCall)cEnumTypesAssignment_1_3.eContents().get(0);
 		private final Assignment cEnumOverridesAssignment_1_4 = (Assignment)cAlternatives_1.eContents().get(4);
 		private final RuleCall cEnumOverridesXOseeEnumOverrideParserRuleCall_1_4_0 = (RuleCall)cEnumOverridesAssignment_1_4.eContents().get(0);
-		private final Alternatives cAlternatives_2 = (Alternatives)cGroup.eContents().get(2);
-		private final Assignment cBranchRefsAssignment_2_0 = (Assignment)cAlternatives_2.eContents().get(0);
-		private final RuleCall cBranchRefsXBranchRefParserRuleCall_2_0_0 = (RuleCall)cBranchRefsAssignment_2_0.eContents().get(0);
-		private final Assignment cArtifactRefsAssignment_2_1 = (Assignment)cAlternatives_2.eContents().get(1);
-		private final RuleCall cArtifactRefsXArtifactRefParserRuleCall_2_1_0 = (RuleCall)cArtifactRefsAssignment_2_1.eContents().get(0);
+		private final Assignment cArtifactMatchRefsAssignment_2 = (Assignment)cGroup.eContents().get(2);
+		private final RuleCall cArtifactMatchRefsXArtifactMatcherParserRuleCall_2_0 = (RuleCall)cArtifactMatchRefsAssignment_2.eContents().get(0);
 		private final Assignment cAccessDeclarationsAssignment_3 = (Assignment)cGroup.eContents().get(3);
 		private final RuleCall cAccessDeclarationsAccessContextParserRuleCall_3_0 = (RuleCall)cAccessDeclarationsAssignment_3.eContents().get(0);
 		
 		//OseeDsl:
 		//	imports+=Import* (artifactTypes+=XArtifactType | relationTypes+=XRelationType | attributeTypes+=XAttributeType |
-		//	enumTypes+=XOseeEnumType | enumOverrides+=XOseeEnumOverride)* (branchRefs+=XBranchRef | artifactRefs+=XArtifactRef)*
+		//	enumTypes+=XOseeEnumType | enumOverrides+=XOseeEnumOverride)* artifactMatchRefs+=XArtifactMatcher*
 		//	accessDeclarations+=AccessContext*;
 		public ParserRule getRule() { return rule; }
 
 		//imports+=Import* (artifactTypes+=XArtifactType | relationTypes+=XRelationType | attributeTypes+=XAttributeType |
-		//enumTypes+=XOseeEnumType | enumOverrides+=XOseeEnumOverride)* (branchRefs+=XBranchRef | artifactRefs+=XArtifactRef)*
+		//enumTypes+=XOseeEnumType | enumOverrides+=XOseeEnumOverride)* artifactMatchRefs+=XArtifactMatcher*
 		//accessDeclarations+=AccessContext*
 		public Group getGroup() { return cGroup; }
 
@@ -92,20 +89,11 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		//XOseeEnumOverride
 		public RuleCall getEnumOverridesXOseeEnumOverrideParserRuleCall_1_4_0() { return cEnumOverridesXOseeEnumOverrideParserRuleCall_1_4_0; }
 
-		//(branchRefs+=XBranchRef | artifactRefs+=XArtifactRef)*
-		public Alternatives getAlternatives_2() { return cAlternatives_2; }
+		//artifactMatchRefs+=XArtifactMatcher*
+		public Assignment getArtifactMatchRefsAssignment_2() { return cArtifactMatchRefsAssignment_2; }
 
-		//branchRefs+=XBranchRef
-		public Assignment getBranchRefsAssignment_2_0() { return cBranchRefsAssignment_2_0; }
-
-		//XBranchRef
-		public RuleCall getBranchRefsXBranchRefParserRuleCall_2_0_0() { return cBranchRefsXBranchRefParserRuleCall_2_0_0; }
-
-		//artifactRefs+=XArtifactRef
-		public Assignment getArtifactRefsAssignment_2_1() { return cArtifactRefsAssignment_2_1; }
-
-		//XArtifactRef
-		public RuleCall getArtifactRefsXArtifactRefParserRuleCall_2_1_0() { return cArtifactRefsXArtifactRefParserRuleCall_2_1_0; }
+		//XArtifactMatcher
+		public RuleCall getArtifactMatchRefsXArtifactMatcherParserRuleCall_2_0() { return cArtifactMatchRefsXArtifactMatcherParserRuleCall_2_0; }
 
 		//accessDeclarations+=AccessContext*
 		public Assignment getAccessDeclarationsAssignment_3() { return cAccessDeclarationsAssignment_3; }
@@ -136,78 +124,6 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 
 		//STRING
 		public RuleCall getImportURISTRINGTerminalRuleCall_1_0() { return cImportURISTRINGTerminalRuleCall_1_0; }
-	}
-
-	public class NAME_REFERENCEElements extends AbstractParserRuleElementFinder {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "NAME_REFERENCE");
-		private final RuleCall cSTRINGTerminalRuleCall = (RuleCall)rule.eContents().get(1);
-		
-		//NAME_REFERENCE:
-		//	STRING;
-		public ParserRule getRule() { return rule; }
-
-		//STRING
-		public RuleCall getSTRINGTerminalRuleCall() { return cSTRINGTerminalRuleCall; }
-	}
-
-	public class ATTRIBUTE_TYPE_REFERENCEElements extends AbstractParserRuleElementFinder {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "ATTRIBUTE_TYPE_REFERENCE");
-		private final RuleCall cSTRINGTerminalRuleCall = (RuleCall)rule.eContents().get(1);
-		
-		//ATTRIBUTE_TYPE_REFERENCE:
-		//	STRING;
-		public ParserRule getRule() { return rule; }
-
-		//STRING
-		public RuleCall getSTRINGTerminalRuleCall() { return cSTRINGTerminalRuleCall; }
-	}
-
-	public class ARTIFACT_TYPE_REFERENCEElements extends AbstractParserRuleElementFinder {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "ARTIFACT_TYPE_REFERENCE");
-		private final RuleCall cSTRINGTerminalRuleCall = (RuleCall)rule.eContents().get(1);
-		
-		//ARTIFACT_TYPE_REFERENCE:
-		//	STRING;
-		public ParserRule getRule() { return rule; }
-
-		//STRING
-		public RuleCall getSTRINGTerminalRuleCall() { return cSTRINGTerminalRuleCall; }
-	}
-
-	public class RELATION_TYPE_REFERENCEElements extends AbstractParserRuleElementFinder {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "RELATION_TYPE_REFERENCE");
-		private final RuleCall cSTRINGTerminalRuleCall = (RuleCall)rule.eContents().get(1);
-		
-		//RELATION_TYPE_REFERENCE:
-		//	STRING;
-		public ParserRule getRule() { return rule; }
-
-		//STRING
-		public RuleCall getSTRINGTerminalRuleCall() { return cSTRINGTerminalRuleCall; }
-	}
-
-	public class ENUM_TYPE_REFERENCEElements extends AbstractParserRuleElementFinder {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "ENUM_TYPE_REFERENCE");
-		private final RuleCall cSTRINGTerminalRuleCall = (RuleCall)rule.eContents().get(1);
-		
-		//ENUM_TYPE_REFERENCE:
-		//	STRING;
-		public ParserRule getRule() { return rule; }
-
-		//STRING
-		public RuleCall getSTRINGTerminalRuleCall() { return cSTRINGTerminalRuleCall; }
-	}
-
-	public class ENUM_ENTRY_TYPE_REFERENCEElements extends AbstractParserRuleElementFinder {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "ENUM_ENTRY_TYPE_REFERENCE");
-		private final RuleCall cSTRINGTerminalRuleCall = (RuleCall)rule.eContents().get(1);
-		
-		//ENUM_ENTRY_TYPE_REFERENCE:
-		//	STRING;
-		public ParserRule getRule() { return rule; }
-
-		//STRING
-		public RuleCall getSTRINGTerminalRuleCall() { return cSTRINGTerminalRuleCall; }
 	}
 
 	public class QUALIFIED_NAMEElements extends AbstractParserRuleElementFinder {
@@ -296,17 +212,17 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cAbstractAbstractKeyword_0_0 = (Keyword)cAbstractAssignment_0.eContents().get(0);
 		private final Keyword cArtifactTypeKeyword_1 = (Keyword)cGroup.eContents().get(1);
 		private final Assignment cNameAssignment_2 = (Assignment)cGroup.eContents().get(2);
-		private final RuleCall cNameARTIFACT_TYPE_REFERENCEParserRuleCall_2_0 = (RuleCall)cNameAssignment_2.eContents().get(0);
+		private final RuleCall cNameSTRINGTerminalRuleCall_2_0 = (RuleCall)cNameAssignment_2.eContents().get(0);
 		private final Group cGroup_3 = (Group)cGroup.eContents().get(3);
 		private final Keyword cExtendsKeyword_3_0 = (Keyword)cGroup_3.eContents().get(0);
 		private final Assignment cSuperArtifactTypesAssignment_3_1 = (Assignment)cGroup_3.eContents().get(1);
 		private final CrossReference cSuperArtifactTypesXArtifactTypeCrossReference_3_1_0 = (CrossReference)cSuperArtifactTypesAssignment_3_1.eContents().get(0);
-		private final RuleCall cSuperArtifactTypesXArtifactTypeARTIFACT_TYPE_REFERENCEParserRuleCall_3_1_0_1 = (RuleCall)cSuperArtifactTypesXArtifactTypeCrossReference_3_1_0.eContents().get(1);
+		private final RuleCall cSuperArtifactTypesXArtifactTypeSTRINGTerminalRuleCall_3_1_0_1 = (RuleCall)cSuperArtifactTypesXArtifactTypeCrossReference_3_1_0.eContents().get(1);
 		private final Group cGroup_3_2 = (Group)cGroup_3.eContents().get(2);
 		private final Keyword cCommaKeyword_3_2_0 = (Keyword)cGroup_3_2.eContents().get(0);
 		private final Assignment cSuperArtifactTypesAssignment_3_2_1 = (Assignment)cGroup_3_2.eContents().get(1);
 		private final CrossReference cSuperArtifactTypesXArtifactTypeCrossReference_3_2_1_0 = (CrossReference)cSuperArtifactTypesAssignment_3_2_1.eContents().get(0);
-		private final RuleCall cSuperArtifactTypesXArtifactTypeARTIFACT_TYPE_REFERENCEParserRuleCall_3_2_1_0_1 = (RuleCall)cSuperArtifactTypesXArtifactTypeCrossReference_3_2_1_0.eContents().get(1);
+		private final RuleCall cSuperArtifactTypesXArtifactTypeSTRINGTerminalRuleCall_3_2_1_0_1 = (RuleCall)cSuperArtifactTypesXArtifactTypeCrossReference_3_2_1_0.eContents().get(1);
 		private final Keyword cLeftCurlyBracketKeyword_4 = (Keyword)cGroup.eContents().get(4);
 		private final Keyword cGuidKeyword_5 = (Keyword)cGroup.eContents().get(5);
 		private final Assignment cTypeGuidAssignment_6 = (Assignment)cGroup.eContents().get(6);
@@ -316,16 +232,12 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cRightCurlyBracketKeyword_8 = (Keyword)cGroup.eContents().get(8);
 		
 		//XArtifactType:
-		//	abstract?="abstract"? "artifactType" name=ARTIFACT_TYPE_REFERENCE ("extends"
-		//	superArtifactTypes+=[XArtifactType|ARTIFACT_TYPE_REFERENCE] (","
-		//	superArtifactTypes+=[XArtifactType|ARTIFACT_TYPE_REFERENCE])*)? "{" "guid" typeGuid=STRING
-		//	validAttributeTypes+=XAttributeTypeRef* "}";
+		//	abstract?="abstract"? "artifactType" name=STRING ("extends" superArtifactTypes+=[XArtifactType|STRING] (","
+		//	superArtifactTypes+=[XArtifactType|STRING])*)? "{" "guid" typeGuid=STRING validAttributeTypes+=XAttributeTypeRef* "}";
 		public ParserRule getRule() { return rule; }
 
-		//abstract?="abstract"? "artifactType" name=ARTIFACT_TYPE_REFERENCE ("extends"
-		//superArtifactTypes+=[XArtifactType|ARTIFACT_TYPE_REFERENCE] (","
-		//superArtifactTypes+=[XArtifactType|ARTIFACT_TYPE_REFERENCE])*)? "{" "guid" typeGuid=STRING
-		//validAttributeTypes+=XAttributeTypeRef* "}"
+		//abstract?="abstract"? "artifactType" name=STRING ("extends" superArtifactTypes+=[XArtifactType|STRING] (","
+		//superArtifactTypes+=[XArtifactType|STRING])*)? "{" "guid" typeGuid=STRING validAttributeTypes+=XAttributeTypeRef* "}"
 		public Group getGroup() { return cGroup; }
 
 		//abstract?="abstract"?
@@ -337,42 +249,41 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		//"artifactType"
 		public Keyword getArtifactTypeKeyword_1() { return cArtifactTypeKeyword_1; }
 
-		//name=ARTIFACT_TYPE_REFERENCE
+		//name=STRING
 		public Assignment getNameAssignment_2() { return cNameAssignment_2; }
 
-		//ARTIFACT_TYPE_REFERENCE
-		public RuleCall getNameARTIFACT_TYPE_REFERENCEParserRuleCall_2_0() { return cNameARTIFACT_TYPE_REFERENCEParserRuleCall_2_0; }
+		//STRING
+		public RuleCall getNameSTRINGTerminalRuleCall_2_0() { return cNameSTRINGTerminalRuleCall_2_0; }
 
-		//("extends" superArtifactTypes+=[XArtifactType|ARTIFACT_TYPE_REFERENCE] (","
-		//superArtifactTypes+=[XArtifactType|ARTIFACT_TYPE_REFERENCE])*)?
+		//("extends" superArtifactTypes+=[XArtifactType|STRING] ("," superArtifactTypes+=[XArtifactType|STRING])*)?
 		public Group getGroup_3() { return cGroup_3; }
 
 		//"extends"
 		public Keyword getExtendsKeyword_3_0() { return cExtendsKeyword_3_0; }
 
-		//superArtifactTypes+=[XArtifactType|ARTIFACT_TYPE_REFERENCE]
+		//superArtifactTypes+=[XArtifactType|STRING]
 		public Assignment getSuperArtifactTypesAssignment_3_1() { return cSuperArtifactTypesAssignment_3_1; }
 
-		//[XArtifactType|ARTIFACT_TYPE_REFERENCE]
+		//[XArtifactType|STRING]
 		public CrossReference getSuperArtifactTypesXArtifactTypeCrossReference_3_1_0() { return cSuperArtifactTypesXArtifactTypeCrossReference_3_1_0; }
 
-		//ARTIFACT_TYPE_REFERENCE
-		public RuleCall getSuperArtifactTypesXArtifactTypeARTIFACT_TYPE_REFERENCEParserRuleCall_3_1_0_1() { return cSuperArtifactTypesXArtifactTypeARTIFACT_TYPE_REFERENCEParserRuleCall_3_1_0_1; }
+		//STRING
+		public RuleCall getSuperArtifactTypesXArtifactTypeSTRINGTerminalRuleCall_3_1_0_1() { return cSuperArtifactTypesXArtifactTypeSTRINGTerminalRuleCall_3_1_0_1; }
 
-		//("," superArtifactTypes+=[XArtifactType|ARTIFACT_TYPE_REFERENCE])*
+		//("," superArtifactTypes+=[XArtifactType|STRING])*
 		public Group getGroup_3_2() { return cGroup_3_2; }
 
 		//","
 		public Keyword getCommaKeyword_3_2_0() { return cCommaKeyword_3_2_0; }
 
-		//superArtifactTypes+=[XArtifactType|ARTIFACT_TYPE_REFERENCE]
+		//superArtifactTypes+=[XArtifactType|STRING]
 		public Assignment getSuperArtifactTypesAssignment_3_2_1() { return cSuperArtifactTypesAssignment_3_2_1; }
 
-		//[XArtifactType|ARTIFACT_TYPE_REFERENCE]
+		//[XArtifactType|STRING]
 		public CrossReference getSuperArtifactTypesXArtifactTypeCrossReference_3_2_1_0() { return cSuperArtifactTypesXArtifactTypeCrossReference_3_2_1_0; }
 
-		//ARTIFACT_TYPE_REFERENCE
-		public RuleCall getSuperArtifactTypesXArtifactTypeARTIFACT_TYPE_REFERENCEParserRuleCall_3_2_1_0_1() { return cSuperArtifactTypesXArtifactTypeARTIFACT_TYPE_REFERENCEParserRuleCall_3_2_1_0_1; }
+		//STRING
+		public RuleCall getSuperArtifactTypesXArtifactTypeSTRINGTerminalRuleCall_3_2_1_0_1() { return cSuperArtifactTypesXArtifactTypeSTRINGTerminalRuleCall_3_2_1_0_1; }
 
 		//"{"
 		public Keyword getLeftCurlyBracketKeyword_4() { return cLeftCurlyBracketKeyword_4; }
@@ -402,30 +313,30 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cAttributeKeyword_0 = (Keyword)cGroup.eContents().get(0);
 		private final Assignment cValidAttributeTypeAssignment_1 = (Assignment)cGroup.eContents().get(1);
 		private final CrossReference cValidAttributeTypeXAttributeTypeCrossReference_1_0 = (CrossReference)cValidAttributeTypeAssignment_1.eContents().get(0);
-		private final RuleCall cValidAttributeTypeXAttributeTypeATTRIBUTE_TYPE_REFERENCEParserRuleCall_1_0_1 = (RuleCall)cValidAttributeTypeXAttributeTypeCrossReference_1_0.eContents().get(1);
+		private final RuleCall cValidAttributeTypeXAttributeTypeSTRINGTerminalRuleCall_1_0_1 = (RuleCall)cValidAttributeTypeXAttributeTypeCrossReference_1_0.eContents().get(1);
 		private final Group cGroup_2 = (Group)cGroup.eContents().get(2);
 		private final Keyword cBranchGuidKeyword_2_0 = (Keyword)cGroup_2.eContents().get(0);
 		private final Assignment cBranchGuidAssignment_2_1 = (Assignment)cGroup_2.eContents().get(1);
 		private final RuleCall cBranchGuidSTRINGTerminalRuleCall_2_1_0 = (RuleCall)cBranchGuidAssignment_2_1.eContents().get(0);
 		
 		//XAttributeTypeRef:
-		//	"attribute" validAttributeType=[XAttributeType|ATTRIBUTE_TYPE_REFERENCE] ("branchGuid" branchGuid=STRING)?;
+		//	"attribute" validAttributeType=[XAttributeType|STRING] ("branchGuid" branchGuid=STRING)?;
 		public ParserRule getRule() { return rule; }
 
-		//"attribute" validAttributeType=[XAttributeType|ATTRIBUTE_TYPE_REFERENCE] ("branchGuid" branchGuid=STRING)?
+		//"attribute" validAttributeType=[XAttributeType|STRING] ("branchGuid" branchGuid=STRING)?
 		public Group getGroup() { return cGroup; }
 
 		//"attribute"
 		public Keyword getAttributeKeyword_0() { return cAttributeKeyword_0; }
 
-		//validAttributeType=[XAttributeType|ATTRIBUTE_TYPE_REFERENCE]
+		//validAttributeType=[XAttributeType|STRING]
 		public Assignment getValidAttributeTypeAssignment_1() { return cValidAttributeTypeAssignment_1; }
 
-		//[XAttributeType|ATTRIBUTE_TYPE_REFERENCE]
+		//[XAttributeType|STRING]
 		public CrossReference getValidAttributeTypeXAttributeTypeCrossReference_1_0() { return cValidAttributeTypeXAttributeTypeCrossReference_1_0; }
 
-		//ATTRIBUTE_TYPE_REFERENCE
-		public RuleCall getValidAttributeTypeXAttributeTypeATTRIBUTE_TYPE_REFERENCEParserRuleCall_1_0_1() { return cValidAttributeTypeXAttributeTypeATTRIBUTE_TYPE_REFERENCEParserRuleCall_1_0_1; }
+		//STRING
+		public RuleCall getValidAttributeTypeXAttributeTypeSTRINGTerminalRuleCall_1_0_1() { return cValidAttributeTypeXAttributeTypeSTRINGTerminalRuleCall_1_0_1; }
 
 		//("branchGuid" branchGuid=STRING)?
 		public Group getGroup_2() { return cGroup_2; }
@@ -445,7 +356,7 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Keyword cAttributeTypeKeyword_0 = (Keyword)cGroup.eContents().get(0);
 		private final Assignment cNameAssignment_1 = (Assignment)cGroup.eContents().get(1);
-		private final RuleCall cNameATTRIBUTE_TYPE_REFERENCEParserRuleCall_1_0 = (RuleCall)cNameAssignment_1.eContents().get(0);
+		private final RuleCall cNameSTRINGTerminalRuleCall_1_0 = (RuleCall)cNameAssignment_1.eContents().get(0);
 		private final Group cGroup_2 = (Group)cGroup.eContents().get(2);
 		private final Keyword cExtendsKeyword_2_0 = (Keyword)cGroup_2.eContents().get(0);
 		private final Assignment cBaseAttributeTypeAssignment_2_1 = (Assignment)cGroup_2.eContents().get(1);
@@ -454,7 +365,7 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cOverridesKeyword_3_0 = (Keyword)cGroup_3.eContents().get(0);
 		private final Assignment cOverrideAssignment_3_1 = (Assignment)cGroup_3.eContents().get(1);
 		private final CrossReference cOverrideXAttributeTypeCrossReference_3_1_0 = (CrossReference)cOverrideAssignment_3_1.eContents().get(0);
-		private final RuleCall cOverrideXAttributeTypeATTRIBUTE_TYPE_REFERENCEParserRuleCall_3_1_0_1 = (RuleCall)cOverrideXAttributeTypeCrossReference_3_1_0.eContents().get(1);
+		private final RuleCall cOverrideXAttributeTypeSTRINGTerminalRuleCall_3_1_0_1 = (RuleCall)cOverrideXAttributeTypeCrossReference_3_1_0.eContents().get(1);
 		private final Keyword cLeftCurlyBracketKeyword_4 = (Keyword)cGroup.eContents().get(4);
 		private final Keyword cGuidKeyword_5 = (Keyword)cGroup.eContents().get(5);
 		private final Assignment cTypeGuidAssignment_6 = (Assignment)cGroup.eContents().get(6);
@@ -483,7 +394,7 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cEnumTypeKeyword_14_0 = (Keyword)cGroup_14.eContents().get(0);
 		private final Assignment cEnumTypeAssignment_14_1 = (Assignment)cGroup_14.eContents().get(1);
 		private final CrossReference cEnumTypeXOseeEnumTypeCrossReference_14_1_0 = (CrossReference)cEnumTypeAssignment_14_1.eContents().get(0);
-		private final RuleCall cEnumTypeXOseeEnumTypeENUM_TYPE_REFERENCEParserRuleCall_14_1_0_1 = (RuleCall)cEnumTypeXOseeEnumTypeCrossReference_14_1_0.eContents().get(1);
+		private final RuleCall cEnumTypeXOseeEnumTypeSTRINGTerminalRuleCall_14_1_0_1 = (RuleCall)cEnumTypeXOseeEnumTypeCrossReference_14_1_0.eContents().get(1);
 		private final Group cGroup_15 = (Group)cGroup.eContents().get(15);
 		private final Keyword cDescriptionKeyword_15_0 = (Keyword)cGroup_15.eContents().get(0);
 		private final Assignment cDescriptionAssignment_15_1 = (Assignment)cGroup_15.eContents().get(1);
@@ -499,30 +410,30 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cRightCurlyBracketKeyword_18 = (Keyword)cGroup.eContents().get(18);
 		
 		//XAttributeType:
-		//	"attributeType" name=ATTRIBUTE_TYPE_REFERENCE ("extends" baseAttributeType=AttributeBaseType) ("overrides"
-		//	override=[XAttributeType|ATTRIBUTE_TYPE_REFERENCE])? "{" "guid" typeGuid=STRING "dataProvider"
+		//	"attributeType" name=STRING ("extends" baseAttributeType=AttributeBaseType) ("overrides"
+		//	override=[XAttributeType|STRING])? "{" "guid" typeGuid=STRING "dataProvider"
 		//	dataProvider=("DefaultAttributeDataProvider" | "UriAttributeDataProvider" | QUALIFIED_NAME) "min" min=WHOLE_NUM_STR
 		//	"max" max=(WHOLE_NUM_STR | "unlimited") ("taggerId" taggerId=("DefaultAttributeTaggerProvider" | QUALIFIED_NAME))?
-		//	("enumType" enumType=[XOseeEnumType|ENUM_TYPE_REFERENCE])? ("description" description=STRING)? ("defaultValue"
+		//	("enumType" enumType=[XOseeEnumType|STRING])? ("description" description=STRING)? ("defaultValue"
 		//	defaultValue=STRING)? ("fileExtension" fileExtension=STRING)? "}";
 		public ParserRule getRule() { return rule; }
 
-		//"attributeType" name=ATTRIBUTE_TYPE_REFERENCE ("extends" baseAttributeType=AttributeBaseType) ("overrides"
-		//override=[XAttributeType|ATTRIBUTE_TYPE_REFERENCE])? "{" "guid" typeGuid=STRING "dataProvider"
+		//"attributeType" name=STRING ("extends" baseAttributeType=AttributeBaseType) ("overrides"
+		//override=[XAttributeType|STRING])? "{" "guid" typeGuid=STRING "dataProvider"
 		//dataProvider=("DefaultAttributeDataProvider" | "UriAttributeDataProvider" | QUALIFIED_NAME) "min" min=WHOLE_NUM_STR
 		//"max" max=(WHOLE_NUM_STR | "unlimited") ("taggerId" taggerId=("DefaultAttributeTaggerProvider" | QUALIFIED_NAME))?
-		//("enumType" enumType=[XOseeEnumType|ENUM_TYPE_REFERENCE])? ("description" description=STRING)? ("defaultValue"
-		//defaultValue=STRING)? ("fileExtension" fileExtension=STRING)? "}"
+		//("enumType" enumType=[XOseeEnumType|STRING])? ("description" description=STRING)? ("defaultValue" defaultValue=STRING)?
+		//("fileExtension" fileExtension=STRING)? "}"
 		public Group getGroup() { return cGroup; }
 
 		//"attributeType"
 		public Keyword getAttributeTypeKeyword_0() { return cAttributeTypeKeyword_0; }
 
-		//name=ATTRIBUTE_TYPE_REFERENCE
+		//name=STRING
 		public Assignment getNameAssignment_1() { return cNameAssignment_1; }
 
-		//ATTRIBUTE_TYPE_REFERENCE
-		public RuleCall getNameATTRIBUTE_TYPE_REFERENCEParserRuleCall_1_0() { return cNameATTRIBUTE_TYPE_REFERENCEParserRuleCall_1_0; }
+		//STRING
+		public RuleCall getNameSTRINGTerminalRuleCall_1_0() { return cNameSTRINGTerminalRuleCall_1_0; }
 
 		//"extends" baseAttributeType=AttributeBaseType
 		public Group getGroup_2() { return cGroup_2; }
@@ -536,20 +447,20 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		//AttributeBaseType
 		public RuleCall getBaseAttributeTypeAttributeBaseTypeParserRuleCall_2_1_0() { return cBaseAttributeTypeAttributeBaseTypeParserRuleCall_2_1_0; }
 
-		//("overrides" override=[XAttributeType|ATTRIBUTE_TYPE_REFERENCE])?
+		//("overrides" override=[XAttributeType|STRING])?
 		public Group getGroup_3() { return cGroup_3; }
 
 		//"overrides"
 		public Keyword getOverridesKeyword_3_0() { return cOverridesKeyword_3_0; }
 
-		//override=[XAttributeType|ATTRIBUTE_TYPE_REFERENCE]
+		//override=[XAttributeType|STRING]
 		public Assignment getOverrideAssignment_3_1() { return cOverrideAssignment_3_1; }
 
-		//[XAttributeType|ATTRIBUTE_TYPE_REFERENCE]
+		//[XAttributeType|STRING]
 		public CrossReference getOverrideXAttributeTypeCrossReference_3_1_0() { return cOverrideXAttributeTypeCrossReference_3_1_0; }
 
-		//ATTRIBUTE_TYPE_REFERENCE
-		public RuleCall getOverrideXAttributeTypeATTRIBUTE_TYPE_REFERENCEParserRuleCall_3_1_0_1() { return cOverrideXAttributeTypeATTRIBUTE_TYPE_REFERENCEParserRuleCall_3_1_0_1; }
+		//STRING
+		public RuleCall getOverrideXAttributeTypeSTRINGTerminalRuleCall_3_1_0_1() { return cOverrideXAttributeTypeSTRINGTerminalRuleCall_3_1_0_1; }
 
 		//"{"
 		public Keyword getLeftCurlyBracketKeyword_4() { return cLeftCurlyBracketKeyword_4; }
@@ -623,20 +534,20 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		//QUALIFIED_NAME
 		public RuleCall getTaggerIdQUALIFIED_NAMEParserRuleCall_13_1_0_1() { return cTaggerIdQUALIFIED_NAMEParserRuleCall_13_1_0_1; }
 
-		//("enumType" enumType=[XOseeEnumType|ENUM_TYPE_REFERENCE])?
+		//("enumType" enumType=[XOseeEnumType|STRING])?
 		public Group getGroup_14() { return cGroup_14; }
 
 		//"enumType"
 		public Keyword getEnumTypeKeyword_14_0() { return cEnumTypeKeyword_14_0; }
 
-		//enumType=[XOseeEnumType|ENUM_TYPE_REFERENCE]
+		//enumType=[XOseeEnumType|STRING]
 		public Assignment getEnumTypeAssignment_14_1() { return cEnumTypeAssignment_14_1; }
 
-		//[XOseeEnumType|ENUM_TYPE_REFERENCE]
+		//[XOseeEnumType|STRING]
 		public CrossReference getEnumTypeXOseeEnumTypeCrossReference_14_1_0() { return cEnumTypeXOseeEnumTypeCrossReference_14_1_0; }
 
-		//ENUM_TYPE_REFERENCE
-		public RuleCall getEnumTypeXOseeEnumTypeENUM_TYPE_REFERENCEParserRuleCall_14_1_0_1() { return cEnumTypeXOseeEnumTypeENUM_TYPE_REFERENCEParserRuleCall_14_1_0_1; }
+		//STRING
+		public RuleCall getEnumTypeXOseeEnumTypeSTRINGTerminalRuleCall_14_1_0_1() { return cEnumTypeXOseeEnumTypeSTRINGTerminalRuleCall_14_1_0_1; }
 
 		//("description" description=STRING)?
 		public Group getGroup_15() { return cGroup_15; }
@@ -737,7 +648,7 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Keyword cOseeEnumTypeKeyword_0 = (Keyword)cGroup.eContents().get(0);
 		private final Assignment cNameAssignment_1 = (Assignment)cGroup.eContents().get(1);
-		private final RuleCall cNameENUM_TYPE_REFERENCEParserRuleCall_1_0 = (RuleCall)cNameAssignment_1.eContents().get(0);
+		private final RuleCall cNameSTRINGTerminalRuleCall_1_0 = (RuleCall)cNameAssignment_1.eContents().get(0);
 		private final Keyword cLeftCurlyBracketKeyword_2 = (Keyword)cGroup.eContents().get(2);
 		private final Keyword cGuidKeyword_3 = (Keyword)cGroup.eContents().get(3);
 		private final Assignment cTypeGuidAssignment_4 = (Assignment)cGroup.eContents().get(4);
@@ -747,20 +658,20 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cRightCurlyBracketKeyword_6 = (Keyword)cGroup.eContents().get(6);
 		
 		//XOseeEnumType:
-		//	"oseeEnumType" name=ENUM_TYPE_REFERENCE "{" "guid" typeGuid=STRING enumEntries+=XOseeEnumEntry* "}";
+		//	"oseeEnumType" name=STRING "{" "guid" typeGuid=STRING enumEntries+=XOseeEnumEntry* "}";
 		public ParserRule getRule() { return rule; }
 
-		//"oseeEnumType" name=ENUM_TYPE_REFERENCE "{" "guid" typeGuid=STRING enumEntries+=XOseeEnumEntry* "}"
+		//"oseeEnumType" name=STRING "{" "guid" typeGuid=STRING enumEntries+=XOseeEnumEntry* "}"
 		public Group getGroup() { return cGroup; }
 
 		//"oseeEnumType"
 		public Keyword getOseeEnumTypeKeyword_0() { return cOseeEnumTypeKeyword_0; }
 
-		//name=ENUM_TYPE_REFERENCE
+		//name=STRING
 		public Assignment getNameAssignment_1() { return cNameAssignment_1; }
 
-		//ENUM_TYPE_REFERENCE
-		public RuleCall getNameENUM_TYPE_REFERENCEParserRuleCall_1_0() { return cNameENUM_TYPE_REFERENCEParserRuleCall_1_0; }
+		//STRING
+		public RuleCall getNameSTRINGTerminalRuleCall_1_0() { return cNameSTRINGTerminalRuleCall_1_0; }
 
 		//"{"
 		public Keyword getLeftCurlyBracketKeyword_2() { return cLeftCurlyBracketKeyword_2; }
@@ -789,7 +700,7 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Keyword cEntryKeyword_0 = (Keyword)cGroup.eContents().get(0);
 		private final Assignment cNameAssignment_1 = (Assignment)cGroup.eContents().get(1);
-		private final RuleCall cNameENUM_ENTRY_TYPE_REFERENCEParserRuleCall_1_0 = (RuleCall)cNameAssignment_1.eContents().get(0);
+		private final RuleCall cNameSTRINGTerminalRuleCall_1_0 = (RuleCall)cNameAssignment_1.eContents().get(0);
 		private final Assignment cOrdinalAssignment_2 = (Assignment)cGroup.eContents().get(2);
 		private final RuleCall cOrdinalWHOLE_NUM_STRTerminalRuleCall_2_0 = (RuleCall)cOrdinalAssignment_2.eContents().get(0);
 		private final Group cGroup_3 = (Group)cGroup.eContents().get(3);
@@ -798,20 +709,20 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cEntryGuidSTRINGTerminalRuleCall_3_1_0 = (RuleCall)cEntryGuidAssignment_3_1.eContents().get(0);
 		
 		//XOseeEnumEntry:
-		//	"entry" name=ENUM_ENTRY_TYPE_REFERENCE ordinal=WHOLE_NUM_STR? ("entryGuid" entryGuid=STRING)?;
+		//	"entry" name=STRING ordinal=WHOLE_NUM_STR? ("entryGuid" entryGuid=STRING)?;
 		public ParserRule getRule() { return rule; }
 
-		//"entry" name=ENUM_ENTRY_TYPE_REFERENCE ordinal=WHOLE_NUM_STR? ("entryGuid" entryGuid=STRING)?
+		//"entry" name=STRING ordinal=WHOLE_NUM_STR? ("entryGuid" entryGuid=STRING)?
 		public Group getGroup() { return cGroup; }
 
 		//"entry"
 		public Keyword getEntryKeyword_0() { return cEntryKeyword_0; }
 
-		//name=ENUM_ENTRY_TYPE_REFERENCE
+		//name=STRING
 		public Assignment getNameAssignment_1() { return cNameAssignment_1; }
 
-		//ENUM_ENTRY_TYPE_REFERENCE
-		public RuleCall getNameENUM_ENTRY_TYPE_REFERENCEParserRuleCall_1_0() { return cNameENUM_ENTRY_TYPE_REFERENCEParserRuleCall_1_0; }
+		//STRING
+		public RuleCall getNameSTRINGTerminalRuleCall_1_0() { return cNameSTRINGTerminalRuleCall_1_0; }
 
 		//ordinal=WHOLE_NUM_STR?
 		public Assignment getOrdinalAssignment_2() { return cOrdinalAssignment_2; }
@@ -838,7 +749,7 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cOverridesEnumKeyword_0 = (Keyword)cGroup.eContents().get(0);
 		private final Assignment cOverridenEnumTypeAssignment_1 = (Assignment)cGroup.eContents().get(1);
 		private final CrossReference cOverridenEnumTypeXOseeEnumTypeCrossReference_1_0 = (CrossReference)cOverridenEnumTypeAssignment_1.eContents().get(0);
-		private final RuleCall cOverridenEnumTypeXOseeEnumTypeENUM_TYPE_REFERENCEParserRuleCall_1_0_1 = (RuleCall)cOverridenEnumTypeXOseeEnumTypeCrossReference_1_0.eContents().get(1);
+		private final RuleCall cOverridenEnumTypeXOseeEnumTypeSTRINGTerminalRuleCall_1_0_1 = (RuleCall)cOverridenEnumTypeXOseeEnumTypeCrossReference_1_0.eContents().get(1);
 		private final Keyword cLeftCurlyBracketKeyword_2 = (Keyword)cGroup.eContents().get(2);
 		private final Assignment cInheritAllAssignment_3 = (Assignment)cGroup.eContents().get(3);
 		private final Keyword cInheritAllInheritAllKeyword_3_0 = (Keyword)cInheritAllAssignment_3.eContents().get(0);
@@ -847,25 +758,25 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cRightCurlyBracketKeyword_5 = (Keyword)cGroup.eContents().get(5);
 		
 		//XOseeEnumOverride:
-		//	"overrides enum" overridenEnumType=[XOseeEnumType|ENUM_TYPE_REFERENCE] "{" inheritAll?="inheritAll"?
+		//	"overrides enum" overridenEnumType=[XOseeEnumType|STRING] "{" inheritAll?="inheritAll"?
 		//	overrideOptions+=OverrideOption* "}";
 		public ParserRule getRule() { return rule; }
 
-		//"overrides enum" overridenEnumType=[XOseeEnumType|ENUM_TYPE_REFERENCE] "{" inheritAll?="inheritAll"?
-		//overrideOptions+=OverrideOption* "}"
+		//"overrides enum" overridenEnumType=[XOseeEnumType|STRING] "{" inheritAll?="inheritAll"? overrideOptions+=OverrideOption*
+		//"}"
 		public Group getGroup() { return cGroup; }
 
 		//"overrides enum"
 		public Keyword getOverridesEnumKeyword_0() { return cOverridesEnumKeyword_0; }
 
-		//overridenEnumType=[XOseeEnumType|ENUM_TYPE_REFERENCE]
+		//overridenEnumType=[XOseeEnumType|STRING]
 		public Assignment getOverridenEnumTypeAssignment_1() { return cOverridenEnumTypeAssignment_1; }
 
-		//[XOseeEnumType|ENUM_TYPE_REFERENCE]
+		//[XOseeEnumType|STRING]
 		public CrossReference getOverridenEnumTypeXOseeEnumTypeCrossReference_1_0() { return cOverridenEnumTypeXOseeEnumTypeCrossReference_1_0; }
 
-		//ENUM_TYPE_REFERENCE
-		public RuleCall getOverridenEnumTypeXOseeEnumTypeENUM_TYPE_REFERENCEParserRuleCall_1_0_1() { return cOverridenEnumTypeXOseeEnumTypeENUM_TYPE_REFERENCEParserRuleCall_1_0_1; }
+		//STRING
+		public RuleCall getOverridenEnumTypeXOseeEnumTypeSTRINGTerminalRuleCall_1_0_1() { return cOverridenEnumTypeXOseeEnumTypeSTRINGTerminalRuleCall_1_0_1; }
 
 		//"{"
 		public Keyword getLeftCurlyBracketKeyword_2() { return cLeftCurlyBracketKeyword_2; }
@@ -911,7 +822,7 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Keyword cAddKeyword_0 = (Keyword)cGroup.eContents().get(0);
 		private final Assignment cEnumEntryAssignment_1 = (Assignment)cGroup.eContents().get(1);
-		private final RuleCall cEnumEntryENUM_ENTRY_TYPE_REFERENCEParserRuleCall_1_0 = (RuleCall)cEnumEntryAssignment_1.eContents().get(0);
+		private final RuleCall cEnumEntrySTRINGTerminalRuleCall_1_0 = (RuleCall)cEnumEntryAssignment_1.eContents().get(0);
 		private final Assignment cOrdinalAssignment_2 = (Assignment)cGroup.eContents().get(2);
 		private final RuleCall cOrdinalWHOLE_NUM_STRTerminalRuleCall_2_0 = (RuleCall)cOrdinalAssignment_2.eContents().get(0);
 		private final Group cGroup_3 = (Group)cGroup.eContents().get(3);
@@ -920,20 +831,20 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cEntryGuidSTRINGTerminalRuleCall_3_1_0 = (RuleCall)cEntryGuidAssignment_3_1.eContents().get(0);
 		
 		//AddEnum:
-		//	"add" enumEntry=ENUM_ENTRY_TYPE_REFERENCE ordinal=WHOLE_NUM_STR? ("entryGuid" entryGuid=STRING)?;
+		//	"add" enumEntry=STRING ordinal=WHOLE_NUM_STR? ("entryGuid" entryGuid=STRING)?;
 		public ParserRule getRule() { return rule; }
 
-		//"add" enumEntry=ENUM_ENTRY_TYPE_REFERENCE ordinal=WHOLE_NUM_STR? ("entryGuid" entryGuid=STRING)?
+		//"add" enumEntry=STRING ordinal=WHOLE_NUM_STR? ("entryGuid" entryGuid=STRING)?
 		public Group getGroup() { return cGroup; }
 
 		//"add"
 		public Keyword getAddKeyword_0() { return cAddKeyword_0; }
 
-		//enumEntry=ENUM_ENTRY_TYPE_REFERENCE
+		//enumEntry=STRING
 		public Assignment getEnumEntryAssignment_1() { return cEnumEntryAssignment_1; }
 
-		//ENUM_ENTRY_TYPE_REFERENCE
-		public RuleCall getEnumEntryENUM_ENTRY_TYPE_REFERENCEParserRuleCall_1_0() { return cEnumEntryENUM_ENTRY_TYPE_REFERENCEParserRuleCall_1_0; }
+		//STRING
+		public RuleCall getEnumEntrySTRINGTerminalRuleCall_1_0() { return cEnumEntrySTRINGTerminalRuleCall_1_0; }
 
 		//ordinal=WHOLE_NUM_STR?
 		public Assignment getOrdinalAssignment_2() { return cOrdinalAssignment_2; }
@@ -960,26 +871,26 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cRemoveKeyword_0 = (Keyword)cGroup.eContents().get(0);
 		private final Assignment cEnumEntryAssignment_1 = (Assignment)cGroup.eContents().get(1);
 		private final CrossReference cEnumEntryXOseeEnumEntryCrossReference_1_0 = (CrossReference)cEnumEntryAssignment_1.eContents().get(0);
-		private final RuleCall cEnumEntryXOseeEnumEntryENUM_ENTRY_TYPE_REFERENCEParserRuleCall_1_0_1 = (RuleCall)cEnumEntryXOseeEnumEntryCrossReference_1_0.eContents().get(1);
+		private final RuleCall cEnumEntryXOseeEnumEntrySTRINGTerminalRuleCall_1_0_1 = (RuleCall)cEnumEntryXOseeEnumEntryCrossReference_1_0.eContents().get(1);
 		
 		//RemoveEnum:
-		//	"remove" enumEntry=[XOseeEnumEntry|ENUM_ENTRY_TYPE_REFERENCE];
+		//	"remove" enumEntry=[XOseeEnumEntry|STRING];
 		public ParserRule getRule() { return rule; }
 
-		//"remove" enumEntry=[XOseeEnumEntry|ENUM_ENTRY_TYPE_REFERENCE]
+		//"remove" enumEntry=[XOseeEnumEntry|STRING]
 		public Group getGroup() { return cGroup; }
 
 		//"remove"
 		public Keyword getRemoveKeyword_0() { return cRemoveKeyword_0; }
 
-		//enumEntry=[XOseeEnumEntry|ENUM_ENTRY_TYPE_REFERENCE]
+		//enumEntry=[XOseeEnumEntry|STRING]
 		public Assignment getEnumEntryAssignment_1() { return cEnumEntryAssignment_1; }
 
-		//[XOseeEnumEntry|ENUM_ENTRY_TYPE_REFERENCE]
+		//[XOseeEnumEntry|STRING]
 		public CrossReference getEnumEntryXOseeEnumEntryCrossReference_1_0() { return cEnumEntryXOseeEnumEntryCrossReference_1_0; }
 
-		//ENUM_ENTRY_TYPE_REFERENCE
-		public RuleCall getEnumEntryXOseeEnumEntryENUM_ENTRY_TYPE_REFERENCEParserRuleCall_1_0_1() { return cEnumEntryXOseeEnumEntryENUM_ENTRY_TYPE_REFERENCEParserRuleCall_1_0_1; }
+		//STRING
+		public RuleCall getEnumEntryXOseeEnumEntrySTRINGTerminalRuleCall_1_0_1() { return cEnumEntryXOseeEnumEntrySTRINGTerminalRuleCall_1_0_1; }
 	}
 
 	public class XRelationTypeElements extends AbstractParserRuleElementFinder {
@@ -987,7 +898,7 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Keyword cRelationTypeKeyword_0 = (Keyword)cGroup.eContents().get(0);
 		private final Assignment cNameAssignment_1 = (Assignment)cGroup.eContents().get(1);
-		private final RuleCall cNameRELATION_TYPE_REFERENCEParserRuleCall_1_0 = (RuleCall)cNameAssignment_1.eContents().get(0);
+		private final RuleCall cNameSTRINGTerminalRuleCall_1_0 = (RuleCall)cNameAssignment_1.eContents().get(0);
 		private final Keyword cLeftCurlyBracketKeyword_2 = (Keyword)cGroup.eContents().get(2);
 		private final Keyword cGuidKeyword_3 = (Keyword)cGroup.eContents().get(3);
 		private final Assignment cTypeGuidAssignment_4 = (Assignment)cGroup.eContents().get(4);
@@ -998,14 +909,14 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cSideAArtifactTypeKeyword_7 = (Keyword)cGroup.eContents().get(7);
 		private final Assignment cSideAArtifactTypeAssignment_8 = (Assignment)cGroup.eContents().get(8);
 		private final CrossReference cSideAArtifactTypeXArtifactTypeCrossReference_8_0 = (CrossReference)cSideAArtifactTypeAssignment_8.eContents().get(0);
-		private final RuleCall cSideAArtifactTypeXArtifactTypeARTIFACT_TYPE_REFERENCEParserRuleCall_8_0_1 = (RuleCall)cSideAArtifactTypeXArtifactTypeCrossReference_8_0.eContents().get(1);
+		private final RuleCall cSideAArtifactTypeXArtifactTypeSTRINGTerminalRuleCall_8_0_1 = (RuleCall)cSideAArtifactTypeXArtifactTypeCrossReference_8_0.eContents().get(1);
 		private final Keyword cSideBNameKeyword_9 = (Keyword)cGroup.eContents().get(9);
 		private final Assignment cSideBNameAssignment_10 = (Assignment)cGroup.eContents().get(10);
 		private final RuleCall cSideBNameSTRINGTerminalRuleCall_10_0 = (RuleCall)cSideBNameAssignment_10.eContents().get(0);
 		private final Keyword cSideBArtifactTypeKeyword_11 = (Keyword)cGroup.eContents().get(11);
 		private final Assignment cSideBArtifactTypeAssignment_12 = (Assignment)cGroup.eContents().get(12);
 		private final CrossReference cSideBArtifactTypeXArtifactTypeCrossReference_12_0 = (CrossReference)cSideBArtifactTypeAssignment_12.eContents().get(0);
-		private final RuleCall cSideBArtifactTypeXArtifactTypeARTIFACT_TYPE_REFERENCEParserRuleCall_12_0_1 = (RuleCall)cSideBArtifactTypeXArtifactTypeCrossReference_12_0.eContents().get(1);
+		private final RuleCall cSideBArtifactTypeXArtifactTypeSTRINGTerminalRuleCall_12_0_1 = (RuleCall)cSideBArtifactTypeXArtifactTypeCrossReference_12_0.eContents().get(1);
 		private final Keyword cDefaultOrderTypeKeyword_13 = (Keyword)cGroup.eContents().get(13);
 		private final Assignment cDefaultOrderTypeAssignment_14 = (Assignment)cGroup.eContents().get(14);
 		private final RuleCall cDefaultOrderTypeRelationOrderTypeParserRuleCall_14_0 = (RuleCall)cDefaultOrderTypeAssignment_14.eContents().get(0);
@@ -1015,26 +926,26 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cRightCurlyBracketKeyword_17 = (Keyword)cGroup.eContents().get(17);
 		
 		//XRelationType:
-		//	"relationType" name=RELATION_TYPE_REFERENCE "{" "guid" typeGuid=STRING "sideAName" sideAName=STRING
-		//	"sideAArtifactType" sideAArtifactType=[XArtifactType|ARTIFACT_TYPE_REFERENCE] "sideBName" sideBName=STRING
-		//	"sideBArtifactType" sideBArtifactType=[XArtifactType|ARTIFACT_TYPE_REFERENCE] "defaultOrderType"
-		//	defaultOrderType=RelationOrderType "multiplicity" multiplicity=RelationMultiplicityEnum "}";
+		//	"relationType" name=STRING "{" "guid" typeGuid=STRING "sideAName" sideAName=STRING "sideAArtifactType"
+		//	sideAArtifactType=[XArtifactType|STRING] "sideBName" sideBName=STRING "sideBArtifactType"
+		//	sideBArtifactType=[XArtifactType|STRING] "defaultOrderType" defaultOrderType=RelationOrderType "multiplicity"
+		//	multiplicity=RelationMultiplicityEnum "}";
 		public ParserRule getRule() { return rule; }
 
-		//"relationType" name=RELATION_TYPE_REFERENCE "{" "guid" typeGuid=STRING "sideAName" sideAName=STRING "sideAArtifactType"
-		//sideAArtifactType=[XArtifactType|ARTIFACT_TYPE_REFERENCE] "sideBName" sideBName=STRING "sideBArtifactType"
-		//sideBArtifactType=[XArtifactType|ARTIFACT_TYPE_REFERENCE] "defaultOrderType" defaultOrderType=RelationOrderType
-		//"multiplicity" multiplicity=RelationMultiplicityEnum "}"
+		//"relationType" name=STRING "{" "guid" typeGuid=STRING "sideAName" sideAName=STRING "sideAArtifactType"
+		//sideAArtifactType=[XArtifactType|STRING] "sideBName" sideBName=STRING "sideBArtifactType"
+		//sideBArtifactType=[XArtifactType|STRING] "defaultOrderType" defaultOrderType=RelationOrderType "multiplicity"
+		//multiplicity=RelationMultiplicityEnum "}"
 		public Group getGroup() { return cGroup; }
 
 		//"relationType"
 		public Keyword getRelationTypeKeyword_0() { return cRelationTypeKeyword_0; }
 
-		//name=RELATION_TYPE_REFERENCE
+		//name=STRING
 		public Assignment getNameAssignment_1() { return cNameAssignment_1; }
 
-		//RELATION_TYPE_REFERENCE
-		public RuleCall getNameRELATION_TYPE_REFERENCEParserRuleCall_1_0() { return cNameRELATION_TYPE_REFERENCEParserRuleCall_1_0; }
+		//STRING
+		public RuleCall getNameSTRINGTerminalRuleCall_1_0() { return cNameSTRINGTerminalRuleCall_1_0; }
 
 		//"{"
 		public Keyword getLeftCurlyBracketKeyword_2() { return cLeftCurlyBracketKeyword_2; }
@@ -1060,14 +971,14 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		//"sideAArtifactType"
 		public Keyword getSideAArtifactTypeKeyword_7() { return cSideAArtifactTypeKeyword_7; }
 
-		//sideAArtifactType=[XArtifactType|ARTIFACT_TYPE_REFERENCE]
+		//sideAArtifactType=[XArtifactType|STRING]
 		public Assignment getSideAArtifactTypeAssignment_8() { return cSideAArtifactTypeAssignment_8; }
 
-		//[XArtifactType|ARTIFACT_TYPE_REFERENCE]
+		//[XArtifactType|STRING]
 		public CrossReference getSideAArtifactTypeXArtifactTypeCrossReference_8_0() { return cSideAArtifactTypeXArtifactTypeCrossReference_8_0; }
 
-		//ARTIFACT_TYPE_REFERENCE
-		public RuleCall getSideAArtifactTypeXArtifactTypeARTIFACT_TYPE_REFERENCEParserRuleCall_8_0_1() { return cSideAArtifactTypeXArtifactTypeARTIFACT_TYPE_REFERENCEParserRuleCall_8_0_1; }
+		//STRING
+		public RuleCall getSideAArtifactTypeXArtifactTypeSTRINGTerminalRuleCall_8_0_1() { return cSideAArtifactTypeXArtifactTypeSTRINGTerminalRuleCall_8_0_1; }
 
 		//"sideBName"
 		public Keyword getSideBNameKeyword_9() { return cSideBNameKeyword_9; }
@@ -1081,14 +992,14 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		//"sideBArtifactType"
 		public Keyword getSideBArtifactTypeKeyword_11() { return cSideBArtifactTypeKeyword_11; }
 
-		//sideBArtifactType=[XArtifactType|ARTIFACT_TYPE_REFERENCE]
+		//sideBArtifactType=[XArtifactType|STRING]
 		public Assignment getSideBArtifactTypeAssignment_12() { return cSideBArtifactTypeAssignment_12; }
 
-		//[XArtifactType|ARTIFACT_TYPE_REFERENCE]
+		//[XArtifactType|STRING]
 		public CrossReference getSideBArtifactTypeXArtifactTypeCrossReference_12_0() { return cSideBArtifactTypeXArtifactTypeCrossReference_12_0; }
 
-		//ARTIFACT_TYPE_REFERENCE
-		public RuleCall getSideBArtifactTypeXArtifactTypeARTIFACT_TYPE_REFERENCEParserRuleCall_12_0_1() { return cSideBArtifactTypeXArtifactTypeARTIFACT_TYPE_REFERENCEParserRuleCall_12_0_1; }
+		//STRING
+		public RuleCall getSideBArtifactTypeXArtifactTypeSTRINGTerminalRuleCall_12_0_1() { return cSideBArtifactTypeXArtifactTypeSTRINGTerminalRuleCall_12_0_1; }
 
 		//"defaultOrderType"
 		public Keyword getDefaultOrderTypeKeyword_13() { return cDefaultOrderTypeKeyword_13; }
@@ -1140,126 +1051,188 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		public RuleCall getIDTerminalRuleCall_3() { return cIDTerminalRuleCall_3; }
 	}
 
-	public class ARTIFACT_INSTANCE_REFERENCEElements extends AbstractParserRuleElementFinder {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "ARTIFACT_INSTANCE_REFERENCE");
-		private final RuleCall cSTRINGTerminalRuleCall = (RuleCall)rule.eContents().get(1);
+	public class CONDITION_VALUEElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "CONDITION_VALUE");
+		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
+		private final RuleCall cWHOLE_NUM_STRTerminalRuleCall_0 = (RuleCall)cAlternatives.eContents().get(0);
+		private final RuleCall cSTRINGTerminalRuleCall_1 = (RuleCall)cAlternatives.eContents().get(1);
 		
-		/////////////////////////////////////////
-		////  OSEE ARTIFACT INSTANCE REFERENCE //
-		/////////////////////////////////////////
-		//ARTIFACT_INSTANCE_REFERENCE:
-		//	STRING;
+		//CONDITION_VALUE:
+		//	WHOLE_NUM_STR | STRING;
 		public ParserRule getRule() { return rule; }
+
+		//WHOLE_NUM_STR | STRING
+		public Alternatives getAlternatives() { return cAlternatives; }
+
+		//WHOLE_NUM_STR
+		public RuleCall getWHOLE_NUM_STRTerminalRuleCall_0() { return cWHOLE_NUM_STRTerminalRuleCall_0; }
 
 		//STRING
-		public RuleCall getSTRINGTerminalRuleCall() { return cSTRINGTerminalRuleCall; }
+		public RuleCall getSTRINGTerminalRuleCall_1() { return cSTRINGTerminalRuleCall_1; }
 	}
 
-	public class XArtifactRefElements extends AbstractParserRuleElementFinder {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "XArtifactRef");
-		private final Group cGroup = (Group)rule.eContents().get(1);
-		private final Keyword cArtifactKeyword_0 = (Keyword)cGroup.eContents().get(0);
-		private final Assignment cNameAssignment_1 = (Assignment)cGroup.eContents().get(1);
-		private final RuleCall cNameARTIFACT_INSTANCE_REFERENCEParserRuleCall_1_0 = (RuleCall)cNameAssignment_1.eContents().get(0);
-		private final Keyword cArtGuidKeyword_2 = (Keyword)cGroup.eContents().get(2);
-		private final Assignment cGuidAssignment_3 = (Assignment)cGroup.eContents().get(3);
-		private final RuleCall cGuidSTRINGTerminalRuleCall_3_0 = (RuleCall)cGuidAssignment_3.eContents().get(0);
-		private final Keyword cSemicolonKeyword_4 = (Keyword)cGroup.eContents().get(4);
+	public class ConditionElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "Condition");
+		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
+		private final RuleCall cSimpleConditionParserRuleCall_0 = (RuleCall)cAlternatives.eContents().get(0);
+		private final RuleCall cCompoundConditionParserRuleCall_1 = (RuleCall)cAlternatives.eContents().get(1);
 		
-		//XArtifactRef:
-		//	"artifact" name=ARTIFACT_INSTANCE_REFERENCE "artGuid" guid=STRING ";";
+		//Condition:
+		//	SimpleCondition | CompoundCondition;
 		public ParserRule getRule() { return rule; }
 
-		//"artifact" name=ARTIFACT_INSTANCE_REFERENCE "artGuid" guid=STRING ";"
+		//SimpleCondition | CompoundCondition
+		public Alternatives getAlternatives() { return cAlternatives; }
+
+		//SimpleCondition
+		public RuleCall getSimpleConditionParserRuleCall_0() { return cSimpleConditionParserRuleCall_0; }
+
+		//CompoundCondition
+		public RuleCall getCompoundConditionParserRuleCall_1() { return cCompoundConditionParserRuleCall_1; }
+	}
+
+	public class SimpleConditionElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "SimpleCondition");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Assignment cFieldAssignment_0 = (Assignment)cGroup.eContents().get(0);
+		private final RuleCall cFieldMatchFieldEnumRuleCall_0_0 = (RuleCall)cFieldAssignment_0.eContents().get(0);
+		private final Assignment cOpAssignment_1 = (Assignment)cGroup.eContents().get(1);
+		private final RuleCall cOpCompareOpEnumRuleCall_1_0 = (RuleCall)cOpAssignment_1.eContents().get(0);
+		private final Assignment cExpressionAssignment_2 = (Assignment)cGroup.eContents().get(2);
+		private final RuleCall cExpressionSTRINGTerminalRuleCall_2_0 = (RuleCall)cExpressionAssignment_2.eContents().get(0);
+		
+		//SimpleCondition:
+		//	field=MatchField op=CompareOp expression=STRING;
+		public ParserRule getRule() { return rule; }
+
+		//field=MatchField op=CompareOp expression=STRING
 		public Group getGroup() { return cGroup; }
 
-		//"artifact"
-		public Keyword getArtifactKeyword_0() { return cArtifactKeyword_0; }
+		//field=MatchField
+		public Assignment getFieldAssignment_0() { return cFieldAssignment_0; }
 
-		//name=ARTIFACT_INSTANCE_REFERENCE
-		public Assignment getNameAssignment_1() { return cNameAssignment_1; }
+		//MatchField
+		public RuleCall getFieldMatchFieldEnumRuleCall_0_0() { return cFieldMatchFieldEnumRuleCall_0_0; }
 
-		//ARTIFACT_INSTANCE_REFERENCE
-		public RuleCall getNameARTIFACT_INSTANCE_REFERENCEParserRuleCall_1_0() { return cNameARTIFACT_INSTANCE_REFERENCEParserRuleCall_1_0; }
+		//op=CompareOp
+		public Assignment getOpAssignment_1() { return cOpAssignment_1; }
 
-		//"artGuid"
-		public Keyword getArtGuidKeyword_2() { return cArtGuidKeyword_2; }
+		//CompareOp
+		public RuleCall getOpCompareOpEnumRuleCall_1_0() { return cOpCompareOpEnumRuleCall_1_0; }
 
-		//guid=STRING
-		public Assignment getGuidAssignment_3() { return cGuidAssignment_3; }
-
-		//STRING
-		public RuleCall getGuidSTRINGTerminalRuleCall_3_0() { return cGuidSTRINGTerminalRuleCall_3_0; }
-
-		//";"
-		public Keyword getSemicolonKeyword_4() { return cSemicolonKeyword_4; }
-	}
-
-	public class BRANCH_INSTANCE_REFERENCEElements extends AbstractParserRuleElementFinder {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "BRANCH_INSTANCE_REFERENCE");
-		private final RuleCall cSTRINGTerminalRuleCall = (RuleCall)rule.eContents().get(1);
-		
-		//BRANCH_INSTANCE_REFERENCE:
-		//	STRING;
-		public ParserRule getRule() { return rule; }
+		//expression=STRING
+		public Assignment getExpressionAssignment_2() { return cExpressionAssignment_2; }
 
 		//STRING
-		public RuleCall getSTRINGTerminalRuleCall() { return cSTRINGTerminalRuleCall; }
+		public RuleCall getExpressionSTRINGTerminalRuleCall_2_0() { return cExpressionSTRINGTerminalRuleCall_2_0; }
 	}
 
-	public class XBranchRefElements extends AbstractParserRuleElementFinder {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "XBranchRef");
+	public class CompoundConditionElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "CompoundCondition");
 		private final Group cGroup = (Group)rule.eContents().get(1);
-		private final Keyword cBranchKeyword_0 = (Keyword)cGroup.eContents().get(0);
-		private final Assignment cNameAssignment_1 = (Assignment)cGroup.eContents().get(1);
-		private final RuleCall cNameBRANCH_INSTANCE_REFERENCEParserRuleCall_1_0 = (RuleCall)cNameAssignment_1.eContents().get(0);
-		private final Keyword cBranchGuidKeyword_2 = (Keyword)cGroup.eContents().get(2);
-		private final Assignment cGuidAssignment_3 = (Assignment)cGroup.eContents().get(3);
-		private final RuleCall cGuidSTRINGTerminalRuleCall_3_0 = (RuleCall)cGuidAssignment_3.eContents().get(0);
-		private final Keyword cSemicolonKeyword_4 = (Keyword)cGroup.eContents().get(4);
+		private final Keyword cLeftParenthesisKeyword_0 = (Keyword)cGroup.eContents().get(0);
+		private final Assignment cConditionsAssignment_1 = (Assignment)cGroup.eContents().get(1);
+		private final RuleCall cConditionsSimpleConditionParserRuleCall_1_0 = (RuleCall)cConditionsAssignment_1.eContents().get(0);
+		private final Group cGroup_2 = (Group)cGroup.eContents().get(2);
+		private final Assignment cOperatorsAssignment_2_0 = (Assignment)cGroup_2.eContents().get(0);
+		private final RuleCall cOperatorsXLogicOperatorEnumRuleCall_2_0_0 = (RuleCall)cOperatorsAssignment_2_0.eContents().get(0);
+		private final Assignment cConditionsAssignment_2_1 = (Assignment)cGroup_2.eContents().get(1);
+		private final RuleCall cConditionsSimpleConditionParserRuleCall_2_1_0 = (RuleCall)cConditionsAssignment_2_1.eContents().get(0);
+		private final Keyword cRightParenthesisKeyword_3 = (Keyword)cGroup.eContents().get(3);
 		
-		//XBranchRef:
-		//	"branch" name=BRANCH_INSTANCE_REFERENCE "branchGuid" guid=STRING ";";
+		//CompoundCondition:
+		//	"(" conditions+=SimpleCondition (operators+=XLogicOperator conditions+=SimpleCondition)+ ")";
 		public ParserRule getRule() { return rule; }
 
-		//"branch" name=BRANCH_INSTANCE_REFERENCE "branchGuid" guid=STRING ";"
+		//"(" conditions+=SimpleCondition (operators+=XLogicOperator conditions+=SimpleCondition)+ ")"
 		public Group getGroup() { return cGroup; }
 
-		//"branch"
-		public Keyword getBranchKeyword_0() { return cBranchKeyword_0; }
+		//"("
+		public Keyword getLeftParenthesisKeyword_0() { return cLeftParenthesisKeyword_0; }
 
-		//name=BRANCH_INSTANCE_REFERENCE
-		public Assignment getNameAssignment_1() { return cNameAssignment_1; }
+		//conditions+=SimpleCondition
+		public Assignment getConditionsAssignment_1() { return cConditionsAssignment_1; }
 
-		//BRANCH_INSTANCE_REFERENCE
-		public RuleCall getNameBRANCH_INSTANCE_REFERENCEParserRuleCall_1_0() { return cNameBRANCH_INSTANCE_REFERENCEParserRuleCall_1_0; }
+		//SimpleCondition
+		public RuleCall getConditionsSimpleConditionParserRuleCall_1_0() { return cConditionsSimpleConditionParserRuleCall_1_0; }
 
-		//"branchGuid"
-		public Keyword getBranchGuidKeyword_2() { return cBranchGuidKeyword_2; }
+		//(operators+=XLogicOperator conditions+=SimpleCondition)+
+		public Group getGroup_2() { return cGroup_2; }
 
-		//guid=STRING
-		public Assignment getGuidAssignment_3() { return cGuidAssignment_3; }
+		//operators+=XLogicOperator
+		public Assignment getOperatorsAssignment_2_0() { return cOperatorsAssignment_2_0; }
 
-		//STRING
-		public RuleCall getGuidSTRINGTerminalRuleCall_3_0() { return cGuidSTRINGTerminalRuleCall_3_0; }
+		//XLogicOperator
+		public RuleCall getOperatorsXLogicOperatorEnumRuleCall_2_0_0() { return cOperatorsXLogicOperatorEnumRuleCall_2_0_0; }
 
-		//";"
-		public Keyword getSemicolonKeyword_4() { return cSemicolonKeyword_4; }
+		//conditions+=SimpleCondition
+		public Assignment getConditionsAssignment_2_1() { return cConditionsAssignment_2_1; }
+
+		//SimpleCondition
+		public RuleCall getConditionsSimpleConditionParserRuleCall_2_1_0() { return cConditionsSimpleConditionParserRuleCall_2_1_0; }
+
+		//")"
+		public Keyword getRightParenthesisKeyword_3() { return cRightParenthesisKeyword_3; }
 	}
 
-	public class ACCESS_CONTEXT_TYPE_REFRENCEElements extends AbstractParserRuleElementFinder {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "ACCESS_CONTEXT_TYPE_REFRENCE");
-		private final RuleCall cSTRINGTerminalRuleCall = (RuleCall)rule.eContents().get(1);
+	public class XArtifactMatcherElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "XArtifactMatcher");
+		private final Group cGroup = (Group)rule.eContents().get(1);
+		private final Keyword cArtifactMatcherKeyword_0 = (Keyword)cGroup.eContents().get(0);
+		private final Assignment cNameAssignment_1 = (Assignment)cGroup.eContents().get(1);
+		private final RuleCall cNameSTRINGTerminalRuleCall_1_0 = (RuleCall)cNameAssignment_1.eContents().get(0);
+		private final Keyword cWhereKeyword_2 = (Keyword)cGroup.eContents().get(2);
+		private final Assignment cConditionsAssignment_3 = (Assignment)cGroup.eContents().get(3);
+		private final RuleCall cConditionsConditionParserRuleCall_3_0 = (RuleCall)cConditionsAssignment_3.eContents().get(0);
+		private final Group cGroup_4 = (Group)cGroup.eContents().get(4);
+		private final Assignment cOperatorsAssignment_4_0 = (Assignment)cGroup_4.eContents().get(0);
+		private final RuleCall cOperatorsXLogicOperatorEnumRuleCall_4_0_0 = (RuleCall)cOperatorsAssignment_4_0.eContents().get(0);
+		private final Assignment cConditionsAssignment_4_1 = (Assignment)cGroup_4.eContents().get(1);
+		private final RuleCall cConditionsConditionParserRuleCall_4_1_0 = (RuleCall)cConditionsAssignment_4_1.eContents().get(0);
+		private final Keyword cSemicolonKeyword_5 = (Keyword)cGroup.eContents().get(5);
 		
-		/////////////////////////////////////////
-		////  OSEE ACCESS MODEL                //
-		/////////////////////////////////////////
-		//ACCESS_CONTEXT_TYPE_REFRENCE:
-		//	STRING;
+		//XArtifactMatcher:
+		//	"artifactMatcher" name=STRING "where" conditions+=Condition (operators+=XLogicOperator conditions+=Condition)* ";";
 		public ParserRule getRule() { return rule; }
 
+		//"artifactMatcher" name=STRING "where" conditions+=Condition (operators+=XLogicOperator conditions+=Condition)* ";"
+		public Group getGroup() { return cGroup; }
+
+		//"artifactMatcher"
+		public Keyword getArtifactMatcherKeyword_0() { return cArtifactMatcherKeyword_0; }
+
+		//name=STRING
+		public Assignment getNameAssignment_1() { return cNameAssignment_1; }
+
 		//STRING
-		public RuleCall getSTRINGTerminalRuleCall() { return cSTRINGTerminalRuleCall; }
+		public RuleCall getNameSTRINGTerminalRuleCall_1_0() { return cNameSTRINGTerminalRuleCall_1_0; }
+
+		//"where"
+		public Keyword getWhereKeyword_2() { return cWhereKeyword_2; }
+
+		//conditions+=Condition
+		public Assignment getConditionsAssignment_3() { return cConditionsAssignment_3; }
+
+		//Condition
+		public RuleCall getConditionsConditionParserRuleCall_3_0() { return cConditionsConditionParserRuleCall_3_0; }
+
+		//(operators+=XLogicOperator conditions+=Condition)*
+		public Group getGroup_4() { return cGroup_4; }
+
+		//operators+=XLogicOperator
+		public Assignment getOperatorsAssignment_4_0() { return cOperatorsAssignment_4_0; }
+
+		//XLogicOperator
+		public RuleCall getOperatorsXLogicOperatorEnumRuleCall_4_0_0() { return cOperatorsXLogicOperatorEnumRuleCall_4_0_0; }
+
+		//conditions+=Condition
+		public Assignment getConditionsAssignment_4_1() { return cConditionsAssignment_4_1; }
+
+		//Condition
+		public RuleCall getConditionsConditionParserRuleCall_4_1_0() { return cConditionsConditionParserRuleCall_4_1_0; }
+
+		//";"
+		public Keyword getSemicolonKeyword_5() { return cSemicolonKeyword_5; }
 	}
 
 	public class AccessContextElements extends AbstractParserRuleElementFinder {
@@ -1267,17 +1240,17 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Keyword cAccessContextKeyword_0 = (Keyword)cGroup.eContents().get(0);
 		private final Assignment cNameAssignment_1 = (Assignment)cGroup.eContents().get(1);
-		private final RuleCall cNameACCESS_CONTEXT_TYPE_REFRENCEParserRuleCall_1_0 = (RuleCall)cNameAssignment_1.eContents().get(0);
+		private final RuleCall cNameSTRINGTerminalRuleCall_1_0 = (RuleCall)cNameAssignment_1.eContents().get(0);
 		private final Group cGroup_2 = (Group)cGroup.eContents().get(2);
 		private final Keyword cExtendsKeyword_2_0 = (Keyword)cGroup_2.eContents().get(0);
 		private final Assignment cSuperAccessContextsAssignment_2_1 = (Assignment)cGroup_2.eContents().get(1);
 		private final CrossReference cSuperAccessContextsAccessContextCrossReference_2_1_0 = (CrossReference)cSuperAccessContextsAssignment_2_1.eContents().get(0);
-		private final RuleCall cSuperAccessContextsAccessContextACCESS_CONTEXT_TYPE_REFRENCEParserRuleCall_2_1_0_1 = (RuleCall)cSuperAccessContextsAccessContextCrossReference_2_1_0.eContents().get(1);
+		private final RuleCall cSuperAccessContextsAccessContextSTRINGTerminalRuleCall_2_1_0_1 = (RuleCall)cSuperAccessContextsAccessContextCrossReference_2_1_0.eContents().get(1);
 		private final Group cGroup_2_2 = (Group)cGroup_2.eContents().get(2);
 		private final Keyword cCommaKeyword_2_2_0 = (Keyword)cGroup_2_2.eContents().get(0);
 		private final Assignment cSuperAccessContextsAssignment_2_2_1 = (Assignment)cGroup_2_2.eContents().get(1);
 		private final CrossReference cSuperAccessContextsAccessContextCrossReference_2_2_1_0 = (CrossReference)cSuperAccessContextsAssignment_2_2_1.eContents().get(0);
-		private final RuleCall cSuperAccessContextsAccessContextACCESS_CONTEXT_TYPE_REFRENCEParserRuleCall_2_2_1_0_1 = (RuleCall)cSuperAccessContextsAccessContextCrossReference_2_2_1_0.eContents().get(1);
+		private final RuleCall cSuperAccessContextsAccessContextSTRINGTerminalRuleCall_2_2_1_0_1 = (RuleCall)cSuperAccessContextsAccessContextCrossReference_2_2_1_0.eContents().get(1);
 		private final Keyword cLeftCurlyBracketKeyword_3 = (Keyword)cGroup.eContents().get(3);
 		private final Keyword cGuidKeyword_4 = (Keyword)cGroup.eContents().get(4);
 		private final Assignment cGuidAssignment_5 = (Assignment)cGroup.eContents().get(5);
@@ -1290,58 +1263,58 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cHierarchyRestrictionsHierarchyRestrictionParserRuleCall_7_1_0 = (RuleCall)cHierarchyRestrictionsAssignment_7_1.eContents().get(0);
 		private final Keyword cRightCurlyBracketKeyword_8 = (Keyword)cGroup.eContents().get(8);
 		
+		/////////////////////////////////////////
+		////  OSEE ACCESS MODEL                //
+		/////////////////////////////////////////
 		//AccessContext:
-		//	"accessContext" name=ACCESS_CONTEXT_TYPE_REFRENCE ("extends"
-		//	superAccessContexts+=[AccessContext|ACCESS_CONTEXT_TYPE_REFRENCE] (","
-		//	superAccessContexts+=[AccessContext|ACCESS_CONTEXT_TYPE_REFRENCE])*)? "{" "guid" guid=STRING ";"
-		//	(accessRules+=ObjectRestriction | hierarchyRestrictions+=HierarchyRestriction)+ "}";
+		//	"accessContext" name=STRING ("extends" superAccessContexts+=[AccessContext|STRING] (","
+		//	superAccessContexts+=[AccessContext|STRING])*)? "{" "guid" guid=STRING ";" (accessRules+=ObjectRestriction |
+		//	hierarchyRestrictions+=HierarchyRestriction)+ "}";
 		public ParserRule getRule() { return rule; }
 
-		//"accessContext" name=ACCESS_CONTEXT_TYPE_REFRENCE ("extends"
-		//superAccessContexts+=[AccessContext|ACCESS_CONTEXT_TYPE_REFRENCE] (","
-		//superAccessContexts+=[AccessContext|ACCESS_CONTEXT_TYPE_REFRENCE])*)? "{" "guid" guid=STRING ";"
-		//(accessRules+=ObjectRestriction | hierarchyRestrictions+=HierarchyRestriction)+ "}"
+		//"accessContext" name=STRING ("extends" superAccessContexts+=[AccessContext|STRING] (","
+		//superAccessContexts+=[AccessContext|STRING])*)? "{" "guid" guid=STRING ";" (accessRules+=ObjectRestriction |
+		//hierarchyRestrictions+=HierarchyRestriction)+ "}"
 		public Group getGroup() { return cGroup; }
 
 		//"accessContext"
 		public Keyword getAccessContextKeyword_0() { return cAccessContextKeyword_0; }
 
-		//name=ACCESS_CONTEXT_TYPE_REFRENCE
+		//name=STRING
 		public Assignment getNameAssignment_1() { return cNameAssignment_1; }
 
-		//ACCESS_CONTEXT_TYPE_REFRENCE
-		public RuleCall getNameACCESS_CONTEXT_TYPE_REFRENCEParserRuleCall_1_0() { return cNameACCESS_CONTEXT_TYPE_REFRENCEParserRuleCall_1_0; }
+		//STRING
+		public RuleCall getNameSTRINGTerminalRuleCall_1_0() { return cNameSTRINGTerminalRuleCall_1_0; }
 
-		//("extends" superAccessContexts+=[AccessContext|ACCESS_CONTEXT_TYPE_REFRENCE] (","
-		//superAccessContexts+=[AccessContext|ACCESS_CONTEXT_TYPE_REFRENCE])*)?
+		//("extends" superAccessContexts+=[AccessContext|STRING] ("," superAccessContexts+=[AccessContext|STRING])*)?
 		public Group getGroup_2() { return cGroup_2; }
 
 		//"extends"
 		public Keyword getExtendsKeyword_2_0() { return cExtendsKeyword_2_0; }
 
-		//superAccessContexts+=[AccessContext|ACCESS_CONTEXT_TYPE_REFRENCE]
+		//superAccessContexts+=[AccessContext|STRING]
 		public Assignment getSuperAccessContextsAssignment_2_1() { return cSuperAccessContextsAssignment_2_1; }
 
-		//[AccessContext|ACCESS_CONTEXT_TYPE_REFRENCE]
+		//[AccessContext|STRING]
 		public CrossReference getSuperAccessContextsAccessContextCrossReference_2_1_0() { return cSuperAccessContextsAccessContextCrossReference_2_1_0; }
 
-		//ACCESS_CONTEXT_TYPE_REFRENCE
-		public RuleCall getSuperAccessContextsAccessContextACCESS_CONTEXT_TYPE_REFRENCEParserRuleCall_2_1_0_1() { return cSuperAccessContextsAccessContextACCESS_CONTEXT_TYPE_REFRENCEParserRuleCall_2_1_0_1; }
+		//STRING
+		public RuleCall getSuperAccessContextsAccessContextSTRINGTerminalRuleCall_2_1_0_1() { return cSuperAccessContextsAccessContextSTRINGTerminalRuleCall_2_1_0_1; }
 
-		//("," superAccessContexts+=[AccessContext|ACCESS_CONTEXT_TYPE_REFRENCE])*
+		//("," superAccessContexts+=[AccessContext|STRING])*
 		public Group getGroup_2_2() { return cGroup_2_2; }
 
 		//","
 		public Keyword getCommaKeyword_2_2_0() { return cCommaKeyword_2_2_0; }
 
-		//superAccessContexts+=[AccessContext|ACCESS_CONTEXT_TYPE_REFRENCE]
+		//superAccessContexts+=[AccessContext|STRING]
 		public Assignment getSuperAccessContextsAssignment_2_2_1() { return cSuperAccessContextsAssignment_2_2_1; }
 
-		//[AccessContext|ACCESS_CONTEXT_TYPE_REFRENCE]
+		//[AccessContext|STRING]
 		public CrossReference getSuperAccessContextsAccessContextCrossReference_2_2_1_0() { return cSuperAccessContextsAccessContextCrossReference_2_2_1_0; }
 
-		//ACCESS_CONTEXT_TYPE_REFRENCE
-		public RuleCall getSuperAccessContextsAccessContextACCESS_CONTEXT_TYPE_REFRENCEParserRuleCall_2_2_1_0_1() { return cSuperAccessContextsAccessContextACCESS_CONTEXT_TYPE_REFRENCEParserRuleCall_2_2_1_0_1; }
+		//STRING
+		public RuleCall getSuperAccessContextsAccessContextSTRINGTerminalRuleCall_2_2_1_0_1() { return cSuperAccessContextsAccessContextSTRINGTerminalRuleCall_2_2_1_0_1; }
 
 		//"{"
 		public Keyword getLeftCurlyBracketKeyword_3() { return cLeftCurlyBracketKeyword_3; }
@@ -1381,32 +1354,32 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "HierarchyRestriction");
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Keyword cChildrenOfKeyword_0 = (Keyword)cGroup.eContents().get(0);
-		private final Assignment cArtifactAssignment_1 = (Assignment)cGroup.eContents().get(1);
-		private final CrossReference cArtifactXArtifactRefCrossReference_1_0 = (CrossReference)cArtifactAssignment_1.eContents().get(0);
-		private final RuleCall cArtifactXArtifactRefARTIFACT_INSTANCE_REFERENCEParserRuleCall_1_0_1 = (RuleCall)cArtifactXArtifactRefCrossReference_1_0.eContents().get(1);
+		private final Assignment cArtifactMatcherRefAssignment_1 = (Assignment)cGroup.eContents().get(1);
+		private final CrossReference cArtifactMatcherRefXArtifactMatcherCrossReference_1_0 = (CrossReference)cArtifactMatcherRefAssignment_1.eContents().get(0);
+		private final RuleCall cArtifactMatcherRefXArtifactMatcherSTRINGTerminalRuleCall_1_0_1 = (RuleCall)cArtifactMatcherRefXArtifactMatcherCrossReference_1_0.eContents().get(1);
 		private final Keyword cLeftCurlyBracketKeyword_2 = (Keyword)cGroup.eContents().get(2);
 		private final Assignment cAccessRulesAssignment_3 = (Assignment)cGroup.eContents().get(3);
 		private final RuleCall cAccessRulesObjectRestrictionParserRuleCall_3_0 = (RuleCall)cAccessRulesAssignment_3.eContents().get(0);
 		private final Keyword cRightCurlyBracketKeyword_4 = (Keyword)cGroup.eContents().get(4);
 		
 		//HierarchyRestriction:
-		//	"childrenOf" artifact=[XArtifactRef|ARTIFACT_INSTANCE_REFERENCE] "{" accessRules+=ObjectRestriction+ "}";
+		//	"childrenOf" artifactMatcherRef=[XArtifactMatcher|STRING] "{" accessRules+=ObjectRestriction+ "}";
 		public ParserRule getRule() { return rule; }
 
-		//"childrenOf" artifact=[XArtifactRef|ARTIFACT_INSTANCE_REFERENCE] "{" accessRules+=ObjectRestriction+ "}"
+		//"childrenOf" artifactMatcherRef=[XArtifactMatcher|STRING] "{" accessRules+=ObjectRestriction+ "}"
 		public Group getGroup() { return cGroup; }
 
 		//"childrenOf"
 		public Keyword getChildrenOfKeyword_0() { return cChildrenOfKeyword_0; }
 
-		//artifact=[XArtifactRef|ARTIFACT_INSTANCE_REFERENCE]
-		public Assignment getArtifactAssignment_1() { return cArtifactAssignment_1; }
+		//artifactMatcherRef=[XArtifactMatcher|STRING]
+		public Assignment getArtifactMatcherRefAssignment_1() { return cArtifactMatcherRefAssignment_1; }
 
-		//[XArtifactRef|ARTIFACT_INSTANCE_REFERENCE]
-		public CrossReference getArtifactXArtifactRefCrossReference_1_0() { return cArtifactXArtifactRefCrossReference_1_0; }
+		//[XArtifactMatcher|STRING]
+		public CrossReference getArtifactMatcherRefXArtifactMatcherCrossReference_1_0() { return cArtifactMatcherRefXArtifactMatcherCrossReference_1_0; }
 
-		//ARTIFACT_INSTANCE_REFERENCE
-		public RuleCall getArtifactXArtifactRefARTIFACT_INSTANCE_REFERENCEParserRuleCall_1_0_1() { return cArtifactXArtifactRefARTIFACT_INSTANCE_REFERENCEParserRuleCall_1_0_1; }
+		//STRING
+		public RuleCall getArtifactMatcherRefXArtifactMatcherSTRINGTerminalRuleCall_1_0_1() { return cArtifactMatcherRefXArtifactMatcherSTRINGTerminalRuleCall_1_0_1; }
 
 		//"{"
 		public Keyword getLeftCurlyBracketKeyword_2() { return cLeftCurlyBracketKeyword_2; }
@@ -1424,20 +1397,20 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 	public class ObjectRestrictionElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "ObjectRestriction");
 		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
-		private final RuleCall cArtifactInstanceRestrictionParserRuleCall_0 = (RuleCall)cAlternatives.eContents().get(0);
+		private final RuleCall cArtifactMatchRestrictionParserRuleCall_0 = (RuleCall)cAlternatives.eContents().get(0);
 		private final RuleCall cArtifactTypeRestrictionParserRuleCall_1 = (RuleCall)cAlternatives.eContents().get(1);
 		private final RuleCall cRelationTypeRestrictionParserRuleCall_2 = (RuleCall)cAlternatives.eContents().get(2);
 		private final RuleCall cAttributeTypeRestrictionParserRuleCall_3 = (RuleCall)cAlternatives.eContents().get(3);
 		
 		//ObjectRestriction:
-		//	ArtifactInstanceRestriction | ArtifactTypeRestriction | RelationTypeRestriction | AttributeTypeRestriction;
+		//	ArtifactMatchRestriction | ArtifactTypeRestriction | RelationTypeRestriction | AttributeTypeRestriction;
 		public ParserRule getRule() { return rule; }
 
-		//ArtifactInstanceRestriction | ArtifactTypeRestriction | RelationTypeRestriction | AttributeTypeRestriction
+		//ArtifactMatchRestriction | ArtifactTypeRestriction | RelationTypeRestriction | AttributeTypeRestriction
 		public Alternatives getAlternatives() { return cAlternatives; }
 
-		//ArtifactInstanceRestriction
-		public RuleCall getArtifactInstanceRestrictionParserRuleCall_0() { return cArtifactInstanceRestrictionParserRuleCall_0; }
+		//ArtifactMatchRestriction
+		public RuleCall getArtifactMatchRestrictionParserRuleCall_0() { return cArtifactMatchRestrictionParserRuleCall_0; }
 
 		//ArtifactTypeRestriction
 		public RuleCall getArtifactTypeRestrictionParserRuleCall_1() { return cArtifactTypeRestrictionParserRuleCall_1; }
@@ -1449,23 +1422,23 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		public RuleCall getAttributeTypeRestrictionParserRuleCall_3() { return cAttributeTypeRestrictionParserRuleCall_3; }
 	}
 
-	public class ArtifactInstanceRestrictionElements extends AbstractParserRuleElementFinder {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "ArtifactInstanceRestriction");
+	public class ArtifactMatchRestrictionElements extends AbstractParserRuleElementFinder {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "ArtifactMatchRestriction");
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Assignment cPermissionAssignment_0 = (Assignment)cGroup.eContents().get(0);
 		private final RuleCall cPermissionAccessPermissionEnumEnumRuleCall_0_0 = (RuleCall)cPermissionAssignment_0.eContents().get(0);
 		private final Keyword cEditKeyword_1 = (Keyword)cGroup.eContents().get(1);
 		private final Keyword cArtifactKeyword_2 = (Keyword)cGroup.eContents().get(2);
-		private final Assignment cArtifactRefAssignment_3 = (Assignment)cGroup.eContents().get(3);
-		private final CrossReference cArtifactRefXArtifactRefCrossReference_3_0 = (CrossReference)cArtifactRefAssignment_3.eContents().get(0);
-		private final RuleCall cArtifactRefXArtifactRefARTIFACT_INSTANCE_REFERENCEParserRuleCall_3_0_1 = (RuleCall)cArtifactRefXArtifactRefCrossReference_3_0.eContents().get(1);
+		private final Assignment cArtifactMatcherRefAssignment_3 = (Assignment)cGroup.eContents().get(3);
+		private final CrossReference cArtifactMatcherRefXArtifactMatcherCrossReference_3_0 = (CrossReference)cArtifactMatcherRefAssignment_3.eContents().get(0);
+		private final RuleCall cArtifactMatcherRefXArtifactMatcherSTRINGTerminalRuleCall_3_0_1 = (RuleCall)cArtifactMatcherRefXArtifactMatcherCrossReference_3_0.eContents().get(1);
 		private final Keyword cSemicolonKeyword_4 = (Keyword)cGroup.eContents().get(4);
 		
-		//ArtifactInstanceRestriction:
-		//	permission=AccessPermissionEnum "edit" "artifact" artifactRef=[XArtifactRef|ARTIFACT_INSTANCE_REFERENCE] ";";
+		//ArtifactMatchRestriction:
+		//	permission=AccessPermissionEnum "edit" "artifact" artifactMatcherRef=[XArtifactMatcher|STRING] ";";
 		public ParserRule getRule() { return rule; }
 
-		//permission=AccessPermissionEnum "edit" "artifact" artifactRef=[XArtifactRef|ARTIFACT_INSTANCE_REFERENCE] ";"
+		//permission=AccessPermissionEnum "edit" "artifact" artifactMatcherRef=[XArtifactMatcher|STRING] ";"
 		public Group getGroup() { return cGroup; }
 
 		//permission=AccessPermissionEnum
@@ -1480,14 +1453,14 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		//"artifact"
 		public Keyword getArtifactKeyword_2() { return cArtifactKeyword_2; }
 
-		//artifactRef=[XArtifactRef|ARTIFACT_INSTANCE_REFERENCE]
-		public Assignment getArtifactRefAssignment_3() { return cArtifactRefAssignment_3; }
+		//artifactMatcherRef=[XArtifactMatcher|STRING]
+		public Assignment getArtifactMatcherRefAssignment_3() { return cArtifactMatcherRefAssignment_3; }
 
-		//[XArtifactRef|ARTIFACT_INSTANCE_REFERENCE]
-		public CrossReference getArtifactRefXArtifactRefCrossReference_3_0() { return cArtifactRefXArtifactRefCrossReference_3_0; }
+		//[XArtifactMatcher|STRING]
+		public CrossReference getArtifactMatcherRefXArtifactMatcherCrossReference_3_0() { return cArtifactMatcherRefXArtifactMatcherCrossReference_3_0; }
 
-		//ARTIFACT_INSTANCE_REFERENCE
-		public RuleCall getArtifactRefXArtifactRefARTIFACT_INSTANCE_REFERENCEParserRuleCall_3_0_1() { return cArtifactRefXArtifactRefARTIFACT_INSTANCE_REFERENCEParserRuleCall_3_0_1; }
+		//STRING
+		public RuleCall getArtifactMatcherRefXArtifactMatcherSTRINGTerminalRuleCall_3_0_1() { return cArtifactMatcherRefXArtifactMatcherSTRINGTerminalRuleCall_3_0_1; }
 
 		//";"
 		public Keyword getSemicolonKeyword_4() { return cSemicolonKeyword_4; }
@@ -1502,14 +1475,14 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cArtifactTypeKeyword_2 = (Keyword)cGroup.eContents().get(2);
 		private final Assignment cArtifactTypeRefAssignment_3 = (Assignment)cGroup.eContents().get(3);
 		private final CrossReference cArtifactTypeRefXArtifactTypeCrossReference_3_0 = (CrossReference)cArtifactTypeRefAssignment_3.eContents().get(0);
-		private final RuleCall cArtifactTypeRefXArtifactTypeARTIFACT_TYPE_REFERENCEParserRuleCall_3_0_1 = (RuleCall)cArtifactTypeRefXArtifactTypeCrossReference_3_0.eContents().get(1);
+		private final RuleCall cArtifactTypeRefXArtifactTypeSTRINGTerminalRuleCall_3_0_1 = (RuleCall)cArtifactTypeRefXArtifactTypeCrossReference_3_0.eContents().get(1);
 		private final Keyword cSemicolonKeyword_4 = (Keyword)cGroup.eContents().get(4);
 		
 		//ArtifactTypeRestriction:
-		//	permission=AccessPermissionEnum "edit" "artifactType" artifactTypeRef=[XArtifactType|ARTIFACT_TYPE_REFERENCE] ";";
+		//	permission=AccessPermissionEnum "edit" "artifactType" artifactTypeRef=[XArtifactType|STRING] ";";
 		public ParserRule getRule() { return rule; }
 
-		//permission=AccessPermissionEnum "edit" "artifactType" artifactTypeRef=[XArtifactType|ARTIFACT_TYPE_REFERENCE] ";"
+		//permission=AccessPermissionEnum "edit" "artifactType" artifactTypeRef=[XArtifactType|STRING] ";"
 		public Group getGroup() { return cGroup; }
 
 		//permission=AccessPermissionEnum
@@ -1524,14 +1497,14 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		//"artifactType"
 		public Keyword getArtifactTypeKeyword_2() { return cArtifactTypeKeyword_2; }
 
-		//artifactTypeRef=[XArtifactType|ARTIFACT_TYPE_REFERENCE]
+		//artifactTypeRef=[XArtifactType|STRING]
 		public Assignment getArtifactTypeRefAssignment_3() { return cArtifactTypeRefAssignment_3; }
 
-		//[XArtifactType|ARTIFACT_TYPE_REFERENCE]
+		//[XArtifactType|STRING]
 		public CrossReference getArtifactTypeRefXArtifactTypeCrossReference_3_0() { return cArtifactTypeRefXArtifactTypeCrossReference_3_0; }
 
-		//ARTIFACT_TYPE_REFERENCE
-		public RuleCall getArtifactTypeRefXArtifactTypeARTIFACT_TYPE_REFERENCEParserRuleCall_3_0_1() { return cArtifactTypeRefXArtifactTypeARTIFACT_TYPE_REFERENCEParserRuleCall_3_0_1; }
+		//STRING
+		public RuleCall getArtifactTypeRefXArtifactTypeSTRINGTerminalRuleCall_3_0_1() { return cArtifactTypeRefXArtifactTypeSTRINGTerminalRuleCall_3_0_1; }
 
 		//";"
 		public Keyword getSemicolonKeyword_4() { return cSemicolonKeyword_4; }
@@ -1546,22 +1519,22 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cAttributeTypeKeyword_2 = (Keyword)cGroup.eContents().get(2);
 		private final Assignment cAttributeTypeRefAssignment_3 = (Assignment)cGroup.eContents().get(3);
 		private final CrossReference cAttributeTypeRefXAttributeTypeCrossReference_3_0 = (CrossReference)cAttributeTypeRefAssignment_3.eContents().get(0);
-		private final RuleCall cAttributeTypeRefXAttributeTypeATTRIBUTE_TYPE_REFERENCEParserRuleCall_3_0_1 = (RuleCall)cAttributeTypeRefXAttributeTypeCrossReference_3_0.eContents().get(1);
+		private final RuleCall cAttributeTypeRefXAttributeTypeSTRINGTerminalRuleCall_3_0_1 = (RuleCall)cAttributeTypeRefXAttributeTypeCrossReference_3_0.eContents().get(1);
 		private final Group cGroup_4 = (Group)cGroup.eContents().get(4);
 		private final Keyword cOfKeyword_4_0 = (Keyword)cGroup_4.eContents().get(0);
 		private final Keyword cArtifactTypeKeyword_4_1 = (Keyword)cGroup_4.eContents().get(1);
 		private final Assignment cArtifactTypeRefAssignment_4_2 = (Assignment)cGroup_4.eContents().get(2);
 		private final CrossReference cArtifactTypeRefXArtifactTypeCrossReference_4_2_0 = (CrossReference)cArtifactTypeRefAssignment_4_2.eContents().get(0);
-		private final RuleCall cArtifactTypeRefXArtifactTypeARTIFACT_TYPE_REFERENCEParserRuleCall_4_2_0_1 = (RuleCall)cArtifactTypeRefXArtifactTypeCrossReference_4_2_0.eContents().get(1);
+		private final RuleCall cArtifactTypeRefXArtifactTypeSTRINGTerminalRuleCall_4_2_0_1 = (RuleCall)cArtifactTypeRefXArtifactTypeCrossReference_4_2_0.eContents().get(1);
 		private final Keyword cSemicolonKeyword_5 = (Keyword)cGroup.eContents().get(5);
 		
 		//AttributeTypeRestriction:
-		//	permission=AccessPermissionEnum "edit" "attributeType" attributeTypeRef=[XAttributeType|ATTRIBUTE_TYPE_REFERENCE]
-		//	("of" "artifactType" artifactTypeRef=[XArtifactType|ARTIFACT_TYPE_REFERENCE])? ";";
+		//	permission=AccessPermissionEnum "edit" "attributeType" attributeTypeRef=[XAttributeType|STRING] ("of" "artifactType"
+		//	artifactTypeRef=[XArtifactType|STRING])? ";";
 		public ParserRule getRule() { return rule; }
 
-		//permission=AccessPermissionEnum "edit" "attributeType" attributeTypeRef=[XAttributeType|ATTRIBUTE_TYPE_REFERENCE] ("of"
-		//"artifactType" artifactTypeRef=[XArtifactType|ARTIFACT_TYPE_REFERENCE])? ";"
+		//permission=AccessPermissionEnum "edit" "attributeType" attributeTypeRef=[XAttributeType|STRING] ("of" "artifactType"
+		//artifactTypeRef=[XArtifactType|STRING])? ";"
 		public Group getGroup() { return cGroup; }
 
 		//permission=AccessPermissionEnum
@@ -1576,16 +1549,16 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		//"attributeType"
 		public Keyword getAttributeTypeKeyword_2() { return cAttributeTypeKeyword_2; }
 
-		//attributeTypeRef=[XAttributeType|ATTRIBUTE_TYPE_REFERENCE]
+		//attributeTypeRef=[XAttributeType|STRING]
 		public Assignment getAttributeTypeRefAssignment_3() { return cAttributeTypeRefAssignment_3; }
 
-		//[XAttributeType|ATTRIBUTE_TYPE_REFERENCE]
+		//[XAttributeType|STRING]
 		public CrossReference getAttributeTypeRefXAttributeTypeCrossReference_3_0() { return cAttributeTypeRefXAttributeTypeCrossReference_3_0; }
 
-		//ATTRIBUTE_TYPE_REFERENCE
-		public RuleCall getAttributeTypeRefXAttributeTypeATTRIBUTE_TYPE_REFERENCEParserRuleCall_3_0_1() { return cAttributeTypeRefXAttributeTypeATTRIBUTE_TYPE_REFERENCEParserRuleCall_3_0_1; }
+		//STRING
+		public RuleCall getAttributeTypeRefXAttributeTypeSTRINGTerminalRuleCall_3_0_1() { return cAttributeTypeRefXAttributeTypeSTRINGTerminalRuleCall_3_0_1; }
 
-		//("of" "artifactType" artifactTypeRef=[XArtifactType|ARTIFACT_TYPE_REFERENCE])?
+		//("of" "artifactType" artifactTypeRef=[XArtifactType|STRING])?
 		public Group getGroup_4() { return cGroup_4; }
 
 		//"of"
@@ -1594,14 +1567,14 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		//"artifactType"
 		public Keyword getArtifactTypeKeyword_4_1() { return cArtifactTypeKeyword_4_1; }
 
-		//artifactTypeRef=[XArtifactType|ARTIFACT_TYPE_REFERENCE]
+		//artifactTypeRef=[XArtifactType|STRING]
 		public Assignment getArtifactTypeRefAssignment_4_2() { return cArtifactTypeRefAssignment_4_2; }
 
-		//[XArtifactType|ARTIFACT_TYPE_REFERENCE]
+		//[XArtifactType|STRING]
 		public CrossReference getArtifactTypeRefXArtifactTypeCrossReference_4_2_0() { return cArtifactTypeRefXArtifactTypeCrossReference_4_2_0; }
 
-		//ARTIFACT_TYPE_REFERENCE
-		public RuleCall getArtifactTypeRefXArtifactTypeARTIFACT_TYPE_REFERENCEParserRuleCall_4_2_0_1() { return cArtifactTypeRefXArtifactTypeARTIFACT_TYPE_REFERENCEParserRuleCall_4_2_0_1; }
+		//STRING
+		public RuleCall getArtifactTypeRefXArtifactTypeSTRINGTerminalRuleCall_4_2_0_1() { return cArtifactTypeRefXArtifactTypeSTRINGTerminalRuleCall_4_2_0_1; }
 
 		//";"
 		public Keyword getSemicolonKeyword_5() { return cSemicolonKeyword_5; }
@@ -1616,17 +1589,17 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cRelationTypeKeyword_2 = (Keyword)cGroup.eContents().get(2);
 		private final Assignment cRelationTypeRefAssignment_3 = (Assignment)cGroup.eContents().get(3);
 		private final CrossReference cRelationTypeRefXRelationTypeCrossReference_3_0 = (CrossReference)cRelationTypeRefAssignment_3.eContents().get(0);
-		private final RuleCall cRelationTypeRefXRelationTypeRELATION_TYPE_REFERENCEParserRuleCall_3_0_1 = (RuleCall)cRelationTypeRefXRelationTypeCrossReference_3_0.eContents().get(1);
+		private final RuleCall cRelationTypeRefXRelationTypeSTRINGTerminalRuleCall_3_0_1 = (RuleCall)cRelationTypeRefXRelationTypeCrossReference_3_0.eContents().get(1);
 		private final Assignment cRestrictedToSideAssignment_4 = (Assignment)cGroup.eContents().get(4);
 		private final RuleCall cRestrictedToSideXRelationSideEnumEnumRuleCall_4_0 = (RuleCall)cRestrictedToSideAssignment_4.eContents().get(0);
 		private final Keyword cSemicolonKeyword_5 = (Keyword)cGroup.eContents().get(5);
 		
 		//RelationTypeRestriction:
-		//	permission=AccessPermissionEnum "edit" "relationType" relationTypeRef=[XRelationType|RELATION_TYPE_REFERENCE]
+		//	permission=AccessPermissionEnum "edit" "relationType" relationTypeRef=[XRelationType|STRING]
 		//	restrictedToSide=XRelationSideEnum ";";
 		public ParserRule getRule() { return rule; }
 
-		//permission=AccessPermissionEnum "edit" "relationType" relationTypeRef=[XRelationType|RELATION_TYPE_REFERENCE]
+		//permission=AccessPermissionEnum "edit" "relationType" relationTypeRef=[XRelationType|STRING]
 		//restrictedToSide=XRelationSideEnum ";"
 		public Group getGroup() { return cGroup; }
 
@@ -1642,14 +1615,14 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		//"relationType"
 		public Keyword getRelationTypeKeyword_2() { return cRelationTypeKeyword_2; }
 
-		//relationTypeRef=[XRelationType|RELATION_TYPE_REFERENCE]
+		//relationTypeRef=[XRelationType|STRING]
 		public Assignment getRelationTypeRefAssignment_3() { return cRelationTypeRefAssignment_3; }
 
-		//[XRelationType|RELATION_TYPE_REFERENCE]
+		//[XRelationType|STRING]
 		public CrossReference getRelationTypeRefXRelationTypeCrossReference_3_0() { return cRelationTypeRefXRelationTypeCrossReference_3_0; }
 
-		//RELATION_TYPE_REFERENCE
-		public RuleCall getRelationTypeRefXRelationTypeRELATION_TYPE_REFERENCEParserRuleCall_3_0_1() { return cRelationTypeRefXRelationTypeRELATION_TYPE_REFERENCEParserRuleCall_3_0_1; }
+		//STRING
+		public RuleCall getRelationTypeRefXRelationTypeSTRINGTerminalRuleCall_3_0_1() { return cRelationTypeRefXRelationTypeSTRINGTerminalRuleCall_3_0_1; }
 
 		//restrictedToSide=XRelationSideEnum
 		public Assignment getRestrictedToSideAssignment_4() { return cRestrictedToSideAssignment_4; }
@@ -1706,6 +1679,109 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		public Keyword getMANY_TO_MANYMANY_TO_MANYKeyword_3_0() { return cMANY_TO_MANYMANY_TO_MANYKeyword_3_0; }
 	}
 
+	public class CompareOpElements extends AbstractEnumRuleElementFinder {
+		private final EnumRule rule = (EnumRule) GrammarUtil.findRuleForName(getGrammar(), "CompareOp");
+		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
+		private final EnumLiteralDeclaration cEQEnumLiteralDeclaration_0 = (EnumLiteralDeclaration)cAlternatives.eContents().get(0);
+		private final Keyword cEQEQKeyword_0_0 = (Keyword)cEQEnumLiteralDeclaration_0.eContents().get(0);
+		private final EnumLiteralDeclaration cLIKEEnumLiteralDeclaration_1 = (EnumLiteralDeclaration)cAlternatives.eContents().get(1);
+		private final Keyword cLIKELIKEKeyword_1_0 = (Keyword)cLIKEEnumLiteralDeclaration_1.eContents().get(0);
+		
+		/////////////////////////////////////////
+		////  OSEE MATCH RULES //
+		/////////////////////////////////////////
+		//enum CompareOp:
+		//	EQ | LIKE;
+		public EnumRule getRule() { return rule; }
+
+		//EQ | LIKE
+		public Alternatives getAlternatives() { return cAlternatives; }
+
+		//EQ
+		public EnumLiteralDeclaration getEQEnumLiteralDeclaration_0() { return cEQEnumLiteralDeclaration_0; }
+
+		//"EQ"
+		public Keyword getEQEQKeyword_0_0() { return cEQEQKeyword_0_0; }
+
+		//LIKE
+		public EnumLiteralDeclaration getLIKEEnumLiteralDeclaration_1() { return cLIKEEnumLiteralDeclaration_1; }
+
+		//"LIKE"
+		public Keyword getLIKELIKEKeyword_1_0() { return cLIKELIKEKeyword_1_0; }
+	}
+
+	public class XLogicOperatorElements extends AbstractEnumRuleElementFinder {
+		private final EnumRule rule = (EnumRule) GrammarUtil.findRuleForName(getGrammar(), "XLogicOperator");
+		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
+		private final EnumLiteralDeclaration cANDEnumLiteralDeclaration_0 = (EnumLiteralDeclaration)cAlternatives.eContents().get(0);
+		private final Keyword cANDANDKeyword_0_0 = (Keyword)cANDEnumLiteralDeclaration_0.eContents().get(0);
+		private final EnumLiteralDeclaration cOREnumLiteralDeclaration_1 = (EnumLiteralDeclaration)cAlternatives.eContents().get(1);
+		private final Keyword cORORKeyword_1_0 = (Keyword)cOREnumLiteralDeclaration_1.eContents().get(0);
+		
+		//enum XLogicOperator:
+		//	AND | OR;
+		public EnumRule getRule() { return rule; }
+
+		//AND | OR
+		public Alternatives getAlternatives() { return cAlternatives; }
+
+		//AND
+		public EnumLiteralDeclaration getANDEnumLiteralDeclaration_0() { return cANDEnumLiteralDeclaration_0; }
+
+		//"AND"
+		public Keyword getANDANDKeyword_0_0() { return cANDANDKeyword_0_0; }
+
+		//OR
+		public EnumLiteralDeclaration getOREnumLiteralDeclaration_1() { return cOREnumLiteralDeclaration_1; }
+
+		//"OR"
+		public Keyword getORORKeyword_1_0() { return cORORKeyword_1_0; }
+	}
+
+	public class MatchFieldElements extends AbstractEnumRuleElementFinder {
+		private final EnumRule rule = (EnumRule) GrammarUtil.findRuleForName(getGrammar(), "MatchField");
+		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
+		private final EnumLiteralDeclaration cArtifactNameEnumLiteralDeclaration_0 = (EnumLiteralDeclaration)cAlternatives.eContents().get(0);
+		private final Keyword cArtifactNameArtifactNameKeyword_0_0 = (Keyword)cArtifactNameEnumLiteralDeclaration_0.eContents().get(0);
+		private final EnumLiteralDeclaration cArtifactGuidEnumLiteralDeclaration_1 = (EnumLiteralDeclaration)cAlternatives.eContents().get(1);
+		private final Keyword cArtifactGuidArtifactGuidKeyword_1_0 = (Keyword)cArtifactGuidEnumLiteralDeclaration_1.eContents().get(0);
+		private final EnumLiteralDeclaration cBranchNameEnumLiteralDeclaration_2 = (EnumLiteralDeclaration)cAlternatives.eContents().get(2);
+		private final Keyword cBranchNameBranchNameKeyword_2_0 = (Keyword)cBranchNameEnumLiteralDeclaration_2.eContents().get(0);
+		private final EnumLiteralDeclaration cBranchGuidEnumLiteralDeclaration_3 = (EnumLiteralDeclaration)cAlternatives.eContents().get(3);
+		private final Keyword cBranchGuidBranchGuidKeyword_3_0 = (Keyword)cBranchGuidEnumLiteralDeclaration_3.eContents().get(0);
+		
+		//enum MatchField:
+		//	artifactName | artifactGuid | branchName | branchGuid;
+		public EnumRule getRule() { return rule; }
+
+		//artifactName | artifactGuid | branchName | branchGuid
+		public Alternatives getAlternatives() { return cAlternatives; }
+
+		//artifactName
+		public EnumLiteralDeclaration getArtifactNameEnumLiteralDeclaration_0() { return cArtifactNameEnumLiteralDeclaration_0; }
+
+		//"artifactName"
+		public Keyword getArtifactNameArtifactNameKeyword_0_0() { return cArtifactNameArtifactNameKeyword_0_0; }
+
+		//artifactGuid
+		public EnumLiteralDeclaration getArtifactGuidEnumLiteralDeclaration_1() { return cArtifactGuidEnumLiteralDeclaration_1; }
+
+		//"artifactGuid"
+		public Keyword getArtifactGuidArtifactGuidKeyword_1_0() { return cArtifactGuidArtifactGuidKeyword_1_0; }
+
+		//branchName
+		public EnumLiteralDeclaration getBranchNameEnumLiteralDeclaration_2() { return cBranchNameEnumLiteralDeclaration_2; }
+
+		//"branchName"
+		public Keyword getBranchNameBranchNameKeyword_2_0() { return cBranchNameBranchNameKeyword_2_0; }
+
+		//branchGuid
+		public EnumLiteralDeclaration getBranchGuidEnumLiteralDeclaration_3() { return cBranchGuidEnumLiteralDeclaration_3; }
+
+		//"branchGuid"
+		public Keyword getBranchGuidBranchGuidKeyword_3_0() { return cBranchGuidBranchGuidKeyword_3_0; }
+	}
+
 	public class AccessPermissionEnumElements extends AbstractEnumRuleElementFinder {
 		private final EnumRule rule = (EnumRule) GrammarUtil.findRuleForName(getGrammar(), "AccessPermissionEnum");
 		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
@@ -1744,23 +1820,11 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		private final EnumLiteralDeclaration cBOTHEnumLiteralDeclaration_2 = (EnumLiteralDeclaration)cAlternatives.eContents().get(2);
 		private final Keyword cBOTHBOTHKeyword_2_0 = (Keyword)cBOTHEnumLiteralDeclaration_2.eContents().get(0);
 		
-		////BranchRestriction:
-		////	'onBranch' branch=[XBranchRef|BRANCH_INSTANCE_REFERENCE] '{' accessRule+=PermissionRule '}';
-		////AccessSet:
-		////	artifactRestrictions+=ArtifactInstanceRestriction
-		////	artifactTypeRestrictions+=ArtifactTypeRestriction
-		////	attributeTypeRestrictions+=AttributeTypeRestriction
-		////	relationTypeRestrictions+=RelationTypeRestriction; enum XRelationSideEnum:
+		//enum XRelationSideEnum:
 		//	SIDE_A | SIDE_B | BOTH;
 		public EnumRule getRule() { return rule; }
 
-		//SIDE_A //BranchRestriction:
-		////	'onBranch' branch=[XBranchRef|BRANCH_INSTANCE_REFERENCE] '{' accessRule+=PermissionRule '}';
-		////AccessSet:
-		////	artifactRestrictions+=ArtifactInstanceRestriction
-		////	artifactTypeRestrictions+=ArtifactTypeRestriction
-		////	attributeTypeRestrictions+=AttributeTypeRestriction
-		////	relationTypeRestrictions+=RelationTypeRestriction; | SIDE_B | BOTH
+		//SIDE_A | SIDE_B | BOTH
 		public Alternatives getAlternatives() { return cAlternatives; }
 
 		//SIDE_A
@@ -1775,13 +1839,7 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		//"SIDE_B"
 		public Keyword getSIDE_BSIDE_BKeyword_1_0() { return cSIDE_BSIDE_BKeyword_1_0; }
 
-		////BranchRestriction:
-		////	'onBranch' branch=[XBranchRef|BRANCH_INSTANCE_REFERENCE] '{' accessRule+=PermissionRule '}';
-		////AccessSet:
-		////	artifactRestrictions+=ArtifactInstanceRestriction
-		////	artifactTypeRestrictions+=ArtifactTypeRestriction
-		////	attributeTypeRestrictions+=AttributeTypeRestriction
-		////	relationTypeRestrictions+=RelationTypeRestriction; BOTH
+		//BOTH
 		public EnumLiteralDeclaration getBOTHEnumLiteralDeclaration_2() { return cBOTHEnumLiteralDeclaration_2; }
 
 		//"BOTH"
@@ -1790,13 +1848,8 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 	
 	private OseeDslElements pOseeDsl;
 	private ImportElements pImport;
+	private TerminalRule tSTRING;
 	private TerminalRule tWHOLE_NUM_STR;
-	private NAME_REFERENCEElements pNAME_REFERENCE;
-	private ATTRIBUTE_TYPE_REFERENCEElements pATTRIBUTE_TYPE_REFERENCE;
-	private ARTIFACT_TYPE_REFERENCEElements pARTIFACT_TYPE_REFERENCE;
-	private RELATION_TYPE_REFERENCEElements pRELATION_TYPE_REFERENCE;
-	private ENUM_TYPE_REFERENCEElements pENUM_TYPE_REFERENCE;
-	private ENUM_ENTRY_TYPE_REFERENCEElements pENUM_ENTRY_TYPE_REFERENCE;
 	private QUALIFIED_NAMEElements pQUALIFIED_NAME;
 	private OseeElementElements pOseeElement;
 	private OseeTypeElements pOseeType;
@@ -1813,16 +1866,19 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 	private XRelationTypeElements pXRelationType;
 	private RelationMultiplicityEnumElements unknownRuleRelationMultiplicityEnum;
 	private RelationOrderTypeElements pRelationOrderType;
-	private ARTIFACT_INSTANCE_REFERENCEElements pARTIFACT_INSTANCE_REFERENCE;
-	private XArtifactRefElements pXArtifactRef;
-	private BRANCH_INSTANCE_REFERENCEElements pBRANCH_INSTANCE_REFERENCE;
-	private XBranchRefElements pXBranchRef;
-	private ACCESS_CONTEXT_TYPE_REFRENCEElements pACCESS_CONTEXT_TYPE_REFRENCE;
+	private CompareOpElements unknownRuleCompareOp;
+	private XLogicOperatorElements unknownRuleXLogicOperator;
+	private CONDITION_VALUEElements pCONDITION_VALUE;
+	private MatchFieldElements unknownRuleMatchField;
+	private ConditionElements pCondition;
+	private SimpleConditionElements pSimpleCondition;
+	private CompoundConditionElements pCompoundCondition;
+	private XArtifactMatcherElements pXArtifactMatcher;
 	private AccessContextElements pAccessContext;
 	private HierarchyRestrictionElements pHierarchyRestriction;
 	private AccessPermissionEnumElements unknownRuleAccessPermissionEnum;
 	private ObjectRestrictionElements pObjectRestriction;
-	private ArtifactInstanceRestrictionElements pArtifactInstanceRestriction;
+	private ArtifactMatchRestrictionElements pArtifactMatchRestriction;
 	private ArtifactTypeRestrictionElements pArtifactTypeRestriction;
 	private AttributeTypeRestrictionElements pAttributeTypeRestriction;
 	private RelationTypeRestrictionElements pRelationTypeRestriction;
@@ -1851,7 +1907,7 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 	
 	//OseeDsl:
 	//	imports+=Import* (artifactTypes+=XArtifactType | relationTypes+=XRelationType | attributeTypes+=XAttributeType |
-	//	enumTypes+=XOseeEnumType | enumOverrides+=XOseeEnumOverride)* (branchRefs+=XBranchRef | artifactRefs+=XArtifactRef)*
+	//	enumTypes+=XOseeEnumType | enumOverrides+=XOseeEnumOverride)* artifactMatchRefs+=XArtifactMatcher*
 	//	accessDeclarations+=AccessContext*;
 	public OseeDslElements getOseeDslAccess() {
 		return (pOseeDsl != null) ? pOseeDsl : (pOseeDsl = new OseeDslElements());
@@ -1871,71 +1927,17 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		return getImportAccess().getRule();
 	}
 
+	//terminal STRING:
+	//	"\"" ("\\" "\"" | !"\"")* "\"" | "\'" ("\\" "\'" | !"\'")* "\'";
+	public TerminalRule getSTRINGRule() {
+		return (tSTRING != null) ? tSTRING : (tSTRING = (TerminalRule) GrammarUtil.findRuleForName(getGrammar(), "STRING"));
+	} 
+
 	//terminal WHOLE_NUM_STR:
 	//	"0".."9"+;
 	public TerminalRule getWHOLE_NUM_STRRule() {
 		return (tWHOLE_NUM_STR != null) ? tWHOLE_NUM_STR : (tWHOLE_NUM_STR = (TerminalRule) GrammarUtil.findRuleForName(getGrammar(), "WHOLE_NUM_STR"));
 	} 
-
-	//NAME_REFERENCE:
-	//	STRING;
-	public NAME_REFERENCEElements getNAME_REFERENCEAccess() {
-		return (pNAME_REFERENCE != null) ? pNAME_REFERENCE : (pNAME_REFERENCE = new NAME_REFERENCEElements());
-	}
-	
-	public ParserRule getNAME_REFERENCERule() {
-		return getNAME_REFERENCEAccess().getRule();
-	}
-
-	//ATTRIBUTE_TYPE_REFERENCE:
-	//	STRING;
-	public ATTRIBUTE_TYPE_REFERENCEElements getATTRIBUTE_TYPE_REFERENCEAccess() {
-		return (pATTRIBUTE_TYPE_REFERENCE != null) ? pATTRIBUTE_TYPE_REFERENCE : (pATTRIBUTE_TYPE_REFERENCE = new ATTRIBUTE_TYPE_REFERENCEElements());
-	}
-	
-	public ParserRule getATTRIBUTE_TYPE_REFERENCERule() {
-		return getATTRIBUTE_TYPE_REFERENCEAccess().getRule();
-	}
-
-	//ARTIFACT_TYPE_REFERENCE:
-	//	STRING;
-	public ARTIFACT_TYPE_REFERENCEElements getARTIFACT_TYPE_REFERENCEAccess() {
-		return (pARTIFACT_TYPE_REFERENCE != null) ? pARTIFACT_TYPE_REFERENCE : (pARTIFACT_TYPE_REFERENCE = new ARTIFACT_TYPE_REFERENCEElements());
-	}
-	
-	public ParserRule getARTIFACT_TYPE_REFERENCERule() {
-		return getARTIFACT_TYPE_REFERENCEAccess().getRule();
-	}
-
-	//RELATION_TYPE_REFERENCE:
-	//	STRING;
-	public RELATION_TYPE_REFERENCEElements getRELATION_TYPE_REFERENCEAccess() {
-		return (pRELATION_TYPE_REFERENCE != null) ? pRELATION_TYPE_REFERENCE : (pRELATION_TYPE_REFERENCE = new RELATION_TYPE_REFERENCEElements());
-	}
-	
-	public ParserRule getRELATION_TYPE_REFERENCERule() {
-		return getRELATION_TYPE_REFERENCEAccess().getRule();
-	}
-
-	//ENUM_TYPE_REFERENCE:
-	//	STRING;
-	public ENUM_TYPE_REFERENCEElements getENUM_TYPE_REFERENCEAccess() {
-		return (pENUM_TYPE_REFERENCE != null) ? pENUM_TYPE_REFERENCE : (pENUM_TYPE_REFERENCE = new ENUM_TYPE_REFERENCEElements());
-	}
-	
-	public ParserRule getENUM_TYPE_REFERENCERule() {
-		return getENUM_TYPE_REFERENCEAccess().getRule();
-	}
-
-	//ENUM_ENTRY_TYPE_REFERENCE:
-	//	STRING;
-	public ENUM_ENTRY_TYPE_REFERENCEElements getENUM_ENTRY_TYPE_REFERENCEAccess() {
-		return (pENUM_ENTRY_TYPE_REFERENCE != null) ? pENUM_ENTRY_TYPE_REFERENCE : (pENUM_ENTRY_TYPE_REFERENCE = new ENUM_ENTRY_TYPE_REFERENCEElements());
-	}
-	
-	public ParserRule getENUM_ENTRY_TYPE_REFERENCERule() {
-		return getENUM_ENTRY_TYPE_REFERENCEAccess().getRule();
-	}
 
 	//QUALIFIED_NAME:
 	//	ID ("." ID)*;
@@ -1971,10 +1973,8 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//XArtifactType:
-	//	abstract?="abstract"? "artifactType" name=ARTIFACT_TYPE_REFERENCE ("extends"
-	//	superArtifactTypes+=[XArtifactType|ARTIFACT_TYPE_REFERENCE] (","
-	//	superArtifactTypes+=[XArtifactType|ARTIFACT_TYPE_REFERENCE])*)? "{" "guid" typeGuid=STRING
-	//	validAttributeTypes+=XAttributeTypeRef* "}";
+	//	abstract?="abstract"? "artifactType" name=STRING ("extends" superArtifactTypes+=[XArtifactType|STRING] (","
+	//	superArtifactTypes+=[XArtifactType|STRING])*)? "{" "guid" typeGuid=STRING validAttributeTypes+=XAttributeTypeRef* "}";
 	public XArtifactTypeElements getXArtifactTypeAccess() {
 		return (pXArtifactType != null) ? pXArtifactType : (pXArtifactType = new XArtifactTypeElements());
 	}
@@ -1984,7 +1984,7 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//XAttributeTypeRef:
-	//	"attribute" validAttributeType=[XAttributeType|ATTRIBUTE_TYPE_REFERENCE] ("branchGuid" branchGuid=STRING)?;
+	//	"attribute" validAttributeType=[XAttributeType|STRING] ("branchGuid" branchGuid=STRING)?;
 	public XAttributeTypeRefElements getXAttributeTypeRefAccess() {
 		return (pXAttributeTypeRef != null) ? pXAttributeTypeRef : (pXAttributeTypeRef = new XAttributeTypeRefElements());
 	}
@@ -1994,11 +1994,11 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//XAttributeType:
-	//	"attributeType" name=ATTRIBUTE_TYPE_REFERENCE ("extends" baseAttributeType=AttributeBaseType) ("overrides"
-	//	override=[XAttributeType|ATTRIBUTE_TYPE_REFERENCE])? "{" "guid" typeGuid=STRING "dataProvider"
+	//	"attributeType" name=STRING ("extends" baseAttributeType=AttributeBaseType) ("overrides"
+	//	override=[XAttributeType|STRING])? "{" "guid" typeGuid=STRING "dataProvider"
 	//	dataProvider=("DefaultAttributeDataProvider" | "UriAttributeDataProvider" | QUALIFIED_NAME) "min" min=WHOLE_NUM_STR
 	//	"max" max=(WHOLE_NUM_STR | "unlimited") ("taggerId" taggerId=("DefaultAttributeTaggerProvider" | QUALIFIED_NAME))?
-	//	("enumType" enumType=[XOseeEnumType|ENUM_TYPE_REFERENCE])? ("description" description=STRING)? ("defaultValue"
+	//	("enumType" enumType=[XOseeEnumType|STRING])? ("description" description=STRING)? ("defaultValue"
 	//	defaultValue=STRING)? ("fileExtension" fileExtension=STRING)? "}";
 	public XAttributeTypeElements getXAttributeTypeAccess() {
 		return (pXAttributeType != null) ? pXAttributeType : (pXAttributeType = new XAttributeTypeElements());
@@ -2020,7 +2020,7 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//XOseeEnumType:
-	//	"oseeEnumType" name=ENUM_TYPE_REFERENCE "{" "guid" typeGuid=STRING enumEntries+=XOseeEnumEntry* "}";
+	//	"oseeEnumType" name=STRING "{" "guid" typeGuid=STRING enumEntries+=XOseeEnumEntry* "}";
 	public XOseeEnumTypeElements getXOseeEnumTypeAccess() {
 		return (pXOseeEnumType != null) ? pXOseeEnumType : (pXOseeEnumType = new XOseeEnumTypeElements());
 	}
@@ -2030,7 +2030,7 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//XOseeEnumEntry:
-	//	"entry" name=ENUM_ENTRY_TYPE_REFERENCE ordinal=WHOLE_NUM_STR? ("entryGuid" entryGuid=STRING)?;
+	//	"entry" name=STRING ordinal=WHOLE_NUM_STR? ("entryGuid" entryGuid=STRING)?;
 	public XOseeEnumEntryElements getXOseeEnumEntryAccess() {
 		return (pXOseeEnumEntry != null) ? pXOseeEnumEntry : (pXOseeEnumEntry = new XOseeEnumEntryElements());
 	}
@@ -2040,7 +2040,7 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//XOseeEnumOverride:
-	//	"overrides enum" overridenEnumType=[XOseeEnumType|ENUM_TYPE_REFERENCE] "{" inheritAll?="inheritAll"?
+	//	"overrides enum" overridenEnumType=[XOseeEnumType|STRING] "{" inheritAll?="inheritAll"?
 	//	overrideOptions+=OverrideOption* "}";
 	public XOseeEnumOverrideElements getXOseeEnumOverrideAccess() {
 		return (pXOseeEnumOverride != null) ? pXOseeEnumOverride : (pXOseeEnumOverride = new XOseeEnumOverrideElements());
@@ -2061,7 +2061,7 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//AddEnum:
-	//	"add" enumEntry=ENUM_ENTRY_TYPE_REFERENCE ordinal=WHOLE_NUM_STR? ("entryGuid" entryGuid=STRING)?;
+	//	"add" enumEntry=STRING ordinal=WHOLE_NUM_STR? ("entryGuid" entryGuid=STRING)?;
 	public AddEnumElements getAddEnumAccess() {
 		return (pAddEnum != null) ? pAddEnum : (pAddEnum = new AddEnumElements());
 	}
@@ -2071,7 +2071,7 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//RemoveEnum:
-	//	"remove" enumEntry=[XOseeEnumEntry|ENUM_ENTRY_TYPE_REFERENCE];
+	//	"remove" enumEntry=[XOseeEnumEntry|STRING];
 	public RemoveEnumElements getRemoveEnumAccess() {
 		return (pRemoveEnum != null) ? pRemoveEnum : (pRemoveEnum = new RemoveEnumElements());
 	}
@@ -2081,10 +2081,10 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//XRelationType:
-	//	"relationType" name=RELATION_TYPE_REFERENCE "{" "guid" typeGuid=STRING "sideAName" sideAName=STRING
-	//	"sideAArtifactType" sideAArtifactType=[XArtifactType|ARTIFACT_TYPE_REFERENCE] "sideBName" sideBName=STRING
-	//	"sideBArtifactType" sideBArtifactType=[XArtifactType|ARTIFACT_TYPE_REFERENCE] "defaultOrderType"
-	//	defaultOrderType=RelationOrderType "multiplicity" multiplicity=RelationMultiplicityEnum "}";
+	//	"relationType" name=STRING "{" "guid" typeGuid=STRING "sideAName" sideAName=STRING "sideAArtifactType"
+	//	sideAArtifactType=[XArtifactType|STRING] "sideBName" sideBName=STRING "sideBArtifactType"
+	//	sideBArtifactType=[XArtifactType|STRING] "defaultOrderType" defaultOrderType=RelationOrderType "multiplicity"
+	//	multiplicity=RelationMultiplicityEnum "}";
 	public XRelationTypeElements getXRelationTypeAccess() {
 		return (pXRelationType != null) ? pXRelationType : (pXRelationType = new XRelationTypeElements());
 	}
@@ -2114,66 +2114,95 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	/////////////////////////////////////////
-	////  OSEE ARTIFACT INSTANCE REFERENCE //
+	////  OSEE MATCH RULES //
 	/////////////////////////////////////////
-	//ARTIFACT_INSTANCE_REFERENCE:
-	//	STRING;
-	public ARTIFACT_INSTANCE_REFERENCEElements getARTIFACT_INSTANCE_REFERENCEAccess() {
-		return (pARTIFACT_INSTANCE_REFERENCE != null) ? pARTIFACT_INSTANCE_REFERENCE : (pARTIFACT_INSTANCE_REFERENCE = new ARTIFACT_INSTANCE_REFERENCEElements());
+	//enum CompareOp:
+	//	EQ | LIKE;
+	public CompareOpElements getCompareOpAccess() {
+		return (unknownRuleCompareOp != null) ? unknownRuleCompareOp : (unknownRuleCompareOp = new CompareOpElements());
 	}
 	
-	public ParserRule getARTIFACT_INSTANCE_REFERENCERule() {
-		return getARTIFACT_INSTANCE_REFERENCEAccess().getRule();
+	public EnumRule getCompareOpRule() {
+		return getCompareOpAccess().getRule();
 	}
 
-	//XArtifactRef:
-	//	"artifact" name=ARTIFACT_INSTANCE_REFERENCE "artGuid" guid=STRING ";";
-	public XArtifactRefElements getXArtifactRefAccess() {
-		return (pXArtifactRef != null) ? pXArtifactRef : (pXArtifactRef = new XArtifactRefElements());
+	//enum XLogicOperator:
+	//	AND | OR;
+	public XLogicOperatorElements getXLogicOperatorAccess() {
+		return (unknownRuleXLogicOperator != null) ? unknownRuleXLogicOperator : (unknownRuleXLogicOperator = new XLogicOperatorElements());
 	}
 	
-	public ParserRule getXArtifactRefRule() {
-		return getXArtifactRefAccess().getRule();
+	public EnumRule getXLogicOperatorRule() {
+		return getXLogicOperatorAccess().getRule();
 	}
 
-	//BRANCH_INSTANCE_REFERENCE:
-	//	STRING;
-	public BRANCH_INSTANCE_REFERENCEElements getBRANCH_INSTANCE_REFERENCEAccess() {
-		return (pBRANCH_INSTANCE_REFERENCE != null) ? pBRANCH_INSTANCE_REFERENCE : (pBRANCH_INSTANCE_REFERENCE = new BRANCH_INSTANCE_REFERENCEElements());
+	//CONDITION_VALUE:
+	//	WHOLE_NUM_STR | STRING;
+	public CONDITION_VALUEElements getCONDITION_VALUEAccess() {
+		return (pCONDITION_VALUE != null) ? pCONDITION_VALUE : (pCONDITION_VALUE = new CONDITION_VALUEElements());
 	}
 	
-	public ParserRule getBRANCH_INSTANCE_REFERENCERule() {
-		return getBRANCH_INSTANCE_REFERENCEAccess().getRule();
+	public ParserRule getCONDITION_VALUERule() {
+		return getCONDITION_VALUEAccess().getRule();
 	}
 
-	//XBranchRef:
-	//	"branch" name=BRANCH_INSTANCE_REFERENCE "branchGuid" guid=STRING ";";
-	public XBranchRefElements getXBranchRefAccess() {
-		return (pXBranchRef != null) ? pXBranchRef : (pXBranchRef = new XBranchRefElements());
+	//enum MatchField:
+	//	artifactName | artifactGuid | branchName | branchGuid;
+	public MatchFieldElements getMatchFieldAccess() {
+		return (unknownRuleMatchField != null) ? unknownRuleMatchField : (unknownRuleMatchField = new MatchFieldElements());
 	}
 	
-	public ParserRule getXBranchRefRule() {
-		return getXBranchRefAccess().getRule();
+	public EnumRule getMatchFieldRule() {
+		return getMatchFieldAccess().getRule();
+	}
+
+	//Condition:
+	//	SimpleCondition | CompoundCondition;
+	public ConditionElements getConditionAccess() {
+		return (pCondition != null) ? pCondition : (pCondition = new ConditionElements());
+	}
+	
+	public ParserRule getConditionRule() {
+		return getConditionAccess().getRule();
+	}
+
+	//SimpleCondition:
+	//	field=MatchField op=CompareOp expression=STRING;
+	public SimpleConditionElements getSimpleConditionAccess() {
+		return (pSimpleCondition != null) ? pSimpleCondition : (pSimpleCondition = new SimpleConditionElements());
+	}
+	
+	public ParserRule getSimpleConditionRule() {
+		return getSimpleConditionAccess().getRule();
+	}
+
+	//CompoundCondition:
+	//	"(" conditions+=SimpleCondition (operators+=XLogicOperator conditions+=SimpleCondition)+ ")";
+	public CompoundConditionElements getCompoundConditionAccess() {
+		return (pCompoundCondition != null) ? pCompoundCondition : (pCompoundCondition = new CompoundConditionElements());
+	}
+	
+	public ParserRule getCompoundConditionRule() {
+		return getCompoundConditionAccess().getRule();
+	}
+
+	//XArtifactMatcher:
+	//	"artifactMatcher" name=STRING "where" conditions+=Condition (operators+=XLogicOperator conditions+=Condition)* ";";
+	public XArtifactMatcherElements getXArtifactMatcherAccess() {
+		return (pXArtifactMatcher != null) ? pXArtifactMatcher : (pXArtifactMatcher = new XArtifactMatcherElements());
+	}
+	
+	public ParserRule getXArtifactMatcherRule() {
+		return getXArtifactMatcherAccess().getRule();
 	}
 
 	/////////////////////////////////////////
 	////  OSEE ACCESS MODEL                //
 	/////////////////////////////////////////
-	//ACCESS_CONTEXT_TYPE_REFRENCE:
-	//	STRING;
-	public ACCESS_CONTEXT_TYPE_REFRENCEElements getACCESS_CONTEXT_TYPE_REFRENCEAccess() {
-		return (pACCESS_CONTEXT_TYPE_REFRENCE != null) ? pACCESS_CONTEXT_TYPE_REFRENCE : (pACCESS_CONTEXT_TYPE_REFRENCE = new ACCESS_CONTEXT_TYPE_REFRENCEElements());
-	}
-	
-	public ParserRule getACCESS_CONTEXT_TYPE_REFRENCERule() {
-		return getACCESS_CONTEXT_TYPE_REFRENCEAccess().getRule();
-	}
-
 	//AccessContext:
-	//	"accessContext" name=ACCESS_CONTEXT_TYPE_REFRENCE ("extends"
-	//	superAccessContexts+=[AccessContext|ACCESS_CONTEXT_TYPE_REFRENCE] (","
-	//	superAccessContexts+=[AccessContext|ACCESS_CONTEXT_TYPE_REFRENCE])*)? "{" "guid" guid=STRING ";"
-	//	(accessRules+=ObjectRestriction | hierarchyRestrictions+=HierarchyRestriction)+ "}";
+	//	"accessContext" name=STRING ("extends" superAccessContexts+=[AccessContext|STRING] (","
+	//	superAccessContexts+=[AccessContext|STRING])*)? "{" "guid" guid=STRING ";" (accessRules+=ObjectRestriction |
+	//	hierarchyRestrictions+=HierarchyRestriction)+ "}";
 	public AccessContextElements getAccessContextAccess() {
 		return (pAccessContext != null) ? pAccessContext : (pAccessContext = new AccessContextElements());
 	}
@@ -2183,7 +2212,7 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//HierarchyRestriction:
-	//	"childrenOf" artifact=[XArtifactRef|ARTIFACT_INSTANCE_REFERENCE] "{" accessRules+=ObjectRestriction+ "}";
+	//	"childrenOf" artifactMatcherRef=[XArtifactMatcher|STRING] "{" accessRules+=ObjectRestriction+ "}";
 	public HierarchyRestrictionElements getHierarchyRestrictionAccess() {
 		return (pHierarchyRestriction != null) ? pHierarchyRestriction : (pHierarchyRestriction = new HierarchyRestrictionElements());
 	}
@@ -2203,7 +2232,7 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//ObjectRestriction:
-	//	ArtifactInstanceRestriction | ArtifactTypeRestriction | RelationTypeRestriction | AttributeTypeRestriction;
+	//	ArtifactMatchRestriction | ArtifactTypeRestriction | RelationTypeRestriction | AttributeTypeRestriction;
 	public ObjectRestrictionElements getObjectRestrictionAccess() {
 		return (pObjectRestriction != null) ? pObjectRestriction : (pObjectRestriction = new ObjectRestrictionElements());
 	}
@@ -2212,18 +2241,18 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		return getObjectRestrictionAccess().getRule();
 	}
 
-	//ArtifactInstanceRestriction:
-	//	permission=AccessPermissionEnum "edit" "artifact" artifactRef=[XArtifactRef|ARTIFACT_INSTANCE_REFERENCE] ";";
-	public ArtifactInstanceRestrictionElements getArtifactInstanceRestrictionAccess() {
-		return (pArtifactInstanceRestriction != null) ? pArtifactInstanceRestriction : (pArtifactInstanceRestriction = new ArtifactInstanceRestrictionElements());
+	//ArtifactMatchRestriction:
+	//	permission=AccessPermissionEnum "edit" "artifact" artifactMatcherRef=[XArtifactMatcher|STRING] ";";
+	public ArtifactMatchRestrictionElements getArtifactMatchRestrictionAccess() {
+		return (pArtifactMatchRestriction != null) ? pArtifactMatchRestriction : (pArtifactMatchRestriction = new ArtifactMatchRestrictionElements());
 	}
 	
-	public ParserRule getArtifactInstanceRestrictionRule() {
-		return getArtifactInstanceRestrictionAccess().getRule();
+	public ParserRule getArtifactMatchRestrictionRule() {
+		return getArtifactMatchRestrictionAccess().getRule();
 	}
 
 	//ArtifactTypeRestriction:
-	//	permission=AccessPermissionEnum "edit" "artifactType" artifactTypeRef=[XArtifactType|ARTIFACT_TYPE_REFERENCE] ";";
+	//	permission=AccessPermissionEnum "edit" "artifactType" artifactTypeRef=[XArtifactType|STRING] ";";
 	public ArtifactTypeRestrictionElements getArtifactTypeRestrictionAccess() {
 		return (pArtifactTypeRestriction != null) ? pArtifactTypeRestriction : (pArtifactTypeRestriction = new ArtifactTypeRestrictionElements());
 	}
@@ -2233,8 +2262,8 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//AttributeTypeRestriction:
-	//	permission=AccessPermissionEnum "edit" "attributeType" attributeTypeRef=[XAttributeType|ATTRIBUTE_TYPE_REFERENCE]
-	//	("of" "artifactType" artifactTypeRef=[XArtifactType|ARTIFACT_TYPE_REFERENCE])? ";";
+	//	permission=AccessPermissionEnum "edit" "attributeType" attributeTypeRef=[XAttributeType|STRING] ("of" "artifactType"
+	//	artifactTypeRef=[XArtifactType|STRING])? ";";
 	public AttributeTypeRestrictionElements getAttributeTypeRestrictionAccess() {
 		return (pAttributeTypeRestriction != null) ? pAttributeTypeRestriction : (pAttributeTypeRestriction = new AttributeTypeRestrictionElements());
 	}
@@ -2244,7 +2273,7 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//RelationTypeRestriction:
-	//	permission=AccessPermissionEnum "edit" "relationType" relationTypeRef=[XRelationType|RELATION_TYPE_REFERENCE]
+	//	permission=AccessPermissionEnum "edit" "relationType" relationTypeRef=[XRelationType|STRING]
 	//	restrictedToSide=XRelationSideEnum ";";
 	public RelationTypeRestrictionElements getRelationTypeRestrictionAccess() {
 		return (pRelationTypeRestriction != null) ? pRelationTypeRestriction : (pRelationTypeRestriction = new RelationTypeRestrictionElements());
@@ -2254,13 +2283,7 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 		return getRelationTypeRestrictionAccess().getRule();
 	}
 
-	////BranchRestriction:
-	////	'onBranch' branch=[XBranchRef|BRANCH_INSTANCE_REFERENCE] '{' accessRule+=PermissionRule '}';
-	////AccessSet:
-	////	artifactRestrictions+=ArtifactInstanceRestriction
-	////	artifactTypeRestrictions+=ArtifactTypeRestriction
-	////	attributeTypeRestrictions+=AttributeTypeRestriction
-	////	relationTypeRestrictions+=RelationTypeRestriction; enum XRelationSideEnum:
+	//enum XRelationSideEnum:
 	//	SIDE_A | SIDE_B | BOTH;
 	public XRelationSideEnumElements getXRelationSideEnumAccess() {
 		return (unknownRuleXRelationSideEnum != null) ? unknownRuleXRelationSideEnum : (unknownRuleXRelationSideEnum = new XRelationSideEnumElements());
@@ -2280,13 +2303,6 @@ public class OseeDslGrammarAccess extends AbstractGrammarElementFinder {
 	//	"0".."9"+;
 	public TerminalRule getINTRule() {
 		return gaTerminals.getINTRule();
-	} 
-
-	//terminal STRING:
-	//	"\"" ("\\" ("b" | "t" | "n" | "f" | "r" | "u" | "\"" | "\'" | "\\") | !("\\" | "\""))* "\"" | "\'" ("\\" ("b" | "t" |
-	//	"n" | "f" | "r" | "u" | "\"" | "\'" | "\\") | !("\\" | "\'"))* "\'";
-	public TerminalRule getSTRINGRule() {
-		return gaTerminals.getSTRINGRule();
 	} 
 
 	//terminal ML_COMMENT:

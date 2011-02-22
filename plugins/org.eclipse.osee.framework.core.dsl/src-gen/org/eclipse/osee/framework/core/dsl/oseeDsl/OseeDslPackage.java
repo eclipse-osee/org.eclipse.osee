@@ -126,22 +126,13 @@ public interface OseeDslPackage extends EPackage
   int OSEE_DSL__ENUM_OVERRIDES = 5;
 
   /**
-   * The feature id for the '<em><b>Branch Refs</b></em>' containment reference list.
+   * The feature id for the '<em><b>Artifact Match Refs</b></em>' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int OSEE_DSL__BRANCH_REFS = 6;
-
-  /**
-   * The feature id for the '<em><b>Artifact Refs</b></em>' containment reference list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int OSEE_DSL__ARTIFACT_REFS = 7;
+  int OSEE_DSL__ARTIFACT_MATCH_REFS = 6;
 
   /**
    * The feature id for the '<em><b>Access Declarations</b></em>' containment reference list.
@@ -150,7 +141,7 @@ public interface OseeDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int OSEE_DSL__ACCESS_DECLARATIONS = 8;
+  int OSEE_DSL__ACCESS_DECLARATIONS = 7;
 
   /**
    * The number of structural features of the '<em>Osee Dsl</em>' class.
@@ -159,7 +150,7 @@ public interface OseeDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int OSEE_DSL_FEATURE_COUNT = 9;
+  int OSEE_DSL_FEATURE_COUNT = 8;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.ImportImpl <em>Import</em>}' class.
@@ -796,14 +787,116 @@ public interface OseeDslPackage extends EPackage
   int XRELATION_TYPE_FEATURE_COUNT = OSEE_TYPE_FEATURE_COUNT + 6;
 
   /**
-   * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.XArtifactRefImpl <em>XArtifact Ref</em>}' class.
+   * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.ConditionImpl <em>Condition</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.XArtifactRefImpl
-   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getXArtifactRef()
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.ConditionImpl
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getCondition()
    * @generated
    */
-  int XARTIFACT_REF = 14;
+  int CONDITION = 14;
+
+  /**
+   * The number of structural features of the '<em>Condition</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int CONDITION_FEATURE_COUNT = 0;
+
+  /**
+   * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.SimpleConditionImpl <em>Simple Condition</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.SimpleConditionImpl
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getSimpleCondition()
+   * @generated
+   */
+  int SIMPLE_CONDITION = 15;
+
+  /**
+   * The feature id for the '<em><b>Field</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int SIMPLE_CONDITION__FIELD = CONDITION_FEATURE_COUNT + 0;
+
+  /**
+   * The feature id for the '<em><b>Op</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int SIMPLE_CONDITION__OP = CONDITION_FEATURE_COUNT + 1;
+
+  /**
+   * The feature id for the '<em><b>Expression</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int SIMPLE_CONDITION__EXPRESSION = CONDITION_FEATURE_COUNT + 2;
+
+  /**
+   * The number of structural features of the '<em>Simple Condition</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int SIMPLE_CONDITION_FEATURE_COUNT = CONDITION_FEATURE_COUNT + 3;
+
+  /**
+   * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.CompoundConditionImpl <em>Compound Condition</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.CompoundConditionImpl
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getCompoundCondition()
+   * @generated
+   */
+  int COMPOUND_CONDITION = 16;
+
+  /**
+   * The feature id for the '<em><b>Conditions</b></em>' containment reference list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int COMPOUND_CONDITION__CONDITIONS = CONDITION_FEATURE_COUNT + 0;
+
+  /**
+   * The feature id for the '<em><b>Operators</b></em>' attribute list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int COMPOUND_CONDITION__OPERATORS = CONDITION_FEATURE_COUNT + 1;
+
+  /**
+   * The number of structural features of the '<em>Compound Condition</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int COMPOUND_CONDITION_FEATURE_COUNT = CONDITION_FEATURE_COUNT + 2;
+
+  /**
+   * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.XArtifactMatcherImpl <em>XArtifact Matcher</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.XArtifactMatcherImpl
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getXArtifactMatcher()
+   * @generated
+   */
+  int XARTIFACT_MATCHER = 17;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -812,62 +905,34 @@ public interface OseeDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int XARTIFACT_REF__NAME = 0;
+  int XARTIFACT_MATCHER__NAME = 0;
 
   /**
-   * The feature id for the '<em><b>Guid</b></em>' attribute.
+   * The feature id for the '<em><b>Conditions</b></em>' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int XARTIFACT_REF__GUID = 1;
+  int XARTIFACT_MATCHER__CONDITIONS = 1;
 
   /**
-   * The number of structural features of the '<em>XArtifact Ref</em>' class.
+   * The feature id for the '<em><b>Operators</b></em>' attribute list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int XARTIFACT_REF_FEATURE_COUNT = 2;
+  int XARTIFACT_MATCHER__OPERATORS = 2;
 
   /**
-   * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.XBranchRefImpl <em>XBranch Ref</em>}' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.XBranchRefImpl
-   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getXBranchRef()
-   * @generated
-   */
-  int XBRANCH_REF = 15;
-
-  /**
-   * The feature id for the '<em><b>Name</b></em>' attribute.
+   * The number of structural features of the '<em>XArtifact Matcher</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int XBRANCH_REF__NAME = 0;
-
-  /**
-   * The feature id for the '<em><b>Guid</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int XBRANCH_REF__GUID = 1;
-
-  /**
-   * The number of structural features of the '<em>XBranch Ref</em>' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int XBRANCH_REF_FEATURE_COUNT = 2;
+  int XARTIFACT_MATCHER_FEATURE_COUNT = 3;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.AccessContextImpl <em>Access Context</em>}' class.
@@ -877,7 +942,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getAccessContext()
    * @generated
    */
-  int ACCESS_CONTEXT = 16;
+  int ACCESS_CONTEXT = 18;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -941,16 +1006,16 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getHierarchyRestriction()
    * @generated
    */
-  int HIERARCHY_RESTRICTION = 17;
+  int HIERARCHY_RESTRICTION = 19;
 
   /**
-   * The feature id for the '<em><b>Artifact</b></em>' reference.
+   * The feature id for the '<em><b>Artifact Matcher Ref</b></em>' reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int HIERARCHY_RESTRICTION__ARTIFACT = 0;
+  int HIERARCHY_RESTRICTION__ARTIFACT_MATCHER_REF = 0;
 
   /**
    * The feature id for the '<em><b>Access Rules</b></em>' containment reference list.
@@ -978,7 +1043,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getObjectRestriction()
    * @generated
    */
-  int OBJECT_RESTRICTION = 18;
+  int OBJECT_RESTRICTION = 20;
 
   /**
    * The feature id for the '<em><b>Permission</b></em>' attribute.
@@ -999,14 +1064,14 @@ public interface OseeDslPackage extends EPackage
   int OBJECT_RESTRICTION_FEATURE_COUNT = 1;
 
   /**
-   * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.ArtifactInstanceRestrictionImpl <em>Artifact Instance Restriction</em>}' class.
+   * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.ArtifactMatchRestrictionImpl <em>Artifact Match Restriction</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.ArtifactInstanceRestrictionImpl
-   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getArtifactInstanceRestriction()
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.ArtifactMatchRestrictionImpl
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getArtifactMatchRestriction()
    * @generated
    */
-  int ARTIFACT_INSTANCE_RESTRICTION = 19;
+  int ARTIFACT_MATCH_RESTRICTION = 21;
 
   /**
    * The feature id for the '<em><b>Permission</b></em>' attribute.
@@ -1015,25 +1080,25 @@ public interface OseeDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int ARTIFACT_INSTANCE_RESTRICTION__PERMISSION = OBJECT_RESTRICTION__PERMISSION;
+  int ARTIFACT_MATCH_RESTRICTION__PERMISSION = OBJECT_RESTRICTION__PERMISSION;
 
   /**
-   * The feature id for the '<em><b>Artifact Ref</b></em>' reference.
+   * The feature id for the '<em><b>Artifact Matcher Ref</b></em>' reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int ARTIFACT_INSTANCE_RESTRICTION__ARTIFACT_REF = OBJECT_RESTRICTION_FEATURE_COUNT + 0;
+  int ARTIFACT_MATCH_RESTRICTION__ARTIFACT_MATCHER_REF = OBJECT_RESTRICTION_FEATURE_COUNT + 0;
 
   /**
-   * The number of structural features of the '<em>Artifact Instance Restriction</em>' class.
+   * The number of structural features of the '<em>Artifact Match Restriction</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int ARTIFACT_INSTANCE_RESTRICTION_FEATURE_COUNT = OBJECT_RESTRICTION_FEATURE_COUNT + 1;
+  int ARTIFACT_MATCH_RESTRICTION_FEATURE_COUNT = OBJECT_RESTRICTION_FEATURE_COUNT + 1;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.ArtifactTypeRestrictionImpl <em>Artifact Type Restriction</em>}' class.
@@ -1043,7 +1108,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getArtifactTypeRestriction()
    * @generated
    */
-  int ARTIFACT_TYPE_RESTRICTION = 20;
+  int ARTIFACT_TYPE_RESTRICTION = 22;
 
   /**
    * The feature id for the '<em><b>Permission</b></em>' attribute.
@@ -1080,7 +1145,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getAttributeTypeRestriction()
    * @generated
    */
-  int ATTRIBUTE_TYPE_RESTRICTION = 21;
+  int ATTRIBUTE_TYPE_RESTRICTION = 23;
 
   /**
    * The feature id for the '<em><b>Permission</b></em>' attribute.
@@ -1126,7 +1191,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getRelationTypeRestriction()
    * @generated
    */
-  int RELATION_TYPE_RESTRICTION = 22;
+  int RELATION_TYPE_RESTRICTION = 24;
 
   /**
    * The feature id for the '<em><b>Permission</b></em>' attribute.
@@ -1172,7 +1237,37 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getRelationMultiplicityEnum()
    * @generated
    */
-  int RELATION_MULTIPLICITY_ENUM = 23;
+  int RELATION_MULTIPLICITY_ENUM = 25;
+
+  /**
+   * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.CompareOp <em>Compare Op</em>}' enum.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.CompareOp
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getCompareOp()
+   * @generated
+   */
+  int COMPARE_OP = 26;
+
+  /**
+   * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XLogicOperator <em>XLogic Operator</em>}' enum.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.XLogicOperator
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getXLogicOperator()
+   * @generated
+   */
+  int XLOGIC_OPERATOR = 27;
+
+  /**
+   * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.MatchField <em>Match Field</em>}' enum.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.MatchField
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getMatchField()
+   * @generated
+   */
+  int MATCH_FIELD = 28;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.AccessPermissionEnum <em>Access Permission Enum</em>}' enum.
@@ -1182,7 +1277,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getAccessPermissionEnum()
    * @generated
    */
-  int ACCESS_PERMISSION_ENUM = 24;
+  int ACCESS_PERMISSION_ENUM = 29;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XRelationSideEnum <em>XRelation Side Enum</em>}' enum.
@@ -1192,7 +1287,7 @@ public interface OseeDslPackage extends EPackage
    * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getXRelationSideEnum()
    * @generated
    */
-  int XRELATION_SIDE_ENUM = 25;
+  int XRELATION_SIDE_ENUM = 30;
 
 
   /**
@@ -1272,26 +1367,15 @@ public interface OseeDslPackage extends EPackage
   EReference getOseeDsl_EnumOverrides();
 
   /**
-   * Returns the meta object for the containment reference list '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl#getBranchRefs <em>Branch Refs</em>}'.
+   * Returns the meta object for the containment reference list '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl#getArtifactMatchRefs <em>Artifact Match Refs</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the containment reference list '<em>Branch Refs</em>'.
-   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl#getBranchRefs()
+   * @return the meta object for the containment reference list '<em>Artifact Match Refs</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl#getArtifactMatchRefs()
    * @see #getOseeDsl()
    * @generated
    */
-  EReference getOseeDsl_BranchRefs();
-
-  /**
-   * Returns the meta object for the containment reference list '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl#getArtifactRefs <em>Artifact Refs</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the containment reference list '<em>Artifact Refs</em>'.
-   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl#getArtifactRefs()
-   * @see #getOseeDsl()
-   * @generated
-   */
-  EReference getOseeDsl_ArtifactRefs();
+  EReference getOseeDsl_ArtifactMatchRefs();
 
   /**
    * Returns the meta object for the containment reference list '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl#getAccessDeclarations <em>Access Declarations</em>}'.
@@ -1820,68 +1904,132 @@ public interface OseeDslPackage extends EPackage
   EAttribute getXRelationType_Multiplicity();
 
   /**
-   * Returns the meta object for class '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactRef <em>XArtifact Ref</em>}'.
+   * Returns the meta object for class '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.Condition <em>Condition</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for class '<em>XArtifact Ref</em>'.
-   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactRef
+   * @return the meta object for class '<em>Condition</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.Condition
    * @generated
    */
-  EClass getXArtifactRef();
+  EClass getCondition();
 
   /**
-   * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactRef#getName <em>Name</em>}'.
+   * Returns the meta object for class '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.SimpleCondition <em>Simple Condition</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Simple Condition</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.SimpleCondition
+   * @generated
+   */
+  EClass getSimpleCondition();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.SimpleCondition#getField <em>Field</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Field</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.SimpleCondition#getField()
+   * @see #getSimpleCondition()
+   * @generated
+   */
+  EAttribute getSimpleCondition_Field();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.SimpleCondition#getOp <em>Op</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Op</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.SimpleCondition#getOp()
+   * @see #getSimpleCondition()
+   * @generated
+   */
+  EAttribute getSimpleCondition_Op();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.SimpleCondition#getExpression <em>Expression</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Expression</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.SimpleCondition#getExpression()
+   * @see #getSimpleCondition()
+   * @generated
+   */
+  EAttribute getSimpleCondition_Expression();
+
+  /**
+   * Returns the meta object for class '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.CompoundCondition <em>Compound Condition</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Compound Condition</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.CompoundCondition
+   * @generated
+   */
+  EClass getCompoundCondition();
+
+  /**
+   * Returns the meta object for the containment reference list '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.CompoundCondition#getConditions <em>Conditions</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the containment reference list '<em>Conditions</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.CompoundCondition#getConditions()
+   * @see #getCompoundCondition()
+   * @generated
+   */
+  EReference getCompoundCondition_Conditions();
+
+  /**
+   * Returns the meta object for the attribute list '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.CompoundCondition#getOperators <em>Operators</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute list '<em>Operators</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.CompoundCondition#getOperators()
+   * @see #getCompoundCondition()
+   * @generated
+   */
+  EAttribute getCompoundCondition_Operators();
+
+  /**
+   * Returns the meta object for class '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactMatcher <em>XArtifact Matcher</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>XArtifact Matcher</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactMatcher
+   * @generated
+   */
+  EClass getXArtifactMatcher();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactMatcher#getName <em>Name</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @return the meta object for the attribute '<em>Name</em>'.
-   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactRef#getName()
-   * @see #getXArtifactRef()
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactMatcher#getName()
+   * @see #getXArtifactMatcher()
    * @generated
    */
-  EAttribute getXArtifactRef_Name();
+  EAttribute getXArtifactMatcher_Name();
 
   /**
-   * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactRef#getGuid <em>Guid</em>}'.
+   * Returns the meta object for the containment reference list '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactMatcher#getConditions <em>Conditions</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Guid</em>'.
-   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactRef#getGuid()
-   * @see #getXArtifactRef()
+   * @return the meta object for the containment reference list '<em>Conditions</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactMatcher#getConditions()
+   * @see #getXArtifactMatcher()
    * @generated
    */
-  EAttribute getXArtifactRef_Guid();
+  EReference getXArtifactMatcher_Conditions();
 
   /**
-   * Returns the meta object for class '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XBranchRef <em>XBranch Ref</em>}'.
+   * Returns the meta object for the attribute list '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactMatcher#getOperators <em>Operators</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for class '<em>XBranch Ref</em>'.
-   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.XBranchRef
+   * @return the meta object for the attribute list '<em>Operators</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactMatcher#getOperators()
+   * @see #getXArtifactMatcher()
    * @generated
    */
-  EClass getXBranchRef();
-
-  /**
-   * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XBranchRef#getName <em>Name</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Name</em>'.
-   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.XBranchRef#getName()
-   * @see #getXBranchRef()
-   * @generated
-   */
-  EAttribute getXBranchRef_Name();
-
-  /**
-   * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XBranchRef#getGuid <em>Guid</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Guid</em>'.
-   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.XBranchRef#getGuid()
-   * @see #getXBranchRef()
-   * @generated
-   */
-  EAttribute getXBranchRef_Guid();
+  EAttribute getXArtifactMatcher_Operators();
 
   /**
    * Returns the meta object for class '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.AccessContext <em>Access Context</em>}'.
@@ -1959,15 +2107,15 @@ public interface OseeDslPackage extends EPackage
   EClass getHierarchyRestriction();
 
   /**
-   * Returns the meta object for the reference '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.HierarchyRestriction#getArtifact <em>Artifact</em>}'.
+   * Returns the meta object for the reference '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.HierarchyRestriction#getArtifactMatcherRef <em>Artifact Matcher Ref</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the reference '<em>Artifact</em>'.
-   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.HierarchyRestriction#getArtifact()
+   * @return the meta object for the reference '<em>Artifact Matcher Ref</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.HierarchyRestriction#getArtifactMatcherRef()
    * @see #getHierarchyRestriction()
    * @generated
    */
-  EReference getHierarchyRestriction_Artifact();
+  EReference getHierarchyRestriction_ArtifactMatcherRef();
 
   /**
    * Returns the meta object for the containment reference list '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.HierarchyRestriction#getAccessRules <em>Access Rules</em>}'.
@@ -2002,25 +2150,25 @@ public interface OseeDslPackage extends EPackage
   EAttribute getObjectRestriction_Permission();
 
   /**
-   * Returns the meta object for class '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.ArtifactInstanceRestriction <em>Artifact Instance Restriction</em>}'.
+   * Returns the meta object for class '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.ArtifactMatchRestriction <em>Artifact Match Restriction</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for class '<em>Artifact Instance Restriction</em>'.
-   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.ArtifactInstanceRestriction
+   * @return the meta object for class '<em>Artifact Match Restriction</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.ArtifactMatchRestriction
    * @generated
    */
-  EClass getArtifactInstanceRestriction();
+  EClass getArtifactMatchRestriction();
 
   /**
-   * Returns the meta object for the reference '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.ArtifactInstanceRestriction#getArtifactRef <em>Artifact Ref</em>}'.
+   * Returns the meta object for the reference '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.ArtifactMatchRestriction#getArtifactMatcherRef <em>Artifact Matcher Ref</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the reference '<em>Artifact Ref</em>'.
-   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.ArtifactInstanceRestriction#getArtifactRef()
-   * @see #getArtifactInstanceRestriction()
+   * @return the meta object for the reference '<em>Artifact Matcher Ref</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.ArtifactMatchRestriction#getArtifactMatcherRef()
+   * @see #getArtifactMatchRestriction()
    * @generated
    */
-  EReference getArtifactInstanceRestriction_ArtifactRef();
+  EReference getArtifactMatchRestriction_ArtifactMatcherRef();
 
   /**
    * Returns the meta object for class '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.ArtifactTypeRestriction <em>Artifact Type Restriction</em>}'.
@@ -2116,6 +2264,36 @@ public interface OseeDslPackage extends EPackage
    * @generated
    */
   EEnum getRelationMultiplicityEnum();
+
+  /**
+   * Returns the meta object for enum '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.CompareOp <em>Compare Op</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for enum '<em>Compare Op</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.CompareOp
+   * @generated
+   */
+  EEnum getCompareOp();
+
+  /**
+   * Returns the meta object for enum '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XLogicOperator <em>XLogic Operator</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for enum '<em>XLogic Operator</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.XLogicOperator
+   * @generated
+   */
+  EEnum getXLogicOperator();
+
+  /**
+   * Returns the meta object for enum '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.MatchField <em>Match Field</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for enum '<em>Match Field</em>'.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.MatchField
+   * @generated
+   */
+  EEnum getMatchField();
 
   /**
    * Returns the meta object for enum '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.AccessPermissionEnum <em>Access Permission Enum</em>}'.
@@ -2219,20 +2397,12 @@ public interface OseeDslPackage extends EPackage
     EReference OSEE_DSL__ENUM_OVERRIDES = eINSTANCE.getOseeDsl_EnumOverrides();
 
     /**
-     * The meta object literal for the '<em><b>Branch Refs</b></em>' containment reference list feature.
+     * The meta object literal for the '<em><b>Artifact Match Refs</b></em>' containment reference list feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference OSEE_DSL__BRANCH_REFS = eINSTANCE.getOseeDsl_BranchRefs();
-
-    /**
-     * The meta object literal for the '<em><b>Artifact Refs</b></em>' containment reference list feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EReference OSEE_DSL__ARTIFACT_REFS = eINSTANCE.getOseeDsl_ArtifactRefs();
+    EReference OSEE_DSL__ARTIFACT_MATCH_REFS = eINSTANCE.getOseeDsl_ArtifactMatchRefs();
 
     /**
      * The meta object literal for the '<em><b>Access Declarations</b></em>' containment reference list feature.
@@ -2653,14 +2823,84 @@ public interface OseeDslPackage extends EPackage
     EAttribute XRELATION_TYPE__MULTIPLICITY = eINSTANCE.getXRelationType_Multiplicity();
 
     /**
-     * The meta object literal for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.XArtifactRefImpl <em>XArtifact Ref</em>}' class.
+     * The meta object literal for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.ConditionImpl <em>Condition</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.XArtifactRefImpl
-     * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getXArtifactRef()
+     * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.ConditionImpl
+     * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getCondition()
      * @generated
      */
-    EClass XARTIFACT_REF = eINSTANCE.getXArtifactRef();
+    EClass CONDITION = eINSTANCE.getCondition();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.SimpleConditionImpl <em>Simple Condition</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.SimpleConditionImpl
+     * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getSimpleCondition()
+     * @generated
+     */
+    EClass SIMPLE_CONDITION = eINSTANCE.getSimpleCondition();
+
+    /**
+     * The meta object literal for the '<em><b>Field</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute SIMPLE_CONDITION__FIELD = eINSTANCE.getSimpleCondition_Field();
+
+    /**
+     * The meta object literal for the '<em><b>Op</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute SIMPLE_CONDITION__OP = eINSTANCE.getSimpleCondition_Op();
+
+    /**
+     * The meta object literal for the '<em><b>Expression</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute SIMPLE_CONDITION__EXPRESSION = eINSTANCE.getSimpleCondition_Expression();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.CompoundConditionImpl <em>Compound Condition</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.CompoundConditionImpl
+     * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getCompoundCondition()
+     * @generated
+     */
+    EClass COMPOUND_CONDITION = eINSTANCE.getCompoundCondition();
+
+    /**
+     * The meta object literal for the '<em><b>Conditions</b></em>' containment reference list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EReference COMPOUND_CONDITION__CONDITIONS = eINSTANCE.getCompoundCondition_Conditions();
+
+    /**
+     * The meta object literal for the '<em><b>Operators</b></em>' attribute list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute COMPOUND_CONDITION__OPERATORS = eINSTANCE.getCompoundCondition_Operators();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.XArtifactMatcherImpl <em>XArtifact Matcher</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.XArtifactMatcherImpl
+     * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getXArtifactMatcher()
+     * @generated
+     */
+    EClass XARTIFACT_MATCHER = eINSTANCE.getXArtifactMatcher();
 
     /**
      * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
@@ -2668,41 +2908,23 @@ public interface OseeDslPackage extends EPackage
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute XARTIFACT_REF__NAME = eINSTANCE.getXArtifactRef_Name();
+    EAttribute XARTIFACT_MATCHER__NAME = eINSTANCE.getXArtifactMatcher_Name();
 
     /**
-     * The meta object literal for the '<em><b>Guid</b></em>' attribute feature.
+     * The meta object literal for the '<em><b>Conditions</b></em>' containment reference list feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute XARTIFACT_REF__GUID = eINSTANCE.getXArtifactRef_Guid();
+    EReference XARTIFACT_MATCHER__CONDITIONS = eINSTANCE.getXArtifactMatcher_Conditions();
 
     /**
-     * The meta object literal for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.XBranchRefImpl <em>XBranch Ref</em>}' class.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.XBranchRefImpl
-     * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getXBranchRef()
-     * @generated
-     */
-    EClass XBRANCH_REF = eINSTANCE.getXBranchRef();
-
-    /**
-     * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
+     * The meta object literal for the '<em><b>Operators</b></em>' attribute list feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EAttribute XBRANCH_REF__NAME = eINSTANCE.getXBranchRef_Name();
-
-    /**
-     * The meta object literal for the '<em><b>Guid</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute XBRANCH_REF__GUID = eINSTANCE.getXBranchRef_Guid();
+    EAttribute XARTIFACT_MATCHER__OPERATORS = eINSTANCE.getXArtifactMatcher_Operators();
 
     /**
      * The meta object literal for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.AccessContextImpl <em>Access Context</em>}' class.
@@ -2765,12 +2987,12 @@ public interface OseeDslPackage extends EPackage
     EClass HIERARCHY_RESTRICTION = eINSTANCE.getHierarchyRestriction();
 
     /**
-     * The meta object literal for the '<em><b>Artifact</b></em>' reference feature.
+     * The meta object literal for the '<em><b>Artifact Matcher Ref</b></em>' reference feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference HIERARCHY_RESTRICTION__ARTIFACT = eINSTANCE.getHierarchyRestriction_Artifact();
+    EReference HIERARCHY_RESTRICTION__ARTIFACT_MATCHER_REF = eINSTANCE.getHierarchyRestriction_ArtifactMatcherRef();
 
     /**
      * The meta object literal for the '<em><b>Access Rules</b></em>' containment reference list feature.
@@ -2799,22 +3021,22 @@ public interface OseeDslPackage extends EPackage
     EAttribute OBJECT_RESTRICTION__PERMISSION = eINSTANCE.getObjectRestriction_Permission();
 
     /**
-     * The meta object literal for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.ArtifactInstanceRestrictionImpl <em>Artifact Instance Restriction</em>}' class.
+     * The meta object literal for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.ArtifactMatchRestrictionImpl <em>Artifact Match Restriction</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.ArtifactInstanceRestrictionImpl
-     * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getArtifactInstanceRestriction()
+     * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.ArtifactMatchRestrictionImpl
+     * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getArtifactMatchRestriction()
      * @generated
      */
-    EClass ARTIFACT_INSTANCE_RESTRICTION = eINSTANCE.getArtifactInstanceRestriction();
+    EClass ARTIFACT_MATCH_RESTRICTION = eINSTANCE.getArtifactMatchRestriction();
 
     /**
-     * The meta object literal for the '<em><b>Artifact Ref</b></em>' reference feature.
+     * The meta object literal for the '<em><b>Artifact Matcher Ref</b></em>' reference feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference ARTIFACT_INSTANCE_RESTRICTION__ARTIFACT_REF = eINSTANCE.getArtifactInstanceRestriction_ArtifactRef();
+    EReference ARTIFACT_MATCH_RESTRICTION__ARTIFACT_MATCHER_REF = eINSTANCE.getArtifactMatchRestriction_ArtifactMatcherRef();
 
     /**
      * The meta object literal for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.ArtifactTypeRestrictionImpl <em>Artifact Type Restriction</em>}' class.
@@ -2895,6 +3117,36 @@ public interface OseeDslPackage extends EPackage
      * @generated
      */
     EEnum RELATION_MULTIPLICITY_ENUM = eINSTANCE.getRelationMultiplicityEnum();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.CompareOp <em>Compare Op</em>}' enum.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.osee.framework.core.dsl.oseeDsl.CompareOp
+     * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getCompareOp()
+     * @generated
+     */
+    EEnum COMPARE_OP = eINSTANCE.getCompareOp();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.XLogicOperator <em>XLogic Operator</em>}' enum.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.osee.framework.core.dsl.oseeDsl.XLogicOperator
+     * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getXLogicOperator()
+     * @generated
+     */
+    EEnum XLOGIC_OPERATOR = eINSTANCE.getXLogicOperator();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.MatchField <em>Match Field</em>}' enum.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.osee.framework.core.dsl.oseeDsl.MatchField
+     * @see org.eclipse.osee.framework.core.dsl.oseeDsl.impl.OseeDslPackageImpl#getMatchField()
+     * @generated
+     */
+    EEnum MATCH_FIELD = eINSTANCE.getMatchField();
 
     /**
      * The meta object literal for the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.AccessPermissionEnum <em>Access Permission Enum</em>}' enum.

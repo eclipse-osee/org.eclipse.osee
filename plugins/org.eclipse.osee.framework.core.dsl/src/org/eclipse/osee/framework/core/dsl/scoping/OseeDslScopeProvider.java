@@ -10,5 +10,5 @@ import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider;
  * http://www.eclipse.org/Xtext/documentation/latest/xtext.html#scoping on how and when to use it
  */
 public class OseeDslScopeProvider extends AbstractDeclarativeScopeProvider {
-
+   //
 }

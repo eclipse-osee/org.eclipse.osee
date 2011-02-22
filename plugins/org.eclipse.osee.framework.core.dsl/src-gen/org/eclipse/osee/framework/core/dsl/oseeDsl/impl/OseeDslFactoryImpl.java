@@ -83,12 +83,14 @@ public class OseeDslFactoryImpl extends EFactoryImpl implements OseeDslFactory
       case OseeDslPackage.ADD_ENUM: return createAddEnum();
       case OseeDslPackage.REMOVE_ENUM: return createRemoveEnum();
       case OseeDslPackage.XRELATION_TYPE: return createXRelationType();
-      case OseeDslPackage.XARTIFACT_REF: return createXArtifactRef();
-      case OseeDslPackage.XBRANCH_REF: return createXBranchRef();
+      case OseeDslPackage.CONDITION: return createCondition();
+      case OseeDslPackage.SIMPLE_CONDITION: return createSimpleCondition();
+      case OseeDslPackage.COMPOUND_CONDITION: return createCompoundCondition();
+      case OseeDslPackage.XARTIFACT_MATCHER: return createXArtifactMatcher();
       case OseeDslPackage.ACCESS_CONTEXT: return createAccessContext();
       case OseeDslPackage.HIERARCHY_RESTRICTION: return createHierarchyRestriction();
       case OseeDslPackage.OBJECT_RESTRICTION: return createObjectRestriction();
-      case OseeDslPackage.ARTIFACT_INSTANCE_RESTRICTION: return createArtifactInstanceRestriction();
+      case OseeDslPackage.ARTIFACT_MATCH_RESTRICTION: return createArtifactMatchRestriction();
       case OseeDslPackage.ARTIFACT_TYPE_RESTRICTION: return createArtifactTypeRestriction();
       case OseeDslPackage.ATTRIBUTE_TYPE_RESTRICTION: return createAttributeTypeRestriction();
       case OseeDslPackage.RELATION_TYPE_RESTRICTION: return createRelationTypeRestriction();
@@ -109,6 +111,12 @@ public class OseeDslFactoryImpl extends EFactoryImpl implements OseeDslFactory
     {
       case OseeDslPackage.RELATION_MULTIPLICITY_ENUM:
         return createRelationMultiplicityEnumFromString(eDataType, initialValue);
+      case OseeDslPackage.COMPARE_OP:
+        return createCompareOpFromString(eDataType, initialValue);
+      case OseeDslPackage.XLOGIC_OPERATOR:
+        return createXLogicOperatorFromString(eDataType, initialValue);
+      case OseeDslPackage.MATCH_FIELD:
+        return createMatchFieldFromString(eDataType, initialValue);
       case OseeDslPackage.ACCESS_PERMISSION_ENUM:
         return createAccessPermissionEnumFromString(eDataType, initialValue);
       case OseeDslPackage.XRELATION_SIDE_ENUM:
@@ -130,6 +138,12 @@ public class OseeDslFactoryImpl extends EFactoryImpl implements OseeDslFactory
     {
       case OseeDslPackage.RELATION_MULTIPLICITY_ENUM:
         return convertRelationMultiplicityEnumToString(eDataType, instanceValue);
+      case OseeDslPackage.COMPARE_OP:
+        return convertCompareOpToString(eDataType, instanceValue);
+      case OseeDslPackage.XLOGIC_OPERATOR:
+        return convertXLogicOperatorToString(eDataType, instanceValue);
+      case OseeDslPackage.MATCH_FIELD:
+        return convertMatchFieldToString(eDataType, instanceValue);
       case OseeDslPackage.ACCESS_PERMISSION_ENUM:
         return convertAccessPermissionEnumToString(eDataType, instanceValue);
       case OseeDslPackage.XRELATION_SIDE_ENUM:
@@ -298,10 +312,10 @@ public class OseeDslFactoryImpl extends EFactoryImpl implements OseeDslFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public XArtifactRef createXArtifactRef()
+  public Condition createCondition()
   {
-    XArtifactRefImpl xArtifactRef = new XArtifactRefImpl();
-    return xArtifactRef;
+    ConditionImpl condition = new ConditionImpl();
+    return condition;
   }
 
   /**
@@ -309,10 +323,32 @@ public class OseeDslFactoryImpl extends EFactoryImpl implements OseeDslFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public XBranchRef createXBranchRef()
+  public SimpleCondition createSimpleCondition()
   {
-    XBranchRefImpl xBranchRef = new XBranchRefImpl();
-    return xBranchRef;
+    SimpleConditionImpl simpleCondition = new SimpleConditionImpl();
+    return simpleCondition;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public CompoundCondition createCompoundCondition()
+  {
+    CompoundConditionImpl compoundCondition = new CompoundConditionImpl();
+    return compoundCondition;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public XArtifactMatcher createXArtifactMatcher()
+  {
+    XArtifactMatcherImpl xArtifactMatcher = new XArtifactMatcherImpl();
+    return xArtifactMatcher;
   }
 
   /**
@@ -353,10 +389,10 @@ public class OseeDslFactoryImpl extends EFactoryImpl implements OseeDslFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public ArtifactInstanceRestriction createArtifactInstanceRestriction()
+  public ArtifactMatchRestriction createArtifactMatchRestriction()
   {
-    ArtifactInstanceRestrictionImpl artifactInstanceRestriction = new ArtifactInstanceRestrictionImpl();
-    return artifactInstanceRestriction;
+    ArtifactMatchRestrictionImpl artifactMatchRestriction = new ArtifactMatchRestrictionImpl();
+    return artifactMatchRestriction;
   }
 
   /**
@@ -410,6 +446,72 @@ public class OseeDslFactoryImpl extends EFactoryImpl implements OseeDslFactory
    * @generated
    */
   public String convertRelationMultiplicityEnumToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public CompareOp createCompareOpFromString(EDataType eDataType, String initialValue)
+  {
+    CompareOp result = CompareOp.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertCompareOpToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public XLogicOperator createXLogicOperatorFromString(EDataType eDataType, String initialValue)
+  {
+    XLogicOperator result = XLogicOperator.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertXLogicOperatorToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public MatchField createMatchFieldFromString(EDataType eDataType, String initialValue)
+  {
+    MatchField result = MatchField.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertMatchFieldToString(EDataType eDataType, Object instanceValue)
   {
     return instanceValue == null ? null : instanceValue.toString();
   }

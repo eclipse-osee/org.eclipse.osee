@@ -17,11 +17,15 @@ import org.eclipse.emf.ecore.impl.EPackageImpl;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessContext;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessPermissionEnum;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AddEnum;
-import org.eclipse.osee.framework.core.dsl.oseeDsl.ArtifactInstanceRestriction;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.ArtifactMatchRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.ArtifactTypeRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AttributeTypeRestriction;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.CompareOp;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.CompoundCondition;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.Condition;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.HierarchyRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.Import;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.MatchField;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.ObjectRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslFactory;
@@ -32,11 +36,12 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.OverrideOption;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.RelationMultiplicityEnum;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.RelationTypeRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.RemoveEnum;
-import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactRef;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.SimpleCondition;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactMatcher;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeType;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XAttributeTypeRef;
-import org.eclipse.osee.framework.core.dsl.oseeDsl.XBranchRef;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.XLogicOperator;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumEntry;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumOverride;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XOseeEnumType;
@@ -154,14 +159,28 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  private EClass xArtifactRefEClass = null;
+  private EClass conditionEClass = null;
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  private EClass xBranchRefEClass = null;
+  private EClass simpleConditionEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass compoundConditionEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EClass xArtifactMatcherEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -189,7 +208,7 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  private EClass artifactInstanceRestrictionEClass = null;
+  private EClass artifactMatchRestrictionEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -218,6 +237,27 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
    * @generated
    */
   private EEnum relationMultiplicityEnumEEnum = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EEnum compareOpEEnum = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EEnum xLogicOperatorEEnum = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EEnum matchFieldEEnum = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -371,7 +411,7 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getOseeDsl_BranchRefs()
+  public EReference getOseeDsl_ArtifactMatchRefs()
   {
     return (EReference)oseeDslEClass.getEStructuralFeatures().get(6);
   }
@@ -381,19 +421,9 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getOseeDsl_ArtifactRefs()
-  {
-    return (EReference)oseeDslEClass.getEStructuralFeatures().get(7);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public EReference getOseeDsl_AccessDeclarations()
   {
-    return (EReference)oseeDslEClass.getEStructuralFeatures().get(8);
+    return (EReference)oseeDslEClass.getEStructuralFeatures().get(7);
   }
 
   /**
@@ -881,9 +911,9 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EClass getXArtifactRef()
+  public EClass getCondition()
   {
-    return xArtifactRefEClass;
+    return conditionEClass;
   }
 
   /**
@@ -891,9 +921,9 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getXArtifactRef_Name()
+  public EClass getSimpleCondition()
   {
-    return (EAttribute)xArtifactRefEClass.getEStructuralFeatures().get(0);
+    return simpleConditionEClass;
   }
 
   /**
@@ -901,9 +931,9 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getXArtifactRef_Guid()
+  public EAttribute getSimpleCondition_Field()
   {
-    return (EAttribute)xArtifactRefEClass.getEStructuralFeatures().get(1);
+    return (EAttribute)simpleConditionEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -911,9 +941,9 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EClass getXBranchRef()
+  public EAttribute getSimpleCondition_Op()
   {
-    return xBranchRefEClass;
+    return (EAttribute)simpleConditionEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -921,9 +951,9 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getXBranchRef_Name()
+  public EAttribute getSimpleCondition_Expression()
   {
-    return (EAttribute)xBranchRefEClass.getEStructuralFeatures().get(0);
+    return (EAttribute)simpleConditionEClass.getEStructuralFeatures().get(2);
   }
 
   /**
@@ -931,9 +961,69 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getXBranchRef_Guid()
+  public EClass getCompoundCondition()
   {
-    return (EAttribute)xBranchRefEClass.getEStructuralFeatures().get(1);
+    return compoundConditionEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getCompoundCondition_Conditions()
+  {
+    return (EReference)compoundConditionEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getCompoundCondition_Operators()
+  {
+    return (EAttribute)compoundConditionEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EClass getXArtifactMatcher()
+  {
+    return xArtifactMatcherEClass;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getXArtifactMatcher_Name()
+  {
+    return (EAttribute)xArtifactMatcherEClass.getEStructuralFeatures().get(0);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EReference getXArtifactMatcher_Conditions()
+  {
+    return (EReference)xArtifactMatcherEClass.getEStructuralFeatures().get(1);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EAttribute getXArtifactMatcher_Operators()
+  {
+    return (EAttribute)xArtifactMatcherEClass.getEStructuralFeatures().get(2);
   }
 
   /**
@@ -1011,7 +1101,7 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getHierarchyRestriction_Artifact()
+  public EReference getHierarchyRestriction_ArtifactMatcherRef()
   {
     return (EReference)hierarchyRestrictionEClass.getEStructuralFeatures().get(0);
   }
@@ -1051,9 +1141,9 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EClass getArtifactInstanceRestriction()
+  public EClass getArtifactMatchRestriction()
   {
-    return artifactInstanceRestrictionEClass;
+    return artifactMatchRestrictionEClass;
   }
 
   /**
@@ -1061,9 +1151,9 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getArtifactInstanceRestriction_ArtifactRef()
+  public EReference getArtifactMatchRestriction_ArtifactMatcherRef()
   {
-    return (EReference)artifactInstanceRestrictionEClass.getEStructuralFeatures().get(0);
+    return (EReference)artifactMatchRestrictionEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -1161,6 +1251,36 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
    * <!-- end-user-doc -->
    * @generated
    */
+  public EEnum getCompareOp()
+  {
+    return compareOpEEnum;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EEnum getXLogicOperator()
+  {
+    return xLogicOperatorEEnum;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public EEnum getMatchField()
+  {
+    return matchFieldEEnum;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EEnum getAccessPermissionEnum()
   {
     return accessPermissionEnumEEnum;
@@ -1213,8 +1333,7 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
     createEReference(oseeDslEClass, OSEE_DSL__ATTRIBUTE_TYPES);
     createEReference(oseeDslEClass, OSEE_DSL__ENUM_TYPES);
     createEReference(oseeDslEClass, OSEE_DSL__ENUM_OVERRIDES);
-    createEReference(oseeDslEClass, OSEE_DSL__BRANCH_REFS);
-    createEReference(oseeDslEClass, OSEE_DSL__ARTIFACT_REFS);
+    createEReference(oseeDslEClass, OSEE_DSL__ARTIFACT_MATCH_REFS);
     createEReference(oseeDslEClass, OSEE_DSL__ACCESS_DECLARATIONS);
 
     importEClass = createEClass(IMPORT);
@@ -1278,13 +1397,21 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
     createEAttribute(xRelationTypeEClass, XRELATION_TYPE__DEFAULT_ORDER_TYPE);
     createEAttribute(xRelationTypeEClass, XRELATION_TYPE__MULTIPLICITY);
 
-    xArtifactRefEClass = createEClass(XARTIFACT_REF);
-    createEAttribute(xArtifactRefEClass, XARTIFACT_REF__NAME);
-    createEAttribute(xArtifactRefEClass, XARTIFACT_REF__GUID);
+    conditionEClass = createEClass(CONDITION);
 
-    xBranchRefEClass = createEClass(XBRANCH_REF);
-    createEAttribute(xBranchRefEClass, XBRANCH_REF__NAME);
-    createEAttribute(xBranchRefEClass, XBRANCH_REF__GUID);
+    simpleConditionEClass = createEClass(SIMPLE_CONDITION);
+    createEAttribute(simpleConditionEClass, SIMPLE_CONDITION__FIELD);
+    createEAttribute(simpleConditionEClass, SIMPLE_CONDITION__OP);
+    createEAttribute(simpleConditionEClass, SIMPLE_CONDITION__EXPRESSION);
+
+    compoundConditionEClass = createEClass(COMPOUND_CONDITION);
+    createEReference(compoundConditionEClass, COMPOUND_CONDITION__CONDITIONS);
+    createEAttribute(compoundConditionEClass, COMPOUND_CONDITION__OPERATORS);
+
+    xArtifactMatcherEClass = createEClass(XARTIFACT_MATCHER);
+    createEAttribute(xArtifactMatcherEClass, XARTIFACT_MATCHER__NAME);
+    createEReference(xArtifactMatcherEClass, XARTIFACT_MATCHER__CONDITIONS);
+    createEAttribute(xArtifactMatcherEClass, XARTIFACT_MATCHER__OPERATORS);
 
     accessContextEClass = createEClass(ACCESS_CONTEXT);
     createEAttribute(accessContextEClass, ACCESS_CONTEXT__NAME);
@@ -1294,14 +1421,14 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
     createEReference(accessContextEClass, ACCESS_CONTEXT__HIERARCHY_RESTRICTIONS);
 
     hierarchyRestrictionEClass = createEClass(HIERARCHY_RESTRICTION);
-    createEReference(hierarchyRestrictionEClass, HIERARCHY_RESTRICTION__ARTIFACT);
+    createEReference(hierarchyRestrictionEClass, HIERARCHY_RESTRICTION__ARTIFACT_MATCHER_REF);
     createEReference(hierarchyRestrictionEClass, HIERARCHY_RESTRICTION__ACCESS_RULES);
 
     objectRestrictionEClass = createEClass(OBJECT_RESTRICTION);
     createEAttribute(objectRestrictionEClass, OBJECT_RESTRICTION__PERMISSION);
 
-    artifactInstanceRestrictionEClass = createEClass(ARTIFACT_INSTANCE_RESTRICTION);
-    createEReference(artifactInstanceRestrictionEClass, ARTIFACT_INSTANCE_RESTRICTION__ARTIFACT_REF);
+    artifactMatchRestrictionEClass = createEClass(ARTIFACT_MATCH_RESTRICTION);
+    createEReference(artifactMatchRestrictionEClass, ARTIFACT_MATCH_RESTRICTION__ARTIFACT_MATCHER_REF);
 
     artifactTypeRestrictionEClass = createEClass(ARTIFACT_TYPE_RESTRICTION);
     createEReference(artifactTypeRestrictionEClass, ARTIFACT_TYPE_RESTRICTION__ARTIFACT_TYPE_REF);
@@ -1316,6 +1443,9 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
 
     // Create enums
     relationMultiplicityEnumEEnum = createEEnum(RELATION_MULTIPLICITY_ENUM);
+    compareOpEEnum = createEEnum(COMPARE_OP);
+    xLogicOperatorEEnum = createEEnum(XLOGIC_OPERATOR);
+    matchFieldEEnum = createEEnum(MATCH_FIELD);
     accessPermissionEnumEEnum = createEEnum(ACCESS_PERMISSION_ENUM);
     xRelationSideEnumEEnum = createEEnum(XRELATION_SIDE_ENUM);
   }
@@ -1357,7 +1487,9 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
     addEnumEClass.getESuperTypes().add(this.getOverrideOption());
     removeEnumEClass.getESuperTypes().add(this.getOverrideOption());
     xRelationTypeEClass.getESuperTypes().add(this.getOseeType());
-    artifactInstanceRestrictionEClass.getESuperTypes().add(this.getObjectRestriction());
+    simpleConditionEClass.getESuperTypes().add(this.getCondition());
+    compoundConditionEClass.getESuperTypes().add(this.getCondition());
+    artifactMatchRestrictionEClass.getESuperTypes().add(this.getObjectRestriction());
     artifactTypeRestrictionEClass.getESuperTypes().add(this.getObjectRestriction());
     attributeTypeRestrictionEClass.getESuperTypes().add(this.getObjectRestriction());
     relationTypeRestrictionEClass.getESuperTypes().add(this.getObjectRestriction());
@@ -1370,8 +1502,7 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
     initEReference(getOseeDsl_AttributeTypes(), this.getXAttributeType(), null, "attributeTypes", null, 0, -1, OseeDsl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getOseeDsl_EnumTypes(), this.getXOseeEnumType(), null, "enumTypes", null, 0, -1, OseeDsl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getOseeDsl_EnumOverrides(), this.getXOseeEnumOverride(), null, "enumOverrides", null, 0, -1, OseeDsl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getOseeDsl_BranchRefs(), this.getXBranchRef(), null, "branchRefs", null, 0, -1, OseeDsl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getOseeDsl_ArtifactRefs(), this.getXArtifactRef(), null, "artifactRefs", null, 0, -1, OseeDsl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getOseeDsl_ArtifactMatchRefs(), this.getXArtifactMatcher(), null, "artifactMatchRefs", null, 0, -1, OseeDsl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getOseeDsl_AccessDeclarations(), this.getAccessContext(), null, "accessDeclarations", null, 0, -1, OseeDsl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(importEClass, Import.class, "Import", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -1435,13 +1566,21 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
     initEAttribute(getXRelationType_DefaultOrderType(), ecorePackage.getEString(), "defaultOrderType", null, 0, 1, XRelationType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getXRelationType_Multiplicity(), this.getRelationMultiplicityEnum(), "multiplicity", null, 0, 1, XRelationType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-    initEClass(xArtifactRefEClass, XArtifactRef.class, "XArtifactRef", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getXArtifactRef_Name(), ecorePackage.getEString(), "name", null, 0, 1, XArtifactRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getXArtifactRef_Guid(), ecorePackage.getEString(), "guid", null, 0, 1, XArtifactRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEClass(conditionEClass, Condition.class, "Condition", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
-    initEClass(xBranchRefEClass, XBranchRef.class, "XBranchRef", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getXBranchRef_Name(), ecorePackage.getEString(), "name", null, 0, 1, XBranchRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getXBranchRef_Guid(), ecorePackage.getEString(), "guid", null, 0, 1, XBranchRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEClass(simpleConditionEClass, SimpleCondition.class, "SimpleCondition", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getSimpleCondition_Field(), this.getMatchField(), "field", null, 0, 1, SimpleCondition.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getSimpleCondition_Op(), this.getCompareOp(), "op", null, 0, 1, SimpleCondition.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getSimpleCondition_Expression(), ecorePackage.getEString(), "expression", null, 0, 1, SimpleCondition.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(compoundConditionEClass, CompoundCondition.class, "CompoundCondition", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getCompoundCondition_Conditions(), this.getSimpleCondition(), null, "conditions", null, 0, -1, CompoundCondition.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getCompoundCondition_Operators(), this.getXLogicOperator(), "operators", null, 0, -1, CompoundCondition.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    initEClass(xArtifactMatcherEClass, XArtifactMatcher.class, "XArtifactMatcher", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEAttribute(getXArtifactMatcher_Name(), ecorePackage.getEString(), "name", null, 0, 1, XArtifactMatcher.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getXArtifactMatcher_Conditions(), this.getCondition(), null, "conditions", null, 0, -1, XArtifactMatcher.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getXArtifactMatcher_Operators(), this.getXLogicOperator(), "operators", null, 0, -1, XArtifactMatcher.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(accessContextEClass, AccessContext.class, "AccessContext", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getAccessContext_Name(), ecorePackage.getEString(), "name", null, 0, 1, AccessContext.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1451,14 +1590,14 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
     initEReference(getAccessContext_HierarchyRestrictions(), this.getHierarchyRestriction(), null, "hierarchyRestrictions", null, 0, -1, AccessContext.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(hierarchyRestrictionEClass, HierarchyRestriction.class, "HierarchyRestriction", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEReference(getHierarchyRestriction_Artifact(), this.getXArtifactRef(), null, "artifact", null, 0, 1, HierarchyRestriction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getHierarchyRestriction_ArtifactMatcherRef(), this.getXArtifactMatcher(), null, "artifactMatcherRef", null, 0, 1, HierarchyRestriction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getHierarchyRestriction_AccessRules(), this.getObjectRestriction(), null, "accessRules", null, 0, -1, HierarchyRestriction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(objectRestrictionEClass, ObjectRestriction.class, "ObjectRestriction", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getObjectRestriction_Permission(), this.getAccessPermissionEnum(), "permission", null, 0, 1, ObjectRestriction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-    initEClass(artifactInstanceRestrictionEClass, ArtifactInstanceRestriction.class, "ArtifactInstanceRestriction", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEReference(getArtifactInstanceRestriction_ArtifactRef(), this.getXArtifactRef(), null, "artifactRef", null, 0, 1, ArtifactInstanceRestriction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEClass(artifactMatchRestrictionEClass, ArtifactMatchRestriction.class, "ArtifactMatchRestriction", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+    initEReference(getArtifactMatchRestriction_ArtifactMatcherRef(), this.getXArtifactMatcher(), null, "artifactMatcherRef", null, 0, 1, ArtifactMatchRestriction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(artifactTypeRestrictionEClass, ArtifactTypeRestriction.class, "ArtifactTypeRestriction", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getArtifactTypeRestriction_ArtifactTypeRef(), this.getXArtifactType(), null, "artifactTypeRef", null, 0, 1, ArtifactTypeRestriction.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1477,6 +1616,20 @@ public class OseeDslPackageImpl extends EPackageImpl implements OseeDslPackage
     addEEnumLiteral(relationMultiplicityEnumEEnum, RelationMultiplicityEnum.ONE_TO_MANY);
     addEEnumLiteral(relationMultiplicityEnumEEnum, RelationMultiplicityEnum.MANY_TO_ONE);
     addEEnumLiteral(relationMultiplicityEnumEEnum, RelationMultiplicityEnum.MANY_TO_MANY);
+
+    initEEnum(compareOpEEnum, CompareOp.class, "CompareOp");
+    addEEnumLiteral(compareOpEEnum, CompareOp.EQ);
+    addEEnumLiteral(compareOpEEnum, CompareOp.LIKE);
+
+    initEEnum(xLogicOperatorEEnum, XLogicOperator.class, "XLogicOperator");
+    addEEnumLiteral(xLogicOperatorEEnum, XLogicOperator.AND);
+    addEEnumLiteral(xLogicOperatorEEnum, XLogicOperator.OR);
+
+    initEEnum(matchFieldEEnum, MatchField.class, "MatchField");
+    addEEnumLiteral(matchFieldEEnum, MatchField.ARTIFACT_NAME);
+    addEEnumLiteral(matchFieldEEnum, MatchField.ARTIFACT_GUID);
+    addEEnumLiteral(matchFieldEEnum, MatchField.BRANCH_NAME);
+    addEEnumLiteral(matchFieldEEnum, MatchField.BRANCH_GUID);
 
     initEEnum(accessPermissionEnumEEnum, AccessPermissionEnum.class, "AccessPermissionEnum");
     addEEnumLiteral(accessPermissionEnumEEnum, AccessPermissionEnum.ALLOW);

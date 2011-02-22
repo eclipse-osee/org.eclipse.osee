@@ -19,12 +19,13 @@ Require-Bundle: org.eclipse.xtext;bundle-version="2.0.0";visibility:=reexport,
 Import-Package: org.apache.log4j,
  org.apache.commons.logging
 Export-Package: org.eclipse.osee.framework.core.dsl,
- org.eclipse.osee.framework.core.dsl.services,
+ org.eclipse.osee.framework.core.dsl.conversion,
  org.eclipse.osee.framework.core.dsl.oseeDsl,
  org.eclipse.osee.framework.core.dsl.oseeDsl.impl,
  org.eclipse.osee.framework.core.dsl.oseeDsl.util,
  org.eclipse.osee.framework.core.dsl.parseTreeConstruction,
  org.eclipse.osee.framework.core.dsl.parser.antlr,
  org.eclipse.osee.framework.core.dsl.parser.antlr.internal,
+ org.eclipse.osee.framework.core.dsl.services,
  org.eclipse.osee.framework.core.dsl.validation
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

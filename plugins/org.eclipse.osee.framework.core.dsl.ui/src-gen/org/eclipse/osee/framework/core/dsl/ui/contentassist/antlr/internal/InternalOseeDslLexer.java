@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class InternalOseeDslLexer extends Lexer {
     public static final int T__68=68;
     public static final int T__69=69;
-    public static final int RULE_ID=6;
+    public static final int RULE_ID=5;
     public static final int T__66=66;
     public static final int T__67=67;
     public static final int T__29=29;
@@ -59,18 +59,27 @@ public class InternalOseeDslLexer extends Lexer {
     public static final int T__40=40;
     public static final int T__41=41;
     public static final int T__46=46;
+    public static final int T__80=80;
     public static final int T__47=47;
+    public static final int T__81=81;
     public static final int T__44=44;
+    public static final int T__82=82;
     public static final int T__45=45;
+    public static final int T__83=83;
     public static final int T__48=48;
-    public static final int RULE_WHOLE_NUM_STR=5;
+    public static final int RULE_WHOLE_NUM_STR=4;
     public static final int T__49=49;
+    public static final int T__85=85;
+    public static final int T__84=84;
     public static final int RULE_SL_COMMENT=9;
+    public static final int T__87=87;
+    public static final int T__86=86;
+    public static final int T__88=88;
     public static final int RULE_ML_COMMENT=8;
     public static final int T__30=30;
     public static final int T__31=31;
     public static final int T__32=32;
-    public static final int RULE_STRING=4;
+    public static final int RULE_STRING=6;
     public static final int T__33=33;
     public static final int T__71=71;
     public static final int T__34=34;
@@ -528,10 +537,10 @@ public class InternalOseeDslLexer extends Lexer {
         try {
             int _type = T__32;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:31:7: ( 'ALLOW' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:31:9: 'ALLOW'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:31:7: ( 'EQ' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:31:9: 'EQ'
             {
-            match("ALLOW"); 
+            match("EQ"); 
 
 
             }
@@ -549,10 +558,10 @@ public class InternalOseeDslLexer extends Lexer {
         try {
             int _type = T__33;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:32:7: ( 'DENY' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:32:9: 'DENY'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:32:7: ( 'LIKE' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:32:9: 'LIKE'
             {
-            match("DENY"); 
+            match("LIKE"); 
 
 
             }
@@ -570,10 +579,10 @@ public class InternalOseeDslLexer extends Lexer {
         try {
             int _type = T__34;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:33:7: ( 'SIDE_A' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:33:9: 'SIDE_A'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:33:7: ( 'AND' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:33:9: 'AND'
             {
-            match("SIDE_A"); 
+            match("AND"); 
 
 
             }
@@ -591,10 +600,10 @@ public class InternalOseeDslLexer extends Lexer {
         try {
             int _type = T__35;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:34:7: ( 'SIDE_B' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:34:9: 'SIDE_B'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:34:7: ( 'OR' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:34:9: 'OR'
             {
-            match("SIDE_B"); 
+            match("OR"); 
 
 
             }
@@ -612,10 +621,10 @@ public class InternalOseeDslLexer extends Lexer {
         try {
             int _type = T__36;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:35:7: ( 'BOTH' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:35:9: 'BOTH'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:35:7: ( 'artifactName' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:35:9: 'artifactName'
             {
-            match("BOTH"); 
+            match("artifactName"); 
 
 
             }
@@ -633,10 +642,10 @@ public class InternalOseeDslLexer extends Lexer {
         try {
             int _type = T__37;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:36:7: ( 'import' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:36:9: 'import'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:36:7: ( 'artifactGuid' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:36:9: 'artifactGuid'
             {
-            match("import"); 
+            match("artifactGuid"); 
 
 
             }
@@ -654,10 +663,11 @@ public class InternalOseeDslLexer extends Lexer {
         try {
             int _type = T__38;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:37:7: ( '.' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:37:9: '.'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:37:7: ( 'branchName' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:37:9: 'branchName'
             {
-            match('.'); 
+            match("branchName"); 
+
 
             }
 
@@ -674,10 +684,10 @@ public class InternalOseeDslLexer extends Lexer {
         try {
             int _type = T__39;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:38:7: ( 'artifactType' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:38:9: 'artifactType'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:38:7: ( 'branchGuid' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:38:9: 'branchGuid'
             {
-            match("artifactType"); 
+            match("branchGuid"); 
 
 
             }
@@ -695,10 +705,11 @@ public class InternalOseeDslLexer extends Lexer {
         try {
             int _type = T__40;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:39:7: ( '{' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:39:9: '{'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:39:7: ( 'ALLOW' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:39:9: 'ALLOW'
             {
-            match('{'); 
+            match("ALLOW"); 
+
 
             }
 
@@ -715,10 +726,10 @@ public class InternalOseeDslLexer extends Lexer {
         try {
             int _type = T__41;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:40:7: ( 'guid' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:40:9: 'guid'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:40:7: ( 'DENY' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:40:9: 'DENY'
             {
-            match("guid"); 
+            match("DENY"); 
 
 
             }
@@ -736,10 +747,11 @@ public class InternalOseeDslLexer extends Lexer {
         try {
             int _type = T__42;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:41:7: ( '}' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:41:9: '}'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:41:7: ( 'SIDE_A' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:41:9: 'SIDE_A'
             {
-            match('}'); 
+            match("SIDE_A"); 
+
 
             }
 
@@ -756,10 +768,10 @@ public class InternalOseeDslLexer extends Lexer {
         try {
             int _type = T__43;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:42:7: ( 'extends' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:42:9: 'extends'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:42:7: ( 'SIDE_B' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:42:9: 'SIDE_B'
             {
-            match("extends"); 
+            match("SIDE_B"); 
 
 
             }
@@ -777,10 +789,11 @@ public class InternalOseeDslLexer extends Lexer {
         try {
             int _type = T__44;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:43:7: ( ',' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:43:9: ','
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:43:7: ( 'BOTH' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:43:9: 'BOTH'
             {
-            match(','); 
+            match("BOTH"); 
+
 
             }
 
@@ -797,10 +810,10 @@ public class InternalOseeDslLexer extends Lexer {
         try {
             int _type = T__45;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:44:7: ( 'attribute' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:44:9: 'attribute'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:44:7: ( 'import' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:44:9: 'import'
             {
-            match("attribute"); 
+            match("import"); 
 
 
             }
@@ -818,11 +831,10 @@ public class InternalOseeDslLexer extends Lexer {
         try {
             int _type = T__46;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:45:7: ( 'branchGuid' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:45:9: 'branchGuid'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:45:7: ( '.' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:45:9: '.'
             {
-            match("branchGuid"); 
-
+            match('.'); 
 
             }
 
@@ -839,10 +851,10 @@ public class InternalOseeDslLexer extends Lexer {
         try {
             int _type = T__47;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:46:7: ( 'attributeType' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:46:9: 'attributeType'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:46:7: ( 'artifactType' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:46:9: 'artifactType'
             {
-            match("attributeType"); 
+            match("artifactType"); 
 
 
             }
@@ -860,11 +872,10 @@ public class InternalOseeDslLexer extends Lexer {
         try {
             int _type = T__48;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:47:7: ( 'dataProvider' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:47:9: 'dataProvider'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:47:7: ( '{' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:47:9: '{'
             {
-            match("dataProvider"); 
-
+            match('{'); 
 
             }
 
@@ -881,10 +892,10 @@ public class InternalOseeDslLexer extends Lexer {
         try {
             int _type = T__49;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:48:7: ( 'min' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:48:9: 'min'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:48:7: ( 'guid' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:48:9: 'guid'
             {
-            match("min"); 
+            match("guid"); 
 
 
             }
@@ -902,11 +913,10 @@ public class InternalOseeDslLexer extends Lexer {
         try {
             int _type = T__50;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:49:7: ( 'max' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:49:9: 'max'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:49:7: ( '}' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:49:9: '}'
             {
-            match("max"); 
-
+            match('}'); 
 
             }
 
@@ -923,10 +933,10 @@ public class InternalOseeDslLexer extends Lexer {
         try {
             int _type = T__51;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:50:7: ( 'overrides' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:50:9: 'overrides'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:50:7: ( 'extends' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:50:9: 'extends'
             {
-            match("overrides"); 
+            match("extends"); 
 
 
             }
@@ -944,11 +954,10 @@ public class InternalOseeDslLexer extends Lexer {
         try {
             int _type = T__52;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:51:7: ( 'taggerId' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:51:9: 'taggerId'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:51:7: ( ',' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:51:9: ','
             {
-            match("taggerId"); 
-
+            match(','); 
 
             }
 
@@ -965,10 +974,10 @@ public class InternalOseeDslLexer extends Lexer {
         try {
             int _type = T__53;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:52:7: ( 'enumType' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:52:9: 'enumType'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:52:7: ( 'attribute' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:52:9: 'attribute'
             {
-            match("enumType"); 
+            match("attribute"); 
 
 
             }
@@ -986,10 +995,10 @@ public class InternalOseeDslLexer extends Lexer {
         try {
             int _type = T__54;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:53:7: ( 'description' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:53:9: 'description'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:53:7: ( 'attributeType' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:53:9: 'attributeType'
             {
-            match("description"); 
+            match("attributeType"); 
 
 
             }
@@ -1007,10 +1016,10 @@ public class InternalOseeDslLexer extends Lexer {
         try {
             int _type = T__55;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:54:7: ( 'defaultValue' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:54:9: 'defaultValue'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:54:7: ( 'dataProvider' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:54:9: 'dataProvider'
             {
-            match("defaultValue"); 
+            match("dataProvider"); 
 
 
             }
@@ -1028,10 +1037,10 @@ public class InternalOseeDslLexer extends Lexer {
         try {
             int _type = T__56;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:55:7: ( 'fileExtension' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:55:9: 'fileExtension'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:55:7: ( 'min' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:55:9: 'min'
             {
-            match("fileExtension"); 
+            match("min"); 
 
 
             }
@@ -1049,10 +1058,10 @@ public class InternalOseeDslLexer extends Lexer {
         try {
             int _type = T__57;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:56:7: ( 'oseeEnumType' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:56:9: 'oseeEnumType'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:56:7: ( 'max' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:56:9: 'max'
             {
-            match("oseeEnumType"); 
+            match("max"); 
 
 
             }
@@ -1070,10 +1079,10 @@ public class InternalOseeDslLexer extends Lexer {
         try {
             int _type = T__58;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:57:7: ( 'entry' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:57:9: 'entry'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:57:7: ( 'overrides' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:57:9: 'overrides'
             {
-            match("entry"); 
+            match("overrides"); 
 
 
             }
@@ -1091,10 +1100,10 @@ public class InternalOseeDslLexer extends Lexer {
         try {
             int _type = T__59;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:58:7: ( 'entryGuid' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:58:9: 'entryGuid'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:58:7: ( 'taggerId' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:58:9: 'taggerId'
             {
-            match("entryGuid"); 
+            match("taggerId"); 
 
 
             }
@@ -1112,10 +1121,10 @@ public class InternalOseeDslLexer extends Lexer {
         try {
             int _type = T__60;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:59:7: ( 'overrides enum' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:59:9: 'overrides enum'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:59:7: ( 'enumType' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:59:9: 'enumType'
             {
-            match("overrides enum"); 
+            match("enumType"); 
 
 
             }
@@ -1133,10 +1142,10 @@ public class InternalOseeDslLexer extends Lexer {
         try {
             int _type = T__61;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:60:7: ( 'add' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:60:9: 'add'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:60:7: ( 'description' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:60:9: 'description'
             {
-            match("add"); 
+            match("description"); 
 
 
             }
@@ -1154,10 +1163,10 @@ public class InternalOseeDslLexer extends Lexer {
         try {
             int _type = T__62;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:61:7: ( 'remove' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:61:9: 'remove'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:61:7: ( 'defaultValue' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:61:9: 'defaultValue'
             {
-            match("remove"); 
+            match("defaultValue"); 
 
 
             }
@@ -1175,10 +1184,10 @@ public class InternalOseeDslLexer extends Lexer {
         try {
             int _type = T__63;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:62:7: ( 'relationType' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:62:9: 'relationType'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:62:7: ( 'fileExtension' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:62:9: 'fileExtension'
             {
-            match("relationType"); 
+            match("fileExtension"); 
 
 
             }
@@ -1196,10 +1205,10 @@ public class InternalOseeDslLexer extends Lexer {
         try {
             int _type = T__64;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:63:7: ( 'sideAName' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:63:9: 'sideAName'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:63:7: ( 'oseeEnumType' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:63:9: 'oseeEnumType'
             {
-            match("sideAName"); 
+            match("oseeEnumType"); 
 
 
             }
@@ -1217,10 +1226,10 @@ public class InternalOseeDslLexer extends Lexer {
         try {
             int _type = T__65;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:64:7: ( 'sideAArtifactType' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:64:9: 'sideAArtifactType'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:64:7: ( 'entry' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:64:9: 'entry'
             {
-            match("sideAArtifactType"); 
+            match("entry"); 
 
 
             }
@@ -1238,10 +1247,10 @@ public class InternalOseeDslLexer extends Lexer {
         try {
             int _type = T__66;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:65:7: ( 'sideBName' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:65:9: 'sideBName'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:65:7: ( 'entryGuid' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:65:9: 'entryGuid'
             {
-            match("sideBName"); 
+            match("entryGuid"); 
 
 
             }
@@ -1259,10 +1268,10 @@ public class InternalOseeDslLexer extends Lexer {
         try {
             int _type = T__67;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:66:7: ( 'sideBArtifactType' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:66:9: 'sideBArtifactType'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:66:7: ( 'overrides enum' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:66:9: 'overrides enum'
             {
-            match("sideBArtifactType"); 
+            match("overrides enum"); 
 
 
             }
@@ -1280,10 +1289,10 @@ public class InternalOseeDslLexer extends Lexer {
         try {
             int _type = T__68;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:67:7: ( 'defaultOrderType' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:67:9: 'defaultOrderType'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:67:7: ( 'add' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:67:9: 'add'
             {
-            match("defaultOrderType"); 
+            match("add"); 
 
 
             }
@@ -1301,10 +1310,10 @@ public class InternalOseeDslLexer extends Lexer {
         try {
             int _type = T__69;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:68:7: ( 'multiplicity' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:68:9: 'multiplicity'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:68:7: ( 'remove' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:68:9: 'remove'
             {
-            match("multiplicity"); 
+            match("remove"); 
 
 
             }
@@ -1322,10 +1331,10 @@ public class InternalOseeDslLexer extends Lexer {
         try {
             int _type = T__70;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:69:7: ( 'artifact' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:69:9: 'artifact'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:69:7: ( 'relationType' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:69:9: 'relationType'
             {
-            match("artifact"); 
+            match("relationType"); 
 
 
             }
@@ -1343,10 +1352,10 @@ public class InternalOseeDslLexer extends Lexer {
         try {
             int _type = T__71;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:70:7: ( 'artGuid' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:70:9: 'artGuid'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:70:7: ( 'sideAName' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:70:9: 'sideAName'
             {
-            match("artGuid"); 
+            match("sideAName"); 
 
 
             }
@@ -1364,10 +1373,11 @@ public class InternalOseeDslLexer extends Lexer {
         try {
             int _type = T__72;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:71:7: ( ';' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:71:9: ';'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:71:7: ( 'sideAArtifactType' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:71:9: 'sideAArtifactType'
             {
-            match(';'); 
+            match("sideAArtifactType"); 
+
 
             }
 
@@ -1384,10 +1394,10 @@ public class InternalOseeDslLexer extends Lexer {
         try {
             int _type = T__73;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:72:7: ( 'branch' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:72:9: 'branch'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:72:7: ( 'sideBName' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:72:9: 'sideBName'
             {
-            match("branch"); 
+            match("sideBName"); 
 
 
             }
@@ -1405,10 +1415,10 @@ public class InternalOseeDslLexer extends Lexer {
         try {
             int _type = T__74;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:73:7: ( 'accessContext' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:73:9: 'accessContext'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:73:7: ( 'sideBArtifactType' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:73:9: 'sideBArtifactType'
             {
-            match("accessContext"); 
+            match("sideBArtifactType"); 
 
 
             }
@@ -1426,10 +1436,10 @@ public class InternalOseeDslLexer extends Lexer {
         try {
             int _type = T__75;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:74:7: ( 'childrenOf' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:74:9: 'childrenOf'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:74:7: ( 'defaultOrderType' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:74:9: 'defaultOrderType'
             {
-            match("childrenOf"); 
+            match("defaultOrderType"); 
 
 
             }
@@ -1447,10 +1457,10 @@ public class InternalOseeDslLexer extends Lexer {
         try {
             int _type = T__76;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:75:7: ( 'edit' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:75:9: 'edit'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:75:7: ( 'multiplicity' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:75:9: 'multiplicity'
             {
-            match("edit"); 
+            match("multiplicity"); 
 
 
             }
@@ -1468,11 +1478,10 @@ public class InternalOseeDslLexer extends Lexer {
         try {
             int _type = T__77;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:76:7: ( 'of' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:76:9: 'of'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:76:7: ( '(' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:76:9: '('
             {
-            match("of"); 
-
+            match('('); 
 
             }
 
@@ -1489,11 +1498,10 @@ public class InternalOseeDslLexer extends Lexer {
         try {
             int _type = T__78;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:77:7: ( 'abstract' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:77:9: 'abstract'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:77:7: ( ')' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:77:9: ')'
             {
-            match("abstract"); 
-
+            match(')'); 
 
             }
 
@@ -1510,10 +1518,10 @@ public class InternalOseeDslLexer extends Lexer {
         try {
             int _type = T__79;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:78:7: ( 'inheritAll' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:78:9: 'inheritAll'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:78:7: ( 'artifactMatcher' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:78:9: 'artifactMatcher'
             {
-            match("inheritAll"); 
+            match("artifactMatcher"); 
 
 
             }
@@ -1526,43 +1534,15 @@ public class InternalOseeDslLexer extends Lexer {
     }
     // $ANTLR end "T__79"
 
-    // $ANTLR start "RULE_WHOLE_NUM_STR"
-    public final void mRULE_WHOLE_NUM_STR() throws RecognitionException {
+    // $ANTLR start "T__80"
+    public final void mT__80() throws RecognitionException {
         try {
-            int _type = RULE_WHOLE_NUM_STR;
+            int _type = T__80;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7829:20: ( ( '0' .. '9' )+ )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7829:22: ( '0' .. '9' )+
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:79:7: ( 'where' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:79:9: 'where'
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7829:22: ( '0' .. '9' )+
-            int cnt1=0;
-            loop1:
-            do {
-                int alt1=2;
-                int LA1_0 = input.LA(1);
-
-                if ( ((LA1_0>='0' && LA1_0<='9')) ) {
-                    alt1=1;
-                }
-
-
-                switch (alt1) {
-            	case 1 :
-            	    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7829:23: '0' .. '9'
-            	    {
-            	    matchRange('0','9'); 
-
-            	    }
-            	    break;
-
-            	default :
-            	    if ( cnt1 >= 1 ) break loop1;
-                        EarlyExitException eee =
-                            new EarlyExitException(1, input);
-                        throw eee;
-                }
-                cnt1++;
-            } while (true);
+            match("where"); 
 
 
             }
@@ -1573,76 +1553,343 @@ public class InternalOseeDslLexer extends Lexer {
         finally {
         }
     }
-    // $ANTLR end "RULE_WHOLE_NUM_STR"
+    // $ANTLR end "T__80"
 
-    // $ANTLR start "RULE_ID"
-    public final void mRULE_ID() throws RecognitionException {
+    // $ANTLR start "T__81"
+    public final void mT__81() throws RecognitionException {
         try {
-            int _type = RULE_ID;
+            int _type = T__81;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7831:9: ( ( '^' )? ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' )* )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7831:11: ( '^' )? ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' )*
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:80:7: ( ';' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:80:9: ';'
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7831:11: ( '^' )?
-            int alt2=2;
-            int LA2_0 = input.LA(1);
+            match(';'); 
 
-            if ( (LA2_0=='^') ) {
-                alt2=1;
             }
-            switch (alt2) {
+
+            state.type = _type;
+            state.channel = _channel;
+        }
+        finally {
+        }
+    }
+    // $ANTLR end "T__81"
+
+    // $ANTLR start "T__82"
+    public final void mT__82() throws RecognitionException {
+        try {
+            int _type = T__82;
+            int _channel = DEFAULT_TOKEN_CHANNEL;
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:81:7: ( 'accessContext' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:81:9: 'accessContext'
+            {
+            match("accessContext"); 
+
+
+            }
+
+            state.type = _type;
+            state.channel = _channel;
+        }
+        finally {
+        }
+    }
+    // $ANTLR end "T__82"
+
+    // $ANTLR start "T__83"
+    public final void mT__83() throws RecognitionException {
+        try {
+            int _type = T__83;
+            int _channel = DEFAULT_TOKEN_CHANNEL;
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:82:7: ( 'childrenOf' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:82:9: 'childrenOf'
+            {
+            match("childrenOf"); 
+
+
+            }
+
+            state.type = _type;
+            state.channel = _channel;
+        }
+        finally {
+        }
+    }
+    // $ANTLR end "T__83"
+
+    // $ANTLR start "T__84"
+    public final void mT__84() throws RecognitionException {
+        try {
+            int _type = T__84;
+            int _channel = DEFAULT_TOKEN_CHANNEL;
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:83:7: ( 'edit' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:83:9: 'edit'
+            {
+            match("edit"); 
+
+
+            }
+
+            state.type = _type;
+            state.channel = _channel;
+        }
+        finally {
+        }
+    }
+    // $ANTLR end "T__84"
+
+    // $ANTLR start "T__85"
+    public final void mT__85() throws RecognitionException {
+        try {
+            int _type = T__85;
+            int _channel = DEFAULT_TOKEN_CHANNEL;
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:84:7: ( 'artifact' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:84:9: 'artifact'
+            {
+            match("artifact"); 
+
+
+            }
+
+            state.type = _type;
+            state.channel = _channel;
+        }
+        finally {
+        }
+    }
+    // $ANTLR end "T__85"
+
+    // $ANTLR start "T__86"
+    public final void mT__86() throws RecognitionException {
+        try {
+            int _type = T__86;
+            int _channel = DEFAULT_TOKEN_CHANNEL;
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:85:7: ( 'of' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:85:9: 'of'
+            {
+            match("of"); 
+
+
+            }
+
+            state.type = _type;
+            state.channel = _channel;
+        }
+        finally {
+        }
+    }
+    // $ANTLR end "T__86"
+
+    // $ANTLR start "T__87"
+    public final void mT__87() throws RecognitionException {
+        try {
+            int _type = T__87;
+            int _channel = DEFAULT_TOKEN_CHANNEL;
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:86:7: ( 'abstract' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:86:9: 'abstract'
+            {
+            match("abstract"); 
+
+
+            }
+
+            state.type = _type;
+            state.channel = _channel;
+        }
+        finally {
+        }
+    }
+    // $ANTLR end "T__87"
+
+    // $ANTLR start "T__88"
+    public final void mT__88() throws RecognitionException {
+        try {
+            int _type = T__88;
+            int _channel = DEFAULT_TOKEN_CHANNEL;
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:87:7: ( 'inheritAll' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:87:9: 'inheritAll'
+            {
+            match("inheritAll"); 
+
+
+            }
+
+            state.type = _type;
+            state.channel = _channel;
+        }
+        finally {
+        }
+    }
+    // $ANTLR end "T__88"
+
+    // $ANTLR start "RULE_STRING"
+    public final void mRULE_STRING() throws RecognitionException {
+        try {
+            int _type = RULE_STRING;
+            int _channel = DEFAULT_TOKEN_CHANNEL;
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:8099:13: ( ( '\"' ( '\\\\' '\"' | ~ ( '\"' ) )* '\"' | '\\'' ( '\\\\' '\\'' | ~ ( '\\'' ) )* '\\'' ) )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:8099:15: ( '\"' ( '\\\\' '\"' | ~ ( '\"' ) )* '\"' | '\\'' ( '\\\\' '\\'' | ~ ( '\\'' ) )* '\\'' )
+            {
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:8099:15: ( '\"' ( '\\\\' '\"' | ~ ( '\"' ) )* '\"' | '\\'' ( '\\\\' '\\'' | ~ ( '\\'' ) )* '\\'' )
+            int alt3=2;
+            int LA3_0 = input.LA(1);
+
+            if ( (LA3_0=='\"') ) {
+                alt3=1;
+            }
+            else if ( (LA3_0=='\'') ) {
+                alt3=2;
+            }
+            else {
+                NoViableAltException nvae =
+                    new NoViableAltException("", 3, 0, input);
+
+                throw nvae;
+            }
+            switch (alt3) {
                 case 1 :
-                    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7831:11: '^'
+                    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:8099:16: '\"' ( '\\\\' '\"' | ~ ( '\"' ) )* '\"'
                     {
-                    match('^'); 
+                    match('\"'); 
+                    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:8099:20: ( '\\\\' '\"' | ~ ( '\"' ) )*
+                    loop1:
+                    do {
+                        int alt1=3;
+                        int LA1_0 = input.LA(1);
+
+                        if ( (LA1_0=='\\') ) {
+                            int LA1_2 = input.LA(2);
+
+                            if ( (LA1_2=='\"') ) {
+                                int LA1_4 = input.LA(3);
+
+                                if ( ((LA1_4>='\u0000' && LA1_4<='\uFFFF')) ) {
+                                    alt1=1;
+                                }
+
+                                else {
+                                    alt1=2;
+                                }
+
+                            }
+                            else if ( ((LA1_2>='\u0000' && LA1_2<='!')||(LA1_2>='#' && LA1_2<='\uFFFF')) ) {
+                                alt1=2;
+                            }
+
+
+                        }
+                        else if ( ((LA1_0>='\u0000' && LA1_0<='!')||(LA1_0>='#' && LA1_0<='[')||(LA1_0>=']' && LA1_0<='\uFFFF')) ) {
+                            alt1=2;
+                        }
+
+
+                        switch (alt1) {
+                    	case 1 :
+                    	    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:8099:21: '\\\\' '\"'
+                    	    {
+                    	    match('\\'); 
+                    	    match('\"'); 
+
+                    	    }
+                    	    break;
+                    	case 2 :
+                    	    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:8099:30: ~ ( '\"' )
+                    	    {
+                    	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='!')||(input.LA(1)>='#' && input.LA(1)<='\uFFFF') ) {
+                    	        input.consume();
+
+                    	    }
+                    	    else {
+                    	        MismatchedSetException mse = new MismatchedSetException(null,input);
+                    	        recover(mse);
+                    	        throw mse;}
+
+
+                    	    }
+                    	    break;
+
+                    	default :
+                    	    break loop1;
+                        }
+                    } while (true);
+
+                    match('\"'); 
+
+                    }
+                    break;
+                case 2 :
+                    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:8099:43: '\\'' ( '\\\\' '\\'' | ~ ( '\\'' ) )* '\\''
+                    {
+                    match('\''); 
+                    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:8099:48: ( '\\\\' '\\'' | ~ ( '\\'' ) )*
+                    loop2:
+                    do {
+                        int alt2=3;
+                        int LA2_0 = input.LA(1);
+
+                        if ( (LA2_0=='\\') ) {
+                            int LA2_2 = input.LA(2);
+
+                            if ( (LA2_2=='\'') ) {
+                                int LA2_4 = input.LA(3);
+
+                                if ( ((LA2_4>='\u0000' && LA2_4<='\uFFFF')) ) {
+                                    alt2=1;
+                                }
+
+                                else {
+                                    alt2=2;
+                                }
+
+                            }
+                            else if ( ((LA2_2>='\u0000' && LA2_2<='&')||(LA2_2>='(' && LA2_2<='\uFFFF')) ) {
+                                alt2=2;
+                            }
+
+
+                        }
+                        else if ( ((LA2_0>='\u0000' && LA2_0<='&')||(LA2_0>='(' && LA2_0<='[')||(LA2_0>=']' && LA2_0<='\uFFFF')) ) {
+                            alt2=2;
+                        }
+
+
+                        switch (alt2) {
+                    	case 1 :
+                    	    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:8099:49: '\\\\' '\\''
+                    	    {
+                    	    match('\\'); 
+                    	    match('\''); 
+
+                    	    }
+                    	    break;
+                    	case 2 :
+                    	    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:8099:59: ~ ( '\\'' )
+                    	    {
+                    	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='&')||(input.LA(1)>='(' && input.LA(1)<='\uFFFF') ) {
+                    	        input.consume();
+
+                    	    }
+                    	    else {
+                    	        MismatchedSetException mse = new MismatchedSetException(null,input);
+                    	        recover(mse);
+                    	        throw mse;}
+
+
+                    	    }
+                    	    break;
+
+                    	default :
+                    	    break loop2;
+                        }
+                    } while (true);
+
+                    match('\''); 
 
                     }
                     break;
 
             }
 
-            if ( (input.LA(1)>='A' && input.LA(1)<='Z')||input.LA(1)=='_'||(input.LA(1)>='a' && input.LA(1)<='z') ) {
-                input.consume();
-
-            }
-            else {
-                MismatchedSetException mse = new MismatchedSetException(null,input);
-                recover(mse);
-                throw mse;}
-
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7831:40: ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' )*
-            loop3:
-            do {
-                int alt3=2;
-                int LA3_0 = input.LA(1);
-
-                if ( ((LA3_0>='0' && LA3_0<='9')||(LA3_0>='A' && LA3_0<='Z')||LA3_0=='_'||(LA3_0>='a' && LA3_0<='z')) ) {
-                    alt3=1;
-                }
-
-
-                switch (alt3) {
-            	case 1 :
-            	    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:
-            	    {
-            	    if ( (input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='A' && input.LA(1)<='Z')||input.LA(1)=='_'||(input.LA(1)>='a' && input.LA(1)<='z') ) {
-            	        input.consume();
-
-            	    }
-            	    else {
-            	        MismatchedSetException mse = new MismatchedSetException(null,input);
-            	        recover(mse);
-            	        throw mse;}
-
-
-            	    }
-            	    break;
-
-            	default :
-            	    break loop3;
-                }
-            } while (true);
-
 
             }
 
@@ -1652,17 +1899,17 @@ public class InternalOseeDslLexer extends Lexer {
         finally {
         }
     }
-    // $ANTLR end "RULE_ID"
+    // $ANTLR end "RULE_STRING"
 
-    // $ANTLR start "RULE_INT"
-    public final void mRULE_INT() throws RecognitionException {
+    // $ANTLR start "RULE_WHOLE_NUM_STR"
+    public final void mRULE_WHOLE_NUM_STR() throws RecognitionException {
         try {
-            int _type = RULE_INT;
+            int _type = RULE_WHOLE_NUM_STR;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7833:10: ( ( '0' .. '9' )+ )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7833:12: ( '0' .. '9' )+
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:8101:20: ( ( '0' .. '9' )+ )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:8101:22: ( '0' .. '9' )+
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7833:12: ( '0' .. '9' )+
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:8101:22: ( '0' .. '9' )+
             int cnt4=0;
             loop4:
             do {
@@ -1676,7 +1923,7 @@ public class InternalOseeDslLexer extends Lexer {
 
                 switch (alt4) {
             	case 1 :
-            	    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7833:13: '0' .. '9'
+            	    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:8101:23: '0' .. '9'
             	    {
             	    matchRange('0','9'); 
 
@@ -1701,155 +1948,75 @@ public class InternalOseeDslLexer extends Lexer {
         finally {
         }
     }
-    // $ANTLR end "RULE_INT"
+    // $ANTLR end "RULE_WHOLE_NUM_STR"
 
-    // $ANTLR start "RULE_STRING"
-    public final void mRULE_STRING() throws RecognitionException {
+    // $ANTLR start "RULE_ID"
+    public final void mRULE_ID() throws RecognitionException {
         try {
-            int _type = RULE_STRING;
+            int _type = RULE_ID;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7835:13: ( ( '\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | 'u' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )* '\"' | '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | 'u' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )* '\\'' ) )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7835:15: ( '\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | 'u' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )* '\"' | '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | 'u' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )* '\\'' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:8103:9: ( ( '^' )? ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' )* )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:8103:11: ( '^' )? ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' )*
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7835:15: ( '\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | 'u' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )* '\"' | '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | 'u' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )* '\\'' )
-            int alt7=2;
-            int LA7_0 = input.LA(1);
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:8103:11: ( '^' )?
+            int alt5=2;
+            int LA5_0 = input.LA(1);
 
-            if ( (LA7_0=='\"') ) {
-                alt7=1;
+            if ( (LA5_0=='^') ) {
+                alt5=1;
             }
-            else if ( (LA7_0=='\'') ) {
-                alt7=2;
+            switch (alt5) {
+                case 1 :
+                    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:8103:11: '^'
+                    {
+                    match('^'); 
+
+                    }
+                    break;
+
+            }
+
+            if ( (input.LA(1)>='A' && input.LA(1)<='Z')||input.LA(1)=='_'||(input.LA(1)>='a' && input.LA(1)<='z') ) {
+                input.consume();
+
             }
             else {
-                NoViableAltException nvae =
-                    new NoViableAltException("", 7, 0, input);
+                MismatchedSetException mse = new MismatchedSetException(null,input);
+                recover(mse);
+                throw mse;}
 
-                throw nvae;
-            }
-            switch (alt7) {
-                case 1 :
-                    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7835:16: '\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | 'u' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )* '\"'
-                    {
-                    match('\"'); 
-                    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7835:20: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | 'u' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )*
-                    loop5:
-                    do {
-                        int alt5=3;
-                        int LA5_0 = input.LA(1);
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:8103:40: ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' )*
+            loop6:
+            do {
+                int alt6=2;
+                int LA6_0 = input.LA(1);
 
-                        if ( (LA5_0=='\\') ) {
-                            alt5=1;
-                        }
-                        else if ( ((LA5_0>='\u0000' && LA5_0<='!')||(LA5_0>='#' && LA5_0<='[')||(LA5_0>=']' && LA5_0<='\uFFFF')) ) {
-                            alt5=2;
-                        }
+                if ( ((LA6_0>='0' && LA6_0<='9')||(LA6_0>='A' && LA6_0<='Z')||LA6_0=='_'||(LA6_0>='a' && LA6_0<='z')) ) {
+                    alt6=1;
+                }
 
 
-                        switch (alt5) {
-                    	case 1 :
-                    	    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7835:21: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | 'u' | '\"' | '\\'' | '\\\\' )
-                    	    {
-                    	    match('\\'); 
-                    	    if ( input.LA(1)=='\"'||input.LA(1)=='\''||input.LA(1)=='\\'||input.LA(1)=='b'||input.LA(1)=='f'||input.LA(1)=='n'||input.LA(1)=='r'||(input.LA(1)>='t' && input.LA(1)<='u') ) {
-                    	        input.consume();
+                switch (alt6) {
+            	case 1 :
+            	    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:
+            	    {
+            	    if ( (input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='A' && input.LA(1)<='Z')||input.LA(1)=='_'||(input.LA(1)>='a' && input.LA(1)<='z') ) {
+            	        input.consume();
 
-                    	    }
-                    	    else {
-                    	        MismatchedSetException mse = new MismatchedSetException(null,input);
-                    	        recover(mse);
-                    	        throw mse;}
-
-
-                    	    }
-                    	    break;
-                    	case 2 :
-                    	    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7835:66: ~ ( ( '\\\\' | '\"' ) )
-                    	    {
-                    	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='!')||(input.LA(1)>='#' && input.LA(1)<='[')||(input.LA(1)>=']' && input.LA(1)<='\uFFFF') ) {
-                    	        input.consume();
-
-                    	    }
-                    	    else {
-                    	        MismatchedSetException mse = new MismatchedSetException(null,input);
-                    	        recover(mse);
-                    	        throw mse;}
+            	    }
+            	    else {
+            	        MismatchedSetException mse = new MismatchedSetException(null,input);
+            	        recover(mse);
+            	        throw mse;}
 
 
-                    	    }
-                    	    break;
+            	    }
+            	    break;
 
-                    	default :
-                    	    break loop5;
-                        }
-                    } while (true);
-
-                    match('\"'); 
-
-                    }
-                    break;
-                case 2 :
-                    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7835:86: '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | 'u' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )* '\\''
-                    {
-                    match('\''); 
-                    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7835:91: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | 'u' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )*
-                    loop6:
-                    do {
-                        int alt6=3;
-                        int LA6_0 = input.LA(1);
-
-                        if ( (LA6_0=='\\') ) {
-                            alt6=1;
-                        }
-                        else if ( ((LA6_0>='\u0000' && LA6_0<='&')||(LA6_0>='(' && LA6_0<='[')||(LA6_0>=']' && LA6_0<='\uFFFF')) ) {
-                            alt6=2;
-                        }
-
-
-                        switch (alt6) {
-                    	case 1 :
-                    	    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7835:92: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | 'u' | '\"' | '\\'' | '\\\\' )
-                    	    {
-                    	    match('\\'); 
-                    	    if ( input.LA(1)=='\"'||input.LA(1)=='\''||input.LA(1)=='\\'||input.LA(1)=='b'||input.LA(1)=='f'||input.LA(1)=='n'||input.LA(1)=='r'||(input.LA(1)>='t' && input.LA(1)<='u') ) {
-                    	        input.consume();
-
-                    	    }
-                    	    else {
-                    	        MismatchedSetException mse = new MismatchedSetException(null,input);
-                    	        recover(mse);
-                    	        throw mse;}
-
-
-                    	    }
-                    	    break;
-                    	case 2 :
-                    	    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7835:137: ~ ( ( '\\\\' | '\\'' ) )
-                    	    {
-                    	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='&')||(input.LA(1)>='(' && input.LA(1)<='[')||(input.LA(1)>=']' && input.LA(1)<='\uFFFF') ) {
-                    	        input.consume();
-
-                    	    }
-                    	    else {
-                    	        MismatchedSetException mse = new MismatchedSetException(null,input);
-                    	        recover(mse);
-                    	        throw mse;}
-
-
-                    	    }
-                    	    break;
-
-                    	default :
-                    	    break loop6;
-                        }
-                    } while (true);
-
-                    match('\''); 
-
-                    }
-                    break;
-
-            }
+            	default :
+            	    break loop6;
+                }
+            } while (true);
 
 
             }
@@ -1860,19 +2027,68 @@ public class InternalOseeDslLexer extends Lexer {
         finally {
         }
     }
-    // $ANTLR end "RULE_STRING"
+    // $ANTLR end "RULE_ID"
+
+    // $ANTLR start "RULE_INT"
+    public final void mRULE_INT() throws RecognitionException {
+        try {
+            int _type = RULE_INT;
+            int _channel = DEFAULT_TOKEN_CHANNEL;
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:8105:10: ( ( '0' .. '9' )+ )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:8105:12: ( '0' .. '9' )+
+            {
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:8105:12: ( '0' .. '9' )+
+            int cnt7=0;
+            loop7:
+            do {
+                int alt7=2;
+                int LA7_0 = input.LA(1);
+
+                if ( ((LA7_0>='0' && LA7_0<='9')) ) {
+                    alt7=1;
+                }
+
+
+                switch (alt7) {
+            	case 1 :
+            	    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:8105:13: '0' .. '9'
+            	    {
+            	    matchRange('0','9'); 
+
+            	    }
+            	    break;
+
+            	default :
+            	    if ( cnt7 >= 1 ) break loop7;
+                        EarlyExitException eee =
+                            new EarlyExitException(7, input);
+                        throw eee;
+                }
+                cnt7++;
+            } while (true);
+
+
+            }
+
+            state.type = _type;
+            state.channel = _channel;
+        }
+        finally {
+        }
+    }
+    // $ANTLR end "RULE_INT"
 
     // $ANTLR start "RULE_ML_COMMENT"
     public final void mRULE_ML_COMMENT() throws RecognitionException {
         try {
             int _type = RULE_ML_COMMENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7837:17: ( '/*' ( options {greedy=false; } : . )* '*/' )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7837:19: '/*' ( options {greedy=false; } : . )* '*/'
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:8107:17: ( '/*' ( options {greedy=false; } : . )* '*/' )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:8107:19: '/*' ( options {greedy=false; } : . )* '*/'
             {
             match("/*"); 
 
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7837:24: ( options {greedy=false; } : . )*
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:8107:24: ( options {greedy=false; } : . )*
             loop8:
             do {
                 int alt8=2;
@@ -1897,7 +2113,7 @@ public class InternalOseeDslLexer extends Lexer {
 
                 switch (alt8) {
             	case 1 :
-            	    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7837:52: .
+            	    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:8107:52: .
             	    {
             	    matchAny(); 
 
@@ -1927,12 +2143,12 @@ public class InternalOseeDslLexer extends Lexer {
         try {
             int _type = RULE_SL_COMMENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7839:17: ( '//' (~ ( ( '\\n' | '\\r' ) ) )* ( ( '\\r' )? '\\n' )? )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7839:19: '//' (~ ( ( '\\n' | '\\r' ) ) )* ( ( '\\r' )? '\\n' )?
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:8109:17: ( '//' (~ ( ( '\\n' | '\\r' ) ) )* ( ( '\\r' )? '\\n' )? )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:8109:19: '//' (~ ( ( '\\n' | '\\r' ) ) )* ( ( '\\r' )? '\\n' )?
             {
             match("//"); 
 
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7839:24: (~ ( ( '\\n' | '\\r' ) ) )*
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:8109:24: (~ ( ( '\\n' | '\\r' ) ) )*
             loop9:
             do {
                 int alt9=2;
@@ -1945,7 +2161,7 @@ public class InternalOseeDslLexer extends Lexer {
 
                 switch (alt9) {
             	case 1 :
-            	    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7839:24: ~ ( ( '\\n' | '\\r' ) )
+            	    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:8109:24: ~ ( ( '\\n' | '\\r' ) )
             	    {
             	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='\t')||(input.LA(1)>='\u000B' && input.LA(1)<='\f')||(input.LA(1)>='\u000E' && input.LA(1)<='\uFFFF') ) {
             	        input.consume();
@@ -1965,7 +2181,7 @@ public class InternalOseeDslLexer extends Lexer {
                 }
             } while (true);
 
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7839:40: ( ( '\\r' )? '\\n' )?
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:8109:40: ( ( '\\r' )? '\\n' )?
             int alt11=2;
             int LA11_0 = input.LA(1);
 
@@ -1974,9 +2190,9 @@ public class InternalOseeDslLexer extends Lexer {
             }
             switch (alt11) {
                 case 1 :
-                    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7839:41: ( '\\r' )? '\\n'
+                    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:8109:41: ( '\\r' )? '\\n'
                     {
-                    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7839:41: ( '\\r' )?
+                    // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:8109:41: ( '\\r' )?
                     int alt10=2;
                     int LA10_0 = input.LA(1);
 
@@ -1985,7 +2201,7 @@ public class InternalOseeDslLexer extends Lexer {
                     }
                     switch (alt10) {
                         case 1 :
-                            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7839:41: '\\r'
+                            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:8109:41: '\\r'
                             {
                             match('\r'); 
 
@@ -2017,10 +2233,10 @@ public class InternalOseeDslLexer extends Lexer {
         try {
             int _type = RULE_WS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7841:9: ( ( ' ' | '\\t' | '\\r' | '\\n' )+ )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7841:11: ( ' ' | '\\t' | '\\r' | '\\n' )+
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:8111:9: ( ( ' ' | '\\t' | '\\r' | '\\n' )+ )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:8111:11: ( ' ' | '\\t' | '\\r' | '\\n' )+
             {
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7841:11: ( ' ' | '\\t' | '\\r' | '\\n' )+
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:8111:11: ( ' ' | '\\t' | '\\r' | '\\n' )+
             int cnt12=0;
             loop12:
             do {
@@ -2074,8 +2290,8 @@ public class InternalOseeDslLexer extends Lexer {
         try {
             int _type = RULE_ANY_OTHER;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7843:16: ( . )
-            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:7843:18: .
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:8113:16: ( . )
+            // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:8113:18: .
             {
             matchAny(); 
 
@@ -2090,8 +2306,8 @@ public class InternalOseeDslLexer extends Lexer {
     // $ANTLR end "RULE_ANY_OTHER"
 
     public void mTokens() throws RecognitionException {
-        // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:1:8: ( T__12 | T__13 | T__14 | T__15 | T__16 | T__17 | T__18 | T__19 | T__20 | T__21 | T__22 | T__23 | T__24 | T__25 | T__26 | T__27 | T__28 | T__29 | T__30 | T__31 | T__32 | T__33 | T__34 | T__35 | T__36 | T__37 | T__38 | T__39 | T__40 | T__41 | T__42 | T__43 | T__44 | T__45 | T__46 | T__47 | T__48 | T__49 | T__50 | T__51 | T__52 | T__53 | T__54 | T__55 | T__56 | T__57 | T__58 | T__59 | T__60 | T__61 | T__62 | T__63 | T__64 | T__65 | T__66 | T__67 | T__68 | T__69 | T__70 | T__71 | T__72 | T__73 | T__74 | T__75 | T__76 | T__77 | T__78 | T__79 | RULE_WHOLE_NUM_STR | RULE_ID | RULE_INT | RULE_STRING | RULE_ML_COMMENT | RULE_SL_COMMENT | RULE_WS | RULE_ANY_OTHER )
-        int alt13=76;
+        // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:1:8: ( T__12 | T__13 | T__14 | T__15 | T__16 | T__17 | T__18 | T__19 | T__20 | T__21 | T__22 | T__23 | T__24 | T__25 | T__26 | T__27 | T__28 | T__29 | T__30 | T__31 | T__32 | T__33 | T__34 | T__35 | T__36 | T__37 | T__38 | T__39 | T__40 | T__41 | T__42 | T__43 | T__44 | T__45 | T__46 | T__47 | T__48 | T__49 | T__50 | T__51 | T__52 | T__53 | T__54 | T__55 | T__56 | T__57 | T__58 | T__59 | T__60 | T__61 | T__62 | T__63 | T__64 | T__65 | T__66 | T__67 | T__68 | T__69 | T__70 | T__71 | T__72 | T__73 | T__74 | T__75 | T__76 | T__77 | T__78 | T__79 | T__80 | T__81 | T__82 | T__83 | T__84 | T__85 | T__86 | T__87 | T__88 | RULE_STRING | RULE_WHOLE_NUM_STR | RULE_ID | RULE_INT | RULE_ML_COMMENT | RULE_SL_COMMENT | RULE_WS | RULE_ANY_OTHER )
+        int alt13=85;
         alt13 = dfa13.predict(input);
         switch (alt13) {
             case 1 :
@@ -2571,56 +2787,119 @@ public class InternalOseeDslLexer extends Lexer {
                 }
                 break;
             case 69 :
-                // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:1:418: RULE_WHOLE_NUM_STR
+                // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:1:418: T__80
                 {
-                mRULE_WHOLE_NUM_STR(); 
+                mT__80(); 
 
                 }
                 break;
             case 70 :
-                // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:1:437: RULE_ID
+                // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:1:424: T__81
                 {
-                mRULE_ID(); 
+                mT__81(); 
 
                 }
                 break;
             case 71 :
-                // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:1:445: RULE_INT
+                // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:1:430: T__82
                 {
-                mRULE_INT(); 
+                mT__82(); 
 
                 }
                 break;
             case 72 :
-                // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:1:454: RULE_STRING
+                // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:1:436: T__83
+                {
+                mT__83(); 
+
+                }
+                break;
+            case 73 :
+                // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:1:442: T__84
+                {
+                mT__84(); 
+
+                }
+                break;
+            case 74 :
+                // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:1:448: T__85
+                {
+                mT__85(); 
+
+                }
+                break;
+            case 75 :
+                // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:1:454: T__86
+                {
+                mT__86(); 
+
+                }
+                break;
+            case 76 :
+                // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:1:460: T__87
+                {
+                mT__87(); 
+
+                }
+                break;
+            case 77 :
+                // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:1:466: T__88
+                {
+                mT__88(); 
+
+                }
+                break;
+            case 78 :
+                // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:1:472: RULE_STRING
                 {
                 mRULE_STRING(); 
 
                 }
                 break;
-            case 73 :
-                // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:1:466: RULE_ML_COMMENT
+            case 79 :
+                // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:1:484: RULE_WHOLE_NUM_STR
+                {
+                mRULE_WHOLE_NUM_STR(); 
+
+                }
+                break;
+            case 80 :
+                // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:1:503: RULE_ID
+                {
+                mRULE_ID(); 
+
+                }
+                break;
+            case 81 :
+                // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:1:511: RULE_INT
+                {
+                mRULE_INT(); 
+
+                }
+                break;
+            case 82 :
+                // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:1:520: RULE_ML_COMMENT
                 {
                 mRULE_ML_COMMENT(); 
 
                 }
                 break;
-            case 74 :
-                // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:1:482: RULE_SL_COMMENT
+            case 83 :
+                // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:1:536: RULE_SL_COMMENT
                 {
                 mRULE_SL_COMMENT(); 
 
                 }
                 break;
-            case 75 :
-                // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:1:498: RULE_WS
+            case 84 :
+                // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:1:552: RULE_WS
                 {
                 mRULE_WS(); 
 
                 }
                 break;
-            case 76 :
-                // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:1:506: RULE_ANY_OTHER
+            case 85 :
+                // ../org.eclipse.osee.framework.core.dsl.ui/src-gen/org/eclipse/osee/framework/core/dsl/ui/contentassist/antlr/internal/InternalOseeDsl.g:1:560: RULE_ANY_OTHER
                 {
                 mRULE_ANY_OTHER(); 
 
@@ -2634,85 +2913,90 @@ public class InternalOseeDslLexer extends Lexer {
 
     protected DFA13 dfa13 = new DFA13(this);
     static final String DFA13_eotS =
-        "\1\uffff\20\55\1\uffff\1\55\1\uffff\1\55\1\uffff\1\55\1\uffff\10"+
-        "\55\1\uffff\1\55\1\135\1\51\1\uffff\3\51\2\uffff\3\55\1\uffff\23"+
-        "\55\1\uffff\5\55\1\uffff\1\55\1\uffff\3\55\1\uffff\10\55\1\u008c"+
-        "\4\55\1\uffff\1\55\1\uffff\1\135\4\uffff\30\55\1\u00ac\13\55\1\u00b8"+
-        "\1\u00b9\3\55\1\uffff\10\55\1\u00c5\4\55\1\u00ca\21\55\1\uffff\2"+
-        "\55\1\u00de\3\55\1\u00e2\4\55\2\uffff\13\55\1\uffff\4\55\1\uffff"+
-        "\13\55\1\u0103\7\55\1\uffff\2\55\1\u010e\1\uffff\32\55\1\u012b\1"+
-        "\u012c\4\55\1\uffff\1\u0131\11\55\1\uffff\1\u013c\10\55\1\u0145"+
-        "\22\55\2\uffff\4\55\1\uffff\2\55\1\u015f\3\55\1\u0163\3\55\1\uffff"+
-        "\10\55\1\uffff\30\55\1\u018a\1\uffff\2\55\1\u018d\1\uffff\1\u018e"+
-        "\11\55\1\u0198\12\55\1\u01a3\1\u01a4\17\55\1\uffff\1\u01b5\1\55"+
-        "\2\uffff\1\u01b7\6\55\1\u01bf\1\55\1\uffff\2\55\1\u01c3\1\55\1\u01c5"+
-        "\5\55\2\uffff\11\55\1\u01d4\3\55\1\u01d8\2\55\1\uffff\1\55\1\uffff"+
-        "\1\u01dc\5\55\2\uffff\3\55\1\uffff\1\55\1\uffff\1\55\1\u01e7\14"+
-        "\55\1\uffff\1\u01f4\1\u01f5\1\55\1\uffff\3\55\1\uffff\1\55\1\u01fb"+
-        "\10\55\1\uffff\14\55\2\uffff\1\u0210\1\u0211\2\55\1\u0214\1\uffff"+
-        "\1\u0215\1\55\1\u0217\1\u0218\1\55\1\u021a\3\55\1\u021e\10\55\1"+
-        "\u0227\1\55\2\uffff\1\u0229\1\u022a\2\uffff\1\55\2\uffff\1\u022c"+
-        "\1\uffff\3\55\1\uffff\10\55\1\uffff\1\55\2\uffff\1\55\1\uffff\12"+
-        "\55\1\u0244\6\55\1\u024c\3\55\1\u0250\1\55\1\uffff\1\55\1\u0254"+
-        "\5\55\1\uffff\3\55\1\uffff\3\55\1\uffff\1\u0260\1\u0261\11\55\2"+
-        "\uffff\4\55\1\u026f\1\55\1\u0271\6\55\1\uffff\1\55\1\uffff\15\55"+
-        "\1\u0286\6\55\1\uffff\4\55\1\u0291\5\55\1\uffff\1\55\1\u0298\3\55"+
-        "\1\u029c\1\uffff\1\u029d\2\55\2\uffff\1\u02a0\1\55\1\uffff\1\55"+
-        "\1\u02a3\1\uffff";
+        "\1\uffff\22\60\2\uffff\1\60\1\uffff\1\60\1\uffff\7\60\2\uffff\1"+
+        "\60\1\uffff\1\60\2\54\1\150\1\54\1\uffff\1\54\2\uffff\3\60\1\uffff"+
+        "\7\60\1\167\11\60\1\u0081\13\60\2\uffff\1\60\1\uffff\3\60\1\uffff"+
+        "\7\60\1\u009a\4\60\2\uffff\1\60\1\uffff\1\60\2\uffff\1\150\3\uffff"+
+        "\12\60\1\uffff\11\60\1\uffff\1\60\1\u00b6\3\60\1\u00ba\15\60\1\u00c8"+
+        "\1\u00c9\3\60\1\uffff\11\60\1\u00d6\4\60\1\u00db\11\60\1\u00e5\2"+
+        "\60\1\uffff\3\60\1\uffff\5\60\1\u00f0\3\60\1\u00f4\3\60\2\uffff"+
+        "\14\60\1\uffff\4\60\1\uffff\11\60\1\uffff\2\60\1\u0115\7\60\1\uffff"+
+        "\2\60\1\u0120\1\uffff\14\60\1\u012f\15\60\1\u013d\1\u013e\4\60\1"+
+        "\uffff\5\60\1\u0149\4\60\1\uffff\10\60\1\u0156\5\60\1\uffff\15\60"+
+        "\2\uffff\12\60\1\uffff\1\60\1\u0175\12\60\1\uffff\27\60\1\u019d"+
+        "\2\60\1\u01a0\3\60\1\uffff\1\u01a4\10\60\1\u01ad\12\60\1\u01b8\1"+
+        "\u01b9\21\60\1\uffff\1\u01cc\1\60\1\uffff\3\60\1\uffff\1\u01d1\5"+
+        "\60\1\u01d8\1\60\1\uffff\2\60\1\u01dc\1\60\1\u01de\5\60\2\uffff"+
+        "\11\60\1\u01ed\10\60\1\uffff\1\60\1\u01f7\1\u01f8\1\u01f9\1\uffff"+
+        "\5\60\2\uffff\3\60\1\uffff\1\60\1\uffff\1\60\1\u0204\14\60\1\uffff"+
+        "\1\u0211\1\u0212\7\60\3\uffff\1\60\1\u021b\10\60\1\uffff\14\60\2"+
+        "\uffff\1\u0230\1\u0231\1\u0232\1\u0233\3\60\1\u0237\1\uffff\1\u0238"+
+        "\1\60\1\u023a\1\u023b\1\60\1\u023d\3\60\1\u0241\10\60\1\u024a\1"+
+        "\60\4\uffff\1\60\1\u024d\1\u024e\2\uffff\1\60\2\uffff\1\u0250\1"+
+        "\uffff\3\60\1\uffff\10\60\1\uffff\2\60\2\uffff\1\60\1\uffff\12\60"+
+        "\1\u0269\1\60\1\u026b\5\60\1\u0272\3\60\1\u0276\1\60\1\uffff\1\60"+
+        "\1\uffff\1\u027a\5\60\1\uffff\3\60\1\uffff\3\60\1\uffff\1\u0286"+
+        "\1\u0287\11\60\2\uffff\4\60\1\u0295\1\60\1\u0297\6\60\1\uffff\1"+
+        "\60\1\uffff\15\60\1\u02ac\6\60\1\uffff\4\60\1\u02b7\5\60\1\uffff"+
+        "\1\60\1\u02be\3\60\1\u02c2\1\uffff\1\u02c3\2\60\2\uffff\1\u02c6"+
+        "\1\60\1\uffff\1\60\1\u02c9\1\uffff";
     static final String DFA13_eofS =
-        "\u02a4\uffff";
+        "\u02ca\uffff";
     static final String DFA13_minS =
-        "\1\0\1\105\2\156\1\117\1\157\1\156\1\154\1\156\1\141\1\111\1\157"+
-        "\1\145\1\116\1\101\1\114\1\155\1\uffff\1\142\1\uffff\1\165\1\uffff"+
-        "\1\144\1\uffff\1\162\2\141\1\146\1\141\1\151\1\145\1\151\1\uffff"+
-        "\1\150\1\60\1\101\1\uffff\2\0\1\52\2\uffff\1\146\1\164\1\116\1\uffff"+
-        "\1\151\1\157\1\154\1\157\1\124\1\155\1\165\1\157\1\164\1\166\1\162"+
-        "\1\104\1\162\1\170\1\105\1\116\1\114\1\160\1\150\1\uffff\2\164\1"+
-        "\144\1\143\1\163\1\uffff\1\151\1\uffff\2\164\1\151\1\uffff\1\141"+
-        "\1\164\1\146\1\156\1\170\1\154\2\145\1\60\1\147\2\154\1\144\1\uffff"+
-        "\1\151\1\uffff\1\60\4\uffff\1\141\1\145\1\131\1\101\1\162\1\151"+
-        "\1\154\1\110\1\160\1\155\1\141\1\145\1\141\1\151\1\105\1\144\1\151"+
-        "\1\137\1\131\1\117\1\157\1\145\1\107\1\162\1\60\1\145\1\164\1\144"+
-        "\1\145\1\155\1\162\1\164\1\156\1\141\1\143\1\141\2\60\1\164\1\162"+
-        "\1\145\1\uffff\1\147\1\145\1\157\1\141\1\145\1\154\1\165\1\101\1"+
-        "\60\1\164\1\144\1\155\1\145\1\60\1\162\1\145\1\164\1\147\1\117\1"+
-        "\156\1\137\1\101\1\143\1\124\1\137\1\127\2\162\1\146\1\165\1\151"+
-        "\1\uffff\1\163\1\162\1\60\1\156\1\124\1\171\1\60\1\143\1\120\1\162"+
-        "\1\165\2\uffff\1\151\1\162\1\105\1\145\1\105\1\166\1\164\1\101\1"+
-        "\144\1\154\1\164\1\uffff\1\164\1\145\1\151\1\141\1\uffff\1\145\1"+
-        "\162\1\151\1\145\1\142\1\147\1\101\1\164\1\157\1\117\1\124\1\60"+
-        "\1\164\1\151\1\141\1\151\1\142\1\163\1\141\1\uffff\1\144\1\171\1"+
-        "\60\1\uffff\1\150\1\162\1\151\1\154\1\160\1\151\1\156\1\162\1\170"+
-        "\1\145\1\151\2\101\1\162\2\164\2\162\1\164\1\156\1\163\1\141\1\156"+
-        "\1\162\1\152\1\101\2\60\1\164\1\147\1\137\1\117\1\uffff\1\60\1\164"+
-        "\1\143\1\144\1\165\1\103\1\143\1\163\1\160\1\165\1\uffff\1\60\1"+
-        "\157\1\160\1\164\1\154\1\144\1\165\1\111\1\164\1\60\1\157\1\141"+
-        "\1\162\1\141\1\162\1\145\1\101\1\162\1\151\2\145\1\101\1\163\1\164"+
-        "\1\147\1\101\1\145\1\164\2\uffff\2\162\1\115\1\137\1\uffff\1\101"+
-        "\1\164\1\60\1\164\1\157\1\164\1\60\1\145\1\151\1\165\1\uffff\1\166"+
-        "\1\164\1\117\1\151\1\145\1\155\1\144\1\145\1\uffff\1\156\1\155\1"+
-        "\164\1\155\1\164\1\156\1\164\1\151\1\142\2\144\1\164\2\145\1\120"+
-        "\1\164\1\143\1\164\1\151\1\141\1\116\1\101\1\115\1\154\1\60\1\uffff"+
-        "\1\145\1\156\1\60\1\uffff\1\60\1\144\3\151\1\141\1\162\1\143\1\163"+
-        "\1\124\1\60\1\156\1\124\1\145\1\151\1\145\1\151\1\117\1\164\1\142"+
-        "\1\165\2\60\1\164\2\144\1\157\2\164\1\162\1\142\1\160\1\105\2\116"+
-        "\1\101\1\154\1\171\1\uffff\1\60\1\164\2\uffff\1\60\2\144\1\157\1"+
-        "\154\1\144\1\151\1\40\1\171\1\uffff\1\163\1\171\1\60\1\146\1\60"+
-        "\2\146\1\162\1\165\1\164\2\uffff\1\162\1\103\1\101\1\151\1\162\1"+
-        "\101\1\151\1\165\1\150\1\60\1\131\1\105\1\116\1\60\1\160\1\171\1"+
-        "\uffff\1\145\1\uffff\1\60\1\145\1\156\1\165\1\145\1\164\2\uffff"+
-        "\1\160\1\151\1\160\1\uffff\1\141\1\uffff\1\141\1\60\1\151\1\164"+
-        "\1\145\1\151\1\157\1\164\1\156\1\151\1\164\1\142\1\164\1\151\1\uffff"+
-        "\2\60\1\131\1\uffff\1\145\1\160\1\170\1\uffff\1\162\1\60\1\145\1"+
-        "\162\1\171\1\145\1\157\1\145\2\143\1\uffff\1\142\1\145\1\104\1\142"+
-        "\1\156\2\164\1\142\1\164\1\165\1\145\1\143\2\uffff\2\60\1\145\1"+
-        "\164\1\60\1\uffff\1\60\1\124\2\60\1\156\1\60\2\164\1\165\1\60\1"+
-        "\141\1\165\1\164\1\162\1\101\1\165\1\162\1\164\1\60\1\141\2\uffff"+
-        "\2\60\2\uffff\1\171\2\uffff\1\60\1\uffff\2\124\1\164\1\uffff\2\164"+
-        "\1\145\1\151\2\164\1\151\1\145\1\uffff\1\154\2\uffff\1\160\1\uffff"+
-        "\2\171\1\145\1\141\1\145\1\156\1\142\1\164\1\145\1\142\1\60\1\137"+
-        "\1\145\2\160\1\104\1\120\1\60\1\164\1\165\1\162\1\60\1\165\1\uffff"+
-        "\1\101\1\60\2\145\2\141\1\162\1\uffff\1\101\1\164\1\151\1\uffff"+
+        "\1\0\1\105\2\156\1\117\1\157\1\121\1\154\1\156\1\141\1\111\1\157"+
+        "\1\111\1\116\1\101\1\114\1\142\1\162\1\155\2\uffff\1\165\1\uffff"+
+        "\1\144\1\uffff\2\141\1\146\1\141\1\151\1\145\1\151\2\uffff\1\150"+
+        "\1\uffff\1\150\2\0\1\60\1\101\1\uffff\1\52\2\uffff\1\146\1\164\1"+
+        "\116\1\uffff\1\151\1\157\1\154\1\157\1\124\1\155\1\165\1\60\1\157"+
+        "\1\164\1\166\1\162\1\104\1\162\1\170\1\113\1\105\1\60\1\116\1\104"+
+        "\1\114\2\164\1\144\1\143\1\163\1\141\1\160\1\150\2\uffff\1\151\1"+
+        "\uffff\2\164\1\151\1\uffff\1\164\1\146\1\156\1\170\1\154\2\145\1"+
+        "\60\1\147\2\154\1\144\2\uffff\1\145\1\uffff\1\151\2\uffff\1\60\3"+
+        "\uffff\1\141\1\145\1\131\1\101\1\162\1\151\1\154\1\110\1\160\1\155"+
+        "\1\uffff\1\141\1\145\1\141\1\151\1\105\1\144\1\151\1\105\1\137\1"+
+        "\uffff\1\131\1\60\1\117\1\151\1\162\1\60\1\145\1\164\1\156\1\157"+
+        "\1\145\1\144\1\145\1\155\1\162\1\164\1\141\1\143\1\141\2\60\1\164"+
+        "\1\162\1\145\1\uffff\1\147\1\145\1\157\1\141\1\145\1\162\1\154\1"+
+        "\165\1\101\1\60\1\164\1\144\1\155\1\145\1\60\1\162\1\145\1\164\1"+
+        "\147\1\117\1\156\1\137\1\101\1\143\1\60\1\124\1\137\1\uffff\1\127"+
+        "\1\146\1\151\1\uffff\1\163\1\162\1\143\2\162\1\60\1\156\1\124\1"+
+        "\171\1\60\1\120\1\162\1\165\2\uffff\1\151\1\162\1\105\1\145\1\105"+
+        "\1\166\1\164\1\101\1\145\1\144\1\154\1\164\1\uffff\1\164\1\145\1"+
+        "\151\1\141\1\uffff\1\145\1\162\1\151\1\145\1\142\1\147\1\101\1\164"+
+        "\1\157\1\uffff\1\117\1\124\1\60\1\141\1\142\1\163\1\141\1\150\1"+
+        "\164\1\151\1\uffff\1\144\1\171\1\60\1\uffff\1\162\1\151\1\154\1"+
+        "\160\1\151\1\156\1\162\1\170\1\145\1\151\2\101\1\60\1\162\2\164"+
+        "\2\162\1\164\1\156\1\163\1\141\1\156\1\162\1\152\1\101\2\60\1\164"+
+        "\1\147\1\137\1\117\1\uffff\1\143\1\165\1\103\1\143\1\107\1\60\1"+
+        "\164\1\163\1\160\1\165\1\uffff\1\157\1\160\1\164\1\154\1\144\1\165"+
+        "\1\111\1\164\1\60\1\157\1\141\1\162\1\141\1\162\1\uffff\1\145\1"+
+        "\101\1\162\1\151\2\145\1\101\1\163\1\164\1\147\1\101\1\145\1\164"+
+        "\2\uffff\2\162\1\115\1\137\2\164\1\157\1\164\1\141\1\165\1\uffff"+
+        "\1\101\1\60\1\145\1\151\1\166\1\164\1\117\1\151\1\145\1\155\1\144"+
+        "\1\145\1\uffff\1\156\1\155\1\164\1\155\1\164\1\156\1\164\1\151\1"+
+        "\142\2\144\1\164\2\145\1\120\1\164\1\143\1\164\1\151\1\141\1\116"+
+        "\1\101\1\115\1\60\1\145\1\156\1\60\1\155\1\151\1\154\1\uffff\1\60"+
+        "\1\144\2\151\1\141\1\162\1\143\1\163\1\124\1\60\1\156\1\124\1\145"+
+        "\1\151\1\145\1\151\1\117\1\164\1\142\1\165\2\60\1\164\2\144\1\157"+
+        "\2\164\1\162\1\142\1\160\1\105\2\116\1\101\1\141\1\165\1\171\1\141"+
+        "\1\uffff\1\60\1\164\1\uffff\1\145\1\144\1\154\1\uffff\1\60\1\144"+
+        "\1\157\1\154\1\144\1\151\1\40\1\171\1\uffff\1\163\1\171\1\60\1\146"+
+        "\1\60\2\146\1\162\1\165\1\164\2\uffff\1\162\1\103\1\101\1\151\1"+
+        "\162\1\101\1\151\1\165\1\150\1\60\1\131\1\105\1\116\1\155\1\151"+
+        "\1\160\1\164\1\171\1\uffff\1\145\3\60\1\uffff\1\145\1\156\1\165"+
+        "\1\145\1\164\2\uffff\1\160\1\151\1\160\1\uffff\1\141\1\uffff\1\141"+
+        "\1\60\1\151\1\164\1\145\1\151\1\157\1\164\1\156\1\151\1\164\1\142"+
+        "\1\164\1\151\1\uffff\2\60\1\131\1\145\1\144\1\145\1\143\1\160\1"+
+        "\170\3\uffff\1\162\1\60\1\145\1\162\1\171\1\145\1\157\1\145\2\143"+
+        "\1\uffff\1\142\1\145\1\104\1\142\1\156\2\164\1\142\1\164\1\165\1"+
+        "\145\1\143\2\uffff\4\60\1\150\1\145\1\164\1\60\1\uffff\1\60\1\124"+
+        "\2\60\1\156\1\60\2\164\1\165\1\60\1\141\1\165\1\164\1\162\1\101"+
+        "\1\165\1\162\1\164\1\60\1\141\4\uffff\1\145\2\60\2\uffff\1\171\2"+
+        "\uffff\1\60\1\uffff\2\124\1\164\1\uffff\2\164\1\145\1\151\2\164"+
+        "\1\151\1\145\1\uffff\1\154\1\162\2\uffff\1\160\1\uffff\2\171\1\145"+
+        "\1\141\1\145\1\156\1\142\1\164\1\145\1\142\1\60\1\137\1\60\1\145"+
+        "\2\160\1\104\1\120\1\60\1\164\1\165\1\162\1\60\1\165\1\uffff\1\101"+
+        "\1\uffff\1\60\2\145\2\141\1\162\1\uffff\1\101\1\164\1\151\1\uffff"+
         "\1\164\1\163\1\145\1\uffff\2\60\1\164\1\147\1\157\1\164\1\145\1"+
         "\142\1\145\1\143\1\163\2\uffff\1\141\1\147\1\166\1\164\1\60\1\165"+
         "\1\60\1\145\1\143\1\120\1\145\1\151\1\162\1\uffff\1\164\1\uffff"+
@@ -2723,146 +3007,143 @@ public class InternalOseeDslLexer extends Lexer {
         "\uffff\1\162\1\60\1\uffff";
     static final String DFA13_maxS =
         "\1\uffff\1\145\1\162\1\156\2\157\1\156\1\154\1\156\1\141\1\164"+
-        "\1\157\1\145\1\116\1\101\1\114\1\156\1\uffff\1\164\1\uffff\1\165"+
-        "\1\uffff\1\170\1\uffff\1\162\1\145\1\165\1\166\1\141\1\151\1\145"+
-        "\1\151\1\uffff\1\150\1\71\1\172\1\uffff\2\uffff\1\57\2\uffff\1\146"+
-        "\1\164\1\116\1\uffff\1\151\1\157\1\154\1\157\1\124\1\155\1\165\1"+
-        "\157\1\164\1\166\1\162\1\104\1\162\1\170\1\105\1\116\1\114\1\160"+
-        "\1\150\1\uffff\2\164\1\144\1\143\1\163\1\uffff\1\151\1\uffff\1\164"+
-        "\1\165\1\151\1\uffff\1\141\1\164\1\163\1\156\1\170\1\154\2\145\1"+
-        "\172\1\147\1\154\1\155\1\144\1\uffff\1\151\1\uffff\1\71\4\uffff"+
-        "\1\141\1\145\1\131\1\101\1\162\1\151\1\154\1\110\1\160\1\155\1\141"+
-        "\1\145\1\141\1\151\1\105\1\144\1\151\1\137\1\131\1\117\1\157\1\145"+
-        "\1\151\1\162\1\172\1\145\1\164\1\144\1\145\1\155\1\162\1\164\1\156"+
+        "\1\157\1\145\1\122\1\101\1\116\1\164\1\162\1\156\2\uffff\1\165\1"+
+        "\uffff\1\170\1\uffff\1\145\1\165\1\166\1\141\1\151\1\145\1\151\2"+
+        "\uffff\1\150\1\uffff\1\150\2\uffff\1\71\1\172\1\uffff\1\57\2\uffff"+
+        "\1\146\1\164\1\116\1\uffff\1\151\1\157\1\154\1\157\1\124\1\155\1"+
+        "\165\1\172\1\157\1\164\1\166\1\162\1\104\1\162\1\170\1\113\1\105"+
+        "\1\172\1\116\1\104\1\114\2\164\1\144\1\143\1\163\1\141\1\160\1\150"+
+        "\2\uffff\1\151\1\uffff\1\164\1\165\1\151\1\uffff\1\164\1\163\1\156"+
+        "\1\170\1\154\2\145\1\172\1\147\1\154\1\155\1\144\2\uffff\1\145\1"+
+        "\uffff\1\151\2\uffff\1\71\3\uffff\1\141\1\145\1\131\1\101\1\162"+
+        "\1\151\1\154\1\110\1\160\1\155\1\uffff\1\141\1\145\1\141\1\151\1"+
+        "\105\1\144\1\151\1\105\1\137\1\uffff\1\131\1\172\1\117\1\151\1\162"+
+        "\1\172\1\145\1\164\1\156\1\157\1\145\1\144\1\145\1\155\1\162\1\164"+
         "\1\141\1\143\1\141\2\172\1\164\1\162\1\145\1\uffff\1\147\1\145\1"+
-        "\157\1\141\1\145\1\154\1\165\1\101\1\172\1\164\1\144\1\155\1\145"+
-        "\1\172\1\162\1\145\1\164\1\147\1\117\1\156\1\137\1\101\1\143\1\124"+
-        "\1\137\1\127\2\162\1\146\1\165\1\151\1\uffff\1\163\1\162\1\172\1"+
-        "\156\1\124\1\171\1\172\1\143\1\120\1\162\1\165\2\uffff\1\151\1\162"+
-        "\1\105\1\145\1\105\1\166\1\164\1\102\1\144\1\154\1\164\1\uffff\1"+
-        "\164\1\145\1\151\1\141\1\uffff\1\145\1\162\1\151\1\145\1\142\1\147"+
-        "\1\102\1\164\1\157\1\117\1\124\1\172\1\164\1\151\1\141\1\151\1\142"+
-        "\1\163\1\141\1\uffff\1\144\1\171\1\172\1\uffff\1\150\1\162\1\151"+
-        "\1\154\1\160\1\151\1\156\1\162\1\170\1\145\1\151\2\116\1\162\2\164"+
-        "\2\162\1\164\1\156\1\163\1\141\1\156\1\162\1\152\1\101\2\172\1\164"+
-        "\1\147\1\137\1\117\1\uffff\1\172\1\164\1\143\1\144\1\165\1\103\1"+
-        "\143\1\163\1\160\1\165\1\uffff\1\172\1\157\1\160\1\164\1\154\1\144"+
-        "\1\165\1\111\1\164\1\172\1\157\1\141\1\162\1\141\1\162\1\145\1\101"+
-        "\1\162\1\151\2\145\1\101\1\163\1\164\1\147\1\101\1\145\1\164\2\uffff"+
-        "\2\162\1\117\1\137\1\uffff\1\101\1\164\1\172\1\164\1\157\1\164\1"+
-        "\172\1\145\1\151\1\165\1\uffff\1\166\1\164\1\126\1\151\1\145\1\155"+
-        "\1\144\1\145\1\uffff\1\156\1\155\1\164\1\155\1\164\1\156\1\164\1"+
-        "\151\1\142\2\144\1\164\2\145\1\120\1\164\1\143\1\164\1\151\1\141"+
-        "\1\116\1\101\1\117\1\154\1\172\1\uffff\1\145\1\156\1\172\1\uffff"+
-        "\1\172\1\144\3\151\1\141\1\162\1\143\1\163\1\124\1\172\1\156\1\124"+
-        "\1\145\1\151\1\145\1\151\1\117\1\164\1\142\1\165\2\172\1\164\2\144"+
-        "\1\157\2\164\1\162\1\142\1\160\1\105\2\116\1\101\1\154\1\171\1\uffff"+
-        "\1\172\1\164\2\uffff\1\172\2\144\1\157\1\154\1\144\1\151\1\172\1"+
+        "\157\1\141\1\145\1\162\1\154\1\165\1\101\1\172\1\164\1\144\1\155"+
+        "\1\145\1\172\1\162\1\145\1\164\1\147\1\117\1\156\1\137\1\101\1\143"+
+        "\1\172\1\124\1\137\1\uffff\1\127\1\146\1\151\1\uffff\1\163\1\162"+
+        "\1\143\2\162\1\172\1\156\1\124\1\171\1\172\1\120\1\162\1\165\2\uffff"+
+        "\1\151\1\162\1\105\1\145\1\105\1\166\1\164\1\102\1\145\1\144\1\154"+
+        "\1\164\1\uffff\1\164\1\145\1\151\1\141\1\uffff\1\145\1\162\1\151"+
+        "\1\145\1\142\1\147\1\102\1\164\1\157\1\uffff\1\117\1\124\1\172\1"+
+        "\141\1\142\1\163\1\141\1\150\1\164\1\151\1\uffff\1\144\1\171\1\172"+
+        "\1\uffff\1\162\1\151\1\154\1\160\1\151\1\156\1\162\1\170\1\145\1"+
+        "\151\2\116\1\172\1\162\2\164\2\162\1\164\1\156\1\163\1\141\1\156"+
+        "\1\162\1\152\1\101\2\172\1\164\1\147\1\137\1\117\1\uffff\1\143\1"+
+        "\165\1\103\1\143\1\116\1\172\1\164\1\163\1\160\1\165\1\uffff\1\157"+
+        "\1\160\1\164\1\154\1\144\1\165\1\111\1\164\1\172\1\157\1\141\1\162"+
+        "\1\141\1\162\1\uffff\1\145\1\101\1\162\1\151\2\145\1\101\1\163\1"+
+        "\164\1\147\1\101\1\145\1\164\2\uffff\2\162\1\117\1\137\2\164\1\157"+
+        "\1\164\1\141\1\165\1\uffff\1\101\1\172\1\145\1\151\1\166\1\164\1"+
+        "\126\1\151\1\145\1\155\1\144\1\145\1\uffff\1\156\1\155\1\164\1\155"+
+        "\1\164\1\156\1\164\1\151\1\142\2\144\1\164\2\145\1\120\1\164\1\143"+
+        "\1\164\1\151\1\141\1\116\1\101\1\117\1\172\1\145\1\156\1\172\1\155"+
+        "\1\151\1\154\1\uffff\1\172\1\144\2\151\1\141\1\162\1\143\1\163\1"+
+        "\124\1\172\1\156\1\124\1\145\1\151\1\145\1\151\1\117\1\164\1\142"+
+        "\1\165\2\172\1\164\2\144\1\157\2\164\1\162\1\142\1\160\1\105\2\116"+
+        "\1\101\1\141\1\165\1\171\1\141\1\uffff\1\172\1\164\1\uffff\1\145"+
+        "\1\144\1\154\1\uffff\1\172\1\144\1\157\1\154\1\144\1\151\1\172\1"+
         "\171\1\uffff\1\163\1\171\1\172\1\146\1\172\2\146\1\162\1\165\1\164"+
         "\2\uffff\1\162\1\103\1\101\1\151\1\162\1\101\1\151\1\165\1\150\1"+
-        "\172\1\131\1\105\1\116\1\172\1\160\1\171\1\uffff\1\145\1\uffff\1"+
-        "\172\1\145\1\156\1\165\1\145\1\164\2\uffff\1\160\1\151\1\160\1\uffff"+
-        "\1\141\1\uffff\1\141\1\172\1\151\1\164\1\145\1\151\1\157\1\164\1"+
-        "\156\1\151\1\164\1\142\1\164\1\151\1\uffff\2\172\1\131\1\uffff\1"+
-        "\145\1\160\1\170\1\uffff\1\162\1\172\1\145\1\162\1\171\1\145\1\157"+
-        "\1\145\2\143\1\uffff\1\142\1\145\1\104\1\142\1\156\2\164\1\142\1"+
-        "\164\1\165\1\145\1\143\2\uffff\2\172\1\145\1\164\1\172\1\uffff\1"+
-        "\172\1\124\2\172\1\156\1\172\2\164\1\165\1\172\1\141\1\165\1\164"+
-        "\1\162\1\101\1\165\1\162\1\164\1\172\1\141\2\uffff\2\172\2\uffff"+
-        "\1\171\2\uffff\1\172\1\uffff\2\124\1\164\1\uffff\2\164\1\145\1\151"+
-        "\2\164\1\151\1\145\1\uffff\1\154\2\uffff\1\160\1\uffff\2\171\1\145"+
-        "\1\141\1\145\1\156\1\142\1\164\1\145\1\142\1\172\1\137\1\145\2\160"+
-        "\1\124\1\120\1\172\1\164\1\165\1\162\1\172\1\165\1\uffff\1\104\1"+
-        "\172\2\145\2\141\1\162\1\uffff\1\101\1\164\1\151\1\uffff\1\164\1"+
-        "\163\1\145\1\uffff\2\172\1\164\1\147\1\157\1\164\1\145\1\142\1\145"+
-        "\1\143\1\163\2\uffff\1\141\1\147\1\166\1\164\1\172\1\165\1\172\1"+
-        "\145\1\143\1\120\1\145\1\151\1\162\1\uffff\1\164\1\uffff\1\156\1"+
-        "\145\2\162\1\144\1\151\1\145\1\144\1\156\1\157\1\120\1\145\1\142"+
-        "\1\172\1\151\1\144\1\166\2\162\1\165\1\uffff\1\156\2\151\1\157\1"+
-        "\172\1\164\1\147\1\156\1\144\1\166\1\uffff\1\145\1\172\1\147\1\145"+
-        "\1\151\1\172\1\uffff\1\172\1\162\1\144\2\uffff\1\172\1\145\1\uffff"+
-        "\1\162\1\172\1\uffff";
+        "\172\1\131\1\105\1\116\1\155\1\151\1\160\1\164\1\171\1\uffff\1\145"+
+        "\3\172\1\uffff\1\145\1\156\1\165\1\145\1\164\2\uffff\1\160\1\151"+
+        "\1\160\1\uffff\1\141\1\uffff\1\141\1\172\1\151\1\164\1\145\1\151"+
+        "\1\157\1\164\1\156\1\151\1\164\1\142\1\164\1\151\1\uffff\2\172\1"+
+        "\131\1\145\1\144\1\145\1\143\1\160\1\170\3\uffff\1\162\1\172\1\145"+
+        "\1\162\1\171\1\145\1\157\1\145\2\143\1\uffff\1\142\1\145\1\104\1"+
+        "\142\1\156\2\164\1\142\1\164\1\165\1\145\1\143\2\uffff\4\172\1\150"+
+        "\1\145\1\164\1\172\1\uffff\1\172\1\124\2\172\1\156\1\172\2\164\1"+
+        "\165\1\172\1\141\1\165\1\164\1\162\1\101\1\165\1\162\1\164\1\172"+
+        "\1\141\4\uffff\1\145\2\172\2\uffff\1\171\2\uffff\1\172\1\uffff\2"+
+        "\124\1\164\1\uffff\2\164\1\145\1\151\2\164\1\151\1\145\1\uffff\1"+
+        "\154\1\162\2\uffff\1\160\1\uffff\2\171\1\145\1\141\1\145\1\156\1"+
+        "\142\1\164\1\145\1\142\1\172\1\137\1\172\1\145\2\160\1\124\1\120"+
+        "\1\172\1\164\1\165\1\162\1\172\1\165\1\uffff\1\104\1\uffff\1\172"+
+        "\2\145\2\141\1\162\1\uffff\1\101\1\164\1\151\1\uffff\1\164\1\163"+
+        "\1\145\1\uffff\2\172\1\164\1\147\1\157\1\164\1\145\1\142\1\145\1"+
+        "\143\1\163\2\uffff\1\141\1\147\1\166\1\164\1\172\1\165\1\172\1\145"+
+        "\1\143\1\120\1\145\1\151\1\162\1\uffff\1\164\1\uffff\1\156\1\145"+
+        "\2\162\1\144\1\151\1\145\1\144\1\156\1\157\1\120\1\145\1\142\1\172"+
+        "\1\151\1\144\1\166\2\162\1\165\1\uffff\1\156\2\151\1\157\1\172\1"+
+        "\164\1\147\1\156\1\144\1\166\1\uffff\1\145\1\172\1\147\1\145\1\151"+
+        "\1\172\1\uffff\1\172\1\162\1\144\2\uffff\1\172\1\145\1\uffff\1\162"+
+        "\1\172\1\uffff";
     static final String DFA13_acceptS =
-        "\21\uffff\1\33\1\uffff\1\35\1\uffff\1\37\1\uffff\1\41\10\uffff"+
-        "\1\75\3\uffff\1\106\3\uffff\1\113\1\114\3\uffff\1\106\23\uffff\1"+
-        "\33\5\uffff\1\35\1\uffff\1\37\3\uffff\1\41\15\uffff\1\75\1\uffff"+
-        "\1\105\1\uffff\1\110\1\111\1\112\1\113\51\uffff\1\102\37\uffff\1"+
-        "\62\13\uffff\1\46\1\47\13\uffff\1\26\4\uffff\1\31\23\uffff\1\36"+
-        "\3\uffff\1\101\40\uffff\1\25\12\uffff\1\57\34\uffff\1\27\1\30\4"+
-        "\uffff\1\32\12\uffff\1\76\10\uffff\1\63\31\uffff\1\74\3\uffff\1"+
-        "\40\46\uffff\1\73\2\uffff\1\103\1\52\11\uffff\1\51\12\uffff\1\20"+
-        "\1\3\20\uffff\1\42\1\uffff\1\60\6\uffff\1\61\1\50\3\uffff\1\65\1"+
-        "\uffff\1\67\16\uffff\1\21\3\uffff\1\104\3\uffff\1\43\12\uffff\1"+
-        "\100\14\uffff\1\22\1\23\5\uffff\1\53\24\uffff\1\24\1\34\2\uffff"+
-        "\1\45\1\54\1\uffff\1\72\1\56\1\uffff\1\64\3\uffff\1\7\10\uffff\1"+
-        "\15\1\uffff\1\44\1\77\1\uffff\1\55\27\uffff\1\14\7\uffff\1\5\3\uffff"+
-        "\1\12\3\uffff\1\71\13\uffff\1\66\1\70\15\uffff\1\10\1\uffff\1\13"+
-        "\24\uffff\1\11\12\uffff\1\2\6\uffff\1\16\3\uffff\1\6\1\17\2\uffff"+
-        "\1\1\2\uffff\1\4";
+        "\23\uffff\1\43\1\45\1\uffff\1\47\1\uffff\1\51\7\uffff\1\102\1\103"+
+        "\1\uffff\1\106\5\uffff\1\120\1\uffff\1\124\1\125\3\uffff\1\120\35"+
+        "\uffff\1\43\1\45\1\uffff\1\47\3\uffff\1\51\14\uffff\1\102\1\103"+
+        "\1\uffff\1\106\1\uffff\1\116\1\117\1\uffff\1\122\1\123\1\124\12"+
+        "\uffff\1\25\11\uffff\1\30\30\uffff\1\113\33\uffff\1\27\3\uffff\1"+
+        "\71\15\uffff\1\55\1\56\14\uffff\1\36\4\uffff\1\41\11\uffff\1\26"+
+        "\12\uffff\1\46\3\uffff\1\111\40\uffff\1\35\12\uffff\1\66\16\uffff"+
+        "\1\105\15\uffff\1\37\1\40\12\uffff\1\42\14\uffff\1\72\36\uffff\1"+
+        "\50\47\uffff\1\112\2\uffff\1\114\3\uffff\1\61\10\uffff\1\60\12\uffff"+
+        "\1\20\1\3\22\uffff\1\52\4\uffff\1\67\5\uffff\1\70\1\57\3\uffff\1"+
+        "\74\1\uffff\1\76\16\uffff\1\21\11\uffff\1\33\1\34\1\115\12\uffff"+
+        "\1\110\14\uffff\1\22\1\23\10\uffff\1\62\24\uffff\1\24\1\31\1\32"+
+        "\1\44\3\uffff\1\54\1\63\1\uffff\1\101\1\65\1\uffff\1\73\3\uffff"+
+        "\1\7\10\uffff\1\15\2\uffff\1\53\1\107\1\uffff\1\64\30\uffff\1\14"+
+        "\1\uffff\1\104\6\uffff\1\5\3\uffff\1\12\3\uffff\1\100\13\uffff\1"+
+        "\75\1\77\15\uffff\1\10\1\uffff\1\13\24\uffff\1\11\12\uffff\1\2\6"+
+        "\uffff\1\16\3\uffff\1\6\1\17\2\uffff\1\1\2\uffff\1\4";
     static final String DFA13_specialS =
-        "\1\1\44\uffff\1\2\1\0\u027d\uffff}>";
+        "\1\0\44\uffff\1\2\1\1\u02a3\uffff}>";
     static final String[] DFA13_transitionS = {
-            "\11\51\2\50\2\51\1\50\22\51\1\50\1\51\1\45\4\51\1\46\4\51\1"+
-            "\27\1\51\1\21\1\47\12\42\1\51\1\40\5\51\1\17\1\4\1\5\1\1\1\6"+
-            "\1\7\2\44\1\10\1\11\1\44\1\14\1\16\1\44\1\15\3\44\1\12\1\44"+
-            "\1\2\1\44\1\13\3\44\3\51\1\43\1\44\1\51\1\22\1\30\1\41\1\31"+
-            "\1\26\1\35\1\24\1\44\1\20\3\44\1\32\1\44\1\33\2\44\1\36\1\37"+
-            "\1\34\1\3\5\44\1\23\1\51\1\25\uff82\51",
-            "\1\54\33\uffff\1\53\3\uffff\1\52",
-            "\1\57\3\uffff\1\56",
-            "\1\60",
-            "\1\62\37\uffff\1\61",
+            "\11\54\2\53\2\54\1\53\22\54\1\53\1\54\1\45\4\54\1\46\1\40\1"+
+            "\41\2\54\1\30\1\54\1\23\1\52\12\47\1\54\1\43\5\54\1\17\1\4\1"+
+            "\5\1\1\1\6\1\7\2\51\1\10\1\11\1\51\1\14\1\16\1\51\1\15\3\51"+
+            "\1\12\1\51\1\2\1\51\1\13\3\51\3\54\1\50\1\51\1\54\1\20\1\21"+
+            "\1\44\1\31\1\27\1\35\1\25\1\51\1\22\3\51\1\32\1\51\1\33\2\51"+
+            "\1\36\1\37\1\34\1\3\1\51\1\42\3\51\1\24\1\54\1\26\uff82\54",
+            "\1\57\33\uffff\1\56\3\uffff\1\55",
+            "\1\62\3\uffff\1\61",
             "\1\63",
-            "\1\64",
-            "\1\65",
+            "\1\65\37\uffff\1\64",
             "\1\66",
-            "\1\67",
-            "\1\71\52\uffff\1\70",
+            "\1\70\34\uffff\1\67",
+            "\1\71",
             "\1\72",
             "\1\73",
-            "\1\74",
-            "\1\75",
+            "\1\75\52\uffff\1\74",
             "\1\76",
-            "\1\77\1\100",
-            "",
-            "\1\106\1\105\1\104\15\uffff\1\102\1\uffff\1\103",
-            "",
-            "\1\110",
-            "",
-            "\1\114\11\uffff\1\113\11\uffff\1\112",
-            "",
-            "\1\116",
-            "\1\117\3\uffff\1\120",
-            "\1\122\7\uffff\1\121\13\uffff\1\123",
-            "\1\126\14\uffff\1\125\2\uffff\1\124",
-            "\1\127",
-            "\1\130",
-            "\1\131",
-            "\1\132",
-            "",
-            "\1\134",
-            "\12\136",
-            "\32\55\4\uffff\1\55\1\uffff\32\55",
-            "",
-            "\0\137",
-            "\0\137",
-            "\1\140\4\uffff\1\141",
+            "\1\100\33\uffff\1\77",
+            "\1\101\3\uffff\1\102",
+            "\1\103",
+            "\1\105\1\uffff\1\104",
+            "\1\112\1\111\1\110\15\uffff\1\106\1\uffff\1\107",
+            "\1\113",
+            "\1\114\1\115",
             "",
             "",
-            "\1\143",
+            "\1\120",
+            "",
+            "\1\124\11\uffff\1\123\11\uffff\1\122",
+            "",
+            "\1\126\3\uffff\1\127",
+            "\1\131\7\uffff\1\130\13\uffff\1\132",
+            "\1\135\14\uffff\1\134\2\uffff\1\133",
+            "\1\136",
+            "\1\137",
+            "\1\140",
+            "\1\141",
+            "",
+            "",
             "\1\144",
-            "\1\145",
             "",
             "\1\146",
-            "\1\147",
-            "\1\150",
-            "\1\151",
-            "\1\152",
-            "\1\153",
-            "\1\154",
+            "\0\147",
+            "\0\147",
+            "\12\151",
+            "\32\60\4\uffff\1\60\1\uffff\32\60",
+            "",
+            "\1\152\4\uffff\1\153",
+            "",
+            "",
             "\1\155",
             "\1\156",
             "\1\157",
+            "",
             "\1\160",
             "\1\161",
             "\1\162",
@@ -2870,57 +3151,59 @@ public class InternalOseeDslLexer extends Lexer {
             "\1\164",
             "\1\165",
             "\1\166",
-            "\1\167",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
             "\1\170",
-            "",
             "\1\171",
             "\1\172",
             "\1\173",
             "\1\174",
             "\1\175",
-            "",
             "\1\176",
-            "",
             "\1\177",
-            "\1\u0081\1\u0080",
+            "\1\u0080",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
             "\1\u0082",
-            "",
             "\1\u0083",
             "\1\u0084",
-            "\1\u0086\14\uffff\1\u0085",
+            "\1\u0085",
+            "\1\u0086",
             "\1\u0087",
             "\1\u0088",
             "\1\u0089",
             "\1\u008a",
             "\1\u008b",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
+            "\1\u008c",
+            "",
+            "",
             "\1\u008d",
+            "",
             "\1\u008e",
             "\1\u0090\1\u008f",
             "\1\u0091",
             "",
             "\1\u0092",
-            "",
-            "\12\136",
-            "",
-            "",
-            "",
-            "",
-            "\1\u0093",
-            "\1\u0094",
+            "\1\u0094\14\uffff\1\u0093",
             "\1\u0095",
             "\1\u0096",
             "\1\u0097",
             "\1\u0098",
             "\1\u0099",
-            "\1\u009a",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
             "\1\u009b",
             "\1\u009c",
-            "\1\u009d",
-            "\1\u009e",
+            "\1\u009e\1\u009d",
             "\1\u009f",
+            "",
+            "",
             "\1\u00a0",
+            "",
             "\1\u00a1",
+            "",
+            "",
+            "\12\151",
+            "",
+            "",
+            "",
             "\1\u00a2",
             "\1\u00a3",
             "\1\u00a4",
@@ -2928,9 +3211,11 @@ public class InternalOseeDslLexer extends Lexer {
             "\1\u00a6",
             "\1\u00a7",
             "\1\u00a8",
-            "\1\u00aa\41\uffff\1\u00a9",
+            "\1\u00a9",
+            "\1\u00aa",
             "\1\u00ab",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
+            "",
+            "\1\u00ac",
             "\1\u00ad",
             "\1\u00ae",
             "\1\u00af",
@@ -2939,15 +3224,15 @@ public class InternalOseeDslLexer extends Lexer {
             "\1\u00b2",
             "\1\u00b3",
             "\1\u00b4",
+            "",
             "\1\u00b5",
-            "\1\u00b6",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
             "\1\u00b7",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
-            "\1\u00ba",
+            "\1\u00b8",
+            "\1\u00b9",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
             "\1\u00bb",
             "\1\u00bc",
-            "",
             "\1\u00bd",
             "\1\u00be",
             "\1\u00bf",
@@ -2956,14 +3241,15 @@ public class InternalOseeDslLexer extends Lexer {
             "\1\u00c2",
             "\1\u00c3",
             "\1\u00c4",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
+            "\1\u00c5",
             "\1\u00c6",
             "\1\u00c7",
-            "\1\u00c8",
-            "\1\u00c9",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
+            "\1\u00ca",
             "\1\u00cb",
             "\1\u00cc",
+            "",
             "\1\u00cd",
             "\1\u00ce",
             "\1\u00cf",
@@ -2973,84 +3259,88 @@ public class InternalOseeDslLexer extends Lexer {
             "\1\u00d3",
             "\1\u00d4",
             "\1\u00d5",
-            "\1\u00d6",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
             "\1\u00d7",
             "\1\u00d8",
             "\1\u00d9",
             "\1\u00da",
-            "\1\u00db",
-            "",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
             "\1\u00dc",
             "\1\u00dd",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
+            "\1\u00de",
             "\1\u00df",
             "\1\u00e0",
             "\1\u00e1",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
+            "\1\u00e2",
             "\1\u00e3",
             "\1\u00e4",
-            "\1\u00e5",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
             "\1\u00e6",
-            "",
-            "",
             "\1\u00e7",
+            "",
             "\1\u00e8",
             "\1\u00e9",
             "\1\u00ea",
+            "",
             "\1\u00eb",
             "\1\u00ec",
             "\1\u00ed",
-            "\1\u00ee\1\u00ef",
-            "\1\u00f0",
+            "\1\u00ee",
+            "\1\u00ef",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
             "\1\u00f1",
             "\1\u00f2",
-            "",
             "\1\u00f3",
-            "\1\u00f4",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
             "\1\u00f5",
             "\1\u00f6",
-            "",
             "\1\u00f7",
+            "",
+            "",
             "\1\u00f8",
             "\1\u00f9",
             "\1\u00fa",
             "\1\u00fb",
             "\1\u00fc",
-            "\1\u00fd\1\u00fe",
-            "\1\u00ff",
-            "\1\u0100",
+            "\1\u00fd",
+            "\1\u00fe",
+            "\1\u00ff\1\u0100",
             "\1\u0101",
             "\1\u0102",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
+            "\1\u0103",
             "\1\u0104",
+            "",
             "\1\u0105",
             "\1\u0106",
             "\1\u0107",
             "\1\u0108",
+            "",
             "\1\u0109",
             "\1\u010a",
-            "",
             "\1\u010b",
             "\1\u010c",
-            "\12\55\7\uffff\6\55\1\u010d\23\55\4\uffff\1\55\1\uffff\32"+
-            "\55",
-            "",
-            "\1\u010f",
-            "\1\u0110",
+            "\1\u010d",
+            "\1\u010e",
+            "\1\u010f\1\u0110",
             "\1\u0111",
             "\1\u0112",
+            "",
             "\1\u0113",
             "\1\u0114",
-            "\1\u0115",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
             "\1\u0116",
             "\1\u0117",
             "\1\u0118",
             "\1\u0119",
-            "\1\u011b\14\uffff\1\u011a",
-            "\1\u011d\14\uffff\1\u011c",
+            "\1\u011a",
+            "\1\u011b",
+            "\1\u011c",
+            "",
+            "\1\u011d",
             "\1\u011e",
-            "\1\u011f",
-            "\1\u0120",
+            "\12\60\7\uffff\6\60\1\u011f\23\60\4\uffff\1\60\1\uffff\32"+
+            "\60",
+            "",
             "\1\u0121",
             "\1\u0122",
             "\1\u0123",
@@ -3061,14 +3351,11 @@ public class InternalOseeDslLexer extends Lexer {
             "\1\u0128",
             "\1\u0129",
             "\1\u012a",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
-            "\1\u012d",
-            "\1\u012e",
-            "\1\u012f",
+            "\1\u012c\14\uffff\1\u012b",
+            "\1\u012e\14\uffff\1\u012d",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
             "\1\u0130",
-            "",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
+            "\1\u0131",
             "\1\u0132",
             "\1\u0133",
             "\1\u0134",
@@ -3078,26 +3365,26 @@ public class InternalOseeDslLexer extends Lexer {
             "\1\u0138",
             "\1\u0139",
             "\1\u013a",
-            "",
-            "\12\55\7\uffff\6\55\1\u013b\23\55\4\uffff\1\55\1\uffff\32"+
-            "\55",
-            "\1\u013d",
-            "\1\u013e",
+            "\1\u013b",
+            "\1\u013c",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
             "\1\u013f",
             "\1\u0140",
             "\1\u0141",
             "\1\u0142",
+            "",
             "\1\u0143",
             "\1\u0144",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
+            "\1\u0145",
             "\1\u0146",
-            "\1\u0147",
-            "\1\u0148",
-            "\1\u0149",
+            "\1\u0148\6\uffff\1\u0147",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
             "\1\u014a",
             "\1\u014b",
             "\1\u014c",
             "\1\u014d",
+            "",
             "\1\u014e",
             "\1\u014f",
             "\1\u0150",
@@ -3106,67 +3393,66 @@ public class InternalOseeDslLexer extends Lexer {
             "\1\u0153",
             "\1\u0154",
             "\1\u0155",
-            "\1\u0156",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
             "\1\u0157",
-            "",
-            "",
             "\1\u0158",
             "\1\u0159",
-            "\1\u015b\1\uffff\1\u015a",
-            "\1\u015c",
+            "\1\u015a",
+            "\1\u015b",
             "",
+            "\1\u015c",
             "\1\u015d",
             "\1\u015e",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
+            "\1\u015f",
             "\1\u0160",
             "\1\u0161",
             "\1\u0162",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
+            "\1\u0163",
             "\1\u0164",
             "\1\u0165",
             "\1\u0166",
-            "",
             "\1\u0167",
             "\1\u0168",
-            "\1\u016a\6\uffff\1\u0169",
-            "\1\u016b",
-            "\1\u016c",
+            "",
+            "",
+            "\1\u0169",
+            "\1\u016a",
+            "\1\u016c\1\uffff\1\u016b",
             "\1\u016d",
             "\1\u016e",
             "\1\u016f",
-            "",
             "\1\u0170",
             "\1\u0171",
             "\1\u0172",
             "\1\u0173",
+            "",
             "\1\u0174",
-            "\1\u0175",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
             "\1\u0176",
             "\1\u0177",
             "\1\u0178",
             "\1\u0179",
-            "\1\u017a",
-            "\1\u017b",
+            "\1\u017b\6\uffff\1\u017a",
             "\1\u017c",
             "\1\u017d",
             "\1\u017e",
             "\1\u017f",
             "\1\u0180",
+            "",
             "\1\u0181",
             "\1\u0182",
             "\1\u0183",
             "\1\u0184",
             "\1\u0185",
-            "\1\u0187\1\uffff\1\u0186",
+            "\1\u0186",
+            "\1\u0187",
             "\1\u0188",
-            "\12\55\7\uffff\23\55\1\u0189\6\55\4\uffff\1\55\1\uffff\32"+
-            "\55",
-            "",
+            "\1\u0189",
+            "\1\u018a",
             "\1\u018b",
             "\1\u018c",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
-            "",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
+            "\1\u018d",
+            "\1\u018e",
             "\1\u018f",
             "\1\u0190",
             "\1\u0191",
@@ -3175,20 +3461,17 @@ public class InternalOseeDslLexer extends Lexer {
             "\1\u0194",
             "\1\u0195",
             "\1\u0196",
-            "\1\u0197",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
-            "\1\u0199",
-            "\1\u019a",
-            "\1\u019b",
-            "\1\u019c",
-            "\1\u019d",
+            "\1\u0198\1\uffff\1\u0197",
+            "\12\60\7\uffff\6\60\1\u019a\5\60\1\u019c\1\u0199\5\60\1\u019b"+
+            "\6\60\4\uffff\1\60\1\uffff\32\60",
             "\1\u019e",
             "\1\u019f",
-            "\1\u01a0",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
             "\1\u01a1",
             "\1\u01a2",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
+            "\1\u01a3",
+            "",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
             "\1\u01a5",
             "\1\u01a6",
             "\1\u01a7",
@@ -3197,110 +3480,106 @@ public class InternalOseeDslLexer extends Lexer {
             "\1\u01aa",
             "\1\u01ab",
             "\1\u01ac",
-            "\1\u01ad",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
             "\1\u01ae",
             "\1\u01af",
             "\1\u01b0",
             "\1\u01b1",
             "\1\u01b2",
             "\1\u01b3",
-            "",
-            "\12\55\7\uffff\23\55\1\u01b4\6\55\4\uffff\1\55\1\uffff\32"+
-            "\55",
+            "\1\u01b4",
+            "\1\u01b5",
             "\1\u01b6",
-            "",
-            "",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
-            "\1\u01b8",
-            "\1\u01b9",
+            "\1\u01b7",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
             "\1\u01ba",
             "\1\u01bb",
             "\1\u01bc",
             "\1\u01bd",
-            "\1\u01be\17\uffff\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff"+
-            "\32\55",
+            "\1\u01be",
+            "\1\u01bf",
             "\1\u01c0",
-            "",
             "\1\u01c1",
             "\1\u01c2",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
+            "\1\u01c3",
             "\1\u01c4",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
+            "\1\u01c5",
             "\1\u01c6",
             "\1\u01c7",
             "\1\u01c8",
             "\1\u01c9",
             "\1\u01ca",
             "",
-            "",
-            "\1\u01cb",
-            "\1\u01cc",
+            "\12\60\7\uffff\23\60\1\u01cb\6\60\4\uffff\1\60\1\uffff\32"+
+            "\60",
             "\1\u01cd",
+            "",
             "\1\u01ce",
             "\1\u01cf",
             "\1\u01d0",
-            "\1\u01d1",
+            "",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
             "\1\u01d2",
             "\1\u01d3",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
+            "\1\u01d4",
             "\1\u01d5",
             "\1\u01d6",
-            "\1\u01d7",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
+            "\1\u01d7\17\uffff\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff"+
+            "\32\60",
             "\1\u01d9",
+            "",
             "\1\u01da",
-            "",
             "\1\u01db",
-            "",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
             "\1\u01dd",
-            "\1\u01de",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
             "\1\u01df",
             "\1\u01e0",
             "\1\u01e1",
-            "",
-            "",
             "\1\u01e2",
             "\1\u01e3",
+            "",
+            "",
             "\1\u01e4",
-            "",
             "\1\u01e5",
-            "",
             "\1\u01e6",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
+            "\1\u01e7",
             "\1\u01e8",
             "\1\u01e9",
             "\1\u01ea",
             "\1\u01eb",
             "\1\u01ec",
-            "\1\u01ed",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
             "\1\u01ee",
             "\1\u01ef",
             "\1\u01f0",
             "\1\u01f1",
             "\1\u01f2",
             "\1\u01f3",
+            "\1\u01f4",
+            "\1\u01f5",
             "",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
             "\1\u01f6",
-            "",
-            "\1\u01f7",
-            "\1\u01f8",
-            "\1\u01f9",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
             "",
             "\1\u01fa",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
+            "\1\u01fb",
             "\1\u01fc",
             "\1\u01fd",
             "\1\u01fe",
+            "",
+            "",
             "\1\u01ff",
             "\1\u0200",
             "\1\u0201",
-            "\1\u0202",
-            "\1\u0203",
             "",
-            "\1\u0204",
+            "\1\u0202",
+            "",
+            "\1\u0203",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
             "\1\u0205",
             "\1\u0206",
             "\1\u0207",
@@ -3312,105 +3591,110 @@ public class InternalOseeDslLexer extends Lexer {
             "\1\u020d",
             "\1\u020e",
             "\1\u020f",
+            "\1\u0210",
             "",
-            "",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
-            "\1\u0212",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
             "\1\u0213",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
-            "",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
+            "\1\u0214",
+            "\1\u0215",
             "\1\u0216",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
+            "\1\u0217",
+            "\1\u0218",
             "\1\u0219",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
-            "\1\u021b",
+            "",
+            "",
+            "",
+            "\1\u021a",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
             "\1\u021c",
             "\1\u021d",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
+            "\1\u021e",
             "\1\u021f",
             "\1\u0220",
             "\1\u0221",
             "\1\u0222",
             "\1\u0223",
+            "",
             "\1\u0224",
             "\1\u0225",
             "\1\u0226",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
+            "\1\u0227",
             "\1\u0228",
-            "",
-            "",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
-            "",
-            "",
+            "\1\u0229",
+            "\1\u022a",
             "\1\u022b",
-            "",
-            "",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
-            "",
+            "\1\u022c",
             "\1\u022d",
             "\1\u022e",
             "\1\u022f",
             "",
-            "\1\u0230",
-            "\1\u0231",
-            "\1\u0232",
-            "\1\u0233",
+            "",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
             "\1\u0234",
             "\1\u0235",
             "\1\u0236",
-            "\1\u0237",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
             "",
-            "\1\u0238",
-            "",
-            "",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
             "\1\u0239",
-            "",
-            "\1\u023a",
-            "\1\u023b",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
             "\1\u023c",
-            "\1\u023d",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
             "\1\u023e",
             "\1\u023f",
             "\1\u0240",
-            "\1\u0241",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
             "\1\u0242",
             "\1\u0243",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
+            "\1\u0244",
             "\1\u0245",
             "\1\u0246",
             "\1\u0247",
             "\1\u0248",
-            "\1\u0249\17\uffff\1\u024a",
+            "\1\u0249",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
             "\1\u024b",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
-            "\1\u024d",
-            "\1\u024e",
-            "\1\u024f",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
-            "\1\u0251",
             "",
-            "\1\u0252\2\uffff\1\u0253",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
+            "",
+            "",
+            "",
+            "\1\u024c",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
+            "",
+            "",
+            "\1\u024f",
+            "",
+            "",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
+            "",
+            "\1\u0251",
+            "\1\u0252",
+            "\1\u0253",
+            "",
+            "\1\u0254",
             "\1\u0255",
             "\1\u0256",
             "\1\u0257",
             "\1\u0258",
             "\1\u0259",
-            "",
             "\1\u025a",
             "\1\u025b",
+            "",
             "\1\u025c",
-            "",
             "\1\u025d",
-            "\1\u025e",
-            "\1\u025f",
             "",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
+            "",
+            "\1\u025e",
+            "",
+            "\1\u025f",
+            "\1\u0260",
+            "\1\u0261",
             "\1\u0262",
             "\1\u0263",
             "\1\u0264",
@@ -3418,75 +3702,116 @@ public class InternalOseeDslLexer extends Lexer {
             "\1\u0266",
             "\1\u0267",
             "\1\u0268",
-            "\1\u0269",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
             "\1\u026a",
-            "",
-            "",
-            "\1\u026b",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
             "\1\u026c",
             "\1\u026d",
             "\1\u026e",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
-            "\1\u0270",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
-            "\1\u0272",
+            "\1\u026f\17\uffff\1\u0270",
+            "\1\u0271",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
             "\1\u0273",
             "\1\u0274",
             "\1\u0275",
-            "\1\u0276",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
             "\1\u0277",
             "",
-            "\1\u0278",
+            "\1\u0278\2\uffff\1\u0279",
             "",
-            "\1\u0279",
-            "\1\u027a",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
             "\1\u027b",
             "\1\u027c",
             "\1\u027d",
             "\1\u027e",
             "\1\u027f",
+            "",
             "\1\u0280",
             "\1\u0281",
             "\1\u0282",
+            "",
             "\1\u0283",
             "\1\u0284",
             "\1\u0285",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
-            "\1\u0287",
+            "",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
             "\1\u0288",
             "\1\u0289",
             "\1\u028a",
             "\1\u028b",
             "\1\u028c",
-            "",
             "\1\u028d",
             "\1\u028e",
             "\1\u028f",
             "\1\u0290",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
+            "",
+            "",
+            "\1\u0291",
             "\1\u0292",
             "\1\u0293",
             "\1\u0294",
-            "\1\u0295",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
             "\1\u0296",
-            "",
-            "\1\u0297",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
+            "\1\u0298",
             "\1\u0299",
             "\1\u029a",
             "\1\u029b",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
+            "\1\u029c",
+            "\1\u029d",
             "",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
             "\1\u029e",
+            "",
             "\1\u029f",
-            "",
-            "",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
+            "\1\u02a0",
             "\1\u02a1",
-            "",
             "\1\u02a2",
-            "\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55",
+            "\1\u02a3",
+            "\1\u02a4",
+            "\1\u02a5",
+            "\1\u02a6",
+            "\1\u02a7",
+            "\1\u02a8",
+            "\1\u02a9",
+            "\1\u02aa",
+            "\1\u02ab",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
+            "\1\u02ad",
+            "\1\u02ae",
+            "\1\u02af",
+            "\1\u02b0",
+            "\1\u02b1",
+            "\1\u02b2",
+            "",
+            "\1\u02b3",
+            "\1\u02b4",
+            "\1\u02b5",
+            "\1\u02b6",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
+            "\1\u02b8",
+            "\1\u02b9",
+            "\1\u02ba",
+            "\1\u02bb",
+            "\1\u02bc",
+            "",
+            "\1\u02bd",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
+            "\1\u02bf",
+            "\1\u02c0",
+            "\1\u02c1",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
+            "",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
+            "\1\u02c4",
+            "\1\u02c5",
+            "",
+            "",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
+            "\1\u02c7",
+            "",
+            "\1\u02c8",
+            "\12\60\7\uffff\32\60\4\uffff\1\60\1\uffff\32\60",
             ""
     };
 
@@ -3520,23 +3845,13 @@ public class InternalOseeDslLexer extends Lexer {
             this.transition = DFA13_transition;
         }
         public String getDescription() {
-            return "1:1: Tokens : ( T__12 | T__13 | T__14 | T__15 | T__16 | T__17 | T__18 | T__19 | T__20 | T__21 | T__22 | T__23 | T__24 | T__25 | T__26 | T__27 | T__28 | T__29 | T__30 | T__31 | T__32 | T__33 | T__34 | T__35 | T__36 | T__37 | T__38 | T__39 | T__40 | T__41 | T__42 | T__43 | T__44 | T__45 | T__46 | T__47 | T__48 | T__49 | T__50 | T__51 | T__52 | T__53 | T__54 | T__55 | T__56 | T__57 | T__58 | T__59 | T__60 | T__61 | T__62 | T__63 | T__64 | T__65 | T__66 | T__67 | T__68 | T__69 | T__70 | T__71 | T__72 | T__73 | T__74 | T__75 | T__76 | T__77 | T__78 | T__79 | RULE_WHOLE_NUM_STR | RULE_ID | RULE_INT | RULE_STRING | RULE_ML_COMMENT | RULE_SL_COMMENT | RULE_WS | RULE_ANY_OTHER );";
+            return "1:1: Tokens : ( T__12 | T__13 | T__14 | T__15 | T__16 | T__17 | T__18 | T__19 | T__20 | T__21 | T__22 | T__23 | T__24 | T__25 | T__26 | T__27 | T__28 | T__29 | T__30 | T__31 | T__32 | T__33 | T__34 | T__35 | T__36 | T__37 | T__38 | T__39 | T__40 | T__41 | T__42 | T__43 | T__44 | T__45 | T__46 | T__47 | T__48 | T__49 | T__50 | T__51 | T__52 | T__53 | T__54 | T__55 | T__56 | T__57 | T__58 | T__59 | T__60 | T__61 | T__62 | T__63 | T__64 | T__65 | T__66 | T__67 | T__68 | T__69 | T__70 | T__71 | T__72 | T__73 | T__74 | T__75 | T__76 | T__77 | T__78 | T__79 | T__80 | T__81 | T__82 | T__83 | T__84 | T__85 | T__86 | T__87 | T__88 | RULE_STRING | RULE_WHOLE_NUM_STR | RULE_ID | RULE_INT | RULE_ML_COMMENT | RULE_SL_COMMENT | RULE_WS | RULE_ANY_OTHER );";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             IntStream input = _input;
         	int _s = s;
             switch ( s ) {
                     case 0 : 
-                        int LA13_38 = input.LA(1);
-
-                        s = -1;
-                        if ( ((LA13_38>='\u0000' && LA13_38<='\uFFFF')) ) {s = 95;}
-
-                        else s = 41;
-
-                        if ( s>=0 ) return s;
-                        break;
-                    case 1 : 
                         int LA13_0 = input.LA(1);
 
                         s = -1;
@@ -3570,23 +3885,23 @@ public class InternalOseeDslLexer extends Lexer {
 
                         else if ( (LA13_0=='A') ) {s = 15;}
 
-                        else if ( (LA13_0=='i') ) {s = 16;}
+                        else if ( (LA13_0=='a') ) {s = 16;}
 
-                        else if ( (LA13_0=='.') ) {s = 17;}
+                        else if ( (LA13_0=='b') ) {s = 17;}
 
-                        else if ( (LA13_0=='a') ) {s = 18;}
+                        else if ( (LA13_0=='i') ) {s = 18;}
 
-                        else if ( (LA13_0=='{') ) {s = 19;}
+                        else if ( (LA13_0=='.') ) {s = 19;}
 
-                        else if ( (LA13_0=='g') ) {s = 20;}
+                        else if ( (LA13_0=='{') ) {s = 20;}
 
-                        else if ( (LA13_0=='}') ) {s = 21;}
+                        else if ( (LA13_0=='g') ) {s = 21;}
 
-                        else if ( (LA13_0=='e') ) {s = 22;}
+                        else if ( (LA13_0=='}') ) {s = 22;}
 
-                        else if ( (LA13_0==',') ) {s = 23;}
+                        else if ( (LA13_0=='e') ) {s = 23;}
 
-                        else if ( (LA13_0=='b') ) {s = 24;}
+                        else if ( (LA13_0==',') ) {s = 24;}
 
                         else if ( (LA13_0=='d') ) {s = 25;}
 
@@ -3602,25 +3917,41 @@ public class InternalOseeDslLexer extends Lexer {
 
                         else if ( (LA13_0=='s') ) {s = 31;}
 
-                        else if ( (LA13_0==';') ) {s = 32;}
+                        else if ( (LA13_0=='(') ) {s = 32;}
 
-                        else if ( (LA13_0=='c') ) {s = 33;}
+                        else if ( (LA13_0==')') ) {s = 33;}
 
-                        else if ( ((LA13_0>='0' && LA13_0<='9')) ) {s = 34;}
+                        else if ( (LA13_0=='w') ) {s = 34;}
 
-                        else if ( (LA13_0=='^') ) {s = 35;}
+                        else if ( (LA13_0==';') ) {s = 35;}
 
-                        else if ( ((LA13_0>='G' && LA13_0<='H')||LA13_0=='K'||LA13_0=='N'||(LA13_0>='P' && LA13_0<='R')||LA13_0=='T'||LA13_0=='V'||(LA13_0>='X' && LA13_0<='Z')||LA13_0=='_'||LA13_0=='h'||(LA13_0>='j' && LA13_0<='l')||LA13_0=='n'||(LA13_0>='p' && LA13_0<='q')||(LA13_0>='v' && LA13_0<='z')) ) {s = 36;}
+                        else if ( (LA13_0=='c') ) {s = 36;}
 
                         else if ( (LA13_0=='\"') ) {s = 37;}
 
                         else if ( (LA13_0=='\'') ) {s = 38;}
 
-                        else if ( (LA13_0=='/') ) {s = 39;}
+                        else if ( ((LA13_0>='0' && LA13_0<='9')) ) {s = 39;}
 
-                        else if ( ((LA13_0>='\t' && LA13_0<='\n')||LA13_0=='\r'||LA13_0==' ') ) {s = 40;}
+                        else if ( (LA13_0=='^') ) {s = 40;}
 
-                        else if ( ((LA13_0>='\u0000' && LA13_0<='\b')||(LA13_0>='\u000B' && LA13_0<='\f')||(LA13_0>='\u000E' && LA13_0<='\u001F')||LA13_0=='!'||(LA13_0>='#' && LA13_0<='&')||(LA13_0>='(' && LA13_0<='+')||LA13_0=='-'||LA13_0==':'||(LA13_0>='<' && LA13_0<='@')||(LA13_0>='[' && LA13_0<=']')||LA13_0=='`'||LA13_0=='|'||(LA13_0>='~' && LA13_0<='\uFFFF')) ) {s = 41;}
+                        else if ( ((LA13_0>='G' && LA13_0<='H')||LA13_0=='K'||LA13_0=='N'||(LA13_0>='P' && LA13_0<='R')||LA13_0=='T'||LA13_0=='V'||(LA13_0>='X' && LA13_0<='Z')||LA13_0=='_'||LA13_0=='h'||(LA13_0>='j' && LA13_0<='l')||LA13_0=='n'||(LA13_0>='p' && LA13_0<='q')||LA13_0=='v'||(LA13_0>='x' && LA13_0<='z')) ) {s = 41;}
+
+                        else if ( (LA13_0=='/') ) {s = 42;}
+
+                        else if ( ((LA13_0>='\t' && LA13_0<='\n')||LA13_0=='\r'||LA13_0==' ') ) {s = 43;}
+
+                        else if ( ((LA13_0>='\u0000' && LA13_0<='\b')||(LA13_0>='\u000B' && LA13_0<='\f')||(LA13_0>='\u000E' && LA13_0<='\u001F')||LA13_0=='!'||(LA13_0>='#' && LA13_0<='&')||(LA13_0>='*' && LA13_0<='+')||LA13_0=='-'||LA13_0==':'||(LA13_0>='<' && LA13_0<='@')||(LA13_0>='[' && LA13_0<=']')||LA13_0=='`'||LA13_0=='|'||(LA13_0>='~' && LA13_0<='\uFFFF')) ) {s = 44;}
+
+                        if ( s>=0 ) return s;
+                        break;
+                    case 1 : 
+                        int LA13_38 = input.LA(1);
+
+                        s = -1;
+                        if ( ((LA13_38>='\u0000' && LA13_38<='\uFFFF')) ) {s = 103;}
+
+                        else s = 44;
 
                         if ( s>=0 ) return s;
                         break;
@@ -3628,9 +3959,9 @@ public class InternalOseeDslLexer extends Lexer {
                         int LA13_37 = input.LA(1);
 
                         s = -1;
-                        if ( ((LA13_37>='\u0000' && LA13_37<='\uFFFF')) ) {s = 95;}
+                        if ( ((LA13_37>='\u0000' && LA13_37<='\uFFFF')) ) {s = 103;}
 
-                        else s = 41;
+                        else s = 44;
 
                         if ( s>=0 ) return s;
                         break;

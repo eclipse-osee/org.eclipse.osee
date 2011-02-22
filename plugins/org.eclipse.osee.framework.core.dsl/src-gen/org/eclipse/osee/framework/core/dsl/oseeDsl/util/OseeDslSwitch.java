@@ -186,17 +186,33 @@ public class OseeDslSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
-      case OseeDslPackage.XARTIFACT_REF:
+      case OseeDslPackage.CONDITION:
       {
-        XArtifactRef xArtifactRef = (XArtifactRef)theEObject;
-        T result = caseXArtifactRef(xArtifactRef);
+        Condition condition = (Condition)theEObject;
+        T result = caseCondition(condition);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
-      case OseeDslPackage.XBRANCH_REF:
+      case OseeDslPackage.SIMPLE_CONDITION:
       {
-        XBranchRef xBranchRef = (XBranchRef)theEObject;
-        T result = caseXBranchRef(xBranchRef);
+        SimpleCondition simpleCondition = (SimpleCondition)theEObject;
+        T result = caseSimpleCondition(simpleCondition);
+        if (result == null) result = caseCondition(simpleCondition);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case OseeDslPackage.COMPOUND_CONDITION:
+      {
+        CompoundCondition compoundCondition = (CompoundCondition)theEObject;
+        T result = caseCompoundCondition(compoundCondition);
+        if (result == null) result = caseCondition(compoundCondition);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case OseeDslPackage.XARTIFACT_MATCHER:
+      {
+        XArtifactMatcher xArtifactMatcher = (XArtifactMatcher)theEObject;
+        T result = caseXArtifactMatcher(xArtifactMatcher);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -221,11 +237,11 @@ public class OseeDslSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
-      case OseeDslPackage.ARTIFACT_INSTANCE_RESTRICTION:
+      case OseeDslPackage.ARTIFACT_MATCH_RESTRICTION:
       {
-        ArtifactInstanceRestriction artifactInstanceRestriction = (ArtifactInstanceRestriction)theEObject;
-        T result = caseArtifactInstanceRestriction(artifactInstanceRestriction);
-        if (result == null) result = caseObjectRestriction(artifactInstanceRestriction);
+        ArtifactMatchRestriction artifactMatchRestriction = (ArtifactMatchRestriction)theEObject;
+        T result = caseArtifactMatchRestriction(artifactMatchRestriction);
+        if (result == null) result = caseObjectRestriction(artifactMatchRestriction);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -482,33 +498,65 @@ public class OseeDslSwitch<T> extends Switch<T>
   }
 
   /**
-   * Returns the result of interpreting the object as an instance of '<em>XArtifact Ref</em>'.
+   * Returns the result of interpreting the object as an instance of '<em>Condition</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
    * returning a non-null result will terminate the switch.
    * <!-- end-user-doc -->
    * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>XArtifact Ref</em>'.
+   * @return the result of interpreting the object as an instance of '<em>Condition</em>'.
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caseXArtifactRef(XArtifactRef object)
+  public T caseCondition(Condition object)
   {
     return null;
   }
 
   /**
-   * Returns the result of interpreting the object as an instance of '<em>XBranch Ref</em>'.
+   * Returns the result of interpreting the object as an instance of '<em>Simple Condition</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
    * returning a non-null result will terminate the switch.
    * <!-- end-user-doc -->
    * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>XBranch Ref</em>'.
+   * @return the result of interpreting the object as an instance of '<em>Simple Condition</em>'.
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caseXBranchRef(XBranchRef object)
+  public T caseSimpleCondition(SimpleCondition object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Compound Condition</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Compound Condition</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseCompoundCondition(CompoundCondition object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>XArtifact Matcher</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>XArtifact Matcher</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseXArtifactMatcher(XArtifactMatcher object)
   {
     return null;
   }
@@ -562,17 +610,17 @@ public class OseeDslSwitch<T> extends Switch<T>
   }
 
   /**
-   * Returns the result of interpreting the object as an instance of '<em>Artifact Instance Restriction</em>'.
+   * Returns the result of interpreting the object as an instance of '<em>Artifact Match Restriction</em>'.
    * <!-- begin-user-doc -->
    * This implementation returns null;
    * returning a non-null result will terminate the switch.
    * <!-- end-user-doc -->
    * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Artifact Instance Restriction</em>'.
+   * @return the result of interpreting the object as an instance of '<em>Artifact Match Restriction</em>'.
    * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
    * @generated
    */
-  public T caseArtifactInstanceRestriction(ArtifactInstanceRestriction object)
+  public T caseArtifactMatchRestriction(ArtifactMatchRestriction object)
   {
     return null;
   }

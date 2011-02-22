@@ -66,25 +66,25 @@ public class HierarchyRestrictionItemProvider
       if (itemPropertyDescriptors == null) {
          super.getPropertyDescriptors(object);
 
-         addArtifactPropertyDescriptor(object);
+         addArtifactMatcherRefPropertyDescriptor(object);
       }
       return itemPropertyDescriptors;
    }
 
    /**
-    * This adds a property descriptor for the Artifact feature.
+    * This adds a property descriptor for the Artifact Matcher Ref feature.
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
     * @generated
     */
-   protected void addArtifactPropertyDescriptor(Object object) {
+   protected void addArtifactMatcherRefPropertyDescriptor(Object object) {
       itemPropertyDescriptors.add
          (createItemPropertyDescriptor
             (((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
              getResourceLocator(),
-             getString("_UI_HierarchyRestriction_artifact_feature"),
-             getString("_UI_PropertyDescriptor_description", "_UI_HierarchyRestriction_artifact_feature", "_UI_HierarchyRestriction_type"),
-             OseeDslPackage.Literals.HIERARCHY_RESTRICTION__ARTIFACT,
+             getString("_UI_HierarchyRestriction_artifactMatcherRef_feature"),
+             getString("_UI_PropertyDescriptor_description", "_UI_HierarchyRestriction_artifactMatcherRef_feature", "_UI_HierarchyRestriction_type"),
+             OseeDslPackage.Literals.HIERARCHY_RESTRICTION__ARTIFACT_MATCHER_REF,
              true,
              false,
              true,
@@ -183,7 +183,7 @@ public class HierarchyRestrictionItemProvider
       newChildDescriptors.add
          (createChildParameter
             (OseeDslPackage.Literals.HIERARCHY_RESTRICTION__ACCESS_RULES,
-             OseeDslFactory.eINSTANCE.createArtifactInstanceRestriction()));
+             OseeDslFactory.eINSTANCE.createArtifactMatchRestriction()));
 
       newChildDescriptors.add
          (createChildParameter

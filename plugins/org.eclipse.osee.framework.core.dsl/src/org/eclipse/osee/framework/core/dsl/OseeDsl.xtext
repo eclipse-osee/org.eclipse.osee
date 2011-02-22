@@ -6,32 +6,17 @@ OseeDsl:
 	(imports+=Import)*
 	(artifactTypes+=XArtifactType | relationTypes+=XRelationType | attributeTypes+=XAttributeType |
 	enumTypes+=XOseeEnumType | enumOverrides+=XOseeEnumOverride)*
-	(branchRefs+=XBranchRef | artifactRefs+=XArtifactRef)*
+	(artifactMatchRefs+=XArtifactMatcher)*
 	(accessDeclarations+=AccessContext)*;
 
 Import:
 	'import' importURI=STRING;
 
+terminal STRING:
+	'"' ('\\' ('"') | !('"'))* '"' | "'" ('\\' ("'") | !("'"))* "'";
+
 terminal WHOLE_NUM_STR:
 	('0'..'9')+;
-
-NAME_REFERENCE:
-	STRING;
-
-ATTRIBUTE_TYPE_REFERENCE:
-	STRING;
-
-ARTIFACT_TYPE_REFERENCE:
-	STRING;
-
-RELATION_TYPE_REFERENCE:
-	STRING;
-
-ENUM_TYPE_REFERENCE:
-	STRING;
-
-ENUM_ENTRY_TYPE_REFERENCE:
-	STRING;
 
 QUALIFIED_NAME:
 	ID ('.' ID)*;
@@ -46,20 +31,20 @@ OseeType:
 	XArtifactType | XRelationType | XAttributeType | XOseeEnumType;
 
 XArtifactType:
-	(abstract?='abstract')? 'artifactType' name=ARTIFACT_TYPE_REFERENCE ('extends'
-	superArtifactTypes+=[XArtifactType|ARTIFACT_TYPE_REFERENCE] (','
-	superArtifactTypes+=[XArtifactType|ARTIFACT_TYPE_REFERENCE])*)? '{' 'guid' typeGuid=STRING
+	(abstract?='abstract')? 'artifactType' name=STRING ('extends'
+	superArtifactTypes+=[XArtifactType|STRING] (','
+	superArtifactTypes+=[XArtifactType|STRING])*)? '{' 'guid' typeGuid=STRING
 	(validAttributeTypes+=XAttributeTypeRef)* '}';
 
 XAttributeTypeRef:
-	'attribute' validAttributeType=[XAttributeType|ATTRIBUTE_TYPE_REFERENCE] ('branchGuid' branchGuid=STRING)?;
+	'attribute' validAttributeType=[XAttributeType|STRING] ('branchGuid' branchGuid=STRING)?;
 
 XAttributeType:
-	'attributeType' name=ATTRIBUTE_TYPE_REFERENCE ('extends' baseAttributeType=AttributeBaseType) ('overrides'
-	override=[XAttributeType|ATTRIBUTE_TYPE_REFERENCE])? '{' 'guid' typeGuid=STRING 'dataProvider'
+	'attributeType' name=STRING ('extends' baseAttributeType=AttributeBaseType) ('overrides'
+	override=[XAttributeType|STRING])? '{' 'guid' typeGuid=STRING 'dataProvider'
 	dataProvider=('DefaultAttributeDataProvider' | 'UriAttributeDataProvider' | QUALIFIED_NAME) 'min' min=WHOLE_NUM_STR
 	'max' max=(WHOLE_NUM_STR | 'unlimited') ('taggerId' taggerId=('DefaultAttributeTaggerProvider' | QUALIFIED_NAME))?
-	('enumType' enumType=[XOseeEnumType|ENUM_TYPE_REFERENCE])? ('description' description=STRING)? ('defaultValue'
+	('enumType' enumType=[XOseeEnumType|STRING])? ('description' description=STRING)? ('defaultValue'
 	defaultValue=STRING)? ('fileExtension' fileExtension=STRING)? '}';
 
 AttributeBaseType:
@@ -68,28 +53,28 @@ AttributeBaseType:
 	QUALIFIED_NAME;
 
 XOseeEnumType:
-	'oseeEnumType' name=ENUM_TYPE_REFERENCE '{' 'guid' typeGuid=STRING (enumEntries+=XOseeEnumEntry)* '}';
+	'oseeEnumType' name=STRING '{' 'guid' typeGuid=STRING (enumEntries+=XOseeEnumEntry)* '}';
 
 XOseeEnumEntry:
-	'entry' name=ENUM_ENTRY_TYPE_REFERENCE (ordinal=WHOLE_NUM_STR)? ('entryGuid' entryGuid=STRING)?;
+	'entry' name=STRING (ordinal=WHOLE_NUM_STR)? ('entryGuid' entryGuid=STRING)?;
 
 XOseeEnumOverride:
-	'overrides enum' overridenEnumType=[XOseeEnumType|ENUM_TYPE_REFERENCE] '{' (inheritAll?='inheritAll')?
+	'overrides enum' overridenEnumType=[XOseeEnumType|STRING] '{' (inheritAll?='inheritAll')?
 	(overrideOptions+=OverrideOption)* '}';
 
 OverrideOption:
 	AddEnum | RemoveEnum;
 
 AddEnum:
-	'add' enumEntry=ENUM_ENTRY_TYPE_REFERENCE (ordinal=WHOLE_NUM_STR)? ('entryGuid' entryGuid=STRING)?;
+	'add' enumEntry=STRING (ordinal=WHOLE_NUM_STR)? ('entryGuid' entryGuid=STRING)?;
 
 RemoveEnum:
-	'remove' enumEntry=[XOseeEnumEntry|ENUM_ENTRY_TYPE_REFERENCE];
+	'remove' enumEntry=[XOseeEnumEntry|STRING];
 
 XRelationType:
-	'relationType' name=RELATION_TYPE_REFERENCE '{' 'guid' typeGuid=STRING 'sideAName' sideAName=STRING
-	'sideAArtifactType' sideAArtifactType=[XArtifactType|ARTIFACT_TYPE_REFERENCE] 'sideBName' sideBName=STRING
-	'sideBArtifactType' sideBArtifactType=[XArtifactType|ARTIFACT_TYPE_REFERENCE] 'defaultOrderType'
+	'relationType' name=STRING '{' 'guid' typeGuid=STRING 'sideAName' sideAName=STRING
+	'sideAArtifactType' sideAArtifactType=[XArtifactType|STRING] 'sideBName' sideBName=STRING
+	'sideBArtifactType' sideBArtifactType=[XArtifactType|STRING] 'defaultOrderType'
 	defaultOrderType=RelationOrderType 'multiplicity' multiplicity=RelationMultiplicityEnum '}';
 
 enum RelationMultiplicityEnum:
@@ -99,68 +84,67 @@ RelationOrderType:
 	'Lexicographical_Ascending' | 'Lexicographical_Descending' | 'Unordered' | ID;
 
 	///////////////////////////////////////
-//  OSEE ARTIFACT INSTANCE REFERENCE //
+//  OSEE MATCH RULES //
 ///////////////////////////////////////
-ARTIFACT_INSTANCE_REFERENCE:
-	STRING;
+enum CompareOp:
+	EQ | LIKE;
 
-XArtifactRef:
-	'artifact' name=ARTIFACT_INSTANCE_REFERENCE
-	'artGuid' guid=STRING ';';
+enum XLogicOperator:
+	AND | OR;
 
-BRANCH_INSTANCE_REFERENCE:
-	STRING;
+CONDITION_VALUE:
+	WHOLE_NUM_STR | STRING;
 
-XBranchRef:
-	'branch' name=BRANCH_INSTANCE_REFERENCE
-	'branchGuid' guid=STRING ';';
+enum MatchField:
+	artifactName | artifactGuid | branchName | branchGuid;
+
+Condition:
+	SimpleCondition | CompoundCondition;
+
+SimpleCondition:
+	field=MatchField op=CompareOp expression=STRING;
+
+CompoundCondition:
+	'(' conditions+=SimpleCondition (operators+=XLogicOperator conditions+=SimpleCondition)+ ')';
+
+XArtifactMatcher:
+	'artifactMatcher' name=STRING 'where'
+	conditions+=Condition (operators+=XLogicOperator conditions+=Condition)* ';';
 
 	///////////////////////////////////////
 //  OSEE ACCESS MODEL                //
 ///////////////////////////////////////
-ACCESS_CONTEXT_TYPE_REFRENCE:
-	STRING;
-
 AccessContext:
-	'accessContext' name=ACCESS_CONTEXT_TYPE_REFRENCE ('extends'
-	superAccessContexts+=[AccessContext|ACCESS_CONTEXT_TYPE_REFRENCE] (','
-	superAccessContexts+=[AccessContext|ACCESS_CONTEXT_TYPE_REFRENCE])*)? '{'
-	'guid' guid=STRING ';'
-	(accessRules+=ObjectRestriction | hierarchyRestrictions+=HierarchyRestriction)+
-	'}';
+	'accessContext' name=STRING ('extends'
+	superAccessContexts+=[AccessContext|STRING] (','
+	superAccessContexts+=[AccessContext|STRING])*)? '{' 'guid' guid=STRING ';'
+	(accessRules+=ObjectRestriction | hierarchyRestrictions+=HierarchyRestriction)+ '}';
 
 HierarchyRestriction:
-	'childrenOf' artifact=[XArtifactRef|ARTIFACT_INSTANCE_REFERENCE] '{' (accessRules+=ObjectRestriction)+ '}';
+	'childrenOf' artifactMatcherRef=[XArtifactMatcher|STRING] '{' (accessRules+=ObjectRestriction)+
+	'}';
 
 enum AccessPermissionEnum:
 	ALLOW | DENY;
 
 ObjectRestriction:
-	ArtifactInstanceRestriction | ArtifactTypeRestriction | RelationTypeRestriction | AttributeTypeRestriction;
+	ArtifactMatchRestriction | ArtifactTypeRestriction | RelationTypeRestriction | AttributeTypeRestriction;
 
-ArtifactInstanceRestriction:
-	permission=AccessPermissionEnum 'edit' 'artifact' artifactRef=[XArtifactRef|ARTIFACT_INSTANCE_REFERENCE] ';';
+ArtifactMatchRestriction:
+	permission=AccessPermissionEnum 'edit' 'artifact' artifactMatcherRef=[XArtifactMatcher|STRING]
+	';';
 
 ArtifactTypeRestriction:
-	permission=AccessPermissionEnum 'edit' 'artifactType' artifactTypeRef=[XArtifactType|ARTIFACT_TYPE_REFERENCE] ';';
+	permission=AccessPermissionEnum 'edit' 'artifactType' artifactTypeRef=[XArtifactType|STRING] ';';
 
 AttributeTypeRestriction:
-	permission=AccessPermissionEnum 'edit' 'attributeType' attributeTypeRef=[XAttributeType|ATTRIBUTE_TYPE_REFERENCE]
-	('of'
-	'artifactType' artifactTypeRef=[XArtifactType|ARTIFACT_TYPE_REFERENCE])? ';';
+	permission=AccessPermissionEnum 'edit' 'attributeType' attributeTypeRef=[XAttributeType|STRING]
+	('of' 'artifactType' artifactTypeRef=[XArtifactType|STRING])? ';';
 
 RelationTypeRestriction:
-	permission=AccessPermissionEnum 'edit' 'relationType' relationTypeRef=[XRelationType|RELATION_TYPE_REFERENCE]
+	permission=AccessPermissionEnum 'edit' 'relationType' relationTypeRef=[XRelationType|STRING]
 	restrictedToSide=XRelationSideEnum ';';
 
 enum XRelationSideEnum:
 	SIDE_A | SIDE_B | BOTH;
-
-		//BranchRestriction:
-//	'onBranch' branch=[XBranchRef|BRANCH_INSTANCE_REFERENCE] '{' accessRule+=PermissionRule '}';
-
-//AccessSet:
-//	artifactRestrictions+=ArtifactInstanceRestriction
-//	artifactTypeRestrictions+=ArtifactTypeRestriction
-//	attributeTypeRestrictions+=AttributeTypeRestriction
-//	relationTypeRestrictions+=RelationTypeRestriction;
+	

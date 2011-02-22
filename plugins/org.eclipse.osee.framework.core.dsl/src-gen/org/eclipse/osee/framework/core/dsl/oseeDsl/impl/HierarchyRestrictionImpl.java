@@ -25,7 +25,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.HierarchyRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.ObjectRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslPackage;
-import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactRef;
+import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactMatcher;
 
 /**
  * <!-- begin-user-doc -->
@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactRef;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.HierarchyRestrictionImpl#getArtifact <em>Artifact</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.HierarchyRestrictionImpl#getArtifactMatcherRef <em>Artifact Matcher Ref</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.impl.HierarchyRestrictionImpl#getAccessRules <em>Access Rules</em>}</li>
  * </ul>
  * </p>
@@ -44,14 +44,14 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactRef;
 public class HierarchyRestrictionImpl extends MinimalEObjectImpl.Container implements HierarchyRestriction
 {
   /**
-   * The cached value of the '{@link #getArtifact() <em>Artifact</em>}' reference.
+   * The cached value of the '{@link #getArtifactMatcherRef() <em>Artifact Matcher Ref</em>}' reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getArtifact()
+   * @see #getArtifactMatcherRef()
    * @generated
    * @ordered
    */
-  protected XArtifactRef artifact;
+  protected XArtifactMatcher artifactMatcherRef;
 
   /**
    * The cached value of the '{@link #getAccessRules() <em>Access Rules</em>}' containment reference list.
@@ -89,19 +89,19 @@ public class HierarchyRestrictionImpl extends MinimalEObjectImpl.Container imple
    * <!-- end-user-doc -->
    * @generated
    */
-  public XArtifactRef getArtifact()
+  public XArtifactMatcher getArtifactMatcherRef()
   {
-    if (artifact != null && artifact.eIsProxy())
+    if (artifactMatcherRef != null && artifactMatcherRef.eIsProxy())
     {
-      InternalEObject oldArtifact = (InternalEObject)artifact;
-      artifact = (XArtifactRef)eResolveProxy(oldArtifact);
-      if (artifact != oldArtifact)
+      InternalEObject oldArtifactMatcherRef = (InternalEObject)artifactMatcherRef;
+      artifactMatcherRef = (XArtifactMatcher)eResolveProxy(oldArtifactMatcherRef);
+      if (artifactMatcherRef != oldArtifactMatcherRef)
       {
         if (eNotificationRequired())
-          eNotify(new ENotificationImpl(this, Notification.RESOLVE, OseeDslPackage.HIERARCHY_RESTRICTION__ARTIFACT, oldArtifact, artifact));
+          eNotify(new ENotificationImpl(this, Notification.RESOLVE, OseeDslPackage.HIERARCHY_RESTRICTION__ARTIFACT_MATCHER_REF, oldArtifactMatcherRef, artifactMatcherRef));
       }
     }
-    return artifact;
+    return artifactMatcherRef;
   }
 
   /**
@@ -109,9 +109,9 @@ public class HierarchyRestrictionImpl extends MinimalEObjectImpl.Container imple
    * <!-- end-user-doc -->
    * @generated
    */
-  public XArtifactRef basicGetArtifact()
+  public XArtifactMatcher basicGetArtifactMatcherRef()
   {
-    return artifact;
+    return artifactMatcherRef;
   }
 
   /**
@@ -119,12 +119,12 @@ public class HierarchyRestrictionImpl extends MinimalEObjectImpl.Container imple
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setArtifact(XArtifactRef newArtifact)
+  public void setArtifactMatcherRef(XArtifactMatcher newArtifactMatcherRef)
   {
-    XArtifactRef oldArtifact = artifact;
-    artifact = newArtifact;
+    XArtifactMatcher oldArtifactMatcherRef = artifactMatcherRef;
+    artifactMatcherRef = newArtifactMatcherRef;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.HIERARCHY_RESTRICTION__ARTIFACT, oldArtifact, artifact));
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.HIERARCHY_RESTRICTION__ARTIFACT_MATCHER_REF, oldArtifactMatcherRef, artifactMatcherRef));
   }
 
   /**
@@ -167,9 +167,9 @@ public class HierarchyRestrictionImpl extends MinimalEObjectImpl.Container imple
   {
     switch (featureID)
     {
-      case OseeDslPackage.HIERARCHY_RESTRICTION__ARTIFACT:
-        if (resolve) return getArtifact();
-        return basicGetArtifact();
+      case OseeDslPackage.HIERARCHY_RESTRICTION__ARTIFACT_MATCHER_REF:
+        if (resolve) return getArtifactMatcherRef();
+        return basicGetArtifactMatcherRef();
       case OseeDslPackage.HIERARCHY_RESTRICTION__ACCESS_RULES:
         return getAccessRules();
     }
@@ -187,8 +187,8 @@ public class HierarchyRestrictionImpl extends MinimalEObjectImpl.Container imple
   {
     switch (featureID)
     {
-      case OseeDslPackage.HIERARCHY_RESTRICTION__ARTIFACT:
-        setArtifact((XArtifactRef)newValue);
+      case OseeDslPackage.HIERARCHY_RESTRICTION__ARTIFACT_MATCHER_REF:
+        setArtifactMatcherRef((XArtifactMatcher)newValue);
         return;
       case OseeDslPackage.HIERARCHY_RESTRICTION__ACCESS_RULES:
         getAccessRules().clear();
@@ -208,8 +208,8 @@ public class HierarchyRestrictionImpl extends MinimalEObjectImpl.Container imple
   {
     switch (featureID)
     {
-      case OseeDslPackage.HIERARCHY_RESTRICTION__ARTIFACT:
-        setArtifact((XArtifactRef)null);
+      case OseeDslPackage.HIERARCHY_RESTRICTION__ARTIFACT_MATCHER_REF:
+        setArtifactMatcherRef((XArtifactMatcher)null);
         return;
       case OseeDslPackage.HIERARCHY_RESTRICTION__ACCESS_RULES:
         getAccessRules().clear();
@@ -228,8 +228,8 @@ public class HierarchyRestrictionImpl extends MinimalEObjectImpl.Container imple
   {
     switch (featureID)
     {
-      case OseeDslPackage.HIERARCHY_RESTRICTION__ARTIFACT:
-        return artifact != null;
+      case OseeDslPackage.HIERARCHY_RESTRICTION__ARTIFACT_MATCHER_REF:
+        return artifactMatcherRef != null;
       case OseeDslPackage.HIERARCHY_RESTRICTION__ACCESS_RULES:
         return accessRules != null && !accessRules.isEmpty();
     }

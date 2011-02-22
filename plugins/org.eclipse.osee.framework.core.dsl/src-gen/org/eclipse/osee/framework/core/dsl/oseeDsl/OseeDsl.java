@@ -24,8 +24,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl#getAttributeTypes <em>Attribute Types</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl#getEnumTypes <em>Enum Types</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl#getEnumOverrides <em>Enum Overrides</em>}</li>
- *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl#getBranchRefs <em>Branch Refs</em>}</li>
- *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl#getArtifactRefs <em>Artifact Refs</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl#getArtifactMatchRefs <em>Artifact Match Refs</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl#getAccessDeclarations <em>Access Declarations</em>}</li>
  * </ul>
  * </p>
@@ -133,36 +132,20 @@ public interface OseeDsl extends EObject
   EList<XOseeEnumOverride> getEnumOverrides();
 
   /**
-   * Returns the value of the '<em><b>Branch Refs</b></em>' containment reference list.
-   * The list contents are of type {@link org.eclipse.osee.framework.core.dsl.oseeDsl.XBranchRef}.
+   * Returns the value of the '<em><b>Artifact Match Refs</b></em>' containment reference list.
+   * The list contents are of type {@link org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactMatcher}.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Branch Refs</em>' containment reference list isn't clear,
+   * If the meaning of the '<em>Artifact Match Refs</em>' containment reference list isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Branch Refs</em>' containment reference list.
-   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslPackage#getOseeDsl_BranchRefs()
+   * @return the value of the '<em>Artifact Match Refs</em>' containment reference list.
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslPackage#getOseeDsl_ArtifactMatchRefs()
    * @model containment="true"
    * @generated
    */
-  EList<XBranchRef> getBranchRefs();
-
-  /**
-   * Returns the value of the '<em><b>Artifact Refs</b></em>' containment reference list.
-   * The list contents are of type {@link org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactRef}.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Artifact Refs</em>' containment reference list isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Artifact Refs</em>' containment reference list.
-   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslPackage#getOseeDsl_ArtifactRefs()
-   * @model containment="true"
-   * @generated
-   */
-  EList<XArtifactRef> getArtifactRefs();
+  EList<XArtifactMatcher> getArtifactMatchRefs();
 
   /**
    * Returns the value of the '<em><b>Access Declarations</b></em>' containment reference list.

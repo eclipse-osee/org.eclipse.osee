@@ -18,7 +18,7 @@ import org.eclipse.emf.ecore.EObject;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.HierarchyRestriction#getArtifact <em>Artifact</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.HierarchyRestriction#getArtifactMatcherRef <em>Artifact Matcher Ref</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.core.dsl.oseeDsl.HierarchyRestriction#getAccessRules <em>Access Rules</em>}</li>
  * </ul>
  * </p>
@@ -30,30 +30,30 @@ import org.eclipse.emf.ecore.EObject;
 public interface HierarchyRestriction extends EObject
 {
   /**
-   * Returns the value of the '<em><b>Artifact</b></em>' reference.
+   * Returns the value of the '<em><b>Artifact Matcher Ref</b></em>' reference.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Artifact</em>' reference isn't clear,
+   * If the meaning of the '<em>Artifact Matcher Ref</em>' reference isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Artifact</em>' reference.
-   * @see #setArtifact(XArtifactRef)
-   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslPackage#getHierarchyRestriction_Artifact()
+   * @return the value of the '<em>Artifact Matcher Ref</em>' reference.
+   * @see #setArtifactMatcherRef(XArtifactMatcher)
+   * @see org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslPackage#getHierarchyRestriction_ArtifactMatcherRef()
    * @model
    * @generated
    */
-  XArtifactRef getArtifact();
+  XArtifactMatcher getArtifactMatcherRef();
 
   /**
-   * Sets the value of the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.HierarchyRestriction#getArtifact <em>Artifact</em>}' reference.
+   * Sets the value of the '{@link org.eclipse.osee.framework.core.dsl.oseeDsl.HierarchyRestriction#getArtifactMatcherRef <em>Artifact Matcher Ref</em>}' reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Artifact</em>' reference.
-   * @see #getArtifact()
+   * @param value the new value of the '<em>Artifact Matcher Ref</em>' reference.
+   * @see #getArtifactMatcherRef()
    * @generated
    */
-  void setArtifact(XArtifactRef value);
+  void setArtifactMatcherRef(XArtifactMatcher value);
 
   /**
    * Returns the value of the '<em><b>Access Rules</b></em>' containment reference list.

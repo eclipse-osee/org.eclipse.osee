@@ -239,7 +239,7 @@ public class AccessContextItemProvider
       newChildDescriptors.add
          (createChildParameter
             (OseeDslPackage.Literals.ACCESS_CONTEXT__ACCESS_RULES,
-             OseeDslFactory.eINSTANCE.createArtifactInstanceRestriction()));
+             OseeDslFactory.eINSTANCE.createArtifactMatchRestriction()));
 
       newChildDescriptors.add
          (createChildParameter

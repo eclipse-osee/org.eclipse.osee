@@ -9,6 +9,7 @@ import java.util.Stack;
 import org.eclipse.osee.framework.core.dsl.services.OseeDslGrammarAccess;
 import org.eclipse.xtext.GrammarUtil;
 import org.eclipse.xtext.Keyword;
+import org.eclipse.xtext.formatting.IIndentationInformation;
 import org.eclipse.xtext.formatting.impl.AbstractDeclarativeFormatter;
 import org.eclipse.xtext.formatting.impl.FormattingConfig;
 
@@ -17,7 +18,7 @@ import org.eclipse.xtext.formatting.impl.FormattingConfig;
  * http://www.eclipse.org/Xtext/documentation/latest/xtext.html#formatting on how and when to use it Also see
  * {@link org.eclipse.xtext.xtext.XtextFormattingTokenSerializer} as an example
  */
-public class OseeDslFormatter extends AbstractDeclarativeFormatter {
+public class OseeDslFormatter extends AbstractDeclarativeFormatter implements IIndentationInformation {
 
    private final List<String> KEYWORDS = Arrays.asList(new String[] {
       "attribute",
@@ -49,7 +50,9 @@ public class OseeDslFormatter extends AbstractDeclarativeFormatter {
       "artifact",
       "accessContext",
       "ALLOW",
-      "DENY"});
+      "DENY",
+      "AND",
+      "OR"});
 
    private boolean isKeywordEntry(String current) {
       return KEYWORDS.contains(current);
@@ -87,5 +90,10 @@ public class OseeDslFormatter extends AbstractDeclarativeFormatter {
       c.setLinewrap(0, 1, 2).before(access.getSL_COMMENTRule());
       c.setLinewrap(0, 1, 2).before(access.getML_COMMENTRule());
       c.setLinewrap(0, 1, 1).after(access.getML_COMMENTRule());
+   }
+
+   @Override
+   public String getIndentString() {
+      return "   ";
    }
 }
