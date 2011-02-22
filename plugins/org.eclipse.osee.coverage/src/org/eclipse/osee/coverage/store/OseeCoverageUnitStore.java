@@ -100,8 +100,8 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
          coverageUnit.setNotes(artifact.getSoleAttributeValueAsString(CoverageAttributeTypes.Notes, ""));
          coverageUnit.setFolder(artifact.isOfType(CoverageArtifactTypes.CoverageFolder));
          coverageUnit.setAssignees(artifact.getSoleAttributeValueAsString(CoverageAttributeTypes.Assignees, ""));
-         coverageUnit.setWorkProductTaskGuid(artifact.getSoleAttributeValueAsString(CoverageAttributeTypes.WorkProductTaskGuid,
-            ""));
+         coverageUnit.setWorkProductTaskGuid(artifact.getSoleAttributeValueAsString(
+            CoverageAttributeTypes.WorkProductTaskGuid, ""));
          coverageUnit.setNamespace(artifact.getSoleAttributeValueAsString(CoverageAttributeTypes.Namespace, ""));
          coverageUnit.setOrderNumber(artifact.getSoleAttributeValueAsString(CoverageAttributeTypes.Order, ""));
          coverageUnit.setLocation(artifact.getSoleAttributeValueAsString(CoverageAttributeTypes.Location, ""));
@@ -173,12 +173,19 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
       }
       if (Strings.isValid(coverageUnit.getNotes())) {
          artifact.setSoleAttributeFromString(CoverageAttributeTypes.Notes, coverageUnit.getNotes());
+      } else {
+         artifact.deleteAttributes(CoverageAttributeTypes.Notes);
       }
       if (Strings.isValid(coverageUnit.getNamespace())) {
          artifact.setSoleAttributeFromString(CoverageAttributeTypes.Namespace, coverageUnit.getNamespace());
+      } else {
+         artifact.deleteAttributes(CoverageAttributeTypes.Namespace);
       }
       if (Strings.isValid(coverageUnit.getWorkProductTaskGuid())) {
-         artifact.setSoleAttributeFromString(CoverageAttributeTypes.WorkProductTaskGuid, coverageUnit.getWorkProductTaskGuid());
+         artifact.setSoleAttributeFromString(CoverageAttributeTypes.WorkProductTaskGuid,
+            coverageUnit.getWorkProductTaskGuid());
+      } else {
+         artifact.deleteAttributes(CoverageAttributeTypes.WorkProductTaskGuid);
       }
       if (coverageUnit.getFileContentsProvider() != null && coverageUnit.getFileContentsProvider() != OseeCoverageUnitFileContentsProvider.getInstance(branch)) {
          String fileContents = coverageUnit.getFileContents();
@@ -189,12 +196,18 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
       }
       if (Strings.isValid(coverageUnit.getOrderNumber())) {
          artifact.setSoleAttributeFromString(CoverageAttributeTypes.Order, coverageUnit.getOrderNumber());
+      } else {
+         artifact.deleteAttributes(CoverageAttributeTypes.Order);
       }
       if (Strings.isValid(coverageUnit.getAssignees())) {
          artifact.setSoleAttributeFromString(CoverageAttributeTypes.Assignees, coverageUnit.getAssignees());
+      } else {
+         artifact.deleteAttributes(CoverageAttributeTypes.Assignees);
       }
       if (Strings.isValid(coverageUnit.getLocation())) {
          artifact.setSoleAttributeFromString(CoverageAttributeTypes.Location, coverageUnit.getLocation());
+      } else {
+         artifact.deleteAttributes(CoverageAttributeTypes.Location);
       }
       if (coverageUnit.getParent() != null) {
          Artifact parentArt = ArtifactQuery.getArtifactFromId(coverageUnit.getParent().getGuid(), branch);
