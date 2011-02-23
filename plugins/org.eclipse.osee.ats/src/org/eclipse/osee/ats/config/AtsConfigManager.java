@@ -181,7 +181,7 @@ public class AtsConfigManager extends AbstractOperation {
          Artifact workDefArt =
             AtsWorkDefinitionProvider.get().importWorkDefinitionToDb(workDef, name, resultData, transaction);
 
-         Artifact folder = ArtifactQuery.getArtifactFromToken(AtsArtifactToken.WorkDefinitionsFolder);
+         Artifact folder = AtsUtil.getFromToken(AtsArtifactToken.WorkDefinitionsFolder);
          folder.addChild(workDefArt);
          folder.persist(transaction);
       } else {

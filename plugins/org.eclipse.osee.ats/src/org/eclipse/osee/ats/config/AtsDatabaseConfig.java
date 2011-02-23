@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.config;
 
+import java.util.Arrays;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.AtsArtifactToken;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
@@ -76,18 +77,18 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
          rootArt.addChild(headingArt);
          headingArt.persist(transaction);
       }
-      for (AtsArtifactToken token : Arrays.asList(AtsArtifactToken.TopActionableItem,
-         AtsArtifactToken.TopTeamDefinition, AtsArtifactToken.ConfigFolder, //
+      for (IArtifactToken token : Arrays.asList(AtsArtifactToken.TopActionableItem, AtsArtifactToken.TopTeamDefinition,
+         AtsArtifactToken.ConfigFolder, //
          AtsArtifactToken.WorkDefinitionsFolder)) {
-         Artifact art = OseeSystemArtifacts.getOrCreateArtifact(token);
+         Artifact art = OseeSystemArtifacts.getOrCreateArtifact(token, atsBranch);
          headingArt.addChild(art);
          art.persist(transaction);
       }
       if (AtsUtil.dbInitWorkItemDefs()) {
-         for (AtsArtifactToken token : Arrays.asList(AtsArtifactToken.WorkFlowsFolder, //
+         for (IArtifactToken token : Arrays.asList(AtsArtifactToken.WorkFlowsFolder, //
             AtsArtifactToken.WorkPagesFolder, AtsArtifactToken.WorkWidgetsFolder, //
             AtsArtifactToken.WorkRulesFolder)) {
-            Artifact art = OseeSystemArtifacts.getOrCreateArtifact(token);
+            Artifact art = OseeSystemArtifacts.getOrCreateArtifact(token, atsBranch);
             headingArt.addChild(art);
             art.persist(transaction);
          }

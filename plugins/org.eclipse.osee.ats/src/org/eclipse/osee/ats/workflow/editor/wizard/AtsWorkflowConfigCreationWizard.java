@@ -72,7 +72,7 @@ public class AtsWorkflowConfigCreationWizard extends Wizard implements INewWizar
          Artifact workDefArt =
             AtsWorkDefinitionProvider.get().importWorkDefinitionToDb(workDef, workDefName, resultData, transaction);
 
-         Artifact folder = ArtifactQuery.getArtifactFromToken(AtsArtifactToken.WorkDefinitionsFolder);
+         Artifact folder = AtsUtil.getFromToken(AtsArtifactToken.WorkDefinitionsFolder);
          folder.addChild(workDefArt);
          folder.persist(transaction);
 

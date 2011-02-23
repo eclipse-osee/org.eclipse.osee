@@ -39,4 +39,5 @@ public final class AtsArtifactToken {
    private AtsArtifactToken() {
       // Constants
    }
+
 }
