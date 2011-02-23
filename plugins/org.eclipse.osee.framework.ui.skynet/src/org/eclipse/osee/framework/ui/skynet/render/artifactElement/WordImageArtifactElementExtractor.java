@@ -95,6 +95,9 @@ public class WordImageArtifactElementExtractor implements IElementExtractor {
 
       for (int i = 0; i < nodeList.getLength(); i++) {
          Element element = (Element) nodeList.item(i);
+         if (oleDataElement == null && element.getNodeName().endsWith("docOleData")) {
+            oleDataElement = element;
+         }
          if (parseState == ParseState.LOOKING_FOR_START && isArtifactEditTag(element, true)) {
             parseState = ParseState.LOOKING_FOR_END;
             newArtifactElement = handleStartElement(linkBuilder, artifactElements, element);

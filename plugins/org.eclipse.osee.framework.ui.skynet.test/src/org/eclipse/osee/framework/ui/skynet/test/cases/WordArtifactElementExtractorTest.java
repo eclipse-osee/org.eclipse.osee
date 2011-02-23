@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.test.cases;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -35,6 +37,7 @@ import org.xml.sax.SAXException;
  * @author Jeff C. Phillips
  */
 public class WordArtifactElementExtractorTest {
+   private static final String EQUATION_TEST = "support/equation.xml";
    private final static String WORDML_START =
       "<w:wordDocument xmlns:w=\"http://schemas.microsoft.com/office/word/2003/wordml\" xmlns:v=\"urn:schemas-microsoft-com:vml\" xmlns:w10=\"urn:schemas-microsoft-com:office:word\" xmlns:sl=\"http://schemas.microsoft.com/schemaLibrary/2003/core\" xmlns:aml=\"http://schemas.microsoft.com/aml/2001/core\" xmlns:wx=\"http://schemas.microsoft.com/office/word/2003/auxHint\" xmlns:o=\"urn:schemas-microsoft-com:office:office\" xmlns:dt=\"uuid:C2F41010-65B3-11d1-A29F-00AA00C14882\" xmlns:wsp=\"http://schemas.microsoft.com/office/word/2003/wordml/sp2\"  xmlns:ns0=\"http:/ \" xmlns:ns1=\"http://www.w3.org/2001/XMLSchema\" w:macrosPresent=\"no\" w:embeddedObjPresent=\"no\" w:ocxPresent=\"no\" xml:space=\"preserve\">";
    private final static String WORDML_END = "</w:wordDocument>";
@@ -53,18 +56,38 @@ public class WordArtifactElementExtractorTest {
    private final static String MULIT_2007_EDIT =
       "<w:body><wx:sub-section><wx:sub-section><wx:sub-section><w:p wsp:rsidR=\"00964C23\" wsp:rsidRDefault=\"00DB6B9D\"><w:pPr><w:pStyle w:val=\"Heading3\"/><w:listPr><wx:t wx:val=\"3.2.3  \"/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Aircraft Systems Management Subsystem Crew Interface</w:t></w:r></w:p><w:p wsp:rsidR=\"00964C23\" wsp:rsidRDefault=\"00964C23\"><w:r><w:pict><v:shapetype id=\"_x0000_t75\" coordsize=\"21600,21600\" o:spt=\"75\" o:preferrelative=\"t\" path=\"m@4@5l@4@11@9@11@9@5xe\" filled=\"f\" stroked=\"f\"><v:stroke joinstyle=\"miter\"/><v:formulas><v:f eqn=\"if lineDrawn pixelLineWidth 0\"/><v:f eqn=\"sum @0 1 0\"/><v:f eqn=\"sum 0 0 @1\"/><v:f eqn=\"prod @2 1 2\"/><v:f eqn=\"prod @3 21600 pixelWidth\"/><v:f eqn=\"prod @3 21600 pixelHeight\"/><v:f eqn=\"sum @0 0 1\"/><v:f eqn=\"prod @6 1 2\"/><v:f eqn=\"prod @7 21600 pixelWidth\"/><v:f eqn=\"sum @8 21600 0\"/><v:f eqn=\"prod @7 21600 pixelHeight\"/><v:f eqn=\"sum @10 21600 0\"/></v:formulas><v:path o:extrusionok=\"f\" gradientshapeok=\"t\" o:connecttype=\"rect\"/><o:lock v:ext=\"edit\" aspectratio=\"t\"/></v:shapetype><w:binData w:name=\"wordml://02000001.jpg\" xml:space=\"preserve\">/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAAUAEcDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwDuI/HV3L4l1XTJvEnhmwtrKK1aC5uYSRd+bEHZkzcKNoPTBbhhz3Ol478fWvhjR9TFhcW0us2awt9nmRmQeY4AViMDcU3sF3bsKWxgGix0bxLpfi3Xtahs9JnTVltSYnv5IzC0UW1hkQncMk4PHAHHOBleLPh/rWrz+Kv7Nu9PWHXls2b7TvDRtAcbPlBGCAG3c9Nu3ncPfhHBSxEPaWUEovdav3OZOyv/ADPXe2ljJ81nY0ta8fjw7N4nluxDdw6V9mWC2tYpRKryoSBM5GxVJxhlzgcHLEA9pBMtxBHMgcJIodRIhRgCM8qwBB9iARXAa98P9Q1l/G4W7tok11bI2pO4lWgAyHGOASAMjOAc44wen/4S/wAPwfub/XtGtryP5Z4P7QjPlyDhlycHg5HIB9hXHiKNGdOH1dXlpe3+GHS383N+vQpN31ObtPGOsap4k1fSrW40azvrG+8iHS7+OVJbqEYPmLKG/iUOwxG2BtzkHJ2bfxxp0/iHW9KeG5hGkrF5k0kD4kdyRtUbckk7Ao6yFjtBAycbxb4O1jxRJIj2+jRTx3Mb2OswySxXdrErBsbAp3sMvj94qkkHCkVY1Hwjrp1Xxbd6RqcNpJrltbiG4ywkt5Yl2bcAH5WXPzghlJ4U4zXTKGCqRV2otpddneN3dJ3VuZ6rmVnvoT7yNh/G3h+LTdQv5r14YdOZEu1mtpY5YS+Nm6NlD4bcMHGDz6GoLTxvY33i+Hw9BZ6gsslm90ZZ7OWELhgoG10Bwfm+Y4XIABJOBx0vww1N9D8WWNpBpOnJqy2KWlvDcSSRwiAjducxgktjOcEkk59a7WXw/dj4jW/iSGSF7ZtMbT54nYq6fvPMV1wCGyeCDtx1yelZ1KGAgpcsm3Z21W/LFrZd3Jb20GnNnR0UUV45oFFFFABRRRQAUUUUAFFFFABRRRQB/9k=</w:binData><v:shape id=\"_x0000_i1025\" type=\"#_x0000_t75\" style=\"width:53.25pt;height:15pt\"><v:imagedata src=\"wordml://02000001.jpg\" o:title=\"AAABDIyk7NQAjIItIqz3cQ\"/></v:shape></w:pict></w:r></w:p><w:p wsp:rsidR=\"00193380\" wsp:rsidRDefault=\"00236054\" wsp:rsidP=\"007117E2\"><w:pPr><w:pStyle w:val=\"paranormal\"/></w:pPr><w:r><w:t>One</w:t></w:r></w:p><w:p wsp:rsidR=\"00964C23\" wsp:rsidRDefault=\"00964C23\"><w:r><w:pict><w:binData w:name=\"wordml://02000002.jpg\" xml:space=\"preserve\">/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAAUAEcDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD1jUPE2oR+NF8NabpdtcTf2f8Ab2mubxoVC+YY9uFjck5wf886s2t6fYIE1XUNPsrpIFnmie6UCNSQu7LbSV3naGIGTjoeK5HxB4emufiUmsXXhn+29KGji1CYt32zecWztldei55H9761V17wjfal4hvL210VI7U+EpbCzjYxAwXLFgsYAbCkIxXI+XBIzivYWGwk1BOSj7t3qt+2r0+5fMzvJXO11/XrTQNMubmaSFrmO2muILV5gj3HlIXYLnk8DkgHGc1Pouo/2xoOnan5Xk/bLaO48vdu2b1DYzgZxnrivMdQ8E681ra7dJhvDJ4QXSHiedB5FyhVwWzweR8pXPzKMlR8w9H8MWc+neE9GsbqPy7m2sYIZUyDtdY1BGRweQelY4rD4elh04TUpX79PS44tt6mUnifVb3xVrWiaZpFlL/ZXkeZNc37Rb/NTeMKsT9MEdfSp/GHi+08J6Je3mIbq8tokm+w/aAkjRtKse/oSFy3XGMjFc3J4cdPH/iXU9T8Hf21Z332X7HJttZNuyLa/EsilcnHbnb9KyvG/gnXtSuvGH2HSYb4av8AYJrSUzovktCNjgbuQ+CfQbWb5s/KeylhcFOvTUpJRtBvXdvk5k3zabyb0VrNIlykkzstT8c2OhTa62rrDBaaZ5IieO6SWW5eRC2zyh8yNxxu6jLcAEjpoJ4rmCOeCVJYZVDxyRsGV1IyCCOCCO9eZeJfBeuas/xCW2tkA1ZbBrFnlUCYwgF165U5GBuwMkc45r02CRpYI5HheF3UM0UhBZCR907SRkdOCR7muHF0sPClCVJ+87X1/uQe3q5J+a6bFRbvqSUUUV55YUUUUAFZV54Y8P6jdPdX2h6Zc3MmN809pG7tgYGSRk8AD8KKKuFScHeDt6Ba5owQRW0EcEESRQxKEjjjUKqKBgAAcAAdqkooqG76sAooooAKKKKAP//Z</w:binData><v:shape id=\"_x0000_i1026\" type=\"#_x0000_t75\" style=\"width:53.25pt;height:15pt\"><v:imagedata src=\"wordml://02000002.jpg\" o:title=\"AAABDIyk7NQAjIItIqz3cQ\"/></v:shape></w:pict></w:r></w:p><w:p wsp:rsidR=\"00964C23\" wsp:rsidRDefault=\"00964C23\"/><w:p wsp:rsidR=\"00964C23\" wsp:rsidRDefault=\"00964C23\"><w:pPr><w:rPr><w:vanish/></w:rPr></w:pPr><w:r><w:rPr><w:vanish/></w:rPr><w:fldChar w:fldCharType=\"begin\"/></w:r><w:r wsp:rsidR=\"00DB6B9D\"><w:rPr><w:vanish/></w:rPr><w:instrText>LISTNUM\"listreset\"\\l1\\s0</w:instrText></w:r><w:r><w:rPr><w:vanish/></w:rPr><w:fldChar w:fldCharType=\"end\"/><wx:t wx:val=\" .\"/></w:r></w:p></wx:sub-section><wx:sub-section><w:p wsp:rsidR=\"00964C23\" wsp:rsidRDefault=\"00DB6B9D\"><w:pPr><w:pStyle w:val=\"Heading3\"/><w:listPr><wx:t wx:val=\"3.2.4  \"/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Controls and Display Subsystem Crew Interface</w:t></w:r></w:p><w:p wsp:rsidR=\"00964C23\" wsp:rsidRDefault=\"00964C23\"><w:r><w:pict><v:shape id=\"_x0000_i1027\" type=\"#_x0000_t75\" style=\"width:53.25pt;height:15pt\"><v:imagedata src=\"wordml://02000001.jpg\" o:title=\"AAABDIpXNGsAlFP5ZetuAg\"/></v:shape></w:pict></w:r></w:p><w:p wsp:rsidR=\"00494E1B\" wsp:rsidRDefault=\"00236054\" wsp:rsidP=\"00494E1B\"><w:pPr><w:pStyle w:val=\"paranormal\"/></w:pPr><w:r><w:t>Two</w:t></w:r></w:p><w:p wsp:rsidR=\"00964C23\" wsp:rsidRDefault=\"00964C23\"><w:r><w:pict><v:shape id=\"_x0000_i1028\" type=\"#_x0000_t75\" style=\"width:53.25pt;height:15pt\"><v:imagedata src=\"wordml://02000002.jpg\" o:title=\"AAABDIpXNGsAlFP5ZetuAg\"/></v:shape></w:pict></w:r></w:p><w:p wsp:rsidR=\"00964C23\" wsp:rsidRDefault=\"00964C23\"/><w:p wsp:rsidR=\"00964C23\" wsp:rsidRDefault=\"00964C23\"><w:pPr><w:rPr><w:vanish/></w:rPr></w:pPr><w:r><w:rPr><w:vanish/></w:rPr><w:fldChar w:fldCharType=\"begin\"/></w:r><w:r wsp:rsidR=\"00DB6B9D\"><w:rPr><w:vanish/></w:rPr><w:instrText>LISTNUM\"listreset\"\\l1\\s0</w:instrText></w:r><w:r><w:rPr><w:vanish/></w:rPr><w:fldChar w:fldCharType=\"end\"/><wx:t wx:val=\" .\"/></w:r></w:p></wx:sub-section></wx:sub-section></wx:sub-section><w:sectPr wsp:rsidR=\"00964C23\" wsp:rsidSect=\"00FC06D7\"><w:pgSz w:w=\"12240\" w:h=\"15840\" w:code=\"1\"/><w:pgMar w:top=\"1440\" w:right=\"1080\" w:bottom=\"1440\" w:left=\"1440\" w:header=\"432\" w:footer=\"432\" w:gutter=\"0\"/><w:pgNumType w:start=\"1\"/><w:cols w:space=\"475\"/><w:noEndnote/></w:sectPr></w:body>";
 
+   private static final String getExpectedContent() throws IOException {
+      InputStream inputStream = null;
+      try {
+         inputStream =
+            new BufferedInputStream(WordArtifactElementExtractorTest.class.getResourceAsStream(EQUATION_TEST));
+         String data = Lib.inputStreamToString(inputStream);
+         return data.replaceAll("\r?\n", "\r\n");
+      } finally {
+         Lib.close(inputStream);
+      }
+   }
+
    @org.junit.Test(expected = OseeCoreException.class)
    public void testEmptyChange() throws Exception {
       WordImageArtifactElementExtractor artifactElementExtractor =
-         new WordImageArtifactElementExtractor(getDocument(NO_CHANGE));
+         new WordImageArtifactElementExtractor(getDocumentWrapTags(NO_CHANGE));
       artifactElementExtractor.extractElements();
+   }
+
+   @org.junit.Test
+   public void testOLEObject() throws Exception {
+      WordImageArtifactElementExtractor artifactElementExtractor =
+         new WordImageArtifactElementExtractor(getDocument(getExpectedContent()));
+      artifactElementExtractor.extractElements();
+      Assert.assertTrue(artifactElementExtractor.getOleDataElement() != null);
    }
 
    @org.junit.Test
    public void test2007SimpleChange() throws Exception {
       OseeLinkBuilder builder = new OseeLinkBuilder();
       WordImageArtifactElementExtractor extractor =
-         new WordImageArtifactElementExtractor(getDocument(createTestString(builder, START_2007, END_2007,
+         new WordImageArtifactElementExtractor(getDocumentWrapTags(createTestString(builder, START_2007, END_2007,
             SIMPLE_2007_CHANGE)));
 
       Collection<Element> artElements = extractor.extractElements();
@@ -77,7 +100,7 @@ public class WordArtifactElementExtractorTest {
    public void test2007StartChange() throws Exception {
       OseeLinkBuilder builder = new OseeLinkBuilder();
       WordImageArtifactElementExtractor extractor =
-         new WordImageArtifactElementExtractor(getDocument(createTestString(builder, START_2007, END_2007,
+         new WordImageArtifactElementExtractor(getDocumentWrapTags(createTestString(builder, START_2007, END_2007,
             START_2007_CHANGE)));
 
       Collection<Element> artElements = extractor.extractElements();
@@ -92,7 +115,7 @@ public class WordArtifactElementExtractorTest {
    public void test2007EndChange() throws Exception {
       OseeLinkBuilder builder = new OseeLinkBuilder();
       WordImageArtifactElementExtractor extractor =
-         new WordImageArtifactElementExtractor(getDocument(createTestString(builder, START_2007, END_2007,
+         new WordImageArtifactElementExtractor(getDocumentWrapTags(createTestString(builder, START_2007, END_2007,
             END_2007_CHANGE)));
 
       Collection<Element> artElements = extractor.extractElements();
@@ -103,7 +126,8 @@ public class WordArtifactElementExtractorTest {
 
    @org.junit.Test
    public void testInBetweenChange2007Multi() throws Exception {
-      WordImageArtifactElementExtractor extractor = new WordImageArtifactElementExtractor(getDocument(MULIT_2007_EDIT));
+      WordImageArtifactElementExtractor extractor =
+         new WordImageArtifactElementExtractor(getDocumentWrapTags(MULIT_2007_EDIT));
 
       List<Element> artElements = extractor.extractElements();
       Assert.assertTrue("expected 2 got " + extractor.extractElements().size(), extractor.extractElements().size() == 2);
@@ -115,7 +139,7 @@ public class WordArtifactElementExtractorTest {
    public void test2003Change() throws Exception {
       OseeLinkBuilder builder = new OseeLinkBuilder();
       WordImageArtifactElementExtractor extractor =
-         new WordImageArtifactElementExtractor(getDocument(createTestString(builder, START_2003, END_2003,
+         new WordImageArtifactElementExtractor(getDocumentWrapTags(createTestString(builder, START_2003, END_2003,
             "</w:p><w:p><w:r><w:t>This is a test-x</w:t></w:r></w:p><w:p>")));
 
       Collection<Element> artElements = extractor.extractElements();
@@ -128,7 +152,7 @@ public class WordArtifactElementExtractorTest {
    public void test2003StartChange() throws Exception {
       OseeLinkBuilder builder = new OseeLinkBuilder();
       WordImageArtifactElementExtractor extractor =
-         new WordImageArtifactElementExtractor(getDocument(createTestString(builder, START_2003, END_2003,
+         new WordImageArtifactElementExtractor(getDocumentWrapTags(createTestString(builder, START_2003, END_2003,
             "<w:r><w:t>this This is a test that</w:t></w:r></w:p><w:p>")));
 
       Collection<Element> artElements = extractor.extractElements();
@@ -142,7 +166,7 @@ public class WordArtifactElementExtractorTest {
    @org.junit.Test
    public void testInBetweenChange2003Multi() throws Exception {
       WordImageArtifactElementExtractor extractor =
-         new WordImageArtifactElementExtractor(getDocument(MULULTI_2003_EDIT_MULTI_SECTION));
+         new WordImageArtifactElementExtractor(getDocumentWrapTags(MULULTI_2003_EDIT_MULTI_SECTION));
 
       List<Element> artElements = extractor.extractElements();
       Assert.assertTrue("expected 2 got " + extractor.extractElements().size(), extractor.extractElements().size() == 2);
@@ -159,7 +183,6 @@ public class WordArtifactElementExtractorTest {
          stringBuilder.append(linkBuilder.getEndEditImage(guid));
       }
       stringBuilder.append(end);
-      System.out.println(stringBuilder.toString());
       return stringBuilder.toString();
    }
 
@@ -173,7 +196,11 @@ public class WordArtifactElementExtractorTest {
       }
    }
 
+   private Document getDocumentWrapTags(String xmlString) throws ParserConfigurationException, SAXException, IOException {
+      return getDocument(WORDML_START + xmlString + WORDML_END);
+   }
+
    private Document getDocument(String xmlString) throws ParserConfigurationException, SAXException, IOException {
-      return Jaxp.readXmlDocument(WORDML_START + xmlString + WORDML_END);
+      return Jaxp.readXmlDocument(xmlString);
    }
 }
