@@ -159,7 +159,6 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
    protected void addPages() {
       OseeStatusContributionItemFactory.addTo(this, true);
       setPartName(getEditorInput().getName());
-      setTitleImage(getEditorInput().getImage());
 
       formPage = new ArtifactFormPage(this, "ArtifactFormPage", null);
       try {
@@ -231,7 +230,6 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
       public IStatus runInUIThread(IProgressMonitor monitor) {
          try {
             setPartName(getEditorInput().getName());
-            setTitleImage(getEditorInput().getImage());
             ArtifactEditorOutlinePage outlinePage = getOutlinePage();
             outlinePage.refresh();
 

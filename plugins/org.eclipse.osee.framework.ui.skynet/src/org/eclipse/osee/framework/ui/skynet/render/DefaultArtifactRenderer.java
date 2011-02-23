@@ -171,8 +171,10 @@ public class DefaultArtifactRenderer implements IRenderer {
    public ImageDescriptor getCommandImageDescriptor(Command command, Artifact artifact) {
       String id = command.getId();
       ImageDescriptor descriptor;
-      if (OPEN_MASS_EDITOR_CMD_ID.equals(id)) {
+      if (OPEN_ART_EDITOR_CMD_ID.equals(id)) {
          descriptor = ImageManager.getImageDescriptor(FrameworkImage.ARTIFACT_EDITOR);
+      } else if (OPEN_MASS_EDITOR_CMD_ID.equals(id)) {
+         descriptor = ImageManager.getImageDescriptor(FrameworkImage.ARTIFACT_MASS_EDITOR);
       } else if (OPEN_ART_EXPLORER_CMD_ID.equals(id)) {
          descriptor = ImageManager.getImageDescriptor(FrameworkImage.ARTIFACT_EXPLORER);
       } else if (OPEN_ART_HISTORY_CMD_ID.equals(id)) {

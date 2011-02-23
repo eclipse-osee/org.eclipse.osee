@@ -13,7 +13,8 @@ package org.eclipse.osee.framework.ui.skynet.artifact.editor;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
@@ -45,11 +46,11 @@ public abstract class BaseArtifactEditorInput implements IEditorInput {
 
    @Override
    public ImageDescriptor getImageDescriptor() {
-      return ArtifactImageManager.getImageDescriptor(artifact);
+      return ImageManager.getImageDescriptor(FrameworkImage.ARTIFACT_EDITOR);
    }
 
    public Image getImage() {
-      return ArtifactImageManager.getImage(artifact);
+      return ImageManager.getImage(FrameworkImage.ARTIFACT_EDITOR);
    }
 
    @Override

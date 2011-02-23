@@ -23,6 +23,7 @@ public enum FrameworkImage implements KeyedImage {
    ADD_GREEN("add.png"),
    ARCHIVE("archive.gif"),
    ARTIFACT_EDITOR("artifact_editor.gif"),
+   ARTIFACT_MASS_EDITOR("artifact_mass_editor.gif"),
    ARTIFACT_EXPLORER("artifact_explorer.gif"),
    ARTIFACT_IMPORT_WIZARD("artifact_import_wiz.png"),
    ARTIFACT_SEARCH("artifact_search.gif"),

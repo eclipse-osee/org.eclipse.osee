@@ -60,8 +60,8 @@ public class DefineNavigateViewItems implements XNavigateViewItems {
 
       addExtensionPointItems(items);
       items.add(new XNavigateItemAction(null, new CompareTwoStringsAction(), FrameworkImage.EDIT));
-      items.add(new XNavigateItemOperation(null, FrameworkImage.GEAR, MassEditDirtyArtifactOperation.NAME,
-         new MassEditDirtyArtifactOperation()));
+      items.add(new XNavigateItemOperation(null, FrameworkImage.ARTIFACT_MASS_EDITOR,
+         MassEditDirtyArtifactOperation.NAME, new MassEditDirtyArtifactOperation()));
 
       return items;
    }
