@@ -78,9 +78,14 @@ public class WorkDefinitionFactory {
                      try {
                         WorkRuleDefinition workRule = (WorkRuleDefinition) workItem;
                         // All rules in DB should map to RuleDefinitionOption 
-                        RuleDefinitionOption ruleOption =
-                           RuleDefinitionOption.valueOf(workRule.getName().replaceFirst("^ats", ""));
-                        RuleDefinition ruleDef = new RuleDefinition(ruleOption);
+                        RuleDefinition ruleDef = null;
+                        String workRuleName = workRule.getName().replaceFirst("^ats", "");
+                        try {
+                           RuleDefinitionOption ruleOption = RuleDefinitionOption.valueOf(workRuleName);
+                           ruleDef = new RuleDefinition(ruleOption);
+                        } catch (IllegalArgumentException ex) {
+                           ruleDef = new RuleDefinition(workRuleName);
+                        }
                         ruleDef.setDescription(workRule.getDescription());
                         copyKeyValuePair(ruleDef, workRule);
                         idToRule.put(ruleDef.getName(), ruleDef);
