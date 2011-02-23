@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.plugin.core.PluginUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.osgi.framework.Bundle;
 
 /**
@@ -68,14 +69,16 @@ public final class AtsWorkDefinitionSheetProviders {
       return null;
    }
 
-   public static void initializeDatabase() throws OseeCoreException {
+   public static void initializeDatabase(XResultData resultData, boolean onlyWorkDefinitions) throws OseeCoreException {
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Import ATS Work Definitions");
       Artifact folder = AtsUtil.getFromToken(AtsArtifactToken.WorkDefinitionsFolder);
       for (WorkDefinitionSheet sheet : getWorkDefinitionSheets()) {
          if (isValidSheet(sheet)) {
             String logStr = String.format("Importing ATS sheet [%s]", sheet.getName());
             System.out.println(logStr);
-            Artifact artifact = AtsWorkDefinitionProvider.get().importWorkDefinitionSheetToDb(sheet, transaction);
+            Artifact artifact =
+               AtsWorkDefinitionProvider.get().importWorkDefinitionSheetToDb(sheet, resultData, onlyWorkDefinitions,
+                  transaction);
             if (artifact != null) {
                folder.addChild(artifact);
                artifact.persist(transaction);
@@ -89,7 +92,7 @@ public final class AtsWorkDefinitionSheetProviders {
       SkynetTransaction transaction =
          new SkynetTransaction(AtsUtil.getAtsBranch(), "Import ATS AIs and Team Definitions");
       for (WorkDefinitionSheet sheet : getWorkDefinitionSheets()) {
-         if (sheet.getName().contains("AIsAndTeams") && isValidSheet(sheet)) {
+         if (isValidSheet(sheet)) {
             String logStr = String.format("Importing ATS AIs and Teams sheet [%s]", sheet.getName());
             OseeLog.log(AtsPlugin.class, Level.INFO, logStr);
             AtsWorkDefinitionProvider.get().importAIsAndTeamsToDb(sheet, transaction);

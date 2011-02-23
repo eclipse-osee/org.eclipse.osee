@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.navigate;
+package org.eclipse.osee.ats.workdef.config;
 
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.workdef.AtsWorkDefinitionSheetProviders;
@@ -16,9 +16,9 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLo
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 
-public class ImportAIsAndTeamDefinitions extends XNavigateItemAction {
+public class ImportAIsAndTeamDefinitionsItem extends XNavigateItemAction {
 
-   public ImportAIsAndTeamDefinitions(XNavigateItem parent) {
+   public ImportAIsAndTeamDefinitionsItem(XNavigateItem parent) {
       super(parent, "Import AIs and Team Definition to DB", AtsImage.WORK_DEFINITION);
    }
 

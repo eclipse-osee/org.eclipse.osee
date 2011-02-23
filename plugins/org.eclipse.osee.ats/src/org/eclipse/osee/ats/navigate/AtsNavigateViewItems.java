@@ -41,6 +41,8 @@ import org.eclipse.osee.ats.util.ConvertAtsFor097Database;
 import org.eclipse.osee.ats.util.ConvertAtsSingleFor097Database;
 import org.eclipse.osee.ats.util.DoesNotWorkItemAts;
 import org.eclipse.osee.ats.util.Import.ImportActionsViaSpreadsheetBlam;
+import org.eclipse.osee.ats.workdef.config.ImportAIsAndTeamDefinitionsItem;
+import org.eclipse.osee.ats.workdef.config.ImportWorkDefinitionsItem;
 import org.eclipse.osee.ats.world.search.ActionableItemWorldSearchItem;
 import org.eclipse.osee.ats.world.search.ArtifactTypeSearchItem;
 import org.eclipse.osee.ats.world.search.ArtifactTypeWithInheritenceSearchItem;
@@ -185,7 +187,8 @@ public final class AtsNavigateViewItems implements XNavigateViewItems {
          new ConvertAtsSingleFor097Database(dbConvertItems);
          new ConvertWorkFlowDefinitions(dbConvertItems);
          new ConvertAIsAndTeamDefinitions(dbConvertItems);
-         new ImportAIsAndTeamDefinitions(dbConvertItems);
+         new ImportAIsAndTeamDefinitionsItem(dbConvertItems);
+         new ImportWorkDefinitionsItem(dbConvertItems);
 
          new AtsNotificationNavigateItem(adminItems);
          new AtsNotificationNavigateItem(adminItems, true);

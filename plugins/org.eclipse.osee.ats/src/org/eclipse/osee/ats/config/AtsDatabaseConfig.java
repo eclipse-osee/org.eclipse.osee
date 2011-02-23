@@ -39,7 +39,7 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
    public void run() throws OseeCoreException {
       createAtsFolders();
 
-      AtsWorkDefinitionSheetProviders.initializeDatabase();
+      AtsWorkDefinitionSheetProviders.initializeDatabase(new XResultData(false), false);
 
       Artifact topAi = ActionableItemArtifact.getTopActionableItem();
       topAi.setSoleAttributeValue(AtsAttributeTypes.Actionable, false);

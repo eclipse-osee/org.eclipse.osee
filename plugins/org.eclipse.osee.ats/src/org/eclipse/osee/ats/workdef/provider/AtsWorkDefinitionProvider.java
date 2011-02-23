@@ -12,6 +12,7 @@ import java.io.OutputStream;
 import java.util.logging.Level;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.emf.common.util.WrappedException;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
 import org.eclipse.osee.ats.internal.AtsPlugin;
@@ -19,6 +20,7 @@ import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workdef.WorkDefinition;
 import org.eclipse.osee.ats.workdef.WorkDefinitionSheet;
+import org.eclipse.osee.ats.workdef.config.ImportAIsAndTeamDefinitionsToDb;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -31,6 +33,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.ws.AWorkspace;
@@ -60,7 +63,7 @@ public class AtsWorkDefinitionProvider {
       importer.execute();
    }
 
-   public Artifact importWorkDefinitionSheetToDb(WorkDefinitionSheet sheet, SkynetTransaction transaction) throws OseeCoreException {
+   public Artifact importWorkDefinitionSheetToDb(WorkDefinitionSheet sheet, XResultData resultData, boolean onlyWorkDefinitions, SkynetTransaction transaction) throws OseeCoreException {
       String modelName = sheet.getFile().getName();
       AtsDsl atsDsl = loadAtsDslFromFile(modelName, sheet);
       ConvertAtsDslToWorkDefinition converter = new ConvertAtsDslToWorkDefinition(modelName, atsDsl);
@@ -78,15 +81,16 @@ public class AtsWorkDefinitionProvider {
             throw new OseeStateException("WorkDefinitionSheet [%s] internal id [%s] does not match sheet name", sheet,
                workDef.getIds().iterator().next());
          }
-         XResultData resultData = new XResultData();
          artifact = importWorkDefinitionToDb(workDef, sheet.getName(), resultData, transaction);
          if (resultData.getNumErrors() > 0) {
             throw new OseeStateException("Error importing WorkDefinitionSheet [%s] into database [%s]",
                sheet.getName(), resultData.toString());
          }
       }
-      ImportAIsAndTeamDefinitionsToDb importer = new ImportAIsAndTeamDefinitionsToDb(modelName, atsDsl, transaction);
-      importer.execute();
+      if (!onlyWorkDefinitions) {
+         ImportAIsAndTeamDefinitionsToDb importer = new ImportAIsAndTeamDefinitionsToDb(modelName, atsDsl, transaction);
+         importer.execute();
+      }
 
       return artifact;
    }
@@ -96,18 +100,28 @@ public class AtsWorkDefinitionProvider {
       try {
          artifact =
             ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.WorkDefinition, name, AtsUtil.getAtsBranch());
-         if (artifact != null) {
-            throw new OseeStateException("WorkDefinition [%s] already loaded into database", name);
-         }
       } catch (ArtifactDoesNotExist ex) {
          // do nothing; this is what we want
       }
-      artifact = ArtifactTypeManager.addArtifact(AtsArtifactTypes.WorkDefinition, AtsUtil.getAtsBranch(), name);
+      if (artifact != null) {
+         String importStr = String.format("WorkDefinition [%s] already loaded into database", workDef.getName());
+         if (!MessageDialog.openConfirm(AWorkbench.getActiveShell(), "Overwrite Work Definition",
+            importStr + "\n\nOverwrite?")) {
+            OseeLog.log(AtsPlugin.class, Level.INFO, importStr + "...skipping");
+            resultData.log(importStr + "...skipping");
+            return artifact;
+         } else {
+            resultData.log(importStr + "...overwriting");
+         }
+      } else {
+         resultData.log(String.format("Imported new WorkDefinition [%s]", workDef.getName()));
+         artifact = ArtifactTypeManager.addArtifact(AtsArtifactTypes.WorkDefinition, AtsUtil.getAtsBranch(), name);
+      }
       artifact.setSoleAttributeValue(AtsAttributeTypes.DslSheet, workFlowDefinitionToString(workDef, resultData));
       artifact.persist(transaction);
+
       return artifact;
    }
-
    private class StringOutputStream extends OutputStream {
       private final StringBuilder string = new StringBuilder();
 

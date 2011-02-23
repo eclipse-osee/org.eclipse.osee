@@ -3,7 +3,7 @@
  *
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
-package org.eclipse.osee.ats.workdef.provider;
+package org.eclipse.osee.ats.workdef.config;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,6 +19,8 @@ import org.eclipse.osee.ats.dsl.atsDsl.VersionDef;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.workdef.provider.BooleanDefUtil;
+import org.eclipse.osee.ats.workdef.provider.UserRefUtil;
 import org.eclipse.osee.framework.core.data.IOseeUser;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -159,6 +161,8 @@ public class ImportAIsAndTeamDefinitionsToDb {
          newVer.setSoleAttributeValue(AtsAttributeTypes.AllowCreateBranch,
             BooleanDefUtil.get(dslVersionDef.getAllowCreateBranch(), true));
          newVer.setSoleAttributeValue(AtsAttributeTypes.NextVersion, BooleanDefUtil.get(dslVersionDef.getNext(), false));
+         newVer.setSoleAttributeValue(AtsAttributeTypes.Released,
+            BooleanDefUtil.get(dslVersionDef.getReleased(), false));
          if (Strings.isValid(dslVersionDef.getBaselineBranchGuid())) {
             newVer.setSoleAttributeValue(AtsAttributeTypes.BaselineBranchGuid, dslVersionDef.getBaselineBranchGuid());
          }
