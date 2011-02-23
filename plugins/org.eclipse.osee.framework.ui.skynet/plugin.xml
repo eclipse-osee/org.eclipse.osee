@@ -1740,4 +1740,12 @@
             sequence="M1++">
       </key>
    </extension>
+   <extension
+         id="SetWorkbenchOverrideIconBlam"
+         name="SetWorkbenchOverrideIconBlam"
+         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+      <Operation
+            className="org.eclipse.osee.framework.ui.skynet.blam.operation.SetWorkbenchOverrideIconBlam">
+      </Operation>
+   </extension>
 </plugin>

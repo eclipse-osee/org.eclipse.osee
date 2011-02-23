@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 import org.eclipse.osee.framework.ui.plugin.OseeFormActivator;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactSaveNotificationHandler;
 import org.eclipse.osee.framework.ui.skynet.artifact.IAccessPolicyHandlerService;
+import org.eclipse.osee.framework.ui.skynet.blam.operation.SetWorkbenchOverrideIconBlam;
 import org.eclipse.osee.framework.ui.skynet.cm.IOseeCmService;
 import org.eclipse.osee.framework.ui.skynet.internal.AccessPolicyServiceRegHandler;
 import org.eclipse.osee.framework.ui.skynet.internal.ArtifactPromptService;
@@ -106,6 +107,8 @@ public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEven
       for (ServiceDependencyTracker tracker : trackers.values()) {
          tracker.open();
       }
+
+      SetWorkbenchOverrideIconBlam.reloadOverrideImage();
 
       OseeEventManager.addListener(this);
 
