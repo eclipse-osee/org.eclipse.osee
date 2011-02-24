@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.server.admin.internal.Activator;
 import org.eclipse.osee.framework.server.admin.management.AdminCommands;
 import org.eclipse.osee.framework.server.admin.management.ConsolidateArtifactVersionsCommand;
-import org.eclipse.osee.framework.server.admin.management.GarbageCollectionCommand;
 import org.eclipse.osee.framework.server.admin.management.SchedulingCommand;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 import org.eclipse.osgi.framework.console.CommandProvider;
@@ -69,10 +68,6 @@ public class ServerAdminCommandProvider implements CommandProvider {
       return Operations.executeAsJob(new ConsolidateArtifactVersionsCommand(ci), false);
    }
 
-   public Job _gc(CommandInterpreter ci) {
-      return Operations.executeAsJob(new GarbageCollectionCommand(ci), false);
-   }
-
    public Job _schedule(CommandInterpreter ci) {
       return Operations.executeAsJob(new SchedulingCommand(ci), false);
    }
@@ -107,7 +102,6 @@ public class ServerAdminCommandProvider implements CommandProvider {
       sb.append("        tx_currents [true | false] - detect and fix tx current and mod types inconsistencies on archive txs or txs\n");
       sb.append("        duplicate_attr - detect and fix duplicate attributes\n");
       sb.append("        osee_shutdown [-oseeOnly] - immediately release the listening port then waits for all existing operations to finish. \n");
-      sb.append("        gc - run java garbage collecction\n");
       sb.append("        schedule <delay seconds> <iterations> <command> - runs the command after the specified delay and repeat given number of times\n");
       sb.append(String.format("        reload_cache %s? - reloads server caches\n",
          Arrays.deepToString(OseeCacheEnum.values()).replaceAll(",", " | ")));
