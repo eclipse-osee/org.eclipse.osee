@@ -330,10 +330,9 @@ public class SMAWorkFlowSection extends SectionPart {
       }
       if (sma.isCancelled()) {
          if (statePage.isCancelledPage()) {
-            sb.append(" - Cancelled");
             if (Strings.isValid(sma.getCancelledReason())) {
                sb.append(" - Reason: ");
-               sb.append(Strings.isValid(sma.getCancelledReason()));
+               sb.append(Strings.truncate(sma.getCancelledReason(), 50, true));
             }
          }
       }
