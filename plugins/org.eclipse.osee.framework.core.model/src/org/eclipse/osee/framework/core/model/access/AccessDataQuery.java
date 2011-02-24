@@ -15,10 +15,10 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
-import org.eclipse.osee.framework.core.model.RelationTypeSide;
 
 /**
  * @author Jeff C. Phillips
@@ -98,7 +98,7 @@ public class AccessDataQuery {
       }
    }
 
-   public void relationTypeMatches(PermissionEnum permissionToMatch, RelationTypeSide relationTypeSide, PermissionStatus permissionStatus) throws OseeCoreException {
+   public void relationTypeMatches(PermissionEnum permissionToMatch, IRelationTypeSide relationTypeSide, PermissionStatus permissionStatus) throws OseeCoreException {
       Collection<AccessDetail<?>> relationAccessDetails = accessData.getAccess(relationTypeSide);
       checkAccess(relationAccessDetails, relationTypeSide, permissionToMatch, permissionStatus);
    }
