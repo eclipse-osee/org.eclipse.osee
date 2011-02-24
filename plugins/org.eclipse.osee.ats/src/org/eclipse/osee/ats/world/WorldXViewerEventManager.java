@@ -141,9 +141,7 @@ public class WorldXViewerEventManager {
                IContentProvider contentProvider = worldViewer.getContentProvider();
                // remove from UI
                if (contentProvider instanceof WorldContentProvider) {
-                  for (EventBasicGuidArtifact guidArt : deletedPurgedArts) {
-                     worldViewer.remove(guidArt);
-                  }
+                  handler.getWorldXViewer().remove(deletedPurgedArts.toArray(new Object[deletedPurgedArts.size()]));
                }
             } catch (Exception ex) {
                OseeLog.log(AtsPlugin.class, Level.SEVERE, ex, "Error processing event handler for deleted - %s",
