@@ -45,6 +45,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -619,7 +620,9 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
                IAccessPolicyHandlerService policy = SkynetGuiPlugin.getInstance().getPolicyHandlerService();
 
                PermissionStatus status =
-                  policy.hasArtifactPermission(java.util.Collections.singleton(parent), PermissionEnum.WRITE, Level.FINE);
+                  policy.hasRelationSidePermission(
+                     java.util.Collections.singleton(CoreRelationTypes.Default_Hierarchical__Child),
+                     PermissionEnum.WRITE, Level.FINE);
 
                if (status.matched()) {
                   if (dialog.open() == Window.OK) {
@@ -1240,7 +1243,13 @@ public class ArtifactExplorer extends ViewPart implements IArtifactExplorerEvent
 
             lockMenuItem.setEnabled(permiss.isWritePermission() && (!permiss.isLocked() || permiss.isAccessToRemoveLock()));
 
-            createMenuItem.setEnabled(permiss.isWritePermission());
+            IAccessPolicyHandlerService service = SkynetGuiPlugin.getInstance().getPolicyHandlerService();
+            PermissionStatus status =
+               service.hasRelationSidePermission(
+                  java.util.Collections.singleton(CoreRelationTypes.Default_Hierarchical__Child), PermissionEnum.WRITE,
+                  Level.FINE);
+
+            createMenuItem.setEnabled(permiss.isWritePermission() || status.matched());
 
             goIntoMenuItem.setEnabled(permiss.isReadPermission());
             copyMenuItem.setEnabled(permiss.isReadPermission());
