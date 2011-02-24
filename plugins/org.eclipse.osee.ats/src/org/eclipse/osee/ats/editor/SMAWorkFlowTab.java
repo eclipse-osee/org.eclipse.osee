@@ -696,6 +696,11 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    }
 
    public SMAWorkFlowSection getSectionForCurrentState() {
+      for (SMAWorkFlowSection section : sections) {
+         if (section.isCurrentState()) {
+            return section;
+         }
+      }
       return null;
    }
 }

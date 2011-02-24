@@ -22,7 +22,9 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
@@ -37,6 +39,8 @@ public class SMATargetedVersionHeader extends Composite {
 
    private final static String TARGET_VERSION = "Target Version:";
    Label valueLabel;
+   Label origLabel;
+   Hyperlink link;
 
    public SMATargetedVersionHeader(Composite parent, int style, final AbstractWorkflowArtifact sma, final SMAEditor editor) {
       super(parent, style);
@@ -46,7 +50,7 @@ public class SMATargetedVersionHeader extends Composite {
 
       try {
          if (!sma.isCancelled() && !sma.isCompleted()) {
-            Hyperlink link = editor.getToolkit().createHyperlink(this, TARGET_VERSION, SWT.NONE);
+            link = editor.getToolkit().createHyperlink(this, TARGET_VERSION, SWT.NONE);
             link.addHyperlinkListener(new IHyperlinkListener() {
 
                @Override
@@ -64,7 +68,7 @@ public class SMATargetedVersionHeader extends Composite {
                   try {
                      if (TargetedVersionColumn.promptChangeVersion(sma,
                         AtsUtil.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased,
-                        VersionLockedType.UnLocked, false)) {
+                        VersionLockedType.UnLocked)) {
                         updateLabel(sma);
                         editor.onDirtied();
                      }
@@ -74,7 +78,7 @@ public class SMATargetedVersionHeader extends Composite {
                }
             });
          } else {
-            Label origLabel = editor.getToolkit().createLabel(this, TARGET_VERSION);
+            origLabel = editor.getToolkit().createLabel(this, TARGET_VERSION);
             origLabel.setLayoutData(new GridData());
          }
 
@@ -97,6 +101,20 @@ public class SMATargetedVersionHeader extends Composite {
       }
       valueLabel.setText(value);
       valueLabel.getParent().layout();
+   }
+
+   @Override
+   public void setBackground(Color color) {
+      super.setBackground(color);
+      if (Widgets.isAccessible(valueLabel)) {
+         valueLabel.setBackground(color);
+      }
+      if (Widgets.isAccessible(origLabel)) {
+         origLabel.setBackground(color);
+      }
+      if (Widgets.isAccessible(link)) {
+         link.setBackground(color);
+      }
    }
 
 }

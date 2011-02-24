@@ -11,20 +11,11 @@
 package org.eclipse.osee.ats.editor;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.osee.ats.artifact.AbstractReviewArtifact;
 import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.log.LogItem;
 import org.eclipse.osee.ats.editor.stateItem.AtsStateItemManager;
@@ -35,28 +26,14 @@ import org.eclipse.osee.ats.editor.widget.StatePercentCompleteXWidget;
 import org.eclipse.osee.ats.editor.widget.TaskInfoXWidget;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.TeamState;
-import org.eclipse.osee.ats.util.TransitionOption;
 import org.eclipse.osee.ats.util.XCancellationReasonTextWidget;
-import org.eclipse.osee.ats.util.widgets.ReviewManager;
-import org.eclipse.osee.ats.util.widgets.dialog.SMAStatusDialog;
-import org.eclipse.osee.ats.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.workdef.RuleDefinitionOption;
-import org.eclipse.osee.ats.workdef.StateDefinition;
-import org.eclipse.osee.ats.workdef.StateDefinitionLabelProvider;
-import org.eclipse.osee.ats.workdef.StateDefinitionViewSorter;
 import org.eclipse.osee.ats.workdef.StateXWidgetPage;
-import org.eclipse.osee.ats.workflow.TransitionManager;
-import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactStoredWidget;
@@ -64,8 +41,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XLabelValue;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserCheckTreeDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkPage;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -73,22 +48,14 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.FontManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.SectionPart;
-import org.eclipse.ui.forms.events.HyperlinkEvent;
-import org.eclipse.ui.forms.events.IHyperlinkListener;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
-import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.forms.widgets.Section;
 
 /**
@@ -96,8 +63,6 @@ import org.eclipse.ui.forms.widgets.Section;
  */
 public class SMAWorkFlowSection extends SectionPart {
 
-   private XComboViewer transitionToStateCombo;
-   private Label transitionAssigneesLabel;
    protected final AbstractWorkflowArtifact sma;
    private final StateXWidgetPage statePage;
    private final boolean isEditable, isCurrentState, isGlobalEditable;
@@ -106,6 +71,7 @@ public class SMAWorkFlowSection extends SectionPart {
    private boolean sectionCreated = false;
    private Section section;
    private final SMAEditor editor;
+   private WETransitionComposite workflowTransitionComposite;
 
    public SMAWorkFlowSection(Composite parent, int style, StateXWidgetPage page, AbstractWorkflowArtifact sma, final SMAEditor editor) throws OseeCoreException {
       super(parent, editor.getToolkit(), style | ExpandableComposite.TWISTIE | ExpandableComposite.TITLE_BAR);
@@ -181,7 +147,7 @@ public class SMAWorkFlowSection extends SectionPart {
       Composite workComp = createWorkArea(mainComp, statePage, editor.getToolkit());
 
       if (isCurrentState) {
-         createCurrentPageTransitionLine(mainComp, statePage, editor.getToolkit());
+         workflowTransitionComposite = new WETransitionComposite(mainComp, this, editor, isEditable);
       }
 
       GridData gridData = new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING);
@@ -428,8 +394,10 @@ public class SMAWorkFlowSection extends SectionPart {
                   OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
                }
             }
-            updateTransitionToState();
-            updateTransitionToAssignees();
+            if (workflowTransitionComposite != null) {
+               workflowTransitionComposite.updateTransitionToState();
+               workflowTransitionComposite.updateTransitionToAssignees();
+            }
             editor.onDirtied();
          } catch (Exception ex) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
@@ -444,14 +412,8 @@ public class SMAWorkFlowSection extends SectionPart {
       }
       super.refresh();
       try {
-         if (Widgets.isAccessible(transitionAssigneesLabel)) {
-            StateDefinition toWorkPage = (StateDefinition) transitionToStateCombo.getSelected();
-            if (toWorkPage == null) {
-               transitionAssigneesLabel.setText("");
-            } else {
-               transitionAssigneesLabel.setText(sma.getTransitionAssigneesStr());
-            }
-            transitionAssigneesLabel.getParent().layout();
+         if (workflowTransitionComposite != null) {
+            workflowTransitionComposite.refresh();
          }
          editor.onDirtied();
          for (XWidget xWidget : allXWidgets) {
@@ -462,438 +424,15 @@ public class SMAWorkFlowSection extends SectionPart {
       }
    }
 
-   private void handleChangeTransitionAssignees() throws OseeCoreException {
-      StateDefinition toWorkPage = (StateDefinition) transitionToStateCombo.getSelected();
-      if (toWorkPage == null) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "No Transition State Selected");
-         return;
-      }
-      if (toWorkPage.isCancelledPage() || toWorkPage.isCompletedPage()) {
-         AWorkbench.popup("ERROR", "No Assignees in Completed and Cancelled states");
-         return;
-      }
-      UserCheckTreeDialog uld = new UserCheckTreeDialog();
-      uld.setMessage("Select users to transition to.");
-      uld.setInitialSelections(sma.getTransitionAssignees());
-      if (sma.getParentTeamWorkflow() != null) {
-         uld.setTeamMembers(sma.getParentTeamWorkflow().getTeamDefinition().getMembersAndLeads());
-      }
-      if (uld.open() != 0) {
-         return;
-      }
-      Collection<User> users = uld.getUsersSelected();
-      if (users.isEmpty()) {
-         AWorkbench.popup("ERROR", "Must have at least one assignee");
-         return;
-      }
-      sma.setTransitionAssignees(users);
-      refresh();
-      editor.onDirtied();
-   }
-
-   private void createCurrentPageTransitionLine(Composite parent, StateXWidgetPage statePage, XFormToolkit toolkit) throws OseeCoreException {
-      Composite comp = toolkit.createComposite(parent, SWT.NONE);
-      comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-      comp.setLayout(new GridLayout(5, false));
-      comp.setBackground(AtsUtil.ACTIVE_COLOR);
-
-      Button transitionButton = toolkit.createButton(comp, "Transition", SWT.PUSH);
-      transitionButton.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            handleTransition();
-         }
-      });
-      transitionButton.setBackground(AtsUtil.ACTIVE_COLOR);
-
-      Label label = toolkit.createLabel(comp, "to");
-      label.setBackground(AtsUtil.ACTIVE_COLOR);
-
-      transitionToStateCombo = new XComboViewer("Transition To State Combo", SWT.NONE);
-      transitionToStateCombo.setDisplayLabel(false);
-      List<Object> allPages = new ArrayList<Object>();
-      for (StateDefinition nextState : sma.getToStates()) {
-         if (!allPages.contains(nextState)) {
-            allPages.add(nextState);
-         }
-      }
-      StateDefinition currState = sma.getStateDefinition();
-      if (currState.isCompletedPage()) {
-         StateDefinition completedFromState = sma.getWorkDefinition().getStateByName(sma.getCompletedFromState());
-         if (!allPages.contains(completedFromState)) {
-            allPages.add(completedFromState);
-         }
-      }
-      if (currState.isCancelledPage()) {
-         StateDefinition cancelledFromState = sma.getWorkDefinition().getStateByName(sma.getCancelledFromState());
-         if (!allPages.contains(cancelledFromState)) {
-            allPages.add(cancelledFromState);
-         }
-      }
-      transitionToStateCombo.setInput(allPages);
-      transitionToStateCombo.setLabelProvider(new StateDefinitionLabelProvider());
-      transitionToStateCombo.setContentProvider(new ArrayContentProvider());
-      transitionToStateCombo.setSorter(new StateDefinitionViewSorter());
-
-      transitionToStateCombo.createWidgets(comp, 1);
-
-      // Set default page from workflow default
-      ArrayList<Object> defaultPage = new ArrayList<Object>();
-      if (statePage.getDefaultToPage() != null) {
-         defaultPage.add(statePage.getDefaultToPage());
-         transitionToStateCombo.setSelected(defaultPage);
-      }
-      if (statePage.isCancelledPage() && Strings.isValid(sma.getCancelledFromState())) {
-         defaultPage.add(sma.getStateDefinitionByName(sma.getCancelledFromState()));
-         transitionToStateCombo.setSelected(defaultPage);
-      }
-      if (statePage.isCompletedPage() && Strings.isValid(sma.getCompletedFromState())) {
-         defaultPage.add(sma.getStateDefinitionByName(sma.getCompletedFromState()));
-         transitionToStateCombo.setSelected(defaultPage);
-      }
-      // Update transition based on state items
-      updateTransitionToState();
-
-      transitionToStateCombo.getCombo().setVisibleItemCount(20);
-      transitionToStateCombo.addSelectionChangedListener(new ISelectionChangedListener() {
-         @Override
-         public void selectionChanged(SelectionChangedEvent event) {
-            try {
-               updateTransitionToAssignees();
-            } catch (Exception ex) {
-               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-            }
-         }
-      });
-
-      Hyperlink assigneesLabelLink = toolkit.createHyperlink(comp, "Next State Assignee(s)", SWT.NONE);
-      assigneesLabelLink.addHyperlinkListener(new IHyperlinkListener() {
-
-         @Override
-         public void linkEntered(HyperlinkEvent e) {
-            // do nothing
-         }
-
-         @Override
-         public void linkExited(HyperlinkEvent e) {
-            // do nothing
-         }
-
-         @Override
-         public void linkActivated(HyperlinkEvent e) {
-            try {
-               handleChangeTransitionAssignees();
-            } catch (Exception ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         }
-
-      });
-      assigneesLabelLink.setBackground(AtsUtil.ACTIVE_COLOR);
-
-      transitionAssigneesLabel =
-         toolkit.createLabel(comp, Strings.truncate(sma.getTransitionAssigneesStr(), 100, true));
-      transitionAssigneesLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-      transitionAssigneesLabel.setBackground(AtsUtil.ACTIVE_COLOR);
-
-   }
-
-   public void updateTransitionToAssignees() throws OseeCoreException {
-      Collection<User> assignees = null;
-      // Determine if the is an override set of assigness
-      for (IAtsStateItem item : AtsStateItemManager.getStateItems()) {
-         assignees = item.getOverrideTransitionToAssignees(this);
-         if (assignees != null) {
-            break;
-         }
-      }
-      // If override set and isn't the same as already selected, update
-      if (assignees != null && !sma.getTransitionAssignees().equals(assignees)) {
-         sma.setTransitionAssignees(assignees);
-         editor.onDirtied();
-      }
-      refresh();
-   }
-
-   public void updateTransitionToState() throws OseeCoreException {
-      // Determine if there is a transitionToStateOverride for this page
-      String transitionStateOverride = null;
-      for (IAtsStateItem item : AtsStateItemManager.getStateItems()) {
-         transitionStateOverride = item.getOverrideTransitionToStateName(this);
-         if (transitionStateOverride != null) {
-            break;
-         }
-      }
-      if (transitionStateOverride != null) {
-         // Return if override state is same as selected
-         if (((StateDefinition) transitionToStateCombo.getSelected()).getName().equals(transitionStateOverride)) {
-            return;
-         }
-         // Find page corresponding to override state name
-         for (StateDefinition toState : sma.getToStates()) {
-            if (toState.getPageName().equals(transitionStateOverride)) {
-               // Reset selection
-               ArrayList<Object> defaultPage = new ArrayList<Object>();
-               defaultPage.add(toState);
-               transitionToStateCombo.setSelected(defaultPage);
-               return;
-            }
-         }
-      }
-   }
-
-   public void setTransitionToStateSelection(String stateName) {
-      ArrayList<Object> allPages = new ArrayList<Object>();
-      for (StateDefinition nextState : sma.getToStates()) {
-         if (nextState.getPageName().equals(stateName)) {
-            allPages.add(nextState);
-         }
-      }
-      transitionToStateCombo.setSelected(allPages);
-   }
-
-   private void handleTransition() {
-      try {
-
-         if (!isEditable && !sma.getStateMgr().getAssignees().contains(UserManager.getUser(SystemUser.UnAssigned))) {
-            AWorkbench.popup(
-               "ERROR",
-               "You must be assigned to transition this workflow.\nContact Assignee or Select Priviledged Edit for Authorized Overriders.");
-            return;
-         }
-         // As a convenience, if assignee is UnAssigned and user selects to transition, make user current assignee
-         if (sma.getStateMgr().getAssignees().contains(UserManager.getUser(SystemUser.UnAssigned))) {
-            sma.getStateMgr().removeAssignee(UserManager.getUser(SystemUser.UnAssigned));
-            sma.getStateMgr().addAssignee(UserManager.getUser());
-         }
-         if (!isWorkingBranchTransitionable()) {
-            return;
-         }
-
-         sma.setInTransition(true);
-         editor.doSave(null);
-
-         // Get transition to state
-         StateDefinition toStateDefinition = (StateDefinition) transitionToStateCombo.getSelected();
-
-         if (toStateDefinition == null) {
-            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "No Transition State Selected");
-            return;
-         }
-         if (toStateDefinition.isCancelledPage()) {
-            handleTransitionToCancelled();
-            return;
-         }
-
-         // Validate assignees
-         if (sma.getStateMgr().getAssignees().contains(UserManager.getUser(SystemUser.OseeSystem)) || sma.getStateMgr().getAssignees().contains(
-            UserManager.getUser(SystemUser.Guest)) || sma.getStateMgr().getAssignees().contains(
-            UserManager.getUser(SystemUser.UnAssigned))) {
-            AWorkbench.popup("Transition Blocked",
-               "Can not transition with \"Guest\", \"UnAssigned\" or \"OseeSystem\" user as assignee.");
-            return;
-         }
-
-         // Get transition to assignees
-         Collection<User> toAssignees;
-         if (toStateDefinition.isCancelledPage() || toStateDefinition.isCompletedPage()) {
-            toAssignees = new HashSet<User>();
-         } else {
-            toAssignees = sma.getTransitionAssignees();
-            if (toAssignees.isEmpty()) {
-               toAssignees.add(UserManager.getUser());
-            }
-         }
-
-         // If overrideAttributeValidation state, don't require page/tasks to be complete
-         if (!sma.getStateDefinition().getOverrideAttributeValidationStates().contains(toStateDefinition) && !isStateTransitionable(
-            toStateDefinition, toAssignees)) {
-            return;
-         }
-
-         // Persist must be done prior and separate from transition
-         sma.persist();
-
-         // Perform transition separate from persist of previous changes to state machine artifact
-         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "ATS Transition");
-         TransitionManager transitionMgr = new TransitionManager(sma);
-         Result result =
-            transitionMgr.transition(toStateDefinition, toAssignees, transaction, TransitionOption.Persist);
-         transaction.execute();
-         if (result.isFalse()) {
-            result.popup();
-            return;
-         }
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      } finally {
-         sma.setInTransition(false);
-      }
-   }
-
-   private boolean isStateTransitionable(StateDefinition toStateDefinition, Collection<User> toAssignees) throws OseeCoreException {
-      // Validate XWidgets for transition
-      Result result = statePage.isPageComplete();
-      if (result.isFalse()) {
-         result.popup();
-         return false;
-      }
-
-      // Loop through this state's tasks to confirm complete
-      if (sma instanceof AbstractTaskableArtifact && !sma.isCompletedOrCancelled()) {
-         for (TaskArtifact taskArt : ((AbstractTaskableArtifact) sma).getTaskArtifactsFromCurrentState()) {
-            if (taskArt.isInWork()) {
-               AWorkbench.popup("Transition Blocked",
-                  "Task Not Complete\n\nTitle: " + taskArt.getName() + "\n\nHRID: " + taskArt.getHumanReadableId());
-               return false;
-            }
-         }
-      }
-
-      // Don't transition without targeted version if so configured
-      boolean teamDefRequiresTargetedVersion = sma.teamDefHasRule(RuleDefinitionOption.RequireTargetedVersion);
-      boolean pageRequiresTargetedVersion =
-         sma.getStateDefinition().hasRule(RuleDefinitionOption.RequireTargetedVersion);
-
-      // Only check this if TeamWorkflow, not for reviews
-      if (sma instanceof TeamWorkFlowArtifact && (teamDefRequiresTargetedVersion || pageRequiresTargetedVersion) && //
-      sma.getTargetedVersion() == null && //
-      !toStateDefinition.isCancelledPage()) {
-         AWorkbench.popup("Transition Blocked",
-            "Actions must be targeted for a Version.\nPlease set \"Target Version\" before transition.");
-         return false;
-      }
-
-      // Loop through this state's blocking reviews to confirm complete
-      if (sma.isTeamWorkflow()) {
-         for (AbstractReviewArtifact reviewArt : ReviewManager.getReviewsFromCurrentState((TeamWorkFlowArtifact) sma)) {
-            if (reviewArt.getReviewBlockType() == ReviewBlockType.Transition && !reviewArt.isCompletedOrCancelled()) {
-               AWorkbench.popup("Transition Blocked", "All Blocking Reviews must be completed before transition.");
-               return false;
-            }
-         }
-      }
-
-      // Check extension points for valid transition
-      for (IAtsStateItem item : AtsStateItemManager.getStateItems()) {
-         try {
-            result = item.transitioning(sma, sma.getStateMgr().getCurrentState(), toStateDefinition, toAssignees);
-            if (result.isFalse()) {
-               result.popup();
-               return false;
-            }
-         } catch (Exception ex) {
-            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Exception occurred during transition; Aborting.", ex);
-            return false;
-         }
-      }
-
-      // Ask for metrics for this page (store in state versus task?)
-      if (!handlePopulateStateMetrics()) {
-         return false;
-      }
-      return true;
-   }
-
-   private void handleTransitionToCancelled() throws OseeCoreException {
-      EntryDialog cancelDialog = new EntryDialog("Cancellation Reason", "Enter cancellation reason.");
-      if (cancelDialog.open() != 0) {
-         return;
-      }
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "ATS Transition to Cancelled");
-      TransitionManager transitionMgr = new TransitionManager(sma);
-      Result result =
-         transitionMgr.transitionToCancelled(cancelDialog.getEntry(), transaction, TransitionOption.Persist);
-      transaction.execute();
-      if (result.isFalse()) {
-         result.popup();
-         return;
-      }
-      sma.setInTransition(false);
-      editor.refreshPages();
-   }
-
-   private boolean isWorkingBranchTransitionable() throws OseeCoreException {
-      if (sma.isTeamWorkflow() && ((TeamWorkFlowArtifact) sma).getBranchMgr().isWorkingBranchInWork()) {
-
-         if (((StateDefinition) transitionToStateCombo.getSelected()).getPageName().equals(
-            TeamState.Cancelled.getPageName())) {
-            AWorkbench.popup("Transition Blocked",
-               "Working Branch exists.\n\nPlease delete working branch before transition to cancel.");
-            return false;
-         }
-         if (((TeamWorkFlowArtifact) sma).getBranchMgr().isBranchInCommit()) {
-            AWorkbench.popup("Transition Blocked",
-               "Working Branch is being Committed.\n\nPlease wait till commit completes to transition.");
-            return false;
-         }
-         if (!statePage.isAllowTransitionWithWorkingBranch()) {
-            AWorkbench.popup("Transition Blocked",
-               "Working Branch exists.\n\nPlease commit or delete working branch before transition.");
-            return false;
-         }
-      }
-      return true;
-   }
-
    public boolean isCurrentState() {
       return isCurrentState;
    }
 
-   public boolean handlePopulateStateMetrics() throws OseeCoreException {
-      // Don't log metrics for completed / cancelled states
-      if (statePage.isCompletedOrCancelledPage()) {
-         return true;
-      }
-
-      // Page has the ability to override the autofill of the metrics
-      if (!statePage.isRequireStateHoursSpentPrompt() && sma.getStateMgr().getHoursSpent() == 0) {
-         // First, try to autofill if it's only been < 5 min since creation
-         double minSinceCreation = getCreationToNowDateDeltaMinutes();
-         // System.out.println("minSinceCreation *" + minSinceCreation + "*");
-         double hoursSinceCreation = minSinceCreation / 60.0;
-         if (hoursSinceCreation < 0.02) {
-            hoursSinceCreation = 0.02;
-         }
-         // System.out.println("hoursSinceCreation *" + hoursSinceCreation + "*");
-         if (minSinceCreation < 5) {
-            sma.getStateMgr().updateMetrics(hoursSinceCreation, 100, true);
-            return true;
-         }
-      }
-
-      if (statePage.isRequireStateHoursSpentPrompt()) {
-         // Otherwise, open dialog to ask for hours complete
-         String msg =
-            sma.getStateMgr().getCurrentStateName() + " State\n\n" + AtsUtil.doubleToI18nString(sma.getStateMgr().getHoursSpent()) + " hours already spent on this state.\n" + "Enter the additional number of hours you spent on this state.";
-         SMAStatusDialog tsd =
-            new SMAStatusDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Enter Hours Spent",
-               msg, false, Arrays.asList(sma));
-         int result = tsd.open();
-         if (result == 0) {
-            sma.getStateMgr().updateMetrics(tsd.getHours().getFloat(), 100, true);
-            return true;
-         } else {
-            return false;
-         }
-      } else {
-         return true;
-      }
-   }
-
-   public int getCreationToNowDateDeltaMinutes() throws OseeCoreException {
-      Date createDate = sma.getStateStartedData(statePage).getDate();
-      long createDateLong = createDate.getTime();
-      Date date = new Date();
-      float diff = date.getTime() - createDateLong;
-      // System.out.println("diff *" + diff + "*");
-      Float min = diff / 60000;
-      // System.out.println("min *" + min + "*");
-      return min.intValue();
-   }
-
    public XComboViewer getTransitionToStateCombo() {
-      return transitionToStateCombo;
+      if (workflowTransitionComposite != null) {
+         return workflowTransitionComposite.getTransitionToStateCombo();
+      }
+      return null;
    }
 
    public AbstractWorkflowArtifact getSma() {
@@ -937,5 +476,13 @@ public class SMAWorkFlowSection extends SectionPart {
       sma.isAssigneeMe() ||
       // current user is ats admin
       AtsUtil.isAtsAdmin());
+   }
+
+   public boolean isEditable() {
+      return isEditable;
+   }
+
+   public StateXWidgetPage getStatePage() {
+      return statePage;
    }
 }
