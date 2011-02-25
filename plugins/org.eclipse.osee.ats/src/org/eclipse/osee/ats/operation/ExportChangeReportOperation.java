@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.operation;
 import static org.eclipse.osee.framework.ui.skynet.render.IRenderer.NO_DISPLAY;
 import static org.eclipse.osee.framework.ui.skynet.render.IRenderer.SKIP_DIALOGS;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -25,6 +26,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -38,19 +40,26 @@ import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
+import org.eclipse.osee.framework.ui.skynet.render.compare.CompareData;
+import org.eclipse.osee.framework.ui.skynet.render.compare.CompareDataCollector;
 
 /**
  * @author Ryan D. Brooks
  */
-public class ExportChangeReportOperation extends AbstractOperation {
+public final class ExportChangeReportOperation extends AbstractOperation {
    private final List<TeamWorkFlowArtifact> workflows;
-   private String resultFolder;
+   private final Appendable resultFolder;
    private final boolean reverse;
 
-   public ExportChangeReportOperation(List<TeamWorkFlowArtifact> workflows, boolean reverse) {
+   public ExportChangeReportOperation(List<TeamWorkFlowArtifact> workflows, boolean reverse, Appendable resultFolder) {
       super("Exporting Change Report(s)", AtsPlugin.PLUGIN_ID);
       this.workflows = workflows;
       this.reverse = reverse;
+      this.resultFolder = resultFolder;
+   }
+
+   public ExportChangeReportOperation(List<TeamWorkFlowArtifact> workflows, boolean reverse) {
+      this(workflows, reverse, new StringBuilder());
    }
 
    @Override
@@ -59,11 +68,30 @@ public class ExportChangeReportOperation extends AbstractOperation {
 
       sortWorkflows();
 
+      CompareDataCollector collector = new CompareDataCollector() {
+
+         @Override
+         public void onCompare(CompareData data) throws OseeCoreException {
+            String filePath = data.getOutputPath();
+            String modifiedPath = filePath.substring(0, filePath.lastIndexOf(File.separator));
+            try {
+               if (resultFolder.toString().isEmpty()) {
+                  resultFolder.append(modifiedPath);
+               }
+            } catch (IOException ex) {
+               OseeExceptions.wrapAndThrow(ex);
+            }
+         }
+      };
+
       for (Artifact workflow : workflows) {
          Collection<Change> changes = computeChanges(workflow, monitor);
          if (!changes.isEmpty() && changes.size() < 4000) {
             String legacyPcrId = workflow.getSoleAttributeValueAsString(AtsAttributeTypes.LegacyPcrId, null);
-            resultFolder = generateDiffReport(changes, legacyPcrId, monitor);
+
+            Collection<ArtifactDelta> artifactDeltas = ChangeManager.getCompareArtifacts(changes);
+            String prefix = "/" + legacyPcrId;
+            RendererManager.diff(collector, artifactDeltas, prefix, NO_DISPLAY, true, SKIP_DIALOGS, true);
          }
          monitor.worked(calculateWork(0.50));
       }
@@ -127,13 +155,4 @@ public class ExportChangeReportOperation extends AbstractOperation {
       return TransactionManager.getTransactionId(minTransactionId);
    }
 
-   private String generateDiffReport(Collection<Change> changes, String legacyPcrId, IProgressMonitor monitor) {
-      Collection<ArtifactDelta> artifactDeltas = ChangeManager.getCompareArtifacts(changes);
-      String filePath = RendererManager.diff(artifactDeltas, "/" + legacyPcrId, NO_DISPLAY, true, SKIP_DIALOGS, true);
-      return filePath.substring(0, filePath.lastIndexOf(File.separator));
-   }
-
-   public String getResultFolder() {
-      return resultFolder;
-   }
 }

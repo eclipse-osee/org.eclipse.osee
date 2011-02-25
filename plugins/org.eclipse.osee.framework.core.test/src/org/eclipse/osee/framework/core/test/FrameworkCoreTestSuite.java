@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.core.test;
 import org.eclipse.osee.framework.core.test.enums.EnumsTestSuite;
 import org.eclipse.osee.framework.core.test.exception.ExceptionTestSuite;
 import org.eclipse.osee.framework.core.test.internal.InternalCoreTestSuite;
+import org.eclipse.osee.framework.core.test.ops.OpsTestSuite;
 import org.eclipse.osee.framework.core.test.util.UtilCoreTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -22,7 +23,8 @@ import org.junit.runners.Suite;
    EnumsTestSuite.class,
    ExceptionTestSuite.class,
    InternalCoreTestSuite.class,
-   UtilCoreTestSuite.class})
+   UtilCoreTestSuite.class,
+   OpsTestSuite.class})
 /**
  * @author Roberto E. Escobar
  */

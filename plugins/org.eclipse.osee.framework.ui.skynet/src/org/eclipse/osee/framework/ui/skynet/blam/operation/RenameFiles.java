@@ -10,16 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
-import java.util.regex.Pattern;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.jdk.core.text.Rule;
-import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
-import org.eclipse.osee.framework.jdk.core.text.rules.ReplaceAll;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.OperationLogger;
+import org.eclipse.osee.framework.core.ops.RenameFilesOperation;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
@@ -27,36 +22,12 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
  * @author Ryan D. Brooks
  */
 public class RenameFiles extends AbstractBlam {
-
    @Override
-   public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      File parentFolder = new File(variableMap.getString("Parent Folder"));
+   public IOperation createOperation(VariableMap variableMap, OperationLogger logger) throws Exception {
+      String parentFolder = variableMap.getString("Parent Folder");
       String pathPattern = variableMap.getString("Full Path Pattern");
       String replacement = variableMap.getString("Replacement");
-
-      Rule rule = new ReplaceAll(Pattern.compile(pathPattern), replacement);
-      List<File> files = Lib.recursivelyListFiles(parentFolder.getCanonicalFile(), null);
-      int size = files.size();
-      int renamedFileCount = 0;
-
-      for (int i = 0; i < size; i++) {
-         if (monitor.isCanceled()) {
-            return;
-         }
-         File file = files.get(i);
-         rule.setRuleWasApplicable(false);
-         ChangeSet newName = rule.computeChanges(file.getPath());
-         if (rule.ruleWasApplicable()) {
-            File newFile = new File(newName.toString());
-            if (file.renameTo(newFile)) {
-               report(file.getPath() + " became " + newFile.getPath());
-               renamedFileCount++;
-            } else {
-               report(file.getPath() + " failed to become " + newFile.getPath());
-            }
-         }
-      }
-      report("Changed " + renamedFileCount + " files");
+      return new RenameFilesOperation(logger, parentFolder, pathPattern, replacement);
    }
 
    @Override

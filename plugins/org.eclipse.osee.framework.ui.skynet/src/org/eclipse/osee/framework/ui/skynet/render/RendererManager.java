@@ -214,6 +214,11 @@ public final class RendererManager {
       Operations.executeAsJob(new DiffUsingRenderer(collector, artifactDelta, pathPrefix, options), true);
    }
 
+   public static void diff(CompareDataCollector collector, Collection<ArtifactDelta> artifactDelta, String pathPrefix, Object... options) {
+      DiffUsingRenderer operation = new DiffUsingRenderer(collector, artifactDelta, pathPrefix, options);
+      Operations.executeWork(operation);
+   }
+
    public static void diff(CompareDataCollector collector, ArtifactDelta artifactDelta, String pathPrefix, Object... options) {
       DiffUsingRenderer operation = new DiffUsingRenderer(collector, artifactDelta, pathPrefix, options);
       Operations.executeWork(operation);
@@ -225,9 +230,9 @@ public final class RendererManager {
       Operations.executeAsJob(operation, true);
    }
 
-   public static void diff(Collection<ArtifactDelta> artifactDeltas, String diffPrefix, Object... options) {
+   public static void diff(Collection<ArtifactDelta> artifactDeltas, String pathPrefix, Object... options) {
       CompareDataCollector collector = new NoOpCompareDataCollector();
-      IOperation operation = new DiffUsingRenderer(collector, artifactDeltas, diffPrefix, options);
+      IOperation operation = new DiffUsingRenderer(collector, artifactDeltas, pathPrefix, options);
       Operations.executeWork(operation);
    }
 }
