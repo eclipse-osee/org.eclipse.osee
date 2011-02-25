@@ -117,21 +117,18 @@ public class BlamEditor extends FormEditor implements IDirtiableEditor {
 
       @Override
       public void scheduled(IJobChangeEvent event) {
-         super.scheduled(event);
          getActionBarContributor().getExecuteBlamAction().setEnabled(false);
          showBusy(true);
       }
 
       @Override
       public void aboutToRun(IJobChangeEvent event) {
-         super.aboutToRun(event);
          startTime = System.currentTimeMillis();
          overviewPage.setOuputText(String.format("Starting BLAM at [%s]\n", Lib.getElapseString(startTime)));
       }
 
       @Override
       public void done(IJobChangeEvent event) {
-         super.done(event);
          overviewPage.appendOutput(String.format("BLAM completed in [%s]\n", Lib.getElapseString(startTime)));
          showBusy(false);
          getActionBarContributor().getExecuteBlamAction().setEnabled(true);
