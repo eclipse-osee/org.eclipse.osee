@@ -133,11 +133,6 @@ public class ResultsEditor extends AbstractArtifactEditor implements IActionable
    }
 
    @Override
-   public void dispose() {
-      super.dispose();
-   }
-
-   @Override
    public boolean isDirty() {
       return false;
    }
