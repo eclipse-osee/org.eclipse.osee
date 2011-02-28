@@ -155,6 +155,7 @@ public class WorkPageShape extends RectangleShape {
       return isInstanceofRecurse(workPageDefinition, workPageDefinitionId);
    }
 
+   @SuppressWarnings("unused")
    private boolean isInstanceofRecurse(StateDefinition workPageDefinition, String workPageDefinitionId) throws OseeCoreException {
       if (workPageDefinition.getName().equals(workPageDefinitionId)) {
          return true;

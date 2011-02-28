@@ -536,7 +536,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
       return null;
    }
 
-   public static Set<TeamDefinitionArtifact> getTeamDefinitions(Collection<String> teamDefNames) throws OseeCoreException {
+   public static Set<TeamDefinitionArtifact> getTeamDefinitions(Collection<String> teamDefNames) {
       Set<TeamDefinitionArtifact> teamDefs = new HashSet<TeamDefinitionArtifact>();
       for (String teamDefName : teamDefNames) {
          for (Artifact artifact : AtsCacheManager.getArtifactsByName(AtsArtifactTypes.TeamDefinition, teamDefName)) {

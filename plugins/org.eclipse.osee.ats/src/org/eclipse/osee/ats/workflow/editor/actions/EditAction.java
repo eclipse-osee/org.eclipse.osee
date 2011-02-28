@@ -16,7 +16,6 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.workdef.StateDefinition;
-import org.eclipse.osee.ats.workdef.WorkDefinition;
 import org.eclipse.osee.ats.workflow.editor.model.WorkPageShape;
 import org.eclipse.osee.ats.workflow.editor.model.WorkflowDiagram;
 import org.eclipse.osee.ats.workflow.editor.parts.DiagramEditPart;
@@ -59,9 +58,9 @@ public class EditAction extends Action {
                Object obj = i.next();
                if (obj instanceof DiagramEditPart && ((DiagramEditPart) obj).getModel() instanceof WorkflowDiagram) {
                   WorkflowDiagram diagram = (WorkflowDiagram) ((DiagramEditPart) obj).getModel();
-                  Artifact artifact = null;
+                  //                  Artifact artifact = null;
                   if (diagram.getWorkFlowDefinition() != null) {
-                     WorkDefinition def = diagram.getWorkFlowDefinition();
+                     //                     WorkDefinition def = diagram.getWorkFlowDefinition();
                      //                     artifact = WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(def.getId());
                   }
                   //                  if (artifact != null) {

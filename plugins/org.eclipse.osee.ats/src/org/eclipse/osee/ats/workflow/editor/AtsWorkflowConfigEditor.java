@@ -286,6 +286,7 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
 
    }
 
+   @SuppressWarnings("unused")
    private void createTransitions(WorkDefinition workflowDef) throws OseeCoreException {
       for (StateDefinition workPageDefinition : workflowDef.getStatesOrdered()) {
          WorkPageShape pageShape = getWorkPageShape(workPageDefinition);

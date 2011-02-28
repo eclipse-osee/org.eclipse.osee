@@ -24,7 +24,6 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -51,7 +50,7 @@ import org.eclipse.ui.PlatformUI;
 /**
  * @author Donald G. Dunne
  */
-public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IActionable, IArtifactEventListener, IPerspectiveListener2 {
+public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IArtifactEventListener, IPerspectiveListener2 {
 
    public static final String VIEW_ID = "org.eclipse.osee.ats.hyper.ActionSkyWalker";
 

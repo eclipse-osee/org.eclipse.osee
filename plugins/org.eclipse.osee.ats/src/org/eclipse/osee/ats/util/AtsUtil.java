@@ -44,7 +44,6 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.database.core.OseeInfo;
@@ -274,12 +273,13 @@ public final class AtsUtil {
    public static void createATSAction(String initialDescription, String actionableItemName) {
       // Ensure actionable item is configured for ATS before continuing
       try {
-         AtsCacheManager.getSoleArtifactByName(AtsArtifactTypes.ActionableItem, actionableItemName);
-      } catch (ArtifactDoesNotExist ex) {
-         AWorkbench.popup(
-            "Configuration Error",
-            "Actionable Item \"" + actionableItemName + "\" is not configured for ATS tracking.\n\nAction can not be created.");
-         return;
+         Artifact artifact = AtsCacheManager.getSoleArtifactByName(AtsArtifactTypes.ActionableItem, actionableItemName);
+         if (artifact == null) {
+            AWorkbench.popup(
+               "Configuration Error",
+               "Actionable Item \"" + actionableItemName + "\" is not configured for ATS tracking.\n\nAction can not be created.");
+            return;
+         }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          return;

@@ -184,7 +184,7 @@ public class VersionArtifact extends Artifact implements ICommitConfigArtifact {
       return getSoleAttributeValue(AtsAttributeTypes.ReleaseDate, null);
    }
 
-   public static Set<VersionArtifact> getVersions(Collection<String> teamDefNames) throws OseeCoreException {
+   public static Set<VersionArtifact> getVersions(Collection<String> teamDefNames) {
       Set<VersionArtifact> teamDefs = new HashSet<VersionArtifact>();
       for (String teamDefName : teamDefNames) {
          teamDefs.add(getSoleVersion(teamDefName));
@@ -195,7 +195,7 @@ public class VersionArtifact extends Artifact implements ICommitConfigArtifact {
    /**
     * Refrain from using this method as Version Artifact names can be changed by the user.
     */
-   public static VersionArtifact getSoleVersion(String name) throws OseeCoreException {
+   public static VersionArtifact getSoleVersion(String name) {
       return (VersionArtifact) AtsCacheManager.getArtifactsByName(AtsArtifactTypes.Version, name).iterator().next();
    }
 }

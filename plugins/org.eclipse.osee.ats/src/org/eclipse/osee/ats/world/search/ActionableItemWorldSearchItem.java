@@ -93,7 +93,7 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
       return String.format("%s - %s", super.getSelectedName(searchType), getProductSearchName());
    }
 
-   public void getActionableItems() throws OseeCoreException {
+   public void getActionableItems() {
       if (actionItemNames != null && actionItems == null) {
          actionItems = new HashSet<ActionableItemArtifact>();
          for (String actionItemName : actionItemNames) {

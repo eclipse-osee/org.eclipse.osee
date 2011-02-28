@@ -61,7 +61,7 @@ public class ActionableItemArtifact extends Artifact {
       return getRelatedArtifacts(AtsRelationTypes.TeamLead_Lead, User.class);
    }
 
-   public static ActionableItemArtifact getTopActionableItem() throws OseeCoreException {
+   public static ActionableItemArtifact getTopActionableItem() {
       return (ActionableItemArtifact) AtsUtil.getFromToken(AtsArtifactToken.TopActionableItem);
    }
 
@@ -73,7 +73,7 @@ public class ActionableItemArtifact extends Artifact {
       return getSoleAttributeValue(AtsAttributeTypes.Actionable, false);
    }
 
-   public static Set<ActionableItemArtifact> getActionableItems(Collection<String> actionableItemNames) throws OseeCoreException {
+   public static Set<ActionableItemArtifact> getActionableItems(Collection<String> actionableItemNames) {
       Set<ActionableItemArtifact> aias = new HashSet<ActionableItemArtifact>();
       for (String actionableItemName : actionableItemNames) {
          for (Artifact artifact : AtsCacheManager.getArtifactsByName(AtsArtifactTypes.ActionableItem,

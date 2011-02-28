@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.VersionReportJob;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.framework.core.enums.Active;
-import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -84,16 +83,11 @@ public class GenerateFullVersionReportItem extends XNavigateItemAction {
          return teamDef;
       }
       if (Strings.isValid(teamDefName)) {
-         try {
-            TeamDefinitionArtifact teamDef =
-               (TeamDefinitionArtifact) AtsCacheManager.getSoleArtifactByName(AtsArtifactTypes.TeamDefinition,
-                  teamDefName);
+         TeamDefinitionArtifact teamDef =
+            (TeamDefinitionArtifact) AtsCacheManager.getSoleArtifactByName(AtsArtifactTypes.TeamDefinition, teamDefName);
 
-            if (teamDef != null) {
-               return teamDef;
-            }
-         } catch (ArtifactDoesNotExist ex) {
-            // do nothing, going to get team below
+         if (teamDef != null) {
+            return teamDef;
          }
       }
       TeamDefinitionDialog ld = new TeamDefinitionDialog("Select Team", "Select Team");

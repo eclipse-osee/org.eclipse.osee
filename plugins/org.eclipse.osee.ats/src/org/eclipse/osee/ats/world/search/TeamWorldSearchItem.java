@@ -127,7 +127,7 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
    /**
     * Loads all team definitions if specified by name versus by team definition class
     */
-   public void getTeamDefs() throws OseeCoreException {
+   public void getTeamDefs() {
       if (teamDefNames != null && teamDefs == null) {
          teamDefs = new HashSet<TeamDefinitionArtifact>();
          for (String teamDefName : teamDefNames) {

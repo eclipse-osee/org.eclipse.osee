@@ -88,7 +88,7 @@ public class AtsCacheManager implements IArtifactEventListener {
       return teamTasksCache.get(sma);
    }
 
-   public static List<Artifact> getArtifactsByName(IArtifactType artifactType, String name) throws OseeCoreException {
+   public static List<Artifact> getArtifactsByName(IArtifactType artifactType, String name) {
       AtsBulkLoad.loadConfig(true);
       return ArtifactCache.getArtifactsByName(artifactType, name);
    }
@@ -108,7 +108,7 @@ public class AtsCacheManager implements IArtifactEventListener {
       return AtsUtil.getActive(ArtifactCache.getArtifactsByType(artifactType), active, null);
    }
 
-   public static Artifact getSoleArtifactByName(IArtifactType artifactType, String name) throws OseeCoreException {
+   public static Artifact getSoleArtifactByName(IArtifactType artifactType, String name) {
       AtsBulkLoad.loadConfig(true);
       List<Artifact> arts = ArtifactCache.getArtifactsByName(artifactType, name);
       if (arts.size() == 1) {

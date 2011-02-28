@@ -15,7 +15,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.workdef.StateDefinition;
 import org.eclipse.osee.ats.workdef.WorkDefinition;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -104,7 +103,7 @@ public class WorkflowDiagram extends ModelElement {
          //         }
          for (Shape shape : getChildren()) {
             if (WorkPageShape.class.isAssignableFrom(shape.getClass())) {
-               StateDefinition workPageDefinition = ((WorkPageShape) shape).getWorkPageDefinition();
+               //               StateDefinition workPageDefinition = ((WorkPageShape) shape).getWorkPageDefinition();
                //               result = AtsWorkDefinitions.validateWorkItemDefinition(workPageDefinition);
                if (result.isFalse()) {
                   return result;
