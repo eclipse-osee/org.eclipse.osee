@@ -16,8 +16,8 @@ import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.branch.management.ImportOptions;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
-import org.eclipse.osee.framework.core.operation.CommandInterpreterReporter;
-import org.eclipse.osee.framework.core.operation.OperationReporter;
+import org.eclipse.osee.framework.core.operation.CommandInterpreterLogger;
+import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.resource.management.Options;
 import org.eclipse.osee.framework.resource.management.util.ResourceLocator;
 import org.eclipse.osee.framework.server.admin.BaseServerCommand;
@@ -88,8 +88,8 @@ public class BranchImportWorker extends BaseServerCommand {
 
       for (String fileToImport : importFiles) {
          URI uri = new URI("exchange://" + fileToImport);
-         OperationReporter reporter = new CommandInterpreterReporter(getCommandInterpreter());
-         Activator.getBranchExchange().importBranch(new ResourceLocator(uri), options, branchIds, reporter);
+         OperationLogger logger = new CommandInterpreterLogger(getCommandInterpreter());
+         Activator.getBranchExchange().importBranch(new ResourceLocator(uri), options, branchIds, logger);
       }
    }
 }

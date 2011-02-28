@@ -10,29 +10,22 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.operation;
 
-import org.eclipse.osgi.framework.console.CommandInterpreter;
-
 /**
  * @author Ryan D. Brooks
  */
-public class CommandInterpreterReporter extends OperationReporter {
-   private final CommandInterpreter ci;
-
-   public CommandInterpreterReporter(CommandInterpreter ci) {
-      this.ci = ci;
-   }
+public class ConsoleLogger extends OperationLogger {
 
    @Override
-   public void report(String... row) {
+   public void log(String... row) {
       for (String cell : row) {
-         ci.print(cell);
-         ci.print("   ");
+         System.out.print(cell);
+         System.out.print("   ");
       }
-      ci.println();
+      System.out.println();
    }
 
    @Override
-   public void report(Throwable th) {
-      ci.printStackTrace(th);
+   public void log(Throwable th) {
+      th.printStackTrace();
    }
 }

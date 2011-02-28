@@ -10,23 +10,29 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.operation;
 
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osgi.framework.console.CommandInterpreter;
 
 /**
  * @author Ryan D. Brooks
  */
-public abstract class OperationReporter {
+public class CommandInterpreterLogger extends OperationLogger {
+   private final CommandInterpreter ci;
 
-   public abstract void report(String... row);
-
-   public void report(Throwable th) {
-      report(Lib.exceptionToString(th));
+   public CommandInterpreterLogger(CommandInterpreter ci) {
+      this.ci = ci;
    }
 
-   public void report(IStatus status) {
-      if (status.getSeverity() == IStatus.ERROR) {
-         report(status.getException());
+   @Override
+   public void log(String... row) {
+      for (String cell : row) {
+         ci.print(cell);
+         ci.print("   ");
       }
+      ci.println();
+   }
+
+   @Override
+   public void log(Throwable th) {
+      ci.printStackTrace(th);
    }
 }

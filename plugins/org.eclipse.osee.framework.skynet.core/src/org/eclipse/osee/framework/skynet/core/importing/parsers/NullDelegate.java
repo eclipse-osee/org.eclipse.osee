@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.importing.parsers;
 
-import org.eclipse.osee.framework.core.operation.OperationReporter;
+import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
 
 public final class NullDelegate implements IArtifactExtractorDelegate {
@@ -36,7 +36,7 @@ public final class NullDelegate implements IArtifactExtractorDelegate {
    }
 
    @Override
-   public void processContent(OperationReporter reporter, RoughArtifactCollector collector, boolean forceBody, boolean forcePrimaryType, String headerNumber, String listIdentifier, String paragraphStyle, String content, boolean isParagraph) {
+   public void processContent(OperationLogger logger, RoughArtifactCollector collector, boolean forceBody, boolean forcePrimaryType, String headerNumber, String listIdentifier, String paragraphStyle, String content, boolean isParagraph) {
       //
    }
 

@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
-import org.eclipse.osee.framework.core.operation.OperationReporter;
+import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.internal.Activator;
@@ -35,7 +35,7 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
       "update osee_txs%s set tx_current = ? where transaction_id = ? and gamma_id = ?";
 
    private final List<Address> addresses = new ArrayList<Address>();
-   private final OperationReporter reporter;
+   private final OperationLogger logger;
 
    private final List<Object[]> purgeData = new ArrayList<Object[]>();
    private final List<Object[]> currentData = new ArrayList<Object[]>();
@@ -44,14 +44,14 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
    private final boolean isFixOperationEnabled;
    private final String txsTableName;
 
-   public InvalidTxCurrentsAndModTypes(String operationName, String tableName, String columnName, OperationReporter reporter, boolean isFixOperationEnabled, boolean archived) {
+   public InvalidTxCurrentsAndModTypes(String operationName, String tableName, String columnName, OperationLogger logger, boolean isFixOperationEnabled, boolean archived) {
       super(
          "InvalidTxCurrentsAndModTypes " + operationName + tableName + " fix:" + isFixOperationEnabled + " archived:" + archived,
          Activator.PLUGIN_ID);
       this.tableName = tableName;
       this.columnName = columnName;
       this.isFixOperationEnabled = isFixOperationEnabled;
-      this.reporter = reporter;
+      this.logger = logger;
       txsTableName = archived ? "_archived" : "";
    }
 
@@ -65,7 +65,7 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
    }
 
    private void logIssue(String issue, Address address) {
-      reporter.report(issue, String.valueOf(address.getBranchId()), String.valueOf(address.getItemId()),
+      logger.log(issue, String.valueOf(address.getBranchId()), String.valueOf(address.getItemId()),
          String.valueOf(address.getTransactionId()), String.valueOf(address.getGammaId()),
          address.getModType().toString(), address.getTxCurrent().toString());
    }
@@ -160,7 +160,7 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      reporter.report("Starting " + getName());
+      logger.log("Starting " + getName());
 
       checkForCancelledStatus(monitor);
 
@@ -197,6 +197,6 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
 
       fixIssues(monitor);
 
-      reporter.report("Completed " + getName());
+      logger.log("Completed " + getName());
    }
 }

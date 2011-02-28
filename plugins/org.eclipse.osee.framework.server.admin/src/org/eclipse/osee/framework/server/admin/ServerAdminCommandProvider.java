@@ -15,8 +15,8 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.branch.management.TxCurrentsAndModTypesCommand;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.operation.CommandInterpreterReporter;
-import org.eclipse.osee.framework.core.operation.OperationReporter;
+import org.eclipse.osee.framework.core.operation.CommandInterpreterLogger;
+import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.server.admin.internal.Activator;
 import org.eclipse.osee.framework.server.admin.management.AdminCommands;
@@ -78,14 +78,14 @@ public class ServerAdminCommandProvider implements CommandProvider {
    }
 
    public Job _tx_currents(CommandInterpreter ci) {
-      OperationReporter reporter = new CommandInterpreterReporter(ci);
+      OperationLogger logger = new CommandInterpreterLogger(ci);
       boolean archived = Boolean.parseBoolean(ci.nextArgument());
-      return Operations.executeAsJob(new TxCurrentsAndModTypesCommand(reporter, archived), false);
+      return Operations.executeAsJob(new TxCurrentsAndModTypesCommand(logger, archived), false);
    }
 
    public Job _duplicate_attr(CommandInterpreter ci) throws OseeDataStoreException {
-      OperationReporter reporter = new CommandInterpreterReporter(ci);
-      return Operations.executeAsJob(new DuplicateAttributesOperation(reporter, Activator.getOseeDatabaseService()),
+      OperationLogger logger = new CommandInterpreterLogger(ci);
+      return Operations.executeAsJob(new DuplicateAttributesOperation(logger, Activator.getOseeDatabaseService()),
          false);
    }
 

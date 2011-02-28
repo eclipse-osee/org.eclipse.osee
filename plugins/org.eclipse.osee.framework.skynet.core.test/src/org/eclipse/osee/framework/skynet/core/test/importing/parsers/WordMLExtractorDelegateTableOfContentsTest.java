@@ -15,7 +15,7 @@ import java.io.InputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import junit.framework.Assert;
-import org.eclipse.osee.framework.core.operation.OperationReporter;
+import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.WordOutlineExtractorDelegate;
 import org.junit.Test;
@@ -33,11 +33,11 @@ public final class WordMLExtractorDelegateTableOfContentsTest {
    private static final String TABLE_OF_CONTENTS_FILE = "tableOfContentsHyperlinkTest.xml";
    private final WordOutlineExtractorDelegate delegate = new WordOutlineExtractorDelegate();
 
-   private class TestOperationReporter extends OperationReporter {
+   private class TestOperationLogger extends OperationLogger {
       public final StringBuilder warningMsgs = new StringBuilder();
 
       @Override
-      public void report(String... row) {
+      public void log(String... row) {
          for (String warningMessage : row) {
             warningMsgs.append(warningMessage);
          }
@@ -48,17 +48,17 @@ public final class WordMLExtractorDelegateTableOfContentsTest {
    public void tableOfContentsLinksInput() throws Exception {
       delegate.initialize();
 
-      TestOperationReporter reporter = new TestOperationReporter();
+      TestOperationLogger logger = new TestOperationLogger();
 
       Matcher matcher = PARAGRAPHREGEX.matcher(getFileAsString(TABLE_OF_CONTENTS_FILE));
       boolean foundSomething = false;
       while (matcher.find()) {
          foundSomething = true;
-         delegate.processContent(reporter, null, false, false, null, null, null, matcher.group(), false);
+         delegate.processContent(logger, null, false, false, null, null, null, matcher.group(), false);
       }
 
       Assert.assertTrue("Warnings generated and Table of Contents in WordML should be detected",
-         reporter.warningMsgs.length() > 0);
+         logger.warningMsgs.length() > 0);
       Assert.assertTrue(foundSomething);
    }
 

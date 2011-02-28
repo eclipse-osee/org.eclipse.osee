@@ -10,22 +10,23 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.operation;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+
 /**
  * @author Ryan D. Brooks
  */
-public class ConsoleReporter extends OperationReporter {
+public abstract class OperationLogger {
 
-   @Override
-   public void report(String... row) {
-      for (String cell : row) {
-         System.out.print(cell);
-         System.out.print("   ");
-      }
-      System.out.println();
+   public abstract void log(String... row);
+
+   public void log(Throwable th) {
+      log(Lib.exceptionToString(th));
    }
 
-   @Override
-   public void report(Throwable th) {
-      th.printStackTrace();
+   public void log(IStatus status) {
+      if (status.getSeverity() == IStatus.ERROR) {
+         log(status.getException());
+      }
    }
 }

@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.jobs.Job;
  */
 public final class OperationJob extends Job {
    private final IOperation operation;
-   private final OperationReporter reporter;
+   private final OperationLogger logger;
 
    /**
     * @param operation the operation that will be executed by this Job's run method
@@ -31,12 +31,12 @@ public final class OperationJob extends Job {
 
    /**
     * @param operation the operation that will be executed by this Job's run method
-    * @param reporter reporter.report(IStatus status) is passed the IStatus returned by the operation's run method
+    * @param logger logger.log(IStatus status) is passed the IStatus returned by the operation's run method
     */
-   public OperationJob(IOperation operation, OperationReporter reporter) {
+   public OperationJob(IOperation operation, OperationLogger logger) {
       super(operation.getName());
       this.operation = operation;
-      this.reporter = reporter;
+      this.logger = logger;
    }
 
    @Override
@@ -44,8 +44,8 @@ public final class OperationJob extends Job {
       SubMonitor subMonitor = SubMonitor.convert(monitor);
 
       IStatus status = operation.run(subMonitor);
-      if (reporter != null) {
-         reporter.report(status);
+      if (logger != null) {
+         logger.log(status);
       }
       return status;
    }

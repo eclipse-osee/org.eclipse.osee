@@ -78,7 +78,7 @@ public final class Operations {
       return scheduleJob(new OperationJob(operation), user, Job.LONG, null);
    }
 
-   public static Job executeAsJob(IOperation operation, OperationReporter reporter, boolean user) {
+   public static Job executeAsJob(IOperation operation, OperationLogger logger, boolean user) {
       return scheduleJob(new OperationJob(operation), user, Job.LONG, null);
    }
 

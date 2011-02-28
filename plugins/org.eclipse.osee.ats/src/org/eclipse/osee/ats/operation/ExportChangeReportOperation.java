@@ -55,7 +55,7 @@ public class ExportChangeReportOperation extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws OseeCoreException {
-      report(workflows.size() + " workflows.");
+      log(workflows.size() + " workflows.");
 
       sortWorkflows();
 

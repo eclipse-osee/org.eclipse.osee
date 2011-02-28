@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.operation.OperationReporter;
+import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.AbstractDbTxOperation;
 import org.eclipse.osee.framework.database.core.ExportImportJoinQuery;
@@ -32,12 +32,12 @@ public final class DuplicateAttributesOperation extends AbstractDbTxOperation {
    private static final String SELECT_DUPLICATES =
       "select txs1.branch_id, txs1.gamma_id as gamma1, txs2.gamma_id as gamma2  from osee_join_export_import idj, osee_txs txs1, osee_txs txs2 where idj.query_id = ? and idj.id1 = txs1.gamma_id and idj.id2 = txs2.gamma_id and txs1.branch_id = txs2.branch_id and txs1.tx_current = ? and  txs2.tx_current = ?";
    private final ExportImportJoinQuery gammaJoin;
-   private final OperationReporter reporter;
+   private final OperationLogger logger;
 
-   public DuplicateAttributesOperation(OperationReporter reporter, IOseeDatabaseService databaseService) throws OseeDataStoreException {
+   public DuplicateAttributesOperation(OperationLogger logger, IOseeDatabaseService databaseService) throws OseeDataStoreException {
       super(databaseService, "Duplicate Attributes", Activator.PLUGIN_ID);
       gammaJoin = JoinUtility.createExportImportJoinQuery();
-      this.reporter = reporter;
+      this.logger = logger;
    }
 
    @Override
@@ -47,7 +47,7 @@ public final class DuplicateAttributesOperation extends AbstractDbTxOperation {
          gammaJoin.store(connection);
          selectDuplicates(connection);
       } catch (Exception ex) {
-         reporter.report(ex);
+         logger.log(ex);
       } finally {
          gammaJoin.delete(connection);
       }
@@ -71,7 +71,7 @@ public final class DuplicateAttributesOperation extends AbstractDbTxOperation {
          chStmt.runPreparedQuery(SELECT_DUPLICATES, gammaJoin.getQueryId(), TxChange.CURRENT.getValue(),
             TxChange.CURRENT.getValue());
          while (chStmt.next()) {
-            reporter.report("branch: " + chStmt.getInt("branch_id"), "gamma1: " + chStmt.getLong("gamma1"),
+            logger.log("branch: " + chStmt.getInt("branch_id"), "gamma1: " + chStmt.getLong("gamma1"),
                "gamma2: " + chStmt.getLong("gamma2"));
          }
       } finally {

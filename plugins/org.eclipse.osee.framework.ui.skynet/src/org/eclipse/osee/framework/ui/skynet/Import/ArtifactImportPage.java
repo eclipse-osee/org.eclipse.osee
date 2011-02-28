@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.operation.IOperation;
-import org.eclipse.osee.framework.core.operation.OperationReporter;
+import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -438,9 +438,9 @@ public class ArtifactImportPage extends WizardDataTransferPage {
 
          IOperation op =
             ArtifactImportOperationFactory.createArtifactsCompOperation("Extracting data from source", sourceFile,
-               destinationArtifact, new OperationReporter() {
+               destinationArtifact, new OperationLogger() {
                   @Override
-                  public void report(String... row) {
+                  public void log(String... row) {
                      for (String warningMessage : row) {
                         operationReportMessages.append(warningMessage);
                      }

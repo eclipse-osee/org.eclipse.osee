@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.server.admin.management;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.operation.CommandInterpreterReporter;
+import org.eclipse.osee.framework.core.operation.CommandInterpreterLogger;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.database.operation.ConsolidateArtifactVersionTxOperation;
 import org.eclipse.osee.framework.server.admin.BaseServerCommand;
@@ -33,7 +33,7 @@ public class ConsolidateArtifactVersionsCommand extends BaseServerCommand {
       try {
          Operations.executeWorkAndCheckStatus(
             new ConsolidateArtifactVersionTxOperation(Activator.getOseeDatabaseService(),
-               new CommandInterpreterReporter(getCommandInterpreter())), monitor);
+               new CommandInterpreterLogger(getCommandInterpreter())), monitor);
       } catch (OseeCoreException ex) {
          printStackTrace(ex);
       }

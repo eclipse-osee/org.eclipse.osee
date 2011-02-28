@@ -23,7 +23,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.core.operation.OperationReporter;
+import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.jdk.core.util.Readers;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
@@ -109,7 +109,7 @@ public class WordOutlineExtractor extends AbstractArtifactExtractor {
    }
 
    @Override
-   protected void extractFromSource(OperationReporter reporter, URI source, RoughArtifactCollector collector) throws OseeCoreException, IOException {
+   protected void extractFromSource(OperationLogger logger, URI source, RoughArtifactCollector collector) throws OseeCoreException, IOException {
       Reader reader = null;
       try {
          reader = new BufferedReader(new InputStreamReader(source.toURL().openStream(), "UTF-8"));
@@ -162,7 +162,7 @@ public class WordOutlineExtractor extends AbstractArtifactExtractor {
                listIdentifier = "";
                paragraphStyle = null;
                parseContentDetails(content, new Stack<String>());
-               delegate.processContent(reporter, collector, forceBody, forcePrimaryType, headerNumber, listIdentifier,
+               delegate.processContent(logger, collector, forceBody, forcePrimaryType, headerNumber, listIdentifier,
                   paragraphStyle, content.toString(), element == PARAGRAPH_TAG);
             }
          }

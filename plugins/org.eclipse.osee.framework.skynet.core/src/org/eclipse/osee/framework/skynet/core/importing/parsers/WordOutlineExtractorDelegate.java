@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.core.operation.OperationReporter;
+import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
@@ -153,12 +153,12 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
    }
 
    @Override
-   public final void processContent(OperationReporter opReporter, RoughArtifactCollector collector, boolean forceBody, boolean forcePrimaryType, String headerNumber, String listIdentifier, String paragraphStyle, String content, boolean isParagraph) throws OseeCoreException {
+   public final void processContent(OperationLogger logger, RoughArtifactCollector collector, boolean forceBody, boolean forcePrimaryType, String headerNumber, String listIdentifier, String paragraphStyle, String content, boolean isParagraph) throws OseeCoreException {
       if (Strings.isValid(content) && initalized) {
          if (!possibleTableOfContents) {
             possibleTableOfContents = TOC_HYPERLINK_PATTERN.matcher(content).matches();
-            if (possibleTableOfContents && opReporter != null) {
-               opReporter.report(detectedTableOfContentsReportError);
+            if (possibleTableOfContents && logger != null) {
+               logger.log(detectedTableOfContentsReportError);
             }
          }
 

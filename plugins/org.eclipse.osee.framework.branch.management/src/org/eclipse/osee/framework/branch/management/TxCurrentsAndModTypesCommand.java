@@ -15,26 +15,26 @@ import java.util.List;
 import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
-import org.eclipse.osee.framework.core.operation.OperationReporter;
+import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.database.operation.InvalidTxCurrentsAndModTypes;
 
 /**
  * @author Ryan D. Brooks
  */
 public class TxCurrentsAndModTypesCommand extends CompositeOperation {
-   public TxCurrentsAndModTypesCommand(OperationReporter reporter, boolean archived) {
-      super("TxCurrents And Mod Types", Activator.PLUGIN_ID, buildSubOperations(reporter, archived));
+   public TxCurrentsAndModTypesCommand(OperationLogger logger, boolean archived) {
+      super("TxCurrents And Mod Types", Activator.PLUGIN_ID, buildSubOperations(logger, archived));
    }
 
-   private static List<IOperation> buildSubOperations(OperationReporter reporter, boolean archived) {
+   private static List<IOperation> buildSubOperations(OperationLogger logger, boolean archived) {
       List<IOperation> operations = new ArrayList<IOperation>(3);
-      operations.add(buildFixOperation(reporter, archived, "1/3 ", "osee_artifact", "art_id"));
-      operations.add(buildFixOperation(reporter, archived, "2/3 ", "osee_attribute", "attr_id"));
-      operations.add(buildFixOperation(reporter, archived, "3/3 ", "osee_relation_link", "rel_link_id"));
+      operations.add(buildFixOperation(logger, archived, "1/3 ", "osee_artifact", "art_id"));
+      operations.add(buildFixOperation(logger, archived, "2/3 ", "osee_attribute", "attr_id"));
+      operations.add(buildFixOperation(logger, archived, "3/3 ", "osee_relation_link", "rel_link_id"));
       return operations;
    }
 
-   private static IOperation buildFixOperation(OperationReporter reporter, boolean archived, String operationName, String tableName, String columnName) {
-      return new InvalidTxCurrentsAndModTypes(operationName, tableName, columnName, reporter, true, archived);
+   private static IOperation buildFixOperation(OperationLogger logger, boolean archived, String operationName, String tableName, String columnName) {
+      return new InvalidTxCurrentsAndModTypes(operationName, tableName, columnName, logger, true, archived);
    }
 }

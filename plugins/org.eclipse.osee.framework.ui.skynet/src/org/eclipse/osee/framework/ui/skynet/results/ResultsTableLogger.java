@@ -10,19 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.results;
 
-import org.eclipse.osee.framework.core.operation.OperationReporter;
+import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsEditorTableTab;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsXViewerRow;
 
-public class ResultsReporter extends OperationReporter {
+public class ResultsTableLogger extends OperationLogger {
    private final ResultsEditorTableTab resultsTab;
 
-   public ResultsReporter(ResultsEditorTableTab resultsTab) {
+   public ResultsTableLogger(ResultsEditorTableTab resultsTab) {
       this.resultsTab = resultsTab;
    }
 
    @Override
-   public void report(String... row) {
+   public void log(String... row) {
       resultsTab.addRow(new ResultsXViewerRow(row));
    }
 }

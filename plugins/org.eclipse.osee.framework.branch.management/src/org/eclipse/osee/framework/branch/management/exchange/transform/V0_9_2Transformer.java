@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.core.operation.OperationReporter;
+import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.database.operation.Address;
 import org.eclipse.osee.framework.jdk.core.text.rules.ReplaceAll;
@@ -58,7 +58,7 @@ public class V0_9_2Transformer implements IOseeExchangeVersionTransformer {
    }
 
    @Override
-   public Version applyTransform(ExchangeDataProcessor processor, OperationReporter reporter) throws OseeCoreException {
+   public Version applyTransform(ExchangeDataProcessor processor, OperationLogger logger) throws OseeCoreException {
       List<Integer> branchIds = convertBranchTable(processor);
 
       Map<Long, Long> artifactGammaToNetGammaId = convertArtifactAndConflicts(processor);
@@ -81,9 +81,9 @@ public class V0_9_2Transformer implements IOseeExchangeVersionTransformer {
    }
 
    @Override
-   public void finalizeTransform(ExchangeDataProcessor processor, OperationReporter reporter) throws OseeCoreException {
-      Operations.executeWorkAndCheckStatus(new TxCurrentsAndModTypesCommand(reporter, false));
-      Operations.executeWorkAndCheckStatus(new TxCurrentsAndModTypesCommand(reporter, true));
+   public void finalizeTransform(ExchangeDataProcessor processor, OperationLogger logger) throws OseeCoreException {
+      Operations.executeWorkAndCheckStatus(new TxCurrentsAndModTypesCommand(logger, false));
+      Operations.executeWorkAndCheckStatus(new TxCurrentsAndModTypesCommand(logger, true));
    }
 
    private List<Integer> convertBranchTable(ExchangeDataProcessor processor) throws OseeCoreException {

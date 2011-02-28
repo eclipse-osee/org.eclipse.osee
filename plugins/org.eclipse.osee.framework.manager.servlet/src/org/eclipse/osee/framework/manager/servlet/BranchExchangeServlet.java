@@ -17,7 +17,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.branch.management.IBranchExchange;
-import org.eclipse.osee.framework.core.operation.ConsoleReporter;
+import org.eclipse.osee.framework.core.operation.ConsoleLogger;
 import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.core.server.SecureOseeHttpServlet;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -134,7 +134,7 @@ public class BranchExchangeServlet extends SecureOseeHttpServlet {
    private void executeImport(HttpBranchExchangeInfo exchangeInfo, HttpServletResponse response) throws Exception {
       IResourceLocator locator = locatorManager.getResourceLocator(exchangeInfo.getPath());
       branchExchangeService.importBranch(locator, exchangeInfo.getOptions(), exchangeInfo.getSelectedBranchIds(),
-         new ConsoleReporter());
+         new ConsoleLogger());
 
       response.setStatus(HttpServletResponse.SC_ACCEPTED);
       response.setContentType("text/plain");

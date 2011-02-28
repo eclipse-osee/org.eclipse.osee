@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.skynet.core.importing.parsers;
 import java.net.URI;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.core.operation.OperationReporter;
+import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
 
@@ -30,7 +30,7 @@ public abstract class AbstractArtifactExtractor implements IArtifactExtractor {
       // Protect Constructor
    }
 
-   protected abstract void extractFromSource(OperationReporter reporter, URI source, RoughArtifactCollector collector) throws Exception;
+   protected abstract void extractFromSource(OperationLogger logger, URI source, RoughArtifactCollector collector) throws Exception;
 
    @Override
    public String toString() {
@@ -64,12 +64,12 @@ public abstract class AbstractArtifactExtractor implements IArtifactExtractor {
    }
 
    @Override
-   public final void process(OperationReporter reporter, URI source, RoughArtifactCollector collector) throws Exception {
+   public final void process(OperationLogger logger, URI source, RoughArtifactCollector collector) throws Exception {
       checkDelegate();
 
       delegate.initialize();
       try {
-         extractFromSource(reporter, source, collector);
+         extractFromSource(logger, source, collector);
          connectParentChildRelations(collector);
          connectCollectorParent(collector);
       } finally {
