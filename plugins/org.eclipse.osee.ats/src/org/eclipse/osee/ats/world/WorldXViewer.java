@@ -40,7 +40,6 @@ import org.eclipse.osee.ats.actions.EmailActionAction;
 import org.eclipse.osee.ats.actions.FavoriteAction;
 import org.eclipse.osee.ats.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.actions.ISelectedTeamWorkflowArtifacts;
-import org.eclipse.osee.ats.actions.OpenInMassEditorAction;
 import org.eclipse.osee.ats.actions.SubscribedAction;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
@@ -120,11 +119,9 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
    DeletePurgeAtsArtifactsAction deletePurgeAtsObjectAction;
    EmailActionAction emailAction;
    Action resetActionArtifactAction;
-   OpenInMassEditorAction openInMassEditorAction;
 
    public void createMenuActions() {
 
-      openInMassEditorAction = new OpenInMassEditorAction(this);
       convertActionableItemsAction = new ConvertActionableItemsAction(this);
       favoritesAction = new FavoriteAction(this);
       subscribedAction = new SubscribedAction(this);
@@ -383,9 +380,6 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
 
       mm.insertBefore(XViewer.MENU_GROUP_PRE, resetActionArtifactAction);
       resetActionArtifactAction.setEnabled(getSelectedActionArtifacts().size() > 0);
-
-      mm.insertBefore(XViewer.MENU_GROUP_PRE, openInMassEditorAction);
-      openInMassEditorAction.updateEnablement();
 
       mm.insertBefore(XViewer.MENU_GROUP_PRE, new GroupMarker(MENU_GROUP_ATS_WORLD_OTHER));
       mm.insertBefore(XViewer.MENU_GROUP_PRE, new Separator());
