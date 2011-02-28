@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -93,7 +94,10 @@ public final class ViewWordChangeAndDiffTest {
 
          TestUtil.sleep(2000);
 
+         Assert.assertEquals(1, testDatas.size());
          CompareData testData = testDatas.iterator().next();
+
+         Assert.assertEquals(1, testData.size());
          Entry<String, String> fileSet = testData.entrySet().iterator().next();
 
          File vbScript = new File(testData.getGeneratorScriptPath());
@@ -109,7 +113,7 @@ public final class ViewWordChangeAndDiffTest {
             Assert.assertTrue(outPut.exists());
          }
       } catch (Exception ex) {
-         fail("Compare Two Artifacts test failed " + ex.getLocalizedMessage());
+         fail(String.format("Compare Two Artifacts test failed [%s]", Lib.exceptionToString(ex)));
          throw ex;
       }
       TestUtil.severeLoggingEnd(severeLoggingMonitor);
