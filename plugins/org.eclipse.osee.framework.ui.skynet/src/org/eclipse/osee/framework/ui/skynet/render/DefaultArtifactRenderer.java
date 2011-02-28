@@ -108,8 +108,11 @@ public class DefaultArtifactRenderer implements IRenderer {
       if (presentationType.matches(GENERALIZED_EDIT, GENERAL_REQUESTED, PRODUCE_ATTRIBUTE)) {
          return PRESENTATION_TYPE;
       }
-      if (presentationType.matches(SPECIALIZED_EDIT, PREVIEW, DEFAULT_OPEN)) {
-         return DEFAULT_MATCH;
+      if (presentationType.matches(SPECIALIZED_EDIT, DEFAULT_OPEN)) {
+         return GENERAL_MATCH;
+      }
+      if (presentationType.matches(PREVIEW)) {
+         return BASE_MATCH;
       }
       return NO_MATCH;
    }

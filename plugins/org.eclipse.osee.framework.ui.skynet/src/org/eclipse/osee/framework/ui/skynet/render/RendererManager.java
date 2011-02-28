@@ -138,7 +138,9 @@ public final class RendererManager {
 
    private static List<IRenderer> getApplicableRenderers(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
       ArrayList<IRenderer> applicableRenderers = new ArrayList<IRenderer>();
-      int minimumRank = Math.max(getBestRenderer(presentationType, artifact).minimumRanking(), IRenderer.DEFAULT_MATCH);
+      IRenderer bestRenderer = getBestRenderer(presentationType, artifact);
+      int rendererMinimumRanking = bestRenderer.minimumRanking();
+      int minimumRank = Math.max(rendererMinimumRanking, IRenderer.BASE_MATCH);
 
       for (IRenderer prototypeRenderer : renderers) {
          // Add Catch Exception Code --
@@ -156,7 +158,8 @@ public final class RendererManager {
       HashCollection<IRenderer, Artifact> prototypeRendererArtifactMap =
          new HashCollection<IRenderer, Artifact>(false, LinkedList.class);
       for (Artifact artifact : artifacts) {
-         prototypeRendererArtifactMap.put(getBestRendererPrototype(presentationType, artifact), artifact);
+         IRenderer renderer = getBestRendererPrototype(presentationType, artifact);
+         prototypeRendererArtifactMap.put(renderer, artifact);
       }
 
       // now that the artifacts are grouped based on best renderer type, create instances of those renderer with the supplied options

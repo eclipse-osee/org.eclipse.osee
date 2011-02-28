@@ -11,8 +11,6 @@
 
 package org.eclipse.osee.framework.ui.skynet.render;
 
-import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERALIZED_EDIT;
-import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.GENERAL_REQUESTED;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -25,6 +23,7 @@ import javax.xml.namespace.QName;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -137,15 +136,17 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
 
    @Override
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
-      if (!presentationType.matches(GENERALIZED_EDIT, GENERAL_REQUESTED)) {
+      int rating = NO_MATCH;
+      if (!presentationType.matches(PresentationType.GENERALIZED_EDIT, PresentationType.GENERAL_REQUESTED)) {
          if (artifact.isAttributeTypeValid(CoreAttributeTypes.WordTemplateContent)) {
-            return PRESENTATION_SUBTYPE_MATCH;
-         }
-         if (!presentationType.matches(PresentationType.SPECIALIZED_EDIT, PresentationType.PRODUCE_ATTRIBUTE)) {
-            return IRenderer.DEFAULT_MATCH;
+            rating = PRESENTATION_SUBTYPE_MATCH;
+         } else if (presentationType.matches(PresentationType.PREVIEW)) {
+            rating = BASE_MATCH;
+         } else if (presentationType.matches(PresentationType.DIFF) && artifact.isOfType(CoreArtifactTypes.Folder)) {
+            rating = BASE_MATCH;
          }
       }
-      return NO_MATCH;
+      return rating;
    }
 
    @Override

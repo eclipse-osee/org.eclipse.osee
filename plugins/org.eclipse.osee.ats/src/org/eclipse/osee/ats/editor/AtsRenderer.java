@@ -5,9 +5,8 @@
  */
 package org.eclipse.osee.ats.editor;
 
-import org.eclipse.osee.framework.access.AccessControlManager;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 
 public abstract class AtsRenderer extends DefaultArtifactRenderer {
 
@@ -16,11 +15,7 @@ public abstract class AtsRenderer extends DefaultArtifactRenderer {
    }
 
    @Override
-   public int minimumRanking() throws OseeCoreException {
-      if (AccessControlManager.isOseeAdmin()) {
-         return NO_MATCH;
-      } else {
-         return ARTIFACT_TYPE_MATCH;
-      }
+   public int minimumRanking() {
+      return IRenderer.GENERAL_MATCH;
    }
 }

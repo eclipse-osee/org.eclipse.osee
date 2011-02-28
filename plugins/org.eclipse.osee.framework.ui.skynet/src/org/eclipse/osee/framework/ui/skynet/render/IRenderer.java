@@ -33,7 +33,8 @@ public interface IRenderer {
    public static final int PRESENTATION_TYPE = 40;
    public static final int SUBTYPE_TYPE_MATCH = 30;
    public static final int ARTIFACT_TYPE_MATCH = 20;
-   public static final int DEFAULT_MATCH = 10;
+   public static final int GENERAL_MATCH = 10;
+   public static final int BASE_MATCH = 5;
    public static final int NO_MATCH = -1;
 
    public static final String RESULT_PATH_RETURN = "resultPath";

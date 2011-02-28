@@ -14,6 +14,7 @@ import static org.eclipse.osee.ats.test.render.RendererManagerTest.DefaultOption
 import static org.eclipse.osee.ats.test.render.RendererManagerTest.DefaultOption.Off;
 import static org.eclipse.osee.ats.test.render.RendererManagerTest.DefaultOption.On;
 import static org.eclipse.osee.ats.util.AtsArtifactTypes.Action;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Folder;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.GeneralDocument;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SoftwareRequirement;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.TestInformationSheet;
@@ -97,7 +98,8 @@ public class RendererManagerTest {
                   renderer);
             Assert.fail(message);
          } catch (OseeStateException ex) {
-            Assert.assertEquals("Expected message", ex.getMessage());
+            Assert.assertEquals(String.format("No renderer configured for %s of %s", presentationType, artifact),
+               ex.getMessage());
          }
       } else {
          IRenderer renderer = computeRenderer(artifact);
@@ -114,6 +116,15 @@ public class RendererManagerTest {
    @Parameters
    public static Collection<Object[]> getData() {
       Collection<Object[]> data = new ArrayList<Object[]>();
+
+      addTest(data, Folder, GENERALIZED_EDIT, DefaultArtifactRenderer.class, Both);
+      addTest(data, Folder, SPECIALIZED_EDIT, DefaultArtifactRenderer.class, Both);
+      addTest(data, Folder, DIFF, WordTemplateRenderer.class, Both);
+      addTest(data, Folder, PREVIEW, WordTemplateRenderer.class, Both);
+      addTest(data, Folder, MERGE, null, Both);
+      addTest(data, Folder, DEFAULT_OPEN, DefaultArtifactRenderer.class, Off);
+      addTest(data, Folder, DEFAULT_OPEN, DefaultArtifactRenderer.class, On);
+      addTest(data, Folder, PRODUCE_ATTRIBUTE, DefaultArtifactRenderer.class, Both);
 
       addTest(data, SoftwareRequirement, GENERALIZED_EDIT, DefaultArtifactRenderer.class, Both);
       addTest(data, SoftwareRequirement, SPECIALIZED_EDIT, WordTemplateRenderer.class, Both);
