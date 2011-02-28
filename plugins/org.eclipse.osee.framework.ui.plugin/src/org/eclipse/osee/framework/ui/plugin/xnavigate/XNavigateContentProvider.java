@@ -29,13 +29,12 @@ public class XNavigateContentProvider implements ITreeContentProvider {
    }
 
    @Override
-   @SuppressWarnings("unchecked")
    public Object[] getChildren(Object parentElement) {
       if (parentElement instanceof Object[]) {
          return (Object[]) parentElement;
       }
       if (parentElement instanceof Collection) {
-         return ((Collection) parentElement).toArray();
+         return ((Collection<?>) parentElement).toArray();
       }
       if (parentElement instanceof XNavigateItem) {
          List<XNavigateItem> items = new ArrayList<XNavigateItem>();
@@ -73,10 +72,12 @@ public class XNavigateContentProvider implements ITreeContentProvider {
 
    @Override
    public void dispose() {
+      // do nothing
    }
 
    @Override
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+      // do nothing
    }
 
 }

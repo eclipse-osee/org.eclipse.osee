@@ -21,6 +21,7 @@ public class XNavigateViewFilter extends ViewerFilter {
    private String text;
 
    public XNavigateViewFilter(TreeViewer treeViewer) {
+      // do nothing
    }
 
    public void setFilterText(String text) {

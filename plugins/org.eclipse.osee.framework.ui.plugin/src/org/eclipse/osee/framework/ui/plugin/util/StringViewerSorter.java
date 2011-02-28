@@ -20,6 +20,7 @@ import org.eclipse.jface.viewers.ViewerSorter;
 public class StringViewerSorter extends ViewerSorter {
 
    public StringViewerSorter() {
+      // do nothing
    }
 
    public StringViewerSorter(Collator collator) {

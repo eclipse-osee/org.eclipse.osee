@@ -12,8 +12,8 @@ package org.eclipse.osee.framework.ui.plugin.util;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -23,8 +23,6 @@ import org.eclipse.swt.widgets.Shell;
 
 public class ListSelectionDialog extends MessageDialog {
 
-   private Button okButton;
-   private Button cancelButton;
    private List selections;
    private int selectionIndex;
    private final Object[] choose;
@@ -51,15 +49,11 @@ public class ListSelectionDialog extends MessageDialog {
       saveSelection.setText("Remember Selection");
       saveSelection.setSelection(true);
 
-      saveSelection.addSelectionListener(new SelectionListener() {
+      saveSelection.addSelectionListener(new SelectionAdapter() {
 
          @Override
          public void widgetSelected(SelectionEvent e) {
             isChecked = saveSelection.getSelection();
-         }
-
-         @Override
-         public void widgetDefaultSelected(SelectionEvent e) {
          }
 
       });
@@ -67,7 +61,7 @@ public class ListSelectionDialog extends MessageDialog {
          selections.add(choose[i].toString());
       }
 
-      selections.addSelectionListener(new SelectionListener() {
+      selections.addSelectionListener(new SelectionAdapter() {
 
          @Override
          public void widgetSelected(SelectionEvent e) {
@@ -75,49 +69,11 @@ public class ListSelectionDialog extends MessageDialog {
             System.out.println("selected index " + selectionIndex);
          }
 
-         @Override
-         public void widgetDefaultSelected(SelectionEvent e) {
-         }
-
       });
 
       selections.select(0);
 
       return parent;
-   }
-
-   @Override
-   protected Control createButtonBar(Composite parent) {
-      Control c = super.createButtonBar(parent);
-      okButton = getButton(0);
-      cancelButton = getButton(1);
-
-      okButton.addSelectionListener(new SelectionListener() {
-
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-
-         }
-
-         @Override
-         public void widgetDefaultSelected(SelectionEvent e) {
-         }
-      });
-
-      cancelButton.addSelectionListener(new SelectionListener() {
-
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-
-         }
-
-         @Override
-         public void widgetDefaultSelected(SelectionEvent e) {
-         }
-
-      });
-
-      return c;
    }
 
    public int getSelection() {

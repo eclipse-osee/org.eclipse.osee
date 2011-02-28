@@ -21,6 +21,7 @@ public class CompositePropertySource extends AbstractPropertySource {
    private List<AbstractPropertySource> sources;
 
    public CompositePropertySource() {
+      // do nothing
    }
 
    public CompositePropertySource(IPropertySource... sources) {

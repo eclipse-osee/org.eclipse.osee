@@ -43,6 +43,7 @@ public final class AWorkbench {
    public static void openPerspective(String perspId) {
       IAdaptable input = ResourcesPlugin.getWorkspace();
       // Get "Open Behavior" preference.
+      @SuppressWarnings("deprecation")
       AbstractUIPlugin plugin = (AbstractUIPlugin) Platform.getPlugin(PlatformUI.PLUGIN_ID);
       IPreferenceStore store = plugin.getPreferenceStore();
       String pref = store.getString(IWorkbenchPreferenceConstants.OPEN_NEW_PERSPECTIVE);
@@ -51,8 +52,6 @@ public final class AWorkbench {
       try {
          if (pref.equals(IWorkbenchPreferenceConstants.OPEN_PERSPECTIVE_WINDOW)) {
             PlatformUI.getWorkbench().openWorkbenchWindow(perspId, input);
-         } else if (pref.equals(IWorkbenchPreferenceConstants.OPEN_PERSPECTIVE_PAGE)) {
-            PlatformUI.getWorkbench().getActiveWorkbenchWindow().openPage(perspId, input);
          } else if (pref.equals(IWorkbenchPreferenceConstants.OPEN_PERSPECTIVE_REPLACE)) {
             IPerspectiveRegistry reg = PlatformUI.getWorkbench().getPerspectiveRegistry();
             PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().setPerspective(

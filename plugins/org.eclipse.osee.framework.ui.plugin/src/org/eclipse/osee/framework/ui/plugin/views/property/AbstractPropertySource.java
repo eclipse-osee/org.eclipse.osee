@@ -22,6 +22,7 @@ public abstract class AbstractPropertySource implements IPropertySource2 {
    private IPropertyDescriptor[] descriptors;
 
    public AbstractPropertySource() {
+      // do nothing
    }
 
    protected abstract void addPropertyDescriptors(List<IPropertyDescriptor> list);

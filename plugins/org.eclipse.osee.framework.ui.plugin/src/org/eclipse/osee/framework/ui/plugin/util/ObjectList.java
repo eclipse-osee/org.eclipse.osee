@@ -110,5 +110,6 @@ public class ObjectList<A> extends List {
    // Stop SWT from disallowing our simple class extension
    @Override
    protected void checkSubclass() {
+      // provided for subclass implementation
    }
 }

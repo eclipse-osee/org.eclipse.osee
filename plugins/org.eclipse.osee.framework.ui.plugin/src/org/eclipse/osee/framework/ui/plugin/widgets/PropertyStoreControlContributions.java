@@ -28,6 +28,7 @@ import org.osgi.framework.Bundle;
 public class PropertyStoreControlContributions {
 
    private PropertyStoreControlContributions() {
+      // do nothing
    }
 
    public static List<IPropertyStoreBasedControl> getContributions(String viewIdToMatch) {

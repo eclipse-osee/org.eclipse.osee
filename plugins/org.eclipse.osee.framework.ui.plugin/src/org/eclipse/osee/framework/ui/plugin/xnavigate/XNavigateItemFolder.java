@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.plugin.xnavigate;
 
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
@@ -19,11 +18,11 @@ import org.eclipse.osee.framework.ui.swt.KeyedImage;
  */
 public class XNavigateItemFolder extends XNavigateItem {
 
-   public XNavigateItemFolder(XNavigateItem parent, String name) throws OseeArgumentException {
+   public XNavigateItemFolder(XNavigateItem parent, String name) {
       super(parent, name, name.contains("Admin") ? PluginUiImage.ADMIN : PluginUiImage.FOLDER);
    }
 
-   public XNavigateItemFolder(XNavigateItem parent, String name, KeyedImage oseeImage) throws OseeArgumentException {
+   public XNavigateItemFolder(XNavigateItem parent, String name, KeyedImage oseeImage) {
       super(parent, name, oseeImage);
    }
 
