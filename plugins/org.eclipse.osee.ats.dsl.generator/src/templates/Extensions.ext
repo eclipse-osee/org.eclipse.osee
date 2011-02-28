@@ -1,4 +1,0 @@
-import org::eclipse::osee::ats::dsl::atsDsl;
-
-sortedGreetings(Model this) :
-	this.greetings.sortBy(g|g.name.toLowerCase());
