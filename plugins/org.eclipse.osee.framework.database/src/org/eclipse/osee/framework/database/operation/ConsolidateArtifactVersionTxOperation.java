@@ -71,13 +71,11 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
    private long previousNetGammaId;
    private int previousBranchId;
    private int previuosTransactionId;
-   private final OperationLogger logger;
    private int updateTxsCounter;
    private int deleteTxsCounter;
 
    public ConsolidateArtifactVersionTxOperation(IOseeDatabaseService databaseService, OperationLogger logger) {
-      super(databaseService, "Consolidate Artifact Versions", Activator.PLUGIN_ID);
-      this.logger = logger;
+      super(databaseService, "Consolidate Artifact Versions", Activator.PLUGIN_ID, logger);
    }
 
    private void init() throws OseeCoreException {
@@ -158,7 +156,7 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
          }
       }
       if (!knownCase) {
-         logger.log(String.format("unknown case: artifact id: %d branch_id: %d", previousArtifactId, previousBranchId));
+         log(String.format("unknown case: artifact id: %d branch_id: %d", previousArtifactId, previousBranchId));
       }
    }
 
@@ -170,8 +168,8 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
       if (true) {
          findArtifactMods();
 
-         logger.log("updateTxsCurrentModData size: " + updateTxsCurrentModData.size());
-         logger.log("addressingToDelete size: " + addressingToDelete.size());
+         log("updateTxsCurrentModData size: " + updateTxsCurrentModData.size());
+         log("addressingToDelete size: " + addressingToDelete.size());
 
          getDatabaseService().runBatchUpdate(connection, prepareSql(UPDATE_TXS_MOD_CURRENT, false),
             updateTxsCurrentModData);
@@ -181,9 +179,9 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
       }
 
       findObsoleteGammas();
-      logger.log("gamma join size: " + gammaJoin.size());
+      log("gamma join size: " + gammaJoin.size());
 
-      logger.log("Number of artifact version rows deleted: " + getDatabaseService().runBatchUpdate(connection,
+      log("Number of artifact version rows deleted: " + getDatabaseService().runBatchUpdate(connection,
          DELETE_ARTIFACT_VERSIONS, deleteArtifactVersionData));
       deleteArtifactVersionData = null;
 
@@ -204,17 +202,17 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
 
    private void updataConflicts(String columnName) throws OseeCoreException {
       int count = getDatabaseService().runPreparedUpdate(connection, String.format(UPDATE_CONFLICTS, columnName));
-      logger.log(String.format("updated %s in %d rows", columnName, count));
+      log(String.format("updated %s in %d rows", columnName, count));
    }
 
    private void setBaselineTransactions() throws OseeCoreException {
       int count = getDatabaseService().runPreparedUpdate(connection, SET_BASELINE_TRANSACTION);
-      logger.log(String.format("updated %d baseline transactions", count));
+      log(String.format("updated %d baseline transactions", count));
    }
 
    private void populateArts() throws OseeCoreException {
       int count = getDatabaseService().runPreparedUpdate(connection, POPULATE_ARTS);
-      logger.log(String.format("inserted %d rows into osee_artifact", count));
+      log(String.format("inserted %d rows into osee_artifact", count));
    }
 
    private void findObsoleteGammas() throws OseeCoreException {
@@ -249,7 +247,7 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
 
    private void determineAffectedAddressingAndFix(boolean archived) throws OseeCoreException {
       try {
-         logger.log("query id: " + gammaJoin.getQueryId());
+         log("query id: " + gammaJoin.getQueryId());
          chStmt.runPreparedQuery(10000, String.format(SELECT_ADDRESSING, archived ? "_archived" : ""),
             gammaJoin.getQueryId());
 
@@ -315,7 +313,7 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
       if (addressingToDelete.size() > 99960 || force) {
          deleteTxsCounter +=
             getDatabaseService().runBatchUpdate(connection, prepareSql(DELETE_TXS, archived), addressingToDelete);
-         logger.log("Number of txs" + archivedStr + " rows deleted: " + deleteTxsCounter);
+         log("Number of txs" + archivedStr + " rows deleted: " + deleteTxsCounter);
          addressingToDelete.clear();
       }
 
@@ -323,7 +321,7 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
          updateTxsCounter +=
             getDatabaseService().runBatchUpdate(connection, prepareSql(UPDATE_TXS_GAMMAS, archived),
                updateAddressingData);
-         logger.log("Number of txs" + archivedStr + " rows updated: " + updateTxsCounter);
+         log("Number of txs" + archivedStr + " rows updated: " + updateTxsCounter);
 
          updateAddressingData.clear();
       }

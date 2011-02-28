@@ -35,7 +35,6 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
       "update osee_txs%s set tx_current = ? where transaction_id = ? and gamma_id = ?";
 
    private final List<Address> addresses = new ArrayList<Address>();
-   private final OperationLogger logger;
 
    private final List<Object[]> purgeData = new ArrayList<Object[]>();
    private final List<Object[]> currentData = new ArrayList<Object[]>();
@@ -47,11 +46,10 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
    public InvalidTxCurrentsAndModTypes(String operationName, String tableName, String columnName, OperationLogger logger, boolean isFixOperationEnabled, boolean archived) {
       super(
          "InvalidTxCurrentsAndModTypes " + operationName + tableName + " fix:" + isFixOperationEnabled + " archived:" + archived,
-         Activator.PLUGIN_ID);
+         Activator.PLUGIN_ID, logger);
       this.tableName = tableName;
       this.columnName = columnName;
       this.isFixOperationEnabled = isFixOperationEnabled;
-      this.logger = logger;
       txsTableName = archived ? "_archived" : "";
    }
 
@@ -65,7 +63,7 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
    }
 
    private void logIssue(String issue, Address address) {
-      logger.log(issue, String.valueOf(address.getBranchId()), String.valueOf(address.getItemId()),
+      log(issue, String.valueOf(address.getBranchId()), String.valueOf(address.getItemId()),
          String.valueOf(address.getTransactionId()), String.valueOf(address.getGammaId()),
          address.getModType().toString(), address.getTxCurrent().toString());
    }
@@ -160,7 +158,7 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      logger.log("Starting " + getName());
+      log("Starting " + getName());
 
       checkForCancelledStatus(monitor);
 
@@ -197,6 +195,6 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
 
       fixIssues(monitor);
 
-      logger.log("Completed " + getName());
+      log("Completed " + getName());
    }
 }

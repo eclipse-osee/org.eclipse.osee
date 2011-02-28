@@ -30,10 +30,16 @@ public abstract class AbstractOperation implements IOperation {
    private final String pluginId;
    private final String name;
    private boolean wasExecuted = false;
+   private final OperationLogger logger;
 
    public AbstractOperation(String operationName, String pluginId) {
+      this(operationName, pluginId, NullOperationLogger.getSingleton());
+   }
+
+   public AbstractOperation(String operationName, String pluginId, OperationLogger logger) {
       this.pluginId = pluginId;
       this.name = operationName;
+      this.logger = logger;
    }
 
    @Override
@@ -129,5 +135,17 @@ public abstract class AbstractOperation implements IOperation {
     */
    protected final String getPluginId() {
       return pluginId;
+   }
+
+   protected final void log(String... row) {
+      logger.log(row);
+   }
+
+   protected final void log(Throwable th) {
+      logger.log(th);
+   }
+
+   protected final void log(IStatus status) {
+      logger.log(status);
    }
 }

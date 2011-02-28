@@ -32,12 +32,10 @@ public final class DuplicateAttributesOperation extends AbstractDbTxOperation {
    private static final String SELECT_DUPLICATES =
       "select txs1.branch_id, txs1.gamma_id as gamma1, txs2.gamma_id as gamma2  from osee_join_export_import idj, osee_txs txs1, osee_txs txs2 where idj.query_id = ? and idj.id1 = txs1.gamma_id and idj.id2 = txs2.gamma_id and txs1.branch_id = txs2.branch_id and txs1.tx_current = ? and  txs2.tx_current = ?";
    private final ExportImportJoinQuery gammaJoin;
-   private final OperationLogger logger;
 
    public DuplicateAttributesOperation(OperationLogger logger, IOseeDatabaseService databaseService) throws OseeDataStoreException {
-      super(databaseService, "Duplicate Attributes", Activator.PLUGIN_ID);
+      super(databaseService, "Duplicate Attributes", Activator.PLUGIN_ID, logger);
       gammaJoin = JoinUtility.createExportImportJoinQuery();
-      this.logger = logger;
    }
 
    @Override
@@ -47,7 +45,7 @@ public final class DuplicateAttributesOperation extends AbstractDbTxOperation {
          gammaJoin.store(connection);
          selectDuplicates(connection);
       } catch (Exception ex) {
-         logger.log(ex);
+         log(ex);
       } finally {
          gammaJoin.delete(connection);
       }
@@ -71,7 +69,7 @@ public final class DuplicateAttributesOperation extends AbstractDbTxOperation {
          chStmt.runPreparedQuery(SELECT_DUPLICATES, gammaJoin.getQueryId(), TxChange.CURRENT.getValue(),
             TxChange.CURRENT.getValue());
          while (chStmt.next()) {
-            logger.log("branch: " + chStmt.getInt("branch_id"), "gamma1: " + chStmt.getLong("gamma1"),
+            log("branch: " + chStmt.getInt("branch_id"), "gamma1: " + chStmt.getLong("gamma1"),
                "gamma2: " + chStmt.getLong("gamma2"));
          }
       } finally {

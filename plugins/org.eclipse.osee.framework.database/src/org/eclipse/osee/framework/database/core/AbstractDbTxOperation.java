@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.database.core;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 
 /**
@@ -21,6 +22,11 @@ import org.eclipse.osee.framework.database.IOseeDatabaseService;
 public abstract class AbstractDbTxOperation extends AbstractOperation {
 
    private final IOseeDatabaseService databaseService;
+
+   public AbstractDbTxOperation(IOseeDatabaseService databaseService, String operationName, String pluginId, OperationLogger logger) {
+      super(operationName, pluginId, logger);
+      this.databaseService = databaseService;
+   }
 
    public AbstractDbTxOperation(IOseeDatabaseService databaseService, String operationName, String pluginId) {
       super(operationName, pluginId);
