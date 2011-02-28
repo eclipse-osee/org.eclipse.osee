@@ -109,7 +109,7 @@ public final class ViewWordChangeAndDiffTest {
          Assert.assertTrue(file1.exists());
          Assert.assertTrue(file2.exists());
 
-         if (TestUtil.isWindows()) {
+         if (Lib.isWindows()) {
             Assert.assertTrue(outPut.exists());
          }
       } catch (Exception ex) {
