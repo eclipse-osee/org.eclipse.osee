@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.ats.util;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -427,13 +426,15 @@ public class StateManager {
    }
 
    public static Collection<User> getImplementersByState(AbstractWorkflowArtifact workflow, IWorkPage state) throws OseeCoreException {
+      Set<User> users = new HashSet<User>();
       if (workflow.isCancelled()) {
-         return Arrays.asList(workflow.getCancelledBy());
-      }
-      Collection<User> users = new HashSet<User>(workflow.getStateMgr().getAssignees(state));
-      User user = workflow.getCompletedBy();
-      if (user != null) {
-         users.add(user);
+         users.add(workflow.getCancelledBy());
+      } else {
+         users.addAll(workflow.getStateMgr().getAssignees(state));
+         User user = workflow.getCompletedBy();
+         if (user != null) {
+            users.add(user);
+         }
       }
       return users;
    }
