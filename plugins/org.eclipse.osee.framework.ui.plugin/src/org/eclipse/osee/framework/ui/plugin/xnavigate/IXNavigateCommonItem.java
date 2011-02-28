@@ -8,17 +8,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.navigate;
+package org.eclipse.osee.framework.ui.plugin.xnavigate;
 
 import java.util.List;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 
 /**
+ * Implement to contribute items to common navigate views.
+ * 
  * @author Donald G. Dunne
  */
-public interface IAtsNavigateItem {
+public interface IXNavigateCommonItem {
 
-   public List<XNavigateItem> getNavigateItems(XNavigateItem parentItem) throws OseeCoreException;
+   public String getSectionId();
+
+   public void createCommonSection(List<XNavigateItem> items, List<String> excludeSectionIds);
 
 }

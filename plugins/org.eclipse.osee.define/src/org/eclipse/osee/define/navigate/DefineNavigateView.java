@@ -23,10 +23,13 @@ import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.IXNavigateEventListener;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateEventManager;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
@@ -36,7 +39,7 @@ import org.eclipse.ui.part.ViewPart;
  * 
  * @see ViewPart
  */
-public class DefineNavigateView extends ViewPart implements IActionable {
+public class DefineNavigateView extends ViewPart implements IActionable, IXNavigateEventListener {
 
    public static final String VIEW_ID = "org.eclipse.osee.define.DefineNavigateView";
    private XNavigateComposite xNavComp;
@@ -45,6 +48,13 @@ public class DefineNavigateView extends ViewPart implements IActionable {
    public void setFocus() {
       if (xNavComp != null) {
          xNavComp.setFocus();
+      }
+   }
+
+   @Override
+   public void refresh(XNavigateItem item) {
+      if (xNavComp != null && Widgets.isAccessible(xNavComp.getFilteredTree()) && Widgets.isAccessible(xNavComp.getFilteredTree().getViewer().getTree())) {
+         xNavComp.getFilteredTree().getViewer().refresh(item);
       }
    }
 
@@ -58,8 +68,7 @@ public class DefineNavigateView extends ViewPart implements IActionable {
       }
 
       xNavComp = new XNavigateComposite(new DefineNavigateViewItems(), parent, SWT.NONE);
-      xNavComp.getFilteredTree().getViewer().setSorter(new DefineNavigateViewerSorter());
-
+      XNavigateEventManager.register(this);
       HelpUtil.setHelp(xNavComp, OseeHelpContext.DEFINE_NAVIGATOR);
       createActions();
       xNavComp.refresh();

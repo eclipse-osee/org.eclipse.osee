@@ -1748,4 +1748,12 @@
             className="org.eclipse.osee.framework.ui.skynet.blam.operation.SetWorkbenchOverrideIconBlam">
       </Operation>
    </extension>
+   <extension
+         id="BlamContributionManager"
+         name="BlamContributionManager"
+         point="org.eclipse.osee.framework.ui.plugin.XCommonNavigateItem">
+      <XCommonNavigateItem
+            classname="org.eclipse.osee.framework.ui.skynet.blam.BlamContributionManager">
+      </XCommonNavigateItem>
+   </extension>
 </plugin>

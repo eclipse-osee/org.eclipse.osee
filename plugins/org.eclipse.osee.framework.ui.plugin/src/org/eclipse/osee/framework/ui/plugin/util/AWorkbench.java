@@ -13,22 +13,55 @@ package org.eclipse.osee.framework.ui.plugin.util;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.IPerspectiveRegistry;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPreferenceConstants;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.WorkbenchException;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 /**
  * @author Donald G. Dunne
  */
 public final class AWorkbench {
+
+   public static void openPerspective(String perspId) {
+      IAdaptable input = ResourcesPlugin.getWorkspace();
+      // Get "Open Behavior" preference.
+      AbstractUIPlugin plugin = (AbstractUIPlugin) Platform.getPlugin(PlatformUI.PLUGIN_ID);
+      IPreferenceStore store = plugin.getPreferenceStore();
+      String pref = store.getString(IWorkbenchPreferenceConstants.OPEN_NEW_PERSPECTIVE);
+
+      // Implement open behavior.
+      try {
+         if (pref.equals(IWorkbenchPreferenceConstants.OPEN_PERSPECTIVE_WINDOW)) {
+            PlatformUI.getWorkbench().openWorkbenchWindow(perspId, input);
+         } else if (pref.equals(IWorkbenchPreferenceConstants.OPEN_PERSPECTIVE_PAGE)) {
+            PlatformUI.getWorkbench().getActiveWorkbenchWindow().openPage(perspId, input);
+         } else if (pref.equals(IWorkbenchPreferenceConstants.OPEN_PERSPECTIVE_REPLACE)) {
+            IPerspectiveRegistry reg = PlatformUI.getWorkbench().getPerspectiveRegistry();
+            PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().setPerspective(
+               reg.findPerspectiveWithId(perspId));
+         }
+      } catch (WorkbenchException ex) {
+         OseeLog.log(OseeUiActivator.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+   }
 
    /**
     * Popup a workbench viewer eg: AWorkbench.popupView(IPageLayout.ID_PROBLEM_VIEW);

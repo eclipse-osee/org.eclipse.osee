@@ -10,34 +10,34 @@
  *******************************************************************************/
 package org.eclipse.osee.define.navigate;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.define.DefinePlugin;
-import org.eclipse.osee.framework.access.AccessControlManager;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.plugin.util.OpenPerspectiveNavigateItem;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.IXNavigateCommonItem;
+import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateCommonItems;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
-import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemFolder;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemOperation;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateViewItems;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.action.CompareTwoStringsAction;
 import org.eclipse.osee.framework.ui.skynet.artifact.MassEditDirtyArtifactOperation;
-import org.eclipse.osee.framework.ui.skynet.blam.BlamContributionManager;
 import org.osgi.framework.Bundle;
 
 /**
  * @author Donald G. Dunne
  */
-public class DefineNavigateViewItems implements XNavigateViewItems {
+public class DefineNavigateViewItems implements XNavigateViewItems, IXNavigateCommonItem {
+   private final List<XNavigateItem> items = new CopyOnWriteArrayList<XNavigateItem>();
 
    public DefineNavigateViewItems() {
       super();
@@ -45,25 +45,20 @@ public class DefineNavigateViewItems implements XNavigateViewItems {
 
    @Override
    public List<XNavigateItem> getSearchNavigateItems() {
-      List<XNavigateItem> items = new ArrayList<XNavigateItem>();
-
-      try {
-         BlamContributionManager.addBlamOperationsToNavigator(items);
-
-         if (AccessControlManager.isOseeAdmin()) {
-            XNavigateItem adminItems = new XNavigateItemFolder(null, "Admin");
-            items.add(adminItems);
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-      }
-
-      addExtensionPointItems(items);
-      items.add(new XNavigateItemAction(null, new CompareTwoStringsAction(), FrameworkImage.EDIT));
-      items.add(new XNavigateItemOperation(null, FrameworkImage.ARTIFACT_MASS_EDITOR,
-         MassEditDirtyArtifactOperation.NAME, new MassEditDirtyArtifactOperation()));
-
+      addDefineSectionChildren(null);
+      XNavigateCommonItems.addCommonNavigateItems(items, Arrays.asList(getSectionId()));
       return items;
+   }
+
+   public void addDefineSectionChildren(XNavigateItem item) {
+      try {
+         items.add(new XNavigateItemAction(item, new CompareTwoStringsAction(), FrameworkImage.EDIT));
+         items.add(new XNavigateItemOperation(item, FrameworkImage.ARTIFACT_MASS_EDITOR,
+            MassEditDirtyArtifactOperation.NAME, new MassEditDirtyArtifactOperation()));
+         addExtensionPointItems(items);
+      } catch (Exception ex) {
+         OseeLog.log(DefinePlugin.class, Level.SEVERE, ex);
+      }
    }
 
    private void addExtensionPointItems(List<XNavigateItem> items) {
@@ -97,4 +92,18 @@ public class DefineNavigateViewItems implements XNavigateViewItems {
          }
       }
    }
+
+   @Override
+   public void createCommonSection(List<XNavigateItem> items, List<String> excludeSectionIds) {
+      XNavigateItem reviewItem = new XNavigateItem(null, "OSEE Define", FrameworkImage.LASER);
+      new OpenPerspectiveNavigateItem(reviewItem, "Define", "osee.define.PerspectiveFactory", FrameworkImage.LASER);
+      addDefineSectionChildren(reviewItem);
+      items.add(reviewItem);
+   }
+
+   @Override
+   public String getSectionId() {
+      return "Define";
+   }
+
 }

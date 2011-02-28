@@ -8,26 +8,18 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats;
+package org.eclipse.osee.ats.review;
 
 import org.eclipse.osee.ats.hyper.ActionHyperView;
-import org.eclipse.osee.ats.hyper.ArtifactHyperView;
-import org.eclipse.osee.ats.navigate.NavigateView;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.ui.skynet.ArtifactExplorer;
-import org.eclipse.osee.framework.ui.skynet.group.GroupExplorer;
 import org.eclipse.osee.framework.ui.skynet.search.QuickSearchView;
-import org.eclipse.osee.framework.ui.skynet.skywalker.arttype.ArtifactTypeWalker;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView;
-import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView;
-import org.eclipse.search.ui.NewSearchUI;
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 
-public class ATSPerspective implements IPerspectiveFactory {
-
-   public static String ID = "org.eclipse.osee.ats.ATSPerspective";
+public class ReviewPerspective implements IPerspectiveFactory {
+   public static String ID = "org.eclipse.osee.ats.review.ReviewPerspective";
 
    @Override
    public void createInitialLayout(final IPageLayout layout) {
@@ -36,42 +28,21 @@ public class ATSPerspective implements IPerspectiveFactory {
    }
 
    public void defineActions(final IPageLayout layout) {
-      layout.addShowViewShortcut(NavigateView.VIEW_ID);
+      layout.addShowViewShortcut(ReviewNavigateView.VIEW_ID);
       layout.addShowViewShortcut(ActionHyperView.VIEW_ID);
-
-      layout.addShowViewShortcut(ArtifactHyperView.VIEW_ID);
       layout.addShowViewShortcut(ArtifactExplorer.VIEW_ID);
       layout.addShowViewShortcut(BranchView.VIEW_ID);
-      layout.addShowViewShortcut(GroupExplorer.VIEW_ID);
       layout.addShowViewShortcut(QuickSearchView.VIEW_ID);
-      layout.addShowViewShortcut(ArtifactTypeWalker.VIEW_ID);
-      layout.addShowViewShortcut("osee.admin.AdminView");
       layout.addShowViewShortcut("org.eclipse.pde.runtime.LogView");
-      layout.addShowViewShortcut("org.eclipse.ui.views.PropertySheet");
-      layout.addShowViewShortcut("org.eclipse.ui.views.ContentOutline");
    }
 
    public void defineLayout(final IPageLayout layout) {
       final String editorArea = layout.getEditorArea();
 
       final IFolderLayout left = layout.createFolder("left", IPageLayout.LEFT, 0.2f, editorArea);
-      final IFolderLayout right = layout.createFolder("right", IPageLayout.RIGHT, .75f, editorArea);
-      final IFolderLayout bottom = layout.createFolder("bottom", IPageLayout.BOTTOM, 0.7f, editorArea);
       final IFolderLayout bottomLeft = layout.createFolder("bottomLeft", IPageLayout.BOTTOM, 0.7f, "left");
-      final IFolderLayout bottomRight = layout.createFolder("bottomRight", IPageLayout.RIGHT, 0.6f, "bottom");
 
-      left.addView(NavigateView.VIEW_ID);
+      left.addView(ReviewNavigateView.VIEW_ID);
       bottomLeft.addView(QuickSearchView.VIEW_ID);
-      right.addView(ArtifactExplorer.VIEW_ID);
-
-      if (AtsUtil.isAtsAdmin()) {
-         bottom.addView("org.eclipse.pde.runtime.LogView");
-      }
-      bottom.addView(BranchView.VIEW_ID);
-      bottom.addView(GroupExplorer.VIEW_ID);
-      bottom.addView(NewSearchUI.SEARCH_VIEW_ID);
-      bottom.addPlaceholder(MergeView.VIEW_ID);
-
-      bottomRight.addView(ActionHyperView.VIEW_ID);
    }
 }

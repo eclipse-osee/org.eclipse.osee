@@ -54,7 +54,7 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
    }
 
    @Override
-   public List<XNavigateItem> getNavigateItems() throws OseeCoreException {
+   public List<XNavigateItem> getNavigateItems(XNavigateItem parentItem) throws OseeCoreException {
       List<XNavigateItem> items = new ArrayList<XNavigateItem>();
 
       if (OseeUiActivator.areOSEEServicesAvailable().isFalse()) {
@@ -79,7 +79,7 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
          OseeLog.log(OseeAtsConfigDemoActivator.class, Level.WARNING, "Demo Teams Not Cofigured", ex);
          return items;
       }
-      XNavigateItem jhuItem = new XNavigateItemFolder(null, "John Hopkins Univ (JHU)");
+      XNavigateItem jhuItem = new XNavigateItemFolder(parentItem, "John Hopkins Univ (JHU)");
       new XNavigateUrlItem(jhuItem, "Open JHU Website - Externally", "http://www.jhu.edu/", true);
       new XNavigateUrlItem(jhuItem, "Open JHU Website - Internally", "http://www.jhu.edu/", false);
 

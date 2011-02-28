@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.navigate;
+package org.eclipse.osee.ats.review;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,16 +28,11 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.ats.actions.MyFavoritesAction;
-import org.eclipse.osee.ats.actions.MyWorldAction;
-import org.eclipse.osee.ats.actions.NewAction;
-import org.eclipse.osee.ats.actions.NewGoal;
-import org.eclipse.osee.ats.actions.OpenChangeReportByIdAction;
 import org.eclipse.osee.ats.actions.OpenWorkflowByIdAction;
-import org.eclipse.osee.ats.actions.OpenWorldByIdAction;
 import org.eclipse.osee.ats.config.AtsBulkLoad;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.navigate.AtsNavigateComposite;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.operation.CompositeOperation;
@@ -49,19 +44,15 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.IXNavigateEventListener;
-import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateEventManager;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.skynet.action.CollapseAllAction;
 import org.eclipse.osee.framework.ui.skynet.action.ExpandAllAction;
-import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.util.LoadingComposite;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
@@ -77,9 +68,9 @@ import org.eclipse.ui.progress.UIJob;
 /**
  * @author Donald G. Dunne
  */
-public class NavigateView extends ViewPart implements IActionable, IXNavigateEventListener {
+public class ReviewNavigateView extends ViewPart implements IActionable, IXNavigateEventListener {
 
-   public static final String VIEW_ID = "org.eclipse.osee.ats.navigate.NavigateView";
+   public static final String VIEW_ID = "org.eclipse.osee.ats.review.ReviewNavigateView";
    private static final String INPUT = "filter";
    private static final String FILTER_STR = "filterStr";
 
@@ -95,25 +86,32 @@ public class NavigateView extends ViewPart implements IActionable, IXNavigateEve
       refreshData();
    }
 
+   @Override
+   public void refresh(XNavigateItem item) {
+      if (xNavComp != null && Widgets.isAccessible(xNavComp.getFilteredTree()) && Widgets.isAccessible(xNavComp.getFilteredTree().getViewer().getTree())) {
+         xNavComp.getFilteredTree().getViewer().refresh(item);
+      }
+   }
+
    public void refreshData() {
       List<IOperation> ops = new ArrayList<IOperation>();
       ops.add(AtsBulkLoad.getConfigLoadingOperation());
-      ops.add(new AtsNavigateViewItemsOperation());
-      IOperation operation = new CompositeOperation("Load ATS Navigator", AtsPlugin.PLUGIN_ID, ops);
+      ops.add(new ReviewNavigateViewItemsOperation());
+      IOperation operation = new CompositeOperation("Load Review Navigator", AtsPlugin.PLUGIN_ID, ops);
       Operations.executeAsJob(operation, false, Job.LONG, new ReloadJobChangeAdapter(this));
    }
 
    private final class ReloadJobChangeAdapter extends JobChangeAdapter {
 
-      private final NavigateView navView;
+      private final ReviewNavigateView navView;
 
-      private ReloadJobChangeAdapter(NavigateView navView) {
+      private ReloadJobChangeAdapter(ReviewNavigateView navView) {
          this.navView = navView;
       }
 
       @Override
       public void done(IJobChangeEvent event) {
-         Job job = new UIJob("Load ATS Navigator") {
+         Job job = new UIJob("Load Review Navigator") {
 
             @Override
             public IStatus runInUIThread(IProgressMonitor monitor) {
@@ -127,21 +125,10 @@ public class NavigateView extends ViewPart implements IActionable, IXNavigateEve
                      return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, "Navigate View - !dbConnectionIsOk");
                   }
 
-                  xNavComp = new AtsNavigateComposite(AtsNavigateViewItems.getInstance(), parent, SWT.NONE);
+                  xNavComp = new AtsNavigateComposite(ReviewNavigateViewItems.getInstance(), parent, SWT.NONE);
 
-                  XNavigateEventManager.register(navView);
                   HelpUtil.setHelp(xNavComp, AtsHelpContext.NAVIGATOR);
                   createToolBar();
-
-                  // add search text box
-                  AtsQuickSearchComposite composite = new AtsQuickSearchComposite(xNavComp, SWT.NONE);
-                  composite.addDisposeListener(new DisposeListener() {
-
-                     @Override
-                     public void widgetDisposed(DisposeEvent e) {
-                        OseeNotificationManager.getInstance().sendNotifications();
-                     }
-                  });
 
                   Label label = new Label(xNavComp, SWT.None);
                   String str = getWhoAmI();
@@ -184,13 +171,6 @@ public class NavigateView extends ViewPart implements IActionable, IXNavigateEve
       }
    }
 
-   @Override
-   public void refresh(XNavigateItem item) {
-      if (xNavComp != null && Widgets.isAccessible(xNavComp.getFilteredTree()) && Widgets.isAccessible(xNavComp.getFilteredTree().getViewer().getTree())) {
-         xNavComp.getFilteredTree().getViewer().refresh(item);
-      }
-   }
-
    private void addExtensionPointListenerBecauseOfWorkspaceLoading() {
       IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
       extensionRegistry.addListener(new IRegistryEventListener() {
@@ -229,32 +209,25 @@ public class NavigateView extends ViewPart implements IActionable, IXNavigateEve
 
    protected void createToolBar() {
       IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
-      toolbarManager.add(new MyWorldAction());
-      toolbarManager.add(new MyFavoritesAction());
       toolbarManager.add(new CollapseAllAction(xNavComp.getFilteredTree().getViewer()));
       toolbarManager.add(new ExpandAllAction(xNavComp.getFilteredTree().getViewer()));
-      toolbarManager.add(new OpenChangeReportByIdAction());
-      toolbarManager.add(new OpenWorldByIdAction());
       toolbarManager.add(new OpenWorkflowByIdAction());
-      toolbarManager.add(new NewAction());
       getViewSite().getActionBars().updateActionBars();
 
       IActionBars bars = getViewSite().getActionBars();
       IMenuManager mm = bars.getMenuManager();
-      mm.add(new NewAction());
-      mm.add(new NewGoal());
-      mm.add(OseeUiActions.createBugAction(AtsPlugin.PLUGIN_ID, this, VIEW_ID, "ATS Navigator"));
+      mm.add(OseeUiActions.createBugAction(AtsPlugin.PLUGIN_ID, this, VIEW_ID, "Review Navigator"));
 
       toolbarManager.update(true);
    }
 
-   public static NavigateView getNavigateView() {
+   public static ReviewNavigateView getNavigateView() {
       IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
       try {
-         return (NavigateView) page.showView(NavigateView.VIEW_ID);
+         return (ReviewNavigateView) page.showView(ReviewNavigateView.VIEW_ID);
       } catch (PartInitException e1) {
          MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Launch Error",
-            "Couldn't Launch OSEE ATS NavigateView " + e1.getMessage());
+            "Couldn't Launch OSEE Review NavigateView " + e1.getMessage());
       }
       return null;
    }

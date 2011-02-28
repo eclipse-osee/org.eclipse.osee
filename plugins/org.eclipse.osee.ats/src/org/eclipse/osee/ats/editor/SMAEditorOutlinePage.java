@@ -143,8 +143,10 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
             return ImageManager.getImage(FrameworkImage.RULE);
          } else if (element instanceof User) {
             return ImageManager.getImage(FrameworkImage.USER);
-         } else if (element instanceof WrappedPeerReviews || element instanceof WrappedDecisionReviews || element instanceof DecisionReviewDefinition || element instanceof PeerReviewDefinition) {
-            return ImageManager.getImage(AtsImage.REVIEW);
+         } else if (element instanceof WrappedPeerReviews || element instanceof PeerReviewDefinition) {
+            return ImageManager.getImage(AtsImage.PEER_REVIEW);
+         } else if (element instanceof WrappedDecisionReviews || element instanceof DecisionReviewDefinition) {
+            return ImageManager.getImage(AtsImage.DECISION_REVIEW);
          } else if (element instanceof DecisionReviewOption) {
             return ImageManager.getImage(FrameworkImage.QUESTION);
          }

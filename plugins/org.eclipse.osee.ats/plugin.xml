@@ -87,6 +87,12 @@
          id="org.eclipse.osee.ats.ATSPerspective"
          icon="images/atsPerspective.gif">
    </perspective>
+   <perspective
+         class="org.eclipse.osee.ats.review.ReviewPerspective"
+         icon="images/review.gif"
+         id="org.eclipse.osee.ats.review.ReviewPerspective"
+         name="Review">
+   </perspective>
 </extension>
       <extension
             point="org.eclipse.ui.perspectiveExtensions">
@@ -144,6 +150,13 @@
          category="org.eclipse.osee.ats.category"
          name="Artifact View"
          id="org.eclipse.osee.ats.hyper.ArtifactHyperView">
+   </view>
+   <view
+         category="org.eclipse.osee.ats.review.category"
+         class="org.eclipse.osee.ats.review.ReviewNavigateView"
+         icon="images/review.gif"
+         id="org.eclipse.osee.ats.review.ReviewNavigateView"
+         name="ReviewNavigator">
    </view>
    </extension>
    <extension
@@ -453,4 +466,40 @@
             className="org.eclipse.osee.ats.navigate.CopyAtsConfigurationBlam">
       </Operation>
    </extension>
+   <extension
+         point="org.eclipse.osee.framework.ui.plugin.XCommonNavigateItem">
+      <XCommonNavigateItem
+            classname="org.eclipse.osee.ats.navigate.AtsNavigateViewItems">
+      </XCommonNavigateItem>
+      <XCommonNavigateItem
+            classname="org.eclipse.osee.ats.review.ReviewNavigateViewItems">
+      </XCommonNavigateItem>
+   </extension>
+      <extension point="org.eclipse.ui.actionSets">
+      <actionSet
+         label="OSEE ATS"
+         visible="true"
+         id="osee.ats.actionSet">
+			<menu
+            label="&amp;OSEE"
+            id="osee.product.oseeMenu">
+         </menu>         <action
+               class="org.eclipse.osee.ats.actions.OpenReviewPerspectiveAction"
+               icon="images/review.gif"
+               id="org.eclipse.osee.ats.actions.OpenReviewPerspectiveAction"
+               label="OSEE &amp;Review"
+               menubarPath="osee.product.oseeMenu/main"
+               tooltip="Open OSEE Review Perspective">
+         </action>
+                         <action
+                               class="org.eclipse.osee.ats.actions.OpenAtsPerspectiveAction"
+                               icon="images/action.gif"
+                               id="org.eclipse.osee.ats.actions.OpenAtsPerspectiveAction"
+                               label="OSEE &amp;ATS"
+                               menubarPath="osee.product.oseeMenu/main"
+                               tooltip="Open OSEE ATS Perspective">
+                         </action>
+      </actionSet>
+   </extension>
+   
 </plugin>
