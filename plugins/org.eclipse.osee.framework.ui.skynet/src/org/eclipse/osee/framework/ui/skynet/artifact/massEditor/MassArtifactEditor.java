@@ -254,6 +254,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IActio
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
+      getSite().setSelectionProvider(xViewer);
    }
 
    public Branch getBranch() {
