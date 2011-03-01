@@ -31,6 +31,7 @@ import org.eclipse.ui.forms.editor.FormEditor;
 public abstract class AbstractArtifactEditor extends FormEditor implements IDirtiableEditor {
 
    private final static Object[] EMPTY_ARRAY = new Object[0];
+   protected ISelectionProvider defaultSelectionProvider;
 
    @Override
    protected XFormToolkit createToolkit(Display display) {
@@ -71,11 +72,15 @@ public abstract class AbstractArtifactEditor extends FormEditor implements IDirt
    @Override
    public void init(IEditorSite site, IEditorInput input) throws PartInitException {
       super.init(site, input);
-      ISelectionProvider provider = new ArtifactEditorSelectionProvider();
+      defaultSelectionProvider = new ArtifactEditorSelectionProvider();
       Artifact artifact = getArtifactFromEditorInput();
       Object[] selected = artifact != null ? new Object[] {artifact} : EMPTY_ARRAY;
-      provider.setSelection(new StructuredSelection(selected));
-      getSite().setSelectionProvider(provider);
+      defaultSelectionProvider.setSelection(new StructuredSelection(selected));
+      getSite().setSelectionProvider(defaultSelectionProvider);
+   }
+
+   public ISelectionProvider getDefaultSelectionProvider() {
+      return defaultSelectionProvider;
    }
 
    private final class ArtifactEditorSelectionProvider implements ISelectionProvider {

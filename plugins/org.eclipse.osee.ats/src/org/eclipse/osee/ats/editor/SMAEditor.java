@@ -21,6 +21,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.osee.ats.actions.AccessControlAction;
 import org.eclipse.osee.ats.actions.DirtyReportAction;
 import org.eclipse.osee.ats.actions.ISelectedAtsArtifacts;
@@ -639,4 +640,27 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
       return ArtifactImageManager.getImage(sma);
    }
 
+   @Override
+   protected void pageChange(int newPageIndex) {
+      super.pageChange(newPageIndex);
+      if (newPageIndex != -1 && pages.size() > newPageIndex) {
+         Object page = pages.get(newPageIndex);
+         if (page != null) {
+            ISelectionProvider provider = getDefaultSelectionProvider();
+            if (page.equals(workFlowTab)) {
+               provider = getDefaultSelectionProvider();
+            } else if (page.equals(taskTabXWidgetActionPage)) {
+               provider = taskTabXWidgetActionPage.getTaskComposite().getTaskXViewer();
+            } else {
+               String title = getPageText(newPageIndex);
+               if (title.equalsIgnoreCase("metrics")) {
+                  provider = null;
+               } else if (title.equalsIgnoreCase("attributes")) {
+                  provider = attributesComposite.getTableViewer();
+               }
+            }
+            getSite().setSelectionProvider(provider);
+         }
+      }
+   }
 }

@@ -163,6 +163,10 @@ public class AttributesComposite extends Composite {
       });
    }
 
+   public TableViewer getTableViewer() {
+      return tableViewer;
+   }
+
    private void createTableViewer(Composite parent) {
       tableViewer = new TableViewer(table);
 

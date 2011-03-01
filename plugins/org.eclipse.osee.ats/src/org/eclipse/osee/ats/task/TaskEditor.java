@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
@@ -414,4 +415,19 @@ public class TaskEditor extends AbstractArtifactEditor implements IActionable, I
       });
    }
 
+   @Override
+   protected void pageChange(int newPageIndex) {
+      super.pageChange(newPageIndex);
+      if (newPageIndex != -1 && pages.size() > newPageIndex) {
+         Object page = pages.get(newPageIndex);
+         if (page != null) {
+            ISelectionProvider provider = taskActionPage.getTaskComposite().getTaskXViewer();
+            String title = getPageText(newPageIndex);
+            if (title.equalsIgnoreCase("metrics")) {
+               provider = null;
+            }
+            getSite().setSelectionProvider(provider);
+         }
+      }
+   }
 }
