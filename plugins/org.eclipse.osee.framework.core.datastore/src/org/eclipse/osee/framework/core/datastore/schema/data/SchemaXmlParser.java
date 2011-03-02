@@ -12,10 +12,12 @@ package org.eclipse.osee.framework.core.datastore.schema.data;
 
 import java.io.BufferedInputStream;
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.framework.core.datastore.IOseeSchemaProvider;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.core.datastore.IOseeSchemaResource;
+import org.eclipse.osee.framework.core.datastore.internal.Activator;
 import org.eclipse.osee.framework.core.datastore.schema.data.AppliesToClause.AppliesToEntries;
 import org.eclipse.osee.framework.core.datastore.schema.data.AppliesToClause.OrderType;
 import org.eclipse.osee.framework.core.datastore.schema.data.ConstraintElement.ConstraintFields;
@@ -29,6 +31,7 @@ import org.eclipse.osee.framework.core.datastore.schema.data.TableElement.TableS
 import org.eclipse.osee.framework.core.datastore.schema.data.TableElement.TableTags;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -187,8 +190,8 @@ public class SchemaXmlParser {
       return schemaData;
    }
 
-   public void parseFromSchemaProvider(IOseeSchemaProvider schemaProvider, Map<String, SchemaData> schemas) {
-      for (IOseeSchemaResource schemaResource : schemaProvider.getSchemaResources()) {
+   public void parseFromSchemaProvider(Collection<IOseeSchemaResource> schemaResources, Map<String, SchemaData> schemas) {
+      for (IOseeSchemaResource schemaResource : schemaResources) {
          SchemaData schemaData;
          InputStream inputStream = null;
          try {
@@ -207,8 +210,8 @@ public class SchemaXmlParser {
                }
                schema.addTableDefinition(table);
             }
-         } catch (Exception e) {
-            e.printStackTrace();
+         } catch (Exception ex) {
+            OseeLog.log(Activator.class, Level.WARNING, ex);
          } finally {
             Lib.close(inputStream);
          }

@@ -12,12 +12,14 @@ package org.eclipse.osee.framework.core.datastore.schema.operations;
 
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.datastore.IOseeSchemaProvider;
+import org.eclipse.osee.framework.core.datastore.IOseeSchemaResource;
 import org.eclipse.osee.framework.core.datastore.SchemaCreationOptions;
 import org.eclipse.osee.framework.core.datastore.internal.Activator;
 import org.eclipse.osee.framework.core.datastore.schema.data.ColumnMetadata;
@@ -52,8 +54,9 @@ public class LoadUserSchemasOperation extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
+      Collection<IOseeSchemaResource> schemaResources = schemaProvider.getSchemaResources();
       SchemaXmlParser parser = new SchemaXmlParser();
-      parser.parseFromSchemaProvider(schemaProvider, schemas);
+      parser.parseFromSchemaProvider(schemaResources, schemas);
 
       if (!options.isUseFileSpecifiedSchemas()) {
          try {

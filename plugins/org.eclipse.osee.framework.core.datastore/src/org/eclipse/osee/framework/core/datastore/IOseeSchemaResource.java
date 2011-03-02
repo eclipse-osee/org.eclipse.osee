@@ -18,5 +18,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  */
 public interface IOseeSchemaResource {
 
+   public boolean isApplicable();
+
    public InputStream getContent() throws OseeCoreException;
 }

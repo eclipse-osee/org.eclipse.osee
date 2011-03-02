@@ -33,7 +33,10 @@ public class OseeSchemaProvider implements IOseeSchemaProvider {
       if (services != null) {
          for (Object object : services) {
             if (object instanceof IOseeSchemaResource) {
-               providers.add((IOseeSchemaResource) object);
+               IOseeSchemaResource resource = (IOseeSchemaResource) object;
+               if (resource.isApplicable()) {
+                  providers.add(resource);
+               }
             }
          }
       }

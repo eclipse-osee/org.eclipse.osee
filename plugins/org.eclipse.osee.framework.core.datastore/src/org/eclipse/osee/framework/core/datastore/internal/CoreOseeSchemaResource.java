@@ -32,4 +32,9 @@ public class CoreOseeSchemaResource implements IOseeSchemaResource {
       }
       return inputStream;
    }
+
+   @Override
+   public boolean isApplicable() {
+      return true;
+   }
 }
