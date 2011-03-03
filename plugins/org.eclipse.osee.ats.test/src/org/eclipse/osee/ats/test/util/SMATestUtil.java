@@ -12,11 +12,11 @@ package org.eclipse.osee.ats.test.util;
 
 import java.util.Arrays;
 import java.util.Collection;
-import org.junit.Assert;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.internal.workflow.SMAState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.junit.Assert;
 
 /**
  * @author Donald G. Dunne
@@ -40,7 +40,7 @@ public class SMATestUtil {
          Assert.assertEquals("Percent wrong for " + sma.getHumanReadableId(), sma.getWorldViewPercentCompleteTotal(),
             totalPercent);
          Assert.assertEquals("Hours Spent wrong for " + sma.getHumanReadableId(), sma.getWorldViewHoursSpentTotal(),
-            hoursSpent);
+            hoursSpent, 0.0);
 
          for (String stateValue : sma.getAttributesToStringList(AtsAttributeTypes.State)) {
             SMAState smaState = new SMAState();
