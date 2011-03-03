@@ -34,6 +34,6 @@ public final class SendEmailCall implements Callable<String> {
          return String.format("An exception occured with sending the email for address \"%s\" for user %s.  %s",
             emailAddress, user.getName(), ex);
       }
-      return null;
+      return String.format("Sucess for address \"%s\" for user %s.", emailAddress, user.getName());
    }
 }
