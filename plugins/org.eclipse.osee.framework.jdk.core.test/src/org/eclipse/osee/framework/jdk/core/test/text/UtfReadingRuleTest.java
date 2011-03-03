@@ -55,11 +55,11 @@ public final class UtfReadingRuleTest {
       return outfile;
    }
 
-   private final Utf8TestRule rule = new Utf8TestRule();
-
-   @Test(expected = NullPointerException.class)
+   @Test
    public void testWrongFileName() throws IOException {
+      Utf8TestRule rule = new Utf8TestRule();
       rule.process(new File("./notexistentFile.txt"));
+      Assert.assertNull(rule.lastOutput);
    }
 
    @Test
@@ -68,6 +68,7 @@ public final class UtfReadingRuleTest {
       charsetStack.add("UnknownCharset");
       charsetStack.add("UTF-8");
 
+      Utf8TestRule rule = new Utf8TestRule();
       while (!charsetStack.isEmpty()) {
          try {
             File inputFile = getInputFile();
@@ -82,6 +83,7 @@ public final class UtfReadingRuleTest {
 
    @Test
    public void testUtf8ReadData() throws IOException {
+      Utf8TestRule rule = new Utf8TestRule();
       try {
          File inputFile = getInputFile();
          rule.process(inputFile);
