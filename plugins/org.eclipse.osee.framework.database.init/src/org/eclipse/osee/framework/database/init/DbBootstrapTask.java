@@ -52,6 +52,7 @@ public class DbBootstrapTask implements IDbInitializationTask {
 
       createOseeDatastore();
 
+      //      Platform.getBundle("org.eclipse.osee.framework.ui.skynet");
       IOseeCachingService service = DatabaseInitActivator.getInstance().getCachingService();
       service.clearAll();
 
