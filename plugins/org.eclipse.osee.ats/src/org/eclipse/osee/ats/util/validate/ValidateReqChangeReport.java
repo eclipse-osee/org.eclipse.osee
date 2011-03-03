@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 public class ValidateReqChangeReport {
 
    public static void run(TeamWorkFlowArtifact teamArt, Set<AttributeSetRule> attributeSetRules, Set<RelationSetRule> relationSetRules) {
-      XResultData resultData = new XResultData();
+      XResultData resultData = new XResultData(false);
       IOperation operation = new ValidationReportOperation(resultData, teamArt, attributeSetRules, relationSetRules);
       Operations.executeAsJob(operation, true);
    }
