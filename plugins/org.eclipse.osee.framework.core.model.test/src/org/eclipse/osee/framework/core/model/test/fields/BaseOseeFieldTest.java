@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.core.model.test.fields;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.OseeField;
 import org.eclipse.osee.framework.jdk.core.util.Compare;

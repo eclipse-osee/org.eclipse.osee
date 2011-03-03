@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.framework.core.message.TableData;
 import org.eclipse.osee.framework.core.message.internal.translation.TableDataTranslator;
 import org.eclipse.osee.framework.core.message.test.mocks.DataAsserts;

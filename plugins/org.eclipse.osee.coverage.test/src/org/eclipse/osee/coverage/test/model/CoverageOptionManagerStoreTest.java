@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.test.model;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.coverage.model.CoverageOption;
 import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.CoverageOptionManagerDefault;

@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.core.server.test.internal.session;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.IOseeStorable;

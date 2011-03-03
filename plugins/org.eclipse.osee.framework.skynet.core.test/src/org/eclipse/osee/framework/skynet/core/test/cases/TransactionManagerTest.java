@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.skynet.core.test.cases;
 
 import static org.junit.Assert.assertFalse;
 import java.util.List;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.util.GUID;

@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.search.engine.test.utility;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.framework.search.engine.utility.SearchTagQueryBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -18,7 +18,7 @@ import static org.eclipse.osee.framework.core.enums.PermissionEnum.READ;
 import static org.eclipse.osee.framework.core.enums.PermissionEnum.WRITE;
 import java.util.ArrayList;
 import java.util.Collection;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.junit.Test;
 

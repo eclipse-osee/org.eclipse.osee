@@ -11,10 +11,10 @@
 package org.eclipse.osee.ote.message.test.element;
 
 import java.util.Random;
-import junit.framework.Assert;
 import org.eclipse.osee.ote.message.data.HeaderData;
 import org.eclipse.osee.ote.message.data.MemoryResource;
 import org.eclipse.osee.ote.message.elements.Float64Element;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class Float64ElementTest {
@@ -51,12 +51,9 @@ public class Float64ElementTest {
          Float64Element el = e[i];
          el.setValue(val);
          expectedVals[i] = val;
-         if (el.getValue() != expectedVals[i]) {
-            Assert.failNotEquals(
-               String.format("set/get fail on %s: msb=%d, lsb=%d", el.getName(), el.getMsb(), el.getLsb()),
-               expectedVals[i], el.getValue());
-         }
-
+         Assert.assertEquals(
+            String.format("set/get fail on %s: msb=%d, lsb=%d", el.getName(), el.getMsb(), el.getLsb()),
+            (Double) expectedVals[i], el.getValue());
       }
    }
 
@@ -66,29 +63,23 @@ public class Float64ElementTest {
          Float64Element el = e[i];
          el.setValue(val);
          expectedVals[i] = val;
-         if (el.getValue() != expectedVals[i]) {
-            Assert.failNotEquals(
-               String.format("set/get fail on %s: msb=%d, lsb=%d", el.getName(), el.getMsb(), el.getLsb()),
-               Double.toHexString(expectedVals[i]), Double.toHexString(el.getValue()));
-         }
+         Assert.assertEquals(
+            String.format("set/get fail on %s: msb=%d, lsb=%d", el.getName(), el.getMsb(), el.getLsb()),
+            Double.toHexString(expectedVals[i]), Double.toHexString(el.getValue()));
       }
    }
 
    private void check(Float64Element[] e, double[] expectedVals, int length) {
       for (int i = 0; i < length; i++) {
          Float64Element el = e[i];
-         if (el.getValue() != expectedVals[i]) {
-            Assert.failNotEquals(
-               String.format("corruption detect on %s: msb=%d, lsb=%d", el.getName(), el.getMsb(), el.getLsb()),
-               expectedVals[i], e[i].getValue());
-         }
+         Assert.assertEquals(
+            String.format("corruption detect on %s: msb=%d, lsb=%d", el.getName(), el.getMsb(), el.getLsb()),
+            (Double) expectedVals[i], e[i].getValue());
 
          String v = Double.toString(expectedVals[i]);
-         if (!el.valueOf().equals(v)) {
-            Assert.failNotEquals(
-               String.format("set/get fail on %s: msb=%d, lsb=%d", el.getName(), el.getMsb(), el.getLsb()), v,
-               el.valueOf());
-         }
+         Assert.assertEquals(
+            String.format("set/get fail on %s: msb=%d, lsb=%d", el.getName(), el.getMsb(), el.getLsb()), v,
+            el.valueOf());
       }
    }
 }

@@ -14,7 +14,7 @@ import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;

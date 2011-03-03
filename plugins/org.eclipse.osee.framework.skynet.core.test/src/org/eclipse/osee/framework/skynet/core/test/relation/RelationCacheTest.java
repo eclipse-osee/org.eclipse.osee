@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.skynet.core.test.relation;
 
 import java.util.ArrayList;
 import java.util.List;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.ModificationType;

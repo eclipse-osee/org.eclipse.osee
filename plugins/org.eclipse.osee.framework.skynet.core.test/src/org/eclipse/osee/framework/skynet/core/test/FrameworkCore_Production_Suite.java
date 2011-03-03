@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.test;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.skynet.core.test.cases.ArtifactQueryPerformanceTests;
 import org.eclipse.osee.framework.skynet.core.test.cases.ArtifactQueryTestProduction;

@@ -9,7 +9,7 @@ import static org.junit.Assert.assertFalse;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.stateItem.AtsForceAssigneesToTeamLeadsStateItem;
 import org.eclipse.osee.ats.test.util.DemoTestUtil;

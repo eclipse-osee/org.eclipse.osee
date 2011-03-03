@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.test.artifact.note;
 
 import java.util.Date;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.ats.artifact.note.AtsNote;
 import org.eclipse.osee.ats.artifact.note.INoteStorageProvider;
 import org.eclipse.osee.ats.artifact.note.NoteItem;

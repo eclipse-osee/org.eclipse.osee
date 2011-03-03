@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.dsl.integration.internal;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.framework.core.dsl.integration.RestrictionHandler;
 import org.eclipse.osee.framework.core.dsl.integration.mocks.DslAsserts;
 import org.eclipse.osee.framework.core.dsl.integration.mocks.MockModel;

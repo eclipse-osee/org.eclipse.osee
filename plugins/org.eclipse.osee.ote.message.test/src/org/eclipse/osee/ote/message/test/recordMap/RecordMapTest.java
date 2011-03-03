@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.message.test.recordMap;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.ote.message.test.mock.TestMessage;
 import org.junit.Test;
 

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.test.exception;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.junit.Test;

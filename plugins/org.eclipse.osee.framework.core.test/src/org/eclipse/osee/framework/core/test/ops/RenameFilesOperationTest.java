@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.core.test.ops;
 
 import java.io.File;
 import java.io.IOException;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.NullOperationLogger;
 import org.eclipse.osee.framework.core.operation.Operations;

@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.core.test.mocks;
 
 import java.util.Map;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.framework.core.util.AbstractTrackingHandler;
 import org.eclipse.osee.framework.core.util.ServiceBindType;
 import org.eclipse.osee.framework.jdk.core.type.Pair;

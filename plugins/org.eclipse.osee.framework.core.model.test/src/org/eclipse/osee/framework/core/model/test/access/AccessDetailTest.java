@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.core.model.test.access;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.access.AccessDetail;

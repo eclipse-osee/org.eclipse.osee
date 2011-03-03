@@ -16,12 +16,11 @@ import java.nio.charset.IllegalCharsetNameException;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import junit.framework.Assert;
-import junit.framework.TestCase;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.text.rules.WordMLNewLineMaker;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -31,7 +30,7 @@ import org.junit.Test;
  * @link:WordMLNewLineMaker
  * @author Karol M. Wilk
  */
-public final class WordMLNewLineMakerRuleTest extends TestCase {
+public final class WordMLNewLineMakerRuleTest {
 
    private final static String INPUT_FILE_NAME = "sample_icd_formatted.xml";
    private final static String NEW_WP_INJECTION_FINGERPRINT =

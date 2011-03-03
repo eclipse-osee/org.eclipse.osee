@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.core.message.test.mocks;
 
 import java.util.List;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.BranchCommitRequest;
 import org.eclipse.osee.framework.core.message.BranchCommitResponse;

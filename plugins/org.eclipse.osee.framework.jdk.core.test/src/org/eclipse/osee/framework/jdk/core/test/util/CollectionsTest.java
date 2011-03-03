@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.jdk.core.test.util;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.junit.Test;
 

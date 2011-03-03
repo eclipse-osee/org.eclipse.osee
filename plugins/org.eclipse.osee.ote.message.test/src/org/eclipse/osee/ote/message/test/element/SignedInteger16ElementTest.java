@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.message.test.element;
 
-import junit.framework.Assert;
 import org.eclipse.osee.ote.message.data.HeaderData;
 import org.eclipse.osee.ote.message.data.MemoryResource;
 import org.eclipse.osee.ote.message.elements.SignedInteger16Element;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class SignedInteger16ElementTest {
@@ -59,10 +59,8 @@ public class SignedInteger16ElementTest {
    }
 
    private void check(SignedInteger16Element e, int expectedVals) {
-      if (e.getValue() != expectedVals) {
-         Assert.failNotEquals(
-            String.format("corruption detect on %s: msb=%d, lsb=%d", e.getName(), e.getMsb(), e.getLsb()),
-            expectedVals, e.getValue());
-      }
+      Assert.assertEquals(
+         String.format("corruption detect on %s: msb=%d, lsb=%d", e.getName(), e.getMsb(), e.getLsb()),
+         (Integer) expectedVals, e.getValue());
    }
 }

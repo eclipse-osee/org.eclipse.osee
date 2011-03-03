@@ -7,7 +7,7 @@ package org.eclipse.osee.ats.test.editor.stateItem;
 
 import static org.junit.Assert.assertFalse;
 import java.util.Arrays;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewState;
 import org.eclipse.osee.ats.editor.stateItem.AtsPeerToPeerReviewReviewStateItem;

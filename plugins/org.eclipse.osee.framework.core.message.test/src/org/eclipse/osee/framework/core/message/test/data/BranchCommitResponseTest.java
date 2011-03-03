@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.core.message.test.data;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.framework.core.message.BranchCommitResponse;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.test.mocks.MockDataFactory;

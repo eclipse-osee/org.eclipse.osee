@@ -12,7 +12,7 @@ package org.eclipse.osee.coverage.test;
 
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
 import java.util.Collection;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.coverage.event.CoverageEventType;
 import org.eclipse.osee.coverage.event.CoveragePackageEvent;
 import org.eclipse.osee.coverage.merge.IMergeItem;

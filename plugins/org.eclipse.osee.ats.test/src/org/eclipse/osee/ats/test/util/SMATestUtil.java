@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.test.util;
 
 import java.util.Arrays;
 import java.util.Collection;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.internal.workflow.SMAState;

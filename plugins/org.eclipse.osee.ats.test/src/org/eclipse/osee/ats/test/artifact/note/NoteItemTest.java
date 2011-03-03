@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.test.artifact.note;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.ats.NoteType;
 import org.eclipse.osee.ats.artifact.note.NoteItem;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;

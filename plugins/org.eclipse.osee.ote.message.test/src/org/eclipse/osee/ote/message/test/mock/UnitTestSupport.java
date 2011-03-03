@@ -15,7 +15,7 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.ote.core.TestException;
 import org.eclipse.osee.ote.core.environment.EnvironmentTask;
 import org.eclipse.osee.ote.core.testPoint.CheckGroup;

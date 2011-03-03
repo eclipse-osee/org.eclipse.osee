@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.message.test.other;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.ote.message.test.mock.TestMessage;
 import org.eclipse.osee.ote.message.test.mock.UnitTestSupport;
 import org.junit.After;

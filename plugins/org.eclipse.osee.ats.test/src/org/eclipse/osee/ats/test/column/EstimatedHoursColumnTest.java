@@ -6,7 +6,7 @@
 package org.eclipse.osee.ats.test.column;
 
 import java.util.Date;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;

@@ -11,10 +11,10 @@
 package org.eclipse.osee.ote.message.test.element;
 
 import java.util.Random;
-import junit.framework.Assert;
 import org.eclipse.osee.ote.message.data.HeaderData;
 import org.eclipse.osee.ote.message.data.MemoryResource;
 import org.eclipse.osee.ote.message.elements.IntegerElement;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class IntegerElementTest {
@@ -233,11 +233,9 @@ public class IntegerElementTest {
          } else {
             expectedVals[i] = val;
          }
-         if (el.getValue() != expectedVals[i]) {
-            Assert.failNotEquals(
-               String.format("set/get fail on %s: msb=%d, lsb=%d", el.getName(), el.getMsb(), el.getLsb()),
-               expectedVals[i], el.getValue());
-         }
+         Assert.assertEquals(
+            String.format("set/get fail on %s: msb=%d, lsb=%d", el.getName(), el.getMsb(), el.getLsb()),
+            (Integer) expectedVals[i], el.getValue());
       }
    }
 
@@ -252,22 +250,18 @@ public class IntegerElementTest {
          } else {
             expectedVals[i] = val;
          }
-         if (el.getValue() != expectedVals[i]) {
-            Assert.failNotEquals(
-               String.format("set/get fail on %s: msb=%d, lsb=%d", el.getName(), el.getMsb(), el.getLsb()),
-               Long.toHexString(expectedVals[i]), Long.toHexString(el.getValue()));
-         }
+         Assert.assertEquals(
+            String.format("set/get fail on %s: msb=%d, lsb=%d", el.getName(), el.getMsb(), el.getLsb()),
+            Long.toHexString(expectedVals[i]), Long.toHexString(el.getValue()));
       }
    }
 
    private void check(IntegerElement[] e, int[] expectedVals, int length) {
       for (int i = 0; i < length; i++) {
          IntegerElement el = e[i];
-         if (el.getValue() != expectedVals[i]) {
-            Assert.failNotEquals(
-               String.format("corruption detect on %s: msb=%d, lsb=%d", el.getName(), el.getMsb(), el.getLsb()),
-               expectedVals[i], e[i].getValue());
-         }
+         Assert.assertEquals(
+            String.format("corruption detect on %s: msb=%d, lsb=%d", el.getName(), el.getMsb(), el.getLsb()),
+            (Integer) expectedVals[i], el.getValue());
       }
    }
 }

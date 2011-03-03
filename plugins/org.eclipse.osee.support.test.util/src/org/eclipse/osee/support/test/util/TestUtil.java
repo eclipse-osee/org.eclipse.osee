@@ -14,14 +14,15 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.logging.Level;
-import junit.framework.Assert;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.database.core.OseeInfo;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.IHealthStatus;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
+import org.junit.Assert;
 
 /**
  * @author Donald G. Dunne
@@ -103,9 +104,7 @@ public class TestUtil {
                   continue;
                }
                if (status.getException() != null) {
-                  StringBuilder sb = new StringBuilder();
-                  exceptionToString(status.getException(), sb);
-                  System.err.println("SevereLogging Exception: " + sb.toString());
+                  System.err.println("SevereLogging Exception: " + Lib.exceptionToString(status.getException()));
                } else {
                   System.err.println("SevereLogging Exception: " + status.getMessage());
                }
@@ -116,24 +115,6 @@ public class TestUtil {
             throw new OseeStateException("SevereLoggingMonitor found [%d] exceptions (see console for details)!",
                numExceptions);
          }
-      }
-   }
-
-   private static void exceptionToString(Throwable ex, StringBuilder sb) {
-      if (ex == null) {
-         sb.append("Exception == null; can't display stack");
-         return;
-      }
-      sb.append(ex.getMessage() + "\n");
-      StackTraceElement st[] = ex.getStackTrace();
-      for (int i = 0; i < st.length; i++) {
-         StackTraceElement ste = st[i];
-         sb.append("   at " + ste.toString() + "\n");
-      }
-      Throwable cause = ex.getCause();
-      if (cause != null) {
-         sb.append("   caused by ");
-         exceptionToString(cause, sb);
       }
    }
 

@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.core.message.test.data;
 
 import java.util.Arrays;
 import java.util.List;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.message.CacheUpdateRequest;
 import org.junit.Test;

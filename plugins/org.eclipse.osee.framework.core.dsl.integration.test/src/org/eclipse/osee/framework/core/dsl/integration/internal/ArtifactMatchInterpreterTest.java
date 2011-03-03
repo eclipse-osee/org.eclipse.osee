@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.core.dsl.integration.internal;
 
 import java.util.Collection;
 import java.util.Iterator;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.Identity;

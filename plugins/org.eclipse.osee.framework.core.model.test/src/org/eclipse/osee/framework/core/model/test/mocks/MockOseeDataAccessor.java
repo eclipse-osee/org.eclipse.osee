@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.core.model.test.mocks;
 
 import java.util.Collection;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.IOseeStorable;
 import org.eclipse.osee.framework.core.model.cache.IOseeCache;

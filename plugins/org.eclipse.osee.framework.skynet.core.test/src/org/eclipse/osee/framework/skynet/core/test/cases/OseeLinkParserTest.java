@@ -11,7 +11,7 @@
 
 package org.eclipse.osee.framework.skynet.core.test.cases;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.linking.OseeLinkParser;
 

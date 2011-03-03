@@ -10,15 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.test.importing.parsers;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.OutlineResolution;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
  * @author Karol M. Wilk
  */
-public final class OutlineResolutionAndNumberTest extends TestCase {
+public final class OutlineResolutionAndNumberTest {
 
    private static final String LAST_OUTLINE_NUMBER = "3.1.1.2.1.7"; /* realistic outline number */
    private final OutlineResolution outlineResolution = new OutlineResolution();

@@ -5,7 +5,7 @@
  */
 package org.eclipse.osee.ats.test.editor.stateItem;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.ats.editor.stateItem.AtsHandleAddReviewRuleStateItem;
 import org.eclipse.osee.ats.test.AtsTest_Demo_Suite;
 import org.junit.Test;

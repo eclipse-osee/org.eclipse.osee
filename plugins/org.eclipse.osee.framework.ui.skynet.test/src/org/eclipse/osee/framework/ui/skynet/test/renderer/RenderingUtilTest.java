@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.test.renderer;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;

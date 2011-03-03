@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
 import org.junit.Test;

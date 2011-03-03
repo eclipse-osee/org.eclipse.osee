@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.skynet.core.test.event;
 
 import java.util.HashSet;
 import java.util.Set;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidRelation;

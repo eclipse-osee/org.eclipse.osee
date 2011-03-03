@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.core.dsl.integration.internal;
 
 import java.util.HashSet;
 import java.util.Set;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider.ArtifactProxy;

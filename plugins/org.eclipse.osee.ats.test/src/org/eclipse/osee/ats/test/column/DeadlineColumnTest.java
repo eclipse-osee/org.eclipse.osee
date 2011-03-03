@@ -7,7 +7,7 @@ package org.eclipse.osee.ats.test.column;
 
 import java.util.Calendar;
 import java.util.Date;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.column.DeadlineColumn;

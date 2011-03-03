@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.skynet.core.test.event;
 
 import java.util.Arrays;
 import java.util.List;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkSender;

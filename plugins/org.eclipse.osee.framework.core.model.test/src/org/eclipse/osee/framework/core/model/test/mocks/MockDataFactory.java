@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.core.model.test.mocks;
 
 import java.util.Date;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.framework.core.data.AccessContextId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.TokenFactory;

@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.skynet.core.test.importing;
 
 import java.net.URL;
 import java.util.List;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;

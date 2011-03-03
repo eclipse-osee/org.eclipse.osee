@@ -5,7 +5,7 @@
  */
 package org.eclipse.osee.framework.ui.skynet.test.widgets.workflow;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**

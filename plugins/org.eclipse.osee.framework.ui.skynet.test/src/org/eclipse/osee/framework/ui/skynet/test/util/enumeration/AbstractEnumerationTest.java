@@ -5,7 +5,7 @@
  */
 package org.eclipse.osee.framework.ui.skynet.test.util.enumeration;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**

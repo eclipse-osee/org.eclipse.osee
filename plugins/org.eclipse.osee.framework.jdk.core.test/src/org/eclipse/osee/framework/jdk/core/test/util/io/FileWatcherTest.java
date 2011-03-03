@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.jdk.core.test.util.io;
 import java.io.File;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.framework.jdk.core.test.mock.MockFileWatcherListener;
 import org.eclipse.osee.framework.jdk.core.util.io.FileChangeEvent;
 import org.eclipse.osee.framework.jdk.core.util.io.FileChangeType;

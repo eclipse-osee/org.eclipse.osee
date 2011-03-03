@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.skynet.core.test.branch;
 
 import static org.junit.Assert.assertFalse;
 import java.util.Arrays;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.UserManager;

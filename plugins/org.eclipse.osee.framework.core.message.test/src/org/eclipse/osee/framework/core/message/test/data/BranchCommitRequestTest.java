@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.core.message.test.data;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.framework.core.message.BranchCommitRequest;
 import org.junit.Test;
 import org.junit.runner.RunWith;

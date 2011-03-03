@@ -13,7 +13,7 @@ package org.eclipse.osee.coverage.test;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.coverage.editor.params.CoverageParameters;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageItem;

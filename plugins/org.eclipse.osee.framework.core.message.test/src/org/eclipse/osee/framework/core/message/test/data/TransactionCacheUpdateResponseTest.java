@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.core.message.test.data;
 
 import java.util.ArrayList;
 import java.util.List;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.TransactionCacheUpdateResponse;
 import org.eclipse.osee.framework.core.message.test.mocks.DataAsserts;

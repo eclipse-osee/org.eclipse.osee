@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.test.navigate;
 
 import java.util.Collection;
 import java.util.Collections;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.navigate.AtsXNavigateItemLauncher;

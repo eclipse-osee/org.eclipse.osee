@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.message.test.translation;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.message.internal.DataTranslationServiceFactory;

@@ -26,5 +26,5 @@ Float32ElementTest.class,//
    StringElementTest.class,//
 })
 public class ElementTestSuite {
-
+   // Test Suite
 }

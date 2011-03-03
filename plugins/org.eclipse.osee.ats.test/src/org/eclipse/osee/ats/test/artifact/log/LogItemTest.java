@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.test.artifact.log;
 
 import java.util.Date;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.ats.artifact.log.LogItem;
 import org.eclipse.osee.ats.artifact.log.LogType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;

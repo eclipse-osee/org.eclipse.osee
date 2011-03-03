@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.test.model;
 
-import junit.framework.Assert;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.CoverageUnit;
@@ -18,6 +17,7 @@ import org.eclipse.osee.coverage.model.SimpleCoverageUnitFileContentsProvider;
 import org.eclipse.osee.coverage.test.util.CoverageTestUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -371,10 +371,10 @@ public class CoverageUnitTest {
    public void testGetCoveragePercentAndStr() {
       CoverageTestUtil.setAllCoverageMethod(cu, CoverageOptionManager.Not_Covered, true);
       Assert.assertFalse(cu.isCovered());
-      Assert.assertEquals(0.0, cu.getCoveragePercent());
+      Assert.assertEquals(Double.valueOf(0.0), cu.getCoveragePercent());
       Assert.assertEquals("0% - 0 / 4", cu.getCoveragePercentStr());
       CoverageTestUtil.setAllCoverageMethod(cu, CoverageOptionManager.Test_Unit, true);
-      Assert.assertEquals(100.0, cu.getCoveragePercent());
+      Assert.assertEquals(Double.valueOf(100.0), cu.getCoveragePercent());
       Assert.assertEquals("100% - 4 / 4", cu.getCoveragePercentStr());
    }
 

@@ -16,7 +16,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.framework.jdk.core.text.tool.Find;
 import org.eclipse.osee.framework.jdk.core.text.tool.FindResultsIterator;
 import org.eclipse.osee.framework.jdk.core.util.Lib;

@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.test.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Level;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.navigate.AtsNavigateViewItems;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.search.engine.test.attribute;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.framework.search.engine.attribute.AttributeData;
 import org.junit.Test;
 

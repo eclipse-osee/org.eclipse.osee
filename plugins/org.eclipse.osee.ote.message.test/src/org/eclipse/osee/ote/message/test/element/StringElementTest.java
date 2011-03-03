@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.message.test.element;
 
-import junit.framework.Assert;
 import org.eclipse.osee.ote.message.data.HeaderData;
 import org.eclipse.osee.ote.message.data.MemoryResource;
 import org.eclipse.osee.ote.message.elements.StringElement;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class StringElementTest {
@@ -128,13 +128,13 @@ public class StringElementTest {
 
    private void check(StringElement elem, String value) {
       if (!elem.getValue().equals(value)) {
-         Assert.failNotEquals(elem.getName(), value, elem.getValue());
+         Assert.assertEquals(elem.getName(), value, elem.getValue());
       }
    }
 
    private void checkEmpty(StringElement elem) {
       if (!elem.isEmpty()) {
-         Assert.failNotEquals(elem.getName(), "rmpty", "not empty");
+         Assert.assertEquals(elem.getName(), "rmpty", "not empty");
       }
    }
 }

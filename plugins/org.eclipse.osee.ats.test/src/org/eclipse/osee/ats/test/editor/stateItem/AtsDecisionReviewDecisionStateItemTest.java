@@ -7,7 +7,7 @@ package org.eclipse.osee.ats.test.editor.stateItem;
 
 import static org.junit.Assert.assertFalse;
 import java.util.Collection;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.artifact.DecisionReviewState;

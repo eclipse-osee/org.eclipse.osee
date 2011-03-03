@@ -5,7 +5,7 @@
  */
 package org.eclipse.osee.ats.test.column;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.column.AssigneeColumn;

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.dsl.integration.mocks;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessContext;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.ArtifactMatchRestriction;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.ArtifactTypeRestriction;

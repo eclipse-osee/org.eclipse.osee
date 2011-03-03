@@ -11,10 +11,10 @@
 package org.eclipse.osee.ote.message.test.element;
 
 import java.util.Random;
-import junit.framework.Assert;
 import org.eclipse.osee.ote.message.data.HeaderData;
 import org.eclipse.osee.ote.message.data.MemoryResource;
 import org.eclipse.osee.ote.message.elements.Float32Element;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class Float32ElementTest {
@@ -55,11 +55,9 @@ public class Float32ElementTest {
          Float32Element el = e[i];
          el.setValue(val);
          expectedVals[i] = val;
-         if (el.getValue() != expectedVals[i]) {
-            Assert.failNotEquals(
-               String.format("set/get fail on %s: msb=%d, lsb=%d", el.getName(), el.getMsb(), el.getLsb()),
-               expectedVals[i], el.getValue());
-         }
+         Assert.assertEquals(
+            String.format("set/get fail on %s: msb=%d, lsb=%d", el.getName(), el.getMsb(), el.getLsb()),
+            Double.valueOf(expectedVals[i]), el.getValue());
       }
    }
 
@@ -69,11 +67,9 @@ public class Float32ElementTest {
          Float32Element el = e[i];
          el.setValue(val);
          expectedVals[i] = val;
-         if (el.getValue() != expectedVals[i]) {
-            Assert.failNotEquals(
-               String.format("set/get fail on %s: msb=%d, lsb=%d", el.getName(), el.getMsb(), el.getLsb()),
-               Double.toHexString(expectedVals[i]), Double.toHexString(el.getValue()));
-         }
+         Assert.assertEquals(
+            String.format("set/get fail on %s: msb=%d, lsb=%d", el.getName(), el.getMsb(), el.getLsb()),
+            Double.toHexString(expectedVals[i]), Double.toHexString(el.getValue()));
       }
    }
 

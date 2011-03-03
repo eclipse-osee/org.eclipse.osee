@@ -18,7 +18,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.Stack;
-import junit.framework.TestCase;
 import org.eclipse.osee.framework.jdk.core.text.Rule;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -36,7 +35,7 @@ import org.junit.rules.TemporaryFolder;
  * 
  * @author Karol M. Wilk
  */
-public final class UtfReadingRuleTest extends TestCase {
+public final class UtfReadingRuleTest {
 
    private static final String FILE_INPUT = "utf8_input.xml";
 

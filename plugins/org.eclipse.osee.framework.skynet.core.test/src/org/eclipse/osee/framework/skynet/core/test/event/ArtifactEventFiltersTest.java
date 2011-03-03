@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.skynet.core.test.event;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;

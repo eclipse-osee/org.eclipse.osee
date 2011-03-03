@@ -15,7 +15,7 @@ import static org.junit.Assert.assertFalse;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.config.AtsBulkLoad;

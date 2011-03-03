@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.branch.management.test.exchange.transformer;
 
 import java.util.Collection;
 import java.util.Iterator;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.eclipse.osee.framework.branch.management.exchange.transform.ExchangeTransformProvider;
 import org.eclipse.osee.framework.branch.management.exchange.transform.IExchangeTransformProvider;
 import org.eclipse.osee.framework.branch.management.exchange.transform.IOseeExchangeVersionTransformer;

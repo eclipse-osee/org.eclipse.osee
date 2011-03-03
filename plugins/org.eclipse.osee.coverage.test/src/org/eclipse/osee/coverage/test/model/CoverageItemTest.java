@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.test.model;
 
-import junit.framework.Assert;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.CoverageOptionManagerDefault;
@@ -18,6 +17,7 @@ import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.SimpleTestUnitProvider;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -256,7 +256,7 @@ public class CoverageItemTest {
     */
    @Test
    public void testGetCoveragePercent() {
-      Assert.assertEquals(100.0, ci1.getCoveragePercent());
+      Assert.assertEquals(Double.valueOf(100.0), ci1.getCoveragePercent());
    }
 
    /**
