@@ -224,8 +224,12 @@ public class BranchManager {
       return Operations.executeAsJob(operation, true);
    }
 
-   public static void purgeBranch(final Branch branch) throws OseeCoreException {
+   public static void purgeBranchPending(Branch branch) throws OseeCoreException {
       Operations.executeWorkAndCheckStatus(new PurgeBranchHttpRequestOperation(branch));
+   }
+
+   public static void purgeBranch(final Branch branch) {
+      purgeBranch(Arrays.asList(branch));
    }
 
    /**

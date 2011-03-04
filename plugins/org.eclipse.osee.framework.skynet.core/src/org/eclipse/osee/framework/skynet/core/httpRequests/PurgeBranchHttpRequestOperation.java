@@ -54,6 +54,8 @@ public final class PurgeBranchHttpRequestOperation extends AbstractOperation {
 
       if (response.wasSuccessful()) {
          branch.setStorageState(StorageState.PURGED);
+         branch.setArchived(true);
+         Activator.getInstance().getAccessControlService().removePermissions(branch);
          BranchManager.decache(branch);
          OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.Purged, branch.getGuid()),
             branch.getId());

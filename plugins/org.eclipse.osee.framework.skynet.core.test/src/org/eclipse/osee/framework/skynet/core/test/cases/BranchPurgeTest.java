@@ -86,7 +86,7 @@ public class BranchPurgeTest {
       TestUtil.checkThatIncreased(preCreateCount, postCreateBranchCount);
 
       // Purge branch
-      BranchManager.purgeBranch(branch);
+      BranchManager.purgeBranchPending(branch);
 
       TestUtil.sleep(4000);
 

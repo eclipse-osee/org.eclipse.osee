@@ -81,7 +81,7 @@ public final class AccessEventListener implements IBranchEventListener, IAccessC
    @Override
    public void handleBranchEvent(Sender sender, final BranchEvent branchEvent) {
       try {
-         if (branchEvent.getEventType() == BranchEventType.Deleted || sender.isLocal() && branchEvent.getEventType() == BranchEventType.Purged) {
+         if (branchEvent.getEventType() == BranchEventType.Deleted || (!sender.isLocal() && branchEvent.getEventType() == BranchEventType.Purged)) {
             BranchAccessObject branchAccessObject =
                BranchAccessObject.getBranchAccessObject(branchEvent.getBranchGuid());
             updateAccessList(sender, branchAccessObject);
@@ -94,7 +94,7 @@ public final class AccessEventListener implements IBranchEventListener, IAccessC
    private void updateAccessList(Sender sender, AccessObject accessObject) throws OseeCoreException {
       List<AccessControlData> acl = service.generateAccessControlList(accessObject);
       for (AccessControlData accessControlData : acl) {
-         service.removeAccessControlDataIf(sender.isLocal(), accessControlData);
+         service.removeAccessControlDataIf(false, accessControlData);
       }
    }
 

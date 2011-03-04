@@ -12,9 +12,10 @@ package org.eclipse.osee.framework.skynet.core.test.event;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
-import java.util.logging.Level;
-import org.junit.Assert;
+import java.util.Set;
+import junit.framework.Assert;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
@@ -27,7 +28,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -41,7 +41,6 @@ import org.eclipse.osee.framework.skynet.core.event.listener.IBranchEventListene
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
-import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.support.test.util.TestUtil;
 
 /**
@@ -53,6 +52,7 @@ public class BranchEventTest {
    private Sender resultSender = null;
    public static List<String> ignoreLogging = Arrays.asList("");
    private static String BRANCH_NAME_PREFIX = "BranchEventManagerTest";
+   private static Set<Branch> branches = new HashSet<Branch>();
 
    @org.junit.Test
    public void testRegistration() throws Exception {
@@ -106,10 +106,6 @@ public class BranchEventTest {
       BranchManager.updateBranchArchivedState(null, committedBranch.getId(), committedBranch.getGuid(),
          BranchArchivedState.UNARCHIVED);
 
-      //      if (isRemoteTest()) {
-      //         Thread.sleep(2000);
-      //      }
-
       Assert.assertNotNull(resultBranchEvent);
       Assert.assertEquals(BranchEventType.ArchiveStateUpdated, resultBranchEvent.getEventType());
       if (isRemoteTest()) {
@@ -127,6 +123,7 @@ public class BranchEventTest {
       clearEventCollections();
       Branch workingBranch =
          BranchManager.createWorkingBranch(topLevel, BRANCH_NAME_PREFIX + " - to commit", UserManager.getUser());
+      branches.add(workingBranch);
 
       Assert.assertNotNull(workingBranch);
 
@@ -158,12 +155,14 @@ public class BranchEventTest {
       clearEventCollections();
       Branch workingBranch =
          BranchManager.createWorkingBranch(topLevel, BRANCH_NAME_PREFIX + " - to purge", UserManager.getUser());
+      branches.add(workingBranch);
 
       Assert.assertNotNull(workingBranch);
 
       final String guid = workingBranch.getGuid();
       Assert.assertNotNull(workingBranch);
-      BranchManager.purgeBranch(workingBranch);
+
+      BranchManager.purgeBranchPending(workingBranch);
 
       //      if (isRemoteTest()) {
       //         Thread.sleep(2000);
@@ -197,10 +196,6 @@ public class BranchEventTest {
 
       Operations.executeWork(new DeleteBranchOperation(workingBranch));
 
-      //      if (isRemoteTest()) {
-      //         Thread.sleep(2000);
-      //      }
-
       Assert.assertNotNull(resultBranchEvent);
       Assert.assertEquals(BranchEventType.Deleted, resultBranchEvent.getEventType());
       if (isRemoteTest()) {
@@ -220,10 +215,6 @@ public class BranchEventTest {
       Assert.assertEquals(BranchState.CREATED, workingBranch.getBranchState());
       BranchManager.updateBranchState(null, workingBranch.getId(), workingBranch.getGuid(), BranchState.MODIFIED);
 
-      //      if (isRemoteTest()) {
-      //         Thread.sleep(2000);
-      //      }
-
       Assert.assertNotNull(resultBranchEvent);
       Assert.assertEquals(BranchEventType.StateUpdated, resultBranchEvent.getEventType());
       if (isRemoteTest()) {
@@ -242,10 +233,6 @@ public class BranchEventTest {
       Assert.assertNotNull(workingBranch);
       Assert.assertEquals(BranchType.WORKING, workingBranch.getBranchType());
       BranchManager.updateBranchType(null, workingBranch.getId(), workingBranch.getGuid(), BranchType.BASELINE);
-
-      //      if (isRemoteTest()) {
-      //         Thread.sleep(2000);
-      //      }
 
       Assert.assertNotNull(resultBranchEvent);
       Assert.assertEquals(BranchEventType.TypeUpdated, resultBranchEvent.getEventType());
@@ -267,10 +254,6 @@ public class BranchEventTest {
       workingBranch.setName(newName);
       BranchManager.persist(workingBranch);
 
-      //      if (isRemoteTest()) {
-      //         Thread.sleep(2000);
-      //      }
-
       Assert.assertNotNull(resultBranchEvent);
       Assert.assertEquals(BranchEventType.Renamed, resultBranchEvent.getEventType());
       if (isRemoteTest()) {
@@ -288,7 +271,7 @@ public class BranchEventTest {
       clearEventCollections();
       Branch workingBranch =
          BranchManager.createWorkingBranch(topLevel, BRANCH_NAME_PREFIX + " - working", UserManager.getUser());
-
+      branches.add(workingBranch);
       Assert.assertNotNull(workingBranch);
 
       Thread.sleep(4000);
@@ -309,10 +292,10 @@ public class BranchEventTest {
       final String branchName = String.format("%s - top level branch", BRANCH_NAME_PREFIX);
       IOseeBranch branchToken = TokenFactory.createBranch(guid, branchName);
       Branch branch = BranchManager.createTopLevelBranch(branchToken);
-
+      branches.add(branch);
       Assert.assertNotNull(branch);
 
-      Thread.sleep(1000);
+      Thread.sleep(2000);
 
       Assert.assertNotNull(resultBranchEvent);
       Assert.assertEquals(BranchEventType.Added, resultBranchEvent.getEventType());
@@ -344,26 +327,25 @@ public class BranchEventTest {
    }
 
    @org.junit.BeforeClass
-   @org.junit.AfterClass
-   public static void cleanUp() throws OseeCoreException {
+   public static void cleanUpBefore() {
+      branches.clear();
+   }
 
-      for (Branch branch : BranchManager.getBranches(BranchArchivedState.ALL, BranchType.MERGE, BranchType.WORKING)) {
-         if (branch.getName().startsWith(BRANCH_NAME_PREFIX)) {
-            try {
-               BranchManager.purgeBranch(branch);
-            } catch (OseeCoreException ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, ex);
-            }
-         }
+   @org.junit.AfterClass
+   public static void cleanUpAfter() throws OseeCoreException {
+      for (Branch branch : branches) {
+         purgeBranch(branch);
       }
-      for (Branch branch : BranchManager.getBranches(BranchArchivedState.ALL, BranchType.BASELINE, BranchType.MERGE,
-         BranchType.WORKING)) {
-         if (branch.getName().startsWith(BRANCH_NAME_PREFIX)) {
-            try {
-               BranchManager.purgeBranch(branch);
-            } catch (OseeCoreException ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, ex);
-            }
+   }
+
+   private static void purgeBranch(Branch branch) throws OseeCoreException {
+      if (!branch.getChildBranches().isEmpty()) {
+         for (Branch childBranch : branch.getChildren()) {
+            purgeBranch(childBranch);
+         }
+      } else {
+         if (branch.getStorageState() != StorageState.PURGED) {
+            BranchManager.purgeBranchPending(branch);
          }
       }
    }
