@@ -5,7 +5,6 @@ plugin@org.eclipse.osee.framework.access=SVN,,http://dev.eclipse.org/svnroot/tec
 plugin@org.eclipse.osee.framework.core.client=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.framework.core.client
 plugin@org.eclipse.osee.framework.database=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.framework.database
 plugin@org.eclipse.osee.framework.database.init=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.framework.database.init
-plugin@org.eclipse.osee.framework.derby=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.framework.derby
 plugin@org.eclipse.osee.framework.h2=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.framework.h2
 plugin@org.eclipse.osee.framework.messaging.event.skynet=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.framework.messaging.event.skynet
 plugin@org.eclipse.osee.framework.messaging.event.res=SVN,,http://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk,,plugins/org.eclipse.osee.framework.messaging.event.res

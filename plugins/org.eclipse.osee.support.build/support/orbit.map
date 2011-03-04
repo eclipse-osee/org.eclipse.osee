@@ -8,7 +8,6 @@ plugin@org.apache.commons.httpclient,3.1.0=GET,http://download.eclipse.org/tools
 plugin@org.apache.commons.lang,2.4.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090529135407/bundles/org.apache.commons.lang_2.4.0.v20081016-1030.jar
 plugin@org.apache.commons.logging,1.1.1=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090825191606/bundles/org.apache.commons.logging_1.1.1.v200904062255.jar
 plugin@org.apache.commons.net,1.4.1=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090529135407/bundles/org.apache.commons.net_1.4.1.v200905122237.jar
-plugin@org.apache.derby,10.5.1=GET,http://download.eclipse.org/tools/orbit/downloads/drops/S20091203150826/bundles/org.apache.derby_10.5.1.1_200912031533.jar
 plugin@org.apache.oro,2.0.8=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090529135407/bundles/org.apache.oro_2.0.8.v200903061218.jar
 plugin@org.apache.xerces,2.9.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090825191606/bundles/org.apache.xerces_2.9.0.v200909240008.jar
 plugin@org.apache.xml.resolver,1.2.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090825191606/bundles/org.apache.xml.resolver_1.2.0.v200902170519.jar

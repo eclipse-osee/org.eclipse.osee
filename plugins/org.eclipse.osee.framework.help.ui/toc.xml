@@ -9,7 +9,6 @@
 			</topic>
 			<topic href="\OSEE\Users_Guide\Getting_Started/Getting-Started.html#Eclipse_Installation" label="Eclipse Installation"></topic>
 			<topic href="\OSEE\Users_Guide\Getting_Started/Getting-Started.html#Supported_Databases" label="Supported Databases">
-				<topic href="\OSEE\Users_Guide\Getting_Started/Getting-Started.html#Derby_Installation" label="Derby Installation"></topic>
 				<topic href="\OSEE\Users_Guide\Getting_Started/Getting-Started.html#PostgreSQL_Installation" label="PostgreSQL Installation"></topic>
 			</topic>
 			<topic href="\OSEE\Users_Guide\Getting_Started/Getting-Started.html#Launch_Application_Server" label="Launch Application Server"></topic>

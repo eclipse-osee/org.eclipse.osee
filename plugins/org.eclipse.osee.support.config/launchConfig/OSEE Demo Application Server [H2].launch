@@ -92,7 +92,6 @@
 <listEntry value="/org.eclipse.osee.ote.define/bin"/>
 <listEntry value="/org.eclipse.osee.framework.resource.management.test/bin"/>
 <listEntry value="/org.eclipse.osee.framework.plugin.core/bin"/>
-<listEntry value="/org.eclipse.osee.framework.derby/bin"/>
 <listEntry value="/org.eclipse.osee.ote.ui.mux/bin"/>
 <listEntry value="/lba.support.test/bin"/>
 <listEntry value="/org.eclipse.osee.coverage/bin"/>

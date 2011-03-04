@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.core.exception.OseeExceptions;
 public enum SupportedDatabase {
    h2,
    oracle,
-   derby,
    foxpro,
    mysql,
    postgresql;
@@ -31,8 +30,6 @@ public enum SupportedDatabase {
          String lowerCaseName = dbName.toLowerCase();
          if (lowerCaseName.contains(SupportedDatabase.h2.toString())) {
             toReturn = SupportedDatabase.h2;
-         } else if (lowerCaseName.contains(SupportedDatabase.derby.toString())) {
-            toReturn = SupportedDatabase.derby;
          } else if (lowerCaseName.contains(SupportedDatabase.oracle.toString())) {
             toReturn = SupportedDatabase.oracle;
          } else if (lowerCaseName.contains(SupportedDatabase.foxpro.toString())) {

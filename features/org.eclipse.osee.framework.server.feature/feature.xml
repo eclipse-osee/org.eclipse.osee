@@ -33,7 +33,6 @@
       <import plugin="org.apache.commons.codec"/>
       <import plugin="org.eclipse.equinox.ds"/>
       <import plugin="com.lowagie.text" version="2.1.7" match="greaterOrEqual"/>
-      <import plugin="org.apache.derby" version="10.5.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.xtext" version="2.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.xtext.util" version="2.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.emf.ecore" version="2.5.0" match="greaterOrEqual"/>
@@ -104,13 +103,6 @@
 
    <plugin
          id="org.eclipse.osee.framework.manager.servlet"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.osee.framework.derby"
          download-size="0"
          install-size="0"
          version="0.0.0"

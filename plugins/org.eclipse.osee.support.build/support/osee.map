@@ -22,7 +22,6 @@ plugin@net.jini=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.o
 plugin@jms.activemq.launch=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=plugins/jms.activemq.launch
 plugin@jms.libraries=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=plugins/jms.libraries
 
-plugin@org.eclipse.osee.framework.derby=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=plugins/org.eclipse.osee.framework.derby
 plugin@org.eclipse.osee.framework.core=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=plugins/org.eclipse.osee.framework.core
 plugin@org.eclipse.osee.framework.core.client=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=plugins/org.eclipse.osee.framework.core.client
 plugin@org.eclipse.osee.framework.core.server=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=plugins/org.eclipse.osee.framework.core.server

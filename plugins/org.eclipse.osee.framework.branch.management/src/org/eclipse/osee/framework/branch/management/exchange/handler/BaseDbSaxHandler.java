@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.OseeConnection;
-import org.eclipse.osee.framework.database.core.SupportedDatabase;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.resource.management.Options;
 
@@ -108,26 +107,24 @@ public abstract class BaseDbSaxHandler extends BaseExportImportSaxHandler {
    private boolean isTruncateSupported() throws OseeCoreException {
       boolean isTruncateSupported = false;
       DatabaseMetaData metaData = connection.getMetaData();
-      if (!SupportedDatabase.isDatabaseType(metaData, SupportedDatabase.derby)) {
-         ResultSet resultSet = null;
-         try {
-            resultSet = metaData.getTablePrivileges(null, null, getMetaData().getTableName().toUpperCase());
-            while (resultSet.next()) {
-               String value = resultSet.getString("PRIVILEGE");
-               if ("TRUNCATE".equalsIgnoreCase(value)) {
-                  isTruncateSupported = true;
-                  break;
-               }
+      ResultSet resultSet = null;
+      try {
+         resultSet = metaData.getTablePrivileges(null, null, getMetaData().getTableName().toUpperCase());
+         while (resultSet.next()) {
+            String value = resultSet.getString("PRIVILEGE");
+            if ("TRUNCATE".equalsIgnoreCase(value)) {
+               isTruncateSupported = true;
+               break;
             }
-         } catch (SQLException ex1) {
-            OseeLog.log(Activator.class, Level.INFO, ex1);
-         } finally {
-            if (resultSet != null) {
-               try {
-                  resultSet.close();
-               } catch (SQLException ex) {
-                  // Do Nothing
-               }
+         }
+      } catch (SQLException ex1) {
+         OseeLog.log(Activator.class, Level.INFO, ex1);
+      } finally {
+         if (resultSet != null) {
+            try {
+               resultSet.close();
+            } catch (SQLException ex) {
+               // Do Nothing
             }
          }
       }

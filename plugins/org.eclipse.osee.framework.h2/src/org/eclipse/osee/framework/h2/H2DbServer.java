@@ -42,7 +42,7 @@ public class H2DbServer {
             addShutdownHook();
             //            stayAlive();
          } else {
-            OseeLog.log(H2DbServer.class, Level.INFO, "Exiting, since unable to connect to Derby Network Server.");
+            OseeLog.log(H2DbServer.class, Level.INFO, "Exiting, since unable to connect to H2 Network Server.");
             OseeLog.log(H2DbServer.class, Level.INFO,
                "Please try to increase the amount of time to keep trying to connect to the Server.");
          }

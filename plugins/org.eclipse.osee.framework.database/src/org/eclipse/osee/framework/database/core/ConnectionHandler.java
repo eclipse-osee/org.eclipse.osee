@@ -157,9 +157,6 @@ public final class ConnectionHandler {
    public static void deferConstraintChecking(OseeConnection connection) throws OseeCoreException {
       SupportedDatabase dbType = SupportedDatabase.getDatabaseType(connection.getMetaData());
       switch (dbType) {
-         case derby:
-            // Derby Does not support deferring constraints
-            break;
          case h2:
             runPreparedUpdate(connection, "SET REFERENTIAL_INTEGRITY = FALSE");
             break;

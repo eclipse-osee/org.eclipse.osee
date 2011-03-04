@@ -70,25 +70,6 @@ public class RemoveTestBatchProjectNature implements IObjectActionDelegate {
          if (currentJavaProject == null) {
             currentJavaProject = JavaCore.create(currentProject);
          }
-         //         //Shutdown server if running for the current project
-         //         if (DerbyServerUtils.getDefault().getRunning(currentJavaProject.getProject())) {
-         //            DerbyServerUtils.getDefault().stopDerbyServer(currentJavaProject.getProject());
-         //         }
-         //         IClasspathEntry[] rawClasspath = currentJavaProject.getRawClasspath();
-         //
-         //         List<IClasspathEntry> newEntries = new ArrayList<IClasspathEntry>();
-         //         for (IClasspathEntry e : rawClasspath) {
-         //            if (e.getEntryKind() != IClasspathEntry.CPE_CONTAINER) {
-         //               newEntries.add(e);
-         //            } else if (!e.getPath().equals(DerbyClasspathContainer.CONTAINER_ID)) {
-         //               newEntries.add(e);
-         //            }
-         //         }
-
-         //         IClasspathEntry[] newEntriesArray = new IClasspathEntry[newEntries.size()];
-         //         newEntriesArray = (IClasspathEntry[]) newEntries.toArray(newEntriesArray);
-         //         currentJavaProject.setRawClasspath(newEntriesArray, null);
-
          IProjectDescription description = currentJavaProject.getProject().getDescription();
          String[] natures = description.getNatureIds();
 
