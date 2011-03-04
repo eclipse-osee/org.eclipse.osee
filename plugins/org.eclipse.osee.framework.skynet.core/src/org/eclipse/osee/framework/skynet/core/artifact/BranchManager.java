@@ -19,6 +19,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
@@ -265,6 +266,10 @@ public class BranchManager {
     */
    public static Job deleteBranch(final Branch branch) {
       return Operations.executeAsJob(new DeleteBranchOperation(branch), true);
+   }
+
+   public static IStatus deleteBranchAndPend(final Branch branch) {
+      return Operations.executeWork(new DeleteBranchOperation(branch));
    }
 
    /**
