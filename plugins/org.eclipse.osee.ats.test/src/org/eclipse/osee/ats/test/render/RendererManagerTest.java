@@ -155,7 +155,7 @@ public class RendererManagerTest {
 
       addTest(data, GeneralDocument, GENERALIZED_EDIT, DefaultArtifactRenderer.class, Both);
       addTest(data, GeneralDocument, SPECIALIZED_EDIT, NativeRenderer.class, Both);
-      addTest(data, GeneralDocument, DIFF, null, Both);
+      addTest(data, GeneralDocument, DIFF, WordTemplateRenderer.class, Both);
       addTest(data, GeneralDocument, PREVIEW, NativeRenderer.class, Both);
       addTest(data, GeneralDocument, MERGE, null, Both);
       addTest(data, GeneralDocument, DEFAULT_OPEN, NativeRenderer.class, Off);

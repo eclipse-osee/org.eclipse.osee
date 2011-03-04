@@ -23,7 +23,6 @@ import javax.xml.namespace.QName;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -140,9 +139,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
       if (!presentationType.matches(PresentationType.GENERALIZED_EDIT, PresentationType.GENERAL_REQUESTED)) {
          if (artifact.isAttributeTypeValid(CoreAttributeTypes.WordTemplateContent)) {
             rating = PRESENTATION_SUBTYPE_MATCH;
-         } else if (presentationType.matches(PresentationType.PREVIEW)) {
-            rating = BASE_MATCH;
-         } else if (presentationType.matches(PresentationType.DIFF) && artifact.isOfType(CoreArtifactTypes.Folder)) {
+         } else if (presentationType.matches(PresentationType.PREVIEW, PresentationType.DIFF)) {
             rating = BASE_MATCH;
          }
       }
