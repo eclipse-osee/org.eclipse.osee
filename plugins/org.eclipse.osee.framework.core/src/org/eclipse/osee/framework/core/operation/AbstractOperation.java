@@ -105,8 +105,8 @@ public abstract class AbstractOperation implements IOperation {
    }
 
    /**
-    * Executes a nested operation and calls monitor begin and done. The parentMonitor will be wrapped into a
-    * SubProgressMonitor and set to the appropriate number of ticks to consume from the main monitor.
+    * Executes a nested operation and calls monitor begin and done. The parentMonitor will be converted using
+    * SubMonitor.convert and set to the appropriate number of ticks to consume from the main monitor.
     */
    public final IStatus doSubWork(IOperation operation, IProgressMonitor parentMonitor, double workPercentage) throws OseeCoreException {
       IStatus status = Operations.executeWork(operation, parentMonitor);
@@ -149,7 +149,11 @@ public abstract class AbstractOperation implements IOperation {
       logger.log(status);
    }
 
-   public OperationLogger getReporter() {
+   protected final void logf(String format, Object... args) {
+      logger.logf(format, args);
+   }
+
+   public OperationLogger getLogger() {
       return logger;
    }
 }

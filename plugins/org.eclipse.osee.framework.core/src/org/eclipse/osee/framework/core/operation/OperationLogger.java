@@ -34,4 +34,8 @@ public abstract class OperationLogger {
          log(status.getException());
       }
    }
+
+   public final void logf(String format, Object... args) {
+      log(String.format(format, args));
+   }
 }

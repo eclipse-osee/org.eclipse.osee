@@ -68,13 +68,13 @@ public class RenameFilesOperation extends AbstractOperation {
          if (rule.ruleWasApplicable()) {
             File newFile = new File(newName.toString());
             if (file.renameTo(newFile)) {
-               log(file.getPath() + " became " + newFile.getPath());
+               logf("%s became %s", file.getPath(), newFile.getPath());
                renamedFileCount++;
             } else {
-               log(file.getPath() + " failed to become " + newFile.getPath());
+               logf("%s failed to become %s", file.getPath(), newFile.getPath());
             }
          }
       }
-      log("Changed " + renamedFileCount + " files");
+      logf("Changed %d files.", renamedFileCount);
    }
 }

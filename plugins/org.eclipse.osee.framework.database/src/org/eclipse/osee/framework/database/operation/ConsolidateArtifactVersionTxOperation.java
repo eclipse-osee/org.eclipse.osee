@@ -156,7 +156,7 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
          }
       }
       if (!knownCase) {
-         log(String.format("unknown case: artifact id: %d branch_id: %d", previousArtifactId, previousBranchId));
+         logf("unknown case: artifact id: %d branch_id: %d", previousArtifactId, previousBranchId);
       }
    }
 
@@ -168,8 +168,8 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
       if (true) {
          findArtifactMods();
 
-         log("updateTxsCurrentModData size: " + updateTxsCurrentModData.size());
-         log("addressingToDelete size: " + addressingToDelete.size());
+         logf("updateTxsCurrentModData size: %d", updateTxsCurrentModData.size());
+         logf("addressingToDelete size: %d", addressingToDelete.size());
 
          getDatabaseService().runBatchUpdate(connection, prepareSql(UPDATE_TXS_MOD_CURRENT, false),
             updateTxsCurrentModData);
@@ -179,10 +179,10 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
       }
 
       findObsoleteGammas();
-      log("gamma join size: " + gammaJoin.size());
+      logf("gamma join size: %d", gammaJoin.size());
 
-      log("Number of artifact version rows deleted: " + getDatabaseService().runBatchUpdate(connection,
-         DELETE_ARTIFACT_VERSIONS, deleteArtifactVersionData));
+      logf("Number of artifact version rows deleted: %d",
+         getDatabaseService().runBatchUpdate(connection, DELETE_ARTIFACT_VERSIONS, deleteArtifactVersionData));
       deleteArtifactVersionData = null;
 
       gammaJoin.store(connection);
@@ -202,17 +202,17 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
 
    private void updataConflicts(String columnName) throws OseeCoreException {
       int count = getDatabaseService().runPreparedUpdate(connection, String.format(UPDATE_CONFLICTS, columnName));
-      log(String.format("updated %s in %d rows", columnName, count));
+      logf("updated %s in %d rows", columnName, count);
    }
 
    private void setBaselineTransactions() throws OseeCoreException {
       int count = getDatabaseService().runPreparedUpdate(connection, SET_BASELINE_TRANSACTION);
-      log(String.format("updated %d baseline transactions", count));
+      logf("updated %d baseline transactions", count);
    }
 
    private void populateArts() throws OseeCoreException {
       int count = getDatabaseService().runPreparedUpdate(connection, POPULATE_ARTS);
-      log(String.format("inserted %d rows into osee_artifact", count));
+      logf("inserted %d rows into osee_artifact", count);
    }
 
    private void findObsoleteGammas() throws OseeCoreException {
@@ -247,7 +247,7 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
 
    private void determineAffectedAddressingAndFix(boolean archived) throws OseeCoreException {
       try {
-         log("query id: " + gammaJoin.getQueryId());
+         logf("query id: %d", gammaJoin.getQueryId());
          chStmt.runPreparedQuery(10000, String.format(SELECT_ADDRESSING, archived ? "_archived" : ""),
             gammaJoin.getQueryId());
 
@@ -313,7 +313,7 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
       if (addressingToDelete.size() > 99960 || force) {
          deleteTxsCounter +=
             getDatabaseService().runBatchUpdate(connection, prepareSql(DELETE_TXS, archived), addressingToDelete);
-         log("Number of txs" + archivedStr + " rows deleted: " + deleteTxsCounter);
+         logf("Number of txs%s rows deleted: %d", archivedStr, deleteTxsCounter);
          addressingToDelete.clear();
       }
 
@@ -321,7 +321,7 @@ public class ConsolidateArtifactVersionTxOperation extends AbstractDbTxOperation
          updateTxsCounter +=
             getDatabaseService().runBatchUpdate(connection, prepareSql(UPDATE_TXS_GAMMAS, archived),
                updateAddressingData);
-         log("Number of txs" + archivedStr + " rows updated: " + updateTxsCounter);
+         logf("Number of txs%s rows updated: %d", archivedStr, updateTxsCounter);
 
          updateAddressingData.clear();
       }

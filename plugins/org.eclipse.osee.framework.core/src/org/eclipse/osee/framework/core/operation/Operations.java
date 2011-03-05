@@ -66,8 +66,7 @@ public final class Operations {
    }
 
    /**
-    * Executes an operation calling the monitor begin and done methods. If workPercentage is set greater than 0, monitor
-    * will be wrapped into a SubProgressMonitor set to the appropriate number of ticks to consume from the main monitor.
+    * Executes an operation calling the monitor begin and done methods.
     */
    public static IStatus executeWork(IOperation operation, IProgressMonitor monitor) {
       SubMonitor subMonitor = SubMonitor.convert(monitor, operation.getName(), TASK_WORK_RESOLUTION);

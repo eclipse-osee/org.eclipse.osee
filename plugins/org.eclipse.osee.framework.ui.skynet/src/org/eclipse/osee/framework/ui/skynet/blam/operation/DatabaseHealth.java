@@ -127,7 +127,7 @@ public class DatabaseHealth extends AbstractBlam {
          checkForCancelledStatus(monitor);
          if (operation != null) {
             operation.setFixOperationEnabled(isFix);
-            log(String.format("\nProcessing: [%s]", operation.getName()));
+            logf("\nProcessing: [%s]", operation.getName());
             doSubWork(operation, monitor, workPercentage);
 
             String detailedReport = operation.getDetailedReport().toString();
@@ -138,7 +138,7 @@ public class DatabaseHealth extends AbstractBlam {
             } else {
                ResultsEditor.open(operation.getResultsProvider());
             }
-            log(String.format("Completed:  [%s]", operation.getName()));
+            logf("Completed:  [%s]", operation.getName());
          }
       }
 
