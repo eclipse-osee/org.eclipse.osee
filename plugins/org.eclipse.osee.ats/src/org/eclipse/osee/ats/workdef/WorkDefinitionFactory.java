@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.actions.wizard.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.actions.wizard.ITeamWorkflowProvider;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
+import org.eclipse.osee.ats.artifact.TeamWorkflowProviders;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.DecisionOption;
@@ -446,7 +446,7 @@ public class WorkDefinitionFactory {
 
    private static WorkDefinitionMatch getWorkDefinitionForTask(TaskArtifact taskArt) throws OseeCoreException {
       WorkDefinitionMatch match = new WorkDefinitionMatch();
-      for (IAtsTeamWorkflow provider : TeamWorkflowExtensions.getAtsTeamWorkflowExtensions()) {
+      for (ITeamWorkflowProvider provider : TeamWorkflowProviders.getAtsTeamWorkflowExtensions()) {
          String workFlowDefId = provider.getRelatedTaskWorkflowDefinitionId(taskArt.getParentSMA());
          if (Strings.isValid(workFlowDefId)) {
             String translatedId = getOverrideWorkDefId(workFlowDefId);
@@ -494,7 +494,7 @@ public class WorkDefinitionFactory {
       if (!match.isMatched() && artifact instanceof AbstractWorkflowArtifact) {
          AbstractWorkflowArtifact aba = (AbstractWorkflowArtifact) artifact;
          // Check extensions for definition handling
-         for (IAtsTeamWorkflow provider : TeamWorkflowExtensions.getAtsTeamWorkflowExtensions()) {
+         for (ITeamWorkflowProvider provider : TeamWorkflowProviders.getAtsTeamWorkflowExtensions()) {
             String workFlowDefId = provider.getWorkflowDefinitionId(aba);
             if (Strings.isValid(workFlowDefId)) {
                match =

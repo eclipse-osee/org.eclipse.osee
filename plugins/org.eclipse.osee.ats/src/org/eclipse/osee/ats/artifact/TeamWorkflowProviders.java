@@ -16,7 +16,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.osee.ats.actions.wizard.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.actions.wizard.ITeamWorkflowProvider;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -28,19 +28,19 @@ import org.osgi.framework.Bundle;
 /**
  * @author Donald G. Dunne
  */
-public final class TeamWorkflowExtensions {
+public final class TeamWorkflowProviders {
 
-   private static Set<IAtsTeamWorkflow> teamWorkflowExtensionItems;
+   private static Set<ITeamWorkflowProvider> atsTeamWorkflows;
 
-   private TeamWorkflowExtensions() {
+   private TeamWorkflowProviders() {
       // private constructor
    }
 
    public static Set<IArtifactType> getAllTeamWorkflowArtifactTypes() throws OseeCoreException {
       Set<IArtifactType> artifactTypes = new HashSet<IArtifactType>();
       artifactTypes.add(AtsArtifactTypes.TeamWorkflow);
-      for (IAtsTeamWorkflow ext : getAtsTeamWorkflowExtensions()) {
-         artifactTypes.addAll(ext.getTeamWorkflowArtifactNames());
+      for (ITeamWorkflowProvider ext : getAtsTeamWorkflowExtensions()) {
+         artifactTypes.addAll(ext.getTeamWorkflowArtifactTypes());
       }
       return artifactTypes;
    }
@@ -48,16 +48,17 @@ public final class TeamWorkflowExtensions {
    /*
     * due to lazy initialization, this function is non-reentrant therefore, the synchronized keyword is necessary
     */
-   public synchronized static Set<IAtsTeamWorkflow> getAtsTeamWorkflowExtensions() {
-      if (teamWorkflowExtensionItems != null) {
-         return teamWorkflowExtensionItems;
+   public synchronized static Set<ITeamWorkflowProvider> getAtsTeamWorkflowExtensions() {
+      if (atsTeamWorkflows != null) {
+         return atsTeamWorkflows;
       }
-      teamWorkflowExtensionItems = new HashSet<IAtsTeamWorkflow>();
+      atsTeamWorkflows = new HashSet<ITeamWorkflowProvider>();
 
-      IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.ats.AtsTeamWorkflow");
+      IExtensionPoint point =
+         Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.ats.AtsTeamWorkflowProvider");
       if (point == null) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't access AtsTeamWorkflow extension point");
-         return teamWorkflowExtensionItems;
+         return atsTeamWorkflows;
       }
       IExtension[] extensions = point.getExtensions();
       for (IExtension extension : extensions) {
@@ -65,7 +66,7 @@ public final class TeamWorkflowExtensions {
          String classname = null;
          String bundleName = null;
          for (IConfigurationElement el : elements) {
-            if (el.getName().equals("AtsTeamWorkflow")) {
+            if (el.getName().equals("TeamWorkflowProvider")) {
                classname = el.getAttribute("classname");
                bundleName = el.getContributor().getName();
                if (classname != null && bundleName != null) {
@@ -73,15 +74,16 @@ public final class TeamWorkflowExtensions {
                   try {
                      Class<?> taskClass = bundle.loadClass(classname);
                      Object obj = taskClass.newInstance();
-                     teamWorkflowExtensionItems.add((IAtsTeamWorkflow) obj);
+                     atsTeamWorkflows.add((ITeamWorkflowProvider) obj);
                   } catch (Exception ex) {
-                     OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Error loading AtsTeamWorkflow extension", ex);
+                     OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP,
+                        "Error loading TeamWorkflowProvider extension", ex);
                   }
                }
             }
          }
       }
-      return teamWorkflowExtensionItems;
+      return atsTeamWorkflows;
    }
 
 }

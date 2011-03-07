@@ -37,16 +37,10 @@
       </OseeTypes>
    </extension>
    <extension
-         point="org.eclipse.osee.ats.AtsTeamWorkflow">
-      <AtsTeamWorkflow
+         point="org.eclipse.osee.ats.AtsTeamWorkflowProvider">
+      <TeamWorkflowProvider
             classname="org.eclipse.osee.ats.config.demo.artifact.DemoTeamWorkflows">
-      </AtsTeamWorkflow>
-   </extension>
-   <extension
-         point="org.eclipse.osee.framework.skynet.core.ArtifactFactory">
-      <ArtifactFactory
-            classname="org.eclipse.osee.ats.config.demo.artifact.DemoArtifactFactory">
-      </ArtifactFactory>
+      </TeamWorkflowProvider>
    </extension>
    <extension
          point="org.eclipse.osee.framework.ui.skynet.ArtifactImageProvider">

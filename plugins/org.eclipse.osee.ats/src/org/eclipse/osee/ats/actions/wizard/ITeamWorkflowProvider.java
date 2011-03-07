@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsTeamWorkflow {
+public interface ITeamWorkflowProvider {
 
    /**
     * Return true if this class/plugin is responsible for the creation of the Team Workflow that will be created for the
@@ -56,9 +56,20 @@ public interface IAtsTeamWorkflow {
     * 
     * @return collection of all team workflow artifact type names
     */
-   public Collection<? extends IArtifactType> getTeamWorkflowArtifactNames() throws OseeCoreException;
+   public Collection<? extends IArtifactType> getTeamWorkflowArtifactTypes() throws OseeCoreException;
 
    public String getWorkflowDefinitionId(AbstractWorkflowArtifact artifact) throws OseeCoreException;
 
    public String getRelatedTaskWorkflowDefinitionId(AbstractWorkflowArtifact artifact) throws OseeCoreException;
+
+   /**
+    * Assigned or computed Id that will show at the top of the editor
+    */
+   public String getPcrId(TeamWorkFlowArtifact teamArt) throws OseeCoreException;
+
+   /**
+    * 5-9 character short name for UI and display purposes
+    */
+   public String getArtifactTypeShortName(TeamWorkFlowArtifact teamArt);
+
 }

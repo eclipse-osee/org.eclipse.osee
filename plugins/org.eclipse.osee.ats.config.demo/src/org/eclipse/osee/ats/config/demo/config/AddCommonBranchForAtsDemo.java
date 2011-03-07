@@ -10,11 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.config.demo.config;
 
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.init.AddCommonBranch;
+import org.eclipse.osee.support.test.util.TestUtil;
 
 /**
  * @author Donald G. Dunne
  */
 public class AddCommonBranchForAtsDemo extends AddCommonBranch {
-   // provided for db init
+
+   @Override
+   public void run() throws OseeCoreException {
+      TestUtil.setDemoDb(true);
+      super.run();
+   }
+
 }

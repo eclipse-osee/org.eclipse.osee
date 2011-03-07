@@ -12,19 +12,21 @@ package org.eclipse.osee.ats.util;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.ats.actions.wizard.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.actions.wizard.INewActionListener;
+import org.eclipse.osee.ats.actions.wizard.ITeamWorkflowProvider;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
-import org.eclipse.osee.ats.artifact.ActionArtifact.CreateTeamOption;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
+import org.eclipse.osee.ats.artifact.TeamWorkflowProviders;
 import org.eclipse.osee.ats.column.ChangeTypeColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.operation.DuplicateWorkflowBlam.CreateTeamOption;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -85,10 +87,10 @@ public class ActionManager {
 
    public static TeamWorkFlowArtifact createTeamWorkflow(ActionArtifact actionArt, TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems, Collection<User> assignees, SkynetTransaction transaction, Date createdDate, User createdBy, INewActionListener newActionListener, CreateTeamOption... createTeamOption) throws OseeCoreException {
       IArtifactType teamWorkflowArtifact = AtsArtifactTypes.TeamWorkflow;
-      IAtsTeamWorkflow teamExt = null;
+      ITeamWorkflowProvider teamExt = null;
 
       // Check if any plugins want to create the team workflow themselves
-      for (IAtsTeamWorkflow teamExtension : TeamWorkflowExtensions.getAtsTeamWorkflowExtensions()) {
+      for (ITeamWorkflowProvider teamExtension : TeamWorkflowProviders.getAtsTeamWorkflowExtensions()) {
          boolean isResponsible = false;
          try {
             isResponsible = teamExtension.isResponsibleForTeamWorkflowCreation(teamDef, actionableItems);
@@ -202,6 +204,21 @@ public class ActionManager {
       if (validationRequired) {
          art.setSoleAttributeValue(AtsAttributeTypes.ValidationRequired, true);
       }
+   }
+
+   public static Set<ActionableItemArtifact> getActionableItems(Artifact action) throws OseeCoreException {
+      Set<ActionableItemArtifact> aias = new HashSet<ActionableItemArtifact>();
+      if (action.isOfType(AtsArtifactTypes.Action)) {
+         for (TeamWorkFlowArtifact team : ((ActionArtifact) action).getTeamWorkFlowArtifacts()) {
+            aias.addAll(team.getActionableItemsDam().getActionableItems());
+         }
+      }
+      return aias;
+   }
+
+   public static Collection<TeamWorkFlowArtifact> getTeamWorkFlowArtifacts(Artifact actionArt) throws OseeCoreException {
+      return actionArt.getRelatedArtifactsUnSorted(AtsRelationTypes.ActionToWorkflow_WorkFlow,
+         TeamWorkFlowArtifact.class);
    }
 
 }

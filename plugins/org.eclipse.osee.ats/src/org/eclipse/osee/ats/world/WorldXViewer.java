@@ -49,6 +49,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.column.GoalOrderColumn;
 import org.eclipse.osee.ats.column.IPersistAltLeftClickProvider;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.ActionArtifactRollup;
 import org.eclipse.osee.ats.util.ArtifactEmailWizard;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.TeamState;
@@ -167,7 +168,8 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
             try {
                transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Reset Action off Children");
                for (ActionArtifact actionArt : getSelectedActionArtifacts()) {
-                  actionArt.resetAttributesOffChildren(transaction);
+                  ActionArtifactRollup rollup = new ActionArtifactRollup(actionArt, transaction);
+                  rollup.resetAttributesOffChildren();
                }
                transaction.execute();
             } catch (OseeCoreException ex) {

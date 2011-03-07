@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.column.AssigneeColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -122,10 +123,8 @@ public class ActionHyperItem extends HyperViewItem {
          return null;
       }
       try {
-         if (artifact instanceof AbstractWorkflowArtifact) {
-            return ((AbstractWorkflowArtifact) artifact).getAssigneeImage();
-         } else if (artifact instanceof ActionArtifact) {
-            return ((ActionArtifact) artifact).getAssigneeImage();
+         if (artifact instanceof AbstractWorkflowArtifact || artifact instanceof ActionArtifact) {
+            return AssigneeColumn.getAssigneeImage((Artifact) artifact);
          }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);

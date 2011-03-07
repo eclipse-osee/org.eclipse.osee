@@ -38,18 +38,18 @@ public class WorldXViewerSorter extends XViewerSorter {
             return 0;
          }
          XViewerColumn sortXCol = xViewer.getCustomizeMgr().getSortXCols().get(sortXColIndex);
-         IWorldViewArtifact m1 = (IWorldViewArtifact) (Artifact) o1;
-         IWorldViewArtifact m2 = (IWorldViewArtifact) (Artifact) o2;
+         Artifact m1 = (Artifact) o1;
+         Artifact m2 = (Artifact) o2;
 
          if (sortXCol.equals(AssigneeColumn.getInstance())) {
             int compareInt =
-               getComparator().compare(m1.getAssigneeStr().replaceFirst("\\(", ""),
-                  m2.getAssigneeStr().replaceFirst("\\(", ""));
+               getComparator().compare(AssigneeColumn.getAssigneeStr(m1).replaceFirst("\\(", ""),
+                  AssigneeColumn.getAssigneeStr(m2).replaceFirst("\\(", ""));
             return getCompareBasedOnDirection(sortXCol, compareInt, viewer, o1, o2, sortXColIndex);
          } else if (sortXCol.equals(ChangeTypeColumn.getInstance())) {
             int compareInt =
-               getComparator().compare(ChangeTypeColumn.getChangeType((Artifact) m1).ordinal() + "",
-                  ChangeTypeColumn.getChangeType((Artifact) m2).ordinal() + "");
+               getComparator().compare(ChangeTypeColumn.getChangeType(m1).ordinal() + "",
+                  ChangeTypeColumn.getChangeType(m2).ordinal() + "");
             return getCompareBasedOnDirection(sortXCol, compareInt, viewer, o1, o2, sortXColIndex);
          }
 

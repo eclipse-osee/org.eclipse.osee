@@ -19,7 +19,9 @@ import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.artifact.TeamWorkflowManager;
 import org.eclipse.osee.ats.artifact.note.NoteItem;
+import org.eclipse.osee.ats.column.AssigneeColumn;
 import org.eclipse.osee.ats.column.ChangeTypeColumn;
 import org.eclipse.osee.ats.column.DeadlineColumn;
 import org.eclipse.osee.ats.column.PriorityColumn;
@@ -29,7 +31,6 @@ import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.Overview;
 import org.eclipse.osee.ats.workdef.StateXWidgetPage;
-import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -75,7 +76,7 @@ public class SMAPrint extends Action {
          //
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Team: ", TeamColumn.getName(sma)),
          //
-         AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Assignees: ", ((IWorldViewArtifact) sma).getAssigneeStr()),
+         AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Assignees: ", AssigneeColumn.getAssigneeStr(sma)),
          //
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Originator: ", sma.getCreatedBy().getName()),
          //
@@ -90,11 +91,12 @@ public class SMAPrint extends Action {
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Priority: ", PriorityColumn.getPriorityStr(sma)),
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Need By: ", DeadlineColumn.getDateStr(sma))}));
 
+      String pcrId = TeamWorkflowManager.getPcrId(sma);
       resultData.addRaw(AHTML.addRowMultiColumnTable(new String[] {
          //
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Workflow: ", sma.getArtifactTypeName()),
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "HRID: ", sma.getHumanReadableId()),
-         (sma.getPcrId() == null ? "" : AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Id: ", sma.getPcrId()))}));
+         (pcrId == null ? "" : AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Id: ", pcrId))}));
       resultData.addRaw(AHTML.endMultiColumnTable());
       for (NoteItem note : sma.getNotes().getNoteItems()) {
          if (note.getState().equals("")) {
@@ -136,7 +138,7 @@ public class SMAPrint extends Action {
             rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {
                art.getName(),
                art.getStateMgr().getCurrentStateName().replaceAll("(Task|State)", ""),
-               art.getAssigneeStr(),
+               AssigneeColumn.getAssigneeStr(art),
                art.getPercentCompleteSMATotal() + "",
                art.getHoursSpentSMATotal() + "",
                art.getSoleAttributeValue(AtsAttributeTypes.Resolution, ""),

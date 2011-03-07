@@ -17,9 +17,11 @@ import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.ActionManager;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
-import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -30,6 +32,7 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.FrameworkArtifactImageProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserCheckTreeDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -142,8 +145,8 @@ public class AssigneeColumn extends XViewerAtsColumn implements IXViewerValueCol
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
-         if (element instanceof IWorldViewArtifact) {
-            return ((IWorldViewArtifact) element).getAssigneeStr();
+         if (element instanceof Artifact) {
+            return getAssigneeStr((Artifact) element);
          }
       } catch (OseeCoreException ex) {
          return XViewerCells.getCellExceptionString(ex);
@@ -177,12 +180,59 @@ public class AssigneeColumn extends XViewerAtsColumn implements IXViewerValueCol
    @Override
    public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) {
       try {
-         if (element instanceof IWorldViewArtifact) {
-            return ((IWorldViewArtifact) element).getAssigneeImage();
+         if (element instanceof Artifact) {
+            return AssigneeColumn.getAssigneeImage((Artifact) element);
          }
       } catch (Exception ex) {
          // do nothing
       }
       return null;
    }
+
+   public static Image getAssigneeImage(Artifact artifact) throws OseeCoreException {
+      if (artifact.isDeleted()) {
+         return null;
+      }
+      if (artifact instanceof AbstractWorkflowArtifact) {
+         return FrameworkArtifactImageProvider.getUserImage(((AbstractWorkflowArtifact) artifact).getStateMgr().getAssignees());
+      }
+      if (artifact.isOfType(AtsArtifactTypes.Action)) {
+         for (TeamWorkFlowArtifact team : ActionManager.getTeamWorkFlowArtifacts(artifact)) {
+            Image image = AssigneeColumn.getAssigneeImage(team);
+            if (image != null) {
+               return image;
+            }
+         }
+      }
+      return null;
+
+   }
+
+   public static String getAssigneeStr(Artifact artifact) throws OseeCoreException {
+      if (artifact.isOfType(AtsArtifactTypes.Action)) {
+         Set<User> pocs = new HashSet<User>();
+         Set<User> implementers = new HashSet<User>();
+         for (TeamWorkFlowArtifact team : ActionManager.getTeamWorkFlowArtifacts(artifact)) {
+            if (team.isCompletedOrCancelled()) {
+               implementers.addAll(team.getImplementers());
+            } else {
+               pocs.addAll(team.getStateMgr().getAssignees());
+            }
+         }
+         return Artifacts.toString("; ", pocs) + (implementers.isEmpty() ? "" : "(" + Artifacts.toString("; ",
+            implementers) + ")");
+      } else if (artifact.isOfType(AtsArtifactTypes.StateMachineArtifact)) {
+         AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
+         if (awa.isCompletedOrCancelled()) {
+            if (awa.implementersStr == null && !awa.getImplementers().isEmpty()) {
+               awa.implementersStr = "(" + Artifacts.toString("; ", awa.getImplementers()) + ")";
+            }
+            return awa.implementersStr;
+         }
+         return Artifacts.toString("; ", awa.getStateMgr().getAssignees());
+
+      }
+      return "";
+   }
+
 }

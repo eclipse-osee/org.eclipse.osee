@@ -18,6 +18,7 @@ import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.ActionArtifactRollup;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.StateManager;
@@ -75,7 +76,8 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IB
    public void saveSMA(SkynetTransaction transaction) {
       super.saveSMA(transaction);
       try {
-         getParentActionArtifact().resetAttributesOffChildren(transaction);
+         ActionArtifactRollup rollup = new ActionArtifactRollup(getParentActionArtifact(), transaction);
+         rollup.resetAttributesOffChildren();
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't reset Action parent of children", ex);
       }
@@ -230,20 +232,14 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IB
       return branchMgr;
    }
 
-   /**
-    * 5-9 character short name for UI and display purposes
-    */
-   public String getArtifactTypeShortName() {
-      return "";
-   }
-
    public String getBranchName() {
       String smaTitle = getName();
       if (smaTitle.length() > 40) {
          smaTitle = smaTitle.substring(0, 39) + "...";
       }
-      if (Strings.isValid(getArtifactTypeShortName())) {
-         return String.format("%s - %s - %s", getHumanReadableId(), getArtifactTypeShortName(), smaTitle);
+      String typeName = TeamWorkflowManager.getArtifactTypeShortName(this);
+      if (Strings.isValid(typeName)) {
+         return String.format("%s - %s - %s", getHumanReadableId(), typeName, smaTitle);
       } else {
          return String.format("%s - %s", getHumanReadableId(), smaTitle);
       }

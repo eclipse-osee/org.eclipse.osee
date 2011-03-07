@@ -17,8 +17,11 @@ import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.ActionManager;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -181,9 +184,12 @@ public class ChangeTypeColumn extends XViewerAtsAttributeValueColumn {
       return null;
    }
 
-   public static void resetChangeTypeOffChildren(ActionArtifact actionArt) throws OseeCoreException {
+   public static void resetChangeTypeOffChildren(Artifact actionArt) throws OseeCoreException {
+      if (!actionArt.isOfType(AtsArtifactTypes.Action)) {
+         throw new OseeArgumentException("Artifact must be an Action instead of [%s]", actionArt.getArtifactTypeName());
+      }
       ChangeType changeType = null;
-      Collection<TeamWorkFlowArtifact> teamArts = actionArt.getTeamWorkFlowArtifacts();
+      Collection<TeamWorkFlowArtifact> teamArts = ActionManager.getTeamWorkFlowArtifacts(actionArt);
       if (teamArts.size() == 1) {
          changeType = getChangeType(teamArts.iterator().next());
       } else {

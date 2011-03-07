@@ -14,7 +14,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
-public abstract class AtsTeamWorkflowAdapter implements IAtsTeamWorkflow {
+public abstract class TeamWorkflowProviderAdapter implements ITeamWorkflowProvider {
 
    @SuppressWarnings("unused")
    @Override
@@ -41,7 +41,7 @@ public abstract class AtsTeamWorkflowAdapter implements IAtsTeamWorkflow {
 
    @SuppressWarnings("unused")
    @Override
-   public Collection<? extends IArtifactType> getTeamWorkflowArtifactNames() throws OseeCoreException {
+   public Collection<? extends IArtifactType> getTeamWorkflowArtifactTypes() throws OseeCoreException {
       return Collections.emptyList();
    }
 
@@ -54,6 +54,17 @@ public abstract class AtsTeamWorkflowAdapter implements IAtsTeamWorkflow {
    @SuppressWarnings("unused")
    @Override
    public String getRelatedTaskWorkflowDefinitionId(AbstractWorkflowArtifact artifact) throws OseeCoreException {
+      return null;
+   }
+
+   @SuppressWarnings("unused")
+   @Override
+   public String getPcrId(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
+      return null;
+   }
+
+   @Override
+   public String getArtifactTypeShortName(TeamWorkFlowArtifact teamArt) {
       return null;
    }
 

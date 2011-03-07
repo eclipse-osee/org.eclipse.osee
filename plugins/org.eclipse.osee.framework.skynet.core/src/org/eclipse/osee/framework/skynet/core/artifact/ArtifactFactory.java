@@ -10,9 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -31,10 +32,12 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public abstract class ArtifactFactory {
 
-   private final Collection<IArtifactType> artifactTypeNames;
+   private final Set<IArtifactType> artifactTypeNames = new HashSet<IArtifactType>(5);
 
    protected ArtifactFactory(IArtifactType... artifactTypes) {
-      this.artifactTypeNames = Arrays.asList(artifactTypes);
+      for (IArtifactType artifactType : artifactTypes) {
+         registerAsResponsible(artifactType);
+      }
    }
 
    public Artifact makeNewArtifact(IOseeBranch branch, IArtifactType artifactTypeToken, String guid, String humandReadableId, ArtifactProcessor earlyArtifactInitialization) throws OseeCoreException {
@@ -133,6 +136,12 @@ public abstract class ArtifactFactory {
     */
    public boolean isResponsibleFor(IArtifactType artifactType) {
       return artifactTypeNames.contains(artifactType);
+   }
+
+   public void registerAsResponsible(IArtifactType artifactType) {
+      if (!artifactTypeNames.contains(artifactType)) {
+         artifactTypeNames.add(artifactType);
+      }
    }
 
    /**

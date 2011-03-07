@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.database.core.OseeInfo;
 import org.eclipse.osee.framework.database.init.IDbInitializationTask;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -30,6 +29,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition.WriteType;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
+import org.eclipse.osee.support.test.util.TestUtil;
 
 /**
  * Initialization class that will load configuration information for a sample DB.
@@ -40,6 +40,8 @@ public class DemoDatabaseConfig implements IDbInitializationTask {
 
    @Override
    public void run() throws OseeCoreException {
+
+      TestUtil.setDemoDb(true);
 
       if (AtsUtil.dbInitWorkItemDefs()) {
          new DemoCodeWorkFlowDefinition().config(WriteType.New, null);
@@ -56,7 +58,6 @@ public class DemoDatabaseConfig implements IDbInitializationTask {
       BranchManager.createTopLevelBranch(DemoCISBuilds.CIS_Bld_1);
       populateProgramBranch(DemoCISBuilds.CIS_Bld_1);
 
-      OseeInfo.putValue(OseeInfo.DB_TYPE_KEY, "demo");
    }
 
    private void populateProgramBranch(IOseeBranch branch) throws OseeCoreException {

@@ -11,13 +11,8 @@
 package org.eclipse.osee.ats.world;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.swt.graphics.Image;
 
 public interface IWorldViewArtifact {
-
-   Image getAssigneeImage() throws OseeCoreException;
-
-   String getAssigneeStr() throws OseeCoreException;
 
    /**
     * @return estimated hours from workflow attribute, tasks and reviews

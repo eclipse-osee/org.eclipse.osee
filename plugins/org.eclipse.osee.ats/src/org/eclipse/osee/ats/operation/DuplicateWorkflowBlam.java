@@ -17,12 +17,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.ats.actions.wizard.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.actions.wizard.ITeamWorkflowProvider;
 import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
-import org.eclipse.osee.ats.artifact.ActionArtifact.CreateTeamOption;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
+import org.eclipse.osee.ats.artifact.TeamWorkflowProviders;
 import org.eclipse.osee.ats.artifact.log.LogType;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.AtsPlugin;
@@ -62,6 +61,9 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
    private final static String DUPLICATE_METHOD = "Duplicate Method";
    private final static String TITLE = "New Title (blank for same title)";
    private Collection<? extends TeamWorkFlowArtifact> defaultTeamWorkflows;
+   public static enum CreateTeamOption {
+      Duplicate_If_Exists; // If option exists, then duplication of workflow of same team definition is allowed
+   };
 
    public DuplicateWorkflowBlam() {
       // do nothing
@@ -167,7 +169,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
          dupArt.persist(transaction);
          // Notify all extension points that workflow is being duplicated in case they need to add, remove
          // attributes or relations
-         for (IAtsTeamWorkflow teamExtension : TeamWorkflowExtensions.getAtsTeamWorkflowExtensions()) {
+         for (ITeamWorkflowProvider teamExtension : TeamWorkflowProviders.getAtsTeamWorkflowExtensions()) {
             teamExtension.teamWorkflowDuplicating(teamArt, dupArt);
          }
       }

@@ -41,7 +41,7 @@ public class ActionableItemManager {
             "Select New Impacted Actionable Items\n\n" + "Note: Un-selecting existing items will NOT remove the impact.\n" + "Team Workflow with no impact should be transitioned to Cancelled.",
             Active.Active);
 
-      diag.setInitialAias(actionArt.getActionableItems());
+      diag.setInitialAias(ActionManager.getActionableItems(actionArt));
       if (diag.open() != 0) {
          return Result.FalseResult;
       }
@@ -198,7 +198,8 @@ public class ActionableItemManager {
             teamArt.setTeamDefinition(teamDefinition);
          }
          SkynetTransaction transaction = new SkynetTransaction(branch, "Converate Actionable Item");
-         teamArt.getParentActionArtifact().resetAttributesOffChildren(transaction);
+         ActionArtifactRollup rollup = new ActionArtifactRollup(teamArt.getParentActionArtifact(), transaction);
+         rollup.resetAttributesOffChildren();
          teamArt.persist(transaction);
          transaction.execute();
       }

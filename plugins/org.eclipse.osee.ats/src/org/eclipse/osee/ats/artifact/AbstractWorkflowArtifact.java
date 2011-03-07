@@ -71,11 +71,9 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.HelpContext;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.FrameworkArtifactImageProvider;
 import org.eclipse.osee.framework.ui.skynet.group.IGroupExplorerProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkPage;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageType;
-import org.eclipse.swt.graphics.Image;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -223,14 +221,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       atsWorldRelations.add(typeSideToken);
    }
 
-   @Override
-   public Image getAssigneeImage() throws OseeCoreException {
-      if (isDeleted()) {
-         return null;
-      }
-      return FrameworkArtifactImageProvider.getUserImage(getStateMgr().getAssignees());
-   }
-
    public void clearCaches() {
       implementersStr = null;
    }
@@ -267,17 +257,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    public String implementersStr = null;
-
-   @Override
-   public String getAssigneeStr() throws OseeCoreException {
-      if (isCompletedOrCancelled()) {
-         if (implementersStr == null && !getImplementers().isEmpty()) {
-            implementersStr = "(" + Artifacts.toString("; ", getImplementers()) + ")";
-         }
-         return implementersStr;
-      }
-      return Artifacts.toString("; ", getStateMgr().getAssignees());
-   }
 
    public double getEstimatedHoursFromArtifact() throws OseeCoreException {
       if (isAttributeTypeValid(AtsAttributeTypes.EstimatedHours)) {
@@ -436,7 +415,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    public static Set<IArtifactType> getAllSMAType() throws OseeCoreException {
-      Set<IArtifactType> artTypeNames = TeamWorkflowExtensions.getAllTeamWorkflowArtifactTypes();
+      Set<IArtifactType> artTypeNames = TeamWorkflowProviders.getAllTeamWorkflowArtifactTypes();
       artTypeNames.add(AtsArtifactTypes.Task);
       artTypeNames.add(AtsArtifactTypes.DecisionReview);
       artTypeNames.add(AtsArtifactTypes.PeerToPeerReview);
@@ -453,7 +432,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    public static List<TeamWorkFlowArtifact> getAllTeamWorkflowArtifacts() throws OseeCoreException {
       List<TeamWorkFlowArtifact> result = new ArrayList<TeamWorkFlowArtifact>();
-      for (IArtifactType artType : TeamWorkflowExtensions.getAllTeamWorkflowArtifactTypes()) {
+      for (IArtifactType artType : TeamWorkflowProviders.getAllTeamWorkflowArtifactTypes()) {
          List<TeamWorkFlowArtifact> teamArts =
             org.eclipse.osee.framework.jdk.core.util.Collections.castAll(ArtifactQuery.getArtifactListFromType(artType,
                AtsUtil.getAtsBranch()));
@@ -1089,17 +1068,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
          }
       }
       return statePages;
-   }
-
-   /**
-    * Assigned or computed Id that will show at the top of the editor
-    */
-   public String getPcrId() throws OseeCoreException {
-      TeamWorkFlowArtifact teamArt = getParentTeamWorkflow();
-      if (teamArt != null) {
-         return teamArt.getTeamName() + " " + getHumanReadableId();
-      }
-      return "";
    }
 
    protected void addPriviledgedUsersUpTeamDefinitionTree(TeamDefinitionArtifact tda, Set<User> users) throws OseeCoreException {

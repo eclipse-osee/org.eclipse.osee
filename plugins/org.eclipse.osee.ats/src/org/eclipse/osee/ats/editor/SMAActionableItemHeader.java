@@ -15,6 +15,7 @@ import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.column.ActionableItemsColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -88,7 +89,7 @@ public class SMAActionableItemHeader extends Composite {
       }
       final TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) sma;
       if (!sma.isCancelled() && !sma.isCompleted()) {
-         if (teamWf.getParentActionArtifact().getActionableItems().isEmpty()) {
+         if (ActionManager.getActionableItems(teamWf.getParentActionArtifact()).isEmpty()) {
             label.setText(" " + "Error: No Actionable Items identified.");
             label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
          } else {
@@ -108,7 +109,7 @@ public class SMAActionableItemHeader extends Composite {
          label.update();
          layout();
       } else {
-         if (teamWf.getParentActionArtifact().getActionableItems().isEmpty()) {
+         if (ActionManager.getActionableItems(teamWf.getParentActionArtifact()).isEmpty()) {
             label.setText(" " + "Error: No Actionable Items identified.");
             label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
          } else {

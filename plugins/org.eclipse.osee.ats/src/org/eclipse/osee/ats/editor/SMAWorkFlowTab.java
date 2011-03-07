@@ -41,6 +41,7 @@ import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.artifact.TeamWorkflowManager;
 import org.eclipse.osee.ats.artifact.note.NoteItem;
 import org.eclipse.osee.ats.config.AtsBulkLoad;
 import org.eclipse.osee.ats.internal.AtsPlugin;
@@ -607,7 +608,8 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          if (sma.isTeamWorkflow()) {
             FormsUtil.createLabelText(toolkit, topLineComp, "Team: ", ((TeamWorkFlowArtifact) sma).getTeamName());
          } else if ((sma.isTask() || sma.isReview()) && sma.getParentSMA() != null) {
-            FormsUtil.createLabelText(toolkit, topLineComp, "Parent Id: ", sma.getParentSMA().getPcrId());
+            String pcrId = TeamWorkflowManager.getPcrId(sma.getParentSMA());
+            FormsUtil.createLabelText(toolkit, topLineComp, "Parent Id: ", pcrId);
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
@@ -616,8 +618,9 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          sma.getHumanReadableId());
 
       try {
-         if (Strings.isValid(sma.getPcrId())) {
-            FormsUtil.createLabelText(toolkit, topLineComp, " Id: ", sma.getPcrId());
+         String pcrId = TeamWorkflowManager.getPcrId(sma);
+         if (Strings.isValid(pcrId)) {
+            FormsUtil.createLabelText(toolkit, topLineComp, " Id: ", pcrId);
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);

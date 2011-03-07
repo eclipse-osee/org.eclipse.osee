@@ -12,10 +12,12 @@
 package org.eclipse.osee.ats.artifact;
 
 import java.util.Date;
+import org.eclipse.osee.ats.actions.wizard.ITeamWorkflowProvider;
 import org.eclipse.osee.ats.util.TeamState;
 import org.eclipse.osee.ats.util.TransitionOption;
 import org.eclipse.osee.ats.workflow.TransitionManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -182,6 +184,33 @@ public class TeamWorkflowManager {
       }
       teamArt.getStateMgr().setMetrics(TeamState.Implement, stateHoursSpent, statePercentComplete, true, user, date);
       return Result.TrueResult;
+   }
+
+   /**
+    * Assigned or computed Id that will show at the top of the editor
+    */
+   public static String getPcrId(AbstractWorkflowArtifact awa) throws OseeCoreException {
+      TeamWorkFlowArtifact teamArt = awa.getParentTeamWorkflow();
+      for (ITeamWorkflowProvider atsTeamWorkflow : TeamWorkflowProviders.getAtsTeamWorkflowExtensions()) {
+         String pcrId = atsTeamWorkflow.getPcrId(teamArt);
+         if (Strings.isValid(pcrId)) {
+            return pcrId;
+         }
+      }
+      if (teamArt != null) {
+         return teamArt.getTeamName() + " " + awa.getHumanReadableId();
+      }
+      return "";
+   }
+
+   public static String getArtifactTypeShortName(TeamWorkFlowArtifact teamArt) {
+      for (ITeamWorkflowProvider atsTeamWorkflow : TeamWorkflowProviders.getAtsTeamWorkflowExtensions()) {
+         String typeName = atsTeamWorkflow.getArtifactTypeShortName(teamArt);
+         if (Strings.isValid(typeName)) {
+            return typeName;
+         }
+      }
+      return null;
    }
 
 }

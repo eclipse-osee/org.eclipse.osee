@@ -22,7 +22,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
+import org.eclipse.osee.ats.artifact.TeamWorkflowProviders;
 import org.eclipse.osee.ats.health.change.DataChangeReportComparer;
 import org.eclipse.osee.ats.health.change.ValidateChangeReportParser;
 import org.eclipse.osee.ats.internal.AtsPlugin;
@@ -126,7 +126,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
          StringBuffer sbFull = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
          String[] columnHeaders = new String[] {"HRID", "PCR", "Results"};
          sbFull.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
-         for (IArtifactType artifactType : TeamWorkflowExtensions.getAllTeamWorkflowArtifactTypes()) {
+         for (IArtifactType artifactType : TeamWorkflowProviders.getAllTeamWorkflowArtifactTypes()) {
             sbFull.append(AHTML.addRowSpanMultiColumnTable(artifactType.getName(), columnHeaders.length));
 
             try {

@@ -53,6 +53,14 @@ public class TestUtil {
       return DEMO_DB_TYPE.equals(OseeInfo.getCachedValue(OseeInfo.DB_TYPE_KEY));
    }
 
+   public static void setDemoDb(boolean set) throws OseeCoreException {
+      if (set) {
+         OseeInfo.putValue(OseeInfo.DB_TYPE_KEY, DEMO_DB_TYPE);
+      } else {
+         OseeInfo.putValue(OseeInfo.DB_TYPE_KEY, "");
+      }
+   }
+
    public static void sleep(long milliseconds) throws Exception {
       System.out.println("Sleeping " + milliseconds);
       Thread.sleep(milliseconds);
