@@ -16,10 +16,10 @@ import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.swt.SWT;
 
 public class OperationalImpactColumn extends XViewerValueColumn {
@@ -48,9 +48,9 @@ public class OperationalImpactColumn extends XViewerValueColumn {
 
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
-      if (element instanceof IWorldViewArtifact) {
+      if (element instanceof IATSArtifact) {
          try {
-            return getOperationalImpact((IWorldViewArtifact) element);
+            return getOperationalImpact((IATSArtifact) element);
          } catch (OseeCoreException ex) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
             return XViewerCells.getCellExceptionString(ex);
@@ -59,7 +59,7 @@ public class OperationalImpactColumn extends XViewerValueColumn {
       return "";
    }
 
-   private String getOperationalImpact(IWorldViewArtifact wva) throws OseeCoreException {
+   private String getOperationalImpact(IATSArtifact wva) throws OseeCoreException {
       if (wva instanceof TeamWorkFlowArtifact) {
          return ((TeamWorkFlowArtifact) wva).getArtifact().getSoleAttributeValue(AtsAttributeTypes.OperationalImpact,
             "");

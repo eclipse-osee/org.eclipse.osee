@@ -59,6 +59,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ISelectedArtifacts;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -558,7 +559,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
    public void load(Collection<Object> objects) {
       Set<Artifact> arts = new HashSet<Artifact>();
       for (Object obj : objects) {
-         if (obj instanceof IWorldViewArtifact) {
+         if (obj instanceof IATSArtifact) {
             arts.add((Artifact) obj);
          }
       }

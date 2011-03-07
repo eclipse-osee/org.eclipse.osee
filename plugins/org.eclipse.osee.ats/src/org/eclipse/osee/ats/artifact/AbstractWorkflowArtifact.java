@@ -45,7 +45,6 @@ import org.eclipse.osee.ats.workdef.WorkDefinitionFactory;
 import org.eclipse.osee.ats.workdef.WorkDefinitionMatch;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
 import org.eclipse.osee.ats.workflow.TransitionManager;
-import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
@@ -81,7 +80,7 @@ import org.osgi.framework.ServiceReference;
 /**
  * @author Donald G. Dunne
  */
-public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact implements HasCmAccessControl, IGroupExplorerProvider, IWorldViewArtifact {
+public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact implements HasCmAccessControl, IGroupExplorerProvider {
 
    private final Set<IRelationTypeSide> atsWorldRelations = new HashSet<IRelationTypeSide>();
    private Collection<User> transitionAssignees;

@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
+import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
@@ -68,7 +69,7 @@ public class WorldViewDragAndDrop extends SkynetDragAndDrop {
          if (artData != null) {
             Artifact[] artifacts = artData.getArtifacts();
             for (Artifact art : artifacts) {
-               if (art instanceof IWorldViewArtifact || art.isOfType(CoreArtifactTypes.UniversalGroup)) {
+               if (art instanceof IATSArtifact || art.isOfType(CoreArtifactTypes.UniversalGroup)) {
                   return true;
                }
             }
@@ -98,7 +99,7 @@ public class WorldViewDragAndDrop extends SkynetDragAndDrop {
                      Artifact[] artifacts = artData.getArtifacts();
                      if (artifacts.length == 1) {
                         Artifact art = artifacts[0];
-                        if (art instanceof IWorldViewArtifact) {
+                        if (art instanceof IATSArtifact) {
                            name = art.getName();
                         } else if (art.isOfType(CoreArtifactTypes.UniversalGroup)) {
                            GroupWorldSearchItem groupWorldSearchItem = new GroupWorldSearchItem(art.getBranch());
@@ -109,11 +110,11 @@ public class WorldViewDragAndDrop extends SkynetDragAndDrop {
                         }
                      }
                      for (Artifact art : artifacts) {
-                        if (art instanceof IWorldViewArtifact) {
+                        if (art instanceof IATSArtifact) {
                            arts.add(art);
                         } else if (art.isOfType(CoreArtifactTypes.UniversalGroup)) {
                            for (Artifact relArt : art.getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Members)) {
-                              if (relArt instanceof IWorldViewArtifact) {
+                              if (relArt instanceof IATSArtifact) {
                                  arts.add(relArt);
                               }
                            }

@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
-import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -24,7 +23,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 /**
  * @author Donald G. Dunne
  */
-public class ActionArtifact extends AbstractAtsArtifact implements IWorldViewArtifact {
+public class ActionArtifact extends AbstractAtsArtifact {
 
    public ActionArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);

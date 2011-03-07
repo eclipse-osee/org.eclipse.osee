@@ -15,11 +15,11 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.DeadlineManager;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
-import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -55,7 +55,7 @@ public class EstimatedCompletionDateColumn extends XViewerAtsAttributeValueColum
    @Override
    public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) {
       try {
-         if (!(element instanceof IWorldViewArtifact)) {
+         if (!(element instanceof IATSArtifact)) {
             return null;
          }
          if (isWorldViewEcdAlerting(element).isTrue()) {

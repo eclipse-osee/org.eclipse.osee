@@ -18,6 +18,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -71,7 +72,7 @@ public class WorldLabelProvider extends XViewerLabelProvider {
    public String getColumnText(Object element, XViewerColumn xCol, int columnIndex) {
       try {
          // NOTE: HRID, Type, Title are handled by XViewerValueColumn values
-         if (!(element instanceof IWorldViewArtifact)) {
+         if (!(element instanceof IATSArtifact)) {
             return "";
          }
          for (IAtsWorldEditorItem item : AtsWorldEditorItems.getItems()) {
