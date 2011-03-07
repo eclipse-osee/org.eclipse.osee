@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.column.CompletedDateColumn;
 import org.eclipse.osee.ats.column.CreatedDateColumn;
 import org.eclipse.osee.ats.column.PriorityColumn;
 import org.eclipse.osee.ats.column.StateColumn;
+import org.eclipse.osee.ats.column.HoursSpentTotalColumn;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -161,7 +162,7 @@ public class SMAUtil {
    public static Double getHoursSpent(Collection<AbstractWorkflowArtifact> artifacts) throws OseeCoreException {
       Double hoursSpent = 0.0;
       for (AbstractWorkflowArtifact sma : artifacts) {
-         hoursSpent += sma.getWorldViewHoursSpentTotal();
+         hoursSpent += HoursSpentTotalColumn.getHoursSpentTotal(sma);
       }
       return hoursSpent;
    }

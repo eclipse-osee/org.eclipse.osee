@@ -24,6 +24,8 @@ import org.eclipse.osee.ats.artifact.note.NoteItem;
 import org.eclipse.osee.ats.column.AssigneeColumn;
 import org.eclipse.osee.ats.column.ChangeTypeColumn;
 import org.eclipse.osee.ats.column.DeadlineColumn;
+import org.eclipse.osee.ats.column.HoursSpentTotalColumn;
+import org.eclipse.osee.ats.column.PercentCompleteTotalColumn;
 import org.eclipse.osee.ats.column.PriorityColumn;
 import org.eclipse.osee.ats.column.TeamColumn;
 import org.eclipse.osee.ats.editor.widget.ReviewInfoXWidget;
@@ -139,8 +141,8 @@ public class SMAPrint extends Action {
                art.getName(),
                art.getStateMgr().getCurrentStateName().replaceAll("(Task|State)", ""),
                AssigneeColumn.getAssigneeStr(art),
-               art.getPercentCompleteSMATotal() + "",
-               art.getHoursSpentSMATotal() + "",
+               PercentCompleteTotalColumn.getPercentCompleteTotal(art) + "",
+               HoursSpentTotalColumn.getHoursSpentTotal(art) + "",
                art.getSoleAttributeValue(AtsAttributeTypes.Resolution, ""),
                art.getHumanReadableId()}));
          }

@@ -16,6 +16,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.column.HoursSpentTotalColumn;
+import org.eclipse.osee.ats.column.PercentCompleteTotalColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -92,8 +94,9 @@ public abstract class XStateAssigneesDam extends XTextDam {
 
    protected void logMetrics(IWorkPage state, User user, Date date) throws OseeCoreException {
       AbstractWorkflowArtifact sma = getArtifact();
-      String hoursSpent = AtsUtil.doubleToI18nString(sma.getHoursSpentSMATotal());
-      XCurrentStateDam.logMetrics(sma, sma.getPercentCompleteSMATotal() + "", hoursSpent, state, user, date);
+      String hoursSpent = AtsUtil.doubleToI18nString(HoursSpentTotalColumn.getHoursSpentTotal(sma));
+      XCurrentStateDam.logMetrics(sma, PercentCompleteTotalColumn.getPercentCompleteTotal(sma) + "", hoursSpent, state,
+         user, date);
    }
 
    public Set<SMAState> getStates() {

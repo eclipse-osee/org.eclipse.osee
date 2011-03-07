@@ -15,6 +15,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.column.PercentCompleteTotalColumn;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
 import org.eclipse.osee.ats.internal.AtsPlugin;
@@ -96,7 +97,7 @@ public class StatePercentCompleteXWidget extends XHyperlinkLabelValueSelection {
             if (!getControl().isDisposed()) {
                setToolTip(sb.toString() + "\n" + TOOLTIP);
             }
-            return String.valueOf(sma.getPercentCompleteSMAStateTotal(page));
+            return String.valueOf(PercentCompleteTotalColumn.getPercentCompleteSMAStateTotal(sma, page));
          } else {
             return String.valueOf(sma.getStateMgr().getPercentComplete(page));
          }

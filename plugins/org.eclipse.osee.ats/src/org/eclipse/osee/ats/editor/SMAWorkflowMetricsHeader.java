@@ -12,6 +12,8 @@ package org.eclipse.osee.ats.editor;
 
 import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.column.HoursSpentTotalColumn;
+import org.eclipse.osee.ats.column.PercentCompleteTotalColumn;
 import org.eclipse.osee.ats.column.RemainingHoursColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -79,13 +81,13 @@ public class SMAWorkflowMetricsHeader extends Composite {
             totalPercentHeader.refresh();
          }
          if (percentLabel != null && !percentLabel.isDisposed()) {
-            percentLabel.setText(String.valueOf(awa.getPercentCompleteSMATotal()));
+            percentLabel.setText(String.valueOf(PercentCompleteTotalColumn.getPercentCompleteTotal(awa)));
          }
          if (estimatedHoursHeader != null) {
             estimatedHoursHeader.refresh();
          }
          if (hoursSpentLabel != null && !hoursSpentLabel.isDisposed()) {
-            hoursSpentLabel.setText(String.valueOf(AtsUtil.doubleToI18nString(awa.getHoursSpentSMATotal())));
+            hoursSpentLabel.setText(String.valueOf(AtsUtil.doubleToI18nString(HoursSpentTotalColumn.getHoursSpentTotal(awa))));
          }
          if (hoursSpentLabel != null && !hoursSpentLabel.isDisposed()) {
             Result result = RemainingHoursColumn.isRemainingHoursValid(awa);

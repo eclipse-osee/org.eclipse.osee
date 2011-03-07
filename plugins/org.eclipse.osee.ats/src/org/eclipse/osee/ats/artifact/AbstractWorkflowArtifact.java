@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.artifact.log.LogItem;
 import org.eclipse.osee.ats.artifact.log.LogType;
 import org.eclipse.osee.ats.artifact.note.ArtifactNote;
 import org.eclipse.osee.ats.artifact.note.AtsNote;
+import org.eclipse.osee.ats.column.PercentCompleteTotalColumn;
 import org.eclipse.osee.ats.column.TargetedVersionColumn;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
@@ -33,7 +34,6 @@ import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.notify.AtsNotification;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.SimpleTeamState;
 import org.eclipse.osee.ats.util.StateManager;
 import org.eclipse.osee.ats.util.TeamState;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
@@ -309,7 +309,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       if (est == 0) {
          return getEstimatedHoursFromArtifact();
       }
-      return est - est * getPercentCompleteSMATotal() / 100.0;
+      return est - est * PercentCompleteTotalColumn.getPercentCompleteTotal(this) / 100.0;
    }
 
    public double getRemainHoursTotal() throws OseeCoreException {
@@ -333,10 +333,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    @SuppressWarnings("unused")
    public double getManHrsPerDayPreference() throws OseeCoreException {
       return AtsUtil.DEFAULT_HOURS_PER_WORK_DAY;
-   }
-
-   public int getWorldViewStatePercentComplete() throws OseeCoreException {
-      return getPercentCompleteSMAStateTotal(getStateMgr().getCurrentState());
    }
 
    /**
@@ -442,63 +438,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    /**
-    * Return hours spent working ONLY the SMA stateName (not children SMAs)
-    */
-   public double getHoursSpentSMAState(IWorkPage state) throws OseeCoreException {
-      return getStateMgr().getHoursSpent(state);
-   }
-
-   /**
-    * Return hours spent working ONLY on tasks related to stateName
-    */
-   public double getHoursSpentSMAStateTasks(IWorkPage state) throws OseeCoreException {
-      if (!(this instanceof AbstractTaskableArtifact)) {
-         return 0;
-      }
-      return ((AbstractTaskableArtifact) this).getHoursSpentFromTasks(state);
-   }
-
-   /**
-    * Return hours spent working ONLY on reviews related to stateName
-    */
-   public double getHoursSpentSMAStateReviews(IWorkPage state) throws OseeCoreException {
-      if (isTeamWorkflow()) {
-         return ReviewManager.getHoursSpent((TeamWorkFlowArtifact) this, state);
-      }
-      return 0;
-   }
-
-   /**
-    * Return hours spent working on all things (including children SMAs) related to stateName
-    */
-   public double getHoursSpentSMAStateTotal(IWorkPage state) throws OseeCoreException {
-      return getHoursSpentSMAState(state) + getHoursSpentSMAStateTasks(state) + getHoursSpentSMAStateReviews(state);
-   }
-
-   @Override
-   public double getWorldViewHoursSpentStateTotal() throws OseeCoreException {
-      return getHoursSpentSMAStateTotal(getStateMgr().getCurrentState());
-   }
-
-   /**
-    * Return hours spent working on all things (including children SMAs) for this SMA
-    */
-   public double getHoursSpentSMATotal() throws OseeCoreException {
-      double hours = 0.0;
-      for (String stateName : getStateMgr().getVisitedStateNames()) {
-         hours += getHoursSpentSMAStateTotal(new SimpleTeamState(stateName, WorkPageType.Working));
-      }
-      return hours;
-   }
-
-   /**
-    * Return Percent Complete working ONLY the SMA stateName (not children SMAs)
-    */
-   public int getPercentCompleteSMAState(IWorkPage state) throws OseeCoreException {
-      return getStateMgr().getPercentComplete(state);
-   }
-
-   /**
     * Return Percent Complete ONLY on tasks related to stateName. Total Percent / # Tasks
     */
    public int getPercentCompleteSMAStateTasks(IWorkPage state) throws OseeCoreException {
@@ -506,183 +445,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
          return 0;
       }
       return ((AbstractTaskableArtifact) this).getPercentCompleteFromTasks(state);
-   }
-
-   /**
-    * Return Percent Complete ONLY on reviews related to stateName. Total Percent / # Reviews
-    */
-   public int getPercentCompleteSMAStateReviews(IWorkPage state) throws OseeCoreException {
-      if (isTeamWorkflow()) {
-         return ReviewManager.getPercentComplete((TeamWorkFlowArtifact) this, state);
-      }
-      return 0;
-   }
-
-   /**
-    * Return Percent Complete on all things (including children SMAs) related to stateName. Total Percent for state,
-    * tasks and reviews / 1 + # Tasks + # Reviews
-    */
-   public int getPercentCompleteSMAStateTotal(IWorkPage state) throws OseeCoreException {
-      return getStateMetricsData(state).getResultingPercent();
-   }
-
-   /**
-    * Return Percent Complete on all things (including children SMAs) for this SMA<br>
-    * <br>
-    * percent = all state's percents / number of states (minus completed/canceled)
-    */
-   public int getPercentCompleteSMATotal() throws OseeCoreException {
-      if (isCompletedOrCancelled()) {
-         return 100;
-      }
-      if (getWorkDefinition().isStateWeightingEnabled()) {
-         // Calculate total percent using configured weighting
-         int percent = 0;
-         for (StateDefinition stateDef : getWorkDefinition().getStates()) {
-            if (!stateDef.isCompletedPage() && !stateDef.isCancelledPage()) {
-               double stateWeightInt = stateDef.getStateWeight();
-               double weight = stateWeightInt / 100;
-               int percentCompleteForState = getPercentCompleteSMAStateTotal(stateDef);
-               percent += weight * percentCompleteForState;
-            }
-         }
-         return percent;
-      } else {
-         int percent = getPercentCompleteSMASinglePercent();
-         if (percent > 0) {
-            return percent;
-         }
-         if (isCompletedOrCancelled()) {
-            return 100;
-         }
-         if (getStateMgr().isAnyStateHavePercentEntered()) {
-            int numStates = 0;
-            for (StateDefinition state : getWorkDefinition().getStates()) {
-               if (!state.isCompletedPage() && !state.isCancelledPage()) {
-                  percent += getPercentCompleteSMAStateTotal(state);
-                  numStates++;
-               }
-            }
-            if (numStates == 0) {
-               return 0;
-            }
-            return percent / numStates;
-         }
-
-      }
-      return 0;
-   }
-
-   /**
-    * Add percent represented by percent attribute, percent for reviews and tasks divided by number of objects.
-    */
-   private int getPercentCompleteSMASinglePercent() throws OseeCoreException {
-      int numObjects = 1;
-      int percent = getSoleAttributeValue(AtsAttributeTypes.PercentComplete, 0);
-      if (this instanceof TeamWorkFlowArtifact) {
-         for (AbstractReviewArtifact revArt : ReviewManager.getReviews((TeamWorkFlowArtifact) this)) {
-            percent += revArt.getPercentCompleteSMATotal();
-            numObjects++;
-         }
-      }
-      if (this instanceof AbstractTaskableArtifact) {
-         for (TaskArtifact taskArt : ((AbstractTaskableArtifact) this).getTaskArtifacts()) {
-            percent += taskArt.getPercentCompleteSMATotal();
-            numObjects++;
-         }
-      }
-      if (percent > 0) {
-         if (numObjects == 0) {
-            return 0;
-         }
-         return percent / numObjects;
-      }
-      return percent;
-   }
-
-   private StateMetricsData getStateMetricsData(IWorkPage teamState) throws OseeCoreException {
-      // Add percent and bump objects 1 for state percent
-      int percent = getPercentCompleteSMAState(teamState);
-      int numObjects = 1; // the state itself is one object
-
-      // Add percent for each task and bump objects for each task
-      if (this instanceof AbstractTaskableArtifact) {
-         Collection<TaskArtifact> tasks = ((AbstractTaskableArtifact) this).getTaskArtifacts(teamState);
-         for (TaskArtifact taskArt : tasks) {
-            percent += taskArt.getPercentCompleteSMATotal();
-         }
-         numObjects += tasks.size();
-      }
-
-      // Add percent for each review and bump objects for each review
-      if (isTeamWorkflow()) {
-         Collection<AbstractReviewArtifact> reviews = ReviewManager.getReviews((TeamWorkFlowArtifact) this, teamState);
-         for (AbstractReviewArtifact reviewArt : reviews) {
-            percent += reviewArt.getPercentCompleteSMATotal();
-         }
-         numObjects += reviews.size();
-      }
-
-      return new StateMetricsData(percent, numObjects);
-   }
-
-   private static class StateMetricsData {
-      public int numObjects = 0;
-      public int percent = 0;
-
-      public StateMetricsData(int percent, int numObjects) {
-         this.numObjects = numObjects;
-         this.percent = percent;
-      }
-
-      public int getResultingPercent() {
-         return percent / numObjects;
-      }
-
-      @Override
-      public String toString() {
-         return "Percent: " + getResultingPercent() + "  NumObjs: " + numObjects + "  Total Percent: " + percent;
-      }
-   }
-
-   @Override
-   public double getWorldViewHoursSpentState() throws OseeCoreException {
-      return getHoursSpentSMAState(getStateMgr().getCurrentState());
-   }
-
-   @Override
-   public double getWorldViewHoursSpentStateReview() throws OseeCoreException {
-      return getHoursSpentSMAStateReviews(getStateMgr().getCurrentState());
-   }
-
-   @Override
-   public double getWorldViewHoursSpentStateTask() throws OseeCoreException {
-      return getHoursSpentSMAStateTasks(getStateMgr().getCurrentState());
-   }
-
-   @Override
-   public double getWorldViewHoursSpentTotal() throws OseeCoreException {
-      return getHoursSpentSMATotal();
-   }
-
-   @Override
-   public int getWorldViewPercentCompleteState() throws OseeCoreException {
-      return getPercentCompleteSMAState(getStateMgr().getCurrentState());
-   }
-
-   @Override
-   public int getWorldViewPercentCompleteStateReview() throws OseeCoreException {
-      return getPercentCompleteSMAStateReviews(getStateMgr().getCurrentState());
-   }
-
-   @Override
-   public int getWorldViewPercentCompleteStateTask() throws OseeCoreException {
-      return getPercentCompleteSMAStateTasks(getStateMgr().getCurrentState());
-   }
-
-   @Override
-   public int getWorldViewPercentCompleteTotal() throws OseeCoreException {
-      return getPercentCompleteSMATotal();
    }
 
    public Set<IRelationTypeSide> getAtsWorldRelations() {

@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.column.EstimatedHoursColumn;
+import org.eclipse.osee.ats.column.PercentCompleteTotalColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.StateManager;
@@ -241,7 +242,7 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IATSStateM
          return 0;
       }
       double est = EstimatedHoursColumn.getEstimatedHours(this);
-      if (getWorldViewStatePercentComplete() == 0) {
+      if (PercentCompleteTotalColumn.getPercentCompleteTotal(this) == 0) {
          return est;
       }
       double percent = getStateMgr().getPercentComplete(TaskStates.InWork);

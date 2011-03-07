@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.world;
 import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.column.ActionableItemsColumn;
@@ -39,6 +38,10 @@ import org.eclipse.osee.ats.column.GoalOrderColumn;
 import org.eclipse.osee.ats.column.GoalOrderVoteColumn;
 import org.eclipse.osee.ats.column.GoalsColumn;
 import org.eclipse.osee.ats.column.GroupsColumn;
+import org.eclipse.osee.ats.column.HoursSpentSMAStateColumn;
+import org.eclipse.osee.ats.column.HoursSpentStateReviewColumn;
+import org.eclipse.osee.ats.column.HoursSpentStateTasksColumn;
+import org.eclipse.osee.ats.column.HoursSpentStateTotalColumn;
 import org.eclipse.osee.ats.column.ImplementorColumn;
 import org.eclipse.osee.ats.column.LastStatusedColumn;
 import org.eclipse.osee.ats.column.LegacyPcrIdColumn;
@@ -59,6 +62,10 @@ import org.eclipse.osee.ats.column.PagesReviewedColumn;
 import org.eclipse.osee.ats.column.ParentHridColumn;
 import org.eclipse.osee.ats.column.ParentIdColumn;
 import org.eclipse.osee.ats.column.ParentStateColumn;
+import org.eclipse.osee.ats.column.PercentCompleteSMAStateColumn;
+import org.eclipse.osee.ats.column.PercentCompleteStateReviewColumn;
+import org.eclipse.osee.ats.column.PercentCompleteStateTasksColumn;
+import org.eclipse.osee.ats.column.PercentCompleteTotalColumn;
 import org.eclipse.osee.ats.column.PercentReworkColumn;
 import org.eclipse.osee.ats.column.PointsColumn;
 import org.eclipse.osee.ats.column.PriorityColumn;
@@ -77,6 +84,7 @@ import org.eclipse.osee.ats.column.StateColumn;
 import org.eclipse.osee.ats.column.TargetedVersionColumn;
 import org.eclipse.osee.ats.column.TeamColumn;
 import org.eclipse.osee.ats.column.TitleColumn;
+import org.eclipse.osee.ats.column.HoursSpentTotalColumn;
 import org.eclipse.osee.ats.column.TypeColumn;
 import org.eclipse.osee.ats.column.UserCommunityColumn;
 import org.eclipse.osee.ats.column.ValidationRequiredColumn;
@@ -93,7 +101,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.GuidCo
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.HridColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastModifiedByColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastModifiedDateColumn;
-import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
@@ -102,51 +109,6 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
 
    public GoalArtifact soleGoalArtifact;
    public static final String COLUMN_NAMESPACE = "ats.column";
-
-   public static final XViewerColumn Percent_Complete_State_Col = new XViewerColumn(
-      COLUMN_NAMESPACE + ".statePercentComplete", "State Percent Complete", 40, SWT.CENTER, false,
-      SortDataType.Percent, false,
-      "Percent Complete for the changes to the current state.\n\nAmount entered from user.");
-   public static final XViewerColumn Percent_Complete_State_Task_Col =
-      new XViewerColumn(
-         COLUMN_NAMESPACE + ".stateTaskPercentComplete",
-         "State Task Percent Complete",
-         40,
-         SWT.CENTER,
-         false,
-         SortDataType.Percent,
-         false,
-         "Percent Complete for the tasks related to the current state.\n\nCalculation: total percent of all tasks related to state / number of tasks related to state");
-   public static final XViewerColumn Percent_Complete_State_Review_Col =
-      new XViewerColumn(
-         COLUMN_NAMESPACE + ".stateReviewPercentComplete",
-         "State Review Percent Complete",
-         40,
-         SWT.CENTER,
-         false,
-         SortDataType.Percent,
-         false,
-         "Percent Complete for the reviews related to the current state.\n\nCalculation: total percent of all reviews related to state / number of reviews related to state");
-   public static final XViewerColumn Percent_Complete_Total_Col = new XViewerColumn(
-      COLUMN_NAMESPACE + ".totalPercentComplete", "Total Percent Complete", 40, SWT.CENTER, false,
-      SortDataType.Percent, false, "Percent Complete for the reviews related to the current state.");
-
-   public static final XViewerColumn Hours_Spent_State_Col = new XViewerColumn(COLUMN_NAMESPACE + ".stateHoursSpent",
-      "State Hours Spent", 40, SWT.CENTER, false, SortDataType.Float, false,
-      "Hours spent in performing the changes to the current state.");
-   public static final XViewerColumn Hours_Spent_State_Task_Col = new XViewerColumn(
-      COLUMN_NAMESPACE + ".stateTaskHoursSpent", "State Task Hours Spent", 40, SWT.CENTER, false, SortDataType.Float,
-      false, "Hours spent in performing the changes for the tasks related to the current state.");
-   public static final XViewerColumn Hours_Spent_State_Review_Col = new XViewerColumn(
-      COLUMN_NAMESPACE + ".stateReviewHoursSpent", "State Review Hours Spent", 40, SWT.CENTER, false,
-      SortDataType.Float, false, "Hours spent in performing the changes for the reveiws related to the current state.");
-   public static final XViewerColumn Hours_Spent_Total_Col = new XViewerColumn(
-      COLUMN_NAMESPACE + ".stateTotalHoursSpent", "State Total Hours Spent", 40, SWT.CENTER, false, SortDataType.Float,
-      false, "Hours spent for all work related to the current state.");
-
-   public static final XViewerColumn Total_Hours_Spent_Col = new XViewerColumn(COLUMN_NAMESPACE + ".totalHoursSpent",
-      "Total Hours Spent", 40, SWT.CENTER, false, SortDataType.Float, false,
-      "Hours spent for all work related to all states.");
 
    public static final XViewerColumn[] WorldViewColumns = new XViewerColumn[] {
       TypeColumn.getInstance(),
@@ -183,15 +145,15 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       EstimatedHoursColumn.getInstance(),
       WeeklyBenefitHrsColumn.getInstance(),
       RemainingHoursColumn.getInstance(),
-      Percent_Complete_State_Col,
-      Percent_Complete_State_Task_Col,
-      Percent_Complete_State_Review_Col,
-      Percent_Complete_Total_Col,
-      Hours_Spent_State_Col,
-      Hours_Spent_State_Task_Col,
-      Hours_Spent_State_Review_Col,
-      Hours_Spent_Total_Col,
-      Total_Hours_Spent_Col,
+      PercentCompleteSMAStateColumn.getInstance(),
+      PercentCompleteStateTasksColumn.getInstance(),
+      PercentCompleteStateReviewColumn.getInstance(),
+      PercentCompleteTotalColumn.getInstance(),
+      HoursSpentSMAStateColumn.getInstance(),
+      HoursSpentStateTasksColumn.getInstance(),
+      HoursSpentStateReviewColumn.getInstance(),
+      HoursSpentStateTotalColumn.getInstance(),
+      HoursSpentTotalColumn.getInstance(),
       OriginatorColumn.getInstance(),
       OperationalImpactColumn.getInstance(),
       OperationalImpactDesciptionColumn.getInstance(),

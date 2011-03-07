@@ -10,29 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world;
 
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-
 public interface IWorldViewArtifact {
-
-   /**
-    * @return estimated hours from workflow attribute, tasks and reviews
-    */
-   double getWorldViewHoursSpentState() throws OseeCoreException;
-
-   double getWorldViewHoursSpentStateReview() throws OseeCoreException;
-
-   double getWorldViewHoursSpentStateTask() throws OseeCoreException;
-
-   double getWorldViewHoursSpentStateTotal() throws OseeCoreException;
-
-   double getWorldViewHoursSpentTotal() throws OseeCoreException;
-
-   int getWorldViewPercentCompleteState() throws OseeCoreException;
-
-   int getWorldViewPercentCompleteStateReview() throws OseeCoreException;
-
-   int getWorldViewPercentCompleteStateTask() throws OseeCoreException;
-
-   int getWorldViewPercentCompleteTotal() throws OseeCoreException;
-
+   // Artifact is displayable in WorldXViewer
 }

@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.column.PercentCompleteTotalColumn;
 import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
@@ -210,20 +211,6 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
    }
 
    /**
-    * Return Hours Spent for Tasks of "Related to State" stateName
-    * 
-    * @param relatedToState state name of parent workflow's state
-    * @return Returns the Hours Spent
-    */
-   public double getHoursSpentFromTasks(IWorkPage relatedToState) throws OseeCoreException {
-      double spent = 0;
-      for (TaskArtifact taskArt : getTaskArtifacts(relatedToState)) {
-         spent += taskArt.getHoursSpentSMATotal();
-      }
-      return spent;
-   }
-
-   /**
     * Return Total Percent Complete / # Tasks for "Related to State" stateName
     * 
     * @param relatedToState state name of parent workflow's state
@@ -233,7 +220,7 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
       int spent = 0;
       Collection<TaskArtifact> taskArts = getTaskArtifacts(relatedToState);
       for (TaskArtifact taskArt : taskArts) {
-         spent += taskArt.getPercentCompleteSMATotal();
+         spent += PercentCompleteTotalColumn.getPercentCompleteTotal(taskArt);
       }
       if (spent == 0) {
          return 0;

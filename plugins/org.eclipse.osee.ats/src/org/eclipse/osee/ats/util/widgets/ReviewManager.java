@@ -24,6 +24,8 @@ import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.artifact.DecisionReviewState;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.column.HoursSpentTotalColumn;
+import org.eclipse.osee.ats.column.PercentCompleteTotalColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
@@ -250,7 +252,7 @@ public class ReviewManager {
    public static double getHoursSpent(TeamWorkFlowArtifact teamArt, IWorkPage relatedToState) throws OseeCoreException {
       double spent = 0;
       for (AbstractReviewArtifact reviewArt : getReviews(teamArt, relatedToState)) {
-         spent += reviewArt.getHoursSpentSMATotal();
+         spent += HoursSpentTotalColumn.getHoursSpentTotal(reviewArt);
       }
       return spent;
    }
@@ -264,7 +266,7 @@ public class ReviewManager {
       int spent = 0;
       Collection<AbstractReviewArtifact> reviewArts = getReviews(teamArt, relatedToState);
       for (AbstractReviewArtifact reviewArt : reviewArts) {
-         spent += reviewArt.getPercentCompleteSMATotal();
+         spent += PercentCompleteTotalColumn.getPercentCompleteTotal(reviewArt);
       }
       if (spent == 0) {
          return 0;

@@ -14,6 +14,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
+import org.eclipse.osee.ats.column.HoursSpentTotalColumn;
+import org.eclipse.osee.ats.column.PercentCompleteTotalColumn;
 import org.eclipse.osee.ats.internal.workflow.SMAState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.junit.Assert;
@@ -37,10 +39,10 @@ public class SMATestUtil {
                sma.getStateMgr().getCurrentStateName() + ";;;",
                sma.getSoleAttributeValue(AtsAttributeTypes.CurrentState));
          }
-         Assert.assertEquals("Percent wrong for " + sma.getHumanReadableId(), sma.getWorldViewPercentCompleteTotal(),
-            totalPercent);
-         Assert.assertEquals("Hours Spent wrong for " + sma.getHumanReadableId(), sma.getWorldViewHoursSpentTotal(),
-            hoursSpent, 0.0);
+         Assert.assertEquals("Percent wrong for " + sma.getHumanReadableId(),
+            PercentCompleteTotalColumn.getPercentCompleteTotal(sma), totalPercent);
+         Assert.assertEquals("Hours Spent wrong for " + sma.getHumanReadableId(),
+            HoursSpentTotalColumn.getHoursSpentTotal(sma), hoursSpent, 0.0);
 
          for (String stateValue : sma.getAttributesToStringList(AtsAttributeTypes.State)) {
             SMAState smaState = new SMAState();

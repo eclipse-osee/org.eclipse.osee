@@ -18,13 +18,16 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
 import org.eclipse.osee.ats.column.AssigneeColumn;
 import org.eclipse.osee.ats.column.EstimatedHoursColumn;
+import org.eclipse.osee.ats.column.HoursSpentTotalColumn;
 import org.eclipse.osee.ats.column.NotesColumn;
+import org.eclipse.osee.ats.column.PercentCompleteTotalColumn;
 import org.eclipse.osee.ats.column.RelatedToStateColumn;
 import org.eclipse.osee.ats.column.RemainingHoursColumn;
 import org.eclipse.osee.ats.column.ResolutionColumn;
 import org.eclipse.osee.ats.column.StateColumn;
 import org.eclipse.osee.ats.column.TitleColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.AtsWorldEditorItems;
 import org.eclipse.osee.ats.world.IAtsWorldEditorItem;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
@@ -37,10 +40,12 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewer
  */
 public class TaskXViewerFactory extends SkynetXViewerFactory {
 
-   public static final List<XViewerColumn> TaskViewerVisibleColumns = Arrays.asList(TitleColumn.getInstance(),
-      StateColumn.getInstance(), AssigneeColumn.getInstance(), WorldXViewerFactory.Percent_Complete_Total_Col,
-      WorldXViewerFactory.Total_Hours_Spent_Col, ResolutionColumn.getInstance(), EstimatedHoursColumn.getInstance(),
-      RemainingHoursColumn.getInstance(), RelatedToStateColumn.getInstance(), NotesColumn.getInstance());
+   @SuppressWarnings("unchecked")
+   public static final List<? extends XViewerAtsColumn> TaskViewerVisibleColumns = Arrays.asList(
+      TitleColumn.getInstance(), StateColumn.getInstance(), AssigneeColumn.getInstance(),
+      PercentCompleteTotalColumn.getInstance(), HoursSpentTotalColumn.getInstance(), ResolutionColumn.getInstance(),
+      EstimatedHoursColumn.getInstance(), RemainingHoursColumn.getInstance(), RelatedToStateColumn.getInstance(),
+      NotesColumn.getInstance());
    public static Integer[] widths = new Integer[] {450, 60, 150, 40, 40, 100, 50, 50, 50, 80, 80};
 
    public TaskXViewerFactory() {

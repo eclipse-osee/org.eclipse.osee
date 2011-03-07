@@ -15,6 +15,8 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.column.HoursSpentStateTasksColumn;
+import org.eclipse.osee.ats.column.HoursSpentStateTotalColumn;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
 import org.eclipse.osee.ats.internal.AtsPlugin;
@@ -84,7 +86,7 @@ public class StateHoursSpentXWidget extends XHyperlinkLabelValueSelection {
          boolean breakoutNeeded = false;
          if (sma instanceof AbstractTaskableArtifact && ((AbstractTaskableArtifact) sma).hasTaskArtifacts()) {
             sb.append(String.format("\n        Task  Hours: %5.2f",
-               ((AbstractTaskableArtifact) sma).getHoursSpentFromTasks(page)));
+               HoursSpentStateTasksColumn.getHoursSpentFromStateTasks(sma, page)));
             breakoutNeeded = true;
          }
          if (sma.isTeamWorkflow() && ReviewManager.hasReviews((TeamWorkFlowArtifact) sma)) {
@@ -94,7 +96,7 @@ public class StateHoursSpentXWidget extends XHyperlinkLabelValueSelection {
          }
          if (breakoutNeeded) {
             setToolTip(sb.toString());
-            return String.format("%5.2f", sma.getHoursSpentSMAStateTotal(page));
+            return String.format("%5.2f", HoursSpentStateTotalColumn.getHoursSpentStateTotal(sma, page));
          } else {
             return String.format("%5.2f", sma.getStateMgr().getHoursSpent(page));
          }

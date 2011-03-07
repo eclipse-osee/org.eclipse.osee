@@ -23,13 +23,16 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.actions.EditAssigneeAction;
 import org.eclipse.osee.ats.actions.EditStatusAction;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
+import org.eclipse.osee.ats.column.HoursSpentSMAStateColumn;
+import org.eclipse.osee.ats.column.HoursSpentStateTotalColumn;
+import org.eclipse.osee.ats.column.PercentCompleteSMAStateColumn;
+import org.eclipse.osee.ats.column.PercentCompleteTotalColumn;
 import org.eclipse.osee.ats.column.ResolutionColumn;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.world.AtsWorldEditorItems;
 import org.eclipse.osee.ats.world.IAtsWorldEditorItem;
 import org.eclipse.osee.ats.world.WorldXViewer;
-import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -183,9 +186,9 @@ public class TaskXViewer extends WorldXViewer {
          TaskArtifact taskArt = (TaskArtifact) treeItem.getData();
          boolean modified = false;
 
-         if (isUsingTaskResolutionOptions() && (xCol.equals(WorldXViewerFactory.Hours_Spent_State_Col) || xCol.equals(WorldXViewerFactory.Hours_Spent_Total_Col) || xCol.equals(WorldXViewerFactory.Percent_Complete_State_Col) || xCol.equals(WorldXViewerFactory.Percent_Complete_Total_Col))) {
+         if (isUsingTaskResolutionOptions() && (xCol.equals(HoursSpentSMAStateColumn.getInstance()) || xCol.equals(HoursSpentStateTotalColumn.getInstance()) || xCol.equals(PercentCompleteSMAStateColumn.getInstance()) || xCol.equals(PercentCompleteTotalColumn.getInstance()))) {
             modified = ResolutionColumn.promptChangeResolutionOfTasks(this, getSelectedTaskArtifacts(), false);
-         } else if (xCol.equals(WorldXViewerFactory.Hours_Spent_State_Col) || xCol.equals(WorldXViewerFactory.Hours_Spent_Total_Col) || xCol.equals(WorldXViewerFactory.Percent_Complete_State_Col) || xCol.equals(WorldXViewerFactory.Percent_Complete_Total_Col)) {
+         } else if (xCol.equals(HoursSpentSMAStateColumn.getInstance()) || xCol.equals(HoursSpentStateTotalColumn.getInstance()) || xCol.equals(PercentCompleteSMAStateColumn.getInstance()) || xCol.equals(PercentCompleteTotalColumn.getInstance())) {
             modified = SMAPromptChangeStatus.promptChangeStatus(Arrays.asList(taskArt), false);
          } else {
             modified = super.handleAltLeftClick(treeColumn, treeItem);

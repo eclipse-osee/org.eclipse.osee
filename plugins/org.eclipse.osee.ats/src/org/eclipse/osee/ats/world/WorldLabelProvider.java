@@ -17,7 +17,6 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
@@ -75,34 +74,6 @@ public class WorldLabelProvider extends XViewerLabelProvider {
          if (!(element instanceof IWorldViewArtifact)) {
             return "";
          }
-         IWorldViewArtifact wva = (IWorldViewArtifact) element;
-         if (xCol.equals(WorldXViewerFactory.Percent_Complete_State_Col)) {
-            return String.valueOf(wva.getWorldViewPercentCompleteState());
-         }
-         if (xCol.equals(WorldXViewerFactory.Percent_Complete_State_Task_Col)) {
-            return String.valueOf(wva.getWorldViewPercentCompleteStateTask());
-         }
-         if (xCol.equals(WorldXViewerFactory.Percent_Complete_State_Review_Col)) {
-            return String.valueOf(wva.getWorldViewPercentCompleteStateReview());
-         }
-         if (xCol.equals(WorldXViewerFactory.Percent_Complete_Total_Col)) {
-            return String.valueOf(wva.getWorldViewPercentCompleteTotal());
-         }
-         if (xCol.equals(WorldXViewerFactory.Hours_Spent_State_Col)) {
-            return AtsUtil.doubleToI18nString(wva.getWorldViewHoursSpentState());
-         }
-         if (xCol.equals(WorldXViewerFactory.Hours_Spent_State_Task_Col)) {
-            return AtsUtil.doubleToI18nString(wva.getWorldViewHoursSpentStateTask());
-         }
-         if (xCol.equals(WorldXViewerFactory.Hours_Spent_State_Review_Col)) {
-            return AtsUtil.doubleToI18nString(wva.getWorldViewHoursSpentStateReview());
-         }
-         if (xCol.equals(WorldXViewerFactory.Hours_Spent_Total_Col)) {
-            return AtsUtil.doubleToI18nString(wva.getWorldViewHoursSpentStateTotal());
-         }
-         if (xCol.equals(WorldXViewerFactory.Total_Hours_Spent_Col)) {
-            return AtsUtil.doubleToI18nString(wva.getWorldViewHoursSpentTotal());
-         }
          for (IAtsWorldEditorItem item : AtsWorldEditorItems.getItems()) {
             if (item.isXColumnProvider(xCol)) {
                String text = item.getColumnText(element, xCol, columnIndex);
@@ -111,7 +82,6 @@ public class WorldLabelProvider extends XViewerLabelProvider {
                }
             }
          }
-
          return "Unhandled Column";
       } catch (Exception ex) {
          return XViewerCells.getCellExceptionString(ex);

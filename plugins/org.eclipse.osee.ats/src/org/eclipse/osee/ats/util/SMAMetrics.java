@@ -25,6 +25,8 @@ import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.column.EstimatedHoursColumn;
+import org.eclipse.osee.ats.column.HoursSpentTotalColumn;
+import org.eclipse.osee.ats.column.PercentCompleteTotalColumn;
 import org.eclipse.osee.ats.column.RemainingHoursColumn;
 import org.eclipse.osee.ats.column.WorkDaysNeededColumn;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -116,9 +118,9 @@ public class SMAMetrics {
       for (AbstractWorkflowArtifact team : smas) {
          hrsRemainFromEstimates += RemainingHoursColumn.getRemainingHours(team);
          estHours += EstimatedHoursColumn.getEstimatedHours(team);
-         hrsSpent += team.getWorldViewHoursSpentTotal();
+         hrsSpent += HoursSpentTotalColumn.getHoursSpentTotal(team);
          manDaysNeeded += WorkDaysNeededColumn.getWorldViewManDaysNeeded(team);
-         cummulativeWorkflowPercentComplete += team.getWorldViewPercentCompleteTotal();
+         cummulativeWorkflowPercentComplete += PercentCompleteTotalColumn.getPercentCompleteTotal(team);
       }
       if (hrsRemainFromEstimates != 0) {
          manDaysNeeded = hrsRemainFromEstimates / manHoursPerDay;
