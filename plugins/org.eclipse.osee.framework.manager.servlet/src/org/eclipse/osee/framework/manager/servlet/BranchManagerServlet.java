@@ -14,7 +14,6 @@ package org.eclipse.osee.framework.manager.servlet;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.logging.Level;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.branch.management.IOseeBranchService;
@@ -22,6 +21,7 @@ import org.eclipse.osee.framework.core.enums.Function;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.LogProgressMonitor;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.operation.WriterOperationLogger;
 import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.core.server.SecureOseeHttpServlet;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
@@ -53,7 +53,7 @@ public class BranchManagerServlet extends SecureOseeHttpServlet {
    }
 
    @Override
-   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
       try {
          String rawFunction = req.getParameter("function");
          Function function = Function.fromString(rawFunction);
@@ -69,7 +69,9 @@ public class BranchManagerServlet extends SecureOseeHttpServlet {
                op = new ChangeReportFunction(req, resp, branchService, translationService);
                break;
             case PURGE_BRANCH:
-               op = new PurgeBranchFunction(req, resp, branchService, translationService);
+               op =
+                  new PurgeBranchFunction(req, resp, branchService, translationService, new WriterOperationLogger(
+                     resp.getWriter()));
                break;
             case UPDATE_BRANCH_TYPE:
                op = new ChangeBranchTypeFunction(req, resp, branchService, translationService);

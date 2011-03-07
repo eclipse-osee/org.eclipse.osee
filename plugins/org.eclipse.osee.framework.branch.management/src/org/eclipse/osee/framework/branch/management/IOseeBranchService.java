@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.core.message.ChangeReportRequest;
 import org.eclipse.osee.framework.core.message.ChangeReportResponse;
 import org.eclipse.osee.framework.core.message.PurgeBranchRequest;
 import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.OperationLogger;
 
 /**
  * @author Jeff C. Phillips
@@ -35,7 +36,7 @@ public interface IOseeBranchService {
 
    IOperation createBranch(IProgressMonitor monitor, BranchCreationRequest request, BranchCreationResponse response) throws OseeCoreException;
 
-   IOperation purge(IProgressMonitor monitor, PurgeBranchRequest request) throws OseeCoreException;
+   IOperation purge(IProgressMonitor monitor, PurgeBranchRequest request, OperationLogger logger) throws OseeCoreException;
 
    IOperation updateBranchType(IProgressMonitor monitor, ChangeBranchTypeRequest request) throws OseeCoreException;
 

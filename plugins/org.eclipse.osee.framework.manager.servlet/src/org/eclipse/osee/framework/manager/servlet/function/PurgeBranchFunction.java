@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.message.PurgeBranchRequest;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.core.translation.IDataTranslationService;
 import org.eclipse.osee.framework.manager.servlet.internal.Activator;
 
@@ -31,8 +32,8 @@ public class PurgeBranchFunction extends AbstractOperation {
    private final IOseeBranchService branchService;
    private final IDataTranslationService translationService;
 
-   public PurgeBranchFunction(HttpServletRequest req, HttpServletResponse resp, IOseeBranchService branchService, IDataTranslationService translationService) {
-      super("Purge Branch", Activator.PLUGIN_ID);
+   public PurgeBranchFunction(HttpServletRequest req, HttpServletResponse resp, IOseeBranchService branchService, IDataTranslationService translationService, OperationLogger logger) {
+      super("Purge Branch", Activator.PLUGIN_ID, logger);
       this.req = req;
       this.resp = resp;
       this.branchService = branchService;
@@ -44,7 +45,7 @@ public class PurgeBranchFunction extends AbstractOperation {
       PurgeBranchRequest request =
          translationService.convert(req.getInputStream(), CoreTranslatorId.PURGE_BRANCH_REQUEST);
 
-      IOperation subOp = branchService.purge(monitor, request);
+      IOperation subOp = branchService.purge(monitor, request, getLogger());
       doSubWork(subOp, monitor, 0.90);
 
       resp.setStatus(HttpServletResponse.SC_ACCEPTED);

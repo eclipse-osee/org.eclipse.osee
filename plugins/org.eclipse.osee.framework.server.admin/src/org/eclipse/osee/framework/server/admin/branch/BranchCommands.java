@@ -12,7 +12,9 @@ package org.eclipse.osee.framework.server.admin.branch;
 
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.branch.management.purge.PurgeDeletedBranches;
+import org.eclipse.osee.framework.core.operation.CommandInterpreterLogger;
 import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.server.admin.internal.Activator;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
@@ -119,8 +121,9 @@ public class BranchCommands {
    }
 
    public Job purgeDeletedBranches(CommandInterpreter ci) {
+      OperationLogger logger = new CommandInterpreterLogger(ci);
       IOperation operation =
-         new PurgeDeletedBranches(Activator.getOseeCachingService(), Activator.getOseeDatabaseService());
+         new PurgeDeletedBranches(logger, Activator.getOseeCachingService(), Activator.getOseeDatabaseService());
       return Operations.executeAsJob(operation, false);
    }
 }

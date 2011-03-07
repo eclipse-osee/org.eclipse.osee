@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
+import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.AbstractDbTxOperation;
@@ -56,9 +57,9 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
    private final IOseeCachingService cachingService;
    private final IOseeDatabaseService databaseService;
 
-   public PurgeBranchOperation(Branch branch, IOseeCachingService cachingService, IOseeDatabaseService databaseService) {
+   public PurgeBranchOperation(OperationLogger logger, Branch branch, IOseeCachingService cachingService, IOseeDatabaseService databaseService) {
       super(databaseService, String.format("Purge Branch: [(%s)-%s]", branch.getId(), branch.getShortName()),
-         Activator.PLUGIN_ID);
+         Activator.PLUGIN_ID, logger);
       this.branch = branch;
       this.sourceTableName = branch.getArchiveState().isArchived() ? "osee_txs_archived" : "osee_txs";
       this.cachingService = cachingService;
@@ -71,7 +72,8 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
       this.monitor = monitor;
 
       if (!branch.getAllChildBranches(false).isEmpty()) {
-         throw new OseeArgumentException("Unable to purge a branch containing children: branchId[%s]", branch.getId());
+         throw new OseeArgumentException("Unable to purge a branch containing children: branchGuid[%s] branchType[%s]",
+            branch.getGuid(), branch.getBranchType());
       }
 
       monitor.worked(calculateWork(0.05));

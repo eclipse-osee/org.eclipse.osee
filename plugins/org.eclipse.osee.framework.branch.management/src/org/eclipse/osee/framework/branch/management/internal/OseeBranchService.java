@@ -45,6 +45,7 @@ import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.services.IOseeCachingServiceProvider;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
@@ -144,29 +145,29 @@ public class OseeBranchService implements IOseeBranchService {
    }
 
    @Override
-   public IOperation purge(IProgressMonitor monitor, PurgeBranchRequest request) throws OseeCoreException {
+   public IOperation purge(IProgressMonitor monitor, PurgeBranchRequest request, OperationLogger logger) throws OseeCoreException {
       BranchCache branchCache = cachingService.getOseeCachingService().getBranchCache();
-      return new PurgeBranchOperation(branchCache.getById(request.getBranchId()),
+      return new PurgeBranchOperation(logger, branchCache.getById(request.getBranchId()),
          cachingService.getOseeCachingService(), oseeDatabaseProvider.getOseeDatabaseService());
    }
 
    @Override
-   public IOperation updateBranchArchiveState(IProgressMonitor monitor, ChangeBranchArchiveStateRequest request) throws OseeCoreException {
+   public IOperation updateBranchArchiveState(IProgressMonitor monitor, ChangeBranchArchiveStateRequest request) {
       return createBranchChangeOp(monitor, "Branch Archive State Change", request.getBranchId(), null, null,
          request.getState());
    }
 
    @Override
-   public IOperation updateBranchState(IProgressMonitor monitor, ChangeBranchStateRequest request) throws OseeCoreException {
+   public IOperation updateBranchState(IProgressMonitor monitor, ChangeBranchStateRequest request) {
       return createBranchChangeOp(monitor, "Branch State Change", request.getBranchId(), request.getState(), null, null);
    }
 
    @Override
-   public IOperation updateBranchType(IProgressMonitor monitor, ChangeBranchTypeRequest request) throws OseeCoreException {
+   public IOperation updateBranchType(IProgressMonitor monitor, ChangeBranchTypeRequest request) {
       return createBranchChangeOp(monitor, "Branch Type Change", request.getBranchId(), null, request.getType(), null);
    }
 
-   private IOperation createBranchChangeOp(IProgressMonitor monitor, String opName, final int branchId, final BranchState branchState, final BranchType branchType, final BranchArchivedState archivedState) throws OseeCoreException {
+   private IOperation createBranchChangeOp(IProgressMonitor monitor, String opName, final int branchId, final BranchState branchState, final BranchType branchType, final BranchArchivedState archivedState) {
       IOperation operation = new AbstractOperation(opName, Activator.PLUGIN_ID) {
 
          @Override
