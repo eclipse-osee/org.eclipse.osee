@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.StateListDialog;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
@@ -29,6 +30,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -121,7 +123,7 @@ public class RelatedToStateColumn extends XViewerAtsAttributeValueColumn {
    @Override
    public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
       try {
-         if (treeItem.getData() instanceof TaskArtifact) {
+         if (Artifacts.isOfType(treeItem, AtsArtifactTypes.Task)) {
             TaskArtifact taskArt = (TaskArtifact) treeItem.getData();
             boolean modified = promptChangeRelatedToState(taskArt, isPersistViewer());
             XViewer xViewer = ((XViewerColumn) treeColumn.getData()).getTreeViewer();
@@ -144,7 +146,7 @@ public class RelatedToStateColumn extends XViewerAtsAttributeValueColumn {
       Set<TaskArtifact> tasks = new HashSet<TaskArtifact>();
       for (TreeItem item : treeItems) {
          Artifact art = (Artifact) item.getData();
-         if (art instanceof TaskArtifact) {
+         if (art.isOfType(AtsArtifactTypes.Task)) {
             tasks.add((TaskArtifact) art);
          }
       }

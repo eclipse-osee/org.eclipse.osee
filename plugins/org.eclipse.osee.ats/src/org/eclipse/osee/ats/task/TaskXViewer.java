@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.column.PercentCompleteTotalColumn;
 import org.eclipse.osee.ats.column.ResolutionColumn;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.world.AtsWorldEditorItems;
 import org.eclipse.osee.ats.world.IAtsWorldEditorItem;
 import org.eclipse.osee.ats.world.WorldXViewer;
@@ -37,6 +38,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -104,7 +106,7 @@ public class TaskXViewer extends WorldXViewer {
       Iterator<?> i = ((IStructuredSelection) getSelection()).iterator();
       while (i.hasNext()) {
          Object obj = i.next();
-         if (obj instanceof TaskArtifact && !((TaskArtifact) obj).isInWork()) {
+         if (Artifacts.isOfType(obj, AtsArtifactTypes.Task) && !((TaskArtifact) obj).isInWork()) {
             return false;
          }
       }

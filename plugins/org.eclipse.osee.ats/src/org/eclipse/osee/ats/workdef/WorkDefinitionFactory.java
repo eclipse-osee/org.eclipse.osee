@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowProviders;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.DecisionOption;
 import org.eclipse.osee.ats.util.widgets.XDecisionOptions;
@@ -488,7 +489,7 @@ public class WorkDefinitionFactory {
 
    private static WorkDefinitionMatch getWorkDefinitionNew(Artifact artifact) throws OseeCoreException {
       WorkDefinitionMatch match = new WorkDefinitionMatch();
-      if (artifact instanceof TaskArtifact) {
+      if (artifact.isOfType(AtsArtifactTypes.Task)) {
          match = getWorkDefinitionForTask((TaskArtifact) artifact);
       }
       if (!match.isMatched() && artifact instanceof AbstractWorkflowArtifact) {
@@ -507,13 +508,13 @@ public class WorkDefinitionFactory {
             if (!match.isMatched()) {
                // Otherwise, use workflow defined by attribute of WorkflowDefinition
                // Note: This is new.  Old TeamDefs got workflow off relation
-               if (artifact instanceof TeamWorkFlowArtifact) {
+               if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                   TeamDefinitionArtifact teamDef = ((TeamWorkFlowArtifact) artifact).getTeamDefinition();
                   match = getWorkDefinitionFromTeamDefinitionAttributeInherited(teamDef);
                   if (!match.isMatched()) {
                      match = ((TeamWorkFlowArtifact) artifact).getTeamDefinition().getWorkDefinition();
                   }
-               } else if (artifact instanceof GoalArtifact) {
+               } else if (artifact.isOfType(AtsArtifactTypes.Goal)) {
                   match = getWorkDefinition(getOverrideWorkDefId(GoalWorkflowDefinition.ID));
                   match.getTrace().add(String.format("Override translated from id [%s]", GoalWorkflowDefinition.ID));
                } else if (artifact instanceof PeerToPeerReviewArtifact) {

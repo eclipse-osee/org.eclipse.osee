@@ -15,8 +15,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XFloat;
@@ -65,7 +65,7 @@ public class SMAStatusDialog extends MessageDialog {
 
       boolean hasTask = false;
       for (AbstractWorkflowArtifact awa : awas) {
-         if (awa instanceof TaskArtifact) {
+         if (awa.isOfType(AtsArtifactTypes.Task)) {
             hasTask = true;
          }
       }

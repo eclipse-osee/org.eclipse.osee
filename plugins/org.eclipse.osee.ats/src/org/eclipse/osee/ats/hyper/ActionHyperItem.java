@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.column.AssigneeColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -65,7 +66,7 @@ public class ActionHyperItem extends HyperViewItem {
          return "Deleted";
       }
       try {
-         if (artifact instanceof TeamWorkFlowArtifact) {
+         if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
             return ((TeamWorkFlowArtifact) artifact).getEditorTitle();
          }
       } catch (OseeCoreException ex) {
@@ -104,7 +105,7 @@ public class ActionHyperItem extends HyperViewItem {
 
    private String getTargetedVersion() {
       try {
-         if (artifact instanceof TeamWorkFlowArtifact) {
+         if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
             String str = ((TeamWorkFlowArtifact) artifact).getTargetedVersionStr();
             return str.isEmpty() ? "" : str;
          }

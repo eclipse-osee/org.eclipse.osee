@@ -213,7 +213,7 @@ public class AtsCacheManager implements IArtifactEventListener {
                // Only process if in cache
                Artifact artifact = ArtifactCache.getActive(guidArt);
                if (artifact != null && guidArt.is(EventModType.Added)) {
-                  if (artifact instanceof TaskArtifact) {
+                  if (artifact.isOfType(AtsArtifactTypes.Task)) {
                      teamTasksCache.remove(artifact.getParent());
                   }
                   if (artifact instanceof AbstractTaskableArtifact) {

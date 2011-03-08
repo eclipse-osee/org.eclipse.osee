@@ -815,11 +815,11 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    public boolean isTeamWorkflow() {
-      return this instanceof TeamWorkFlowArtifact;
+      return this.isOfType(AtsArtifactTypes.TeamWorkflow);
    }
 
    public boolean isTask() {
-      return this instanceof TaskArtifact;
+      return this.isOfType(AtsArtifactTypes.Task);
    }
 
    public boolean isReview() {

@@ -18,7 +18,6 @@ import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.artifact.AbstractAtsArtifact;
 import org.eclipse.osee.ats.artifact.AbstractReviewArtifact;
 import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
-import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.config.AtsBulkLoad;
@@ -166,10 +165,10 @@ public class ActionHyperView extends HyperView implements IActionable, IArtifact
                addTasksAHIs(teamAHI, team);
             }
          }
-         if (topArt instanceof GoalArtifact) {
+         if (topArt.isOfType(AtsArtifactTypes.Goal)) {
             List<TaskArtifact> taskArts = new ArrayList<TaskArtifact>();
             for (Artifact member : topArt.getRelatedArtifacts(AtsRelationTypes.Goal_Member)) {
-               if (member instanceof TaskArtifact) {
+               if (member.isOfType(AtsArtifactTypes.Task)) {
                   taskArts.add((TaskArtifact) member);
                } else if (AtsUtil.isAtsArtifact(member)) {
                   ActionHyperItem teamAHI = new ActionHyperItem(member);
@@ -212,10 +211,10 @@ public class ActionHyperView extends HyperView implements IActionable, IArtifact
 
    public Artifact getTopArtifact(AbstractAtsArtifact art) throws OseeCoreException {
       Artifact artifact = art;
-      if (artifact instanceof TaskArtifact) {
+      if (artifact.isOfType(AtsArtifactTypes.Task)) {
          artifact = ((TaskArtifact) artifact).getParentAWA();
       }
-      if (artifact instanceof TeamWorkFlowArtifact) {
+      if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
          artifact = ((TeamWorkFlowArtifact) artifact).getParentActionArtifact();
       }
       if (artifact instanceof AbstractReviewArtifact && ((AbstractReviewArtifact) artifact).getParentActionArtifact() != null) {

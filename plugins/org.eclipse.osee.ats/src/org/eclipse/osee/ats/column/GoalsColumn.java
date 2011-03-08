@@ -74,7 +74,7 @@ public class GoalsColumn extends XViewerAtsColumn implements IXViewerValueColumn
                   return false;
                }
             }
-            if (!(useArt instanceof TeamWorkFlowArtifact)) {
+            if (!(useArt.isOfType(AtsArtifactTypes.TeamWorkflow))) {
                return false;
             }
             boolean modified = promptChangeGoals(Arrays.asList((TeamWorkFlowArtifact) useArt), isPersistViewer());

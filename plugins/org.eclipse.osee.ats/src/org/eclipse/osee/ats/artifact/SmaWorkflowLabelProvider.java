@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.artifact;
 
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
+
 /**
  * @author Donald G. Dunne
  */
@@ -17,7 +20,7 @@ public class SmaWorkflowLabelProvider extends TeamWorkflowLabelProvider {
 
    @Override
    public String getText(Object element) {
-      if (element instanceof TeamWorkFlowArtifact) {
+      if (Artifacts.isOfType(element, AtsArtifactTypes.TeamWorkflow)) {
          return super.getText(element);
       }
       return element.toString();

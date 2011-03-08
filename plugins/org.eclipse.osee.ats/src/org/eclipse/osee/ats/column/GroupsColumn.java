@@ -72,7 +72,7 @@ public class GroupsColumn extends XViewerAtsColumn implements IXViewerValueColum
                   return false;
                }
             }
-            if (!(useArt instanceof TeamWorkFlowArtifact)) {
+            if (!(useArt.isOfType(AtsArtifactTypes.TeamWorkflow))) {
                return false;
             }
             boolean modified = promptChangeGroups(Arrays.asList((TeamWorkFlowArtifact) useArt), isPersistViewer());
@@ -146,7 +146,7 @@ public class GroupsColumn extends XViewerAtsColumn implements IXViewerValueColum
          Set<AbstractWorkflowArtifact> awas = new HashSet<AbstractWorkflowArtifact>();
          for (TreeItem item : treeItems) {
             Artifact art = (Artifact) item.getData();
-            if (art instanceof TeamWorkFlowArtifact) {
+            if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                awas.add((AbstractWorkflowArtifact) art);
             }
          }

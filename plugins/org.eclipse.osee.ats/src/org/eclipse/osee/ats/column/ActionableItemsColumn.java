@@ -71,7 +71,7 @@ public class ActionableItemsColumn extends XViewerAtsAttributeValueColumn {
             aias.addAll(team.getActionableItemsDam().getActionableItems());
          }
          return aias;
-      } else if (element instanceof TeamWorkFlowArtifact) {
+      } else if (Artifacts.isOfType(element, AtsArtifactTypes.TeamWorkflow)) {
          return ((TeamWorkFlowArtifact) element).getActionableItemsDam().getActionableItems();
       } else if (element instanceof AbstractWorkflowArtifact) {
          TeamWorkFlowArtifact teamArt = ((AbstractWorkflowArtifact) element).getParentTeamWorkflow();

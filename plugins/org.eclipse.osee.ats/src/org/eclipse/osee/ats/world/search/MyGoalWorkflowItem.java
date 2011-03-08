@@ -18,7 +18,7 @@ import java.util.Set;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.GoalArtifact;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -67,7 +67,7 @@ public class MyGoalWorkflowItem extends UserSearchItem {
 
       List<Artifact> artifactsToReturn = new ArrayList<Artifact>(artifacts.size());
       for (Artifact artifact : artifacts) {
-         if (artifact instanceof GoalArtifact && (goalSearchState == GoalSearchState.All || goalSearchState == GoalSearchState.InWork && !((AbstractWorkflowArtifact) artifact).isCompletedOrCancelled())) {
+         if (artifact.isOfType(AtsArtifactTypes.Goal) && (goalSearchState == GoalSearchState.All || goalSearchState == GoalSearchState.InWork && !((AbstractWorkflowArtifact) artifact).isCompletedOrCancelled())) {
             artifactsToReturn.add(artifact);
          }
       }

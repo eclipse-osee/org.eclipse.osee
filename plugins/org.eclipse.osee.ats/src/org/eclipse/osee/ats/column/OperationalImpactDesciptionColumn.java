@@ -46,7 +46,7 @@ public class OperationalImpactDesciptionColumn extends XViewerValueColumn {
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
-         if (element instanceof TeamWorkFlowArtifact) {
+         if (Artifacts.isOfType(element, AtsArtifactTypes.TeamWorkflow)) {
             return ((TeamWorkFlowArtifact) element).getArtifact().getSoleAttributeValue(
                AtsAttributeTypes.OperationalImpactDescription, "");
          }

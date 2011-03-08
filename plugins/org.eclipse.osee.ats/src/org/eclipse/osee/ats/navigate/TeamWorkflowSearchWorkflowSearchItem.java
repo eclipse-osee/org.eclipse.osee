@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.ats.util.widgets.XHyperlabelTeamDefinitionSelection;
 import org.eclipse.osee.ats.util.widgets.XStateCombo;
@@ -122,7 +123,7 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
          if (artifact instanceof AbstractTaskableArtifact) {
             results.addAll(((AbstractTaskableArtifact) artifact).getTaskArtifacts());
          }
-         if (artifact instanceof TeamWorkFlowArtifact) {
+         if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
             results.addAll(ReviewManager.getReviews((TeamWorkFlowArtifact) artifact));
          }
       }

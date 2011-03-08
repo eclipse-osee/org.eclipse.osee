@@ -80,7 +80,7 @@ public class AnnualCostAvoidanceColumn extends XViewerAtsColumn implements IXVie
             }
          }
          return hours;
-      } else if (object instanceof TeamWorkFlowArtifact) {
+      } else if (Artifacts.isOfType(object, AtsArtifactTypes.TeamWorkflow)) {
          TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) object;
          double benefit = teamArt.getWorldViewWeeklyBenefit();
          double remainHrs = teamArt.getRemainHoursTotal();

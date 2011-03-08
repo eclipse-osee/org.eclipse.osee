@@ -75,7 +75,7 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
                   return false;
                }
             }
-            if (!(useArt instanceof TeamWorkFlowArtifact)) {
+            if (!(useArt.isOfType(AtsArtifactTypes.TeamWorkflow))) {
                return false;
             }
             boolean modified = promptChangeOriginator(Arrays.asList((TeamWorkFlowArtifact) useArt), isPersistViewer());

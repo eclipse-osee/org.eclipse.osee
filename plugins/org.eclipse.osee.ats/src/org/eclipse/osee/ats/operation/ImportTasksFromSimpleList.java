@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -79,7 +80,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
                   return;
                }
                Artifact artifact = artifacts.iterator().next();
-               if (!(artifact instanceof TeamWorkFlowArtifact)) {
+               if (!(artifact.isOfType(AtsArtifactTypes.TeamWorkflow))) {
                   AWorkbench.popup("ERROR", "Artifact MUST be Team Workflow");
                   return;
                }

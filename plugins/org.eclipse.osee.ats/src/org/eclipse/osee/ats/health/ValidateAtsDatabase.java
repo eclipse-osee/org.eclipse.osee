@@ -238,7 +238,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                   "Error: Duplicate HRIDs: " + XResultData.getHyperlink(artifact));
             }
             // Check that duplicate Legacy PCR IDs team arts do not exist with different parent actions
-            if (artifact instanceof TeamWorkFlowArtifact) {
+            if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
                String legacyPcrId = artifact.getSoleAttributeValueAsString(AtsAttributeTypes.LegacyPcrId, null);
                if (legacyPcrId != null) {
@@ -301,7 +301,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
 
    private void testTeamWorkflows(Collection<Artifact> artifacts) {
       for (Artifact art : artifacts) {
-         if (art instanceof TeamWorkFlowArtifact) {
+         if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
             TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) art;
             try {
                if (teamArt.getActionableItemsDam().getActionableItems().isEmpty()) {
@@ -323,7 +323,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
 
    private void testAtsBranchManager(Collection<Artifact> artifacts) {
       for (Artifact art : artifacts) {
-         if (art instanceof TeamWorkFlowArtifact) {
+         if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
             TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) art;
             AtsBranchManager mgr = teamArt.getBranchMgr();
             try {
@@ -526,7 +526,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    private void testAtsWorkflowsHaveAction(Collection<Artifact> artifacts) {
       for (Artifact artifact : artifacts) {
          try {
-            if (artifact instanceof TeamWorkFlowArtifact) {
+            if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                boolean noParent = false;
                try {
                   if (((TeamWorkFlowArtifact) artifact).getParentActionArtifact() == null) {
@@ -567,7 +567,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    private void testAtsWorkflowsHaveZeroOrOneVersion(Collection<Artifact> artifacts) {
       for (Artifact artifact : artifacts) {
          try {
-            if (artifact instanceof TeamWorkFlowArtifact) {
+            if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
                if (teamArt.getRelatedArtifacts(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version).size() > 1) {
                   testNameToResultsMap.put(
@@ -589,7 +589,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       Set<Artifact> badTasks = new HashSet<Artifact>(30);
       for (Artifact artifact : artifacts) {
          try {
-            if (artifact instanceof TaskArtifact) {
+            if (artifact.isOfType(AtsArtifactTypes.Task)) {
                TaskArtifact taskArtifact = (TaskArtifact) artifact;
                if (taskArtifact.getRelatedArtifacts(AtsRelationTypes.SmaToTask_Sma).size() != 1) {
                   testNameToResultsMap.put(

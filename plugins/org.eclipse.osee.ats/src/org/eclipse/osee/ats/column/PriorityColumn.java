@@ -85,7 +85,7 @@ public class PriorityColumn extends XViewerAtsAttributeValueColumn {
                   return false;
                }
             }
-            if (!(useArt instanceof TeamWorkFlowArtifact)) {
+            if (!(useArt.isOfType(AtsArtifactTypes.TeamWorkflow))) {
                return false;
             }
             TeamWorkFlowArtifact team = (TeamWorkFlowArtifact) useArt;
@@ -117,7 +117,7 @@ public class PriorityColumn extends XViewerAtsAttributeValueColumn {
       Set<TeamWorkFlowArtifact> awas = new HashSet<TeamWorkFlowArtifact>();
       for (TreeItem item : treeItems) {
          Artifact art = (Artifact) item.getData();
-         if (art instanceof TeamWorkFlowArtifact) {
+         if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
             awas.add((TeamWorkFlowArtifact) art);
          }
       }

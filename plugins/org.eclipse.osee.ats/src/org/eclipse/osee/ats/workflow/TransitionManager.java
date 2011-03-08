@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.editor.stateItem.AtsStateItemManager;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsNotifyUsers;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.TeamState;
@@ -143,7 +144,7 @@ public class TransitionManager {
          awa.getStateDefinition().hasRule(RuleDefinitionOption.RequireTargetedVersion);
 
       // Only check this if TeamWorkflow, not for reviews
-      if (awa instanceof TeamWorkFlowArtifact && (teamDefRequiresTargetedVersion || pageRequiresTargetedVersion) && //
+      if (awa.isOfType(AtsArtifactTypes.TeamWorkflow) && (teamDefRequiresTargetedVersion || pageRequiresTargetedVersion) && //
       awa.getTargetedVersion() == null && //
       !toStateDefinition.isCancelledPage()) {
          AWorkbench.popup("Transition Blocked",

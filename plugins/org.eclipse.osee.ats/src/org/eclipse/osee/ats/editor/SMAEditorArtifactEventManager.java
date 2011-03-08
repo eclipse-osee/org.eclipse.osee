@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.ActionManager;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -92,7 +93,7 @@ public class SMAEditorArtifactEventManager implements IArtifactEventListener {
       Artifact actionArt = null;
       boolean refreshed = false;
       try {
-         actionArt = awa instanceof TeamWorkFlowArtifact ? awa.getParentActionArtifact() : null;
+         actionArt = awa.isOfType(AtsArtifactTypes.TeamWorkflow) ? awa.getParentActionArtifact() : null;
       } catch (OseeCoreException ex) {
          // do nothing
       }

@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.framework.access.AccessControlData;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
@@ -367,7 +368,7 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
 
    @Override
    public void setArtifact(Artifact artifact) {
-      if (artifact instanceof TeamWorkFlowArtifact) {
+      if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
          this.teamArt = (TeamWorkFlowArtifact) artifact;
       }
       enablement = new XWorkingBranchEnablement(teamArt);

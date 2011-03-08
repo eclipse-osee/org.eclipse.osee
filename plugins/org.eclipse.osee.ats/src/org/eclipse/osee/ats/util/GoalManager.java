@@ -129,7 +129,7 @@ public final class GoalManager {
    }
 
    public static String getGoalOrder(Artifact artifact) throws OseeCoreException {
-      if (artifact instanceof GoalArtifact) {
+      if (artifact.isOfType(AtsArtifactTypes.Goal)) {
          return "";
       }
       if (!isHasGoal(artifact)) {
@@ -172,7 +172,7 @@ public final class GoalManager {
 
    public static void getGoals(Collection<Artifact> artifacts, Set<Artifact> goals, boolean recurse) throws OseeCoreException {
       for (Artifact art : artifacts) {
-         if (art instanceof GoalArtifact) {
+         if (art.isOfType(AtsArtifactTypes.Goal)) {
             goals.add(art);
          }
          goals.addAll(art.getRelatedArtifacts(AtsRelationTypes.Goal_Goal, GoalArtifact.class));

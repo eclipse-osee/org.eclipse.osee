@@ -443,7 +443,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       TreeItem items[] = getTree().getSelection();
       if (items.length > 0) {
          for (TreeItem item : items) {
-            if (item.getData() instanceof TaskArtifact) {
+            if (Artifacts.isOfType(item, AtsArtifactTypes.Task)) {
                arts.add((TaskArtifact) item.getData());
             }
          }
@@ -466,7 +466,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
                } catch (OseeCoreException ex) {
                   // Do Nothing
                }
-            } else if (!(item.getData() instanceof TeamWorkFlowArtifact)) {
+            } else if (!Artifacts.isOfType(item.getData(), AtsArtifactTypes.TeamWorkflow)) {
                return false;
             }
          }
@@ -483,7 +483,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       TreeItem items[] = getTree().getSelection();
       if (items.length > 0) {
          for (TreeItem item : items) {
-            if (item.getData() instanceof TeamWorkFlowArtifact) {
+            if (Artifacts.isOfType(item.getData(), AtsArtifactTypes.TeamWorkflow)) {
                teamArts.add((TeamWorkFlowArtifact) item.getData());
             }
             if (Artifacts.isOfType(item.getData(), AtsArtifactTypes.Action)) {

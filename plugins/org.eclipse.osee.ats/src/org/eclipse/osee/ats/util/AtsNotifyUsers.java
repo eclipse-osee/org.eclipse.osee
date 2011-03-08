@@ -212,7 +212,7 @@ public class AtsNotifyUsers implements IArtifactEventListener {
          // Handle notifications for subscription by TeamDefinition and ActionableItem
          for (Artifact art : artifactEvent.getCacheArtifacts(EventModType.Added)) {
             try {
-               if (art instanceof TeamWorkFlowArtifact) {
+               if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                   TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) art;
 
                   // Handle Team Definitions

@@ -112,11 +112,11 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAr
       Artifact artifact = null;
       if (art.isOfType(AtsArtifactTypes.Action)) {
          artifact = art;
-      } else if (art instanceof TeamWorkFlowArtifact) {
+      } else if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
          artifact = ((TeamWorkFlowArtifact) art).getParentActionArtifact();
-      } else if (art instanceof TaskArtifact) {
+      } else if (art.isOfType(AtsArtifactTypes.Task)) {
          Artifact parentArtifact = ((TaskArtifact) art).getParentAWA();
-         if (parentArtifact instanceof TeamWorkFlowArtifact) {
+         if (parentArtifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
             artifact = ((TeamWorkFlowArtifact) parentArtifact).getParentActionArtifact();
          } else {
             OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Unknown parent " + art.getHumanReadableId());

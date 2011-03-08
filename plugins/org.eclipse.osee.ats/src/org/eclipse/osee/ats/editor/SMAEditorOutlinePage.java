@@ -429,7 +429,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
             }
          }
          // add rules from Team Definition
-         if (awa instanceof TeamWorkFlowArtifact) {
+         if (awa.isOfType(AtsArtifactTypes.TeamWorkflow)) {
             try {
                TeamDefinitionArtifact teamDef = ((TeamWorkFlowArtifact) awa).getTeamDefinition();
                for (RuleDefinition workRuleDef : teamDef.getWorkRules()) {

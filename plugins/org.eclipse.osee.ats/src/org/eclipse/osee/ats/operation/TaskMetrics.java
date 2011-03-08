@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.artifact.TaskStates;
 import org.eclipse.osee.ats.internal.workflow.SMAState;
 import org.eclipse.osee.ats.internal.workflow.XCurrentStateDam;
 import org.eclipse.osee.ats.internal.workflow.XStateDam;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -74,7 +75,7 @@ public class TaskMetrics extends AbstractBlam {
          List<Artifact> artifacts = ArtifactQuery.getArtifactListFromType(artifctType, AtsUtil.getAtsBranch());
          Set<Artifact> tasks = RelationManager.getRelatedArtifacts(artifacts, 1, AtsRelationTypes.SmaToTask_Task);
          for (Artifact artifact : tasks) {
-            if (artifact instanceof TaskArtifact) {
+            if (artifact.isOfType(AtsArtifactTypes.Task)) {
                tallyState((TaskArtifact) artifact);
             }
          }

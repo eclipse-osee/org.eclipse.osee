@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.column.PriorityColumn;
 import org.eclipse.osee.ats.column.TeamColumn;
 import org.eclipse.osee.ats.editor.widget.ReviewInfoXWidget;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.Overview;
 import org.eclipse.osee.ats.workdef.StateXWidgetPage;
@@ -182,7 +183,7 @@ public class SMAPrint extends Action {
    }
 
    private String getReviewData(AbstractWorkflowArtifact sma, StateXWidgetPage page) throws OseeCoreException {
-      if (sma instanceof TeamWorkFlowArtifact) {
+      if (sma.isOfType(AtsArtifactTypes.TeamWorkflow)) {
          return ReviewInfoXWidget.toHTML((TeamWorkFlowArtifact) sma, page);
       }
       return "";

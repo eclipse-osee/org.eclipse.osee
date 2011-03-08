@@ -16,12 +16,14 @@ import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.PromptChangeUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
@@ -98,7 +100,7 @@ public class ResolutionColumn extends XViewerAtsAttributeValueColumn {
 
    @Override
    public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
-      if (treeItem.getData() instanceof TaskArtifact) {
+      if (Artifacts.isOfType(treeItem, AtsArtifactTypes.Task)) {
          return promptChangeResolutionOfTasks(getXViewer(), (TaskArtifact) treeItem.getData(), isPersistAltLeftClick());
       }
       return super.handleAltLeftClick(treeColumn, treeItem);
@@ -127,10 +129,10 @@ public class ResolutionColumn extends XViewerAtsAttributeValueColumn {
       List<TreeItem> otherTreeItems = new ArrayList<TreeItem>();
       for (TreeItem item : treeItems) {
          try {
-            if (item.getData() instanceof TaskArtifact) {
+            if (Artifacts.isOfType(item, AtsArtifactTypes.Task)) {
                allTasks.add((TaskArtifact) item.getData());
             }
-            if (item.getData() instanceof TaskArtifact && ((TaskArtifact) item.getData()).isUsingTaskResolutionOptions()) {
+            if (Artifacts.isOfType(item, AtsArtifactTypes.Task) && ((TaskArtifact) item.getData()).isUsingTaskResolutionOptions()) {
                tasksUsingResOptions.add((TaskArtifact) item.getData());
             } else {
                otherTreeItems.add(item);

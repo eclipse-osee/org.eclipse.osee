@@ -39,12 +39,12 @@ import org.eclipse.osee.ats.actions.ShowChangeReportAction;
 import org.eclipse.osee.ats.actions.ShowMergeManagerAction;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowManager;
 import org.eclipse.osee.ats.artifact.note.NoteItem;
 import org.eclipse.osee.ats.config.AtsBulkLoad;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workdef.RuleDefinitionOption;
 import org.eclipse.osee.ats.workdef.StateXWidgetPage;
@@ -98,7 +98,7 @@ import org.eclipse.ui.progress.UIJob;
  * @author Donald G. Dunne
  */
 public class SMAWorkFlowTab extends FormPage implements IActionable {
-   private final AbstractWorkflowArtifact sma;
+   private final AbstractWorkflowArtifact awa;
    private final List<SMAWorkFlowSection> sections = new ArrayList<SMAWorkFlowSection>();
    private final List<StateXWidgetPage> statePages = new ArrayList<StateXWidgetPage>();
    private static Map<String, Integer> guidToScrollLocation = new HashMap<String, Integer>();
@@ -116,10 +116,10 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    public final static String ID = "ats.workflow.tab";
    private final SMAEditor editor;
 
-   public SMAWorkFlowTab(SMAEditor editor, AbstractWorkflowArtifact sma) {
+   public SMAWorkFlowTab(SMAEditor editor, AbstractWorkflowArtifact awa) {
       super(editor, ID, "Workflow");
       this.editor = editor;
-      this.sma = sma;
+      this.awa = awa;
    }
 
    @Override
@@ -144,8 +144,8 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          bodyComp.setLayoutData(gd);
 
          setLoading(true);
-         if (sma.getHelpContext() != null) {
-            HelpUtil.setHelp(managedForm.getForm(), sma.getHelpContext());
+         if (awa.getHelpContext() != null) {
+            HelpUtil.setHelp(managedForm.getForm(), awa.getHelpContext());
          }
 
          refreshData();
@@ -159,7 +159,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       String titleString = editor.getTitleStr();
       String displayableTitle = Strings.escapeAmpersands(titleString);
       managedForm.getForm().setText(displayableTitle);
-      managedForm.getForm().setImage(ArtifactImageManager.getImage(sma));
+      managedForm.getForm().setImage(ArtifactImageManager.getImage(awa));
    }
 
    @Override
@@ -242,13 +242,13 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       atsBody.setLayoutData(new GridData(GridData.FILL_BOTH));
       atsBody.setLayout(new GridLayout(1, false));
 
-      StateXWidgetPage page = sma.getCurrentAtsWorkPage();
+      StateXWidgetPage page = awa.getCurrentAtsWorkPage();
       if (page == null) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, null,
-            "Can't retrieve current page from current state [%s] of work definition [%s]", sma.getCurrentStateName(),
-            sma.getWorkDefinition().getName());
+            "Can't retrieve current page from current state [%s] of work definition [%s]", awa.getCurrentStateName(),
+            awa.getWorkDefinition().getName());
       }
-      createHeaderSection(sma.getCurrentAtsWorkPage());
+      createHeaderSection(awa.getCurrentAtsWorkPage());
       createGoalSection();
       createPageSections();
       createHistorySection();
@@ -259,7 +259,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       atsBody.layout();
       atsBody.setFocus();
       // Jump to scroll location if set
-      Integer selection = guidToScrollLocation.get(sma.getGuid());
+      Integer selection = guidToScrollLocation.get(awa.getGuid());
       if (selection != null) {
          JumpScrollbarJob job = new JumpScrollbarJob("");
          job.schedule(500);
@@ -307,7 +307,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
 
    private void createGoalSection() {
       try {
-         if (sma instanceof GoalArtifact) {
+         if (awa.isOfType(AtsArtifactTypes.Goal)) {
             smaGoalMembersSection = new SMAGoalMembersSection(editor, atsBody, editor.getToolkit(), SWT.NONE);
             managedForm.addPart(smaGoalMembersSection);
          }
@@ -319,17 +319,17 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    private void createPageSections() {
       try {
          // Only display current or past states
-         for (StateXWidgetPage statePage : sma.getStatePages()) {
+         for (StateXWidgetPage statePage : awa.getStatePages()) {
             try {
-               if (sma.isInState(statePage) || sma.getStateMgr().isStateVisited(statePage)) {
+               if (awa.isInState(statePage) || awa.getStateMgr().isStateVisited(statePage)) {
                   // Don't show completed or cancelled state if not currently those state
-                  if (statePage.isCompletedPage() && !sma.isCompleted()) {
+                  if (statePage.isCompletedPage() && !awa.isCompleted()) {
                      continue;
                   }
-                  if (statePage.isCancelledPage() && !sma.isCancelled()) {
+                  if (statePage.isCancelledPage() && !awa.isCancelled()) {
                      continue;
                   }
-                  SMAWorkFlowSection section = new SMAWorkFlowSection(atsBody, SWT.NONE, statePage, sma, editor);
+                  SMAWorkFlowSection section = new SMAWorkFlowSection(atsBody, SWT.NONE, statePage, awa, editor);
                   managedForm.addPart(section);
                   control = section.getMainComp();
                   sections.add(section);
@@ -358,23 +358,23 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          createTargetVersionAndAssigneeHeader(headerComp, currentStateXWidgetPage, editor.getToolkit());
 
          createLatestHeader(headerComp, editor.getToolkit());
-         if (sma.isTeamWorkflow()) {
-            actionableItemHeader = new SMAActionableItemHeader(headerComp, editor.getToolkit(), sma);
+         if (awa.isTeamWorkflow()) {
+            actionableItemHeader = new SMAActionableItemHeader(headerComp, editor.getToolkit(), awa);
          }
          workflowMetricsHeader =
-            new SMAWorkflowMetricsHeader(headerComp, editor.getToolkit(), sma, editor, managedForm);
+            new SMAWorkflowMetricsHeader(headerComp, editor.getToolkit(), awa, editor, managedForm);
          int headerCompColumns = 4;
-         createWorkDefHeader(headerComp, editor.getToolkit(), sma, headerCompColumns);
-         createSMANotesHeader(headerComp, editor.getToolkit(), sma, headerCompColumns);
-         createStateNotesHeader(headerComp, editor.getToolkit(), sma, headerCompColumns, null);
+         createWorkDefHeader(headerComp, editor.getToolkit(), awa, headerCompColumns);
+         createSMANotesHeader(headerComp, editor.getToolkit(), awa, headerCompColumns);
+         createStateNotesHeader(headerComp, editor.getToolkit(), awa, headerCompColumns, null);
          createAnnotationsHeader(headerComp, editor.getToolkit());
 
          sections.clear();
          statePages.clear();
 
-         if (SMARelationsHyperlinkComposite.relationExists(sma)) {
+         if (SMARelationsHyperlinkComposite.relationExists(awa)) {
             smaRelationsComposite = new SMARelationsHyperlinkComposite(atsBody, SWT.NONE, editor);
-            smaRelationsComposite.create(sma);
+            smaRelationsComposite.create(awa);
          }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
@@ -382,12 +382,12 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    }
 
    protected boolean isShowTargetedVersion() throws OseeCoreException {
-      return sma.isTargetedVersionable();
+      return awa.isTargetedVersionable();
    }
 
    private void createTargetVersionAndAssigneeHeader(Composite parent, StateXWidgetPage page, XFormToolkit toolkit) throws OseeCoreException {
       boolean isShowTargetedVersion = isShowTargetedVersion();
-      boolean isCurrentNonCompleteCanceledState = page.isCurrentNonCompleteCancelledState(sma);
+      boolean isCurrentNonCompleteCanceledState = page.isCurrentNonCompleteCancelledState(awa);
       if (!isShowTargetedVersion && !isCurrentNonCompleteCanceledState) {
          return;
       }
@@ -398,7 +398,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
 
       // Targeted Version
       if (isShowTargetedVersion) {
-         new SMATargetedVersionHeader(comp, SWT.NONE, sma, editor);
+         new SMATargetedVersionHeader(comp, SWT.NONE, awa, editor);
          toolkit.createLabel(comp, "    ");
       }
 
@@ -411,17 +411,17 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
 
       // Current Assignees
       if (isCurrentNonCompleteCanceledState) {
-         boolean editable = !sma.isCompletedOrCancelled() && !sma.isReadOnly() &&
+         boolean editable = !awa.isCompletedOrCancelled() && !awa.isReadOnly() &&
          // and access control writeable
-         sma.isAccessControlWrite() && //
+         awa.isAccessControlWrite() && //
 
-         (SMAWorkFlowSection.isEditable(sma, page, editor) || //
+         (SMAWorkFlowSection.isEditable(awa, page, editor) || //
          // page is define to allow anyone to edit
-         sma.getStateDefinition().hasRule(RuleDefinitionOption.AllowAssigneeToAll) ||
+         awa.getStateDefinition().hasRule(RuleDefinitionOption.AllowAssigneeToAll) ||
          // team definition has allowed anyone to edit
-         sma.teamDefHasRule(RuleDefinitionOption.AllowAssigneeToAll));
+         awa.teamDefHasRule(RuleDefinitionOption.AllowAssigneeToAll));
 
-         new SMAAssigneesHeader(comp, SWT.NONE, sma, editable, editor);
+         new SMAAssigneesHeader(comp, SWT.NONE, awa, editable, editor);
       }
    }
 
@@ -450,26 +450,26 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       IToolBarManager toolBarMgr = managedForm.getForm().getToolBarManager();
       toolBarMgr.removeAll();
 
-      if (sma.isTeamWorkflow() && (((TeamWorkFlowArtifact) sma).getBranchMgr().isCommittedBranchExists() || ((TeamWorkFlowArtifact) sma).getBranchMgr().isWorkingBranchInWork())) {
-         toolBarMgr.add(new ShowMergeManagerAction((TeamWorkFlowArtifact) sma));
-         toolBarMgr.add(new ShowChangeReportAction((TeamWorkFlowArtifact) sma));
+      if (awa.isTeamWorkflow() && (((TeamWorkFlowArtifact) awa).getBranchMgr().isCommittedBranchExists() || ((TeamWorkFlowArtifact) awa).getBranchMgr().isWorkingBranchInWork())) {
+         toolBarMgr.add(new ShowMergeManagerAction((TeamWorkFlowArtifact) awa));
+         toolBarMgr.add(new ShowChangeReportAction((TeamWorkFlowArtifact) awa));
       }
       toolBarMgr.add(new FavoriteAction(editor));
-      if (sma.getParentAWA() != null) {
-         toolBarMgr.add(new OpenParentAction(sma));
+      if (awa.getParentAWA() != null) {
+         toolBarMgr.add(new OpenParentAction(awa));
       }
       toolBarMgr.add(new EmailActionAction(editor));
-      toolBarMgr.add(new AddNoteAction(sma, editor));
-      toolBarMgr.add(new OpenInAtsWorldAction(sma));
+      toolBarMgr.add(new AddNoteAction(awa, editor));
+      toolBarMgr.add(new OpenInAtsWorldAction(awa));
       if (AtsUtil.isAtsAdmin()) {
          toolBarMgr.add(new OpenInArtifactEditorAction(editor));
       }
-      toolBarMgr.add(new OpenVersionArtifactAction(sma));
-      toolBarMgr.add(new OpenTeamDefinitionAction(sma));
-      toolBarMgr.add(new CopyActionDetailsAction(sma));
-      toolBarMgr.add(new PrivilegedEditAction(sma, editor));
-      toolBarMgr.add(new ResourceHistoryAction(sma));
-      toolBarMgr.add(new ReloadAction(sma));
+      toolBarMgr.add(new OpenVersionArtifactAction(awa));
+      toolBarMgr.add(new OpenTeamDefinitionAction(awa));
+      toolBarMgr.add(new CopyActionDetailsAction(awa));
+      toolBarMgr.add(new PrivilegedEditAction(awa, editor));
+      toolBarMgr.add(new ResourceHistoryAction(awa));
+      toolBarMgr.add(new ReloadAction(awa));
 
       OseeUiActions.addButtonToEditorToolBar(editor, this, AtsPlugin.PLUGIN_ID,
          managedForm.getForm().getToolBarManager(), SMAEditor.EDITOR_ID, "ATS Editor");
@@ -548,7 +548,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       if (managedForm != null && managedForm.getForm() != null) {
          Integer selection = managedForm.getForm().getVerticalBar().getSelection();
          // System.out.println("Storing selection => " + selection);
-         guidToScrollLocation.put(sma.getGuid(), selection);
+         guidToScrollLocation.put(awa.getGuid(), selection);
       }
    }
 
@@ -562,7 +562,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
             public void run() {
-               Integer selection = guidToScrollLocation.get(sma.getGuid());
+               Integer selection = guidToScrollLocation.get(awa.getGuid());
                // System.out.println("Restoring selection => " + selection);
 
                // Find the ScrolledComposite operating on the control.
@@ -596,29 +596,29 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       toolkit.adapt(topLineComp);
 
       try {
-         FormsUtil.createLabelText(toolkit, topLineComp, "Current State: ", sma.getStateMgr().getCurrentStateName());
-         FormsUtil.createLabelText(toolkit, topLineComp, "Created: ", DateUtil.getMMDDYYHHMM(sma.getCreatedDate()));
+         FormsUtil.createLabelText(toolkit, topLineComp, "Current State: ", awa.getStateMgr().getCurrentStateName());
+         FormsUtil.createLabelText(toolkit, topLineComp, "Created: ", DateUtil.getMMDDYYHHMM(awa.getCreatedDate()));
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
 
-      new SMAOriginatorHeader(topLineComp, SWT.NONE, sma, editor);
+      new SMAOriginatorHeader(topLineComp, SWT.NONE, awa, editor);
 
       try {
-         if (sma.isTeamWorkflow()) {
-            FormsUtil.createLabelText(toolkit, topLineComp, "Team: ", ((TeamWorkFlowArtifact) sma).getTeamName());
-         } else if ((sma.isTask() || sma.isReview()) && sma.getParentAWA() != null) {
-            String pcrId = TeamWorkflowManager.getPcrId(sma.getParentAWA());
+         if (awa.isTeamWorkflow()) {
+            FormsUtil.createLabelText(toolkit, topLineComp, "Team: ", ((TeamWorkFlowArtifact) awa).getTeamName());
+         } else if ((awa.isTask() || awa.isReview()) && awa.getParentAWA() != null) {
+            String pcrId = TeamWorkflowManager.getPcrId(awa.getParentAWA());
             FormsUtil.createLabelText(toolkit, topLineComp, "Parent Id: ", pcrId);
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
-      FormsUtil.createLabelText(toolkit, topLineComp, sma.getArtifactSuperTypeName() + " Id: ",
-         sma.getHumanReadableId());
+      FormsUtil.createLabelText(toolkit, topLineComp, awa.getArtifactSuperTypeName() + " Id: ",
+         awa.getHumanReadableId());
 
       try {
-         String pcrId = TeamWorkflowManager.getPcrId(sma);
+         String pcrId = TeamWorkflowManager.getPcrId(awa);
          if (Strings.isValid(pcrId)) {
             FormsUtil.createLabelText(toolkit, topLineComp, " Id: ", pcrId);
          }
@@ -628,18 +628,18 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    }
 
    private void createLatestHeader(Composite comp, XFormToolkit toolkit) {
-      if (sma.isHistoricalVersion()) {
+      if (awa.isHistoricalVersion()) {
          Label label =
             toolkit.createLabel(
                comp,
-               "This is a historical version of this " + sma.getArtifactTypeName() + " and can not be edited; Select \"Open Latest\" to view/edit latest version.");
+               "This is a historical version of this " + awa.getArtifactTypeName() + " and can not be edited; Select \"Open Latest\" to view/edit latest version.");
          label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
       }
    }
 
    private void createAnnotationsHeader(Composite comp, XFormToolkit toolkit) {
-      if (sma.getAnnotations().size() > 0) {
-         new AnnotationComposite(toolkit, comp, SWT.None, sma);
+      if (awa.getAnnotations().size() > 0) {
+         new AnnotationComposite(toolkit, comp, SWT.None, awa);
       }
    }
 
@@ -680,7 +680,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    }
 
    public void refresh() {
-      if (editor != null && !sma.isInTransition()) {
+      if (editor != null && !awa.isInTransition()) {
          // remove all pages
          for (SMAWorkFlowSection section : sections) {
             section.dispose();

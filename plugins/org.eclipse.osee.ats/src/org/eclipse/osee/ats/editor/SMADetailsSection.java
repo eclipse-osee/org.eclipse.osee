@@ -109,7 +109,7 @@ public class SMADetailsSection extends SectionPart {
       if (workflow.getParentActionArtifact() != null) {
          details.put("Action Id", workflow.getParentActionArtifact().getHumanReadableId());
       }
-      if (!(workflow instanceof TeamWorkFlowArtifact) && workflow.getParentTeamWorkflow() != null) {
+      if (!(workflow.isOfType(AtsArtifactTypes.TeamWorkflow)) && workflow.getParentTeamWorkflow() != null) {
          details.put("Parent Team Workflow Id", workflow.getParentTeamWorkflow().getHumanReadableId());
       }
       if (workflow.isOfType(AtsArtifactTypes.TeamWorkflow)) {

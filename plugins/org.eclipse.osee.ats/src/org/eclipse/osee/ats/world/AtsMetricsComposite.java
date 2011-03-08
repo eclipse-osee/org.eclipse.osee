@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.column.PercentCompleteTotalColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.SMAMetrics;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -163,7 +164,7 @@ public class AtsMetricsComposite extends ScrolledComposite {
       }
       // Try to find an estimated release date from one of the workflows
       for (Artifact art : iAtsMetricsProvider.getMetricsArtifacts()) {
-         if (art instanceof TeamWorkFlowArtifact) {
+         if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
             Artifact verArt = ((TeamWorkFlowArtifact) art).getTargetedVersion();
             if (verArt != null) {
                Date estRelDate = verArt.getSoleAttributeValue(AtsAttributeTypes.EstimatedReleaseDate, null);

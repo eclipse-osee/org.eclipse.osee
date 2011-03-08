@@ -37,6 +37,7 @@ import org.eclipse.osee.ats.column.OperationalImpactWithWorkaroundXWidget.XOpera
 import org.eclipse.osee.ats.column.OperationalImpactXWidget.XOperationalImpactRequiredXWidgetWorkItem;
 import org.eclipse.osee.ats.column.OperationalImpactXWidget.XOperationalImpactXWidgetWorkItem;
 import org.eclipse.osee.ats.column.PriorityXWidget;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.XWorkingBranch;
 import org.eclipse.osee.ats.util.widgets.commit.XCommitManager;
@@ -271,7 +272,7 @@ public final class AtsWorkDefinitions implements IWorkDefinitionProvider {
 
    @Override
    public WorkFlowDefinitionMatch getWorkFlowDefinition(Artifact artifact) throws OseeCoreException {
-      if (artifact instanceof TaskArtifact) {
+      if (artifact.isOfType(AtsArtifactTypes.Task)) {
          return getWorkFlowDefinitionForTask((TaskArtifact) artifact);
       }
       if (artifact instanceof AbstractWorkflowArtifact) {
@@ -292,14 +293,14 @@ public final class AtsWorkDefinitions implements IWorkDefinitionProvider {
             return match;
          }
          // Otherwise, use workflow defined by WorkflowDefinition
-         if (artifact instanceof TeamWorkFlowArtifact) {
+         if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
             WorkFlowDefinitionMatch match2 =
                ((TeamWorkFlowArtifact) artifact).getTeamDefinition().getWorkFlowDefinition();
             if (match2.isMatched()) {
                return match2;
             }
          }
-         if (artifact instanceof GoalArtifact) {
+         if (artifact.isOfType(AtsArtifactTypes.Goal)) {
             WorkFlowDefinition workDef =
                (WorkFlowDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(GoalWorkflowDefinition.ID);
             return new WorkFlowDefinitionMatch(workDef, (String.format("default GoalWorkflowDefinition ID [%s]",

@@ -73,7 +73,7 @@ public class SMAMetrics {
       }
       Set<Artifact> resolvedArts = new HashSet<Artifact>(artifacts);
       for (Artifact art : artifacts) {
-         if (art instanceof GoalArtifact) {
+         if (art.isOfType(AtsArtifactTypes.Goal)) {
             resolvedArts.addAll(((GoalArtifact) art).getMembers());
          }
       }
@@ -84,9 +84,9 @@ public class SMAMetrics {
          }
       }
       for (Artifact art : resolvedArts) {
-         if (art instanceof TeamWorkFlowArtifact) {
+         if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
             teamArts.add((TeamWorkFlowArtifact) art);
-         } else if (art instanceof TaskArtifact) {
+         } else if (art.isOfType(AtsArtifactTypes.Task)) {
             taskArts.add((TaskArtifact) art);
          } else if (art instanceof AbstractReviewArtifact) {
             reviewArts.add((AbstractReviewArtifact) art);

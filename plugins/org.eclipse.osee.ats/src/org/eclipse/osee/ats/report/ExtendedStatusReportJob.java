@@ -183,9 +183,9 @@ public class ExtendedStatusReportJob extends Job {
       }
    }
 
-   private static void handleTaskIdColumn(AbstractWorkflowArtifact sma, List<String> values) {
-      if (sma instanceof TaskArtifact) {
-         values.add(((TaskArtifact) sma).getHumanReadableId());
+   private static void handleTaskIdColumn(AbstractWorkflowArtifact awa, List<String> values) {
+      if (awa.isOfType(AtsArtifactTypes.Task)) {
+         values.add(((TaskArtifact) awa).getHumanReadableId());
       } else {
          values.add(".");
       }
@@ -208,10 +208,10 @@ public class ExtendedStatusReportJob extends Job {
       }
    }
 
-   private static void handleAnalysisColumn(AbstractWorkflowArtifact sma, List<String> values) throws OseeCoreException {
-      String desc = sma.getDescription();
-      if (sma instanceof TaskArtifact) {
-         TaskArtifact taskArt = (TaskArtifact) sma;
+   private static void handleAnalysisColumn(AbstractWorkflowArtifact awa, List<String> values) throws OseeCoreException {
+      String desc = awa.getDescription();
+      if (awa.isOfType(AtsArtifactTypes.Task)) {
+         TaskArtifact taskArt = (TaskArtifact) awa;
          desc = taskArt.getDescription() + " " + taskArt.getSoleAttributeValue(AtsAttributeTypes.Resolution, "");
       }
       if (desc.matches("^ *$")) {

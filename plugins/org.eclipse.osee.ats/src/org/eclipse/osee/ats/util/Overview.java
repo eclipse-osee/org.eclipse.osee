@@ -131,34 +131,34 @@ public class Overview {
       }
    }
 
-   public void addHeader(AbstractWorkflowArtifact sma, PreviewStyle... styles) throws OseeCoreException {
+   public void addHeader(AbstractWorkflowArtifact awa, PreviewStyle... styles) throws OseeCoreException {
       startBorderTable(100, false, "");
-      addTable(getLabelValue("Title", sma.getName()));
+      addTable(getLabelValue("Title", awa.getName()));
       this.html.append(AHTML.multiColumnTable(new String[] {
-         AHTML.getLabelStr(labelFont, "State: ") + sma.getStateMgr().getCurrentStateName(),
-         AHTML.getLabelStr(labelFont, "Type: ") + sma.getArtifactTypeName(),
-         AHTML.getLabelStr(labelFont, "Id: ") + sma.getHumanReadableId()}));
-      addTable(getLabelValue("Originator", sma.getCreatedBy().getName()),
-         getLabelValue("Creation Date", DateUtil.getMMDDYYHHMM(sma.getCreatedDate())));
-      if (sma.isTeamWorkflow()) {
-         addTable(getLabelValue("Team", ((TeamWorkFlowArtifact) sma).getTeamName()),
-            getLabelValue("Assignees", Artifacts.toString("; ", sma.getStateMgr().getAssignees())));
+         AHTML.getLabelStr(labelFont, "State: ") + awa.getStateMgr().getCurrentStateName(),
+         AHTML.getLabelStr(labelFont, "Type: ") + awa.getArtifactTypeName(),
+         AHTML.getLabelStr(labelFont, "Id: ") + awa.getHumanReadableId()}));
+      addTable(getLabelValue("Originator", awa.getCreatedBy().getName()),
+         getLabelValue("Creation Date", DateUtil.getMMDDYYHHMM(awa.getCreatedDate())));
+      if (awa.isTeamWorkflow()) {
+         addTable(getLabelValue("Team", ((TeamWorkFlowArtifact) awa).getTeamName()),
+            getLabelValue("Assignees", Artifacts.toString("; ", awa.getStateMgr().getAssignees())));
       } else {
-         addTable(getLabelValue("Assignees", Artifacts.toString("; ", sma.getStateMgr().getAssignees())));
+         addTable(getLabelValue("Assignees", Artifacts.toString("; ", awa.getStateMgr().getAssignees())));
       }
-      addTable(getLabelValue("Description", sma.getDescription()));
-      if (sma.isCancelled()) {
-         addTable(getLabelValue("Cancelled From", sma.getCancelledFromState()));
-         addTable(getLabelValue("Cancellation Reason", sma.getCancelledReason()));
+      addTable(getLabelValue("Description", awa.getDescription()));
+      if (awa.isCancelled()) {
+         addTable(getLabelValue("Cancelled From", awa.getCancelledFromState()));
+         addTable(getLabelValue("Cancellation Reason", awa.getCancelledReason()));
       }
-      if (sma instanceof TaskArtifact) {
-         AbstractWorkflowArtifact parentArt = ((TaskArtifact) sma).getParentAWA();
+      if (awa.isOfType(AtsArtifactTypes.Task)) {
+         AbstractWorkflowArtifact parentArt = ((TaskArtifact) awa).getParentAWA();
          if (parentArt != null) {
             this.html.append(AHTML.multiColumnTable(new String[] {AHTML.getLabelStr(labelFont, "Parent Workflow: ") + parentArt.getName()}));
-            this.html.append(AHTML.multiColumnTable(new String[] {AHTML.getLabelStr(labelFont, "Parent State: ") + ((TaskArtifact) sma).getStateMgr().getCurrentStateName()}));
+            this.html.append(AHTML.multiColumnTable(new String[] {AHTML.getLabelStr(labelFont, "Parent State: ") + ((TaskArtifact) awa).getStateMgr().getCurrentStateName()}));
          }
          this.html.append(AHTML.multiColumnTable(new String[] {AHTML.getLabelStr(labelFont, "Task Owner: ") + Artifacts.toString(
-            "; ", sma.getStateMgr().getAssignees())}));
+            "; ", awa.getStateMgr().getAssignees())}));
       }
       endBorderTable();
    }

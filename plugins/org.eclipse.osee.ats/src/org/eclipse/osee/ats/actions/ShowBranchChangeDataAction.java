@@ -16,6 +16,7 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -30,22 +31,22 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
  */
 public class ShowBranchChangeDataAction extends Action {
 
-   private final AbstractWorkflowArtifact sma;
+   private final AbstractWorkflowArtifact awa;
 
-   public ShowBranchChangeDataAction(AbstractWorkflowArtifact sma) {
+   public ShowBranchChangeDataAction(AbstractWorkflowArtifact awa) {
       super("Show Branch Change Data Report");
-      this.sma = sma;
+      this.awa = awa;
       setToolTipText("Show computed change data from Branch; should be same as what's shown in change report");
    }
 
    @Override
    public void run() {
       try {
-         if (!(sma instanceof TeamWorkFlowArtifact)) {
+         if (!(awa.isOfType(AtsArtifactTypes.TeamWorkflow))) {
             AWorkbench.popup("Only valid for Team Workflow artifacts");
             return;
          }
-         TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) sma;
+         TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) awa;
          if (!teamArt.getBranchMgr().isWorkingBranchInWork() && !teamArt.getBranchMgr().isWorkingBranchEverCommitted()) {
             AWorkbench.popup("Working branch never created or committed.");
             return;
@@ -56,7 +57,7 @@ public class ShowBranchChangeDataAction extends Action {
          for (Change change : changeData.getChanges()) {
             result.log(String.format("Change [%s]", change));
          }
-         result.report(String.format("Branch Change Data Report [%s]", sma));
+         result.report(String.format("Branch Change Data Report [%s]", awa));
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -68,6 +69,6 @@ public class ShowBranchChangeDataAction extends Action {
    }
 
    public static boolean isApplicable(AbstractWorkflowArtifact awa) {
-      return awa instanceof TeamWorkFlowArtifact;
+      return awa.isOfType(AtsArtifactTypes.TeamWorkflow);
    }
 }

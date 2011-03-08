@@ -79,13 +79,13 @@ public class WorldContentProvider implements ITreeContentProvider {
                relatedArts.addAll(ActionManager.getTeams(artifact));
                return ActionManager.getTeams((artifact)).toArray();
             }
-            if (artifact instanceof GoalArtifact) {
+            if (artifact.isOfType(AtsArtifactTypes.Goal)) {
                List<Artifact> arts =
                   artifact.getRelatedArtifacts(AtsRelationTypes.Goal_Member, DeletionFlag.EXCLUDE_DELETED);
                relatedArts.addAll(arts);
                return arts.toArray(new Artifact[artifact.getRelatedArtifactsCount(AtsRelationTypes.Goal_Member)]);
             }
-            if (artifact instanceof TeamWorkFlowArtifact) {
+            if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
                List<Artifact> arts = new ArrayList<Artifact>();
                // Convert artifacts to WorldArtifactItems
@@ -116,16 +116,16 @@ public class WorldContentProvider implements ITreeContentProvider {
             if (artifact.isDeleted()) {
                return null;
             }
-            if (artifact instanceof TeamWorkFlowArtifact) {
+            if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                return ((TeamWorkFlowArtifact) artifact).getParentActionArtifact();
             }
-            if (artifact instanceof TaskArtifact) {
+            if (artifact.isOfType(AtsArtifactTypes.Task)) {
                return ((TaskArtifact) artifact).getParentAWA();
             }
             if (artifact instanceof AbstractReviewArtifact) {
                return ((AbstractReviewArtifact) artifact).getParentAWA();
             }
-            if (artifact instanceof GoalArtifact) {
+            if (artifact.isOfType(AtsArtifactTypes.Goal)) {
                return ((GoalArtifact) artifact).getParentAWA();
             }
          } catch (Exception ex) {
@@ -156,7 +156,7 @@ public class WorldContentProvider implements ITreeContentProvider {
    }
 
    private boolean hasAtsWorldChildren(AbstractWorkflowArtifact workflow) {
-      if (workflow instanceof TaskArtifact) {
+      if (workflow.isOfType(AtsArtifactTypes.Task)) {
          return false;
       }
       for (IRelationTypeSide iRelationEnumeration : workflow.getAtsWorldRelations()) {

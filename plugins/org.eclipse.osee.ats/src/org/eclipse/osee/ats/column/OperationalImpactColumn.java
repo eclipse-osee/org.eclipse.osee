@@ -17,11 +17,11 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.swt.SWT;
 
 public class OperationalImpactColumn extends XViewerValueColumn {
@@ -50,9 +50,9 @@ public class OperationalImpactColumn extends XViewerValueColumn {
 
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
-      if (element instanceof IATSArtifact) {
+      if (AtsUtil.isAtsArtifact(element)) {
          try {
-            return getOperationalImpact((IATSArtifact) element);
+            return getOperationalImpact((Artifact) element);
          } catch (OseeCoreException ex) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
             return XViewerCells.getCellExceptionString(ex);
@@ -61,20 +61,20 @@ public class OperationalImpactColumn extends XViewerValueColumn {
       return "";
    }
 
-   private String getOperationalImpact(IATSArtifact wva) throws OseeCoreException {
-      if (wva instanceof TeamWorkFlowArtifact) {
-         return ((TeamWorkFlowArtifact) wva).getArtifact().getSoleAttributeValue(AtsAttributeTypes.OperationalImpact,
+   private String getOperationalImpact(Artifact art) throws OseeCoreException {
+      if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
+         return ((TeamWorkFlowArtifact) art).getArtifact().getSoleAttributeValue(AtsAttributeTypes.OperationalImpact,
             "");
       }
-      if (Artifacts.isOfType(wva, AtsArtifactTypes.Action)) {
+      if (art.isOfType(AtsArtifactTypes.Action)) {
          Set<String> strs = new HashSet<String>();
-         for (TeamWorkFlowArtifact team : ActionManager.getTeams(wva)) {
+         for (TeamWorkFlowArtifact team : ActionManager.getTeams(art)) {
             strs.add(getOperationalImpact(team));
          }
          return Collections.toString(", ", strs);
       }
-      if (wva instanceof TaskArtifact) {
-         return getOperationalImpact(((TaskArtifact) wva).getParentTeamWorkflow());
+      if (art.isOfType(AtsArtifactTypes.Task)) {
+         return getOperationalImpact(((TaskArtifact) art).getParentTeamWorkflow());
       }
       return "";
    }

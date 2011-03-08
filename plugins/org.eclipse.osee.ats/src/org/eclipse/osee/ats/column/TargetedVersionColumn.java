@@ -84,7 +84,7 @@ public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerV
                   return false;
                }
             }
-            if (!(useArt instanceof TeamWorkFlowArtifact)) {
+            if (!(useArt.isOfType(AtsArtifactTypes.TeamWorkflow))) {
                return false;
             }
             boolean modified =
@@ -263,7 +263,7 @@ public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerV
          List<Artifact> arts = new ArrayList<Artifact>();
          for (TreeItem item : treeItems) {
             Artifact art = (Artifact) item.getData();
-            if (art instanceof TeamWorkFlowArtifact) {
+            if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                awas.add((TeamWorkFlowArtifact) art);
                arts.add(art);
             }

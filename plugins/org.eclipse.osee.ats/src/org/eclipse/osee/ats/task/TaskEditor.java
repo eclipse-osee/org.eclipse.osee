@@ -24,6 +24,7 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.AtsMetricsComposite;
 import org.eclipse.osee.ats.world.IAtsMetricsProvider;
@@ -279,7 +280,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IActionable, I
             taskEditor.setLoading(true);
             final List<TaskArtifact> taskArts = new ArrayList<TaskArtifact>();
             for (Artifact artifact : itaskEditorProvider.getTaskEditorTaskArtifacts()) {
-               if (artifact instanceof TaskArtifact) {
+               if (artifact.isOfType(AtsArtifactTypes.Task)) {
                   taskArts.add((TaskArtifact) artifact);
                }
             }

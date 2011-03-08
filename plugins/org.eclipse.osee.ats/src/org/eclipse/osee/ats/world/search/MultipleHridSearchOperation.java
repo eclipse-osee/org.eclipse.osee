@@ -113,7 +113,7 @@ public class MultipleHridSearchOperation extends AbstractOperation implements IW
                   }
                }
             }
-            if (artifact instanceof TeamWorkFlowArtifact && (((TeamWorkFlowArtifact) artifact).getBranchMgr().isCommittedBranchExists() || ((TeamWorkFlowArtifact) artifact).getBranchMgr().isWorkingBranchInWork())) {
+            if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow) && (((TeamWorkFlowArtifact) artifact).getBranchMgr().isCommittedBranchExists() || ((TeamWorkFlowArtifact) artifact).getBranchMgr().isWorkingBranchInWork())) {
                addedArts.add(artifact);
             }
          }
@@ -122,7 +122,7 @@ public class MultipleHridSearchOperation extends AbstractOperation implements IW
                @Override
                public void run() {
                   for (Artifact art : addedArts) {
-                     if (art instanceof TeamWorkFlowArtifact) {
+                     if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                         ((TeamWorkFlowArtifact) art).getBranchMgr().showChangeReport();
                      }
                   }

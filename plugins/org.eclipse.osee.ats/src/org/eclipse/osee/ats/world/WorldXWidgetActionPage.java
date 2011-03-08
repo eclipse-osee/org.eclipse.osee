@@ -571,7 +571,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
                      for (TeamWorkFlowArtifact team : ActionManager.getTeams(art)) {
                         arts.addAll(ReviewManager.getReviews(team));
                      }
-                  } else if (art instanceof TeamWorkFlowArtifact) {
+                  } else if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                      arts.addAll(ReviewManager.getReviews((TeamWorkFlowArtifact) art));
                   }
                }

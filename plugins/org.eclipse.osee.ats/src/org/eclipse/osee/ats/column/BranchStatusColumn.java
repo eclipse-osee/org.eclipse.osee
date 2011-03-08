@@ -58,7 +58,7 @@ public class BranchStatusColumn extends XViewerAtsColumn implements IXViewerValu
             }
             return Collections.toString(", ", strs);
          }
-         if (element instanceof TeamWorkFlowArtifact) {
+         if (Artifacts.isOfType(element, AtsArtifactTypes.TeamWorkflow)) {
             TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) element;
             try {
                if (teamArt.getBranchMgr().isWorkingBranchInWork()) {

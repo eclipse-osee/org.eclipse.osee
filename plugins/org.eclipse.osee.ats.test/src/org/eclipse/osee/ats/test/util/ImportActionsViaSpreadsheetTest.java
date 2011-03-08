@@ -15,10 +15,10 @@ import static org.junit.Assert.assertFalse;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
-import org.junit.Assert;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.config.AtsBulkLoad;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.Import.ImportActionsViaSpreadsheetBlam;
 import org.eclipse.osee.ats.util.Import.ImportActionsViaSpreadsheetBlam.ImportOption;
@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
@@ -77,7 +78,7 @@ public class ImportActionsViaSpreadsheetTest {
       int codeCount = 0, testCount = 0;
       TeamWorkFlowArtifact testWf = null;
       for (Artifact art : arts) {
-         if (art instanceof TeamWorkFlowArtifact) {
+         if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
             TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) art;
             if (teamArt.getTeamDefinition().getName().contains("Code")) {
                codeCount++;

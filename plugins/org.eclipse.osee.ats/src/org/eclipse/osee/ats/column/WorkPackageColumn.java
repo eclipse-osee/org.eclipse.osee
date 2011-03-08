@@ -10,10 +10,12 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.swt.SWT;
 
 public class WorkPackageColumn extends XViewerAtsAttributeValueColumn {
@@ -42,7 +44,7 @@ public class WorkPackageColumn extends XViewerAtsAttributeValueColumn {
 
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
-      if (element instanceof TaskArtifact) {
+      if (Artifacts.isOfType(element, AtsArtifactTypes.Task)) {
          try {
             return getColumnText(((TaskArtifact) element).getParentTeamWorkflow(), column, columnIndex);
          } catch (OseeCoreException ex) {

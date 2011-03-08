@@ -17,7 +17,7 @@ import java.util.Set;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.artifact.AbstractReviewArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -50,10 +50,10 @@ public class MyWorldSearchItem extends UserSearchItem {
 
       List<Artifact> artifactsToReturn = new ArrayList<Artifact>(assigned.size());
       for (Artifact artifact : assigned) {
-         if (artifact instanceof TeamWorkFlowArtifact || artifact instanceof AbstractReviewArtifact) {
+         if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow) || artifact instanceof AbstractReviewArtifact) {
             artifactsToReturn.add(artifact);
          }
-         if (artifact instanceof TaskArtifact) {
+         if (artifact.isOfType(AtsArtifactTypes.Task)) {
             artifactsToReturn.add(((TaskArtifact) artifact).getParentTeamWorkflow());
          }
       }

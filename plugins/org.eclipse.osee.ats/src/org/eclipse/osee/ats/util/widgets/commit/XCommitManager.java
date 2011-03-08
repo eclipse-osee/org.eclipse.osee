@@ -23,6 +23,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -327,7 +328,7 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
 
    @Override
    public void setArtifact(Artifact artifact) throws OseeCoreException {
-      if (!(artifact instanceof TeamWorkFlowArtifact)) {
+      if (!(artifact.isOfType(AtsArtifactTypes.TeamWorkflow))) {
          throw new OseeStateException("Must be TeamWorkflowArtifact, set was a [%s]", artifact.getArtifactTypeName());
       }
       this.teamArt = (TeamWorkFlowArtifact) artifact;

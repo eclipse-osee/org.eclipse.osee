@@ -33,6 +33,7 @@ import org.eclipse.osee.ats.config.AtsBulkLoad;
 import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.IWorldViewerEventHandler;
@@ -48,6 +49,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction.IRefreshActionHandler;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
@@ -231,7 +233,7 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
       ArrayList<TaskArtifact> items = new ArrayList<TaskArtifact>();
       while (i.hasNext()) {
          Object obj = i.next();
-         if (obj instanceof TaskArtifact) {
+         if (Artifacts.isOfType(obj, AtsArtifactTypes.Task)) {
             items.add((TaskArtifact) obj);
          }
       }
@@ -304,7 +306,7 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
             final Artifact[] artsToRelate = ((ArtifactData) e.data).getArtifacts();
             SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Drop Add Tasks");
             for (Artifact art : artsToRelate) {
-               if (art instanceof TaskArtifact) {
+               if (art.isOfType(AtsArtifactTypes.Task)) {
                   TaskArtifact taskArt = (TaskArtifact) art;
                   // task dropped on same awa as current parent; do nothing
                   if (taskArt.getParentAWA().equals(iXTaskViewer.getAwa())) {

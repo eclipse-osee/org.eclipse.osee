@@ -16,6 +16,7 @@ import java.util.List;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskOptionStatusDialog;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
@@ -57,7 +58,7 @@ public class SMAPromptChangeStatus {
       }
       // If task status is being changed, make sure tasks belong to current state
       for (AbstractWorkflowArtifact awa : awas) {
-         if (awa instanceof TaskArtifact) {
+         if (awa.isOfType(AtsArtifactTypes.Task)) {
             TaskArtifact taskArt = (TaskArtifact) awa;
             if (!taskArt.isRelatedToParentWorkflowCurrentState()) {
                return new Result(
@@ -85,7 +86,7 @@ public class SMAPromptChangeStatus {
 
       // Access resolution options if object is task
       List<TaskResOptionDefinition> options = null;
-      if (awas.iterator().next() instanceof TaskArtifact && ((TaskArtifact) awas.iterator().next()).isUsingTaskResolutionOptions()) {
+      if (awas.iterator().next().isOfType(AtsArtifactTypes.Task) && ((TaskArtifact) awas.iterator().next()).isUsingTaskResolutionOptions()) {
          options = ((TaskArtifact) awas.iterator().next()).getTaskResolutionOptionDefintions();
       }
       TaskOptionStatusDialog tsd =
@@ -116,7 +117,7 @@ public class SMAPromptChangeStatus {
          if (options != null) {
             awa.setSoleAttributeValue(AtsAttributeTypes.Resolution, selectedOption);
          }
-         if (awa instanceof TaskArtifact) {
+         if (awa.isOfType(AtsArtifactTypes.Task)) {
             ((TaskArtifact) awa).statusPercentChanged(hours, percent, transaction);
          } else {
             if (awa.getWorkDefinition().isStateWeightingEnabled()) {

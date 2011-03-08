@@ -163,7 +163,7 @@ public class DemoTestUtil {
       if (toolsTeamWorkflow == null) {
          for (Artifact art : ArtifactQuery.getArtifactListFromName("Button S doesn't work on help",
             AtsUtil.getAtsBranch(), EXCLUDE_DELETED)) {
-            if (art instanceof TeamWorkFlowArtifact) {
+            if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                toolsTeamWorkflow = (TeamWorkFlowArtifact) art;
             }
          }

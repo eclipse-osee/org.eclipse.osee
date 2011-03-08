@@ -14,6 +14,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.goal.GoalXViewerFactory;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.GoalManager;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldLabelProvider;
@@ -22,6 +23,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -98,10 +100,9 @@ public class GoalOrderColumn extends XViewerAtsColumn implements IXViewerValueCo
    }
 
    public static GoalArtifact getParentGoalArtifact(TreeItem treeItem) {
-      if (Widgets.isAccessible(treeItem) && Widgets.isAccessible(treeItem.getParentItem()) && treeItem.getParentItem().getData() instanceof GoalArtifact) {
+      if (Widgets.isAccessible(treeItem) && Widgets.isAccessible(treeItem.getParentItem()) && Artifacts.isOfType(treeItem.getParentItem().getData(), AtsArtifactTypes.Goal)) {
          return (GoalArtifact) treeItem.getParentItem().getData();
       }
       return null;
    }
-
 }

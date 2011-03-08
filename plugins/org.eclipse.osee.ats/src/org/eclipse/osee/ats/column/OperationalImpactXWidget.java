@@ -9,6 +9,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -91,7 +92,7 @@ public class OperationalImpactXWidget extends XComboWithText implements IArtifac
 
    @Override
    public void setArtifact(Artifact artifact) {
-      if (artifact instanceof TeamWorkFlowArtifact) {
+      if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
          teamArt = (TeamWorkFlowArtifact) artifact;
       }
    }

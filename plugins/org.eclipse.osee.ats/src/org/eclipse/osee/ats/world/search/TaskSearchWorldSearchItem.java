@@ -150,7 +150,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
          Set<TaskArtifact> taskArts = new HashSet<TaskArtifact>();
          for (Artifact groupArt : groups) {
             for (Artifact art : groupArt.getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Members)) {
-               if (art instanceof TaskArtifact) {
+               if (art.isOfType(AtsArtifactTypes.Task)) {
                   taskArts.add((TaskArtifact) art);
                } else if (art instanceof AbstractTaskableArtifact) {
                   taskArts.addAll(((AbstractTaskableArtifact) art).getTaskArtifacts());
