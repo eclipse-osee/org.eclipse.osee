@@ -22,14 +22,9 @@ import java.util.logging.Level;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
-import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
-import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.navigate.AtsXNavigateItemLauncher;
@@ -57,6 +52,7 @@ import org.eclipse.osee.ats.world.search.UserCommunitySearchItem;
 import org.eclipse.osee.ats.world.search.UserSearchItem;
 import org.eclipse.osee.ats.world.search.UserWorldSearchItem.UserSearchOption;
 import org.eclipse.osee.ats.world.search.VersionTargetedForTeamSearchItem;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -91,7 +87,7 @@ public class AtsNavigateItemsToWorldViewTest {
 
    @org.junit.Test
    public void testAttributeDeletion() throws Exception {
-      Collection<Artifact> arts = runGeneralLoadingTest("My Favorites", TeamWorkFlowArtifact.class, 3, null);
+      Collection<Artifact> arts = runGeneralLoadingTest("My Favorites", AtsArtifactTypes.TeamWorkflow, 3, null);
       arts.clear();
       NavigateTestUtil.getAllArtifactChildren(getXViewer().getTree().getItems(), arts);
       // delete an artifact, look for expected !Errors in the XCol
@@ -102,7 +98,7 @@ public class AtsNavigateItemsToWorldViewTest {
 
    @org.junit.Test
    public void testMyWorld() throws Exception {
-      runGeneralLoadingTest("My World", AbstractWorkflowArtifact.class, 11, null);
+      runGeneralLoadingTest("My World", AtsArtifactTypes.AbstractWorkflowArtifact, 11, null);
       runGeneralXColTest(28, false);
    }
 
@@ -134,7 +130,7 @@ public class AtsNavigateItemsToWorldViewTest {
       }
       // Test that recently visited returns all three
       Collection<Artifact> artsLoaded = editor.getLoadedArtifacts();
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), artsLoaded, TeamWorkFlowArtifact.class, 3);
+      NavigateTestUtil.testExpectedVersusActual(item.getName(), artsLoaded, AtsArtifactTypes.TeamWorkflow, 3);
       runGeneralXColTest(20, false);
    }
 
@@ -160,7 +156,7 @@ public class AtsNavigateItemsToWorldViewTest {
       ((UserSearchWorkflowSearchItem) dwl).setSelectedState(TeamState.Implement.getPageName());
       editor.getWorldXWidgetActionPage().reSearch(true);
       Collection<Artifact> arts = editor.getLoadedArtifacts();
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AbstractWorkflowArtifact.class, 7);
+      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.AbstractWorkflowArtifact, 7);
    }
 
    @org.junit.Test
@@ -175,8 +171,8 @@ public class AtsNavigateItemsToWorldViewTest {
       editor.getWorldXWidgetActionPage().reSearch(true);
 
       Collection<Artifact> arts = editor.getLoadedArtifacts();
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, PeerToPeerReviewArtifact.class, 2);
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, DecisionReviewArtifact.class, 2);
+      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.PeerToPeerReview, 2);
+      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.DecisionReview, 2);
       runGeneralXColTest(4, false);
    }
 
@@ -194,8 +190,8 @@ public class AtsNavigateItemsToWorldViewTest {
       editor.getWorldXWidgetActionPage().reSearch(true);
 
       Collection<Artifact> arts = editor.getLoadedArtifacts();
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, PeerToPeerReviewArtifact.class, 2);
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, DecisionReviewArtifact.class, 3);
+      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.PeerToPeerReview, 2);
+      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.DecisionReview, 3);
       runGeneralXColTest(5, false);
    }
 
@@ -209,11 +205,11 @@ public class AtsNavigateItemsToWorldViewTest {
       editor.getWorldXWidgetActionPage().reSearch(true);
 
       Collection<Artifact> arts = editor.getLoadedArtifacts();
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, TaskArtifact.class, DemoTestUtil.getNumTasks());
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, TeamWorkFlowArtifact.class, 18);
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, PeerToPeerReviewArtifact.class, 2);
+      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.Task, DemoTestUtil.getNumTasks());
+      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.TeamWorkflow, 18);
+      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.PeerToPeerReview, 2);
       // Only 2 decision reviews should have been created by Joe, rest are Rule reviews created by OseeSystem user
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, DecisionReviewArtifact.class, 2);
+      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.DecisionReview, 2);
    }
 
    @org.junit.Test
@@ -227,10 +223,10 @@ public class AtsNavigateItemsToWorldViewTest {
       editor.getWorldXWidgetActionPage().reSearch(true);
 
       Collection<Artifact> arts = editor.getLoadedArtifacts();
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, TaskArtifact.class, DemoTestUtil.getNumTasks());
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, TeamWorkFlowArtifact.class, 25);
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, PeerToPeerReviewArtifact.class, 2);
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, DecisionReviewArtifact.class, 3);
+      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.Task, DemoTestUtil.getNumTasks());
+      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.TeamWorkflow, 25);
+      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.PeerToPeerReview, 2);
+      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.DecisionReview, 3);
       runGeneralXColTest(74, false);
    }
 
@@ -254,16 +250,16 @@ public class AtsNavigateItemsToWorldViewTest {
       editor.getWorldXWidgetActionPage().reSearch(true);
 
       Collection<Artifact> arts = editor.getLoadedArtifacts();
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, TeamWorkFlowArtifact.class, 7);
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, PeerToPeerReviewArtifact.class, 2);
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, DecisionReviewArtifact.class, 3);
+      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.TeamWorkflow, 7);
+      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.PeerToPeerReview, 2);
+      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.DecisionReview, 3);
       runGeneralXColTest(29, false);
    }
 
    @org.junit.Test
    public void testMyRecentlyVisited() throws Exception {
       // Load Recently Visited
-      runGeneralLoadingTest("My Recently Visited", TeamWorkFlowArtifact.class, 3, null);
+      runGeneralLoadingTest("My Recently Visited", AtsArtifactTypes.TeamWorkflow, 3, null);
    }
 
    @org.junit.Test
@@ -271,7 +267,8 @@ public class AtsNavigateItemsToWorldViewTest {
       OseeLog.log(AtsPlugin.class, Level.INFO,
          "Testing User's items relating to " + DemoTestUtil.getDemoUser(DemoUsers.Kay_Jones));
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItems("User's World").iterator().next();
-      runGeneralLoadingTest(item, AbstractWorkflowArtifact.class, 8, DemoTestUtil.getDemoUser(DemoUsers.Kay_Jones));
+      runGeneralLoadingTest(item, AtsArtifactTypes.AbstractWorkflowArtifact, 8,
+         DemoTestUtil.getDemoUser(DemoUsers.Kay_Jones));
    }
 
    @org.junit.Test
@@ -286,7 +283,7 @@ public class AtsNavigateItemsToWorldViewTest {
       editor.getWorldXWidgetActionPage().reSearch(true);
 
       Collection<Artifact> arts = editor.getLoadedArtifacts();
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, PeerToPeerReviewArtifact.class, 1);
+      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.PeerToPeerReview, 1);
    }
 
    @org.junit.Test
@@ -302,7 +299,7 @@ public class AtsNavigateItemsToWorldViewTest {
       editor.getWorldXWidgetActionPage().reSearch(true);
 
       Collection<Artifact> arts = editor.getLoadedArtifacts();
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, PeerToPeerReviewArtifact.class, 1);
+      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.PeerToPeerReview, 1);
    }
 
    @org.junit.Test
@@ -344,8 +341,8 @@ public class AtsNavigateItemsToWorldViewTest {
       Collection<Artifact> arts = worldEditor.getLoadedArtifacts();
 
       NavigateTestUtil.testExpectedVersusActual(item.getName() + " Actions", arts, AtsArtifactTypes.Action, 2);
-      NavigateTestUtil.testExpectedVersusActual(item.getName() + " Teams", arts, TeamWorkFlowArtifact.class, 7);
-      NavigateTestUtil.testExpectedVersusActual(item.getName() + " Tasks", arts, TaskArtifact.class,
+      NavigateTestUtil.testExpectedVersusActual(item.getName() + " Teams", arts, AtsArtifactTypes.TeamWorkflow, 7);
+      NavigateTestUtil.testExpectedVersusActual(item.getName() + " Tasks", arts, AtsArtifactTypes.Task,
          DemoTestUtil.getNumTasks());
    }
 
@@ -425,7 +422,7 @@ public class AtsNavigateItemsToWorldViewTest {
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof UserCommunitySearchItem);
       ((UserCommunitySearchItem) ((SearchNavigateItem) item).getWorldSearchItem()).setSelectedUserComm(AtsUserCommunity.Program_2.name());
       // normal searches copy search item which would clear out the set value above; for this test, don't copy item
-      runGeneralLoadingTest(item, TeamWorkFlowArtifact.class, 4, null, TableLoadOption.DontCopySearchItem);
+      runGeneralLoadingTest(item, AtsArtifactTypes.TeamWorkflow, 4, null, TableLoadOption.DontCopySearchItem);
    }
 
    @org.junit.Test
@@ -434,7 +431,7 @@ public class AtsNavigateItemsToWorldViewTest {
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof ActionableItemWorldSearchItem);
       ((ActionableItemWorldSearchItem) ((SearchNavigateItem) item).getWorldSearchItem()).setSelectedActionItems(ActionableItemArtifact.getActionableItems(Arrays.asList("SAW Code")));
       // normal searches copy search item which would clear out the set value above; for this test, don't copy item
-      runGeneralLoadingTest(item, TeamWorkFlowArtifact.class, 3, null, TableLoadOption.DontCopySearchItem);
+      runGeneralLoadingTest(item, AtsArtifactTypes.TeamWorkflow, 3, null, TableLoadOption.DontCopySearchItem);
    }
 
    @org.junit.Test
@@ -445,7 +442,7 @@ public class AtsNavigateItemsToWorldViewTest {
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof VersionTargetedForTeamSearchItem);
       ((VersionTargetedForTeamSearchItem) ((SearchNavigateItem) item).getWorldSearchItem()).setSelectedVersionArt(VersionManager.getVersions(
          Arrays.asList(DemoSawBuilds.SAW_Bld_2.getName())).iterator().next());
-      runGeneralLoadingTest(item, TeamWorkFlowArtifact.class, 14, null, TableLoadOption.DontCopySearchItem);
+      runGeneralLoadingTest(item, AtsArtifactTypes.TeamWorkflow, 14, null, TableLoadOption.DontCopySearchItem);
    }
 
    @org.junit.Test
@@ -456,51 +453,51 @@ public class AtsNavigateItemsToWorldViewTest {
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof NextVersionSearchItem);
       ((NextVersionSearchItem) ((SearchNavigateItem) item).getWorldSearchItem()).setSelectedTeamDef(TeamDefinitionArtifact.getTeamDefinitions(
          Arrays.asList("SAW SW")).iterator().next());
-      runGeneralLoadingTest(item, TeamWorkFlowArtifact.class, 14, null, TableLoadOption.DontCopySearchItem);
+      runGeneralLoadingTest(item, AtsArtifactTypes.TeamWorkflow, 14, null, TableLoadOption.DontCopySearchItem);
    }
 
    @org.junit.Test
    public void testShowOpenDecisionReviewsSearch() throws Exception {
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Show Open Decision Reviews");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof ShowOpenWorkflowsByArtifactType);
-      runGeneralLoadingTest(item, DecisionReviewArtifact.class, 7);
+      runGeneralLoadingTest(item, AtsArtifactTypes.DecisionReview, 7);
    }
 
    @org.junit.Test
    public void testShowWorkflowsWaitingForDecisionReviewsSearch() throws Exception {
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Show Workflows Waiting Decision Reviews");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof ShowOpenWorkflowsByArtifactType);
-      runGeneralLoadingTest(item, TeamWorkFlowArtifact.class, 7);
+      runGeneralLoadingTest(item, AtsArtifactTypes.TeamWorkflow, 7);
    }
 
    @org.junit.Test
    public void testShowOpenPeerToPeerReviewsSearch() throws Exception {
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Show Open PeerToPeer Reviews");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof ShowOpenWorkflowsByArtifactType);
-      runGeneralLoadingTest(item, PeerToPeerReviewArtifact.class, 7);
+      runGeneralLoadingTest(item, AtsArtifactTypes.PeerToPeerReview, 7);
    }
 
    @org.junit.Test
    public void testShowWorkflowsWaitingForPeerToPeerReviewsSearch() throws Exception {
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Show Workflows Waiting PeerToPeer Reviews");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof ShowOpenWorkflowsByArtifactType);
-      runGeneralLoadingTest(item, TeamWorkFlowArtifact.class, 6);
+      runGeneralLoadingTest(item, AtsArtifactTypes.TeamWorkflow, 6);
    }
 
-   private Collection<Artifact> runGeneralLoadingTest(String xNavigateItemName, Class<?> clazz, int numOfType, User user) throws Exception {
+   private Collection<Artifact> runGeneralLoadingTest(String xNavigateItemName, IArtifactType artifactType, int numOfType, User user) throws Exception {
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem(xNavigateItemName);
-      return runGeneralLoadingTest(item, clazz, numOfType, user);
+      return runGeneralLoadingTest(item, artifactType, numOfType, user);
    }
 
-   private Collection<Artifact> runGeneralLoadingTest(XNavigateItem item, Class<?> clazz, int numOfType) throws Exception {
-      return runGeneralLoadingTest(item, clazz, numOfType, null);
+   private Collection<Artifact> runGeneralLoadingTest(XNavigateItem item, IArtifactType artifactType, int numOfType) throws Exception {
+      return runGeneralLoadingTest(item, artifactType, numOfType, null);
    }
 
-   private Collection<Artifact> runGeneralLoadingTest(XNavigateItem item, Class<?> clazz, int numOfType, User user) throws Exception {
-      return runGeneralLoadingTest(item, clazz, numOfType, user, TableLoadOption.None);
+   private Collection<Artifact> runGeneralLoadingTest(XNavigateItem item, IArtifactType artifactType, int numOfType, User user) throws Exception {
+      return runGeneralLoadingTest(item, artifactType, numOfType, user, TableLoadOption.None);
    }
 
-   private Collection<Artifact> runGeneralLoadingTest(XNavigateItem item, Class<?> clazz, int numOfType, User user, TableLoadOption tableLoadOption) throws Exception {
+   private Collection<Artifact> runGeneralLoadingTest(XNavigateItem item, IArtifactType artifactType, int numOfType, User user, TableLoadOption tableLoadOption) throws Exception {
       WorldEditor.closeAll();
       // Find the correct navigate item
       if (user != null && item instanceof SearchNavigateItem) {
@@ -513,7 +510,7 @@ public class AtsNavigateItemsToWorldViewTest {
 
       WorldEditor worldEditor = getSingleEditorOrFail();
       Collection<Artifact> arts = worldEditor.getLoadedArtifacts();
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, clazz, numOfType);
+      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, artifactType, numOfType);
       return arts;
    }
 

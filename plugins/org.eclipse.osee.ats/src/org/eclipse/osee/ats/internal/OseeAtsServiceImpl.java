@@ -88,7 +88,7 @@ public class OseeAtsServiceImpl implements IOseeCmService {
 
    @Override
    public boolean isPcrArtifact(Artifact artifact) {
-      return artifact instanceof AbstractWorkflowArtifact;
+      return AtsUtil.isAtsArtifact(artifact);
    }
 
    @Override

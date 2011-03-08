@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.skynet.core.relation.crossbranch.CrossBranchLinkManager;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
@@ -147,7 +146,7 @@ public class SMARelationsHyperlinkComposite extends Composite {
 
             @Override
             public void linkActivated(HyperlinkEvent e) {
-               if (art instanceof IATSArtifact) {
+               if (AtsUtil.isAtsArtifact(art)) {
                   AtsUtil.openATSAction(art, AtsOpenOption.OpenOneOrPopupSelect);
                } else {
                   try {

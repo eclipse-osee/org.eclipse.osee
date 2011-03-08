@@ -36,7 +36,6 @@ import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction.IRefreshActionHandler;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
@@ -130,7 +129,7 @@ public class WorldComposite extends ScrolledComposite implements IWorldViewerEve
             worldArts.clear();
             otherArts.clear();
             for (Artifact art : arts) {
-               if (art instanceof IATSArtifact) {
+               if (AtsUtil.isAtsArtifact(art)) {
                   worldArts.add(art);
                } else {
                   otherArts.add(art);

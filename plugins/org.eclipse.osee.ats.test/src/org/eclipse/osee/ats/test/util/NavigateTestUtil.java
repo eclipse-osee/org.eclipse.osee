@@ -94,14 +94,6 @@ public final class NavigateTestUtil {
       }
    }
 
-   public static void testExpectedVersusActual(String name, Collection<? extends Artifact> arts, Class<?> clazz, int expectedNumOfType) {
-      int actualNumOfType = numOfType(arts, clazz);
-      String expectedStr =
-         String.format("\"%s\"   Expected: %s   Found: %s   Of Type: %s", name, expectedNumOfType, actualNumOfType,
-            clazz);
-      compare(expectedNumOfType, actualNumOfType, expectedStr);
-   }
-
    public static void testExpectedVersusActual(String name, Collection<? extends Artifact> arts, IArtifactType artType, int expectedNumOfType) {
       int actualNumOfType = numOfType(arts, artType);
       String expectedStr =
@@ -136,16 +128,6 @@ public final class NavigateTestUtil {
          OseeLog.log(AtsPlugin.class, Level.INFO, expectedStr);
       }
       Assert.assertTrue(expectedStr, expectedCond == actualCond);
-   }
-
-   public static int numOfType(Collection<? extends Artifact> arts, Class<?> clazz) {
-      int num = 0;
-      for (Artifact art : arts) {
-         if (clazz.isAssignableFrom(art.getClass())) {
-            num++;
-         }
-      }
-      return num;
    }
 
    public static int numOfType(Collection<? extends Artifact> arts, IArtifactType artType) {

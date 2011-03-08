@@ -40,7 +40,6 @@ import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal;
@@ -571,7 +570,7 @@ public class MergeXWidget extends GenericXWidget implements IAdaptable {
          try {
             Branch sourceBranch = storedConflicts[0].getSourceBranch();
             Artifact branchAssociatedArtifact = BranchManager.getAssociatedArtifact(sourceBranch);
-            if (branchAssociatedArtifact instanceof IATSArtifact) {
+            if (OseeCm.getInstance().isPcrArtifact(branchAssociatedArtifact)) {
                OseeCm.getInstance().openArtifact(branchAssociatedArtifact, OseeCmEditor.CmPcrEditor);
             } else if (!branchAssociatedArtifact.equals(UserManager.getUser(SystemUser.OseeSystem))) {
                RendererManager.open(branchAssociatedArtifact, PresentationType.SPECIALIZED_EDIT);

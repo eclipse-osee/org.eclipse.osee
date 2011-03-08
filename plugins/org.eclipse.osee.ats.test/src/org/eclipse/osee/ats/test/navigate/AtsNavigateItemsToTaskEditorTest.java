@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.test.util.DemoTestUtil;
 import org.eclipse.osee.ats.test.util.NavigateTestUtil;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.search.TaskSearchWorldSearchItem;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -62,8 +63,7 @@ public class AtsNavigateItemsToTaskEditorTest {
       TaskEditor.closeAll();
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Task Search");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof TaskSearchWorldSearchItem);
-      handleGeneralDoubleClickAndTestResults(item, TaskSearchWorldSearchItem.class, 0,
-         TableLoadOption.DontCopySearchItem);
+      handleGeneralDoubleClickAndTestResults(item, CoreArtifactTypes.Artifact, 0, TableLoadOption.DontCopySearchItem);
       runGeneralTaskSearchOnCompletedCancelledTest(item, true, 14);
       runGeneralTaskSearchOnCompletedCancelledTest(item, false, 0);
       runGeneralTaskSearchOnTeamTest(item, selectedUsers, 0);
@@ -127,12 +127,12 @@ public class AtsNavigateItemsToTaskEditorTest {
       runGeneralTaskSearchTest(item, expectedNum);
    }
 
-   public void handleGeneralDoubleClickAndTestResults(XNavigateItem item, Class<?> clazz, int numOfType, TableLoadOption tableLoadOption) throws OseeCoreException {
+   public void handleGeneralDoubleClickAndTestResults(XNavigateItem item, IArtifactType artifactType, int numOfType, TableLoadOption tableLoadOption) throws OseeCoreException {
       AtsXNavigateItemLauncher.handleDoubleClick(item, TableLoadOption.ForcePend, TableLoadOption.NoUI, tableLoadOption);
       TaskEditor taskEditor = getSingleEditorOrFail();
       assertTrue(taskEditor != null);
       Collection<Artifact> arts = taskEditor.getLoadedArtifacts();
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, clazz, numOfType);
+      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, artifactType, numOfType);
    }
 
    public TaskEditor getSingleEditorOrFail() {

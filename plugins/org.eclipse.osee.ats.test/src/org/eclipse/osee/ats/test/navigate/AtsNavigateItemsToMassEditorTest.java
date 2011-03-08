@@ -12,14 +12,14 @@ package org.eclipse.osee.ats.test.navigate;
 
 import java.util.Collection;
 import java.util.Collections;
-import org.junit.Assert;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.artifact.VersionCommitConfigArtifact;
 import org.eclipse.osee.ats.navigate.AtsXNavigateItemLauncher;
 import org.eclipse.osee.ats.navigate.MassEditTeamVersionItem;
 import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.test.util.DemoTestUtil;
 import org.eclipse.osee.ats.test.util.NavigateTestUtil;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEdit
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 
 /**
@@ -54,15 +55,15 @@ public class AtsNavigateItemsToMassEditorTest {
       Assert.assertFalse(teamDefs.isEmpty());
 
       massEditItem.setSelectedTeamDef(teamDefs.iterator().next());
-      handleGeneralDoubleClickAndTestResults(item, VersionCommitConfigArtifact.class, 3);
+      handleGeneralDoubleClickAndTestResults(item, AtsArtifactTypes.Version, 3);
    }
 
-   private void handleGeneralDoubleClickAndTestResults(XNavigateItem item, Class<?> clazz, int numOfType) throws OseeCoreException {
+   private void handleGeneralDoubleClickAndTestResults(XNavigateItem item, IArtifactType artifactType, int numOfType) throws OseeCoreException {
       AtsXNavigateItemLauncher.handleDoubleClick(item, TableLoadOption.ForcePend, TableLoadOption.NoUI);
       MassArtifactEditor massEditor = getMassArtifactEditor();
       Assert.assertNotNull(massEditor);
       Collection<Artifact> arts = massEditor.getLoadedArtifacts();
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, clazz, numOfType);
+      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, artifactType, numOfType);
    }
 
    private MassArtifactEditor getMassArtifactEditor() {

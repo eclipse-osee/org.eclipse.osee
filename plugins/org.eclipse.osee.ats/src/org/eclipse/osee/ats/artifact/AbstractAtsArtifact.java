@@ -16,9 +16,8 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
-import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 
-public abstract class AbstractAtsArtifact extends Artifact implements IATSArtifact {
+public abstract class AbstractAtsArtifact extends Artifact {
 
    public AbstractAtsArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
@@ -29,7 +28,6 @@ public abstract class AbstractAtsArtifact extends Artifact implements IATSArtifa
    }
 
    @SuppressWarnings("unused")
-   @Override
    public Artifact getParentAtsArtifact() throws OseeCoreException {
       return null;
    }

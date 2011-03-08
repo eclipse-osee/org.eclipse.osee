@@ -21,7 +21,6 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
@@ -118,13 +117,13 @@ public class WorldXViewerEventManager {
       private void processArtifact(WorldXViewer worldViewer, Artifact artifact) {
          try {
             // Don't refresh deleted artifacts
-            if (!artifact.isDeleted() && artifact instanceof IATSArtifact) {
+            if (!artifact.isDeleted() && AtsUtil.isAtsArtifact(artifact)) {
                worldViewer.refresh(artifact);
                // If parent is loaded and child changed, refresh parent
                if (artifact instanceof AbstractWorkflowArtifact) {
                   AbstractWorkflowArtifact smaArt = (AbstractWorkflowArtifact) artifact;
                   Artifact smaParent = smaArt.getParentAtsArtifact();
-                  if (smaParent instanceof IATSArtifact) {
+                  if (AtsUtil.isAtsArtifact(smaParent)) {
                      worldViewer.refresh(smaParent);
                   }
                }
