@@ -15,7 +15,9 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import junit.framework.Assert;
+
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
@@ -134,10 +136,6 @@ public class BranchEventTest {
       ConflictManagerExternal conflictManager = new ConflictManagerExternal(topLevel, workingBranch);
       BranchManager.commitBranch(null, conflictManager, true, true);
 
-      //      if (isRemoteTest()) {
-      //         Thread.sleep(2000);
-      //      }
-
       Assert.assertNotNull(resultBranchEvent);
       Assert.assertEquals(BranchEventType.Committed, resultBranchEvent.getEventType());
       if (isRemoteTest()) {
@@ -163,10 +161,6 @@ public class BranchEventTest {
       Assert.assertNotNull(workingBranch);
 
       BranchManager.purgeBranchPending(workingBranch);
-
-      //      if (isRemoteTest()) {
-      //         Thread.sleep(2000);
-      //      }
 
       Assert.assertNotNull(resultBranchEvent);
       Assert.assertEquals(BranchEventType.Purged, resultBranchEvent.getEventType());

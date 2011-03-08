@@ -12,10 +12,8 @@ package org.eclipse.osee.framework.access.internal;
 
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.access.AccessControlData;
-import org.eclipse.osee.framework.access.AccessObject;
+
 import org.eclipse.osee.framework.access.internal.data.ArtifactAccessObject;
-import org.eclipse.osee.framework.access.internal.data.BranchAccessObject;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -39,13 +37,11 @@ import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 public final class AccessEventListener implements IBranchEventListener, IAccessControlEventListener, IArtifactEventListener {
 
    private final AccessControlService service;
+   private final AccessControlCacheHandler accessControlCacheHandler;
 
-   public AccessEventListener(AccessControlService service) {
+   public AccessEventListener(AccessControlService service, AccessControlCacheHandler accessControlCacheHandler) {
+      this.accessControlCacheHandler = accessControlCacheHandler;
       this.service = service;
-   }
-
-   private void reload() throws OseeCoreException {
-      service.reloadCache();
    }
 
    @Override
@@ -53,7 +49,7 @@ public final class AccessEventListener implements IBranchEventListener, IAccessC
       for (EventBasicGuidArtifact guidArt : artifactEvent.getArtifacts()) {
          if (guidArt.is(EventModType.Added) && guidArt.is(CoreArtifactTypes.User)) {
             try {
-               reload();
+               accessControlCacheHandler.reloadCache(service);
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
@@ -63,7 +59,7 @@ public final class AccessEventListener implements IBranchEventListener, IAccessC
                Artifact cacheArt = ArtifactCache.getActive(guidArt);
                if (cacheArt != null) {
                   ArtifactAccessObject artifactAccessObject = ArtifactAccessObject.getArtifactAccessObject(cacheArt);
-                  updateAccessList(sender, artifactAccessObject);
+                  accessControlCacheHandler.updateAccessList(service, artifactAccessObject);
                }
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -81,20 +77,11 @@ public final class AccessEventListener implements IBranchEventListener, IAccessC
    @Override
    public void handleBranchEvent(Sender sender, final BranchEvent branchEvent) {
       try {
-         if (branchEvent.getEventType() == BranchEventType.Deleted || (!sender.isLocal() && branchEvent.getEventType() == BranchEventType.Purged)) {
-            BranchAccessObject branchAccessObject =
-               BranchAccessObject.getBranchAccessObject(branchEvent.getBranchGuid());
-            updateAccessList(sender, branchAccessObject);
+         if (branchEvent.getEventType() == BranchEventType.Deleted) {
+            accessControlCacheHandler.updateAccessListForBranchObject(service, branchEvent.getBranchGuid());
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
-   }
-
-   private void updateAccessList(Sender sender, AccessObject accessObject) throws OseeCoreException {
-      List<AccessControlData> acl = service.generateAccessControlList(accessObject);
-      for (AccessControlData accessControlData : acl) {
-         service.removeAccessControlDataIf(false, accessControlData);
       }
    }
 
@@ -103,7 +90,7 @@ public final class AccessEventListener implements IBranchEventListener, IAccessC
       try {
          // local is handled by operations against cache
          if (sender.isRemote()) {
-            service.reloadCache();
+            accessControlCacheHandler.reloadCache(service);
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

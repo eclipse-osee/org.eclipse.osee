@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.branch.management.purge;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.enums.StorageState;
@@ -48,6 +49,8 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
       "DELETE FROM osee_merge WHERE merge_branch_id = ? AND source_branch_id = ?";
    private static final String DELETE_FROM_CONFLICT = "DELETE FROM osee_conflict WHERE merge_branch_id = ?";
    private static final String DELETE_FROM_TX_DETAILS = "DELETE FROM osee_tx_details WHERE branch_id = ?";
+   private final String DELETE_ARTIFACT_ACL_FROM_BRANCH = "DELETE FROM OSEE_ARTIFACT_ACL WHERE  branch_id =?";
+   private final String DELETE_BRANCH_ACL_FROM_BRANCH = "DELETE FROM OSEE_BRANCH_ACL WHERE branch_id =?";
 
    private final Branch branch;
    private final List<Object[]> deleteableGammas = new ArrayList<Object[]>();
@@ -95,6 +98,13 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
       branch.setStorageState(StorageState.PURGED);
       branchCache.storeItems(branch);
       branch.internalRemovePurgedBranchFromParent();
+
+      purgeAccessControlTables(branch);
+   }
+
+   private void purgeAccessControlTables(Branch branch) throws OseeCoreException {
+      databaseService.runPreparedUpdate(DELETE_ARTIFACT_ACL_FROM_BRANCH, branch.getId());
+      databaseService.runPreparedUpdate(DELETE_BRANCH_ACL_FROM_BRANCH, branch.getId());
    }
 
    private void purgeGammas(String tableName, double percentage) throws OseeCoreException {

@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.access.internal;
 
 import java.util.Map;
+
 import org.eclipse.osee.framework.core.services.IAccessControlService;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.util.AbstractTrackingHandler;
@@ -47,7 +48,7 @@ public final class AccessControlServiceRegHandler extends AbstractTrackingHandle
       accessService = new AccessControlService(databaseService, cachingService);
       serviceRegistration = context.registerService(IAccessControlService.class.getName(), accessService, null);
 
-      accessEventListener = new AccessEventListener(accessService);
+      accessEventListener = new AccessEventListener(accessService, new AccessControlCacheHandler());
       OseeEventManager.addPriorityListener(accessEventListener);
    }
 

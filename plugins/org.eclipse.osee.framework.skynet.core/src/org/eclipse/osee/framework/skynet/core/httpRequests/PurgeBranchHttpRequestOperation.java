@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.httpRequests;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
@@ -55,7 +56,9 @@ public final class PurgeBranchHttpRequestOperation extends AbstractOperation {
       if (response.wasSuccessful()) {
          branch.setStorageState(StorageState.PURGED);
          branch.setArchived(true);
-         Activator.getInstance().getAccessControlService().removePermissions(branch);
+
+         //The access control list could be updated here
+
          BranchManager.decache(branch);
          OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.Purged, branch.getGuid()),
             branch.getId());
