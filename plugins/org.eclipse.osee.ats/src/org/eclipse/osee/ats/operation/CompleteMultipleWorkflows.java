@@ -46,14 +46,14 @@ public class CompleteMultipleWorkflows extends Action {
    @Override
    public void run() {
       try {
-         Collection<AbstractWorkflowArtifact> smas =
+         Collection<AbstractWorkflowArtifact> awas =
             worldEditor.getWorldComposite().getXViewer().getSelectedSMAArtifacts();
-         if (smas.isEmpty()) {
+         if (awas.isEmpty()) {
             AWorkbench.popup("ERROR", "Must select one or more workflows");
             return;
          }
-         for (AbstractWorkflowArtifact sma : smas) {
-            TransitionManager transitionMgr = new TransitionManager(sma);
+         for (AbstractWorkflowArtifact awa : awas) {
+            TransitionManager transitionMgr = new TransitionManager(awa);
             Result result = transitionMgr.isTransitionValid(TeamState.Completed, null, TransitionOption.None);
             if (result.isFalse()) {
                result.popup();
@@ -66,8 +66,8 @@ public class CompleteMultipleWorkflows extends Action {
                AtsUtil.setEmailEnabled(enableEmail);
                SkynetTransaction transaction =
                   new SkynetTransaction(AtsUtil.getAtsBranch(), "Complete Multiple Workflows");
-               for (AbstractWorkflowArtifact sma : smas) {
-                  TransitionManager transitionMgr = new TransitionManager(sma);
+               for (AbstractWorkflowArtifact awa : awas) {
+                  TransitionManager transitionMgr = new TransitionManager(awa);
                   Result result =
                      transitionMgr.transitionToCompleted(ed.getEntry(), transaction, TransitionOption.Persist);
                   if (result.isFalse()) {

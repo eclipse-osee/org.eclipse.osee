@@ -67,7 +67,7 @@ public class ShowBranchChangeDataAction extends Action {
       return ImageManager.getImageDescriptor(AtsImage.WORKFLOW_CONFIG);
    }
 
-   public static boolean isApplicable(AbstractWorkflowArtifact sma) {
-      return sma instanceof TeamWorkFlowArtifact;
+   public static boolean isApplicable(AbstractWorkflowArtifact awa) {
+      return awa instanceof TeamWorkFlowArtifact;
    }
 }

@@ -71,7 +71,7 @@ public class HoursSpentStateReviewColumn extends XViewerAtsColumn implements IXV
          }
          return hours;
       }
-      if (artifact.isOfType(AtsArtifactTypes.StateMachineArtifact)) {
+      if (artifact.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
          return getHoursSpentStateReview(artifact,
             ((AbstractWorkflowArtifact) artifact).getStateMgr().getCurrentState());
       }

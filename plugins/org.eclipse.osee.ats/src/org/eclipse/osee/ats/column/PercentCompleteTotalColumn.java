@@ -67,7 +67,7 @@ public class PercentCompleteTotalColumn extends XViewerAtsColumn implements IXVi
     * percent = all state's percents / number of states (minus completed/canceled)
     */
    public static int getPercentCompleteTotal(Artifact artifact) throws OseeCoreException {
-      if (!(artifact.isOfType(AtsArtifactTypes.StateMachineArtifact))) {
+      if (!(artifact.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact))) {
          return 0;
       }
       AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
@@ -116,7 +116,7 @@ public class PercentCompleteTotalColumn extends XViewerAtsColumn implements IXVi
     * Add percent represented by percent attribute, percent for reviews and tasks divided by number of objects.
     */
    private static int getPercentCompleteSMASinglePercent(Artifact artifact) throws OseeCoreException {
-      if (!(artifact.isOfType(AtsArtifactTypes.StateMachineArtifact))) {
+      if (!(artifact.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact))) {
          return 0;
       }
       AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
@@ -152,7 +152,7 @@ public class PercentCompleteTotalColumn extends XViewerAtsColumn implements IXVi
    }
 
    private static StateMetricsData getStateMetricsData(Artifact artifact, IWorkPage teamState) throws OseeCoreException {
-      if (!(artifact.isOfType(AtsArtifactTypes.StateMachineArtifact))) {
+      if (!(artifact.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact))) {
          return null;
       }
       AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;

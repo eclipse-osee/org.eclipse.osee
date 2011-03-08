@@ -186,14 +186,14 @@ public class SMAGoalMembersSection extends SectionPart implements ISelectedAtsAr
 
    private void createWorldComposite(final Composite sectionBody) {
       worldComposite =
-         new WorldComposite(this, new GoalXViewerFactory((GoalArtifact) editor.getSma()), sectionBody, SWT.BORDER);
+         new WorldComposite(this, new GoalXViewerFactory((GoalArtifact) editor.getAwa()), sectionBody, SWT.BORDER);
 
       CustomizeData customizeData = editorToCustDataMap.get(editor);
       if (customizeData == null) {
          customizeData = worldComposite.getCustomizeDataCopy();
       }
       WorldLabelProvider labelProvider = (WorldLabelProvider) worldComposite.getXViewer().getLabelProvider();
-      labelProvider.setParentGoal((GoalArtifact) editor.getSma());
+      labelProvider.setParentGoal((GoalArtifact) editor.getAwa());
 
       worldComposite.getWorldXViewer().addMenuActionProvider(this);
 
@@ -203,7 +203,7 @@ public class SMAGoalMembersSection extends SectionPart implements ISelectedAtsAr
 
       try {
          customizeData = null;
-         worldComposite.load("Members", editor.getSma().getRelatedArtifacts(AtsRelationTypes.Goal_Member),
+         worldComposite.load("Members", editor.getAwa().getRelatedArtifacts(AtsRelationTypes.Goal_Member),
             customizeData, TableLoadOption.None);
 
       } catch (OseeCoreException ex) {
@@ -258,20 +258,20 @@ public class SMAGoalMembersSection extends SectionPart implements ISelectedAtsAr
       dropToAddLabel.setLayoutData(gd);
       toolkit.adapt(dropToAddLabel, true, true);
 
-      new ArtifactDragAndDrop(dropToAddLabel, editor.getSma(), ArtifactEditor.EDITOR_ID) {
+      new ArtifactDragAndDrop(dropToAddLabel, editor.getAwa(), ArtifactEditor.EDITOR_ID) {
          @Override
          public void performArtifactDrop(Artifact[] dropArtifacts) {
             super.performArtifactDrop(dropArtifacts);
             try {
                List<Artifact> members = new ArrayList<Artifact>();
-               members.addAll(((GoalArtifact) editor.getSma()).getMembers());
+               members.addAll(((GoalArtifact) editor.getAwa()).getMembers());
                for (Artifact art : dropArtifacts) {
                   if (!members.contains(art)) {
                      members.add(art);
-                     editor.getSma().addRelation(AtsRelationTypes.Goal_Member, art);
+                     editor.getAwa().addRelation(AtsRelationTypes.Goal_Member, art);
                   }
                }
-               editor.getSma().setRelationOrder(AtsRelationTypes.Goal_Member, members);
+               editor.getAwa().setRelationOrder(AtsRelationTypes.Goal_Member, members);
                editor.doSave(null);
             } catch (OseeCoreException ex) {
                OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -289,7 +289,7 @@ public class SMAGoalMembersSection extends SectionPart implements ISelectedAtsAr
       dropToAddLabel.setLayoutData(gd);
       toolkit.adapt(dropToAddLabel, true, true);
 
-      new ArtifactDragAndDrop(dropToAddLabel, editor.getSma(), ArtifactEditor.EDITOR_ID) {
+      new ArtifactDragAndDrop(dropToAddLabel, editor.getAwa(), ArtifactEditor.EDITOR_ID) {
          @Override
          public void performArtifactDrop(Artifact[] dropArtifacts) {
             super.performArtifactDrop(dropArtifacts);
@@ -300,7 +300,7 @@ public class SMAGoalMembersSection extends SectionPart implements ISelectedAtsAr
                artList.add(artifact);
             }
             RemoveFromGoalAction remove =
-               new RemoveFromGoalAction((GoalArtifact) editor.getSma(), new ISelectedAtsArtifacts() {
+               new RemoveFromGoalAction((GoalArtifact) editor.getAwa(), new ISelectedAtsArtifacts() {
 
                   @Override
                   public Set<? extends Artifact> getSelectedSMAArtifacts() {
@@ -377,8 +377,8 @@ public class SMAGoalMembersSection extends SectionPart implements ISelectedAtsAr
    Action setGoalOrderAction, removeFromGoalAction;
 
    public void createActions() {
-      setGoalOrderAction = new SetGoalOrderAction((GoalArtifact) editor.getSma(), this);
-      removeFromGoalAction = new RemoveFromGoalAction((GoalArtifact) editor.getSma(), this);
+      setGoalOrderAction = new SetGoalOrderAction((GoalArtifact) editor.getAwa(), this);
+      removeFromGoalAction = new RemoveFromGoalAction((GoalArtifact) editor.getAwa(), this);
    }
 
    @Override

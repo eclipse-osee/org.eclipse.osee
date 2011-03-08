@@ -73,7 +73,7 @@ public class AtsPeerToPeerReviewPrepareStateItemTest {
       decisionComboDam.setRequiredEntry(true);
 
       // verify enabled and required (Default)
-      Assert.assertNull(peerRevArt.getParentSMA()); // condition that causes combo to disable
+      Assert.assertNull(peerRevArt.getParentAWA()); // condition that causes combo to disable
       Assert.assertTrue(decisionComboDam.getComboBox().isEnabled());
       Assert.assertTrue(decisionComboDam.isRequiredEntry());
 

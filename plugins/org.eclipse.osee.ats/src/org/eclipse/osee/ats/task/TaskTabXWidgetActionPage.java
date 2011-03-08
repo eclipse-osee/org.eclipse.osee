@@ -93,8 +93,8 @@ public class TaskTabXWidgetActionPage extends AtsXWidgetActionFormPage implement
    @Override
    public void createPartControl(Composite parent) {
       super.createPartControl(parent);
-      scrolledForm.setImage(ArtifactImageManager.getImage(smaEditor.getSma()));
-      String title = smaEditor.getSma().getName();
+      scrolledForm.setImage(ArtifactImageManager.getImage(smaEditor.getAwa()));
+      String title = smaEditor.getAwa().getName();
       if (title.length() > 80) {
          title = title.substring(0, 80 - 1) + "...";
       }
@@ -186,9 +186,9 @@ public class TaskTabXWidgetActionPage extends AtsXWidgetActionFormPage implement
          try {
             if (taskComposite.getIXTaskViewer().isTasksEditable()) {
                addActionToMenu(fMenu, new ImportTasksViaSpreadsheet(
-                  (AbstractTaskableArtifact) taskComposite.getIXTaskViewer().getSma(), null));
+                  (AbstractTaskableArtifact) taskComposite.getIXTaskViewer().getAwa(), null));
                addActionToMenu(fMenu, new ImportTasksViaSimpleList(
-                  (AbstractTaskableArtifact) taskComposite.getIXTaskViewer().getSma(), null));
+                  (AbstractTaskableArtifact) taskComposite.getIXTaskViewer().getAwa(), null));
 
             }
          } catch (OseeCoreException ex) {

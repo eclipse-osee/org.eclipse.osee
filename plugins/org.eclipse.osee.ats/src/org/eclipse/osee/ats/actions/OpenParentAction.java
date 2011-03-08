@@ -39,7 +39,7 @@ public class OpenParentAction extends Action {
    @Override
    public void run() {
       try {
-         AtsUtil.openATSAction(sma.getParentSMA(), AtsOpenOption.OpenOneOrPopupSelect);
+         AtsUtil.openATSAction(sma.getParentAWA(), AtsOpenOption.OpenOneOrPopupSelect);
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }

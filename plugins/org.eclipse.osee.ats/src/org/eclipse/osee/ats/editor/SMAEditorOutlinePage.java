@@ -90,9 +90,9 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
          if (getTreeViewer() != null) {
             if (editor != null) {
                getTreeViewer().setInput(editor);
-               StateDefinition stateDef = (editor).getSma().getCurrentAtsWorkPage().getStateDefinition();
+               StateDefinition stateDef = (editor).getAwa().getCurrentAtsWorkPage().getStateDefinition();
                StructuredSelection newSelection = new StructuredSelection(Arrays.asList(stateDef));
-               getTreeViewer().expandToLevel((editor).getSma(), 2);
+               getTreeViewer().expandToLevel((editor).getAwa(), 2);
                getTreeViewer().expandToLevel(stateDef, 1);
                getTreeViewer().setSelection(newSelection);
             }
@@ -161,7 +161,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
 
       private InternalContentProvider(SMAEditor editor) {
          this.editor = editor;
-         this.awa = editor.getSma();
+         this.awa = editor.getAwa();
       }
 
       @Override
@@ -179,7 +179,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
          List<Object> items = new ArrayList<Object>();
 
          if (element instanceof SMAEditor) {
-            items.add(((SMAEditor) element).getSma());
+            items.add(((SMAEditor) element).getAwa());
             items.add(new WrappedStateItems(AtsStateItemManager.getStateItems()));
          } else if (element instanceof AbstractWorkflowArtifact) {
             items.add(((AbstractWorkflowArtifact) element).getWorkDefinitionMatch());
@@ -363,7 +363,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
          StateDefinition stateDef = (StateDefinition) element;
          items.add(new WrappedLayout(stateDef.getStateItems()));
          items.add(new WrappedRules(stateDef, awa));
-         if (editor.getSma().isOfType(AtsArtifactTypes.TeamWorkflow)) {
+         if (editor.getAwa().isOfType(AtsArtifactTypes.TeamWorkflow)) {
             items.add(new WrappedDecisionReviews(stateDef.getDecisionReviews()));
             items.add(new WrappedPeerReviews(stateDef.getPeerReviews()));
          }

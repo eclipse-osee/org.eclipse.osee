@@ -79,7 +79,7 @@ public class PercentCompleteSMAStateColumn extends XViewerAtsColumn implements I
          }
          return 0;
       }
-      if (artifact.isOfType(AtsArtifactTypes.StateMachineArtifact)) {
+      if (artifact.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
          return getPercentCompleteSMAState(artifact,
             ((AbstractWorkflowArtifact) artifact).getStateMgr().getCurrentState());
       }
@@ -90,7 +90,7 @@ public class PercentCompleteSMAStateColumn extends XViewerAtsColumn implements I
     * Return Percent Complete working ONLY the SMA stateName (not children SMAs)
     */
    public static int getPercentCompleteSMAState(Artifact artifact, IWorkPage state) throws OseeCoreException {
-      if (artifact.isOfType(AtsArtifactTypes.StateMachineArtifact)) {
+      if (artifact.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
          return ((AbstractWorkflowArtifact) artifact).getStateMgr().getPercentComplete(state);
       }
       return 0;

@@ -44,8 +44,8 @@ public class ParentHridColumn extends XViewerAtsColumn implements IXViewerValueC
       try {
          if (element instanceof TeamWorkFlowArtifact) {
             return ((TeamWorkFlowArtifact) element).getParentActionArtifact().getHumanReadableId();
-         } else if (element instanceof AbstractWorkflowArtifact && ((AbstractWorkflowArtifact) element).getParentSMA() != null) {
-            return ((AbstractWorkflowArtifact) element).getParentSMA().getHumanReadableId();
+         } else if (element instanceof AbstractWorkflowArtifact && ((AbstractWorkflowArtifact) element).getParentAWA() != null) {
+            return ((AbstractWorkflowArtifact) element).getParentAWA().getHumanReadableId();
          }
 
       } catch (OseeCoreException ex) {

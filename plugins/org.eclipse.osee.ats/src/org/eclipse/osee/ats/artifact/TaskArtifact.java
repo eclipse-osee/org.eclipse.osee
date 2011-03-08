@@ -51,7 +51,7 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IATSStateM
 
    public boolean isRelatedToParentWorkflowCurrentState() throws OseeCoreException {
       return getSoleAttributeValueAsString(AtsAttributeTypes.RelatedToState, "").equals(
-         getParentSMA().getStateMgr().getCurrentStateName());
+         getParentAWA().getStateMgr().getCurrentStateName());
    }
 
    public boolean isUsingTaskResolutionOptions() throws OseeCoreException {
@@ -179,21 +179,21 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IATSStateM
 
    @Override
    public double getManHrsPerDayPreference() throws OseeCoreException {
-      return getParentSMA().getManHrsPerDayPreference();
+      return getParentAWA().getManHrsPerDayPreference();
    }
 
    @Override
-   public AbstractWorkflowArtifact getParentSMA() throws OseeCoreException {
-      if (parentSma != null) {
-         return parentSma;
+   public AbstractWorkflowArtifact getParentAWA() throws OseeCoreException {
+      if (parentAwa != null) {
+         return parentAwa;
       }
-      Collection<AbstractWorkflowArtifact> smas =
+      Collection<AbstractWorkflowArtifact> awas =
          getRelatedArtifacts(AtsRelationTypes.SmaToTask_Sma, AbstractWorkflowArtifact.class);
-      if (smas.isEmpty()) {
+      if (awas.isEmpty()) {
          throw new OseeStateException("Task has no parent [%s]", getHumanReadableId());
       }
-      parentSma = smas.iterator().next();
-      return parentSma;
+      parentAwa = awas.iterator().next();
+      return parentAwa;
    }
 
    @Override
@@ -210,9 +210,9 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IATSStateM
       if (parentTeamArt != null) {
          return parentTeamArt;
       }
-      AbstractWorkflowArtifact sma = getParentSMA();
-      if (sma.isTeamWorkflow()) {
-         parentTeamArt = (TeamWorkFlowArtifact) sma;
+      AbstractWorkflowArtifact awa = getParentAWA();
+      if (awa.isTeamWorkflow()) {
+         parentTeamArt = (TeamWorkFlowArtifact) awa;
       }
       return parentTeamArt;
    }
@@ -229,9 +229,9 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IATSStateM
 
    @Override
    public String getWorldViewSWEnhancement() throws OseeCoreException {
-      AbstractWorkflowArtifact sma = getParentSMA();
-      if (sma != null) {
-         return sma.getWorldViewSWEnhancement();
+      AbstractWorkflowArtifact awa = getParentAWA();
+      if (awa != null) {
+         return awa.getWorldViewSWEnhancement();
       }
       return "";
    }

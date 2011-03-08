@@ -44,16 +44,16 @@ public class SMAStatusDialog extends MessageDialog {
    protected XRadioButton eachRadio = new XRadioButton("Apply Hours Spent to each Task");
    private Button okButton;
    private final boolean showPercent;
-   protected final Collection<? extends AbstractWorkflowArtifact> smas;
+   protected final Collection<? extends AbstractWorkflowArtifact> awas;
 
-   public SMAStatusDialog(Shell parentShell, String dialogTitle, String dialogMessage, Collection<? extends AbstractWorkflowArtifact> smas) {
-      this(parentShell, dialogTitle, dialogMessage, true, smas);
+   public SMAStatusDialog(Shell parentShell, String dialogTitle, String dialogMessage, Collection<? extends AbstractWorkflowArtifact> awas) {
+      this(parentShell, dialogTitle, dialogMessage, true, awas);
    }
 
-   public SMAStatusDialog(Shell parentShell, String dialogTitle, String dialogMessage, boolean showPercent, Collection<? extends AbstractWorkflowArtifact> smas) {
+   public SMAStatusDialog(Shell parentShell, String dialogTitle, String dialogMessage, boolean showPercent, Collection<? extends AbstractWorkflowArtifact> awas) {
       super(parentShell, dialogTitle, null, dialogMessage, MessageDialog.NONE, new String[] {"OK", "Cancel"}, 0);
       this.showPercent = showPercent;
-      this.smas = smas;
+      this.awas = awas;
    }
 
    protected void createPreCustomArea(Composite parent) {
@@ -64,8 +64,8 @@ public class SMAStatusDialog extends MessageDialog {
    protected Control createCustomArea(Composite parent) {
 
       boolean hasTask = false;
-      for (AbstractWorkflowArtifact sma : smas) {
-         if (sma instanceof TaskArtifact) {
+      for (AbstractWorkflowArtifact awa : awas) {
+         if (awa instanceof TaskArtifact) {
             hasTask = true;
          }
       }
@@ -74,7 +74,7 @@ public class SMAStatusDialog extends MessageDialog {
       statusLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
       updateStatusLabel();
 
-      if (smas.size() > 1) {
+      if (awas.size() > 1) {
          Label label = new Label(parent, SWT.NONE);
          label.setText("Mulitple objects being statused.  All objects will be " + "set to percent\ncomplete and hours spent will be split or added into each task.");
       }
@@ -90,8 +90,8 @@ public class SMAStatusDialog extends MessageDialog {
          percent.setToolTip("Enter total percent complete.");
          percent.createWidgets(parent, 2);
          try {
-            if (smas.size() == 1) {
-               percent.set(smas.iterator().next().getStateMgr().getPercentComplete());
+            if (awas.size() == 1) {
+               percent.set(awas.iterator().next().getStateMgr().getPercentComplete());
             }
          } catch (Exception ex) {
             OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -126,7 +126,7 @@ public class SMAStatusDialog extends MessageDialog {
          };
       });
 
-      if (smas.size() > 1) {
+      if (awas.size() > 1) {
          Composite comp = new Composite(parent, SWT.NONE);
          comp.setLayout(new GridLayout(2, false));
          comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -170,7 +170,7 @@ public class SMAStatusDialog extends MessageDialog {
       if (!status.isOK()) {
          return status;
       }
-      if (smas.size() > 1) {
+      if (awas.size() > 1) {
          if (!splitRadio.isSelected() && !eachRadio.isSelected()) {
             return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, "Either split or each must be selected");
          }

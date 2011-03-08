@@ -170,15 +170,15 @@ public abstract class AbstractReviewArtifact extends AbstractTaskableArtifact {
    }
 
    @Override
-   public AbstractWorkflowArtifact getParentSMA() throws OseeCoreException {
+   public AbstractWorkflowArtifact getParentAWA() throws OseeCoreException {
       if (isStandAloneReview()) {
          return null;
       }
-      if (parentSma != null) {
-         return parentSma;
+      if (parentAwa != null) {
+         return parentAwa;
       }
-      parentSma = getParentTeamWorkflow();
-      return parentSma;
+      parentAwa = getParentTeamWorkflow();
+      return parentAwa;
    }
 
    @Override

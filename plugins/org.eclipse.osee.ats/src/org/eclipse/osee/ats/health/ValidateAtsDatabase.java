@@ -698,43 +698,43 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    private void testAtsLogs(Collection<Artifact> artifacts) {
       for (Artifact art : artifacts) {
          if (art instanceof AbstractWorkflowArtifact) {
-            AbstractWorkflowArtifact sma = (AbstractWorkflowArtifact) art;
+            AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) art;
             try {
-               AtsLog log = sma.getLog();
-               if (sma.getCreatedBy() == null) {
+               AtsLog log = awa.getLog();
+               if (awa.getCreatedBy() == null) {
                   try {
                      testNameToResultsMap.put(
                         "testAtsLogs",
-                        "Error: " + sma.getArtifactTypeName() + " " + XResultData.getHyperlink(sma) + " originator == null");
+                        "Error: " + awa.getArtifactTypeName() + " " + XResultData.getHyperlink(awa) + " originator == null");
                   } catch (Exception ex) {
                      testNameToResultsMap.put(
                         "testAtsLogs",
-                        "Error: " + sma.getArtifactTypeName() + " " + XResultData.getHyperlink(sma) + " exception accessing originator: " + ex.getLocalizedMessage());
+                        "Error: " + awa.getArtifactTypeName() + " " + XResultData.getHyperlink(awa) + " exception accessing originator: " + ex.getLocalizedMessage());
                   }
                }
                for (IWorkPage state : Arrays.asList(TeamState.Completed, TeamState.Cancelled)) {
-                  if (sma.isInState(state)) {
-                     LogItem logItem = sma.getStateStartedData(state);
+                  if (awa.isInState(state)) {
+                     LogItem logItem = awa.getStateStartedData(state);
                      if (logItem == null) {
                         try {
                            testNameToResultsMap.put(
                               "testAtsLogs",
-                              "Error: " + sma.getArtifactTypeName() + " " + XResultData.getHyperlink(sma) + " state \"" + state + "\" logItem == null");
+                              "Error: " + awa.getArtifactTypeName() + " " + XResultData.getHyperlink(awa) + " state \"" + state + "\" logItem == null");
                         } catch (Exception ex) {
                            testNameToResultsMap.put(
                               "testAtsLogs",
-                              "Error: " + sma.getArtifactTypeName() + " " + XResultData.getHyperlink(sma) + " exception accessing logItem: " + ex.getLocalizedMessage());
+                              "Error: " + awa.getArtifactTypeName() + " " + XResultData.getHyperlink(awa) + " exception accessing logItem: " + ex.getLocalizedMessage());
 
                         }
                      } else if (logItem.getDate() == null) {
                         try {
                            testNameToResultsMap.put(
                               "testAtsLogs",
-                              "Error: " + sma.getArtifactTypeName() + " " + XResultData.getHyperlink(sma) + " state \"" + state + "\" logItem.date == null");
+                              "Error: " + awa.getArtifactTypeName() + " " + XResultData.getHyperlink(awa) + " state \"" + state + "\" logItem.date == null");
                         } catch (Exception ex) {
                            testNameToResultsMap.put(
                               "testAtsLogs",
-                              "Error: " + sma.getArtifactTypeName() + " " + XResultData.getHyperlink(sma) + " exception accessing logItem.date: " + ex.getLocalizedMessage());
+                              "Error: " + awa.getArtifactTypeName() + " " + XResultData.getHyperlink(awa) + " exception accessing logItem.date: " + ex.getLocalizedMessage());
 
                         }
                      }
@@ -743,17 +743,17 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                // Generate html log which will exercise all the conversions
                log.getHtml();
                // Verify that all users are resolved
-               for (LogItem logItem : sma.getLog().getLogItems()) {
+               for (LogItem logItem : awa.getLog().getLogItems()) {
                   if (logItem.getUser() == null) {
                      testNameToResultsMap.put(
                         "testAtsLogs",
-                        "Error: " + sma.getArtifactTypeName() + " " + XResultData.getHyperlink(sma) + " user == null for userId \"" + logItem.getUserId() + "\"");
+                        "Error: " + awa.getArtifactTypeName() + " " + XResultData.getHyperlink(awa) + " user == null for userId \"" + logItem.getUserId() + "\"");
                   }
                }
             } catch (Exception ex) {
                testNameToResultsMap.put(
                   "testAtsLogs",
-                  "Error: " + sma.getArtifactTypeName() + " " + XResultData.getHyperlink(sma) + " exception accessing AtsLog: " + ex.getLocalizedMessage());
+                  "Error: " + awa.getArtifactTypeName() + " " + XResultData.getHyperlink(awa) + " exception accessing AtsLog: " + ex.getLocalizedMessage());
             }
          }
       }
@@ -776,37 +776,37 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       for (Artifact art : artifacts) {
          if (art instanceof AbstractWorkflowArtifact) {
             try {
-               AbstractWorkflowArtifact sma = (AbstractWorkflowArtifact) art;
-               if ((sma.isCompleted() || sma.isCancelled()) && sma.getStateMgr().getAssignees().size() > 0) {
+               AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) art;
+               if ((awa.isCompleted() || awa.isCancelled()) && awa.getStateMgr().getAssignees().size() > 0) {
                   testNameToResultsMap.put(
                      "testStateMachineAssignees",
-                     "Error: " + sma.getArtifactTypeName() + " " + XResultData.getHyperlink(sma) + " cancel/complete with attribute assignees");
+                     "Error: " + awa.getArtifactTypeName() + " " + XResultData.getHyperlink(awa) + " cancel/complete with attribute assignees");
                   if (fixAssignees) {
-                     sma.getStateMgr().clearAssignees();
-                     sma.persist();
+                     awa.getStateMgr().clearAssignees();
+                     awa.persist();
                      testNameToResultsMap.put("testStateMachineAssignees", "Fixed");
                   }
                }
-               if (sma.getStateMgr().getAssignees().size() > 1 && sma.getStateMgr().getAssignees().contains(
+               if (awa.getStateMgr().getAssignees().size() > 1 && awa.getStateMgr().getAssignees().contains(
                   unAssignedUser)) {
                   testNameToResultsMap.put(
                      "testStateMachineAssignees",
-                     "Error: " + sma.getArtifactTypeName() + " " + XResultData.getHyperlink(sma) + " is unassigned and assigned => " + Artifacts.toString(
-                        "; ", sma.getStateMgr().getAssignees()));
+                     "Error: " + awa.getArtifactTypeName() + " " + XResultData.getHyperlink(awa) + " is unassigned and assigned => " + Artifacts.toString(
+                        "; ", awa.getStateMgr().getAssignees()));
                   if (fixAssignees) {
-                     sma.getStateMgr().removeAssignee(unAssignedUser);
+                     awa.getStateMgr().removeAssignee(unAssignedUser);
                      testNameToResultsMap.put("testStateMachineAssignees", "Fixed");
                   }
                }
-               if (sma.getStateMgr().getAssignees().contains(oseeSystemUser)) {
+               if (awa.getStateMgr().getAssignees().contains(oseeSystemUser)) {
                   testNameToResultsMap.put(
                      "testStateMachineAssignees",
                      "Error: " + art.getHumanReadableId() + " is assigned to OseeSystem; invalid assignment - MANUAL FIX REQUIRED");
                }
-               if (!sma.isCompleted() && !sma.isCancelled() && sma.getStateMgr().getAssignees().isEmpty()) {
+               if (!awa.isCompleted() && !awa.isCancelled() && awa.getStateMgr().getAssignees().isEmpty()) {
                   testNameToResultsMap.put(
                      "testStateMachineAssignees",
-                     "Error: " + sma.getArtifactTypeName() + " " + XResultData.getHyperlink(sma) + " In Work without assignees");
+                     "Error: " + awa.getArtifactTypeName() + " " + XResultData.getHyperlink(awa) + " In Work without assignees");
                }
             } catch (OseeCoreException ex) {
                testNameToResultsMap.put("testStateMachineAssignees",

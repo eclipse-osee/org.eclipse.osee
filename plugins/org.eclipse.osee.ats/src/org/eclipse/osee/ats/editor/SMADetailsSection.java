@@ -89,7 +89,7 @@ public class SMADetailsSection extends SectionPart {
       }
 
       if (Widgets.isAccessible(formText)) {
-         AbstractWorkflowArtifact workflow = editor.getSma();
+         AbstractWorkflowArtifact workflow = editor.getAwa();
 
          try {
             Map<String, String> smaDetails = Artifacts.getDetailsKeyValues(workflow);

@@ -54,7 +54,7 @@ public class SMARelationsHyperlinkComposite extends Composite {
       CoreRelationTypes.SupportingInfo_SupportingInfo,
       CoreRelationTypes.Dependency__Artifact,
       CoreRelationTypes.Dependency__Dependency};
-   private AbstractWorkflowArtifact sma;
+   private AbstractWorkflowArtifact awa;
    private Label actionableItemsLabel;
    private final SMAEditor editor;
 
@@ -64,7 +64,7 @@ public class SMARelationsHyperlinkComposite extends Composite {
    }
 
    public void create(AbstractWorkflowArtifact sma) throws OseeCoreException {
-      this.sma = sma;
+      this.awa = sma;
       setLayout(ALayout.getZeroMarginLayout(2, false));
       GridData gd = new GridData(GridData.FILL_HORIZONTAL);
       gd.widthHint = 500;
@@ -190,12 +190,12 @@ public class SMARelationsHyperlinkComposite extends Composite {
    }
 
    private void refreshActionableItemsLabel() throws OseeCoreException {
-      if (actionableItemsLabel != null && sma instanceof AbstractReviewArtifact) {
-         actionableItemsLabel.setText("This \"" + ((AbstractReviewArtifact) sma).getArtifactTypeName() +
+      if (actionableItemsLabel != null && awa instanceof AbstractReviewArtifact) {
+         actionableItemsLabel.setText("This \"" + ((AbstractReviewArtifact) awa).getArtifactTypeName() +
          //
          "\" is review of Actionable Items  \"" +
          //
-         ((AbstractReviewArtifact) sma).getActionableItemsDam().getActionableItemsStr() + "\" ");
+         ((AbstractReviewArtifact) awa).getActionableItemsDam().getActionableItemsStr() + "\" ");
       }
    }
 

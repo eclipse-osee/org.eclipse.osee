@@ -98,7 +98,7 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
       return promptChangeOriginator(Arrays.asList(sma), persist);
    }
 
-   public static boolean promptChangeOriginator(final Collection<? extends AbstractWorkflowArtifact> smas, boolean persist) throws OseeCoreException {
+   public static boolean promptChangeOriginator(final Collection<? extends AbstractWorkflowArtifact> awas, boolean persist) throws OseeCoreException {
       UserListDialog ld = new UserListDialog(Displays.getActiveShell(), "Select New Originator", Active.Active);
       int result = ld.open();
       if (result == 0) {
@@ -110,10 +110,10 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
             transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "ATS Prompt Change Originator");
          }
 
-         for (AbstractWorkflowArtifact sma : smas) {
-            sma.setCreatedBy(selectedUser, true, createdDate);
+         for (AbstractWorkflowArtifact awa : awas) {
+            awa.setCreatedBy(selectedUser, true, createdDate);
             if (persist) {
-               sma.persist(transaction);
+               awa.persist(transaction);
             }
          }
          if (persist) {
@@ -146,14 +146,14 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
    @Override
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
       try {
-         Set<AbstractWorkflowArtifact> smas = new HashSet<AbstractWorkflowArtifact>();
+         Set<AbstractWorkflowArtifact> awas = new HashSet<AbstractWorkflowArtifact>();
          for (TreeItem item : treeItems) {
             Artifact art = (Artifact) item.getData();
             if (art instanceof AbstractWorkflowArtifact) {
-               smas.add((AbstractWorkflowArtifact) art);
+               awas.add((AbstractWorkflowArtifact) art);
             }
          }
-         promptChangeOriginator(smas, true);
+         promptChangeOriginator(awas, true);
          return;
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);

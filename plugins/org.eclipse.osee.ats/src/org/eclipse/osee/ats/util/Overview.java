@@ -152,7 +152,7 @@ public class Overview {
          addTable(getLabelValue("Cancellation Reason", sma.getCancelledReason()));
       }
       if (sma instanceof TaskArtifact) {
-         AbstractWorkflowArtifact parentArt = ((TaskArtifact) sma).getParentSMA();
+         AbstractWorkflowArtifact parentArt = ((TaskArtifact) sma).getParentAWA();
          if (parentArt != null) {
             this.html.append(AHTML.multiColumnTable(new String[] {AHTML.getLabelStr(labelFont, "Parent Workflow: ") + parentArt.getName()}));
             this.html.append(AHTML.multiColumnTable(new String[] {AHTML.getLabelStr(labelFont, "Parent State: ") + ((TaskArtifact) sma).getStateMgr().getCurrentStateName()}));

@@ -186,7 +186,7 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IB
    }
 
    @Override
-   public AbstractWorkflowArtifact getParentSMA() {
+   public AbstractWorkflowArtifact getParentAWA() {
       return null;
    }
 

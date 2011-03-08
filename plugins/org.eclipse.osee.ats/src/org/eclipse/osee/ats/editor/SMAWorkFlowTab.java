@@ -455,7 +455,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          toolBarMgr.add(new ShowChangeReportAction((TeamWorkFlowArtifact) sma));
       }
       toolBarMgr.add(new FavoriteAction(editor));
-      if (sma.getParentSMA() != null) {
+      if (sma.getParentAWA() != null) {
          toolBarMgr.add(new OpenParentAction(sma));
       }
       toolBarMgr.add(new EmailActionAction(editor));
@@ -607,8 +607,8 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       try {
          if (sma.isTeamWorkflow()) {
             FormsUtil.createLabelText(toolkit, topLineComp, "Team: ", ((TeamWorkFlowArtifact) sma).getTeamName());
-         } else if ((sma.isTask() || sma.isReview()) && sma.getParentSMA() != null) {
-            String pcrId = TeamWorkflowManager.getPcrId(sma.getParentSMA());
+         } else if ((sma.isTask() || sma.isReview()) && sma.getParentAWA() != null) {
+            String pcrId = TeamWorkflowManager.getPcrId(sma.getParentAWA());
             FormsUtil.createLabelText(toolkit, topLineComp, "Parent Id: ", pcrId);
          }
       } catch (OseeCoreException ex) {

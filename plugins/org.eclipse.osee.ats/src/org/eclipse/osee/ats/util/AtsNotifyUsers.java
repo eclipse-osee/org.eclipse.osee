@@ -88,82 +88,82 @@ public class AtsNotifyUsers implements IArtifactEventListener {
    /**
     * @param notifyUsers only valid for assignees notifyType. if null or any other type, the users will be computed
     */
-   public void notify(AbstractWorkflowArtifact sma, Collection<User> notifyUsers, NotifyType... notifyTypes) throws OseeCoreException {
-      if (!isInTest() && (!AtsUtil.isEmailEnabled() || !AtsUtil.isProductionDb() || sma.getName().startsWith("tt "))) {
+   public void notify(AbstractWorkflowArtifact awa, Collection<User> notifyUsers, NotifyType... notifyTypes) throws OseeCoreException {
+      if (!isInTest() && (!AtsUtil.isEmailEnabled() || !AtsUtil.isProductionDb() || awa.getName().startsWith("tt "))) {
          return;
       }
       List<NotifyType> types = Collections.getAggregate(notifyTypes);
 
       if (types.contains(NotifyType.Originator)) {
-         User originator = sma.getCreatedBy();
+         User originator = awa.getCreatedBy();
          if (originator.isActive()) {
             if (!EmailUtil.isEmailValid(originator)) {
                OseeLog.log(AtsPlugin.class, Level.INFO,
                   String.format("Email [%s] invalid for user [%s]", originator.getEmail(), originator.getName()));
             } else if (!UserManager.getUser().equals(originator)) {
                notificationManager.addNotificationEvent(new OseeNotificationEvent(Arrays.asList(originator),
-                  getIdString(sma), NotifyType.Originator.name(), String.format(
-                     "You have been set as the originator of [%s] state [%s] titled [%s]", sma.getArtifactTypeName(),
-                     sma.getStateMgr().getCurrentStateName(), sma.getName())));
+                  getIdString(awa), NotifyType.Originator.name(), String.format(
+                     "You have been set as the originator of [%s] state [%s] titled [%s]", awa.getArtifactTypeName(),
+                     awa.getStateMgr().getCurrentStateName(), awa.getName())));
             }
          }
       }
       if (types.contains(NotifyType.Assigned)) {
-         Collection<User> assignees = notifyUsers != null ? notifyUsers : sma.getStateMgr().getAssignees();
+         Collection<User> assignees = notifyUsers != null ? notifyUsers : awa.getStateMgr().getAssignees();
          assignees.remove(UserManager.getUser());
          assignees = EmailUtil.getValidEmailUsers(assignees);
          assignees = EmailUtil.getActiveEmailUsers(assignees);
          if (assignees.size() > 0) {
-            notificationManager.addNotificationEvent(new OseeNotificationEvent(assignees, getIdString(sma),
+            notificationManager.addNotificationEvent(new OseeNotificationEvent(assignees, getIdString(awa),
                NotifyType.Assigned.name(), String.format(
-                  "You have been set as the assignee of [%s] in state [%s] titled [%s]", sma.getArtifactTypeName(),
-                  sma.getStateMgr().getCurrentStateName(), sma.getName())));
+                  "You have been set as the assignee of [%s] in state [%s] titled [%s]", awa.getArtifactTypeName(),
+                  awa.getStateMgr().getCurrentStateName(), awa.getName())));
          }
       }
       if (types.contains(NotifyType.Subscribed)) {
-         Collection<User> subscribed = SubscribeManager.getSubscribed(sma);
+         Collection<User> subscribed = SubscribeManager.getSubscribed(awa);
          subscribed = EmailUtil.getValidEmailUsers(subscribed);
          subscribed = EmailUtil.getActiveEmailUsers(subscribed);
          if (subscribed.size() > 0) {
-            notificationManager.addNotificationEvent(new OseeNotificationEvent(subscribed, getIdString(sma),
+            notificationManager.addNotificationEvent(new OseeNotificationEvent(subscribed, getIdString(awa),
                NotifyType.Subscribed.name(), String.format(
                   "[%s] titled [%s] transitioned to [%s] and you subscribed for notification.",
-                  sma.getArtifactTypeName(), sma.getName(), sma.getStateMgr().getCurrentStateName())));
+                  awa.getArtifactTypeName(), awa.getName(), awa.getStateMgr().getCurrentStateName())));
          }
       }
-      if (types.contains(NotifyType.Cancelled) || types.contains(NotifyType.Completed) && (!sma.isTask() && (sma.isCompleted() || sma.isCancelled()))) {
-         User originator = sma.getCreatedBy();
+      if (types.contains(NotifyType.Cancelled) || types.contains(NotifyType.Completed) && (!awa.isTask() && (awa.isCompleted() || awa.isCancelled()))) {
+         User originator = awa.getCreatedBy();
          if (originator.isActive()) {
             if (!EmailUtil.isEmailValid(originator)) {
                OseeLog.log(AtsPlugin.class, Level.INFO,
                   String.format("Email [%s] invalid for user [%s]", originator.getEmail(), originator.getName()));
             } else if (!UserManager.getUser().equals(originator)) {
-               if (sma.isCompleted()) {
+               if (awa.isCompleted()) {
                   notificationManager.addNotificationEvent(new OseeNotificationEvent(Arrays.asList(originator),
-                     getIdString(sma), sma.getCurrentStateName(), String.format("[%s] titled [%s] is [%s]",
-                        sma.getArtifactTypeName(), sma.getName(), sma.getCurrentStateName())));
+                     getIdString(awa), awa.getCurrentStateName(), String.format("[%s] titled [%s] is [%s]",
+                        awa.getArtifactTypeName(), awa.getName(), awa.getCurrentStateName())));
                }
-               if (sma.isCancelled()) {
+               if (awa.isCancelled()) {
                   notificationManager.addNotificationEvent(new OseeNotificationEvent(Arrays.asList(originator),
-                     getIdString(sma), sma.getCurrentStateName(), String.format(
+                     getIdString(awa), awa.getCurrentStateName(), String.format(
                         "[%s] titled [%s] was [%s] from the [%s] state on [%s].<br>Reason: [%s]",
-                        sma.getArtifactTypeName(), sma.getName(), sma.getCurrentStateName(),
-                        sma.getCancelledFromState(), DateUtil.getMMDDYYHHMM(sma.internalGetCancelledDate()),
-                        sma.getCancelledReason())));
+                        awa.getArtifactTypeName(), awa.getName(), awa.getCurrentStateName(),
+                        awa.getCancelledFromState(), DateUtil.getMMDDYYHHMM(awa.internalGetCancelledDate()),
+                        awa.getCancelledReason())));
                }
             }
          }
       }
-      if (types.contains(NotifyType.Reviewed) && sma instanceof AbstractReviewArtifact && ((AbstractReviewArtifact) sma).getUserRoleManager() != null) {
+      if (types.contains(NotifyType.Reviewed) && awa instanceof AbstractReviewArtifact && ((AbstractReviewArtifact) awa).getUserRoleManager() != null) {
          Collection<User> authorModerator =
-            ((AbstractReviewArtifact) sma).getUserRoleManager().getRoleUsersAuthorModerator();
+            ((AbstractReviewArtifact) awa).getUserRoleManager().getRoleUsersAuthorModerator();
          authorModerator = EmailUtil.getValidEmailUsers(authorModerator);
          authorModerator = EmailUtil.getActiveEmailUsers(authorModerator);
          if (authorModerator.size() > 0) {
-            for (UserRole role : ((AbstractReviewArtifact) sma).getUserRoleManager().getRoleUsersReviewComplete()) {
-               notificationManager.addNotificationEvent(new OseeNotificationEvent(authorModerator, getIdString(sma),
+            for (UserRole role : ((AbstractReviewArtifact) awa).getUserRoleManager().getRoleUsersReviewComplete()) {
+               notificationManager.addNotificationEvent(new OseeNotificationEvent(authorModerator, getIdString(awa),
                   NotifyType.Reviewed.name(), String.format("[%s] titled [%s] has been Reviewed by [%s]",
-                     sma.getArtifactTypeName(), sma.getName(), role.getUser().getName())));
+                     awa.getArtifactTypeName(), awa.getName(), role.getUser().getName())));
             }
          }
       }

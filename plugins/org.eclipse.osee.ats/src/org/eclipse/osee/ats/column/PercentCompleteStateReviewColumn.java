@@ -80,7 +80,7 @@ public class PercentCompleteStateReviewColumn extends XViewerAtsColumn implement
          Double rollPercent = percent / ActionManager.getTeams(artifact).size();
          return rollPercent.intValue();
       }
-      if (artifact.isOfType(AtsArtifactTypes.StateMachineArtifact)) {
+      if (artifact.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
          return getPercentCompleteStateReview(artifact,
             ((AbstractWorkflowArtifact) artifact).getStateMgr().getCurrentState());
       }

@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.SMAUtil;
+import org.eclipse.osee.ats.util.AWAUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -75,7 +75,7 @@ public class UserWorldSearchItem {
          // If include cancelled or completed, need to perform extra search
          // Note: Don't need to do this for Originator, Subscribed or Favorites, cause it does completed canceled in it's own searches
          if (options.contains(UserSearchOption.IncludeCancelled) || options.contains(UserSearchOption.IncludeCompleted)) {
-            searchArts.addAll(SMAUtil.getSMAs(ArtifactQuery.getArtifactListFromAttribute(AtsAttributeTypes.State,
+            searchArts.addAll(AWAUtil.getAwas(ArtifactQuery.getArtifactListFromAttribute(AtsAttributeTypes.State,
                "%<" + user.getUserId() + ">%", AtsUtil.getAtsBranch())));
          }
       }
@@ -91,18 +91,18 @@ public class UserWorldSearchItem {
          filterClasses.add(TaskArtifact.class);
       }
 
-      Collection<AbstractWorkflowArtifact> filteredArts = SMAUtil.filterOutTypes(searchArts, filterClasses);
+      Collection<AbstractWorkflowArtifact> filteredArts = AWAUtil.filterOutTypes(searchArts, filterClasses);
 
       if (teamDefs != null && teamDefs.size() > 0) {
-         filteredArts = SMAUtil.getTeamDefinitionWorkflows(filteredArts, teamDefs);
+         filteredArts = AWAUtil.getTeamDefinitionWorkflows(filteredArts, teamDefs);
       }
 
       if (versions != null && versions.size() > 0) {
-         filteredArts = SMAUtil.getVersionWorkflows(filteredArts, versions);
+         filteredArts = AWAUtil.getVersionWorkflows(filteredArts, versions);
       }
 
       if (Strings.isValid(selectedState)) {
-         filteredArts = SMAUtil.getSMAs(SMAUtil.filterState(selectedState, filteredArts));
+         filteredArts = AWAUtil.getAwas(AWAUtil.filterState(selectedState, filteredArts));
       }
 
       // Handle include completed/cancelled option
@@ -111,11 +111,11 @@ public class UserWorldSearchItem {
       }
 
       if (!options.contains(UserSearchOption.IncludeCancelled)) {
-         filteredArts = SMAUtil.filterOutCancelled(filteredArts);
+         filteredArts = AWAUtil.filterOutCancelled(filteredArts);
       }
 
       if (!options.contains(UserSearchOption.IncludeCompleted)) {
-         filteredArts = SMAUtil.filterOutCompleted(filteredArts);
+         filteredArts = AWAUtil.filterOutCompleted(filteredArts);
       }
 
       return filteredArts;

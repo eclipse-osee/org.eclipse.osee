@@ -99,26 +99,26 @@ public class AssigneeColumn extends XViewerAtsColumn implements IXViewerValueCol
       return promptChangeAssignees(Arrays.asList(sma), persist);
    }
 
-   public static boolean promptChangeAssignees(final Collection<? extends AbstractWorkflowArtifact> smas, boolean persist) throws OseeCoreException {
-      for (AbstractWorkflowArtifact sma : smas) {
-         if (sma.isCompleted()) {
+   public static boolean promptChangeAssignees(final Collection<? extends AbstractWorkflowArtifact> awas, boolean persist) throws OseeCoreException {
+      for (AbstractWorkflowArtifact awa : awas) {
+         if (awa.isCompleted()) {
             AWorkbench.popup("ERROR",
-               "Can't assign completed " + sma.getArtifactTypeName() + " (" + sma.getHumanReadableId() + ")");
+               "Can't assign completed " + awa.getArtifactTypeName() + " (" + awa.getHumanReadableId() + ")");
             return false;
-         } else if (sma.isCancelled()) {
+         } else if (awa.isCancelled()) {
             AWorkbench.popup("ERROR",
-               "Can't assign cancelled " + sma.getArtifactTypeName() + " (" + sma.getHumanReadableId() + ")");
+               "Can't assign cancelled " + awa.getArtifactTypeName() + " (" + awa.getHumanReadableId() + ")");
             return false;
          }
       }
       UserCheckTreeDialog uld = new UserCheckTreeDialog();
       uld.setMessage("Select to assign.\nDeSelect to un-assign.");
-      if (smas.iterator().next().getParentTeamWorkflow() != null) {
-         uld.setTeamMembers(smas.iterator().next().getParentTeamWorkflow().getTeamDefinition().getMembersAndLeads());
+      if (awas.iterator().next().getParentTeamWorkflow() != null) {
+         uld.setTeamMembers(awas.iterator().next().getParentTeamWorkflow().getTeamDefinition().getMembersAndLeads());
       }
 
-      if (smas.size() == 1) {
-         uld.setInitialSelections(smas.iterator().next().getStateMgr().getAssignees());
+      if (awas.size() == 1) {
+         uld.setInitialSelections(awas.iterator().next().getStateMgr().getAssignees());
       }
       if (uld.open() != 0) {
          return false;
@@ -132,11 +132,11 @@ public class AssigneeColumn extends XViewerAtsColumn implements IXViewerValueCol
       if (users.size() > 1) {
          users.remove(UserManager.getUser(SystemUser.UnAssigned));
       }
-      for (AbstractWorkflowArtifact sma : smas) {
-         sma.getStateMgr().setAssignees(users);
+      for (AbstractWorkflowArtifact awa : awas) {
+         awa.getStateMgr().setAssignees(users);
       }
       if (persist) {
-         Artifacts.persistInTransaction(smas);
+         Artifacts.persistInTransaction(awas);
       }
       return true;
    }
@@ -156,21 +156,21 @@ public class AssigneeColumn extends XViewerAtsColumn implements IXViewerValueCol
    @Override
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
       try {
-         Set<AbstractWorkflowArtifact> smas = new HashSet<AbstractWorkflowArtifact>();
+         Set<AbstractWorkflowArtifact> awas = new HashSet<AbstractWorkflowArtifact>();
          for (TreeItem item : treeItems) {
             Artifact art = (Artifact) item.getData();
             if (art instanceof AbstractWorkflowArtifact) {
-               smas.add((AbstractWorkflowArtifact) art);
+               awas.add((AbstractWorkflowArtifact) art);
             }
             if (art.isOfType(AtsArtifactTypes.Action) && ActionManager.getTeams(art).size() == 1) {
-               smas.add(ActionManager.getFirstTeam(art));
+               awas.add(ActionManager.getFirstTeam(art));
             }
          }
-         if (smas.size() == 0) {
+         if (awas.size() == 0) {
             AWorkbench.popup("Invalid selection for setting assignees.");
             return;
          }
-         promptChangeAssignees(smas, true);
+         promptChangeAssignees(awas, true);
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -220,7 +220,7 @@ public class AssigneeColumn extends XViewerAtsColumn implements IXViewerValueCol
          }
          return Artifacts.toString("; ", pocs) + (implementers.isEmpty() ? "" : "(" + Artifacts.toString("; ",
             implementers) + ")");
-      } else if (artifact.isOfType(AtsArtifactTypes.StateMachineArtifact)) {
+      } else if (artifact.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
          AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
          if (awa.isCompletedOrCancelled()) {
             if (awa.implementersStr == null && !awa.getImplementers().isEmpty()) {

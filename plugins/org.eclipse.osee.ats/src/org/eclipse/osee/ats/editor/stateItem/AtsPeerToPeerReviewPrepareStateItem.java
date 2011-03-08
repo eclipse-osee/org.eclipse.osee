@@ -44,7 +44,7 @@ public class AtsPeerToPeerReviewPrepareStateItem extends AtsStateItem {
       try {
          if (art.isOfType(AtsArtifactTypes.PeerToPeerReview) && //
          stateDefinition.getPageName().equals(PeerToPeerReviewState.Prepare.getPageName()) && //
-         ((AbstractReviewArtifact) art).getParentSMA() == null && //
+         ((AbstractReviewArtifact) art).getParentAWA() == null && //
          widget.getLabel().equals(AtsAttributeTypes.ReviewBlocks.getUnqualifiedName())) {
             XComboDam decisionComboDam = (XComboDam) widget;
             decisionComboDam.setEnabled(false);

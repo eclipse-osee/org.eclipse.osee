@@ -271,10 +271,10 @@ public class AtsMetricsComposite extends ScrolledComposite {
             // Since table is loaded with arts and also shows children, don't want to count artifacts twice
             Set<Artifact> processedArts = new HashSet<Artifact>();
             if (sMet.getUserToAssignedSmas().getValues(user) != null) {
-               for (Artifact sma : sMet.getUserToAssignedSmas().getValues(user)) {
-                  if (!processedArts.contains(sma) && !sMet.getUserToCompletedSmas().containsValue(sma)) {
-                     cummulativePercentComplete += PercentCompleteTotalColumn.getPercentCompleteTotal(sma);
-                     processedArts.add(sma);
+               for (Artifact awa : sMet.getUserToAssignedSmas().getValues(user)) {
+                  if (!processedArts.contains(awa) && !sMet.getUserToCompletedSmas().containsValue(awa)) {
+                     cummulativePercentComplete += PercentCompleteTotalColumn.getPercentCompleteTotal(awa);
+                     processedArts.add(awa);
                   }
                }
             }

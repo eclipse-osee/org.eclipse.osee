@@ -233,7 +233,7 @@ public final class AtsWorkDefinitions implements IWorkDefinitionProvider {
    public WorkFlowDefinitionMatch getWorkFlowDefinitionForTask(TaskArtifact taskArt) throws OseeCoreException {
       WorkFlowDefinitionMatch match = new WorkFlowDefinitionMatch();
       for (ITeamWorkflowProvider provider : TeamWorkflowProviders.getAtsTeamWorkflowExtensions()) {
-         String workFlowDefId = provider.getRelatedTaskWorkflowDefinitionId(taskArt.getParentSMA());
+         String workFlowDefId = provider.getRelatedTaskWorkflowDefinitionId(taskArt.getParentAWA());
          if (Strings.isValid(workFlowDefId)) {
             match.setWorkFlowDefinition((WorkFlowDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(workFlowDefId));
             match.getTrace().add(
@@ -247,9 +247,9 @@ public final class AtsWorkDefinitions implements IWorkDefinitionProvider {
       }
       if (!match.isMatched()) {
          // Else If parent SMA has a related task definition workflow id specified, use it
-         WorkFlowDefinitionMatch match2 = getWorkFlowDefinitionFromArtifact(taskArt.getParentSMA());
+         WorkFlowDefinitionMatch match2 = getWorkFlowDefinitionFromArtifact(taskArt.getParentAWA());
          if (match2.isMatched()) {
-            match2.getTrace().add(String.format("from task parent SMA [%s]", taskArt.getParentSMA()));
+            match2.getTrace().add(String.format("from task parent SMA [%s]", taskArt.getParentAWA()));
             match = match2;
          }
       }

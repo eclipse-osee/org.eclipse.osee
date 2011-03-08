@@ -31,15 +31,15 @@ import org.eclipse.ui.PlatformUI;
  */
 public class FavoritesManager {
 
-   private final Collection<AbstractWorkflowArtifact> smas;
+   private final Collection<AbstractWorkflowArtifact> awas;
 
    public FavoritesManager(AbstractWorkflowArtifact sma) {
       this(Arrays.asList(sma));
    }
 
-   public FavoritesManager(Collection<AbstractWorkflowArtifact> smas) {
+   public FavoritesManager(Collection<AbstractWorkflowArtifact> awas) {
       super();
-      this.smas = smas;
+      this.awas = awas;
    }
 
    public void toggleFavorite() {
@@ -48,7 +48,7 @@ public class FavoritesManager {
 
    public void toggleFavorite(boolean prompt) {
       try {
-         if ((amIFavorite(smas.iterator().next()))) {
+         if ((amIFavorite(awas.iterator().next()))) {
             boolean result = true;
             if (prompt) {
                result =
@@ -57,8 +57,8 @@ public class FavoritesManager {
             }
             if (result) {
                SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Toggle Favorites");
-               for (AbstractWorkflowArtifact sma : smas) {
-                  removeFavorite(sma, UserManager.getUser(), transaction);
+               for (AbstractWorkflowArtifact awa : awas) {
+                  removeFavorite(awa, UserManager.getUser(), transaction);
                }
                transaction.execute();
             }
@@ -71,8 +71,8 @@ public class FavoritesManager {
             }
             if (result) {
                SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Toggle Favorites");
-               for (AbstractWorkflowArtifact sma : smas) {
-                  addFavorite(sma, UserManager.getUser(), transaction);
+               for (AbstractWorkflowArtifact awa : awas) {
+                  addFavorite(awa, UserManager.getUser(), transaction);
                }
                transaction.execute();
             }

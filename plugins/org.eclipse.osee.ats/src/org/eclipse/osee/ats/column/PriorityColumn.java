@@ -114,18 +114,18 @@ public class PriorityColumn extends XViewerAtsAttributeValueColumn {
 
    @Override
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
-      Set<TeamWorkFlowArtifact> smas = new HashSet<TeamWorkFlowArtifact>();
+      Set<TeamWorkFlowArtifact> awas = new HashSet<TeamWorkFlowArtifact>();
       for (TreeItem item : treeItems) {
          Artifact art = (Artifact) item.getData();
          if (art instanceof TeamWorkFlowArtifact) {
-            smas.add((TeamWorkFlowArtifact) art);
+            awas.add((TeamWorkFlowArtifact) art);
          }
       }
-      if (smas.size() == 0) {
+      if (awas.size() == 0) {
          AWorkbench.popup("Must select Team Workflows");
          return;
       }
-      promptChangePriority(smas, true);
+      promptChangePriority(awas, true);
       return;
    }
 

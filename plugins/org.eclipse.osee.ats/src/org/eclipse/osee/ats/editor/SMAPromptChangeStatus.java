@@ -31,34 +31,34 @@ import org.eclipse.ui.PlatformUI;
  */
 public class SMAPromptChangeStatus {
 
-   private final Collection<? extends AbstractWorkflowArtifact> smas;
+   private final Collection<? extends AbstractWorkflowArtifact> awas;
 
    public SMAPromptChangeStatus(AbstractWorkflowArtifact sma) {
       this(Arrays.asList(sma));
    }
 
-   public SMAPromptChangeStatus(final Collection<? extends AbstractWorkflowArtifact> smas) {
-      this.smas = smas;
+   public SMAPromptChangeStatus(final Collection<? extends AbstractWorkflowArtifact> awas) {
+      this.awas = awas;
    }
 
-   public static boolean promptChangeStatus(Collection<? extends AbstractWorkflowArtifact> smas, boolean persist) throws OseeCoreException {
-      SMAPromptChangeStatus promptChangeStatus = new SMAPromptChangeStatus(smas);
+   public static boolean promptChangeStatus(Collection<? extends AbstractWorkflowArtifact> awas, boolean persist) throws OseeCoreException {
+      SMAPromptChangeStatus promptChangeStatus = new SMAPromptChangeStatus(awas);
       return promptChangeStatus.promptChangeStatus(persist).isTrue();
    }
 
-   public static Result isValidToChangeStatus(Collection<? extends AbstractWorkflowArtifact> smas) throws OseeCoreException {
+   public static Result isValidToChangeStatus(Collection<? extends AbstractWorkflowArtifact> awas) throws OseeCoreException {
       // Don't allow statusing for any canceled tasks
-      for (AbstractWorkflowArtifact sma : smas) {
-         if (sma.isCancelled()) {
+      for (AbstractWorkflowArtifact awa : awas) {
+         if (awa.isCancelled()) {
             String error =
-               "Can not status a cancelled " + sma.getArtifactTypeName() + ".\n\nTransition out of cancelled first.";
+               "Can not status a cancelled " + awa.getArtifactTypeName() + ".\n\nTransition out of cancelled first.";
             return new Result(error);
          }
       }
       // If task status is being changed, make sure tasks belong to current state
-      for (AbstractWorkflowArtifact sma : smas) {
-         if (sma instanceof TaskArtifact) {
-            TaskArtifact taskArt = (TaskArtifact) sma;
+      for (AbstractWorkflowArtifact awa : awas) {
+         if (awa instanceof TaskArtifact) {
+            TaskArtifact taskArt = (TaskArtifact) awa;
             if (!taskArt.isRelatedToParentWorkflowCurrentState()) {
                return new Result(
                   String.format(
@@ -69,7 +69,7 @@ public class SMAPromptChangeStatus {
                      "Either transition parent workflow or change Task's \"Related to State\" to perform task work.",
                      taskArt.getName(),
                      taskArt.getSoleAttributeValueAsString(AtsAttributeTypes.RelatedToState, "unknown"),
-                     taskArt.getParentSMA().getStateMgr().getCurrentStateName()));
+                     taskArt.getParentAWA().getStateMgr().getCurrentStateName()));
             }
          }
       }
@@ -77,7 +77,7 @@ public class SMAPromptChangeStatus {
    }
 
    public Result promptChangeStatus(boolean persist) throws OseeCoreException {
-      Result result = isValidToChangeStatus(smas);
+      Result result = isValidToChangeStatus(awas);
       if (result.isFalse()) {
          result.popup();
          return result;
@@ -85,14 +85,14 @@ public class SMAPromptChangeStatus {
 
       // Access resolution options if object is task
       List<TaskResOptionDefinition> options = null;
-      if (smas.iterator().next() instanceof TaskArtifact && ((TaskArtifact) smas.iterator().next()).isUsingTaskResolutionOptions()) {
-         options = ((TaskArtifact) smas.iterator().next()).getTaskResolutionOptionDefintions();
+      if (awas.iterator().next() instanceof TaskArtifact && ((TaskArtifact) awas.iterator().next()).isUsingTaskResolutionOptions()) {
+         options = ((TaskArtifact) awas.iterator().next()).getTaskResolutionOptionDefintions();
       }
       TaskOptionStatusDialog tsd =
          new TaskOptionStatusDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-            "Enter State Status", true, options, smas);
+            "Enter State Status", true, options, awas);
       if (tsd.open() == 0) {
-         performChangeStatus(smas, options,
+         performChangeStatus(awas, options,
             tsd.getSelectedOptionDef() != null ? tsd.getSelectedOptionDef().getName() : null,
             tsd.getHours().getFloat(), tsd.getPercent().getInt(), tsd.isSplitHours(), persist);
          return Result.TrueResult;
@@ -100,34 +100,34 @@ public class SMAPromptChangeStatus {
       return Result.FalseResult;
    }
 
-   public static void performChangeStatus(Collection<? extends AbstractWorkflowArtifact> smas, List<TaskResOptionDefinition> options, String selectedOption, double hours, int percent, boolean splitHours, boolean persist) throws OseeCoreException {
+   public static void performChangeStatus(Collection<? extends AbstractWorkflowArtifact> awas, List<TaskResOptionDefinition> options, String selectedOption, double hours, int percent, boolean splitHours, boolean persist) throws OseeCoreException {
       if (splitHours) {
-         hours = hours / smas.size();
+         hours = hours / awas.size();
       }
       SkynetTransaction transaction = null;
       if (persist) {
          transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "ATS Prompt Change Status");
       }
-      for (AbstractWorkflowArtifact sma : smas) {
-         if (sma.getStateMgr().isUnAssigned()) {
-            sma.getStateMgr().removeAssignee(UserManager.getUser(SystemUser.UnAssigned));
-            sma.getStateMgr().addAssignee(UserManager.getUser());
+      for (AbstractWorkflowArtifact awa : awas) {
+         if (awa.getStateMgr().isUnAssigned()) {
+            awa.getStateMgr().removeAssignee(UserManager.getUser(SystemUser.UnAssigned));
+            awa.getStateMgr().addAssignee(UserManager.getUser());
          }
          if (options != null) {
-            sma.setSoleAttributeValue(AtsAttributeTypes.Resolution, selectedOption);
+            awa.setSoleAttributeValue(AtsAttributeTypes.Resolution, selectedOption);
          }
-         if (sma instanceof TaskArtifact) {
-            ((TaskArtifact) sma).statusPercentChanged(hours, percent, transaction);
+         if (awa instanceof TaskArtifact) {
+            ((TaskArtifact) awa).statusPercentChanged(hours, percent, transaction);
          } else {
-            if (sma.getWorkDefinition().isStateWeightingEnabled()) {
-               sma.getStateMgr().updateMetrics(hours, percent, true);
+            if (awa.getWorkDefinition().isStateWeightingEnabled()) {
+               awa.getStateMgr().updateMetrics(hours, percent, true);
             } else {
-               sma.getStateMgr().updateMetrics(hours, percent, true);
-               sma.setSoleAttributeValue(AtsAttributeTypes.PercentComplete, percent);
+               awa.getStateMgr().updateMetrics(hours, percent, true);
+               awa.setSoleAttributeValue(AtsAttributeTypes.PercentComplete, percent);
             }
          }
          if (persist) {
-            sma.persist(transaction);
+            awa.persist(transaction);
          }
       }
       if (persist) {

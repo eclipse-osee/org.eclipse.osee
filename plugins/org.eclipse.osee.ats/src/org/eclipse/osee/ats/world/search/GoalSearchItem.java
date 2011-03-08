@@ -126,12 +126,12 @@ public class GoalSearchItem extends WorldUISearchItem {
       for (Artifact art : artifacts) {
 
          for (Artifact goalArt : GoalManager.getGoals(art, true)) {
-            AbstractWorkflowArtifact sma = (AbstractWorkflowArtifact) goalArt;
+            AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) goalArt;
             // don't include if userArt specified and userArt not assignee
-            if (userArt != null && !sma.getStateMgr().getAssignees().contains(userArt)) {
+            if (userArt != null && !awa.getStateMgr().getAssignees().contains(userArt)) {
                continue;
             }
-            if (!showFinished && sma.isCompletedOrCancelled()) {
+            if (!showFinished && awa.isCompletedOrCancelled()) {
                continue;
             }
             resultGoalArtifacts.add(goalArt);

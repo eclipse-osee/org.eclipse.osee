@@ -201,7 +201,7 @@ public class ArtifactHyperView extends HyperView implements IArtifactEventListen
       if (page != null) {
          IEditorPart editor = page.getActiveEditor();
          if (editor instanceof SMAEditor) {
-            currentArtifact = ((SMAEditor) editor).getSma();
+            currentArtifact = ((SMAEditor) editor).getAwa();
             load(currentArtifact);
          }
       }

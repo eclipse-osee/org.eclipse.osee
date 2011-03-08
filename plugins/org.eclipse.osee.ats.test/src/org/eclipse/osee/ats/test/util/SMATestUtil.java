@@ -30,27 +30,27 @@ public class SMATestUtil {
 
    }
 
-   public static void validateSMAs(Collection<? extends AbstractWorkflowArtifact> smas, String stateName, int totalPercent, double hoursSpent) throws Exception {
-      for (AbstractWorkflowArtifact sma : smas) {
-         Assert.assertEquals("Current State wrong for " + sma.getHumanReadableId(),
-            sma.getStateMgr().getCurrentStateName(), stateName);
-         if (sma.isCompletedOrCancelled()) {
-            Assert.assertEquals("ats.CurrentState wrong " + sma.getHumanReadableId(),
-               sma.getStateMgr().getCurrentStateName() + ";;;",
-               sma.getSoleAttributeValue(AtsAttributeTypes.CurrentState));
+   public static void validateSMAs(Collection<? extends AbstractWorkflowArtifact> awas, String stateName, int totalPercent, double hoursSpent) throws Exception {
+      for (AbstractWorkflowArtifact awa : awas) {
+         Assert.assertEquals("Current State wrong for " + awa.getHumanReadableId(),
+            awa.getStateMgr().getCurrentStateName(), stateName);
+         if (awa.isCompletedOrCancelled()) {
+            Assert.assertEquals("ats.CurrentState wrong " + awa.getHumanReadableId(),
+               awa.getStateMgr().getCurrentStateName() + ";;;",
+               awa.getSoleAttributeValue(AtsAttributeTypes.CurrentState));
          }
-         Assert.assertEquals("Percent wrong for " + sma.getHumanReadableId(),
-            PercentCompleteTotalColumn.getPercentCompleteTotal(sma), totalPercent);
-         Assert.assertEquals("Hours Spent wrong for " + sma.getHumanReadableId(),
-            HoursSpentTotalColumn.getHoursSpentTotal(sma), hoursSpent, 0.0);
+         Assert.assertEquals("Percent wrong for " + awa.getHumanReadableId(),
+            PercentCompleteTotalColumn.getPercentCompleteTotal(awa), totalPercent);
+         Assert.assertEquals("Hours Spent wrong for " + awa.getHumanReadableId(),
+            HoursSpentTotalColumn.getHoursSpentTotal(awa), hoursSpent, 0.0);
 
-         for (String stateValue : sma.getAttributesToStringList(AtsAttributeTypes.State)) {
+         for (String stateValue : awa.getAttributesToStringList(AtsAttributeTypes.State)) {
             SMAState smaState = new SMAState();
             smaState.setFromXml(stateValue);
-            boolean isCompletedCancelledState = isCompletedCancelledState(sma, smaState.getName());
+            boolean isCompletedCancelledState = isCompletedCancelledState(awa, smaState.getName());
             if (isCompletedCancelledState) {
                Assert.assertTrue(
-                  "completed/cancelled ats.State [" + stateValue + "] wrong " + sma.getHumanReadableId(),
+                  "completed/cancelled ats.State [" + stateValue + "] wrong " + awa.getHumanReadableId(),
                   stateValue.endsWith(";;;"));
             }
          }

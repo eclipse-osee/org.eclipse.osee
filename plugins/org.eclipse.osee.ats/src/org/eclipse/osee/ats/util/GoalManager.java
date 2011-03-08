@@ -176,8 +176,8 @@ public final class GoalManager {
             goals.add(art);
          }
          goals.addAll(art.getRelatedArtifacts(AtsRelationTypes.Goal_Goal, GoalArtifact.class));
-         if (recurse && art instanceof AbstractWorkflowArtifact && ((AbstractWorkflowArtifact) art).getParentSMA() != null) {
-            getGoals(((AbstractWorkflowArtifact) art).getParentSMA(), goals, recurse);
+         if (recurse && art instanceof AbstractWorkflowArtifact && ((AbstractWorkflowArtifact) art).getParentAWA() != null) {
+            getGoals(((AbstractWorkflowArtifact) art).getParentAWA(), goals, recurse);
          }
       }
    }

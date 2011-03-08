@@ -21,7 +21,7 @@ public final class AtsArtifactTypes {
    public static final IArtifactType DecisionReview = TokenFactory.createArtifactType("AAMFDhfrdR7BGTL7H_wA", "Decision Review");
    public static final IArtifactType PeerToPeerReview = TokenFactory.createArtifactType("AAMFDhh_300dpgmNtRAA", "PeerToPeer Review");
    public static final IArtifactType Task = TokenFactory.createArtifactType("AAMFDhbTAAB6h+06fuAA", "Task");
-   public static final IArtifactType StateMachineArtifact = TokenFactory.createArtifactType("ABMfXC+LFBn31ZZbvjAA", "Abstract State Machine Artifact");
+   public static final IArtifactType AbstractWorkflowArtifact = TokenFactory.createArtifactType("ABMfXC+LFBn31ZZbvjAA", "Abstract State Machine Artifact");
    public static final IArtifactType ReviewArtifact = TokenFactory.createArtifactType("ABMa6P4TwzXA1b8K3RAA", "Abstract Review Artifact");
    public static final IArtifactType TeamDefinition = TokenFactory.createArtifactType("AAMFDhUrlytusKbaQGAA", "Team Definition");
    public static final IArtifactType TeamWorkflow = TokenFactory.createArtifactType("AAMFDhSiF2OD+wiUqugA", "Team Workflow");

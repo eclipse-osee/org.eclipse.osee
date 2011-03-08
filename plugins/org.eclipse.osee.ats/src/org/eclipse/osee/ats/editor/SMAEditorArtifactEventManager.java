@@ -88,22 +88,22 @@ public class SMAEditorArtifactEventManager implements IArtifactEventListener {
    }
 
    private void safelyProcessHandler(final ArtifactEvent artifactEvent, final ISMAEditorEventHandler handler) {
-      final AbstractWorkflowArtifact sma = handler.getSMAEditor().getSma();
+      final AbstractWorkflowArtifact awa = handler.getSMAEditor().getAwa();
       Artifact actionArt = null;
       boolean refreshed = false;
       try {
-         actionArt = sma instanceof TeamWorkFlowArtifact ? sma.getParentActionArtifact() : null;
+         actionArt = awa instanceof TeamWorkFlowArtifact ? awa.getParentActionArtifact() : null;
       } catch (OseeCoreException ex) {
          // do nothing
       }
-      if (sma.isInTransition()) {
+      if (awa.isInTransition()) {
          return;
       }
-      if (artifactEvent.isDeletedPurged(sma)) {
+      if (artifactEvent.isDeletedPurged(awa)) {
          handler.getSMAEditor().closeEditor();
-      } else if (artifactEvent.isModifiedReloaded(sma) ||
+      } else if (artifactEvent.isModifiedReloaded(awa) ||
       //
-      artifactEvent.isRelAddedChangedDeleted(sma) ||
+      artifactEvent.isRelAddedChangedDeleted(awa) ||
       //
       (actionArt != null && artifactEvent.isModifiedReloaded(actionArt)) ||
       //
@@ -115,16 +115,16 @@ public class SMAEditorArtifactEventManager implements IArtifactEventListener {
                handler.getSMAEditor().refreshPages();
             }
          });
-      } else if (isReloaded(artifactEvent, sma)) {
-         SMAEditor.close(Collections.singleton(sma), false);
-         if (!sma.isDeleted()) {
-            SMAEditor.editArtifact(sma);
+      } else if (isReloaded(artifactEvent, awa)) {
+         SMAEditor.close(Collections.singleton(awa), false);
+         if (!awa.isDeleted()) {
+            SMAEditor.editArtifact(awa);
          }
       }
-      if (!refreshed && sma.isTeamWorkflow() && ReviewManager.hasReviews((TeamWorkFlowArtifact) sma)) {
+      if (!refreshed && awa.isTeamWorkflow() && ReviewManager.hasReviews((TeamWorkFlowArtifact) awa)) {
          try {
             // If related review has made a change, redraw
-            for (AbstractReviewArtifact reviewArt : ReviewManager.getReviews((TeamWorkFlowArtifact) sma)) {
+            for (AbstractReviewArtifact reviewArt : ReviewManager.getReviews((TeamWorkFlowArtifact) awa)) {
                if (artifactEvent.isHasEvent(reviewArt)) {
                   refreshed = true;
                   Displays.ensureInDisplayThread(new Runnable() {
@@ -141,10 +141,10 @@ public class SMAEditorArtifactEventManager implements IArtifactEventListener {
             // do nothing
          }
       }
-      if (!refreshed && sma.isTeamWorkflow() && ((TeamWorkFlowArtifact) sma).hasTaskArtifacts()) {
+      if (!refreshed && awa.isTeamWorkflow() && ((TeamWorkFlowArtifact) awa).hasTaskArtifacts()) {
          try {
             // If related review has made a change, redraw
-            for (TaskArtifact taskArt : ((TeamWorkFlowArtifact) sma).getTaskArtifactsFromCurrentState()) {
+            for (TaskArtifact taskArt : ((TeamWorkFlowArtifact) awa).getTaskArtifactsFromCurrentState()) {
                if (artifactEvent.isHasEvent(taskArt)) {
                   refreshed = true;
                   Displays.ensureInDisplayThread(new Runnable() {
@@ -165,8 +165,8 @@ public class SMAEditorArtifactEventManager implements IArtifactEventListener {
          try {
             // Since SMAEditor is refreshed when a sibling workflow is changed, need to refresh this
             // list of actionable items when a sibling changes
-            for (TeamWorkFlowArtifact teamWf : ActionManager.getTeams(sma.getParentActionArtifact())) {
-               if (!sma.equals(teamWf) && (artifactEvent.isHasEvent(teamWf) || artifactEvent.isRelAddedChangedDeleted(teamWf.getParentActionArtifact()))) {
+            for (TeamWorkFlowArtifact teamWf : ActionManager.getTeams(awa.getParentActionArtifact())) {
+               if (!awa.equals(teamWf) && (artifactEvent.isHasEvent(teamWf) || artifactEvent.isRelAddedChangedDeleted(teamWf.getParentActionArtifact()))) {
                   refreshed = true;
                   Displays.ensureInDisplayThread(new Runnable() {
                      @Override

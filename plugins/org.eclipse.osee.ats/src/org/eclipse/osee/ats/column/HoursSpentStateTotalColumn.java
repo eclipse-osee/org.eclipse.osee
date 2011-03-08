@@ -69,7 +69,7 @@ public class HoursSpentStateTotalColumn extends XViewerAtsColumn implements IXVi
          }
          return hours;
       }
-      if (artifact.isOfType(AtsArtifactTypes.StateMachineArtifact)) {
+      if (artifact.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
          return getHoursSpentStateTotal(artifact, ((AbstractWorkflowArtifact) artifact).getStateMgr().getCurrentState());
       }
       return 0;
@@ -79,7 +79,7 @@ public class HoursSpentStateTotalColumn extends XViewerAtsColumn implements IXVi
     * Return hours spent working SMA state, state tasks and state reviews (not children SMAs)
     */
    public static double getHoursSpentStateTotal(Artifact artifact, IWorkPage state) throws OseeCoreException {
-      if (artifact.isOfType(AtsArtifactTypes.StateMachineArtifact)) {
+      if (artifact.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
          AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
          return HoursSpentSMAStateColumn.getHoursSpentSMAState(awa, state) + HoursSpentStateTasksColumn.getHoursSpentFromStateTasks(
             awa, state) + HoursSpentStateReviewColumn.getHoursSpentStateReview(awa, state);

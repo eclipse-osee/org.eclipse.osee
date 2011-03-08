@@ -38,7 +38,7 @@ public class GoalArtifact extends AbstractWorkflowArtifact {
    }
 
    @Override
-   public AbstractWorkflowArtifact getParentSMA() throws OseeCoreException {
+   public AbstractWorkflowArtifact getParentAWA() throws OseeCoreException {
       List<Artifact> parents = getRelatedArtifacts(AtsRelationTypes.Goal_Goal);
       if (parents.isEmpty()) {
          return null;

@@ -47,8 +47,8 @@ public class XCurrentStateDam extends XStateAssigneesDam {
 
    @Override
    public void setState(SMAState state) throws OseeCoreException {
-      AbstractWorkflowArtifact sma = getArtifact();
-      sma.setSoleAttributeValue(getAttributeType(), state.toXml());
+      AbstractWorkflowArtifact awa = getArtifact();
+      awa.setSoleAttributeValue(getAttributeType(), state.toXml());
    }
 
    public void updateMetrics(double additionalHours, int percentComplete, boolean logMetrics) throws OseeCoreException {

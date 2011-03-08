@@ -126,25 +126,25 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
 
    @Override
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
-      Set<AbstractWorkflowArtifact> smas = new HashSet<AbstractWorkflowArtifact>();
+      Set<AbstractWorkflowArtifact> awas = new HashSet<AbstractWorkflowArtifact>();
       for (TreeItem item : treeItems) {
          Artifact art = (Artifact) item.getData();
          try {
             if (art instanceof AbstractWorkflowArtifact && art.isAttributeTypeValid(getAttributeType())) {
-               smas.add((AbstractWorkflowArtifact) art);
+               awas.add((AbstractWorkflowArtifact) art);
             }
          } catch (OseeCoreException ex) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          }
       }
-      if (smas.isEmpty()) {
+      if (awas.isEmpty()) {
          AWorkbench.popup("Invalid Selection",
             String.format("No selected items valid for attribute [%s] editing", getAttributeType()));
          return;
       }
-      PromptChangeUtil.promptChangeAttribute(smas, getAttributeType(), isPersistViewer(getXViewer()),
+      PromptChangeUtil.promptChangeAttribute(awas, getAttributeType(), isPersistViewer(getXViewer()),
          isMultiLineStringAttribute());
-      getXViewer().update(smas.toArray(), null);
+      getXViewer().update(awas.toArray(), null);
    }
 
    /**

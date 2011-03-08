@@ -93,9 +93,9 @@ public abstract class XStateAssigneesDam extends XTextDam {
    }
 
    protected void logMetrics(IWorkPage state, User user, Date date) throws OseeCoreException {
-      AbstractWorkflowArtifact sma = getArtifact();
-      String hoursSpent = AtsUtil.doubleToI18nString(HoursSpentTotalColumn.getHoursSpentTotal(sma));
-      XCurrentStateDam.logMetrics(sma, PercentCompleteTotalColumn.getPercentCompleteTotal(sma) + "", hoursSpent, state,
+      AbstractWorkflowArtifact awa = getArtifact();
+      String hoursSpent = AtsUtil.doubleToI18nString(HoursSpentTotalColumn.getHoursSpentTotal(awa));
+      XCurrentStateDam.logMetrics(awa, PercentCompleteTotalColumn.getPercentCompleteTotal(awa) + "", hoursSpent, state,
          user, date);
    }
 
@@ -119,9 +119,9 @@ public abstract class XStateAssigneesDam extends XTextDam {
 
    public void setState(SMAState state) throws OseeCoreException {
       // Update attribute if it already exists
-      AbstractWorkflowArtifact sma = getArtifact();
+      AbstractWorkflowArtifact awa = getArtifact();
       try {
-         Collection<Attribute<String>> attrs = sma.getAttributes(getAttributeType());
+         Collection<Attribute<String>> attrs = awa.getAttributes(getAttributeType());
          for (Attribute<String> attr : attrs) {
             SMAState storedState = new SMAState();
             storedState.setFromXml(attr.getValue());
@@ -131,9 +131,9 @@ public abstract class XStateAssigneesDam extends XTextDam {
             }
          }
          // Else, doesn't exist yet, create
-         sma.addAttribute(getAttributeType(), state.toXml());
+         awa.addAttribute(getAttributeType(), state.toXml());
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, "Error setting state data for " + sma.getGuid(), ex);
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, "Error setting state data for " + awa.getGuid(), ex);
       }
    }
 }

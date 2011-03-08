@@ -41,8 +41,8 @@ public class ParentStateColumn extends XViewerAtsColumn implements IXViewerValue
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
-         if (element instanceof AbstractWorkflowArtifact && ((AbstractWorkflowArtifact) element).getParentSMA() != null) {
-            return ((AbstractWorkflowArtifact) element).getParentSMA().getStateMgr().getCurrentStateName();
+         if (element instanceof AbstractWorkflowArtifact && ((AbstractWorkflowArtifact) element).getParentAWA() != null) {
+            return ((AbstractWorkflowArtifact) element).getParentAWA().getStateMgr().getCurrentStateName();
          }
       } catch (OseeCoreException ex) {
          return XViewerCells.getCellExceptionString(ex);

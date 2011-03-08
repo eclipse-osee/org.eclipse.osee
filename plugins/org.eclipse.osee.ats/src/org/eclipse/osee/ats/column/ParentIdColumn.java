@@ -42,8 +42,8 @@ public class ParentIdColumn extends XViewerAtsColumn implements IXViewerValueCol
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
-         if (element instanceof AbstractWorkflowArtifact && ((AbstractWorkflowArtifact) element).getParentSMA() != null) {
-            return TeamWorkflowManager.getPcrId(((AbstractWorkflowArtifact) element).getParentSMA());
+         if (element instanceof AbstractWorkflowArtifact && ((AbstractWorkflowArtifact) element).getParentAWA() != null) {
+            return TeamWorkflowManager.getPcrId(((AbstractWorkflowArtifact) element).getParentAWA());
          }
       } catch (OseeCoreException ex) {
          return XViewerCells.getCellExceptionString(ex);

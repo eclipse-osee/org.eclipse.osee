@@ -31,15 +31,15 @@ import org.eclipse.ui.PlatformUI;
  */
 public class SubscribeManager {
 
-   private final Collection<AbstractWorkflowArtifact> smas;
+   private final Collection<AbstractWorkflowArtifact> awas;
 
    public SubscribeManager(AbstractWorkflowArtifact sma) {
       this(Arrays.asList(sma));
    }
 
-   public SubscribeManager(Collection<AbstractWorkflowArtifact> smas) {
+   public SubscribeManager(Collection<AbstractWorkflowArtifact> awas) {
       super();
-      this.smas = smas;
+      this.awas = awas;
    }
 
    public void toggleSubscribe() {
@@ -48,7 +48,7 @@ public class SubscribeManager {
 
    public void toggleSubscribe(boolean prompt) {
       try {
-         if (amISubscribed(smas.iterator().next())) {
+         if (amISubscribed(awas.iterator().next())) {
             boolean result = true;
             if (prompt) {
                result =
@@ -59,8 +59,8 @@ public class SubscribeManager {
             }
             if (result) {
                SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Toggle Subscribed");
-               for (AbstractWorkflowArtifact sma : smas) {
-                  removeSubscribed(sma, UserManager.getUser(), transaction);
+               for (AbstractWorkflowArtifact awa : awas) {
+                  removeSubscribed(awa, UserManager.getUser(), transaction);
                }
                transaction.execute();
             }
@@ -74,8 +74,8 @@ public class SubscribeManager {
             }
             if (result) {
                SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Toggle Subscribed");
-               for (AbstractWorkflowArtifact sma : smas) {
-                  addSubscribed(sma, UserManager.getUser(), transaction);
+               for (AbstractWorkflowArtifact awa : awas) {
+                  addSubscribed(awa, UserManager.getUser(), transaction);
                }
                transaction.execute();
             }

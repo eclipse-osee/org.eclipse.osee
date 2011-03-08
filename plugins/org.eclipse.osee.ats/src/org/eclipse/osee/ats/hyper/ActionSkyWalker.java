@@ -115,7 +115,7 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAr
       } else if (art instanceof TeamWorkFlowArtifact) {
          artifact = ((TeamWorkFlowArtifact) art).getParentActionArtifact();
       } else if (art instanceof TaskArtifact) {
-         Artifact parentArtifact = ((TaskArtifact) art).getParentSMA();
+         Artifact parentArtifact = ((TaskArtifact) art).getParentAWA();
          if (parentArtifact instanceof TeamWorkFlowArtifact) {
             artifact = ((TeamWorkFlowArtifact) parentArtifact).getParentActionArtifact();
          } else {
@@ -141,7 +141,7 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAr
       if (page != null) {
          IEditorPart editor = page.getActiveEditor();
          if (editor instanceof SMAEditor) {
-            explore(((SMAEditor) editor).getSma());
+            explore(((SMAEditor) editor).getAwa());
          }
       }
    }

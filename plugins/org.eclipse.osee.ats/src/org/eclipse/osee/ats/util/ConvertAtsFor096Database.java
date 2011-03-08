@@ -67,19 +67,19 @@ public class ConvertAtsFor096Database extends XNavigateItemAction {
             XResultData rd = new XResultData(false);
             SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "remove related assignees");
             for (User user : UserManager.getUsers()) {
-               Set<Artifact> smasToRemove = new HashSet<Artifact>();
+               Set<Artifact> awasToRemove = new HashSet<Artifact>();
                for (Artifact art : user.getRelatedArtifacts(CoreRelationTypes.Users_Artifact)) {
                   if (art instanceof AbstractWorkflowArtifact) {
                      if (!AccessControlManager.hasPermission(art, PermissionEnum.FULLACCESS)) {
                         rd.logError(String.format("No permission to remove relations for [%s]", art));
                      } else {
                         user.deleteRelation(CoreRelationTypes.Users_Artifact, art);
-                        smasToRemove.add(art);
+                        awasToRemove.add(art);
                      }
                   }
                }
-               if (smasToRemove.size() > 0) {
-                  rd.log(String.format("Removed [%d] sma relations from [%s]", smasToRemove.size(), user));
+               if (awasToRemove.size() > 0) {
+                  rd.log(String.format("Removed [%d] awa relations from [%s]", awasToRemove.size(), user));
                   user.persist(transaction);
                }
             }

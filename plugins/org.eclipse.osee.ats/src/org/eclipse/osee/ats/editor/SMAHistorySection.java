@@ -68,18 +68,18 @@ public class SMAHistorySection extends SectionPart {
          return;
       }
 
-      AbstractWorkflowArtifact sma = editor.getSma();
+      AbstractWorkflowArtifact awa = editor.getAwa();
       final FormToolkit toolkit = getManagedForm().getToolkit();
       Composite composite = toolkit.createComposite(getSection(), SWT.WRAP);
       composite.setLayout(ALayout.getZeroMarginLayout());
       composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      XHistoryViewer xHistoryViewer = new XHistoryViewer(sma);
+      XHistoryViewer xHistoryViewer = new XHistoryViewer(awa);
       xHistoryViewer.createWidgets(composite, 2);
 
       Label button = toolkit.createLabel(composite, "   ", SWT.NONE);
       button.setText("    ");
-      final AbstractWorkflowArtifact fSma = sma;
+      final AbstractWorkflowArtifact fSma = awa;
       button.addListener(SWT.MouseDoubleClick, new Listener() {
          @Override
          public void handleEvent(Event event) {

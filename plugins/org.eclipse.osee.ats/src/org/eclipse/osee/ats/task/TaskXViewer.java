@@ -63,8 +63,8 @@ public class TaskXViewer extends WorldXViewer {
          return "TaskXViewer";
       }
       try {
-         if (taskComposite.getIXTaskViewer().getSma() != null) {
-            return "TaskXViewer - id:" + viewerId + " - " + taskComposite.getIXTaskViewer().getSma().toString();
+         if (taskComposite.getIXTaskViewer().getAwa() != null) {
+            return "TaskXViewer - id:" + viewerId + " - " + taskComposite.getIXTaskViewer().getAwa().toString();
          }
          return "TaskXViewer - id:" + viewerId + " - " + taskComposite.getIXTaskViewer().toString();
       } catch (Exception ex) {

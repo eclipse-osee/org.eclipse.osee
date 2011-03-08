@@ -28,7 +28,7 @@ import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.SMAUtil;
+import org.eclipse.osee.ats.util.AWAUtil;
 import org.eclipse.osee.ats.util.TeamState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
@@ -171,21 +171,21 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
 
       Set<Artifact> resultSet = new HashSet<Artifact>();
       for (Artifact art : artifacts) {
-         AbstractWorkflowArtifact sma = (AbstractWorkflowArtifact) art;
+         AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) art;
          // don't include if userArt specified and userArt not assignee
-         if (userArt != null && !sma.getStateMgr().getAssignees().contains(userArt)) {
+         if (userArt != null && !awa.getStateMgr().getAssignees().contains(userArt)) {
             continue;
          }
          // don't include if version specified and workflow's not targeted for version
          if (versionArt != null) {
-            TeamWorkFlowArtifact team = sma.getParentTeamWorkflow();
+            TeamWorkFlowArtifact team = awa.getParentTeamWorkflow();
             if (team != null && (team.getTargetedVersion() == null || !team.getTargetedVersion().equals(versionArt))) {
                continue;
             }
          }
          // don't include if release option doesn't match relese state of targeted version
          if (releasedOption != ReleasedOption.Both) {
-            TeamWorkFlowArtifact team = sma.getParentTeamWorkflow();
+            TeamWorkFlowArtifact team = awa.getParentTeamWorkflow();
             if (team != null) {
                // skip if released is desired and version artifact is not set
                VersionArtifact setVerArt = team.getTargetedVersion();
@@ -205,10 +205,10 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
          resultSet.add(art);
       }
       if (showAction) {
-         return SMAUtil.filterState(stateName,
+         return AWAUtil.filterState(stateName,
             RelationManager.getRelatedArtifacts(resultSet, 1, AtsRelationTypes.ActionToWorkflow_Action));
       } else {
-         return SMAUtil.filterState(stateName, resultSet);
+         return AWAUtil.filterState(stateName, resultSet);
       }
 
    }

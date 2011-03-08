@@ -98,10 +98,10 @@ public class GoalsColumn extends XViewerAtsColumn implements IXViewerValueColumn
       return promptChangeGoals(Arrays.asList(sma), persist);
    }
 
-   public static boolean promptChangeGoals(final Collection<? extends Artifact> smas, boolean persist) throws OseeCoreException {
+   public static boolean promptChangeGoals(final Collection<? extends Artifact> awas, boolean persist) throws OseeCoreException {
       Set<Artifact> selected = new HashSet<Artifact>();
-      for (Artifact sma : smas) {
-         selected.addAll(sma.getRelatedArtifacts(AtsRelationTypes.Goal_Goal));
+      for (Artifact awa : awas) {
+         selected.addAll(awa.getRelatedArtifacts(AtsRelationTypes.Goal_Goal));
       }
       Collection<Artifact> allGoals =
          new GoalSearchItem("", new ArrayList<TeamDefinitionArtifact>(), false, null).performSearchGetResults();
@@ -110,9 +110,9 @@ public class GoalsColumn extends XViewerAtsColumn implements IXViewerValueColumn
       dialog.setInitialSelections(selected.toArray());
       if (dialog.open() == 0) {
          SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Set Goals");
-         for (Artifact sma : smas) {
-            sma.setRelations(AtsRelationTypes.Goal_Goal, dialog.getSelection());
-            sma.persist(transaction);
+         for (Artifact awa : awas) {
+            awa.setRelations(AtsRelationTypes.Goal_Goal, dialog.getSelection());
+            awa.persist(transaction);
          }
          transaction.execute();
          return true;
@@ -135,14 +135,14 @@ public class GoalsColumn extends XViewerAtsColumn implements IXViewerValueColumn
    @Override
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
       try {
-         Set<AbstractWorkflowArtifact> smas = new HashSet<AbstractWorkflowArtifact>();
+         Set<AbstractWorkflowArtifact> awas = new HashSet<AbstractWorkflowArtifact>();
          for (TreeItem item : treeItems) {
             Artifact art = (Artifact) item.getData();
             if (art instanceof AbstractWorkflowArtifact) {
-               smas.add((AbstractWorkflowArtifact) art);
+               awas.add((AbstractWorkflowArtifact) art);
             }
          }
-         promptChangeGoals(smas, true);
+         promptChangeGoals(awas, true);
          return;
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);

@@ -539,7 +539,7 @@ public final class AtsUtil {
     */
    public static boolean isAtsArtifact(Object object) {
       if (object instanceof Artifact) {
-         return ((Artifact) object).isOfType(AtsArtifactTypes.StateMachineArtifact) || ((Artifact) object).isOfType(AtsArtifactTypes.Action);
+         return ((Artifact) object).isOfType(AtsArtifactTypes.AbstractWorkflowArtifact) || ((Artifact) object).isOfType(AtsArtifactTypes.Action);
       }
       return false;
    }

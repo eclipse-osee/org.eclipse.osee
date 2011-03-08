@@ -91,7 +91,7 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
  */
 public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEventHandler, ISelectedAtsArtifacts, IActionable, IAtsMetricsProvider, IXTaskViewer {
    public static final String EDITOR_ID = "org.eclipse.osee.ats.editor.SMAEditor";
-   private AbstractWorkflowArtifact sma;
+   private AbstractWorkflowArtifact awa;
    private SMAWorkFlowTab workFlowTab;
    int attributesPageIndex;
    private AttributesComposite attributesComposite;
@@ -113,7 +113,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
             SMAEditorInput aei = (SMAEditorInput) editorInput;
             if (aei.getArtifact() != null) {
                if (aei.getArtifact() instanceof AbstractWorkflowArtifact) {
-                  sma = (AbstractWorkflowArtifact) aei.getArtifact();
+                  awa = (AbstractWorkflowArtifact) aei.getArtifact();
                } else {
                   throw new OseeArgumentException("SMAEditorInput artifact must be StateMachineArtifact");
                }
@@ -126,7 +126,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
          return;
       }
 
-      if (sma == null) {
+      if (awa == null) {
          MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Open Error",
             "Can't Find Action in DB");
          return;
@@ -174,7 +174,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
     */
    private void createWorkflowTab() {
       try {
-         workFlowTab = new SMAWorkFlowTab(this, sma);
+         workFlowTab = new SMAWorkFlowTab(this, awa);
          addPage(workFlowTab);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
@@ -193,29 +193,29 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
    }
 
    public String getTitleStr() throws OseeCoreException {
-      return sma.getEditorTitle();
+      return awa.getEditorTitle();
    }
 
    @Override
    public void doSave(IProgressMonitor monitor) {
       try {
-         if (sma.isHistoricalVersion()) {
+         if (awa.isHistoricalVersion()) {
             AWorkbench.popup("Historical Error",
-               "You can not change a historical version of " + sma.getArtifactTypeName() + ":\n\n" + sma);
-         } else if (!sma.isAccessControlWrite()) {
+               "You can not change a historical version of " + awa.getArtifactTypeName() + ":\n\n" + awa);
+         } else if (!awa.isAccessControlWrite()) {
             AWorkbench.popup("Authentication Error",
-               "You do not have permissions to save " + sma.getArtifactTypeName() + ":" + sma);
+               "You do not have permissions to save " + awa.getArtifactTypeName() + ":" + awa);
          } else {
             try {
                SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Workflow Editor - Save");
-               // If change was made on Attribute tab, persist sma separately.  This is cause attribute
+               // If change was made on Attribute tab, persist awa separately.  This is cause attribute
                // tab changes conflict with XWidget changes
                if (attributesComposite != null && getActivePage() == attributesPageIndex) {
-                  sma.persist(transaction);
+                  awa.persist(transaction);
                }
                // Save widget data to artifact
                workFlowTab.saveXWidgetToArtifact();
-               sma.saveSMA(transaction);
+               awa.saveSMA(transaction);
                transaction.execute();
             } catch (Exception ex) {
                OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -244,7 +244,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
    }
 
    void enableGlobalPrint() {
-      printAction = new SMAPrint(sma);
+      printAction = new SMAPrint(awa);
       getEditorSite().getActionBars().setGlobalActionHandler(ActionFactory.PRINT.getId(), printAction);
    }
 
@@ -260,8 +260,8 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
       }
       SMAEditorArtifactEventManager.remove(this);
       SMAEditorBranchEventManager.remove(this);
-      if (sma != null && !sma.isDeleted() && sma.isSMAEditorDirty().isTrue()) {
-         sma.revertSMA();
+      if (awa != null && !awa.isDeleted() && awa.isSMAEditorDirty().isTrue()) {
+         awa.revertSMA();
       }
       workFlowTab.dispose();
       super.dispose();
@@ -273,7 +273,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
    }
 
    public Result isDirtyResult() {
-      if (sma.isDeleted()) {
+      if (awa.isDeleted()) {
          return Result.FalseResult;
       }
       try {
@@ -287,7 +287,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
          }
 
          String rString = null;
-         for (Attribute<?> attribute : sma.internalGetAttributes()) {
+         for (Attribute<?> attribute : awa.internalGetAttributes()) {
             if (attribute.isDirty()) {
                rString = "Attribute: " + attribute.getNameValueDescription();
                break;
@@ -295,7 +295,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
          }
 
          if (rString == null) {
-            rString = RelationManager.reportHasDirtyLinks(sma);
+            rString = RelationManager.reportHasDirtyLinks(awa);
          }
 
          return new Result((rString != null), rString);
@@ -307,7 +307,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
 
    @Override
    public String toString() {
-      return "SMAEditor - " + sma.getHumanReadableId() + " - " + sma.getArtifactTypeName() + " named \"" + sma.getName() + "\"";
+      return "SMAEditor - " + awa.getHumanReadableId() + " - " + awa.getArtifactTypeName() + " named \"" + awa.getName() + "\"";
    }
 
    @Override
@@ -346,7 +346,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
             @Override
             public void widgetSelected(SelectionEvent e) {
                try {
-                  sma.persist();
+                  awa.persist();
                } catch (Exception ex) {
                   OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                }
@@ -357,7 +357,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
          label.setText("  NOTE: Changes made on this page MUST be saved through save icon on this page");
          label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
 
-         attributesComposite = new AttributesComposite(this, composite, SWT.NONE, sma);
+         attributesComposite = new AttributesComposite(this, composite, SWT.NONE, awa);
          attributesPageIndex = addPage(composite);
          setPageText(attributesPageIndex, "Attributes");
       } catch (Exception ex) {
@@ -369,13 +369,13 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
       ToolBar toolBar = AtsUtil.createCommonToolBar(parent);
 
       OseeUiActions.addButtonToEditorToolBar(this, SkynetGuiPlugin.PLUGIN_ID, toolBar, EDITOR_ID, "ATS Editor");
-      AtsUtil.actionToToolItem(toolBar, new ResourceHistoryAction(sma), FrameworkImage.EDIT_BLUE);
-      AtsUtil.actionToToolItem(toolBar, new AccessControlAction(sma), FrameworkImage.AUTHENTICATED);
+      AtsUtil.actionToToolItem(toolBar, new ResourceHistoryAction(awa), FrameworkImage.EDIT_BLUE);
+      AtsUtil.actionToToolItem(toolBar, new AccessControlAction(awa), FrameworkImage.AUTHENTICATED);
       AtsUtil.actionToToolItem(toolBar, new DirtyReportAction(this), FrameworkImage.DIRTY);
       new ToolItem(toolBar, SWT.SEPARATOR);
       Text artifactInfoLabel = new Text(toolBar.getParent(), SWT.END);
       artifactInfoLabel.setEditable(false);
-      artifactInfoLabel.setText("Type: \"" + sma.getArtifactTypeName() + "\"   HRID: " + sma.getHumanReadableId());
+      artifactInfoLabel.setText("Type: \"" + awa.getArtifactTypeName() + "\"   HRID: " + awa.getHumanReadableId());
       artifactInfoLabel.setToolTipText("The human readable id and database id for this artifact");
 
       return toolBar;
@@ -390,7 +390,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
             workFlowTab.refresh();
          }
          if (attributesComposite != null) {
-            attributesComposite.refreshArtifact(sma);
+            attributesComposite.refreshArtifact(awa);
          }
          onDirtied();
          updatePartName();
@@ -456,7 +456,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
             IEditorReference editors[] = page.getEditorReferences();
             for (int j = 0; j < editors.length; j++) {
                IEditorReference editor = editors[j];
-               if (editor.getPart(false) instanceof SMAEditor && artifacts.contains(((SMAEditor) editor.getPart(false)).getSma())) {
+               if (editor.getPart(false) instanceof SMAEditor && artifacts.contains(((SMAEditor) editor.getPart(false)).getAwa())) {
                   ((SMAEditor) editor.getPart(false)).closeEditor();
                }
             }
@@ -469,7 +469,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
       IEditorReference editors[] = page.getEditorReferences();
       for (int j = 0; j < editors.length; j++) {
          IEditorReference editor = editors[j];
-         if (editor.getPart(false) instanceof SMAEditor && ((SMAEditor) editor.getPart(false)).getSma().equals(artifact)) {
+         if (editor.getPart(false) instanceof SMAEditor && ((SMAEditor) editor.getPart(false)).getAwa().equals(artifact)) {
             return (SMAEditor) editor.getPart(false);
          }
       }
@@ -487,13 +487,13 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
    }
 
    @Override
-   public AbstractWorkflowArtifact getSma() {
-      return sma;
+   public AbstractWorkflowArtifact getAwa() {
+      return awa;
    }
 
    @Override
    public String getCurrentStateName() {
-      return sma.getStateMgr().getCurrentStateName();
+      return awa.getStateMgr().getCurrentStateName();
    }
 
    @Override
@@ -508,29 +508,29 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
 
    @Override
    public Collection<TaskArtifact> getTaskArtifacts(IWorkPage state) throws OseeCoreException {
-      if (sma instanceof AbstractTaskableArtifact) {
-         return ((AbstractTaskableArtifact) sma).getTaskArtifacts(state);
+      if (awa instanceof AbstractTaskableArtifact) {
+         return ((AbstractTaskableArtifact) awa).getTaskArtifacts(state);
       }
       return Collections.emptyList();
    }
 
    @Override
    public Collection<TaskArtifact> getTaskArtifacts() throws OseeCoreException {
-      if (sma instanceof AbstractTaskableArtifact) {
-         return ((AbstractTaskableArtifact) sma).getTaskArtifacts();
+      if (awa instanceof AbstractTaskableArtifact) {
+         return ((AbstractTaskableArtifact) awa).getTaskArtifacts();
       }
       return Collections.emptyList();
    }
 
    @Override
    public boolean isTaskable() {
-      return sma instanceof AbstractTaskableArtifact;
+      return awa instanceof AbstractTaskableArtifact;
    }
 
    @Override
    public boolean isTasksEditable() {
       try {
-         if (!(sma instanceof AbstractTaskableArtifact) || sma.isCompletedOrCancelled()) {
+         if (!(awa instanceof AbstractTaskableArtifact) || awa.isCompletedOrCancelled()) {
             return false;
          }
       } catch (OseeCoreException ex) {
@@ -554,7 +554,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
    }
 
    public boolean isAccessControlWrite() throws OseeCoreException {
-      return AccessControlManager.hasPermission(sma, PermissionEnum.WRITE);
+      return AccessControlManager.hasPermission(awa, PermissionEnum.WRITE);
    }
 
    @Override
@@ -564,12 +564,12 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
 
    @Override
    public Collection<? extends Artifact> getMetricsArtifacts() {
-      return Arrays.asList(sma);
+      return Arrays.asList(awa);
    }
 
    @Override
    public VersionArtifact getMetricsVersionArtifact() throws OseeCoreException {
-      return sma.getTargetedVersion();
+      return awa.getTargetedVersion();
    }
 
    @Override
@@ -584,7 +584,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
 
    @Override
    public double getManHoursPerDayPreference() throws OseeCoreException {
-      return sma.getManHrsPerDayPreference();
+      return awa.getManHrsPerDayPreference();
    }
 
    public SMAWorkFlowTab getWorkFlowTab() {
@@ -602,7 +602,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
 
    @Override
    public Set<? extends Artifact> getSelectedSMAArtifacts() {
-      return Collections.singleton(sma);
+      return Collections.singleton(awa);
    }
 
    public Action getPrintAction() {
@@ -631,13 +631,13 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
    @Override
    public List<Artifact> getSelectedAtsArtifacts() {
       List<Artifact> arts = new ArrayList<Artifact>();
-      arts.add(sma);
+      arts.add(awa);
       return arts;
    }
 
    @Override
    public Image getTitleImage() {
-      return ArtifactImageManager.getImage(sma);
+      return ArtifactImageManager.getImage(awa);
    }
 
    @Override

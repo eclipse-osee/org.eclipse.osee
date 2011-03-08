@@ -138,7 +138,7 @@ public class AtsDeleteManager {
             for (TeamWorkFlowArtifact art : ActionManager.getTeams(deleteArt)) {
                art.atsDelete(relatedArts, ignoredArts);
             }
-         } else if (deleteArt.isOfType(AtsArtifactTypes.StateMachineArtifact)) {
+         } else if (deleteArt.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
             ((AbstractWorkflowArtifact) deleteArt).atsDelete(relatedArts, ignoredArts);
             for (Artifact loopArt : relatedArts) {
                if (!loopArt.equals(deleteArt)) {

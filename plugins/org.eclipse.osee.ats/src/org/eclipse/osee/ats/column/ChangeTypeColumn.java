@@ -209,15 +209,15 @@ public class ChangeTypeColumn extends XViewerAtsAttributeValueColumn {
 
    @Override
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
-      Set<TeamWorkFlowArtifact> smas = new HashSet<TeamWorkFlowArtifact>();
+      Set<TeamWorkFlowArtifact> awas = new HashSet<TeamWorkFlowArtifact>();
       for (TreeItem item : treeItems) {
          Artifact art = (Artifact) item.getData();
          if (art instanceof TeamWorkFlowArtifact) {
-            smas.add((TeamWorkFlowArtifact) art);
+            awas.add((TeamWorkFlowArtifact) art);
          }
       }
-      promptChangeType(smas, true);
-      getXViewer().update(smas.toArray(), null);
+      promptChangeType(awas, true);
+      getXViewer().update(awas.toArray(), null);
    }
 
 }

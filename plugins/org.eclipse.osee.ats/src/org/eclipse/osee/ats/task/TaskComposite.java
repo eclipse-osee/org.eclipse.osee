@@ -191,7 +191,7 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
             }
             transaction.execute();
 
-            AtsCacheManager.decacheTaskArtifacts((AbstractTaskableArtifact) iXTaskViewer.getSma());
+            AtsCacheManager.decacheTaskArtifacts((AbstractTaskableArtifact) iXTaskViewer.getAwa());
             taskXViewer.remove(items.toArray(new Object[items.size()]));
             taskArts.removeAll(items);
 
@@ -214,11 +214,11 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
       if (ed.open() == 0) {
          try {
             taskArt =
-               ((AbstractTaskableArtifact) iXTaskViewer.getSma()).createNewTask(ed.getEntry(), new Date(),
+               ((AbstractTaskableArtifact) iXTaskViewer.getAwa()).createNewTask(ed.getEntry(), new Date(),
                   UserManager.getUser());
             iXTaskViewer.getEditor().onDirtied();
             add(Collections.singleton(taskArt));
-            AtsCacheManager.decacheTaskArtifacts((AbstractTaskableArtifact) iXTaskViewer.getSma());
+            AtsCacheManager.decacheTaskArtifacts((AbstractTaskableArtifact) iXTaskViewer.getAwa());
          } catch (Exception ex) {
             OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
@@ -298,7 +298,7 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
    private void performDrop(DropTargetEvent e) {
       if (e.data instanceof ArtifactData) {
          try {
-            if (iXTaskViewer.getSma() == null) {
+            if (iXTaskViewer.getAwa() == null) {
                return;
             }
             final Artifact[] artsToRelate = ((ArtifactData) e.data).getArtifacts();
@@ -306,14 +306,14 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
             for (Artifact art : artsToRelate) {
                if (art instanceof TaskArtifact) {
                   TaskArtifact taskArt = (TaskArtifact) art;
-                  // task dropped on same sma as current parent; do nothing
-                  if (taskArt.getParentSMA().equals(iXTaskViewer.getSma())) {
+                  // task dropped on same awa as current parent; do nothing
+                  if (taskArt.getParentAWA().equals(iXTaskViewer.getAwa())) {
                      return;
                   }
-                  if (taskArt.getParentSMA() != null) {
-                     taskArt.deleteRelation(AtsRelationTypes.SmaToTask_Sma, taskArt.getParentSMA());
+                  if (taskArt.getParentAWA() != null) {
+                     taskArt.deleteRelation(AtsRelationTypes.SmaToTask_Sma, taskArt.getParentAWA());
                   }
-                  taskArt.addRelation(AtsRelationTypes.SmaToTask_Sma, iXTaskViewer.getSma());
+                  taskArt.addRelation(AtsRelationTypes.SmaToTask_Sma, iXTaskViewer.getAwa());
                   taskArt.persist(transaction);
                }
             }

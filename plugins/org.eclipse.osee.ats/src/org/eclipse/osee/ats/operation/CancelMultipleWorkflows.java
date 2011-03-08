@@ -45,14 +45,14 @@ public class CancelMultipleWorkflows extends Action {
    @Override
    public void run() {
       try {
-         Collection<AbstractWorkflowArtifact> smas =
+         Collection<AbstractWorkflowArtifact> awas =
             worldEditor.getWorldComposite().getXViewer().getSelectedSMAArtifacts();
-         if (smas.isEmpty()) {
+         if (awas.isEmpty()) {
             AWorkbench.popup("ERROR", "Must select one or more workflows");
             return;
          }
-         for (AbstractWorkflowArtifact sma : smas) {
-            TransitionManager transitionMgr = new TransitionManager(sma);
+         for (AbstractWorkflowArtifact awa : awas) {
+            TransitionManager transitionMgr = new TransitionManager(awa);
             Result result = transitionMgr.isTransitionValid(TeamState.Cancelled, null, TransitionOption.None);
             if (result.isFalse()) {
                result.popup();
@@ -62,8 +62,8 @@ public class CancelMultipleWorkflows extends Action {
          EntryDialog ed = new EntryDialog("Cancel Workflows", "Enter Cancellation Reason");
          if (ed.open() == 0) {
             SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Cancel Multiple Workflows");
-            for (AbstractWorkflowArtifact sma : smas) {
-               TransitionManager transitionMgr = new TransitionManager(sma);
+            for (AbstractWorkflowArtifact awa : awas) {
+               TransitionManager transitionMgr = new TransitionManager(awa);
                Result result =
                   transitionMgr.transitionToCancelled(ed.getEntry(), transaction, TransitionOption.Persist);
                if (result.isFalse()) {

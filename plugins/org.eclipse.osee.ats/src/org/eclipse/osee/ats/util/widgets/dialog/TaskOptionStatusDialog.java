@@ -89,8 +89,8 @@ public class TaskOptionStatusDialog extends SMAStatusDialog {
          resolutionCombo.setInput(objs);
          resolutionCombo.createWidgets(parent, 2);
          try {
-            if (smas.size() == 1) {
-               String selOption = smas.iterator().next().getSoleAttributeValue(AtsAttributeTypes.Resolution, "");
+            if (awas.size() == 1) {
+               String selOption = awas.iterator().next().getSoleAttributeValue(AtsAttributeTypes.Resolution, "");
                if (Strings.isValid(selOption)) {
                   selectedOption = nameToResDef.get(selOption);
                   if (selectedOption != null) {

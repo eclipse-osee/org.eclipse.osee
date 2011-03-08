@@ -25,12 +25,12 @@ public class AtsArtifactAnnotations implements IArtifactAnnotation {
    @Override
    public void getAnnotations(Artifact artifact, Set<ArtifactAnnotation> annotations) {
       if (artifact instanceof AbstractWorkflowArtifact) {
-         AbstractWorkflowArtifact sma = (AbstractWorkflowArtifact) artifact;
-         Result result = DeadlineManager.isDeadlineDateAlerting(sma);
+         AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
+         Result result = DeadlineManager.isDeadlineDateAlerting(awa);
          if (result.isTrue()) {
             annotations.add(ArtifactAnnotation.getWarning("org.eclipse.osee.ats.deadline", result.getText()));
          }
-         result = DeadlineManager.isEcdDateAlerting(sma);
+         result = DeadlineManager.isEcdDateAlerting(awa);
          if (result.isTrue()) {
             annotations.add(ArtifactAnnotation.getWarning("org.eclipse.osee.ats.ecd", result.getText()));
          }

@@ -38,8 +38,8 @@ public final class PromptChangeUtil {
       return false;
    }
 
-   public static boolean promptChangeAttribute(final Collection<? extends AbstractWorkflowArtifact> smas, IAttributeType attributeType, boolean persist, boolean multiLine) {
-      return ArtifactPromptChange.promptChangeAttribute(attributeType, smas, persist, multiLine);
+   public static boolean promptChangeAttribute(final Collection<? extends AbstractWorkflowArtifact> awas, IAttributeType attributeType, boolean persist, boolean multiLine) {
+      return ArtifactPromptChange.promptChangeAttribute(attributeType, awas, persist, multiLine);
    }
 
    public static boolean promptChangeAttribute(final Artifact sma, IAttributeType attributeType, boolean persist, boolean multiLine) {

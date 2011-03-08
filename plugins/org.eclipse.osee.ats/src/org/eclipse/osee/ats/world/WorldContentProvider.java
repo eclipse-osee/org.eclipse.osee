@@ -119,13 +119,13 @@ public class WorldContentProvider implements ITreeContentProvider {
                return ((TeamWorkFlowArtifact) artifact).getParentActionArtifact();
             }
             if (artifact instanceof TaskArtifact) {
-               return ((TaskArtifact) artifact).getParentSMA();
+               return ((TaskArtifact) artifact).getParentAWA();
             }
             if (artifact instanceof AbstractReviewArtifact) {
-               return ((AbstractReviewArtifact) artifact).getParentSMA();
+               return ((AbstractReviewArtifact) artifact).getParentAWA();
             }
             if (artifact instanceof GoalArtifact) {
-               return ((GoalArtifact) artifact).getParentSMA();
+               return ((GoalArtifact) artifact).getParentAWA();
             }
          } catch (Exception ex) {
             // do nothing

@@ -140,7 +140,7 @@ public class ConvertAtsFor097Database extends XNavigateItemAction {
    public static void convertWorkflowArtifacts(HashCollection<String, String> testNameToResultsMap, Collection<Artifact> artifacts, SkynetTransaction transaction) {
       for (Artifact artifact : artifacts) {
          try {
-            if (artifact.isOfType(AtsArtifactTypes.StateMachineArtifact)) {
+            if (artifact.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
                AbstractWorkflowArtifact aba = (AbstractWorkflowArtifact) artifact;
                setCurrentStateType(testNameToResultsMap, aba);
                setCompletedAttributes(testNameToResultsMap, aba);

@@ -340,7 +340,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IActionable, I
    }
 
    @Override
-   public AbstractWorkflowArtifact getSma() {
+   public AbstractWorkflowArtifact getAwa() {
       return null;
    }
 

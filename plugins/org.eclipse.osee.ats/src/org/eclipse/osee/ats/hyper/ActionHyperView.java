@@ -211,7 +211,7 @@ public class ActionHyperView extends HyperView implements IActionable, IArtifact
    public Artifact getTopArtifact(AbstractAtsArtifact art) throws OseeCoreException {
       Artifact artifact = art;
       if (artifact instanceof TaskArtifact) {
-         artifact = ((TaskArtifact) artifact).getParentSMA();
+         artifact = ((TaskArtifact) artifact).getParentAWA();
       }
       if (artifact instanceof TeamWorkFlowArtifact) {
          artifact = ((TeamWorkFlowArtifact) artifact).getParentActionArtifact();
@@ -241,7 +241,7 @@ public class ActionHyperView extends HyperView implements IActionable, IArtifact
       if (page != null) {
          IEditorPart editor = page.getActiveEditor();
          if (editor instanceof SMAEditor) {
-            currentArtifact = ((SMAEditor) editor).getSma();
+            currentArtifact = ((SMAEditor) editor).getAwa();
             display();
          } else if (currentArtifact != null && currentArtifact.isDeleted()) {
             super.clear();

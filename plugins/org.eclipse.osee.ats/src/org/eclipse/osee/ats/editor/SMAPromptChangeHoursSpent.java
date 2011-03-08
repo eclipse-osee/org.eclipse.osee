@@ -23,23 +23,23 @@ import org.eclipse.ui.PlatformUI;
  */
 public class SMAPromptChangeHoursSpent {
 
-   private final Collection<? extends AbstractWorkflowArtifact> smas;
+   private final Collection<? extends AbstractWorkflowArtifact> awas;
 
-   public SMAPromptChangeHoursSpent(AbstractWorkflowArtifact sma) {
-      this(Arrays.asList(sma));
+   public SMAPromptChangeHoursSpent(AbstractWorkflowArtifact awa) {
+      this(Arrays.asList(awa));
    }
 
-   public SMAPromptChangeHoursSpent(final Collection<? extends AbstractWorkflowArtifact> smas) {
-      this.smas = smas;
+   public SMAPromptChangeHoursSpent(final Collection<? extends AbstractWorkflowArtifact> awas) {
+      this.awas = awas;
    }
 
-   public static boolean promptChangeStatus(Collection<? extends AbstractWorkflowArtifact> smas, boolean persist) throws OseeCoreException {
-      SMAPromptChangeHoursSpent promptChangeStatus = new SMAPromptChangeHoursSpent(smas);
+   public static boolean promptChangeStatus(Collection<? extends AbstractWorkflowArtifact> awas, boolean persist) throws OseeCoreException {
+      SMAPromptChangeHoursSpent promptChangeStatus = new SMAPromptChangeHoursSpent(awas);
       return promptChangeStatus.promptChangeStatus(persist).isTrue();
    }
 
    public Result promptChangeStatus(boolean persist) throws OseeCoreException {
-      Result result = SMAPromptChangeStatus.isValidToChangeStatus(smas);
+      Result result = SMAPromptChangeStatus.isValidToChangeStatus(awas);
       if (result.isFalse()) {
          result.popup();
          return result;
@@ -47,9 +47,9 @@ public class SMAPromptChangeHoursSpent {
 
       TaskOptionStatusDialog tsd =
          new TaskOptionStatusDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-            "Enter State Hours Spend", false, null, smas);
+            "Enter State Hours Spend", false, null, awas);
       if (tsd.open() == 0) {
-         SMAPromptChangeStatus.performChangeStatus(smas, null,
+         SMAPromptChangeStatus.performChangeStatus(awas, null,
             tsd.getSelectedOptionDef() != null ? tsd.getSelectedOptionDef().getName() : null,
             tsd.getHours().getFloat(), tsd.getPercent().getInt(), tsd.isSplitHours(), persist);
          return Result.TrueResult;

@@ -190,7 +190,7 @@ public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage implem
          try {
             if (taskComposite.getIXTaskViewer().isTasksEditable()) {
                addActionToMenu(fMenu, new ImportTasksViaSpreadsheet(
-                  (AbstractTaskableArtifact) taskComposite.getIXTaskViewer().getSma(), new Listener() {
+                  (AbstractTaskableArtifact) taskComposite.getIXTaskViewer().getAwa(), new Listener() {
                      @Override
                      public void handleEvent(Event event) {
                         try {
@@ -201,7 +201,7 @@ public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage implem
                      }
                   }));
                addActionToMenu(fMenu, new ImportTasksViaSimpleList(
-                  (AbstractTaskableArtifact) taskComposite.getIXTaskViewer().getSma(), new Listener() {
+                  (AbstractTaskableArtifact) taskComposite.getIXTaskViewer().getAwa(), new Listener() {
                      @Override
                      public void handleEvent(Event event) {
                         try {

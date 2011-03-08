@@ -115,9 +115,9 @@ public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerV
       return promptChangeVersion(Arrays.asList((TeamWorkFlowArtifact) sma), versionReleaseType, versionLockType);
    }
 
-   public static boolean promptChangeVersion(final Collection<? extends TeamWorkFlowArtifact> smas, VersionReleaseType versionReleaseType, VersionLockedType versionLockType) throws OseeCoreException {
+   public static boolean promptChangeVersion(final Collection<? extends TeamWorkFlowArtifact> awas, VersionReleaseType versionReleaseType, VersionLockedType versionLockType) throws OseeCoreException {
       TeamDefinitionArtifact teamDefHoldingVersions = null;
-      for (TeamWorkFlowArtifact teamArt : smas) {
+      for (TeamWorkFlowArtifact teamArt : awas) {
          if (!teamArt.getTeamDefinition().isTeamUsesVersions()) {
             AWorkbench.popup("ERROR", "Team \"" + teamArt.getTeamDefinition().getName() + "\" doesn't use versions.");
             return false;
@@ -148,9 +148,9 @@ public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerV
       final VersionListDialog vld =
          new VersionListDialog("Select Version", "Select Version", teamDefHoldingVersions.getVersionsArtifacts(
             versionReleaseType, versionLockType));
-      if (smas.size() == 1 && smas.iterator().next().getTargetedVersion() != null) {
+      if (awas.size() == 1 && awas.iterator().next().getTargetedVersion() != null) {
          Object[] objs = new Object[1];
-         objs[0] = smas.iterator().next().getTargetedVersion();
+         objs[0] = awas.iterator().next().getTargetedVersion();
          vld.setInitialSelections(objs);
       }
       int result = vld.open();
@@ -170,12 +170,12 @@ public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerV
          }
       }
 
-      for (TeamWorkFlowArtifact teamArt : smas) {
+      for (TeamWorkFlowArtifact teamArt : awas) {
          teamArt.setRelations(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version,
             java.util.Collections.singleton(newVersion));
       }
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "ATS Prompt Change Version");
-      for (TeamWorkFlowArtifact teamArt : smas) {
+      for (TeamWorkFlowArtifact teamArt : awas) {
          teamArt.persist(transaction);
       }
       transaction.execute();
@@ -259,19 +259,19 @@ public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerV
    @Override
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
       try {
-         Set<TeamWorkFlowArtifact> smas = new HashSet<TeamWorkFlowArtifact>();
+         Set<TeamWorkFlowArtifact> awas = new HashSet<TeamWorkFlowArtifact>();
          List<Artifact> arts = new ArrayList<Artifact>();
          for (TreeItem item : treeItems) {
             Artifact art = (Artifact) item.getData();
             if (art instanceof TeamWorkFlowArtifact) {
-               smas.add((TeamWorkFlowArtifact) art);
+               awas.add((TeamWorkFlowArtifact) art);
                arts.add(art);
             }
          }
 
-         promptChangeVersion(smas, AtsUtil.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased,
+         promptChangeVersion(awas, AtsUtil.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased,
             AtsUtil.isAtsAdmin() ? VersionLockedType.Both : VersionLockedType.UnLocked);
-         getXViewer().update(smas.toArray(), null);
+         getXViewer().update(awas.toArray(), null);
          return;
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);

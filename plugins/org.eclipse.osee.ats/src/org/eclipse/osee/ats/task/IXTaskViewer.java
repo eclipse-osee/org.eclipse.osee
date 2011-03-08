@@ -41,7 +41,7 @@ public interface IXTaskViewer {
 
    public String getCurrentStateName();
 
-   public AbstractWorkflowArtifact getSma() throws OseeCoreException;
+   public AbstractWorkflowArtifact getAwa() throws OseeCoreException;
 
    /**
     * Overriding flag to denote if tasks are allowed to be edited. If false, task viewer will disable all right-click

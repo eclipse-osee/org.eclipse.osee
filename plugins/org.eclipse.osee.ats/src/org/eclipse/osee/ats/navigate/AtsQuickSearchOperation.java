@@ -69,10 +69,10 @@ public class AtsQuickSearchOperation extends AbstractOperation implements IWorld
          data.getSearchStr(), false, EXCLUDE_DELETED, false)) {
          // only ATS Artifacts
          if (art instanceof AbstractWorkflowArtifact) {
-            AbstractWorkflowArtifact sma = (AbstractWorkflowArtifact) art;
+            AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) art;
             // default excludes canceled/completed
             if (data.isIncludeCompleteCancelled() == false) {
-               if (!sma.isCompletedOrCancelled()) {
+               if (!awa.isCompletedOrCancelled()) {
                   allArtifacts.add(art);
                }
             } else {

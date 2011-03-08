@@ -54,7 +54,7 @@ public class SMAMetrics {
    Set<Artifact> actionArts = new HashSet<Artifact>();
    Set<TaskArtifact> taskArts = new HashSet<TaskArtifact>();
    Set<AbstractReviewArtifact> reviewArts = new HashSet<AbstractReviewArtifact>();
-   Set<AbstractWorkflowArtifact> smas = new HashSet<AbstractWorkflowArtifact>();
+   Set<AbstractWorkflowArtifact> awas = new HashSet<AbstractWorkflowArtifact>();
    Set<User> assignees = new HashSet<User>();
    Set<User> assigneesAssignedOrCompleted = new HashSet<User>();
 
@@ -92,7 +92,7 @@ public class SMAMetrics {
             reviewArts.add((AbstractReviewArtifact) art);
          }
          if (art instanceof AbstractWorkflowArtifact) {
-            smas.add((AbstractWorkflowArtifact) art);
+            awas.add((AbstractWorkflowArtifact) art);
             Collection<User> users = ((AbstractWorkflowArtifact) art).getStateMgr().getAssignees();
             assignees.addAll(users);
             assigneesAssignedOrCompleted.addAll(users);
@@ -114,7 +114,7 @@ public class SMAMetrics {
       manDaysNeeded = 0;
       cummulativeWorkflowPercentComplete = 0;
       manDaysNeeded = 0;
-      for (AbstractWorkflowArtifact team : smas) {
+      for (AbstractWorkflowArtifact team : awas) {
          hrsRemainFromEstimates += RemainingHoursColumn.getRemainingHours(team);
          estHours += EstimatedHoursColumn.getEstimatedHours(team);
          hrsSpent += HoursSpentTotalColumn.getHoursSpentTotal(team);
@@ -166,13 +166,13 @@ public class SMAMetrics {
       if (!userToCompletedSmas.containsKey(user)) {
          return Collections.emptyList();
       }
-      List<A> smas = new ArrayList<A>();
+      List<A> awas = new ArrayList<A>();
       for (Artifact art : userToCompletedSmas.getValues(user)) {
          if (clazz == null || art.getClass().isInstance(clazz)) {
-            smas.add((A) art);
+            awas.add((A) art);
          }
       }
-      return smas;
+      return awas;
    }
 
    @SuppressWarnings("unchecked")
@@ -180,13 +180,13 @@ public class SMAMetrics {
       if (!userToAssignedSmas.containsKey(user)) {
          return Collections.emptyList();
       }
-      List<A> smas = new ArrayList<A>();
+      List<A> awas = new ArrayList<A>();
       for (Artifact art : userToAssignedSmas.getValues(user)) {
          if (clazz == null || art.getClass().equals(clazz)) {
-            smas.add((A) art);
+            awas.add((A) art);
          }
       }
-      return smas;
+      return awas;
    }
 
    public Collection<TeamWorkFlowArtifact> getCompletedTeamWorkflows() throws OseeCoreException {
@@ -201,9 +201,9 @@ public class SMAMetrics {
 
    public Collection<AbstractWorkflowArtifact> getCompletedWorkflows() throws OseeCoreException {
       Set<AbstractWorkflowArtifact> completed = new HashSet<AbstractWorkflowArtifact>();
-      for (AbstractWorkflowArtifact sma : smas) {
-         if (sma.isCompletedOrCancelled()) {
-            completed.add(sma);
+      for (AbstractWorkflowArtifact awa : awas) {
+         if (awa.isCompletedOrCancelled()) {
+            completed.add(awa);
          }
       }
       return completed;
@@ -221,14 +221,14 @@ public class SMAMetrics {
    }
 
    public double getPercentCompleteByWorkflow() throws OseeCoreException {
-      if (smas.isEmpty()) {
+      if (awas.isEmpty()) {
          return 0;
       }
       double completed = getCompletedWorkflows().size();
       if (completed == 0) {
          return 0;
       }
-      return completed / smas.size() * 100;
+      return completed / awas.size() * 100;
    }
 
    public Collection<TaskArtifact> getCompletedTaskWorkflows() throws OseeCoreException {
@@ -257,8 +257,8 @@ public class SMAMetrics {
       return str;
    }
 
-   public static String getEstRemainMetrics(Collection<? extends Artifact> smas, VersionArtifact versionArtifact, double manHoursPerDay, Date estimatedrelDate) throws OseeCoreException {
-      return new SMAMetrics(smas, versionArtifact, manHoursPerDay, estimatedrelDate).str;
+   public static String getEstRemainMetrics(Collection<? extends Artifact> awas, VersionArtifact versionArtifact, double manHoursPerDay, Date estimatedrelDate) throws OseeCoreException {
+      return new SMAMetrics(awas, versionArtifact, manHoursPerDay, estimatedrelDate).str;
    }
 
    public Set<User> getAssigneesAssignedOrCompleted() {
@@ -333,13 +333,13 @@ public class SMAMetrics {
    }
 
    public int getNumSMAs() {
-      return smas.size();
+      return awas.size();
    }
 
    public int getNumNotEstimated() throws OseeCoreException {
       int count = 0;
-      for (AbstractWorkflowArtifact sma : smas) {
-         if (EstimatedHoursColumn.getEstimatedHours(sma) == 0) {
+      for (AbstractWorkflowArtifact awa : awas) {
+         if (EstimatedHoursColumn.getEstimatedHours(awa) == 0) {
             count++;
          }
       }

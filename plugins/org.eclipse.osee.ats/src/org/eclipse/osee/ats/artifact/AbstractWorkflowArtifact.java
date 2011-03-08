@@ -86,7 +86,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    private final Set<IRelationTypeSide> atsWorldRelations = new HashSet<IRelationTypeSide>();
    private Collection<User> transitionAssignees;
-   protected AbstractWorkflowArtifact parentSma;
+   protected AbstractWorkflowArtifact parentAwa;
    protected TeamWorkFlowArtifact parentTeamArt;
    protected Artifact parentAction;
    private StateManager stateMgr;
@@ -196,8 +196,8 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    @SuppressWarnings("unused")
-   public AbstractWorkflowArtifact getParentSMA() throws OseeCoreException {
-      return parentSma;
+   public AbstractWorkflowArtifact getParentAWA() throws OseeCoreException {
+      return parentAwa;
    }
 
    @SuppressWarnings("unused")
@@ -423,7 +423,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    @Override
    public Artifact getParentAtsArtifact() throws OseeCoreException {
-      return getParentSMA();
+      return getParentAWA();
    }
 
    public static Set<IArtifactType> getAllSMAType() throws OseeCoreException {
@@ -536,7 +536,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    /**
-    * Return true if sma is TeamWorkflowArtifact or review of a team workflow and it's TeamDefinitionArtifact has rule
+    * Return true if awa is TeamWorkflowArtifact or review of a team workflow and it's TeamDefinitionArtifact has rule
     * set
     */
    public boolean teamDefHasRule(RuleDefinitionOption option) throws OseeCoreException {

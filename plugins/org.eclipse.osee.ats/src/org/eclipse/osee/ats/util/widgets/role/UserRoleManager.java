@@ -276,8 +276,8 @@ public class UserRoleManager {
       for (UserRole role : getUserRoles()) {
          hoursSpent += role.getHoursSpent() == null ? 0 : role.getHoursSpent();
       }
-      AbstractWorkflowArtifact sma = getArtifact();
-      sma.getStateMgr().setMetrics(hoursSpent, sma.getStateMgr().getPercentComplete(), true, UserManager.getUser(),
+      AbstractWorkflowArtifact awa = getArtifact();
+      awa.getStateMgr().setMetrics(hoursSpent, awa.getStateMgr().getPercentComplete(), true, UserManager.getUser(),
          new Date());
       if (persist) {
          getArtifact().persist(transaction);

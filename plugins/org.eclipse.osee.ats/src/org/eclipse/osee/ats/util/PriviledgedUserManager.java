@@ -38,7 +38,7 @@ public class PriviledgedUserManager {
             }
          }
       }
-      AbstractWorkflowArtifact parentSma = workflow.getParentSMA();
+      AbstractWorkflowArtifact parentSma = workflow.getParentAWA();
       if (parentSma != null) {
          users.addAll(parentSma.getStateMgr().getAssignees());
       }

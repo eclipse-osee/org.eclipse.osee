@@ -96,10 +96,10 @@ public class GroupsColumn extends XViewerAtsColumn implements IXViewerValueColum
       return promptChangeGroups(Arrays.asList(sma), persist);
    }
 
-   public static boolean promptChangeGroups(final Collection<? extends AbstractWorkflowArtifact> smas, boolean persist) throws OseeCoreException {
+   public static boolean promptChangeGroups(final Collection<? extends AbstractWorkflowArtifact> awas, boolean persist) throws OseeCoreException {
       Set<Artifact> selected = new HashSet<Artifact>();
-      for (AbstractWorkflowArtifact sma : smas) {
-         selected.addAll(sma.getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Group));
+      for (AbstractWorkflowArtifact awa : awas) {
+         selected.addAll(awa.getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Group));
       }
       Collection<Artifact> allGroups = UniversalGroup.getGroupsNotRoot(AtsUtil.getAtsBranch());
       UserGroupsCheckTreeDialog dialog = new UserGroupsCheckTreeDialog(allGroups);
@@ -107,9 +107,9 @@ public class GroupsColumn extends XViewerAtsColumn implements IXViewerValueColum
       dialog.setInitialSelections(selected.toArray());
       if (dialog.open() == 0) {
          SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Set Groups");
-         for (AbstractWorkflowArtifact sma : smas) {
-            sma.setRelations(CoreRelationTypes.Universal_Grouping__Group, dialog.getSelection());
-            sma.persist(transaction);
+         for (AbstractWorkflowArtifact awa : awas) {
+            awa.setRelations(CoreRelationTypes.Universal_Grouping__Group, dialog.getSelection());
+            awa.persist(transaction);
          }
          transaction.execute();
          return true;
@@ -143,14 +143,14 @@ public class GroupsColumn extends XViewerAtsColumn implements IXViewerValueColum
    @Override
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
       try {
-         Set<AbstractWorkflowArtifact> smas = new HashSet<AbstractWorkflowArtifact>();
+         Set<AbstractWorkflowArtifact> awas = new HashSet<AbstractWorkflowArtifact>();
          for (TreeItem item : treeItems) {
             Artifact art = (Artifact) item.getData();
             if (art instanceof TeamWorkFlowArtifact) {
-               smas.add((AbstractWorkflowArtifact) art);
+               awas.add((AbstractWorkflowArtifact) art);
             }
          }
-         promptChangeGroups(smas, true);
+         promptChangeGroups(awas, true);
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
