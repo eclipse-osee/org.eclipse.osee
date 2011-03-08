@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.ActionManager;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
@@ -38,6 +39,7 @@ import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActions;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
@@ -149,7 +151,7 @@ public class ActionHyperView extends HyperView implements IActionable, IArtifact
             return;
          }
          ActionHyperItem topAHI = new ActionHyperItem(topArt);
-         if (ActionManager.isOfTypeAction(topArt)) {
+         if (Artifacts.isOfType(topArt, AtsArtifactTypes.Action)) {
             for (TeamWorkFlowArtifact team : ActionManager.getTeams(topArt)) {
                ActionHyperItem teamAHI = new ActionHyperItem(team);
                teamAHI.setRelationToolTip("Team");

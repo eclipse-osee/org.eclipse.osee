@@ -20,14 +20,14 @@ import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.ats.util.AWAUtil;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.AWAUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 public class UserWorldSearchItem {
 
    private final Collection<TeamDefinitionArtifact> teamDefs;
-   private final Collection<VersionArtifact> versions;
+   private final Collection<Artifact> versions;
    private final Collection<UserSearchOption> options;
    private final User user;
    private final String selectedState;
@@ -54,7 +54,7 @@ public class UserWorldSearchItem {
       IncludeTasks
    };
 
-   public UserWorldSearchItem(User user, Collection<TeamDefinitionArtifact> teamDefs, Collection<VersionArtifact> versions, String selectedState, UserSearchOption... userSearchOption) {
+   public UserWorldSearchItem(User user, Collection<TeamDefinitionArtifact> teamDefs, Collection<Artifact> versions, String selectedState, UserSearchOption... userSearchOption) {
       this.user = user;
       this.teamDefs = teamDefs;
       this.versions = versions;

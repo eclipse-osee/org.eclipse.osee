@@ -13,10 +13,9 @@ package org.eclipse.osee.ats.util.widgets.dialog;
 import java.util.ArrayList;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.artifact.VersionArtifact;
-import org.eclipse.osee.ats.artifact.VersionArtifact.VersionLockedType;
-import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.VersionLockedType;
+import org.eclipse.osee.ats.util.VersionReleaseType;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -41,7 +40,7 @@ public class TeamVersionListDialog extends SelectionDialog {
 
    XComboViewer teamCombo = new XComboViewer("Team", SWT.READ_ONLY);
    XComboViewer versionCombo = new XComboViewer("Version", SWT.READ_ONLY);
-   VersionArtifact selectedVersion = null;
+   Artifact selectedVersion = null;
    TeamDefinitionArtifact selectedTeamDef = null;
    private final Active active;
    private final TeamDefinitionArtifact teamDef;
@@ -125,7 +124,7 @@ public class TeamVersionListDialog extends SelectionDialog {
 
          @Override
          public void widgetSelected(SelectionEvent e) {
-            selectedVersion = (VersionArtifact) versionCombo.getSelected();
+            selectedVersion = (Artifact) versionCombo.getSelected();
          };
       });
       if (teamDef != null) {
@@ -143,7 +142,7 @@ public class TeamVersionListDialog extends SelectionDialog {
       return container;
    }
 
-   public VersionArtifact getSelectedVersion() {
+   public Artifact getSelectedVersion() {
       return selectedVersion;
    }
 

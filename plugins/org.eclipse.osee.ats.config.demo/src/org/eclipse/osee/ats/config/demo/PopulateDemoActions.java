@@ -22,7 +22,6 @@ import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowManager;
-import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.config.AtsBulkLoad;
 import org.eclipse.osee.ats.config.demo.config.DemoDbActionData;
 import org.eclipse.osee.ats.config.demo.config.DemoDbActionData.CreateReview;
@@ -39,6 +38,7 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.FavoritesManager;
 import org.eclipse.osee.ats.util.SubscribeManager;
 import org.eclipse.osee.ats.util.TeamState;
+import org.eclipse.osee.ats.util.VersionManager;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
@@ -292,7 +292,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
       DemoDbUtil.sleep(2000L);
       OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Committing branch");
       Job job =
-         reqTeam.getBranchMgr().commitWorkingBranch(false, true, reqTeam.getTargetedVersion().getParentBranch(), true);
+         reqTeam.getBranchMgr().commitWorkingBranch(false, true,
+            VersionManager.getParentBranch(reqTeam.getTargetedVersion()), true);
       try {
          job.join();
       } catch (InterruptedException ex) {
@@ -446,8 +447,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
                dtwm.transitionTo((toStateOverride != null ? toStateOverride : aData.toState), null, false, transaction);
                teamWf.persist(transaction);
                if (Strings.isValid(versionStr)) {
-                  VersionArtifact verArt =
-                     (VersionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Version, versionStr,
+                  Artifact verArt =
+                     ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Version, versionStr,
                         AtsUtil.getAtsBranch());
                   teamWf.addRelation(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, verArt);
                   teamWf.persist(transaction);

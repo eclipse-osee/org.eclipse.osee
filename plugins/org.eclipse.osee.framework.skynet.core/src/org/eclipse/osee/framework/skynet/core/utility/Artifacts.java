@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -209,4 +210,12 @@ public final class Artifacts {
       }
       return branchMap;
    }
+
+   public static boolean isOfType(Object object, IArtifactType artifactType) {
+      if (object instanceof Artifact) {
+         return ((Artifact) object).isOfType(artifactType);
+      }
+      return false;
+   }
+
 }

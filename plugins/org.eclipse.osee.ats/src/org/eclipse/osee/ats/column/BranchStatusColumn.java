@@ -12,11 +12,13 @@ import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.util.ActionManager;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.swt.SWT;
 
 public class BranchStatusColumn extends XViewerAtsColumn implements IXViewerValueColumn {
@@ -46,7 +48,7 @@ public class BranchStatusColumn extends XViewerAtsColumn implements IXViewerValu
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
-         if (ActionManager.isOfTypeAction(element)) {
+         if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
             Set<String> strs = new HashSet<String>();
             for (TeamWorkFlowArtifact team : ActionManager.getTeams(element)) {
                String str = getColumnText(team, column, columnIndex);

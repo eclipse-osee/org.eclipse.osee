@@ -10,7 +10,6 @@ import java.util.Map;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.dsl.atsDsl.ActionableItemDef;
 import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
 import org.eclipse.osee.ats.dsl.atsDsl.BooleanDef;
@@ -128,7 +127,7 @@ public class ConvertAIsAndTeamsToAtsDsl {
       if (match.isMatched()) {
          dslTeamDef.setWorkDefinition(match.getWorkFlowDefinition().getName());
       }
-      for (VersionArtifact verArt : teamDef.getVersionsArtifacts()) {
+      for (Artifact verArt : teamDef.getVersionsArtifacts()) {
          convertVersionArtifact(dslTeamDef, verArt, teamDef);
       }
       // process children
@@ -138,7 +137,7 @@ public class ConvertAIsAndTeamsToAtsDsl {
       return dslTeamDef;
    }
 
-   private void convertVersionArtifact(TeamDef dslTeamDef, VersionArtifact art, TeamDefinitionArtifact teamDef) throws OseeCoreException {
+   private void convertVersionArtifact(TeamDef dslTeamDef, Artifact art, TeamDefinitionArtifact teamDef) throws OseeCoreException {
       VersionDef dslVerDef = AtsDslFactoryImpl.init().createVersionDef();
       dslVerDef.setName(art.getName());
       if (art.getSoleAttributeValue(AtsAttributeTypes.Active, false)) {

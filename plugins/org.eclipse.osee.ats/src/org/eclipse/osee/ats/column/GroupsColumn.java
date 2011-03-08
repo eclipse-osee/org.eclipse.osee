@@ -120,7 +120,7 @@ public class GroupsColumn extends XViewerAtsColumn implements IXViewerValueColum
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
-         if (ActionManager.isOfTypeAction(element)) {
+         if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
             Set<Artifact> groups = new HashSet<Artifact>();
             Artifact actionArt = (Artifact) element;
             groups.addAll(actionArt.getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Group));

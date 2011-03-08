@@ -16,11 +16,13 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.util.ActionManager;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.swt.SWT;
 
 public class OriginatingWorkFlowColumn extends XViewerAtsColumn implements IXViewerValueColumn {
@@ -51,7 +53,7 @@ public class OriginatingWorkFlowColumn extends XViewerAtsColumn implements IXVie
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
-         if (ActionManager.isOfTypeAction(element)) {
+         if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
             getWorldViewOriginatingWorkflowStr((Artifact) element);
          }
          if (element instanceof AbstractWorkflowArtifact) {

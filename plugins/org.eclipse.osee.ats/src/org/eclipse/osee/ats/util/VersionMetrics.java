@@ -17,13 +17,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.column.ChangeTypeColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 
 /**
@@ -31,10 +32,10 @@ import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
  */
 public class VersionMetrics {
 
-   private final VersionArtifact verArt;
+   private final Artifact verArt;
    private final VersionTeamMetrics verTeamMet;
 
-   public VersionMetrics(VersionArtifact verArt, VersionTeamMetrics verTeamMet) {
+   public VersionMetrics(Artifact verArt, VersionTeamMetrics verTeamMet) {
       this.verArt = verArt;
       this.verTeamMet = verTeamMet;
    }
@@ -45,7 +46,7 @@ public class VersionMetrics {
       sb.append("\n");
       try {
          sb.append("Workflows: ");
-         sb.append(verArt.getTargetedForTeamArtifacts().size());
+         sb.append(VersionManager.getTargetedForTeamArtifacts(verArt).size());
          sb.append(" Problem: ");
          sb.append(getTeamWorkFlows(ChangeType.Problem).size());
          sb.append(" Improve: ");
@@ -53,7 +54,7 @@ public class VersionMetrics {
          sb.append(" Support: ");
          sb.append(getTeamWorkFlows(ChangeType.Support).size());
          sb.append(" Release Date: ");
-         sb.append(verArt.getReleaseDate());
+         sb.append(verArt.getSoleAttributeValue(AtsAttributeTypes.ReleaseDate, null));
          VersionMetrics prevVerMet = getPreviousVerMetViaReleaseDate();
          if (prevVerMet == null) {
             sb.append(" Prev Release Version: <not found>");
@@ -61,7 +62,7 @@ public class VersionMetrics {
             sb.append(" Prev Release Version \"");
             sb.append(prevVerMet);
             sb.append("\"   Release Date: ");
-            sb.append(verArt.getReleaseDate());
+            sb.append(verArt.getSoleAttributeValue(AtsAttributeTypes.ReleaseDate, null));
          }
          sb.append(" Start Date: ");
          sb.append(getReleaseStartDate());
@@ -78,10 +79,11 @@ public class VersionMetrics {
       if (startDate == null) {
          return null;
       }
-      if (verArt.getReleaseDate() == null) {
+      Date relDate = verArt.getSoleAttributeValue(AtsAttributeTypes.ReleaseDate, null);
+      if (relDate == null) {
          return null;
       }
-      return DateUtil.getDifference(startDate, verArt.getReleaseDate());
+      return DateUtil.getDifference(startDate, relDate);
    }
 
    public Date getReleaseStartDate() throws OseeCoreException {
@@ -89,13 +91,14 @@ public class VersionMetrics {
       if (prevVerMet == null) {
          return null;
       }
-      return prevVerMet.getVerArt().getReleaseDate();
+      Date relDate = prevVerMet.getVerArt().getSoleAttributeValue(AtsAttributeTypes.ReleaseDate, null);
+      return relDate;
    }
 
    public Collection<TeamWorkFlowArtifact> getTeamWorkFlows(ChangeType... changeType) throws OseeCoreException {
       List<ChangeType> changeTypes = Arrays.asList(changeType);
       Set<TeamWorkFlowArtifact> teams = new HashSet<TeamWorkFlowArtifact>();
-      for (TeamWorkFlowArtifact team : verArt.getTargetedForTeamArtifacts()) {
+      for (TeamWorkFlowArtifact team : VersionManager.getTargetedForTeamArtifacts(verArt)) {
          if (changeTypes.contains(ChangeTypeColumn.getChangeType(team))) {
             teams.add(team);
          }
@@ -104,7 +107,7 @@ public class VersionMetrics {
    }
 
    public VersionMetrics getPreviousVerMetViaReleaseDate() throws OseeCoreException {
-      if (verArt.getReleaseDate() == null) {
+      if (verArt.getSoleAttributeValue(AtsAttributeTypes.ReleaseDate, null) == null) {
          return null;
       }
       int index = verTeamMet.getReleasedOrderedVersions().indexOf(this);
@@ -115,7 +118,7 @@ public class VersionMetrics {
    }
 
    public VersionMetrics getNextVerMetViaReleaseDate() throws OseeCoreException {
-      if (verArt.getReleaseDate() == null) {
+      if (verArt.getSoleAttributeValue(AtsAttributeTypes.ReleaseDate, null) == null) {
          return null;
       }
       int index = verTeamMet.getReleasedOrderedVersions().indexOf(this);
@@ -125,16 +128,10 @@ public class VersionMetrics {
       return null;
    }
 
-   /**
-    * @return the verArt
-    */
-   public VersionArtifact getVerArt() {
+   public Artifact getVerArt() {
       return verArt;
    }
 
-   /**
-    * @return the verTeamMet
-    */
    public VersionTeamMetrics getVerTeamMet() {
       return verTeamMet;
    }

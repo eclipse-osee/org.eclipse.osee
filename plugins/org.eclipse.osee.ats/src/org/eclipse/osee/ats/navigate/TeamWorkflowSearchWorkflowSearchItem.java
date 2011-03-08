@@ -18,7 +18,6 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.ats.util.widgets.XHyperlabelTeamDefinitionSelection;
@@ -287,7 +286,7 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
       }
    }
 
-   protected VersionArtifact getSelectedVersionArtifact() throws OseeCoreException {
+   protected Artifact getSelectedVersionArtifact() throws OseeCoreException {
       if (versionCombo == null) {
          return null;
       }
@@ -301,7 +300,7 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
          if (teamDefHoldingVersions == null) {
             return null;
          }
-         for (VersionArtifact versionArtifact : teamDefHoldingVersions.getVersionsArtifacts()) {
+         for (Artifact versionArtifact : teamDefHoldingVersions.getVersionsArtifacts()) {
             if (versionArtifact.getName().equals(versionStr)) {
                return versionArtifact;
             }
@@ -362,7 +361,7 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
          if (teamDefs.size() > 0) {
             selected = true;
          }
-         VersionArtifact verArt = getSelectedVersionArtifact();
+         Artifact verArt = getSelectedVersionArtifact();
          if (verArt != null) {
             selected = true;
          }
@@ -393,7 +392,7 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
    }
 
    @Override
-   public VersionArtifact getTargetedVersionArtifact() throws OseeCoreException {
+   public Artifact getTargetedVersionArtifact() throws OseeCoreException {
       if (versionCombo == null) {
          return null;
       }

@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.column.ChangeTypeColumn;
@@ -152,13 +153,13 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
       monitor.beginTask("Processing Versions", verMets.size());
       for (VersionMetrics verMet : verMets) {
          Date thisReleaseStartDate = verMet.getReleaseStartDate();
-         Date thisReleaseEndDate = verMet.getVerArt().getReleaseDate();
+         Date thisReleaseEndDate = verMet.getVerArt().getSoleAttributeValue(AtsAttributeTypes.ReleaseDate, null);
          Date nextReleaseStartDate = null;
          Date nextReleaseEndDate = null;
          VersionMetrics nextVerMet = verMet.getNextVerMetViaReleaseDate();
          if (nextVerMet != null) {
             nextReleaseStartDate = nextVerMet.getReleaseStartDate();
-            nextReleaseEndDate = nextVerMet.getVerArt().getReleaseDate();
+            nextReleaseEndDate = nextVerMet.getVerArt().getSoleAttributeValue(AtsAttributeTypes.ReleaseDate, null);
          }
          Integer numOrigDurningNextReleaseCycle = 0;
          if (nextReleaseStartDate != null && nextReleaseEndDate != null) {

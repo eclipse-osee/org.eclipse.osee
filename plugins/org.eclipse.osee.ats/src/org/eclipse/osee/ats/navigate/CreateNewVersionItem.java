@@ -15,7 +15,6 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
@@ -26,6 +25,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
@@ -81,7 +81,7 @@ public class CreateNewVersionItem extends XNavigateItemAction {
             if (!Strings.isValid(newVer)) {
                resultData.logError("Version name can't be blank");
             }
-            for (VersionArtifact verArt : teamDefHoldingVersions.getVersionsArtifacts()) {
+            for (Artifact verArt : teamDefHoldingVersions.getVersionsArtifacts()) {
                if (verArt.getName().equals(newVer)) {
                   resultData.logError(String.format("Version [%s] already exists", newVer));
                }
@@ -96,8 +96,7 @@ public class CreateNewVersionItem extends XNavigateItemAction {
          }
          try {
             SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Create New Version(s)");
-            Set<VersionArtifact> newVersions =
-               createNewVersionItemTx(transaction, teamDefHoldingVersions, newVersionNames);
+            Set<Artifact> newVersions = createNewVersionItemTx(transaction, teamDefHoldingVersions, newVersionNames);
             transaction.execute();
 
             if (newVersions.size() == 1) {
@@ -126,11 +125,10 @@ public class CreateNewVersionItem extends XNavigateItemAction {
       return null;
    }
 
-   private Set<VersionArtifact> createNewVersionItemTx(SkynetTransaction transaction, TeamDefinitionArtifact teamDefHoldingVersions, Set<String> newVersionNames) throws OseeCoreException {
-      Set<VersionArtifact> newVersions = new HashSet<VersionArtifact>();
+   private Set<Artifact> createNewVersionItemTx(SkynetTransaction transaction, TeamDefinitionArtifact teamDefHoldingVersions, Set<String> newVersionNames) throws OseeCoreException {
+      Set<Artifact> newVersions = new HashSet<Artifact>();
       for (String newVer : newVersionNames) {
-         VersionArtifact ver =
-            (VersionArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version, AtsUtil.getAtsBranch(), newVer);
+         Artifact ver = ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version, AtsUtil.getAtsBranch(), newVer);
          teamDefHoldingVersions.addRelation(AtsRelationTypes.TeamDefinitionToVersion_Version, ver);
          ver.persist(transaction);
          newVersions.add(ver);

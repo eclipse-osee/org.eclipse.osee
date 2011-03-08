@@ -13,6 +13,7 @@ import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.ActionManager;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.DeadlineManager;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
@@ -20,6 +21,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -68,7 +70,7 @@ public class EstimatedCompletionDateColumn extends XViewerAtsAttributeValueColum
    }
 
    public static Result isWorldViewEcdAlerting(Object object) throws OseeCoreException {
-      if (ActionManager.isOfTypeAction(object)) {
+      if (Artifacts.isOfType(object, AtsArtifactTypes.Action)) {
          for (TeamWorkFlowArtifact team : ActionManager.getTeams(object)) {
             Result result = isWorldViewEcdAlerting(team);
             if (result.isTrue()) {
@@ -82,7 +84,7 @@ public class EstimatedCompletionDateColumn extends XViewerAtsAttributeValueColum
    }
 
    public static Date getDate(Object object) throws OseeCoreException {
-      if (ActionManager.isOfTypeAction(object)) {
+      if (Artifacts.isOfType(object, AtsArtifactTypes.Action)) {
          return getDate((ActionManager.getFirstTeam(object)));
       } else if (object instanceof TeamWorkFlowArtifact) {
          Date date =

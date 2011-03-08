@@ -23,14 +23,14 @@ import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.artifact.VersionArtifact;
-import org.eclipse.osee.ats.artifact.VersionArtifact.VersionLockedType;
-import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.VersionLockedType;
+import org.eclipse.osee.ats.util.VersionManager;
+import org.eclipse.osee.ats.util.VersionReleaseType;
 import org.eclipse.osee.ats.util.widgets.dialog.VersionListDialog;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
@@ -158,10 +158,11 @@ public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerV
          return false;
       }
       Object obj = vld.getResult()[0];
-      VersionArtifact newVersion = (VersionArtifact) obj;
+      Artifact newVersion = (Artifact) obj;
       //now check selected version
-      if (newVersion.isVersionLocked()) {
-         String error = "Version \"" + newVersion.getFullDisplayName() + "\" is locked or already released.";
+      if (VersionManager.isVersionLocked(newVersion)) {
+         String error =
+            "Version \"" + VersionManager.getFullDisplayName(newVersion) + "\" is locked or already released.";
          if (AtsUtil.isAtsAdmin() && !MessageDialog.openConfirm(Displays.getActiveShell(), "Change Version",
             error + "\n\nOverride?")) {
             return false;
@@ -182,7 +183,7 @@ public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerV
       return true;
    }
 
-   public static VersionArtifact getTargetedVersion(Object object) throws OseeCoreException {
+   public static Artifact getTargetedVersion(Object object) throws OseeCoreException {
       if (object instanceof AbstractWorkflowArtifact) {
          TeamWorkFlowArtifact teamArt = ((AbstractWorkflowArtifact) object).getParentTeamWorkflow();
          if (teamArt != null) {
@@ -192,9 +193,9 @@ public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerV
                if (verArts.size() > 1) {
                   OseeLog.log(AtsPlugin.class, Level.SEVERE,
                      "Multiple targeted versions for artifact " + teamArt.toStringWithId());
-                  return (VersionArtifact) verArts.iterator().next();
+                  return verArts.iterator().next();
                } else {
-                  return (VersionArtifact) verArts.iterator().next();
+                  return verArts.iterator().next();
                }
             }
          }
@@ -206,9 +207,8 @@ public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerV
       if (object instanceof AbstractWorkflowArtifact) {
          TeamWorkFlowArtifact teamArt = ((AbstractWorkflowArtifact) object).getParentTeamWorkflow();
          if (teamArt != null) {
-            Collection<VersionArtifact> verArts =
-               teamArt.getRelatedArtifacts(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version,
-                  VersionArtifact.class);
+            Collection<Artifact> verArts =
+               teamArt.getRelatedArtifacts(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
             if (verArts.isEmpty()) {
                return "";
             }
@@ -218,7 +218,7 @@ public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerV
                OseeLog.log(AtsPlugin.class, Level.SEVERE, errStr, null);
                return XViewerCells.getCellExceptionString(errStr);
             }
-            VersionArtifact verArt = verArts.iterator().next();
+            Artifact verArt = verArts.iterator().next();
             if (!teamArt.isCompleted() && !teamArt.isCancelled() && verArt.getSoleAttributeValue(
                AtsAttributeTypes.Released, false)) {
                String errStr =
@@ -238,7 +238,7 @@ public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerV
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
-         if (ActionManager.isOfTypeAction(element)) {
+         if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
             Set<String> strs = new HashSet<String>();
             for (TeamWorkFlowArtifact team : ActionManager.getTeams(element)) {
                String str = team.getTargetedVersionStr();

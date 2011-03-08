@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.AtsArtifactToken;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
@@ -160,11 +159,10 @@ public class AtsConfigManager extends AbstractOperation {
    }
 
    private void createVersions(SkynetTransaction transaction, TeamDefinitionArtifact teamDefinition) throws OseeCoreException {
-      List<VersionArtifact> versions = new ArrayList<VersionArtifact>();
+      List<Artifact> versions = new ArrayList<Artifact>();
       if (versionNames != null) {
          for (String name : versionNames) {
-            VersionArtifact version =
-               (VersionArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version, AtsUtil.getAtsBranch(), name);
+            Artifact version = ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version, AtsUtil.getAtsBranch(), name);
             teamDefinition.addRelation(AtsRelationTypes.TeamDefinitionToVersion_Version, version);
             versions.add(version);
             version.persist(transaction);

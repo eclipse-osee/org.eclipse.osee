@@ -16,11 +16,11 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.artifact.VersionArtifact;
-import org.eclipse.osee.ats.artifact.VersionArtifact.VersionLockedType;
-import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.VersionLockedType;
+import org.eclipse.osee.ats.util.VersionManager;
+import org.eclipse.osee.ats.util.VersionReleaseType;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.ats.util.widgets.dialog.VersionListDialog;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
@@ -65,16 +66,17 @@ public class ReleaseVersionItem extends XNavigateItemAction {
                teamDefHoldingVersions.getVersionsArtifacts(VersionReleaseType.UnReleased, VersionLockedType.Both));
          int result = ld.open();
          if (result == 0) {
-            VersionArtifact verArt = (VersionArtifact) ld.getResult()[0];
+            Artifact verArt = (Artifact) ld.getResult()[0];
 
             // Validate team lead status
-            if (!AtsUtil.isAtsAdmin() && !verArt.getParentTeamDefinition().getLeads().contains(UserManager.getUser())) {
+            if (!AtsUtil.isAtsAdmin() && !VersionManager.getParentTeamDefinition(verArt).getLeads().contains(
+               UserManager.getUser())) {
                AWorkbench.popup("ERROR", "Only lead can release version.");
                return;
             }
             // Validate that all Team Workflows are Completed or Cancelled
             String errorStr = null;
-            for (TeamWorkFlowArtifact team : verArt.getTargetedForTeamArtifacts()) {
+            for (TeamWorkFlowArtifact team : VersionManager.getTargetedForTeamArtifacts(verArt)) {
                if (!team.isCancelled() && !team.isCompleted()) {
                   errorStr =
                      "All Team Workflows must be either Completed or " + "Cancelled before releasing a version.\n\n" + team.getHumanReadableId() + " - is in the\"" + team.getStateMgr().getCurrentStateName() + "\" state.";
@@ -92,7 +94,7 @@ public class ReleaseVersionItem extends XNavigateItemAction {
 
             verArt.setSoleAttributeValue(AtsAttributeTypes.Released, true);
             verArt.setSoleAttributeValue(AtsAttributeTypes.ReleaseDate, new Date());
-            verArt.setNextVersion(false);
+            VersionManager.setNextVersion(verArt, false);
             verArt.persist();
 
             if (MessageDialog.openQuestion(Displays.getActiveShell(), "Select NEW Next Release Version",
@@ -102,8 +104,8 @@ public class ReleaseVersionItem extends XNavigateItemAction {
                      teamDefHoldingVersions.getVersionsArtifacts());
                result = ld.open();
                if (result == 0) {
-                  verArt = (VersionArtifact) ld.getResult()[0];
-                  verArt.setNextVersion(true);
+                  verArt = (Artifact) ld.getResult()[0];
+                  VersionManager.setNextVersion(verArt, true);
                   verArt.persist();
                }
             }

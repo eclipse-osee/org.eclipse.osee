@@ -21,9 +21,6 @@ import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.artifact.VersionArtifact;
-import org.eclipse.osee.ats.artifact.VersionArtifact.VersionLockedType;
-import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.task.ITaskEditorProvider;
 import org.eclipse.osee.ats.task.TaskEditor;
@@ -31,6 +28,8 @@ import org.eclipse.osee.ats.task.TaskEditorParameterSearchItem;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.VersionLockedType;
+import org.eclipse.osee.ats.util.VersionReleaseType;
 import org.eclipse.osee.ats.util.widgets.XHyperlabelTeamDefinitionSelection;
 import org.eclipse.osee.ats.util.widgets.XStateCombo;
 import org.eclipse.osee.ats.world.search.TeamWorldSearchItem.ReleasedOption;
@@ -104,7 +103,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
    public Collection<? extends Artifact> getTaskEditorTaskArtifacts() throws OseeCoreException {
       List<Artifact> workflows = new ArrayList<Artifact>();
       Collection<TeamDefinitionArtifact> teamDefs = getSelectedTeamDefinitions();
-      VersionArtifact verArt = getSelectedVersionArtifact();
+      Artifact verArt = getSelectedVersionArtifact();
       Collection<Artifact> groups = getSelectedGroups();
       User user = getSelectedUser();
 
@@ -387,7 +386,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
       return stateCombo.getSelectedState();
    }
 
-   private VersionArtifact getSelectedVersionArtifact() throws OseeCoreException {
+   private Artifact getSelectedVersionArtifact() throws OseeCoreException {
       if (versionCombo == null) {
          return null;
       }
@@ -401,7 +400,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
          if (teamDefHoldingVersions == null) {
             return null;
          }
-         for (VersionArtifact versionArtifact : teamDefHoldingVersions.getVersionsArtifacts(VersionReleaseType.Both,
+         for (Artifact versionArtifact : teamDefHoldingVersions.getVersionsArtifacts(VersionReleaseType.Both,
             VersionLockedType.Both)) {
             if (versionArtifact.getName().equals(versionStr)) {
                return versionArtifact;

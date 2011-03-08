@@ -16,10 +16,12 @@ import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.ActionManager;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.swt.SWT;
 
 public class OperationalImpactWorkaroundColumn extends XViewerValueColumn {
@@ -64,7 +66,7 @@ public class OperationalImpactWorkaroundColumn extends XViewerValueColumn {
          return ((TeamWorkFlowArtifact) wva).getArtifact().getSoleAttributeValue(
             AtsAttributeTypes.OperationalImpactWorkaround, "");
       }
-      if (ActionManager.isOfTypeAction(wva)) {
+      if (Artifacts.isOfType(wva, AtsArtifactTypes.Action)) {
          Set<String> strs = new HashSet<String>();
          for (TeamWorkFlowArtifact team : ActionManager.getTeams(wva)) {
             strs.add(getOperationalImpact(team));

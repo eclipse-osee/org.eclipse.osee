@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
@@ -74,7 +75,7 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
          if (element instanceof AbstractWorkflowArtifact) {
             return ((AbstractWorkflowArtifact) element).getAttributesToStringUnique(getAttributeType(), ";");
          }
-         if (ActionManager.isOfTypeAction(element)) {
+         if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
             Set<String> strs = new HashSet<String>();
             for (TeamWorkFlowArtifact team : ActionManager.getTeams(element)) {
                String str = getColumnText(team, column, columnIndex);

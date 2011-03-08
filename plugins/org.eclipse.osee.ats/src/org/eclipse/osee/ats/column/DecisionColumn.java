@@ -7,8 +7,9 @@ package org.eclipse.osee.ats.column;
 
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.util.ActionManager;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.swt.SWT;
 
 public class DecisionColumn extends XViewerAtsAttributeValueColumn {
@@ -36,7 +37,7 @@ public class DecisionColumn extends XViewerAtsAttributeValueColumn {
 
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
-      if (ActionManager.isOfTypeAction(element)) {
+      if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
          return "";
       }
       return super.getColumnText(element, column, columnIndex);

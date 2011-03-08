@@ -36,6 +36,7 @@ import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.StateManager;
 import org.eclipse.osee.ats.util.TeamState;
+import org.eclipse.osee.ats.util.VersionManager;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.ats.workdef.RuleDefinitionOption;
 import org.eclipse.osee.ats.workdef.StateDefinition;
@@ -563,9 +564,9 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
     */
    public boolean isReleased() {
       try {
-         VersionArtifact verArt = getTargetedVersion();
+         Artifact verArt = getTargetedVersion();
          if (verArt != null) {
-            return verArt.isReleased();
+            return VersionManager.isReleased(verArt);
          }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
@@ -575,9 +576,9 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    public boolean isVersionLocked() {
       try {
-         VersionArtifact verArt = getTargetedVersion();
+         Artifact verArt = getTargetedVersion();
          if (verArt != null) {
-            return verArt.isVersionLocked();
+            return VersionManager.isVersionLocked(verArt);
          }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
@@ -585,7 +586,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return false;
    }
 
-   public VersionArtifact getTargetedVersion() throws OseeCoreException {
+   public Artifact getTargetedVersion() throws OseeCoreException {
       return TargetedVersionColumn.getTargetedVersion(this);
    }
 

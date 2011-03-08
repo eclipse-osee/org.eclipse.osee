@@ -20,11 +20,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 
 /**
@@ -59,8 +60,8 @@ public class VersionTeamMetrics {
    public Collection<TeamWorkFlowArtifact> getWorkflowsOriginatedBetween(Date startDate, Date endDate) throws OseeCoreException {
       if (teamWorkflowToOrigDate == null) {
          teamWorkflowToOrigDate = new HashMap<TeamWorkFlowArtifact, Date>();
-         for (VersionArtifact verArt : verTeamDef.getVersionsArtifacts()) {
-            for (TeamWorkFlowArtifact team : verArt.getTargetedForTeamArtifacts()) {
+         for (Artifact verArt : verTeamDef.getVersionsArtifacts()) {
+            for (TeamWorkFlowArtifact team : VersionManager.getTargetedForTeamArtifacts(verArt)) {
                Date origDate = team.getCreatedDate();
                teamWorkflowToOrigDate.put(team, origDate);
             }
@@ -76,10 +77,11 @@ public class VersionTeamMetrics {
    }
 
    private void orderReleasedVersions() throws OseeCoreException {
-      for (VersionArtifact ver : verTeamDef.getVersionsArtifacts()) {
-         VersionMetrics verMet = new VersionMetrics(ver, this);
-         if (ver.getReleaseDate() != null) {
-            relDateToVerMet.put(ver.getReleaseDate(), verMet);
+      for (Artifact verArt : verTeamDef.getVersionsArtifacts()) {
+         VersionMetrics verMet = new VersionMetrics(verArt, this);
+         Date relDate = verArt.getSoleAttributeValue(AtsAttributeTypes.ReleaseDate, null);
+         if (relDate != null) {
+            relDateToVerMet.put(relDate, verMet);
          }
          verMets.add(verMet);
       }

@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -100,7 +101,7 @@ public class AtsExportManager extends Action {
 
             if (selectedObject instanceof AbstractWorkflowArtifact) {
                smaArts.add((AbstractWorkflowArtifact) selectedObject);
-            } else if (ActionManager.isOfTypeAction(selectedObject)) {
+            } else if (Artifacts.isOfType(selectedObject, AtsArtifactTypes.Action)) {
                smaArts.addAll(ActionManager.getTeams(selectedObject));
             } else {
                OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Expected selection to be of type Artifact");

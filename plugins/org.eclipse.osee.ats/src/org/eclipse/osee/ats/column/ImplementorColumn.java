@@ -13,6 +13,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.util.ActionManager;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -49,7 +50,7 @@ public class ImplementorColumn extends XViewerAtsColumn implements IXViewerValue
       try {
          if (element instanceof AbstractWorkflowArtifact) {
             return Artifacts.toString("; ", ((AbstractWorkflowArtifact) element).getImplementers());
-         } else if (ActionManager.isOfTypeAction(element)) {
+         } else if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
             Set<User> users = new HashSet<User>();
             for (TeamWorkFlowArtifact team : ActionManager.getTeams(element)) {
                users.addAll(team.getImplementers());

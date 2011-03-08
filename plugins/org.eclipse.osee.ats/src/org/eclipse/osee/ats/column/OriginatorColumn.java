@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserListDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
@@ -130,7 +131,7 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
          if (element instanceof AbstractWorkflowArtifact) {
             return ((AbstractWorkflowArtifact) element).getCreatedBy().getName();
          }
-         if (ActionManager.isOfTypeAction(element)) {
+         if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
             Set<String> strs = new HashSet<String>();
             for (TeamWorkFlowArtifact team : ActionManager.getTeams(element)) {
                strs.add(team.getCreatedBy().getName());

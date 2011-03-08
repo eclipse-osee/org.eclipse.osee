@@ -14,11 +14,13 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.util.ActionManager;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.swt.SWT;
 
 public class CreatedDateColumn extends XViewerAtsColumn implements IXViewerValueColumn {
@@ -56,7 +58,7 @@ public class CreatedDateColumn extends XViewerAtsColumn implements IXViewerValue
    }
 
    public static Date getDate(Object object) throws OseeCoreException {
-      if (ActionManager.isOfTypeAction(object)) {
+      if (Artifacts.isOfType(object, AtsArtifactTypes.Action)) {
          return getDate(ActionManager.getFirstTeam(object));
       } else if (object instanceof AbstractWorkflowArtifact) {
          return ((AbstractWorkflowArtifact) object).getCreatedDate();
@@ -66,7 +68,7 @@ public class CreatedDateColumn extends XViewerAtsColumn implements IXViewerValue
 
    public static String getDateStr(Object object) throws OseeCoreException {
       Set<String> strs = new HashSet<String>();
-      if (ActionManager.isOfTypeAction(object)) {
+      if (Artifacts.isOfType(object, AtsArtifactTypes.Action)) {
          for (TeamWorkFlowArtifact team : ActionManager.getTeams(object)) {
             Date date = getDate(team);
             if (date == null) {

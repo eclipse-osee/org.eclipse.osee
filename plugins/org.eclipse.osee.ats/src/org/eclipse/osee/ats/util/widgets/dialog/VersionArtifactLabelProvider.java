@@ -10,12 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.widgets.dialog;
 
+import java.util.Date;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
+import org.eclipse.osee.ats.artifact.VersionCommitConfigArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.swt.graphics.Image;
 
@@ -26,12 +31,14 @@ public class VersionArtifactLabelProvider extends LabelProvider {
 
    @Override
    public String getText(Object element) {
-      if (element instanceof VersionArtifact) {
-         VersionArtifact verArt = (VersionArtifact) element;
+      if (element instanceof VersionCommitConfigArtifact) {
+         Artifact verArt = (Artifact) element;
          String str = verArt.getName();
          try {
-            if (verArt.getEstimatedReleaseDate() != null) {
-               str += " - Estimated Release: " + DateUtil.getMMDDYY(verArt.getEstimatedReleaseDate());
+            if (verArt.getSoleAttributeValue(AtsAttributeTypes.EstimatedReleaseDate, null) != null) {
+               str +=
+                  " - Estimated Release: " + DateUtil.getMMDDYY((Date) verArt.getSoleAttributeValue(
+                     AtsAttributeTypes.EstimatedReleaseDate, null));
             }
          } catch (Exception ex) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
@@ -43,8 +50,8 @@ public class VersionArtifactLabelProvider extends LabelProvider {
 
    @Override
    public Image getImage(Object element) {
-      if (element instanceof VersionArtifact) {
-         return ArtifactImageManager.getImage((VersionArtifact) element);
+      if (Artifacts.isOfType(element, AtsArtifactTypes.Version)) {
+         return ArtifactImageManager.getImage((Artifact) element);
       }
       return null;
    }

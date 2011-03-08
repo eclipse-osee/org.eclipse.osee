@@ -63,6 +63,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ISelectedArtifacts;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.ArtifactDoubleClick;
 import org.eclipse.osee.framework.ui.skynet.OpenContributionItem;
@@ -267,7 +268,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
          return false;
       }
       for (TreeItem item : treeItems) {
-         if (ActionManager.isOfTypeAction(item.getData())) {
+         if (Artifacts.isOfType(item.getData(), AtsArtifactTypes.Action)) {
             return false;
          }
          try {
@@ -457,7 +458,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       TreeItem items[] = getTree().getSelection();
       if (items.length > 0) {
          for (TreeItem item : items) {
-            if (ActionManager.isOfTypeAction(item.getData())) {
+            if (Artifacts.isOfType(item.getData(), AtsArtifactTypes.Action)) {
                try {
                   if (ActionManager.getTeams(item.getData()).size() != 1) {
                      return false;
@@ -485,7 +486,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
             if (item.getData() instanceof TeamWorkFlowArtifact) {
                teamArts.add((TeamWorkFlowArtifact) item.getData());
             }
-            if (ActionManager.isOfTypeAction(item.getData())) {
+            if (Artifacts.isOfType(item.getData(), AtsArtifactTypes.Action)) {
                try {
                   if (ActionManager.getTeams(item.getData()).size() == 1) {
                      teamArts.addAll(ActionManager.getTeams(item.getData()));
@@ -511,7 +512,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
             Object obj = i.next();
             if (obj instanceof AbstractWorkflowArtifact) {
                smaArts.add((AbstractWorkflowArtifact) obj);
-            } else if (ActionManager.isOfTypeAction(obj)) {
+            } else if (Artifacts.isOfType(obj, AtsArtifactTypes.Action)) {
                smaArts.addAll(ActionManager.getTeams(obj));
             }
          }
@@ -526,7 +527,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       TreeItem items[] = getTree().getSelection();
       if (items.length > 0) {
          for (TreeItem item : items) {
-            if (ActionManager.isOfTypeAction(item.getData())) {
+            if (Artifacts.isOfType(item.getData(), AtsArtifactTypes.Action)) {
                actionArts.add((Artifact) item.getData());
             }
          }

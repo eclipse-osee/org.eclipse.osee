@@ -29,7 +29,6 @@ import org.eclipse.osee.ats.actions.ResourceHistoryAction;
 import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
-import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.navigate.VisitedItems;
 import org.eclipse.osee.ats.task.IXTaskViewer;
@@ -568,7 +567,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISMAEditorEvent
    }
 
    @Override
-   public VersionArtifact getMetricsVersionArtifact() throws OseeCoreException {
+   public Artifact getMetricsVersionArtifact() throws OseeCoreException {
       return awa.getTargetedVersion();
    }
 

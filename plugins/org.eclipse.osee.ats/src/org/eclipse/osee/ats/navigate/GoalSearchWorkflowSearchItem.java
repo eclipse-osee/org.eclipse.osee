@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.XHyperlabelTeamDefinitionSelection;
 import org.eclipse.osee.ats.world.WorldEditor;
@@ -187,7 +186,7 @@ public class GoalSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
    }
 
    @Override
-   public VersionArtifact getTargetedVersionArtifact() {
+   public Artifact getTargetedVersionArtifact() {
       return null;
    }
 

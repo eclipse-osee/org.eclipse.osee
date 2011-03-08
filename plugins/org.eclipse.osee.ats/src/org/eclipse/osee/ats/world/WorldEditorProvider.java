@@ -11,9 +11,9 @@
 package org.eclipse.osee.ats.world;
 
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
-import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 
 /**
@@ -36,7 +36,7 @@ public abstract class WorldEditorProvider implements IWorldEditorProvider {
 
    @SuppressWarnings("unused")
    @Override
-   public VersionArtifact getTargetedVersionArtifact() throws OseeCoreException {
+   public Artifact getTargetedVersionArtifact() throws OseeCoreException {
       return null;
    }
 

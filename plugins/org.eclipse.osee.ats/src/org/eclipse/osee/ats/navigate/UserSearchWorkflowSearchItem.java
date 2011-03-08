@@ -17,10 +17,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.artifact.VersionArtifact;
-import org.eclipse.osee.ats.artifact.VersionArtifact.VersionLockedType;
-import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.VersionLockedType;
+import org.eclipse.osee.ats.util.VersionReleaseType;
 import org.eclipse.osee.ats.util.widgets.XHyperlabelTeamDefinitionSelection;
 import org.eclipse.osee.ats.util.widgets.XStateCombo;
 import org.eclipse.osee.ats.world.WorldEditor;
@@ -393,7 +392,7 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
       }
    }
 
-   private VersionArtifact getSelectedVersionArtifact() throws OseeCoreException {
+   private Artifact getSelectedVersionArtifact() throws OseeCoreException {
       if (versionCombo == null) {
          return null;
       }
@@ -407,7 +406,7 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
          if (teamDefHoldingVersions == null) {
             return null;
          }
-         for (VersionArtifact versionArtifact : teamDefHoldingVersions.getVersionsArtifacts(VersionReleaseType.Both,
+         for (Artifact versionArtifact : teamDefHoldingVersions.getVersionsArtifacts(VersionReleaseType.Both,
             VersionLockedType.Both)) {
             if (versionArtifact.getName().equals(versionStr)) {
                return versionArtifact;
@@ -473,7 +472,7 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
    }
 
    @Override
-   public VersionArtifact getTargetedVersionArtifact() throws OseeCoreException {
+   public Artifact getTargetedVersionArtifact() throws OseeCoreException {
       if (versionCombo == null) {
          return null;
       }

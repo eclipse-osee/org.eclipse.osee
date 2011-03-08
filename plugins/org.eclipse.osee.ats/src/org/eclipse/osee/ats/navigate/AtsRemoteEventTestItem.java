@@ -20,7 +20,6 @@ import org.eclipse.osee.ats.actions.wizard.NewActionJob;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.column.ChangeTypeColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.ActionManager;
@@ -226,19 +225,16 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       transaction.execute();
    }
 
-   private VersionArtifact getVersion256() throws OseeCoreException {
-      return (VersionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Version, "2.5.6",
-         AtsUtil.getAtsBranch());
+   private Artifact getVersion256() throws OseeCoreException {
+      return ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Version, "2.5.6", AtsUtil.getAtsBranch());
    }
 
-   private VersionArtifact getVersion257() throws OseeCoreException {
-      return (VersionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Version, "2.5.7",
-         AtsUtil.getAtsBranch());
+   private Artifact getVersion257() throws OseeCoreException {
+      return ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Version, "2.5.7", AtsUtil.getAtsBranch());
    }
 
-   private VersionArtifact getVersion258() throws OseeCoreException {
-      return (VersionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Version, "2.5.8",
-         AtsUtil.getAtsBranch());
+   private Artifact getVersion258() throws OseeCoreException {
+      return ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Version, "2.5.8", AtsUtil.getAtsBranch());
    }
 
    private void validateActionAtStart(Artifact actionArt) throws OseeCoreException {
@@ -274,7 +270,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       testEquals("Validation Required", "false",
          String.valueOf(teamArt.getSoleAttributeValue(AtsAttributeTypes.ValidationRequired, null)));
 
-      VersionArtifact verArt = teamArt.getTargetedVersion();
+      Artifact verArt = teamArt.getTargetedVersion();
       String expectedTargetedVersion;
       if (verArt != null) {
          expectedTargetedVersion = verArt.toString();

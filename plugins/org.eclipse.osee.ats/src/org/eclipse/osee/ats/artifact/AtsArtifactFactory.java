@@ -33,8 +33,7 @@ public class AtsArtifactFactory extends ArtifactFactory {
 
    public AtsArtifactFactory() {
       super(AtsArtifactTypes.PeerToPeerReview, AtsArtifactTypes.DecisionReview, AtsArtifactTypes.ActionableItem,
-         AtsArtifactTypes.Task, AtsArtifactTypes.TeamWorkflow, AtsArtifactTypes.TeamDefinition,
-         AtsArtifactTypes.Version, AtsArtifactTypes.Goal);
+         AtsArtifactTypes.Task, AtsArtifactTypes.TeamWorkflow, AtsArtifactTypes.TeamDefinition, AtsArtifactTypes.Goal);
       for (ITeamWorkflowProvider atsTeamWorkflow : TeamWorkflowProviders.getAtsTeamWorkflowExtensions()) {
          try {
             for (IArtifactType teamWorkflowTypeName : atsTeamWorkflow.getTeamWorkflowArtifactTypes()) {
@@ -54,8 +53,6 @@ public class AtsArtifactFactory extends ArtifactFactory {
          return new TeamWorkFlowArtifact(this, guid, humandReadableId, branch, artifactType);
       } else if (artifactType.equals(AtsArtifactTypes.TeamDefinition)) {
          return new TeamDefinitionArtifact(this, guid, humandReadableId, branch, artifactType);
-      } else if (artifactType.equals(AtsArtifactTypes.Version)) {
-         return new VersionArtifact(this, guid, humandReadableId, branch, artifactType);
       } else if (artifactType.equals(AtsArtifactTypes.ActionableItem)) {
          return new ActionableItemArtifact(this, guid, humandReadableId, branch, artifactType);
       } else if (artifactType.equals(AtsArtifactTypes.DecisionReview)) {

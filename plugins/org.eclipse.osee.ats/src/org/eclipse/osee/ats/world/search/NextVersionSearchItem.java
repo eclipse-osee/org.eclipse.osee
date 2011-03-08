@@ -15,7 +15,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
@@ -34,7 +33,7 @@ public class NextVersionSearchItem extends WorldUISearchItem {
 
    private final TeamDefinitionArtifact teamDefHoldingVersions;
    private TeamDefinitionArtifact selectedTeamDef;
-   private VersionArtifact selectedVersionArt;
+   private Artifact selectedVersionArt;
 
    public NextVersionSearchItem(TeamDefinitionArtifact teamDefHoldingVersions, LoadView loadView) {
       this(null, teamDefHoldingVersions, loadView);
@@ -133,7 +132,7 @@ public class NextVersionSearchItem extends WorldUISearchItem {
    /**
     * @return the selectedVersionArt
     */
-   public VersionArtifact getSelectedVersionArt() {
+   public Artifact getSelectedVersionArt() {
       return selectedVersionArt;
    }
 

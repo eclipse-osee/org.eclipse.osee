@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.Collections;
 import org.junit.Assert;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.ats.artifact.VersionCommitConfigArtifact;
 import org.eclipse.osee.ats.navigate.AtsXNavigateItemLauncher;
 import org.eclipse.osee.ats.navigate.MassEditTeamVersionItem;
 import org.eclipse.osee.ats.task.TaskEditor;
@@ -54,7 +54,7 @@ public class AtsNavigateItemsToMassEditorTest {
       Assert.assertFalse(teamDefs.isEmpty());
 
       massEditItem.setSelectedTeamDef(teamDefs.iterator().next());
-      handleGeneralDoubleClickAndTestResults(item, VersionArtifact.class, 3);
+      handleGeneralDoubleClickAndTestResults(item, VersionCommitConfigArtifact.class, 3);
    }
 
    private void handleGeneralDoubleClickAndTestResults(XNavigateItem item, Class<?> clazz, int numOfType) throws OseeCoreException {

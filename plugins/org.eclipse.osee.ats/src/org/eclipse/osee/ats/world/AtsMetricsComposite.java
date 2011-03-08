@@ -19,7 +19,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.column.PercentCompleteTotalColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.SMAMetrics;
@@ -132,8 +131,10 @@ public class AtsMetricsComposite extends ScrolledComposite {
       addSpace();
 
       try {
-         if (estimatedReleaseXDate.getDate() == null && iAtsMetricsProvider.getMetricsVersionArtifact() != null && iAtsMetricsProvider.getMetricsVersionArtifact().getEstimatedReleaseDate() != null) {
-            estimatedReleaseXDate.setDate(iAtsMetricsProvider.getMetricsVersionArtifact().getEstimatedReleaseDate());
+         if (estimatedReleaseXDate.getDate() == null && iAtsMetricsProvider.getMetricsVersionArtifact() != null && iAtsMetricsProvider.getMetricsVersionArtifact().getSoleAttributeValue(
+            AtsAttributeTypes.EstimatedReleaseDate, null) != null) {
+            estimatedReleaseXDate.setDate((Date) iAtsMetricsProvider.getMetricsVersionArtifact().getSoleAttributeValue(
+               AtsAttributeTypes.EstimatedReleaseDate, null));
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -157,14 +158,18 @@ public class AtsMetricsComposite extends ScrolledComposite {
          return estimatedReleaseXDate.getDate();
       }
       if (iAtsMetricsProvider.getMetricsVersionArtifact() != null) {
-         return iAtsMetricsProvider.getMetricsVersionArtifact().getEstimatedReleaseDate();
+         return iAtsMetricsProvider.getMetricsVersionArtifact().getSoleAttributeValue(
+            AtsAttributeTypes.EstimatedReleaseDate, null);
       }
       // Try to find an estimated release date from one of the workflows
       for (Artifact art : iAtsMetricsProvider.getMetricsArtifacts()) {
          if (art instanceof TeamWorkFlowArtifact) {
-            VersionArtifact verArt = ((TeamWorkFlowArtifact) art).getTargetedVersion();
-            if (verArt != null && verArt.getEstimatedReleaseDate() != null) {
-               return verArt.getEstimatedReleaseDate();
+            Artifact verArt = ((TeamWorkFlowArtifact) art).getTargetedVersion();
+            if (verArt != null) {
+               Date estRelDate = verArt.getSoleAttributeValue(AtsAttributeTypes.EstimatedReleaseDate, null);
+               if (estRelDate != null) {
+                  return estRelDate;
+               }
             }
          }
       }

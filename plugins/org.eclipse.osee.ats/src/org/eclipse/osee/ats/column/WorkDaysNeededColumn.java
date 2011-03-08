@@ -13,12 +13,14 @@ import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.ActionManager;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.swt.SWT;
@@ -71,7 +73,8 @@ public class WorkDaysNeededColumn extends XViewerAtsColumn implements IXViewerVa
          AbstractWorkflowArtifact aba = null;
          if (treeItem.getData() instanceof AbstractWorkflowArtifact) {
             aba = (AbstractWorkflowArtifact) treeItem.getData();
-         } else if (ActionManager.isOfTypeAction(treeItem.getData()) && ActionManager.getTeams(treeItem.getData()).size() == 1) {
+         } else if (Artifacts.isOfType(treeItem.getData(), AtsArtifactTypes.Action) && ActionManager.getTeams(
+            treeItem.getData()).size() == 1) {
             aba = ActionManager.getFirstTeam(treeItem.getData());
          }
          if (aba != null) {
@@ -97,7 +100,7 @@ public class WorkDaysNeededColumn extends XViewerAtsColumn implements IXViewerVa
          }
 
          return Result.TrueResult;
-      } else if (ActionManager.isOfTypeAction(object)) {
+      } else if (Artifacts.isOfType(object, AtsArtifactTypes.Action)) {
          for (TeamWorkFlowArtifact team : ActionManager.getTeams(object)) {
             if (!isWorldViewManDaysNeededValid(team).isFalse()) {
                return Result.FalseResult;
@@ -115,7 +118,7 @@ public class WorkDaysNeededColumn extends XViewerAtsColumn implements IXViewerVa
             manDaysNeeded = hrsRemain / ((AbstractWorkflowArtifact) object).getManHrsPerDayPreference();
          }
          return manDaysNeeded;
-      } else if (ActionManager.isOfTypeAction(object)) {
+      } else if (Artifacts.isOfType(object, AtsArtifactTypes.Action)) {
          double hours = 0;
          // Add up hours for all children
          for (TeamWorkFlowArtifact team : ActionManager.getTeams(object)) {

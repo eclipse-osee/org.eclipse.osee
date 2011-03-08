@@ -11,12 +11,14 @@ import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.util.ActionManager;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.DeadlineManager;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -65,7 +67,7 @@ public class DeadlineColumn extends XViewerAtsAttributeValueColumn {
    public static Result isDeadlineAlerting(Object object) throws OseeCoreException {
       if (object instanceof AbstractWorkflowArtifact) {
          return DeadlineManager.isDeadlineDateAlerting((AbstractWorkflowArtifact) object);
-      } else if (ActionManager.isOfTypeAction(object)) {
+      } else if (Artifacts.isOfType(object, AtsArtifactTypes.Action)) {
          for (TeamWorkFlowArtifact team : ActionManager.getTeams(object)) {
             Result result = isDeadlineAlerting(team);
             if (result.isTrue()) {
@@ -77,7 +79,7 @@ public class DeadlineColumn extends XViewerAtsAttributeValueColumn {
    }
 
    public static Date getDate(Object object) throws OseeCoreException {
-      if (ActionManager.isOfTypeAction(object)) {
+      if (Artifacts.isOfType(object, AtsArtifactTypes.Action)) {
          return getDate(ActionManager.getFirstTeam(object));
       } else if (object instanceof TeamWorkFlowArtifact) {
          return ((TeamWorkFlowArtifact) object).getSoleAttributeValue(AtsAttributeTypes.NeedBy, null);

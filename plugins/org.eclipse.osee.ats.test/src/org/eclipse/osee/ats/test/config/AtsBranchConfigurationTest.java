@@ -21,7 +21,6 @@ import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowManager;
-import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.config.AtsBulkLoad;
 import org.eclipse.osee.ats.config.AtsConfigManager;
 import org.eclipse.osee.ats.editor.SMAEditor;
@@ -119,8 +118,8 @@ public class AtsBranchConfigurationTest {
       TeamDefinitionArtifact teamDef =
          (TeamDefinitionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.TeamDefinition,
             BRANCH_VIA_VERSIONS.getName(), AtsUtil.getAtsBranch());
-      VersionArtifact verArtToTarget = null;
-      for (VersionArtifact vArt : teamDef.getVersionsArtifacts()) {
+      Artifact verArtToTarget = null;
+      for (Artifact vArt : teamDef.getVersionsArtifacts()) {
          if (vArt.getName().contains("Ver1")) {
             verArtToTarget = vArt;
          }

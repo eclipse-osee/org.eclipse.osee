@@ -12,14 +12,16 @@ import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.util.ActionManager;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.swt.SWT;
 
 /**
@@ -34,7 +36,7 @@ public abstract class AbstractWorkflowVersionDateColumn extends XViewerAtsAttrib
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
-         if (ActionManager.isOfTypeAction(element)) {
+         if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
             Set<String> strs = new HashSet<String>();
             for (TeamWorkFlowArtifact team : ActionManager.getTeams(element)) {
                String str = getColumnText(team, column, columnIndex);
@@ -68,7 +70,7 @@ public abstract class AbstractWorkflowVersionDateColumn extends XViewerAtsAttrib
    public static Date getDateFromTargetedVersion(IAttributeType attributeType, Object object) throws OseeCoreException {
       if (object instanceof TeamWorkFlowArtifact) {
          TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) object;
-         VersionArtifact verArt = TargetedVersionColumn.getTargetedVersion(teamArt);
+         Artifact verArt = TargetedVersionColumn.getTargetedVersion(teamArt);
          if (verArt != null) {
             return verArt.getSoleAttributeValue(attributeType, null);
          }

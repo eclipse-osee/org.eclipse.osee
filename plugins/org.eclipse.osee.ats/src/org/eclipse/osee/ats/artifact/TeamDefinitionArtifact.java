@@ -17,13 +17,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.artifact.VersionArtifact.VersionLockedType;
-import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.VersionLockedType;
+import org.eclipse.osee.ats.util.VersionManager;
+import org.eclipse.osee.ats.util.VersionReleaseType;
 import org.eclipse.osee.ats.util.widgets.commit.ICommitConfigArtifact;
 import org.eclipse.osee.ats.workdef.RuleDefinition;
 import org.eclipse.osee.ats.workdef.RuleDefinitionOption;
@@ -182,9 +183,8 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
       return null;
    }
 
-   public VersionArtifact getNextReleaseVersion() throws OseeCoreException {
-      for (VersionArtifact verArt : getRelatedArtifacts(AtsRelationTypes.TeamDefinitionToVersion_Version,
-         VersionArtifact.class)) {
+   public Artifact getNextReleaseVersion() throws OseeCoreException {
+      for (Artifact verArt : getRelatedArtifacts(AtsRelationTypes.TeamDefinitionToVersion_Version)) {
          if (verArt.getSoleAttributeValue(AtsAttributeTypes.NextVersion, false)) {
             return verArt;
          }
@@ -192,10 +192,10 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
       return null;
    }
 
-   public Collection<VersionArtifact> getVersionsFromTeamDefHoldingVersions(VersionReleaseType releaseType, VersionLockedType lockedType) throws OseeCoreException {
+   public Collection<Artifact> getVersionsFromTeamDefHoldingVersions(VersionReleaseType releaseType, VersionLockedType lockedType) throws OseeCoreException {
       TeamDefinitionArtifact teamDef = getTeamDefinitionHoldingVersions();
       if (teamDef == null) {
-         return new ArrayList<VersionArtifact>();
+         return new ArrayList<Artifact>();
       }
       return teamDef.getVersionsArtifacts(releaseType, lockedType);
    }
@@ -439,8 +439,8 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
       return getRelatedArtifacts(AtsRelationTypes.TeamMember_Member, User.class);
    }
 
-   public VersionArtifact getVersionArtifact(String name, boolean create) throws OseeCoreException {
-      for (VersionArtifact verArt : getVersionsArtifacts()) {
+   public Artifact getVersionArtifact(String name, boolean create) throws OseeCoreException {
+      for (Artifact verArt : getVersionsArtifacts()) {
          if (verArt.getName().equals(name)) {
             return verArt;
          }
@@ -451,39 +451,38 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
       return null;
    }
 
-   public VersionArtifact createVersion(String name) throws OseeCoreException {
-      VersionArtifact versionArt =
-         (VersionArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version, AtsUtil.getAtsBranch(), name);
+   public Artifact createVersion(String name) throws OseeCoreException {
+      Artifact versionArt = ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version, AtsUtil.getAtsBranch(), name);
       addRelation(AtsRelationTypes.TeamDefinitionToVersion_Version, versionArt);
       return versionArt;
    }
 
-   public Collection<VersionArtifact> getVersionsArtifacts() throws OseeCoreException {
-      return getRelatedArtifacts(AtsRelationTypes.TeamDefinitionToVersion_Version, VersionArtifact.class);
+   public Collection<Artifact> getVersionsArtifacts() throws OseeCoreException {
+      return getRelatedArtifacts(AtsRelationTypes.TeamDefinitionToVersion_Version);
    }
 
-   public Collection<VersionArtifact> getVersionsArtifacts(VersionReleaseType releaseType, VersionLockedType lockType) throws OseeCoreException {
+   public Collection<Artifact> getVersionsArtifacts(VersionReleaseType releaseType, VersionLockedType lockType) throws OseeCoreException {
       return Collections.setIntersection(getVersionsArtifacts(releaseType), getVersionsArtifacts(lockType));
    }
 
-   private Collection<VersionArtifact> getVersionsArtifacts(VersionReleaseType releaseType) throws OseeCoreException {
-      ArrayList<VersionArtifact> versions = new ArrayList<VersionArtifact>();
-      for (VersionArtifact version : getVersionsArtifacts()) {
-         if (version.isReleased() && (releaseType == VersionReleaseType.Released || releaseType == VersionReleaseType.Both)) {
+   private Collection<Artifact> getVersionsArtifacts(VersionReleaseType releaseType) throws OseeCoreException {
+      ArrayList<Artifact> versions = new ArrayList<Artifact>();
+      for (Artifact version : getVersionsArtifacts()) {
+         if (VersionManager.isReleased(version) && (releaseType == VersionReleaseType.Released || releaseType == VersionReleaseType.Both)) {
             versions.add(version);
-         } else if ((!version.isReleased() && releaseType == VersionReleaseType.UnReleased) || releaseType == VersionReleaseType.Both) {
+         } else if ((!VersionManager.isReleased(version) && releaseType == VersionReleaseType.UnReleased) || releaseType == VersionReleaseType.Both) {
             versions.add(version);
          }
       }
       return versions;
    }
 
-   private Collection<VersionArtifact> getVersionsArtifacts(VersionLockedType lockType) throws OseeCoreException {
-      ArrayList<VersionArtifact> versions = new ArrayList<VersionArtifact>();
-      for (VersionArtifact version : getVersionsArtifacts()) {
-         if (version.isVersionLocked() && (lockType == VersionLockedType.Locked || lockType == VersionLockedType.Both)) {
+   private Collection<Artifact> getVersionsArtifacts(VersionLockedType lockType) throws OseeCoreException {
+      ArrayList<Artifact> versions = new ArrayList<Artifact>();
+      for (Artifact version : getVersionsArtifacts()) {
+         if (VersionManager.isVersionLocked(version) && (lockType == VersionLockedType.Locked || lockType == VersionLockedType.Both)) {
             versions.add(version);
-         } else if ((!version.isVersionLocked() && lockType == VersionLockedType.UnLocked) || lockType == VersionLockedType.Both) {
+         } else if ((!VersionManager.isVersionLocked(version) && lockType == VersionLockedType.UnLocked) || lockType == VersionLockedType.Both) {
             versions.add(version);
          }
       }

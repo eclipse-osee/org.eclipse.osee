@@ -12,11 +12,13 @@ import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.ActionManager;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.swt.SWT;
 
 public class EstimatedHoursColumn extends XViewerAtsAttributeValueColumn {
@@ -56,7 +58,7 @@ public class EstimatedHoursColumn extends XViewerAtsAttributeValueColumn {
    public static double getEstimatedHours(Object object) throws OseeCoreException {
       if (object instanceof AbstractWorkflowArtifact) {
          return ((AbstractWorkflowArtifact) object).getEstimatedHoursTotal();
-      } else if (ActionManager.isOfTypeAction(object)) {
+      } else if (Artifacts.isOfType(object, AtsArtifactTypes.Action)) {
          double total = 0;
          for (TeamWorkFlowArtifact team : ActionManager.getTeams(object)) {
             total += team.getEstimatedHoursTotal();

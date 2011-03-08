@@ -19,10 +19,10 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.artifact.AbstractReviewArtifact;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.column.EstimatedHoursColumn;
 import org.eclipse.osee.ats.column.HoursSpentTotalColumn;
 import org.eclipse.osee.ats.column.PercentCompleteTotalColumn;
@@ -48,7 +48,7 @@ public class SMAMetrics {
 
    Date estimatedReleaseDate;
    long daysTillRel = 0;
-   VersionArtifact versionArtifact = null;
+   Artifact versionArtifact = null;
    String str = "";
    Set<TeamWorkFlowArtifact> teamArts = new HashSet<TeamWorkFlowArtifact>();
    Set<Artifact> actionArts = new HashSet<Artifact>();
@@ -64,7 +64,7 @@ public class SMAMetrics {
       HashSet.class, 100);
    private final double manHoursPerDay;
 
-   public SMAMetrics(Collection<? extends Artifact> artifacts, VersionArtifact versionArtifact, double manHoursPerDay, Date estimatedReleaseDate) throws OseeCoreException {
+   public SMAMetrics(Collection<? extends Artifact> artifacts, Artifact versionArtifact, double manHoursPerDay, Date estimatedReleaseDate) throws OseeCoreException {
       this.manHoursPerDay = manHoursPerDay;
       this.versionArtifact = versionArtifact;
       this.estimatedReleaseDate = estimatedReleaseDate;
@@ -132,7 +132,7 @@ public class SMAMetrics {
       Date today = new Date();
       daysTillRel = 0;
       if (versionArtifact != null && estimatedReleaseDate == null) {
-         estimatedReleaseDate = versionArtifact.getEstimatedReleaseDate();
+         estimatedReleaseDate = versionArtifact.getSoleAttributeValue(AtsAttributeTypes.EstimatedReleaseDate, null);
       }
       if (estimatedReleaseDate != null && estimatedReleaseDate.after(today)) {
          daysTillRel = DateUtil.getWorkingDaysBetween(today, estimatedReleaseDate);
@@ -257,7 +257,7 @@ public class SMAMetrics {
       return str;
    }
 
-   public static String getEstRemainMetrics(Collection<? extends Artifact> awas, VersionArtifact versionArtifact, double manHoursPerDay, Date estimatedrelDate) throws OseeCoreException {
+   public static String getEstRemainMetrics(Collection<? extends Artifact> awas, Artifact versionArtifact, double manHoursPerDay, Date estimatedrelDate) throws OseeCoreException {
       return new SMAMetrics(awas, versionArtifact, manHoursPerDay, estimatedrelDate).str;
    }
 
@@ -316,11 +316,11 @@ public class SMAMetrics {
       this.daysTillRel = daysTillRel;
    }
 
-   public VersionArtifact getVersionArtifact() {
+   public Artifact getVersionArtifact() {
       return versionArtifact;
    }
 
-   public void setVersionArtifact(VersionArtifact versionArtifact) {
+   public void setVersionArtifact(Artifact versionArtifact) {
       this.versionArtifact = versionArtifact;
    }
 

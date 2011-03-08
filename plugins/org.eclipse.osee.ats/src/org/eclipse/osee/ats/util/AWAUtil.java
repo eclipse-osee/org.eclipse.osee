@@ -17,7 +17,6 @@ import java.util.List;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.artifact.log.LogItem;
 import org.eclipse.osee.ats.column.CancelledDateColumn;
 import org.eclipse.osee.ats.column.ChangeTypeColumn;
@@ -231,7 +230,7 @@ public class AWAUtil {
       return returnawas;
    }
 
-   public static Collection<AbstractWorkflowArtifact> getVersionWorkflows(Collection<? extends Artifact> artifacts, Collection<VersionArtifact> versionArts) throws OseeCoreException {
+   public static Collection<AbstractWorkflowArtifact> getVersionWorkflows(Collection<? extends Artifact> artifacts, Collection<Artifact> versionArts) throws OseeCoreException {
       List<AbstractWorkflowArtifact> returnawas = new ArrayList<AbstractWorkflowArtifact>();
       for (AbstractWorkflowArtifact awa : getAwas(artifacts)) {
          if (awa.getParentTeamWorkflow() == null) {

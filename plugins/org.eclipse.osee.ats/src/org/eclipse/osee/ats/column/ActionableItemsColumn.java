@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.ActionManager;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -63,7 +64,7 @@ public class ActionableItemsColumn extends XViewerAtsAttributeValueColumn {
    }
 
    public static Collection<ActionableItemArtifact> getActionableItems(Object element) throws OseeCoreException {
-      if (ActionManager.isOfTypeAction(element)) {
+      if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
          Set<ActionableItemArtifact> aias = new HashSet<ActionableItemArtifact>();
          // Roll up if same for all children
          for (TeamWorkFlowArtifact team : ActionManager.getTeams(element)) {

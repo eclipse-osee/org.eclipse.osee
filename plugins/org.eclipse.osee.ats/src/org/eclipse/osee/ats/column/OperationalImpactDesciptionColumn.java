@@ -13,8 +13,10 @@ import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.ActionManager;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.swt.SWT;
 
 public class OperationalImpactDesciptionColumn extends XViewerValueColumn {
@@ -48,7 +50,7 @@ public class OperationalImpactDesciptionColumn extends XViewerValueColumn {
             return ((TeamWorkFlowArtifact) element).getArtifact().getSoleAttributeValue(
                AtsAttributeTypes.OperationalImpactDescription, "");
          }
-         if (ActionManager.isOfTypeAction(element) && ActionManager.getTeams(element).size() == 1) {
+         if (Artifacts.isOfType(element, AtsArtifactTypes.Action) && ActionManager.getTeams(element).size() == 1) {
             return getColumnText(ActionManager.getFirstTeam(element), column, columnIndex);
          }
       } catch (OseeCoreException ex) {

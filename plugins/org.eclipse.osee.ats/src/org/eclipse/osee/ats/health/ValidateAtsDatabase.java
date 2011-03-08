@@ -32,7 +32,6 @@ import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.artifact.log.AtsLog;
 import org.eclipse.osee.ats.artifact.log.LogItem;
 import org.eclipse.osee.ats.internal.AtsPlugin;
@@ -264,8 +263,8 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
 
    private void testVersionArtifacts(Collection<Artifact> artifacts) {
       for (Artifact artifact : artifacts) {
-         if (artifact instanceof VersionArtifact) {
-            VersionArtifact verArt = (VersionArtifact) artifact;
+         if (artifact.isOfType(AtsArtifactTypes.Version)) {
+            Artifact verArt = artifact;
             try {
                String parentBranchGuid =
                   verArt.getSoleAttributeValueAsString(AtsAttributeTypes.BaselineBranchGuid, null);

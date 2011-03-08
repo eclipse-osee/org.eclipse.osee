@@ -23,7 +23,6 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
-import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.AtsMetricsComposite;
@@ -320,7 +319,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IActionable, I
    }
 
    @Override
-   public VersionArtifact getMetricsVersionArtifact() throws OseeCoreException {
+   public Artifact getMetricsVersionArtifact() throws OseeCoreException {
       for (TaskArtifact taskArt : tasks) {
          if (taskArt.getTargetedVersion() != null) {
             return taskArt.getTargetedVersion();

@@ -29,7 +29,6 @@ import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.operation.DuplicateWorkflowBlam.CreateTeamOption;
@@ -186,7 +185,7 @@ public class ExcelAtsActionArtifactExtractor {
             }
             if (!aData.version.equals("")) {
                for (TeamWorkFlowArtifact team : newTeamArts) {
-                  VersionArtifact verArt =
+                  Artifact verArt =
                      team.getTeamDefinition().getTeamDefinitionHoldingVersions().getVersionArtifact(aData.version,
                         false);
                   if (verArt == null) {

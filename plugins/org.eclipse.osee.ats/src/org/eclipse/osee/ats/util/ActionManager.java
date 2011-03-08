@@ -229,10 +229,4 @@ public class ActionManager {
       return null;
    }
 
-   public static boolean isOfTypeAction(Object object) {
-      if (object instanceof Artifact) {
-         return ((Artifact) object).isOfType(AtsArtifactTypes.Action);
-      }
-      return false;
-   }
 }
