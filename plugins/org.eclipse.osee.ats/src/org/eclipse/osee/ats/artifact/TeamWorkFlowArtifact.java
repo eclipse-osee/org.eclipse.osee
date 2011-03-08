@@ -171,12 +171,11 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IB
    }
 
    @Override
-   public ActionArtifact getParentActionArtifact() throws OseeCoreException {
+   public Artifact getParentActionArtifact() throws OseeCoreException {
       if (parentAction != null) {
          return parentAction;
       }
-      Collection<ActionArtifact> arts =
-         getRelatedArtifacts(AtsRelationTypes.ActionToWorkflow_Action, ActionArtifact.class);
+      Collection<Artifact> arts = getRelatedArtifacts(AtsRelationTypes.ActionToWorkflow_Action);
       if (arts.isEmpty()) {
          throw new OseeStateException("Team [%s] has no parent Action", getGuid());
       } else if (arts.size() > 1) {

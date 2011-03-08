@@ -61,12 +61,12 @@ public class PercentCompleteSMAStateColumn extends XViewerAtsColumn implements I
     */
    public static int getPercentCompleteSMAState(Artifact artifact) throws OseeCoreException {
       if (artifact.isOfType(AtsArtifactTypes.Action)) {
-         if (ActionManager.getTeamWorkFlowArtifacts(artifact).size() == 1) {
-            return getPercentCompleteSMAState(ActionManager.getTeamWorkFlowArtifacts(artifact).iterator().next());
+         if (ActionManager.getTeams(artifact).size() == 1) {
+            return getPercentCompleteSMAState(ActionManager.getFirstTeam(artifact));
          } else {
             double percent = 0;
             int items = 0;
-            for (TeamWorkFlowArtifact team : ActionManager.getTeamWorkFlowArtifacts(artifact)) {
+            for (TeamWorkFlowArtifact team : ActionManager.getTeams(artifact)) {
                if (!team.isCancelled()) {
                   percent += getPercentCompleteSMAState(team);
                   items++;

@@ -10,9 +10,9 @@ import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
@@ -71,8 +71,8 @@ public class WorkDaysNeededColumn extends XViewerAtsColumn implements IXViewerVa
          AbstractWorkflowArtifact aba = null;
          if (treeItem.getData() instanceof AbstractWorkflowArtifact) {
             aba = (AbstractWorkflowArtifact) treeItem.getData();
-         } else if (treeItem.getData() instanceof ActionArtifact && ((ActionArtifact) treeItem.getData()).getTeamWorkFlowArtifacts().size() == 1) {
-            aba = ((ActionArtifact) treeItem.getData()).getTeamWorkFlowArtifacts().iterator().next();
+         } else if (ActionManager.isOfTypeAction(treeItem.getData()) && ActionManager.getTeams(treeItem.getData()).size() == 1) {
+            aba = ActionManager.getFirstTeam(treeItem.getData());
          }
          if (aba != null) {
             AWorkbench.popup(
@@ -97,8 +97,8 @@ public class WorkDaysNeededColumn extends XViewerAtsColumn implements IXViewerVa
          }
 
          return Result.TrueResult;
-      } else if (object instanceof ActionArtifact) {
-         for (TeamWorkFlowArtifact team : ((ActionArtifact) object).getTeamWorkFlowArtifacts()) {
+      } else if (ActionManager.isOfTypeAction(object)) {
+         for (TeamWorkFlowArtifact team : ActionManager.getTeams(object)) {
             if (!isWorldViewManDaysNeededValid(team).isFalse()) {
                return Result.FalseResult;
             }
@@ -115,10 +115,10 @@ public class WorkDaysNeededColumn extends XViewerAtsColumn implements IXViewerVa
             manDaysNeeded = hrsRemain / ((AbstractWorkflowArtifact) object).getManHrsPerDayPreference();
          }
          return manDaysNeeded;
-      } else if (object instanceof ActionArtifact) {
+      } else if (ActionManager.isOfTypeAction(object)) {
          double hours = 0;
          // Add up hours for all children
-         for (TeamWorkFlowArtifact team : ((ActionArtifact) object).getTeamWorkFlowArtifacts()) {
+         for (TeamWorkFlowArtifact team : ActionManager.getTeams(object)) {
             hours += getWorldViewManDaysNeeded(team);
          }
          return hours;

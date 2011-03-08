@@ -197,7 +197,7 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IATSStateM
    }
 
    @Override
-   public ActionArtifact getParentActionArtifact() throws OseeCoreException {
+   public Artifact getParentActionArtifact() throws OseeCoreException {
       if (parentAction != null) {
          return parentAction;
       }

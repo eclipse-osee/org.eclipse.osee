@@ -14,23 +14,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.column.AssigneeColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.swt.graphics.Image;
 
 public class ActionHyperItem extends HyperViewItem {
 
-   private final IATSArtifact artifact;
+   private final Artifact artifact;
 
-   public ActionHyperItem(IATSArtifact artifact) {
+   public ActionHyperItem(Artifact artifact) {
       super(artifact.getName());
       this.artifact = artifact;
       setGuid(artifact.getGuid());
@@ -58,7 +56,7 @@ public class ActionHyperItem extends HyperViewItem {
       if (artifact.isDeleted()) {
          return null;
       }
-      return ArtifactImageManager.getImage((Artifact) artifact);
+      return ArtifactImageManager.getImage(artifact);
    }
 
    @Override
@@ -123,8 +121,8 @@ public class ActionHyperItem extends HyperViewItem {
          return null;
       }
       try {
-         if (artifact instanceof AbstractWorkflowArtifact || artifact instanceof ActionArtifact) {
-            return AssigneeColumn.getAssigneeImage((Artifact) artifact);
+         if (artifact instanceof Artifact) {
+            return AssigneeColumn.getAssigneeImage(artifact);
          }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
@@ -158,7 +156,7 @@ public class ActionHyperItem extends HyperViewItem {
    }
 
    public Artifact getArtifact() {
-      return (Artifact) artifact;
+      return artifact;
    }
 
 }

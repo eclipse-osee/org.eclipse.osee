@@ -16,7 +16,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
@@ -198,12 +197,12 @@ public class AtsDeleteManagerTest {
    private TeamWorkFlowArtifact createAction(TestNames testName, Collection<ActionableItemArtifact> actionableItems, SkynetTransaction transaction) throws OseeCoreException {
       Date createdDate = new Date();
       User createdBy = UserManager.getUser();
-      ActionArtifact actionArt =
+      Artifact actionArt =
          ActionManager.createAction(null, testName.name(), "Description", ChangeType.Improvement, "2", false, null,
             actionableItems, createdDate, createdBy, null, transaction);
 
       TeamWorkFlowArtifact teamArt = null;
-      for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts()) {
+      for (TeamWorkFlowArtifact team : ActionManager.getTeams(actionArt)) {
          if (team.getTeamDefinition().getName().contains("Code")) {
             teamArt = team;
          }

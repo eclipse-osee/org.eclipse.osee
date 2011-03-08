@@ -15,11 +15,11 @@ import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.osee.ats.artifact.AbstractAtsArtifact;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -108,9 +108,9 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAr
       }
    }
 
-   public AbstractAtsArtifact getTopArtifact(AbstractAtsArtifact art) throws OseeCoreException {
-      AbstractAtsArtifact artifact = null;
-      if (art instanceof ActionArtifact) {
+   public Artifact getTopArtifact(AbstractAtsArtifact art) throws OseeCoreException {
+      Artifact artifact = null;
+      if (art.isOfType(AtsArtifactTypes.Action)) {
          artifact = art;
       } else if (art instanceof TeamWorkFlowArtifact) {
          artifact = ((TeamWorkFlowArtifact) art).getParentActionArtifact();

@@ -11,11 +11,11 @@ import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -64,9 +64,9 @@ public class OperationalImpactWorkaroundColumn extends XViewerValueColumn {
          return ((TeamWorkFlowArtifact) wva).getArtifact().getSoleAttributeValue(
             AtsAttributeTypes.OperationalImpactWorkaround, "");
       }
-      if (wva instanceof ActionArtifact) {
+      if (ActionManager.isOfTypeAction(wva)) {
          Set<String> strs = new HashSet<String>();
-         for (TeamWorkFlowArtifact team : ((ActionArtifact) wva).getTeamWorkFlowArtifacts()) {
+         for (TeamWorkFlowArtifact team : ActionManager.getTeams(wva)) {
             strs.add(getOperationalImpact(team));
          }
          return Collections.toString(", ", strs);

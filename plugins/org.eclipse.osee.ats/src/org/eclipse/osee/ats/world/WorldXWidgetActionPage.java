@@ -29,9 +29,10 @@ import org.eclipse.osee.ats.actions.OpenNewAtsWorldEditorAction;
 import org.eclipse.osee.ats.actions.OpenNewAtsWorldEditorSelectedAction;
 import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.ActionManager;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.GoalManager;
 import org.eclipse.osee.ats.util.SMAMetrics;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
@@ -448,7 +449,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
             try {
                final Set<Artifact> arts = new HashSet<Artifact>();
                for (Artifact art : artifacts) {
-                  if (art instanceof ActionArtifact) {
+                  if (art.isOfType(AtsArtifactTypes.Action)) {
                      arts.add(art);
                   } else if (art instanceof AbstractWorkflowArtifact) {
                      Artifact parentArt = ((AbstractWorkflowArtifact) art).getParentActionArtifact();
@@ -503,8 +504,8 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
             try {
                final Set<Artifact> arts = new HashSet<Artifact>();
                for (Artifact art : artifacts) {
-                  if (art instanceof ActionArtifact) {
-                     arts.addAll(((ActionArtifact) art).getTeamWorkFlowArtifacts());
+                  if (art.isOfType(AtsArtifactTypes.Action)) {
+                     arts.addAll(ActionManager.getTeams(art));
                   } else if (art instanceof AbstractWorkflowArtifact) {
                      Artifact parentArt = ((AbstractWorkflowArtifact) art).getParentTeamWorkflow();
                      if (parentArt != null) {
@@ -535,8 +536,8 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
             try {
                final Set<Artifact> arts = new HashSet<Artifact>();
                for (Artifact art : artifacts) {
-                  if (art instanceof ActionArtifact) {
-                     for (TeamWorkFlowArtifact team : ((ActionArtifact) art).getTeamWorkFlowArtifacts()) {
+                  if (art.isOfType(AtsArtifactTypes.Action)) {
+                     for (TeamWorkFlowArtifact team : ActionManager.getTeams(art)) {
                         arts.addAll(team.getTaskArtifacts());
                      }
                   } else if (art instanceof AbstractTaskableArtifact) {
@@ -566,8 +567,8 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
             try {
                final Set<Artifact> arts = new HashSet<Artifact>();
                for (Artifact art : artifacts) {
-                  if (art instanceof ActionArtifact) {
-                     for (TeamWorkFlowArtifact team : ((ActionArtifact) art).getTeamWorkFlowArtifacts()) {
+                  if (art.isOfType(AtsArtifactTypes.Action)) {
+                     for (TeamWorkFlowArtifact team : ActionManager.getTeams(art)) {
                         arts.addAll(ReviewManager.getReviews(team));
                      }
                   } else if (art instanceof TeamWorkFlowArtifact) {

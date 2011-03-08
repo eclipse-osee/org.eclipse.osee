@@ -5,15 +5,15 @@
  */
 package org.eclipse.osee.ats.test.column;
 
-import org.junit.Assert;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.column.AssigneeColumn;
 import org.eclipse.osee.ats.column.GroupsColumn;
 import org.eclipse.osee.ats.test.util.DemoTestUtil;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.support.test.util.DemoWorkType;
 import org.eclipse.osee.support.test.util.TestUtil;
+import org.junit.Assert;
 
 /**
  * @tests GroupsColumn
@@ -30,7 +30,7 @@ public class GroupsColumnTest {
       Assert.assertEquals("Test Group",
          GroupsColumn.getInstance().getColumnText(reqArt, AssigneeColumn.getInstance(), 0));
 
-      ActionArtifact actionArt = reqArt.getParentActionArtifact();
+      Artifact actionArt = reqArt.getParentActionArtifact();
       Assert.assertEquals("Test Group",
          GroupsColumn.getInstance().getColumnText(actionArt, AssigneeColumn.getInstance(), 0));
 

@@ -9,10 +9,10 @@ import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
@@ -69,10 +69,10 @@ public class AnnualCostAvoidanceColumn extends XViewerAtsColumn implements IXVie
    }
 
    public static double getWorldViewAnnualCostAvoidance(Object object) throws OseeCoreException {
-      if (object instanceof ActionArtifact) {
+      if (ActionManager.isOfTypeAction(object)) {
          double hours = 0;
          // Add up hours for all children
-         for (TeamWorkFlowArtifact team : ((ActionArtifact) object).getTeamWorkFlowArtifacts()) {
+         for (TeamWorkFlowArtifact team : ActionManager.getTeams(object)) {
             if (!team.isCompleted() && !team.isCancelled()) {
                hours += getWorldViewAnnualCostAvoidance(team);
             }
@@ -88,8 +88,8 @@ public class AnnualCostAvoidanceColumn extends XViewerAtsColumn implements IXVie
    }
 
    public static Result isWorldViewAnnualCostAvoidanceValid(Object object) throws OseeCoreException {
-      if (object instanceof ActionArtifact) {
-         for (TeamWorkFlowArtifact team : ((ActionArtifact) object).getTeamWorkFlowArtifacts()) {
+      if (ActionManager.isOfTypeAction(object)) {
+         for (TeamWorkFlowArtifact team : ActionManager.getTeams(object)) {
             Result result = isWorldViewAnnualCostAvoidanceValid(team);
             if (result.isFalse()) {
                return result;
@@ -126,5 +126,4 @@ public class AnnualCostAvoidanceColumn extends XViewerAtsColumn implements IXVie
       }
       return Result.FalseResult;
    }
-
 }

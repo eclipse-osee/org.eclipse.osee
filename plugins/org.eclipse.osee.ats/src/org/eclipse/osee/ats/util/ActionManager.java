@@ -18,7 +18,6 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.actions.wizard.INewActionListener;
 import org.eclipse.osee.ats.actions.wizard.ITeamWorkflowProvider;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
@@ -46,15 +45,14 @@ import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
  */
 public class ActionManager {
 
-   public static ActionArtifact createAction(IProgressMonitor monitor, String title, String desc, ChangeType changeType, String priority, boolean validationRequired, Date needByDate, Collection<ActionableItemArtifact> actionableItems, Date createdDate, User createdBy, INewActionListener newActionListener, SkynetTransaction transaction) throws OseeCoreException {
+   public static Artifact createAction(IProgressMonitor monitor, String title, String desc, ChangeType changeType, String priority, boolean validationRequired, Date needByDate, Collection<ActionableItemArtifact> actionableItems, Date createdDate, User createdBy, INewActionListener newActionListener, SkynetTransaction transaction) throws OseeCoreException {
       // if "tt" is title, this is an action created for development. To
       // make it easier, all fields are automatically filled in for ATS developer
 
       if (monitor != null) {
          monitor.subTask("Creating Action");
       }
-      ActionArtifact actionArt =
-         (ActionArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Action, AtsUtil.getAtsBranch());
+      Artifact actionArt = ArtifactTypeManager.addArtifact(AtsArtifactTypes.Action, AtsUtil.getAtsBranch());
       setArtifactIdentifyData(actionArt, title, desc, changeType, priority, validationRequired, needByDate);
 
       // Retrieve Team Definitions corresponding to selected Actionable Items
@@ -85,7 +83,7 @@ public class ActionManager {
       return actionArt;
    }
 
-   public static TeamWorkFlowArtifact createTeamWorkflow(ActionArtifact actionArt, TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems, Collection<User> assignees, SkynetTransaction transaction, Date createdDate, User createdBy, INewActionListener newActionListener, CreateTeamOption... createTeamOption) throws OseeCoreException {
+   public static TeamWorkFlowArtifact createTeamWorkflow(Artifact actionArt, TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems, Collection<User> assignees, SkynetTransaction transaction, Date createdDate, User createdBy, INewActionListener newActionListener, CreateTeamOption... createTeamOption) throws OseeCoreException {
       IArtifactType teamWorkflowArtifact = AtsArtifactTypes.TeamWorkflow;
       ITeamWorkflowProvider teamExt = null;
 
@@ -114,11 +112,11 @@ public class ActionManager {
       return teamArt;
    }
 
-   public static TeamWorkFlowArtifact createTeamWorkflow(ActionArtifact actionArt, TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems, Collection<User> assignees, Date createdDate, User createdBy, String guid, String hrid, IArtifactType artifactType, INewActionListener newActionListener, SkynetTransaction transaction, CreateTeamOption... createTeamOption) throws OseeCoreException {
+   public static TeamWorkFlowArtifact createTeamWorkflow(Artifact actionArt, TeamDefinitionArtifact teamDef, Collection<ActionableItemArtifact> actionableItems, Collection<User> assignees, Date createdDate, User createdBy, String guid, String hrid, IArtifactType artifactType, INewActionListener newActionListener, SkynetTransaction transaction, CreateTeamOption... createTeamOption) throws OseeCoreException {
 
       if (!Collections.getAggregate(createTeamOption).contains(CreateTeamOption.Duplicate_If_Exists)) {
          // Make sure team doesn't already exist
-         for (TeamWorkFlowArtifact teamArt : actionArt.getTeamWorkFlowArtifacts()) {
+         for (TeamWorkFlowArtifact teamArt : ActionManager.getTeams(actionArt)) {
             if (teamArt.getTeamDefinition().equals(teamDef)) {
                AWorkbench.popup("ERROR", "Team already exist");
                throw new OseeArgumentException("Team [%s] already exists for Action [%s]", teamDef,
@@ -175,7 +173,7 @@ public class ActionManager {
    /**
     * Set Team Workflow attributes off given action artifact
     */
-   public static void setArtifactIdentifyData(ActionArtifact fromAction, TeamWorkFlowArtifact toTeam) throws OseeCoreException {
+   public static void setArtifactIdentifyData(Artifact fromAction, TeamWorkFlowArtifact toTeam) throws OseeCoreException {
       setArtifactIdentifyData(toTeam, fromAction.getName(),
          fromAction.getSoleAttributeValue(AtsAttributeTypes.Description, ""),
          ChangeTypeColumn.getChangeType(fromAction),
@@ -209,16 +207,32 @@ public class ActionManager {
    public static Set<ActionableItemArtifact> getActionableItems(Artifact action) throws OseeCoreException {
       Set<ActionableItemArtifact> aias = new HashSet<ActionableItemArtifact>();
       if (action.isOfType(AtsArtifactTypes.Action)) {
-         for (TeamWorkFlowArtifact team : ((ActionArtifact) action).getTeamWorkFlowArtifacts()) {
+         for (TeamWorkFlowArtifact team : ActionManager.getTeams(action)) {
             aias.addAll(team.getActionableItemsDam().getActionableItems());
          }
       }
       return aias;
    }
 
-   public static Collection<TeamWorkFlowArtifact> getTeamWorkFlowArtifacts(Artifact actionArt) throws OseeCoreException {
-      return actionArt.getRelatedArtifactsUnSorted(AtsRelationTypes.ActionToWorkflow_WorkFlow,
+   public static Collection<TeamWorkFlowArtifact> getTeams(Object actionArt) throws OseeCoreException {
+      if (!(actionArt instanceof Artifact)) {
+         return java.util.Collections.emptyList();
+      }
+      return ((Artifact) actionArt).getRelatedArtifactsUnSorted(AtsRelationTypes.ActionToWorkflow_WorkFlow,
          TeamWorkFlowArtifact.class);
    }
 
+   public static TeamWorkFlowArtifact getFirstTeam(Object actionArt) throws OseeCoreException {
+      if (actionArt instanceof Artifact && ((Artifact) actionArt).getRelatedArtifactsCount(AtsRelationTypes.ActionToWorkflow_WorkFlow) > 0) {
+         return getTeams(actionArt).iterator().next();
+      }
+      return null;
+   }
+
+   public static boolean isOfTypeAction(Object object) {
+      if (object instanceof Artifact) {
+         return ((Artifact) object).isOfType(AtsArtifactTypes.Action);
+      }
+      return false;
+   }
 }

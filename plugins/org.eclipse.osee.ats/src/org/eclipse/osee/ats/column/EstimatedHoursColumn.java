@@ -8,10 +8,10 @@ package org.eclipse.osee.ats.column;
 import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
@@ -56,9 +56,9 @@ public class EstimatedHoursColumn extends XViewerAtsAttributeValueColumn {
    public static double getEstimatedHours(Object object) throws OseeCoreException {
       if (object instanceof AbstractWorkflowArtifact) {
          return ((AbstractWorkflowArtifact) object).getEstimatedHoursTotal();
-      } else if (object instanceof ActionArtifact) {
+      } else if (ActionManager.isOfTypeAction(object)) {
          double total = 0;
-         for (TeamWorkFlowArtifact team : ((ActionArtifact) object).getTeamWorkFlowArtifacts()) {
+         for (TeamWorkFlowArtifact team : ActionManager.getTeams(object)) {
             total += team.getEstimatedHoursTotal();
          }
          return total;

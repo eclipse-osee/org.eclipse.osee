@@ -6,16 +6,16 @@
 package org.eclipse.osee.ats.test.column;
 
 import java.util.Date;
-import org.junit.Assert;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.column.AssigneeColumn;
 import org.eclipse.osee.ats.column.CreatedDateColumn;
 import org.eclipse.osee.ats.test.util.DemoTestUtil;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.support.test.util.DemoWorkType;
 import org.eclipse.osee.support.test.util.TestUtil;
+import org.junit.Assert;
 
 /**
  * @tests CreatedDateColumn
@@ -34,7 +34,7 @@ public class CreatedDateColumnTest {
       Assert.assertNotNull(date);
       Assert.assertEquals(DateUtil.getMMDDYYHHMM(date), CreatedDateColumn.getDateStr(codeArt));
 
-      ActionArtifact actionArt = codeArt.getParentActionArtifact();
+      Artifact actionArt = codeArt.getParentActionArtifact();
       Assert.assertEquals(DateUtil.getMMDDYYHHMM(date), CreatedDateColumn.getDateStr(actionArt));
 
       TestUtil.severeLoggingEnd(loggingMonitor);

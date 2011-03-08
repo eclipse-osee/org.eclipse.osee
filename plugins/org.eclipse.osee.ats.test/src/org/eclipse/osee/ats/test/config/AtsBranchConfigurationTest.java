@@ -16,7 +16,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
@@ -142,16 +141,16 @@ public class AtsBranchConfigurationTest {
       Assert.assertFalse(selectedActionableItems.isEmpty());
 
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
-      ActionArtifact actionArt =
+      Artifact actionArt =
          ActionManager.createAction(null, BRANCH_VIA_VERSIONS.getName() + " Req Changes", "description",
-            ChangeType.Problem, "1", false, null, selectedActionableItems, new Date(), UserManager.getUser(),
-            null, transaction);
-      actionArt.getTeamWorkFlowArtifacts().iterator().next().addRelation(
+            ChangeType.Problem, "1", false, null, selectedActionableItems, new Date(), UserManager.getUser(), null,
+            transaction);
+      ActionManager.getTeams(actionArt).iterator().next().addRelation(
          AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, verArtToTarget);
-      actionArt.getTeamWorkFlowArtifacts().iterator().next().persist(transaction);
+      ActionManager.getTeams(actionArt).iterator().next().persist(transaction);
       transaction.execute();
 
-      final TeamWorkFlowArtifact teamWf = actionArt.getTeamWorkFlowArtifacts().iterator().next();
+      final TeamWorkFlowArtifact teamWf = ActionManager.getTeams(actionArt).iterator().next();
       TeamWorkflowManager dtwm = new TeamWorkflowManager(teamWf);
 
       // Transition to desired state
@@ -238,12 +237,12 @@ public class AtsBranchConfigurationTest {
       SkynetTransaction transaction =
          new SkynetTransaction(AtsUtil.getAtsBranch(), "Test branch via team definition: create action");
       String actionTitle = BRANCH_VIA_TEAM_DEFINITION.getName() + " Req Changes";
-      ActionArtifact actionArt =
+      Artifact actionArt =
          ActionManager.createAction(null, actionTitle, "description", ChangeType.Problem, "1", false, null,
             selectedActionableItems, new Date(), UserManager.getUser(), null, transaction);
       transaction.execute();
 
-      final TeamWorkFlowArtifact teamWf = actionArt.getTeamWorkFlowArtifacts().iterator().next();
+      final TeamWorkFlowArtifact teamWf = ActionManager.getTeams(actionArt).iterator().next();
       TeamWorkflowManager dtwm = new TeamWorkflowManager(teamWf);
 
       // Transition to desired state
@@ -281,12 +280,12 @@ public class AtsBranchConfigurationTest {
    public static void cleanupBranchTest(IOseeBranch testType) throws Exception {
       String namespace = "org.branchTest." + testType.getName().toLowerCase();
       OseeLog.log(AtsPlugin.class, Level.INFO, "Cleanup from previous run of ATS for team " + namespace);
-      ActionArtifact aArt =
-         (ActionArtifact) ArtifactQuery.checkArtifactFromTypeAndName(AtsArtifactTypes.Action,
-            testType.getName() + " Req Changes", AtsUtil.getAtsBranch());
+      Artifact aArt =
+         ArtifactQuery.checkArtifactFromTypeAndName(AtsArtifactTypes.Action, testType.getName() + " Req Changes",
+            AtsUtil.getAtsBranch());
       if (aArt != null) {
          SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
-         for (TeamWorkFlowArtifact teamArt : aArt.getTeamWorkFlowArtifacts()) {
+         for (TeamWorkFlowArtifact teamArt : ActionManager.getTeams(aArt)) {
             SMAEditor.close(Collections.singleton(teamArt), false);
             teamArt.deleteAndPersist(transaction, true);
          }

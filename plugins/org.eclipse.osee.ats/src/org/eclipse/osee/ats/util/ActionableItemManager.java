@@ -17,7 +17,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
@@ -28,13 +27,14 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
 public class ActionableItemManager {
 
-   public static Result editActionableItems(ActionArtifact actionArt) throws OseeCoreException {
+   public static Result editActionableItems(Artifact actionArt) throws OseeCoreException {
       final AICheckTreeDialog diag =
          new AICheckTreeDialog(
             "Add Impacted Actionable Items",
@@ -47,7 +47,7 @@ public class ActionableItemManager {
       }
 
       // ensure that at least one actionable item exists for each team after aias added/removed
-      for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts()) {
+      for (TeamWorkFlowArtifact team : ActionManager.getTeams(actionArt)) {
          Set<ActionableItemArtifact> currentAias = team.getActionableItemsDam().getActionableItems();
          Collection<ActionableItemArtifact> checkedAias = diag.getChecked();
          for (ActionableItemArtifact aia : new CopyOnWriteArrayList<ActionableItemArtifact>(currentAias)) {
@@ -73,7 +73,7 @@ public class ActionableItemManager {
          sb.append(result.getText());
       }
       // Remove unchecked aias
-      for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts()) {
+      for (TeamWorkFlowArtifact team : ActionManager.getTeams(actionArt)) {
          for (ActionableItemArtifact aia : team.getActionableItemsDam().getActionableItems()) {
             if (!diag.getChecked().contains(aia)) {
                team.getActionableItemsDam().removeActionableItem(aia);
@@ -86,12 +86,12 @@ public class ActionableItemManager {
       return new Result(true, sb.toString());
    }
 
-   public static Result addActionableItemToTeamsOrAddTeams(ActionArtifact actionArt, ActionableItemArtifact aia, Date createdDate, User createdBy, SkynetTransaction transaction) throws OseeCoreException {
+   public static Result addActionableItemToTeamsOrAddTeams(Artifact actionArt, ActionableItemArtifact aia, Date createdDate, User createdBy, SkynetTransaction transaction) throws OseeCoreException {
       StringBuffer sb = new StringBuffer();
       for (TeamDefinitionArtifact tda : TeamDefinitionArtifact.getImpactedTeamDefs(Arrays.asList(aia))) {
          boolean teamExists = false;
          // Look for team workflow that is associated with this tda
-         for (TeamWorkFlowArtifact teamArt : actionArt.getTeamWorkFlowArtifacts()) {
+         for (TeamWorkFlowArtifact teamArt : ActionManager.getTeams(actionArt)) {
             // If found
             if (teamArt.getTeamDefinition().equals(tda)) {
                // And workflow doesn't already have this actionable item,

@@ -15,17 +15,18 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.AbstractReviewArtifact;
+import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
-import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
@@ -88,7 +89,7 @@ public class SMAEditorArtifactEventManager implements IArtifactEventListener {
 
    private void safelyProcessHandler(final ArtifactEvent artifactEvent, final ISMAEditorEventHandler handler) {
       final AbstractWorkflowArtifact sma = handler.getSMAEditor().getSma();
-      ActionArtifact actionArt = null;
+      Artifact actionArt = null;
       boolean refreshed = false;
       try {
          actionArt = sma instanceof TeamWorkFlowArtifact ? sma.getParentActionArtifact() : null;
@@ -164,7 +165,7 @@ public class SMAEditorArtifactEventManager implements IArtifactEventListener {
          try {
             // Since SMAEditor is refreshed when a sibling workflow is changed, need to refresh this
             // list of actionable items when a sibling changes
-            for (TeamWorkFlowArtifact teamWf : sma.getParentActionArtifact().getTeamWorkFlowArtifacts()) {
+            for (TeamWorkFlowArtifact teamWf : ActionManager.getTeams(sma.getParentActionArtifact())) {
                if (!sma.equals(teamWf) && (artifactEvent.isHasEvent(teamWf) || artifactEvent.isRelAddedChangedDeleted(teamWf.getParentActionArtifact()))) {
                   refreshed = true;
                   Displays.ensureInDisplayThread(new Runnable() {

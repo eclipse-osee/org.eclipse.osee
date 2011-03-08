@@ -9,10 +9,10 @@ import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.swt.SWT;
@@ -50,9 +50,8 @@ public class OperationalImpactWorkaroundDesciptionColumn extends XViewerValueCol
             return ((TeamWorkFlowArtifact) element).getArtifact().getSoleAttributeValue(
                AtsAttributeTypes.OperationalImpactWorkaroundDescription, "");
          }
-         if (element instanceof ActionArtifact && ((ActionArtifact) element).getTeamWorkFlowArtifacts().size() == 1) {
-            return getColumnText(((ActionArtifact) element).getTeamWorkFlowArtifacts().iterator().next(), column,
-               columnIndex);
+         if (ActionManager.isOfTypeAction(element) && ActionManager.getTeams(element).size() == 1) {
+            return getColumnText(ActionManager.getFirstTeam(element), column, columnIndex);
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);

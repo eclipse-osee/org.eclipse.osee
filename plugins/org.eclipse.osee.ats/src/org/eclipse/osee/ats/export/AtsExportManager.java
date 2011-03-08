@@ -23,10 +23,11 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.editor.SMAPrint;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.ActionManager;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -77,8 +78,8 @@ public class AtsExportManager extends Action {
       for (Artifact artifact : artifacts) {
          if (artifact instanceof AbstractWorkflowArtifact) {
             smaArts.add((AbstractWorkflowArtifact) artifact);
-         } else if (artifact instanceof ActionArtifact) {
-            smaArts.addAll(((ActionArtifact) artifact).getTeamWorkFlowArtifacts());
+         } else if (artifact.isOfType(AtsArtifactTypes.Action)) {
+            smaArts.addAll(ActionManager.getTeams(artifact));
          }
       }
       return smaArts;
@@ -99,8 +100,8 @@ public class AtsExportManager extends Action {
 
             if (selectedObject instanceof AbstractWorkflowArtifact) {
                smaArts.add((AbstractWorkflowArtifact) selectedObject);
-            } else if (selectedObject instanceof ActionArtifact) {
-               smaArts.addAll(((ActionArtifact) selectedObject).getTeamWorkFlowArtifacts());
+            } else if (ActionManager.isOfTypeAction(selectedObject)) {
+               smaArts.addAll(ActionManager.getTeams(selectedObject));
             } else {
                OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Expected selection to be of type Artifact");
             }

@@ -18,7 +18,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.util.ActionManager;
@@ -64,7 +63,7 @@ public class AtsPurgeTest {
 
       // Create Action, Workflow and Tasks
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Purge Test");
-      ActionArtifact actionArt =
+      Artifact actionArt =
          ActionManager.createAction(
             null,
             getClass().getSimpleName(),
@@ -81,12 +80,12 @@ public class AtsPurgeTest {
       transaction.execute();
 
       artsToPurge.add(actionArt);
-      artsToPurge.addAll(actionArt.getTeamWorkFlowArtifacts());
+      artsToPurge.addAll(ActionManager.getTeams(actionArt));
 
       for (int x = 0; x < 30; x++) {
          TaskArtifact taskArt =
-            actionArt.getTeamWorkFlowArtifacts().iterator().next().createNewTask(getClass().getSimpleName() + x,
-               new Date(), UserManager.getUser());
+            ActionManager.getFirstTeam(actionArt).createNewTask(getClass().getSimpleName() + x, new Date(),
+               UserManager.getUser());
          taskArt.persist();
          artsToPurge.add(taskArt);
       }

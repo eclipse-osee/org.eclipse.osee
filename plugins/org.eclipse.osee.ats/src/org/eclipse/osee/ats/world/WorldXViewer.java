@@ -42,7 +42,6 @@ import org.eclipse.osee.ats.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.actions.ISelectedTeamWorkflowArtifacts;
 import org.eclipse.osee.ats.actions.SubscribedAction;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
@@ -50,7 +49,9 @@ import org.eclipse.osee.ats.column.GoalOrderColumn;
 import org.eclipse.osee.ats.column.IPersistAltLeftClickProvider;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.ActionArtifactRollup;
+import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.ArtifactEmailWizard;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.TeamState;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeColumn;
@@ -148,7 +149,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
          public void run() {
             try {
                if (getSelectedActionArtifacts().size() == 1) {
-                  ActionArtifact actionArt = getSelectedActionArtifacts().iterator().next();
+                  Artifact actionArt = getSelectedActionArtifacts().iterator().next();
                   AtsUtil.editActionableItems(actionArt);
                   refresh(getSelectedArtifactItems().iterator().next());
                } else {
@@ -168,7 +169,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
             SkynetTransaction transaction;
             try {
                transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Reset Action off Children");
-               for (ActionArtifact actionArt : getSelectedActionArtifacts()) {
+               for (Artifact actionArt : getSelectedActionArtifacts()) {
                   ActionArtifactRollup rollup = new ActionArtifactRollup(actionArt, transaction);
                   rollup.resetAttributesOffChildren();
                }
@@ -266,7 +267,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
          return false;
       }
       for (TreeItem item : treeItems) {
-         if (item.getData() instanceof ActionArtifact) {
+         if (ActionManager.isOfTypeAction(item.getData())) {
             return false;
          }
          try {
@@ -289,14 +290,14 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
 
    public void handleEmailSelectedAtsObject() throws OseeCoreException {
       Artifact art = getSelectedArtifacts().iterator().next();
-      if (art instanceof ActionArtifact) {
-         if (((ActionArtifact) art).getTeamWorkFlowArtifacts().size() > 1) {
-            art = AtsUtil.promptSelectTeamWorkflow((ActionArtifact) art);
+      if (art.isOfType(AtsArtifactTypes.Action)) {
+         if (ActionManager.getTeams(art).size() > 1) {
+            art = AtsUtil.promptSelectTeamWorkflow(art);
             if (art == null) {
                return;
             }
          } else {
-            art = ((ActionArtifact) art).getTeamWorkFlowArtifacts().iterator().next();
+            art = ActionManager.getFirstTeam(art);
          }
       }
       if (art != null) {
@@ -456,9 +457,9 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       TreeItem items[] = getTree().getSelection();
       if (items.length > 0) {
          for (TreeItem item : items) {
-            if (item.getData() instanceof ActionArtifact) {
+            if (ActionManager.isOfTypeAction(item.getData())) {
                try {
-                  if (((ActionArtifact) item.getData()).getTeamWorkFlowArtifacts().size() != 1) {
+                  if (ActionManager.getTeams(item.getData()).size() != 1) {
                      return false;
                   }
                } catch (OseeCoreException ex) {
@@ -484,10 +485,10 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
             if (item.getData() instanceof TeamWorkFlowArtifact) {
                teamArts.add((TeamWorkFlowArtifact) item.getData());
             }
-            if (item.getData() instanceof ActionArtifact) {
+            if (ActionManager.isOfTypeAction(item.getData())) {
                try {
-                  if (((ActionArtifact) item.getData()).getTeamWorkFlowArtifacts().size() == 1) {
-                     teamArts.addAll(((ActionArtifact) item.getData()).getTeamWorkFlowArtifacts());
+                  if (ActionManager.getTeams(item.getData()).size() == 1) {
+                     teamArts.addAll(ActionManager.getTeams(item.getData()));
                   }
                } catch (OseeCoreException ex) {
                   // Do Nothing
@@ -510,8 +511,8 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
             Object obj = i.next();
             if (obj instanceof AbstractWorkflowArtifact) {
                smaArts.add((AbstractWorkflowArtifact) obj);
-            } else if (obj instanceof ActionArtifact) {
-               smaArts.addAll(((ActionArtifact) obj).getTeamWorkFlowArtifacts());
+            } else if (ActionManager.isOfTypeAction(obj)) {
+               smaArts.addAll(ActionManager.getTeams(obj));
             }
          }
       } catch (OseeCoreException ex) {
@@ -520,13 +521,13 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       return smaArts;
    }
 
-   public Set<ActionArtifact> getSelectedActionArtifacts() {
-      Set<ActionArtifact> actionArts = new HashSet<ActionArtifact>();
+   public Set<Artifact> getSelectedActionArtifacts() {
+      Set<Artifact> actionArts = new HashSet<Artifact>();
       TreeItem items[] = getTree().getSelection();
       if (items.length > 0) {
          for (TreeItem item : items) {
-            if (item.getData() instanceof ActionArtifact) {
-               actionArts.add((ActionArtifact) item.getData());
+            if (ActionManager.isOfTypeAction(item.getData())) {
+               actionArts.add((Artifact) item.getData());
             }
          }
       }

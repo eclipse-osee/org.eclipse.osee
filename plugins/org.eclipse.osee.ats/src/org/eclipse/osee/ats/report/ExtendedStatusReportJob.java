@@ -19,13 +19,14 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.column.ChangeTypeColumn;
 import org.eclipse.osee.ats.column.CreatedDateColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.ActionManager;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.TeamState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -119,11 +120,11 @@ public class ExtendedStatusReportJob extends Job {
       sb.append(AHTML.addHeaderRowMultiColumnTable(Columns.getColumnNames()));
       int x = 1;
       for (Artifact art : arts) {
-         if (art instanceof ActionArtifact) {
-            ActionArtifact actionArt = (ActionArtifact) art;
+         if (art.isOfType(AtsArtifactTypes.Action)) {
+            Artifact actionArt = art;
             String str = String.format("Processing %s/%s \"%s\"", x++ + "", arts.size(), actionArt.getName());
             monitor.subTask(str);
-            for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts()) {
+            for (TeamWorkFlowArtifact team : ActionManager.getTeams(actionArt)) {
                addTableRow(sb, team);
                for (TaskArtifact taskArt : team.getTaskArtifacts(TeamState.Implement)) {
                   addTableRow(sb, taskArt);

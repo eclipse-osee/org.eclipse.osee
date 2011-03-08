@@ -15,9 +15,10 @@ import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.ActionManager;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.PromptChangeUtil;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -73,9 +74,9 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
          if (element instanceof AbstractWorkflowArtifact) {
             return ((AbstractWorkflowArtifact) element).getAttributesToStringUnique(getAttributeType(), ";");
          }
-         if (element instanceof ActionArtifact) {
+         if (ActionManager.isOfTypeAction(element)) {
             Set<String> strs = new HashSet<String>();
-            for (TeamWorkFlowArtifact team : ((ActionArtifact) element).getTeamWorkFlowArtifacts()) {
+            for (TeamWorkFlowArtifact team : ActionManager.getTeams(element)) {
                String str = getColumnText(team, column, columnIndex);
                if (Strings.isValid(str)) {
                   strs.add(str);
@@ -98,9 +99,9 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
          }
          if (treeItem.getData() instanceof Artifact) {
             Artifact useArt = (Artifact) treeItem.getData();
-            if (useArt instanceof ActionArtifact) {
-               if (((ActionArtifact) useArt).getTeamWorkFlowArtifacts().size() == 1) {
-                  useArt = ((ActionArtifact) useArt).getTeamWorkFlowArtifacts().iterator().next();
+            if (useArt.isOfType(AtsArtifactTypes.Action)) {
+               if (ActionManager.getTeams(useArt).size() == 1) {
+                  useArt = ActionManager.getFirstTeam(useArt);
                } else {
                   return false;
                }

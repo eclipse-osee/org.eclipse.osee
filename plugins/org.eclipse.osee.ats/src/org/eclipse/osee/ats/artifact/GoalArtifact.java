@@ -33,7 +33,7 @@ public class GoalArtifact extends AbstractWorkflowArtifact {
    }
 
    @Override
-   public ActionArtifact getParentActionArtifact() {
+   public Artifact getParentActionArtifact() {
       return null;
    }
 

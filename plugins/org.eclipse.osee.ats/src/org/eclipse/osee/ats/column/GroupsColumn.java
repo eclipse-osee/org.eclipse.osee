@@ -16,9 +16,10 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.ActionManager;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
@@ -64,9 +65,9 @@ public class GroupsColumn extends XViewerAtsColumn implements IXViewerValueColum
       try {
          if (treeItem.getData() instanceof Artifact) {
             Artifact useArt = (Artifact) treeItem.getData();
-            if (useArt instanceof ActionArtifact) {
-               if (((ActionArtifact) useArt).getTeamWorkFlowArtifacts().size() == 1) {
-                  useArt = ((ActionArtifact) useArt).getTeamWorkFlowArtifacts().iterator().next();
+            if (useArt.isOfType(AtsArtifactTypes.Action)) {
+               if ((ActionManager.getTeams(useArt)).size() == 1) {
+                  useArt = (ActionManager.getFirstTeam(useArt));
                } else {
                   return false;
                }
@@ -119,12 +120,12 @@ public class GroupsColumn extends XViewerAtsColumn implements IXViewerValueColum
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
-         if (element instanceof ActionArtifact) {
+         if (ActionManager.isOfTypeAction(element)) {
             Set<Artifact> groups = new HashSet<Artifact>();
-            ActionArtifact actionArt = (ActionArtifact) element;
+            Artifact actionArt = (Artifact) element;
             groups.addAll(actionArt.getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Group));
             // Roll up if same for all children
-            for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts()) {
+            for (TeamWorkFlowArtifact team : ActionManager.getTeams(actionArt)) {
                groups.addAll(team.getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Group));
             }
             return Artifacts.toString("; ", groups);

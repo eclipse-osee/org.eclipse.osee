@@ -13,9 +13,10 @@ package org.eclipse.osee.ats.world;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.ActionManager;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -28,8 +29,8 @@ public class WorldCompletedFilter extends ViewerFilter {
          Artifact art = (Artifact) element;
          if (art instanceof AbstractWorkflowArtifact) {
             return ((AbstractWorkflowArtifact) art).isInWork();
-         } else if (art instanceof ActionArtifact) {
-            for (TeamWorkFlowArtifact teamArt : ((ActionArtifact) art).getTeamWorkFlowArtifacts()) {
+         } else if (art.isOfType(AtsArtifactTypes.Action)) {
+            for (TeamWorkFlowArtifact teamArt : ActionManager.getTeams(art)) {
                if (teamArt.isInWork()) {
                   return true;
                }

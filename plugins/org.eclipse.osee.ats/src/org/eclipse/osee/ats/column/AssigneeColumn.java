@@ -16,7 +16,6 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.ActionManager;
@@ -68,9 +67,9 @@ public class AssigneeColumn extends XViewerAtsColumn implements IXViewerValueCol
       try {
          if (treeItem.getData() instanceof Artifact) {
             Artifact useArt = (Artifact) treeItem.getData();
-            if (useArt instanceof ActionArtifact) {
-               if (((ActionArtifact) useArt).getTeamWorkFlowArtifacts().size() == 1) {
-                  useArt = ((ActionArtifact) useArt).getTeamWorkFlowArtifacts().iterator().next();
+            if (useArt.isOfType(AtsArtifactTypes.Action)) {
+               if (ActionManager.getTeams(useArt).size() == 1) {
+                  useArt = ActionManager.getFirstTeam(useArt);
                } else {
                   return false;
                }
@@ -163,8 +162,8 @@ public class AssigneeColumn extends XViewerAtsColumn implements IXViewerValueCol
             if (art instanceof AbstractWorkflowArtifact) {
                smas.add((AbstractWorkflowArtifact) art);
             }
-            if (art instanceof ActionArtifact && ((ActionArtifact) art).getTeamWorkFlowArtifacts().size() == 1) {
-               smas.add(((ActionArtifact) art).getTeamWorkFlowArtifacts().iterator().next());
+            if (art.isOfType(AtsArtifactTypes.Action) && ActionManager.getTeams(art).size() == 1) {
+               smas.add(ActionManager.getFirstTeam(art));
             }
          }
          if (smas.size() == 0) {
@@ -197,7 +196,7 @@ public class AssigneeColumn extends XViewerAtsColumn implements IXViewerValueCol
          return FrameworkArtifactImageProvider.getUserImage(((AbstractWorkflowArtifact) artifact).getStateMgr().getAssignees());
       }
       if (artifact.isOfType(AtsArtifactTypes.Action)) {
-         for (TeamWorkFlowArtifact team : ActionManager.getTeamWorkFlowArtifacts(artifact)) {
+         for (TeamWorkFlowArtifact team : ActionManager.getTeams(artifact)) {
             Image image = AssigneeColumn.getAssigneeImage(team);
             if (image != null) {
                return image;
@@ -212,7 +211,7 @@ public class AssigneeColumn extends XViewerAtsColumn implements IXViewerValueCol
       if (artifact.isOfType(AtsArtifactTypes.Action)) {
          Set<User> pocs = new HashSet<User>();
          Set<User> implementers = new HashSet<User>();
-         for (TeamWorkFlowArtifact team : ActionManager.getTeamWorkFlowArtifacts(artifact)) {
+         for (TeamWorkFlowArtifact team : ActionManager.getTeams(artifact)) {
             if (team.isCompletedOrCancelled()) {
                implementers.addAll(team.getImplementers());
             } else {

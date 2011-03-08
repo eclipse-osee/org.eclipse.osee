@@ -46,7 +46,7 @@ public class ActionArtifactRollup {
     */
    private void resetTitleOffChildren() throws OseeCoreException {
       String title = "";
-      for (TeamWorkFlowArtifact team : ActionManager.getTeamWorkFlowArtifacts(action)) {
+      for (TeamWorkFlowArtifact team : ActionManager.getTeams(action)) {
          if (title.isEmpty()) {
             title = team.getName();
          } else if (!title.equals(team.getName())) {
@@ -61,7 +61,7 @@ public class ActionArtifactRollup {
    // Set validation to true if any require validation
    private void resetValidationOffChildren() throws OseeCoreException {
       boolean validationRequired = false;
-      for (TeamWorkFlowArtifact team : ActionManager.getTeamWorkFlowArtifacts(action)) {
+      for (TeamWorkFlowArtifact team : ActionManager.getTeams(action)) {
          if (team.getSoleAttributeValue(AtsAttributeTypes.ValidationRequired, false)) {
             validationRequired = true;
          }
@@ -76,7 +76,7 @@ public class ActionArtifactRollup {
     */
    private void resetDescriptionOffChildren() throws OseeCoreException {
       String desc = "";
-      for (TeamWorkFlowArtifact team : ActionManager.getTeamWorkFlowArtifacts(action)) {
+      for (TeamWorkFlowArtifact team : ActionManager.getTeams(action)) {
          if (desc.isEmpty()) {
             desc = team.getSoleAttributeValue(AtsAttributeTypes.Description, "");
          } else if (!desc.equals(team.getSoleAttributeValue(AtsAttributeTypes.Description, ""))) {
@@ -93,7 +93,7 @@ public class ActionArtifactRollup {
 
    private void resetPriorityOffChildren() throws OseeCoreException {
       String priorityType = null;
-      Collection<TeamWorkFlowArtifact> teamArts = ActionManager.getTeamWorkFlowArtifacts(action);
+      Collection<TeamWorkFlowArtifact> teamArts = ActionManager.getTeams(action);
       if (teamArts.size() == 1) {
          priorityType = PriorityColumn.getPriorityStr(teamArts.iterator().next());
       } else {
@@ -114,7 +114,7 @@ public class ActionArtifactRollup {
 
    private void resetUserCommunityOffChildren() throws OseeCoreException {
       Set<String> userComs = new HashSet<String>();
-      for (TeamWorkFlowArtifact team : ActionManager.getTeamWorkFlowArtifacts(action)) {
+      for (TeamWorkFlowArtifact team : ActionManager.getTeams(action)) {
          if (!team.isCancelled()) {
             userComs.addAll(team.getAttributesToStringList(AtsAttributeTypes.UserCommunity));
          }

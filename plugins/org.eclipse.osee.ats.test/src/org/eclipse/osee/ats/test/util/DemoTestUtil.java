@@ -20,8 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
-import org.junit.Assert;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
@@ -50,6 +48,7 @@ import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.DemoUsers;
 import org.eclipse.osee.support.test.util.DemoWorkType;
 import org.eclipse.osee.support.test.util.TestUtil;
+import org.junit.Assert;
 
 /**
  * @author Donald G. Dunne
@@ -97,13 +96,13 @@ public class DemoTestUtil {
     * Creates an action with the name title and demo code workflow
     */
    public static TeamWorkFlowArtifact createSimpleAction(String title, SkynetTransaction transaction) throws OseeCoreException {
-      ActionArtifact actionArt =
+      Artifact actionArt =
          ActionManager.createAction(null, title, "Description", ChangeType.Improvement, "2", false, null,
             ActionableItemArtifact.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName())),
             new Date(), UserManager.getUser(), null, transaction);
 
       TeamWorkFlowArtifact teamArt = null;
-      for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts()) {
+      for (TeamWorkFlowArtifact team : ActionManager.getTeams(actionArt)) {
          if (team.getTeamDefinition().getName().contains("Code")) {
             teamArt = team;
          }
@@ -111,15 +110,15 @@ public class DemoTestUtil {
       return teamArt;
    }
 
-   public static Set<ActionableItemArtifact> getActionableItems(DemoActionableItems demoAI) throws OseeCoreException {
+   public static Set<ActionableItemArtifact> getActionableItems(DemoActionableItems demoAI) {
       return ActionableItemArtifact.getActionableItems(Arrays.asList(demoAI.getName()));
    }
 
-   public static ActionableItemArtifact getActionableItem(DemoActionableItems demoAI) throws OseeCoreException {
+   public static ActionableItemArtifact getActionableItem(DemoActionableItems demoAI) {
       return getActionableItems(demoAI).iterator().next();
    }
 
-   public static TeamWorkFlowArtifact addTeamWorkflow(ActionArtifact actionArt, String title, SkynetTransaction transaction) throws OseeCoreException {
+   public static TeamWorkFlowArtifact addTeamWorkflow(Artifact actionArt, String title, SkynetTransaction transaction) throws OseeCoreException {
       Set<ActionableItemArtifact> actionableItems = getActionableItems(DemoActionableItems.SAW_Test);
       ;
       Collection<TeamDefinitionArtifact> teamDefs = TeamDefinitionArtifact.getImpactedTeamDefs(actionableItems);
@@ -128,7 +127,7 @@ public class DemoTestUtil {
          Arrays.asList(UserManager.getUser()), transaction, new Date(), UserManager.getUser(), null);
 
       TeamWorkFlowArtifact teamArt = null;
-      for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts()) {
+      for (TeamWorkFlowArtifact team : ActionManager.getTeams(actionArt)) {
          if (team.getTeamDefinition().getName().contains("Test")) {
             teamArt = team;
          }

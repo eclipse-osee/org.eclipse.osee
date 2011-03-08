@@ -9,7 +9,7 @@ import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
+import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -45,7 +45,7 @@ public class LastStatusedColumn extends XViewerAtsColumn implements IXViewerValu
       try {
          if (element instanceof AbstractWorkflowArtifact) {
             return DateUtil.getMMDDYYHHMM(((AbstractWorkflowArtifact) element).getLog().getLastStatusedDate());
-         } else if (element instanceof ActionArtifact) {
+         } else if (ActionManager.isOfTypeAction(element)) {
             return "(see children)";
          }
       } catch (OseeCoreException ex) {

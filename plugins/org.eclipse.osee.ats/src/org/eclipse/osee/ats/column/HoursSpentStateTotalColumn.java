@@ -62,7 +62,7 @@ public class HoursSpentStateTotalColumn extends XViewerAtsColumn implements IXVi
    public static double getHoursSpentStateTotal(Artifact artifact) throws OseeCoreException {
       if (artifact.isOfType(AtsArtifactTypes.Action)) {
          double hours = 0;
-         for (TeamWorkFlowArtifact team : ActionManager.getTeamWorkFlowArtifacts(artifact)) {
+         for (TeamWorkFlowArtifact team : ActionManager.getTeams(artifact)) {
             if (!team.isCancelled()) {
                hours += getHoursSpentStateTotal(team);
             }

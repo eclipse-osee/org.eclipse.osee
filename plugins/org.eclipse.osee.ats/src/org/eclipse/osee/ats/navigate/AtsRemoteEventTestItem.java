@@ -17,13 +17,13 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.actions.wizard.NewActionJob;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.column.ChangeTypeColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -34,6 +34,7 @@ import org.eclipse.osee.ats.world.WorldXNavigateItemAction;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -102,9 +103,9 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
 
-      ActionArtifact actionArt = job.getActionArt();
+      Artifact actionArt = job.getActionArt();
       resultData.log("Created Action " + actionArt);
-      TeamWorkFlowArtifact teamArt = actionArt.getTeamWorkFlowArtifacts().iterator().next();
+      TeamWorkFlowArtifact teamArt = ActionManager.getFirstTeam(actionArt);
 
       // Make current user assignee for convenience to developer
       teamArt.getStateMgr().addAssignee(UserManager.getUser());
@@ -240,7 +241,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
          AtsUtil.getAtsBranch());
    }
 
-   private void validateActionAtStart(ActionArtifact actionArt) throws OseeCoreException {
+   private void validateActionAtStart(Artifact actionArt) throws OseeCoreException {
       resultData.log("\nValidating Start...");
       // Ensure event service is connected
       if (!OseeEventManager.isEventManagerConnected()) {
@@ -250,13 +251,13 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       resultData.log("Remote Event Service connected");
 
       // Validate values
-      TeamWorkFlowArtifact teamArt = actionArt.getTeamWorkFlowArtifacts().iterator().next();
+      TeamWorkFlowArtifact teamArt = ActionManager.getFirstTeam(actionArt);
       testEquals("Description", "description", teamArt.getSoleAttributeValue(AtsAttributeTypes.Description, null));
       testEquals("Change Type", ChangeType.Improvement, ChangeTypeColumn.getChangeType(teamArt));
       testEquals("Priority", "1", teamArt.getSoleAttributeValue(AtsAttributeTypes.PriorityType, null));
    }
 
-   private void validateActionAtEnd(ActionArtifact actionArt) throws OseeCoreException {
+   private void validateActionAtEnd(Artifact actionArt) throws OseeCoreException {
       resultData.log("\nValidating End...");
       // Ensure event service is connected
       if (!OseeEventManager.isEventManagerConnected()) {
@@ -266,7 +267,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       resultData.log("Remote Event Service connected");
 
       // Validate values
-      TeamWorkFlowArtifact teamArt = actionArt.getTeamWorkFlowArtifacts().iterator().next();
+      TeamWorkFlowArtifact teamArt = ActionManager.getFirstTeam(actionArt);
       testEquals("Description", "description 4", teamArt.getSoleAttributeValue(AtsAttributeTypes.Description, null));
       testEquals("Change Type", ChangeType.Support, ChangeTypeColumn.getChangeType(teamArt));
       testEquals("Priority", "3", teamArt.getSoleAttributeValue(AtsAttributeTypes.PriorityType, null));
@@ -297,9 +298,8 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       String actionTitle = "tt " + ttNum;
       resultData.log("Running " + title);
 
-      ActionArtifact actionArt =
-         (ActionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Action, actionTitle,
-            AtsUtil.getAtsBranch());
+      Artifact actionArt =
+         ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Action, actionTitle, AtsUtil.getAtsBranch());
 
       if (actionArt == null) {
          resultData.logError(String.format("Couldn't load Action named [%s]", actionTitle));
@@ -316,9 +316,8 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       String actionTitle = "tt " + ttNum;
       resultData.log("Running " + title);
 
-      ActionArtifact actionArt =
-         (ActionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Action, actionTitle,
-            AtsUtil.getAtsBranch());
+      Artifact actionArt =
+         ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Action, actionTitle, AtsUtil.getAtsBranch());
 
       if (actionArt == null) {
          resultData.logError(String.format("Couldn't load Action named [%s]", actionTitle));

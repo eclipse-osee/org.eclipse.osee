@@ -14,7 +14,6 @@ import java.util.Arrays;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
@@ -23,6 +22,7 @@ import org.eclipse.osee.ats.world.WorldEditorSimpleProvider;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
@@ -41,7 +41,7 @@ public class OpenInAtsWorldAction extends Action {
    public void performOpen() {
       try {
          if (sma.isTeamWorkflow()) {
-            ActionArtifact actionArt = ((TeamWorkFlowArtifact) sma).getParentActionArtifact();
+            Artifact actionArt = ((TeamWorkFlowArtifact) sma).getParentActionArtifact();
             WorldEditor.open(new WorldEditorSimpleProvider("Action " + actionArt.getHumanReadableId(),
                Arrays.asList(actionArt)));
             return;

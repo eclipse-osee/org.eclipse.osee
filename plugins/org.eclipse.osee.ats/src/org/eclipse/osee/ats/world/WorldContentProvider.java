@@ -22,11 +22,12 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.ats.artifact.AbstractReviewArtifact;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.ActionManager;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
@@ -73,9 +74,9 @@ public class WorldContentProvider implements ITreeContentProvider {
             if (artifact.isDeleted()) {
                return new Object[] {};
             }
-            if (artifact instanceof ActionArtifact) {
-               relatedArts.addAll(((ActionArtifact) artifact).getTeamWorkFlowArtifacts());
-               return ((ActionArtifact) artifact).getTeamWorkFlowArtifacts().toArray();
+            if (artifact.isOfType(AtsArtifactTypes.Action)) {
+               relatedArts.addAll(ActionManager.getTeams(artifact));
+               return ActionManager.getTeams((artifact)).toArray();
             }
             if (artifact instanceof GoalArtifact) {
                List<Artifact> arts =
@@ -144,7 +145,7 @@ public class WorldContentProvider implements ITreeContentProvider {
       if (((Artifact) element).isDeleted()) {
          return false;
       }
-      if (element instanceof ActionArtifact) {
+      if (ActionManager.isOfTypeAction(element)) {
          return true;
       }
       if (element instanceof AbstractWorkflowArtifact) {

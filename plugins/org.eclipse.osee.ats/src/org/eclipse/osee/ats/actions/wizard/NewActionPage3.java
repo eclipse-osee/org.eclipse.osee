@@ -20,7 +20,6 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.wizard.WizardPage;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
@@ -28,6 +27,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
@@ -59,7 +59,7 @@ public class NewActionPage3 extends WizardPage {
       getWizardXWidgetExtensions();
    }
 
-   public void notifyAtsWizardItemExtensions(ActionArtifact action, SkynetTransaction transaction) {
+   public void notifyAtsWizardItemExtensions(Artifact action, SkynetTransaction transaction) {
       for (IAtsWizardItem item : wizardExtensionItems) {
          try {
             if (item.hasWizardXWidgetExtensions(wizard.getSelectedActionableItemArtifacts())) {

@@ -11,8 +11,8 @@ import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -53,9 +53,9 @@ public class CompletedCancelledByColumn extends XViewerAtsColumn implements IXVi
             } else if (((AbstractWorkflowArtifact) element).isCancelled()) {
                return CancelledByColumn.getInstance().getColumnText(element, column, columnIndex);
             }
-         } else if (element instanceof ActionArtifact) {
+         } else if (ActionManager.isOfTypeAction(element)) {
             Set<User> users = new HashSet<User>();
-            for (TeamWorkFlowArtifact team : ((ActionArtifact) element).getTeamWorkFlowArtifacts()) {
+            for (TeamWorkFlowArtifact team : ActionManager.getTeams(element)) {
                User user = team.getCompletedBy();
                if (((AbstractWorkflowArtifact) element).isCompleted()) {
                   user = team.getCompletedBy();

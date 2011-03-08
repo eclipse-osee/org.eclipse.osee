@@ -12,11 +12,11 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -63,10 +63,10 @@ public class ActionableItemsColumn extends XViewerAtsAttributeValueColumn {
    }
 
    public static Collection<ActionableItemArtifact> getActionableItems(Object element) throws OseeCoreException {
-      if (element instanceof ActionArtifact) {
+      if (ActionManager.isOfTypeAction(element)) {
          Set<ActionableItemArtifact> aias = new HashSet<ActionableItemArtifact>();
          // Roll up if same for all children
-         for (TeamWorkFlowArtifact team : ((ActionArtifact) element).getTeamWorkFlowArtifacts()) {
+         for (TeamWorkFlowArtifact team : ActionManager.getTeams(element)) {
             aias.addAll(team.getActionableItemsDam().getActionableItems());
          }
          return aias;

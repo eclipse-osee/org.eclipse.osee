@@ -27,7 +27,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.artifact.AbstractReviewArtifact;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
@@ -42,6 +41,7 @@ import org.eclipse.osee.ats.internal.workflow.XCurrentStateDam;
 import org.eclipse.osee.ats.internal.workflow.XStateDam;
 import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.task.TaskEditorSimpleProvider;
+import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
@@ -92,7 +92,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    private final Set<String> hrids = new HashSet<String>();
    private final Map<String, String> legacyPcrIdToParentHrid = new HashMap<String, String>();
    private String emailOnComplete = null;
-   private static ActionArtifact tempParentAction;
+   private static Artifact tempParentAction;
 
    public ValidateAtsDatabase(XNavigateItem parent) {
       this("Validate ATS Database", parent);
@@ -513,7 +513,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    private void testAtsActionsHaveTeamWorkflow(Collection<Artifact> artifacts) {
       for (Artifact artifact : artifacts) {
          try {
-            if (artifact instanceof ActionArtifact && ((ActionArtifact) artifact).getTeamWorkFlowArtifacts().isEmpty()) {
+            if (artifact.isOfType(AtsArtifactTypes.Action) && ActionManager.getTeams(artifact).isEmpty()) {
                testNameToResultsMap.put("testAtsActionsHaveTeamWorkflow",
                   "Error: Action " + XResultData.getHyperlink(artifact) + " has no Team Workflows\n");
             }
@@ -544,8 +544,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                if (noParent) {
                   if (tempParentAction == null) {
                      tempParentAction =
-                        (ActionArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Action,
-                           AtsUtil.getAtsBranch());
+                        ArtifactTypeManager.addArtifact(AtsArtifactTypes.Action, AtsUtil.getAtsBranch());
                      tempParentAction.setName("Temp Parent Action");
                      testNameToResultsMap.put(
                         "testAtsWorkflowsHaveAction",

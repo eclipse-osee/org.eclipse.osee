@@ -19,12 +19,12 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.osee.ats.AtsOpenOption;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.SmaWorkflowLabelProvider;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsEditor;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -106,8 +106,8 @@ public class MultipleHridSearchOperation extends AbstractOperation implements IW
       try {
          final Set<Artifact> addedArts = new HashSet<Artifact>();
          for (Artifact artifact : artifacts) {
-            if (artifact instanceof ActionArtifact) {
-               for (TeamWorkFlowArtifact team : ((ActionArtifact) artifact).getTeamWorkFlowArtifacts()) {
+            if (artifact.isOfType(AtsArtifactTypes.Action)) {
+               for (TeamWorkFlowArtifact team : ActionManager.getTeams(artifact)) {
                   if (team.getBranchMgr().isCommittedBranchExists() || team.getBranchMgr().isWorkingBranchInWork()) {
                      addedArts.add(team);
                   }
@@ -183,7 +183,7 @@ public class MultipleHridSearchOperation extends AbstractOperation implements IW
                   artifact = (Artifact) ld.getResult()[0];
                }
             }
-            if (artifact instanceof ActionArtifact) {
+            if (artifact.isOfType(AtsArtifactTypes.Action)) {
                AtsUtil.openATSAction(artifact, AtsOpenOption.OpenOneOrPopupSelect);
             } else {
                try {

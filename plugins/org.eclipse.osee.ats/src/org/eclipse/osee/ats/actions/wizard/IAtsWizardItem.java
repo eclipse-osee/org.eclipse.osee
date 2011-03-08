@@ -11,8 +11,8 @@
 package org.eclipse.osee.ats.actions.wizard;
 
 import java.util.Collection;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 
@@ -48,7 +48,7 @@ public interface IAtsWizardItem {
     * Callback with created action upon completion and creation of the action and it's workflows.
     * hasWizardXWidgetExtenstions will be called to determine if this method should be called.
     */
-   void wizardCompleted(ActionArtifact actionArt, NewActionWizard wizard, SkynetTransaction transaction) throws Exception;
+   void wizardCompleted(Artifact actionArt, NewActionWizard wizard, SkynetTransaction transaction) throws Exception;
 
    /**
     * Validation that the data entered is valid and the wizard can be finished. This will be called after every

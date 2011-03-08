@@ -25,7 +25,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
@@ -66,8 +65,8 @@ import org.xml.sax.helpers.XMLReaderFactory;
 public class ExcelAtsActionArtifactExtractor {
 
    private final List<ActionData> actionDatas = new ArrayList<ActionData>();
-   private final Set<ActionArtifact> actionArts = new HashSet<ActionArtifact>();
-   private final Map<String, ActionArtifact> actionNameToAction = new HashMap<String, ActionArtifact>(100);
+   private final Set<Artifact> actionArts = new HashSet<Artifact>();
+   private final Map<String, Artifact> actionNameToAction = new HashMap<String, Artifact>(100);
    private final boolean emailPOCs;
    private boolean dataIsValid = true;
 
@@ -159,14 +158,14 @@ public class ExcelAtsActionArtifactExtractor {
       try {
          User createdBy = UserManager.getUser();
          for (ActionData aData : actionDatas) {
-            ActionArtifact actionArt = actionNameToAction.get(aData.title);
+            Artifact actionArt = actionNameToAction.get(aData.title);
             Collection<TeamWorkFlowArtifact> newTeamArts = new HashSet<TeamWorkFlowArtifact>();
             if (actionArt == null) {
                actionArt =
                   ActionManager.createAction(null, aData.title, aData.desc, ChangeType.getChangeType(aData.changeType),
                      aData.priorityStr, false, null, ActionableItemArtifact.getActionableItems(aData.actionableItems),
                      createdDate, createdBy, null, transaction);
-               newTeamArts = actionArt.getTeamWorkFlowArtifacts();
+               newTeamArts = ActionManager.getTeams(actionArt);
                actionNameToAction.put(aData.title, actionArt);
                actionArts.add(actionArt);
             } else {
@@ -269,7 +268,7 @@ public class ExcelAtsActionArtifactExtractor {
    /**
     * @return the actionArts
     */
-   public Set<ActionArtifact> getActionArts() {
+   public Set<Artifact> getActionArts() {
       return actionArts;
    }
 

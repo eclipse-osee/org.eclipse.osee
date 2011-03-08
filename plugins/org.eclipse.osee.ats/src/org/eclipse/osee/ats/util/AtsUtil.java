@@ -24,7 +24,6 @@ import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.actions.NewAction;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowLabelProvider;
@@ -210,7 +209,7 @@ public final class AtsUtil {
       }
    }
 
-   public static void editActionableItems(ActionArtifact actionArt) throws OseeCoreException {
+   public static void editActionableItems(Artifact actionArt) throws OseeCoreException {
       Result result = ActionableItemManager.editActionableItems(actionArt);
       if (result.isFalse() && result.getText().equals("")) {
          return;
@@ -255,7 +254,7 @@ public final class AtsUtil {
 
       try {
          if (editor == OseeCmEditor.CmPcrEditor) {
-            if (artifact instanceof AbstractWorkflowArtifact || artifact instanceof ActionArtifact) {
+            if (artifact instanceof AbstractWorkflowArtifact || artifact.isOfType(AtsArtifactTypes.Action)) {
                openATSAction(artifact, AtsOpenOption.OpenOneOrPopupSelect);
             } else {
                RendererManager.open(artifact, PresentationType.GENERALIZED_EDIT);
@@ -305,16 +304,14 @@ public final class AtsUtil {
 
    public static void openATSAction(final Artifact art, final AtsOpenOption atsOpenOption) {
       try {
-         if (art instanceof ActionArtifact) {
-            final ActionArtifact actionArt = (ActionArtifact) art;
-            Collection<TeamWorkFlowArtifact> teams = actionArt.getTeamWorkFlowArtifacts();
+         if (art.isOfType(AtsArtifactTypes.Action)) {
+            Collection<TeamWorkFlowArtifact> teams = ActionManager.getTeams(art);
             if (atsOpenOption == AtsOpenOption.OpenAll) {
                for (TeamWorkFlowArtifact team : teams) {
                   SMAEditor.editArtifact(team);
                }
             } else if (atsOpenOption == AtsOpenOption.AtsWorld) {
-               WorldEditor.open(new WorldEditorSimpleProvider("Action " + actionArt.getHumanReadableId(),
-                  Arrays.asList(actionArt)));
+               WorldEditor.open(new WorldEditorSimpleProvider("Action " + art.getHumanReadableId(), Arrays.asList(art)));
             } else if (atsOpenOption == AtsOpenOption.OpenOneOrPopupSelect) {
                if (teams.size() == 1) {
                   SMAEditor.editArtifact(teams.iterator().next());
@@ -323,7 +320,7 @@ public final class AtsUtil {
                      @Override
                      public void run() {
                         try {
-                           TeamWorkFlowArtifact teamArt = promptSelectTeamWorkflow(actionArt);
+                           TeamWorkFlowArtifact teamArt = promptSelectTeamWorkflow(art);
                            if (teamArt != null) {
                               SMAEditor.editArtifact((Artifact) teamArt);
                            } else {
@@ -344,13 +341,13 @@ public final class AtsUtil {
       }
    }
 
-   public static TeamWorkFlowArtifact promptSelectTeamWorkflow(ActionArtifact actArt) throws OseeCoreException {
+   public static TeamWorkFlowArtifact promptSelectTeamWorkflow(Artifact actArt) throws OseeCoreException {
       ListDialog ld = new ListDialog(Displays.getActiveShell());
       ld.setContentProvider(new ArrayContentProvider());
       ld.setLabelProvider(new TeamWorkflowLabelProvider());
       ld.setTitle("Select Team Workflow");
       ld.setMessage("Select Team Workflow");
-      ld.setInput(actArt.getTeamWorkFlowArtifacts());
+      ld.setInput(ActionManager.getTeams(actArt));
       if (ld.open() == 0) {
          if (ld.getResult().length == 0) {
             AWorkbench.popup("Error", "No Workflow Selected");
@@ -535,5 +532,15 @@ public final class AtsUtil {
          // Do Nothing;
       }
       return toReturn;
+   }
+
+   /**
+    * @return true if Action artifact or AbstractWorkflowArtifact
+    */
+   public static boolean isAtsArtifact(Object object) {
+      if (object instanceof Artifact) {
+         return ((Artifact) object).isOfType(AtsArtifactTypes.StateMachineArtifact) || ((Artifact) object).isOfType(AtsArtifactTypes.Action);
+      }
+      return false;
    }
 }

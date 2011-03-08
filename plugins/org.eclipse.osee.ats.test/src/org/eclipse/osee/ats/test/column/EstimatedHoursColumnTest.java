@@ -6,7 +6,6 @@
 package org.eclipse.osee.ats.test.column;
 
 import java.util.Date;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
@@ -17,6 +16,7 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.AfterClass;
@@ -44,7 +44,7 @@ public class EstimatedHoursColumnTest {
       TeamWorkFlowArtifact teamArt1 =
          DemoTestUtil.createSimpleAction(EstimatedHoursColumnTest.class.getSimpleName(), transaction);
 
-      ActionArtifact actionArt = teamArt1.getParentActionArtifact();
+      Artifact actionArt = teamArt1.getParentActionArtifact();
       TeamWorkFlowArtifact teamArt2 =
          DemoTestUtil.addTeamWorkflow(actionArt, EstimatedHoursColumnTest.class.getSimpleName(), transaction);
       TaskArtifact taskArt1 =

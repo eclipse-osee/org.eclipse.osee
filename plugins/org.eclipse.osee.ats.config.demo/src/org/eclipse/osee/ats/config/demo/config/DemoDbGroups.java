@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.config.demo.internal.OseeAtsConfigDemoActivator;
+import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -41,7 +42,7 @@ public class DemoDbGroups {
          groupArt.addRelation(CoreRelationTypes.Universal_Grouping__Members, codeArt.getParentActionArtifact());
 
          // Add All Team Workflows to Universal Group
-         for (Artifact teamWorkflow : codeArt.getParentActionArtifact().getTeamWorkFlowArtifacts()) {
+         for (Artifact teamWorkflow : ActionManager.getTeams(codeArt.getParentActionArtifact())) {
             groupArt.addRelation(CoreRelationTypes.Universal_Grouping__Members, teamWorkflow);
          }
 

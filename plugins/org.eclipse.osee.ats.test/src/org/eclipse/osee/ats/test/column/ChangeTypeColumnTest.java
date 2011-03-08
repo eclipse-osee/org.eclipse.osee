@@ -5,8 +5,6 @@
  */
 package org.eclipse.osee.ats.test.column;
 
-import org.junit.Assert;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.column.ChangeTypeColumn;
@@ -14,11 +12,13 @@ import org.eclipse.osee.ats.test.util.DemoTestUtil;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.support.test.util.DemoWorkType;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 
 /**
@@ -48,7 +48,7 @@ public class ChangeTypeColumnTest {
       Assert.assertEquals(ChangeType.Problem, ChangeTypeColumn.getChangeType(codeArt));
       Assert.assertNotNull(ChangeTypeColumn.getInstance().getColumnImage(codeArt, ChangeTypeColumn.getInstance(), 0));
 
-      ActionArtifact actionArt = codeArt.getParentActionArtifact();
+      Artifact actionArt = codeArt.getParentActionArtifact();
       Assert.assertEquals(ChangeType.Problem, ChangeTypeColumn.getChangeType(actionArt));
 
       // clear our req change type

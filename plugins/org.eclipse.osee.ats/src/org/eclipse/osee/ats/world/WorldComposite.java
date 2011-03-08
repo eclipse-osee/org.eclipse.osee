@@ -25,8 +25,9 @@ import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.ats.actions.OpenNewAtsWorldEditorAction.IOpenNewAtsWorldEditorHandler;
 import org.eclipse.osee.ats.actions.OpenNewAtsWorldEditorSelectedAction.IOpenNewAtsWorldEditorSelectedHandler;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.ActionManager;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
@@ -102,8 +103,8 @@ public class WorldComposite extends ScrolledComposite implements IWorldViewerEve
    public double getManHoursPerDayPreference() throws OseeCoreException {
       if (worldArts.size() > 0) {
          Artifact artifact = worldArts.iterator().next();
-         if (artifact instanceof ActionArtifact) {
-            artifact = ((ActionArtifact) artifact).getTeamWorkFlowArtifacts().iterator().next();
+         if (artifact.isOfType(AtsArtifactTypes.Action)) {
+            artifact = ActionManager.getFirstTeam(artifact);
          }
          return ((AbstractWorkflowArtifact) artifact).getManHrsPerDayPreference();
       }

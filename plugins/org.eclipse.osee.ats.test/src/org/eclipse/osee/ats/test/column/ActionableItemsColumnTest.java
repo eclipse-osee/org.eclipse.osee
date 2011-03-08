@@ -6,15 +6,15 @@
 package org.eclipse.osee.ats.test.column;
 
 import java.util.Collection;
-import org.junit.Assert;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.column.ActionableItemsColumn;
 import org.eclipse.osee.ats.test.util.DemoTestUtil;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.support.test.util.DemoWorkType;
 import org.eclipse.osee.support.test.util.TestUtil;
+import org.junit.Assert;
 
 /**
  * @tests ActionableItemsColumn
@@ -32,7 +32,7 @@ public class ActionableItemsColumnTest {
       Assert.assertEquals(1, aias.size());
       Assert.assertEquals("SAW Code", aias.iterator().next().getName());
 
-      ActionArtifact actionArt = codeArt.getParentActionArtifact();
+      Artifact actionArt = codeArt.getParentActionArtifact();
       aias = ActionableItemsColumn.getActionableItems(actionArt);
       Assert.assertEquals(4, aias.size());
 
@@ -47,7 +47,7 @@ public class ActionableItemsColumnTest {
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Code);
       Assert.assertEquals("SAW Code", ActionableItemsColumn.getActionableItemsStr(codeArt));
 
-      ActionArtifact actionArt = codeArt.getParentActionArtifact();
+      Artifact actionArt = codeArt.getParentActionArtifact();
 
       String results = ActionableItemsColumn.getActionableItemsStr(actionArt);
       Assert.assertTrue(results.contains("SAW Code"));

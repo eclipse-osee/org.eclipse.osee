@@ -49,6 +49,7 @@ import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.SystemUser;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -65,6 +66,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
@@ -86,7 +88,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    private Collection<User> transitionAssignees;
    protected AbstractWorkflowArtifact parentSma;
    protected TeamWorkFlowArtifact parentTeamArt;
-   protected ActionArtifact parentAction;
+   protected Artifact parentAction;
    private StateManager stateMgr;
    private AtsLog atsLog;
    private AtsNote atsNote;
@@ -199,7 +201,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    @SuppressWarnings("unused")
-   public ActionArtifact getParentActionArtifact() throws OseeCoreException {
+   public Artifact getParentActionArtifact() throws OseeCoreException {
       return parentAction;
    }
 
@@ -237,10 +239,25 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return null;
    }
 
-   @Override
    public void atsDelete(Set<Artifact> deleteArts, Map<Artifact, Object> allRelated) throws OseeCoreException {
       SMAEditor.close(Collections.singleton(this), true);
-      super.atsDelete(deleteArts, allRelated);
+      deleteArts.add(this);
+      for (Artifact relative : getBSideArtifacts()) {
+         allRelated.put(relative, this);
+      }
+   }
+
+   private List<Artifact> getBSideArtifacts() throws OseeCoreException {
+      List<Artifact> sideBArtifacts = new ArrayList<Artifact>();
+      List<RelationLink> relatives = getRelationsAll(DeletionFlag.EXCLUDE_DELETED);
+      for (RelationLink link : relatives) {
+         Artifact sideB = link.getArtifactB();
+         if (!sideB.equals(this)) {
+            sideBArtifacts.add(sideB);
+         }
+      }
+
+      return sideBArtifacts;
    }
 
    public String getType() {

@@ -13,7 +13,6 @@ import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
@@ -121,9 +120,9 @@ public class ChangeTypeColumn extends XViewerAtsAttributeValueColumn {
          }
          if (treeItem.getData() instanceof Artifact) {
             Artifact useArt = (Artifact) treeItem.getData();
-            if (useArt instanceof ActionArtifact) {
-               if (((ActionArtifact) useArt).getTeamWorkFlowArtifacts().size() == 1) {
-                  useArt = ((ActionArtifact) useArt).getTeamWorkFlowArtifacts().iterator().next();
+            if (useArt.isOfType(AtsArtifactTypes.Action)) {
+               if (ActionManager.getTeams(useArt).size() == 1) {
+                  useArt = ActionManager.getFirstTeam(useArt);
                } else {
                   return false;
                }
@@ -189,7 +188,7 @@ public class ChangeTypeColumn extends XViewerAtsAttributeValueColumn {
          throw new OseeArgumentException("Artifact must be an Action instead of [%s]", actionArt.getArtifactTypeName());
       }
       ChangeType changeType = null;
-      Collection<TeamWorkFlowArtifact> teamArts = ActionManager.getTeamWorkFlowArtifacts(actionArt);
+      Collection<TeamWorkFlowArtifact> teamArts = ActionManager.getTeams(actionArt);
       if (teamArts.size() == 1) {
          changeType = getChangeType(teamArts.iterator().next());
       } else {

@@ -18,7 +18,6 @@ import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.artifact.AbstractAtsArtifact;
 import org.eclipse.osee.ats.artifact.AbstractReviewArtifact;
 import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
@@ -26,6 +25,7 @@ import org.eclipse.osee.ats.config.AtsBulkLoad;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
@@ -33,7 +33,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
@@ -145,13 +144,13 @@ public class ActionHyperView extends HyperView implements IActionable, IArtifact
          }
          boolean reviewsCreated = false;
          tasksReviewsCreated = false;
-         AbstractAtsArtifact topArt = getTopArtifact(currentArtifact);
+         Artifact topArt = getTopArtifact(currentArtifact);
          if (topArt == null || topArt.isDeleted()) {
             return;
          }
          ActionHyperItem topAHI = new ActionHyperItem(topArt);
-         if (topArt instanceof ActionArtifact) {
-            for (TeamWorkFlowArtifact team : ((ActionArtifact) topArt).getTeamWorkFlowArtifacts()) {
+         if (ActionManager.isOfTypeAction(topArt)) {
+            for (TeamWorkFlowArtifact team : ActionManager.getTeams(topArt)) {
                ActionHyperItem teamAHI = new ActionHyperItem(team);
                teamAHI.setRelationToolTip("Team");
                topAHI.addBottom(teamAHI);
@@ -170,8 +169,8 @@ public class ActionHyperView extends HyperView implements IActionable, IArtifact
             for (Artifact member : topArt.getRelatedArtifacts(AtsRelationTypes.Goal_Member)) {
                if (member instanceof TaskArtifact) {
                   taskArts.add((TaskArtifact) member);
-               } else if (member instanceof IATSArtifact) {
-                  ActionHyperItem teamAHI = new ActionHyperItem((IATSArtifact) member);
+               } else if (AtsUtil.isAtsArtifact(member)) {
+                  ActionHyperItem teamAHI = new ActionHyperItem(member);
                   teamAHI.setRelationToolTip("Member");
                   topAHI.addBottom(teamAHI);
                }
@@ -209,8 +208,8 @@ public class ActionHyperView extends HyperView implements IActionable, IArtifact
       }
    }
 
-   public AbstractAtsArtifact getTopArtifact(AbstractAtsArtifact art) throws OseeCoreException {
-      AbstractAtsArtifact artifact = art;
+   public Artifact getTopArtifact(AbstractAtsArtifact art) throws OseeCoreException {
+      Artifact artifact = art;
       if (artifact instanceof TaskArtifact) {
          artifact = ((TaskArtifact) artifact).getParentSMA();
       }

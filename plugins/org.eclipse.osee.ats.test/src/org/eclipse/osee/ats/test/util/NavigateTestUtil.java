@@ -13,14 +13,15 @@ package org.eclipse.osee.ats.test.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Level;
-import org.junit.Assert;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.navigate.AtsNavigateViewItems;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.swt.widgets.TreeItem;
+import org.junit.Assert;
 
 /**
  * @author Donald G. Dunne
@@ -101,6 +102,14 @@ public final class NavigateTestUtil {
       compare(expectedNumOfType, actualNumOfType, expectedStr);
    }
 
+   public static void testExpectedVersusActual(String name, Collection<? extends Artifact> arts, IArtifactType artType, int expectedNumOfType) {
+      int actualNumOfType = numOfType(arts, artType);
+      String expectedStr =
+         String.format("\"%s\"   Expected: %s   Found: %s   Of Type: %s", name, expectedNumOfType, actualNumOfType,
+            artType);
+      compare(expectedNumOfType, actualNumOfType, expectedStr);
+   }
+
    public static void testExpectedVersusActual(String testStr, int expected, int actual) {
       String expectedStr = String.format("%sExpected: %s   Found: %s", testStr, expected, actual);
       compare(expected, actual, expectedStr);
@@ -133,6 +142,16 @@ public final class NavigateTestUtil {
       int num = 0;
       for (Artifact art : arts) {
          if (clazz.isAssignableFrom(art.getClass())) {
+            num++;
+         }
+      }
+      return num;
+   }
+
+   public static int numOfType(Collection<? extends Artifact> arts, IArtifactType artType) {
+      int num = 0;
+      for (Artifact art : arts) {
+         if (art.isOfType(artType)) {
             num++;
          }
       }

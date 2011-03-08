@@ -14,12 +14,13 @@ import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.swt.SWT;
 
 public class OriginatingWorkFlowColumn extends XViewerAtsColumn implements IXViewerValueColumn {
@@ -50,8 +51,8 @@ public class OriginatingWorkFlowColumn extends XViewerAtsColumn implements IXVie
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
-         if (element instanceof ActionArtifact) {
-            getWorldViewOriginatingWorkflowStr((ActionArtifact) element);
+         if (ActionManager.isOfTypeAction(element)) {
+            getWorldViewOriginatingWorkflowStr((Artifact) element);
          }
          if (element instanceof AbstractWorkflowArtifact) {
             return getColumnText(((AbstractWorkflowArtifact) element).getParentActionArtifact(), column, columnIndex);
@@ -62,7 +63,7 @@ public class OriginatingWorkFlowColumn extends XViewerAtsColumn implements IXVie
       return "";
    }
 
-   public static String getWorldViewOriginatingWorkflowStr(ActionArtifact actionArt) throws OseeCoreException {
+   public static String getWorldViewOriginatingWorkflowStr(Artifact actionArt) throws OseeCoreException {
       Set<String> strs = new HashSet<String>();
       for (TeamWorkFlowArtifact team : getWorldViewOriginatingWorkflows(actionArt)) {
          strs.add(TeamColumn.getName(team));
@@ -70,13 +71,13 @@ public class OriginatingWorkFlowColumn extends XViewerAtsColumn implements IXVie
       return Collections.toString(";", strs);
    }
 
-   public static Collection<TeamWorkFlowArtifact> getWorldViewOriginatingWorkflows(ActionArtifact actionArt) throws OseeCoreException {
-      if (actionArt.getTeamWorkFlowArtifacts().size() == 1) {
-         return actionArt.getTeamWorkFlowArtifacts();
+   public static Collection<TeamWorkFlowArtifact> getWorldViewOriginatingWorkflows(Artifact actionArt) throws OseeCoreException {
+      if (ActionManager.getTeams(actionArt).size() == 1) {
+         return ActionManager.getTeams(actionArt);
       }
       Collection<TeamWorkFlowArtifact> results = new ArrayList<TeamWorkFlowArtifact>();
       Date origDate = null;
-      for (TeamWorkFlowArtifact teamArt : actionArt.getTeamWorkFlowArtifacts()) {
+      for (TeamWorkFlowArtifact teamArt : ActionManager.getTeams(actionArt)) {
          if (teamArt.isCancelled()) {
             continue;
          }
@@ -91,5 +92,4 @@ public class OriginatingWorkFlowColumn extends XViewerAtsColumn implements IXVie
       }
       return results;
    }
-
 }

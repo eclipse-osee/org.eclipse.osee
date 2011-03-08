@@ -19,7 +19,6 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowManager;
@@ -153,14 +152,14 @@ public class PopulateDemoActions extends XNavigateItemAction {
          // Create SAW_Bld_2 Actions
          SkynetTransaction sawActionsTransaction =
             new SkynetTransaction(AtsUtil.getAtsBranch(), "Populate Demo DB - Create Actions");
-         Set<ActionArtifact> actionArts =
+         Set<Artifact> actionArts =
             createActions(DemoDbActionData.getReqSawActionsData(), DemoSawBuilds.SAW_Bld_2.toString(), null,
                sawActionsTransaction);
          sawActionsTransaction.execute();
          // Sleep to wait for the persist of the actions
          DemoDbUtil.sleep(3000);
 
-         for (ActionArtifact actionArt : actionArts) {
+         for (Artifact actionArt : actionArts) {
             if (actionArt.getName().contains("(committed)")) {
                // Working Branch off SAW_Bld_2, Make Changes, Commit
                makeAction1ReqChanges(actionArt);
@@ -224,10 +223,10 @@ public class PopulateDemoActions extends XNavigateItemAction {
       }
    }
 
-   private void makeAction1ReqChanges(ActionArtifact actionArt) throws OseeCoreException {
+   private void makeAction1ReqChanges(Artifact actionArt) throws OseeCoreException {
       OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Making Action 1 Requirement Changes");
       TeamWorkFlowArtifact reqTeam = null;
-      for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts()) {
+      for (TeamWorkFlowArtifact team : ActionManager.getTeams(actionArt)) {
          if (team.getTeamDefinition().getName().contains("Req")) {
             reqTeam = team;
          }
@@ -302,9 +301,9 @@ public class PopulateDemoActions extends XNavigateItemAction {
       OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Completing Action");
    }
 
-   private void makeAction3ReqChanges(ActionArtifact actionArt) throws Exception {
+   private void makeAction3ReqChanges(Artifact actionArt) throws Exception {
       TeamWorkFlowArtifact reqTeam = null;
-      for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts()) {
+      for (TeamWorkFlowArtifact team : ActionManager.getTeams(actionArt)) {
          if (team.getTeamDefinition().getName().contains("Req")) {
             reqTeam = team;
          }
@@ -347,9 +346,9 @@ public class PopulateDemoActions extends XNavigateItemAction {
 
    }
 
-   private void makeAction2ReqChanges(ActionArtifact actionArt) throws Exception {
+   private void makeAction2ReqChanges(Artifact actionArt) throws Exception {
       TeamWorkFlowArtifact reqTeam = null;
-      for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts()) {
+      for (TeamWorkFlowArtifact team : ActionManager.getTeams(actionArt)) {
          if (team.getTeamDefinition().getName().contains("Req")) {
             reqTeam = team;
          }
@@ -418,8 +417,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
       transaction.execute();
    }
 
-   private Set<ActionArtifact> createActions(Set<DemoDbActionData> actionDatas, String versionStr, TeamState toStateOverride, SkynetTransaction transaction) throws Exception {
-      Set<ActionArtifact> actionArts = new HashSet<ActionArtifact>();
+   private Set<Artifact> createActions(Set<DemoDbActionData> actionDatas, String versionStr, TeamState toStateOverride, SkynetTransaction transaction) throws Exception {
+      Set<Artifact> actionArts = new HashSet<Artifact>();
       int currNum = 1;
       for (DemoDbActionData aData : actionDatas) {
          OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Creating " + currNum++ + "/" + actionDatas.size());
@@ -428,12 +427,12 @@ public class PopulateDemoActions extends XNavigateItemAction {
          User createdBy = UserManager.getUser();
 
          for (String prefixTitle : aData.prefixTitles) {
-            ActionArtifact actionArt =
+            Artifact actionArt =
                ActionManager.createAction(null, prefixTitle + " " + aData.postFixTitle,
                   TITLE_PREFIX[x] + " " + aData.postFixTitle, CHANGE_TYPE[x], "1", false, null,
                   aData.getActionableItems(), createdDate, createdBy, null, transaction);
             actionArts.add(actionArt);
-            for (TeamWorkFlowArtifact teamWf : actionArt.getTeamWorkFlowArtifacts()) {
+            for (TeamWorkFlowArtifact teamWf : ActionManager.getTeams(actionArt)) {
                TeamWorkflowManager dtwm = new TeamWorkflowManager(teamWf);
                // Add validation required flag if Decision review is required
                if (aData.getCreateReviews().length > 0) {

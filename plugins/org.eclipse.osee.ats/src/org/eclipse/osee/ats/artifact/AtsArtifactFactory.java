@@ -32,9 +32,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 public class AtsArtifactFactory extends ArtifactFactory {
 
    public AtsArtifactFactory() {
-      super(AtsArtifactTypes.Action, AtsArtifactTypes.PeerToPeerReview, AtsArtifactTypes.DecisionReview,
-         AtsArtifactTypes.ActionableItem, AtsArtifactTypes.Task, AtsArtifactTypes.TeamWorkflow,
-         AtsArtifactTypes.TeamDefinition, AtsArtifactTypes.Version, AtsArtifactTypes.Goal);
+      super(AtsArtifactTypes.PeerToPeerReview, AtsArtifactTypes.DecisionReview, AtsArtifactTypes.ActionableItem,
+         AtsArtifactTypes.Task, AtsArtifactTypes.TeamWorkflow, AtsArtifactTypes.TeamDefinition,
+         AtsArtifactTypes.Version, AtsArtifactTypes.Goal);
       for (ITeamWorkflowProvider atsTeamWorkflow : TeamWorkflowProviders.getAtsTeamWorkflowExtensions()) {
          try {
             for (IArtifactType teamWorkflowTypeName : atsTeamWorkflow.getTeamWorkflowArtifactTypes()) {
@@ -48,9 +48,7 @@ public class AtsArtifactFactory extends ArtifactFactory {
 
    @Override
    public Artifact getArtifactInstance(String guid, String humandReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
-      if (artifactType.equals(AtsArtifactTypes.Action)) {
-         return new ActionArtifact(this, guid, humandReadableId, branch, artifactType);
-      } else if (artifactType.equals(AtsArtifactTypes.Task)) {
+      if (artifactType.equals(AtsArtifactTypes.Task)) {
          return new TaskArtifact(this, guid, humandReadableId, branch, artifactType);
       } else if (artifactType.equals(AtsArtifactTypes.TeamWorkflow)) {
          return new TeamWorkFlowArtifact(this, guid, humandReadableId, branch, artifactType);

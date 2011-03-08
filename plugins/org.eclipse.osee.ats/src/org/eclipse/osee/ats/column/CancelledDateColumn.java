@@ -12,9 +12,9 @@ import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -60,8 +60,8 @@ public class CancelledDateColumn extends XViewerAtsColumn implements IXViewerVal
    }
 
    public static Date getDate(Object object) throws OseeCoreException {
-      if (object instanceof ActionArtifact) {
-         getDate(((ActionArtifact) object).getTeamWorkFlowArtifacts().iterator().next());
+      if (ActionManager.isOfTypeAction(object)) {
+         getDate(ActionManager.getFirstTeam(object));
       } else if (object instanceof AbstractWorkflowArtifact) {
          AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) object;
          if (((AbstractWorkflowArtifact) object).isCancelled()) {
@@ -77,9 +77,9 @@ public class CancelledDateColumn extends XViewerAtsColumn implements IXViewerVal
    }
 
    public static String getDateStr(Object object) throws OseeCoreException {
-      if (object instanceof ActionArtifact) {
+      if (ActionManager.isOfTypeAction(object)) {
          Set<String> strs = new HashSet<String>();
-         for (TeamWorkFlowArtifact team : ((ActionArtifact) object).getTeamWorkFlowArtifacts()) {
+         for (TeamWorkFlowArtifact team : ActionManager.getTeams(object)) {
             String str = getDateStr(team);
             if (Strings.isValid(str)) {
                strs.add(str);
@@ -89,5 +89,4 @@ public class CancelledDateColumn extends XViewerAtsColumn implements IXViewerVal
       }
       return DateUtil.getMMDDYYHHMM(getDate(object));
    }
-
 }

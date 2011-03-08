@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.config.AtsCacheManager;
@@ -144,7 +143,7 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
       if (selectedShowAction) {
          Set<Artifact> arts = new HashSet<Artifact>();
          for (Artifact art : artifacts) {
-            if (art instanceof ActionArtifact) {
+            if (art.isOfType(AtsArtifactTypes.Action)) {
                arts.add(art);
             } else if (art instanceof AbstractWorkflowArtifact) {
                Artifact parentArt = ((AbstractWorkflowArtifact) art).getParentActionArtifact();

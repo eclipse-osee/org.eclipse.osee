@@ -16,12 +16,12 @@ import java.util.Set;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
@@ -125,7 +125,7 @@ public class NewActionWizard extends Wizard implements INewWizard {
       return ((XDate) page2.getXWidget("Deadline")).getDate();
    }
 
-   public void notifyAtsWizardItemExtensions(ActionArtifact action, SkynetTransaction transaction) {
+   public void notifyAtsWizardItemExtensions(Artifact action, SkynetTransaction transaction) {
       if (page3 != null) {
          page3.notifyAtsWizardItemExtensions(action, transaction);
       }

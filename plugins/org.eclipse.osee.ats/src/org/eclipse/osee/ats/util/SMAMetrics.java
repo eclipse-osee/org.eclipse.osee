@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.artifact.AbstractReviewArtifact;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
@@ -52,7 +51,7 @@ public class SMAMetrics {
    VersionArtifact versionArtifact = null;
    String str = "";
    Set<TeamWorkFlowArtifact> teamArts = new HashSet<TeamWorkFlowArtifact>();
-   Set<ActionArtifact> actionArts = new HashSet<ActionArtifact>();
+   Set<Artifact> actionArts = new HashSet<Artifact>();
    Set<TaskArtifact> taskArts = new HashSet<TaskArtifact>();
    Set<AbstractReviewArtifact> reviewArts = new HashSet<AbstractReviewArtifact>();
    Set<AbstractWorkflowArtifact> smas = new HashSet<AbstractWorkflowArtifact>();
@@ -80,8 +79,8 @@ public class SMAMetrics {
       }
 
       for (Artifact art : resolvedArts) {
-         if (art instanceof ActionArtifact) {
-            actionArts.add((ActionArtifact) art);
+         if (art.isOfType(AtsArtifactTypes.Action)) {
+            actionArts.add(art);
          }
       }
       for (Artifact art : resolvedArts) {
@@ -391,7 +390,7 @@ public class SMAMetrics {
       return teamArts;
    }
 
-   public Set<ActionArtifact> getActionArts() {
+   public Set<Artifact> getActionArts() {
       return actionArts;
    }
 

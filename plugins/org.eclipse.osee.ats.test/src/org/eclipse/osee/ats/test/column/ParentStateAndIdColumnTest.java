@@ -5,8 +5,6 @@
  */
 package org.eclipse.osee.ats.test.column;
 
-import org.junit.Assert;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.column.AssigneeColumn;
@@ -16,8 +14,10 @@ import org.eclipse.osee.ats.test.util.DemoTestUtil;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.TeamState;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.support.test.util.DemoWorkType;
 import org.eclipse.osee.support.test.util.TestUtil;
+import org.junit.Assert;
 
 /**
  * @tests ParentStateColumn
@@ -32,7 +32,7 @@ public class ParentStateAndIdColumnTest {
 
       TeamWorkFlowArtifact codeArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Code);
-      ActionArtifact actionArt = codeArt.getParentActionArtifact();
+      Artifact actionArt = codeArt.getParentActionArtifact();
 
       Assert.assertEquals("", ParentStateColumn.getInstance().getColumnText(codeArt, AssigneeColumn.getInstance(), 0));
       Assert.assertEquals(actionArt.getHumanReadableId(),

@@ -10,19 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.artifact;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import org.eclipse.osee.ats.util.Overview;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
-import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 
 public abstract class AbstractAtsArtifact extends Artifact implements IATSArtifact {
 
@@ -34,27 +28,10 @@ public abstract class AbstractAtsArtifact extends Artifact implements IATSArtifa
       return Overview.getOpenHyperlinkHtml(this);
    }
 
-   /**
-    * Recursively retrieve artifacts and all its ATS related artifacts such as tasks, notes, subscriptions, etc... for
-    * deletion
-    */
-   public void atsDelete(Set<Artifact> deleteArts, Map<Artifact, Object> allRelated) throws OseeCoreException {
-      deleteArts.add(this);
-      for (Artifact relative : getBSideArtifacts()) {
-         allRelated.put(relative, this);
-      }
+   @SuppressWarnings("unused")
+   @Override
+   public Artifact getParentAtsArtifact() throws OseeCoreException {
+      return null;
    }
 
-   private List<Artifact> getBSideArtifacts() throws OseeCoreException {
-      List<Artifact> sideBArtifacts = new ArrayList<Artifact>();
-      List<RelationLink> relatives = getRelationsAll(DeletionFlag.EXCLUDE_DELETED);
-      for (RelationLink link : relatives) {
-         Artifact sideB = link.getArtifactB();
-         if (!sideB.equals(this)) {
-            sideBArtifacts.add(sideB);
-         }
-      }
-
-      return sideBArtifacts;
-   }
 }

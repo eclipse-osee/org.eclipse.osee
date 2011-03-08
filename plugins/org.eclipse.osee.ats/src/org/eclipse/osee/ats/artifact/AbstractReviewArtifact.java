@@ -182,7 +182,7 @@ public abstract class AbstractReviewArtifact extends AbstractTaskableArtifact {
    }
 
    @Override
-   public ActionArtifact getParentActionArtifact() throws OseeCoreException {
+   public Artifact getParentActionArtifact() throws OseeCoreException {
       if (isStandAloneReview()) {
          return null;
       }

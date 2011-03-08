@@ -19,13 +19,13 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsOpenOption;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
@@ -42,7 +42,7 @@ public class NewActionJob extends Job {
    private final String priority;
    private final Date needByDate;
    private final boolean validationRequired;
-   private ActionArtifact actionArt;
+   private Artifact actionArt;
    private final Set<ActionableItemArtifact> actionableItems;
    private final NewActionWizard wizard;
    private final INewActionListener newActionListener;
@@ -108,7 +108,7 @@ public class NewActionJob extends Job {
       this.saveIt = saveIt;
    }
 
-   public ActionArtifact getActionArt() {
+   public Artifact getActionArt() {
       return actionArt;
    }
 

@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.Date;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
@@ -30,6 +29,7 @@ import org.eclipse.osee.ats.world.WorldEditorSimpleProvider;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
@@ -94,9 +94,10 @@ public class CreateGoalTestArtifacts extends XNavigateItemAction {
    }
 
    private void createAction7(SkynetTransaction transaction, GoalArtifact msaGoal) throws OseeCoreException {
-      ActionArtifact action =
+      Artifact action =
          ActionManager.createAction(null, "Add the Improvement", "Description", ChangeType.Improvement, "4", false,
-            null, ActionableItemArtifact.getActionableItems(Arrays.asList("REQ")), createdDate, createdBy, null, transaction);
+            null, ActionableItemArtifact.getActionableItems(Arrays.asList("REQ")), createdDate, createdBy, null,
+            transaction);
       action.persist(transaction);
       msaGoal.addMember(action);
       msaGoal.persist(transaction);
@@ -104,13 +105,13 @@ public class CreateGoalTestArtifacts extends XNavigateItemAction {
 
    private TeamWorkFlowArtifact createAction456(SkynetTransaction transaction, GoalArtifact oteGoal, GoalArtifact msaGoal, TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       for (String msaTool : Arrays.asList("TRAX", "REQ", "RCS")) {
-         ActionArtifact action =
+         Artifact action =
             ActionManager.createAction(null, "Fix " + msaTool + " button", "Description", ChangeType.Problem, "4",
                false, null, ActionableItemArtifact.getActionableItems(Arrays.asList(msaTool)), createdDate, createdBy,
                null, transaction);
          action.persist(transaction);
-         msaGoal.addMember(action.getTeamWorkFlowArtifacts().iterator().next());
-         teamArt = action.getTeamWorkFlowArtifacts().iterator().next();
+         msaGoal.addMember(ActionManager.getFirstTeam(action));
+         teamArt = ActionManager.getFirstTeam(action);
          TaskArtifact taskArt = teamArt.createNewTask("Task 1", createdDate, createdBy);
          oteGoal.addMember(taskArt);
          taskArt.persist(transaction);
@@ -122,36 +123,37 @@ public class CreateGoalTestArtifacts extends XNavigateItemAction {
    }
 
    private void createAction3(SkynetTransaction transaction, GoalArtifact atsGoal, GoalArtifact cdbGoal) throws OseeCoreException {
-      ActionArtifact action =
+      Artifact action =
          ActionManager.createAction(null, "Remove Workflow button", "Description", ChangeType.Problem, "4", false,
-            null, ActionableItemArtifact.getActionableItems(Arrays.asList("ATS", "CDB")), createdDate, createdBy,
-            null, transaction);
+            null, ActionableItemArtifact.getActionableItems(Arrays.asList("ATS", "CDB")), createdDate, createdBy, null,
+            transaction);
       action.persist(transaction);
-      atsGoal.addMember(action.getTeamWorkFlowArtifacts().iterator().next());
-      cdbGoal.addMember(action.getTeamWorkFlowArtifacts().iterator().next());
-      action.getTeamWorkFlowArtifacts().iterator().next().persist(transaction);
+      atsGoal.addMember(ActionManager.getFirstTeam(action));
+      cdbGoal.addMember(ActionManager.getFirstTeam(action));
+      ActionManager.getFirstTeam(action).persist(transaction);
    }
 
    private void createAction2(SkynetTransaction transaction, GoalArtifact oteGoal, GoalArtifact cdbGoal) throws OseeCoreException {
-      ActionArtifact action =
+      Artifact action =
          ActionManager.createAction(null, "Add CDB Check Signals", "Description", ChangeType.Problem, "4", false, null,
-            ActionableItemArtifact.getActionableItems(Arrays.asList("OTE_SW", "CDB")), createdDate, createdBy,
-            null, transaction);
+            ActionableItemArtifact.getActionableItems(Arrays.asList("OTE_SW", "CDB")), createdDate, createdBy, null,
+            transaction);
       action.persist(transaction);
-      oteGoal.addMember(action.getTeamWorkFlowArtifacts().iterator().next());
-      cdbGoal.addMember(action.getTeamWorkFlowArtifacts().iterator().next());
-      for (TeamWorkFlowArtifact teamArt2 : action.getTeamWorkFlowArtifacts()) {
+      oteGoal.addMember(ActionManager.getFirstTeam(action));
+      cdbGoal.addMember(ActionManager.getFirstTeam(action));
+      for (TeamWorkFlowArtifact teamArt2 : ActionManager.getTeams(action)) {
          teamArt2.persist(transaction);
       }
    }
 
    private TeamWorkFlowArtifact createAction1(SkynetTransaction transaction, GoalArtifact oteGoal) throws OseeCoreException {
-      ActionArtifact action =
+      Artifact action =
          ActionManager.createAction(null, "Fix this model", "Description", ChangeType.Problem, "2", false, null,
-            ActionableItemArtifact.getActionableItems(Arrays.asList("OTE_SW")), createdDate, createdBy, null, transaction);
+            ActionableItemArtifact.getActionableItems(Arrays.asList("OTE_SW")), createdDate, createdBy, null,
+            transaction);
       action.persist(transaction);
-      oteGoal.addMember(action.getTeamWorkFlowArtifacts().iterator().next());
-      TeamWorkFlowArtifact teamArt = action.getTeamWorkFlowArtifacts().iterator().next();
+      oteGoal.addMember(ActionManager.getFirstTeam(action));
+      TeamWorkFlowArtifact teamArt = ActionManager.getFirstTeam(action);
       PeerToPeerReviewArtifact peerReviewArt =
          ReviewManager.createNewPeerToPeerReview(teamArt, "New Review", "Implement", transaction);
       oteGoal.addMember(peerReviewArt);

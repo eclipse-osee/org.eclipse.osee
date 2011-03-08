@@ -5,16 +5,16 @@
  */
 package org.eclipse.osee.ats.actions.wizard;
 
-import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 public interface INewActionListener {
 
    /**
     * Called after Action and team workflows are created and before persist of Action
     */
-   public void actionCreated(ActionArtifact actionArt) throws OseeCoreException;
+   public void actionCreated(Artifact actionArt) throws OseeCoreException;
 
    /**
     * Called after team workflow and initialized and before persist of Action

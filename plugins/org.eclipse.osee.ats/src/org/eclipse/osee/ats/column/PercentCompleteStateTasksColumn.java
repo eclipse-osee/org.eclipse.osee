@@ -68,7 +68,7 @@ public class PercentCompleteStateTasksColumn extends XViewerAtsColumn implements
    public static int getPercentCompleteFromStateTasks(Artifact artifact) throws OseeCoreException {
       if (artifact.isOfType(AtsArtifactTypes.Action)) {
          double percent = 0;
-         for (TeamWorkFlowArtifact team : ActionManager.getTeamWorkFlowArtifacts(artifact)) {
+         for (TeamWorkFlowArtifact team : ActionManager.getTeams(artifact)) {
             if (!team.isCancelled()) {
                percent += getPercentCompleteFromStateTasks(team);
             }
@@ -76,7 +76,7 @@ public class PercentCompleteStateTasksColumn extends XViewerAtsColumn implements
          if (percent == 0) {
             return 0;
          }
-         Double rollPercent = percent / ActionManager.getTeamWorkFlowArtifacts(artifact).size();
+         Double rollPercent = percent / ActionManager.getTeams(artifact).size();
          return rollPercent.intValue();
       }
       if (artifact instanceof AbstractTaskableArtifact) {

@@ -94,9 +94,9 @@ public class SMAActionableItemHeader extends Composite {
             label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
          } else {
             StringBuffer sb = new StringBuffer(teamWf.getActionableItemsDam().getActionableItemsStr());
-            if (teamWf.getParentActionArtifact().getTeamWorkFlowArtifacts().size() > 1) {
+            if (ActionManager.getTeams(teamWf.getParentActionArtifact()).size() > 1) {
                sb.append("         Other: ");
-               for (TeamWorkFlowArtifact workflow : teamWf.getParentActionArtifact().getTeamWorkFlowArtifacts()) {
+               for (TeamWorkFlowArtifact workflow : ActionManager.getTeams(teamWf.getParentActionArtifact())) {
                   if (!workflow.equals(teamWf)) {
                      sb.append(workflow.getActionableItemsDam().getActionableItemsStr());
                      sb.append(", ");
