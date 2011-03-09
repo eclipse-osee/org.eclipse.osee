@@ -54,7 +54,8 @@ public class CoverageUtil {
 
    public static boolean getBranchFromUser(boolean force) throws OseeCoreException {
       if (force || CoverageUtil.getBranch() == null) {
-         Collection<Branch> branches = BranchManager.getBranches(BranchArchivedState.UNARCHIVED, BranchType.WORKING);
+         Collection<Branch> branches =
+            BranchManager.getBranches(BranchArchivedState.UNARCHIVED, BranchType.WORKING, BranchType.BASELINE);
          if (isAdmin() && !isProductionDb()) {
             try {
                branches.add(BranchManager.getBranch("SAW_Bld_1"));
