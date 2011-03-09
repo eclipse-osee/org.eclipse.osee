@@ -15,6 +15,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
@@ -41,14 +42,15 @@ public class FrameworkArtifactImageProvider extends ArtifactImageProvider {
    }
 
    @Override
-   public String setupImage(Artifact artifact) throws OseeCoreException {
-      if (artifact.isDeleted()) {
+   public String setupImage(IArtifact artifact) throws OseeCoreException {
+      Artifact aArtifact = artifact.getFullArtifact();
+      if (aArtifact.isDeleted()) {
          return null;
-      } else if (((User) artifact).isSystemUser()) {
+      } else if (((User) aArtifact).isSystemUser()) {
          return ImageManager.setupImage(FrameworkImage.USER_GREY);
-      } else if (!((User) artifact).isActive()) {
+      } else if (!((User) aArtifact).isActive()) {
          return ImageManager.setupImage(FrameworkImage.USER_YELLOW);
-      } else if (((User) artifact).equals(UserManager.getUser())) {
+      } else if (((User) aArtifact).equals(UserManager.getUser())) {
          return ImageManager.setupImage(FrameworkImage.USER_RED);
       }
 
