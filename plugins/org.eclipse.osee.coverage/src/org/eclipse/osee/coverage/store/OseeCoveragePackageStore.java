@@ -39,6 +39,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -237,7 +238,7 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
          transaction.execute();
          CoverageEventManager.getInstance().sendRemoteEvent(coverageEvent);
       } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          return new Result("Save Failed: " + ex.getLocalizedMessage());
       }
       return Result.TrueResult;
