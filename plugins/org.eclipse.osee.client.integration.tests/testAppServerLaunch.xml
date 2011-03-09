@@ -91,6 +91,7 @@
 					<fileset dir="${osee.app.server.home}/plugins" includes="org.eclipse.equinox.launcher_*.jar" />
 					<pathelement location="${osee.app.server.home}/plugins" />
 				</classpath>
+				<jvmarg line=" -Dosgi.noShutdown=true" />
 				<jvmarg line=" -Dorg.osgi.service.http.port=${osee.app.server.port}" />
 				<jvmarg line=" -Dosee.db.connection.id=${osee.app.server.connectionId}" />
 				<jvmarg line=" -Dosee.connection.info.uri=${osee.app.server.connectionFile}" />
