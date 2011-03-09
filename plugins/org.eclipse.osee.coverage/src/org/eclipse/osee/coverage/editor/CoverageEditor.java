@@ -107,19 +107,15 @@ public class CoverageEditor extends FormEditor implements IActionable {
          @SuppressWarnings("unused")
          Collection<Artifact> artifactLoadCache = null;
          if (getCoverageEditorInput().getCoveragePackageArtifact() != null) {
-            try {
                //               ElapsedTime elapsedTime = new ElapsedTime("Coverage - bulk load");
-               artifactLoadCache =
-                  RelationManager.getRelatedArtifacts(
-                     Collections.singleton(getCoverageEditorInput().getCoveragePackageArtifact()), 8,
-                     CoreRelationTypes.Default_Hierarchical__Child);
-               // TODO Need to bulk load binary attributes also; Some Coverage Items are binary attributes
-               // that are not bulk loaded with attributes.  This was mitigated by moving test units to seperate table
-               // and only referencing their ids in Coverage Items.
+            artifactLoadCache =
+               RelationManager.getRelatedArtifacts(
+                  Collections.singleton(getCoverageEditorInput().getCoveragePackageArtifact()), 8,
+                  CoreRelationTypes.Default_Hierarchical__Child);
+            // TODO Need to bulk load binary attributes also; Some Coverage Items are binary attributes
+            // that are not bulk loaded with attributes.  This was mitigated by moving test units to separate table
+            // and only referencing their ids in Coverage Items.
                //               elapsedTime.end();
-            } catch (OseeCoreException ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, ex);
-            }
          }
          if (getCoverageEditorInput().getCoveragePackageArtifact() != null) {
             //            ElapsedTime elapsedTime = new ElapsedTime("Coverage - load model");
