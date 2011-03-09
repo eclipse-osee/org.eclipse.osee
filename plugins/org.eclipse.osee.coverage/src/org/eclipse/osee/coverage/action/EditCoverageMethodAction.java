@@ -21,7 +21,7 @@ import org.eclipse.osee.coverage.model.CoverageOption;
 import org.eclipse.osee.coverage.model.CoverageOptionManager.EnabledOption;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.util.ISaveable;
-import org.eclipse.osee.coverage.util.dialog.CoverageMethodListDialog;
+import org.eclipse.osee.coverage.util.dialog.CoverageMethodSingleSelectListDialog;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -78,13 +78,13 @@ public class EditCoverageMethodAction extends Action {
          return;
       }
 
-      CoverageMethodListDialog dialog =
-         new CoverageMethodListDialog(coverageXViewer.getCoverageOptionManager().getEnabled(EnabledOption.Write));
+      CoverageMethodSingleSelectListDialog dialog =
+         new CoverageMethodSingleSelectListDialog(coverageXViewer.getCoverageOptionManager(), EnabledOption.Write);
       if (dialog.open() == 0) {
          Set<ICoverage> coveragesToSave = new HashSet<ICoverage>();
          for (ICoverage coverageItem : selectedCoverageEditorItem.getSelectedCoverageEditorItems()) {
             if (coverageItem instanceof CoverageItem) {
-               ((CoverageItem) coverageItem).setCoverageMethod((CoverageOption) dialog.getFirstResult());
+               ((CoverageItem) coverageItem).setCoverageMethod((CoverageOption) dialog.getResult()[0]);
                refreshable.update(coverageItem);
                coveragesToSave.add(coverageItem);
             }
