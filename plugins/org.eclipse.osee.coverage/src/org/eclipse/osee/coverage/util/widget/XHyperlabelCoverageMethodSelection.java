@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import org.eclipse.osee.coverage.model.CoverageOption;
 import org.eclipse.osee.coverage.model.CoverageOptionManager;
+import org.eclipse.osee.coverage.model.CoverageOptionManager.EnabledOption;
 import org.eclipse.osee.coverage.util.dialog.CoverageMethodListDialog;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -65,7 +66,8 @@ public class XHyperlabelCoverageMethodSelection extends XHyperlinkLabelCmdValueS
    @Override
    public boolean handleSelection() {
       try {
-         dialog = new CoverageMethodListDialog(coverageOptionManager.getEnabled(), selectedCoverageMethods);
+         dialog =
+            new CoverageMethodListDialog(coverageOptionManager.getEnabled(EnabledOption.Read), selectedCoverageMethods);
          int result = dialog.open();
          if (result == 0) {
             selectedCoverageMethods.clear();

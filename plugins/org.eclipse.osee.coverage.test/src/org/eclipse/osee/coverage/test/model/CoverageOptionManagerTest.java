@@ -12,6 +12,7 @@ package org.eclipse.osee.coverage.test.model;
 
 import org.eclipse.osee.coverage.model.CoverageOption;
 import org.eclipse.osee.coverage.model.CoverageOptionManager;
+import org.eclipse.osee.coverage.model.CoverageOptionManager.EnabledOption;
 import org.eclipse.osee.coverage.model.CoverageOptionManagerDefault;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.junit.Assert;
@@ -29,7 +30,8 @@ public class CoverageOptionManagerTest {
       manager.add(new CoverageOption("New_One", "This is the description", false));
 
       Assert.assertEquals(2, manager.get().size());
-      Assert.assertEquals(1, manager.getEnabled().size());
+      Assert.assertEquals(1, manager.getEnabled(EnabledOption.Write).size());
+      Assert.assertEquals(2, manager.getEnabled(EnabledOption.Read).size());
       try {
          manager.add(new CoverageOption("New_One", "Another descr", true));
          Assert.fail("This should not be allowed");
@@ -41,7 +43,8 @@ public class CoverageOptionManagerTest {
       CoverageOptionManager newManager = new CoverageOptionManager(xml);
 
       Assert.assertEquals(2, newManager.get().size());
-      Assert.assertEquals(1, newManager.getEnabled().size());
+      Assert.assertEquals(1, manager.getEnabled(EnabledOption.Write).size());
+      Assert.assertEquals(2, manager.getEnabled(EnabledOption.Read).size());
       try {
          manager.add(new CoverageOption("New_One", "Another descr", true));
          Assert.fail("This should not be allowed");

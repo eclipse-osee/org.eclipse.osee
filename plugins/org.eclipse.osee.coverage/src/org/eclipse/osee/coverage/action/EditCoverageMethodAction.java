@@ -18,6 +18,7 @@ import org.eclipse.osee.coverage.editor.xcover.CoverageXViewer;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageOption;
+import org.eclipse.osee.coverage.model.CoverageOptionManager.EnabledOption;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.coverage.util.dialog.CoverageMethodListDialog;
@@ -78,7 +79,7 @@ public class EditCoverageMethodAction extends Action {
       }
 
       CoverageMethodListDialog dialog =
-         new CoverageMethodListDialog(coverageXViewer.getCoverageOptionManager().getEnabled());
+         new CoverageMethodListDialog(coverageXViewer.getCoverageOptionManager().getEnabled(EnabledOption.Write));
       if (dialog.open() == 0) {
          Set<ICoverage> coveragesToSave = new HashSet<ICoverage>();
          for (ICoverage coverageItem : selectedCoverageEditorItem.getSelectedCoverageEditorItems()) {

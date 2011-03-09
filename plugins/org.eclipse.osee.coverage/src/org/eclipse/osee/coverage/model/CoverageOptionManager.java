@@ -37,6 +37,10 @@ public class CoverageOptionManager {
    public static CoverageOption Exception_Handling = new CoverageOption("Exception_Handling");
    public static CoverageOption Test_Unit = new CoverageOption("Test_Unit");
    public static CoverageOption Not_Covered = new CoverageOption("Not_Covered");
+   public static enum EnabledOption {
+      Write,
+      Read
+   }
 
    public CoverageOptionManager(List<CoverageOption> options) {
       this.options = options;
@@ -50,10 +54,19 @@ public class CoverageOptionManager {
       fromXml(xml);
    }
 
-   public Collection<CoverageOption> getEnabled() {
+   /**
+    * Return valid options. If Read, all values returned. This handles the search use case where wouldn't want to set
+    * values, but would want to search them. If Write, only enabled values are returned.
+    * 
+    * @param enabledOption
+    * @return
+    */
+   public Collection<CoverageOption> getEnabled(EnabledOption enabledOption) {
       List<CoverageOption> enabled = new ArrayList<CoverageOption>();
       for (CoverageOption option : options) {
-         if (option.isEnabled()) {
+         if (enabledOption == EnabledOption.Read) {
+            enabled.add(option);
+         } else if (enabledOption == EnabledOption.Write && option.isEnabled()) {
             enabled.add(option);
          }
       }
