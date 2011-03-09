@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.WordWholeDocumentAttribute;
 import org.eclipse.osee.framework.skynet.core.linking.LinkType;
 import org.eclipse.osee.framework.skynet.core.linking.WordMlLinkHandler;
+import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
 import org.eclipse.osee.framework.ui.skynet.render.compare.WholeWordCompare;
@@ -67,8 +68,9 @@ public class WholeWordRenderer extends WordRenderer {
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
-      if (!presentationType.matches(GENERALIZED_EDIT, GENERAL_REQUESTED, PRODUCE_ATTRIBUTE) && artifact.isAttributeTypeValid(WholeWordContent)) {
+   public int getApplicabilityRating(PresentationType presentationType, IArtifact artifact) throws OseeCoreException {
+      Artifact aArtifact = artifact.getFullArtifact();
+      if (!presentationType.matches(GENERALIZED_EDIT, GENERAL_REQUESTED, PRODUCE_ATTRIBUTE) && aArtifact.isAttributeTypeValid(WholeWordContent)) {
          return PRESENTATION_SUBTYPE_MATCH;
       }
       return NO_MATCH;

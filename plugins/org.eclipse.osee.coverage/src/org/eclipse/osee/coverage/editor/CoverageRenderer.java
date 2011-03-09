@@ -24,6 +24,7 @@ import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -75,9 +76,10 @@ public class CoverageRenderer extends DefaultArtifactRenderer {
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
-      if (!presentationType.matches(GENERALIZED_EDIT, PRODUCE_ATTRIBUTE) && !artifact.isHistorical()) {
-         if (artifact.isOfType(CoveragePackage, CoverageFolder, CoverageUnit)) {
+   public int getApplicabilityRating(PresentationType presentationType, IArtifact artifact) throws OseeCoreException {
+      Artifact aArtifact = artifact.getFullArtifact();
+      if (!presentationType.matches(GENERALIZED_EDIT, PRODUCE_ATTRIBUTE) && !aArtifact.isHistorical()) {
+         if (aArtifact.isOfType(CoveragePackage, CoverageFolder, CoverageUnit)) {
             return PRESENTATION_SUBTYPE_MATCH;
          }
       }

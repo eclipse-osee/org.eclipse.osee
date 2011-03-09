@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
@@ -33,18 +34,19 @@ public class AtsWorldEditorRenderer extends AtsRenderer {
    private static final String COMMAND_ID = "org.eclipse.osee.framework.ui.skynet.atsworldeditor.command";
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
-      if (artifact.isHistorical() || presentationType.matches(GENERALIZED_EDIT, PRODUCE_ATTRIBUTE)) {
+   public int getApplicabilityRating(PresentationType presentationType, IArtifact artifact) throws OseeCoreException {
+      Artifact aArtifact = artifact.getFullArtifact();
+      if (aArtifact.isHistorical() || presentationType.matches(GENERALIZED_EDIT, PRODUCE_ATTRIBUTE)) {
          return NO_MATCH;
       }
-      if (artifact.isOfType(AtsArtifactTypes.AtsArtifact)) {
+      if (aArtifact.isOfType(AtsArtifactTypes.AtsArtifact)) {
          return PRESENTATION_SUBTYPE_MATCH;
       }
-      if (artifact.isOfType(CoreArtifactTypes.UniversalGroup)) {
-         if (artifact.getRelatedArtifactsCount(CoreRelationTypes.Universal_Grouping__Members) == 0) {
+      if (aArtifact.isOfType(CoreArtifactTypes.UniversalGroup)) {
+         if (aArtifact.getRelatedArtifactsCount(CoreRelationTypes.Universal_Grouping__Members) == 0) {
             return NO_MATCH;
          }
-         for (Artifact childArt : artifact.getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Members)) {
+         for (Artifact childArt : aArtifact.getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Members)) {
             if (childArt.isOfType(AtsArtifactTypes.AtsArtifact)) {
                return PRESENTATION_SUBTYPE_MATCH;
             }

@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
 import org.eclipse.osee.framework.ui.skynet.render.word.AttributeElement;
 import org.eclipse.osee.framework.ui.skynet.render.word.Producer;
@@ -86,7 +87,7 @@ public interface IRenderer {
 
    public void open(List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException;
 
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException;
+   public int getApplicabilityRating(PresentationType presentationType, IArtifact artifact) throws OseeCoreException;
 
    public String getName();
 

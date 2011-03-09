@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
 import org.eclipse.osee.framework.ui.skynet.render.word.template.BasicTemplateAttributeHandler;
 import org.eclipse.osee.framework.ui.skynet.render.word.template.ITemplateAttributeHandler;
@@ -41,8 +42,9 @@ public class TisRenderer extends WordTemplateRenderer {
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
-      if (artifact.isOfType(CoreArtifactTypes.TestInformationSheet) && presentationType.matches(DEFAULT_OPEN, PREVIEW)) {
+   public int getApplicabilityRating(PresentationType presentationType, IArtifact artifact) throws OseeCoreException {
+      if (artifact.getArtifactType().inheritsFrom(CoreArtifactTypes.TestInformationSheet) && presentationType.matches(
+         DEFAULT_OPEN, PREVIEW)) {
          return SPECIALIZED_MATCH;
       }
       return NO_MATCH;
