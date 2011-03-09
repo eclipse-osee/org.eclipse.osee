@@ -119,6 +119,8 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
       coverageEditor.getToolkit().adapt(mainComp);
       mainComp.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
 
+      CoverageEditorCoverageTab.createBranchLabel(coverageEditor, mainComp);
+
       coverageParameters = new CoverageParameters(coveragePackage);
       coverageParametersComposite =
          new CoverageParametersComposite(mainComp, managedForm, coverageEditor, coverageParameters,

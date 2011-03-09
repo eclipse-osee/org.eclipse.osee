@@ -11,6 +11,7 @@ package org.eclipse.osee.coverage.editor;
 
 import java.util.Collection;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.osee.coverage.action.IRefreshable;
@@ -20,6 +21,7 @@ import org.eclipse.osee.coverage.editor.params.CoverageParametersTextFilter;
 import org.eclipse.osee.coverage.editor.xcover.XCoverageViewer;
 import org.eclipse.osee.coverage.editor.xcover.XCoverageViewer.TableType;
 import org.eclipse.osee.coverage.help.ui.CoverageHelpContext;
+import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.CoveragePackageBase;
@@ -33,6 +35,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -42,6 +45,7 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.action.CollapseAllAction;
 import org.eclipse.osee.framework.ui.skynet.action.ExpandAllAction;
 import org.eclipse.osee.framework.ui.swt.ALayout;
+import org.eclipse.osee.framework.ui.swt.FontManager;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -49,6 +53,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.FormPage;
@@ -85,6 +90,8 @@ public class CoverageEditorCoverageTab extends FormPage implements ISaveable, IR
       coverageEditor.getToolkit().adapt(mainComp);
       mainComp.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
 
+      createBranchLabel(coverageEditor, mainComp);
+
       coverageParameters = new CoverageParameters(coveragePackageBase);
       new CoverageParametersComposite(mainComp, managedForm, coverageEditor, coverageParameters,
          new SelectionAdapter() {
@@ -118,6 +125,26 @@ public class CoverageEditorCoverageTab extends FormPage implements ISaveable, IR
       HelpUtil.setHelp(xCoverageViewer.getControl(), CoverageHelpContext.EDITOR__COVERAGE_TAB);
       HelpUtil.setHelp(tableComp, CoverageHelpContext.EDITOR__COVERAGE_TAB);
 
+   }
+
+   public static void createBranchLabel(CoverageEditor coverageEditor, Composite mainComp) {
+      Composite branchComp = new Composite(mainComp, SWT.NONE);
+      coverageEditor.getToolkit().adapt(branchComp);
+      GridData gd = new GridData(SWT.NONE, SWT.NONE, false, false);
+      gd.horizontalSpan = 2;
+      branchComp.setLayoutData(gd);
+      branchComp.setLayout(ALayout.getZeroMarginLayout(2, false));
+      Label label = new Label(branchComp, SWT.NONE);
+      label.setText("Branch: ");
+      label.setFont(FontManager.getDefaultLabelFont());
+      coverageEditor.getToolkit().adapt(label, false, false);
+      try {
+         label = new Label(branchComp, SWT.NONE);
+         label.setText(Strings.truncate(coverageEditor.getBranch().getName(), 200, true));
+         coverageEditor.getToolkit().adapt(label, false, false);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
    }
 
    private void handleSearchButtonPressed() {

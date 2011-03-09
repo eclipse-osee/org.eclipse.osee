@@ -101,6 +101,8 @@ public class CoverageEditorImportTab extends FormPage {
       scrolledForm.getBody().setLayout(new GridLayout(1, false));
       scrolledForm.getBody().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
+      CoverageEditorCoverageTab.createBranchLabel(coverageEditor, scrolledForm.getBody());
+
       managedForm.getMessageManager().setAutoUpdate(false);
 
       combo = new XComboViewer("Select Import Blam", SWT.READ_ONLY);

@@ -84,6 +84,8 @@ public class CoverageEditorWorkProductTab extends FormPage implements ISaveable 
       coverageEditor.getToolkit().adapt(mainComp);
       mainComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
+      CoverageEditorCoverageTab.createBranchLabel(coverageEditor, mainComp);
+
       createActionListViewer(mainComp);
       addDoubleClickSupport();
       addDropSupportToListViewer();
