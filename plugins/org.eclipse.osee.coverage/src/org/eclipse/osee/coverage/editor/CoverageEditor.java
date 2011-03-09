@@ -77,11 +77,10 @@ public class CoverageEditor extends FormEditor implements IActionable {
          setTitleImage(ImageManager.getImage(CoverageImage.COVERAGE));
          setActivePage(startPage);
          if (getCoverageEditorInput().isInTest()) {
-            new LoadCoverage(loadingStr).doWork(null);
+            new LoadCoverage(this, loadingStr).doWork(null);
          } else {
-            Operations.executeAsJob(new LoadCoverage(loadingStr), true);
+            Operations.executeAsJob(new LoadCoverage(this, loadingStr), true);
          }
-         CoverageEventManager.getInstance().register(this);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
@@ -94,8 +93,11 @@ public class CoverageEditor extends FormEditor implements IActionable {
 
    private class LoadCoverage extends AbstractOperation {
 
-      public LoadCoverage(String operationName) {
+      private final CoverageEditor editor;
+
+      public LoadCoverage(CoverageEditor editor, String operationName) {
          super(operationName, Activator.PLUGIN_ID);
+         this.editor = editor;
       }
 
       @Override
@@ -133,6 +135,7 @@ public class CoverageEditor extends FormEditor implements IActionable {
             }
             monitor.worked(1);
 
+            CoverageEventManager.getInstance().register(editor);
             //            elapsedTime.end();
          }
 
