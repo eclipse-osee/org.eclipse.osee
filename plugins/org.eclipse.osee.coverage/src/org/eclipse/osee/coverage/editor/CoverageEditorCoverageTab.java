@@ -53,6 +53,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
@@ -132,12 +133,35 @@ public class CoverageEditorCoverageTab extends FormPage implements ISaveable, IR
       coverageEditor.getToolkit().adapt(branchComp);
       GridData gd = new GridData(SWT.NONE, SWT.NONE, false, false);
       gd.horizontalSpan = 2;
+      gd.verticalIndent = 0;
       branchComp.setLayoutData(gd);
-      branchComp.setLayout(ALayout.getZeroMarginLayout(2, false));
+      GridLayout layout = new GridLayout(3, false);
+      layout.marginHeight = 5;
+      branchComp.setLayout(layout);
+
+      // branch label
       Label label = new Label(branchComp, SWT.NONE);
       label.setText("Branch: ");
       label.setFont(FontManager.getDefaultLabelFont());
       coverageEditor.getToolkit().adapt(label, false, false);
+
+      // read-only label
+      try {
+         if (coverageEditor.getCoveragePackageBase().isEditable().isFalse()) {
+            label = new Label(branchComp, SWT.NONE);
+            label.setText(" -- READ-ONLY -- ");
+            if (Strings.isValid(coverageEditor.getCoveragePackageBase().getEditableReason())) {
+               label.setToolTipText(coverageEditor.getCoveragePackageBase().getEditableReason());
+            }
+            label.setFont(FontManager.getDefaultLabelFont());
+            coverageEditor.getToolkit().adapt(label, false, false);
+            label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_BLUE));
+         }
+      } catch (OseeCoreException ex1) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex1);
+      }
+
+      // show branch name
       try {
          label = new Label(branchComp, SWT.NONE);
          label.setText(Strings.truncate(coverageEditor.getBranch().getName(), 200, true));

@@ -34,6 +34,7 @@ public abstract class CoveragePackageBase extends NamedIdentity implements ICove
    boolean editable = true;
    protected final CoverageOptionManager coverageOptionManager;
    protected ICoverageUnitFileContentsProvider coverageUnitFileContentsProvider;
+   private String editableReason;
 
    public CoveragePackageBase(String guid, String name, CoverageOptionManager coverageOptionManager) {
       super(guid, name);
@@ -215,13 +216,14 @@ public abstract class CoveragePackageBase extends NamedIdentity implements ICove
    @Override
    public Result isEditable() {
       if (!editable) {
-         return new Result("CoveragePackage locked for edits.");
+         return new Result(editableReason);
       }
       return Result.TrueResult;
    }
 
-   public void setEditable(boolean editable) {
+   public void setEditable(boolean editable, String editableReason) {
       this.editable = editable;
+      this.editableReason = editableReason;
    }
 
    @Override
@@ -293,4 +295,9 @@ public abstract class CoveragePackageBase extends NamedIdentity implements ICove
    public CoverageUnit createCoverageUnit(ICoverage parent, String name, String location) {
       return new CoverageUnit(parent, name, location, coverageUnitFileContentsProvider);
    }
+
+   public String getEditableReason() {
+      return editableReason;
+   }
+
 }

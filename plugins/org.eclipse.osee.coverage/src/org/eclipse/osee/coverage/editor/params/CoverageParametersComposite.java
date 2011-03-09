@@ -77,7 +77,9 @@ public class CoverageParametersComposite extends Composite {
          @Override
          public void widgetSelected(SelectionEvent e) {
             try {
-               getAssigeeCombo().clear();
+               if (getAssigeeCombo() != null) {
+                  getAssigeeCombo().clear();
+               }
                getNotesXText().set("");
                getNameXText().set("");
                getWorkProductTasksXText().set("");
@@ -100,17 +102,19 @@ public class CoverageParametersComposite extends Composite {
          page = new WorkPage(getWidgetXml(), new DefaultXWidgetOptionResolver());
          page.createBody(managedForm, paramComp, null, null, true);
 
-         getAssigeeCombo().addXModifiedListener(new XModifiedListener() {
+         if (getAssigeeCombo() != null) {
+            getAssigeeCombo().addXModifiedListener(new XModifiedListener() {
 
-            @Override
-            public void widgetModified(XWidget widget) {
-               try {
-                  coverageParameters.setAssignee(getAssignee());
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+               @Override
+               public void widgetModified(XWidget widget) {
+                  try {
+                     coverageParameters.setAssignee(getAssignee());
+                  } catch (OseeCoreException ex) {
+                     OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+                  }
                }
-            }
-         });
+            });
+         }
          getNotesXText().addXModifiedListener(new XModifiedListener() {
 
             @Override

@@ -30,8 +30,10 @@ import org.eclipse.osee.coverage.model.ICoverageItemProvider;
 import org.eclipse.osee.coverage.model.ICoverageUnitProvider;
 import org.eclipse.osee.coverage.model.IWorkProductRelatable;
 import org.eclipse.osee.coverage.util.ISaveable;
+import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -85,7 +87,16 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
    private void load(CoverageOptionManager coverageOptionManager) throws OseeCoreException {
       coveragePackage.clearCoverageUnits();
       if (artifact != null) {
-         coveragePackage.setEditable(artifact.getSoleAttributeValue(CoreAttributeTypes.Active, true));
+         boolean editable = true;
+         String editableReason = "";
+         if (artifact.getSoleAttributeValue(CoreAttributeTypes.Active, true) == false) {
+            editable = false;
+            editableReason = "Coverage Package has been locked for edit.";
+         } else if (!AccessControlManager.hasPermission(artifact, PermissionEnum.WRITE)) {
+            editable = false;
+            editableReason = "Coverage Package artifact permissions do not allow write.";
+         }
+         coveragePackage.setEditable(editable, editableReason);
          for (Artifact childArt : artifact.getChildren()) {
             if (childArt.isOfType(CoverageArtifactTypes.CoverageUnit, CoverageArtifactTypes.CoverageFolder)) {
                coveragePackage.addCoverageUnit(OseeCoverageUnitStore.get(coveragePackage, childArt,

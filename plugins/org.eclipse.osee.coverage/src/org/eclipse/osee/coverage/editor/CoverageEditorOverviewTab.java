@@ -31,12 +31,12 @@ import org.eclipse.osee.framework.ui.skynet.action.browser.BrowserPrintAction;
 import org.eclipse.osee.framework.ui.skynet.action.browser.IBrowserActionHandler;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultsComposite;
-import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
@@ -69,10 +69,12 @@ public class CoverageEditorOverviewTab extends FormPage implements IRefreshActio
       scrolledForm.setText(coveragePackageBase.getName());
       scrolledForm.setImage(ImageManager.getImage(CoverageUtil.getCoveragePackageBaseImage(coveragePackageBase)));
 
-      scrolledForm.getBody().setLayout(ALayout.getZeroMarginLayout());
       createToolBar();
       Composite composite = scrolledForm.getBody();
       composite.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
+      composite.setLayout(new GridLayout(1, true));
+
+      CoverageEditorCoverageTab.createBranchLabel(coverageEditor, composite);
 
       xResultsComp = new XResultsComposite(composite, SWT.NONE);
       xResultsComp.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING));
