@@ -23,14 +23,9 @@ public class IOOutputThread extends Thread {
    private final Writer output;
    private final BufferedReader input;
 
-   public IOOutputThread(Writer output, BufferedReader input, boolean verbose) {
-      super();
+   public IOOutputThread(Writer output, BufferedReader input) {
       this.output = output;
       this.input = input;
-   }
-
-   public IOOutputThread(Writer output, BufferedReader input) {
-      this(output, input, true);
    }
 
    @Override
