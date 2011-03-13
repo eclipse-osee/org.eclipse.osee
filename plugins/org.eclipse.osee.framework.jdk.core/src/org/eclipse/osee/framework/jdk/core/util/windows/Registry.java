@@ -12,10 +12,9 @@ package org.eclipse.osee.framework.jdk.core.util.windows;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Processes;
 
 public class Registry {
 
@@ -97,17 +96,13 @@ public class Registry {
 
    public static boolean isRegVersion(double lowerBound, double upperBound) throws IOException {
       boolean matched = false;
-      Process p = Runtime.getRuntime().exec(Registry.REG_HELP_CMD);
-      StringWriter stringWriter = new StringWriter();
-      Lib.handleProcess(p, stringWriter);
+      String out = Processes.executeCommandToString(Registry.REG_HELP_CMD);
 
       Pattern pattern = Pattern.compile(".*version\\s(\\d*\\.\\d+).*", Pattern.DOTALL);
-      Matcher matcher = pattern.matcher(stringWriter.toString());
+      Matcher matcher = pattern.matcher(out.toString());
 
-      System.out.println(matcher.groupCount());
       if (matcher.matches()) {
          String regVersion = matcher.group(1).trim();
-         System.out.println("Found Version: " + regVersion);
 
          double foundVersion = Double.parseDouble(regVersion);
          if (foundVersion >= lowerBound && foundVersion <= upperBound) {
@@ -131,12 +126,10 @@ public class Registry {
    public static String[] getValue(RegVersion version, String root, String path, String key) throws IOException {
       String toReturn[] = null;
 
-      Process p = Runtime.getRuntime().exec(version.getQueryCmd(root, path, key));
-      StringWriter stringWriter = new StringWriter();
-      Lib.handleProcess(p, stringWriter);
+      String out = Processes.executeCommandToString(version.getQueryCmd(root, path, key));
 
       Pattern pattern = Pattern.compile(version.getQueryPattern(key), Pattern.DOTALL);
-      Matcher matcher = pattern.matcher(stringWriter.toString());
+      Matcher matcher = pattern.matcher(out.toString());
       if (matcher.matches()) {
          toReturn = new String[matcher.groupCount()];
 
@@ -179,14 +172,10 @@ public class Registry {
          }
       }
 
-      Process p = Runtime.getRuntime().exec(command);
-      StringWriter stringWriter = new StringWriter();
+      String out = Processes.executeCommandToString(command);
+      System.out.println("The string: " + out);
 
-      Lib.handleProcess(p, stringWriter);
-
-      System.out.println("The string: " + stringWriter);
-
-      if (stringWriter.toString().contains("err:")) {
+      if (out.toString().contains("err:")) {
          return false;
       }
       return true;
@@ -198,14 +187,11 @@ public class Registry {
 
       String[] regArray = Registry.getValue(version, root, path, key);
 
-      Process p = Runtime.getRuntime().exec(version.getUpdateCommand(root, path, key, value, regArray));
-      StringWriter stringWriter = new StringWriter();
+      String out = Processes.executeCommandToString(version.getUpdateCommand(root, path, key, value, regArray));
 
-      Lib.handleProcess(p, stringWriter);
+      System.out.println("The string: " + out);
 
-      System.out.println("The string: " + stringWriter);
-
-      if (stringWriter.toString().contains("err:")) {
+      if (out.toString().contains("err:")) {
          return false;
       }
       return true;

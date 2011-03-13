@@ -580,48 +580,8 @@ public final class Lib {
       }
    }
 
-   public static int handleProcess(Process proc) {
-      return handleProcess(proc, new PrintWriter(System.out, true));
-   }
-
-   public static int handleProcess(Process proc, Writer output, String errName, String outName) {
-      try {
-         IOOutputThread errThread =
-            new IOOutputThread(output, new BufferedReader(new InputStreamReader(proc.getErrorStream())));
-         IOOutputThread outThread =
-            new IOOutputThread(output, new BufferedReader(new InputStreamReader(proc.getInputStream())));
-
-         errThread.setName(errName);
-         outThread.setName(outName);
-         errThread.start();
-         outThread.start();
-         proc.waitFor();
-         int exitCode = proc.exitValue();
-         if (exitCode != 0) {
-            output.write("Process exit code is:  " + exitCode + "\n");
-         }
-         int count = 0;
-         while (errThread.isAlive() || outThread.isAlive()) {
-            if (count > 10) {
-               break;
-            }
-            synchronized (Thread.currentThread()) {
-               Thread.currentThread().wait(500);
-            }
-            count++;
-         }
-         output.flush();
-         return exitCode;
-      } catch (IOException ex) {
-         System.err.println(ex);
-      } catch (InterruptedException e) {
-         e.printStackTrace();
-      }
-      return Integer.MIN_VALUE;
-   }
-
-   public static int handleProcess(Process proc, Writer output) {
-      return handleProcess(proc, output, "err", "out");
+   public static int handleProcess(Process process) {
+      return Processes.handleProcess(process);
    }
 
    /**
@@ -742,37 +702,7 @@ public final class Lib {
    }
 
    public static int printAndExec(String[] callAndArgs) {
-      return printAndExec(callAndArgs, null, new BufferedWriter(new PrintWriter(System.out, true)));
-   }
-
-   public static int printAndExec(String[] callAndArgs, File dir) {
-      return printAndExec(callAndArgs, dir, new PrintWriter(System.out, true));
-   }
-
-   public static int printAndExec(String[] callAndArgs, File directory, Writer output) {
-      int result = -1;
-      Process process = null;
-      try {
-         for (int j = 0; j < callAndArgs.length; j++) {
-            output.write(callAndArgs[j] + " ");
-         }
-         output.write("\n");
-         output.flush();
-
-         ProcessBuilder builder = new ProcessBuilder(callAndArgs);
-         builder.directory(directory);
-         process = builder.start();
-
-         result = Lib.handleProcess(process, output);
-      } catch (IOException ex) {
-         System.err.print("error: ");
-         System.err.println(ex);
-      } finally {
-         if (process != null) {
-            process.destroy();
-         }
-      }
-      return result;
+      return Processes.executeCommandToStdOut(callAndArgs);
    }
 
    public static ArrayList<String> readListFromDir(File directory, FilenameFilter filter, boolean keepExtension) {
