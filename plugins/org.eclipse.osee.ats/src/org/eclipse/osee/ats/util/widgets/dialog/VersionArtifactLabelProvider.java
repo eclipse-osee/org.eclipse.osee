@@ -14,7 +14,6 @@ import java.util.Date;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
-import org.eclipse.osee.ats.artifact.VersionCommitConfigArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -31,7 +30,7 @@ public class VersionArtifactLabelProvider extends LabelProvider {
 
    @Override
    public String getText(Object element) {
-      if (element instanceof VersionCommitConfigArtifact) {
+      if (element instanceof Artifact) {
          Artifact verArt = (Artifact) element;
          String str = verArt.getName();
          try {

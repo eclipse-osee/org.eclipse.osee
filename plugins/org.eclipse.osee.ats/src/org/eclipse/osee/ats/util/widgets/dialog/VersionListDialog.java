@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.util.widgets.dialog;
 
 import java.util.Collection;
 import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.osee.ats.artifact.VersionCommitConfigArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactNameReverseSorter;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -34,7 +33,7 @@ public class VersionListDialog extends org.eclipse.ui.dialogs.ListDialog {
          public Object[] getElements(Object inputElement) {
             if (inputElement instanceof Collection) {
                Collection list = (Collection) inputElement;
-               return list.toArray(new VersionCommitConfigArtifact[list.size()]);
+               return list.toArray(new Artifact[list.size()]);
             }
             return super.getElements(inputElement);
          }

@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
@@ -99,10 +100,15 @@ public class SetWorkbenchOverrideIconBlam extends AbstractBlam {
 
    public static void overrideImage(Image overrideImage) {
       for (IWorkbenchWindow window : Workbench.getInstance().getWorkbenchWindows()) {
-         Shell appShell = window.getShell();
+         final Shell appShell = window.getShell();
          // Set the application icons
-         Image[] appIcons = {overrideImage, overrideImage, overrideImage};
-         appShell.setImages(appIcons);
+         final Image[] appIcons = {overrideImage, overrideImage, overrideImage};
+         Displays.ensureInDisplayThread(new Runnable() {
+            @Override
+            public void run() {
+               appShell.setImages(appIcons);
+            }
+         });
       }
    }
 

@@ -14,7 +14,6 @@ import org.eclipse.osee.ats.actions.wizard.ITeamWorkflowProvider;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
-import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
@@ -22,7 +21,6 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowProviders;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.DecisionOption;
 import org.eclipse.osee.ats.util.widgets.XDecisionOptions;
 import org.eclipse.osee.ats.workdef.provider.AtsWorkDefinitionProvider;
@@ -129,7 +127,7 @@ public class WorkDefinitionFactory {
          WorkDefinitionMatch match = new WorkDefinitionMatch();
          String translatedId = WorkDefinitionFactory.getOverrideWorkDefId(id);
          // Try to get from new DSL provider if configured to use it
-         if (!match.isMatched() && AtsUtil.isUseNewWorkDefinitions()) {
+         if (!match.isMatched()) {
             WorkDefinition workDef = AtsWorkDefinitionProvider.get().getWorkFlowDefinition(translatedId);
             if (workDef != null) {
                match.setWorkDefinition(workDef);
@@ -537,14 +535,11 @@ public class WorkDefinitionFactory {
 
    public static String getOverrideWorkDefId(String id) {
       // Don't override if no providers available (dsl plugins not released)
-      if (AtsUtil.isUseNewWorkDefinitions()) {
-
-         String overrideId = AtsWorkDefinitionSheetProviders.getOverrideId(id);
-         if (Strings.isValid(overrideId)) {
-            OseeLog.log(AtsPlugin.class, Level.INFO,
-               String.format("Override WorkDefinition [%s] with [%s]", id, overrideId));
-            return overrideId;
-         }
+      String overrideId = AtsWorkDefinitionSheetProviders.getOverrideId(id);
+      if (Strings.isValid(overrideId)) {
+         OseeLog.log(AtsPlugin.class, Level.INFO,
+            String.format("Override WorkDefinition [%s] with [%s]", id, overrideId));
+         return overrideId;
       }
       return id;
    }

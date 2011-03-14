@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.PluginUtil;
+import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -71,7 +72,11 @@ public final class AtsWorkDefinitionSheetProviders {
 
    public static void initializeDatabase(XResultData resultData, boolean onlyWorkDefinitions) throws OseeCoreException {
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Import ATS Work Definitions");
-      Artifact folder = AtsUtil.getFromToken(AtsArtifactToken.WorkDefinitionsFolder);
+      Artifact folder =
+         OseeSystemArtifacts.getOrCreateArtifact(AtsArtifactToken.WorkDefinitionsFolder, AtsUtil.getAtsBranch());
+      if (folder.isDirty()) {
+         folder.persist(transaction);
+      }
       for (WorkDefinitionSheet sheet : getWorkDefinitionSheets()) {
          if (isValidSheet(sheet)) {
             String logStr = String.format("Importing ATS sheet [%s]", sheet.getName());

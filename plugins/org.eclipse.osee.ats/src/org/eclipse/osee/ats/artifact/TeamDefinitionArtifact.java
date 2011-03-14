@@ -355,7 +355,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
             String id = art.getSoleAttributeValue(CoreAttributeTypes.WorkId, "");
             if (Strings.isValid(id)) {
                // Note: This may skip any complex rules (more than name), but don't think teamdefs have them
-               RuleDefinition ruleDef = WorkDefinitionFactory.getRuleById(id);
+               RuleDefinition ruleDef = WorkDefinitionFactory.getRuleById(id.replaceFirst("^ats", ""));
                if (ruleDef == null) {
                   OseeLog.log(AtsPlugin.class, Level.SEVERE, String.format("Null work rule for " + id));
                } else {

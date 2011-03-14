@@ -45,7 +45,6 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.database.core.OseeInfo;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -507,21 +506,6 @@ public final class AtsUtil {
 
    public static boolean dbInitWorkItemDefs() {
       return dbInitWorkItemDefs;
-   }
-   public static Boolean useNewWorkDefintions = null;
-
-   public synchronized static boolean isUseNewWorkDefinitions() {
-      if (useNewWorkDefintions == null) {
-         useNewWorkDefintions = Boolean.valueOf(System.getProperty("ats.useNewWorkDefinitions"));
-         if (!useNewWorkDefintions) {
-            try {
-               useNewWorkDefintions = OseeInfo.getCachedValue("ats.useNewWorkDefinitions").equals("true");
-            } catch (OseeCoreException ex) {
-               OseeLog.log(AtsPlugin.class, Level.WARNING, ex);
-            }
-         }
-      }
-      return useNewWorkDefintions;
    }
 
    public static Artifact getFromToken(IArtifactToken token) {
