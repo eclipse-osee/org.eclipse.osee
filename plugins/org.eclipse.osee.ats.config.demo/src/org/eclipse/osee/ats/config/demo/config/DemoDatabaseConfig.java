@@ -12,11 +12,6 @@ package org.eclipse.osee.ats.config.demo.config;
 
 import org.eclipse.osee.ats.config.demo.DemoCISBuilds;
 import org.eclipse.osee.ats.config.demo.DemoSubsystems;
-import org.eclipse.osee.ats.config.demo.workflow.DemoCodeWorkFlowDefinition;
-import org.eclipse.osee.ats.config.demo.workflow.DemoReqWorkFlowDefinition;
-import org.eclipse.osee.ats.config.demo.workflow.DemoSWDesignWorkFlowDefinition;
-import org.eclipse.osee.ats.config.demo.workflow.DemoTestWorkFlowDefinition;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -27,7 +22,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition.WriteType;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.TestUtil;
 
@@ -42,13 +36,6 @@ public class DemoDatabaseConfig implements IDbInitializationTask {
    public void run() throws OseeCoreException {
 
       TestUtil.setDemoDb(true);
-
-      if (AtsUtil.dbInitWorkItemDefs()) {
-         new DemoCodeWorkFlowDefinition().config(WriteType.New, null);
-         new DemoTestWorkFlowDefinition().config(WriteType.New, null);
-         new DemoReqWorkFlowDefinition().config(WriteType.New, null);
-         new DemoSWDesignWorkFlowDefinition().config(WriteType.New, null);
-      }
 
       // Create SAW_Bld_1 branch
       BranchManager.createTopLevelBranch(DemoSawBuilds.SAW_Bld_1);

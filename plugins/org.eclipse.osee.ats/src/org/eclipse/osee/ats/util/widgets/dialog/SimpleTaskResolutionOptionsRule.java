@@ -10,11 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.widgets.dialog;
 
-import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.ui.skynet.results.XResultData;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
-
 /**
  * @author Donald G. Dunne
  */
@@ -49,15 +44,4 @@ public class SimpleTaskResolutionOptionsRule extends TaskResolutionOptionRule {
       //
       "</AtsTaskOptions>";
 
-   public SimpleTaskResolutionOptionsRule() {
-      super(ID, ID, resolutionOptionsXml);
-   }
-
-   public void config(WriteType writeType, XResultData xResultData) throws OseeCoreException {
-      AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(writeType, xResultData, this);
-   }
-
-   public static void relatePageToRules(String pageId) throws OseeCoreException {
-      WorkItemDefinitionFactory.relateWorkItemDefinitions(pageId, ID);
-   }
 }

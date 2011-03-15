@@ -16,13 +16,6 @@ import org.eclipse.osee.ats.artifact.AtsArtifactToken;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workdef.AtsWorkDefinitionSheetProviders;
-import org.eclipse.osee.ats.workflow.flow.DecisionWorkflowDefinition;
-import org.eclipse.osee.ats.workflow.flow.GoalWorkflowDefinition;
-import org.eclipse.osee.ats.workflow.flow.PeerToPeerWorkflowDefinition;
-import org.eclipse.osee.ats.workflow.flow.SimpleWorkflowDefinition;
-import org.eclipse.osee.ats.workflow.flow.TaskWorkflowDefinition;
-import org.eclipse.osee.ats.workflow.flow.TeamWorkflowDefinition;
-import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -31,7 +24,6 @@ import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition.WriteType;
 
 public class AtsDatabaseConfig implements IDbInitializationTask {
 
@@ -45,26 +37,7 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
       topAi.setSoleAttributeValue(AtsAttributeTypes.Actionable, false);
       topAi.persist("Set Top AI to Non Actionable");
 
-      if (AtsUtil.dbInitWorkItemDefs()) {
-         configWorkItemDefinitions(WriteType.New, null);
-      }
-
       AtsUtil.getAtsAdminGroup().getGroupArtifact().persist();
-   }
-
-   public static void configWorkItemDefinitions(WriteType writeType, XResultData xResultData) throws OseeCoreException {
-
-      // Import Work Item Definitions
-      AtsWorkDefinitions.importWorkItemDefinitionsIntoDb(writeType, xResultData,
-         AtsWorkDefinitions.getAtsWorkDefinitions());
-
-      new TeamWorkflowDefinition().config(writeType, xResultData);
-      new TaskWorkflowDefinition().config(writeType, xResultData);
-      new GoalWorkflowDefinition().config(writeType, xResultData);
-      new SimpleWorkflowDefinition().config(writeType, xResultData);
-      new DecisionWorkflowDefinition().config(writeType, xResultData);
-      new PeerToPeerWorkflowDefinition().config(writeType, xResultData);
-
    }
 
    public static void createAtsFolders() throws OseeCoreException {
@@ -83,15 +56,6 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
          Artifact art = OseeSystemArtifacts.getOrCreateArtifact(token, atsBranch);
          headingArt.addChild(art);
          art.persist(transaction);
-      }
-      if (AtsUtil.dbInitWorkItemDefs()) {
-         for (IArtifactToken token : Arrays.asList(AtsArtifactToken.WorkFlowsFolder, //
-            AtsArtifactToken.WorkPagesFolder, AtsArtifactToken.WorkWidgetsFolder, //
-            AtsArtifactToken.WorkRulesFolder)) {
-            Artifact art = OseeSystemArtifacts.getOrCreateArtifact(token, atsBranch);
-            headingArt.addChild(art);
-            art.persist(transaction);
-         }
       }
       transaction.execute();
    }

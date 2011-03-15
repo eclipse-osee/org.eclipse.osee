@@ -34,13 +34,6 @@
                id="org.eclipse.osee.ats.world.WorldEditor"
                name="ATS World Editor">
          </editor>
-         <editor name="ATS Workflow Config Editor"
-              icon="images/workflowConfig.gif"
-              default="true"
-              class="org.eclipse.osee.ats.workflow.editor.AtsWorkflowConfigEditor"
-              contributorClass="org.eclipse.osee.ats.workflow.editor.AtsWorkflowConfigEditorActionBarContributor"
-              id="org.eclipse.osee.ats.workflow.editor.AtsWorkflowConfigEditor">
-         </editor>   
    </extension>
    <extension point="org.eclipse.osee.framework.skynet.core.ArtifactFactory">
       <ArtifactFactory classname="org.eclipse.osee.ats.artifact.AtsArtifactFactory"/>
@@ -68,15 +61,6 @@
             icon="images/workflow.gif"
             id="org.eclipse.osee.ats.config.wizard.AtsConfigWizard"
             name="ATS Configuration">
-      </wizard>
-      <wizard
-            canFinishEarly="false"
-            category="org.eclipse.osee.ats.category"
-            class="org.eclipse.osee.ats.workflow.editor.wizard.AtsWorkflowConfigCreationWizard"
-            hasPages="true"
-            icon="images/workflow.gif"
-            id="org.eclipse.osee.ats.workflow.editor.wizard.AtsWorkflowConfigCreationWizard"
-            name="Workflow Configuration">
       </wizard>
    </extension>
 <extension point="org.eclipse.ui.perspectives">
@@ -208,9 +192,6 @@
          point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
       <Renderer classname="org.eclipse.osee.ats.editor.AtsWorkflowRenderer"/>
       <Renderer classname="org.eclipse.osee.ats.workdef.editor.AtsWorkDefinitionRenderer"/>
-      <Renderer
-            classname="org.eclipse.osee.ats.workflow.editor.AtsWorkflowConfigRenderer">
-      </Renderer>
       <Renderer
             classname="org.eclipse.osee.ats.editor.AtsTaskEditorRenderer">
       </Renderer>

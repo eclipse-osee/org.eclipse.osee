@@ -24,13 +24,9 @@ import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.widgets.DecisionOption;
 import org.eclipse.osee.ats.util.widgets.XDecisionOptions;
 import org.eclipse.osee.ats.workdef.provider.AtsWorkDefinitionProvider;
-import org.eclipse.osee.ats.workflow.flow.DecisionWorkflowDefinition;
-import org.eclipse.osee.ats.workflow.flow.GoalWorkflowDefinition;
-import org.eclipse.osee.ats.workflow.flow.PeerToPeerWorkflowDefinition;
-import org.eclipse.osee.ats.workflow.flow.TaskWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.item.AtsAddDecisionReviewRule;
 import org.eclipse.osee.ats.workflow.item.AtsAddPeerToPeerReviewRule;
-import org.eclipse.osee.ats.workflow.item.AtsStatePercentCompleteWeightRule;
+import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -56,6 +52,7 @@ public class WorkDefinitionFactory {
    private static final Map<Artifact, WorkDefinitionMatch> artToWorkDefinitions =
       new HashMap<Artifact, WorkDefinitionMatch>();
    private static final Map<String, WorkDefinitionMatch> idToWorkDefintion = new HashMap<String, WorkDefinitionMatch>();
+   private static String AtsStatePercentCompleteWeightRule = "atsStatePercentCompleteWeight";
 
    public static RuleDefinition getRuleById(String id) {
       ensureRulesLoaded();
@@ -71,7 +68,7 @@ public class WorkDefinitionFactory {
                      System.err.println("skipping rule " + workItem.getName());
                   } else if (workItem.getName().startsWith("atsAddPeerToPeerReview")) {
                      System.err.println("skipping rule " + workItem.getName());
-                  } else if (workItem.getName().startsWith(AtsStatePercentCompleteWeightRule.ID)) {
+                  } else if (workItem.getName().startsWith(AtsStatePercentCompleteWeightRule)) {
                      System.err.println("skipping rule " + workItem.getName());
                   } else {
                      try {
@@ -301,7 +298,7 @@ public class WorkDefinitionFactory {
          // Process WeightDefinitions
          Artifact workDefArt = workFlowDef.getArtifact();
          for (Artifact workChild : workDefArt.getRelatedArtifacts(CoreRelationTypes.WorkItem__Child)) {
-            if (workChild.getName().startsWith(AtsStatePercentCompleteWeightRule.ID)) {
+            if (workChild.getName().startsWith(AtsStatePercentCompleteWeightRule)) {
                WorkRuleDefinition ruleDefinition = new WorkRuleDefinition(workChild);
                for (String stateName : ruleDefinition.getWorkDataKeyValueMap().keySet()) {
                   String value = ruleDefinition.getWorkDataValue(stateName);
@@ -474,12 +471,12 @@ public class WorkDefinitionFactory {
       }
       if (!match.isMatched()) {
          // Else, use default Task workflow
-         String translatedId = getOverrideWorkDefId(TaskWorkflowDefinition.ID);
+         String translatedId = getOverrideWorkDefId(AtsWorkDefinitions.TaskWorkflowDefinitionId);
          match = getWorkDefinition(translatedId);
          if (match.isMatched()) {
             match.getTrace().add(
                String.format("default TaskWorkflowDefinition ID [%s] and override translated Id [%s]",
-                  TaskWorkflowDefinition.ID, translatedId));
+                  AtsWorkDefinitions.TaskWorkflowDefinitionId, translatedId));
          }
       }
       return match;
@@ -513,15 +510,18 @@ public class WorkDefinitionFactory {
                      match = ((TeamWorkFlowArtifact) artifact).getTeamDefinition().getWorkDefinition();
                   }
                } else if (artifact.isOfType(AtsArtifactTypes.Goal)) {
-                  match = getWorkDefinition(getOverrideWorkDefId(GoalWorkflowDefinition.ID));
-                  match.getTrace().add(String.format("Override translated from id [%s]", GoalWorkflowDefinition.ID));
-               } else if (artifact instanceof PeerToPeerReviewArtifact) {
-                  match = getWorkDefinition(getOverrideWorkDefId(PeerToPeerWorkflowDefinition.ID));
+                  match = getWorkDefinition(getOverrideWorkDefId(AtsWorkDefinitions.GoalWorkflowDefinitionId));
                   match.getTrace().add(
-                     String.format("Override translated from id [%s]", PeerToPeerWorkflowDefinition.ID));
+                     String.format("Override translated from id [%s]", AtsWorkDefinitions.GoalWorkflowDefinitionId));
+               } else if (artifact instanceof PeerToPeerReviewArtifact) {
+                  match = getWorkDefinition(getOverrideWorkDefId(AtsWorkDefinitions.PeerToPeerWorkflowDefinitionId));
+                  match.getTrace().add(
+                     String.format("Override translated from id [%s]",
+                        AtsWorkDefinitions.PeerToPeerWorkflowDefinitionId));
                } else if (artifact instanceof DecisionReviewArtifact) {
-                  match = getWorkDefinition(getOverrideWorkDefId(DecisionWorkflowDefinition.ID));
-                  match.getTrace().add(String.format("Override translated from id [%s]", DecisionWorkflowDefinition.ID));
+                  match = getWorkDefinition(getOverrideWorkDefId(AtsWorkDefinitions.DecisionWorkflowDefinitionId));
+                  match.getTrace().add(
+                     String.format("Override translated from id [%s]", AtsWorkDefinitions.DecisionWorkflowDefinitionId));
                }
             }
          }

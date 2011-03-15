@@ -16,9 +16,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboWithTextAndComboWithText;
-import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkWidgetDefinition;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.widgets.Composite;
 
@@ -137,29 +134,6 @@ public class OperationalImpactWithWorkaroundXWidget extends XComboWithTextAndCom
    public void setArtifact(Artifact artifact) {
       if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
          teamArt = (TeamWorkFlowArtifact) artifact;
-      }
-   }
-
-   public static class XOperationalImpactWithWorkaroundXWidgetWorkItem extends WorkWidgetDefinition {
-
-      public XOperationalImpactWithWorkaroundXWidgetWorkItem() {
-         super("Operational Impact - " + ID, ID);
-         DynamicXWidgetLayoutData data = new DynamicXWidgetLayoutData(null, XOption.NOT_REQUIRED);
-         data.setName("Operational Impact");
-         data.setStoreName(getId());
-         data.setXWidgetName(WIDGET_NAME);
-         set(data);
-      }
-   }
-   public static class XOperationalImpactWithWorkaroundRequiredXWidgetWorkItem extends WorkWidgetDefinition {
-
-      public XOperationalImpactWithWorkaroundRequiredXWidgetWorkItem() {
-         super("Operational Impact - " + ID_REQUIRED, ID_REQUIRED);
-         DynamicXWidgetLayoutData data = new DynamicXWidgetLayoutData(null, XOption.REQUIRED);
-         data.setName("Operational Impact");
-         data.setStoreName(getId());
-         data.setXWidgetName(WIDGET_NAME);
-         set(data);
       }
    }
 

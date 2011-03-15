@@ -13,12 +13,10 @@ package org.eclipse.osee.ats.workflow.item;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
-import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.log.LogType;
-import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.ats.workdef.PeerReviewDefinition;
 import org.eclipse.osee.ats.workdef.ReviewBlockType;
@@ -26,7 +24,6 @@ import org.eclipse.osee.ats.workdef.RuleDefinition;
 import org.eclipse.osee.ats.workdef.StateEventType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -37,7 +34,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
 /**
  * @author Donald G. Dunne
  */
-public class AtsAddPeerToPeerReviewRule extends WorkRuleDefinition {
+public class AtsAddPeerToPeerReviewRule {
 
    public final static String ID = "atsAddPeerToPeerReview";
    public static enum PeerToPeerParameter {
@@ -49,23 +46,6 @@ public class AtsAddPeerToPeerReviewRule extends WorkRuleDefinition {
       location,
       description
    };
-
-   public AtsAddPeerToPeerReviewRule() {
-      this(ID, ID);
-   }
-
-   public AtsAddPeerToPeerReviewRule(String name, String id) {
-      super(name, id);
-      setDescription("Work Page and Team Definition Option: PeerToPeer Review will be auto-created based on WorkData attribute values.");
-      setPeerToPeerParameterValue(this, PeerToPeerParameter.reviewBlockingType, "Commit");
-      setPeerToPeerParameterValue(this, PeerToPeerParameter.forState, "Implement");
-      setPeerToPeerParameterValue(this, PeerToPeerParameter.forEvent, StateEventType.CreateBranch.name());
-      try {
-         setPeerToPeerParameterValue(this, PeerToPeerParameter.assignees, "<99999997>");
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-      }
-   }
 
    public static void setPeerToPeerParameterValue(WorkRuleDefinition workRuleDefinition, PeerToPeerParameter decisionParameter, String value) {
       workRuleDefinition.addWorkDataKeyValue(decisionParameter.name(), value);

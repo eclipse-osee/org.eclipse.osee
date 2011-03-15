@@ -22,13 +22,11 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -36,23 +34,13 @@ import org.w3c.dom.NodeList;
 /**
  * @author Donald G. Dunne
  */
-public class TaskResolutionOptionRule extends WorkRuleDefinition {
+public class TaskResolutionOptionRule {
 
    private final List<TaskResOptionDefinition> options = new ArrayList<TaskResOptionDefinition>();
    public final static String ATS_TASK_OPTIONS_TAG = "AtsTaskOptions";
    public final static String WORK_TYPE = "AtsTaskResolutionOptions";
    public final static List<TaskResOptionDefinition> EMPTY_TASK_RESOLUTION_OPTIONS =
       new ArrayList<TaskResOptionDefinition>();
-
-   public TaskResolutionOptionRule(String name, String id, String value) {
-      super(name, id, null, WORK_TYPE);
-      addWorkDataKeyValue(ATS_TASK_OPTIONS_TAG, value);
-   }
-
-   public TaskResolutionOptionRule(Artifact artifact) throws OseeCoreException {
-      super(artifact);
-      fromXml(artifact.getSoleAttributeValue(CoreAttributeTypes.WorkParentId, ""));
-   }
 
    public static List<TaskResOptionDefinition> getTaskResolutionOptions(StateDefinition stateDefinition) throws OseeCoreException {
       TaskResolutionOptionRule taskResolutionOptionRule = getTaskResolutionOptionRule(stateDefinition);
@@ -74,7 +62,7 @@ public class TaskResolutionOptionRule extends WorkRuleDefinition {
       }
       RuleDefinition ruleDefinition = wids.iterator().next();
       if (ruleDefinition != null) {
-         TaskResolutionOptionRule taskResolutionOptionRule = new TaskResolutionOptionRule(null, GUID.create(), null);
+         TaskResolutionOptionRule taskResolutionOptionRule = new TaskResolutionOptionRule();
          taskResolutionOptionRule.fromXml(getTaskResolutionRuleXml(ruleDefinition));
          return taskResolutionOptionRule;
       }

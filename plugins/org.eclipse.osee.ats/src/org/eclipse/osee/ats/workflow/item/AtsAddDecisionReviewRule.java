@@ -13,11 +13,9 @@ package org.eclipse.osee.ats.workflow.item;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
-import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.log.LogType;
-import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.ats.workdef.DecisionReviewDefinition;
 import org.eclipse.osee.ats.workdef.ReviewBlockType;
@@ -25,7 +23,6 @@ import org.eclipse.osee.ats.workdef.RuleDefinition;
 import org.eclipse.osee.ats.workdef.StateEventType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -36,7 +33,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
 /**
  * @author Donald G. Dunne
  */
-public class AtsAddDecisionReviewRule extends WorkRuleDefinition {
+public class AtsAddDecisionReviewRule {
 
    public final static String ID = "atsAddDecisionReview";
    public static enum DecisionParameter {
@@ -52,25 +49,6 @@ public class AtsAddDecisionReviewRule extends WorkRuleDefinition {
    public static enum DecisionRuleOption {
       None,
       TransitionToDecision
-   }
-
-   public AtsAddDecisionReviewRule() {
-      this(ID, ID);
-   }
-
-   public AtsAddDecisionReviewRule(String name, String id) {
-      super(name, id);
-      setDescription("Work Page and Team Definition Option: Decision Review will be auto-created based on WorkData attribute values.");
-      setDecisionParameterValue(this, DecisionParameter.title, "Enter Title Here");
-      setDecisionParameterValue(this, DecisionParameter.reviewBlockingType, "Transition");
-      setDecisionParameterValue(this, DecisionParameter.forState, "Implement");
-      setDecisionParameterValue(this, DecisionParameter.forEvent, StateEventType.TransitionTo.name());
-      try {
-         setDecisionParameterValue(this, DecisionParameter.assignees, "<99999997>");
-         setDecisionParameterValue(this, DecisionParameter.options, "Completed;Completed;");
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-      }
    }
 
    public static void setDecisionParameterValue(WorkRuleDefinition workRuleDefinition, DecisionParameter decisionParameter, String value) {

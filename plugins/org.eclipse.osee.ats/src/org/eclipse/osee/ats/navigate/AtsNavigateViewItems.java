@@ -195,7 +195,6 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
 
          new AtsNotificationNavigateItem(adminItems);
          new AtsNotificationNavigateItem(adminItems, true);
-         new UpdateAtsWorkItemDefinitions(adminItems);
          new DisplayCurrentOseeEventListeners(adminItems);
          new AtsRemoteEventTestItem(adminItems);
 
