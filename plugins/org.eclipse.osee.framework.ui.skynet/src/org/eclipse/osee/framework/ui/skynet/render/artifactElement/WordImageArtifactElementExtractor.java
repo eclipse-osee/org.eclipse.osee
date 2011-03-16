@@ -75,7 +75,7 @@ public class WordImageArtifactElementExtractor implements IElementExtractor {
    }
 
    @Override
-   public List<Element> extractElements() throws DOMException, OseeCoreException {
+   public List<WordExtractorData> extractElements() throws DOMException, OseeCoreException {
       OseeLinkBuilder linkBuilder = new OseeLinkBuilder();
       return extractElements(linkBuilder);
    }
@@ -88,18 +88,19 @@ public class WordImageArtifactElementExtractor implements IElementExtractor {
       guid = null;
    }
 
-   public List<Element> extractElements(OseeLinkBuilder linkBuilder) throws DOMException, OseeCoreException {
-      final List<Element> artifactElements = new LinkedList<Element>();
+   public List<WordExtractorData> extractElements(OseeLinkBuilder linkBuilder) throws DOMException, OseeCoreException {
+      final List<WordExtractorData> artifactElements = new LinkedList<WordExtractorData>();
       Element rootElement = document.getDocumentElement();
       resetClassFields();
 
       NodeList nodeList = rootElement.getElementsByTagName("*");
-      Element newArtifactElement = null;
       ParseState parseState = ParseState.LOOKING_FOR_START;
 
       handleImages(rootElement);
 
       oleDataElement = (Element) getElement(rootElement, "w:docOleData");
+
+      WordExtractorData extractorData = null;
 
       int nodeSize = nodeList.getLength();
       for (int i = 0; i < nodeSize; i++) {
@@ -107,11 +108,13 @@ public class WordImageArtifactElementExtractor implements IElementExtractor {
 
          if (parseState == ParseState.LOOKING_FOR_START && isArtifactEditTag(element, true)) {
             parseState = ParseState.LOOKING_FOR_END;
-            newArtifactElement = handleStartElement(linkBuilder, artifactElements, element);
+            //This is where we create a new data object for each artifact
+            extractorData = new WordExtractorData();
+            handleStartElement(linkBuilder, artifactElements, element, extractorData);
          } else if (parseState == ParseState.LOOKING_FOR_END && isArtifactEditTag(element, false)) {
-            parseState = handleEndElement(linkBuilder, newArtifactElement, element);
+            parseState = handleEndElement(linkBuilder, extractorData, element);
          } else if (parseState == ParseState.LOOKING_FOR_END && properLevelChild(element)) {
-            newArtifactElement.appendChild(element.cloneNode(true));
+            extractorData.addChild(element.cloneNode(true));
          }
       }
 
@@ -120,7 +123,7 @@ public class WordImageArtifactElementExtractor implements IElementExtractor {
       return artifactElements;
    }
 
-   private ParseState handleEndElement(OseeLinkBuilder linkBuilder, Element newArtifactElement, Element element) {
+   private ParseState handleEndElement(OseeLinkBuilder linkBuilder, WordExtractorData extractorData, Element element) {
       ParseState parseState;
       numberOfEndTags++;
       guid = null;
@@ -128,23 +131,26 @@ public class WordImageArtifactElementExtractor implements IElementExtractor {
 
       Node clonedElement = cloneWithoutArtifactEditImage(element, Side.left, linkBuilder);
       if (elementHasGrandChildren(clonedElement)) {
-         newArtifactElement.appendChild(clonedElement);
+         extractorData.addChild(clonedElement);
       }
       return parseState;
    }
 
-   private Element handleStartElement(OseeLinkBuilder linkBuilder, final List<Element> artifactElements, Element element) {
+   private void handleStartElement(OseeLinkBuilder linkBuilder, final List<WordExtractorData> artifactElements, Element element, WordExtractorData extractorData) {
       Element newArtifactElement;
       numberOfStartTags++;
       newArtifactElement = document.createElement("WordAttribute.WORD_TEMPLATE_CONTENT");
       populateNewArtifactElement(newArtifactElement);
-      artifactElements.add(newArtifactElement);
+
+      extractorData.setGuid(guid);
+      extractorData.addParent(newArtifactElement);
+
+      artifactElements.add(extractorData);
 
       Node clonedElement = cloneWithoutArtifactEditImage(element, Side.right, linkBuilder);
       if (elementHasGrandChildren(clonedElement)) {
-         newArtifactElement.appendChild(clonedElement);
+         extractorData.addChild(clonedElement);
       }
-      return newArtifactElement;
    }
 
    private void clearImageIds() {

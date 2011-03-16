@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -45,12 +46,12 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.preferences.MsWordPreferencePage;
 import org.eclipse.osee.framework.ui.skynet.render.artifactElement.IElementExtractor;
 import org.eclipse.osee.framework.ui.skynet.render.artifactElement.MergeEditArtifactElementExtractor;
+import org.eclipse.osee.framework.ui.skynet.render.artifactElement.WordExtractorData;
 import org.eclipse.osee.framework.ui.skynet.render.artifactElement.WordImageArtifactElementExtractor;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
 import org.xml.sax.SAXException;
 
 /**
@@ -95,15 +96,15 @@ public class UpdateArtifactOperation extends AbstractOperation {
 
    private void wordArtifactUpdate(IElementExtractor elementExtractor) throws OseeCoreException, DOMException, ParserConfigurationException, SAXException, IOException {
       List<Artifact> deletedArtifacts = new LinkedList<Artifact>();
-      Collection<Element> artElements = elementExtractor.extractElements();
+      Collection<WordExtractorData> extractorDatas = elementExtractor.extractElements();
       Element oleDataElement = elementExtractor.getOleDataElement();
 
       try {
-         boolean singleArtifact = artElements.size() == 1;
+         boolean singleArtifact = extractorDatas.size() == 1;
          boolean containsOleData = false;
-         for (Element artElement : artElements) {
+         for (WordExtractorData extractorData : extractorDatas) {
 
-            Artifact artifact = getArtifact(artElement);
+            Artifact artifact = getArtifact(extractorData);
 
             if (artifact.isDeleted()) {
                deletedArtifacts.add(artifact);
@@ -124,7 +125,7 @@ public class UpdateArtifactOperation extends AbstractOperation {
                try {
                   content =
                      Lib.inputStreamToString(new ByteArrayInputStream(
-                        WordTemplateRenderer.getFormattedContent(artElement)));
+                        WordTemplateRenderer.getFormattedContent(extractorData.getParentEelement())));
                } catch (IOException ex) {
                   OseeExceptions.wrapAndThrow(ex);
                }
@@ -138,7 +139,7 @@ public class UpdateArtifactOperation extends AbstractOperation {
 
                if (singleArtifact || multiSave) {
                   // TODO Do we need this?
-                  if (artElement.getNodeName().endsWith("body")) {
+                  if (extractorData.getParentEelement().getNodeName().endsWith("body")) {
                      // This code pulls out all of the stuff after the inserted listnum reordering
                      // stuff. This needs to be
                      // here so that we remove unwanted template information from single editing
@@ -164,18 +165,13 @@ public class UpdateArtifactOperation extends AbstractOperation {
          String.format("Skipping update - artifact [%s] is read-only", artifact.toString()));
    }
 
-   private Artifact getArtifact(Element artifactElement) throws OseeCoreException {
+   private Artifact getArtifact(WordExtractorData artifactElement) throws OseeCoreException {
       if (artifacts.size() == 1) {
          return artifacts.get(0);
       }
 
-      NamedNodeMap attributes = artifactElement.getAttributes();
-      for (int i = 0; i < attributes.getLength(); i++) {
-         // MS Word has a nasty habit of changing the namespace say from ns0 to ns1, so we must ignore the namespace by using endsWith()
-         if (attributes.item(i).getNodeName().endsWith("guid")) {
-            String guid = attributes.item(i).getNodeValue();
-            return ArtifactQuery.getArtifactFromId(guid, branch, DeletionFlag.INCLUDE_DELETED);
-         }
+      if (Strings.isValid(artifactElement.getGuid())) {
+         return ArtifactQuery.getArtifactFromId(artifactElement.getGuid(), branch, DeletionFlag.INCLUDE_DELETED);
       }
 
       throw new OseeArgumentException("didn't find the guid attribure in element [%s]", artifactElement);

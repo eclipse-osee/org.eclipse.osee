@@ -5,28 +5,33 @@
  */
 package org.eclipse.osee.framework.ui.skynet.render.artifactElement;
 
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+
 /**
  * @author Jeff C. Phillips
  */
 public class WordExtractorData {
-   StringBuilder textBuilder;
-   String outputText;
-   String guid;
-
-   public WordExtractorData() {
-      this.textBuilder = new StringBuilder();
-   }
+   private Element parent;
+   private String guid;
 
    public void setGuid(String guid) {
       this.guid = guid;
    }
 
-   public void addText(String text) {
-      textBuilder.append(text);
+   public void addParent(Element parent) {
+      this.parent = parent;
    }
 
-   public String getText() {
-      return null;
+   public void addChild(Node child) {
+      parent.appendChild(child);
    }
 
+   public String getGuid() {
+      return guid;
+   }
+
+   public Element getParentEelement() {
+      return parent;
+   }
 }

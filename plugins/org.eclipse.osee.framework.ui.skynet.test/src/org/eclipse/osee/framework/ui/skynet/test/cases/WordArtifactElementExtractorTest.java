@@ -25,10 +25,10 @@ import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.skynet.core.linking.OseeLinkBuilder;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.artifactElement.WordExtractorData;
 import org.eclipse.osee.framework.ui.skynet.render.artifactElement.WordImageArtifactElementExtractor;
 import org.junit.Assert;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 /**
@@ -90,10 +90,10 @@ public class WordArtifactElementExtractorTest {
          new WordImageArtifactElementExtractor(getDocumentWrapTags(createTestString(builder, START_2007, END_2007,
             SIMPLE_2007_CHANGE)));
 
-      Collection<Element> artElements = extractor.extractElements();
+      Collection<WordExtractorData> artElements = extractor.extractElements();
       Assert.assertTrue(extractor.extractElements().size() == 1);
       Assert.assertTrue("Middle change".equals(WordUtil.textOnly(Lib.inputStreamToString(new ByteArrayInputStream(
-         WordTemplateRenderer.getFormattedContent(artElements.iterator().next()))))));
+         WordTemplateRenderer.getFormattedContent(artElements.iterator().next().getParentEelement()))))));
    }
 
    @org.junit.Test
@@ -103,11 +103,11 @@ public class WordArtifactElementExtractorTest {
          new WordImageArtifactElementExtractor(getDocumentWrapTags(createTestString(builder, START_2007, END_2007,
             START_2007_CHANGE)));
 
-      Collection<Element> artElements = extractor.extractElements();
+      Collection<WordExtractorData> artElements = extractor.extractElements();
       Assert.assertTrue(extractor.extractElements().size() == 1);
       String value =
          WordUtil.textOnly(Lib.inputStreamToString(new ByteArrayInputStream(
-            WordTemplateRenderer.getFormattedContent(artElements.iterator().next()))));
+            WordTemplateRenderer.getFormattedContent(artElements.iterator().next().getParentEelement()))));
       Assert.assertTrue("I am change".equals(value));
    }
 
@@ -118,10 +118,10 @@ public class WordArtifactElementExtractorTest {
          new WordImageArtifactElementExtractor(getDocumentWrapTags(createTestString(builder, START_2007, END_2007,
             END_2007_CHANGE)));
 
-      Collection<Element> artElements = extractor.extractElements();
+      Collection<WordExtractorData> artElements = extractor.extractElements();
       Assert.assertTrue(extractor.extractElements().size() == 1);
       Assert.assertTrue("End change".equals(WordUtil.textOnly(Lib.inputStreamToString(new ByteArrayInputStream(
-         WordTemplateRenderer.getFormattedContent(artElements.iterator().next()))))));
+         WordTemplateRenderer.getFormattedContent(artElements.iterator().next().getParentEelement()))))));
    }
 
    @org.junit.Test
@@ -129,7 +129,7 @@ public class WordArtifactElementExtractorTest {
       WordImageArtifactElementExtractor extractor =
          new WordImageArtifactElementExtractor(getDocumentWrapTags(MULIT_2007_EDIT));
 
-      List<Element> artElements = extractor.extractElements();
+      List<WordExtractorData> artElements = extractor.extractElements();
       Assert.assertTrue("expected 2 got " + extractor.extractElements().size(), extractor.extractElements().size() == 2);
       List<String> testText = Arrays.asList("One", "Two");
       multiArtifactTest(artElements, testText);
@@ -142,10 +142,10 @@ public class WordArtifactElementExtractorTest {
          new WordImageArtifactElementExtractor(getDocumentWrapTags(createTestString(builder, START_2003, END_2003,
             "</w:p><w:p><w:r><w:t>This is a test-x</w:t></w:r></w:p><w:p>")));
 
-      Collection<Element> artElements = extractor.extractElements();
+      Collection<WordExtractorData> artElements = extractor.extractElements();
       Assert.assertTrue(extractor.extractElements().size() == 1);
       Assert.assertTrue("This is a test-x".equals(WordUtil.textOnly(Lib.inputStreamToString(new ByteArrayInputStream(
-         WordTemplateRenderer.getFormattedContent(artElements.iterator().next()))))));
+         WordTemplateRenderer.getFormattedContent(artElements.iterator().next().getParentEelement()))))));
    }
 
    @org.junit.Test
@@ -155,11 +155,11 @@ public class WordArtifactElementExtractorTest {
          new WordImageArtifactElementExtractor(getDocumentWrapTags(createTestString(builder, START_2003, END_2003,
             "<w:r><w:t>this This is a test that</w:t></w:r></w:p><w:p>")));
 
-      Collection<Element> artElements = extractor.extractElements();
+      Collection<WordExtractorData> artElements = extractor.extractElements();
       Assert.assertTrue(extractor.extractElements().size() == 1);
       String artContent =
          WordUtil.textOnly(Lib.inputStreamToString(new ByteArrayInputStream(
-            WordTemplateRenderer.getFormattedContent(artElements.iterator().next()))));
+            WordTemplateRenderer.getFormattedContent(artElements.iterator().next().getParentEelement()))));
       Assert.assertTrue("Got*" + artContent, "this This is a test that".equals(artContent));
    }
 
@@ -168,7 +168,7 @@ public class WordArtifactElementExtractorTest {
       WordImageArtifactElementExtractor extractor =
          new WordImageArtifactElementExtractor(getDocumentWrapTags(MULULTI_2003_EDIT_MULTI_SECTION));
 
-      List<Element> artElements = extractor.extractElements();
+      List<WordExtractorData> artElements = extractor.extractElements();
       Assert.assertTrue("expected 2 got " + extractor.extractElements().size(), extractor.extractElements().size() == 2);
       List<String> testText = Arrays.asList("One", "Two");
       multiArtifactTest(artElements, testText);
@@ -193,11 +193,11 @@ public class WordArtifactElementExtractorTest {
       return stringBuilder.toString();
    }
 
-   private void multiArtifactTest(List<Element> actuals, List<String> expected) throws IOException {
+   private void multiArtifactTest(List<WordExtractorData> actuals, List<String> expected) throws IOException {
       for (int i = 0; i < actuals.size(); i++) {
          String artContent =
             WordUtil.textOnly(Lib.inputStreamToString(new ByteArrayInputStream(
-               WordTemplateRenderer.getFormattedContent(actuals.get(i)))));
+               WordTemplateRenderer.getFormattedContent(actuals.get(i).getParentEelement()))));
          Assert.assertTrue("expected:*" + expected.get(i) + "* got:*" + artContent + "*",
             expected.get(i).equals(artContent));
       }
