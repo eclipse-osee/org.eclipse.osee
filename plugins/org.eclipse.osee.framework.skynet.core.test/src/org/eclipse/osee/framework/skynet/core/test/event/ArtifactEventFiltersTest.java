@@ -13,8 +13,7 @@ package org.eclipse.osee.framework.skynet.core.test.event;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.junit.Assert;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import junit.framework.Assert;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -73,27 +72,27 @@ public class ArtifactEventFiltersTest {
       EventBasicGuidArtifact guidArt =
          new EventBasicGuidArtifact(EventModType.Added, GUID.create(), CoreArtifactTypes.Requirement.getGuid(),
             GUID.create());
+      List<EventBasicGuidArtifact> guidArts = Arrays.asList(guidArt);
 
-      Assert.assertTrue("Should match cause same artifact type", typeFilter.isMatch(guidArt));
+      Assert.assertTrue("Should match cause same artifact type", typeFilter.isMatchArtifacts(guidArts));
 
       guidArt.setArtTypeGuid(CoreArtifactTypes.SoftwareRequirement.getGuid());
 
       Assert.assertTrue("Should match cause SoftwareRequirement is subclass of Requirement",
-         typeFilter.isMatch(guidArt));
+         typeFilter.isMatchArtifacts(guidArts));
 
       typeFilter = new ArtifactTypeEventFilter(CoreArtifactTypes.SoftwareRequirement);
       guidArt.setArtTypeGuid(CoreArtifactTypes.Requirement.getGuid());
 
       Assert.assertFalse("Should NOT match cause Requirement is NOT subclass of Software Requirement",
-         typeFilter.isMatch(guidArt));
+         typeFilter.isMatchArtifacts(guidArts));
 
    }
 
    private void testArtifactEventFilters__branchFilter() throws Exception {
       // Create dummy artifact event
       String branchGuid = GUID.create();
-      IOseeBranch branchToken = TokenFactory.createBranch(branchGuid, "test branch");
-      ArtifactEvent testArtifactEvent = new ArtifactEvent(branchToken);
+      ArtifactEvent testArtifactEvent = new ArtifactEvent(TokenFactory.createBranch(branchGuid, "test branch"));
       testArtifactEvent.setNetworkSender(getDummyRemoteNetworkSender());
 
       // Register set filters to null to see if event comes through
@@ -139,18 +138,18 @@ public class ArtifactEventFiltersTest {
    private void testArtifactEventFilters__branchFilterArtifactType() throws Exception {
       // Create dummy artifact event
       String branchGuid = GUID.create();
-      IOseeBranch branchToken = TokenFactory.createBranch(branchGuid, "test branch 2");
-      ArtifactEvent testArtifactEvent = new ArtifactEvent(branchToken);
+      ArtifactEvent testArtifactEvent = new ArtifactEvent(TokenFactory.createBranch(branchGuid, "test branch 2"));
       testArtifactEvent.setNetworkSender(getDummyRemoteNetworkSender());
       testArtifactEvent.getArtifacts().add(
          new EventBasicGuidArtifact(EventModType.Added, branchGuid, CoreArtifactTypes.GeneralDocument.getGuid(),
             GUID.create()));
+      testArtifactEvent.getArtifacts().add(
+         new EventBasicGuidArtifact(EventModType.Added, branchGuid, CoreArtifactTypes.Component.getGuid(),
+            GUID.create()));
 
       // Reset event filters only allow events from this branch
       eventFilters = new ArrayList<IEventFilter>();
-
-      IOseeBranch branchToken2 = TokenFactory.createBranch(branchGuid, "Test Branch");
-      eventFilters.add(new BranchGuidEventFilter(branchToken2));
+      eventFilters.add(new BranchGuidEventFilter(TokenFactory.createBranch(branchGuid, "Test Branch")));
       eventFilters.add(new ArtifactTypeEventFilter(CoreArtifactTypes.GeneralDocument));
       resultArtifactEvent = null;
       resultSender = null;
@@ -165,9 +164,7 @@ public class ArtifactEventFiltersTest {
 
       // Reset event filters to only send other artifact type of this branch
       eventFilters = new ArrayList<IEventFilter>();
-
-      IOseeBranch branchToken3 = TokenFactory.createBranch(branchGuid, "Test Branch");
-      eventFilters.add(new BranchGuidEventFilter(branchToken3));
+      eventFilters.add(new BranchGuidEventFilter(TokenFactory.createBranch(branchGuid, "Test Branch")));
       eventFilters.add(new ArtifactTypeEventFilter(CoreArtifactTypes.Folder));
       resultArtifactEvent = null;
       resultSender = null;
@@ -180,9 +177,7 @@ public class ArtifactEventFiltersTest {
 
       // Reset event filters to only send OTHER branch events
       eventFilters = new ArrayList<IEventFilter>();
-
-      IOseeBranch branchToken4 = TokenFactory.createBranch(GUID.create(), "Other Test Branch");
-      eventFilters.add(new BranchGuidEventFilter(branchToken4));
+      eventFilters.add(new BranchGuidEventFilter(TokenFactory.createBranch(GUID.create(), "Other Test Branch")));
       eventFilters.add(new ArtifactTypeEventFilter(CoreArtifactTypes.GeneralDocument));
       resultArtifactEvent = null;
       resultSender = null;

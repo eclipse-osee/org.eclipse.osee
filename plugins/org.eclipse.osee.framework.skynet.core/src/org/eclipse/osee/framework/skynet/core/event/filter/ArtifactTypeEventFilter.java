@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.event.filter;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidArtifact;
@@ -35,16 +37,25 @@ public class ArtifactTypeEventFilter implements IEventFilter {
       this.artifactTypes = Collections.getAggregate(artifactTypes);
    }
 
+   /**
+    * Return true if any artifact matches any of the desired artifact types
+    */
    @Override
-   public boolean isMatch(IBasicGuidArtifact guidArt) {
+   public boolean isMatchArtifacts(List<? extends IBasicGuidArtifact> guidArts) {
       try {
-         ArtifactType artType = ArtifactTypeManager.getTypeByGuid(guidArt.getArtTypeGuid());
-         for (IArtifactType artifactType : artifactTypes) {
-            if (artType.inheritsFrom(artifactType)) {
-               return true;
+         for (IBasicGuidArtifact guidArt : guidArts) {
+            ArtifactType artType = ArtifactTypeManager.getTypeByGuid(guidArt.getArtTypeGuid());
+            for (IArtifactType artifactType : artifactTypes) {
+               if (artType.inheritsFrom(artifactType)) {
+                  return true;
+               }
+               for (IArtifactType matchArtType : artifactTypes) {
+                  if (matchArtType.getGuid().equals(artType.getGuid())) {
+                     return true;
+                  }
+               }
             }
          }
-         return this.artifactTypes.contains(guidArt.getArtTypeGuid());
 
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -52,9 +63,17 @@ public class ArtifactTypeEventFilter implements IEventFilter {
       return false;
    }
 
+   /**
+    * Return true if any artifact on either side of relation matches any of the desired artifact types
+    */
    @Override
-   public boolean isMatch(IBasicGuidRelation relArt) {
-      return isMatch(relArt.getArtA()) || isMatch(relArt.getArtB());
+   public boolean isMatchRelationArtifacts(List<? extends IBasicGuidRelation> relations) {
+      for (IBasicGuidRelation relation : relations) {
+         if (isMatchArtifacts(Arrays.asList(relation.getArtA(), relation.getArtB()))) {
+            return true;
+         }
+      }
+      return false;
    }
 
    @Override

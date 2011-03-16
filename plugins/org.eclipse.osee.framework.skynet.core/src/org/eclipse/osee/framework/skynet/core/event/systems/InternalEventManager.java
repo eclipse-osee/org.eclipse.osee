@@ -40,8 +40,6 @@ import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.BroadcastEvent;
-import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
-import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidRelation;
 import org.eclipse.osee.framework.skynet.core.event.model.RemoteEventServiceEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionEvent;
@@ -171,13 +169,19 @@ public class InternalEventManager {
             if (!eventFilter.isMatch(artifactEvent.getBranchGuid())) {
                return;
             }
-            for (EventBasicGuidArtifact guidArt : artifactEvent.getArtifacts()) {
-               if (!eventFilter.isMatch(guidArt)) {
-                  return;
+            // Process artifacts and relations only if there were any in this ArtifactEvent
+            if (!artifactEvent.getArtifacts().isEmpty() || !artifactEvent.getRelations().isEmpty()) {
+               boolean matchFound = false;
+               // If artifacts are in event and one or more match, pass events through
+               if (!artifactEvent.getArtifacts().isEmpty() && eventFilter.isMatchArtifacts(artifactEvent.getArtifacts())) {
+                  matchFound = true;
                }
-            }
-            for (EventBasicGuidRelation guidRel : artifactEvent.getRelations()) {
-               if (!eventFilter.isMatch(guidRel)) {
+               // If relations are in event and one or more artifacts of the relations match, pass events through
+               if (!matchFound && !artifactEvent.getRelations().isEmpty() && eventFilter.isMatchRelationArtifacts(artifactEvent.getRelations())) {
+                  matchFound = true;
+               }
+               // If no match, don't pass events through
+               if (!matchFound) {
                   return;
                }
             }

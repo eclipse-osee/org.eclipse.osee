@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.event.filter;
 
+import java.util.List;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidRelation;
@@ -39,15 +40,31 @@ public class BranchGuidEventFilter implements IEventFilter {
    }
 
    @Override
-   public boolean isMatch(IBasicGuidArtifact guidArt) {
-      return branchToken.getGuid().equals(guidArt.getBranchGuid());
+   public boolean isMatchArtifacts(List<? extends IBasicGuidArtifact> guidArts) {
+      if (guidArts.isEmpty()) {
+         return true;
+      }
+      for (IBasicGuidArtifact guidArt : guidArts) {
+         if (branchToken.getGuid().equals(guidArt.getBranchGuid())) {
+            return true;
+         }
+      }
+      return false;
    }
 
    @Override
-   public boolean isMatch(IBasicGuidRelation relArt) {
-      return branchToken.getGuid().equals(relArt.getArtA().getBranchGuid()) ||
-      //
-      branchToken.getGuid().equals(relArt.getArtB().getBranchGuid());
+   public boolean isMatchRelationArtifacts(List<? extends IBasicGuidRelation> relations) {
+      if (relations.isEmpty()) {
+         return true;
+      }
+      for (IBasicGuidRelation rel : relations) {
+         if (branchToken.getGuid().equals(rel.getArtA().getBranchGuid()) ||
+         //
+         branchToken.getGuid().equals(rel.getArtB().getBranchGuid())) {
+            return true;
+         }
+      }
+      return false;
    }
 
    @Override
