@@ -1163,25 +1163,26 @@ public final class Lib {
 
    public static String determineGroup() {
       String toReturn = "no group";
-
       Process process = null;
       try {
-         ProcessBuilder builder =
-            new ProcessBuilder("/usr/bin/bash", "-c", "touch", "whichGroup;", "ls", "-g", "whichGroup;", "rm",
-               "whichGroup");
-         builder.directory(new File("/tmp"));
+         String[] cmd = {"/usr/bin/bash", "-c", "groups | awk '{print $1}'"};
+         ProcessBuilder builder = new ProcessBuilder(cmd);
+         builder.redirectErrorStream(true);
          process = builder.start();
 
          InputStream inputStream = null;
          try {
             inputStream = process.getInputStream();
-            String line = inputStreamToString(inputStream);
-
-            // 15 based on format of line printed  by ls
-            toReturn = line.substring(15, line.indexOf(' ', 16));
+            toReturn = inputStreamToString(inputStream);
+            if (toReturn != null) {
+               toReturn = toReturn.trim();
+            }
          } finally {
-            Lib.close(inputStream);
+            if (inputStream != null) {
+               inputStream.close();
+            }
          }
+
       } catch (IOException ex) {
          ex.printStackTrace();
       } finally {
