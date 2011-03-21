@@ -84,7 +84,7 @@ public class ViewSourceAction extends Action {
                   html = html.replaceAll("HEREBEGIN", "<FONT style=\"BACKGROUND-COLOR: yellow\">");
                   html = html.replaceAll("HEREEND", "</FONT>");
                   ResultsEditor.open("source",
-                     CoverageUtil.getFullPathWithName(item.getParent()) + "[" + item.getName() + "]", html);
+                     CoverageUtil.getFullPathWithName(item.getParent(), true) + "[" + item.getName() + "]", html);
                } else {
                   AWorkbench.popup("No File Contents Available");
                   return;
@@ -99,7 +99,7 @@ public class ViewSourceAction extends Action {
                }
                String html = AHTML.textToHtml(text);
                html = html.replaceAll(" ", "&nbsp;");
-               ResultsEditor.open("source", CoverageUtil.getFullPathWithName(item), html);
+               ResultsEditor.open("source", CoverageUtil.getFullPathWithName(item, true), html);
             }
 
          } catch (OseeCoreException ex) {

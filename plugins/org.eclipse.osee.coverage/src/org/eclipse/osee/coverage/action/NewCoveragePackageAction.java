@@ -62,11 +62,10 @@ public class NewCoveragePackageAction extends Action {
                new CoveragePackage(dialog.getEntry(), CoverageOptionManagerDefault.instance(),
                   new DbWorkProductTaskProvider(branch));
             SkynetTransaction transaction = new SkynetTransaction(branch, "Add Coverage Package");
-            CoveragePackageEvent coverageEvent =
-               new CoveragePackageEvent(coveragePackage, CoverageEventType.Added);
+            CoveragePackageEvent coverageEvent = new CoveragePackageEvent(coveragePackage, CoverageEventType.Added);
             OseeCoveragePackageStore.get(coveragePackage, branch).save(transaction, coverageEvent);
             transaction.execute();
-            CoverageEventManager.getInstance().sendRemoteEvent(coverageEvent);
+            CoverageEventManager.instance.sendRemoteEvent(coverageEvent);
             CoverageEditor.open(new CoverageEditorInput(dialog.getEntry(), OseeCoveragePackageStore.get(
                coveragePackage, branch).getArtifact(false), coveragePackage, false));
          }

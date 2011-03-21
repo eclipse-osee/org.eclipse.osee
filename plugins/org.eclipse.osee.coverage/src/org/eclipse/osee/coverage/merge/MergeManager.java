@@ -23,6 +23,8 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageItem;
+import org.eclipse.osee.coverage.model.CoverageOption;
+import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.CoveragePackageBase;
 import org.eclipse.osee.coverage.model.ICoverage;
@@ -314,7 +316,17 @@ public class MergeManager {
       if (!(importItem instanceof CoverageItem)) {
          return false;
       }
-      if (!((CoverageItem) importItem).getCoverageMethod().equals(((CoverageItem) packageItem).getCoverageMethod())) {
+
+      CoverageOption oldExistingOption = ((CoverageItem) packageItem).getCoverageMethod();
+      CoverageOption newImportOption = ((CoverageItem) importItem).getCoverageMethod();
+      boolean oldIsAnalystDispositionOption =
+         CoverageOptionManager.isAnalystDispositionedCoverageOption(oldExistingOption);
+      // If existing is an Analyst Disposition Option, don't overwrite with Not_Covered
+      if (oldIsAnalystDispositionOption && newImportOption.equals(CoverageOptionManager.Not_Covered)) {
+         return false;
+      }
+      // Else if new is different than old, overwrite old
+      else if (!newImportOption.equals(oldExistingOption)) {
          return true;
       }
       return false;

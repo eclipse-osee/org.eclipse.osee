@@ -32,6 +32,10 @@ public class ElapsedTime {
       System.out.println("\n" + name + " - start " + DateUtil.getTimeStamp());
    }
 
+   public void logPoint(String pointName) {
+      System.out.println("\n" + name + " - [" + pointName + "] " + DateUtil.getTimeStamp());
+   }
+
    public void end() {
       endDate = new Date();
       long diff = endDate.getTime() - startDate.getTime();

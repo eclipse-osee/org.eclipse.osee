@@ -138,4 +138,14 @@ public class CoverageImport extends CoveragePackageBase {
       return super.equals(obj);
    }
 
+   @Override
+   public String toString() {
+      return getName();
+   }
+
+   @Override
+   public String toStringNoPackage() {
+      return getName();
+   }
+
 }

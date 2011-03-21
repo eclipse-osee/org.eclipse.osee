@@ -15,8 +15,11 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.coverage.editor.xcover.CoverageLabelProvider;
 import org.eclipse.osee.coverage.editor.xcover.CoverageXViewerFactory;
 import org.eclipse.osee.coverage.merge.IMergeItem;
+import org.eclipse.osee.coverage.merge.MergeItem;
 import org.eclipse.osee.coverage.merge.MergeItemGroup;
+import org.eclipse.osee.coverage.merge.MergeType;
 import org.eclipse.osee.coverage.merge.MessageMergeItem;
+import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.store.OseeCoverageUnitStore;
@@ -97,6 +100,14 @@ public class CoverageMergeLabelProvider extends CoverageLabelProvider {
       if (xCol.equals(CoverageMergeXViewerFactoryImport.Import) && element instanceof IMergeItem) {
          if (!((IMergeItem) element).isImportAllowed()) {
             return "";
+         }
+         if (element instanceof MergeItem && ((MergeItem) element).getMergeType() == MergeType.CI_Method_Update) {
+            MergeItem mergeItem = (MergeItem) element;
+            if (mergeItem.getPackageItem() instanceof CoverageItem) {
+               return String.format("%s from [%s] to [%s]", mergeItem.getMergeType().toString(),
+                  ((CoverageItem) mergeItem.getPackageItem()).getCoverageMethod().getName(),
+                  ((CoverageItem) mergeItem.getImportItem()).getCoverageMethod().getName());
+            }
          }
          return ((IMergeItem) element).getMergeType().toString();
       }

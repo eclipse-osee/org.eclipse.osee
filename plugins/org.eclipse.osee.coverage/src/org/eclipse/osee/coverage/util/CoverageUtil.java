@@ -177,28 +177,36 @@ public class CoverageUtil {
    /**
     * Returns string of all parent ICoverage items up the tree
     */
-   public static String getFullPath(ICoverage coverage) {
+   public static String getFullPath(ICoverage coverage, boolean includePackageName) {
       StringBuffer sb = new StringBuffer();
-      getFullPathRecurse(coverage.getParent(), sb);
+      getFullPathRecurse(coverage.getParent(), includePackageName, sb);
       return sb.toString();
    }
 
-   public static String getFullPathWithName(ICoverage coverage) {
+   public static String getFullPath(ICoverage coverage) {
       StringBuffer sb = new StringBuffer();
-      getFullPathRecurse(coverage.getParent(), sb);
+      getFullPathRecurse(coverage.getParent(), true, sb);
+      return sb.toString();
+   }
+
+   public static String getFullPathWithName(ICoverage coverage, boolean includePackageName) {
+      StringBuffer sb = new StringBuffer();
+      getFullPathRecurse(coverage.getParent(), includePackageName, sb);
       sb.append("[" + coverage.getName() + "]");
       return sb.toString();
    }
 
-   public static void getFullPathRecurse(ICoverage coverage, StringBuffer sb) {
+   public static void getFullPathRecurse(ICoverage coverage, boolean includePackageName, StringBuffer sb) {
       if (coverage == null) {
          return;
       }
-      getFullPathRecurse(coverage.getParent(), sb);
-      if (coverage instanceof CoverageImport) {
+      getFullPathRecurse(coverage.getParent(), includePackageName, sb);
+      if (coverage instanceof CoverageImport && includePackageName) {
          sb.append("[Import]");
       } else {
-         sb.append("[" + coverage.getName() + "]");
+         if (!(coverage instanceof CoveragePackageBase) || includePackageName) {
+            sb.append("[" + coverage.getName() + "]");
+         }
       }
    }
 
@@ -207,7 +215,7 @@ public class CoverageUtil {
          MatchItem item = MergeManager.getPackageCoverageItem(coveragePackage, importItem);
          if (!item.isMatch()) {
             System.out.println(String.format("No Match for item [%s] path [%s]", importItem,
-               CoverageUtil.getFullPath(importItem)));
+               CoverageUtil.getFullPath(importItem, false)));
          }
       }
    }

@@ -15,7 +15,6 @@ import org.eclipse.osee.coverage.editor.CoverageEditorInput;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
 import org.eclipse.osee.coverage.util.CoverageUtil;
-import org.eclipse.osee.coverage.util.dialog.CoveragePackageArtifactListDialog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
@@ -37,16 +36,7 @@ public class CpSelectAndImportItem extends XNavigateItemAction {
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
       CoverageUtil.getBranchFromUser(false);
-      CoveragePackageArtifactListDialog dialog =
-         new CoveragePackageArtifactListDialog("Open Coverage Package", "Select Coverage Package");
-      if (!CoverageUtil.getBranchFromUser(false)) {
-         return;
-      }
-      dialog.setInput(OseeCoveragePackageStore.getCoveragePackageArtifacts(CoverageUtil.getBranch()));
-      if (dialog.open() != 0) {
-         return;
-      }
-      Artifact coveragePackageArtifact = (Artifact) dialog.getResult()[0];
+      Artifact coveragePackageArtifact = CoverageTestUtil.getSelectedCoveragePackageFromDialog();
       CoveragePackage coveragePackage = OseeCoveragePackageStore.get(coveragePackageArtifact);
       CoverageEditor.open(new CoverageEditorInput(coveragePackage.getName(), coveragePackageArtifact, coveragePackage,
          true));
@@ -67,4 +57,5 @@ public class CpSelectAndImportItem extends XNavigateItemAction {
       }
       editor.simulateImport(blamImportName);
    }
+
 }

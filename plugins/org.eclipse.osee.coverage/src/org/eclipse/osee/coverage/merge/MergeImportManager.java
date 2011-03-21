@@ -14,6 +14,7 @@ import java.util.Collection;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageItem;
+import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
@@ -183,6 +184,9 @@ public class MergeImportManager {
       CoverageItem importItem = (CoverageItem) ((MergeItem) mergeItem).getImportItem();
       CoverageItem packageItem = (CoverageItem) ((MergeItem) mergeItem).getPackageItem();
       packageItem.setCoverageMethod(importItem.getCoverageMethod());
+      if (importItem.getCoverageMethod().getName().equals(CoverageOptionManager.Test_Unit.name)) {
+         packageItem.setRationale("");
+      }
       updateFileContents(packageItem, importItem);
    }
 
@@ -194,7 +198,8 @@ public class MergeImportManager {
    }
 
    private void updateFileContents(CoverageUnit packageUnit, CoverageUnit importUnit) throws OseeCoreException {
-      if (!packageUnit.getFileContents().equals(importUnit.getFileContents())) {
+      if (Strings.isValid(importUnit.getFileContents()) && !packageUnit.getFileContents().equals(
+         importUnit.getFileContents())) {
          packageUnit.setFileContents(importUnit.getFileContents());
       }
       if (packageUnit.getParent() != null && packageUnit.getParent() instanceof CoverageUnit) {

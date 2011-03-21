@@ -12,7 +12,6 @@ package org.eclipse.osee.coverage.test;
 
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
 import java.util.Collection;
-import org.junit.Assert;
 import org.eclipse.osee.coverage.event.CoverageEventType;
 import org.eclipse.osee.coverage.event.CoveragePackageEvent;
 import org.eclipse.osee.coverage.merge.IMergeItem;
@@ -31,15 +30,16 @@ import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.model.SimpleWorkProductTaskProvider;
 import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
 import org.eclipse.osee.coverage.store.OseeCoverageStore;
-import org.eclipse.osee.coverage.test.import1.CoverageImport1TestBlam;
-import org.eclipse.osee.coverage.test.import2.CoverageImport2TestBlam;
-import org.eclipse.osee.coverage.test.import3.CoverageImport3TestBlam;
-import org.eclipse.osee.coverage.test.import4.CoverageImport4TestBlam;
-import org.eclipse.osee.coverage.test.import5.CoverageImport5TestBlam;
-import org.eclipse.osee.coverage.test.import6.CoverageImport6TestBlam;
-import org.eclipse.osee.coverage.test.import7.CoverageImport7TestBlam;
-import org.eclipse.osee.coverage.test.import8.CoverageImport8TestBlam;
-import org.eclipse.osee.coverage.test.import9.CoverageImport9TestBlam;
+import org.eclipse.osee.coverage.test.import01.CoverageImport1TestBlam;
+import org.eclipse.osee.coverage.test.import02.CoverageImport2TestBlam;
+import org.eclipse.osee.coverage.test.import03.CoverageImport3TestBlam;
+import org.eclipse.osee.coverage.test.import04.CoverageImport4TestBlam;
+import org.eclipse.osee.coverage.test.import05.CoverageImport5TestBlam;
+import org.eclipse.osee.coverage.test.import06.CoverageImport6TestBlam;
+import org.eclipse.osee.coverage.test.import07.CoverageImport7TestBlam;
+import org.eclipse.osee.coverage.test.import08.CoverageImport8TestBlam;
+import org.eclipse.osee.coverage.test.import09.CoverageImport9TestBlam;
+import org.eclipse.osee.coverage.test.import10.CoverageImport10TestBlam;
 import org.eclipse.osee.coverage.test.util.CoverageTestUtil;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.ISaveable;
@@ -55,6 +55,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -639,7 +640,8 @@ public class CoveragePackageImportTest {
       Assert.assertEquals(1, mergeManager.getMergeItems(null).size());
       Assert.assertTrue(mergeManager.getMergeItems(null).iterator().next() instanceof MergeItemGroup);
       Assert.assertTrue(((MergeItemGroup) mergeManager.getMergeItems(null).iterator().next()).getMergeType() == MergeType.CI_Changes);
-      Assert.assertEquals(2, ((MergeItemGroup) mergeManager.getMergeItems(null).iterator().next()).getMergeItems().size());
+      Assert.assertEquals(2,
+         ((MergeItemGroup) mergeManager.getMergeItems(null).iterator().next()).getMergeItems().size());
 
       MergeImportManager importManager = new MergeImportManager(mergeManager);
       XResultData resultData = importManager.importItems(new ISaveable() {
@@ -1278,6 +1280,211 @@ public class CoveragePackageImportTest {
       Assert.assertEquals(70, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Test_Unit).size());
       Assert.assertEquals(64, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Not_Covered).size());
 
+   }
+
+   @Test
+   // Re-import; Test Improvement to resolving coverage method differences
+   public void testImport10() throws Exception {
+      CoverageImport10TestBlam coverageImport10TestBlam = new CoverageImport10TestBlam();
+      coverageImport = coverageImport10TestBlam.run(null);
+      Assert.assertNotNull(coverageImport);
+
+      if (testWithDb) {
+         // Test Load of Coverage Package
+         Artifact artifact =
+            ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), CoverageTestUtil.getTestBranch());
+         CoverageTestUtil.registerAsTestArtifact(artifact);
+         artifact.persist();
+         OseeCoveragePackageStore packageStore = new OseeCoveragePackageStore(artifact);
+         Assert.assertNotNull(packageStore.getArtifact(false));
+         coveragePackage = packageStore.getCoveragePackage();
+      }
+
+      // Change NavigateButton1.java methods to insert user disposition item as Coverage_Method for 2 items
+      Result result = setupCoveragePackageForImport10(coveragePackage);
+      Assert.assertTrue(result.getText(), result.isTrue());
+
+      // reload coverage package from store
+      if (testWithDb) {
+         // Test Load of Coverage Package
+         Artifact artifact =
+            ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), CoverageTestUtil.getTestBranch());
+         CoverageTestUtil.registerAsTestArtifact(artifact);
+         artifact.persist();
+         OseeCoveragePackageStore packageStore = new OseeCoveragePackageStore(artifact);
+         Assert.assertNotNull(packageStore.getArtifact(false));
+         coveragePackage = packageStore.getCoveragePackage();
+      }
+
+      // Confirm that programatic changes were recorded
+      // Two items were changed to Deactivated, one was not covered, other test covered, no net gain of 1 item covered
+      Assert.assertEquals(71, coveragePackage.getCoverageItemsCovered().size());
+      Assert.assertEquals(134, coveragePackage.getCoverageItems().size());
+      Assert.assertEquals(52, coveragePackage.getCoveragePercent().intValue());
+      Assert.assertEquals(2, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Deactivated_Code).size());
+      Assert.assertEquals(0, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Exception_Handling).size());
+      Assert.assertEquals(69, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Test_Unit).size());
+      Assert.assertEquals(63, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Not_Covered).size());
+
+      CoverageItem item = getNavigateButton2getImageLine3CoverageItem(coveragePackage);
+      Assert.assertEquals("This is the rationale", item.getRationale());
+
+      // Test MergeManager
+      Assert.assertNotNull(coveragePackage);
+      MergeManager mergeManager = new MergeManager(coveragePackage, coverageImport);
+      Assert.assertEquals(1, mergeManager.getMergeItems(null).size());
+      Assert.assertTrue(mergeManager.getMergeItems(null).iterator().next() instanceof MergeItemGroup);
+      int numUpdateMethod = 0;
+      for (IMergeItem mergeItem : ((MergeItemGroup) mergeManager.getMergeItems(null).iterator().next()).getMergeItems()) {
+         if (mergeItem.getMergeType() == MergeType.CI_Method_Update) {
+            numUpdateMethod++;
+         } else {
+            throw new OseeStateException("Unexpected merge type [%s] for CI_Changes group", mergeItem.getMergeType());
+         }
+      }
+      Assert.assertEquals(2, numUpdateMethod);
+
+      MergeImportManager importManager = new MergeImportManager(mergeManager);
+      XResultData resultData = importManager.importItems(new ISaveable() {
+
+         @Override
+         public Result isEditable() {
+            return Result.TrueResult;
+         }
+
+         @Override
+         public Result save() {
+            return Result.TrueResult;
+         }
+
+         @Override
+         public Result save(Collection<ICoverage> coverages) {
+            return Result.TrueResult;
+         }
+
+         @Override
+         public Result saveImportRecord(SkynetTransaction transaction, CoverageImport coverageImport) {
+            return Result.TrueResult;
+         }
+
+         @Override
+         public Branch getBranch() {
+            return CoverageTestUtil.getTestBranch();
+         }
+
+      }, mergeManager.getMergeItems(null));
+      Assert.assertEquals(0, resultData.getNumErrors());
+
+      // CoveragePackage should now have imported results
+      Assert.assertEquals(70, coveragePackage.getCoverageItemsCovered().size());
+      Assert.assertEquals(134, coveragePackage.getCoverageItems().size());
+      Assert.assertEquals(52, coveragePackage.getCoveragePercent().intValue());
+      Assert.assertEquals(1, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Deactivated_Code).size());
+      Assert.assertEquals(0, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Exception_Handling).size());
+      Assert.assertEquals(69, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Test_Unit).size());
+      Assert.assertEquals(64, coveragePackage.getCoverageItemsCovered(CoverageOptionManager.Not_Covered).size());
+
+      // Rationale should have been cleared
+      CoverageItem item1 = getNavigateButton2getImageLine3CoverageItem(coveragePackage);
+      Assert.assertEquals("", item1.getRationale());
+
+      CoveragePackage loadedCp = null;
+      if (testWithDb) {
+         // Test Persist of CoveragePackage
+         OseeCoverageStore store = OseeCoveragePackageStore.get(coveragePackage, CoverageTestUtil.getTestBranch());
+         SkynetTransaction transaction =
+            new SkynetTransaction(CoverageTestUtil.getTestBranch(), "Coverage Package Save");
+         store.save(transaction, getTestCoveragePackageEvent());
+         transaction.execute();
+
+         // Test Load of Coverage Package
+         Artifact artifact =
+            ArtifactQuery.getArtifactFromId(coveragePackage.getGuid(), CoverageTestUtil.getTestBranch());
+         CoverageTestUtil.registerAsTestArtifact(artifact);
+         artifact.persist();
+
+         OseeCoveragePackageStore packageStore = new OseeCoveragePackageStore(artifact);
+         Assert.assertNotNull(packageStore.getArtifact(false));
+         loadedCp = packageStore.getCoveragePackage();
+      } else {
+         loadedCp = coveragePackage;
+      }
+
+      Assert.assertEquals(70, loadedCp.getCoverageItemsCovered().size());
+      Assert.assertEquals(134, loadedCp.getCoverageItems().size());
+      Assert.assertEquals(52, loadedCp.getCoveragePercent().intValue());
+      Assert.assertEquals(1, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Deactivated_Code).size());
+      Assert.assertEquals(0, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Exception_Handling).size());
+      Assert.assertEquals(69, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Test_Unit).size());
+      Assert.assertEquals(64, loadedCp.getCoverageItemsCovered(CoverageOptionManager.Not_Covered).size());
+
+      // Rationale should have been cleared
+      CoverageItem item2 = getNavigateButton2getImageLine3CoverageItem(loadedCp);
+      Assert.assertEquals("", item2.getRationale());
+   }
+
+   public static CoverageItem getNavigateButton2getTextLine3CoverageItem(CoveragePackage coveragePackage) {
+      ICoverage coverage = CoverageTestUtil.getFirstCoverageByName(coveragePackage, "NavigationButton2.java");
+      CoverageUnit coverageUnit = (CoverageUnit) coverage;
+      for (CoverageUnit childCU : coverageUnit.getCoverageUnits()) {
+         if (childCU.getName().equals("getText")) {
+            for (CoverageItem item : childCU.getCoverageItems()) {
+               if (item.getOrderNumber().equals("3")) {
+                  return item;
+               }
+            }
+         }
+      }
+      return null;
+   }
+
+   public static CoverageItem getNavigateButton2getImageLine3CoverageItem(CoveragePackage coveragePackage) {
+      ICoverage coverage = CoverageTestUtil.getFirstCoverageByName(coveragePackage, "NavigationButton2.java");
+      CoverageUnit coverageUnit = (CoverageUnit) coverage;
+      for (CoverageUnit childCU : coverageUnit.getCoverageUnits()) {
+         if (childCU.getName().equals("getImage")) {
+            for (CoverageItem item : childCU.getCoverageItems()) {
+               if (item.getOrderNumber().equals("3")) {
+                  return item;
+               }
+            }
+         }
+      }
+      return null;
+   }
+
+   /**
+    * Setup test by changing two lines in NavigateButton2.java to be user dispositioned and getText line 3 rationale
+    */
+   public static Result setupCoveragePackageForImport10(CoveragePackage coveragePackage) {
+      String errStr = "";
+
+      CoverageItem item = getNavigateButton2getTextLine3CoverageItem(coveragePackage);
+      if (item == null) {
+         errStr = "NavigationButton.java/getText/line 3 not found\n";
+      } else {
+         item.setCoverageMethod(CoverageOptionManager.Deactivated_Code);
+      }
+
+      item = getNavigateButton2getImageLine3CoverageItem(coveragePackage);
+      if (item == null) {
+         errStr += "NavigationButton.java/getImage/line 3 not found";
+      } else {
+         item.setCoverageMethod(CoverageOptionManager.Deactivated_Code);
+         item.setRationale("This is the rationale");
+      }
+
+      if (!errStr.isEmpty()) {
+         return new Result(errStr);
+      }
+
+      if (testWithDb) {
+         OseeCoveragePackageStore packageStore =
+            new OseeCoveragePackageStore(coveragePackage, CoverageTestUtil.getTestBranch());
+         packageStore.save();
+      }
+
+      return Result.TrueResult;
    }
 
    private CoveragePackageEvent getTestCoveragePackageEvent() {

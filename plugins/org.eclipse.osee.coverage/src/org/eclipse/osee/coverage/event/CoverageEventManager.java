@@ -55,15 +55,11 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
  */
 public class CoverageEventManager implements IArtifactEventListener, OseeMessagingStatusCallback {
 
-   private static CoverageEventManager instance = new CoverageEventManager();
+   public static CoverageEventManager instance = new CoverageEventManager();
    private final List<CoverageEditor> editors = new ArrayList<CoverageEditor>();
    private ArtifactTypeEventFilter artifactTypeEventFilter;
    private ConnectionNode connectionNode;
    private OseeMessagingTracker oseeMessagingTracker;
-
-   public static CoverageEventManager getInstance() {
-      return instance;
-   }
 
    public static void dispose() {
       instance.stopListeneingForFrameworkEvents();

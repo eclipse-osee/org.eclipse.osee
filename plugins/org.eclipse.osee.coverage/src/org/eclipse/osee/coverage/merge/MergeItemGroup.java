@@ -43,6 +43,11 @@ public class MergeItemGroup extends MergeItemBase {
    }
 
    @Override
+   public String toStringNoPackage() {
+      return toString();
+   }
+
+   @Override
    public String getAssignees() {
       return "";
    }

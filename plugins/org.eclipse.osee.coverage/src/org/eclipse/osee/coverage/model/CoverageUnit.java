@@ -160,6 +160,12 @@ public class CoverageUnit extends NamedIdentity implements IWorkProductRelatable
    }
 
    @Override
+   public String toStringNoPackage() {
+      return String.format("[Unit [%s][M: %s][%s][Path: %s]]", getName(), getOrderNumber(), getGuid(),
+         CoverageUtil.getFullPath(this, false));
+   }
+
+   @Override
    public Result isEditable() {
       return Result.TrueResult;
    }

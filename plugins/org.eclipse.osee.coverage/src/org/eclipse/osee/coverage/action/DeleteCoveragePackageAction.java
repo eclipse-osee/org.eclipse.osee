@@ -83,7 +83,7 @@ public class DeleteCoveragePackageAction extends Action {
                if (!purge) {
                   transaction.execute();
                }
-               CoverageEventManager.getInstance().sendRemoteEvent(coverageEvent);
+               CoverageEventManager.instance.sendRemoteEvent(coverageEvent);
             }
          }
       } catch (OseeCoreException ex) {

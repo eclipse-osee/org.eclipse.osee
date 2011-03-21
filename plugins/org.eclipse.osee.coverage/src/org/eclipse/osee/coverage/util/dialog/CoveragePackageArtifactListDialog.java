@@ -15,7 +15,10 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.util.ArtifactNameSorter;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 
 /**
  * @author Donald G. Dunne
@@ -53,4 +56,12 @@ public class CoveragePackageArtifactListDialog extends org.eclipse.ui.dialogs.Li
       });
 
    }
+
+   @Override
+   protected Control createDialogArea(Composite container) {
+      Control control = super.createDialogArea(container);
+      getTableViewer().setSorter(new ArtifactNameSorter());
+      return control;
+   }
+
 }

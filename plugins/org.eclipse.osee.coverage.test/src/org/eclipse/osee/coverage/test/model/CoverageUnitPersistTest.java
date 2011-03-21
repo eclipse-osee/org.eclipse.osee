@@ -30,7 +30,7 @@ import org.eclipse.osee.coverage.model.SimpleWorkProductTaskProvider;
 import org.eclipse.osee.coverage.store.CoverageArtifactTypes;
 import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
 import org.eclipse.osee.coverage.test.SampleJavaFileParser;
-import org.eclipse.osee.coverage.test.import1.CoverageImport1TestBlam;
+import org.eclipse.osee.coverage.test.import01.CoverageImport1TestBlam;
 import org.eclipse.osee.coverage.test.util.CoverageTestUtil;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.ISaveable;
@@ -56,7 +56,7 @@ public class CoverageUnitPersistTest {
    public static CoverageItem ci = null;
    public static String parentGuid = null;
    public static String guid = null;
-   public static String PATH = "../../../../../../../src/org/eclipse/osee/coverage/test/import1/";
+   public static String PATH = "../../../../../../../src/org/eclipse/osee/coverage/test/import01/";
    public static CoverageImport coverageImport;
    public static CoveragePackage saveCoveragePackage;
    public static CoveragePackage loadCoveragePackage;
@@ -86,7 +86,7 @@ public class CoverageUnitPersistTest {
             URL url = CoverageImport1TestBlam.class.getResource(PATH + filename);
             CoverageUnit coverageUnit =
                SampleJavaFileParser.createCodeUnit(url, coverageImport.getCoverageUnitFileContentsProvider());
-            String namespace = coverageUnit.getNamespace().replaceFirst("org.eclipse.osee.coverage.test.import1.", "");
+            String namespace = coverageUnit.getNamespace().replaceFirst("org.eclipse.osee.coverage.test.import01.", "");
             coverageUnit.setNamespace(namespace);
             CoverageUnit parentCoverageUnit = coverageImport.getOrCreateParent(namespace);
             if (parentCoverageUnit != null) {

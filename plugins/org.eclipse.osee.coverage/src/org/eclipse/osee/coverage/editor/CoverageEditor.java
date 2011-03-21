@@ -131,7 +131,7 @@ public class CoverageEditor extends FormEditor implements IActionable {
             }
             monitor.worked(1);
 
-            CoverageEventManager.getInstance().register(editor);
+            CoverageEventManager.instance.register(editor);
             //            elapsedTime.end();
          }
 
@@ -245,7 +245,7 @@ public class CoverageEditor extends FormEditor implements IActionable {
 
    @Override
    public void dispose() {
-      CoverageEventManager.getInstance().unregister(this);
+      CoverageEventManager.instance.unregister(this);
       super.dispose();
    }
 

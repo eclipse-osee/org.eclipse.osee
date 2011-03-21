@@ -21,6 +21,9 @@ import org.eclipse.osee.coverage.model.CoveragePackageBase;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.store.CoverageArtifactTypes;
+import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
+import org.eclipse.osee.coverage.util.CoverageUtil;
+import org.eclipse.osee.coverage.util.dialog.CoveragePackageArtifactListDialog;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -113,4 +116,19 @@ public class CoverageTestUtil {
       }
       return null;
    }
+
+   public static Artifact getSelectedCoveragePackageFromDialog() throws OseeCoreException {
+      CoveragePackageArtifactListDialog dialog =
+         new CoveragePackageArtifactListDialog("Open Coverage Package", "Select Coverage Package");
+      if (!CoverageUtil.getBranchFromUser(false)) {
+         return null;
+      }
+      dialog.setInput(OseeCoveragePackageStore.getCoveragePackageArtifacts(CoverageUtil.getBranch()));
+      if (dialog.open() != 0) {
+         return null;
+      }
+      Artifact coveragePackageArtifact = (Artifact) dialog.getResult()[0];
+      return coveragePackageArtifact;
+   }
+
 }

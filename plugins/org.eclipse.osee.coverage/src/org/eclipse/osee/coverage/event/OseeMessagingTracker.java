@@ -36,7 +36,7 @@ public class OseeMessagingTracker extends ServiceTracker {
       MessageService service = (MessageService) super.addingService(reference);
       try {
          connectionNode = service.getDefault();
-         CoverageEventManager.getInstance().addingRemoteEventService(connectionNode);
+         CoverageEventManager.instance.addingRemoteEventService(connectionNode);
       } catch (OseeCoreException ex) {
          OseeLog.log(OseeMessagingTracker.class, Level.SEVERE, ex);
       }

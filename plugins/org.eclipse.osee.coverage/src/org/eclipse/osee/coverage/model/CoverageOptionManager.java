@@ -55,6 +55,13 @@ public class CoverageOptionManager {
    }
 
    /**
+    * Coverage Option is one set during analyst disposition. !Test_Unit and !Not_Covered
+    */
+   public static boolean isAnalystDispositionedCoverageOption(CoverageOption coverageOption) {
+      return !coverageOption.equals(Test_Unit) && !coverageOption.equals(Not_Covered);
+   }
+
+   /**
     * Return valid options. If Read, all values returned. This handles the search use case where wouldn't want to set
     * values, but would want to search them. If Write, only enabled values are returned.
     * 

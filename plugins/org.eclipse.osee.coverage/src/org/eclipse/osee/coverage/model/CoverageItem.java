@@ -132,6 +132,13 @@ public class CoverageItem extends NamedIdentity implements ICoverage, IWorkProdu
    }
 
    @Override
+   public String toStringNoPackage() {
+      return String.format("[Item : [%s][M: %s][E: %s][%s][Name: %s][Path: %s]]", getCoverageMethod(),
+         getCoverageUnit().getOrderNumber(), getOrderNumber(), getGuid(), getName(),
+         CoverageUtil.getFullPath(this, false));
+   }
+
+   @Override
    public Result isEditable() {
       return Result.FalseResult;
    }
@@ -167,7 +174,7 @@ public class CoverageItem extends NamedIdentity implements ICoverage, IWorkProdu
    }
 
    public String getRationale() {
-      return rationale;
+      return rationale == null ? "" : rationale;
    }
 
    public void setRationale(String rationale) {

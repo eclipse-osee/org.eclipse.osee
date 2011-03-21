@@ -79,8 +79,7 @@ public class DeleteCoverUnitAction extends Action {
                new SkynetTransaction(saveable.getBranch(), "Coverage - Delete Coverage Unit");
             ICoverage coverage = selectedCoverageEditorItem.getSelectedCoverageEditorItems().iterator().next();
             CoveragePackage coveragePackage = (CoveragePackage) CoverageUtil.getParentCoveragePackageBase(coverage);
-            CoveragePackageEvent coverageEvent =
-               new CoveragePackageEvent(coveragePackage, CoverageEventType.Modified);
+            CoveragePackageEvent coverageEvent = new CoveragePackageEvent(coveragePackage, CoverageEventType.Modified);
             List<ICoverage> deleteItems = new ArrayList<ICoverage>();
             for (ICoverage coverageItem : selectedCoverageEditorItem.getSelectedCoverageEditorItems()) {
                if (coverageItem.getParent() instanceof ICoverageUnitProvider) {
@@ -91,7 +90,7 @@ public class DeleteCoverUnitAction extends Action {
                }
             }
             transaction.execute();
-            CoverageEventManager.getInstance().sendRemoteEvent(coverageEvent);
+            CoverageEventManager.instance.sendRemoteEvent(coverageEvent);
             for (ICoverage coverageItem : deleteItems) {
                refreshable.remove(coverageItem);
             }

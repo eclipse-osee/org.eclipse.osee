@@ -37,6 +37,11 @@ public class MessageCoverageItem extends NamedIdentity implements ICoverage {
    }
 
    @Override
+   public String toStringNoPackage() {
+      return toString();
+   }
+
+   @Override
    public String getAssignees() {
       return "";
    }

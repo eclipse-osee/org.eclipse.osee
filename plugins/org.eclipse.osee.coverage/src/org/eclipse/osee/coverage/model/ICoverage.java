@@ -56,4 +56,5 @@ public interface ICoverage extends Named, Identity {
 
    public String getWorkProductTaskStr();
 
+   public String toStringNoPackage();
 }

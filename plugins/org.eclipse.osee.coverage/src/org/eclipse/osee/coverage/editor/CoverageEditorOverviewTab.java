@@ -23,6 +23,7 @@ import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.CoveragePackageBase;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.util.CoverageUtil;
+import org.eclipse.osee.coverage.validate.CoveragePackageOrderValidator;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction;
@@ -117,6 +118,9 @@ public class CoverageEditorOverviewTab extends FormPage implements IRefreshActio
       }
       rd.addRaw(AHTML.newline());
       rd.addRaw(AHTML.getLabelValueStr("\nEditor Branch", branchName));
+
+      new CoveragePackageOrderValidator(coveragePackageBase, rd).run();
+
       if (coveragePackageBase.getLog() != null) {
          rd.log(AHTML.newline() + AHTML.bold("Log:") + AHTML.newline());
          rd.addRaw(coveragePackageBase.getLog().getReport("").getManipulatedHtml());
@@ -125,8 +129,8 @@ public class CoverageEditorOverviewTab extends FormPage implements IRefreshActio
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
-            xResultsComp.setHtmlText(rd.getReport(coveragePackageBase.getName()).getManipulatedHtml(),
-               coveragePackageBase.getName());
+            String html = rd.getReport(coveragePackageBase.getName()).getManipulatedHtml();
+            xResultsComp.setHtmlText(html, coveragePackageBase.getName());
          }
       });
    }

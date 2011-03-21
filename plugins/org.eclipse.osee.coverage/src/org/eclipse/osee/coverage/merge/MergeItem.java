@@ -176,6 +176,11 @@ public class MergeItem extends MergeItemBase {
    }
 
    @Override
+   public String toStringNoPackage() {
+      return toString();
+   }
+
+   @Override
    public String getOrderNumber() {
       if (Strings.isValid(importItem.getOrderNumber())) {
          return importItem.getOrderNumber();

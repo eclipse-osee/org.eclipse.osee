@@ -14,7 +14,7 @@ import static org.junit.Assert.fail;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.osee.coverage.CoverageManager;
-import org.eclipse.osee.coverage.test.import1.CoverageImport1TestBlam;
+import org.eclipse.osee.coverage.test.import01.CoverageImport1TestBlam;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.IHealthStatus;
 import org.eclipse.osee.framework.logging.OseeLog;

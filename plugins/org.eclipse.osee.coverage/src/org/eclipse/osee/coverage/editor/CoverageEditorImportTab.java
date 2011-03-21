@@ -228,6 +228,7 @@ public class CoverageEditorImportTab extends FormPage {
 
       @Override
       public void done(IJobChangeEvent event) {
+         blamOutputSection.appendText(String.format("BLAM completed in [%s]\n", Lib.getElapseString(startTime)));
          super.done(event);
       }
    }

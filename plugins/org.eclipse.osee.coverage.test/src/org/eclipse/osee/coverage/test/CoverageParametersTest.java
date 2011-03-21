@@ -21,7 +21,7 @@ import org.eclipse.osee.coverage.model.CoverageOptionManager;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.store.OseeCoverageUnitStore;
-import org.eclipse.osee.coverage.test.import1.CoverageImport1TestBlam;
+import org.eclipse.osee.coverage.test.import01.CoverageImport1TestBlam;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.Pair;

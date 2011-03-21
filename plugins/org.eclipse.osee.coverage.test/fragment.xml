@@ -10,55 +10,61 @@
    <extension
          point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
       <Operation
-            className="org.eclipse.osee.coverage.test.import1.CoverageImport1TestBlam">
+            className="org.eclipse.osee.coverage.test.import01.CoverageImport1TestBlam">
       </Operation>
    </extension>
    <extension
          point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
       <Operation
-            className="org.eclipse.osee.coverage.test.import2.CoverageImport2TestBlam">
+            className="org.eclipse.osee.coverage.test.import02.CoverageImport2TestBlam">
       </Operation>
    </extension>
    <extension
          point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
       <Operation
-            className="org.eclipse.osee.coverage.test.import3.CoverageImport3TestBlam">
+            className="org.eclipse.osee.coverage.test.import03.CoverageImport3TestBlam">
       </Operation>
    </extension>
    <extension
          point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
       <Operation
-            className="org.eclipse.osee.coverage.test.import4.CoverageImport4TestBlam">
+            className="org.eclipse.osee.coverage.test.import04.CoverageImport4TestBlam">
       </Operation>
    </extension>
    <extension
          point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
       <Operation
-            className="org.eclipse.osee.coverage.test.import5.CoverageImport5TestBlam">
+            className="org.eclipse.osee.coverage.test.import05.CoverageImport5TestBlam">
       </Operation>
    </extension>
    <extension
          point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
       <Operation
-            className="org.eclipse.osee.coverage.test.import6.CoverageImport6TestBlam">
+            className="org.eclipse.osee.coverage.test.import06.CoverageImport6TestBlam">
       </Operation>
    </extension>
    <extension
          point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
       <Operation
-            className="org.eclipse.osee.coverage.test.import7.CoverageImport7TestBlam">
+            className="org.eclipse.osee.coverage.test.import07.CoverageImport7TestBlam">
       </Operation>
    </extension>
    <extension
          point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
       <Operation
-            className="org.eclipse.osee.coverage.test.import8.CoverageImport8TestBlam">
+            className="org.eclipse.osee.coverage.test.import08.CoverageImport8TestBlam">
       </Operation>
    </extension>
    <extension
          point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
       <Operation
-            className="org.eclipse.osee.coverage.test.import9.CoverageImport9TestBlam">
+            className="org.eclipse.osee.coverage.test.import09.CoverageImport9TestBlam">
+      </Operation>
+   </extension>
+   <extension
+         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+      <Operation
+            className="org.eclipse.osee.coverage.test.import10.CoverageImport10TestBlam">
       </Operation>
    </extension>
 

@@ -52,6 +52,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.utility.ElapsedTime;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -325,15 +326,19 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
 
       @Override
       protected void doWork(IProgressMonitor monitor) throws Exception {
-         final XResultData resultData = new XResultData();
+
+         final ElapsedTime elapsedTime = new ElapsedTime(getName());
+         final XResultData resultData = new XResultData(false);
          final List<IMergeItem> mergeItems = mergeManager.getMergeItems(resultData);
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
             public void run() {
+               elapsedTime.logPoint("setInput");
                xImportViewer2.getXViewer().setInput(mergeItems);
                if (debugReport) {
                   resultData.report("Re-Load");
                }
+               elapsedTime.end();
             }
          });
       }

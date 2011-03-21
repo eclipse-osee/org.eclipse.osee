@@ -32,6 +32,11 @@ public class CoverageTestUnit extends NamedIdentity implements ICoverage {
    }
 
    @Override
+   public String toStringNoPackage() {
+      return toString();
+   }
+
+   @Override
    public String getAssignees() {
       return "";
    }
@@ -118,4 +123,5 @@ public class CoverageTestUnit extends NamedIdentity implements ICoverage {
    public String getWorkProductTaskStr() {
       return "";
    }
+
 }

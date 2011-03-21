@@ -67,7 +67,7 @@ public abstract class OseeCoverageStore extends CoverageStore {
          CoveragePackageEvent coverageEvent = getBaseCoveragePackageEvent(CoverageEventType.Modified);
          save(transaction, coverageEvent);
          transaction.execute();
-         CoverageEventManager.getInstance().sendRemoteEvent(coverageEvent);
+         CoverageEventManager.instance.sendRemoteEvent(coverageEvent);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          return new Result("Save Failed: " + ex.getLocalizedMessage());
@@ -81,7 +81,7 @@ public abstract class OseeCoverageStore extends CoverageStore {
       CoveragePackageEvent coverageEvent = getBaseCoveragePackageEvent(CoverageEventType.Deleted);
       delete(transaction, coverageEvent, purge);
       transaction.execute();
-      CoverageEventManager.getInstance().sendRemoteEvent(coverageEvent);
+      CoverageEventManager.instance.sendRemoteEvent(coverageEvent);
    }
 
    public abstract CoveragePackageEvent getBaseCoveragePackageEvent(CoverageEventType coverageEventType);

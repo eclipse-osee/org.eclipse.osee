@@ -236,7 +236,7 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
          CoveragePackageEvent coverageEvent = new CoveragePackageEvent(coveragePackage, CoverageEventType.Modified);
          save(transaction, coverageEvent, coverages);
          transaction.execute();
-         CoverageEventManager.getInstance().sendRemoteEvent(coverageEvent);
+         CoverageEventManager.instance.sendRemoteEvent(coverageEvent);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          return new Result("Save Failed: " + ex.getLocalizedMessage());
