@@ -14,10 +14,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.junit.Assert;
-import org.eclipse.osee.framework.core.operation.OperationLogger;
+import org.eclipse.osee.framework.core.operation.StringOperationLogger;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.WordOutlineExtractorDelegate;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -33,22 +33,11 @@ public final class WordMLExtractorDelegateTableOfContentsTest {
    private static final String TABLE_OF_CONTENTS_FILE = "tableOfContentsHyperlinkTest.xml";
    private final WordOutlineExtractorDelegate delegate = new WordOutlineExtractorDelegate();
 
-   private class TestOperationLogger extends OperationLogger {
-      public final StringBuilder warningMsgs = new StringBuilder();
-
-      @Override
-      public void log(String... row) {
-         for (String warningMessage : row) {
-            warningMsgs.append(warningMessage);
-         }
-      }
-   }
-
    @Test
    public void tableOfContentsLinksInput() throws Exception {
       delegate.initialize();
 
-      TestOperationLogger logger = new TestOperationLogger();
+      StringOperationLogger logger = new StringOperationLogger();
 
       Matcher matcher = PARAGRAPHREGEX.matcher(getFileAsString(TABLE_OF_CONTENTS_FILE));
       boolean foundSomething = false;
@@ -57,8 +46,8 @@ public final class WordMLExtractorDelegateTableOfContentsTest {
          delegate.processContent(logger, null, false, false, null, null, null, matcher.group(), false);
       }
 
-      Assert.assertTrue("Warnings generated and Table of Contents in WordML should be detected",
-         logger.warningMsgs.length() > 0);
+      Assert.assertFalse("Warnings generated and Table of Contents in WordML should be detected",
+         logger.toString().isEmpty());
       Assert.assertTrue(foundSomething);
    }
 

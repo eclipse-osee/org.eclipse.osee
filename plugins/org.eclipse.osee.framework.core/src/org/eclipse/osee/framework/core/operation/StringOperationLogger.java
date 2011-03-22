@@ -10,17 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.operation;
 
+import java.io.StringWriter;
+
 /**
  * @author Ryan D. Brooks
  */
-public class ConsoleLogger extends WriterOperationLogger {
+public class StringOperationLogger extends WriterOperationLogger {
 
-   public ConsoleLogger() {
-      super(System.out);
+   public StringOperationLogger() {
+      super(new StringWriter());
    }
 
    @Override
-   public void log(Throwable th) {
-      th.printStackTrace();
+   public String toString() {
+      return getWriter().toString();
    }
 }
