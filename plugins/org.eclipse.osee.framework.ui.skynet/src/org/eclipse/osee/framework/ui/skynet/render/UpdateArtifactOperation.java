@@ -24,7 +24,6 @@ import java.util.logging.Level;
 import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
@@ -33,12 +32,10 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.linking.LinkType;
 import org.eclipse.osee.framework.skynet.core.linking.WordMlLinkHandler;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
@@ -166,12 +163,14 @@ public class UpdateArtifactOperation extends AbstractOperation {
    }
 
    private Artifact getArtifact(WordExtractorData artifactElement) throws OseeCoreException {
+      Artifact artifact;
       if (artifacts.size() == 1) {
          return artifacts.get(0);
       }
 
-      if (Strings.isValid(artifactElement.getGuid())) {
-         return ArtifactQuery.getArtifactFromId(artifactElement.getGuid(), branch, DeletionFlag.INCLUDE_DELETED);
+      artifact = artifactElement.getArtifact(branch);
+      if (artifact != null) {
+         return artifact;
       }
 
       throw new OseeArgumentException("didn't find the guid attribure in element [%s]", artifactElement);
