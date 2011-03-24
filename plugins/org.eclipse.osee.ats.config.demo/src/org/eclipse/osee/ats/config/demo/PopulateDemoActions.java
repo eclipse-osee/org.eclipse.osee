@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.ActionManager;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkflowManager;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowManager;
 import org.eclipse.osee.ats.config.AtsBulkLoad;
 import org.eclipse.osee.ats.config.demo.config.DemoDbActionData;
 import org.eclipse.osee.ats.config.demo.config.DemoDbActionData.CreateReview;
@@ -432,7 +432,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
                   aData.getActionableItems(), createdDate, createdBy, null, transaction);
             actionArts.add(actionArt);
             for (TeamWorkFlowArtifact teamWf : ActionManager.getTeams(actionArt)) {
-               TeamWorkflowManager dtwm = new TeamWorkflowManager(teamWf);
+               TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf);
                // Add validation required flag if Decision review is required
                if (aData.getCreateReviews().length > 0) {
                   for (CreateReview createReview : aData.getCreateReviews()) {

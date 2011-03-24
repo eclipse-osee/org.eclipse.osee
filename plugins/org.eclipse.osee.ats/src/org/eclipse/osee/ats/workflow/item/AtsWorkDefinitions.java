@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
+import org.eclipse.osee.ats.artifact.TaskManager;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowProviders;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
@@ -149,7 +150,7 @@ public final class AtsWorkDefinitions implements IWorkDefinitionProvider {
    @Override
    public WorkFlowDefinitionMatch getWorkFlowDefinition(Artifact artifact) throws OseeCoreException {
       if (artifact.isOfType(AtsArtifactTypes.Task)) {
-         return getWorkFlowDefinitionForTask((TaskArtifact) artifact);
+         return getWorkFlowDefinitionForTask(TaskManager.cast(artifact));
       }
       if (artifact instanceof AbstractWorkflowArtifact) {
          AbstractWorkflowArtifact aba = (AbstractWorkflowArtifact) artifact;

@@ -13,10 +13,10 @@ package org.eclipse.osee.ats.editor.stateItem;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.artifact.DecisionReviewState;
+import org.eclipse.osee.ats.artifact.WorkflowManager;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.widgets.DecisionOption;
@@ -56,7 +56,7 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
          if (xWidget.getLabel().equals(AtsAttributeTypes.Decision.getUnqualifiedName())) {
             XComboDam decisionComboDam = (XComboDam) xWidget;
             List<String> options = new ArrayList<String>();
-            XDecisionOptions xDecOptions = new XDecisionOptions((AbstractWorkflowArtifact) art);
+            XDecisionOptions xDecOptions = new XDecisionOptions(WorkflowManager.cast(art));
             for (DecisionOption opt : xDecOptions.getDecisionOptions()) {
                options.add(opt.getName());
             }

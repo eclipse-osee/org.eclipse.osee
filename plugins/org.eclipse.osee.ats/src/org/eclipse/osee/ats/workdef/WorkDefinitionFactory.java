@@ -312,7 +312,7 @@ public class WorkDefinitionFactory {
                            new OseeArgumentException("state map exception"));
                      } else {
                         percent = percent * 100;
-                        workDef.getStateByName(stateName).setPercentWeight(new Double(percent).intValue());
+                        workDef.getStateByName(stateName).setPercentWeight((int) percent);
                      }
                   } catch (Exception ex) {
                      OseeLog.log(

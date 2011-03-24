@@ -8,9 +8,9 @@ package org.eclipse.osee.ats.column;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.ActionManager;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.artifact.WorkflowManager;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
@@ -80,8 +80,7 @@ public class PercentCompleteSMAStateColumn extends XViewerAtsColumn implements I
          return 0;
       }
       if (artifact.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
-         return getPercentCompleteSMAState(artifact,
-            ((AbstractWorkflowArtifact) artifact).getStateMgr().getCurrentState());
+         return getPercentCompleteSMAState(artifact, WorkflowManager.getStateManager(artifact).getCurrentState());
       }
       return 0;
    }
@@ -91,7 +90,7 @@ public class PercentCompleteSMAStateColumn extends XViewerAtsColumn implements I
     */
    public static int getPercentCompleteSMAState(Artifact artifact, IWorkPage state) throws OseeCoreException {
       if (artifact.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
-         return ((AbstractWorkflowArtifact) artifact).getStateMgr().getPercentComplete(state);
+         return WorkflowManager.getStateManager(artifact).getPercentComplete(state);
       }
       return 0;
    }

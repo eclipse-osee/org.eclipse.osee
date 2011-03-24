@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.swt.ALayout;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -73,7 +74,7 @@ public class SMAWorkflowMetricsHeader extends Composite {
    }
 
    private void refresh() {
-      if (hoursSpentLabel.isDisposed()) {
+      if (!Widgets.isAccessible(hoursSpentLabel)) {
          return;
       }
       try {

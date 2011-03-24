@@ -107,7 +107,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
       }
    }
 
-   private final class InternalLabelProvider extends LabelProvider {
+   private final static class InternalLabelProvider extends LabelProvider {
 
       @Override
       public String getText(Object element) {
@@ -154,7 +154,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
       }
    }
 
-   private final class InternalContentProvider implements ITreeContentProvider {
+   private final static class InternalContentProvider implements ITreeContentProvider {
 
       private final SMAEditor editor;
       private final AbstractWorkflowArtifact awa;
@@ -406,7 +406,8 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
          return getChildren(inputElement);
       }
    }
-   public class WrappedRules {
+
+   private static class WrappedRules {
       private final StateDefinition stateDef;
       private final AbstractWorkflowArtifact awa;
 
@@ -448,7 +449,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
       }
    }
 
-   public class RuleAndLocation {
+   private static class RuleAndLocation {
       private final RuleDefinition ruleDef;
       private final String location;
 
@@ -464,7 +465,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
 
    }
 
-   public class WrappedStates {
+   private static class WrappedStates {
       private final String name;
       private final Collection<StateDefinition> states;
 
@@ -483,7 +484,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
       }
 
    }
-   public class WrappedPercentWeight {
+   private static class WrappedPercentWeight {
 
       private final WorkDefinition workDef;
 
@@ -505,7 +506,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
       }
 
    }
-   public class WrappedDecisionReviews {
+   private static class WrappedDecisionReviews {
       private final Collection<DecisionReviewDefinition> decReviews;
 
       public WrappedDecisionReviews(Collection<DecisionReviewDefinition> decReviews) {
@@ -522,7 +523,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
       }
 
    }
-   public class WrappedStateItems {
+   private static class WrappedStateItems {
       private final List<IAtsStateItem> stateItems;
 
       public WrappedStateItems(List<IAtsStateItem> stateItems) {
@@ -539,7 +540,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
       }
 
    }
-   public class WrappedPeerReviews {
+   private static class WrappedPeerReviews {
       private final Collection<PeerReviewDefinition> decReviews;
 
       public WrappedPeerReviews(Collection<PeerReviewDefinition> decReviews) {
@@ -556,7 +557,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
       }
 
    }
-   public class WrappedTrace {
+   private static class WrappedTrace {
       private final Collection<String> trace;
 
       public WrappedTrace(Collection<String> trace) {
@@ -573,7 +574,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
       }
 
    }
-   public class WrappedLayout {
+   private static class WrappedLayout {
       private final Collection<StateItem> stateItems;
 
       public WrappedLayout(Collection<StateItem> stateItems) {
@@ -591,7 +592,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
 
    }
 
-   public class WrappedTransitions {
+   private static class WrappedTransitions {
 
       private final StateDefinition stateDef;
 

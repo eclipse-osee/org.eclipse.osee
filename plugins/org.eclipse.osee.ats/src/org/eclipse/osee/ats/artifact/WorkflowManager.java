@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.column.HoursSpentTotalColumn;
 import org.eclipse.osee.ats.column.PriorityColumn;
 import org.eclipse.osee.ats.column.StateColumn;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.StateManager;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -249,6 +250,17 @@ public class WorkflowManager {
 
    public static Collection<AbstractWorkflowArtifact> getAwas(Collection<? extends Artifact> artifacts) {
       return Collections.castMatching(AbstractWorkflowArtifact.class, artifacts);
+   }
+
+   public static StateManager getStateManager(Artifact artifact) {
+      return cast(artifact).getStateMgr();
+   }
+
+   public static AbstractWorkflowArtifact cast(Artifact artifact) {
+      if (artifact instanceof AbstractWorkflowArtifact) {
+         return (AbstractWorkflowArtifact) artifact;
+      }
+      return null;
    }
 
 }

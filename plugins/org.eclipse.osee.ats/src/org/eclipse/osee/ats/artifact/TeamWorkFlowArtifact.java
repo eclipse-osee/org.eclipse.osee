@@ -235,7 +235,7 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IB
       if (smaTitle.length() > 40) {
          smaTitle = smaTitle.substring(0, 39) + "...";
       }
-      String typeName = TeamWorkflowManager.getArtifactTypeShortName(this);
+      String typeName = TeamWorkFlowManager.getArtifactTypeShortName(this);
       if (Strings.isValid(typeName)) {
          return String.format("%s - %s - %s", getHumanReadableId(), typeName, smaTitle);
       } else {

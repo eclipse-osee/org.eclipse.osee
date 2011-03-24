@@ -19,6 +19,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowManager;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.framework.access.AccessControlData;
@@ -369,7 +370,7 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
    @Override
    public void setArtifact(Artifact artifact) {
       if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
-         this.teamArt = (TeamWorkFlowArtifact) artifact;
+         this.teamArt = TeamWorkFlowManager.cast(artifact);
       }
       enablement = new XWorkingBranchEnablement(teamArt);
    }

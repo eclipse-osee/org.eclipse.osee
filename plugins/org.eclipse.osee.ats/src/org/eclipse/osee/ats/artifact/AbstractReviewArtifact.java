@@ -235,4 +235,11 @@ public abstract class AbstractReviewArtifact extends AbstractTaskableArtifact {
       return this;
    }
 
+   public static AbstractReviewArtifact cast(Artifact artifact) {
+      if (artifact instanceof AbstractReviewArtifact) {
+         return (AbstractReviewArtifact) artifact;
+      }
+      return null;
+   }
+
 }

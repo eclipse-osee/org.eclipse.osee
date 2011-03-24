@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.artifact.ActionableItemManager;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkflowManager;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowManager;
 import org.eclipse.osee.ats.config.AtsBulkLoad;
 import org.eclipse.osee.ats.config.AtsConfigManager;
 import org.eclipse.osee.ats.editor.SMAEditor;
@@ -151,7 +151,7 @@ public class AtsBranchConfigurationTest {
       transaction.execute();
 
       final TeamWorkFlowArtifact teamWf = ActionManager.getTeams(actionArt).iterator().next();
-      TeamWorkflowManager dtwm = new TeamWorkflowManager(teamWf);
+      TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf);
 
       // Transition to desired state
       OseeLog.log(AtsPlugin.class, Level.INFO, "Transitioning to Implement state");
@@ -243,7 +243,7 @@ public class AtsBranchConfigurationTest {
       transaction.execute();
 
       final TeamWorkFlowArtifact teamWf = ActionManager.getTeams(actionArt).iterator().next();
-      TeamWorkflowManager dtwm = new TeamWorkflowManager(teamWf);
+      TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf);
 
       // Transition to desired state
       OseeLog.log(AtsPlugin.class, Level.INFO, "Transitioning to Implement state");

@@ -113,7 +113,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       createMenuActions();
    }
 
-   Action editAction, editActionableItemsAction;
+   Action editActionableItemsAction;
    protected EditStatusAction editStatusAction;
    EditAssigneeAction editAssigneeAction;
    ConvertActionableItemsAction convertActionableItemsAction;
@@ -134,7 +134,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       editStatusAction = new EditStatusAction(this, this, this, true);
       editAssigneeAction = new EditAssigneeAction(this, this);
 
-      editAction = new Action("Edit", IAction.AS_PUSH_BUTTON) {
+      new Action("Edit", IAction.AS_PUSH_BUTTON) {
          @Override
          public void run() {
             try {

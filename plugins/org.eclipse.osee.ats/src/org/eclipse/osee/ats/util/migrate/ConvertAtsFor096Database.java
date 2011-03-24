@@ -56,7 +56,7 @@ public class ConvertAtsFor096Database extends XNavigateItemAction {
       Jobs.startJob(new Report(getName()), true);
    }
 
-   public class Report extends Job {
+   public static class Report extends Job {
 
       public Report(String name) {
          super(name);

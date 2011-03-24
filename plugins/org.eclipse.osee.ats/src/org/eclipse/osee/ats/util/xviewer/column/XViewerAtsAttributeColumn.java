@@ -73,4 +73,34 @@ public class XViewerAtsAttributeColumn extends XViewerAtsColumn {
       this.attributeType = attributeType;
    }
 
+   @Override
+   public int hashCode() {
+      final int prime = 31;
+      int result = super.hashCode();
+      result = prime * result + ((attributeType == null) ? 0 : attributeType.hashCode());
+      return result;
+   }
+
+   @Override
+   public boolean equals(Object obj) {
+      if (this == obj) {
+         return true;
+      }
+      if (!super.equals(obj)) {
+         return false;
+      }
+      if (getClass() != obj.getClass()) {
+         return false;
+      }
+      XViewerAtsAttributeColumn other = (XViewerAtsAttributeColumn) obj;
+      if (attributeType == null) {
+         if (other.attributeType != null) {
+            return false;
+         }
+      } else if (!attributeType.equals(other.attributeType)) {
+         return false;
+      }
+      return true;
+   }
+
 }

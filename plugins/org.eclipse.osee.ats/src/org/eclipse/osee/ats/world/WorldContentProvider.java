@@ -23,10 +23,11 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.ats.artifact.AbstractReviewArtifact;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.ActionManager;
-import org.eclipse.osee.ats.artifact.GoalArtifact;
+import org.eclipse.osee.ats.artifact.GoalManager;
 import org.eclipse.osee.ats.artifact.ReviewManager;
-import org.eclipse.osee.ats.artifact.TaskArtifact;
+import org.eclipse.osee.ats.artifact.TaskManager;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowManager;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
@@ -86,7 +87,7 @@ public class WorldContentProvider implements ITreeContentProvider {
                return arts.toArray(new Artifact[artifact.getRelatedArtifactsCount(AtsRelationTypes.Goal_Member)]);
             }
             if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
-               TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
+               TeamWorkFlowArtifact teamArt = TeamWorkFlowManager.cast(artifact);
                List<Artifact> arts = new ArrayList<Artifact>();
                // Convert artifacts to WorldArtifactItems
                arts.addAll(ReviewManager.getReviews(teamArt));
@@ -94,8 +95,8 @@ public class WorldContentProvider implements ITreeContentProvider {
                relatedArts.addAll(arts);
                return arts.toArray();
             }
-            if (artifact instanceof AbstractReviewArtifact) {
-               AbstractReviewArtifact reviewArt = (AbstractReviewArtifact) artifact;
+            if (artifact.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
+               AbstractReviewArtifact reviewArt = AbstractReviewArtifact.cast(artifact);
                List<Artifact> arts = new ArrayList<Artifact>();
                arts.addAll(reviewArt.getTaskArtifactsSorted());
                relatedArts.addAll(arts);
@@ -117,16 +118,16 @@ public class WorldContentProvider implements ITreeContentProvider {
                return null;
             }
             if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
-               return ((TeamWorkFlowArtifact) artifact).getParentActionArtifact();
+               return TeamWorkFlowManager.cast(artifact).getParentActionArtifact();
             }
             if (artifact.isOfType(AtsArtifactTypes.Task)) {
-               return ((TaskArtifact) artifact).getParentAWA();
+               return TaskManager.cast(artifact).getParentAWA();
             }
-            if (artifact instanceof AbstractReviewArtifact) {
-               return ((AbstractReviewArtifact) artifact).getParentAWA();
+            if (artifact.isOfType(AtsArtifactTypes.ReviewArtifact)) {
+               return ReviewManager.cast(artifact).getParentAWA();
             }
             if (artifact.isOfType(AtsArtifactTypes.Goal)) {
-               return ((GoalArtifact) artifact).getParentAWA();
+               return GoalManager.cast(artifact).getParentAWA();
             }
          } catch (Exception ex) {
             // do nothing

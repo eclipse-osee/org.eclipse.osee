@@ -92,13 +92,20 @@ public final class AtsUtil {
 
    private static boolean emailEnabled = true;
    public final static Color ACTIVE_COLOR = new Color(null, 206, 212, 239);
-   private static OseeGroup atsAdminGroup = null;
+   private static OseeGroup atsAdminGroup = new OseeGroup("AtsAdmin");
    private static final Date today = new Date();
    public final static int MILLISECS_PER_DAY = 1000 * 60 * 60 * 24;
    public final static String normalColor = "#FFFFFF";
    public final static String activeColor = "#EEEEEE";
-   private static ArtifactTypeEventFilter atsObjectArtifactTypesFilter, reviewArtifactTypesFilter,
-      teamWorkflowArtifactTypesFilter, workItemArtifactTypesFilter;
+   private static ArtifactTypeEventFilter atsObjectArtifactTypesFilter = new ArtifactTypeEventFilter(
+      AtsArtifactTypes.TeamWorkflow, AtsArtifactTypes.Action, AtsArtifactTypes.Task, AtsArtifactTypes.Goal,
+      AtsArtifactTypes.PeerToPeerReview, AtsArtifactTypes.DecisionReview);
+   private static ArtifactTypeEventFilter reviewArtifactTypesFilter = new ArtifactTypeEventFilter(
+      AtsArtifactTypes.PeerToPeerReview, AtsArtifactTypes.DecisionReview);
+   private static ArtifactTypeEventFilter teamWorkflowArtifactTypesFilter = new ArtifactTypeEventFilter(
+      AtsArtifactTypes.TeamWorkflow);
+   private static ArtifactTypeEventFilter workItemArtifactTypesFilter = new ArtifactTypeEventFilter(
+      CoreArtifactTypes.WorkItemDefinition);
    private static List<IEventFilter> atsObjectEventFilter = new ArrayList<IEventFilter>(2);
    public final static double DEFAULT_HOURS_PER_WORK_DAY = 8;
 
@@ -128,9 +135,6 @@ public final class AtsUtil {
    }
 
    public static OseeGroup getAtsAdminGroup() {
-      if (atsAdminGroup == null) {
-         atsAdminGroup = new OseeGroup("AtsAdmin");
-      }
       return atsAdminGroup;
    }
 
@@ -454,33 +458,18 @@ public final class AtsUtil {
    }
 
    public static ArtifactTypeEventFilter getAtsObjectArtifactTypeEventFilter() {
-      if (atsObjectArtifactTypesFilter == null) {
-         atsObjectArtifactTypesFilter =
-            new ArtifactTypeEventFilter(AtsArtifactTypes.TeamWorkflow, AtsArtifactTypes.Action, AtsArtifactTypes.Task,
-               AtsArtifactTypes.Goal, AtsArtifactTypes.PeerToPeerReview, AtsArtifactTypes.DecisionReview);
-      }
       return atsObjectArtifactTypesFilter;
    }
 
    public static ArtifactTypeEventFilter getTeamWorkflowArtifactTypeEventFilter() {
-      if (teamWorkflowArtifactTypesFilter == null) {
-         teamWorkflowArtifactTypesFilter = new ArtifactTypeEventFilter(AtsArtifactTypes.TeamWorkflow);
-      }
       return teamWorkflowArtifactTypesFilter;
    }
 
    public static ArtifactTypeEventFilter getReviewArtifactTypeEventFilter() {
-      if (reviewArtifactTypesFilter == null) {
-         reviewArtifactTypesFilter =
-            new ArtifactTypeEventFilter(AtsArtifactTypes.PeerToPeerReview, AtsArtifactTypes.DecisionReview);
-      }
       return reviewArtifactTypesFilter;
    }
 
    public static ArtifactTypeEventFilter getWorkItemArtifactTypeEventFilter() {
-      if (workItemArtifactTypesFilter == null) {
-         workItemArtifactTypesFilter = new ArtifactTypeEventFilter(CoreArtifactTypes.WorkItemDefinition);
-      }
       return workItemArtifactTypesFilter;
    }
 

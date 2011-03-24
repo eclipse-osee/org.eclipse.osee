@@ -8,9 +8,9 @@ package org.eclipse.osee.ats.column;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
-import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.ActionManager;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.artifact.WorkflowManager;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
@@ -70,7 +70,7 @@ public class HoursSpentSMAStateColumn extends XViewerAtsColumn implements IXView
          return hours;
       }
       if (artifact.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
-         return getHoursSpentSMAState(artifact, ((AbstractWorkflowArtifact) artifact).getStateMgr().getCurrentState());
+         return getHoursSpentSMAState(artifact, WorkflowManager.getStateManager(artifact).getCurrentState());
       }
       return 0;
    }
@@ -80,7 +80,7 @@ public class HoursSpentSMAStateColumn extends XViewerAtsColumn implements IXView
     */
    public static double getHoursSpentSMAState(Artifact artifact, IWorkPage state) throws OseeCoreException {
       if (artifact.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
-         return ((AbstractWorkflowArtifact) artifact).getStateMgr().getHoursSpent(state);
+         return WorkflowManager.getStateManager(artifact).getHoursSpent(state);
       }
       return 0;
    }

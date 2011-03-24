@@ -181,6 +181,8 @@ public class MultipleHridSearchOperation extends AbstractOperation implements IW
                ld.setInput(resultAtsArts);
                if (ld.open() == 0) {
                   artifact = (Artifact) ld.getResult()[0];
+               } else {
+                  return;
                }
             }
             if (artifact.isOfType(AtsArtifactTypes.Action)) {

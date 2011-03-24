@@ -8,6 +8,7 @@ package org.eclipse.osee.ats.column;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowManager;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -90,7 +91,7 @@ public class OperationalImpactXWidget extends XComboWithText implements IArtifac
    @Override
    public void setArtifact(Artifact artifact) {
       if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
-         teamArt = (TeamWorkFlowArtifact) artifact;
+         teamArt = TeamWorkFlowManager.cast(artifact);
       }
    }
 

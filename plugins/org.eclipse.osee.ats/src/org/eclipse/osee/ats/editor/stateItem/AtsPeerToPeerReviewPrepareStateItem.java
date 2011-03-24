@@ -11,9 +11,9 @@
 package org.eclipse.osee.ats.editor.stateItem;
 
 import java.util.logging.Level;
-import org.eclipse.osee.ats.artifact.AbstractReviewArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewState;
+import org.eclipse.osee.ats.artifact.ReviewManager;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.workdef.StateDefinition;
@@ -44,7 +44,7 @@ public class AtsPeerToPeerReviewPrepareStateItem extends AtsStateItem {
       try {
          if (art.isOfType(AtsArtifactTypes.PeerToPeerReview) && //
          stateDefinition.getPageName().equals(PeerToPeerReviewState.Prepare.getPageName()) && //
-         ((AbstractReviewArtifact) art).getParentAWA() == null && //
+         ReviewManager.cast(art).getParentAWA() == null && //
          widget.getLabel().equals(AtsAttributeTypes.ReviewBlocks.getUnqualifiedName())) {
             XComboDam decisionComboDam = (XComboDam) widget;
             decisionComboDam.setEnabled(false);

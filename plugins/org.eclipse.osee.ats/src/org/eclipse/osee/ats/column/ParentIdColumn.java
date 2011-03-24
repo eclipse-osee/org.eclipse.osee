@@ -9,7 +9,7 @@ import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkflowManager;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowManager;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -43,7 +43,7 @@ public class ParentIdColumn extends XViewerAtsColumn implements IXViewerValueCol
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
          if (element instanceof AbstractWorkflowArtifact && ((AbstractWorkflowArtifact) element).getParentAWA() != null) {
-            return TeamWorkflowManager.getPcrId(((AbstractWorkflowArtifact) element).getParentAWA());
+            return TeamWorkFlowManager.getPcrId(((AbstractWorkflowArtifact) element).getParentAWA());
          }
       } catch (OseeCoreException ex) {
          return XViewerCells.getCellExceptionString(ex);

@@ -11,6 +11,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.ActionManager;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.artifact.WorkflowManager;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.SimpleTeamState;
@@ -72,7 +73,7 @@ public class HoursSpentTotalColumn extends XViewerAtsColumn implements IXViewerV
          return hours;
       }
       if (artifact.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
-         return getHoursSpentTotal(artifact, ((AbstractWorkflowArtifact) artifact).getStateMgr().getCurrentState());
+         return getHoursSpentTotal(artifact, WorkflowManager.getStateManager(artifact).getCurrentState());
       }
       return 0;
    }
@@ -82,7 +83,7 @@ public class HoursSpentTotalColumn extends XViewerAtsColumn implements IXViewerV
     */
    public static double getHoursSpentTotal(Artifact artifact, IWorkPage state) throws OseeCoreException {
       if (artifact.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
-         AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
+         AbstractWorkflowArtifact awa = WorkflowManager.cast(artifact);
          double hours = 0.0;
          for (String stateName : awa.getStateMgr().getVisitedStateNames()) {
             hours +=

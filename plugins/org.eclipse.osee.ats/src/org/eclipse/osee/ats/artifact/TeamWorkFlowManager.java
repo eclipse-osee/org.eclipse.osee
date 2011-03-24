@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkPage;
@@ -30,11 +31,11 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IWorkPage;
  * 
  * @author Donald G. Dunne
  */
-public class TeamWorkflowManager {
+public class TeamWorkFlowManager {
 
    private final TeamWorkFlowArtifact teamArt;
 
-   public TeamWorkflowManager(TeamWorkFlowArtifact teamArt) {
+   public TeamWorkFlowManager(TeamWorkFlowArtifact teamArt) {
       this.teamArt = teamArt;
    }
 
@@ -209,6 +210,13 @@ public class TeamWorkflowManager {
          if (Strings.isValid(typeName)) {
             return typeName;
          }
+      }
+      return null;
+   }
+
+   public static TeamWorkFlowArtifact cast(Artifact artifact) {
+      if (artifact instanceof AbstractWorkflowArtifact) {
+         return (TeamWorkFlowArtifact) artifact;
       }
       return null;
    }

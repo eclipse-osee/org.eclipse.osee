@@ -16,6 +16,7 @@ import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.ReviewManager;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.artifact.WorkflowManager;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.workdef.StateDefinition;
@@ -70,7 +71,7 @@ public class PercentCompleteTotalColumn extends XViewerAtsColumn implements IXVi
       if (!(artifact.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact))) {
          return 0;
       }
-      AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
+      AbstractWorkflowArtifact awa = WorkflowManager.cast(artifact);
       if (awa.isCompletedOrCancelled()) {
          return 100;
       }

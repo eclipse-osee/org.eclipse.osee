@@ -22,6 +22,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowManager;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -331,7 +332,7 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
       if (!(artifact.isOfType(AtsArtifactTypes.TeamWorkflow))) {
          throw new OseeStateException("Must be TeamWorkflowArtifact, set was a [%s]", artifact.getArtifactTypeName());
       }
-      this.teamArt = (TeamWorkFlowArtifact) artifact;
+      this.teamArt = TeamWorkFlowManager.cast(artifact);
       loadTable();
    }
 

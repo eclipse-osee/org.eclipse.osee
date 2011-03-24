@@ -183,4 +183,11 @@ public final class GoalManager {
       }
    }
 
+   public static GoalArtifact cast(Artifact artifact) {
+      if (artifact instanceof GoalArtifact) {
+         return (GoalArtifact) artifact;
+      }
+      return null;
+   }
+
 }

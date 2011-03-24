@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.UsersByIds;
@@ -322,4 +323,10 @@ public class ReviewManager {
       return decRev;
    }
 
+   public static AbstractReviewArtifact cast(Artifact artifact) {
+      if (artifact instanceof AbstractReviewArtifact) {
+         return (AbstractReviewArtifact) artifact;
+      }
+      return null;
+   }
 }

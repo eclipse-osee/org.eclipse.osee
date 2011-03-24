@@ -18,6 +18,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.ActionManager;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.artifact.WorkflowManager;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
@@ -221,7 +222,7 @@ public class AssigneeColumn extends XViewerAtsColumn implements IXViewerValueCol
          return Artifacts.toString("; ", pocs) + (implementers.isEmpty() ? "" : "(" + Artifacts.toString("; ",
             implementers) + ")");
       } else if (artifact.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
-         AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
+         AbstractWorkflowArtifact awa = WorkflowManager.cast(artifact);
          if (awa.isCompletedOrCancelled()) {
             if (awa.implementersStr == null && !awa.getImplementers().isEmpty()) {
                awa.implementersStr = "(" + Artifacts.toString("; ", awa.getImplementers()) + ")";

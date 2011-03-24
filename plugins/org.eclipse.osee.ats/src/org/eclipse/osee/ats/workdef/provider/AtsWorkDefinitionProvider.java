@@ -122,7 +122,7 @@ public class AtsWorkDefinitionProvider {
 
       return artifact;
    }
-   private class StringOutputStream extends OutputStream {
+   private static class StringOutputStream extends OutputStream {
       private final StringBuilder string = new StringBuilder();
 
       @Override
