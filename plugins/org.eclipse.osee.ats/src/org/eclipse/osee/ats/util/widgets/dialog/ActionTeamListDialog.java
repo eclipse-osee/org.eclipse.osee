@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.util.widgets.dialog;
 
 import java.util.ArrayList;
-import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.artifact.TeamDefinitionManager;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -46,7 +46,7 @@ public class ActionTeamListDialog extends ArtifactListDialog {
       setMessage("Select Team(s)");
       ArrayList<Artifact> arts = new ArrayList<Artifact>();
       try {
-         for (Artifact prod : TeamDefinitionArtifact.getTeamDefinitions(active)) {
+         for (Artifact prod : TeamDefinitionManager.getTeamDefinitions(active)) {
             arts.add(prod);
          }
       } catch (Exception ex) {

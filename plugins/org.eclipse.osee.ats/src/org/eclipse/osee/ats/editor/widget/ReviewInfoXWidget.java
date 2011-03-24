@@ -21,14 +21,14 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.actions.NewDecisionReviewJob;
 import org.eclipse.osee.ats.actions.NewPeerToPeerReviewJob;
 import org.eclipse.osee.ats.artifact.AbstractReviewArtifact;
-import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
+import org.eclipse.osee.ats.artifact.PeerToPeerReviewManager;
+import org.eclipse.osee.ats.artifact.ReviewManager;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.Overview;
 import org.eclipse.osee.ats.util.TransitionOption;
-import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.ats.util.widgets.dialog.StateListAndTitleDialog;
 import org.eclipse.osee.ats.workflow.TransitionManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -163,7 +163,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                         "Select state to that review will be associated with.",
                         teamArt.getWorkDefinition().getStateNames());
                   dialog.setInitialSelections(new Object[] {forState.getPageName()});
-                  dialog.setReviewTitle(PeerToPeerReviewArtifact.getDefaultReviewTitle(teamArt));
+                  dialog.setReviewTitle(PeerToPeerReviewManager.getDefaultReviewTitle(teamArt));
                   if (dialog.open() == 0) {
                      if (!Strings.isValid(dialog.getReviewTitle())) {
                         AWorkbench.popup("ERROR", "Must enter review title");

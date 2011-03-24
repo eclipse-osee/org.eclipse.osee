@@ -15,7 +15,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.actions.wizard.NewActionWizard;
-import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
+import org.eclipse.osee.ats.artifact.ActionableItemManager;
 import org.eclipse.osee.ats.config.AtsBulkLoad;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -49,7 +49,7 @@ public class NewAction extends Action {
       NewActionWizard wizard = new NewActionWizard();
       try {
          if (actionableItem != null) {
-            wizard.setInitialAias(ActionableItemArtifact.getActionableItems(Arrays.asList(actionableItem)));
+            wizard.setInitialAias(ActionableItemManager.getActionableItems(Arrays.asList(actionableItem)));
          }
          if (initialDescription != null) {
             wizard.setInitialDescription(initialDescription);

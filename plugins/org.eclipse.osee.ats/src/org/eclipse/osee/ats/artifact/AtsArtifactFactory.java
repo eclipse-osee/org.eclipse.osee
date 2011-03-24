@@ -32,8 +32,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 public class AtsArtifactFactory extends ArtifactFactory {
 
    public AtsArtifactFactory() {
-      super(AtsArtifactTypes.PeerToPeerReview, AtsArtifactTypes.DecisionReview, AtsArtifactTypes.ActionableItem,
-         AtsArtifactTypes.Task, AtsArtifactTypes.TeamWorkflow, AtsArtifactTypes.TeamDefinition, AtsArtifactTypes.Goal);
+      super(AtsArtifactTypes.Action, AtsArtifactTypes.Version, AtsArtifactTypes.PeerToPeerReview,
+         AtsArtifactTypes.DecisionReview, AtsArtifactTypes.ActionableItem, AtsArtifactTypes.Task,
+         AtsArtifactTypes.TeamWorkflow, AtsArtifactTypes.TeamDefinition, AtsArtifactTypes.Goal);
       for (ITeamWorkflowProvider atsTeamWorkflow : TeamWorkflowProviders.getAtsTeamWorkflowExtensions()) {
          try {
             for (IArtifactType teamWorkflowTypeName : atsTeamWorkflow.getTeamWorkflowArtifactTypes()) {
@@ -59,8 +60,12 @@ public class AtsArtifactFactory extends ArtifactFactory {
          return new DecisionReviewArtifact(this, guid, humandReadableId, branch, artifactType);
       } else if (artifactType.equals(AtsArtifactTypes.PeerToPeerReview)) {
          return new PeerToPeerReviewArtifact(this, guid, humandReadableId, branch, artifactType);
+      } else if (artifactType.equals(AtsArtifactTypes.Version)) {
+         return new VersionArtifact(this, guid, humandReadableId, branch, artifactType);
       } else if (artifactType.equals(AtsArtifactTypes.Goal)) {
          return new GoalArtifact(this, guid, humandReadableId, branch, artifactType);
+      } else if (artifactType.equals(AtsArtifactTypes.Action)) {
+         return new ActionArtifact(this, guid, humandReadableId, branch, artifactType);
       } else if (TeamWorkflowProviders.getAllTeamWorkflowArtifactTypes().contains(artifactType)) {
          return new TeamWorkFlowArtifact(this, guid, humandReadableId, branch, artifactType);
       } else {

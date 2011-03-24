@@ -11,7 +11,7 @@
 
 package org.eclipse.osee.ats.util.widgets.dialog;
 
-import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
+import org.eclipse.osee.ats.artifact.ActionableItemManager;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -47,7 +47,7 @@ public class ActionActionableItemListDialog extends CheckedTreeSelectionDialog {
       setMessage("Select Actionable Items");
       setComparator(new ArtifactNameSorter());
       try {
-         setInput(ActionableItemArtifact.getTopLevelActionableItems(active));
+         setInput(ActionableItemManager.getTopLevelActionableItems(active));
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }

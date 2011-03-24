@@ -17,12 +17,12 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.actions.wizard.NewActionJob;
-import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
+import org.eclipse.osee.ats.artifact.ActionManager;
+import org.eclipse.osee.ats.artifact.ActionableItemManager;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.column.ChangeTypeColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -92,7 +92,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       NewActionJob job = null;
       job =
          new NewActionJob("tt", "description", ChangeType.Improvement, "1", null, false,
-            ActionableItemArtifact.getActionableItems(Arrays.asList("ATS")), null, null);
+            ActionableItemManager.getActionableItems(Arrays.asList("ATS")), null, null);
       job.setUser(true);
       job.setPriority(Job.LONG);
       job.schedule();

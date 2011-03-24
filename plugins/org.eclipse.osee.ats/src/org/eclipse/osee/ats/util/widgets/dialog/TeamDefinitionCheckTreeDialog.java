@@ -18,8 +18,9 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
+import org.eclipse.osee.ats.artifact.ActionableItemManager;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.artifact.TeamDefinitionManager;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -63,14 +64,14 @@ public class TeamDefinitionCheckTreeDialog extends OSEECheckedFilteredTreeDialog
    protected Control createDialogArea(Composite container) {
       Control comp = super.createDialogArea(container);
       try {
-         getTreeViewer().getViewer().setInput(TeamDefinitionArtifact.getTopLevelTeamDefinitions(active));
+         getTreeViewer().getViewer().setInput(TeamDefinitionManager.getTopLevelTeamDefinitions(active));
          getTreeViewer().getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
             @Override
             public void selectionChanged(SelectionChangedEvent event) {
                try {
                   for (TeamDefinitionArtifact teamDef : getChecked()) {
                      if (!teamDef.isActionable()) {
-                        AWorkbench.popup("ERROR", ActionableItemArtifact.getNotActionableItemError(teamDef));
+                        AWorkbench.popup("ERROR", ActionableItemManager.getNotActionableItemError(teamDef));
                      }
                   }
                } catch (Exception ex) {

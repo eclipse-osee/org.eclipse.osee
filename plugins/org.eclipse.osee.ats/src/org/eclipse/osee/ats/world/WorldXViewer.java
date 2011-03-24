@@ -42,6 +42,8 @@ import org.eclipse.osee.ats.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.actions.ISelectedTeamWorkflowArtifacts;
 import org.eclipse.osee.ats.actions.SubscribedAction;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.artifact.ActionArtifact;
+import org.eclipse.osee.ats.artifact.ActionManager;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
@@ -49,7 +51,6 @@ import org.eclipse.osee.ats.column.GoalOrderColumn;
 import org.eclipse.osee.ats.column.IPersistAltLeftClickProvider;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.ActionArtifactRollup;
-import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.ArtifactEmailWizard;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -149,7 +150,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
          public void run() {
             try {
                if (getSelectedActionArtifacts().size() == 1) {
-                  Artifact actionArt = getSelectedActionArtifacts().iterator().next();
+                  ActionArtifact actionArt = getSelectedActionArtifacts().iterator().next();
                   AtsUtil.editActionableItems(actionArt);
                   refresh(getSelectedArtifactItems().iterator().next());
                } else {
@@ -169,7 +170,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
             SkynetTransaction transaction;
             try {
                transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Reset Action off Children");
-               for (Artifact actionArt : getSelectedActionArtifacts()) {
+               for (ActionArtifact actionArt : getSelectedActionArtifacts()) {
                   ActionArtifactRollup rollup = new ActionArtifactRollup(actionArt, transaction);
                   rollup.resetAttributesOffChildren();
                }
@@ -521,13 +522,13 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       return smaArts;
    }
 
-   public Set<Artifact> getSelectedActionArtifacts() {
-      Set<Artifact> actionArts = new HashSet<Artifact>();
+   public Set<ActionArtifact> getSelectedActionArtifacts() {
+      Set<ActionArtifact> actionArts = new HashSet<ActionArtifact>();
       TreeItem items[] = getTree().getSelection();
       if (items.length > 0) {
          for (TreeItem item : items) {
             if (Artifacts.isOfType(item.getData(), AtsArtifactTypes.Action)) {
-               actionArts.add((Artifact) item.getData());
+               actionArts.add((ActionArtifact) item.getData());
             }
          }
       }

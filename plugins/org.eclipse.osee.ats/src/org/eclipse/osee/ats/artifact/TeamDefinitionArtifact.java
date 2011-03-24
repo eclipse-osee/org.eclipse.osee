@@ -17,21 +17,18 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.VersionLockedType;
-import org.eclipse.osee.ats.util.VersionManager;
-import org.eclipse.osee.ats.util.VersionReleaseType;
 import org.eclipse.osee.ats.util.widgets.commit.ICommitConfigArtifact;
+import org.eclipse.osee.ats.version.VersionLockedType;
+import org.eclipse.osee.ats.version.VersionReleaseType;
 import org.eclipse.osee.ats.workdef.RuleDefinition;
 import org.eclipse.osee.ats.workdef.RuleDefinitionOption;
 import org.eclipse.osee.ats.workdef.WorkDefinitionFactory;
 import org.eclipse.osee.ats.workdef.WorkDefinitionMatch;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -47,7 +44,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinitionMatch;
@@ -57,11 +53,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionF
  * @author Donald G. Dunne
  */
 public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArtifact {
-
-   public static enum TeamDefinitionOptions {
-      TeamUsesVersions,
-      RequireTargetedVersion
-   };
 
    public TeamDefinitionArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
@@ -114,16 +105,6 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
       for (ActionableItemArtifact aia : actionableItems) {
          addRelation(AtsRelationTypes.TeamActionableItem_ActionableItem, aia);
       }
-   }
-
-   public static List<TeamDefinitionArtifact> getTopLevelTeamDefinitions(Active active) throws OseeCoreException {
-      TeamDefinitionArtifact topTeamDef = getTopTeamDefinition();
-      if (topTeamDef == null) {
-         return java.util.Collections.emptyList();
-      }
-      return Collections.castAll(AtsUtil.getActive(
-         Artifacts.getChildrenOfTypeSet(topTeamDef, TeamDefinitionArtifact.class, false), active,
-         TeamDefinitionArtifact.class));
    }
 
    @Override
@@ -192,87 +173,12 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
       return null;
    }
 
-   public Collection<Artifact> getVersionsFromTeamDefHoldingVersions(VersionReleaseType releaseType, VersionLockedType lockedType) throws OseeCoreException {
+   public Collection<VersionArtifact> getVersionsFromTeamDefHoldingVersions(VersionReleaseType releaseType, VersionLockedType lockedType) throws OseeCoreException {
       TeamDefinitionArtifact teamDef = getTeamDefinitionHoldingVersions();
       if (teamDef == null) {
-         return new ArrayList<Artifact>();
+         return new ArrayList<VersionArtifact>();
       }
       return teamDef.getVersionsArtifacts(releaseType, lockedType);
-   }
-
-   public static List<TeamDefinitionArtifact> getTeamDefinitions(Active active) throws OseeCoreException {
-      return Collections.castAll(AtsCacheManager.getArtifactsByActive(AtsArtifactTypes.TeamDefinition, active));
-   }
-
-   public static List<TeamDefinitionArtifact> getTeamTopLevelDefinitions(Active active) throws OseeCoreException {
-      TeamDefinitionArtifact topTeamDef = getTopTeamDefinition();
-      if (topTeamDef == null) {
-         return java.util.Collections.emptyList();
-      }
-      return Collections.castAll(AtsUtil.getActive(
-         Artifacts.getChildrenOfTypeSet(topTeamDef, TeamDefinitionArtifact.class, false), active,
-         TeamDefinitionArtifact.class));
-   }
-
-   public static TeamDefinitionArtifact getTopTeamDefinition() {
-      return (TeamDefinitionArtifact) AtsUtil.getFromToken(AtsArtifactToken.TopTeamDefinition);
-   }
-
-   public static Set<TeamDefinitionArtifact> getTeamReleaseableDefinitions(Active active) throws OseeCoreException {
-      Set<TeamDefinitionArtifact> teamDefs = new HashSet<TeamDefinitionArtifact>();
-      for (TeamDefinitionArtifact teamDef : getTeamDefinitions(active)) {
-         if (teamDef.getVersionsArtifacts().size() > 0) {
-            teamDefs.add(teamDef);
-         }
-      }
-      return teamDefs;
-   }
-
-   public static Collection<TeamDefinitionArtifact> getImpactedTeamDefs(Collection<ActionableItemArtifact> aias) throws OseeCoreException {
-      Set<TeamDefinitionArtifact> resultTeams = new HashSet<TeamDefinitionArtifact>();
-      for (ActionableItemArtifact aia : aias) {
-         resultTeams.addAll(getImpactedTeamDefInherited(aia));
-      }
-      return resultTeams;
-   }
-
-   private static List<TeamDefinitionArtifact> getImpactedTeamDefInherited(ActionableItemArtifact aia) throws OseeCoreException {
-      if (aia.getRelatedArtifacts(AtsRelationTypes.TeamActionableItem_Team).size() > 0) {
-         return aia.getRelatedArtifacts(AtsRelationTypes.TeamActionableItem_Team, TeamDefinitionArtifact.class);
-      }
-      Artifact parentArt = aia.getParent();
-      if (parentArt instanceof ActionableItemArtifact) {
-         return getImpactedTeamDefInherited((ActionableItemArtifact) parentArt);
-      }
-      return java.util.Collections.emptyList();
-   }
-
-   public static Set<TeamDefinitionArtifact> getTeamsFromItemAndChildren(ActionableItemArtifact aia) throws OseeCoreException {
-      Set<TeamDefinitionArtifact> aiaTeams = new HashSet<TeamDefinitionArtifact>();
-      getTeamFromItemAndChildren(aia, aiaTeams);
-      return aiaTeams;
-   }
-
-   public static Set<TeamDefinitionArtifact> getTeamsFromItemAndChildren(TeamDefinitionArtifact teamDef) throws OseeCoreException {
-      Set<TeamDefinitionArtifact> teamDefs = new HashSet<TeamDefinitionArtifact>();
-      teamDefs.add(teamDef);
-      for (Artifact art : teamDef.getChildren()) {
-         if (art instanceof TeamDefinitionArtifact) {
-            teamDefs.addAll(getTeamsFromItemAndChildren((TeamDefinitionArtifact) art));
-         }
-      }
-      return teamDefs;
-   }
-
-   private static void getTeamFromItemAndChildren(ActionableItemArtifact aia, Set<TeamDefinitionArtifact> aiaTeams) throws OseeCoreException {
-      if (aia.getRelatedArtifacts(AtsRelationTypes.TeamActionableItem_Team).size() > 0) {
-         aiaTeams.addAll(aia.getRelatedArtifacts(AtsRelationTypes.TeamActionableItem_Team, TeamDefinitionArtifact.class));
-      }
-      for (Artifact childArt : aia.getChildren()) {
-         if (childArt instanceof ActionableItemArtifact) {
-            getTeamFromItemAndChildren((ActionableItemArtifact) childArt, aiaTeams);
-         }
-      }
    }
 
    public double getManDayHrsFromItemAndChildren() {
@@ -451,38 +357,39 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
       return null;
    }
 
-   public Artifact createVersion(String name) throws OseeCoreException {
-      Artifact versionArt = ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version, AtsUtil.getAtsBranch(), name);
+   public VersionArtifact createVersion(String name) throws OseeCoreException {
+      VersionArtifact versionArt =
+         (VersionArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version, AtsUtil.getAtsBranch(), name);
       addRelation(AtsRelationTypes.TeamDefinitionToVersion_Version, versionArt);
       return versionArt;
    }
 
-   public Collection<Artifact> getVersionsArtifacts() throws OseeCoreException {
-      return getRelatedArtifacts(AtsRelationTypes.TeamDefinitionToVersion_Version);
+   public Collection<VersionArtifact> getVersionsArtifacts() throws OseeCoreException {
+      return getRelatedArtifacts(AtsRelationTypes.TeamDefinitionToVersion_Version, VersionArtifact.class);
    }
 
-   public Collection<Artifact> getVersionsArtifacts(VersionReleaseType releaseType, VersionLockedType lockType) throws OseeCoreException {
+   public Collection<VersionArtifact> getVersionsArtifacts(VersionReleaseType releaseType, VersionLockedType lockType) throws OseeCoreException {
       return Collections.setIntersection(getVersionsArtifacts(releaseType), getVersionsArtifacts(lockType));
    }
 
-   private Collection<Artifact> getVersionsArtifacts(VersionReleaseType releaseType) throws OseeCoreException {
-      ArrayList<Artifact> versions = new ArrayList<Artifact>();
-      for (Artifact version : getVersionsArtifacts()) {
-         if (VersionManager.isReleased(version) && (releaseType == VersionReleaseType.Released || releaseType == VersionReleaseType.Both)) {
+   private Collection<VersionArtifact> getVersionsArtifacts(VersionReleaseType releaseType) throws OseeCoreException {
+      ArrayList<VersionArtifact> versions = new ArrayList<VersionArtifact>();
+      for (VersionArtifact version : getVersionsArtifacts()) {
+         if (version.isReleased() && (releaseType == VersionReleaseType.Released || releaseType == VersionReleaseType.Both)) {
             versions.add(version);
-         } else if ((!VersionManager.isReleased(version) && releaseType == VersionReleaseType.UnReleased) || releaseType == VersionReleaseType.Both) {
+         } else if ((!version.isReleased() && releaseType == VersionReleaseType.UnReleased) || releaseType == VersionReleaseType.Both) {
             versions.add(version);
          }
       }
       return versions;
    }
 
-   private Collection<Artifact> getVersionsArtifacts(VersionLockedType lockType) throws OseeCoreException {
-      ArrayList<Artifact> versions = new ArrayList<Artifact>();
-      for (Artifact version : getVersionsArtifacts()) {
-         if (VersionManager.isVersionLocked(version) && (lockType == VersionLockedType.Locked || lockType == VersionLockedType.Both)) {
+   private Collection<VersionArtifact> getVersionsArtifacts(VersionLockedType lockType) throws OseeCoreException {
+      ArrayList<VersionArtifact> versions = new ArrayList<VersionArtifact>();
+      for (VersionArtifact version : getVersionsArtifacts()) {
+         if (version.isVersionLocked() && (lockType == VersionLockedType.Locked || lockType == VersionLockedType.Both)) {
             versions.add(version);
-         } else if ((!VersionManager.isVersionLocked(version) && lockType == VersionLockedType.UnLocked) || lockType == VersionLockedType.Both) {
+         } else if ((!version.isVersionLocked() && lockType == VersionLockedType.UnLocked) || lockType == VersionLockedType.Both) {
             versions.add(version);
          }
       }
@@ -533,16 +440,6 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
          }
       }
       return null;
-   }
-
-   public static Set<TeamDefinitionArtifact> getTeamDefinitions(Collection<String> teamDefNames) {
-      Set<TeamDefinitionArtifact> teamDefs = new HashSet<TeamDefinitionArtifact>();
-      for (String teamDefName : teamDefNames) {
-         for (Artifact artifact : AtsCacheManager.getArtifactsByName(AtsArtifactTypes.TeamDefinition, teamDefName)) {
-            teamDefs.add((TeamDefinitionArtifact) artifact);
-         }
-      }
-      return teamDefs;
    }
 
    @Override

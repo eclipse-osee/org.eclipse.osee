@@ -16,16 +16,17 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import org.eclipse.osee.ats.artifact.ActionManager;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
+import org.eclipse.osee.ats.artifact.ActionableItemManager;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
+import org.eclipse.osee.ats.artifact.ReviewManager;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsDeleteManager;
 import org.eclipse.osee.ats.util.AtsDeleteManager.DeleteOption;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.TeamState;
-import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.ats.workdef.ReviewBlockType;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.Named;
@@ -76,7 +77,7 @@ public class AtsDeleteManagerTest {
       // Create Action
       TeamWorkFlowArtifact teamArt =
          createAction(TestNames.TeamArtDeleteOneWorkflow,
-            ActionableItemArtifact.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName())),
+            ActionableItemManager.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName())),
             transaction);
       transaction.execute();
 
@@ -100,7 +101,7 @@ public class AtsDeleteManagerTest {
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Delete Manager Test");
       // Create Action
       TeamWorkFlowArtifact teamArt =
-         createAction(TestNames.TeamArtDeleteWithTwoWorkflows, ActionableItemArtifact.getActionableItems(Arrays.asList(
+         createAction(TestNames.TeamArtDeleteWithTwoWorkflows, ActionableItemManager.getActionableItems(Arrays.asList(
             DemoActionableItems.SAW_Code.getName(), DemoActionableItems.SAW_Requirements.getName())), transaction);
       transaction.execute();
 
@@ -120,7 +121,7 @@ public class AtsDeleteManagerTest {
       // Create Action
       TeamWorkFlowArtifact teamArt =
          createAction(TestNames.TeamArtPurge,
-            ActionableItemArtifact.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName())),
+            ActionableItemManager.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName())),
             transaction);
       transaction.execute();
 
@@ -140,7 +141,7 @@ public class AtsDeleteManagerTest {
       // Create Action
       TeamWorkFlowArtifact teamArt =
          createAction(TestNames.ActionDelete,
-            ActionableItemArtifact.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName())),
+            ActionableItemManager.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName())),
             transaction);
       transaction.execute();
 
@@ -160,7 +161,7 @@ public class AtsDeleteManagerTest {
       // Create Action
       TeamWorkFlowArtifact teamArt =
          createAction(TestNames.ActionPurge,
-            ActionableItemArtifact.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName())),
+            ActionableItemManager.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName())),
             transaction);
       transaction.execute();
 

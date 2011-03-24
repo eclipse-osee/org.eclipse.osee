@@ -13,8 +13,10 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
+import org.eclipse.osee.ats.artifact.ActionableItemManager;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.artifact.TeamDefinitionManager;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -102,7 +104,7 @@ public class CopyAtsConfigurationBlam extends AbstractBlam {
          if (teamDef.getParent() instanceof TeamDefinitionArtifact) {
             parentTeamDef = (TeamDefinitionArtifact) teamDef.getParent();
          } else {
-            parentTeamDef = TeamDefinitionArtifact.getTopTeamDefinition();
+            parentTeamDef = TeamDefinitionManager.getTopTeamDefinition();
          }
          confirmOrCreateTeamDefAndAIs(newArtsToPersist, searchStr, replaceStr, resultData, retainTeamLeads, teamDef,
             parentTeamDef, null);
@@ -137,7 +139,7 @@ public class CopyAtsConfigurationBlam extends AbstractBlam {
          if (fromAias.size() == 1) {
             parentActionableItem = (ActionableItemArtifact) fromAias.iterator().next();
          } else {
-            parentActionableItem = ActionableItemArtifact.getTopActionableItem();
+            parentActionableItem = ActionableItemManager.getTopActionableItem();
          }
       }
 

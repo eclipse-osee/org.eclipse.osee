@@ -8,9 +8,10 @@ package org.eclipse.osee.ats.workdef.config;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
+import org.eclipse.osee.ats.artifact.ActionableItemManager;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.artifact.TeamDefinitionManager;
 import org.eclipse.osee.ats.dsl.atsDsl.ActionableItemDef;
 import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
 import org.eclipse.osee.ats.dsl.atsDsl.TeamDef;
@@ -50,8 +51,8 @@ public class ImportAIsAndTeamDefinitionsToDb {
 
    public void execute() throws OseeCoreException {
       importUserDefinitions(atsDsl.getUserDef());
-      importTeamDefinitions(atsDsl.getTeamDef(), TeamDefinitionArtifact.getTopTeamDefinition());
-      importActionableItems(atsDsl.getActionableItemDef(), ActionableItemArtifact.getTopActionableItem());
+      importTeamDefinitions(atsDsl.getTeamDef(), TeamDefinitionManager.getTopTeamDefinition());
+      importActionableItems(atsDsl.getActionableItemDef(), ActionableItemManager.getTopActionableItem());
    }
 
    public void importUserDefinitions(EList<UserDef> userDefs) throws OseeCoreException {
@@ -66,8 +67,8 @@ public class ImportAIsAndTeamDefinitionsToDb {
             userArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.User, AtsUtil.getAtsBranch(), dslUserName);
          }
          if (userArt == null) {
-            throw new OseeStateException(
-               String.format("No user found in datbase with name [%s] from [%s]", dslUserName), modelName);
+            throw new OseeStateException(String.format("No user found in datbase with name [%s] from [%s]",
+               dslUserName, modelName), modelName);
          }
       }
    }
@@ -224,9 +225,9 @@ public class ImportAIsAndTeamDefinitionsToDb {
       Artifact parent = parentArtifact;
       if (parent == null) {
          if (isTeamDef) {
-            parent = TeamDefinitionArtifact.getTopTeamDefinition();
+            parent = TeamDefinitionManager.getTopTeamDefinition();
          } else {
-            parent = ActionableItemArtifact.getTopActionableItem();
+            parent = ActionableItemManager.getTopActionableItem();
          }
       }
       if (parent.getName().equals(artifactName)) {

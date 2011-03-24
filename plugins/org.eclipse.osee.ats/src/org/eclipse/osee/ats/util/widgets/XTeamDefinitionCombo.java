@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.artifact.TeamDefinitionManager;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -35,7 +36,7 @@ public class XTeamDefinitionCombo extends XComboViewer {
       super.createControls(parent, horizontalSpan);
 
       try {
-         Collection<TeamDefinitionArtifact> teamDefs = TeamDefinitionArtifact.getTeamDefinitions(Active.Active);
+         Collection<TeamDefinitionArtifact> teamDefs = TeamDefinitionManager.getTeamDefinitions(Active.Active);
          List<TeamDefinitionArtifact> sortedTeamDefs = new ArrayList<TeamDefinitionArtifact>();
          sortedTeamDefs.addAll(teamDefs);
          Collections.sort(sortedTeamDefs);

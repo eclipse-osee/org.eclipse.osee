@@ -37,10 +37,6 @@ public class PeerToPeerReviewArtifact extends AbstractReviewArtifact implements 
       defectManager = new DefectManager(this);
    }
 
-   public static String getDefaultReviewTitle(TeamWorkFlowArtifact teamArt) {
-      return "Review \"" + teamArt.getArtifactTypeName() + "\" titled \"" + teamArt.getName() + "\"";
-   }
-
    @Override
    public IStatus isUserRoleValid(String namespace) throws OseeCoreException {
       if (getUserRoleManager().getUserRoles(Role.Author).size() <= 0) {

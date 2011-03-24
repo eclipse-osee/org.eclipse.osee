@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.StateManager;
 import org.eclipse.osee.ats.util.TeamState;
-import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.ats.util.widgets.XActionableItemsDam;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -171,7 +170,7 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IB
    }
 
    @Override
-   public Artifact getParentActionArtifact() throws OseeCoreException {
+   public ActionArtifact getParentActionArtifact() throws OseeCoreException {
       if (parentAction != null) {
          return parentAction;
       }
@@ -181,7 +180,7 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IB
       } else if (arts.size() > 1) {
          throw new OseeStateException("Team [%s] has multiple parent Actions", getGuid());
       }
-      parentAction = arts.iterator().next();
+      parentAction = (ActionArtifact) arts.iterator().next();
       return parentAction;
    }
 

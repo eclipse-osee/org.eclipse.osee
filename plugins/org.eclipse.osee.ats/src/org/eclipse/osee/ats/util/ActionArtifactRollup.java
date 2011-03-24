@@ -8,6 +8,7 @@ package org.eclipse.osee.ats.util;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.column.ChangeTypeColumn;
@@ -15,15 +16,14 @@ import org.eclipse.osee.ats.column.PriorityColumn;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 public class ActionArtifactRollup {
 
-   private final Artifact action;
+   private final ActionArtifact action;
    private final SkynetTransaction transaction;
 
-   public ActionArtifactRollup(Artifact action, SkynetTransaction transaction) throws OseeArgumentException {
+   public ActionArtifactRollup(ActionArtifact action, SkynetTransaction transaction) throws OseeArgumentException {
       this.action = action;
       this.transaction = transaction;
       if (!action.isOfType(AtsArtifactTypes.Action)) {
@@ -46,7 +46,7 @@ public class ActionArtifactRollup {
     */
    private void resetTitleOffChildren() throws OseeCoreException {
       String title = "";
-      for (TeamWorkFlowArtifact team : ActionManager.getTeams(action)) {
+      for (TeamWorkFlowArtifact team : action.getTeams()) {
          if (title.isEmpty()) {
             title = team.getName();
          } else if (!title.equals(team.getName())) {
@@ -61,7 +61,7 @@ public class ActionArtifactRollup {
    // Set validation to true if any require validation
    private void resetValidationOffChildren() throws OseeCoreException {
       boolean validationRequired = false;
-      for (TeamWorkFlowArtifact team : ActionManager.getTeams(action)) {
+      for (TeamWorkFlowArtifact team : action.getTeams()) {
          if (team.getSoleAttributeValue(AtsAttributeTypes.ValidationRequired, false)) {
             validationRequired = true;
          }
@@ -76,7 +76,7 @@ public class ActionArtifactRollup {
     */
    private void resetDescriptionOffChildren() throws OseeCoreException {
       String desc = "";
-      for (TeamWorkFlowArtifact team : ActionManager.getTeams(action)) {
+      for (TeamWorkFlowArtifact team : action.getTeams()) {
          if (desc.isEmpty()) {
             desc = team.getSoleAttributeValue(AtsAttributeTypes.Description, "");
          } else if (!desc.equals(team.getSoleAttributeValue(AtsAttributeTypes.Description, ""))) {
@@ -93,7 +93,7 @@ public class ActionArtifactRollup {
 
    private void resetPriorityOffChildren() throws OseeCoreException {
       String priorityType = null;
-      Collection<TeamWorkFlowArtifact> teamArts = ActionManager.getTeams(action);
+      Collection<TeamWorkFlowArtifact> teamArts = action.getTeams();
       if (teamArts.size() == 1) {
          priorityType = PriorityColumn.getPriorityStr(teamArts.iterator().next());
       } else {
@@ -114,7 +114,7 @@ public class ActionArtifactRollup {
 
    private void resetUserCommunityOffChildren() throws OseeCoreException {
       Set<String> userComs = new HashSet<String>();
-      for (TeamWorkFlowArtifact team : ActionManager.getTeams(action)) {
+      for (TeamWorkFlowArtifact team : action.getTeams()) {
          if (!team.isCancelled()) {
             userComs.addAll(team.getAttributesToStringList(AtsAttributeTypes.UserCommunity));
          }

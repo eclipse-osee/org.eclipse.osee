@@ -154,7 +154,7 @@ public abstract class AbstractReviewArtifact extends AbstractTaskableArtifact {
          teamDefs.add(getParentTeamWorkflow().getTeamDefinition());
       }
       if (getActionableItemsDam().getActionableItems().size() > 0) {
-         teamDefs.addAll(ActionableItemArtifact.getImpactedTeamDefs(getActionableItemsDam().getActionableItems()));
+         teamDefs.addAll(ActionableItemManager.getImpactedTeamDefs(getActionableItemsDam().getActionableItems()));
       }
       return teamDefs;
    }

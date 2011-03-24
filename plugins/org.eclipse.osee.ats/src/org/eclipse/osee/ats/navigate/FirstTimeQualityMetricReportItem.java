@@ -20,6 +20,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.artifact.TeamDefinitionManager;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.column.ChangeTypeColumn;
 import org.eclipse.osee.ats.column.PriorityColumn;
@@ -27,9 +28,9 @@ import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.VersionMetrics;
-import org.eclipse.osee.ats.util.VersionTeamMetrics;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
+import org.eclipse.osee.ats.version.VersionMetrics;
+import org.eclipse.osee.ats.version.VersionTeamMetrics;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -80,7 +81,7 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
          TeamDefinitionDialog ld = new TeamDefinitionDialog("Select Team", "Select Team");
          ld.setTitle(getName());
          try {
-            ld.setInput(TeamDefinitionArtifact.getTeamReleaseableDefinitions(Active.Both));
+            ld.setInput(TeamDefinitionManager.getTeamReleaseableDefinitions(Active.Both));
          } catch (MultipleAttributesExist ex) {
             OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }

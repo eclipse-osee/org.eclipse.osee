@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.config;
 
 import java.util.Arrays;
-import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
+import org.eclipse.osee.ats.artifact.ActionableItemManager;
 import org.eclipse.osee.ats.artifact.AtsArtifactToken;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -33,7 +33,7 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
 
       AtsWorkDefinitionSheetProviders.initializeDatabase(new XResultData(false), false);
 
-      Artifact topAi = ActionableItemArtifact.getTopActionableItem();
+      Artifact topAi = ActionableItemManager.getTopActionableItem();
       topAi.setSoleAttributeValue(AtsAttributeTypes.Actionable, false);
       topAi.persist("Set Top AI to Non Actionable");
 

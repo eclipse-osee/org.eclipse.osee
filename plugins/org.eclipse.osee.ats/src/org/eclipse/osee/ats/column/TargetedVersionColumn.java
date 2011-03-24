@@ -20,19 +20,19 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.artifact.ActionManager;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.VersionLockedType;
-import org.eclipse.osee.ats.util.VersionManager;
-import org.eclipse.osee.ats.util.VersionReleaseType;
 import org.eclipse.osee.ats.util.widgets.dialog.VersionListDialog;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
+import org.eclipse.osee.ats.version.VersionLockedType;
+import org.eclipse.osee.ats.version.VersionReleaseType;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -158,11 +158,10 @@ public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerV
          return false;
       }
       Object obj = vld.getResult()[0];
-      Artifact newVersion = (Artifact) obj;
+      VersionArtifact newVersion = (VersionArtifact) obj;
       //now check selected version
-      if (VersionManager.isVersionLocked(newVersion)) {
-         String error =
-            "Version \"" + VersionManager.getFullDisplayName(newVersion) + "\" is locked or already released.";
+      if (newVersion.isVersionLocked()) {
+         String error = "Version \"" + newVersion.getFullDisplayName() + "\" is locked or already released.";
          if (AtsUtil.isAtsAdmin() && !MessageDialog.openConfirm(Displays.getActiveShell(), "Change Version",
             error + "\n\nOverride?")) {
             return false;
@@ -183,7 +182,7 @@ public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerV
       return true;
    }
 
-   public static Artifact getTargetedVersion(Object object) throws OseeCoreException {
+   public static VersionArtifact getTargetedVersion(Object object) throws OseeCoreException {
       if (object instanceof AbstractWorkflowArtifact) {
          TeamWorkFlowArtifact teamArt = ((AbstractWorkflowArtifact) object).getParentTeamWorkflow();
          if (teamArt != null) {
@@ -193,9 +192,9 @@ public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerV
                if (verArts.size() > 1) {
                   OseeLog.log(AtsPlugin.class, Level.SEVERE,
                      "Multiple targeted versions for artifact " + teamArt.toStringWithId());
-                  return verArts.iterator().next();
+                  return (VersionArtifact) verArts.iterator().next();
                } else {
-                  return verArts.iterator().next();
+                  return (VersionArtifact) verArts.iterator().next();
                }
             }
          }

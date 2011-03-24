@@ -27,10 +27,12 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.artifact.AbstractReviewArtifact;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.artifact.ActionManager;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.artifact.TeamDefinitionManager;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.log.AtsLog;
 import org.eclipse.osee.ats.artifact.log.LogItem;
@@ -40,7 +42,6 @@ import org.eclipse.osee.ats.internal.workflow.XCurrentStateDam;
 import org.eclipse.osee.ats.internal.workflow.XStateDam;
 import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.task.TaskEditorSimpleProvider;
-import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
@@ -620,7 +621,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          try {
             if (artifact instanceof ActionableItemArtifact) {
                ActionableItemArtifact aia = (ActionableItemArtifact) artifact;
-               if (aia.isActionable() && TeamDefinitionArtifact.getImpactedTeamDefs(Arrays.asList(aia)).isEmpty()) {
+               if (aia.isActionable() && TeamDefinitionManager.getImpactedTeamDefs(Arrays.asList(aia)).isEmpty()) {
                   testNameToResultsMap.put(
                      "testActionableItemToTeamDefinition",
                      "Error: ActionableItem " + XResultData.getHyperlink(artifact.getName(), artifact) + " has to related TeamDefinition and is set to Actionable");

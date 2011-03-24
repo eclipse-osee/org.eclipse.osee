@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.artifact.TeamDefinitionManager;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -42,7 +43,7 @@ public class TeamDefinitionTreeWithChildrenDialog extends CheckedTreeSelectionDi
    protected Composite dialogComp;
 
    public TeamDefinitionTreeWithChildrenDialog(Active active) throws OseeCoreException {
-      this(active, TeamDefinitionArtifact.getTeamTopLevelDefinitions(active));
+      this(active, TeamDefinitionManager.getTeamTopLevelDefinitions(active));
    }
 
    public TeamDefinitionTreeWithChildrenDialog(Active active, Collection<TeamDefinitionArtifact> teamDefinitionArtifacts) {

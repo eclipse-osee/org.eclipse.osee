@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.artifact.TeamDefinitionManager;
 import org.eclipse.osee.ats.navigate.AtsXNavigateItemLauncher;
 import org.eclipse.osee.ats.navigate.SearchNavigateItem;
 import org.eclipse.osee.ats.task.TaskEditor;
@@ -59,7 +60,7 @@ public class AtsNavigateItemsToTaskEditorTest {
    @org.junit.Test
    public void testTaskSearch() throws Exception {
       Collection<TeamDefinitionArtifact> selectedUsers =
-         TeamDefinitionArtifact.getTeamTopLevelDefinitions(Active.Active);
+         TeamDefinitionManager.getTeamTopLevelDefinitions(Active.Active);
       TaskEditor.closeAll();
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Task Search");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof TaskSearchWorldSearchItem);
@@ -70,7 +71,7 @@ public class AtsNavigateItemsToTaskEditorTest {
       selectedUsers.clear();
       List<String> teamDefs = new ArrayList<String>();
       teamDefs.add("SAW Code");
-      Set<TeamDefinitionArtifact> tda = TeamDefinitionArtifact.getTeamDefinitions(teamDefs);
+      Set<TeamDefinitionArtifact> tda = TeamDefinitionManager.getTeamDefinitions(teamDefs);
       runGeneralTaskSearchOnTeamTest(item, tda, 14);
       runGeneralTaskSearchOnAssigneeTest(item, "Joe Smith", 14);
       runGeneralTaskSearchOnVersionTest(item, DemoSawBuilds.SAW_Bld_1.getName(), 0);

@@ -20,8 +20,10 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
+import org.eclipse.osee.ats.artifact.ActionableItemManager;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.artifact.TeamDefinitionManager;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.dialog.AITreeContentProvider;
@@ -99,7 +101,7 @@ public class NewActionPage1 extends WizardPage {
          treeViewer.getViewer().setContentProvider(new AITreeContentProvider(Active.Active));
          treeViewer.getViewer().setLabelProvider(new ArtifactLabelProvider());
          try {
-            treeViewer.getViewer().setInput(ActionableItemArtifact.getTopLevelActionableItems(Active.Active));
+            treeViewer.getViewer().setInput(ActionableItemManager.getTopLevelActionableItems(Active.Active));
          } catch (Exception ex) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          }
@@ -185,12 +187,12 @@ public class NewActionPage1 extends WizardPage {
       try {
          for (ActionableItemArtifact aia : getSelectedActionableItemArtifacts()) {
             if (!aia.isActionable()) {
-               AWorkbench.popup("ERROR", ActionableItemArtifact.getNotActionableItemError(aia));
+               AWorkbench.popup("ERROR", ActionableItemManager.getNotActionableItemError(aia));
                return false;
             }
          }
          Collection<TeamDefinitionArtifact> teamDefs =
-            TeamDefinitionArtifact.getImpactedTeamDefs(getSelectedActionableItemArtifacts());
+            TeamDefinitionManager.getImpactedTeamDefs(getSelectedActionableItemArtifacts());
          if (teamDefs.isEmpty()) {
             AWorkbench.popup("ERROR", "No Teams Associated with selected Actionable Items");
             return false;

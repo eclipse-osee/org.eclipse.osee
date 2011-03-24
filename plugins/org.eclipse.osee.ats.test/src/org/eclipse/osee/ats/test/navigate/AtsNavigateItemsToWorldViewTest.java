@@ -22,9 +22,11 @@ import java.util.logging.Level;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
-import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
+import org.eclipse.osee.ats.artifact.ActionableItemManager;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.artifact.TeamDefinitionManager;
+import org.eclipse.osee.ats.artifact.VersionManager;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.navigate.AtsXNavigateItemLauncher;
@@ -40,7 +42,6 @@ import org.eclipse.osee.ats.test.util.NavigateTestUtil;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.TeamState;
-import org.eclipse.osee.ats.util.VersionManager;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldXViewer;
 import org.eclipse.osee.ats.world.search.ActionableItemWorldSearchItem;
@@ -348,7 +349,7 @@ public class AtsNavigateItemsToWorldViewTest {
 
    @org.junit.Test
    public void testTeamWorkflowSearch() throws Exception {
-      List<TeamDefinitionArtifact> selectedTeamDefs = TeamDefinitionArtifact.getTeamTopLevelDefinitions(Active.Active);
+      List<TeamDefinitionArtifact> selectedTeamDefs = TeamDefinitionManager.getTeamTopLevelDefinitions(Active.Active);
       WorldEditor.closeAll();
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Team Workflow Search");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof TeamWorkflowSearchWorkflowSearchItem);
@@ -366,7 +367,7 @@ public class AtsNavigateItemsToWorldViewTest {
       List<String> teamDefs = new ArrayList<String>();
       teamDefs.add("SAW Test");
       teamDefs.add("SAW Design");
-      Set<TeamDefinitionArtifact> tda = TeamDefinitionArtifact.getTeamDefinitions(teamDefs);
+      Set<TeamDefinitionArtifact> tda = TeamDefinitionManager.getTeamDefinitions(teamDefs);
       runGeneralTeamWorkflowSearchOnTeamTest(item, tda, 3);
       runGeneralTeamWorkflowSearchOnVersionTest(item, DemoSawBuilds.SAW_Bld_1.getName(), 0);
       runGeneralTeamWorkflowSearchOnVersionTest(item, DemoSawBuilds.SAW_Bld_2.getName(), 3);
@@ -429,7 +430,7 @@ public class AtsNavigateItemsToWorldViewTest {
    public void testActionableItemSearch() throws Exception {
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Actionable Item Search");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof ActionableItemWorldSearchItem);
-      ((ActionableItemWorldSearchItem) ((SearchNavigateItem) item).getWorldSearchItem()).setSelectedActionItems(ActionableItemArtifact.getActionableItems(Arrays.asList("SAW Code")));
+      ((ActionableItemWorldSearchItem) ((SearchNavigateItem) item).getWorldSearchItem()).setSelectedActionItems(ActionableItemManager.getActionableItems(Arrays.asList("SAW Code")));
       // normal searches copy search item which would clear out the set value above; for this test, don't copy item
       runGeneralLoadingTest(item, AtsArtifactTypes.TeamWorkflow, 3, null, TableLoadOption.DontCopySearchItem);
    }
@@ -451,7 +452,7 @@ public class AtsNavigateItemsToWorldViewTest {
       // First one is the global one
       XNavigateItem item = items.iterator().next();
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof NextVersionSearchItem);
-      ((NextVersionSearchItem) ((SearchNavigateItem) item).getWorldSearchItem()).setSelectedTeamDef(TeamDefinitionArtifact.getTeamDefinitions(
+      ((NextVersionSearchItem) ((SearchNavigateItem) item).getWorldSearchItem()).setSelectedTeamDef(TeamDefinitionManager.getTeamDefinitions(
          Arrays.asList("SAW SW")).iterator().next());
       runGeneralLoadingTest(item, AtsArtifactTypes.TeamWorkflow, 14, null, TableLoadOption.DontCopySearchItem);
    }

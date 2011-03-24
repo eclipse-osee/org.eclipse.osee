@@ -36,8 +36,6 @@ import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.StateManager;
 import org.eclipse.osee.ats.util.TeamState;
-import org.eclipse.osee.ats.util.VersionManager;
-import org.eclipse.osee.ats.util.widgets.ReviewManager;
 import org.eclipse.osee.ats.workdef.RuleDefinitionOption;
 import org.eclipse.osee.ats.workdef.StateDefinition;
 import org.eclipse.osee.ats.workdef.StateXWidgetPage;
@@ -66,7 +64,6 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -89,7 +86,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    private Collection<User> transitionAssignees;
    protected AbstractWorkflowArtifact parentAwa;
    protected TeamWorkFlowArtifact parentTeamArt;
-   protected Artifact parentAction;
+   protected ActionArtifact parentAction;
    private StateManager stateMgr;
    private AtsLog atsLog;
    private AtsNote atsNote;
@@ -427,33 +424,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return getParentAWA();
    }
 
-   public static Set<IArtifactType> getAllSMAType() throws OseeCoreException {
-      Set<IArtifactType> artTypeNames = TeamWorkflowProviders.getAllTeamWorkflowArtifactTypes();
-      artTypeNames.add(AtsArtifactTypes.Task);
-      artTypeNames.add(AtsArtifactTypes.DecisionReview);
-      artTypeNames.add(AtsArtifactTypes.PeerToPeerReview);
-      return artTypeNames;
-   }
-
-   public static List<Artifact> getAllSMATypeArtifacts() throws OseeCoreException {
-      List<Artifact> result = new ArrayList<Artifact>();
-      for (IArtifactType artType : getAllSMAType()) {
-         result.addAll(ArtifactQuery.getArtifactListFromType(artType, AtsUtil.getAtsBranch()));
-      }
-      return result;
-   }
-
-   public static List<TeamWorkFlowArtifact> getAllTeamWorkflowArtifacts() throws OseeCoreException {
-      List<TeamWorkFlowArtifact> result = new ArrayList<TeamWorkFlowArtifact>();
-      for (IArtifactType artType : TeamWorkflowProviders.getAllTeamWorkflowArtifactTypes()) {
-         List<TeamWorkFlowArtifact> teamArts =
-            org.eclipse.osee.framework.jdk.core.util.Collections.castAll(ArtifactQuery.getArtifactListFromType(artType,
-               AtsUtil.getAtsBranch()));
-         result.addAll(teamArts);
-      }
-      return result;
-   }
-
    /**
     * Return Percent Complete ONLY on tasks related to stateName. Total Percent / # Tasks
     */
@@ -564,9 +534,9 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
     */
    public boolean isReleased() {
       try {
-         Artifact verArt = getTargetedVersion();
+         VersionArtifact verArt = getTargetedVersion();
          if (verArt != null) {
-            return VersionManager.isReleased(verArt);
+            return verArt.isReleased();
          }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
@@ -576,9 +546,9 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    public boolean isVersionLocked() {
       try {
-         Artifact verArt = getTargetedVersion();
+         VersionArtifact verArt = getTargetedVersion();
          if (verArt != null) {
-            return VersionManager.isVersionLocked(verArt);
+            return verArt.isVersionLocked();
          }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
@@ -586,7 +556,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return false;
    }
 
-   public Artifact getTargetedVersion() throws OseeCoreException {
+   public VersionArtifact getTargetedVersion() throws OseeCoreException {
       return TargetedVersionColumn.getTargetedVersion(this);
    }
 

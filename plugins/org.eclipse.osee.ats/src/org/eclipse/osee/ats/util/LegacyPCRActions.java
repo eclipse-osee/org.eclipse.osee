@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.world.search.LegacyPCRActionsWorldSearchItem;
@@ -64,16 +65,16 @@ public class LegacyPCRActions {
       return teamArts;
    }
 
-   public static Collection<Artifact> getTeamsActionArtifacts(TeamDefinitionArtifact teamDef) throws OseeCoreException {
+   public static Collection<ActionArtifact> getTeamsActionArtifacts(TeamDefinitionArtifact teamDef) throws OseeCoreException {
       return getTeamsActionArtifacts(Arrays.asList(teamDef));
    }
 
-   public static Collection<Artifact> getTeamsActionArtifacts(Collection<TeamDefinitionArtifact> teamDefs) throws OseeCoreException {
+   public static Collection<ActionArtifact> getTeamsActionArtifacts(Collection<TeamDefinitionArtifact> teamDefs) throws OseeCoreException {
       LegacyPCRActionsWorldSearchItem search = new LegacyPCRActionsWorldSearchItem(teamDefs, true);
-      Set<Artifact> actArts = new HashSet<Artifact>();
+      Set<ActionArtifact> actArts = new HashSet<ActionArtifact>();
       for (Artifact art : search.performSearchGetResults()) {
          if (art.isOfType(AtsArtifactTypes.Action)) {
-            actArts.add(art);
+            actArts.add((ActionArtifact) art);
          }
       }
       return actArts;

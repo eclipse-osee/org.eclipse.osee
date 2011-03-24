@@ -21,15 +21,16 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.artifact.TeamDefinitionManager;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.artifact.VersionArtifact;
+import org.eclipse.osee.ats.artifact.WorkflowManager;
 import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.AWAUtil;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.TeamState;
-import org.eclipse.osee.ats.util.VersionManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -147,7 +148,7 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
       Set<String> teamDefinitionGuids = new HashSet<String>(teamDefs.size());
       for (TeamDefinitionArtifact teamDef : teamDefs) {
          if (recurseChildren) {
-            for (TeamDefinitionArtifact childTeamDef : TeamDefinitionArtifact.getTeamsFromItemAndChildren(teamDef)) {
+            for (TeamDefinitionArtifact childTeamDef : TeamDefinitionManager.getTeamsFromItemAndChildren(teamDef)) {
                teamDefinitionGuids.add(childTeamDef.getGuid());
             }
          } else {
@@ -188,15 +189,15 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
             TeamWorkFlowArtifact team = awa.getParentTeamWorkflow();
             if (team != null) {
                // skip if released is desired and version artifact is not set
-               Artifact setVerArt = team.getTargetedVersion();
+               VersionArtifact setVerArt = team.getTargetedVersion();
                if (setVerArt == null && releasedOption == ReleasedOption.Released) {
                   continue;
                }
                // skip of version release is opposite of desired
                if (setVerArt != null) {
-                  if (releasedOption == ReleasedOption.Released && !VersionManager.isReleased(setVerArt)) {
+                  if (releasedOption == ReleasedOption.Released && !setVerArt.isReleased()) {
                      continue;
-                  } else if (releasedOption == ReleasedOption.UnReleased && VersionManager.isReleased(setVerArt)) {
+                  } else if (releasedOption == ReleasedOption.UnReleased && setVerArt.isReleased()) {
                      continue;
                   }
                }
@@ -205,10 +206,10 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
          resultSet.add(art);
       }
       if (showAction) {
-         return AWAUtil.filterState(stateName,
+         return WorkflowManager.filterState(stateName,
             RelationManager.getRelatedArtifacts(resultSet, 1, AtsRelationTypes.ActionToWorkflow_Action));
       } else {
-         return AWAUtil.filterState(stateName, resultSet);
+         return WorkflowManager.filterState(stateName, resultSet);
       }
 
    }

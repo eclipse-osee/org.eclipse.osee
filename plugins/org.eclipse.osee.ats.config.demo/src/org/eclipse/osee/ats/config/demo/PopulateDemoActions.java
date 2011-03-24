@@ -19,6 +19,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.artifact.ActionManager;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowManager;
@@ -31,14 +32,12 @@ import org.eclipse.osee.ats.config.demo.config.DemoDbTasks;
 import org.eclipse.osee.ats.config.demo.config.DemoDbUtil;
 import org.eclipse.osee.ats.config.demo.config.DemoDbUtil.SoftwareRequirementStrs;
 import org.eclipse.osee.ats.config.demo.internal.OseeAtsConfigDemoActivator;
-import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.FavoritesManager;
 import org.eclipse.osee.ats.util.SubscribeManager;
 import org.eclipse.osee.ats.util.TeamState;
-import org.eclipse.osee.ats.util.VersionManager;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
@@ -292,8 +291,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
       DemoDbUtil.sleep(2000L);
       OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Committing branch");
       Job job =
-         reqTeam.getBranchMgr().commitWorkingBranch(false, true,
-            VersionManager.getParentBranch(reqTeam.getTargetedVersion()), true);
+         reqTeam.getBranchMgr().commitWorkingBranch(false, true, reqTeam.getTargetedVersion().getParentBranch(), true);
       try {
          job.join();
       } catch (InterruptedException ex) {

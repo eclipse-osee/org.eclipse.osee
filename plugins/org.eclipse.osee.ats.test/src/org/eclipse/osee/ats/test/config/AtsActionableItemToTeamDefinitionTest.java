@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.test.config;
 import static org.junit.Assert.assertFalse;
 import java.util.Arrays;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
-import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.artifact.TeamDefinitionManager;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -32,7 +32,7 @@ public class AtsActionableItemToTeamDefinitionTest {
          AtsUtil.getAtsBranch())) {
          ActionableItemArtifact aia = (ActionableItemArtifact) artifact;
          if (aia.isActionable()) {
-            if (TeamDefinitionArtifact.getImpactedTeamDefs(Arrays.asList(aia)).isEmpty()) {
+            if (TeamDefinitionManager.getImpactedTeamDefs(Arrays.asList(aia)).isEmpty()) {
                sb.append("Actionable Item \"" + aia + "\" has no Team Def associated and is Actionable.");
                error = true;
             }

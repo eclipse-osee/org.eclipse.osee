@@ -38,6 +38,7 @@ import org.eclipse.osee.ats.actions.OpenWorldByIdAction;
 import org.eclipse.osee.ats.config.AtsBulkLoad;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.search.AtsQuickSearchComposite;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.operation.CompositeOperation;

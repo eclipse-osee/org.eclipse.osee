@@ -18,10 +18,10 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.artifact.VersionCommitConfigArtifact;
+import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.VersionLockedType;
-import org.eclipse.osee.ats.util.VersionReleaseType;
+import org.eclipse.osee.ats.version.VersionLockedType;
+import org.eclipse.osee.ats.version.VersionReleaseType;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -41,7 +41,7 @@ import org.eclipse.swt.widgets.Control;
 public class ActionTeamVersionListDialog extends ActionTeamListDialog {
 
    XListViewer versionList = new XListViewer("Version");
-   VersionCommitConfigArtifact selectedVersion = null;
+   VersionArtifact selectedVersion = null;
 
    public ActionTeamVersionListDialog(Active active) {
       super(active);
@@ -92,7 +92,7 @@ public class ActionTeamVersionListDialog extends ActionTeamListDialog {
             if (versionList.getSelected().isEmpty()) {
                selectedVersion = null;
             } else {
-               selectedVersion = (VersionCommitConfigArtifact) versionList.getSelected().iterator().next();
+               selectedVersion = (VersionArtifact) versionList.getSelected().iterator().next();
             }
          };
       });
@@ -103,7 +103,7 @@ public class ActionTeamVersionListDialog extends ActionTeamListDialog {
    /**
     * @return the selectedVersion
     */
-   public VersionCommitConfigArtifact getSelectedVersion() {
+   public VersionArtifact getSelectedVersion() {
       return selectedVersion;
    }
 

@@ -21,8 +21,8 @@ import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.column.PercentCompleteTotalColumn;
 import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.WorkflowMetrics;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
-import org.eclipse.osee.ats.util.SMAMetrics;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -141,8 +141,8 @@ public class AtsMetricsComposite extends ScrolledComposite {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
 
-      SMAMetrics sMet =
-         new SMAMetrics(iAtsMetricsProvider.getMetricsArtifacts(), iAtsMetricsProvider.getMetricsVersionArtifact(),
+      WorkflowMetrics sMet =
+         new WorkflowMetrics(iAtsMetricsProvider.getMetricsArtifacts(), iAtsMetricsProvider.getMetricsVersionArtifact(),
             iAtsMetricsProvider.getManHoursPerDayPreference(), getEstimatedReleaseDate());
       createOverviewChart(sMet, metricsComposite);
       addSpace();
@@ -191,7 +191,7 @@ public class AtsMetricsComposite extends ScrolledComposite {
       adapt(label);
    }
 
-   public void createOverviewChart(SMAMetrics sMet, Composite parent) throws OseeCoreException {
+   public void createOverviewChart(WorkflowMetrics sMet, Composite parent) throws OseeCoreException {
       List<XBarGraphLine> lines = new ArrayList<XBarGraphLine>();
 
       lines.add(XBarGraphLine.getTextLine("Loaded", sMet.toStringObjectBreakout()));
@@ -267,7 +267,7 @@ public class AtsMetricsComposite extends ScrolledComposite {
       adapt(table);
    }
 
-   public void createCompletedByAssigneesChart(SMAMetrics sMet, Composite parent) {
+   public void createCompletedByAssigneesChart(WorkflowMetrics sMet, Composite parent) {
       List<XBarGraphLine> lines = new ArrayList<XBarGraphLine>();
       for (User user : sMet.getAssigneesAssignedOrCompleted()) {
          try {
@@ -320,7 +320,7 @@ public class AtsMetricsComposite extends ScrolledComposite {
       adapt(table);
    }
 
-   public void createHoursRemainingByAssigneesChart(SMAMetrics sMet, Composite parent) {
+   public void createHoursRemainingByAssigneesChart(WorkflowMetrics sMet, Composite parent) {
       List<XBarGraphLine> lines = new ArrayList<XBarGraphLine>();
       Double hoursRemain = null;
       if (sMet.getEstRelDate() != null) {

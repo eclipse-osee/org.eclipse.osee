@@ -29,13 +29,13 @@ import org.eclipse.osee.ats.actions.OpenNewAtsWorldEditorAction;
 import org.eclipse.osee.ats.actions.OpenNewAtsWorldEditorSelectedAction;
 import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.artifact.ActionManager;
+import org.eclipse.osee.ats.artifact.GoalManager;
+import org.eclipse.osee.ats.artifact.ReviewManager;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
-import org.eclipse.osee.ats.util.GoalManager;
-import org.eclipse.osee.ats.util.SMAMetrics;
-import org.eclipse.osee.ats.util.widgets.ReviewManager;
+import org.eclipse.osee.ats.util.WorkflowMetrics;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -324,7 +324,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
    public void updateExtraInfoLine() throws OseeCoreException {
       if (selectionMetricsAction != null && selectionMetricsAction.isChecked()) {
          if (worldComposite.getXViewer() != null && worldComposite.getXViewer().getSelectedSMAArtifacts() != null && !worldComposite.getXViewer().getSelectedSMAArtifacts().isEmpty()) {
-            showReleaseMetricsLabel.setText(SMAMetrics.getEstRemainMetrics(
+            showReleaseMetricsLabel.setText(WorkflowMetrics.getEstRemainMetrics(
                worldComposite.getXViewer().getSelectedSMAArtifacts(), null,
                worldComposite.getXViewer().getSelectedSMAArtifacts().iterator().next().getManHrsPerDayPreference(),
                null));

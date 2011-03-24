@@ -20,12 +20,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.artifact.ActionManager;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
+import org.eclipse.osee.ats.artifact.ActionableItemManager;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.artifact.TeamDefinitionManager;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -98,7 +100,7 @@ public class DemoTestUtil {
    public static TeamWorkFlowArtifact createSimpleAction(String title, SkynetTransaction transaction) throws OseeCoreException {
       Artifact actionArt =
          ActionManager.createAction(null, title, "Description", ChangeType.Improvement, "2", false, null,
-            ActionableItemArtifact.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName())),
+            ActionableItemManager.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName())),
             new Date(), UserManager.getUser(), null, transaction);
 
       TeamWorkFlowArtifact teamArt = null;
@@ -111,7 +113,7 @@ public class DemoTestUtil {
    }
 
    public static Set<ActionableItemArtifact> getActionableItems(DemoActionableItems demoAI) {
-      return ActionableItemArtifact.getActionableItems(Arrays.asList(demoAI.getName()));
+      return ActionableItemManager.getActionableItems(Arrays.asList(demoAI.getName()));
    }
 
    public static ActionableItemArtifact getActionableItem(DemoActionableItems demoAI) {
@@ -121,7 +123,7 @@ public class DemoTestUtil {
    public static TeamWorkFlowArtifact addTeamWorkflow(Artifact actionArt, String title, SkynetTransaction transaction) throws OseeCoreException {
       Set<ActionableItemArtifact> actionableItems = getActionableItems(DemoActionableItems.SAW_Test);
       ;
-      Collection<TeamDefinitionArtifact> teamDefs = TeamDefinitionArtifact.getImpactedTeamDefs(actionableItems);
+      Collection<TeamDefinitionArtifact> teamDefs = TeamDefinitionManager.getImpactedTeamDefs(actionableItems);
 
       ActionManager.createTeamWorkflow(actionArt, teamDefs.iterator().next(), actionableItems,
          Arrays.asList(UserManager.getUser()), transaction, new Date(), UserManager.getUser(), null);

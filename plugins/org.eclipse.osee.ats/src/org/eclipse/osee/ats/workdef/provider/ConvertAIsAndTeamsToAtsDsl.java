@@ -8,8 +8,10 @@ package org.eclipse.osee.ats.workdef.provider;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
+import org.eclipse.osee.ats.artifact.ActionableItemManager;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.artifact.TeamDefinitionManager;
 import org.eclipse.osee.ats.dsl.atsDsl.ActionableItemDef;
 import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
 import org.eclipse.osee.ats.dsl.atsDsl.BooleanDef;
@@ -49,11 +51,11 @@ public class ConvertAIsAndTeamsToAtsDsl {
 
       try {
          // Add all TeamDef definitions
-         TeamDef topTeam = convertTeamDef(TeamDefinitionArtifact.getTopTeamDefinition(), null);
+         TeamDef topTeam = convertTeamDef(TeamDefinitionManager.getTopTeamDefinition(), null);
          atsDsl.getTeamDef().add(topTeam);
 
          // Add all AI definitions
-         ActionableItemDef topAi = convertAIDef(ActionableItemArtifact.getTopActionableItem(), null);
+         ActionableItemDef topAi = convertAIDef(ActionableItemManager.getTopActionableItem(), null);
          atsDsl.getActionableItemDef().add(topAi);
 
       } catch (OseeCoreException ex) {

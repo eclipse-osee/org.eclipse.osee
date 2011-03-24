@@ -30,7 +30,7 @@ public class HistoryXViewerFactory extends XViewerFactory {
    public CustomizeData getDefaultTableCustomizeData() {
       CustomizeData customizeData = super.getDefaultTableCustomizeData();
       for (XViewerColumn xCol : customizeData.getColumnData().getColumns()) {
-         if (xCol.getId() == TransactionColumn.getInstance().getId()) {
+         if (xCol.getId().equals(TransactionColumn.getInstance().getId())) {
             xCol.setSortForward(false);
          }
       }

@@ -16,7 +16,9 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osee.ats.artifact.ActionManager;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
+import org.eclipse.osee.ats.artifact.ActionableItemManager;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
@@ -25,7 +27,6 @@ import org.eclipse.osee.ats.config.AtsBulkLoad;
 import org.eclipse.osee.ats.config.AtsConfigManager;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -136,7 +137,7 @@ public class AtsBranchConfigurationTest {
       OseeLog.log(AtsPlugin.class, Level.INFO, "Create new Action and target for version " + verArtToTarget);
 
       Collection<ActionableItemArtifact> selectedActionableItems =
-         ActionableItemArtifact.getActionableItems(appendToName(BRANCH_VIA_VERSIONS, "A1"));
+         ActionableItemManager.getActionableItems(appendToName(BRANCH_VIA_VERSIONS, "A1"));
       Assert.assertFalse(selectedActionableItems.isEmpty());
 
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
@@ -230,7 +231,7 @@ public class AtsBranchConfigurationTest {
       // create action,
       OseeLog.log(AtsPlugin.class, Level.INFO, "Create new Action");
       Collection<ActionableItemArtifact> selectedActionableItems =
-         ActionableItemArtifact.getActionableItems(appendToName(BRANCH_VIA_TEAM_DEFINITION, "A1"));
+         ActionableItemManager.getActionableItems(appendToName(BRANCH_VIA_TEAM_DEFINITION, "A1"));
       Assert.assertFalse(selectedActionableItems.isEmpty());
 
       SkynetTransaction transaction =

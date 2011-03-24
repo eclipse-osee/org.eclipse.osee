@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.actions.wizard.NewActionJob;
 import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
+import org.eclipse.osee.ats.artifact.ActionableItemManager;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.WorldEditor;
@@ -137,7 +138,7 @@ public class OseeAtsServiceImpl implements IOseeCmService {
          if (cType == null) {
             cType = ChangeType.Improvement;
          }
-         Set<ActionableItemArtifact> aias = ActionableItemArtifact.getActionableItems(productNames);
+         Set<ActionableItemArtifact> aias = ActionableItemManager.getActionableItems(productNames);
          if (aias.size() == 0) {
             throw new OseeArgumentException("Can not resolve productNames to Actionable Items");
          }

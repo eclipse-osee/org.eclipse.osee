@@ -13,12 +13,13 @@ package org.eclipse.osee.ats.test.navigate;
 import java.util.Collection;
 import java.util.Collections;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.artifact.TeamDefinitionManager;
 import org.eclipse.osee.ats.navigate.AtsXNavigateItemLauncher;
-import org.eclipse.osee.ats.navigate.MassEditTeamVersionItem;
 import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.test.util.DemoTestUtil;
 import org.eclipse.osee.ats.test.util.NavigateTestUtil;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
+import org.eclipse.osee.ats.version.MassEditTeamVersionItem;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -50,7 +51,7 @@ public class AtsNavigateItemsToMassEditorTest {
       MassEditTeamVersionItem massEditItem = ((MassEditTeamVersionItem) item);
 
       Collection<TeamDefinitionArtifact> teamDefs =
-         TeamDefinitionArtifact.getTeamDefinitions(Collections.singleton("SAW SW"));
+         TeamDefinitionManager.getTeamDefinitions(Collections.singleton("SAW SW"));
       Assert.assertNotNull(teamDefs);
       Assert.assertFalse(teamDefs.isEmpty());
 

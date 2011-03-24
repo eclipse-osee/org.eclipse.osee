@@ -14,13 +14,14 @@ package org.eclipse.osee.ats.world.search;
 import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.artifact.TeamDefinitionManager;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.VersionLockedType;
-import org.eclipse.osee.ats.util.VersionManager;
-import org.eclipse.osee.ats.util.VersionReleaseType;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.ats.util.widgets.dialog.VersionListDialog;
+import org.eclipse.osee.ats.version.VersionLockedType;
+import org.eclipse.osee.ats.version.VersionReleaseType;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -33,16 +34,16 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
  * @author Donald G. Dunne
  */
 public class VersionTargetedForTeamSearchItem extends WorldUISearchItem {
-   private final Artifact versionArt;
-   private Artifact selectedVersionArt;
+   private final VersionArtifact versionArt;
+   private VersionArtifact selectedVersionArt;
    private final boolean returnAction;
    private final TeamDefinitionArtifact teamDef;
 
-   public VersionTargetedForTeamSearchItem(TeamDefinitionArtifact teamDef, Artifact versionArt, boolean returnAction, LoadView loadView) {
+   public VersionTargetedForTeamSearchItem(TeamDefinitionArtifact teamDef, VersionArtifact versionArt, boolean returnAction, LoadView loadView) {
       this(null, teamDef, versionArt, returnAction, loadView);
    }
 
-   public VersionTargetedForTeamSearchItem(String name, TeamDefinitionArtifact teamDef, Artifact versionArt, boolean returnAction, LoadView loadView) {
+   public VersionTargetedForTeamSearchItem(String name, TeamDefinitionArtifact teamDef, VersionArtifact versionArt, boolean returnAction, LoadView loadView) {
       super(name != null ? name : (returnAction ? "Actions" : "Workflows") + " Targeted-For Version", loadView,
          FrameworkImage.VERSION);
       this.teamDef = teamDef;
@@ -65,7 +66,7 @@ public class VersionTargetedForTeamSearchItem extends WorldUISearchItem {
       return "";
    }
 
-   public Artifact getSearchVersionArtifact() {
+   public VersionArtifact getSearchVersionArtifact() {
       if (versionArt != null) {
          return versionArt;
       }
@@ -80,7 +81,7 @@ public class VersionTargetedForTeamSearchItem extends WorldUISearchItem {
       }
 
       ArrayList<Artifact> arts = new ArrayList<Artifact>();
-      for (Artifact art : VersionManager.getTargetedForTeamArtifacts(getSearchVersionArtifact())) {
+      for (Artifact art : getSearchVersionArtifact().getTargetedForTeamArtifacts()) {
          if (returnAction) {
             arts.add(((TeamWorkFlowArtifact) art).getParentActionArtifact());
          } else {
@@ -106,7 +107,7 @@ public class VersionTargetedForTeamSearchItem extends WorldUISearchItem {
          TeamDefinitionArtifact selectedTeamDef = teamDef;
          if (versionArt == null && selectedTeamDef == null) {
             TeamDefinitionDialog ld = new TeamDefinitionDialog("Select Team", "Select Team");
-            ld.setInput(TeamDefinitionArtifact.getTeamReleaseableDefinitions(Active.Both));
+            ld.setInput(TeamDefinitionManager.getTeamReleaseableDefinitions(Active.Both));
             int result = ld.open();
             if (result == 0) {
                selectedTeamDef = (TeamDefinitionArtifact) ld.getResult()[0];
@@ -119,7 +120,7 @@ public class VersionTargetedForTeamSearchItem extends WorldUISearchItem {
                new VersionListDialog("Select Version", "Select Version", selectedTeamDef.getVersionsArtifacts(
                   VersionReleaseType.Both, VersionLockedType.Both));
             if (vld.open() == 0) {
-               selectedVersionArt = (Artifact) vld.getResult()[0];
+               selectedVersionArt = (VersionArtifact) vld.getResult()[0];
                return;
             }
          }
@@ -132,7 +133,7 @@ public class VersionTargetedForTeamSearchItem extends WorldUISearchItem {
    /**
     * @param selectedVersionArt the selectedVersionArt to set
     */
-   public void setSelectedVersionArt(Artifact selectedVersionArt) {
+   public void setSelectedVersionArt(VersionArtifact selectedVersionArt) {
       this.selectedVersionArt = selectedVersionArt;
    }
 

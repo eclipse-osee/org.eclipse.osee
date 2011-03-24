@@ -15,7 +15,7 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.artifact.VersionCommitConfigArtifact;
+import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -133,7 +133,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
    }
 
    private String handleDestBranchColumn(Object element, Branch branch) {
-      if (element instanceof VersionCommitConfigArtifact) {
+      if (element instanceof VersionArtifact) {
          return branch == null ? "Parent Branch Not Configured for Version [" + element + "]" : branch.getShortName();
       } else if (element instanceof TeamDefinitionArtifact) {
          return branch == null ? "Parent Branch Not Configured for Team Definition [" + element + "]" : branch.getShortName();

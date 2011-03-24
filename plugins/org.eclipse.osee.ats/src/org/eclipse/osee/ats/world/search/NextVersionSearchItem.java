@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.artifact.TeamDefinitionManager;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
@@ -103,7 +104,7 @@ public class NextVersionSearchItem extends WorldUISearchItem {
       }
       try {
          TeamDefinitionDialog ld = new TeamDefinitionDialog("Select Team", "Select Team");
-         ld.setInput(TeamDefinitionArtifact.getTeamReleaseableDefinitions(Active.Active));
+         ld.setInput(TeamDefinitionManager.getTeamReleaseableDefinitions(Active.Active));
          int result = ld.open();
          if (result == 0) {
             selectedTeamDef = (TeamDefinitionArtifact) ld.getResult()[0];

@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
+import org.eclipse.osee.ats.artifact.ActionableItemManager;
 import org.eclipse.osee.ats.util.TeamState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.UserCommunity;
@@ -58,7 +59,7 @@ public class DemoDbActionData {
    public Collection<ActionableItemArtifact> getActionableItems() throws OseeCoreException {
       Set<ActionableItemArtifact> aias = new HashSet<ActionableItemArtifact>();
       for (String str : actionableItems) {
-         for (ActionableItemArtifact aia : ActionableItemArtifact.getActionableItems()) {
+         for (ActionableItemArtifact aia : ActionableItemManager.getActionableItems()) {
             if (str.equals(aia.getName())) {
                aias.add(aia);
             }
@@ -112,8 +113,7 @@ public class DemoDbActionData {
       actionDatas.add(new DemoDbActionData(new String[] {"Problem with the"}, "user window", "4",
          new String[] {DemoDbAIs.Timesheet.getAIName()}, new Integer[] {1}, TeamState.Implement));
       actionDatas.add(new DemoDbActionData(new String[] {"Button S doesn't work on"}, "help", "3",
-         new String[] {DemoDbAIs.Reader.getAIName()}, new Integer[] {1}, TeamState.Completed,
-         CreateReview.Decision));
+         new String[] {DemoDbAIs.Reader.getAIName()}, new Integer[] {1}, TeamState.Completed, CreateReview.Decision));
       return actionDatas;
    }
 

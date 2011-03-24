@@ -24,6 +24,9 @@ import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.actions.NewAction;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.artifact.ActionArtifact;
+import org.eclipse.osee.ats.artifact.ActionManager;
+import org.eclipse.osee.ats.artifact.ActionableItemManager;
 import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowLabelProvider;
@@ -207,7 +210,7 @@ public final class AtsUtil {
       }
    }
 
-   public static void editActionableItems(Artifact actionArt) throws OseeCoreException {
+   public static void editActionableItems(ActionArtifact actionArt) throws OseeCoreException {
       Result result = ActionableItemManager.editActionableItems(actionArt);
       if (result.isFalse() && result.getText().equals("")) {
          return;

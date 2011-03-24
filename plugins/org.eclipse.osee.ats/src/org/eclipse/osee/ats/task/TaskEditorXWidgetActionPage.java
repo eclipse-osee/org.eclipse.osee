@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.artifact.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.export.AtsExportManager;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.util.SMAMetrics;
+import org.eclipse.osee.ats.util.WorkflowMetrics;
 import org.eclipse.osee.ats.world.AtsXWidgetActionFormPage;
 import org.eclipse.osee.ats.world.WorldAssigneeFilter;
 import org.eclipse.osee.ats.world.WorldCompletedFilter;
@@ -301,7 +301,7 @@ public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage implem
    public void updateExtraInfoLine() throws OseeCoreException {
       if (selectionMetricsAction != null && selectionMetricsAction.isChecked()) {
          if (taskComposite.getTaskXViewer() != null && taskComposite.getTaskXViewer().getSelectedSMAArtifacts() != null && !taskComposite.getTaskXViewer().getSelectedSMAArtifacts().isEmpty()) {
-            taskComposite.showReleaseMetricsLabel.setText(SMAMetrics.getEstRemainMetrics(
+            taskComposite.showReleaseMetricsLabel.setText(WorkflowMetrics.getEstRemainMetrics(
                taskComposite.getTaskXViewer().getSelectedSMAArtifacts(), null,
                taskComposite.getTaskXViewer().getSelectedSMAArtifacts().iterator().next().getManHrsPerDayPreference(),
                null));

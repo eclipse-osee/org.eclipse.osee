@@ -11,8 +11,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.internal.AtsPlugin;
-import org.eclipse.osee.ats.navigate.GenerateReviewParticipationReport;
-import org.eclipse.osee.ats.navigate.NewPeerToPeerReviewItem;
 import org.eclipse.osee.ats.navigate.SearchNavigateItem;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.world.search.MyReviewWorkflowItem;

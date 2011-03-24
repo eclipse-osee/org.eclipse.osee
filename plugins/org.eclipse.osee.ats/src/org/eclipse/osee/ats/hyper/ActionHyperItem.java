@@ -122,9 +122,7 @@ public class ActionHyperItem extends HyperViewItem {
          return null;
       }
       try {
-         if (artifact instanceof Artifact) {
-            return AssigneeColumn.getAssigneeImage(artifact);
-         }
+         return AssigneeColumn.getAssigneeImage(artifact);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
