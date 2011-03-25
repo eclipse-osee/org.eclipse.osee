@@ -128,6 +128,7 @@ public class XComboWithTextAndComboWithText extends XCombo {
          text.setRequiredEntry(textRequiredIfVisible);
          GridData gd = new GridData(GridData.FILL_BOTH);
          gd.heightHint = getTextHeightHint();
+         gd.widthHint = 100;
          text.getStyledText().setLayoutData(gd);
          text.addModifyListener(new ModifyListener() {
 
@@ -144,6 +145,7 @@ public class XComboWithTextAndComboWithText extends XCombo {
          if (comboWithText.getText() != null) {
             GridData gd2 = (GridData) comboWithText.getText().getStyledText().getLayoutData();
             gd2.heightHint = getTextHeightHint();
+            gd2.widthHint = 100;
             comboWithText.getText().getStyledText().setLayoutData(gd);
          }
          // Since embedding XComboWithText, make that internal composite zero margin so it aligns
