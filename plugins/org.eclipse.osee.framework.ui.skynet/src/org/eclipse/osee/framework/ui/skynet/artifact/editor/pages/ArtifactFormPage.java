@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.jdk.core.util.ReservedCharacters;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
+import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.RelationsComposite;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
@@ -156,8 +157,16 @@ public class ArtifactFormPage extends FormPage {
       form.setText(getEditorInput().getName());
    }
 
+   /**
+    * Set form image to image of artifact type being edited. Editor image will remain that of artifact editor.
+    */
    private void updateImage(ScrolledForm form) {
-      form.setImage(getEditor().getEditorInput().getImage());
+      Image image = ArtifactImageManager.getImage(getEditor().getEditorInput().getArtifact());
+      if (image != null) {
+         form.setImage(image);
+      } else {
+         form.setImage(getEditor().getEditorInput().getImage());
+      }
    }
 
    private String getArtifactShortInfo() {
