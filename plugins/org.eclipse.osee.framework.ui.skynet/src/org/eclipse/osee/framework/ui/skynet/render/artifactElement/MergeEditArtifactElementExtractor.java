@@ -38,8 +38,8 @@ public class MergeEditArtifactElementExtractor implements IElementExtractor {
    }
 
    @Override
-   public Collection<Element> extractElements() throws DOMException, OseeCoreException {
-      final Collection<Element> artifactElements = new LinkedList<Element>();
+   public Collection<WordExtractorData> extractElements() throws DOMException, OseeCoreException {
+      final Collection<WordExtractorData> artifactElements = new LinkedList<WordExtractorData>();
       Collection<Element> sectList = new LinkedList<Element>();
       Element rootElement = document.getDocumentElement();
       oleDataElement = null;
@@ -53,7 +53,10 @@ public class MergeEditArtifactElementExtractor implements IElementExtractor {
             sectList.add(element);
          }
          if (element.getNodeName().endsWith("body")) {
-            artifactElements.add(element);
+            WordExtractorData extractorData = new WordExtractorData();
+            extractorData.addParent(element);
+
+            artifactElements.add(extractorData);
          } else if (oleDataElement == null && element.getNodeName().endsWith("docOleData")) {
             oleDataElement = element;
          }
