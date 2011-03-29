@@ -18,7 +18,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.TestException;
 import org.eclipse.osee.ote.core.environment.TestEnvironment;
@@ -33,10 +35,8 @@ import org.eclipse.osee.ote.core.framework.DestroyableService;
 public class ModelManager implements IModelManager, DestroyableService {
 
    private final List<IModelListener> modelListeners;
-   private final Map<ModelKey, List<IModelListener>> modelListenerMap;
-   private final Map<ModelKey, IModel> models;
-   private final List<ModelKey> registeredModels;
-   private final Map<ModelKey, Integer> referenceCountOfModels;
+   private final Map<ModelKey<?>, ModelReference> modelReferenceMap;
+   private final List<ModelKey<?>> registeredModels;
    private final WeakReference<TestEnvironment> testEnvironment;
 
    private boolean isDestroyed = false;
@@ -48,9 +48,9 @@ public class ModelManager implements IModelManager, DestroyableService {
 
       @Override
       protected void doCmd(ConsoleShell shell, String[] switches, String[] args) {
-         for (Map.Entry<ModelKey, IModel> entry : models.entrySet()) {
+         for (Entry<ModelKey<?>, ModelReference> entry : modelReferenceMap.entrySet()) {
             try {
-               println(String.format("%s: state=%s", entry.getKey().getName(), entry.getValue().getState().name()));
+               println(String.format("%s: state=%s", entry.getKey().getName(), entry.getValue().getModel().getState().name()));
             } catch (Exception e) {
                println("exception while getting model info for " + entry.getKey().getName());
                printStackTrace(e);
@@ -62,18 +62,17 @@ public class ModelManager implements IModelManager, DestroyableService {
 
    public ModelManager(TestEnvironment testEnvironment) {
       this.testEnvironment = new WeakReference<TestEnvironment>(testEnvironment);
-      models = new HashMap<ModelKey, IModel>();
-      registeredModels = new ArrayList<ModelKey>();
-      referenceCountOfModels = new HashMap<ModelKey, Integer>();
+      registeredModels = new ArrayList<ModelKey<?>>();
       modelListeners = new ArrayList<IModelListener>();
-      modelListenerMap = new HashMap<ModelKey, List<IModelListener>>();
+      modelReferenceMap = new HashMap<ModelKey<?>, ModelReference>();
    }
 
    @Override
    public <CLASSTYPE extends IModel> CLASSTYPE getModel(ModelKey<CLASSTYPE> key) {
-      if (models.containsKey(key)) {
-         referenceCountOfModels.put(key, referenceCountOfModels.get(key).intValue() + 1);
-         return (CLASSTYPE) models.get(key);
+      if (modelReferenceMap.containsKey(key)) {
+         ModelReference modelReference = modelReferenceMap.get(key);
+         modelReference.incrementReferenceCount();
+         return (CLASSTYPE) modelReference.getModel();
       } else {
          CLASSTYPE model = null;
          try {
@@ -87,12 +86,12 @@ public class ModelManager implements IModelManager, DestroyableService {
       }
    }
 
-   private IModel findModel(ModelKey key) {
-      return models.get(findModelKey(models.keySet(), key));
+   private IModel findModel(ModelKey<?> key) {
+      return modelReferenceMap.get(findModelKey(modelReferenceMap.keySet(), key)).getModel();
    }
 
-   private ModelKey findModelKey(Collection<ModelKey> list, ModelKey key) {
-      for (ModelKey current : list) {
+   private ModelKey<?> findModelKey(Collection<ModelKey<?>> list, ModelKey<?> key) {
+      for (ModelKey<?> current : list) {
          if (current.equals(key)) {
             return current;
          }
@@ -100,42 +99,45 @@ public class ModelManager implements IModelManager, DestroyableService {
       return null;
    }
 
-   //   private void incrementReferenceCount(ModelKey key)
-   //   {
-   //      ModelKey realKey = findModelKey(referenceCountOfModels.keySet(), key);
-   //      referenceCountOfModels.put(realKey, referenceCountOfModels.get(key).intValue() + 1);
-   //   }
-   //
-   //   private void decrementReferenceCount(ModelKey key)
-   //   {
-   //      ModelKey realKey = findModelKey(referenceCountOfModels.keySet(), key);
-   //      referenceCountOfModels.put(realKey, referenceCountOfModels.get(key).intValue() -1);
-   //   }
-   //
-   //   private Integer getReferenceCount(ModelKey key)
-   //   {
-   //      ModelKey realKey = findModelKey(referenceCountOfModels.keySet(), key);
-   //      return referenceCountOfModels.get(realKey);
-   //   }
-
    private <CLASSTYPE extends IModel> CLASSTYPE createModel(ModelKey<CLASSTYPE> key) throws ClassNotFoundException, InstantiationException, IllegalAccessException, RemoteException {
       if (key == null) {
          throw new IllegalArgumentException("key cannot be null");
       }
       notifyModelPreCreate(key);
-      CLASSTYPE model = key.getModelClass().newInstance();
+      CLASSTYPE model = findOrCreateModel(key);
       ClassLoader loader = Thread.currentThread().getContextClassLoader();
       try {
-         Thread.currentThread().setContextClassLoader(key.getModelClass().getClassLoader());
+         Class<CLASSTYPE> modelClass = key.getModelClass();
+         System.out.printf("############### model class = %s\n", modelClass);
+         Thread.currentThread().setContextClassLoader(modelClass.getClassLoader());
          model.init(testEnvironment.get(), key);
-         referenceCountOfModels.put(key, 1);
-         models.put(key, model);
+         modelReferenceMap.put(key, new ModelReference(model));
          this.registerModel(key);
          notifyModelPostCreate(key);
          return model;
       } finally {
          Thread.currentThread().setContextClassLoader(loader);
       }
+   }
+
+   /**
+    * @param <CLASSTYPE>
+    * @param key
+    * @return
+    * @throws InstantiationException
+    * @throws IllegalAccessException
+    */
+   private <CLASSTYPE extends IModel> CLASSTYPE findOrCreateModel(ModelKey<CLASSTYPE> key) throws InstantiationException, IllegalAccessException {
+      System.out.printf("################################# Trying to find model %s...\n", key);
+      System.out.printf("################################# Trying to find model %s...\n", key);
+      CLASSTYPE model = ModelFinderService.getInstance().getModel(key);
+      System.out.printf("################################ model found = %s\n", model );
+      if( model == null )
+      {
+         System.out.println("############################# Getting the old fashioned way.");
+         model = key.getModelClass().newInstance();
+      }
+      return model;
    }
 
    @Override
@@ -164,20 +166,14 @@ public class ModelManager implements IModelManager, DestroyableService {
    }
 
    @Override
-   public void addModelActivityListener(IModelListener listener, ModelKey key) {
+   public void addModelActivityListener(IModelListener listener, ModelKey<?> key) {
       if (listener == null) {
          Exception e = new NullPointerException();
          OseeLog.log(TestEnvironment.class, Level.SEVERE, e.getMessage(), e);
          return;
       }
-      if (modelListenerMap.containsKey(key)) {
-         if (!collectionContainsListener(modelListenerMap.get(key), listener)) {
-            modelListenerMap.get(key).add(listener);
-         }
-      } else {
-         List<IModelListener> newList = new ArrayList<IModelListener>();
-         newList.add(listener);
-         modelListenerMap.put(key, newList);
+      if (modelReferenceMap.containsKey(key)) {
+         modelReferenceMap.get(key).addModelActivityListener(listener);
       }
    }
 
@@ -196,16 +192,11 @@ public class ModelManager implements IModelManager, DestroyableService {
    }
 
    @Override
-   public void removeModelActivityListener(IModelListener listener, ModelKey key) {
+   public void removeModelActivityListener(IModelListener listener, ModelKey<?> key) {
       try {
-         if (modelListenerMap.containsKey(key)) {
-            List<IModelListener> list = modelListenerMap.get(key);
-            Iterator<IModelListener> iter = list.iterator();
-            while (iter.hasNext()) {
-               if (iter.next().getHashCode() == listener.getHashCode()) {
-                  iter.remove();
-               }
-            }
+         if (modelReferenceMap.containsKey(key)) {
+            ModelReference modelReference = modelReferenceMap.get(key);
+            modelReference.removeModelActivityListener(listener);
          }
       } catch (RemoteException e) {
          OseeLog.log(TestEnvironment.class, Level.SEVERE, e.getMessage(), e);
@@ -213,14 +204,11 @@ public class ModelManager implements IModelManager, DestroyableService {
    }
 
    @Override
-   public <CLASSTYPE extends IModel> void disposeModel(ModelKey key) {
+   public <CLASSTYPE extends IModel> void disposeModel(ModelKey<?> key) {
       IModel localModel = findModel(key);
-      //      referenceCountOfModels.remove(findModelKey(referenceCountOfModels.keySet(),key));
-      referenceCountOfModels.remove(key);
-      models.remove(key);
+      modelReferenceMap.remove(key);
       try {
          localModel.dispose();
-
          notifyModelDispose(localModel.getKey());
       } catch (RemoteException ex) {
          throw new TestException("Could Not dispose of the model " + localModel + ":\n" + ex, Level.WARNING);
@@ -228,17 +216,17 @@ public class ModelManager implements IModelManager, DestroyableService {
    }
 
    @Override
-   public List<ModelKey> getRegisteredModels() {
+   public List<ModelKey<?>> getRegisteredModels() {
       return registeredModels;
    }
 
    @Override
    public void releaseReference(IModel model) {
       try {
-         if (models.containsKey(model.getKey())) {
-            referenceCountOfModels.put(model.getKey(), referenceCountOfModels.get(model.getKey()).intValue() - 1);
-            //            decrementReferenceCount(model.getKey());
-            if (referenceCountOfModels.get(model.getKey()).intValue() <= 0) {
+         if (modelReferenceMap.containsKey(model.getKey())) {
+            ModelReference modelReference = modelReferenceMap.get(model.getKey());
+            modelReference.decrementReferenceCount();
+            if (modelReference.getReferenceCount() <= 0) {
                disposeModel(model.getKey());
             }
          }
@@ -248,92 +236,81 @@ public class ModelManager implements IModelManager, DestroyableService {
    }
 
    @Override
-   public void releaseAllReferences(ModelKey key) {
-      if (!models.containsKey(key)) {
+   public void releaseAllReferences(ModelKey<?> key) {
+      if (!modelReferenceMap.containsKey(key)) {
          return;
       }
-
-      referenceCountOfModels.remove(key);
       disposeModel(key);
+      modelReferenceMap.remove(key);
 
    }
 
    @Override
-   public void releaseReference(ModelKey key) {
-      if (models.containsKey(key)) {
-         this.releaseReference(models.get(key));
+   public void releaseReference(ModelKey<?> key) {
+      if (modelReferenceMap.containsKey(key)) {
+         this.releaseReference(modelReferenceMap.get(key).getModel());
       }
    }
 
    @Override
-   public <CLASSTYPE extends IModel> void registerModel(ModelKey key) {
-      ModelKey cleanKey = new ModelKey(key);
+   public <CLASSTYPE extends IModel> void registerModel(ModelKey<?> key) {
+      ModelKey<?> cleanKey = new ModelKey(key);
       if (!registeredModels.contains(cleanKey)) {
          registeredModels.add(cleanKey);
       }
-      //      else {
-      //         throw new TestException(String.format("[%s] is already registered to this model manager.", key.toString()), Level.WARNING);
-      //      }
    }
 
-   private <CLASSTYPE extends IModel> void notifyModelPreCreate(ModelKey key) throws RemoteException {
-      ModelKey cleanKey = new ModelKey(key);
+   private <CLASSTYPE extends IModel> void notifyModelPreCreate(ModelKey<?> key) throws RemoteException {
+      ModelKey<?> cleanKey = new ModelKey(key);
       for (IModelListener listener : modelListeners) {
          listener.onModelPreCreate(cleanKey);
       }
 
-      if (modelListenerMap.containsKey(cleanKey)) {
-         for (IModelListener listener : modelListenerMap.get(cleanKey)) {
-            listener.onModelPreCreate(cleanKey);
-         }
+      if (modelReferenceMap.containsKey(cleanKey)) {
+         modelReferenceMap.get(cleanKey).notifyModelPreCreate();
       }
    }
 
-   private <CLASSTYPE extends IModel> void notifyModelPostCreate(ModelKey key) throws RemoteException {
-      ModelKey cleanKey = new ModelKey(key);
+   private <CLASSTYPE extends IModel> void notifyModelPostCreate(ModelKey<?> key) throws RemoteException {
+      ModelKey<?> cleanKey = new ModelKey(key);
       for (IModelListener listener : modelListeners) {
          listener.onModelPostCreate(cleanKey);
       }
 
-      if (modelListenerMap.containsKey(cleanKey)) {
-         for (IModelListener listener : modelListenerMap.get(cleanKey)) {
-            listener.onModelPostCreate(cleanKey);
-         }
+      if (modelReferenceMap.containsKey(cleanKey)) {
+         modelReferenceMap.get(cleanKey).notifyModelPostCreate();
       }
    }
 
    @Override
-   public void notifyModeStateListener(ModelKey key, ModelState state) throws RemoteException {
-      ModelKey cleanKey = new ModelKey(key);
+   public void notifyModelStateListener(ModelKey<?> key, ModelState state) throws RemoteException {
+      ModelKey<?> cleanKey = new ModelKey(key);
       for (IModelListener listener : modelListeners) {
          listener.onModelStateChange(cleanKey, state);
       }
 
-      if (modelListenerMap.containsKey(cleanKey)) {
-         for (IModelListener listener : modelListenerMap.get(cleanKey)) {
-            listener.onModelStateChange(cleanKey, state);
-         }
+      if (modelReferenceMap.containsKey(cleanKey)) {
+         modelReferenceMap.get(cleanKey).notifyModelStateListener();
       }
    }
 
-   private <CLASSTYPE extends IModel> void notifyModelDispose(ModelKey key) throws RemoteException {
-      ModelKey cleanKey = new ModelKey(key);
+   private <CLASSTYPE extends IModel> void notifyModelDispose(ModelKey<?> key) throws RemoteException {
+      @SuppressWarnings("rawtypes")
+      ModelKey<?> cleanKey = new ModelKey(key);
       for (IModelListener listener : modelListeners) {
          listener.onModelDispose(cleanKey);
       }
 
-      if (modelListenerMap.containsKey(cleanKey)) {
-         for (IModelListener listener : modelListenerMap.get(cleanKey)) {
-            listener.onModelDispose(cleanKey);
-         }
+      if (modelReferenceMap.containsKey(cleanKey)) {
+         modelReferenceMap.get(cleanKey).notifyModelDispose();
       }
    }
 
    @Override
-   public void changeModelState(ModelKey key, ModelState state) {
+   public void changeModelState(ModelKey<?> key, ModelState state) {
       try {
          if (state == ModelState.PAUSED) {
-            if (models.containsKey(key)) {
+            if (modelReferenceMap.containsKey(key)) {
                getModel(key).turnModelOff();
             }
          } else if (state == ModelState.RUNNING) {
@@ -347,9 +324,9 @@ public class ModelManager implements IModelManager, DestroyableService {
    }
 
    @Override
-   public ModelState getModelState(ModelKey key) throws RemoteException {
-      if (models.containsKey(key)) {
-         return models.get(key).getState();
+   public ModelState getModelState(ModelKey<?> key) throws RemoteException {
+      if (modelReferenceMap.containsKey(key)) {
+         return modelReferenceMap.get(key).getModel().getState();
       } else {
          return ModelState.DISPOSED;
       }
@@ -360,14 +337,11 @@ public class ModelManager implements IModelManager, DestroyableService {
       if (isDestroyed) {
          return;
       }
-      for (ModelKey modelKey : registeredModels) {
+      for (ModelKey<?> modelKey : registeredModels) {
          releaseAllReferences(modelKey);
       }
       modelListeners.clear();
-      modelListenerMap.clear();
-      models.clear();
       registeredModels.clear();
-      referenceCountOfModels.clear();
       isDestroyed = true;
    }
 

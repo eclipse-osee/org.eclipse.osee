@@ -11,6 +11,7 @@
 package org.eclipse.osee.ote.core.internal;
 
 import java.util.Hashtable;
+
 import org.eclipse.osee.framework.core.util.ServiceDependencyTracker;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.ote.core.OteProperties;
@@ -51,6 +52,7 @@ public class Activator implements BundleActivator {
 
    @Override
    public void start(BundleContext context) throws Exception {
+      System.out.println("Activator for osee.ote.core");
       activator = this;
       statusBoard = new StatusBoard();
       bundleContext = context;

@@ -111,4 +111,9 @@ public class ModelKey<M extends IModel> implements Serializable, Comparable {
       return this.getName().compareTo(otherKey.getName());
    }
 
+   @Override
+   public String toString() {
+      return getClassName();
+   }
+
 }
