@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.conflict.ArtifactConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
@@ -154,10 +153,7 @@ public class ConflictTest {
          int whichChange = 1;
 
          for (Conflict conflict : conflicts) {
-            ConflictStatus status = conflict.getStatus();
-            if (conflict instanceof ArtifactConflict && status.isNotResolvable()) {
-               ((ArtifactConflict) conflict).revertSourceArtifact();
-            } else if (conflict instanceof AttributeConflict) {
+            if (conflict instanceof AttributeConflict) {
                ConflictTestManager.resolveAttributeConflict((AttributeConflict) conflict);
                conflict.setStatus(ConflictStatus.RESOLVED);
             } else if (conflict instanceof RelationConflict) {

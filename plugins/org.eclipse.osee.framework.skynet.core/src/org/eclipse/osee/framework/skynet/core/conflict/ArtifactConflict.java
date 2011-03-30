@@ -127,10 +127,6 @@ public class ArtifactConflict extends Conflict {
       return false;
    }
 
-   public void revertSourceArtifact() throws OseeCoreException {
-      getSourceArtifact().revert();
-   }
-
    @Override
    public int getMergeGammaId() throws BranchMergeException {
       throw new BranchMergeException("Artifact Conflicts can not be handled they must be reverted on the Source Branch");
