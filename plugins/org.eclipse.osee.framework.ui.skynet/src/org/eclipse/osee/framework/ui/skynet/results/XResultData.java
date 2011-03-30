@@ -51,8 +51,8 @@ public final class XResultData {
       Info;
    }
 
-   private final StringBuffer sb = new StringBuffer();
-   private final CountingMap<Type> count = new CountingMap<Type>();
+   private StringBuffer sb;
+   private CountingMap<Type> count;
 
    private boolean enableOseeLog;
 
@@ -63,6 +63,12 @@ public final class XResultData {
    public XResultData(boolean enableOseeLog) {
       super();
       this.enableOseeLog = enableOseeLog;
+      clear();
+   }
+
+   public void clear() {
+      sb = new StringBuffer();
+      count = new CountingMap<Type>();
    }
 
    public void addRaw(String str) {
@@ -102,7 +108,7 @@ public final class XResultData {
    }
 
    public void logErrorWithFormat(String formatStr, Object... objs) {
-      logStr(Type.Severe, String.format(formatStr, objs), null);
+      logStr(Type.Severe, String.format(formatStr + "\n", objs), null);
    }
 
    public void logWarning(String str) {
@@ -110,7 +116,7 @@ public final class XResultData {
    }
 
    public void logWarningWithFormat(String formatStr, Object... objs) {
-      logStr(Type.Warning, String.format(formatStr, objs), null);
+      logStr(Type.Warning, String.format(formatStr + "\n", objs), null);
    }
 
    public boolean isEmpty() {
@@ -295,6 +301,10 @@ public final class XResultData {
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
+   }
+
+   public boolean isErrors() {
+      return getNumErrors() > 0;
    }
 
 }

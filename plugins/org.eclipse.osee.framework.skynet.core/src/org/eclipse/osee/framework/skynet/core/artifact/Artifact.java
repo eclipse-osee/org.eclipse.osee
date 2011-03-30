@@ -1004,8 +1004,17 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, IB
    }
 
    /**
-    * Reloads this artifact's attributes and relations back to the last state saved. This will have no effect if the
-    * artifact has never been saved.
+    * Revert artifact to it's state at base transaction of the branch. <br>
+    * This will remove all changes from osee_txs for this artifact on it's branch.<br>
+    * <br>
+    * NOTE: This should NOT normally be used for baseline branches as the artifact will disappear from existence. <br>
+    * <br>
+    * Instead use reloadAttributesAndRelations() to restore in memory artifact back to it's non-dirty state.
+    */
+   /**
+    * Reloads this artifact's attributes and relations back to the last state saved. <br>
+    * <br>
+    * This will have no effect if the artifact has never been saved.
     */
    public final void reloadAttributesAndRelations() throws OseeCoreException {
       if (!isInDb()) {

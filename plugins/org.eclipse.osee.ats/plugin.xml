@@ -448,7 +448,7 @@
          name="CopyAtsConfigurationBlam"
          point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
       <Operation
-            className="org.eclipse.osee.ats.navigate.CopyAtsConfigurationBlam">
+            className="org.eclipse.osee.ats.config.copy.CopyAtsConfigurationBlam">
       </Operation>
    </extension>
    <extension

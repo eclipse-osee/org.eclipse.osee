@@ -12,12 +12,20 @@ package org.eclipse.osee.ats.test;
 
 import org.eclipse.osee.ats.test.artifact.AtsTeamDefintionToWorkflowTest;
 import org.eclipse.osee.ats.test.config.AtsActionableItemToTeamDefinitionTest;
+import org.eclipse.osee.ats.test.config.copy.ConfigDataTest;
+import org.eclipse.osee.ats.test.config.copy.CopyAtsConfigurationOperationTest;
+import org.eclipse.osee.ats.test.config.copy.CopyAtsUtilTest;
+import org.eclipse.osee.ats.test.config.copy.CopyAtsValidationTest;
 import org.eclipse.osee.ats.test.workflow.AtsWorkItemDefinitionTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+   ConfigDataTest.class,
+   CopyAtsUtilTest.class,
+   CopyAtsValidationTest.class,
+   CopyAtsConfigurationOperationTest.class,
    AtsWorkItemDefinitionTest.class,
    AtsActionableItemToTeamDefinitionTest.class,
    AtsTeamDefintionToWorkflowTest.class})

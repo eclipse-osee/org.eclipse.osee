@@ -17,11 +17,10 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.config.demo.PopulateDemoActions;
 import org.eclipse.osee.ats.config.demo.internal.OseeAtsConfigDemoActivator;
-import org.eclipse.osee.ats.config.demo.util.DemoTeams;
-import org.eclipse.osee.ats.config.demo.util.DemoTeams.Team;
 import org.eclipse.osee.ats.health.ValidateAtsDatabase;
 import org.eclipse.osee.ats.navigate.IAtsNavigateItem;
 import org.eclipse.osee.ats.navigate.SearchNavigateItem;
+import org.eclipse.osee.ats.test.util.DemoTestUtil;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.version.CreateNewVersionItem;
 import org.eclipse.osee.ats.version.ReleaseVersionItem;
@@ -41,6 +40,7 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemFolder;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateUrlItem;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.support.test.util.DemoTeam;
 
 /**
  * Provides the ATS Navigator items for the sample XYZ company's teams
@@ -63,7 +63,7 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
 
       // If Demo Teams not configured, ignore these navigate items
       try {
-         if (DemoTeams.getInstance().getTeamDef(Team.Process_Team) == null) {
+         if (DemoTestUtil.getTeamDef(DemoTeam.Process_Team) == null) {
             return items;
          }
       } catch (Exception ex) {
@@ -72,7 +72,7 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
       }
       // If Demo Teams not configured, ignore these navigate items
       try {
-         if (DemoTeams.getInstance().getTeamDef(Team.Process_Team) == null) {
+         if (DemoTestUtil.getTeamDef(DemoTeam.Process_Team) == null) {
             return items;
          }
       } catch (Exception ex) {
@@ -85,19 +85,19 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
 
       items.add(jhuItem);
 
-      for (Team team : Team.values()) {
+      for (DemoTeam team : DemoTeam.values()) {
          try {
-            TeamDefinitionArtifact teamDef = DemoTeams.getInstance().getTeamDef(team);
+            TeamDefinitionArtifact teamDef = DemoTestUtil.getTeamDef(team);
             XNavigateItem teamItems = new XNavigateItemFolder(jhuItem, "JHU " + team.name().replaceAll("_", " "));
             new SearchNavigateItem(teamItems, new TeamWorldSearchItem("Show Open " + teamDef + " Actions",
-               Arrays.asList(DemoTeams.getInstance().getTeamDef(team)), false, false, true, true, null, null,
-               ReleasedOption.Both, null));
+               Arrays.asList(DemoTestUtil.getTeamDef(team)), false, false, true, true, null, null, ReleasedOption.Both,
+               null));
             new SearchNavigateItem(teamItems, new TeamWorldSearchItem("Show Open " + teamDef + " Workflows",
-               Arrays.asList(DemoTeams.getInstance().getTeamDef(team)), false, false, false, true, null, null,
+               Arrays.asList(DemoTestUtil.getTeamDef(team)), false, false, false, true, null, null,
                ReleasedOption.Both, null));
             // Handle all children teams
-            for (TeamDefinitionArtifact childTeamDef : Artifacts.getChildrenOfTypeSet(
-               DemoTeams.getInstance().getTeamDef(team), TeamDefinitionArtifact.class, true)) {
+            for (TeamDefinitionArtifact childTeamDef : Artifacts.getChildrenOfTypeSet(DemoTestUtil.getTeamDef(team),
+               TeamDefinitionArtifact.class, true)) {
                new SearchNavigateItem(teamItems, new TeamWorldSearchItem("Show Open " + childTeamDef + " Workflows",
                   Arrays.asList(childTeamDef), false, false, false, false, null, null, ReleasedOption.Both, null));
             }

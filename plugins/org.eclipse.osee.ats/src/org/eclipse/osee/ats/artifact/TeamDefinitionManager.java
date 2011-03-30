@@ -5,6 +5,7 @@
  */
 package org.eclipse.osee.ats.artifact;
 
+import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -17,6 +18,7 @@ import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 
 public class TeamDefinitionManager {
@@ -115,4 +117,13 @@ public class TeamDefinitionManager {
       return teamDefs;
    }
 
+   public static Set<TeamDefinitionArtifact> getTeamDefinitionsNameStartsWith(String prefix) throws OseeCoreException {
+      Set<TeamDefinitionArtifact> artifacts = new HashSet<TeamDefinitionArtifact>();
+      for (Artifact art : ArtifactQuery.getArtifactListFromName(prefix + "%", AtsUtil.getAtsBranch(), EXCLUDE_DELETED)) {
+         if (art instanceof TeamDefinitionArtifact) {
+            artifacts.add((TeamDefinitionArtifact) art);
+         }
+      }
+      return artifacts;
+   }
 }

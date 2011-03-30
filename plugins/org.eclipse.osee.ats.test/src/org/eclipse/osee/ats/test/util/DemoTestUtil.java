@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -47,6 +48,7 @@ import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.support.test.util.DemoActionableItems;
 import org.eclipse.osee.support.test.util.DemoArtifactTypes;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
+import org.eclipse.osee.support.test.util.DemoTeam;
 import org.eclipse.osee.support.test.util.DemoUsers;
 import org.eclipse.osee.support.test.util.DemoWorkType;
 import org.eclipse.osee.support.test.util.TestUtil;
@@ -112,12 +114,12 @@ public class DemoTestUtil {
       return teamArt;
    }
 
-   public static Set<ActionableItemArtifact> getActionableItems(DemoActionableItems demoAI) {
-      return ActionableItemManager.getActionableItems(Arrays.asList(demoAI.getName()));
+   public static Set<ActionableItemArtifact> getActionableItems(DemoActionableItems demoActionableItems) {
+      return ActionableItemManager.getActionableItems(Arrays.asList(demoActionableItems.getName()));
    }
 
-   public static ActionableItemArtifact getActionableItem(DemoActionableItems demoAI) {
-      return getActionableItems(demoAI).iterator().next();
+   public static ActionableItemArtifact getActionableItem(DemoActionableItems demoActionableItems) {
+      return getActionableItems(demoActionableItems).iterator().next();
    }
 
    public static TeamWorkFlowArtifact addTeamWorkflow(Artifact actionArt, String title, SkynetTransaction transaction) throws OseeCoreException {
@@ -237,6 +239,20 @@ public class DemoTestUtil {
          Assert.fail("Can't authenticate, either Demo Application Server is not running or Demo DbInit has not been performed");
       }
 
+   }
+
+   public static TeamDefinitionArtifact getTeamDef(DemoTeam team) throws OseeCoreException {
+      // Add check to keep exception from occurring for OSEE developers running against production
+      if (ClientSessionManager.isProductionDataStore()) {
+         return null;
+      }
+      try {
+         return (TeamDefinitionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.TeamDefinition,
+            team.name().replaceAll("_", " "), AtsUtil.getAtsBranch());
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      }
+      return null;
    }
 
 }

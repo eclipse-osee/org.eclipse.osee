@@ -197,8 +197,8 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             testVersionArtifacts(artifacts);
             testStateMachineAssignees(artifacts);
             testAtsLogs(artifacts);
-            testActionableItemToTeamDefinition(artifacts);
-            testTeamDefinitionHasWorkflow(artifacts);
+            testActionableItemToTeamDefinition(testNameToResultsMap, artifacts);
+            testTeamDefinitionHasWorkflow(testNameToResultsMap, artifacts);
             for (IAtsHealthCheck atsHealthCheck : AtsHealthCheck.getAtsHealthCheckItems()) {
                atsHealthCheck.validateAtsDatabase(artifacts, testNameToResultsMap);
             }
@@ -616,7 +616,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       }
    }
 
-   private void testActionableItemToTeamDefinition(Collection<Artifact> artifacts) {
+   public static void testActionableItemToTeamDefinition(HashCollection<String, String> testNameToResultsMap, Collection<Artifact> artifacts) {
       for (Artifact artifact : artifacts) {
          try {
             if (artifact instanceof ActionableItemArtifact) {
@@ -635,7 +635,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       }
    }
 
-   private void testTeamDefinitionHasWorkflow(Collection<Artifact> artifacts) {
+   public static void testTeamDefinitionHasWorkflow(HashCollection<String, String> testNameToResultsMap, Collection<Artifact> artifacts) {
       for (Artifact artifact : artifacts) {
          try {
             if (artifact instanceof TeamDefinitionArtifact) {

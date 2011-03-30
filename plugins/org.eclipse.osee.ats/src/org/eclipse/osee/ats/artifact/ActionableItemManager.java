@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.artifact;
 
+import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -31,6 +32,7 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -271,6 +273,16 @@ public class ActionableItemManager {
          transaction.execute();
       }
       return workResult;
+   }
+
+   public static Set<ActionableItemArtifact> getActionableItemsNameStartsWith(String prefix) throws OseeCoreException {
+      Set<ActionableItemArtifact> artifacts = new HashSet<ActionableItemArtifact>();
+      for (Artifact art : ArtifactQuery.getArtifactListFromName(prefix + "%", AtsUtil.getAtsBranch(), EXCLUDE_DELETED)) {
+         if (art instanceof ActionableItemArtifact) {
+            artifacts.add((ActionableItemArtifact) art);
+         }
+      }
+      return artifacts;
    }
 
 }
