@@ -23,7 +23,6 @@ public enum ConflictStatus {
    EDITED(2),
    RESOLVED(3),
    OUT_OF_DATE_RESOLVED(4),
-   NOT_RESOLVABLE(5),
    COMMITTED(6),
    INFORMATIONAL(7),
    OUT_OF_DATE(8),
@@ -65,10 +64,6 @@ public enum ConflictStatus {
       return this == INFORMATIONAL;
    }
 
-   public boolean isNotResolvable() {
-      return this == NOT_RESOLVABLE;
-   }
-
    public boolean isUntouched() {
       return this == UNTOUCHED;
    }
@@ -94,15 +89,15 @@ public enum ConflictStatus {
    }
 
    public boolean isIgnoreable() {
-      return isInformational() || isNotResolvable();
+      return isInformational();
    }
 
    public boolean isEditable() {
-      return !(isResolved() || isCommitted() || isInformational() || isNotResolvable());
+      return !(isResolved() || isCommitted() || isInformational());
    }
 
    public boolean isResolvable() {
-      return !isNotResolvable() && !isInformational() && !isCommitted();
+      return !isInformational() && !isCommitted();
    }
 
    public boolean isOverwriteAllowed() {

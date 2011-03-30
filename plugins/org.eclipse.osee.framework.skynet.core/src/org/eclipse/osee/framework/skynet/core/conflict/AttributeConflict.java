@@ -427,7 +427,7 @@ public class AttributeConflict extends Conflict {
    @Override
    public String getMergeDisplayData() throws OseeCoreException {
       ConflictStatus status = getStatus();
-      if (status.isUntouched() && !(sourceEqualsDestination() && mergeEqualsSource()) || status.isNotResolvable() || status.isInformational()) {
+      if (status.isUntouched() && !(sourceEqualsDestination() && mergeEqualsSource()) || status.isInformational()) {
          return NO_VALUE;
       }
       if (!isWordAttribute) {

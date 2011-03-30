@@ -70,7 +70,7 @@ public class ConflictStatusManager {
                   ConnectionHandler.runPreparedUpdate(MERGE_BRANCH_GAMMAS, sourceGamma, transactionId, objectID);
                }
             }
-            if (intStatus == ConflictStatus.NOT_RESOLVABLE.getValue() || intStatus == ConflictStatus.INFORMATIONAL.getValue() || passedStatus == ConflictStatus.NOT_RESOLVABLE || passedStatus == ConflictStatus.INFORMATIONAL) {
+            if (intStatus == ConflictStatus.INFORMATIONAL.getValue() || passedStatus == ConflictStatus.INFORMATIONAL) {
                intStatus = passedStatus.getValue();
             }
             return ConflictStatus.valueOf(intStatus);
