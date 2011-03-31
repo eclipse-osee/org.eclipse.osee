@@ -51,6 +51,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -580,6 +582,29 @@ public final class Lib {
       }
    }
 
+   /**
+    * Use Processes.handleProcess(Process process, Writer output) instead
+    */
+   @Deprecated
+   public static int handleProcess(Process proc, Writer output) {
+      try {
+         return Processes.handleProcess(proc, output);
+      } catch (InterruptedException ex) {
+         ex.printStackTrace();
+         return -1;
+      } catch (ExecutionException ex) {
+         ex.printStackTrace();
+         return -1;
+      } catch (TimeoutException ex) {
+         ex.printStackTrace();
+         return -1;
+      }
+   }
+
+   /**
+    * Use Processes.handleProcess(Process process) instead
+    */
+   @Deprecated
    public static int handleProcess(Process process) {
       return Processes.handleProcess(process);
    }
