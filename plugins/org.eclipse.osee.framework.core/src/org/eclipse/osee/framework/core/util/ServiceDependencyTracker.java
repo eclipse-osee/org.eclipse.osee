@@ -23,7 +23,9 @@ import org.osgi.util.tracker.ServiceTracker;
 /**
  * @author Andrew M. Finkbeiner
  * @author Roberto E. Escobar
+ * @deprecated Use Declarative Services instead
  */
+@Deprecated
 public final class ServiceDependencyTracker implements Closeable {
 
    private final AbstractTrackingHandler handler;
