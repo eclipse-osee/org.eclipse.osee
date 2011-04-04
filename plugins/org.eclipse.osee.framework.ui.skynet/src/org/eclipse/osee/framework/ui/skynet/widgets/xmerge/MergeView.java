@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.xmerge;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -45,7 +44,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.conflict.ArtifactConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -68,14 +66,12 @@ import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
-import org.eclipse.osee.framework.ui.skynet.revert.RevertWizard;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetViews;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericViewPart;
 import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.ConflictHandlingOperation.ConflictOperationEnum;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
-import org.eclipse.osee.framework.ui.swt.NonmodalWizardDialog;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -280,7 +276,6 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
       createDestinationResourceHistoryMenuItem(menuManager);
       createDestinationRevealMenuItem(menuManager);
       menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-      createRevertUnresolvableConflictsMenuItem(menuManager);
 
       OseeStatusContributionItemFactory.addTo(this, true);
       getSite().registerContextMenu("org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView", menuManager,
@@ -598,54 +593,6 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
       });
    }
 
-   private void createRevertUnresolvableConflictsMenuItem(MenuManager menuManager) {
-      handlerService.activateHandler(addRevertUnresolvableConflictsMenuItem(menuManager),
-         new AbstractSelectionEnabledHandler(menuManager) {
-            List<List<Artifact>> revertList;
-            List<Conflict> selectedConflicts;
-
-            @Override
-            public Object executeWithException(ExecutionEvent event) {
-               RevertWizard wizard = new RevertWizard(revertList);
-               NonmodalWizardDialog wizardDialog = new NonmodalWizardDialog(Displays.getActiveShell(), wizard);
-               wizardDialog.create();
-               wizardDialog.open();
-               return null;
-            }
-
-            @Override
-            public boolean isEnabledWithException(IStructuredSelection structuredSelection) {
-               selectedConflicts = mergeXWidget.getSelectedConflicts();
-               revertList = new ArrayList<List<Artifact>>();
-               populateRevertList();
-               return !revertList.isEmpty();
-            }
-
-            private void populateRevertList() {
-               for (Conflict conflict : selectedConflicts) {
-                  if (conflict.getStatus().isNotResolvable()) {
-                     if (conflict instanceof ArtifactConflict) {
-                        ArtifactConflict artifactConflict = (ArtifactConflict) conflict;
-                        addArtifactToRevertList(artifactConflict);
-                     }
-                  }
-               }
-            }
-
-            private void addArtifactToRevertList(ArtifactConflict artifactConflict) {
-               Artifact art;
-               try {
-                  art = artifactConflict.getSourceArtifact();
-               } catch (OseeCoreException ex) {
-                  return;
-               }
-               List<Artifact> ins = new ArrayList<Artifact>();
-               ins.add(art);
-               revertList.add(ins);
-            }
-         });
-   }
-
    private void createMarkResolvedMenuItem(MenuManager menuManager) {
       String commandId = addMarkAsResolvedMenuItem(menuManager);
       IHandler handler =
@@ -862,7 +809,7 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
                      break;
                   case 3:
                      ConflictStatus status = conflict.getStatus();
-                     if (status.isNotResolvable() || status.isInformational()) {
+                     if (status.isInformational()) {
                         return false;
                      }
                      if (conflict.getArtifact() != null) {

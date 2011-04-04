@@ -174,11 +174,7 @@ public class MergeXViewer extends XViewer {
       Shell shell = Displays.getActiveShell().getShell();
 
       try {
-         if (conflict.getStatus().isNotResolvable()) {
-            if (MergeUtility.showDeletedConflict(conflict, shell)) {
-               mergeXWidget.refreshTable();
-            }
-         } else if (conflict.getStatus().isInformational()) {
+         if (conflict.getStatus().isInformational()) {
             MergeUtility.showInformationalConflict(shell);
          } else {
             handleResolvableConflictClick(treeColumn, conflict, shell);

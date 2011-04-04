@@ -90,9 +90,6 @@ public class XMergeLabelProvider extends XViewerLabelProvider {
             if (status.isUntouched()) {
                return ConflictState.UNTOUCHED.getText();
             }
-            if (status.isNotResolvable()) {
-               return ConflictState.REVERT.getText();
-            }
             if (status.isInformational()) {
                return ConflictState.INFORMATIONAL.getText();
             }
@@ -191,9 +188,6 @@ public class XMergeLabelProvider extends XViewerLabelProvider {
                if (status.isPreviousMergeAppliedWithCaution()) {
                   return ImageManager.getImage(FrameworkImage.MERGE_CAUTION);
                }
-               if (status.isNotResolvable()) {
-                  return ImageManager.getImage(FrameworkImage.MERGE_NOT_RESOLVEABLE);
-               }
                if (status.isInformational()) {
                   return ImageManager.getImage(FrameworkImage.MERGE_INFO);
                }
@@ -209,9 +203,6 @@ public class XMergeLabelProvider extends XViewerLabelProvider {
       ConflictStatus status = conflict.getStatus();
       if (status.isInformational()) {
          return null;
-      }
-      if (status.isNotResolvable()) {
-         return ImageManager.getImage(FrameworkImage.MERGE_START);
       }
       if (conflict.sourceEqualsDestination() && conflict.mergeEqualsSource()) {
          return ImageManager.getImage(FrameworkImage.MERGE_NO_CONFLICT);
