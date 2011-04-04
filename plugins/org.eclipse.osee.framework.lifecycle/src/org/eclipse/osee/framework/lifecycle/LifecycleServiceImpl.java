@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -49,6 +50,8 @@ public class LifecycleServiceImpl implements ILifecycleService {
                break;
             }
          }
+      } else {
+         status = new Status(IStatus.ERROR, getClass().getName(), String.format("Error handler [%s] not found.", type));
       }
       return status;
    }
