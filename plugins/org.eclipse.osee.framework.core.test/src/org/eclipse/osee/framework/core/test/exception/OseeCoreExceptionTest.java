@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.core.test.exception;
 
 import junit.framework.Assert;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.junit.Test;
 
@@ -27,6 +28,31 @@ public class OseeCoreExceptionTest {
       Assert.assertEquals(
          "Exception message could not be formatted: [null] with the following arguments [].  Cause [java.lang.NullPointerException]",
          ex.getMessage());
+   }
+
+   @Test
+   public void testNullMessageNullCause() {
+      Exception ex = new OseeCoreException((String) null, (Throwable) null);
+      Assert.assertEquals("Exception message unavaliable - message & exception were null", ex.getMessage());
+   }
+
+   @Test
+   public void testNullCause() {
+      Exception ex = new OseeCoreException("Error message", (Throwable) null);
+      Assert.assertEquals("Error message", ex.getMessage());
+   }
+
+   @Test
+   public void testNullMessageWithCause() {
+      Exception internalException = new Exception("My error message");
+      Exception ex = new OseeCoreException(null, internalException);
+      Assert.assertEquals(internalException.getMessage(), ex.getMessage());
+   }
+
+   @Test
+   public void testNullStatus() {
+      Exception ex = new OseeCoreException((IStatus) null);
+      Assert.assertEquals("Exception message unavaliable - status was null", ex.getMessage());
    }
 
    @Test

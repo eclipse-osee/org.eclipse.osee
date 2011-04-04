@@ -22,7 +22,27 @@ public class OseeCoreException extends CoreException {
    private static final long serialVersionUID = 1L;
 
    public OseeCoreException(String message, Object... args) {
-      super(new Status(IStatus.ERROR, "OSEE", formatMessage(message, args)));
+      super(createSafeStatus(formatMessage(message, args), null));
+   }
+
+   public OseeCoreException(String message, Throwable cause) {
+      super(createSafeStatus(message, cause));
+   }
+
+   public OseeCoreException(Throwable cause) {
+      super(createSafeStatus(null, cause));
+   }
+
+   public OseeCoreException(IStatus status) {
+      super(safeStatus(status));
+   }
+
+   private static IStatus safeStatus(IStatus status) {
+      IStatus toReturn = status;
+      if (toReturn == null) {
+         toReturn = createSafeStatus("Exception message unavaliable - status was null", null);
+      }
+      return toReturn;
    }
 
    private static String formatMessage(String message, Object... args) {
@@ -35,15 +55,17 @@ public class OseeCoreException extends CoreException {
       }
    }
 
-   public OseeCoreException(String message, Throwable cause) {
-      super(new Status(IStatus.ERROR, "OSEE", message, cause));
-   }
-
-   public OseeCoreException(Throwable cause) {
-      super(new Status(IStatus.ERROR, "OSEE", cause.getMessage(), cause));
-   }
-
-   public OseeCoreException(IStatus status) {
-      super(status);
+   private static IStatus createSafeStatus(String message, Throwable cause) {
+      IStatus status = null;
+      if (message != null && cause != null) {
+         status = new Status(IStatus.ERROR, "OSEE", message, cause);
+      } else if (cause != null) {
+         status = new Status(IStatus.ERROR, "OSEE", cause.getMessage(), cause);
+      } else if (message != null) {
+         status = new Status(IStatus.ERROR, "OSEE", message);
+      } else {
+         status = new Status(IStatus.ERROR, "OSEE", "Exception message unavaliable - message & exception were null");
+      }
+      return status;
    }
 }
