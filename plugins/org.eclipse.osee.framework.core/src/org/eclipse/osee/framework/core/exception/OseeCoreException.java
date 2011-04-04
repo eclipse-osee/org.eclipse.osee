@@ -64,7 +64,8 @@ public class OseeCoreException extends CoreException {
       } else if (message != null) {
          status = new Status(IStatus.ERROR, "OSEE", message);
       } else {
-         status = new Status(IStatus.ERROR, "OSEE", "Exception message unavaliable - message & exception were null");
+         status =
+            new Status(IStatus.ERROR, "OSEE", "Exception message unavaliable - both exception and message were null");
       }
       return status;
    }

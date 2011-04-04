@@ -33,7 +33,7 @@ public class OseeCoreExceptionTest {
    @Test
    public void testNullMessageNullCause() {
       Exception ex = new OseeCoreException((String) null, (Throwable) null);
-      Assert.assertEquals("Exception message unavaliable - message & exception were null", ex.getMessage());
+      Assert.assertEquals("Exception message unavaliable - both exception and message were null", ex.getMessage());
    }
 
    @Test
