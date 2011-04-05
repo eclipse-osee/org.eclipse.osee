@@ -176,8 +176,10 @@ public class AtsConfigManager extends AbstractOperation {
       // If can't be found, create a new one
       if (!workDefMatch.isMatched()) {
          workDef = generateDefaultWorkflow(name, resultData, transaction, teamDefinition);
+         String workDefXml = AtsWorkDefinitionProvider.get().workFlowDefinitionToString(workDef, resultData);
          Artifact workDefArt =
-            AtsWorkDefinitionProvider.get().importWorkDefinitionToDb(workDef, name, resultData, transaction);
+            AtsWorkDefinitionProvider.get().importWorkDefinitionToDb(workDefXml, workDef.getName(), name, resultData,
+               transaction);
 
          Artifact folder = AtsUtil.getFromToken(AtsArtifactToken.WorkDefinitionsFolder);
          folder.addChild(workDefArt);

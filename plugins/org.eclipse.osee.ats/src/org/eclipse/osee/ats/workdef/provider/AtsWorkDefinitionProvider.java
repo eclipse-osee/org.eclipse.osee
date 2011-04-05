@@ -65,6 +65,7 @@ public class AtsWorkDefinitionProvider {
 
    public Artifact importWorkDefinitionSheetToDb(WorkDefinitionSheet sheet, XResultData resultData, boolean onlyWorkDefinitions, SkynetTransaction transaction) throws OseeCoreException {
       String modelName = sheet.getFile().getName();
+      // Prove that can convert to atsDsl
       AtsDsl atsDsl = loadAtsDslFromFile(modelName, sheet);
       ConvertAtsDslToWorkDefinition converter = new ConvertAtsDslToWorkDefinition(modelName, atsDsl);
       WorkDefinition workDef = converter.convert();
@@ -81,7 +82,9 @@ public class AtsWorkDefinitionProvider {
             throw new OseeStateException("WorkDefinitionSheet [%s] internal id [%s] does not match sheet name", sheet,
                workDef.getIds().iterator().next());
          }
-         artifact = importWorkDefinitionToDb(workDef, sheet.getName(), resultData, transaction);
+         // Use original xml to store in artifact so no conversion happens
+         String workDefXml = loadWorkFlowDefinitionStringFromFile(sheet);
+         artifact = importWorkDefinitionToDb(workDefXml, workDef.getName(), sheet.getName(), resultData, transaction);
          if (resultData.getNumErrors() > 0) {
             throw new OseeStateException("Error importing WorkDefinitionSheet [%s] into database [%s]",
                sheet.getName(), resultData.toString());
@@ -95,16 +98,16 @@ public class AtsWorkDefinitionProvider {
       return artifact;
    }
 
-   public Artifact importWorkDefinitionToDb(WorkDefinition workDef, String name, XResultData resultData, SkynetTransaction transaction) throws OseeCoreException {
+   public Artifact importWorkDefinitionToDb(String workDefXml, String workDefName, String sheetName, XResultData resultData, SkynetTransaction transaction) throws OseeCoreException {
       Artifact artifact = null;
       try {
          artifact =
-            ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.WorkDefinition, name, AtsUtil.getAtsBranch());
+            ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.WorkDefinition, sheetName, AtsUtil.getAtsBranch());
       } catch (ArtifactDoesNotExist ex) {
          // do nothing; this is what we want
       }
       if (artifact != null) {
-         String importStr = String.format("WorkDefinition [%s] already loaded into database", workDef.getName());
+         String importStr = String.format("WorkDefinition [%s] already loaded into database", workDefName);
          if (!MessageDialog.openConfirm(AWorkbench.getActiveShell(), "Overwrite Work Definition",
             importStr + "\n\nOverwrite?")) {
             OseeLog.log(AtsPlugin.class, Level.INFO, importStr + "...skipping");
@@ -114,10 +117,10 @@ public class AtsWorkDefinitionProvider {
             resultData.log(importStr + "...overwriting");
          }
       } else {
-         resultData.log(String.format("Imported new WorkDefinition [%s]", workDef.getName()));
-         artifact = ArtifactTypeManager.addArtifact(AtsArtifactTypes.WorkDefinition, AtsUtil.getAtsBranch(), name);
+         resultData.log(String.format("Imported new WorkDefinition [%s]", workDefName));
+         artifact = ArtifactTypeManager.addArtifact(AtsArtifactTypes.WorkDefinition, AtsUtil.getAtsBranch(), sheetName);
       }
-      artifact.setSoleAttributeValue(AtsAttributeTypes.DslSheet, workFlowDefinitionToString(workDef, resultData));
+      artifact.setSoleAttributeValue(AtsAttributeTypes.DslSheet, workDefXml);
       artifact.persist(transaction);
 
       return artifact;
@@ -190,17 +193,21 @@ public class AtsWorkDefinitionProvider {
          artifact =
             ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.WorkDefinition, name,
                BranchManager.getCommonBranch());
-         String modelText = artifact.getAttributesToString(AtsAttributeTypes.DslSheet);
-         String modelName = name + ".ats";
-         AtsDsl atsDsl = loadAtsDsl(modelName, modelText);
-         ConvertAtsDslToWorkDefinition converter = new ConvertAtsDslToWorkDefinition(modelName, atsDsl);
-         return converter.convert();
+         return loadWorkDefinitionFromArtifact(artifact);
       } catch (ArtifactDoesNotExist ex) {
          // do nothing
       } catch (Exception ex) {
          throw new OseeWrappedException(String.format("Error loading AtsDsl [%s] from Artifact", name), ex);
       }
       return null;
+   }
+
+   public WorkDefinition loadWorkDefinitionFromArtifact(Artifact artifact) throws OseeCoreException {
+      String modelText = artifact.getAttributesToString(AtsAttributeTypes.DslSheet);
+      String modelName = artifact.getName() + ".ats";
+      AtsDsl atsDsl = loadAtsDsl(modelName, modelText);
+      ConvertAtsDslToWorkDefinition converter = new ConvertAtsDslToWorkDefinition(modelName, atsDsl);
+      return converter.convert();
    };
 
    private AtsDsl loadAtsDsl(String name, String modelText) throws OseeCoreException {

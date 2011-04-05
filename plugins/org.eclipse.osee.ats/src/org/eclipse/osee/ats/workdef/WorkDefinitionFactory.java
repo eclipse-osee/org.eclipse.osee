@@ -5,10 +5,11 @@
  */
 package org.eclipse.osee.ats.workdef;
 
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.actions.wizard.ITeamWorkflowProvider;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
@@ -28,12 +29,14 @@ import org.eclipse.osee.ats.workflow.item.AtsAddDecisionReviewRule;
 import org.eclipse.osee.ats.workflow.item.AtsAddPeerToPeerReviewRule;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
@@ -49,9 +52,13 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkWidgetDefinitio
 public class WorkDefinitionFactory {
 
    private static final Map<String, RuleDefinition> idToRule = new HashMap<String, RuleDefinition>();
-   private static final Map<Artifact, WorkDefinitionMatch> artToWorkDefinitions =
-      new HashMap<Artifact, WorkDefinitionMatch>();
-   private static final Map<String, WorkDefinitionMatch> idToWorkDefintion = new HashMap<String, WorkDefinitionMatch>();
+   // Cache the WorkDefinition used for each AbstractWorkflowId so don't have to recompute each time
+   private static final Map<String, WorkDefinitionMatch> awaHridToWorkDefinitions =
+      new HashMap<String, WorkDefinitionMatch>();
+   // Cache the WorkDefinition object for each WorkDefinition id so don't have to reload
+   // This grows as WorkDefinitions are requested/loaded
+   private static final Map<String, WorkDefinitionMatch> workDefIdToWorkDefintion =
+      new HashMap<String, WorkDefinitionMatch>();
    private static String AtsStatePercentCompleteWeightRule = "atsStatePercentCompleteWeight";
 
    public static RuleDefinition getRuleById(String id) {
@@ -98,13 +105,13 @@ public class WorkDefinitionFactory {
    }
 
    public static void clearCaches() {
-      artToWorkDefinitions.clear();
+      awaHridToWorkDefinitions.clear();
       idToRule.clear();
-      idToWorkDefintion.clear();
+      workDefIdToWorkDefintion.clear();
    }
 
    public static WorkDefinitionMatch getWorkDefinition(Artifact artifact) throws OseeCoreException {
-      if (!artToWorkDefinitions.containsKey(artifact)) {
+      if (!awaHridToWorkDefinitions.containsKey(artifact.getHumanReadableId())) {
          WorkDefinitionMatch match = getWorkDefinitionNew(artifact);
          if (!match.isMatched()) {
             WorkFlowDefinitionMatch flowMatch = WorkFlowDefinitionFactory.getWorkFlowDefinition(artifact);
@@ -114,13 +121,13 @@ public class WorkDefinitionFactory {
                match.getTrace().addAll(flowMatch.getTrace());
             }
          }
-         artToWorkDefinitions.put(artifact, match);
+         awaHridToWorkDefinitions.put(artifact.getHumanReadableId(), match);
       }
-      return artToWorkDefinitions.get(artifact);
+      return awaHridToWorkDefinitions.get(artifact.getHumanReadableId());
    }
 
    public static WorkDefinitionMatch getWorkDefinition(String id) throws OseeCoreException {
-      if (!idToWorkDefintion.containsKey(id)) {
+      if (!workDefIdToWorkDefintion.containsKey(id)) {
          WorkDefinitionMatch match = new WorkDefinitionMatch();
          String translatedId = WorkDefinitionFactory.getOverrideWorkDefId(id);
          // Try to get from new DSL provider if configured to use it
@@ -165,10 +172,10 @@ public class WorkDefinitionFactory {
          }
          if (match.isMatched()) {
             System.out.println("Loaded " + match);
-            idToWorkDefintion.put(id, match);
+            workDefIdToWorkDefintion.put(id, match);
          }
       }
-      WorkDefinitionMatch match = idToWorkDefintion.get(id);
+      WorkDefinitionMatch match = workDefIdToWorkDefintion.get(id);
       if (match == null) {
          match = new WorkDefinitionMatch();
       }
@@ -529,10 +536,6 @@ public class WorkDefinitionFactory {
       return match;
    }
 
-   public static Collection<WorkDefinitionMatch> getWorkDefinitions() {
-      return idToWorkDefintion.values();
-   }
-
    public static String getOverrideWorkDefId(String id) {
       // Don't override if no providers available (dsl plugins not released)
       String overrideId = AtsWorkDefinitionSheetProviders.getOverrideId(id);
@@ -544,4 +547,19 @@ public class WorkDefinitionFactory {
       return id;
    }
 
+   public static Set<WorkDefinition> loadAllDefinitions() throws OseeCoreException {
+      Set<WorkDefinition> workDefs = new HashSet<WorkDefinition>();
+      // This load is faster than loading each by artifact type
+      for (Artifact art : ArtifactQuery.getArtifactListFromType(AtsArtifactTypes.WorkDefinition,
+         DeletionFlag.EXCLUDE_DELETED)) {
+         try {
+            WorkDefinition workDef = AtsWorkDefinitionProvider.get().loadWorkDefinitionFromArtifact(art);
+            workDefs.add(workDef);
+         } catch (OseeCoreException ex) {
+            OseeLog.log(AtsPlugin.class, Level.SEVERE,
+               "Error loading WorkDefinition from artifact " + art.toStringWithId(), ex);
+         }
+      }
+      return workDefs;
+   }
 }
