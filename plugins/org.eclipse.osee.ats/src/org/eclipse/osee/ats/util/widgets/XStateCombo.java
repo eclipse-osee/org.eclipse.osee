@@ -9,88 +9,58 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.workdef.StateDefinition;
-import org.eclipse.osee.ats.workdef.WorkDefinitionFactory;
-import org.eclipse.osee.ats.workdef.WorkDefinitionMatch;
+import org.eclipse.osee.ats.workdef.WorkDefinition;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
-import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Composite;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.widgets.XComboDam;
 
-public class XStateCombo extends XComboViewer {
-   private static List<String> validStates = new ArrayList<String>();
+/**
+ * Provides combo of all valid states for a certain Task or Team Workflow. Valid states will be determined off
+ * WorkDefinition of parent team workflow when Widget setArtifact is called.
+ * 
+ * @author Donald G. Dunne
+ */
+public class XStateCombo extends XComboDam {
    public static final String WIDGET_ID = XStateCombo.class.getSimpleName();
-   private String selectedState = null;
 
    public XStateCombo() {
-      super("State", SWT.NONE);
-      ensurePopulated();
+      super("State");
    }
 
-   private synchronized void ensurePopulated() {
-      if (validStates.isEmpty()) {
-         validStates.add("--select--");
-         try {
-            for (WorkItemDefinition wid : WorkItemDefinitionFactory.getWorkItemDefinitions()) {
-               if (wid instanceof WorkPageDefinition) {
-                  if (!validStates.contains(((WorkPageDefinition) wid).getPageName())) {
-                     validStates.add(((WorkPageDefinition) wid).getPageName());
-                  }
-               }
-            }
-            for (WorkDefinitionMatch workDef : WorkDefinitionFactory.getWorkDefinitions()) {
-               for (StateDefinition state : workDef.getWorkDefinition().getStates()) {
-                  if (!validStates.contains(state.getName())) {
-                     validStates.add(state.getName());
-                  }
-               }
-            }
-         } catch (OseeCoreException ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+   private String[] getStateNames() {
+      List<String> validStates = new ArrayList<String>();
+      try {
+         WorkDefinition workDef = null;
+         if (getArtifact() instanceof AbstractWorkflowArtifact) {
+            workDef = ((AbstractWorkflowArtifact) getArtifact()).getParentTeamWorkflow().getWorkDefinition();
          }
-         Collections.sort(validStates);
+         if (workDef != null) {
+            for (StateDefinition state : workDef.getStates()) {
+               if (!validStates.contains(state.getName())) {
+                  validStates.add(state.getName());
+               }
+            }
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
-   }
-
-   @Override
-   protected void createControls(Composite parent, int horizontalSpan) {
-      super.createControls(parent, horizontalSpan);
-
-      getComboViewer().setInput(validStates);
-      ArrayList<Object> defaultSelection = new ArrayList<Object>();
-      defaultSelection.add("--select--");
-      setSelected(defaultSelection);
-      addXModifiedListener(new XModifiedListener() {
-
-         @Override
-         public void widgetModified(XWidget widget) {
-            String selected = (String) getSelected();
-            if (selected.equals("--select--")) {
-               selectedState = null;
-            } else {
-               selectedState = (String) getSelected();
-            }
-         }
-      });
+      Collections.sort(validStates);
+      return validStates.toArray(new String[validStates.size()]);
    }
 
    public String getSelectedState() {
-      return selectedState;
+      return (String) getData();
    }
 
    @Override
-   public void setSelected(List<Object> selected) {
-      super.setSelected(selected);
-      if (!selected.isEmpty() && !selected.iterator().next().equals("--select--")) {
-         selectedState = (String) selected.iterator().next();
-      }
+   public void setAttributeType(Artifact artifact, IAttributeType attributeType) throws OseeCoreException {
+      super.setAttributeType(artifact, AtsAttributeTypes.RelatedToState);
+      setDataStrings(getStateNames());
    }
-
 }

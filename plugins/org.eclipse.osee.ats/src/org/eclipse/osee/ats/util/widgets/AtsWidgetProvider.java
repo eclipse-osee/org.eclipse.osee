@@ -37,6 +37,8 @@ public class AtsWidgetProvider implements IXWidgetProvider {
          toReturn = widget;
       } else if (widgetName.equals(XStateCombo.WIDGET_ID)) {
          toReturn = new XStateCombo();
+      } else if (widgetName.equals(XStateSearchCombo.WIDGET_ID)) {
+         toReturn = new XStateSearchCombo();
       } else if (name.equals("Commit Manager") || widgetName.equals("XCommitManager")) {
          toReturn = new XCommitManager();
       } else if (name.equals("Working Branch") || widgetName.equals("XWorkingBranch")) {

@@ -19,6 +19,12 @@ workDefinition "WorkDef_Review_Decision" {
       xWidgetName "XTextDam"
       option FILL_VERTICALLY
    }
+   
+   widgetDefinition "Related To State" {
+      attributeName "ats.Related To State"
+      xWidgetName "XStateCombo"
+      option FILL_VERTICALLY
+   }
 
    widgetDefinition "Resolution" {
       attributeName "ats.Resolution"
@@ -69,9 +75,12 @@ workDefinition "WorkDef_Review_Decision" {
          widget "Title"
          widget "Decision Review Options"
          widget "Description"
-         attributeWidget "ats.Related To State"
-         widget "Review Blocks"
-         attributeWidget "ats.Need By"
+         composite {
+         	numColumns 6
+            widget "Review Blocks"
+            attributeWidget "ats.Need By"
+            widget "Related To State"
+         }
          attributeWidget "ats.Estimated Hours"
       }
    }

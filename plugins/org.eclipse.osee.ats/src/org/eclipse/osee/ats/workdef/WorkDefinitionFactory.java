@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkflowProviders;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.DecisionOption;
 import org.eclipse.osee.ats.util.widgets.XDecisionOptions;
 import org.eclipse.osee.ats.workdef.provider.AtsWorkDefinitionProvider;
@@ -551,7 +552,7 @@ public class WorkDefinitionFactory {
       Set<WorkDefinition> workDefs = new HashSet<WorkDefinition>();
       // This load is faster than loading each by artifact type
       for (Artifact art : ArtifactQuery.getArtifactListFromType(AtsArtifactTypes.WorkDefinition,
-         DeletionFlag.EXCLUDE_DELETED)) {
+         AtsUtil.getAtsBranch(), DeletionFlag.EXCLUDE_DELETED)) {
          try {
             WorkDefinition workDef = AtsWorkDefinitionProvider.get().loadWorkDefinitionFromArtifact(art);
             workDefs.add(workDef);

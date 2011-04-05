@@ -14,6 +14,12 @@ workDefinition "WorkDef_Review_PeerToPeer" {
       option REQUIRED_FOR_TRANSITION
    }
 
+   widgetDefinition "Related To State" {
+      attributeName "ats.Related To State"
+      xWidgetName "XStateCombo"
+      option FILL_VERTICALLY
+   }
+
    widgetDefinition "Location" {
       attributeName "ats.Location"
       xWidgetName "XTextDam"
@@ -63,8 +69,13 @@ workDefinition "WorkDef_Review_PeerToPeer" {
          widget "Role"
          widget "Location"
          widget "Description"
-         attributeWidget "ats.Related To State"
-         widget "Review Blocks"
+         composite {
+         	numColumns 6
+            widget "Review Blocks"
+            attributeWidget "ats.Need By"
+            widget "Related To State"
+         }
+         attributeWidget "ats.Estimated Hours"
          composite {
             numColumns 8
             attributeWidget "ats.LOC Changed"
@@ -72,8 +83,6 @@ workDefinition "WorkDef_Review_PeerToPeer" {
             attributeWidget "ats.Pages Changed"
             attributeWidget "ats.Pages Reviewed"
          }
-         attributeWidget "ats.Need By"
-         attributeWidget "ats.Estimated Hours"
       }
    }
 

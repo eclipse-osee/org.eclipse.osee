@@ -29,7 +29,7 @@ import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.XHyperlabelTeamDefinitionSelection;
-import org.eclipse.osee.ats.util.widgets.XStateCombo;
+import org.eclipse.osee.ats.util.widgets.XStateSearchCombo;
 import org.eclipse.osee.ats.version.VersionLockedType;
 import org.eclipse.osee.ats.version.VersionReleaseType;
 import org.eclipse.osee.ats.world.search.TeamWorldSearchItem.ReleasedOption;
@@ -68,7 +68,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
    private XHyperlabelTeamDefinitionSelection teamCombo = null;
    private XHyperlabelGroupSelection groupWidget = null;
    private XCombo versionCombo = null;
-   private XStateCombo stateCombo = null;
+   private XStateSearchCombo stateCombo = null;
 
    public TaskSearchWorldSearchItem(WorldSearchItem worldSearchItem) {
       super(worldSearchItem);
@@ -88,7 +88,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
       //
       "<XWidget displayName=\"Assignee\" xwidgetType=\"XMembersCombo\" horizontalLabel=\"true\"/>" +
       //
-      "<XWidget displayName=\"State\" xwidgetType=\"XStateCombo\" horizontalLabel=\"true\"/>" +
+      "<XWidget displayName=\"State\" xwidgetType=\"XStateSearchCombo\" horizontalLabel=\"true\"/>" +
       //
       "<XWidget displayName=\"Group(s)\" beginComposite=\"2\" xwidgetType=\"XHyperlabelGroupSelection\" horizontalLabel=\"true\"/>" +
       //
@@ -301,7 +301,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
          widget.setToolTip("Select Team to populate Version list");
       }
       if (widget.getLabel().equals("State")) {
-         stateCombo = (XStateCombo) widget;
+         stateCombo = (XStateSearchCombo) widget;
          stateCombo.getComboViewer().getCombo().setVisibleItemCount(25);
          widget.setToolTip("Select State of Task");
       }

@@ -19,7 +19,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.XHyperlabelTeamDefinitionSelection;
-import org.eclipse.osee.ats.util.widgets.XStateCombo;
+import org.eclipse.osee.ats.util.widgets.XStateSearchCombo;
 import org.eclipse.osee.ats.version.VersionLockedType;
 import org.eclipse.osee.ats.version.VersionReleaseType;
 import org.eclipse.osee.ats.world.WorldEditor;
@@ -63,7 +63,7 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
    private XCheckBox reviewsCheckbox;
    private XCheckBox teamWorkflowsCheckbox;
    private XCheckBox tasksCheckbox;
-   private XStateCombo stateCombo = null;
+   private XStateSearchCombo stateCombo = null;
 
    public UserSearchWorkflowSearchItem() {
       super("User Search", FrameworkImage.USER);
@@ -105,7 +105,7 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
       //
       "<XWidget displayName=\"Version\" beginComposite=\"5\" xwidgetType=\"XCombo()\" horizontalLabel=\"true\"/>" +
       //
-      "<XWidget displayName=\"State\" xwidgetType=\"XStateCombo\" horizontalLabel=\"true\"/>" +
+      "<XWidget displayName=\"State\" xwidgetType=\"XStateSearchCombo\" horizontalLabel=\"true\"/>" +
       //
       "<XWidget displayName=\"Team Definitions(s)\" beginComposite=\"2\" endComposite=\"true\" xwidgetType=\"XHyperlabelTeamDefinitionSelection\" horizontalLabel=\"true\"/>" +
       //
@@ -225,7 +225,7 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
          widget.setToolTip("Select Team to populate Version list");
       }
       if (widget.getLabel().equals("State")) {
-         stateCombo = (XStateCombo) widget;
+         stateCombo = (XStateSearchCombo) widget;
          stateCombo.getComboViewer().getCombo().setVisibleItemCount(25);
          widget.setToolTip("Select State of Task");
       }

@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.widgets.XHyperlabelTeamDefinitionSelection;
-import org.eclipse.osee.ats.util.widgets.XStateCombo;
+import org.eclipse.osee.ats.util.widgets.XStateSearchCombo;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.ats.world.search.TeamWorldSearchItem;
@@ -57,7 +57,7 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
    protected XCheckBox includeCompletedCheckbox;
    protected XCheckBox includeCancelledCheckbox;
    protected XCheckBox showFlatCheckbox;
-   private XStateCombo stateCombo = null;
+   private XStateSearchCombo stateCombo = null;
 
    public TeamWorkflowSearchWorkflowSearchItem(String name) {
       super(name, AtsImage.TEAM_WORKFLOW);
@@ -94,7 +94,7 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
       //
       "<XWidget displayName=\"Assignee\" xwidgetType=\"XMembersCombo\" horizontalLabel=\"true\"/>" +
       //
-      "<XWidget displayName=\"State\" xwidgetType=\"XStateCombo\" horizontalLabel=\"true\"/>" +
+      "<XWidget displayName=\"State\" xwidgetType=\"XStateSearchCombo\" horizontalLabel=\"true\"/>" +
       //
       "<XWidget displayName=\"Include Completed\" beginComposite=\"6\" xwidgetType=\"XCheckBox\" defaultValue=\"false\" labelAfter=\"true\" horizontalLabel=\"true\"/>" +
       //
@@ -183,7 +183,7 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
          showFlatCheckbox = (XCheckBox) widget;
       }
       if (widget.getLabel().equals("State")) {
-         stateCombo = (XStateCombo) widget;
+         stateCombo = (XStateSearchCombo) widget;
          stateCombo.getComboViewer().getCombo().setVisibleItemCount(25);
          widget.setToolTip("Select State of Task");
       }

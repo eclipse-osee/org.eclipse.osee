@@ -15,6 +15,12 @@ workDefinition "WorkDef_Task_Default" {
       option FILL_VERTICALLY
    }
 
+   widgetDefinition "Related To State" {
+      attributeName "ats.Related To State"
+      xWidgetName "XStateCombo"
+      option FILL_VERTICALLY
+   }
+
    state "InWork" {
       type Working
       ordinal 1
@@ -28,7 +34,7 @@ workDefinition "WorkDef_Task_Default" {
             numColumns 6
             attributeWidget "ats.Estimated Hours" with REQUIRED_FOR_TRANSITION
             attributeWidget "ats.Estimated Completion Date"
-            attributeWidget "ats.Related To State"
+            widget "Related To State"
          }
          composite {
             numColumns 4
