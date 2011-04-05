@@ -20,8 +20,8 @@ import org.eclipse.osee.ats.config.demo.internal.OseeAtsConfigDemoActivator;
 import org.eclipse.osee.ats.health.ValidateAtsDatabase;
 import org.eclipse.osee.ats.navigate.IAtsNavigateItem;
 import org.eclipse.osee.ats.navigate.SearchNavigateItem;
-import org.eclipse.osee.ats.test.util.DemoTestUtil;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.version.CreateNewVersionItem;
 import org.eclipse.osee.ats.version.ReleaseVersionItem;
 import org.eclipse.osee.ats.world.search.ArtifactTypeSearchItem;
@@ -31,8 +31,10 @@ import org.eclipse.osee.ats.world.search.TeamWorldSearchItem;
 import org.eclipse.osee.ats.world.search.TeamWorldSearchItem.ReleasedOption;
 import org.eclipse.osee.ats.world.search.VersionTargetedForTeamSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.LoadView;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
@@ -53,6 +55,20 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
       super();
    }
 
+   private static TeamDefinitionArtifact getTeamDef(DemoTeam team) throws OseeCoreException {
+      // Add check to keep exception from occurring for OSEE developers running against production
+      if (ClientSessionManager.isProductionDataStore()) {
+         return null;
+      }
+      try {
+         return (TeamDefinitionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.TeamDefinition,
+            team.name().replaceAll("_", " "), AtsUtil.getAtsBranch());
+      } catch (Exception ex) {
+         OseeLog.log(OseeAtsConfigDemoActivator.class, Level.SEVERE, ex);
+      }
+      return null;
+   }
+
    @Override
    public List<XNavigateItem> getNavigateItems(XNavigateItem parentItem) throws OseeCoreException {
       List<XNavigateItem> items = new ArrayList<XNavigateItem>();
@@ -63,7 +79,7 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
 
       // If Demo Teams not configured, ignore these navigate items
       try {
-         if (DemoTestUtil.getTeamDef(DemoTeam.Process_Team) == null) {
+         if (getTeamDef(DemoTeam.Process_Team) == null) {
             return items;
          }
       } catch (Exception ex) {
@@ -72,7 +88,7 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
       }
       // If Demo Teams not configured, ignore these navigate items
       try {
-         if (DemoTestUtil.getTeamDef(DemoTeam.Process_Team) == null) {
+         if (getTeamDef(DemoTeam.Process_Team) == null) {
             return items;
          }
       } catch (Exception ex) {
@@ -87,16 +103,14 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
 
       for (DemoTeam team : DemoTeam.values()) {
          try {
-            TeamDefinitionArtifact teamDef = DemoTestUtil.getTeamDef(team);
+            TeamDefinitionArtifact teamDef = getTeamDef(team);
             XNavigateItem teamItems = new XNavigateItemFolder(jhuItem, "JHU " + team.name().replaceAll("_", " "));
             new SearchNavigateItem(teamItems, new TeamWorldSearchItem("Show Open " + teamDef + " Actions",
-               Arrays.asList(DemoTestUtil.getTeamDef(team)), false, false, true, true, null, null, ReleasedOption.Both,
-               null));
+               Arrays.asList(teamDef), false, false, true, true, null, null, ReleasedOption.Both, null));
             new SearchNavigateItem(teamItems, new TeamWorldSearchItem("Show Open " + teamDef + " Workflows",
-               Arrays.asList(DemoTestUtil.getTeamDef(team)), false, false, false, true, null, null,
-               ReleasedOption.Both, null));
+               Arrays.asList(teamDef), false, false, false, true, null, null, ReleasedOption.Both, null));
             // Handle all children teams
-            for (TeamDefinitionArtifact childTeamDef : Artifacts.getChildrenOfTypeSet(DemoTestUtil.getTeamDef(team),
+            for (TeamDefinitionArtifact childTeamDef : Artifacts.getChildrenOfTypeSet(teamDef,
                TeamDefinitionArtifact.class, true)) {
                new SearchNavigateItem(teamItems, new TeamWorldSearchItem("Show Open " + childTeamDef + " Workflows",
                   Arrays.asList(childTeamDef), false, false, false, false, null, null, ReleasedOption.Both, null));
