@@ -383,7 +383,6 @@ public class ArtifactQueryBuilder {
          }
       }
 
-      sql.append(" AND ");
       addBranchTxSql(txsAlias);
 
       if (isHistorical) {
@@ -453,11 +452,12 @@ public class ArtifactQueryBuilder {
 
    private void addCurrentTxSql(String txsAlias) {
       sql.append(txsAlias);
-      sql.append(".tx_current=1 AND ");
+      sql.append(".tx_current=1 ");
    }
 
    private void addBranchTxSql(String txsAlias) throws OseeCoreException {
       if (branch != null) {
+         sql.append(" AND ");
          sql.append(txsAlias);
          sql.append(".branch_id=?");
          addParameter(BranchManager.getBranchId(branch));

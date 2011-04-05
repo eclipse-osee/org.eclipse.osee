@@ -8,24 +8,28 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
+
 package org.eclipse.osee.framework.skynet.core.test.cases;
 
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
+import java.util.List;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.junit.Test;
 
 /**
  * @author Donald G. Dunne
  */
 public class ArtifactQueryTestDemo {
 
-   @org.junit.Test
+   @Test
    public void testGetArtifactFromGUIDDeleted() throws OseeCoreException {
       Artifact newArtifact =
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, BranchManager.getCommonBranch());
@@ -63,5 +67,29 @@ public class ArtifactQueryTestDemo {
          ArtifactQuery.getArtifactFromId(newArtifact.getGuid(), BranchManager.getCommonBranch(), INCLUDE_DELETED);
       Assert.assertNotNull(searchedArtifact);
 
+   }
+
+   @Test
+   public void testGetArtifactListFromType() throws OseeCoreException {
+      // Should exist
+      List<Artifact> searchedArtifacts =
+         ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SoftwareRequirement, DeletionFlag.INCLUDE_DELETED);
+      // make sure at least one artifact exists
+      Assert.assertTrue("No artifacts found", searchedArtifacts.size() > 0);
+
+      //check to see if there are multiple branches found
+      String firstGuid = "";
+      Boolean pass = false;
+      for (Artifact a : searchedArtifacts) {
+         if ("" == firstGuid) {
+            firstGuid = a.getBranchGuid();
+         } else {
+            if (firstGuid != a.getBranchGuid()) {
+               pass = true;
+               break;
+            }
+         }
+      }
+      Assert.assertTrue("No artifacts on multiple branches found", pass);
    }
 }
