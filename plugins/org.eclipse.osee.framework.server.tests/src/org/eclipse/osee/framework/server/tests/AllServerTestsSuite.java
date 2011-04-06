@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.test.FrameworkCoreTestSuite;
 import org.eclipse.osee.framework.database.test.DatabaseTestSuite;
 import org.eclipse.osee.framework.jdk.core.test.JdkCoreTestSuite;
 import org.eclipse.osee.framework.lifecycle.test.AllLifecycleTestSuite;
+import org.eclipse.osee.framework.logging.AllLoggingTestSuite;
 import org.eclipse.osee.framework.resource.locator.attribute.test.AttributeLocatorProviderTestSuite;
 import org.eclipse.osee.framework.resource.management.test.ResourceManagementTestSuite;
 import org.eclipse.osee.framework.resource.provider.attribute.test.AttributeProviderTestSuite;
@@ -41,6 +42,7 @@ import org.junit.runners.Suite;
    CoreServerTestSuite.class,
    BranchManagementTestSuite.class,
    AllLifecycleTestSuite.class,
+   AllLoggingTestSuite.class,
    ResourceManagementTestSuite.class,
    AttributeLocatorProviderTestSuite.class,
    AttributeProviderTestSuite.class,

@@ -18,24 +18,13 @@ import java.util.logging.Level;
  */
 public class SevereLogMonitorTest {
 
-   /*
-    * @Before public void setup() throws Exception { assertTrue("Should be run on test or demo datbase.",
-    * TestUtil.isDemoDb() || TestUtil.isTestDb()); }
-    */
-
    @org.junit.Test
    public void testCatchingOfException() {
-
-      boolean madeItInException = false;
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
-      try {
-         throw new Exception("this is my test exception");
-      } catch (Exception ex) {
-         madeItInException = true;
-         OseeLog.log(SevereLogMonitorTest.class, Level.SEVERE, "caught our exception in a junit", ex);
-      }
-      assertTrue(madeItInException);
+      Exception ex = new Exception("this is my test exception");
+      OseeLog.log(SevereLogMonitorTest.class, Level.SEVERE, "caught our exception in a junit", ex);
+      OseeLog.unregisterLoggerListener(monitorLog);
       assertTrue(String.format("%d SevereLogs during test.", monitorLog.getAllLogs().size()),
          monitorLog.getAllLogs().size() == 1);
    }

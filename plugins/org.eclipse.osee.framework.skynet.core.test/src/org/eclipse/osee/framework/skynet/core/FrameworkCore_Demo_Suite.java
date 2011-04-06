@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.skynet.core;
 
 import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.logging.SevereLogMonitorTest;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPurgeTest;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTestSuite;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeInheritanceTest;
@@ -87,7 +86,6 @@ import org.junit.runners.Suite;
    NativeArtifactTest.class,
    ConflictTest.class,
    ChangeManagerTest.class,
-   SevereLogMonitorTest.class,
    RelationDeletionTest.class,
    StaticIdManagerTest.class,
    BranchStateTest.class,
