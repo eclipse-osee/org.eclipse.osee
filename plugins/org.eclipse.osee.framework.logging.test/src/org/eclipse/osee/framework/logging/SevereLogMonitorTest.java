@@ -8,26 +8,20 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.dunno;
+package org.eclipse.osee.framework.logging;
 
 import static org.junit.Assert.assertTrue;
-
 import java.util.logging.Level;
-
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
-import org.eclipse.osee.support.test.util.TestUtil;
-import org.junit.Before;
 
 /**
  * @author Andrew M. Finkbeiner
  */
 public class SevereLogMonitorTest {
 
-   @Before
-   public void setup() throws Exception {
-      assertTrue("Should be run on test or demo datbase.", TestUtil.isDemoDb() || TestUtil.isTestDb());
-   }
+   /*
+    * @Before public void setup() throws Exception { assertTrue("Should be run on test or demo datbase.",
+    * TestUtil.isDemoDb() || TestUtil.isTestDb()); }
+    */
 
    @org.junit.Test
    public void testCatchingOfException() {

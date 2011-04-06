@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core;
 
 import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.logging.SevereLogMonitorTest;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPurgeTest;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTestSuite;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeInheritanceTest;
@@ -30,7 +31,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ReplaceWithAttributeTest;
 import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManagerTest;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactLoaderTest;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQueryTestDemo;
-import org.eclipse.osee.framework.skynet.core.dunno.SevereLogMonitorTest;
 import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactEventFiltersTest;
 import org.eclipse.osee.framework.skynet.core.event.filter.BranchEventFiltersTest;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEventLoopbackTest;

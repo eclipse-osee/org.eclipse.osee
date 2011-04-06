@@ -9,7 +9,6 @@ Require-Bundle: org.junit
 Export-Package: org.eclipse.osee.framework.skynet.core,
  org.eclipse.osee.framework.skynet.core.artifact,
  org.eclipse.osee.framework.skynet.core.artifact.search,
- org.eclipse.osee.framework.skynet.core.dunno,
  org.eclipse.osee.framework.skynet.core.event,
  org.eclipse.osee.framework.skynet.core.event.filter,
  org.eclipse.osee.framework.skynet.core.event.model,
