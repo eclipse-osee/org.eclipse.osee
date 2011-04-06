@@ -9,4 +9,5 @@ Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.osee.framework.jdk.core.util,
  org.osgi.framework
 Export-Package: org.eclipse.osee.framework.logging
+Eclipse-ExtensibleAPI: true
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

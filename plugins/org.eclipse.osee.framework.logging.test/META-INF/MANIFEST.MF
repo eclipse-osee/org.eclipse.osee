@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Logging Test
+Bundle-SymbolicName: org.eclipse.osee.framework.logging.test
+Bundle-Version: 0.9.9.qualifier
+Bundle-Vendor: Eclipse Opne System Engineering Environment
+Fragment-Host: org.eclipse.osee.framework.logging;bundle-version="0.9.9"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
