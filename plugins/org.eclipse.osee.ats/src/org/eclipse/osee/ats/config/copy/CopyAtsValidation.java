@@ -38,15 +38,8 @@ public class CopyAtsValidation {
          return;
       }
 
-      if (configData.getAIArts().isEmpty()) {
-         resultData.logErrorWithFormat("Need at least one AI related to team definition [%s]",
-            configData.getTeamDef().toStringWithId());
-      }
-
       validateTeamDefinition(configData.getTeamDef());
-      for (ActionableItemArtifact aia : configData.getAIArts()) {
-         validateActionableItem(aia);
-      }
+      validateActionableItem(configData.getActionableItem());
    }
 
    private void performValidateAtsDatabaseChecks() throws OseeCoreException {
@@ -54,9 +47,7 @@ public class CopyAtsValidation {
 
       // Validate AIs to TeamDefs
       Set<Artifact> aias = new HashSet<Artifact>();
-      for (ActionableItemArtifact aia : configData.getAIArts()) {
-         aias.addAll(ActionableItemManager.getActionableItemsFromItemAndChildren(aia));
-      }
+      aias.addAll(ActionableItemManager.getActionableItemsFromItemAndChildren(configData.getActionableItem()));
       ValidateAtsDatabase.testActionableItemToTeamDefinition(testNameToResultsMap, aias);
 
       // Validate TeamDefs have Workflow Definitions

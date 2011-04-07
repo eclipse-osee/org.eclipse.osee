@@ -6,6 +6,7 @@
 package org.eclipse.osee.ats.test.config.copy;
 
 import junit.framework.Assert;
+import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemManager;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionManager;
@@ -28,12 +29,14 @@ public class ConfigDataTest {
       XResultData results = new XResultData(false);
       data.validateData(results);
       Assert.assertTrue(results.isErrors());
-      Assert.assertEquals(3, results.getNumErrors());
+      Assert.assertEquals(4, results.getNumErrors());
 
       data.setReplaceStr("ReplStr");
       data.setSearchStr("SrchStr");
       TeamDefinitionArtifact tda = DemoTestUtil.getTeamDef(DemoTeam.CIS_SW);
       data.setTeamDef(tda);
+      ActionableItemArtifact aia = DemoTestUtil.getActionableItem(DemoActionableItems.CIS_Code);
+      data.setActionableItem(aia);
       results.clear();
       data.validateData(results);
       Assert.assertFalse(results.isErrors());
@@ -50,10 +53,9 @@ public class ConfigDataTest {
    @org.junit.Test
    public void testGetAiArts() throws Exception {
       ConfigData data = new ConfigData();
-      TeamDefinitionArtifact tda = DemoTestUtil.getTeamDef(DemoTeam.CIS_Code);
-      data.setTeamDef(tda);
-      Assert.assertEquals(DemoTestUtil.getActionableItem(DemoActionableItems.CIS_Code),
-         data.getAIArts().iterator().next());
+      ActionableItemArtifact aia = DemoTestUtil.getActionableItem(DemoActionableItems.CIS_Code);
+      data.setActionableItem(aia);
+      Assert.assertEquals(aia, data.getActionableItem());
    }
 
    @org.junit.Test

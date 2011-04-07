@@ -47,6 +47,8 @@ public class AtsWidgetProvider implements IXWidgetProvider {
          toReturn = new OperationalImpactXWidget();
       } else if (widgetName.equals(XTeamDefinitionCombo.WIDGET_ID)) {
          toReturn = new XTeamDefinitionCombo();
+      } else if (widgetName.equals(XActionableItemCombo.WIDGET_ID)) {
+         toReturn = new XActionableItemCombo();
       } else if (widgetName.equals(OperationalImpactWithWorkaroundXWidget.WIDGET_NAME)) {
          toReturn = new OperationalImpactWithWorkaroundXWidget();
       }

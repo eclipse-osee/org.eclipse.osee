@@ -32,6 +32,8 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
    protected XResultData resultData;
    Set<Artifact> newArtifacts;
    Set<Artifact> existingArtifacts;
+   Set<Artifact> processedFromAis;
+
    private final Map<TeamDefinitionArtifact, TeamDefinitionArtifact> fromTeamDefToNewTeamDefMap =
       new HashMap<TeamDefinitionArtifact, TeamDefinitionArtifact>();
 
@@ -67,6 +69,7 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
 
          newArtifacts = new HashSet<Artifact>(50);
          existingArtifacts = new HashSet<Artifact>(50);
+         processedFromAis = new HashSet<Artifact>(10);
 
          createTeamDefinitions(data.getTeamDef(), data.getParentTeamDef());
          if (resultData.isErrors()) {
@@ -74,9 +77,8 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
             return;
          }
 
-         for (ActionableItemArtifact aia : data.getAIArts()) {
-            createActionableItems(aia, data.getParentActionableItem());
-         }
+         createActionableItems(data.getActionableItem(), data.getParentActionableItem());
+
          if (resultData.isErrors()) {
             persistOrUndoChanges();
             return;
@@ -89,7 +91,16 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
       }
    }
 
+   /**
+    * Has potential of returning null if this fromAi has already been processed.
+    */
    protected ActionableItemArtifact createActionableItems(ActionableItemArtifact fromAi, ActionableItemArtifact parentAiArt) throws OseeCoreException {
+      if (processedFromAis.contains(fromAi)) {
+         resultData.log(String.format("Skipping already processed fromAi [%s]", fromAi));
+         return null;
+      } else {
+         processedFromAis.add(fromAi);
+      }
       // Get or create new team definition
       ActionableItemArtifact newAiArt = (ActionableItemArtifact) duplicateTeamDefinitionOrActionableItem(fromAi);
       parentAiArt.addChild(newAiArt);

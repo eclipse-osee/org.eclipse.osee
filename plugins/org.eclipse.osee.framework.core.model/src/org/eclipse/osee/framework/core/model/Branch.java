@@ -230,4 +230,12 @@ public class Branch extends AbstractOseeType implements IAdaptable, IOseeBranch 
    public boolean isAncestorOf(IOseeBranch branch) throws OseeCoreException {
       return getChildBranches(true).contains(branch);
    }
+
+   /*
+    * Provide easy way to display/report [guid][name]
+    */
+   public final String toStringWithId() {
+      return String.format("[%s][%s]", getGuid(), getName());
+   }
+
 }

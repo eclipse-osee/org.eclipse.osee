@@ -8,7 +8,9 @@ package org.eclipse.osee.ats.config.copy;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.ats.util.widgets.XActionableItemCombo;
 import org.eclipse.osee.ats.util.widgets.XTeamDefinitionCombo;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
@@ -29,6 +31,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 public class CopyAtsConfigurationBlam extends AbstractBlam {
 
    private org.eclipse.osee.ats.util.widgets.XTeamDefinitionCombo xTeamDefinitionCombo;
+   private org.eclipse.osee.ats.util.widgets.XActionableItemCombo xActionableItemCombo;
 
    @Override
    public String getName() {
@@ -40,6 +43,7 @@ public class CopyAtsConfigurationBlam extends AbstractBlam {
       StringBuilder builder = new StringBuilder();
       builder.append("<xWidgets>");
       builder.append("<XWidget xwidgetType=\"XTeamDefinitionCombo\" displayName=\"Top Team Definition to Copy From (most like new config)\" />");
+      builder.append("<XWidget xwidgetType=\"XActionableItemCombo\" displayName=\"Top Actionable Item to Copy From\" />");
       builder.append("<XWidget xwidgetType=\"XText\" displayName=\"Name Search String\" />");
       builder.append("<XWidget xwidgetType=\"XText\" displayName=\"Name Replace String\" />");
       builder.append("<XWidget xwidgetType=\"XCheckBox\" displayName=\"Retain Team Leads/Members\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
@@ -50,6 +54,10 @@ public class CopyAtsConfigurationBlam extends AbstractBlam {
 
    private TeamDefinitionArtifact getSelectedTeamDefinition() {
       return (TeamDefinitionArtifact) xTeamDefinitionCombo.getSelectedTeamDef();
+   }
+
+   private ActionableItemArtifact getSelectedActionableItem() {
+      return (ActionableItemArtifact) xActionableItemCombo.getSelectedAi();
    }
 
    @Override
@@ -63,6 +71,7 @@ public class CopyAtsConfigurationBlam extends AbstractBlam {
          data.setSearchStr((String) variableMap.getValue("Name Search String"));
          data.setReplaceStr((String) variableMap.getValue("Name Replace String"));
          data.setTeamDef(getSelectedTeamDefinition());
+         data.setActionableItem(getSelectedActionableItem());
          data.setPersistChanges(variableMap.getBoolean("Persist Changes"));
          data.setRetainTeamLeads(variableMap.getBoolean("Retain Team Leads/Members"));
 
@@ -101,6 +110,8 @@ public class CopyAtsConfigurationBlam extends AbstractBlam {
       if (xWidget.getLabel().equals("Top Team Definition to Copy From (most like new config)")) {
          xTeamDefinitionCombo = (XTeamDefinitionCombo) xWidget;
       }
+      if (xWidget.getLabel().equals("Top Actionable Item to Copy From")) {
+         xActionableItemCombo = (XActionableItemCombo) xWidget;
+      }
    }
-
 }

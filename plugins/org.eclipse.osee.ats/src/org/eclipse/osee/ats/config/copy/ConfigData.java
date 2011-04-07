@@ -21,12 +21,16 @@ public class ConfigData {
    String searchStr;
    String replaceStr;
    TeamDefinitionArtifact teamDef;
+   ActionableItemArtifact actionableItem;
    boolean retainTeamLeads;
    boolean persistChanges;
 
    public void validateData(XResultData resultData) {
       if (teamDef == null) {
          resultData.logError("Must Select Team Definition");
+      }
+      if (actionableItem == null) {
+         resultData.logError("Must Select Actionable Item");
       }
       if (!Strings.isValid(searchStr)) {
          resultData.logError("Must Enter Search String");
@@ -79,11 +83,6 @@ public class ConfigData {
       this.persistChanges = persistChanges;
    }
 
-   public List<ActionableItemArtifact> getAIArts() throws OseeCoreException {
-      return teamDef.getRelatedArtifacts(AtsRelationTypes.TeamActionableItem_ActionableItem,
-         ActionableItemArtifact.class);
-   }
-
    public TeamDefinitionArtifact getParentTeamDef() throws OseeCoreException {
       TeamDefinitionArtifact parentTeamDef = null;
       if (teamDef.getParent() instanceof TeamDefinitionArtifact) {
@@ -104,6 +103,14 @@ public class ConfigData {
          parentActionableItem = ActionableItemManager.getTopActionableItem();
       }
       return parentActionableItem;
+   }
+
+   public ActionableItemArtifact getActionableItem() {
+      return actionableItem;
+   }
+
+   public void setActionableItem(ActionableItemArtifact actionableItem) {
+      this.actionableItem = actionableItem;
    }
 
 }
