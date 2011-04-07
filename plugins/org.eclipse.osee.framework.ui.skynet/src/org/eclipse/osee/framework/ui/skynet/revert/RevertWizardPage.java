@@ -11,16 +11,19 @@
 package org.eclipse.osee.framework.ui.skynet.revert;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.RevertOperation;
+import org.eclipse.osee.framework.skynet.core.artifact.revert.ArtifactRevert;
 import org.eclipse.osee.framework.ui.skynet.ArtifactDoubleClick;
-import org.eclipse.osee.framework.ui.skynet.commandHandlers.RevertJob;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.custom.TreeEditor;
@@ -57,13 +60,23 @@ public class RevertWizardPage extends WizardPage {
                      revertList.add(artList.get(0));
                   }
                }
-               Jobs.startJob(new RevertJob(revertList));
+
+               Branch branch = revertList.get(0).getBranch();
+               ArtifactRevert artifactRevert = new ArtifactRevert(branch, getArtids(revertList));
+               RevertOperation revertOperation = new RevertOperation(artifactRevert, "Revert Artifacts");
+               Operations.executeAsJob(revertOperation, false);
+
                artifactSelectionBox.setItems(new String[] {});
                treeViewer.setInput(null);
             }
             if (event.widget == revertSelectedButton) {
                int index = artifactSelectionBox.getSelectionIndex();
-               Jobs.startJob(new RevertJob(artifacts.get(index)));
+
+               Branch branch = artifacts.get(index).get(0).getBranch();
+               ArtifactRevert artifactRevert = new ArtifactRevert(branch, getArtids(artifacts.get(index)));
+               RevertOperation revertOperation = new RevertOperation(artifactRevert, "Revert Artifacts");
+               Operations.executeAsJob(revertOperation, false);
+
                artifacts.remove(index);
                artifactSelectionBox.remove(index);
                if (artifacts.isEmpty()) {
@@ -85,6 +98,15 @@ public class RevertWizardPage extends WizardPage {
          getWizard().getContainer().updateButtons();
       }
    };
+
+   private Integer[] getArtids(Collection<Artifact> artifacts) {
+      Integer[] artIds = new Integer[artifacts.size()];
+      int index = 0;
+      for (Artifact artifact : artifacts) {
+         artIds[index++] = artifact.getArtId();
+      }
+      return artIds;
+   }
 
    public RevertWizardPage(List<List<Artifact>> artifacts) {
       super(TITLE);

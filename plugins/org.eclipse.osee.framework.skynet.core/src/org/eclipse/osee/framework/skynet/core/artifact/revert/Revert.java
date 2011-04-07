@@ -1,14 +1,9 @@
-/*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+/*
+ * Created on Apr 3, 2011
  *
- * Contributors:
- *     Boeing - initial API and implementation
- *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.artifact;
+ * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
+ */
+package org.eclipse.osee.framework.skynet.core.artifact.revert;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,8 +22,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 /**
  * @author Theron Virgin
  */
-public class RevertAction {
-
+public abstract class Revert {
    private static final String REVERT_COMMENT = "Reverted Transaction";
 
    private static final String DELETE_TXS_GAMMAS_REVERT =
@@ -52,34 +46,27 @@ public class RevertAction {
    private static final String REVERT_ARTIFACT_VERSION_SELECT =
       "SELECT txs.gamma_id, txs.transaction_id FROM osee_txs txs, osee_artifact art WHERE txs.transaction_id in (%s) AND txs.gamma_id = art.gamma_id AND NOT EXISTS (SELECT 'x' FROM osee_txs txs2 WHERE txs2.transaction_id = txs.transaction_id AND txs2.gamma_id != txs.gamma_id)";
 
+   private final List<Object[]> gammaIdsModifications = new ArrayList<Object[]>();
+   private final List<Object[]> gammaIdsToInsert = new ArrayList<Object[]>();
+   private final List<Object[]> gammaIdsBaseline = new ArrayList<Object[]>();
+   private final List<Integer> transactionIds = new ArrayList<Integer>();
+
+   private String objectReverted;
+
    private static final boolean DEBUG =
       "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core/debug/Revert"));
 
-   List<Object[]> gammaIdsModifications = new ArrayList<Object[]>();
-   List<Object[]> gammaIdsToInsert = new ArrayList<Object[]>();
-   List<Object[]> gammaIdsBaseline = new ArrayList<Object[]>();
-   List<Integer> transactionIds = new ArrayList<Integer>();
+   public abstract void revert(OseeConnection connection) throws OseeCoreException;
 
-   private final OseeConnection connection;
-   private IOseeStatement chStmt;
-   private final TransactionRecord transId;
-   private String objectReverted;
-
-   public RevertAction(OseeConnection connection, IOseeStatement chStmt, TransactionRecord transId) {
-      this.connection = connection;
-      this.chStmt = chStmt;
-      this.transId = transId;
-   }
-
-   public void revertObject(long totalTime, int id, String objectReverted) throws OseeCoreException {
+   protected void revertObject(long totalTime, int id, String objectReverted, IOseeStatement chStmt, TransactionRecord transId, OseeConnection connection) throws OseeCoreException {
       this.objectReverted = objectReverted;
 
-      processChStmtSortGammas();
+      processChStmtSortGammas(chStmt, transId);
 
       if (!gammaIdsModifications.isEmpty()) {
-         updateTransactionTables();
+         updateTransactionTables(connection, transId);
          if (!gammaIdsBaseline.isEmpty()) {
-            setTxCurrentForRevertedObjects();
+            setTxCurrentForRevertedObjects(connection);
          }
       }
       if (DEBUG) {
@@ -88,23 +75,7 @@ public class RevertAction {
       }
    }
 
-   public void fixArtifactVersionForAttributeRevert(int branchId, int artId) throws OseeCoreException {
-      if (!transactionIds.isEmpty()) {
-         chStmt = ConnectionHandler.getStatement(connection);
-         try {
-            chStmt.runPreparedQuery(String.format(REVERT_ARTIFACT_VERSION_SELECT,
-               Collections.toString(",", transactionIds)));
-            objectReverted = "Atrtribute";
-            processChStmtSortGammas();
-            updateTransactionTables();
-            updateArtifactVersionTxCurrents(branchId, artId);
-         } finally {
-            chStmt.close();
-         }
-      }
-   }
-
-   private void processChStmtSortGammas() throws OseeCoreException {
+   private void processChStmtSortGammas(IOseeStatement chStmt, TransactionRecord transId) throws OseeCoreException {
       gammaIdsModifications.clear();
       gammaIdsToInsert.clear();
       gammaIdsBaseline.clear();
@@ -137,7 +108,24 @@ public class RevertAction {
       }
    }
 
-   private void updateTransactionTables() throws OseeDataStoreException, OseeCoreException {
+   public void fixArtifactVersionForAttributeRevert(int branchId, int artId, OseeConnection connection, TransactionRecord transId) throws OseeCoreException {
+      if (!transactionIds.isEmpty()) {
+         IOseeStatement chStmt = ConnectionHandler.getStatement(connection);
+         try {
+            chStmt.runPreparedQuery(String.format(REVERT_ARTIFACT_VERSION_SELECT,
+               Collections.toString(",", transactionIds)));
+            objectReverted = "Atrtribute";
+            processChStmtSortGammas(chStmt, transId);
+            updateTransactionTables(connection, transId);
+            updateArtifactVersionTxCurrents(branchId, artId, connection);
+         } finally {
+            chStmt.close();
+         }
+      }
+   }
+
+   @SuppressWarnings("unchecked")
+   private void updateTransactionTables(OseeConnection connection, TransactionRecord transId) throws OseeDataStoreException, OseeCoreException {
       long time = System.currentTimeMillis();
       ConnectionHandler.runPreparedUpdate(connection, UPDATE_DETAILS_TABLE, REVERT_COMMENT,
          TxChange.DELETED.getValue(), transId.getId());
@@ -145,8 +133,7 @@ public class RevertAction {
       int count2 = ConnectionHandler.runBatchUpdate(connection, DELETE_TXS_GAMMAS_REVERT, gammaIdsModifications);
 
       if (count1 != count2) {
-         throw new OseeCoreException("Revert Transaction moved %d transaction but should have moved %d",
-            count1, count2);
+         throw new OseeCoreException("Revert Transaction moved %d transaction but should have moved %d", count1, count2);
       }
       if (DEBUG) {
          displayRevertResults(time, objectReverted, gammaIdsModifications, count2);
@@ -163,7 +150,7 @@ public class RevertAction {
       System.out.println(String.format("     Displayed all the data in %s", Lib.getElapseString(time)));
    }
 
-   private void setTxCurrentForRevertedObjects() throws OseeCoreException {
+   private void setTxCurrentForRevertedObjects(OseeConnection connection) throws OseeCoreException {
       int count2;
       long time = System.currentTimeMillis();
       count2 = ConnectionHandler.runBatchUpdate(connection, SET_TX_CURRENT_REVERT, gammaIdsBaseline);
@@ -176,7 +163,7 @@ public class RevertAction {
       }
    }
 
-   private void updateArtifactVersionTxCurrents(int branchId, int artId) throws OseeCoreException {
+   private void updateArtifactVersionTxCurrents(int branchId, int artId, OseeConnection connection) throws OseeCoreException {
       if (DEBUG) {
          IOseeStatement chStmt = ConnectionHandler.getStatement(connection);
          try {

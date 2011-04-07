@@ -23,8 +23,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
-import org.eclipse.osee.framework.database.core.DbTransaction;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -197,8 +195,6 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>> {
          ArtifactCache.updateCachedArtifact(artifact.getArtId(), artifact.getBranch().getId());
       } catch (OseeStateException ex) {
          OseeLog.log(Attribute.class, Level.SEVERE, ex.toString(), ex);
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Attribute.class, Level.SEVERE, ex.toString(), ex);
       }
    }
 
@@ -323,14 +319,18 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>> {
       return false;
    }
 
-   public void revert() throws OseeCoreException {
-      DbTransaction dbTransaction = new DbTransaction() {
-         @Override
-         protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
-            ArtifactPersistenceManager.revertAttribute(connection, Attribute.this);
-         }
-      };
-      dbTransaction.execute();
+   public void revert() {
+      //Do Nothing
+   }
+
+   public void replaceWithVersion(int gammaId) throws OseeStateException, OseeCoreException {
+      modificationType = ModificationType.REPLACED_WITH_VERSION;
+      this.gammaId = gammaId;
+      setDirtyFlag(true);
+
+      //this could be in the calling object
+      getArtifact().persist();
+      getArtifact().reloadAttributesAndRelations();
    }
 
    /**

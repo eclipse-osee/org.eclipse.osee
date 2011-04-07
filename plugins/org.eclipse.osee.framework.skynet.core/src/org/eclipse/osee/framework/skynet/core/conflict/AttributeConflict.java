@@ -470,13 +470,6 @@ public class AttributeConflict extends Conflict {
       return false;
    }
 
-   public void revertSourceAttribute() throws OseeCoreException {
-      if (DEBUG) {
-         System.out.println(String.format("AttributeConflict: Reverting Attribute %d", getAttrId()));
-      }
-      getSourceAttribute(true).revert();
-   }
-
    @Override
    public boolean applyPreviousMerge(int mergeBranchId, int destBranchId) throws OseeCoreException {
       if (DEBUG) {

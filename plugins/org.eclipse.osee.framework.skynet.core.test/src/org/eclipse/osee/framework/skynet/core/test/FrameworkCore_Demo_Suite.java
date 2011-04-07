@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.skynet.core.test.cases.NativeArtifactTest;
 import org.eclipse.osee.framework.skynet.core.test.cases.PurgeTransactionTest;
 import org.eclipse.osee.framework.skynet.core.test.cases.RelationDeletionTest;
 import org.eclipse.osee.framework.skynet.core.test.cases.RelationOrderingTest;
+import org.eclipse.osee.framework.skynet.core.test.cases.ReplaceWithAttributeTest;
 import org.eclipse.osee.framework.skynet.core.test.cases.SevereLogMonitorTest;
 import org.eclipse.osee.framework.skynet.core.test.cases.StaticIdManagerTest;
 import org.eclipse.osee.framework.skynet.core.test.cases.TransactionManagerTest;
@@ -54,6 +55,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+   ReplaceWithAttributeTest.class,
    CrossBranchLinkTest.class,
    UpdateBookmarkIdTest.class,
    ArtifactEventFiltersTest.class,

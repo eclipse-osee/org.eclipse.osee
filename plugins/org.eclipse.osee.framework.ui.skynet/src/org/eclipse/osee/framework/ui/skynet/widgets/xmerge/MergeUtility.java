@@ -12,11 +12,8 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xmerge;
 
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -27,16 +24,13 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
-import org.eclipse.osee.framework.skynet.core.conflict.ArtifactConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
-import org.eclipse.osee.framework.ui.skynet.revert.RevertWizard;
 import org.eclipse.osee.framework.ui.swt.Displays;
-import org.eclipse.osee.framework.ui.swt.NonmodalWizardDialog;
 import org.eclipse.swt.widgets.Shell;
 
 /**
@@ -104,59 +98,6 @@ public class MergeUtility {
 
    public static void showCompareFile(Artifact art1, Artifact art2, String filePrefix) throws OseeCoreException {
       RendererManager.diffInJob(new ArtifactDelta(art1, art2), filePrefix);
-   }
-
-   public static boolean showDeletedConflict(Conflict conflict, Shell shell) {
-      if (conflict.getConflictType().equals(ConflictType.ARTIFACT)) {
-         return showArtifactDeletedConflict(conflict, shell);
-      } else if (conflict.getConflictType().equals(ConflictType.ATTRIBUTE)) {
-         return showAttributeDeletedConflict(conflict, shell);
-      }
-      return false;
-   }
-
-   public static boolean showArtifactDeletedConflict(Conflict conflict, Shell shell) {
-      if (conflict.getConflictType().equals(ConflictType.ARTIFACT)) {
-         MessageDialog dialog =
-            new MessageDialog(shell, "Unresovable Conflict", null, ARTIFACT_DELETED_PROMPT, 1, new String[] {
-               "Revert Source Artifact",
-               "Handle Later"}, 1);
-         if (dialog.open() == 0) {
-            try {
-               List<List<Artifact>> artifacts = new LinkedList<List<Artifact>>();
-
-               List<Artifact> artifactList = new LinkedList<Artifact>();
-               artifactList.add(((ArtifactConflict) conflict).getSourceArtifact());
-               artifacts.add(artifactList);
-               RevertWizard wizard = new RevertWizard(artifacts);
-               NonmodalWizardDialog dialog2 = new NonmodalWizardDialog(Displays.getActiveShell(), wizard);
-               dialog2.create();
-               dialog2.open();
-               return true;
-            } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-            }
-         }
-      }
-      return false;
-   }
-
-   public static boolean showAttributeDeletedConflict(Conflict conflict, Shell shell) {
-      if (conflict.getConflictType().equals(ConflictType.ATTRIBUTE)) {
-         MessageDialog dialog =
-            new MessageDialog(shell, "Unresovable Conflict", null, ATTRIBUTE_DELETED_PROMPT, 1, new String[] {
-               "Revert Source Attribute",
-               "Handle Later"}, 1);
-         if (dialog.open() == 0) {
-            try {
-               ((AttributeConflict) conflict).revertSourceAttribute();
-               return true;
-            } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-            }
-         }
-      }
-      return false;
    }
 
    public static boolean showInformationalConflict(Shell shell) {

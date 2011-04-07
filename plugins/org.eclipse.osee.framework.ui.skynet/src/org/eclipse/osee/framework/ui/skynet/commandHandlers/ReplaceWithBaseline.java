@@ -13,25 +13,20 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 import java.util.List;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.database.core.DbTransaction;
-import org.eclipse.osee.framework.database.core.OseeConnection;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.util.Jobs;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
+import org.eclipse.osee.framework.skynet.core.change.Change;
+import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.ui.PlatformUI;
 
@@ -39,53 +34,32 @@ import org.eclipse.ui.PlatformUI;
  * @author Jeff C. Phillips
  * @author Theron Virgin
  */
-public class RevertAttributeHandler extends AbstractHandler {
+public class ReplaceWithBaseline extends AbstractHandler {
+   @SuppressWarnings("rawtypes")
    private List<Attribute> attributes;
 
    @Override
    public Object execute(ExecutionEvent event) {
-      // This is serious stuff, make sure the user understands the impact.
-      if (MessageDialog.openConfirm(
-         Displays.getActiveShell(),
-         "Confirm Revert of " + attributes.size() + " attributes.",
-         "All attribute changes selected will be reverted." + "\n\nTHIS IS IRREVERSIBLE" + "\n\nOSEE must be restarted after all reverting is finished to see the results")) {
-
-         Jobs.startJob(new RevertJob());
-      }
-      return null;
-   }
-   private class RevertJob extends Job {
-
-      public RevertJob() {
-         super("Reverting " + attributes.size() + " attributes.");
-      }
-
-      @Override
-      protected IStatus run(final IProgressMonitor monitor) {
-         IStatus toReturn;
-         try {
-            monitor.beginTask("Reverting ...", attributes.size());
-
-            DbTransaction dbTransaction = new DbTransaction() {
-               @Override
-               protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
-                  for (Attribute<?> attribute : attributes) {
-                     monitor.setTaskName(attribute.getArtifact().getName() + " : " + attribute.getDisplayableString());
-                     ArtifactPersistenceManager.revertAttribute(connection, attribute);
-                     monitor.worked(1);
+      if (MessageDialog.openConfirm(Displays.getActiveShell(),
+         "Confirm Replace with baseline version of " + attributes.size() + " attributes.",
+         "All attribute changes selected will be replaced with thier baseline version.")) {
+         for (Attribute<?> attribute : attributes) {
+            try {
+               TransactionRecord baselineTransactionRecord = attribute.getArtifact().getBranch().getBaseTransaction();
+               for (Change change : ChangeManager.getChangesPerArtifact(attribute.getArtifact(),
+                  new NullProgressMonitor())) {
+                  if (change.getTxDelta().getEndTx().getId() == baselineTransactionRecord.getId()) {
+                     if (change.getItemKind().equals("Attribute") && change.getItemId() == attribute.getId()) {
+                        attribute.replaceWithVersion((int) change.getGamma());
+                     }
                   }
                }
-            };
-            dbTransaction.execute();
-
-            toReturn = Status.OK_STATUS;
-         } catch (Exception ex) {
-            toReturn = new Status(IStatus.ERROR, SkynetGuiPlugin.PLUGIN_ID, -1, ex.getMessage(), ex);
-         } finally {
-            monitor.done();
+            } catch (OseeCoreException ex) {
+               OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
+            }
          }
-         return toReturn;
       }
+      return null;
    }
 
    @Override
@@ -101,13 +75,11 @@ public class RevertAttributeHandler extends AbstractHandler {
 
          if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
             IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
-            List<Attribute> changes = Handlers.processSelectionObjects(Attribute.class, structuredSelection);
+            this.attributes = Handlers.processSelectionObjects(Attribute.class, structuredSelection);
 
-            if (changes.isEmpty()) {
+            if (attributes.isEmpty()) {
                return false;
             }
-
-            this.attributes = changes;
 
             for (Attribute<?> attribute : attributes) {
                isEnabled = AccessControlManager.hasPermission(attribute.getArtifact(), PermissionEnum.WRITE);

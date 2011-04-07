@@ -36,8 +36,10 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.change.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
@@ -180,6 +182,9 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
 
       createChangeReportMenuItem(popupMenu);
 
+      new MenuItem(popupMenu, SWT.SEPARATOR);
+      createReplaceAttributeWithVersionMenuItem(popupMenu);
+
       IAction action = new CompareArtifactAction("Compare two Artifacts", xHistoryWidget.getXViewer());
       (new ActionContributionItem(action)).fill(popupMenu, 3);
 
@@ -197,6 +202,48 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
       xMenu.addFilterMenuBlock(popupMenu);
       new MenuItem(popupMenu, SWT.SEPARATOR);
       xHistoryWidget.getXViewer().getTree().setMenu(popupMenu);
+   }
+
+   private void createReplaceAttributeWithVersionMenuItem(Menu popupMenu) {
+      final MenuItem replaceWithMenu = new MenuItem(popupMenu, SWT.CASCADE);
+      replaceWithMenu.setText("&Replace Attribute with Version");
+      popupMenu.addMenuListener(new MenuAdapter() {
+
+         @Override
+         public void menuShown(MenuEvent e) {
+            List<?> selections = ((IStructuredSelection) xHistoryWidget.getXViewer().getSelection()).toList();
+            replaceWithMenu.setEnabled(selections.size() == 1 && selections.iterator().next() instanceof AttributeChange);
+         }
+
+      });
+
+      replaceWithMenu.addSelectionListener(new SelectionAdapter() {
+
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            IStructuredSelection selection = (IStructuredSelection) xHistoryWidget.getXViewer().getSelection();
+            Object selectedObject = selection.getFirstElement();
+
+            if (selectedObject instanceof AttributeChange) {
+               try {
+                  AttributeChange attributeChange = (AttributeChange) selectedObject;
+                  Artifact artifact =
+                     ArtifactQuery.getArtifactFromId(attributeChange.getArtId(), attributeChange.getBranch());
+
+                  for (Attribute<?> attribute : artifact.getAttributes(attributeChange.getAttributeType())) {
+                     if (attribute.getId() == attributeChange.getAttrId()) {
+                        attribute.replaceWithVersion((int) attributeChange.getGamma());
+                        break;
+                     }
+                  }
+
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               }
+            }
+         }
+
+      });
    }
 
    private void createChangeReportMenuItem(Menu popupMenu) {

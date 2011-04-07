@@ -559,7 +559,7 @@
           </separator>
           <command
                 commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.revertAttribute.command"
-                label="Revert Source Attribute...">
+                label="Set attribute to baseline...">
           </command>
     </menuContribution>
  </extension>
@@ -717,7 +717,7 @@
      </enabledWhen>
   </handler>
   <handler
-        class="org.eclipse.osee.framework.ui.skynet.commandHandlers.RevertAttributeHandler"
+        class="org.eclipse.osee.framework.ui.skynet.commandHandlers.ReplaceWithBaseline"
         commandId="org.eclipse.osee.framework.ui.skynet.changeReportView.revertAttribute.command">
      <enabledWhen>
         <with
@@ -1353,7 +1353,7 @@
          </command>
   <command
         id="org.eclipse.osee.framework.ui.skynet.changeReportView.revertAttribute.command"
-        name="Revert Attribute...">
+        name="Set attribute to baseline...">
   </command>
 		<command id="org.eclipse.osee.framework.ui.skynet.changeReportView.viewWordChangeReport.command" name="View Word Change Report - F5">
          </command>

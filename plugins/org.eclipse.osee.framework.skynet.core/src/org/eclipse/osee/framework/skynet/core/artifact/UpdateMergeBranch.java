@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.DbTransaction;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
@@ -32,7 +33,9 @@ import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
+import org.eclipse.osee.framework.skynet.core.artifact.revert.ArtifactRevert;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
  * @author Theron Virgin
@@ -243,7 +246,11 @@ public class UpdateMergeBranch extends DbTransaction {
       int baseTxId = branch.getBaseTransaction().getId();
       int branchId = branch.getId();
 
-      ArtifactPersistenceManager.revertArtifact(connection, branch, artId);
+      ArtifactRevert artifactRevert = new ArtifactRevert(branch, artId);
+      RevertOperation revertOperation =
+         new RevertOperation(artifactRevert, Activator.getInstance().getOseeDatabaseService(), "Revert Artifact",
+            Activator.PLUGIN_ID);
+      Operations.executeAsJob(revertOperation, false);
 
       //Remove from Baseline
       ConnectionHandler.runPreparedUpdate(connection, PURGE_BASELINE_ATTRIBUTE_TRANS, baseTxId, branchId, artId);

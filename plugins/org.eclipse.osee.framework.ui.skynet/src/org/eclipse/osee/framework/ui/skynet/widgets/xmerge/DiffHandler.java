@@ -148,7 +148,7 @@ class DiffHandler extends AbstractSelectionEnabledHandler {
          try {
             switch (diffToShow) {
                case 1:
-                  if (artifactConflict.getSourceArtifact() != null && conflicts.get(0).getStatus().isNotResolvable() && MergeUtility.getStartArtifact(artifactConflict) != null) {
+                  if (artifactConflict.getSourceArtifact() != null && MergeUtility.getStartArtifact(artifactConflict) != null) {
                      artifacts.add(artifactConflict.getSourceArtifact());
                      artifacts.add(MergeUtility.getStartArtifact(artifactConflict));
                   } else {

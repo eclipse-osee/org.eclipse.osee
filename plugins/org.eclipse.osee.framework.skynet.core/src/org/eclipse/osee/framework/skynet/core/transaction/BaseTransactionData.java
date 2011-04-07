@@ -50,6 +50,7 @@ public abstract class BaseTransactionData {
          case ARTIFACT_DELETED:
          case DELETED:
          case INTRODUCED:
+         case REPLACED_WITH_VERSION:
             return true;
       }
       return false;
@@ -70,9 +71,20 @@ public abstract class BaseTransactionData {
    }
 
    protected void addInsertToBatch(InsertDataCollector collector) throws OseeCoreException {
+      ModificationType modTypeToStore = getAdjustedModificationType();
+
       internalAddInsertToBatch(collector, Integer.MAX_VALUE, INSERT_INTO_TRANSACTION_TABLE,
-         collector.getTransactionNumber(), getGammaId(), getModificationType().getValue(),
-         TxChange.getCurrent(getModificationType()).getValue(), collector.getBranchId());
+         collector.getTransactionNumber(), getGammaId(), modTypeToStore.getValue(),
+         TxChange.getCurrent(modTypeToStore).getValue(), collector.getBranchId());
+   }
+
+   //Replaces the replace_with_version modtype with modification for storage.
+   private ModificationType getAdjustedModificationType() {
+      ModificationType modtypeToReturn = getModificationType();
+      if (modtypeToReturn == ModificationType.REPLACED_WITH_VERSION) {
+         modtypeToReturn = ModificationType.MODIFIED;
+      }
+      return modtypeToReturn;
    }
 
    protected final int getItemId() {

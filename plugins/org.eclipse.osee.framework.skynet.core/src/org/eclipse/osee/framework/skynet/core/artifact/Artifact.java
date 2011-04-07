@@ -63,9 +63,8 @@ import org.eclipse.osee.framework.core.model.event.IBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.services.IAccessControlService;
-import org.eclipse.osee.framework.database.core.DbTransaction;
-import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -80,6 +79,7 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.ArtifactAnnotation;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.AttributeAnnotationManager;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.IArtifactAnnotation;
+import org.eclipse.osee.framework.skynet.core.artifact.revert.ArtifactRevert;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.event.model.AttributeChange;
@@ -989,14 +989,12 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, IB
       }
    }
 
-   public final void revert() throws OseeCoreException {
-      DbTransaction dbTransaction = new DbTransaction() {
-         @Override
-         protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
-            ArtifactPersistenceManager.revertArtifact(connection, Artifact.this);
-         }
-      };
-      dbTransaction.execute();
+   public final void revert() {
+      ArtifactRevert artifactRevert = new ArtifactRevert(branch, getArtId());
+      RevertOperation revertOperation =
+         new RevertOperation(artifactRevert, Activator.getInstance().getOseeDatabaseService(), "Revert Artifact",
+            Activator.PLUGIN_ID);
+      Operations.executeAsJob(revertOperation, false);
    }
 
    /**

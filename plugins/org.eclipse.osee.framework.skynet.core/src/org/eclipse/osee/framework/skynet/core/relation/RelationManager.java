@@ -42,7 +42,6 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink.ArtifactLinker;
@@ -282,7 +281,7 @@ public class RelationManager {
       return getRelatedArtifact(artifact, relationEnum, relationEnum.getSide());
    }
 
-   public static int getRelatedArtifactsCount(Artifact artifact, IRelationEnumeration relationTypeEnum) throws OseeCoreException {
+   public static int getRelatedArtifactsCount(Artifact artifact, IRelationEnumeration relationTypeEnum) {
       return getRelatedArtifactsCount(artifact, relationTypeEnum, relationTypeEnum.getSide());
    }
 
@@ -499,25 +498,6 @@ public class RelationManager {
 
       updateOrderListOnDelete(artifact, relationType, relationSide,
          getRelatedArtifacts(artifact, relationType, relationSide));
-   }
-
-   /**
-    * This method should only be called for unordered Relation Types. It does not handle reordering relation types that
-    * maintain order.
-    */
-   public static void revertRelations(Artifact artifact, RelationType relationType, RelationSide relationSide) throws OseeCoreException {
-      List<RelationLink> selectedRelations = relationCache.getAllByType(artifact, relationType);
-      if (selectedRelations != null) {
-         for (RelationLink relation : selectedRelations) {
-            if (relationSide == null) {
-               ArtifactPersistenceManager.revertRelationLink(null, relation);
-            } else {
-               if (relation.getSide(artifact) != relationSide) {
-                  ArtifactPersistenceManager.revertRelationLink(null, relation);
-               }
-            }
-         }
-      }
    }
 
    /**

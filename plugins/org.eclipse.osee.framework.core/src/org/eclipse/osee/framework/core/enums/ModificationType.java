@@ -46,7 +46,11 @@ public enum ModificationType {
 
    // Previously deleted artifact, attribute, or relation has been reinstated
    // Relation can be in this state in memory, but this mod type is persisted as MODIFIED
-   UNDELETED("Undeleted", 7);
+   UNDELETED("Undeleted", 7),
+
+   //Artifact: Not valid
+   //Attribute: Valid and can be used to replace the current version of an attribute with another historical version
+   REPLACED_WITH_VERSION("Replace_with_version", 8);
 
    private final static Set<ModificationType> ALL_NONE_HARD_DELETED = new HashSet<ModificationType>();
    private final static Set<ModificationType> ALL_MOD_TYPES = new HashSet<ModificationType>();

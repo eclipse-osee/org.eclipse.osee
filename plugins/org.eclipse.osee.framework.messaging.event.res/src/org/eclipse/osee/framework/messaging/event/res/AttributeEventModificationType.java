@@ -45,6 +45,8 @@ public class AttributeEventModificationType {
       "AYsmWP05uX1Dl6q2pIwA");
    public static AttributeEventModificationType Undeleted = new AttributeEventModificationType(
       ModificationType.UNDELETED, "AYsmWP1q1B2bK1kj0ugA");
+   public static AttributeEventModificationType replaceWithVersion = new AttributeEventModificationType(
+      ModificationType.REPLACED_WITH_VERSION, "AYsmWP1q1B2bK1kj0ugC");
 
    public AttributeEventModificationType(ModificationType modificationType, String guid) {
       this.modificationType = modificationType;
