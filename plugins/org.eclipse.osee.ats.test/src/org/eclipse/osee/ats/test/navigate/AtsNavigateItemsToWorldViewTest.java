@@ -629,7 +629,7 @@ public class AtsNavigateItemsToWorldViewTest {
    private void verifyXCol1HasErrors(List<String> actualErrorCols) {
       int index = 0;
       for (String col : actualErrorCols) {
-         NavigateTestUtil.testExpectedVersusActual("Expected xCol errors", true,
+         NavigateTestUtil.testExpectedVersusActual("Expected xCol " + col + " errors", true,
             NavigateTestUtil.expectedErrorCols1[index++].contains(col));
       }
    }
