@@ -8,5 +8,9 @@ Fragment-Host: org.eclipse.osee.framework.branch.management;bundle-version="0.4.
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.junit
 Import-Package: org.eclipse.osee.framework.core.message.test.mocks,
- org.eclipse.osee.framework.core.test.mocks
+ org.eclipse.osee.framework.core.test.mocks,
+ org.eclipse.osee.framework.skynet.core,
+ org.eclipse.osee.framework.skynet.core.artifact,
+ org.eclipse.osee.framework.skynet.core.transaction,
+ org.eclipse.osee.support.test.util
 Export-Package: org.eclipse.osee.framework.branch.management.test
