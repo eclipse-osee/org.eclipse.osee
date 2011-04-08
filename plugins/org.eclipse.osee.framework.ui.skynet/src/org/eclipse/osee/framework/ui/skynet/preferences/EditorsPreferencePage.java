@@ -15,6 +15,7 @@ import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.SystemGroup;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.SWT;
@@ -29,11 +30,17 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 public class EditorsPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
    private static String CHANGE_REPORT_CLOSE_CHANGE_REPORT_EDITORS_ON_SHUTDOWN =
       "change.report.close.editors.on.shutdown";
+   private static String ADMIN_INCLUDE_ATTRIBUTE_TAB_ON_ARTIFACT_EDITOR = "artifact.editor.include.attribute.tab";
    private Button artifactEditButton;
    private Button closeChangeReportEditorsOnShutdown;
+   private Button includeAttributeTabOnArtifactEditor;
 
    public static boolean isCloseChangeReportEditorsOnShutdown() throws OseeCoreException {
       return UserManager.getBooleanSetting(CHANGE_REPORT_CLOSE_CHANGE_REPORT_EDITORS_ON_SHUTDOWN);
+   }
+
+   public static boolean isIncludeAttributeTabOnArtifactEditor() throws OseeCoreException {
+      return UserManager.getBooleanSetting(ADMIN_INCLUDE_ATTRIBUTE_TAB_ON_ARTIFACT_EDITOR);
    }
 
    @Override
@@ -58,6 +65,22 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
       try {
          boolean value = UserManager.getBooleanSetting(CHANGE_REPORT_CLOSE_CHANGE_REPORT_EDITORS_ON_SHUTDOWN);
          closeChangeReportEditorsOnShutdown.setSelection(value);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+      }
+
+      try {
+         if (SystemGroup.OseeAdmin.isCurrentUserMember()) {
+            includeAttributeTabOnArtifactEditor = new Button(composite, SWT.CHECK);
+            includeAttributeTabOnArtifactEditor.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false));
+            includeAttributeTabOnArtifactEditor.setText("Admin - Include Attribute Tab on Artifact Editor");
+            try {
+               boolean value = UserManager.getBooleanSetting(ADMIN_INCLUDE_ATTRIBUTE_TAB_ON_ARTIFACT_EDITOR);
+               includeAttributeTabOnArtifactEditor.setSelection(value);
+            } catch (OseeCoreException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            }
+         }
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
@@ -90,6 +113,11 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
 
          boolean result = closeChangeReportEditorsOnShutdown.getSelection();
          UserManager.setSetting(CHANGE_REPORT_CLOSE_CHANGE_REPORT_EDITORS_ON_SHUTDOWN, String.valueOf(result));
+
+         if (includeAttributeTabOnArtifactEditor != null) {
+            result = includeAttributeTabOnArtifactEditor.getSelection();
+            UserManager.setSetting(ADMIN_INCLUDE_ATTRIBUTE_TAB_ON_ARTIFACT_EDITOR, String.valueOf(result));
+         }
 
          UserManager.getUser().persist();
       } catch (OseeCoreException ex) {
