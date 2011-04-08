@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.core.test.mocks;
 
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.osee.framework.core.operation.IOperation;
 
@@ -19,8 +20,14 @@ import org.eclipse.osee.framework.core.operation.IOperation;
  */
 public class MockOperation implements IOperation {
    private final IStatus status;
+   private boolean called;
+
+   public MockOperation() {
+      this(Status.OK_STATUS);
+   }
 
    public MockOperation(IStatus status) {
+      setCalled(false);
       this.status = status;
    }
 
@@ -31,6 +38,15 @@ public class MockOperation implements IOperation {
 
    @Override
    public IStatus run(SubMonitor subMonitor) {
+      setCalled(true);
       return status;
+   }
+
+   public boolean getCalled() {
+      return called;
+   }
+
+   public void setCalled(boolean called) {
+      this.called = called;
    }
 }

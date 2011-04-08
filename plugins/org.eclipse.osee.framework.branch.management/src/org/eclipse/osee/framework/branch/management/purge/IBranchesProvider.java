@@ -8,16 +8,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.branch.management.test.purge;
+package org.eclipse.osee.framework.branch.management.purge;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import java.util.Collection;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({BranchOperationTest.class, DeletedBranchProviderTest.class, RecursiveBranchProviderTest.class})
 /**
  * @author John Misinco
  */
-public class PurgeTestSuite {
-   // tests provided above
+public interface IBranchesProvider {
+   Collection<Branch> getBranches() throws OseeCoreException;
 }

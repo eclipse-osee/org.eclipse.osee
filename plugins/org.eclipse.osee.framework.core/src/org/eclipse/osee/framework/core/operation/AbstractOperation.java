@@ -119,7 +119,7 @@ public abstract class AbstractOperation implements IOperation {
     * throws OperationCanceledException if the user cancelled the operation via the monitor , otherwise it simply
     * returns
     */
-   protected static final void checkForCancelledStatus(IProgressMonitor monitor) throws OperationCanceledException {
+   public static final void checkForCancelledStatus(IProgressMonitor monitor) throws OperationCanceledException {
       if (monitor.isCanceled()) {
          throw new OperationCanceledException();
       }

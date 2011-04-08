@@ -19,7 +19,9 @@ import org.eclipse.osee.framework.branch.management.change.LoadDeltasBetweenBran
 import org.eclipse.osee.framework.branch.management.change.LoadDeltasBetweenTxsOnTheSameBranch;
 import org.eclipse.osee.framework.branch.management.commit.CommitDbOperation;
 import org.eclipse.osee.framework.branch.management.creation.CreateBranchOperation;
-import org.eclipse.osee.framework.branch.management.purge.PurgeBranchOperation;
+import org.eclipse.osee.framework.branch.management.purge.BranchOperation;
+import org.eclipse.osee.framework.branch.management.purge.IBranchOperationFactory;
+import org.eclipse.osee.framework.branch.management.purge.PurgeBranchOperationFactory;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -147,8 +149,11 @@ public class OseeBranchService implements IOseeBranchService {
    @Override
    public IOperation purge(IProgressMonitor monitor, PurgeBranchRequest request, OperationLogger logger) throws OseeCoreException {
       BranchCache branchCache = cachingService.getOseeCachingService().getBranchCache();
-      return new PurgeBranchOperation(logger, branchCache.getById(request.getBranchId()),
-         cachingService.getOseeCachingService(), oseeDatabaseProvider.getOseeDatabaseService());
+      Branch branch = branchCache.getById(request.getBranchId());
+      IBranchOperationFactory factory =
+         new PurgeBranchOperationFactory(logger, branchCache, oseeDatabaseProvider.getOseeDatabaseService());
+
+      return new BranchOperation(logger, factory, branch);
    }
 
    @Override

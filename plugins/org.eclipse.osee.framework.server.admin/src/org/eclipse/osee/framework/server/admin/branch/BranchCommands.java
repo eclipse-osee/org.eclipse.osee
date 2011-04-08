@@ -11,11 +11,22 @@
 package org.eclipse.osee.framework.server.admin.branch;
 
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.framework.branch.management.purge.PurgeDeletedBranches;
+import org.eclipse.osee.framework.branch.management.purge.BranchOperation;
+import org.eclipse.osee.framework.branch.management.purge.DeletedBranchProvider;
+import org.eclipse.osee.framework.branch.management.purge.IBranchOperationFactory;
+import org.eclipse.osee.framework.branch.management.purge.IBranchesProvider;
+import org.eclipse.osee.framework.branch.management.purge.PurgeBranchOperationFactory;
+import org.eclipse.osee.framework.branch.management.purge.RecursiveBranchProvider;
+import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.cache.BranchCache;
+import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 import org.eclipse.osee.framework.core.operation.CommandInterpreterLogger;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.server.admin.internal.Activator;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 
@@ -122,8 +133,30 @@ public class BranchCommands {
 
    public Job purgeDeletedBranches(CommandInterpreter ci) {
       OperationLogger logger = new CommandInterpreterLogger(ci);
-      IOperation operation =
-         new PurgeDeletedBranches(logger, Activator.getOseeCachingService(), Activator.getOseeDatabaseService());
+      BranchCache branchCache = Activator.getOseeCachingService().getBranchCache();
+      IBranchesProvider provider = new DeletedBranchProvider(branchCache);
+
+      return internalPurgeBranch(logger, branchCache, provider);
+   }
+
+   public Job purgeBranchRecursive(CommandInterpreter ci) throws OseeCoreException {
+      OperationLogger logger = new CommandInterpreterLogger(ci);
+      String branchGuid = ci.nextArgument();
+      BranchCache branchCache = Activator.getOseeCachingService().getBranchCache();
+      Branch seed = branchCache.getByGuid(branchGuid);
+
+      BranchFilter filter = new BranchFilter();
+      filter.setNegatedBranchTypes(BranchType.BASELINE);
+
+      IBranchesProvider provider = new RecursiveBranchProvider(seed, filter);
+      return internalPurgeBranch(logger, branchCache, provider);
+   }
+
+   private Job internalPurgeBranch(OperationLogger logger, BranchCache branchCache, IBranchesProvider provider) {
+      IOseeDatabaseService databaseService = Activator.getOseeDatabaseService();
+      IBranchOperationFactory factory = new PurgeBranchOperationFactory(logger, branchCache, databaseService);
+
+      IOperation operation = new BranchOperation(logger, factory, provider);
       return Operations.executeAsJob(operation, false);
    }
 }

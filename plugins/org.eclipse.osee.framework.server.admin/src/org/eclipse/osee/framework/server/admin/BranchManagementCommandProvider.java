@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.server.admin;
 
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.server.admin.branch.BranchCommands;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 import org.eclipse.osgi.framework.console.CommandProvider;
@@ -54,16 +55,21 @@ public class BranchManagementCommandProvider implements CommandProvider {
       return branchCmds.purgeDeletedBranches(ci);
    }
 
+   public Job _purge_branch_recursive(CommandInterpreter ci) throws OseeCoreException {
+      return branchCmds.purgeBranchRecursive(ci);
+   }
+
    @Override
    public String getHelp() {
       StringBuilder sb = new StringBuilder();
       sb.append("\n---OSEE Branch Commands---\n");
-      sb.append("        export_branch <exchangeFileName> [-compress] [-minTx <value>] [-maxTx <value>] [-exclude_baseline_txs] [-includeArchivedBranches] -excludeBranchIds [<branchId>]+ - export a specific set of branches into an exchange zip file.\n");
-      sb.append("        export_branch_stop - stop branch export\n");
-      sb.append("        import_branch <exchangeFileName> [-exclude_baseline_txs] [-allAsRootBranches] [-minTx <value>] [-maxTx <value>] [-clean] [<branchId>]+ - import a specific set of branches from an exchange zip file.\n");
-      sb.append("        check_exchange <exchangeFileName> - checks an exchange file to ensure data integrity\n");
-      sb.append("        check_exchange_stop - stop exchange integrity check\n");
-      sb.append("        purge_deleted_branches - permenatly remove all branches that are both archived and deleted \n");
+      sb.append("\texport_branch <exchangeFileName> [-compress] [-minTx <value>] [-maxTx <value>] [-exclude_baseline_txs] [-includeArchivedBranches] -excludeBranchIds [<branchId>]+ - export a specific set of branches into an exchange zip file.\n");
+      sb.append("\texport_branch_stop - stop branch export\n");
+      sb.append("\timport_branch <exchangeFileName> [-exclude_baseline_txs] [-allAsRootBranches] [-minTx <value>] [-maxTx <value>] [-clean] [<branchId>]+ - import a specific set of branches from an exchange zip file.\n");
+      sb.append("\tcheck_exchange <exchangeFileName> - checks an exchange file to ensure data integrity\n");
+      sb.append("\tcheck_exchange_stop - stop exchange integrity check\n");
+      sb.append("\tpurge_deleted_branches - permenatly remove all branches that are both archived and deleted \n");
+      sb.append("\tpurge_branch_recursive <guid> - removes the branch defined by guid and all its children excluding baseline branches\n");
 
       return sb.toString();
    }

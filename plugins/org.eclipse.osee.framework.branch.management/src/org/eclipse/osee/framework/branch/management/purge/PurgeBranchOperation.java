@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
-import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.AbstractDbTxOperation;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
@@ -57,15 +56,15 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
    private OseeConnection connection;
    private IProgressMonitor monitor;
    private final String sourceTableName;
-   private final IOseeCachingService cachingService;
+   private final BranchCache branchCache;
    private final IOseeDatabaseService databaseService;
 
-   public PurgeBranchOperation(OperationLogger logger, Branch branch, IOseeCachingService cachingService, IOseeDatabaseService databaseService) {
+   public PurgeBranchOperation(OperationLogger logger, Branch branch, BranchCache branchCache, IOseeDatabaseService databaseService) {
       super(databaseService, String.format("Purge Branch: [(%s)-%s]", branch.getId(), branch.getShortName()),
          Activator.PLUGIN_ID, logger);
       this.branch = branch;
       this.sourceTableName = branch.getArchiveState().isArchived() ? "osee_txs_archived" : "osee_txs";
-      this.cachingService = cachingService;
+      this.branchCache = branchCache;
       this.databaseService = databaseService;
    }
 
@@ -94,7 +93,6 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
       purgeFromTable("Merge", DELETE_FROM_MERGE, 0.01, branch.getId(), branch.getParentBranch().getId());
       purgeFromTable("Branch", DELETE_FROM_BRANCH_TABLE, 0.01, branch.getId());
 
-      BranchCache branchCache = cachingService.getBranchCache();
       branch.setStorageState(StorageState.PURGED);
       branchCache.storeItems(branch);
       branch.internalRemovePurgedBranchFromParent();
