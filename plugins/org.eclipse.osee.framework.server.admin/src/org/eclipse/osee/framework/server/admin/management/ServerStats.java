@@ -18,89 +18,85 @@ import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.IJobManager;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.core.server.OseeServerProperties;
 import org.eclipse.osee.framework.database.core.DatabaseInfoManager;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.server.admin.BaseServerCommand;
 import org.eclipse.osee.framework.server.admin.internal.Activator;
-import org.eclipse.osgi.framework.console.CommandInterpreter;
 
 /**
  * @author Roberto E. Escobar
  */
-class ServerStats extends BaseServerCommand {
+public class ServerStats extends AbstractOperation {
 
-   protected ServerStats(CommandInterpreter ci) {
-      super("Server Stats", ci);
+   public ServerStats(OperationLogger logger) {
+      super("Server Stats", Activator.PLUGIN_ID, logger);
    }
 
    @Override
-   protected void doCommandWork(IProgressMonitor monitor) throws Exception {
+   protected void doWork(IProgressMonitor monitor) throws Exception {
       IApplicationServerManager manager = Activator.getApplicationServerManager();
       ISessionManager sessionManager = Activator.getSessionManager();
 
-      StringBuffer buffer = new StringBuffer();
-      buffer.append("\n----------------------------------------------\n");
-      buffer.append("                  Server Stats                \n");
-      buffer.append("----------------------------------------------\n");
+      log("\n----------------------------------------------");
+      log("                  Server Stats");
+      log("----------------------------------------------");
 
-      buffer.append(String.format("Server:[%s:%s]\n", manager.getServerAddress(), manager.getPort()));
-      buffer.append(String.format("Id: [%s]\n", manager.getId()));
-      buffer.append(String.format("Running Since: [%s]\n\n",
+      logf("Server:[%s:%s]", manager.getServerAddress(), manager.getPort());
+      logf("Id: [%s]", manager.getId());
+      log(String.format("Running Since: [%s]\n",
          DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG).format(manager.getDateStarted())));
 
-      buffer.append(String.format("Code Base Location: [%s]\n", System.getProperty("user.dir")));
-      buffer.append(String.format("Datastore: [%s]\n", DatabaseInfoManager.getDefault().toString()));
-      buffer.append(String.format("Binary Data Path: [%s]\n\n", OseeServerProperties.getOseeApplicationServerData()));
+      logf("Code Base Location: [%s]", System.getProperty("user.dir"));
+      logf("Datastore: [%s]", DatabaseInfoManager.getDefault().toString());
+      logf("Binary Data Path: [%s]\n", OseeServerProperties.getOseeApplicationServerData());
 
-      buffer.append(String.format("Supported Versions: %s\n", Arrays.deepToString(manager.getSupportedVersions())));
-      buffer.append(String.format("Accepting Requests: [%s]\n", manager.isAcceptingRequests()));
-      buffer.append(Lib.getMemoryInfo());
+      logf("Supported Versions: %s", Arrays.deepToString(manager.getSupportedVersions()));
+      logf("Accepting Requests: [%s]", manager.isAcceptingRequests());
+      log(Lib.getMemoryInfo());
 
-      buffer.append("Servlets:");
-      List<String> contexts = new ArrayList<String>(manager.getRegisteredServlets());
-      Collections.sort(contexts);
-      int indexCnt = 0;
-      for (String context : contexts) {
-         if (indexCnt % 3 == 0) {
-            if (indexCnt != 0) {
-               buffer.append("\n\t");
-            } else {
-               buffer.append(" ");
-            }
-         } else {
-            buffer.append("\t\t");
-         }
-         buffer.append(context);
-         indexCnt++;
-      }
+      logServlets(manager);
 
-      buffer.append(String.format("\nSessionsManaged: [%s]\n", sessionManager.getAllSessions(false).size()));
-      buffer.append(String.format("\nServer State: [%s]\n", manager.isSystemIdle() ? "IDLE" : "BUSY"));
-      buffer.append(String.format("Active Threads: [%s]\n", manager.getNumberOfActiveThreads()));
+      logf("\nSessionsManaged: [%s]", sessionManager.getAllSessions(false).size());
+      logf("\nServer State: [%s]", manager.isSystemIdle() ? "IDLE" : "BUSY");
+      logf("Active Threads: [%s]", manager.getNumberOfActiveThreads());
 
       IJobManager jobManager = Job.getJobManager();
-      buffer.append(String.format("Job Manager: [%s]\n", jobManager.isIdle() ? "IDLE" : "BUSY"));
-      buffer.append(String.format("Current Job: [%s]\n", jobManager.currentJob().getName()));
+      logf("Job Manager: [%s]", jobManager.isIdle() ? "IDLE" : "BUSY");
+      logf("Current Job: [%s]", jobManager.currentJob().getName());
 
-      buffer.append("Current Tasks: ");
+      log("Current Tasks: ");
       List<String> entries = manager.getCurrentProcesses();
       if (entries.isEmpty()) {
-         buffer.append("[NONE]");
+         log("[NONE]");
       } else {
-         buffer.append("\n");
+         log();
          for (int index = 0; index < entries.size(); index++) {
-            buffer.append(String.format("[%s] ", index));
-            buffer.append(entries.get(index));
+            logf("[%s] ", index);
+            log(entries.get(index));
             if (index + 1 < entries.size()) {
-               buffer.append("\n");
+               log();
             }
          }
       }
 
-      buffer.append("\n");
-      println(buffer.toString());
+      log();
+
+   }
+
+   private void logServlets(IApplicationServerManager manager) {
+      log("Servlets:");
+      List<String> contexts = new ArrayList<String>(manager.getRegisteredServlets());
+      Collections.sort(contexts);
+      if (contexts.size() % 2 == 1) {
+         contexts.add("");
+      }
+      int midPoint = contexts.size() / 2;
+      for (int i = 0; i < midPoint; i++) {
+         logf("%-40.40s%s", contexts.get(i), contexts.get(i + midPoint));
+      }
    }
 }

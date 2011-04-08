@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 public abstract class OperationLogger {
 
    /**
-    * Reports as a row. Subsequent calls are reported as a new row (i.e. new line)
+    * Reports as a row. Subsequent calls are reported as a new row (i.e. a new line is appended)
     * 
     * @param row array of strings treated as fields of a row
     */

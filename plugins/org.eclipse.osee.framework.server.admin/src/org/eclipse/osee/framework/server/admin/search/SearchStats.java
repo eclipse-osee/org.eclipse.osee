@@ -11,30 +11,29 @@
 package org.eclipse.osee.framework.server.admin.search;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.search.engine.ISearchStatistics;
-import org.eclipse.osee.framework.server.admin.BaseServerCommand;
 import org.eclipse.osee.framework.server.admin.internal.Activator;
 
 /**
  * @author Roberto E. Escobar
  */
-class SearchStats extends BaseServerCommand {
+public class SearchStats extends AbstractOperation {
 
-   protected SearchStats() {
-      super("Search Engine Stats");
+   public SearchStats(OperationLogger logger) {
+      super("Search Engine Stats", Activator.PLUGIN_ID, logger);
    }
 
    @Override
-   protected void doCommandWork(IProgressMonitor monitor) throws Exception {
+   protected void doWork(IProgressMonitor monitor) {
       ISearchStatistics stats = Activator.getSearchEngine().getStatistics();
-      StringBuffer buffer = new StringBuffer();
-      buffer.append("\n----------------------------------------------\n");
-      buffer.append("                  Search Stats                \n");
-      buffer.append("----------------------------------------------\n");
-      buffer.append(String.format("Total Searches - [%d]\n", stats.getTotalSearches()));
-      buffer.append(String.format("Search Time    - avg: [%s] ms - longest: [%s] ms\n", stats.getAverageSearchTime(),
-         stats.getLongestSearchTime()));
-      buffer.append(String.format("Longest Search  - %s\n", stats.getLongestSearch()));
-      println(buffer.toString());
+      log("\n----------------------------------------------");
+      log("                  Search Stats");
+      log("----------------------------------------------");
+      logf("Total Searches - [%d]", stats.getTotalSearches());
+      logf("Search Time    - avg: [%s] ms - longest: [%s] ms", stats.getAverageSearchTime(),
+         stats.getLongestSearchTime());
+      logf("Longest Search  - %s", stats.getLongestSearch());
    }
 }

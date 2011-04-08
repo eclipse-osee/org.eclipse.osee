@@ -8,24 +8,26 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.server.admin.management;
+package org.eclipse.osee.framework.server.admin.search;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.server.admin.BaseServerCommand;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.core.operation.OperationLogger;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.server.admin.internal.Activator;
 
 /**
  * @author Roberto E. Escobar
  */
-public class ServerRequestsWorker extends BaseServerCommand {
+public final class TaggerDropAllOperation extends AbstractOperation {
 
-   protected ServerRequestsWorker() {
-      super("Set Servlet Requests Allowed");
+   public TaggerDropAllOperation(OperationLogger logger) {
+      super("Drop All Search Tags", Activator.PLUGIN_ID, logger);
    }
 
    @Override
-   protected void doCommandWork(IProgressMonitor monitor) throws Exception {
-      String value = getCommandInterpreter().nextArgument();
-      Activator.getApplicationServerManager().setServletRequestsAllowed(new Boolean(value));
+   protected void doWork(IProgressMonitor monitor) throws OseeCoreException {
+      ConnectionHandler.runPreparedUpdate("TRUNCATE osee_search_tags");
    }
 }

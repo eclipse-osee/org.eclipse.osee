@@ -60,7 +60,7 @@ public final class SearchEngineTagger implements ISearchEngineTagger {
    }
 
    @Override
-   public void tagByQueueQueryId(ITagListener listener, int queryId) {
+   public FutureTask<?> tagByQueueQueryId(ITagListener listener, int queryId) {
       TaggerRunnable runnable = new TaggerRunnable(taggingManager, searchTagDataStore, queryId, false, CACHE_LIMIT);
       runnable.addListener(statistics);
       if (listener != null) {
@@ -70,6 +70,7 @@ public final class SearchEngineTagger implements ISearchEngineTagger {
       FutureTask<Object> futureTask = new FutureTaggingTask(runnable);
       this.futureTasks.put(queryId, futureTask);
       this.executor.submit(futureTask);
+      return futureTask;
    }
 
    @Override

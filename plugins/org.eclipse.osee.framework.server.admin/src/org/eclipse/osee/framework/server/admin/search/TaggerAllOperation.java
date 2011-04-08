@@ -11,27 +11,26 @@
 package org.eclipse.osee.framework.server.admin.search;
 
 import java.util.Collection;
-import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.IdJoinQuery;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.TagQueueJoinQuery;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.search.engine.TagListenerAdapter;
-import org.eclipse.osee.framework.server.admin.BaseServerCommand;
 import org.eclipse.osee.framework.server.admin.internal.Activator;
 
 /**
  * @author Roberto E. Escobar
  */
-class TaggerAllWorker extends BaseServerCommand {
+public final class TaggerAllOperation extends AbstractOperation {
    private static final int BATCH_SIZE = 1000;
 
    private static final String SELECT_BRANCHES = "SELECT branch_id FROM osee_branch ORDER BY branch_id";
@@ -48,11 +47,14 @@ class TaggerAllWorker extends BaseServerCommand {
    private static final String FIND_TAGGABLE_MISSING =
       FIND_ALL_TAGGABLE_ATTRIBUTES + " AND attr.gamma_id NOT IN (SELECT ost.gamma_id FROM osee_search_tags ost)";
 
+   private final Set<Integer> branchIds;
+   private final boolean tagOnlyMissingGammas;
    private TagProcessListener processor;
 
-   TaggerAllWorker() {
-      super("Tag All Attributes");
-      this.processor = null;
+   public TaggerAllOperation(OperationLogger logger, Set<Integer> branchIds, boolean tagOnlyMissingGammas) {
+      super("Tag All Attributes", Activator.PLUGIN_ID, logger);
+      this.branchIds = branchIds;
+      this.tagOnlyMissingGammas = tagOnlyMissingGammas;
    }
 
    private TagProcessListener process(long startTime, Collection<Integer> branchIds, boolean tagOnlyMissingGammas) throws OseeCoreException {
@@ -67,7 +69,7 @@ class TaggerAllWorker extends BaseServerCommand {
       } else {
          builder.append("Branch(es) ").append(branchIds);
       }
-      println(builder.toString());
+      log(builder.toString());
 
       if (branchIds.isEmpty()) {
          loadBranchIds(branchIds);
@@ -119,7 +121,7 @@ class TaggerAllWorker extends BaseServerCommand {
       try {
          chStmt.runPreparedQuery(query, params);
          TagQueueJoinQuery joinQuery = JoinUtility.createTagQueueJoinQuery();
-         while (chStmt.next() && isExecutionAllowed()) {
+         while (chStmt.next()) {
             long gammaId = chStmt.getLong("gamma_id");
             joinQuery.add(gammaId);
             if (joinQuery.size() >= BATCH_SIZE) {
@@ -130,50 +132,6 @@ class TaggerAllWorker extends BaseServerCommand {
          processor.storeAndAddQueryId(joinQuery);
       } finally {
          chStmt.close();
-      }
-   }
-
-   @Override
-   protected void doCommandWork(IProgressMonitor monitor) throws Exception {
-      long startTime = System.currentTimeMillis();
-      try {
-         Set<Integer> branchIds = new LinkedHashSet<Integer>();
-         boolean tagOnlyMissingGammas = false;
-         String arg = getCommandInterpreter().nextArgument();
-         while (arg != null) {
-            if (Strings.isValid(arg)) {
-               if (arg.equals("-missing")) {
-                  tagOnlyMissingGammas = true;
-               } else {
-                  branchIds.add(new Integer(arg));
-               }
-            }
-            arg = getCommandInterpreter().nextArgument();
-         }
-
-         TagProcessListener processor = process(startTime, branchIds, tagOnlyMissingGammas);
-         if (!processor.isProcessingDone()) {
-            synchronized (processor) {
-               processor.wait();
-            }
-         }
-
-         if (!isExecutionAllowed() && !processor.isProcessingDone()) {
-            processor.cancelProcessing();
-         }
-         processor.printStats();
-      } finally {
-         processor = null;
-      }
-   }
-
-   @Override
-   public void setExecutionAllowed(boolean value) {
-      super.setExecutionAllowed(value);
-      if (!value && processor != null) {
-         synchronized (processor) {
-            processor.notify();
-         }
       }
    }
 
@@ -191,17 +149,6 @@ class TaggerAllWorker extends BaseServerCommand {
          this.totalAttributes = totalAttributes;
          this.attributesProcessed = 0;
          this.queriesProcessed = 0;
-      }
-
-      public void cancelProcessing() {
-         Set<Integer> list = queryIdMap.keySet();
-         int[] toStop = new int[list.size()];
-         int index = 0;
-         for (Integer item : list) {
-            toStop[index] = item;
-            index++;
-         }
-         Activator.getSearchTagger().stopTaggingByQueueQueryId(toStop);
       }
 
       public void storeAndAddQueryId(TagQueueJoinQuery joinQuery) throws OseeCoreException {
@@ -222,10 +169,8 @@ class TaggerAllWorker extends BaseServerCommand {
       }
 
       public void printStats() {
-         if (isVerbose()) {
-            println(String.format("QueryIds: [ %d of %d] Attributes: [%d of %d] - Elapsed Time = %s.",
-               queriesProcessed, totalQueries(), attributesProcessed, totalAttributes, Lib.getElapseString(startTime)));
-         }
+         logf("QueryIds: [ %d of %d] Attributes: [%d of %d] - Elapsed Time = %s.", queriesProcessed, totalQueries(),
+            attributesProcessed, totalAttributes, Lib.getElapseString(startTime));
       }
 
       @Override
@@ -249,5 +194,12 @@ class TaggerAllWorker extends BaseServerCommand {
             }
          }
       }
+   }
+
+   @Override
+   protected void doWork(IProgressMonitor monitor) throws Exception {
+      long startTime = System.currentTimeMillis();
+      processor = process(startTime, branchIds, tagOnlyMissingGammas);
+      processor.printStats();
    }
 }

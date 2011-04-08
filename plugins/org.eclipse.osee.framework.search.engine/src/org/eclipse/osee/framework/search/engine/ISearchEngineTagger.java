@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.search.engine;
 
 import java.io.InputStream;
+import java.util.concurrent.FutureTask;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
@@ -45,8 +46,9 @@ public interface ISearchEngineTagger {
     * 
     * @param listener object listening for tag events
     * @param queryId queryId to tag
+    * @return a FutureTask that can be used to cancel the tagging
     */
-   public void tagByQueueQueryId(ITagListener listener, int queryId);
+   public FutureTask<?> tagByQueueQueryId(ITagListener listener, int queryId);
 
    /**
     * Create tags for attributes specified in xml stream. <b>

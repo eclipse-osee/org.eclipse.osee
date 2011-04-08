@@ -12,8 +12,9 @@ package org.eclipse.osee.framework.server.admin.management;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
-import org.eclipse.osee.framework.server.admin.BaseServerCommand;
 import org.eclipse.osee.framework.server.admin.internal.Activator;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 import org.osgi.framework.Bundle;
@@ -21,21 +22,16 @@ import org.osgi.framework.Bundle;
 /**
  * @author Roberto E. Escobar
  */
-class ServerShutdownWorker extends BaseServerCommand {
+public class ServerShutdownOperation extends AbstractOperation {
+   private final CommandInterpreter ci;
 
-   private final static String OSEE_ONLY_OPTION = "-oseeOnly";
-   private final static String OSEE_SHUTDOWN_COMPLETE = "Osee Shutdown Complete";
-   private boolean isOseeOnly;
-   private boolean isFirstTime;
-
-   protected ServerShutdownWorker(CommandInterpreter ci) {
-      super("Server Shutdown", ci);
-      isOseeOnly = false;
-      isFirstTime = true;
+   public ServerShutdownOperation(OperationLogger logger, CommandInterpreter ci) {
+      super("Server Shutdown", Activator.PLUGIN_ID, logger);
+      this.ci = ci;
    }
 
    @Override
-   protected void doCommandWork(IProgressMonitor monitor) throws Exception {
+   protected void doWork(IProgressMonitor monitor) throws Exception {
       IApplicationServerManager manager = Activator.getApplicationServerManager();
 
       Bundle equinoxHttpBundle = Platform.getBundle("org.eclipse.equinox.http.jetty");
@@ -45,26 +41,17 @@ class ServerShutdownWorker extends BaseServerCommand {
 
       while (!manager.isSystemIdle()) {
          try {
-            Thread.sleep(5000);
+            Thread.sleep(1000);
          } catch (InterruptedException ex) {
-            printStackTrace(ex);
+            log(ex);
          }
       }
       manager.shutdown();
 
-      if (isOseeOnly()) {
-         println(OSEE_SHUTDOWN_COMPLETE);
+      if ("-oseeOnly".equalsIgnoreCase(ci.nextArgument())) {
+         log("Osee Shutdown Complete");
       } else {
-         getCommandInterpreter().execute("close");
+         ci.execute("close");
       }
-   }
-
-   private synchronized boolean isOseeOnly() {
-      if (isFirstTime) {
-         isFirstTime = false;
-         String cmd = getCommandInterpreter().nextArgument();
-         isOseeOnly = OSEE_ONLY_OPTION.equalsIgnoreCase(cmd);
-      }
-      return isOseeOnly;
    }
 }

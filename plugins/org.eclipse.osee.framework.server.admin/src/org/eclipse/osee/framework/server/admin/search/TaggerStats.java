@@ -11,19 +11,20 @@
 package org.eclipse.osee.framework.server.admin.search;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.search.engine.ISearchEngineTagger;
 import org.eclipse.osee.framework.search.engine.ITagItemStatistics;
 import org.eclipse.osee.framework.search.engine.ITaggerStatistics;
-import org.eclipse.osee.framework.server.admin.BaseServerCommand;
 import org.eclipse.osee.framework.server.admin.internal.Activator;
 
 /**
  * @author Roberto E. Escobar
  */
-class TaggerStats extends BaseServerCommand {
+public final class TaggerStats extends AbstractOperation {
 
-   protected TaggerStats() {
-      super("Tag Engine Stats");
+   public TaggerStats(OperationLogger logger) {
+      super("Tag Engine Stats", Activator.PLUGIN_ID, logger);
    }
 
    private String toString(ITagItemStatistics task) {
@@ -32,30 +33,27 @@ class TaggerStats extends BaseServerCommand {
    }
 
    @Override
-   protected void doCommandWork(IProgressMonitor monitor) throws Exception {
+   protected void doWork(IProgressMonitor monitor) throws Exception {
       ISearchEngineTagger tagger = Activator.getSearchTagger();
 
       ITaggerStatistics stats = tagger.getStatistics();
 
-      StringBuffer buffer = new StringBuffer();
-      buffer.append("\n----------------------------------------------\n");
-      buffer.append("                  Tagger Stats                \n");
-      buffer.append("----------------------------------------------\n");
-      buffer.append(String.format("Query Id Processing Time  - avg: [%s] ms - longest: [%s] ms\n",
-         stats.getAverageQueryIdProcessingTime(), stats.getLongestQueryIdProcessingTime()));
-      buffer.append(String.format("Query Id Wait Time        - avg: [%s] ms - longest: [%s] ms\n",
-         stats.getAverageQueryIdWaitTime(), stats.getLongestQueryIdWaitTime()));
+      log("\n----------------------------------------------");
+      log("                  Tagger Stats");
+      log("----------------------------------------------");
+      logf("Query Id Processing Time  - avg: [%s] ms - longest: [%s] ms", stats.getAverageQueryIdProcessingTime(),
+         stats.getLongestQueryIdProcessingTime());
+      logf("Query Id Wait Time        - avg: [%s] ms - longest: [%s] ms", stats.getAverageQueryIdWaitTime(),
+         stats.getLongestQueryIdWaitTime());
 
-      buffer.append(String.format("Attribute Processing Time - avg: [%s] ms - longest: [%s] ms\n",
-         stats.getAverageAttributeProcessingTime(), stats.getLongestAttributeProcessingTime()));
-      buffer.append(String.format("Attribute with longest processing time - %s\n", toString(stats.getLongestTask())));
-      buffer.append(String.format("Attribute with most tags - %s\n", toString(stats.getMostTagsTask())));
-      buffer.append(String.format("Total - QueryIds: [%d] Attributes: [%d] Tags: [%d]\n",
-         stats.getTotalQueryIdsProcessed(), stats.getTotalAttributesProcessed(), stats.getTotalTags()));
-      buffer.append(String.format("Total Query Ids Waiting to be Processed - [%d]\n", tagger.getWorkersInQueue()));
-      buffer.append(String.format("Total Query Ids in Tag Queue Table - [%d]\n", stats.getTotalQueryIdsInQueue()));
-      buffer.append(String.format("Total Tags in System - [%d]\n\n", stats.getTagsInSystem()));
-
-      println(buffer.toString());
+      logf("Attribute Processing Time - avg: [%s] ms - longest: [%s] ms", stats.getAverageAttributeProcessingTime(),
+         stats.getLongestAttributeProcessingTime());
+      logf("Attribute with longest processing time - %s", toString(stats.getLongestTask()));
+      logf("Attribute with most tags - %s", toString(stats.getMostTagsTask()));
+      logf("Total - QueryIds: [%d] Attributes: [%d] Tags: [%d]", stats.getTotalQueryIdsProcessed(),
+         stats.getTotalAttributesProcessed(), stats.getTotalTags());
+      logf("Total Query Ids Waiting to be Processed - [%d]", tagger.getWorkersInQueue());
+      logf("Total Query Ids in Tag Queue Table - [%d]", stats.getTotalQueryIdsInQueue());
+      logf("Total Tags in System - [%d]\n", stats.getTagsInSystem());
    }
 }

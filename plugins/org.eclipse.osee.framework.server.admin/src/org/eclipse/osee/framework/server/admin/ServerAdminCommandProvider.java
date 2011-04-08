@@ -11,17 +11,27 @@
 package org.eclipse.osee.framework.server.admin;
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.branch.management.TxCurrentsAndModTypesCommand;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.operation.CommandInterpreterLogger;
+import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.MutexSchedulingRule;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.database.operation.ConsolidateArtifactVersionTxOperation;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.server.admin.internal.Activator;
-import org.eclipse.osee.framework.server.admin.management.AdminCommands;
-import org.eclipse.osee.framework.server.admin.management.ConsolidateArtifactVersionsCommand;
 import org.eclipse.osee.framework.server.admin.management.SchedulingCommand;
+import org.eclipse.osee.framework.server.admin.management.ServerShutdownOperation;
+import org.eclipse.osee.framework.server.admin.management.ServerStats;
+import org.eclipse.osee.framework.server.admin.management.UpdateCachesOperation;
+import org.eclipse.osee.framework.server.admin.management.UpdateServerVersionsOperation;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 import org.eclipse.osgi.framework.console.CommandProvider;
 
@@ -30,46 +40,67 @@ import org.eclipse.osgi.framework.console.CommandProvider;
  */
 public class ServerAdminCommandProvider implements CommandProvider {
 
-   private final AdminCommands adminCommands;
-
-   public ServerAdminCommandProvider() {
-      this.adminCommands = new AdminCommands();
-   }
+   private final ISchedulingRule versionMutex = new MutexSchedulingRule();
+   private final ISchedulingRule cacheMutex = new MutexSchedulingRule();
+   private final ISchedulingRule shutdownMutex = new MutexSchedulingRule();
 
    public Job _server_status(CommandInterpreter ci) {
-      return adminCommands.getServerStatus(ci);
+      OperationLogger logger = new CommandInterpreterLogger(ci);
+      return Operations.executeAsJob(new ServerStats(logger), false);
    }
 
-   public Job _server_process_requests(CommandInterpreter ci) {
-      return adminCommands.setServletRequestProcessing(ci);
+   public void _server_process_requests(CommandInterpreter ci) throws OseeCoreException {
+      String value = ci.nextArgument();
+      Activator.getApplicationServerManager().setServletRequestsAllowed(new Boolean(value));
    }
 
    public Job _add_osee_version(CommandInterpreter ci) {
-      return adminCommands.addServerVersion(ci);
+      return updateServerVersions(ci, true);
    }
 
    public Job _remove_osee_version(CommandInterpreter ci) {
-      return adminCommands.removeServerVersion(ci);
+      return updateServerVersions(ci, false);
    }
 
-   public Job _osee_version(CommandInterpreter ci) {
-      return adminCommands.getServerVersion(ci);
+   private Job updateServerVersions(CommandInterpreter ci, boolean add) {
+      String version = ci.nextArgument();
+      OperationLogger logger = new CommandInterpreterLogger(ci);
+      return Operations.executeAsJob(new UpdateServerVersionsOperation(logger, version, add), false, versionMutex);
+   }
+
+   public void _osee_version(CommandInterpreter ci) {
+      ci.print("Osee Application Server: ");
+      ci.println(Arrays.deepToString(Activator.getApplicationServerManager().getSupportedVersions()));
    }
 
    public Job _reload_cache(CommandInterpreter ci) {
-      return adminCommands.reloadCache(ci);
+      return updateCaches(ci, false);
    }
 
    public Job _clear_cache(CommandInterpreter ci) {
-      return adminCommands.clearCache(ci);
+      return updateCaches(ci, false);
+   }
+
+   private Job updateCaches(CommandInterpreter ci, boolean reload) {
+      Set<OseeCacheEnum> cacheIds = new HashSet<OseeCacheEnum>();
+
+      for (String arg = ci.nextArgument(); Strings.isValid(arg); arg = ci.nextArgument()) {
+         cacheIds.add(OseeCacheEnum.valueOf(arg));
+      }
+
+      OperationLogger logger = new CommandInterpreterLogger(ci);
+      return Operations.executeAsJob(new UpdateCachesOperation(logger, cacheIds, reload), false, cacheMutex);
    }
 
    public Job _consolidate_artifact_versions(CommandInterpreter ci) {
-      return Operations.executeAsJob(new ConsolidateArtifactVersionsCommand(ci), false);
+      OperationLogger logger = new CommandInterpreterLogger(ci);
+      IOperation operation = new ConsolidateArtifactVersionTxOperation(Activator.getOseeDatabaseService(), logger);
+      return Operations.executeAsJob(operation, false);
    }
 
    public Job _schedule(CommandInterpreter ci) {
-      return Operations.executeAsJob(new SchedulingCommand(ci), false);
+      OperationLogger logger = new CommandInterpreterLogger(ci);
+      return Operations.executeAsJob(new SchedulingCommand(logger, ci), false);
    }
 
    public Job _tx_currents(CommandInterpreter ci) {
@@ -84,8 +115,9 @@ public class ServerAdminCommandProvider implements CommandProvider {
          false);
    }
 
-   public void _osee_shutdown(CommandInterpreter ci) {
-      adminCommands.oseeShutdown(ci);
+   public Job _osee_shutdown(CommandInterpreter ci) {
+      OperationLogger logger = new CommandInterpreterLogger(ci);
+      return Operations.executeAsJob(new ServerShutdownOperation(logger, ci), true, shutdownMutex);
    }
 
    @Override
