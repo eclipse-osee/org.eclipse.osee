@@ -131,7 +131,7 @@ public class CoverageEditorWorkProductTab extends FormPage implements ISaveable 
                   return;
                }
                // set completed to false; will be reloaded on save anyway
-               workProductActions.add(new WorkProductAction(artifact, false));
+               workProductActions.add(new WorkProductAction(artifact));
             }
             try {
                if (coverageEditor.getBranch() == null) {

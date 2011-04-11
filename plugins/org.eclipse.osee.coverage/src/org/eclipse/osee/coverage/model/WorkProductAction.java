@@ -13,35 +13,27 @@ package org.eclipse.osee.coverage.model;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 public class WorkProductAction {
 
-   String guid;
-   String name;
-   boolean completed;
    Set<WorkProductTask> tasks = new HashSet<WorkProductTask>();
+   private final Artifact artifact;
 
-   public WorkProductAction(Artifact artifact, boolean completed) {
-      this(artifact.getGuid(), artifact.getName(), completed);
-   }
-
-   public WorkProductAction(String guid, String name, boolean completed) {
-      super();
-      this.guid = guid;
-      this.name = name;
-      this.completed = completed;
+   public WorkProductAction(Artifact artifact) {
+      this.artifact = artifact;
    }
 
    public String getGuid() {
-      return guid;
+      return artifact.getGuid();
    }
 
    public String getName() {
-      return name;
+      return artifact.getName();
    }
 
    public boolean isCompleted() {
-      return completed;
+      return SkynetGuiPlugin.getInstance().getOseeCmService().isCompleted(artifact);
    }
 
    public Set<WorkProductTask> getTasks() {
@@ -49,10 +41,15 @@ public class WorkProductAction {
    }
 
    @Override
+   public String toString() {
+      return getName() + " - " + (isCompleted() ? "[Completed]" : "[InWork]");
+   }
+
+   @Override
    public int hashCode() {
       final int prime = 31;
       int result = 1;
-      result = prime * result + ((guid == null) ? 0 : guid.hashCode());
+      result = prime * result + ((artifact == null) ? 0 : artifact.hashCode());
       return result;
    }
 
@@ -68,18 +65,14 @@ public class WorkProductAction {
          return false;
       }
       WorkProductAction other = (WorkProductAction) obj;
-      if (guid == null) {
-         if (other.guid != null) {
+      if (artifact == null) {
+         if (other.artifact != null) {
             return false;
          }
-      } else if (!guid.equals(other.guid)) {
+      } else if (!artifact.equals(other.artifact)) {
          return false;
       }
       return true;
    }
 
-   @Override
-   public String toString() {
-      return getName() + " - " + (completed ? "[Completed]" : "[InWork]");
-   }
 }

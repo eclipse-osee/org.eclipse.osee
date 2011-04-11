@@ -302,7 +302,18 @@ public class CoverageEditor extends FormEditor implements IActionable {
          @Override
          public void run() {
             coverageEditorCoverageTab.refresh();
+            coverageEditorWorkProductTab.refresh();
             coverageEditorOverviewTab.refreshActionHandler();
+         }
+      });
+   }
+
+   public void refreshWorkProductTab() {
+      Displays.ensureInDisplayThread(new Runnable() {
+
+         @Override
+         public void run() {
+            coverageEditorWorkProductTab.refresh();
          }
       });
    }

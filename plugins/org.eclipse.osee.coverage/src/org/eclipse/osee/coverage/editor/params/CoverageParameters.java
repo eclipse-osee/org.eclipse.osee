@@ -166,8 +166,7 @@ public class CoverageParameters {
       if (!Strings.isValid(workProductTasks) || !(coverage instanceof IWorkProductRelatable)) {
          return true;
       }
-      boolean guidValid = Strings.isValid(((IWorkProductRelatable) coverage).getWorkProductTaskGuid());
-      if (guidValid && ((IWorkProductRelatable) coverage).getWorkProductTask().getName().contains(workProductTasks)) {
+      if (coverage.getWorkProductTaskStr().contains(workProductTasks)) {
          return true;
       }
       if (coverage instanceof CoverageUnit) {

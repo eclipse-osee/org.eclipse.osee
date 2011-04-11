@@ -19,10 +19,15 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.coverage.editor.CoverageEditorWorkProductTab;
+import org.eclipse.osee.coverage.model.ICoverage;
+import org.eclipse.osee.coverage.model.IWorkProductRelatable;
 import org.eclipse.osee.coverage.model.WorkProductAction;
+import org.eclipse.osee.coverage.model.WorkProductTask;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.widgets.Display;
@@ -52,6 +57,16 @@ public class RemoveRelatedWorkProductAction extends Action {
          AWorkbench.popup("Please select work product to remove");
          return;
       }
+
+      // Don't allow removal if coverage items related to selected action(s)
+      XResultData resultData = new XResultData(false);
+      resultData.log("Selected Work Product Actions have related Tasks.  Remove first before removing Action.\n");
+      validateWorkProductGuid(selActions, coverageEditorWorkProductTab.getCoveragePackage(), resultData);
+      if (resultData.isErrors()) {
+         resultData.report("Work Product Report");
+         return;
+      }
+
       if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getText(),
          "Remove selected work product actions?")) {
 
@@ -74,5 +89,33 @@ public class RemoveRelatedWorkProductAction extends Action {
          };
          Jobs.startJob(job);
       }
+   }
+
+   private void validateWorkProductGuid(ArrayList<WorkProductAction> selActions, ICoverage coverage, XResultData resultData) {
+      if (coverage instanceof IWorkProductRelatable) {
+         String guid = ((IWorkProductRelatable) coverage).getWorkProductTaskGuid();
+         if (Strings.isValid(guid)) {
+            WorkProductTask task =
+               coverageEditorWorkProductTab.getCoveragePackage().getWorkProductTaskProvider().getWorkProductTask(guid);
+            if (task == null) {
+               resultData.logError(String.format("No valid Work Product Task [%s] for item %s", guid, coverage));
+            } else {
+               WorkProductAction wpa = task.getParent();
+               if (wpa == null) {
+                  resultData.logError(String.format(
+                     "No related Work Product Action for Work Product Task [%s] for item %s", guid, coverage));
+               } else {
+                  if (selActions.contains(wpa)) {
+                     resultData.logError(String.format(
+                        "Related Work Product Action [%s] has related Work Product Task [%s].", wpa, task));
+                  }
+               }
+            }
+         }
+      }
+      for (ICoverage child : coverage.getChildren()) {
+         validateWorkProductGuid(selActions, child, resultData);
+      }
+      return;
    }
 }

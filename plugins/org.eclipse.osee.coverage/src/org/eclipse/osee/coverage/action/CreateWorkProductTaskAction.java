@@ -86,7 +86,17 @@ public class CreateWorkProductTaskAction extends Action {
       }
 
       WorkProductListDialog dialog = new WorkProductListDialog(getText(), "Select Work Product");
-      dialog.setInput(coverageXViewer.getWorkProductTaskProvider().getWorkProductRelatedActions());
+      List<WorkProductAction> inWorkActions = new ArrayList<WorkProductAction>();
+      for (WorkProductAction action : coverageXViewer.getWorkProductTaskProvider().getWorkProductRelatedActions()) {
+         if (!action.isCompleted()) {
+            inWorkActions.add(action);
+         }
+      }
+      if (inWorkActions.isEmpty()) {
+         AWorkbench.popup("No Related InWork Actions");
+         return;
+      }
+      dialog.setInput(inWorkActions);
       if (dialog.open() != 0) {
          return;
       }

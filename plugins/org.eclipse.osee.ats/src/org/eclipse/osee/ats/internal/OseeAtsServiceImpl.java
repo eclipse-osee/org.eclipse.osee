@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorSimpleProvider;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -170,6 +171,11 @@ public class OseeAtsServiceImpl implements IOseeCmService {
    @Override
    public IArtifactType getPcrTaskArtifactType() {
       return AtsArtifactTypes.Task;
+   }
+
+   @Override
+   public IOseeBranch getCmBranchToken() {
+      return AtsUtil.getAtsBranchToken();
    }
 
 }

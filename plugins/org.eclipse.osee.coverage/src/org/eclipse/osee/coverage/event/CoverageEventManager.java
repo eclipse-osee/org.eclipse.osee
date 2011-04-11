@@ -27,6 +27,7 @@ import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.model.IWorkProductTaskProvider;
+import org.eclipse.osee.coverage.model.WorkProductAction;
 import org.eclipse.osee.coverage.model.WorkProductTask;
 import org.eclipse.osee.coverage.msgs.CoverageChange1;
 import org.eclipse.osee.coverage.msgs.CoveragePackageEvent1;
@@ -150,6 +151,15 @@ public class CoverageEventManager implements IArtifactEventListener, OseeMessagi
    public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
       for (CoverageEditor editor : new CopyOnWriteArrayList<CoverageEditor>(editors)) {
          try {
+            if (SkynetGuiPlugin.getInstance().getOseeCmService().getCmBranchToken().getGuid().equals(
+               artifactEvent.getBranchGuid())) {
+               boolean updatedWorkProductTab = false;
+               for (EventBasicGuidArtifact eventArt : artifactEvent.getArtifacts()) {
+                  if (!updatedWorkProductTab) {
+                     updatedWorkProductTab = checkForWorkProductActionModified(editor, eventArt);
+                  }
+               }
+            }
             if (!editor.getBranch().getGuid().equals(artifactEvent.getBranchGuid())) {
                return;
             }
@@ -193,6 +203,29 @@ public class CoverageEventManager implements IArtifactEventListener, OseeMessagi
    private boolean isWorkProductTasksEquals(IWorkProductTaskProvider taskProvider, EventBasicGuidArtifact eventArt) {
       for (WorkProductTask task : taskProvider.getWorkProductTasks()) {
          if (task.getGuid().equals(eventArt.getGuid())) {
+            return true;
+         }
+      }
+      return false;
+   }
+
+   private boolean checkForWorkProductActionModified(CoverageEditor editor, EventBasicGuidArtifact eventArt) {
+      try {
+         CoveragePackage coveragePackage = (CoveragePackage) editor.getCoverageEditorInput().getCoveragePackageBase();
+         // if one of the related tasks is modified
+         if (isWorkProductActionEquals(coveragePackage.getWorkProductTaskProvider(), eventArt)) {
+            editor.refreshWorkProductTab();
+            return true;
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+      return false;
+   }
+
+   private boolean isWorkProductActionEquals(IWorkProductTaskProvider taskProvider, EventBasicGuidArtifact eventArt) {
+      for (WorkProductAction action : taskProvider.getWorkProductRelatedActions()) {
+         if (action.getGuid().equals(eventArt.getGuid())) {
             return true;
          }
       }

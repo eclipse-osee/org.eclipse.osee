@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
@@ -31,6 +32,8 @@ public interface IOseeCmService {
    KeyedImage getImage(ImageType imageType);
 
    boolean isCmAdmin();
+
+   public IOseeBranch getCmBranchToken();
 
    void openArtifact(Artifact artifact, OseeCmEditor oseeCmEditor);
 

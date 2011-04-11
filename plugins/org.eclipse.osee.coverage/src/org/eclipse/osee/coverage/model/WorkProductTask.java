@@ -59,7 +59,7 @@ public class WorkProductTask {
 
    @Override
    public String toString() {
-      return getName() + " - " + (completed ? "[Completed]" : "[InWork]");
+      return String.format("%s - %s for Action [%s]", getName(), (completed ? "[Completed]" : "[InWork]"), parent);
    }
 
    @Override

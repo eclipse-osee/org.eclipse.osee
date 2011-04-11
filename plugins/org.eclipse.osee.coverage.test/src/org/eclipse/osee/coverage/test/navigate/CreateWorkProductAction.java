@@ -74,7 +74,7 @@ public class CreateWorkProductAction extends XNavigateItemAction {
          Artifact reqTeamArt = actionArt.getRelatedArtifact(CoverageRelationTypes.ActionToWorkflow_WorkFlow);
          reqTeamArt.persist(transaction);
 
-         workProductActions.add(new WorkProductAction(reqTeamArt, false));
+         workProductActions.add(new WorkProductAction(reqTeamArt));
 
          actionArt =
             cmService.createPcr("Code PCR 1001", "Do code for PCR 33201", "Improvement", "1", null,
@@ -83,7 +83,7 @@ public class CreateWorkProductAction extends XNavigateItemAction {
          Artifact codeTeamArt = actionArt.getRelatedArtifact(CoverageRelationTypes.ActionToWorkflow_WorkFlow);
          codeTeamArt.persist(transaction);
 
-         workProductActions.add(new WorkProductAction(codeTeamArt, false));
+         workProductActions.add(new WorkProductAction(codeTeamArt));
 
          actionArt =
             cmService.createPcr("Test PCR 1001", "Do test for PCR 33201", "Improvement", "1", null,
@@ -92,7 +92,7 @@ public class CreateWorkProductAction extends XNavigateItemAction {
          Artifact testTeamArt = actionArt.getRelatedArtifact(CoverageRelationTypes.ActionToWorkflow_WorkFlow);
          testTeamArt.persist(transaction);
 
-         workProductActions.add(new WorkProductAction(testTeamArt, false));
+         workProductActions.add(new WorkProductAction(testTeamArt));
 
          coveragePackageArtifact.persist(transaction);
 

@@ -59,7 +59,7 @@ public class DbWorkProductTaskProvider implements IWorkProductTaskProvider {
             checkForErrorCase(relatedActionGuids, relatedArtifacts, store.getBranch());
             for (Artifact pcrArt : relatedArtifacts) {
                if (cm.isPcrArtifact(pcrArt)) {
-                  WorkProductAction action = new WorkProductAction(pcrArt, cm.isCompleted(pcrArt));
+                  WorkProductAction action = new WorkProductAction(pcrArt);
                   actions.add(action);
                   for (Artifact taskArt : cm.getTaskArtifacts(pcrArt)) {
                      action.getTasks().add(
