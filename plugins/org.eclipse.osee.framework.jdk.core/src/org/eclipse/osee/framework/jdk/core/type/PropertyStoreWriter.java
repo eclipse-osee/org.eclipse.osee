@@ -27,7 +27,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Properties;
 import java.util.Stack;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
@@ -70,9 +69,9 @@ public class PropertyStoreWriter {
       out.startTag(TAG_SECTION, attributes);
       attributes.clear();
 
-      Properties items = store.getItems();
-      for (Entry<Object, Object> entry : items.entrySet()) {
-         String key = (String) entry.getKey();
+      Map<String, Object> items = store.getItems();
+      for (Entry<String, Object> entry : items.entrySet()) {
+         String key = entry.getKey();
          attributes.put(TAG_KEY, key == null ? "" : key);
          String value = (String) entry.getValue();
          attributes.put(TAG_VALUE, value == null ? "" : value);
@@ -80,9 +79,9 @@ public class PropertyStoreWriter {
       }
 
       attributes.clear();
-      Properties arrayItems = store.getArrays();
-      for (Entry<Object, Object> entry : arrayItems.entrySet()) {
-         String key = (String) entry.getKey();
+      Map<String, Object> arrayItems = store.getArrays();
+      for (Entry<String, Object> entry : arrayItems.entrySet()) {
+         String key = entry.getKey();
          attributes.put(TAG_KEY, key == null ? "" : key);
          out.startTag(TAG_LIST, attributes);
 
@@ -107,9 +106,9 @@ public class PropertyStoreWriter {
 
    private void processInnerStores(PropertyStore store, XMLWriter out) {
       Map<String, String> attributes = new HashMap<String, String>(2);
-      Properties properties = store.getPropertyStores();
-      for (Entry<Object, Object> entry : properties.entrySet()) {
-         String key = (String) entry.getKey();
+      Map<String, Object> properties = store.getPropertyStores();
+      for (Entry<String, Object> entry : properties.entrySet()) {
+         String key = entry.getKey();
          attributes.put(TAG_KEY, key == null ? "" : key);
          out.startTag(TAG_INNER, attributes);
          PropertyStore innerStore = (PropertyStore) entry.getValue();

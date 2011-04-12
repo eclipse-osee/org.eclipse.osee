@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.jdk.core.test.mock;
 
-import java.util.Properties;
+import java.util.Map;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 
 /**
@@ -28,7 +28,7 @@ public class MockPropertyStore extends PropertyStore {
       super(id);
    }
 
-   public MockPropertyStore(Properties properties) {
+   public MockPropertyStore(Map<String, Object> properties) {
       super(properties);
    }
 
@@ -38,17 +38,17 @@ public class MockPropertyStore extends PropertyStore {
    }
 
    @Override
-   public Properties getItems() {
+   public Map<String, Object> getItems() {
       return super.getItems();
    }
 
    @Override
-   public Properties getArrays() {
+   public Map<String, Object> getArrays() {
       return super.getArrays();
    }
 
    @Override
-   public Properties getPropertyStores() {
+   public Map<String, Object> getPropertyStores() {
       return super.getPropertyStores();
    }
 }

@@ -19,9 +19,10 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Properties;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -38,11 +39,11 @@ public class PropertyStore implements IPropertyStore, Serializable {
    private static final String EXCEPTION_MESSAGE = "No setting found for key: [%s]";
 
    private String storeId;
-   private final Properties storageData;
-   private final Properties storageArrays;
-   private final Properties storageProperties;
+   private final Map<String, Object> storageData;
+   private final Map<String, Object> storageArrays;
+   private final Map<String, Object> storageProperties;
 
-   private PropertyStore(String storeId, Properties storageData, Properties storageArrays, Properties storageProperties) {
+   private PropertyStore(String storeId, Map<String, Object> storageData, Map<String, Object> storageArrays, Map<String, Object> storageProperties) {
       super();
       this.storeId = storeId;
       this.storageData = storageData;
@@ -51,20 +52,25 @@ public class PropertyStore implements IPropertyStore, Serializable {
    }
 
    public PropertyStore(String storeId) {
-      this(storeId, new Properties(), new Properties(), new Properties());
+      this(storeId, new TreeMap<String, Object>(), new TreeMap<String, Object>(), new TreeMap<String, Object>());
    }
 
    public PropertyStore() {
       this(EMPTY_STRING);
    }
 
-   public PropertyStore(Properties properties) {
-      this(Integer.toString(properties.hashCode()), properties, new Properties(), new Properties());
+   public PropertyStore(Map<String, Object> properties) {
+      this(Integer.toString(properties.hashCode()), properties, new TreeMap<String, Object>(),
+         new TreeMap<String, Object>());
    }
 
    @Override
    public String get(String key) {
-      return storageData.getProperty(key, EMPTY_STRING);
+      String result = EMPTY_STRING;
+      if (storageData.containsKey(key)) {
+         result = (String) storageData.get(key);
+      }
+      return result;
    }
 
    @Override
@@ -167,7 +173,7 @@ public class PropertyStore implements IPropertyStore, Serializable {
       if (value == null) {
          value = EMPTY_STRING;
       }
-      storageData.setProperty(key, value);
+      storageData.put(key, value);
    }
 
    @Override
@@ -187,15 +193,15 @@ public class PropertyStore implements IPropertyStore, Serializable {
       this.storeId = name;
    }
 
-   protected Properties getItems() {
+   protected Map<String, Object> getItems() {
       return storageData;
    }
 
-   protected Properties getArrays() {
+   protected Map<String, Object> getArrays() {
       return storageArrays;
    }
 
-   protected Properties getPropertyStores() {
+   protected Map<String, Object> getPropertyStores() {
       return storageProperties;
    }
 
@@ -287,7 +293,7 @@ public class PropertyStore implements IPropertyStore, Serializable {
    private boolean areStorageArraysEqual(PropertyStore other) {
       boolean result = other.storageArrays.size() == storageArrays.size();
       if (result) {
-         for (Entry<Object, Object> expectedEntry : storageArrays.entrySet()) {
+         for (Entry<String, Object> expectedEntry : storageArrays.entrySet()) {
             Object expectedValue = expectedEntry.getValue();
             Object actualValue = other.storageArrays.get(expectedEntry.getKey());
             String[] expArray = (String[]) expectedValue;
@@ -320,9 +326,9 @@ public class PropertyStore implements IPropertyStore, Serializable {
       return result;
    }
 
-   public int getPropertiesHashCode(Properties properties) {
+   public int getPropertiesHashCode(Map<String, Object> properties) {
       int result = 0;
-      for (Entry<Object, Object> entry : properties.entrySet()) {
+      for (Entry<String, Object> entry : properties.entrySet()) {
          result += entry.getKey().hashCode();
          Object value = entry.getValue();
          if (value instanceof String[]) {

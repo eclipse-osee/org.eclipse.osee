@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.jdk.core.test.mock;
 
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.TreeMap;
 import org.junit.Assert;
 
 /**
@@ -47,7 +49,7 @@ public final class PropertyStoreTestUtil {
       return store;
    }
 
-   public static MockPropertyStore createPropertyStore(Properties properties) {
+   public static MockPropertyStore createPropertyStore(Map<String, Object> properties) {
       MockPropertyStore store = new MockPropertyStore(properties);
       Assert.assertEquals(properties, store.getItems());
       Assert.assertEquals(String.valueOf(properties.hashCode()), store.getId());
@@ -63,9 +65,9 @@ public final class PropertyStoreTestUtil {
       checkPropertiesEqual(expected.getPropertyStores(), actual.getPropertyStores());
    }
 
-   public static void checkPropertiesEqual(Properties expected, Properties actual) {
+   public static void checkPropertiesEqual(Map<String, Object> expected, Map<String, Object> actual) {
       Assert.assertEquals(expected.size(), actual.size());
-      for (Entry<Object, Object> expectedEntry : expected.entrySet()) {
+      for (Entry<String, Object> expectedEntry : expected.entrySet()) {
          Object expectedValue = expectedEntry.getValue();
          Object actualValue = actual.get(expectedEntry.getKey());
          if (expectedValue instanceof String[]) {
@@ -76,6 +78,14 @@ public final class PropertyStoreTestUtil {
             Assert.assertEquals(expectedValue, actualValue);
          }
       }
+   }
+
+   public static Map<String, Object> convertPropertiesToMap(Properties props) {
+      Map<String, Object> result = new TreeMap<String, Object>();
+      for (Entry<Object, Object> entry : props.entrySet()) {
+         result.put((String) entry.getKey(), entry.getValue());
+      }
+      return result;
    }
 
 }

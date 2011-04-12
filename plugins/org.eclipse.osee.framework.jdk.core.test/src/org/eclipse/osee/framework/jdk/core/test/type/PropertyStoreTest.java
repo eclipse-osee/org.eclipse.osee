@@ -14,7 +14,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
-import java.util.Properties;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import org.eclipse.osee.framework.jdk.core.test.mock.MockPropertyStore;
@@ -31,7 +31,8 @@ public class PropertyStoreTest {
 
    @org.junit.Test
    public void testCreateWithProperties() {
-      Properties properties = (Properties) System.getProperties().clone();
+      Map<String, Object> properties = PropertyStoreTestUtil.convertPropertiesToMap(System.getProperties());
+
       MockPropertyStore store1 = PropertyStoreTestUtil.createPropertyStore(properties);
       PropertyStoreTestUtil.checkPropertiesEqual(properties, store1.getItems());
       Assert.assertTrue(!properties.equals(store1.getArrays()));
@@ -87,9 +88,11 @@ public class PropertyStoreTest {
       store1.put("key3", new String[] {"entry1", "entry2", "entry3"});
       store1.put("key4", new String[] {"entry4", "entry5"});
 
-      Assert.assertEquals(
-         "Id:[ID] Data:{key2=543, key1=12.3} Arrays:{key3=[entry1, entry2, entry3], key4=[entry4, entry5]}",
-         store1.toString());
+      String strStore1 = store1.toString();
+      String expected =
+         "Id:[ID] Data:{key1=12.3, key2=543} Arrays:{key3=[entry1, entry2, entry3], key4=[entry4, entry5]}";
+
+      Assert.assertEquals(expected, strStore1);
    }
 
    @org.junit.Test
@@ -154,7 +157,8 @@ public class PropertyStoreTest {
       store1.put("key6.5", "");
       store1.put("key7", new String[] {"entry1", "entry2", "entry3"});
       store1.put("key8", new String[] {"entry4", "entry5", "entry6"});
-      MockPropertyStore nested = PropertyStoreTestUtil.createPropertyStore(System.getProperties());
+      MockPropertyStore nested =
+         PropertyStoreTestUtil.createPropertyStore(PropertyStoreTestUtil.convertPropertiesToMap(System.getProperties()));
       store1.put("key9", nested);
 
       Set<String> set1 = new TreeSet<String>(store1.keySet());
@@ -210,7 +214,9 @@ public class PropertyStoreTest {
       store1.put("key6", 543L);
       store1.put("key7", new String[] {"entry1", "entry2", "entry3"});
       store1.put("key8", new String[] {"entry4", "entry5", "entry6"});
-      store1.put("key9", PropertyStoreTestUtil.createPropertyStore(System.getProperties()));
+      store1.put(
+         "key9",
+         PropertyStoreTestUtil.createPropertyStore(PropertyStoreTestUtil.convertPropertiesToMap(System.getProperties())));
 
       store1.save(outputStream);
 
@@ -233,7 +239,9 @@ public class PropertyStoreTest {
       store1.put("key6", 543L);
       store1.put("key7", new String[] {"entry1", "entry2", "entry3"});
       store1.put("key8", new String[] {"entry4", "entry5", "entry6"});
-      store1.put("key9", PropertyStoreTestUtil.createPropertyStore(System.getProperties()));
+      store1.put(
+         "key9",
+         PropertyStoreTestUtil.createPropertyStore(PropertyStoreTestUtil.convertPropertiesToMap(System.getProperties())));
 
       store1.save(writer);
 
