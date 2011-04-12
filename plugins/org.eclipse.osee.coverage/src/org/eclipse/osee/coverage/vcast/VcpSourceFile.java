@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.vcast;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -83,9 +84,8 @@ public class VcpSourceFile {
    public CoverageDataFile getCoverageDataFile(CoverageImport coverageImport) throws OseeCoreException {
       if (coverageDataFile == null) {
          coverageDataFile =
-            new CoverageDataFile(coverageImport,
-               vcastDirectory + "/vcast/" + getValue(SourceValue.SOURCE_FILENAME).replaceAll("\\.(ada|adb|c)$",
-                  "\\.xml"));
+            new CoverageDataFile(coverageImport, vcastDirectory + File.separator + "vcast" + File.separator + getValue(
+               SourceValue.SOURCE_FILENAME).replaceAll("\\.(ada|adb|c)$", "\\.xml"));
       }
       return coverageDataFile;
    }

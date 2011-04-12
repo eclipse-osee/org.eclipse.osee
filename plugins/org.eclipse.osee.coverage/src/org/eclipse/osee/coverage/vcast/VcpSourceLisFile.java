@@ -35,8 +35,8 @@ public class VcpSourceLisFile {
 
    public VcpSourceLisFile(String vcastDirectory, VcpSourceFile vcpSourceFile) throws OseeCoreException, IOException {
       lisFilename =
-         vcastDirectory + "/vcast/" + vcpSourceFile.getValue(SourceValue.SOURCE_FILENAME).replaceFirst("(.*)\\..*",
-            "$1") + ".LIS";
+         vcastDirectory + File.separator + "vcast" + File.separator + vcpSourceFile.getValue(
+            SourceValue.SOURCE_FILENAME).replaceFirst("(.*)\\..*", "$1") + ".LIS";
       listFile = getFile();
       if (!listFile.exists()) {
          throw new OseeArgumentException(

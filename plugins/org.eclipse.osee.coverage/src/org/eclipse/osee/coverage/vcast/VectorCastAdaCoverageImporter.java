@@ -73,13 +73,13 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
       // Add config files to import record
       try {
          coverageImport.addImportRecordFile(new File(
-            vectorCastCoverageImportProvider.getVCastDirectory() + "\\CCAST_.CFG"));
+            vectorCastCoverageImportProvider.getVCastDirectory() + File.separator + "CCAST_.CFG"));
       } catch (Exception ex) {
          coverageImport.getLog().logError("Error Adding Import Record File: " + ex.getLocalizedMessage());
       }
       try {
          coverageImport.addImportRecordFile(new File(
-            vectorCastCoverageImportProvider.getVCastDirectory() + "\\vcast\\build_info.xml"));
+            vectorCastCoverageImportProvider.getVCastDirectory() + File.separator + "vcast" + File.separator + "build_info.xml"));
       } catch (Exception ex) {
          coverageImport.getLog().logError("Error Adding Import Record File: " + ex.getLocalizedMessage());
       }
@@ -267,7 +267,9 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
          "\nVerifying number results files reported in vcast.vcp with vcast/results/*.dat files");
       int numVcastVcpDatFiles = vCastVcp.getResultsFiles().size();
       List<String> filenames =
-         Lib.readListFromDir(new File(vectorCastCoverageImportProvider.getVCastDirectory() + "\\vcast\\results\\"),
+         Lib.readListFromDir(
+            new File(
+               vectorCastCoverageImportProvider.getVCastDirectory() + File.separator + "vcast" + File.separator + "results" + File.separator),
             new MatchFilter(".*\\.DAT"), false);
       if (numVcastVcpDatFiles != filenames.size()) {
          coverageImport.getLog().logError(
