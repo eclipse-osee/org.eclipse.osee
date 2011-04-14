@@ -1,0 +1,216 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  EXCEPTION_ACCESS_VIOLATION (0xc0000005) at pc=0x6d449053, pid=5652, tid=4296
+#
+# JRE version: 6.0_18-b07
+# Java VM: Java HotSpot(TM) Client VM (16.0-b13 mixed mode windows-x86 )
+# Problematic frame:
+# C  [jdwp.dll+0x19053]
+#
+# If you would like to submit a bug report, please visit:
+#   http://java.sun.com/webapps/bugreport/crash.jsp
+# The crash happened outside the Java Virtual Machine in native code.
+# See problematic frame for where to report the bug.
+#
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x52f07400):  JavaThread "JDWP Event Helper Thread" daemon [_thread_in_native, id=4296, stack(0x531b0000,0x53200000)]
+
+siginfo: ExceptionCode=0xc0000005, reading address 0x00000000
+
+Registers:
+EAX=0x00000000, EBX=0x00000000, ECX=0x531ffdd0, EDX=0x7c90e514
+ESP=0x531ffe6c, EBP=0x531ffed0, ESI=0x53ba7f28, EDI=0x00000008
+EIP=0x6d449053, EFLAGS=0x00010246
+
+Top of Stack: (sp=0x531ffe6c)
+0x531ffe6c:   52f06f70 53ba7f28 6d440423 52f06f70
+0x531ffe7c:   00000008 53ba7f28 00000000 6d4413d3
+0x531ffe8c:   52f07400 00000000 6d9f2117 003f5a20
+0x531ffe9c:   52f07510 00000000 52f07400 6da8d924
+0x531ffeac:   52f07400 52f07400 52f07400 52f07400
+0x531ffebc:   52f07af8 52f07b18 52f07b20 52f07f0c
+0x531ffecc:   52f07f18 531fff80 6da2f9cc 00000098
+0x531ffedc:   f6080ea4 00000000 0f650000 bccabb4c 
+
+Instructions: (pc=0x6d449053)
+0x6d449043:   e8 a1 ff ff ff a1 c4 47 45 6d 8b 00 ff 74 24 08
+0x6d449053:   8b 08 50 ff 91 80 00 00 00 e8 a8 ff ff ff 8b f0 
+
+
+Stack: [0x531b0000,0x53200000],  sp=0x531ffe6c,  free space=13f531ff9a0k
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+C  [jdwp.dll+0x19053]
+V  [jvm.dll+0x17f9cc]
+C  [msvcr71.dll+0x9565]
+C  [kernel32.dll+0xb729]
+
+
+---------------  P R O C E S S  ---------------
+
+Java Threads: ( => current thread )
+  0x537f5400 JavaThread "RMI TCP Connection(4)-144.114.132.25" daemon [_thread_in_native, id=5880, stack(0x535c0000,0x53610000)]
+  0x5375ac00 JavaThread "RMI TCP Connection(3)-127.0.0.1" daemon [_thread_in_native, id=5248, stack(0x547b0000,0x54800000)]
+  0x53478400 JavaThread "VMTransport" daemon [_thread_blocked, id=6136, stack(0x54760000,0x547b0000)]
+  0x54186400 JavaThread "VMTransport" daemon [_thread_blocked, id=3972, stack(0x546f0000,0x54740000)]
+  0x53f2b400 JavaThread "com.google.inject.internal.Finalizer" daemon [_thread_blocked, id=3796, stack(0x57aa0000,0x57af0000)]
+  0x53cb2400 JavaThread "Osee Client Events:1" [_thread_blocked, id=5604, stack(0x57a00000,0x57a50000)]
+  0x53d0e800 JavaThread "Osee Client Events:0" [_thread_blocked, id=1184, stack(0x578c0000,0x57910000)]
+  0x53c97800 JavaThread "MultiThreadedHttpConnectionManager cleanup" daemon [_thread_blocked, id=5000, stack(0x57da0000,0x57df0000)]
+  0x539e8400 JavaThread "osee.http.server:18251" [_thread_in_native, id=4380, stack(0x57be0000,0x57c30000)]
+  0x53c99000 JavaThread "Timer-0" [_thread_blocked, id=912, stack(0x57b90000,0x57be0000)]
+  0x53c82400 JavaThread "pool-3-thread-1" [_thread_blocked, id=5456, stack(0x57b40000,0x57b90000)]
+  0x53b9d000 JavaThread "pool-2-thread-1" [_thread_blocked, id=4260, stack(0x57af0000,0x57b40000)]
+  0x53a89800 JavaThread "ActiveMQ Scheduler" daemon [_thread_blocked, id=200, stack(0x57730000,0x57780000)]
+  0x534e2400 JavaThread "RMI Scheduler(0)" daemon [_thread_blocked, id=452, stack(0x57910000,0x57960000)]
+  0x53464000 JavaThread "RMI TCP Accept-0" daemon [_thread_in_native, id=5860, stack(0x57780000,0x577d0000)]
+  0x53c72400 JavaThread "RMI TCP Accept-1099" daemon [_thread_in_native, id=5560, stack(0x576e0000,0x57730000)]
+  0x52f19800 JavaThread "Low Memory Detector" daemon [_thread_blocked, id=5944, stack(0x532a0000,0x532f0000)]
+  0x52f16400 JavaThread "CompilerThread0" daemon [_thread_blocked, id=4732, stack(0x53250000,0x532a0000)]
+  0x52f09000 JavaThread "JDWP Command Reader" daemon [_thread_blocked, id=4060, stack(0x53200000,0x53250000)]
+=>0x52f07400 JavaThread "JDWP Event Helper Thread" daemon [_thread_in_native, id=4296, stack(0x531b0000,0x53200000)]
+  0x52f04800 JavaThread "JDWP Transport Listener: dt_socket" daemon [_thread_blocked, id=5092, stack(0x53160000,0x531b0000)]
+  0x52ef9800 JavaThread "Attach Listener" daemon [_thread_blocked, id=4652, stack(0x53060000,0x530b0000)]
+  0x52ef8400 JavaThread "Signal Dispatcher" daemon [_thread_blocked, id=1500, stack(0x53010000,0x53060000)]
+  0x52ee4c00 JavaThread "Finalizer" daemon [_thread_blocked, id=3924, stack(0x52fc0000,0x53010000)]
+  0x52ee3800 JavaThread "Reference Handler" daemon [_thread_blocked, id=6068, stack(0x52f70000,0x52fc0000)]
+  0x003f7800 JavaThread "main" [_thread_blocked, id=5392, stack(0x00920000,0x00970000)]
+
+Other Threads:
+  0x52ee0c00 VMThread [stack: 0x00840000,0x00890000] [id=2904]
+
+VM state:at safepoint (normal execution)
+
+VM Mutex/Monitor currently owned by a thread:  ([mutex/lock_event])
+[0x003f6830] Threads_lock - owner thread: 0x52ee0c00
+
+Heap
+ def new generation   total 15104K, used 590K [0x029f0000, 0x03a50000, 0x17f40000)
+  eden space 13440K,   4% used [0x029f0000, 0x02a83840, 0x03710000)
+  from space 1664K,   0% used [0x03710000, 0x03710000, 0x038b0000)
+  to   space 1664K,   0% used [0x038b0000, 0x038b0000, 0x03a50000)
+ tenured generation   total 33372K, used 18428K [0x17f40000, 0x19fd7000, 0x429f0000)
+   the space 33372K,  55% used [0x17f40000, 0x1913f388, 0x1913f400, 0x19fd7000)
+ compacting perm gen  total 53248K, used 53002K [0x429f0000, 0x45df0000, 0x529f0000)
+   the space 53248K,  99% used [0x429f0000, 0x45db2bf0, 0x45db2c00, 0x45df0000)
+No shared spaces configured.
+
+Dynamic libraries:
+0x00400000 - 0x00424000 	C:\UserData\jre\bin\javaw.exe
+0x7c900000 - 0x7c9b2000 	C:\WINDOWS\system32\ntdll.dll
+0x7c800000 - 0x7c8f6000 	C:\WINDOWS\system32\kernel32.dll
+0x77dd0000 - 0x77e6b000 	C:\WINDOWS\system32\ADVAPI32.dll
+0x77e70000 - 0x77f02000 	C:\WINDOWS\system32\RPCRT4.dll
+0x77fe0000 - 0x77ff1000 	C:\WINDOWS\system32\Secur32.dll
+0x7e410000 - 0x7e4a1000 	C:\WINDOWS\system32\USER32.dll
+0x77f10000 - 0x77f59000 	C:\WINDOWS\system32\GDI32.dll
+0x7c340000 - 0x7c396000 	C:\UserData\jre\bin\msvcr71.dll
+0x6d8b0000 - 0x6db47000 	C:\UserData\jre\bin\client\jvm.dll
+0x76b40000 - 0x76b6d000 	C:\WINDOWS\system32\WINMM.dll
+0x6d860000 - 0x6d86c000 	C:\UserData\jre\bin\verify.dll
+0x6d3e0000 - 0x6d3ff000 	C:\UserData\jre\bin\java.dll
+0x6d340000 - 0x6d348000 	C:\UserData\jre\bin\hpi.dll
+0x76bf0000 - 0x76bfb000 	C:\WINDOWS\system32\PSAPI.DLL
+0x6d430000 - 0x6d459000 	C:\UserData\jre\bin\jdwp.dll
+0x6d750000 - 0x6d756000 	C:\UserData\jre\bin\npt.dll
+0x6d8a0000 - 0x6d8af000 	C:\UserData\jre\bin\zip.dll
+0x6d2b0000 - 0x6d2b7000 	C:\UserData\jre\bin\dt_socket.dll
+0x71ab0000 - 0x71ac7000 	C:\WINDOWS\system32\WS2_32.dll
+0x77c10000 - 0x77c68000 	C:\WINDOWS\system32\msvcrt.dll
+0x71aa0000 - 0x71aa8000 	C:\WINDOWS\system32\WS2HELP.dll
+0x71a50000 - 0x71a8f000 	C:\WINDOWS\System32\mswsock.dll
+0x76f20000 - 0x76f47000 	C:\WINDOWS\system32\DNSAPI.dll
+0x76fb0000 - 0x76fb8000 	C:\WINDOWS\System32\winrnr.dll
+0x76f60000 - 0x76f8c000 	C:\WINDOWS\system32\WLDAP32.dll
+0x64000000 - 0x64025000 	C:\Program Files\Bonjour\mdnsNSP.dll
+0x76d60000 - 0x76d79000 	C:\WINDOWS\system32\Iphlpapi.dll
+0x76fc0000 - 0x76fc6000 	C:\WINDOWS\system32\rasadhlp.dll
+0x662b0000 - 0x66308000 	C:\WINDOWS\system32\hnetcfg.dll
+0x71a90000 - 0x71a98000 	C:\WINDOWS\System32\wshtcpip.dll
+0x68000000 - 0x68036000 	C:\WINDOWS\system32\rsaenh.dll
+0x769c0000 - 0x76a74000 	C:\WINDOWS\system32\USERENV.dll
+0x5b860000 - 0x5b8b5000 	C:\WINDOWS\system32\netapi32.dll
+0x6d6c0000 - 0x6d6d3000 	C:\UserData\jre\bin\net.dll
+0x6d6e0000 - 0x6d6e9000 	C:\UserData\jre\bin\nio.dll
+0x54390000 - 0x543f3000 	C:\UserData\workspace_git\.metadata\.plugins\org.eclipse.pde.core\pde-junit\org.eclipse.osgi\bundles\256\1\.cp\swt-win32-3655.dll
+0x774e0000 - 0x7761d000 	C:\WINDOWS\system32\ole32.dll
+0x77120000 - 0x771ab000 	C:\WINDOWS\system32\OLEAUT32.dll
+0x763b0000 - 0x763f9000 	C:\WINDOWS\system32\comdlg32.dll
+0x773d0000 - 0x774d3000 	C:\WINDOWS\WinSxS\x86_Microsoft.Windows.Common-Controls_6595b64144ccf1df_6.0.2600.5512_x-ww_35d4ce83\COMCTL32.dll
+0x77f60000 - 0x77fd6000 	C:\WINDOWS\system32\SHLWAPI.dll
+0x7c9c0000 - 0x7d1d7000 	C:\WINDOWS\system32\SHELL32.dll
+0x76390000 - 0x763ad000 	C:\WINDOWS\system32\IMM32.dll
+0x74d90000 - 0x74dfb000 	C:\WINDOWS\system32\USP10.dll
+0x771b0000 - 0x7725a000 	C:\WINDOWS\system32\WININET.dll
+0x77a80000 - 0x77b15000 	C:\WINDOWS\system32\CRYPT32.dll
+0x77b20000 - 0x77b32000 	C:\WINDOWS\system32\MSASN1.dll
+0x5ad70000 - 0x5ada8000 	C:\WINDOWS\system32\uxtheme.dll
+0x544b0000 - 0x544b6000 	C:\Program Files\Utimaco\SafeGuard Easy\SgMsgBhk.dll
+0x544c0000 - 0x544ce000 	C:\Program Files\Logitech\SetPoint\lgscroll.dll
+0x78130000 - 0x781cb000 	C:\WINDOWS\WinSxS\x86_Microsoft.VC80.CRT_1fc8b3b9a1e18e3b_8.0.50727.4053_x-ww_e6967989\MSVCR80.dll
+0x77690000 - 0x776b1000 	C:\WINDOWS\system32\NTMARTA.DLL
+0x71bf0000 - 0x71c03000 	C:\WINDOWS\system32\SAMLIB.dll
+0x54510000 - 0x5452d000 	C:\UserData\workspace_git\.metadata\.plugins\org.eclipse.pde.core\pde-junit\org.eclipse.osgi\bundles\256\1\.cp\swt-gdip-win32-3655.dll
+0x54530000 - 0x546db000 	C:\WINDOWS\WinSxS\x86_Microsoft.Windows.GdiPlus_6595b64144ccf1df_1.0.6001.22319_x-ww_f0b4c2df\gdiplus.dll
+0x74c80000 - 0x74cac000 	C:\WINDOWS\system32\oleacc.dll
+0x76080000 - 0x760e5000 	C:\WINDOWS\system32\MSVCP60.dll
+0x54b10000 - 0x54dd5000 	C:\WINDOWS\system32\xpsp2res.dll
+0x76fd0000 - 0x7704f000 	C:\WINDOWS\system32\CLBCATQ.DLL
+0x77050000 - 0x77115000 	C:\WINDOWS\system32\COMRes.dll
+0x77c00000 - 0x77c08000 	C:\WINDOWS\system32\VERSION.dll
+0x76c30000 - 0x76c5e000 	C:\WINDOWS\system32\WINTRUST.dll
+0x76c90000 - 0x76cb8000 	C:\WINDOWS\system32\IMAGEHLP.dll
+0x77b40000 - 0x77b62000 	C:\WINDOWS\system32\appHelp.dll
+0x7e720000 - 0x7e7d0000 	C:\WINDOWS\system32\SXS.DLL
+0x7d1e0000 - 0x7d49c000 	C:\WINDOWS\system32\msi.dll
+0x7e1e0000 - 0x7e283000 	C:\WINDOWS\system32\urlmon.dll
+0x71800000 - 0x71888000 	C:\WINDOWS\system32\shdoclc.dll
+0x75cf0000 - 0x75d81000 	C:\WINDOWS\system32\MLANG.dll
+0x76380000 - 0x76385000 	C:\WINDOWS\system32\msimg32.dll
+0x77920000 - 0x77a13000 	C:\WINDOWS\system32\SETUPAPI.dll
+0x73760000 - 0x737ab000 	C:\WINDOWS\system32\DDRAW.dll
+0x73bc0000 - 0x73bc6000 	C:\WINDOWS\system32\DCIMAN32.dll
+0x57210000 - 0x5721f000 	C:\UserData\workspace_git\.metadata\.plugins\org.eclipse.pde.core\pde-junit\org.eclipse.osgi\bundles\73\1\.cp\jWinHttp-1.0.0.dll
+0x57230000 - 0x57289000 	C:\WINDOWS\system32\WINHTTP.dll
+0x76ee0000 - 0x76f1c000 	C:\WINDOWS\system32\RASAPI32.DLL
+0x76e90000 - 0x76ea2000 	C:\WINDOWS\system32\rasman.dll
+0x76eb0000 - 0x76edf000 	C:\WINDOWS\system32\TAPI32.dll
+0x76e80000 - 0x76e8e000 	C:\WINDOWS\system32\rtutils.dll
+0x77c70000 - 0x77c94000 	C:\WINDOWS\system32\msv1_0.dll
+0x6d610000 - 0x6d619000 	C:\UserData\jre\bin\management.dll
+0x6d7b0000 - 0x6d7b6000 	C:\UserData\jre\bin\rmi.dll
+0x57420000 - 0x5742e000 	C:\UserData\workspace_git\.metadata\.plugins\org.eclipse.pde.core\pde-junit\org.eclipse.osgi\bundles\70\1\.cp\os\win32\x86\localfile_1_0_0.dll
+0x72d20000 - 0x72d29000 	C:\WINDOWS\system32\wdmaud.drv
+0x72d10000 - 0x72d18000 	C:\WINDOWS\system32\msacm32.drv
+0x77be0000 - 0x77bf5000 	C:\WINDOWS\system32\MSACM32.dll
+0x77bd0000 - 0x77bd7000 	C:\WINDOWS\system32\midimap.dll
+
+VM Arguments:
+jvm_args: -agentlib:jdwp=transport=dt_socket,suspend=y,address=localhost:1187 -Xmx1024M -XX:MaxPermSize=256m -Dosee.log.default=INFO -Dequinox.ds.debug=true -Dosee.application.server=http://localhost:8089 -Dosee.authentication.protocol=demo -DeventDebug=log -DeventSystem=new -Dosee.is.in.db.init=true -Dats.useNewWorkDefinitions=true -Declipse.pde.launch=true -Declipse.p2.data.area=@config.dir\p2 -Dfile.encoding=UTF-8 
+java_command: org.eclipse.equinox.launcher.Main -os win32 -ws win32 -arch x86 -nl en_US -nosplash -version 3 -port 1186 -testLoaderClass org.eclipse.jdt.internal.junit4.runner.JUnit4TestLoader -loaderpluginname org.eclipse.jdt.junit4.runtime -classNames org.eclipse.osee.client.integration.tests.suite.MasterTestSuite_DemoDbInit -application org.eclipse.pde.junit.runtime.uitestapplication -product org.eclipse.sdk.ide -data C:\UserData\workspace_git/../junit-workspace -configuration file:C:/UserData/workspace_git/.metadata/.plugins/org.eclipse.pde.core/pde-junit/ -dev file:C:/UserData/workspace_git/.metadata/.plugins/org.eclipse.pde.core/pde-junit/dev.properties -os win32 -ws win32 -arch x86 -nl en_US -nosplash -testpluginname org.eclipse.osee.client.integration.tests
+Launcher Type: SUN_STANDARD
+
+Environment Variables:
+CLASSPATH=.;C:\Program Files\Java\jre6\lib\ext\QTJava.zip
+PATH=C:\UserData\jre\bin;C:/UserData/OSEE_0.9.9_RCa/jre/bin/client;C:/UserData/OSEE_0.9.9_RCa/jre/bin;C:/UserData/OSEE_0.9.9_RCa/jre/lib/i386;C:\Program Files\Java\jdk1.6.0_07\bin;c:\oracle\10gR2Client\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\Program Files\Gemplus\GemSafe Libraries\BIN;C:\Program Files\Windows Imaging\;C:\Program Files\Utimaco\SafeGuard Easy\;C:\Program Files\Common Files\GTK\2.0\bin;C:\Program Files\YourKit Java Profiler 8.0.19\bin\win32;C:\Program Files\QuickTime\QTSystem\
+USERNAME=b0727536
+OS=Windows_NT
+PROCESSOR_IDENTIFIER=x86 Family 6 Model 15 Stepping 11, GenuineIntel
+
+
+
+---------------  S Y S T E M  ---------------
+
+OS: Windows XP Build 2600 Service Pack 3
+
+CPU:total 2 (2 cores per cpu, 1 threads per core) family 6 model 15 stepping 11, cmov, cx8, fxsr, mmx, sse, sse2, sse3, ssse3
+
+Memory: 4k page, physical 3143736k(1373276k free), swap 5112504k(3392124k free)
+
+vm_info: Java HotSpot(TM) Client VM (16.0-b13) for windows-x86 JRE (1.6.0_18-b07), built on Dec 17 2009 13:35:55 by "java_re" with MS VC++ 7.1 (VS2003)
+
+time: Wed Apr 20 11:32:03 2011
+elapsed time: 90 seconds
+

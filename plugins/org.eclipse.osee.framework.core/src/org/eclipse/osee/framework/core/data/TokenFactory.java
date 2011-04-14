@@ -33,7 +33,7 @@ public final class TokenFactory {
       return new RelationTypeSideToken(guid, name, relationSide);
    }
 
-   public static AccessContextId createAccessContextId(String guid, String name) {
+   public static IAccessContextId createAccessContextId(String guid, String name) {
       return new AccessContextIdToken(guid, name);
    }
 
@@ -87,7 +87,7 @@ public final class TokenFactory {
       }
    }
 
-   private final static class AccessContextIdToken extends NamedIdentity implements AccessContextId {
+   private final static class AccessContextIdToken extends NamedIdentity implements IAccessContextId {
       public AccessContextIdToken(String guid, String name) {
          super(guid, name);
       }

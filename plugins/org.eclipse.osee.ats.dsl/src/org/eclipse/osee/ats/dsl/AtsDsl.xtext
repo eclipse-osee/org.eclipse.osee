@@ -33,6 +33,7 @@ TeamDef:
 		('member' member+=UserRef)*
 		('priviledged' priviledged+=UserRef)*
 		('workDefinition' workDefinition=STRING)?
+		('accessContextId' accessContextId+=STRING)*
 		('version' version+=VersionDef)*
 		('children' '{'
 		   ('teamDefinition' children+=TeamDef)+
@@ -51,6 +52,7 @@ ActionableItemDef:
 		('lead' lead+=UserRef)*
 		('staticId' staticId+=STRING)*
 		('team' teamDef=STRING)?
+		('accessContextId' accessContextId+=STRING)*
 		('children' '{'
 		   ('actionableItem' children+=ActionableItemDef)+
 		   '}'

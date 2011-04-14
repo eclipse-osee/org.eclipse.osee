@@ -143,6 +143,12 @@
           </elements>
         </elements>
         <elements xsi:type="xtext:Group" cardinality="*">
+          <elements xsi:type="xtext:Keyword" value="accessContextId"/>
+          <elements xsi:type="xtext:Assignment" feature="accessContextId" operator="+=">
+            <terminal xsi:type="xtext:RuleCall" rule="/1/@rules.2"/>
+          </elements>
+        </elements>
+        <elements xsi:type="xtext:Group" cardinality="*">
           <elements xsi:type="xtext:Keyword" value="version"/>
           <elements xsi:type="xtext:Assignment" feature="version" operator="+=">
             <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.8"/>
@@ -208,6 +214,12 @@
           <elements xsi:type="xtext:Group" cardinality="?">
             <elements xsi:type="xtext:Keyword" value="team"/>
             <elements xsi:type="xtext:Assignment" feature="teamDef" operator="=">
+              <terminal xsi:type="xtext:RuleCall" rule="/1/@rules.2"/>
+            </elements>
+          </elements>
+          <elements xsi:type="xtext:Group" cardinality="*">
+            <elements xsi:type="xtext:Keyword" value="accessContextId"/>
+            <elements xsi:type="xtext:Assignment" feature="accessContextId" operator="+=">
               <terminal xsi:type="xtext:RuleCall" rule="/1/@rules.2"/>
             </elements>
           </elements>

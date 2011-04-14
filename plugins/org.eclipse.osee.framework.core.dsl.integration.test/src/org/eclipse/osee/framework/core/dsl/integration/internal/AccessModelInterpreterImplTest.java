@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import org.junit.Assert;
-import org.eclipse.osee.framework.core.data.AccessContextId;
+import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.dsl.integration.internal.AccessModelInterpreterImpl;
 import org.eclipse.osee.framework.core.dsl.integration.mocks.CheckAccessDetailCollectorNotCalled;
@@ -38,8 +38,8 @@ import org.junit.Test;
  * @author Roberto E. Escobar
  */
 public class AccessModelInterpreterImplTest {
-   private AccessContextId contextId1;
-   private AccessContextId contextId2;
+   private IAccessContextId contextId1;
+   private IAccessContextId contextId2;
 
    private AccessContext expectedContext1;
    private AccessContext expectedContext2;

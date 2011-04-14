@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
-import org.eclipse.osee.framework.core.data.AccessContextId;
+import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.services.CmAccessControl;
@@ -129,12 +129,18 @@ public class SMADetailsSection extends SectionPart {
          } catch (Exception ex) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          }
+         Collection<? extends IAccessContextId> ids = null;
          if (workingBranch == null) {
-            message = "No working branch";
+            try {
+               ids = accessControl.getContextId(UserManager.getUser(), workflow);
+               message = ids.toString();
+            } catch (Exception ex) {
+               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+               message = String.format("Error getting context id [%s]", ex.getMessage());
+            }
          } else {
             try {
-               Collection<? extends AccessContextId> ids =
-                  accessControl.getContextId(UserManager.getUser(), workingBranch);
+               ids = accessControl.getContextId(UserManager.getUser(), workingBranch);
                message = ids.toString();
             } catch (Exception ex) {
                OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);

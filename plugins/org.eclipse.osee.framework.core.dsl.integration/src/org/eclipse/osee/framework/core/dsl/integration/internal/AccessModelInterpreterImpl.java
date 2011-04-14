@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.core.dsl.integration.internal;
 
 import java.util.Collection;
 import java.util.HashSet;
-import org.eclipse.osee.framework.core.data.AccessContextId;
+import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.dsl.integration.AccessModelInterpreter;
 import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider;
 import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider.ArtifactProxy;
@@ -45,7 +45,7 @@ public class AccessModelInterpreterImpl implements AccessModelInterpreter {
    }
 
    @Override
-   public AccessContext getContext(Collection<AccessContext> contexts, AccessContextId contextId) throws OseeCoreException {
+   public AccessContext getContext(Collection<AccessContext> contexts, IAccessContextId contextId) throws OseeCoreException {
       Conditions.checkNotNull(contexts, "accessContext collection");
       Conditions.checkNotNull(contextId, "accessContextId");
       AccessContext toReturn = null;

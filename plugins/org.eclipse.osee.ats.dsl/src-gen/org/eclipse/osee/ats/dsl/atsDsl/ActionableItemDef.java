@@ -25,6 +25,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.ActionableItemDef#getLead <em>Lead</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.ActionableItemDef#getStaticId <em>Static Id</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.ActionableItemDef#getTeamDef <em>Team Def</em>}</li>
+ *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.ActionableItemDef#getAccessContextId <em>Access Context Id</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.ActionableItemDef#getChildren <em>Children</em>}</li>
  * </ul>
  * </p>
@@ -192,6 +193,22 @@ public interface ActionableItemDef extends EObject
    * @generated
    */
   void setTeamDef(String value);
+
+  /**
+   * Returns the value of the '<em><b>Access Context Id</b></em>' attribute list.
+   * The list contents are of type {@link java.lang.String}.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Access Context Id</em>' attribute list isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Access Context Id</em>' attribute list.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.AtsDslPackage#getActionableItemDef_AccessContextId()
+   * @model unique="false"
+   * @generated
+   */
+  EList<String> getAccessContextId();
 
   /**
    * Returns the value of the '<em><b>Children</b></em>' containment reference list.

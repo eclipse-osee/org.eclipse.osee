@@ -20,7 +20,6 @@ public final class CoreArtifactTypes {
 
    // @formatter:off
    public static final IArtifactType AccessControlModel = TokenFactory.createArtifactType("CJr1bPfZQkbiuTA4FewA", "Access Control Model");
-   public static final IArtifactType AbstractAccessControlled = TokenFactory.createArtifactType("AAFVUREVAxmEmLW2KkAA", "Abstract Access Controlled");
    public static final IArtifactType AbstractSoftwareRequirement = TokenFactory.createArtifactType("ABNAYPwV6H4EkjQ3+QQA", "Abstract Software Requirement");
    public static final IArtifactType AbstractTestResult = TokenFactory.createArtifactType("ATkaanWmHH3PkhGNVjwA", "Abstract Test Result");
    public static final IArtifactType AbstractTestUnit = TokenFactory.createArtifactType("AISIbSI6wzEUfPdCQaAA", "Abstract Test Unit");

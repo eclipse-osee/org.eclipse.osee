@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.core.dsl.integration;
 
 import java.util.Collection;
 import java.util.HashSet;
-import org.eclipse.osee.framework.core.data.AccessContextId;
+import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.AccessContext;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -35,7 +35,7 @@ public class OseeDslAccessModel implements AccessModel {
    }
 
    @Override
-   public void computeAccess(AccessContextId contextId, Collection<Object> objectsToCheck, AccessData accessData) throws OseeCoreException {
+   public void computeAccess(IAccessContextId contextId, Collection<Object> objectsToCheck, AccessData accessData) throws OseeCoreException {
       Conditions.checkNotNull(contextId, "contextId");
       Conditions.checkNotNull(objectsToCheck, "objectsToCheck");
       Conditions.checkNotNull(accessData, "accessData");

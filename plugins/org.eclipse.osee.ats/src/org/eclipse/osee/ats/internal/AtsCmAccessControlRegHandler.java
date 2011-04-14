@@ -10,13 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.internal;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.CopyOnWriteArraySet;
-import org.eclipse.osee.ats.access.AtsBranchObjectManager;
-import org.eclipse.osee.ats.access.IAtsAccessControlService;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.access.AtsBranchAccessManager;
 import org.eclipse.osee.framework.core.dsl.integration.AccessModelInterpreter;
 import org.eclipse.osee.framework.core.dsl.integration.OseeDslAccessModel;
 import org.eclipse.osee.framework.core.dsl.integration.OseeDslProvider;
@@ -35,15 +31,14 @@ import org.osgi.framework.ServiceRegistration;
 public class AtsCmAccessControlRegHandler extends AbstractTrackingHandler {
 
    private final Map<Class<?>, ServiceBindType> serviceDeps = new HashMap<Class<?>, ServiceBindType>();
-   private final Collection<IAtsAccessControlService> atsAccessServices =
-      new CopyOnWriteArraySet<IAtsAccessControlService>();
 
    private ServiceRegistration registration;
    private IEventListener listener;
 
+   private AtsBranchAccessManager atsBranchObjectManager;
+
    public AtsCmAccessControlRegHandler() {
       serviceDeps.put(AccessModelInterpreter.class, ServiceBindType.SINGLETON);
-      serviceDeps.put(IAtsAccessControlService.class, ServiceBindType.MANY);
    }
 
    @Override
@@ -59,14 +54,11 @@ public class AtsCmAccessControlRegHandler extends AbstractTrackingHandler {
    @Override
    public void onActivate(BundleContext context, Map<Class<?>, Object> services) {
       AccessModelInterpreter interpreter = getService(AccessModelInterpreter.class, services);
-      IAtsAccessControlService atsService = getService(IAtsAccessControlService.class, services);
-      atsAccessServices.add(atsService);
 
       OseeDslProvider dslProvider = new AtsAccessOseeDslProvider();
       AccessModel accessModel = new OseeDslAccessModel(interpreter, dslProvider);
 
-      AtsBranchObjectManager atsBranchObjectManager =
-         new AtsBranchObjectManager(AtsUtil.getAtsBranchToken(), atsAccessServices);
+      atsBranchObjectManager = new AtsBranchAccessManager();
       CmAccessControl cmService = new AtsCmAccessControl(accessModel, atsBranchObjectManager);
       registration = context.registerService(CmAccessControl.class.getName(), cmService, null);
 
@@ -78,21 +70,14 @@ public class AtsCmAccessControlRegHandler extends AbstractTrackingHandler {
    public void onDeActivate() {
       if (listener != null) {
          OseeEventManager.removeListener(listener);
+         if (atsBranchObjectManager != null) {
+            atsBranchObjectManager.dispose();
+         }
          listener = null;
       }
-      atsAccessServices.clear();
       if (registration != null) {
          registration.unregister();
       }
    }
 
-   @Override
-   public void onServiceAdded(BundleContext context, Class<?> clazz, Object service) {
-      atsAccessServices.add((IAtsAccessControlService) service);
-   }
-
-   @Override
-   public void onServiceRemoved(BundleContext context, Class<?> clazz, Object service) {
-      atsAccessServices.remove(service);
-   }
 }

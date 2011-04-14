@@ -77,7 +77,9 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
 
    private String getXWidgetName(DynamicXWidgetLayoutData defaultData, IAttributeType attributeType, int minOccurrence, int maxOccurrence) throws OseeCoreException {
       String xWidgetName = "";
-      if (AttributeTypeManager.isBaseTypeCompatible(EnumeratedAttribute.class, attributeType)) {
+      if (attributeType.equals(CoreAttributeTypes.AccessContextId)) {
+         xWidgetName = "XTextFlatDam";
+      } else if (AttributeTypeManager.isBaseTypeCompatible(EnumeratedAttribute.class, attributeType)) {
          if (maxOccurrence == 1) {
             xWidgetName =
                "XComboDam(" + Collections.toString(",", AttributeTypeManager.getEnumerationValues(attributeType)) + ")";

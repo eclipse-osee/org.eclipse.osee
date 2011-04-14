@@ -36,6 +36,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+   AtsTest_Demo_Access_Suite.class,
    AtsNavigateItemsToMassEditorTest.class,
    AtsNavigateItemsToTaskEditorTest.class,
    AtsNavigateItemsToWorldViewTest.class,

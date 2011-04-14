@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.core.model.test.mocks;
 
 import java.util.Date;
 import org.junit.Assert;
-import org.eclipse.osee.framework.core.data.AccessContextId;
+import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -54,8 +54,8 @@ public final class MockDataFactory {
       // Utility Class
    }
 
-   public static AccessContextId createAccessContextId(String guid, String name) {
-      AccessContextId cxt = TokenFactory.createAccessContextId(guid, name);
+   public static IAccessContextId createAccessContextId(String guid, String name) {
+      IAccessContextId cxt = TokenFactory.createAccessContextId(guid, name);
       Assert.assertEquals(guid, cxt.getGuid());
       Assert.assertEquals(name, cxt.getName());
       return cxt;

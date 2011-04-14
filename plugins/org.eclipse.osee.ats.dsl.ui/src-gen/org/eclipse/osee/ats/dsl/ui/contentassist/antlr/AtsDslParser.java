@@ -72,7 +72,8 @@ public class AtsDslParser extends AbstractContentAssistParser {
 					put(grammarAccess.getTeamDefAccess().getGroup_9(), "rule__TeamDef__Group_9__0");
 					put(grammarAccess.getTeamDefAccess().getGroup_10(), "rule__TeamDef__Group_10__0");
 					put(grammarAccess.getTeamDefAccess().getGroup_11(), "rule__TeamDef__Group_11__0");
-					put(grammarAccess.getTeamDefAccess().getGroup_11_2(), "rule__TeamDef__Group_11_2__0");
+					put(grammarAccess.getTeamDefAccess().getGroup_12(), "rule__TeamDef__Group_12__0");
+					put(grammarAccess.getTeamDefAccess().getGroup_12_2(), "rule__TeamDef__Group_12_2__0");
 					put(grammarAccess.getActionableItemDefAccess().getGroup(), "rule__ActionableItemDef__Group__0");
 					put(grammarAccess.getActionableItemDefAccess().getGroup_2(), "rule__ActionableItemDef__Group_2__0");
 					put(grammarAccess.getActionableItemDefAccess().getGroup_2_1(), "rule__ActionableItemDef__Group_2_1__0");
@@ -81,7 +82,8 @@ public class AtsDslParser extends AbstractContentAssistParser {
 					put(grammarAccess.getActionableItemDefAccess().getGroup_2_4(), "rule__ActionableItemDef__Group_2_4__0");
 					put(grammarAccess.getActionableItemDefAccess().getGroup_2_5(), "rule__ActionableItemDef__Group_2_5__0");
 					put(grammarAccess.getActionableItemDefAccess().getGroup_2_6(), "rule__ActionableItemDef__Group_2_6__0");
-					put(grammarAccess.getActionableItemDefAccess().getGroup_2_6_2(), "rule__ActionableItemDef__Group_2_6_2__0");
+					put(grammarAccess.getActionableItemDefAccess().getGroup_2_7(), "rule__ActionableItemDef__Group_2_7__0");
+					put(grammarAccess.getActionableItemDefAccess().getGroup_2_7_2(), "rule__ActionableItemDef__Group_2_7_2__0");
 					put(grammarAccess.getVersionDefAccess().getGroup(), "rule__VersionDef__Group__0");
 					put(grammarAccess.getVersionDefAccess().getGroup_2(), "rule__VersionDef__Group_2__0");
 					put(grammarAccess.getVersionDefAccess().getGroup_3(), "rule__VersionDef__Group_3__0");
@@ -148,8 +150,9 @@ public class AtsDslParser extends AbstractContentAssistParser {
 					put(grammarAccess.getTeamDefAccess().getMemberAssignment_7_1(), "rule__TeamDef__MemberAssignment_7_1");
 					put(grammarAccess.getTeamDefAccess().getPriviledgedAssignment_8_1(), "rule__TeamDef__PriviledgedAssignment_8_1");
 					put(grammarAccess.getTeamDefAccess().getWorkDefinitionAssignment_9_1(), "rule__TeamDef__WorkDefinitionAssignment_9_1");
-					put(grammarAccess.getTeamDefAccess().getVersionAssignment_10_1(), "rule__TeamDef__VersionAssignment_10_1");
-					put(grammarAccess.getTeamDefAccess().getChildrenAssignment_11_2_1(), "rule__TeamDef__ChildrenAssignment_11_2_1");
+					put(grammarAccess.getTeamDefAccess().getAccessContextIdAssignment_10_1(), "rule__TeamDef__AccessContextIdAssignment_10_1");
+					put(grammarAccess.getTeamDefAccess().getVersionAssignment_11_1(), "rule__TeamDef__VersionAssignment_11_1");
+					put(grammarAccess.getTeamDefAccess().getChildrenAssignment_12_2_1(), "rule__TeamDef__ChildrenAssignment_12_2_1");
 					put(grammarAccess.getActionableItemDefAccess().getNameAssignment_0(), "rule__ActionableItemDef__NameAssignment_0");
 					put(grammarAccess.getActionableItemDefAccess().getAiDefOptionAssignment_1(), "rule__ActionableItemDef__AiDefOptionAssignment_1");
 					put(grammarAccess.getActionableItemDefAccess().getActiveAssignment_2_1_1(), "rule__ActionableItemDef__ActiveAssignment_2_1_1");
@@ -157,7 +160,8 @@ public class AtsDslParser extends AbstractContentAssistParser {
 					put(grammarAccess.getActionableItemDefAccess().getLeadAssignment_2_3_1(), "rule__ActionableItemDef__LeadAssignment_2_3_1");
 					put(grammarAccess.getActionableItemDefAccess().getStaticIdAssignment_2_4_1(), "rule__ActionableItemDef__StaticIdAssignment_2_4_1");
 					put(grammarAccess.getActionableItemDefAccess().getTeamDefAssignment_2_5_1(), "rule__ActionableItemDef__TeamDefAssignment_2_5_1");
-					put(grammarAccess.getActionableItemDefAccess().getChildrenAssignment_2_6_2_1(), "rule__ActionableItemDef__ChildrenAssignment_2_6_2_1");
+					put(grammarAccess.getActionableItemDefAccess().getAccessContextIdAssignment_2_6_1(), "rule__ActionableItemDef__AccessContextIdAssignment_2_6_1");
+					put(grammarAccess.getActionableItemDefAccess().getChildrenAssignment_2_7_2_1(), "rule__ActionableItemDef__ChildrenAssignment_2_7_2_1");
 					put(grammarAccess.getVersionDefAccess().getNameAssignment_0(), "rule__VersionDef__NameAssignment_0");
 					put(grammarAccess.getVersionDefAccess().getActiveAssignment_2_1(), "rule__VersionDef__ActiveAssignment_2_1");
 					put(grammarAccess.getVersionDefAccess().getStaticIdAssignment_3_1(), "rule__VersionDef__StaticIdAssignment_3_1");

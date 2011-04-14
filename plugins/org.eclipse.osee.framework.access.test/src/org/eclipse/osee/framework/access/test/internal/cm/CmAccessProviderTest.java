@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.access.IAccessProvider;
 import org.eclipse.osee.framework.access.internal.cm.CmAccessProvider;
 import org.eclipse.osee.framework.access.test.mocks.MockCMWithAccessModel;
 import org.eclipse.osee.framework.access.test.mocks.MockConfigurationManagementProvider;
-import org.eclipse.osee.framework.core.data.AccessContextId;
+import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.access.AccessData;
@@ -37,7 +37,7 @@ import org.junit.Test;
 public class CmAccessProviderTest {
    private static IBasicArtifact<?> expectedUser;
    private static Object expectedObject;
-   private static AccessContextId contextId1;
+   private static IAccessContextId contextId1;
 
    @BeforeClass
    public static void setup() {
@@ -83,12 +83,12 @@ public class CmAccessProviderTest {
    private final class MockAccessModel implements AccessModel {
 
       protected boolean wasComputeAccessCalled;
-      protected AccessContextId contextId;
+      protected IAccessContextId contextId;
       protected Collection<Object> objectsToCheck;
       protected AccessData accessData;
 
       @Override
-      public void computeAccess(AccessContextId contextId, Collection<Object> objectsToCheck, AccessData accessData) {
+      public void computeAccess(IAccessContextId contextId, Collection<Object> objectsToCheck, AccessData accessData) {
          wasComputeAccessCalled = true;
          this.contextId = contextId;
          this.objectsToCheck = objectsToCheck;

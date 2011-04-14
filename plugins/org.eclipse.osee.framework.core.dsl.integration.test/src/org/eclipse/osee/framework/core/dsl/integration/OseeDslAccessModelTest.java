@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.core.dsl.integration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import org.eclipse.osee.framework.core.data.AccessContextId;
+import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.dsl.integration.AccessModelInterpreter;
 import org.eclipse.osee.framework.core.dsl.integration.OseeDslAccessModel;
@@ -40,7 +40,7 @@ import org.junit.Test;
  */
 public class OseeDslAccessModelTest {
 
-   private static AccessContextId accessContextId;
+   private static IAccessContextId accessContextId;
 
    @BeforeClass
    public static void setUp() {
@@ -137,7 +137,7 @@ public class OseeDslAccessModelTest {
 
       private final AccessContext contextToReturn;
       private Collection<AccessContext> contexts;
-      private AccessContextId contextId;
+      private IAccessContextId contextId;
       private boolean wasComputeCalled;
 
       public MockAccessModelInterpreter(AccessContext contextToReturn) {
@@ -148,13 +148,13 @@ public class OseeDslAccessModelTest {
          return contexts;
       }
 
-      public AccessContextId getContextId() {
+      public IAccessContextId getContextId() {
          return contextId;
       }
 
       @SuppressWarnings("unused")
       @Override
-      public AccessContext getContext(Collection<AccessContext> contexts, AccessContextId contextId) throws OseeCoreException {
+      public AccessContext getContext(Collection<AccessContext> contexts, IAccessContextId contextId) throws OseeCoreException {
          this.contextId = contextId;
          this.contexts = contexts;
          return contextToReturn;

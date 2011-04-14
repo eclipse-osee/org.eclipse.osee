@@ -281,13 +281,22 @@ public interface AtsDslPackage extends EPackage
   int TEAM_DEF__WORK_DEFINITION = 8;
 
   /**
+   * The feature id for the '<em><b>Access Context Id</b></em>' attribute list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int TEAM_DEF__ACCESS_CONTEXT_ID = 9;
+
+  /**
    * The feature id for the '<em><b>Version</b></em>' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int TEAM_DEF__VERSION = 9;
+  int TEAM_DEF__VERSION = 10;
 
   /**
    * The feature id for the '<em><b>Children</b></em>' containment reference list.
@@ -296,7 +305,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int TEAM_DEF__CHILDREN = 10;
+  int TEAM_DEF__CHILDREN = 11;
 
   /**
    * The number of structural features of the '<em>Team Def</em>' class.
@@ -305,7 +314,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int TEAM_DEF_FEATURE_COUNT = 11;
+  int TEAM_DEF_FEATURE_COUNT = 12;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.ats.dsl.atsDsl.impl.ActionableItemDefImpl <em>Actionable Item Def</em>}' class.
@@ -381,13 +390,22 @@ public interface AtsDslPackage extends EPackage
   int ACTIONABLE_ITEM_DEF__TEAM_DEF = 6;
 
   /**
+   * The feature id for the '<em><b>Access Context Id</b></em>' attribute list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ACTIONABLE_ITEM_DEF__ACCESS_CONTEXT_ID = 7;
+
+  /**
    * The feature id for the '<em><b>Children</b></em>' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int ACTIONABLE_ITEM_DEF__CHILDREN = 7;
+  int ACTIONABLE_ITEM_DEF__CHILDREN = 8;
 
   /**
    * The number of structural features of the '<em>Actionable Item Def</em>' class.
@@ -396,7 +414,7 @@ public interface AtsDslPackage extends EPackage
    * @generated
    * @ordered
    */
-  int ACTIONABLE_ITEM_DEF_FEATURE_COUNT = 8;
+  int ACTIONABLE_ITEM_DEF_FEATURE_COUNT = 9;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.ats.dsl.atsDsl.impl.VersionDefImpl <em>Version Def</em>}' class.
@@ -1671,6 +1689,17 @@ public interface AtsDslPackage extends EPackage
   EAttribute getTeamDef_WorkDefinition();
 
   /**
+   * Returns the meta object for the attribute list '{@link org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getAccessContextId <em>Access Context Id</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute list '<em>Access Context Id</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getAccessContextId()
+   * @see #getTeamDef()
+   * @generated
+   */
+  EAttribute getTeamDef_AccessContextId();
+
+  /**
    * Returns the meta object for the containment reference list '{@link org.eclipse.osee.ats.dsl.atsDsl.TeamDef#getVersion <em>Version</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -1778,6 +1807,17 @@ public interface AtsDslPackage extends EPackage
    * @generated
    */
   EAttribute getActionableItemDef_TeamDef();
+
+  /**
+   * Returns the meta object for the attribute list '{@link org.eclipse.osee.ats.dsl.atsDsl.ActionableItemDef#getAccessContextId <em>Access Context Id</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute list '<em>Access Context Id</em>'.
+   * @see org.eclipse.osee.ats.dsl.atsDsl.ActionableItemDef#getAccessContextId()
+   * @see #getActionableItemDef()
+   * @generated
+   */
+  EAttribute getActionableItemDef_AccessContextId();
 
   /**
    * Returns the meta object for the containment reference list '{@link org.eclipse.osee.ats.dsl.atsDsl.ActionableItemDef#getChildren <em>Children</em>}'.
@@ -2973,6 +3013,14 @@ public interface AtsDslPackage extends EPackage
     EAttribute TEAM_DEF__WORK_DEFINITION = eINSTANCE.getTeamDef_WorkDefinition();
 
     /**
+     * The meta object literal for the '<em><b>Access Context Id</b></em>' attribute list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute TEAM_DEF__ACCESS_CONTEXT_ID = eINSTANCE.getTeamDef_AccessContextId();
+
+    /**
      * The meta object literal for the '<em><b>Version</b></em>' containment reference list feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -3053,6 +3101,14 @@ public interface AtsDslPackage extends EPackage
      * @generated
      */
     EAttribute ACTIONABLE_ITEM_DEF__TEAM_DEF = eINSTANCE.getActionableItemDef_TeamDef();
+
+    /**
+     * The meta object literal for the '<em><b>Access Context Id</b></em>' attribute list feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute ACTIONABLE_ITEM_DEF__ACCESS_CONTEXT_ID = eINSTANCE.getActionableItemDef_AccessContextId();
 
     /**
      * The meta object literal for the '<em><b>Children</b></em>' containment reference list feature.

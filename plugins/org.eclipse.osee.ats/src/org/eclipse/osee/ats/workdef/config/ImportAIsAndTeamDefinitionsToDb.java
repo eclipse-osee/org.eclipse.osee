@@ -138,12 +138,19 @@ public class ImportAIsAndTeamDefinitionsToDb {
          if (Strings.isValid(dslTeamDef.getWorkDefinition())) {
             newTeam.setSoleAttributeValue(AtsAttributeTypes.WorkflowDefinition, dslTeamDef.getWorkDefinition());
          }
+         importAccessContextIds(newTeam, dslTeamDef.getAccessContextId());
          importVersionDefinitions(dslTeamDef.getVersion(), (TeamDefinitionArtifact) newTeam);
          // process children
          importTeamDefinitions(dslTeamDef.getChildren(), newTeam);
          newTeam.persist(transaction);
       }
 
+   }
+
+   private void importAccessContextIds(Artifact teamOrAi, EList<String> contextIds) throws OseeCoreException {
+      for (String accessContextId : contextIds) {
+         teamOrAi.addAttribute(CoreAttributeTypes.AccessContextId, accessContextId);
+      }
    }
 
    public void importVersionDefinitions(EList<VersionDef> versionDefs, TeamDefinitionArtifact teamDef) throws OseeCoreException {
@@ -216,6 +223,7 @@ public class ImportAIsAndTeamDefinitionsToDb {
             }
             newAi.addRelation(AtsRelationTypes.TeamActionableItem_Team, newTeams.get(dslAIDef.getTeamDef()));
          }
+         importAccessContextIds(newAi, dslAIDef.getAccessContextId());
          importActionableItems(dslAIDef.getChildren(), newAi);
          newAi.persist(transaction);
       }

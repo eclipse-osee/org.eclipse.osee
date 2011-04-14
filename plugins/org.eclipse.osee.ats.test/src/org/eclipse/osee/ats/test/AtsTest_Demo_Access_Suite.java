@@ -8,21 +8,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.access;
+package org.eclipse.osee.ats.test;
 
-import org.eclipse.osee.framework.core.data.AccessContextId;
+import org.eclipse.osee.ats.test.access.AtsBranchAccessManagerTest;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
+@RunWith(Suite.class)
+@Suite.SuiteClasses({AtsBranchAccessManagerTest.class})
 /**
  * @author Donald G. Dunne
  */
-public final class AtsBranchObjectContextId {
-
-   public static final AccessContextId DEFAULT_BRANCH_CONTEXT = AtsAccessContextIdFactory.createContextId(
-      "AFRkIhi2m2cdanu3i2AA", "ats.branchobject.default.context");
-   public static final AccessContextId DENY_CONTEXT = AtsAccessContextIdFactory.createContextId("ABcgU0QxFG_cQU4Ph1wA",
-      "ats.branchobject.deny");
-
-   private AtsBranchObjectContextId() {
-      // Branch Object Contexts;
-   }
+public class AtsTest_Demo_Access_Suite {
+   // Tests listed above
 }

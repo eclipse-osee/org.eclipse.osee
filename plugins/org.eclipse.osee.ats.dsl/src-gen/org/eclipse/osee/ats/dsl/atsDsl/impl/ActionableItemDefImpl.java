@@ -42,6 +42,7 @@ import org.eclipse.osee.ats.dsl.atsDsl.UserRef;
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.ActionableItemDefImpl#getLead <em>Lead</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.ActionableItemDefImpl#getStaticId <em>Static Id</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.ActionableItemDefImpl#getTeamDef <em>Team Def</em>}</li>
+ *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.ActionableItemDefImpl#getAccessContextId <em>Access Context Id</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.ActionableItemDefImpl#getChildren <em>Children</em>}</li>
  * </ul>
  * </p>
@@ -159,6 +160,16 @@ public class ActionableItemDefImpl extends MinimalEObjectImpl.Container implemen
    * @ordered
    */
   protected String teamDef = TEAM_DEF_EDEFAULT;
+
+  /**
+   * The cached value of the '{@link #getAccessContextId() <em>Access Context Id</em>}' attribute list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getAccessContextId()
+   * @generated
+   * @ordered
+   */
+  protected EList<String> accessContextId;
 
   /**
    * The cached value of the '{@link #getChildren() <em>Children</em>}' containment reference list.
@@ -330,6 +341,20 @@ public class ActionableItemDefImpl extends MinimalEObjectImpl.Container implemen
    * <!-- end-user-doc -->
    * @generated
    */
+  public EList<String> getAccessContextId()
+  {
+    if (accessContextId == null)
+    {
+      accessContextId = new EDataTypeEList<String>(String.class, this, AtsDslPackage.ACTIONABLE_ITEM_DEF__ACCESS_CONTEXT_ID);
+    }
+    return accessContextId;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EList<ActionableItemDef> getChildren()
   {
     if (children == null)
@@ -381,6 +406,8 @@ public class ActionableItemDefImpl extends MinimalEObjectImpl.Container implemen
         return getStaticId();
       case AtsDslPackage.ACTIONABLE_ITEM_DEF__TEAM_DEF:
         return getTeamDef();
+      case AtsDslPackage.ACTIONABLE_ITEM_DEF__ACCESS_CONTEXT_ID:
+        return getAccessContextId();
       case AtsDslPackage.ACTIONABLE_ITEM_DEF__CHILDREN:
         return getChildren();
     }
@@ -422,6 +449,10 @@ public class ActionableItemDefImpl extends MinimalEObjectImpl.Container implemen
       case AtsDslPackage.ACTIONABLE_ITEM_DEF__TEAM_DEF:
         setTeamDef((String)newValue);
         return;
+      case AtsDslPackage.ACTIONABLE_ITEM_DEF__ACCESS_CONTEXT_ID:
+        getAccessContextId().clear();
+        getAccessContextId().addAll((Collection<? extends String>)newValue);
+        return;
       case AtsDslPackage.ACTIONABLE_ITEM_DEF__CHILDREN:
         getChildren().clear();
         getChildren().addAll((Collection<? extends ActionableItemDef>)newValue);
@@ -461,6 +492,9 @@ public class ActionableItemDefImpl extends MinimalEObjectImpl.Container implemen
       case AtsDslPackage.ACTIONABLE_ITEM_DEF__TEAM_DEF:
         setTeamDef(TEAM_DEF_EDEFAULT);
         return;
+      case AtsDslPackage.ACTIONABLE_ITEM_DEF__ACCESS_CONTEXT_ID:
+        getAccessContextId().clear();
+        return;
       case AtsDslPackage.ACTIONABLE_ITEM_DEF__CHILDREN:
         getChildren().clear();
         return;
@@ -492,6 +526,8 @@ public class ActionableItemDefImpl extends MinimalEObjectImpl.Container implemen
         return staticId != null && !staticId.isEmpty();
       case AtsDslPackage.ACTIONABLE_ITEM_DEF__TEAM_DEF:
         return TEAM_DEF_EDEFAULT == null ? teamDef != null : !TEAM_DEF_EDEFAULT.equals(teamDef);
+      case AtsDslPackage.ACTIONABLE_ITEM_DEF__ACCESS_CONTEXT_ID:
+        return accessContextId != null && !accessContextId.isEmpty();
       case AtsDslPackage.ACTIONABLE_ITEM_DEF__CHILDREN:
         return children != null && !children.isEmpty();
     }
@@ -521,6 +557,8 @@ public class ActionableItemDefImpl extends MinimalEObjectImpl.Container implemen
     result.append(staticId);
     result.append(", teamDef: ");
     result.append(teamDef);
+    result.append(", accessContextId: ");
+    result.append(accessContextId);
     result.append(')');
     return result.toString();
   }

@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.access.test.mocks;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.core.data.AccessContextId;
+import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.services.CmAccessControl;
 import org.junit.Assert;
@@ -24,11 +24,11 @@ public class MockConfigurationManagement implements CmAccessControl {
    private final IBasicArtifact<?> expectedUser;
    private final Object expectedObject;
    private final boolean isApplicable;
-   private final Collection<AccessContextId> contextIds;
+   private final Collection<IAccessContextId> contextIds;
    private boolean wasIsApplicableCalled;
    private boolean wasGetContextIdCalled;
 
-   public MockConfigurationManagement(IBasicArtifact<?> expectedUser, Object expectedObject, boolean isApplicable, Collection<AccessContextId> contextIds) {
+   public MockConfigurationManagement(IBasicArtifact<?> expectedUser, Object expectedObject, boolean isApplicable, Collection<IAccessContextId> contextIds) {
       super();
       this.expectedUser = expectedUser;
       this.expectedObject = expectedObject;
@@ -45,7 +45,7 @@ public class MockConfigurationManagement implements CmAccessControl {
    }
 
    @Override
-   public Collection<AccessContextId> getContextId(IBasicArtifact<?> user, Object object) {
+   public Collection<IAccessContextId> getContextId(IBasicArtifact<?> user, Object object) {
       wasGetContextIdCalled = true;
       Assert.assertEquals(expectedUser, user);
       Assert.assertEquals(expectedObject, object);

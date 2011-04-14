@@ -45,6 +45,7 @@ import org.eclipse.osee.ats.dsl.atsDsl.VersionDef;
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.TeamDefImpl#getMember <em>Member</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.TeamDefImpl#getPriviledged <em>Priviledged</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.TeamDefImpl#getWorkDefinition <em>Work Definition</em>}</li>
+ *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.TeamDefImpl#getAccessContextId <em>Access Context Id</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.TeamDefImpl#getVersion <em>Version</em>}</li>
  *   <li>{@link org.eclipse.osee.ats.dsl.atsDsl.impl.TeamDefImpl#getChildren <em>Children</em>}</li>
  * </ul>
@@ -183,6 +184,16 @@ public class TeamDefImpl extends MinimalEObjectImpl.Container implements TeamDef
    * @ordered
    */
   protected String workDefinition = WORK_DEFINITION_EDEFAULT;
+
+  /**
+   * The cached value of the '{@link #getAccessContextId() <em>Access Context Id</em>}' attribute list.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getAccessContextId()
+   * @generated
+   * @ordered
+   */
+  protected EList<String> accessContextId;
 
   /**
    * The cached value of the '{@link #getVersion() <em>Version</em>}' containment reference list.
@@ -392,6 +403,20 @@ public class TeamDefImpl extends MinimalEObjectImpl.Container implements TeamDef
    * <!-- end-user-doc -->
    * @generated
    */
+  public EList<String> getAccessContextId()
+  {
+    if (accessContextId == null)
+    {
+      accessContextId = new EDataTypeEList<String>(String.class, this, AtsDslPackage.TEAM_DEF__ACCESS_CONTEXT_ID);
+    }
+    return accessContextId;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EList<VersionDef> getVersion()
   {
     if (version == null)
@@ -467,6 +492,8 @@ public class TeamDefImpl extends MinimalEObjectImpl.Container implements TeamDef
         return getPriviledged();
       case AtsDslPackage.TEAM_DEF__WORK_DEFINITION:
         return getWorkDefinition();
+      case AtsDslPackage.TEAM_DEF__ACCESS_CONTEXT_ID:
+        return getAccessContextId();
       case AtsDslPackage.TEAM_DEF__VERSION:
         return getVersion();
       case AtsDslPackage.TEAM_DEF__CHILDREN:
@@ -518,6 +545,10 @@ public class TeamDefImpl extends MinimalEObjectImpl.Container implements TeamDef
       case AtsDslPackage.TEAM_DEF__WORK_DEFINITION:
         setWorkDefinition((String)newValue);
         return;
+      case AtsDslPackage.TEAM_DEF__ACCESS_CONTEXT_ID:
+        getAccessContextId().clear();
+        getAccessContextId().addAll((Collection<? extends String>)newValue);
+        return;
       case AtsDslPackage.TEAM_DEF__VERSION:
         getVersion().clear();
         getVersion().addAll((Collection<? extends VersionDef>)newValue);
@@ -567,6 +598,9 @@ public class TeamDefImpl extends MinimalEObjectImpl.Container implements TeamDef
       case AtsDslPackage.TEAM_DEF__WORK_DEFINITION:
         setWorkDefinition(WORK_DEFINITION_EDEFAULT);
         return;
+      case AtsDslPackage.TEAM_DEF__ACCESS_CONTEXT_ID:
+        getAccessContextId().clear();
+        return;
       case AtsDslPackage.TEAM_DEF__VERSION:
         getVersion().clear();
         return;
@@ -605,6 +639,8 @@ public class TeamDefImpl extends MinimalEObjectImpl.Container implements TeamDef
         return priviledged != null && !priviledged.isEmpty();
       case AtsDslPackage.TEAM_DEF__WORK_DEFINITION:
         return WORK_DEFINITION_EDEFAULT == null ? workDefinition != null : !WORK_DEFINITION_EDEFAULT.equals(workDefinition);
+      case AtsDslPackage.TEAM_DEF__ACCESS_CONTEXT_ID:
+        return accessContextId != null && !accessContextId.isEmpty();
       case AtsDslPackage.TEAM_DEF__VERSION:
         return version != null && !version.isEmpty();
       case AtsDslPackage.TEAM_DEF__CHILDREN:
@@ -636,6 +672,8 @@ public class TeamDefImpl extends MinimalEObjectImpl.Container implements TeamDef
     result.append(staticId);
     result.append(", workDefinition: ");
     result.append(workDefinition);
+    result.append(", accessContextId: ");
+    result.append(accessContextId);
     result.append(')');
     return result.toString();
   }
