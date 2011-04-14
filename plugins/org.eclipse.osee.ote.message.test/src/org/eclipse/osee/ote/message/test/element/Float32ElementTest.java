@@ -17,6 +17,9 @@ import org.eclipse.osee.ote.message.elements.Float32Element;
 import org.junit.Assert;
 import org.junit.Test;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public class Float32ElementTest {
 
    @Test

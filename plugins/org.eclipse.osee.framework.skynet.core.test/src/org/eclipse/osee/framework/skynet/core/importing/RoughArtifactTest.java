@@ -13,6 +13,9 @@ package org.eclipse.osee.framework.skynet.core.importing;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+/**
+ * @author Ryan D. Brooks
+ */
 public class RoughArtifactTest {
 
    //TODO: due to issues with the MasterTestSuite_DemoDbTests

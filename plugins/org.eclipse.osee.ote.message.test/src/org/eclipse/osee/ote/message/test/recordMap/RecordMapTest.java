@@ -10,10 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.message.test.recordMap;
 
-import org.junit.Assert;
 import org.eclipse.osee.ote.message.test.mock.TestMessage;
+import org.junit.Assert;
 import org.junit.Test;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public class RecordMapTest {
 
    @Test

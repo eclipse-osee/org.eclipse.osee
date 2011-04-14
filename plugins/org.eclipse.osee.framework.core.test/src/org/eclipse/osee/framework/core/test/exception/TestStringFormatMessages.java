@@ -16,12 +16,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.junit.Assert;
 import org.eclipse.osee.framework.jdk.core.text.tool.Find;
 import org.eclipse.osee.framework.jdk.core.text.tool.FindResultsIterator;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.junit.Assert;
 import org.junit.Test;
 
+/**
+ * @author Ryan D. Brooks
+ */
 public class TestStringFormatMessages {
    private static final String formatSuffix = "\\s*\\(\".*?%.*?\"(?<!\\\\\")[^;]+;";
    private static final String throwPattern = "throw new\\s*\\w+" + formatSuffix;

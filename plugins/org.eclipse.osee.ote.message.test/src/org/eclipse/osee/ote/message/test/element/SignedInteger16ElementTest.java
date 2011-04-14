@@ -16,6 +16,9 @@ import org.eclipse.osee.ote.message.elements.SignedInteger16Element;
 import org.junit.Assert;
 import org.junit.Test;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public class SignedInteger16ElementTest {
 
    @Test

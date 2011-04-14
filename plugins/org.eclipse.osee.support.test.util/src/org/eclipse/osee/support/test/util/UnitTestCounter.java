@@ -7,7 +7,10 @@ package org.eclipse.osee.support.test.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -41,15 +44,29 @@ public class UnitTestCounter {
          }
 
          StringBuffer results = new StringBuffer();
-         results.append("Test Unit Total, " + unitTestCount + "\n");
+         results.append("Test Unit Total (file with at least 1 test case), " + unitTestCount + "\n");
+
+         List<String> names = new ArrayList<String>();
          for (Entry<String, MutableInteger> entry : authorToFileCount.getCounts()) {
-            results.append(entry.getKey() + ", " + entry.getValue() + "\n");
+            System.out.println(String.format("Author [%s]", entry.getKey()));
+            names.add(entry.getKey() + ", " + entry.getValue() + "\n");
          }
+         Collections.sort(names);
+         for (String name : names) {
+            results.append(name);
+         }
+
          results.append("\n\n");
-         results.append("Test Point Total, " + testPointCount + "\n");
+         results.append("Test Case Total (@org.junit.Test or @Test), " + testPointCount + "\n");
+         names.clear();
          for (Entry<String, MutableInteger> entry : authorToTestPointCount.getCounts()) {
-            results.append(entry.getKey() + ", " + entry.getValue() + "\n");
+            names.add(entry.getKey() + ", " + entry.getValue() + "\n");
          }
+         Collections.sort(names);
+         for (String name : names) {
+            results.append(name);
+         }
+
          results.append("\n\n");
          results.append(sb.toString());
 
@@ -82,16 +99,23 @@ public class UnitTestCounter {
                   author = author.replaceAll(System.getProperty("line.separator"), "");
                   author = author.replaceFirst("^.*@author *", "");
                   author = author.replaceFirst(" *$", "");
-                  authorToFileCount.put(author);
-                  sb.append(author);
+                  author = author.replaceAll("\\s+$", "");
+                  if (Strings.isValid(author)) {
 
-                  Matcher m = Pattern.compile("(@Test|@org.junit.Test)").matcher(text);
-                  int fileTestPointCount = 0;
-                  while (m.find()) {
-                     fileTestPointCount++;
+                     Matcher m = Pattern.compile("(@Test|@org.junit.Test)").matcher(text);
+                     int fileTestPointCount = 0;
+                     while (m.find()) {
+                        fileTestPointCount++;
+                     }
+                     if (fileTestPointCount > 0) {
+                        authorToFileCount.put(author);
+                        sb.append(author);
+
+                        testPointCount += fileTestPointCount;
+                        authorToTestPointCount.put(author, fileTestPointCount);
+                     }
                   }
-                  testPointCount += fileTestPointCount;
-                  authorToTestPointCount.put(author, fileTestPointCount);
+
                }
             }
             sb.append("\n");

@@ -17,6 +17,9 @@ import org.eclipse.osee.ote.message.elements.LongIntegerElement;
 import org.junit.Assert;
 import org.junit.Test;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public class LongIntegerElementTest {
    @Test
    public void test1BitInts() {

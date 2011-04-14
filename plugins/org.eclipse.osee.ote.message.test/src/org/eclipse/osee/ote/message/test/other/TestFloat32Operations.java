@@ -18,6 +18,9 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public class TestFloat32Operations {
    private UnitTestSupport support;
 

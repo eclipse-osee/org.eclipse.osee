@@ -16,6 +16,8 @@ import org.junit.Test;
 
 /**
  * Test Case for {@link UpdateBookmarkIds}
+ * 
+ * @author Ryan D. Brooks
  */
 public class UpdateBookmarkIdTest {
 

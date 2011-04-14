@@ -25,6 +25,9 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class CopyAtsConfigurationOperationTest {
 
    @BeforeClass

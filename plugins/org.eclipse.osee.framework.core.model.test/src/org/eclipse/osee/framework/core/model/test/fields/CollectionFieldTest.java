@@ -14,13 +14,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import org.junit.Assert;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.internal.fields.CollectionField;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * author Roberto E. Escobar
+ * @author Roberto E. Escobar
  */
 public class CollectionFieldTest {
 
