@@ -14,12 +14,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
-import org.eclipse.osee.framework.core.internal.Activator;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Roberto E. Escobar
@@ -74,35 +72,35 @@ public final class Operations {
    }
 
    public static Job executeAsJob(IOperation operation, boolean user) {
-      return scheduleJob(new OperationJob(operation), user, Job.LONG, null);
+      return executeAsJob(operation, user, Job.LONG, null, null);
    }
 
-   public static Job executeAsJob(IOperation operation, OperationLogger logger, boolean user) {
-      return scheduleJob(new OperationJob(operation), user, Job.LONG, null);
+   public static Job executeAsJob(IOperation operation, boolean user, ISchedulingRule rule) {
+      return executeAsJob(operation, user, Job.LONG, null, rule);
+   }
+
+   public static Job executeAsJob(IOperation operation, boolean user, int priority, IJobChangeListener jobChangeListener, ISchedulingRule rule) {
+      Job job = new OperationJob(operation);
+      job.addJobChangeListener(new JobChangeLogger(operation.getLogger()));
+      return scheduleJob(job, user, priority, jobChangeListener, rule);
    }
 
    public static Job executeAsJob(IOperation operation, boolean user, int priority, IJobChangeListener jobChangeListener) {
-      return scheduleJob(new OperationJob(operation), user, priority, jobChangeListener);
+      return executeAsJob(operation, user, priority, jobChangeListener, null);
    }
 
    public static Job scheduleJob(Job job, boolean user, int priority, IJobChangeListener jobChangeListener) {
-      return scheduleJob(job, user, priority, jobChangeListener, false);
+      return scheduleJob(job, user, priority, jobChangeListener, null);
    }
 
-   public static Job scheduleJob(Job job, boolean user, int priority, IJobChangeListener jobChangeListener, boolean forcePend) {
+   public static Job scheduleJob(Job job, boolean user, int priority, IJobChangeListener jobChangeListener, ISchedulingRule rule) {
       job.setUser(user);
       job.setPriority(priority);
       if (jobChangeListener != null) {
          job.addJobChangeListener(jobChangeListener);
       }
+      job.setRule(rule);
       job.schedule();
-      if (forcePend) {
-         try {
-            job.join();
-         } catch (InterruptedException ex) {
-            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-         }
-      }
       return job;
    }
 }

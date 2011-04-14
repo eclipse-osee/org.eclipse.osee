@@ -14,6 +14,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.OperationLogger;
 
 /**
  * @author Ryan D. Brooks
@@ -48,5 +49,10 @@ public class MockOperation implements IOperation {
 
    public void setCalled(boolean called) {
       this.called = called;
+   }
+
+   @Override
+   public OperationLogger getLogger() {
+      return null;
    }
 }

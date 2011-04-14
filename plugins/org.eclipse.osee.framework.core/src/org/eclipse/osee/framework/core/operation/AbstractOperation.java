@@ -153,6 +153,7 @@ public abstract class AbstractOperation implements IOperation {
       logger.logf(format, args);
    }
 
+   @Override
    public OperationLogger getLogger() {
       return logger;
    }
