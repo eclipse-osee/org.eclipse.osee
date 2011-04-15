@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.artifact.ActionManager;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.goal.GoalCheckTreeDialog;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
@@ -33,7 +34,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ArtifactCheckTreeDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
@@ -105,8 +105,7 @@ public class GoalsColumn extends XViewerAtsColumn implements IXViewerValueColumn
       }
       Collection<Artifact> allGoals =
          new GoalSearchItem("", new ArrayList<TeamDefinitionArtifact>(), false, null).performSearchGetResults();
-      ArtifactCheckTreeDialog dialog = new ArtifactCheckTreeDialog(allGoals);
-      dialog.setTitle("Select Goals");
+      GoalCheckTreeDialog dialog = new GoalCheckTreeDialog(allGoals);
       dialog.setInitialSelections(selected.toArray());
       if (dialog.open() == 0) {
          SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Set Goals");

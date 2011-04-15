@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.jface.window.Window;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
+import org.eclipse.osee.ats.goal.GoalLabelProvider;
+import org.eclipse.osee.ats.goal.GoalViewerSorter;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -52,7 +54,8 @@ public final class GoalManager {
       if (goals.size() == 1) {
          goal = (GoalArtifact) goals.iterator().next();
       } else if (goals.size() > 1) {
-         ArtifactListDialog dialog = new ArtifactListDialog(Displays.getActiveShell());
+         ArtifactListDialog dialog =
+            new ArtifactListDialog(Displays.getActiveShell(), new GoalViewerSorter(), new GoalLabelProvider());
          dialog.setTitle("Select Goal");
          dialog.setMessage("Artifact has multiple Goals\n\nSelect Goal to change order");
          dialog.setArtifacts(goals);

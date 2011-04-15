@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 
 import java.util.Collection;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -29,25 +30,25 @@ import org.eclipse.ui.dialogs.ListDialog;
 public class ArtifactListDialog extends ListDialog {
 
    boolean requireSelection = true;
+   private final ViewerSorter viewerSorter;
 
-   /**
-    * @return the requireSelection
-    */
    public boolean isRequireSelection() {
       return requireSelection;
    }
 
-   /**
-    * @param requireSelection the requireSelection to set
-    */
    public void setRequireSelection(boolean requireSelection) {
       this.requireSelection = requireSelection;
    }
 
    public ArtifactListDialog(Shell parent) {
+      this(parent, null, new ArtifactDescriptiveLabelProvider());
+   }
+
+   public ArtifactListDialog(Shell parent, ViewerSorter viewerSorter, ILabelProvider labelProvider) {
       super(parent);
+      this.viewerSorter = viewerSorter;
       setContentProvider(new ArrayContentProvider());
-      setLabelProvider(new ArtifactDescriptiveLabelProvider());
+      setLabelProvider(labelProvider);
       setShellStyle(getShellStyle() | SWT.RESIZE);
    }
 
@@ -58,13 +59,17 @@ public class ArtifactListDialog extends ListDialog {
    @Override
    protected Control createDialogArea(Composite container) {
       Control c = super.createDialogArea(container);
-      getTableViewer().setSorter(new ViewerSorter() {
-         @SuppressWarnings("unchecked")
-         @Override
-         public int compare(Viewer viewer, Object e1, Object e2) {
-            return getComparator().compare(((Artifact) e1).getName(), ((Artifact) e2).getName());
-         }
-      });
+      if (viewerSorter == null) {
+         getTableViewer().setSorter(new ViewerSorter() {
+            @SuppressWarnings("unchecked")
+            @Override
+            public int compare(Viewer viewer, Object e1, Object e2) {
+               return getComparator().compare(((Artifact) e1).getName(), ((Artifact) e2).getName());
+            }
+         });
+      } else {
+         getTableViewer().setSorter(viewerSorter);
+      }
       return c;
    }
 

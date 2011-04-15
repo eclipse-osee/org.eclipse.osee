@@ -192,13 +192,13 @@ public class TeamWorkFlowManager {
     */
    public static String getPcrId(AbstractWorkflowArtifact awa) throws OseeCoreException {
       TeamWorkFlowArtifact teamArt = awa.getParentTeamWorkflow();
-      for (ITeamWorkflowProvider atsTeamWorkflow : TeamWorkflowProviders.getAtsTeamWorkflowExtensions()) {
-         String pcrId = atsTeamWorkflow.getPcrId(teamArt);
-         if (Strings.isValid(pcrId)) {
-            return pcrId;
-         }
-      }
       if (teamArt != null) {
+         for (ITeamWorkflowProvider atsTeamWorkflow : TeamWorkflowProviders.getAtsTeamWorkflowExtensions()) {
+            String pcrId = atsTeamWorkflow.getPcrId(teamArt);
+            if (Strings.isValid(pcrId)) {
+               return pcrId;
+            }
+         }
          return teamArt.getTeamName() + " " + awa.getHumanReadableId();
       }
       return "";
