@@ -48,6 +48,7 @@ public class AtsArtifactImageProvider extends ArtifactImageProvider {
       ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.Task);
       ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.PeerToPeerReview);
       ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.DecisionReview);
+      ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.Goal);
       for (IArtifactType artifactType : TeamWorkflowProviders.getAllTeamWorkflowArtifactTypes()) {
          ArtifactImageManager.registerOverrideImageProvider(this, artifactType);
       }
