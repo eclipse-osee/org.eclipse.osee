@@ -206,23 +206,23 @@ public class DefectXViewer extends XViewer {
       MenuManager mm = getMenuManager();
       // EDIT MENU BLOCK
       mm.insertBefore(MENU_GROUP_PRE, editSeverityAction);
-      editSeverityAction.setEnabled(true);
+      editSeverityAction.setEnabled(xDefectViewer.isEditable());
       mm.insertBefore(MENU_GROUP_PRE, editClosedAction);
-      editClosedAction.setEnabled(true);
+      editClosedAction.setEnabled(xDefectViewer.isEditable());
       mm.insertBefore(MENU_GROUP_PRE, editCreatedDateAction);
-      editCreatedDateAction.setEnabled(true);
+      editCreatedDateAction.setEnabled(xDefectViewer.isEditable());
       mm.insertBefore(MENU_GROUP_PRE, editDescriptionAction);
-      editDescriptionAction.setEnabled(true);
+      editDescriptionAction.setEnabled(xDefectViewer.isEditable());
       mm.insertBefore(MENU_GROUP_PRE, editDispositionAction);
-      editDispositionAction.setEnabled(true);
+      editDispositionAction.setEnabled(xDefectViewer.isEditable());
       mm.insertBefore(MENU_GROUP_PRE, editInjectionAction);
-      editInjectionAction.setEnabled(true);
+      editInjectionAction.setEnabled(xDefectViewer.isEditable());
       mm.insertBefore(MENU_GROUP_PRE, editLocationAction);
-      editLocationAction.setEnabled(true);
+      editLocationAction.setEnabled(xDefectViewer.isEditable());
       mm.insertBefore(MENU_GROUP_PRE, editResolutionAction);
-      editResolutionAction.setEnabled(true);
+      editResolutionAction.setEnabled(xDefectViewer.isEditable());
       mm.insertBefore(MENU_GROUP_PRE, editUserAction);
-      editUserAction.setEnabled(true);
+      editUserAction.setEnabled(xDefectViewer.isEditable());
 
    }
 
@@ -473,8 +473,7 @@ public class DefectXViewer extends XViewer {
          XPromptChange.promptChangeSingleSelectEnumeration(xCol.getName(), InjectionActivity.strValues(),
             (columnMultiEdit ? null : defectItem.getInjectionActivity().name()));
       if (enumDialog != null && enumDialog.getResult() != null) {
-         modified =
-            setInjectionActivity(defectItems, InjectionActivity.valueOf((String) enumDialog.getResult()[0]));
+         modified = setInjectionActivity(defectItems, InjectionActivity.valueOf((String) enumDialog.getResult()[0]));
       }
       return modified;
    }
@@ -490,8 +489,8 @@ public class DefectXViewer extends XViewer {
 
    private boolean handleLocationCol(XViewerColumn xCol, Collection<DefectItem> defectItems, boolean columnMultiEdit, boolean modified, DefectItem defectItem) {
       String loc =
-         XPromptChange.promptChangeString(xCol.getName(), (columnMultiEdit ? null : defectItem.getLocation()),
-            null, Option.MULTI_LINE);
+         XPromptChange.promptChangeString(xCol.getName(), (columnMultiEdit ? null : defectItem.getLocation()), null,
+            Option.MULTI_LINE);
       if (loc != null) {
          modified = setLocation(defectItems, loc);
       }
@@ -500,8 +499,8 @@ public class DefectXViewer extends XViewer {
 
    private boolean handleResolutionCol(XViewerColumn xCol, Collection<DefectItem> defectItems, boolean columnMultiEdit, boolean modified, DefectItem defectItem) {
       String resolution =
-         XPromptChange.promptChangeString(xCol.getName(), (columnMultiEdit ? null : defectItem.getResolution()),
-            null, Option.MULTI_LINE);
+         XPromptChange.promptChangeString(xCol.getName(), (columnMultiEdit ? null : defectItem.getResolution()), null,
+            Option.MULTI_LINE);
       if (resolution != null) {
          modified = setResolution(defectItems, resolution);
       }
@@ -510,8 +509,8 @@ public class DefectXViewer extends XViewer {
 
    private boolean handleDescriptionCol(XViewerColumn xCol, Collection<DefectItem> defectItems, boolean columnMultiEdit, boolean modified, DefectItem defectItem) {
       String desc =
-         XPromptChange.promptChangeString(xCol.getName(), (columnMultiEdit ? null : defectItem.getDescription()),
-            null, Option.MULTI_LINE);
+         XPromptChange.promptChangeString(xCol.getName(), (columnMultiEdit ? null : defectItem.getDescription()), null,
+            Option.MULTI_LINE);
       if (desc != null) {
          modified = setDescription(defectItems, desc);
       }
@@ -529,8 +528,7 @@ public class DefectXViewer extends XViewer {
    }
 
    private boolean handleCreatedDateCol(XViewerColumn xCol, Collection<DefectItem> defectItems, boolean columnMultiEdit, boolean modified, DefectItem defectItem) {
-      Date selDate =
-         XPromptChange.promptChangeDate(xCol.getName(), (columnMultiEdit ? defectItem.getDate() : null));
+      Date selDate = XPromptChange.promptChangeDate(xCol.getName(), (columnMultiEdit ? defectItem.getDate() : null));
       if (selDate != null) {
          modified = setDate(defectItems, selDate);
       }
