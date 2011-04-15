@@ -422,6 +422,21 @@ oseeEnumType "enum.ats.review.formalType" {
 }
 
 
+attributeType "ats.Review Formal Type" extends EnumeratedAttribute {
+   guid "AOwrClAkonFC_UKqyJAA"
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   enumType "enum.ats.review.formalType"
+}
+
+oseeEnumType "enum.ats.review.formalType" {
+   guid "AOwcwimB611lejOyNxQA"
+   entry "InFormal" entryGuid "AOwhbvyBMHKCIuhSzwgA"
+   entry "Formal" entryGuid "AOwiPVD_jCOHV4KnAQwA"
+}
+
+
 oseeEnumType "enum.ats.point" {
    guid "AYyqLF5WrgvoWwAJhbAA"
    entry "1" entryGuid "AYyqLF5WrgvoWwAJhbAA"

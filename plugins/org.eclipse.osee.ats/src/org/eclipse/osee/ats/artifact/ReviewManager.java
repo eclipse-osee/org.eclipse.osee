@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.util.TeamState;
 import org.eclipse.osee.ats.util.TransitionOption;
 import org.eclipse.osee.ats.workdef.DecisionReviewOption;
 import org.eclipse.osee.ats.workdef.ReviewBlockType;
+import org.eclipse.osee.ats.workdef.ReviewFormalType;
 import org.eclipse.osee.ats.workflow.TransitionManager;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -139,6 +140,7 @@ public class ReviewManager {
          }
       }
       peerToPeerRev.setSoleAttributeValue(AtsAttributeTypes.ReviewBlocks, ReviewBlockType.None.name());
+      peerToPeerRev.setSoleAttributeValue(AtsAttributeTypes.ReviewFormalType, ReviewFormalType.InFormal.name());
       peerToPeerRev.persist(transaction);
       return peerToPeerRev;
    }

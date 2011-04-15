@@ -76,6 +76,7 @@ import org.eclipse.osee.ats.column.RemainingHoursColumn;
 import org.eclipse.osee.ats.column.ResolutionColumn;
 import org.eclipse.osee.ats.column.ReviewAuthorColumn;
 import org.eclipse.osee.ats.column.ReviewDeciderColumn;
+import org.eclipse.osee.ats.column.ReviewFormalTypeColumn;
 import org.eclipse.osee.ats.column.ReviewModeratorColumn;
 import org.eclipse.osee.ats.column.ReviewNumIssuesColumn;
 import org.eclipse.osee.ats.column.ReviewNumMajorDefectsColumn;
@@ -160,6 +161,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       OperationalImpactWorkaroundColumn.getInstance(),
       OperationalImpactWorkaroundDesciptionColumn.getInstance(),
       ImplementorColumn.getInstance(),
+      ReviewFormalTypeColumn.getInstance(),
       ReviewAuthorColumn.getInstance(),
       ReviewModeratorColumn.getInstance(),
       ReviewReviewerColumn.getInstance(),

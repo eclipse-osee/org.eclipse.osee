@@ -89,6 +89,7 @@ public final class AtsAttributeTypes {
    public static final IAttributeType Resolution = createType("AAMFEdUMfV1KdbQNaKwA", "Resolution", "Implementation details.");
    public static final IAttributeType ReviewBlocks = createType("AAMFEc6G2A8jmRWJgagA", "Review Blocks", "Review Completion will block it's parent workflow in this manner.");
    public static final IAttributeType ReviewDefect = createType("AAMFEd+MSVAb8JQ6f5gA", "Review Defect");
+   public static final IAttributeType ReviewFormalType = createType("AOwrClAkonFC_UKqyJAA", "Review Formal Type");
    public static final IAttributeType Role = createType("AAMFEeCqMz0XCSBJ+IQA", "Role");
    public static final IAttributeType RuleDefinition = createType("AEqAJNnkyW4_d5_WhpgA", "Rule Definition");
    public static final IAttributeType SmaNote = createType("AAMFEdm7ywte8qayfbAA", "SMA Note", "Notes applicable to ATS object");
