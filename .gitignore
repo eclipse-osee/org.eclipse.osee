@@ -1,5 +1,5 @@
 #Ignore all bin folders
-*/*/bin/
+bin/
 #Ignore all .settings folders
 */*/.settings/
 #Ignore vi temporary files
