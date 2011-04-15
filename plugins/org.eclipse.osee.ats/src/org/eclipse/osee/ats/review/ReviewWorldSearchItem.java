@@ -1,0 +1,237 @@
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+
+package org.eclipse.osee.ats.review;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.logging.Level;
+import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
+import org.eclipse.osee.ats.artifact.ActionableItemManager;
+import org.eclipse.osee.ats.artifact.AtsAttributeTypes;
+import org.eclipse.osee.ats.artifact.ReviewManager;
+import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.artifact.WorkflowManager;
+import org.eclipse.osee.ats.column.ReviewFormalTypeColumn;
+import org.eclipse.osee.ats.config.AtsCacheManager;
+import org.eclipse.osee.ats.internal.AtsPlugin;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
+import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.TeamState;
+import org.eclipse.osee.ats.world.search.WorldUISearchItem;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.AbstractArtifactSearchCriteria;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeCriteria;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageType;
+
+/**
+ * @author Donald G. Dunne
+ */
+public class ReviewWorldSearchItem extends WorldUISearchItem {
+
+   private Collection<ActionableItemArtifact> aias;
+   private final boolean recurseChildren;
+   private boolean includeCompleted;
+   private final Collection<String> aiNames;
+   private final Artifact versionArt;
+   private final User userArt;
+   private final boolean includeCancelled;
+   private final String stateName;
+   private final ReviewFormalType reviewFormalType;
+
+   public ReviewWorldSearchItem(String displayName, List<String> aiNames, boolean includeCompleted, boolean includeCancelled, boolean recurseChildren, Artifact versionArt, User userArt, ReviewFormalType reviewFormalType, String stateName) {
+      super(displayName, AtsImage.REVIEW);
+      this.includeCancelled = includeCancelled;
+      this.versionArt = versionArt;
+      this.userArt = userArt;
+      this.aiNames = aiNames;
+      this.includeCompleted = includeCompleted;
+      this.recurseChildren = recurseChildren;
+      this.reviewFormalType = reviewFormalType;
+      this.stateName = stateName;
+   }
+
+   public ReviewWorldSearchItem(String displayName, Collection<ActionableItemArtifact> aias, boolean includeCompleted, boolean includeCancelled, boolean recurseChildren, Artifact versionArt, User userArt, ReviewFormalType reviewFormalType, String stateName) {
+      super(displayName, AtsImage.REVIEW);
+      this.includeCancelled = includeCancelled;
+      this.versionArt = versionArt;
+      this.userArt = userArt;
+      this.recurseChildren = recurseChildren;
+      this.stateName = stateName;
+      this.aiNames = null;
+      this.aias = aias;
+      this.includeCompleted = includeCompleted;
+      this.reviewFormalType = reviewFormalType;
+   }
+
+   public ReviewWorldSearchItem(ReviewWorldSearchItem reviewWorldUISearchItem) {
+      super(reviewWorldUISearchItem, AtsImage.REVIEW);
+      this.versionArt = null;
+      this.userArt = null;
+      this.recurseChildren = reviewWorldUISearchItem.recurseChildren;
+      this.aiNames = reviewWorldUISearchItem.aiNames;
+      this.aias = reviewWorldUISearchItem.aias;
+      this.includeCompleted = reviewWorldUISearchItem.includeCompleted;
+      this.includeCancelled = reviewWorldUISearchItem.includeCancelled;
+      this.stateName = reviewWorldUISearchItem.stateName;
+      this.reviewFormalType = reviewWorldUISearchItem.reviewFormalType;
+   }
+
+   public Collection<String> getProductSearchName() {
+      if (aiNames != null) {
+         return aiNames;
+      } else if (aias != null) {
+         return Artifacts.artNames(aias);
+      }
+      return new ArrayList<String>();
+   }
+
+   @Override
+   public String getSelectedName(SearchType searchType) throws OseeCoreException {
+      return String.format("%s - %s", super.getSelectedName(searchType), getProductSearchName());
+   }
+
+   /**
+    * Loads all team definitions if specified by name versus by team definition class
+    */
+   public void getTeamDefs() {
+      if (aiNames != null && aias == null) {
+         aias = new HashSet<ActionableItemArtifact>();
+         for (String teamDefName : aiNames) {
+            ActionableItemArtifact aia =
+               (ActionableItemArtifact) AtsCacheManager.getSoleArtifactByName(AtsArtifactTypes.ActionableItem,
+                  teamDefName);
+            if (aia != null) {
+               aias.add(aia);
+            }
+         }
+      }
+   }
+
+   @Override
+   public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
+      getTeamDefs();
+      Set<String> actionableItemGuids = new HashSet<String>(aias.size());
+      for (ActionableItemArtifact aia : aias) {
+         if (recurseChildren) {
+            for (ActionableItemArtifact childTeamDef : ActionableItemManager.getActionableItemsFromItemAndChildren(aia)) {
+               actionableItemGuids.add(childTeamDef.getGuid());
+            }
+         } else {
+            actionableItemGuids.add(aia.getGuid());
+         }
+      }
+      List<AbstractArtifactSearchCriteria> criteria = new ArrayList<AbstractArtifactSearchCriteria>();
+      if (actionableItemGuids.isEmpty()) {
+         criteria.add(new AttributeCriteria(AtsAttributeTypes.ActionableItem));
+      } else {
+         criteria.add(new AttributeCriteria(AtsAttributeTypes.ActionableItem, actionableItemGuids));
+      }
+
+      addIncludeCompletedCancelledCriteria(criteria, includeCompleted, includeCancelled);
+
+      List<Artifact> artifacts = ArtifactQuery.getArtifactListFromCriteria(AtsUtil.getAtsBranch(), 1000, criteria);
+
+      Set<Artifact> resultSet = new HashSet<Artifact>();
+      for (Artifact art : artifacts) {
+         if (art.isOfType(AtsArtifactTypes.ReviewArtifact) && includeReview(art)) {
+            resultSet.add(art);
+         }
+         if (art instanceof TeamWorkFlowArtifact) {
+            for (Artifact revArt : ReviewManager.getReviews((TeamWorkFlowArtifact) art)) {
+               if (includeReview(revArt)) {
+                  resultSet.add(revArt);
+               }
+            }
+         }
+      }
+      return WorkflowManager.filterState(stateName, resultSet);
+   }
+
+   public boolean includeReview(Artifact reviewArt) throws OseeCoreException {
+      AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) reviewArt;
+      // don't include if userArt specified and userArt not assignee
+      if (userArt != null && !awa.getStateMgr().getAssignees().contains(userArt)) {
+         return false;
+      }
+      // don't include if version specified and workflow's not targeted for version
+      if (versionArt != null) {
+         TeamWorkFlowArtifact team = awa.getParentTeamWorkflow();
+         if (team != null && (team.getTargetedVersion() == null || !team.getTargetedVersion().equals(versionArt))) {
+            return false;
+         }
+      }
+
+      if (reviewFormalType != null) {
+         ReviewFormalType reviewType = ReviewFormalTypeColumn.getReviewFormalType(reviewArt);
+         if (reviewType == null || reviewFormalType != reviewType) {
+            return false;
+         }
+      }
+      return true;
+
+   }
+
+   public static void addIncludeCompletedCancelledCriteria(List<AbstractArtifactSearchCriteria> criteria, boolean includeCompleted, boolean includeCancelled) throws OseeCoreException {
+      try {
+         if (AttributeTypeManager.getType(AtsAttributeTypes.CurrentStateType) != null) {
+            if (!includeCancelled && !includeCompleted) {
+               criteria.add(new AttributeCriteria(AtsAttributeTypes.CurrentStateType, WorkPageType.Working.name()));
+            } else {
+               List<String> cancelOrComplete = new ArrayList<String>(2);
+               cancelOrComplete.add(WorkPageType.Working.name());
+               if (includeCompleted) {
+                  cancelOrComplete.add(WorkPageType.Completed.name());
+               }
+               if (includeCancelled) {
+                  cancelOrComplete.add(WorkPageType.Cancelled.name());
+               }
+               criteria.add(new AttributeCriteria(AtsAttributeTypes.CurrentStateType, cancelOrComplete));
+            }
+         }
+      } catch (OseeTypeDoesNotExist ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         // Backward compatibility; remove after 0.9.7 release
+         List<String> cancelOrComplete = new ArrayList<String>(2);
+         if (!includeCancelled) {
+            cancelOrComplete.add(TeamState.Cancelled.getPageName() + ";;;");
+         }
+         if (!includeCompleted) {
+            cancelOrComplete.add(TeamState.Completed.getPageName() + ";;;");
+         }
+         if (cancelOrComplete.size() > 0) {
+            criteria.add(new AttributeCriteria(AtsAttributeTypes.CurrentState, cancelOrComplete));
+         }
+      }
+   }
+
+   public void setShowFinished(boolean showFinished) {
+      this.includeCompleted = showFinished;
+   }
+
+   @Override
+   public WorldUISearchItem copy() {
+      return new ReviewWorldSearchItem(this);
+   }
+
+}

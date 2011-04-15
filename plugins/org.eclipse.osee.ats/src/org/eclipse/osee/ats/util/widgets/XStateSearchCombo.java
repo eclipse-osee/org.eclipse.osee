@@ -31,7 +31,7 @@ import org.eclipse.swt.widgets.Composite;
  * @author Donald G. Dunne
  */
 public class XStateSearchCombo extends XComboViewer {
-   private static List<String> validStates = new ArrayList<String>();
+   protected static List<String> validStates = new ArrayList<String>();
    public static final String WIDGET_ID = XStateSearchCombo.class.getSimpleName();
    private String selectedState = null;
 
@@ -40,7 +40,7 @@ public class XStateSearchCombo extends XComboViewer {
       ensurePopulated();
    }
 
-   private synchronized void ensurePopulated() {
+   protected synchronized void ensurePopulated() {
       if (validStates.isEmpty()) {
          validStates.add("--select--");
          try {

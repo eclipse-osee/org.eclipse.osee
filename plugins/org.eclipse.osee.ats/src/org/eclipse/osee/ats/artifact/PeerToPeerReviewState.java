@@ -17,7 +17,7 @@ public class PeerToPeerReviewState extends WorkPageAdapter {
       return WorkPageAdapter.valueOfPage(PeerToPeerReviewState.class, pageName);
    }
 
-   public List<PeerToPeerReviewState> values() {
+   public static List<PeerToPeerReviewState> values() {
       return WorkPageAdapter.pages(PeerToPeerReviewState.class);
    }
 

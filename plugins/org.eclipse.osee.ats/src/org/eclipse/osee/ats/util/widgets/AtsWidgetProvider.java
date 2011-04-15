@@ -31,10 +31,16 @@ public class AtsWidgetProvider implements IXWidgetProvider {
          XHyperlabelTeamDefinitionSelection widget = new XHyperlabelTeamDefinitionSelection(name);
          widget.setToolTip(widgetLayoutData.getToolTip());
          toReturn = widget;
+      } else if (widgetName.equals(XHyperlabelActionableItemSelection.WIDGET_ID)) {
+         XHyperlabelActionableItemSelection widget = new XHyperlabelActionableItemSelection(name);
+         widget.setToolTip(widgetLayoutData.getToolTip());
+         toReturn = widget;
       } else if (widgetName.equals(XHyperlabelGroupSelection.WIDGET_ID)) {
          XHyperlabelGroupSelection widget = new XHyperlabelGroupSelection(name);
          widget.setToolTip(widgetLayoutData.getToolTip());
          toReturn = widget;
+      } else if (widgetName.equals(XReviewStateSearchCombo.WIDGET_ID)) {
+         toReturn = new XReviewStateSearchCombo();
       } else if (widgetName.equals(XStateCombo.WIDGET_ID)) {
          toReturn = new XStateCombo();
       } else if (widgetName.equals(XStateSearchCombo.WIDGET_ID)) {
