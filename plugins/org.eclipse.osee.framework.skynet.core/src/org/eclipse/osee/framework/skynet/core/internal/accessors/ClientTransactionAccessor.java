@@ -51,6 +51,7 @@ public class ClientTransactionAccessor implements ITransactionDataAccessor {
 
    @Override
    public void loadTransactionRecord(TransactionCache cache, Branch branch) {
+      // provided for subclass implementation
    }
 
    @Override

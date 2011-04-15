@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.render;
 import java.io.File;
 import java.io.InputStream;
 import java.util.List;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -51,7 +50,7 @@ public class OpenOfficeWriterRenderer extends FileSystemRenderer implements ITem
    }
 
    @Override
-   protected IOperation getUpdateOperation(File file, List<Artifact> artifacts, Branch branch, PresentationType presentationType) throws OseeCoreException {
+   protected IOperation getUpdateOperation(File file, List<Artifact> artifacts, Branch branch, PresentationType presentationType) {
       throw new UnsupportedOperationException();
    }
 }

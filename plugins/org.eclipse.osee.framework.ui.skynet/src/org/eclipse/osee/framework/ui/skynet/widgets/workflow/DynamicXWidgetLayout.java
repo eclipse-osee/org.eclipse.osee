@@ -441,7 +441,7 @@ public class DynamicXWidgetLayout {
       }
    }
 
-   public void processLayoutDatas(Element element) throws OseeCoreException {
+   public void processLayoutDatas(Element element) {
       List<DynamicXWidgetLayoutData> layoutDatas = XWidgetParser.extractlayoutDatas(this, element);
       for (DynamicXWidgetLayoutData layoutData : layoutDatas) {
          nameToLayoutData.put(layoutData.getName(), layoutData);

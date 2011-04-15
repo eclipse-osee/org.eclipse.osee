@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.IActionable;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.Change;
@@ -57,7 +56,7 @@ import org.eclipse.swt.widgets.Tree;
 /**
  * @author Jeff C. Phillips
  */
-public class XHistoryWidget extends GenericXWidget implements IActionable {
+public class XHistoryWidget extends GenericXWidget {
 
    private HistoryXViewer xHistoryViewer;
    public final static String normalColor = "#EEEEEE";

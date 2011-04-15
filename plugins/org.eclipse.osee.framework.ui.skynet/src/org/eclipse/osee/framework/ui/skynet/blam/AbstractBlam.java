@@ -68,6 +68,7 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
     */
    public abstract Collection<String> getCategories();
 
+   @SuppressWarnings("unused")
    public String getXWidgetsXml() throws OseeCoreException {
       return AbstractBlam.branchXWidgetXml;
    }

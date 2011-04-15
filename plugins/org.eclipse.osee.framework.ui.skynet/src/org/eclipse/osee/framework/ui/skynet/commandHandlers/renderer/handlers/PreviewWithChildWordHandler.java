@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers;
 
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
@@ -22,7 +21,7 @@ import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 public class PreviewWithChildWordHandler extends AbstractEditorHandler {
 
    @Override
-   public Object executeWithException(ExecutionEvent event) throws OseeCoreException {
+   public Object executeWithException(ExecutionEvent event) {
       RendererManager.openInJob(artifacts, PresentationType.PREVIEW, ITemplateRenderer.PREVIEW_WITH_RECURSE_OPTION_PAIR);
       return null;
    }

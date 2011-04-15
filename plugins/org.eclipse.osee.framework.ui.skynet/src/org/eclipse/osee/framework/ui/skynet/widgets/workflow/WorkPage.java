@@ -211,7 +211,7 @@ public class WorkPage implements IDynamicWidgetLayoutListener, IWorkPage {
       return dynamicXWidgetLayout.getLayoutData(layoutName);
    }
 
-   public void processInstructions(Document doc) throws OseeCoreException {
+   public void processInstructions(Document doc) {
       processLayoutDatas(doc.getDocumentElement());
    }
 
@@ -219,7 +219,7 @@ public class WorkPage implements IDynamicWidgetLayoutListener, IWorkPage {
       dynamicXWidgetLayout.processlayoutDatas(xWidgetXml);
    }
 
-   protected void processLayoutDatas(Element element) throws OseeCoreException {
+   protected void processLayoutDatas(Element element) {
       dynamicXWidgetLayout.processLayoutDatas(element);
    }
 
