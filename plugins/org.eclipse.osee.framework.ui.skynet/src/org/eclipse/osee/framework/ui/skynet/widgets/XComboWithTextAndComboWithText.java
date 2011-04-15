@@ -23,6 +23,7 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -232,6 +233,14 @@ public class XComboWithTextAndComboWithText extends XCombo {
 
    public XComboWithText getComboWithText() {
       return comboWithText;
+   }
+
+   @Override
+   public Control getControl() {
+      if (text != null) {
+         return text.getStyledText();
+      }
+      return null;
    }
 
    @Override
