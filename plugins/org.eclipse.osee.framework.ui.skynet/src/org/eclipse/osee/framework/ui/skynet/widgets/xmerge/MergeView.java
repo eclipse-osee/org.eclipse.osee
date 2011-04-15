@@ -72,6 +72,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView;
 import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.ConflictHandlingOperation.ConflictOperationEnum;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -840,15 +841,25 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
    }
 
    @Override
-   public void handleBranchEvent(Sender sender, BranchEvent branchEvent) {
+   public void handleBranchEvent(final Sender sender, final BranchEvent branchEvent) {
       if (!isApplicableSourceOrDestEvent(branchEvent.getBranchGuid())) {
          return;
       }
+
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
-            if (mergeXWidget != null && mergeXWidget.getXViewer().getTree().isDisposed() != true) {
-               mergeXWidget.refresh();
+            switch (branchEvent.getEventType()) {
+               case Deleted:
+               case Purged:
+               case Committed:
+                  getSite().getPage().hideView(MergeView.this);
+                  break;
+               default:
+                  if (mergeXWidget != null && Widgets.isAccessible(mergeXWidget.getXViewer().getTree())) {
+                     mergeXWidget.refresh();
+                  }
+                  break;
             }
          }
       });
