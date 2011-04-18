@@ -135,14 +135,14 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
       public void foundStartOfWorksheet(String sheetName) {
          rowCount = 0;
          try {
-            if (sheetName.equals("relations")) {
-               importingRelations = true;
-               return;
-            }
-            primaryDescriptor = ArtifactTypeManager.getType(sheetName);
-            if (primaryDescriptor == null) {
-               throw new OseeArgumentException("The sheet [%s] is not a valid artifact type name.", sheetName);
-            }
+         if (sheetName.equals("relations")) {
+            importingRelations = true;
+            return;
+         }
+         primaryDescriptor = ArtifactTypeManager.getType(sheetName);
+         if (primaryDescriptor == null) {
+            throw new OseeArgumentException("The sheet [%s] is not a valid artifact type name.", sheetName);
+         }
          } catch (OseeCoreException ex) {
             throw new IllegalArgumentException("The sheet [%s] is not a valid artifact type name: ", ex);
          }
@@ -228,7 +228,7 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
             }
 
             collector.addRoughArtifact(roughArtifact);
-            relationHelper.put(primaryDescriptor.getName(), Integer.valueOf(rowCount), roughArtifact);
+            relationHelper.put(primaryDescriptor.getName(), rowCount, roughArtifact);
          }
       }
 

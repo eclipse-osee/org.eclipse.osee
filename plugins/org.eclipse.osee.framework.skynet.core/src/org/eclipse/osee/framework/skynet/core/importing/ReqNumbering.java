@@ -14,11 +14,21 @@ package org.eclipse.osee.framework.skynet.core.importing;
  * @author Robert A. Fisher
  */
 public class ReqNumbering implements Comparable<ReqNumbering> {
+   private static final int ZERO_BASED_NUMBERING = 2;
+   private static final int ONE_BASED_NUMBERING = 1;
+
    private final String number;
    private final String[] values;
 
+   /**
+    * Requirement Numbering
+    *
+    * @note When a number with a separator - is used, i.e. 1.2-1. All - are replaced with . at construction.
+    * @param number
+    */
    public ReqNumbering(String number) {
-      this.number = number;
+      //When additional separators are used (- instead of .)
+      this.number = number.replace("-", ".");
       values = tokenize();
    }
 
@@ -31,8 +41,17 @@ public class ReqNumbering implements Comparable<ReqNumbering> {
     */
    public boolean isChild(ReqNumbering numbering) {
       String[] numberVals = numbering.values;
-      if (values.length + 1 != numberVals.length) {
-         return false;
+
+      switch (numberVals.length - values.length) {
+         case ZERO_BASED_NUMBERING:
+            if (!numberVals[numberVals.length - 2].equals("0")) {
+               return false;
+            }
+            break;
+         case ONE_BASED_NUMBERING:
+            break;
+         default:
+            return false;
       }
 
       for (int i = 0; i < values.length; i++) {
