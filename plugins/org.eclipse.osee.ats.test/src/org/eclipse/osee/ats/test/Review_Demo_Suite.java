@@ -22,6 +22,6 @@ import org.junit.runners.Suite;
  * 
  * @author Donald G. Dunne
  */
-public class Review_Demo_StateItem_Suite {
+public class Review_Demo_Suite {
    // test provided above
 }
