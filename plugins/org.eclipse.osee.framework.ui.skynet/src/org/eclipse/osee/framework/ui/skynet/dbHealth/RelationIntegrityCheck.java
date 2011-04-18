@@ -26,20 +26,16 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
 
 /**
+ * {@link RelationIntegrityCheckTest }
+ *
  * @author Theron Virgin
  */
 public class RelationIntegrityCheck extends DatabaseHealthOperation {
-   private static class LocalRelationLink {
-      public int relLinkId;
-      public int gammaId;
-      public int relTransId;
-      public int branchId;
-      public int aArtId;
-      public int bArtId;
-      public int transIdForArtifactDeletion;
+   public static class LocalRelationLink {
+      public int relLinkId, gammaId, relTransId, branchId, aArtId, bArtId, transIdForArtifactDeletion, commitTrans,
+         modType;
 
-      public LocalRelationLink(int relLinkId, int gammaId, int transactionId, int branchId, int aArtId, int bArtId, int transIdForArtifactDeletion) {
-         super();
+      public LocalRelationLink(int relLinkId, int gammaId, int transactionId, int branchId, int aArtId, int bArtId, int transIdForArtifactDeletion, int commitTrans, int modType) {
          this.aArtId = aArtId;
          this.bArtId = bArtId;
          this.branchId = branchId;
@@ -47,26 +43,63 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
          this.relLinkId = relLinkId;
          this.relTransId = transactionId;
          this.transIdForArtifactDeletion = transIdForArtifactDeletion;
+         this.commitTrans = commitTrans;
+         this.modType = modType;
+      }
+
+      @Override
+      public String toString() {
+         //System.out.println("gamma_id \t transaction_id \t rel_link_id \t branch_d \t a_art_id \t b_art_id \t deleted_tran \t commit trans \t commit trans mod type");
+         return String.format("%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s", gammaId, relTransId, relLinkId, branchId, aArtId,
+            bArtId, transIdForArtifactDeletion, commitTrans, modType);
       }
    }
+   //@formatter:off
+   private static final String DELETED_ARTIFACTS_QUERY =
+      " SELECT    " +
+      "     tx1.gamma_id, " +
+      "     tx1.transaction_id, " +
+      "     tx1.branch_id, " +
+      "     rel1.rel_link_id, " +
+      "     rel1.a_art_id, " +
+      "     rel1.b_art_id, " +
+      "     tx2.transaction_id AS deleted_tran, " +
+      "     txd.commit_art_id AS commit_trans_art_id, " +
+      "     tx1.mod_type AS creating_trans_mod_type " +
+      " FROM " +
+      "     osee_txs tx1, " +
+      "     osee_txs tx2, " +
+      "     osee_relation_link rel1, " +
+      "     osee_artifact av1, " +
+      "     osee_tx_details txd " +
+      " WHERE " +
+      "     tx1.branch_id = tx2.branch_id AND " +
+      "     tx1.tx_current = " + TxChange.CURRENT.getValue() + " AND " +
+      "     tx2.tx_current = " + TxChange.DELETED.getValue() + " AND " +
+      "     tx1.gamma_id = rel1.gamma_id AND " +
+      "     tx2.gamma_id = av1.gamma_id AND " +
+      "     av1.art_id = rel1.%s AND " +
+      "     tx1.transaction_id = txd.transaction_id ";
+    //@formatter:on
 
+   // relations that reference deleted artifacts on side A
+   public static final String DELETED_A_ARTIFACTS = String.format(DELETED_ARTIFACTS_QUERY, "a_art_id");
+   public static final String DELETED_B_ARTIFACTS = String.format(DELETED_ARTIFACTS_QUERY, "b_art_id");
+
+   public static final String DELETE_FROM_TXS = "DELETE FROM osee_txs where gamma_id = ? AND transaction_id = ?";
+
+   public static final String DEL_FROM_TXS_W_SPEC_BRANCH_ID =
+      "DELETE FROM osee_txs where gamma_id = ? AND transaction_id = ? AND branch_id = ?";
+
+   // relations that no artifact (on side A of relation) references
    private static final String NO_ADDRESSING_ARTIFACTS_A =
       "SELECT tx1.gamma_id, tx1.transaction_id, rel1.rel_link_id, tx1.branch_id, rel1.a_art_id, rel1.b_art_id, 0 AS deleted_tran FROM osee_txs tx1, osee_relation_link rel1 WHERE tx1.gamma_id = rel1.gamma_id AND NOT EXISTS (SELECT 'x' FROM osee_txs tx2, osee_artifact av1 WHERE tx1.branch_id = tx2.branch_id AND tx2.gamma_id = av1.gamma_id AND av1.art_id = rel1.a_art_id)";
-
+   // relations that no artifact (on side B of relation) references
    private static final String NO_ADDRESSING_ARTIFACTS_B =
       "SELECT tx1.gamma_id, tx1.transaction_id, rel1.rel_link_id, tx1.branch_id, rel1.a_art_id, rel1.b_art_id, 0 AS deleted_tran FROM osee_txs tx1, osee_relation_link rel1 WHERE tx1.gamma_id = rel1.gamma_id AND NOT EXISTS (SELECT 'x' FROM osee_txs tx2, osee_artifact av1 WHERE tx1.branch_id = tx2.branch_id AND tx2.gamma_id = av1.gamma_id AND av1.art_id = rel1.b_art_id)";
 
-   private static final String DELETED_A_ARTIFACTS =
-      "SELECT tx1.gamma_id, tx1.transaction_id, rel1.rel_link_id, tx1.branch_id, rel1.a_art_id, rel1.b_art_id, tx2.transaction_id AS deleted_tran FROM osee_txs tx1, osee_txs tx2, osee_relation_link rel1, osee_artifact av1 WHERE tx1.gamma_id = rel1.gamma_id AND tx1.tx_current = 1 AND tx1.branch_id = tx2.branch_id AND tx2.gamma_id = av1.gamma_id AND tx2.tx_current = 2 AND av1.art_id = rel1.a_art_id";
-
-   private static final String DELETED_B_ARTIFACTS =
-      "SELECT tx1.gamma_id, tx1.transaction_id, rel1.rel_link_id, tx1.branch_id, rel1.a_art_id, rel1.b_art_id, tx2.transaction_id AS deleted_tran FROM osee_txs tx1, osee_txs tx2, osee_relation_link rel1, osee_artifact av1 WHERE tx1.gamma_id = rel1.gamma_id AND tx1.tx_current = 1 AND tx1.branch_id = tx2.branch_id AND tx2.gamma_id = av1.gamma_id AND tx2.tx_current = 2 AND av1.art_id = rel1.b_art_id";
-
-   private static final String DELETE_FROM_TXS = "DELETE FROM osee_txs where gamma_id = ? AND transaction_id = ?";
-
    private static final String UPDATE_TXS_PREVIOUS =
       "UPDATE osee_txs SET tx_current = 0 WHERE gamma_id = ? AND transaction_id = ?";
-
    private static final String UPDATE_TXS_CURRENT =
       "UPDATE osee_txs SET tx_current = " + TxChange.ARTIFACT_DELETED.getValue() + ", mod_type = " + ModificationType.ARTIFACT_DELETED.getValue() + " WHERE gamma_id = ? AND transaction_id = ?";
 
@@ -162,7 +195,7 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
          rowsToDelete.add(new Object[] {relLink.gammaId, relLink.relTransId});
       }
 
-      monitor.subTask("Deleting Relation Addressing with non existent Artifacts");
+      monitor.subTask("Deleting Relation Addressing with " + TxChange.DELETED + " Artifact");
       if (rowsToDelete.size() != 0) {
          ConnectionHandler.runBatchUpdate(DELETE_FROM_TXS, rowsToDelete);
       }
@@ -172,15 +205,31 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
    }
 
    private void fix() throws OseeCoreException {
+
+      //fix for NO_ADDRESSING_ARTIFACTS_A or NO_ADDRESSING_ARTIFACTS_B
       deleteInvalidRelationAddressing();
 
       List<Object[]> insertArtifactDeleted = new LinkedList<Object[]>();
       List<Object[]> updatePreviousAddressing = new LinkedList<Object[]>();
       List<Object[]> updateCurrentAddressing = new LinkedList<Object[]>();
-      List<LocalRelationLink> pathologicalCases = new ArrayList<LocalRelationLink>();
+      List<LocalRelationLink> unExpectedCases = new ArrayList<LocalRelationLink>();
+      List<Object[]> commitOfNewRelationOnDeletedArtifactCases = new ArrayList<Object[]>();
+
       for (LocalRelationLink relLink : updateMap.allValues()) {
          if (relLink.relTransId > relLink.transIdForArtifactDeletion) {
-            pathologicalCases.add(relLink);
+
+            if (relLink.commitTrans > 0 && relLink.modType == 1) {
+               commitOfNewRelationOnDeletedArtifactCases.add(new Object[] {
+                  relLink.gammaId,
+                  relLink.relTransId,
+                  relLink.branchId}); //typically during a merge of a branch
+               //displayUnexpectedRelLinks(unExpectedCases);
+            } else {
+               //NO POST PROCESSING HERE, subset of relLink(s) that are not understood to be classified.
+               //At minimum they should be displayed.
+               unExpectedCases.add(relLink);
+            }
+
          } else if (relLink.relTransId == relLink.transIdForArtifactDeletion) {
             updateCurrentAddressing.add(new Object[] {relLink.gammaId, relLink.relTransId});
          } else {
@@ -192,10 +241,18 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
          }
       }
 
+      runInsert(commitOfNewRelationOnDeletedArtifactCases, DEL_FROM_TXS_W_SPEC_BRANCH_ID,
+         "Deleting TXs with relation links made with deleted artifacts.");
       runInsert(insertArtifactDeleted, INSERT_TXS, "Inserting Addressing for Deleted Artifacts");
       runInsert(updatePreviousAddressing, UPDATE_TXS_PREVIOUS, "Updating Addressing for Deleted Artifacts");
       runInsert(updateCurrentAddressing, UPDATE_TXS_CURRENT, "Updating Addressing for Deleted Artifacts");
       updateMap = null;
+   }
+
+   @SuppressWarnings("unused")
+   private void displayUnexpectedRelLinks(LocalRelationLink relationLink) {
+      System.out.println("gam_id \t transaction_id \t rel_link_id \t branch_d \t a_art_id \t b_art_id \t deleted_tran \t commit trans \t commit trans mod type");
+      System.out.println(relationLink.toString());
    }
 
    private void runInsert(List<Object[]> insertParameters, String sql, String taskName) throws OseeCoreException {
@@ -204,10 +261,9 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
          ConnectionHandler.runBatchUpdate(sql, insertParameters);
       }
       monitor.worked(calculateWork(0.10));
-
    }
 
-   private void endReport() throws OseeCoreException {
+   private void endReport() {
       sbFull.append(AHTML.endMultiColumnTable());
       XResultData rd = new XResultData();
       rd.addRaw(sbFull.toString());
@@ -244,14 +300,22 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
       try {
          chStmt.runPreparedQuery(sql);
          while (chStmt.next()) {
-            if (!map.containsKey(chStmt.getInt("gamma_id"), chStmt.getInt("transaction_id")) && (forDelete || !deleteMap.containsKey(
-               chStmt.getInt("gamma_id"), chStmt.getInt("transaction_id")))) {
-               map.put(
-                  chStmt.getInt("gamma_id"),
-                  chStmt.getInt("transaction_id"),
-                  new LocalRelationLink(chStmt.getInt("rel_link_id"), chStmt.getInt("gamma_id"),
-                     chStmt.getInt("transaction_id"), chStmt.getInt("branch_id"), chStmt.getInt("a_art_id"),
-                     chStmt.getInt("b_art_id"), chStmt.getInt("deleted_tran")));
+            //@formatter:off
+            int version =              chStmt.getInt("gamma_id");
+            int transactionId =        chStmt.getInt("transaction_id");
+            int relationId =           chStmt.getInt("rel_link_id");
+            int branchId =             chStmt.getInt("branch_id");
+            int a_sideArtifactId =     chStmt.getInt("a_art_id");
+            int b_sideArtifactId =     chStmt.getInt("b_art_id");
+            int deletedTransaction =   chStmt.getInt("deleted_tran");
+
+            int commitTransId =        chStmt.getInt("commit_trans_art_id");
+            int modType =              chStmt.getInt("creating_trans_mod_type");
+            //@formatter:on
+
+            if (!map.containsKey(version, transactionId) && (forDelete || !deleteMap.containsKey(version, transactionId))) {
+               map.put(version, transactionId, new LocalRelationLink(relationId, version, transactionId, branchId,
+                  a_sideArtifactId, b_sideArtifactId, deletedTransaction, commitTransId, modType));
             } else {
                System.out.print("");
             }
@@ -272,5 +336,4 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
    public String getFixDescription() {
       return "Enter Fix Description Here";
    }
-
 }

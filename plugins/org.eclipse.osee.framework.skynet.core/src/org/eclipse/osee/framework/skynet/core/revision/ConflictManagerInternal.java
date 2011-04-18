@@ -392,7 +392,7 @@ public class ConflictManagerInternal {
          }
       }
       for (Branch branch : sourceBranches) {
-         if (branch.getParentBranch().equals(commonBranch)) {
+         if (commonBranch.equals(branch.getParentBranch())) {
             sourceTransaction = branch.getBaseTransaction();
             break;
          }

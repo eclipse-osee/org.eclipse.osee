@@ -77,24 +77,24 @@ public class DatabaseHealth extends AbstractBlam {
       builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\" \"/>");
       builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Select Verification Operations to Run:\"/>");
       for (DatabaseHealthOperation healthOp : DatabaseHealthOpsExtensionManager.getVerifyOperations()) {
-         builder.append(getOperationsCheckBoxes(healthOp, false));
+         builder.append(getOperationsCheckBoxes(healthOp.getVerifyTaskName(), healthOp.getCheckDescription()));
       }
 
       builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\" \"/>");
       builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Select Clean Up Operations to Run:\"/>");
       for (DatabaseHealthOperation fixOp : DatabaseHealthOpsExtensionManager.getFixOperations()) {
-         builder.append(getOperationsCheckBoxes(fixOp, true));
+         builder.append(getOperationsCheckBoxes(fixOp.getFixTaskName(), fixOp.getFixDescription()));
       }
 
       builder.append("</xWidgets>");
       return builder.toString();
    }
 
-   private String getOperationsCheckBoxes(DatabaseHealthOperation fixOp, boolean fix) {
+   private String getOperationsCheckBoxes(String taskName, String description) {
       StringBuilder builder = new StringBuilder();
       builder.append("<XWidget xwidgetType=\"XCheckBox\" displayName=\"");
-      builder.append(fix ? fixOp.getFixTaskName() : fixOp.getVerifyTaskName());
-      String toolTip = AXml.textToXml((fix ? fixOp.getFixDescription() : fixOp.getCheckDescription()));
+      builder.append(taskName);
+      String toolTip = AXml.textToXml(description);
       builder.append("\" labelAfter=\"true\" horizontalLabel=\"true\"  toolTip=\"" + toolTip + "\"/>");
       return builder.toString();
    }

@@ -66,7 +66,6 @@ public class OseeBranchService implements IOseeBranchService {
    private final IOseeModelFactoryServiceProvider modelFactory;
 
    public OseeBranchService(IOseeDatabaseServiceProvider oseeDatabaseProvider, IOseeCachingServiceProvider cachingService, IOseeModelFactoryServiceProvider modelFactory) {
-      super();
       this.oseeDatabaseProvider = oseeDatabaseProvider;
       this.cachingService = cachingService;
       this.modelFactory = modelFactory;

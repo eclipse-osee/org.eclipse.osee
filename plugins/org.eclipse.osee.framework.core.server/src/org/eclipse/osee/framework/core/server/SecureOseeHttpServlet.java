@@ -23,7 +23,6 @@ public class SecureOseeHttpServlet extends OseeHttpServlet {
    private final ISessionManager sessionManager;
 
    public SecureOseeHttpServlet(ISessionManager sessionManager) {
-      super();
       this.sessionManager = sessionManager;
    }
 

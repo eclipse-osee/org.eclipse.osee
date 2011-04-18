@@ -24,27 +24,27 @@ public class ArtifactPasteConfigurationTest {
    @Test
    public void testConstruction() {
       ArtifactPasteConfiguration config = new ArtifactPasteConfiguration();
-      Assert.assertEquals(false, config.isIncludeChildrenOfCopiedElements());
-      Assert.assertEquals(true, config.isKeepRelationOrderSettings());
+      Assert.assertFalse(config.isIncludeChildrenOfCopiedElements());
+      Assert.assertTrue(config.isKeepRelationOrderSettings());
    }
 
    @Test
    public void testSetIncludeChildren() {
       ArtifactPasteConfiguration config = new ArtifactPasteConfiguration();
       config.setIncludeChildrenOfCopiedElements(true);
-      Assert.assertEquals(true, config.isIncludeChildrenOfCopiedElements());
+      Assert.assertTrue(config.isIncludeChildrenOfCopiedElements());
 
       config.setIncludeChildrenOfCopiedElements(false);
-      Assert.assertEquals(false, config.isIncludeChildrenOfCopiedElements());
+      Assert.assertFalse(config.isIncludeChildrenOfCopiedElements());
    }
 
    @Test
    public void testSetKeepRelationOrder() {
       ArtifactPasteConfiguration config = new ArtifactPasteConfiguration();
       config.setKeepRelationOrderSettings(true);
-      Assert.assertEquals(true, config.isKeepRelationOrderSettings());
+      Assert.assertTrue(config.isKeepRelationOrderSettings());
 
       config.setKeepRelationOrderSettings(false);
-      Assert.assertEquals(false, config.isKeepRelationOrderSettings());
+      Assert.assertFalse(config.isKeepRelationOrderSettings());
    }
 }
