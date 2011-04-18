@@ -202,8 +202,7 @@ public class CoverageEditor extends FormEditor implements IActionable {
    }
 
    public static void addToToolBar(IToolBarManager manager, CoverageEditor coverageEditor) {
-      manager.add(OseeUiActions.createBugAction(SkynetGuiPlugin.PLUGIN_ID, coverageEditor, EDITOR_ID,
-         "Lba Code Promote"));
+      manager.add(OseeUiActions.createBugAction(SkynetGuiPlugin.PLUGIN_ID, coverageEditor, EDITOR_ID, "Coverage Editor"));
       manager.update(true);
    }
 
