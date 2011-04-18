@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.render;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.LinkedList;
 import java.util.List;
@@ -19,6 +20,7 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.render.imageDetection.WordImageCompare;
 
 /**
  * @author Theron Virgin
@@ -54,12 +56,17 @@ public class WordImageChecker {
          int count = 0;
          for (int y = 0; y < oldPictures.size(); y++) {
             if (y < newPictures.size() && oldPictures.get(y).getBinaryData() != null && newPictures.get(y).getBinaryData() != null) {
-               if (!oldPictures.get(y).getBinaryData().equals(newPictures.get(y).getBinaryData())) {
-                  int index = oldPictures.get(y).getStartIndex() + MODIFIED_STRING.length() * count;
-                  oldValue = oldValue.substring(0, index) + MODIFIED_STRING + oldValue.substring(index);
-                  modified = true;
-                  count++;
-                  oldAttr.setValue(oldValue);
+               WordImageCompare compare = new WordImageCompare();
+               try {
+                  if (!compare.compareFiles(oldPictures.get(y).getBinaryData(), newPictures.get(y).getBinaryData())) {
+                     int index = oldPictures.get(y).getStartIndex() + MODIFIED_STRING.length() * count;
+                     oldValue = oldValue.substring(0, index) + MODIFIED_STRING + oldValue.substring(index);
+                     modified = true;
+                     count++;
+                     oldAttr.setValue(oldValue);
+                  }
+               } catch (IOException ex) {
+                  OseeLog.log(WordImageChecker.class, Level.WARNING, ex);
                }
             }
          }

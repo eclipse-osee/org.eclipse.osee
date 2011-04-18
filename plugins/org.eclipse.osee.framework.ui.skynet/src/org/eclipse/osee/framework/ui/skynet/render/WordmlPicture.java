@@ -23,6 +23,7 @@ public class WordmlPicture {
    private String binaryData;
    private final String pictureDefinition;
    private final Attribute<?> attribute;
+
    private static final boolean DEBUG =
       "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.ui.skynet/debug/Word"));
 
@@ -75,4 +76,7 @@ public class WordmlPicture {
       return binaryData;
    }
 
+   public String getpictureDefinition() {
+      return pictureDefinition;
+   }
 }
