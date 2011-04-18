@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.actions;
 
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.artifact.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -27,16 +26,17 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
  */
 public class OpenVersionArtifactAction extends Action {
 
+   private static final String ACTION_TEXT = "Open Targeted for Version";
    private final AbstractWorkflowArtifact sma;
 
    public OpenVersionArtifactAction(AbstractWorkflowArtifact sma) {
-      super();
+      super(ACTION_TEXT, ImageManager.getImageDescriptor(FrameworkImage.VERSION));
+      setToolTipText(ACTION_TEXT);
       this.sma = sma;
-      setText("Open Targeted for Version");
-      setToolTipText(getText());
    }
 
-   private void performOpen() {
+   @Override
+   public void run() {
       try {
          if (sma.getTargetedVersion() != null) {
             RendererManager.open(sma.getTargetedVersion(), PresentationType.DEFAULT_OPEN);
@@ -45,15 +45,4 @@ public class OpenVersionArtifactAction extends Action {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
    }
-
-   @Override
-   public void run() {
-      performOpen();
-   }
-
-   @Override
-   public ImageDescriptor getImageDescriptor() {
-      return ImageManager.getImageDescriptor(FrameworkImage.VERSION);
-   }
-
 }
