@@ -96,7 +96,10 @@ import org.eclipse.osee.ote.ui.message.watch.recording.RecordingWizard;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.dnd.Clipboard;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.MouseAdapter;
@@ -243,8 +246,6 @@ public final class WatchView extends ViewPart implements IActionable, IMessageDi
 
    private Composite parentComposite;
    private WatchList watchList;
-
-   private MessageFinder messageFinder;
 
    public WatchView() {
       watchFile = OseeData.getFile("msgWatch.txt");
@@ -433,6 +434,10 @@ public final class WatchView extends ViewPart implements IActionable, IMessageDi
 		public void keyReleased(KeyEvent e) {
 		}
       });
+      
+      int ops = DND.DROP_COPY | DND.DROP_MOVE;
+      Transfer[] transfers = new Transfer[] { FileTransfer.getInstance(), TextTransfer.getInstance()};
+      treeViewer.addDropSupport(ops, transfers, new WatchViewDropAdapter(this));
    }
 
    @Override
@@ -1005,8 +1010,6 @@ public final class WatchView extends ViewPart implements IActionable, IMessageDi
    @Override
    public void onDictionaryLoaded(final IMessageDictionary dictionary) {
 
-	  messageFinder = new MessageFinder(dictionary); 
-	   
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {

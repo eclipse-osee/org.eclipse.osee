@@ -147,7 +147,7 @@ public class SignalStripper {
 
    private List<String> extractMessageImports(String fileAsString) {
       List<String> retVal = new ArrayList<String>();
-      Pattern pattern = Pattern.compile("import (.*+.(\\w|.)+.[A-Z0-9_]+);");
+      Pattern pattern = Pattern.compile("import ((\\w|\\.)+?\\.[A-Z0-9_]+);");
       Matcher matcher = pattern.matcher(fileAsString);
       while( matcher.find()){
          String fullyQualifiesMessageClass = matcher.group(1);
