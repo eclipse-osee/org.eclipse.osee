@@ -16,6 +16,10 @@ import javax.xml.bind.DatatypeConverter;
  */
 public class WordImageCompare {
 
+   /**
+    * Compares images by detecting if they are compressed and using GZIPInputStream to deflate them or compares images
+    * by using the equals method.
+    */
    public boolean compareFiles(String firstFile, String secondFile) throws IOException {
       return handleCompare(firstFile, secondFile);
    }
@@ -28,7 +32,7 @@ public class WordImageCompare {
       InputStream secondStream = getInputStream(secondFile);
 
       if (handler.isValid(firstStream) && handler.isValid(secondStream)) {
-         isEqual = compareBytes(getConvertedByteArray(firstStream), getConvertedByteArray(secondStream));
+         isEqual = compareGZIPImages(getUncompressedByteArray(firstStream), getUncompressedByteArray(secondStream));
       } else {
          isEqual = firstFile.equals(secondFile);
       }
@@ -40,7 +44,7 @@ public class WordImageCompare {
       return new ByteArrayInputStream(data);
    }
 
-   private byte[] getConvertedByteArray(InputStream inputStream) throws IOException {
+   private byte[] getUncompressedByteArray(InputStream inputStream) throws IOException {
       ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
       EMZHtmlImageHandler handler = new EMZHtmlImageHandler();
@@ -48,10 +52,10 @@ public class WordImageCompare {
       return outputStream.toByteArray();
    }
 
-   private boolean compareBytes(byte[] firstbytes, byte[] secondbytes) {
+   private boolean compareGZIPImages(byte[] firstbytes, byte[] secondbytes) {
       boolean isEqual = false;
 
-      if (firstbytes.length == secondbytes.length) {
+      if (firstbytes.length == secondbytes.length && secondbytes.length > 0) {
          isEqual = true;
 
          for (int i = 0; i < firstbytes.length; i++) {
