@@ -45,6 +45,7 @@ public class AtsNavigateItemsToMassEditorTest {
    @org.junit.Test
    public void testTeamVersions() throws Exception {
       closeTaskEditors();
+      MassArtifactEditor.closeAll();
 
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Team Versions");
       Assert.assertTrue(item instanceof MassEditTeamVersionItem);

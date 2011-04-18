@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.test.util.NavigateTestUtil;
 import org.eclipse.osee.ats.test.util.WorldEditorUtil;
 import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.world.WorldEditor;
-import org.eclipse.osee.ats.world.WorldXViewer;
 import org.eclipse.osee.ats.world.search.UserSearchItem;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -91,6 +90,7 @@ public class ReviewNavigateItemsToWorldViewTest {
 
    @org.junit.Test
    public void testReviewParticipationReport() throws Exception {
+      MassArtifactEditor.closeAll();
       XNavigateItem item =
          NavigateTestUtil.getAtsNavigateItems("Generate Review Participation Report").iterator().next();
       ((GenerateReviewParticipationReport) item).setSelectedUser(UserManager.getUser(DemoUsers.Joe_Smith));
@@ -106,10 +106,6 @@ public class ReviewNavigateItemsToWorldViewTest {
    private Collection<Artifact> runGeneralLoadingTest(String xNavigateItemName, IArtifactType artifactType, int numOfType, User user) throws Exception {
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem(xNavigateItemName);
       return runGeneralLoadingTest(item, artifactType, numOfType, user);
-   }
-
-   private Collection<Artifact> runGeneralLoadingTest(XNavigateItem item, IArtifactType artifactType, int numOfType) throws Exception {
-      return runGeneralLoadingTest(item, artifactType, numOfType, null);
    }
 
    private Collection<Artifact> runGeneralLoadingTest(XNavigateItem item, IArtifactType artifactType, int numOfType, User user) throws Exception {
@@ -131,10 +127,6 @@ public class ReviewNavigateItemsToWorldViewTest {
       Collection<Artifact> arts = worldEditor.getLoadedArtifacts();
       NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, artifactType, numOfType);
       return arts;
-   }
-
-   private WorldXViewer getXViewer() {
-      return WorldEditorUtil.getSingleEditorOrFail().getWorldComposite().getXViewer();
    }
 
 }
