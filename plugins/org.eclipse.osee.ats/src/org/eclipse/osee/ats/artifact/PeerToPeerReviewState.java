@@ -7,6 +7,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageType;
 public class PeerToPeerReviewState extends WorkPageAdapter {
    public static PeerToPeerReviewState Prepare = new PeerToPeerReviewState("Prepare", WorkPageType.Working);
    public static PeerToPeerReviewState Review = new PeerToPeerReviewState("Review", WorkPageType.Working);
+   public static PeerToPeerReviewState Meeting = new PeerToPeerReviewState("Meeting", WorkPageType.Working);
    public static PeerToPeerReviewState Completed = new PeerToPeerReviewState("Completed", WorkPageType.Completed);
 
    private PeerToPeerReviewState(String pageName, WorkPageType workPageType) {

@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.review;
 
 import java.util.Collection;
+import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -26,7 +27,9 @@ import org.eclipse.osee.ats.world.search.MyReviewWorkflowItem;
 import org.eclipse.osee.ats.world.search.MyReviewWorkflowItem.ReviewState;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -50,35 +53,55 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
 
    private static final String MASS_XVIEWER_CUSTOMIZE_NAMESPACE = "org.eclipse.osee.ats.ReviewParticipationReport";
 
+   private User selectedUser = null;
+
    public GenerateReviewParticipationReport(XNavigateItem parent) {
       super(parent, "Generate Review Participation Report", AtsImage.REPORT);
    }
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
-      UserListDialog ld = new UserListDialog(Displays.getActiveShell(), Active.Active);
-      int result = ld.open();
-      if (result == 0) {
-         if (ld.getResult().length == 0) {
-            AWorkbench.popup("ERROR", "Must select user");
-            return;
+      User useUser = null;
+      if (selectedUser != null) {
+         useUser = selectedUser;
+      } else {
+         UserListDialog ld = new UserListDialog(Displays.getActiveShell(), Active.Active);
+         int result = ld.open();
+         if (result == 0) {
+            if (ld.getResult().length == 0) {
+               AWorkbench.popup("ERROR", "Must select user");
+               return;
+            }
+            useUser = ld.getSelection();
          }
-         User selectedUser = ld.getSelection();
+      }
+
+      boolean forcePend = Collections.getAggregate(tableLoadOptions).contains(TableLoadOption.ForcePend);
+      if (useUser != null) {
          ParticipationReportJob job =
-            new ParticipationReportJob("Review Participation Report - " + selectedUser, selectedUser);
+            new ParticipationReportJob("Review Participation Report - " + useUser, useUser, forcePend);
          job.setUser(true);
          job.setPriority(Job.LONG);
          job.schedule();
+         if (forcePend) {
+            try {
+               job.join();
+            } catch (InterruptedException ex) {
+               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            }
+         }
       }
-   }
 
+   }
    private static class ParticipationReportJob extends Job {
 
       private final User user;
+      private final boolean forcePend;
 
-      public ParticipationReportJob(String title, User user) {
+      public ParticipationReportJob(String title, User user, boolean forcePend) {
          super(title);
          this.user = user;
+         this.forcePend = forcePend;
       }
 
       @Override
@@ -86,10 +109,18 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
          try {
             MyReviewWorkflowItem srch = new MyReviewWorkflowItem("", user, ReviewState.All);
             Collection<Artifact> reviewArts = srch.performSearchGetResults();
-            MassArtifactEditorInput input =
+            final MassArtifactEditorInput input =
                new MassArtifactEditorInput(getName() + " as of " + DateUtil.getDateNow(), reviewArts,
                   new ReviewParticipationXViewerFactory(user));
-            MassArtifactEditor.editArtifacts(input);
+            Displays.ensureInDisplayThread(new Runnable() {
+
+               @Override
+               public void run() {
+                  MassArtifactEditor.editArtifacts(input);
+               }
+
+            }, forcePend);
+
          } catch (Exception ex) {
             return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, -1, ex.toString(), ex);
          }
@@ -114,5 +145,13 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
          registerAllAttributeColumns();
       }
 
+   }
+
+   public User getSelectedUser() {
+      return selectedUser;
+   }
+
+   public void setSelectedUser(User selectedUser) {
+      this.selectedUser = selectedUser;
    }
 }

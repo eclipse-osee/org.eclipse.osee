@@ -14,6 +14,16 @@ workDefinition "WorkDef_Review_PeerToPeer" {
       option REQUIRED_FOR_TRANSITION
    }
 
+   widgetDefinition "Meeting Length" {
+      attributeName "ats.Meeting Length"
+      option REQUIRED_FOR_TRANSITION
+   }
+
+   widgetDefinition "Meeting Location" {
+      attributeName "ats.Meeting Location"
+      option REQUIRED_FOR_TRANSITION
+   }
+
    widgetDefinition "Related To State" {
       attributeName "ats.Related To State"
       xWidgetName "XStateCombo"
@@ -31,6 +41,12 @@ workDefinition "WorkDef_Review_PeerToPeer" {
       attributeName "ats.Description"
       xWidgetName "XTextDam"
       option FILL_VERTICALLY
+   }
+
+   widgetDefinition "Meeting Attendees" {
+      attributeName "ats.Meeting Attendee"	
+      xWidgetName "XHyperlabelMemberSelDam"
+      option REQUIRED_FOR_TRANSITION
    }
 
    widgetDefinition "Review Blocks" {
@@ -57,24 +73,18 @@ workDefinition "WorkDef_Review_PeerToPeer" {
       option FILL_VERTICALLY
    }
 
-   state "Cancelled" {
-      type Cancelled
-      ordinal 4
-      to "Prepare" OverrideAttributeValidation
-      to "Review" OverrideAttributeValidation
-   }
-
    state "Prepare" {
       type Working
       ordinal 1
       to "Cancelled"
       to "Review" AsDefault
+      to "Meeting"
       layout {
          widget "Title"
          attributeWidget "ats.Legacy PCR Id"
+         widget "Description"
          widget "Role"
          widget "Location"
-         widget "Description"
          composite {
          	numColumns 8
             widget "Review Blocks"
@@ -98,8 +108,10 @@ workDefinition "WorkDef_Review_PeerToPeer" {
       ordinal 2
       to "Cancelled"
       to "Completed" AsDefault
+      to "Meeting" OverrideAttributeValidation
       to "Prepare" OverrideAttributeValidation
       layout {
+         widget "Description"	
          widget "Role"
          widget "Review Defect"
          composite {
@@ -110,14 +122,52 @@ workDefinition "WorkDef_Review_PeerToPeer" {
             attributeWidget "ats.Pages Reviewed"
          }
          widget "Resolution"
-         widget "Description"
+      }
+   }
+
+   state "Meeting" {
+      type Working
+      ordinal 3
+      to "Cancelled"
+      to "Review" OverrideAttributeValidation
+      to "Completed" AsDefault
+      to "Prepare" OverrideAttributeValidation
+      layout {
+         composite {
+            numColumns 4
+            widget "Meeting Length"
+            widget "Meeting Location"
+         }
+         widget "Meeting Attendees"
+         widget "Description"	
+         widget "Role"
+         widget "Review Defect"
+         composite {
+            numColumns 8
+            attributeWidget "ats.LOC Changed"
+            attributeWidget "ats.LOC Reviewed"
+            attributeWidget "ats.Pages Changed"
+            attributeWidget "ats.Pages Reviewed"
+         }
+         widget "Resolution"
       }
    }
 
    state "Completed" {
       type Completed
-      ordinal 3
+      ordinal 4
+      to "Meeting" OverrideAttributeValidation
       to "Review" OverrideAttributeValidation
       rule AddDecisionValidateBlockingReview
    }
+   
+   state "Cancelled" {
+      type Cancelled
+      ordinal 5
+      to "Prepare" OverrideAttributeValidation
+      to "Review" OverrideAttributeValidation
+      to "Meeting" OverrideAttributeValidation
+   }
+
+   
 }

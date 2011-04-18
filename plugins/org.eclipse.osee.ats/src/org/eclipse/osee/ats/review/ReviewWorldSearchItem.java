@@ -112,9 +112,9 @@ public class ReviewWorldSearchItem extends WorldUISearchItem {
    }
 
    /**
-    * Loads all team definitions if specified by name versus by team definition class
+    * Loads all actionable items if specified by name versus by AI class
     */
-   public void getTeamDefs() {
+   public void getAIs() {
       if (aiNames != null && aias == null) {
          aias = new HashSet<ActionableItemArtifact>();
          for (String teamDefName : aiNames) {
@@ -125,12 +125,14 @@ public class ReviewWorldSearchItem extends WorldUISearchItem {
                aias.add(aia);
             }
          }
+      } else if (aiNames == null && aias == null) {
+         aias = new HashSet<ActionableItemArtifact>();
       }
    }
 
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
-      getTeamDefs();
+      getAIs();
       Set<String> actionableItemGuids = new HashSet<String>(aias.size());
       for (ActionableItemArtifact aia : aias) {
          if (recurseChildren) {
@@ -154,18 +156,33 @@ public class ReviewWorldSearchItem extends WorldUISearchItem {
 
       Set<Artifact> resultSet = new HashSet<Artifact>();
       for (Artifact art : artifacts) {
-         if (art.isOfType(AtsArtifactTypes.ReviewArtifact) && includeReview(art)) {
+         if (art.isOfType(AtsArtifactTypes.ReviewArtifact) && includeReview(art) && isCompletedCancelledValid(art)) {
             resultSet.add(art);
          }
          if (art instanceof TeamWorkFlowArtifact) {
             for (Artifact revArt : ReviewManager.getReviews((TeamWorkFlowArtifact) art)) {
-               if (includeReview(revArt)) {
+               if (includeReview(revArt) && isCompletedCancelledValid(revArt)) {
                   resultSet.add(revArt);
                }
             }
          }
       }
       return WorkflowManager.filterState(stateName, resultSet);
+   }
+
+   // Because reviews can be stand-alone or attached to team workflow, the criteria above
+   // doesn't necessarily filter out completed cancelled, make check again here
+   public boolean isCompletedCancelledValid(Artifact artifact) throws OseeCoreException {
+      if (artifact instanceof AbstractWorkflowArtifact) {
+         if (!includeCancelled && ((AbstractWorkflowArtifact) artifact).isCancelled()) {
+            return false;
+         }
+         if (!includeCompleted && ((AbstractWorkflowArtifact) artifact).isCompleted()) {
+            return false;
+         }
+         return true;
+      }
+      return false;
    }
 
    public boolean includeReview(Artifact reviewArt) throws OseeCoreException {

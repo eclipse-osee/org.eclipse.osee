@@ -13,13 +13,9 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.AXml;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -28,9 +24,12 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
+/**
+ * Select users and store as single userId attributes
+ * 
+ * @author Donald G. Dunne
+ */
 public class XHyperlabelMemberSelDam extends XHyperlabelMemberSelection implements IAttributeWidget {
-
-   private static final Pattern USER_PATTERN = Pattern.compile("<userId>(.*?)</userId>");
 
    private Artifact artifact;
    private IAttributeType attributeType;
@@ -54,18 +53,20 @@ public class XHyperlabelMemberSelDam extends XHyperlabelMemberSelection implemen
       this.artifact = artifact;
       this.attributeType = attributeType;
 
-      super.setSelectedUsers(getUsers());
+      super.setSelectedUsers(getStoredUsers());
    }
 
-   public Set<User> getUsers() {
+   public Set<User> getStoredUsers() {
       Set<User> users = new HashSet<User>();
       try {
-         String value = getArtifact().getSoleAttributeValue(getAttributeType(), "");
-         Matcher m = USER_PATTERN.matcher(value);
-         while (m.find()) {
-            users.add(UserManager.getUserByUserId(m.group(1)));
+         for (String userId : artifact.getAttributesToStringList(attributeType)) {
+            try {
+               users.add(UserManager.getUserByUserId(userId));
+            } catch (OseeCoreException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            }
          }
-      } catch (Exception ex) {
+      } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
 
@@ -75,40 +76,23 @@ public class XHyperlabelMemberSelDam extends XHyperlabelMemberSelection implemen
    @Override
    public void saveToArtifact() {
       try {
-         String selectedStrValue = getSelectedStringValue();
-         if (!Strings.isValid(selectedStrValue)) {
-            getArtifact().deleteSoleAttribute(getAttributeType());
-         } else {
-            getArtifact().setSoleAttributeValue(getAttributeType(), selectedStrValue);
+         Set<String> userIds = new HashSet<String>();
+         for (User user : getSelectedUsers()) {
+            userIds.add(user.getUserId());
          }
+         artifact.setAttributeValues(attributeType, userIds);
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
-   public String getSelectedStringValue() throws OseeCoreException {
-      StringBuffer sb = new StringBuffer();
-      for (User user : getSelectedUsers()) {
-         sb.append(AXml.addTagData("userId", user.getUserId()));
-      }
-      return sb.toString();
-   }
-
    @Override
-   public Result isDirty() throws OseeCoreException {
+   public Result isDirty() {
       if (isEditable()) {
-         try {
-            String enteredValue = getSelectedStringValue();
-            String storedValue = artifact.getSoleAttributeValue(attributeType);
-            if (!enteredValue.equals(storedValue)) {
-               return new Result(true, attributeType + " is dirty");
-            }
-         } catch (AttributeDoesNotExist ex) {
-            if (!artifact.getSoleAttributeValue(attributeType, "").equals("")) {
-               return new Result(true, attributeType + " is dirty");
-            }
-         } catch (NumberFormatException ex) {
-            // do nothing
+         Set<User> selected = getSelectedUsers();
+         Set<User> stored = getStoredUsers();
+         if (!Collections.isEqual(selected, stored)) {
+            return new Result(true, attributeType + " is dirty");
          }
       }
       return Result.FalseResult;
@@ -116,6 +100,6 @@ public class XHyperlabelMemberSelDam extends XHyperlabelMemberSelection implemen
 
    @Override
    public void revert() {
-      setAttributeType(getArtifact(), getAttributeType());
+      super.setSelectedUsers(getStoredUsers());
    }
 }

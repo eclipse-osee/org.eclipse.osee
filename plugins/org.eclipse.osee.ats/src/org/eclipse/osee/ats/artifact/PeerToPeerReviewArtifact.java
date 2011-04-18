@@ -46,7 +46,7 @@ public class PeerToPeerReviewArtifact extends AbstractReviewArtifact implements 
          return new Status(IStatus.ERROR, namespace, "Must have at least one Reviewer");
       }
       // If in review state, all roles must have hours spent entered
-      if (isInState(PeerToPeerReviewState.Review)) {
+      if (isInState(PeerToPeerReviewState.Review) || isInState(PeerToPeerReviewState.Meeting)) {
          for (UserRole uRole : userRoleManager.getUserRoles()) {
             if (uRole.getHoursSpent() == null) {
                return new Status(IStatus.ERROR, AtsPlugin.PLUGIN_ID, "Hours spent must be entered for each role.");

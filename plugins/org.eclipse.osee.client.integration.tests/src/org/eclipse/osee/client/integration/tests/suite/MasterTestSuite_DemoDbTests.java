@@ -11,10 +11,10 @@
 package org.eclipse.osee.client.integration.tests.suite;
 
 import static org.junit.Assert.assertTrue;
-
 import org.eclipse.osee.ats.test.AtsTest_Config_Suite;
 import org.eclipse.osee.ats.test.AtsTest_Demo_StateItem_Suite;
 import org.eclipse.osee.ats.test.AtsTest_Demo_Suite;
+import org.eclipse.osee.ats.test.Review_Demo_StateItem_Suite;
 import org.eclipse.osee.coverage.test.Coverage_Db_Suite;
 import org.eclipse.osee.define.AllDefineTestSuite;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
@@ -29,6 +29,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+   Review_Demo_StateItem_Suite.class,
    AtsTest_Demo_StateItem_Suite.class,
    CoreRuntimeFeatureTestsSuite.class,
    Coverage_Db_Suite.class,

@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.artifact.TeamDefinitionManager;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.internal.AtsPlugin;
 import org.eclipse.osee.ats.util.widgets.XHyperlabelActionableItemSelection;
-import org.eclipse.osee.ats.util.widgets.XStateSearchCombo;
+import org.eclipse.osee.ats.util.widgets.XReviewStateSearchCombo;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -53,10 +53,10 @@ public class ReviewSearchWorkflowSearchItem extends WorldEditorParameterSearchIt
    protected XMembersCombo assigneeCombo;
    protected XCheckBox includeCompletedCheckbox;
    protected XCheckBox includeCancelledCheckbox;
-   private XStateSearchCombo stateCombo = null;
+   private XReviewStateSearchCombo stateCombo = null;
 
    public ReviewSearchWorkflowSearchItem(String name) {
-      super(name, AtsImage.REVIEW);
+      super(name, AtsImage.REVIEW_SEARCH);
    }
 
    public ReviewSearchWorkflowSearchItem() {
@@ -64,7 +64,7 @@ public class ReviewSearchWorkflowSearchItem extends WorldEditorParameterSearchIt
    }
 
    public ReviewSearchWorkflowSearchItem(ReviewSearchWorkflowSearchItem peerSearchItem) {
-      super(peerSearchItem, AtsImage.REVIEW);
+      super(peerSearchItem, AtsImage.REVIEW_SEARCH);
    }
 
    @Override
@@ -157,7 +157,7 @@ public class ReviewSearchWorkflowSearchItem extends WorldEditorParameterSearchIt
          includeCancelledCheckbox = (XCheckBox) widget;
       }
       if (widget.getLabel().equals("State")) {
-         stateCombo = (XStateSearchCombo) widget;
+         stateCombo = (XReviewStateSearchCombo) widget;
          stateCombo.getComboViewer().getCombo().setVisibleItemCount(25);
          widget.setToolTip("Select State of Task");
       }

@@ -75,8 +75,8 @@ public class UserWorldSearchItem {
          // If include cancelled or completed, need to perform extra search
          // Note: Don't need to do this for Originator, Subscribed or Favorites, cause it does completed canceled in it's own searches
          if (options.contains(UserSearchOption.IncludeCancelled) || options.contains(UserSearchOption.IncludeCompleted)) {
-            searchArts.addAll(WorkflowManager.getAwas(ArtifactQuery.getArtifactListFromAttribute(AtsAttributeTypes.State,
-               "%<" + user.getUserId() + ">%", AtsUtil.getAtsBranch())));
+            searchArts.addAll(WorkflowManager.getAwas(ArtifactQuery.getArtifactListFromAttribute(
+               AtsAttributeTypes.State, "%<" + user.getUserId() + ">%", AtsUtil.getAtsBranch())));
          }
       }
 

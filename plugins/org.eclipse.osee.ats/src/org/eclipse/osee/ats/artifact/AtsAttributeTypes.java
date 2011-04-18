@@ -66,6 +66,11 @@ public final class AtsAttributeTypes {
    public static final IAttributeType LocChanged= createType("AQR27biJiQlOKTEKCvwA", "LOC Changed", "Total Lines of Code Changed");
    public static final IAttributeType LocReviewed = createType("AQR5ckRsrh4PpayYGAgA", "LOC Reviewed", "Total Lines of Code Reviewed");
    public static final IAttributeType Log = createType("AAMFEdgB1DX3eJSZb0wA", "Log");
+   
+   public static final IAttributeType MeetingLocation = createType("APom8wytSX0G3mcb3qQA", "Meeting Location", "Location meeting is held.");
+   public static final IAttributeType MeetingAttendee = createType("APrZQQaOlFcX1CxbO6QA", "Meeting Attendee", "Attendee of meeting.");
+   public static final IAttributeType MeetingLength = createType("APoxOFjXzV49ZmO3CfwA", "Meeting Length", "Length of meeting.");
+
    public static final IAttributeType NeedBy = createType("AAMFEcxAGzHAKfDNAIwA", "Need By", "Hard schedule date that workflow must be completed.");
    public static final IAttributeType NextVersion = createType("AAMFEcpH8Xb72hsF5AwA", "Next Version", "True if version artifact is \"Next\" version to be released.");
    public static final IAttributeType Numeric1 = createType("AABY2xxQsDm811kCViwA", "Numeric1", "Open field for user to be able to enter numbers for sorting.");

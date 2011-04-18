@@ -37,7 +37,7 @@ public class XStateCombo extends XComboDam {
       List<String> validStates = new ArrayList<String>();
       try {
          WorkDefinition workDef = null;
-         if (getArtifact() instanceof AbstractWorkflowArtifact) {
+         if (getArtifact() instanceof AbstractWorkflowArtifact && ((AbstractWorkflowArtifact) getArtifact()).getParentTeamWorkflow() != null) {
             workDef = ((AbstractWorkflowArtifact) getArtifact()).getParentTeamWorkflow().getWorkDefinition();
          }
          if (workDef != null) {

@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserCheckTreeDialog;
 
@@ -36,12 +37,7 @@ public class XHyperlabelMemberSelection extends XHyperlinkLabelCmdValueSelection
 
    @Override
    public String getCurrentValue() {
-      StringBuffer sb = new StringBuffer();
-      for (User user : selectedUsers) {
-         sb.append(user.getName());
-         sb.append(", ");
-      }
-      return sb.toString().replaceFirst(", $", "");
+      return Artifacts.toString("; ", selectedUsers);
    }
 
    public void setSelectedUsers(Set<User> selectedUsers) {

@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -50,6 +51,7 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 
@@ -296,6 +298,30 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IActio
    @Override
    public String getActionDescription() {
       return "";
+   }
+
+   public static Collection<MassArtifactEditor> getEditors() {
+      final List<MassArtifactEditor> editors = new ArrayList<MassArtifactEditor>();
+      Displays.pendInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            for (IEditorReference editor : AWorkbench.getEditors(EDITOR_ID)) {
+               editors.add((MassArtifactEditor) editor.getEditor(false));
+            }
+         }
+      });
+      return editors;
+   }
+
+   public static void closeAll() {
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            for (IEditorReference editor : AWorkbench.getEditors(EDITOR_ID)) {
+               AWorkbench.getActivePage().closeEditor(editor.getEditor(false), false);
+            }
+         }
+      });
    }
 
 }
