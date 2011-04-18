@@ -18,6 +18,7 @@ import java.net.URL;
 import java.security.NoSuchAlgorithmException;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
+
 import org.eclipse.osee.framework.jdk.core.util.ChecksumUtil;
 
 /**
@@ -78,7 +79,9 @@ public class BundleInfo {
     */
    public static String generateBundleName(Manifest jarManifest) {
       String nameEntry = jarManifest.getMainAttributes().getValue("Bundle-SymbolicName");
-
+	  if(nameEntry == null){
+	     return "unknown";
+	  }
       // Sometimes there's a semicolon then extra info - ignore this
       int index = nameEntry.indexOf(';');
       if (index != -1) {
