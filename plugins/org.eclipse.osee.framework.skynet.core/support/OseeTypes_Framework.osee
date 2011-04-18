@@ -251,8 +251,19 @@ artifactType "Group Artifact" extends "Artifact" {
    guid "ABM4FTvWVzDQsTsM6jQA"
 }
 
+attributeType "Default Group" extends BooleanAttribute {
+   guid "AA37C8T6J1QyaT0+jBwA"
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+   description "Specifies whether to automatically add new users into this group"
+   defaultValue "no"
+}
+
 artifactType "User Group" extends "Abstract Access Controlled" , "Group Artifact" {
    guid "AAMFDhrEbXqZKPfWkwAA"
+   attribute "Default Group"
 }
 
 artifactType "Universal Group" extends "Group Artifact" {

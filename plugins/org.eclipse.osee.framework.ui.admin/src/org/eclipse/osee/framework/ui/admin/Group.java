@@ -21,7 +21,6 @@ public class Group {
    private int numChildrenChecked;
 
    public Group(String groupName, int groupId) {
-      super();
       this.groupName = groupName;
       this.groupId = groupId;
    }

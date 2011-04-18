@@ -15,6 +15,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Collection;
 import java.util.HashSet;
+
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
@@ -34,12 +35,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
  */
 public class User extends Artifact {
    private PropertyStore userSettings;
-
-   @Override
-   public void onBirth() throws OseeCoreException {
-      super.onBirth();
-      SystemGroup.Everyone.addMember(this);
-   }
 
    public User(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, IArtifactType artifactType) throws OseeCoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);

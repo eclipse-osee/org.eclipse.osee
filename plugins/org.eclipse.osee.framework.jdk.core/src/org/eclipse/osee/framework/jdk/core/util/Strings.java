@@ -33,14 +33,12 @@ public class Strings {
    }
 
    public static boolean isValid(String... values) {
-      boolean answer = true;
       for (String value : values) {
-         if (!isValid(value)) {
-            answer = false;
-            break;
+         if (value == null || value.length() == 0) {
+            return false;
          }
       }
-      return answer;
+      return true;
    }
 
    public static boolean isValid(CharSequence value) {

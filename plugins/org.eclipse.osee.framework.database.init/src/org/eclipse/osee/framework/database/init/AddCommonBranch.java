@@ -13,12 +13,14 @@ package org.eclipse.osee.framework.database.init;
 
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.GlobalXViewerSettings;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.SystemGroup;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -51,6 +53,11 @@ public abstract class AddCommonBranch implements IDbInitializationTask {
          BranchManager.createTopLevelBranch(CoreBranches.COMMON);
 
          SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch(), "Add Common Branch");
+
+         //create everyone group
+         Artifact everyonGroup = SystemGroup.Everyone.getArtifact();
+         everyonGroup.setSoleAttributeValue(CoreAttributeTypes.DefaultGroup, true);
+         everyonGroup.persist(transaction);
 
          // Create Default Users
          for (SystemUser userEnum : SystemUser.values()) {

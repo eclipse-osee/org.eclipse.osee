@@ -15,6 +15,10 @@ import java.util.Collection;
 import java.util.Collections;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -24,6 +28,9 @@ import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.skynet.core.SystemGroup;
+import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
  * @author Ryan D. Brooks
@@ -35,11 +42,6 @@ public abstract class ArtifactFactory {
 
    protected ArtifactFactory(IArtifactType... artifactTypes) {
       this.artifactTypeNames = Arrays.asList(artifactTypes);
-   }
-
-   protected ArtifactFactory() {
-      super();
-      this.artifactTypeNames = null;
    }
 
    public Artifact makeNewArtifact(IOseeBranch branch, IArtifactType artifactTypeToken, String guid, String humandReadableId, ArtifactProcessor earlyArtifactInitialization) throws OseeCoreException {
@@ -80,7 +82,22 @@ public abstract class ArtifactFactory {
       artifact.meetMinimumAttributeCounts(true);
       ArtifactCache.cache(artifact);
       artifact.setLinksLoaded(true);
-      artifact.onBirth();
+
+      if (artifactType.equals(CoreArtifactTypes.User)) {
+
+         SystemGroup.Everyone.addMember((User) artifact);
+
+         Collection<Artifact> userGroups =
+            ArtifactQuery.getArtifactListFromTypeAndAttribute(CoreArtifactTypes.UserGroup,
+               CoreAttributeTypes.DefaultGroup, "yes", CoreBranches.COMMON);
+         for (Artifact userGroup : userGroups) {
+            userGroup.addRelation(CoreRelationTypes.Users_User, artifact);
+            userGroup.persist();
+         }
+      } else {
+         artifact.onBirth();
+      }
+
       artifact.onInitializationComplete();
 
       if (Strings.isValid(artifactName)) {
@@ -135,7 +152,7 @@ public abstract class ArtifactFactory {
     * Return true if this artifact factory is responsible for creating artifactType.
     */
    public boolean isResponsibleFor(IArtifactType artifactType) {
-      return artifactTypeNames != null && artifactTypeNames.contains(artifactType);
+      return artifactTypeNames.contains(artifactType);
    }
 
    /**

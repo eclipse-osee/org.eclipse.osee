@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -61,7 +62,7 @@ public class UniversalGroup {
    }
 
    public static Artifact addGroup(String name, Branch branch) throws OseeCoreException {
-      if (getGroups(name, branch).size() > 0) {
+      if (!getGroups(name, branch).isEmpty()) {
          throw new OseeArgumentException("Group Already Exists");
       }
 

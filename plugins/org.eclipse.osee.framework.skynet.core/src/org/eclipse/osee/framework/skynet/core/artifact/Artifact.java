@@ -12,6 +12,7 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Default_Hierarchical__Child;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
+
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
@@ -253,7 +255,7 @@ public class Artifact extends NamedIdentity implements IArtifact, IAdaptable, IB
    @SuppressWarnings("unused")
    public void onBirth() throws OseeCoreException {
       // provided for subclass implementation
-   };
+   }
 
    /**
     * Called upon completion of the initialization of an artifact when loaded from the persistence layer, and when
