@@ -16,12 +16,11 @@ import org.eclipse.osee.framework.jdk.core.text.Rule;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 
 /**
- * Test: @link:WordMLNewLineMakerTest
+ * @see WordMLNewLineMakerTest
  * @author Karol M. Wilk
+ * @note Rule implements a main(), so start this by passing path to files as argument <br/>
+ * TODO: update methods to use ChangeSet rather than current logic
  */
-
-//NOTE: Rule implements a main(), so start this by passing path to files as argument
-//TODO: update methods to use ChangeSet rather than current logic
 public final class WordMLNewLineMaker extends Rule {
 
    private static final String TERMINATING_WP_XML = "\n</w:p>";
@@ -164,7 +163,6 @@ public final class WordMLNewLineMaker extends Rule {
 
    /**
     * Grabs only the first <w:r><w:t> combination and looks for a dot. When found removes the dot
-    * 
     */
    private StringBuilder cleanUpWtFromChunk(CharSequence chunk) {
       StringBuilder tempBuffer = new StringBuilder(chunk.length());

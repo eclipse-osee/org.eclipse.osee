@@ -27,7 +27,7 @@ import org.junit.Test;
  * Tests ability of this WordMLNewLineMakerRule to make new paragraphs by injecting <w:p> at specific points in the
  * file.
  * 
- * @link:WordMLNewLineMaker
+ * @see WordMLNewLineMaker
  * @author Karol M. Wilk
  */
 public final class WordMLNewLineMakerRuleTest {
