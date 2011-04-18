@@ -10,95 +10,65 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.importing.parsers;
 
+import java.util.Collection;
+import java.util.HashSet;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.skynet.core.importing.ReqNumbering;
 
 public final class OutlineResolution {
 
-   private static final String OUTLINE_NUMBER_DELIMITER = "\\.";
-
    public final boolean isInvalidOutlineNumber(String currentOutlineNumber, String lastOutlineNumber) {
-      if (Strings.isValid(currentOutlineNumber) && Strings.isValid(lastOutlineNumber) && currentOutlineNumber.length() >= 1 && lastOutlineNumber.length() >= 1) {
+      if (Strings.isValid(currentOutlineNumber, lastOutlineNumber)) {
 
-         String[] lastOutlineNumberArray = lastOutlineNumber.split(OUTLINE_NUMBER_DELIMITER);
-         String[] currentOutlineNumberArray = currentOutlineNumber.split(OUTLINE_NUMBER_DELIMITER);
+         ReqNumbering current = new ReqNumbering(currentOutlineNumber, false);
+         ReqNumbering last = new ReqNumbering(lastOutlineNumber, false);
 
-         int minLength = currentOutlineNumberArray.length;
-         if (minLength > lastOutlineNumberArray.length) {
-            minLength = lastOutlineNumberArray.length;
+         switch (last.compareTo(current)) {
+            case 1:
+            case -1:
+               boolean check = !generateNextSet(last).contains(current.getNumberString());
+               return check;
+            case 0:
+            default:
+               return false;
          }
-
-         //should I show GUI to resolve conflict?
-         return decideNextPossibleOutlineNumber(currentOutlineNumberArray, lastOutlineNumberArray, minLength) ? false : true;
-
       } else {
          return false;
       }
    }
 
    /**
-    * Determines if the incoming number follows a logical next based on the previous outline number found.
+    * @param lastNumberParagrah i.e. new ReqNumbering("4.0");
+    * @return set of combinations i.e ["4.1, 5.0"]
     */
-   private boolean decideNextPossibleOutlineNumber(String[] currentOutlineNumberArray, String[] lastOutlineNumberArray, int minLength) {
-      boolean detectedAtLeastOnePositive = false; // set to true moment a delta of 1 is found.
-      boolean finalDecisionIfNumberFollowsPattern = false; // decision that gets returned to calling method, whether the paragraph follows the right pattern
-      int zeroDeltaCounter = 0; // counts amount of time delta is 0
-      for (int nextNumberIndex = 0; nextNumberIndex < minLength; nextNumberIndex++) {
-         int currentDigit = extractDigitsSafely(currentOutlineNumberArray[nextNumberIndex]);
-         int lastDigit = extractDigitsSafely(lastOutlineNumberArray[nextNumberIndex]);
+   public Collection<String> generateNextSet(ReqNumbering lastNumberParagrah) {
+      String last = lastNumberParagrah.getNumberString();
+      Collection<String> nextParagraphs = new HashSet<String>();
 
-         int delta = currentDigit - lastDigit;
+      for (int i = last.length() - 1; i >= 0; i--) {
 
-         if (delta == 1) {
-            if (detectedAtLeastOnePositive) {
-               detectedAtLeastOnePositive = false;
-               break;
-            } else {
-               detectedAtLeastOnePositive = true;
-            }
-         } else if (delta == 0) {
-            //made to track difference between previous and next is 0
-            //i.e. last=2.1.1.1 current=2.1.1.1.1
-            zeroDeltaCounter++;
-         } else if (delta < 0) {
-            //negative delta, therefore number
-            //does not follow pattern
-            //invalidate previous findings.
-            if (currentDigit == 0) {
-               //current if zero will disqualify a valid outline number
-               //example: last: 3.1 current: 4.0
-               break;
-            } else {
-               detectedAtLeastOnePositive = false;
-               break;
-            }
-         }
+         if (last.charAt(i) != '.') {
+            int currentInt = extractDigitsSafely(last.subSequence(i, i + 1).toString());
 
-         //check for last=2.1.1.1 current=2.1.1.1.1, indented paragraphs
-         if (nextNumberIndex == minLength - 1 && zeroDeltaCounter == minLength && currentOutlineNumberArray.length > lastOutlineNumberArray.length) {
-            if (Strings.isValid(currentOutlineNumberArray[currentOutlineNumberArray.length - 1])) {
-               if (currentOutlineNumberArray[currentOutlineNumberArray.length - 1].compareTo("1") == 0) {
-                  detectedAtLeastOnePositive = true;
-               } else {
-                  detectedAtLeastOnePositive = false;
-               }
-               break;
+            if (i == last.length() - 1) {
+               nextParagraphs.add(String.format("%s%s", last, ".0.1"));
+               nextParagraphs.add(String.format("%s%s", last, ".1"));
             }
+
+            nextParagraphs.add(String.format("%s%s", last.subSequence(0, i),
+               (i != 0) ? currentInt + 1 : String.format("%s.0", currentInt + 1)));
          }
       }
 
-      if (detectedAtLeastOnePositive) {
-         finalDecisionIfNumberFollowsPattern = true;
-      }
-
-      return finalDecisionIfNumberFollowsPattern;
+      return nextParagraphs;
    }
 
    private int extractDigitsSafely(String stringContainingDigit) {
-      int returnValue = -1;
+      int returnValue = 0;
       try {
          returnValue = Integer.parseInt(stringContainingDigit);
       } catch (NumberFormatException ex) {
-         returnValue = -1;
+         returnValue = 0;
       }
       return returnValue;
    }

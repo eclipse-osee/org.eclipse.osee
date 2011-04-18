@@ -64,6 +64,14 @@ public final class RoughAttributeSet {
       return getAttributeValueList(attributeType.getName());
    }
 
+   /**
+    * @return Same as getAttributeValueList, returns defaultList if getAttributeValueList is null.
+    */
+   public Collection<String> getAttributeValueList(IAttributeType attributeType, Collection<String> defaultList) {
+      Collection<String> list = getAttributeValueList(attributeType);
+      return (list != null) ? list : defaultList;
+   }
+
    public void addURIAttribute(String name, URI url) {
       uriAttributes.put(new CaseInsensitiveString(name), url);
    }

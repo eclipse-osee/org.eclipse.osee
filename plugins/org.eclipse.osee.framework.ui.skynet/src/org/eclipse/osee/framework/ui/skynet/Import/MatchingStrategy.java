@@ -20,9 +20,9 @@ import org.eclipse.osee.framework.skynet.core.importing.resolvers.IArtifactImpor
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.NewArtifactImportResolver;
 
 public enum MatchingStrategy {
-   ATTRIBUTE(),
-   GUID(),
-   NONE();
+   ATTRIBUTE,
+   GUID,
+   NONE;
 
    public IArtifactImportResolver getResolver(IArtifactType primaryArtifactType, Collection<IAttributeType> nonChangingAttributes, boolean createNewIfNotExist, boolean deleteUnmatchedArtifacts) {
       switch (this) {

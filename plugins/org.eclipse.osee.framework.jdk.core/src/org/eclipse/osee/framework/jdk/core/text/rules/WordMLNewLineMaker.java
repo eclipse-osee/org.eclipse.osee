@@ -16,10 +16,11 @@ import org.eclipse.osee.framework.jdk.core.text.Rule;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 
 /**
+ * Processes WordML documents and inserts WordML equivalent new lines. Used in importing tasks. TODO: update methods to
+ * use ChangeSet rather than current logic
+ *
  * @see WordMLNewLineMakerTest
  * @author Karol M. Wilk
- * @note Rule implements a main(), so start this by passing path to files as argument <br/>
- * TODO: update methods to use ChangeSet rather than current logic
  */
 public final class WordMLNewLineMaker extends Rule {
 
@@ -83,17 +84,15 @@ public final class WordMLNewLineMaker extends Rule {
       }
    }
 
+   /**
+    * if modifiedText is valid, it will be the changeset, otherwise entirefile
+    *
+    * @return changset representing result
+    */
    private ChangeSet decideOnResultAndReturnIt(StringBuilder modifiedFile, CharSequence entireFile) {
-      ChangeSet returningChangeSet = null;
-      if (modifiedText.length() > 0) {
-         // modified text becomes the char sequence
-         returningChangeSet = new ChangeSet(modifiedText);
-         setRuleWasApplicable(true);
-      } else {
-         returningChangeSet = new ChangeSet(entireFile);
-         setRuleWasApplicable(false);
-      }
-      return returningChangeSet;
+      boolean insertModified = modifiedText.length() > 0;
+      setRuleWasApplicable(insertModified);
+      return new ChangeSet((insertModified) ? modifiedText : entireFile);
    }
 
    private void processWxSubSection(String wxSubSection) {

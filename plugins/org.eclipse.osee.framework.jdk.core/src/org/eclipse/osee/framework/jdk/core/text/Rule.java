@@ -49,6 +49,12 @@ public abstract class Rule {
       this.subdirectoryName = null;
    }
 
+   /**
+    * Implement this to receive the content of the entire file in {@code seq}
+    *
+    * @param seq
+    * @return
+    */
    public abstract ChangeSet computeChanges(CharSequence seq);
 
    public final void process(Collection<File> list) {

@@ -102,10 +102,6 @@ public final class UtfReadingRuleTest {
    private static final class Utf8TestRule extends Rule {
       private CharSequence lastOutput;
 
-      public Utf8TestRule() {
-         lastOutput = null;
-      }
-
       @Override
       public ChangeSet computeChanges(final CharSequence seq) {
          lastOutput = seq;

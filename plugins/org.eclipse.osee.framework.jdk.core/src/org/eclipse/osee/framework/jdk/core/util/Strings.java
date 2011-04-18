@@ -52,18 +52,11 @@ public class Strings {
     * @return a string with doubled ampersands.
     */
    public static String escapeAmpersands(String stringWithAmp) {
-      if (isValid(stringWithAmp)) {
-         return stringWithAmp.replace("&", "&&");
-      } else {
-         return null;
-      }
+      return isValid(stringWithAmp) ? stringWithAmp.replace("&", "&&") : null;
    }
 
    public static String intern(String str) {
-      if (str == null) {
-         return null;
-      }
-      return str.intern();
+      return (str == null) ? null : str.intern();
    }
 
    /**

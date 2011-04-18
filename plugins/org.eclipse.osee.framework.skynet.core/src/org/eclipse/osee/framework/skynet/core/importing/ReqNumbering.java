@@ -11,29 +11,40 @@
 package org.eclipse.osee.framework.skynet.core.importing;
 
 /**
+ * Requirement Numbering
+ *
+ * @see ReqNumberingTest
  * @author Robert A. Fisher
  */
-public class ReqNumbering implements Comparable<ReqNumbering> {
-   private static final int ZERO_BASED_NUMBERING = 2;
-   private static final int ONE_BASED_NUMBERING = 1;
+public final class ReqNumbering implements Comparable<ReqNumbering> {
+   private static final int ZERO_BASED_NUMBERING = 0; // 1.0-1
+   private static final int ONE_BASED_NUMBERING = 1; // 1.1
 
-   private final String number;
+   private final boolean removeEndingZero;
+   private final String numberStr;
    private final String[] values;
 
+   //TODO: to implement support for i. ii. iii. or a. b. c.
+   //reimplement the comparators and the below.
+
+   public ReqNumbering(String number) {
+      this(number, true);
+   }
+
    /**
-    * Requirement Numbering
-    *
     * @note When a number with a separator - is used, i.e. 1.2-1. All - are replaced with . at construction.
     * @param number
     */
-   public ReqNumbering(String number) {
+   public ReqNumbering(String number, boolean removeEndingZero) {
       //When additional separators are used (- instead of .)
-      this.number = number.replace("-", ".");
-      values = tokenize();
+      this.numberStr = number.replace("-", ".");
+
+      this.removeEndingZero = removeEndingZero;
+      this.values = tokenize(removeEndingZero);
    }
 
    public String getNumberString() {
-      return number;
+      return numberStr;
    }
 
    /**
@@ -42,9 +53,11 @@ public class ReqNumbering implements Comparable<ReqNumbering> {
    public boolean isChild(ReqNumbering numbering) {
       String[] numberVals = numbering.values;
 
-      switch (numberVals.length - values.length) {
+      int delta = numberVals.length - values.length;
+
+      switch (delta % 2) {
          case ZERO_BASED_NUMBERING:
-            if (!numberVals[numberVals.length - 2].equals("0")) {
+            if (delta <= 0) {
                return false;
             }
             break;
@@ -54,19 +67,24 @@ public class ReqNumbering implements Comparable<ReqNumbering> {
             return false;
       }
 
-      for (int i = 0; i < values.length; i++) {
+      for (int i = 0; i < Math.min(values.length, numberVals.length); i++) {
          if (!values[i].equals(numberVals[i])) {
             return false;
          }
       }
+
       return true;
    }
 
    public String[] tokenize() {
-      String[] returnVal = number.split("\\.");
+      return tokenize(removeEndingZero);
+   }
 
-      // If the very last token is a 0, then chop it off
-      if (returnVal[returnVal.length - 1].equals("0")) {
+   public String[] tokenize(boolean chopOffZero) {
+      String[] returnVal = numberStr.split("\\.");
+
+      if (chopOffZero && returnVal[returnVal.length - 1].equals("0")) {
+         // If the very last token is a 0, then chop it off
          String[] temp = new String[returnVal.length - 1];
          System.arraycopy(returnVal, 0, temp, 0, temp.length);
          returnVal = temp;
@@ -99,7 +117,7 @@ public class ReqNumbering implements Comparable<ReqNumbering> {
 
    @Override
    public int hashCode() {
-      return number.hashCode();
+      return numberStr.hashCode();
    }
 
    private int getValue(int index) {
@@ -112,6 +130,6 @@ public class ReqNumbering implements Comparable<ReqNumbering> {
 
    @Override
    public String toString() {
-      return number;
+      return numberStr;
    }
 }

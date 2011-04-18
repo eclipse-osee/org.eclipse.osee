@@ -90,8 +90,8 @@ public final class ArtifactImportWizardTest {
 
       // copy imported paragraph over... because they will be matched on guid...
       Map<String, String> answerParagraphNumbers = new HashMap<String, String>();
-      answerParagraphNumbers.put("B", "3");
-      answerParagraphNumbers.put("D", "2");
+      answerParagraphNumbers.put("B", "3.0");
+      answerParagraphNumbers.put("D", "2.0");
 
       int numberOfDescendants = myRootArtifact.getDescendants().size();
 
@@ -102,12 +102,11 @@ public final class ArtifactImportWizardTest {
 
       //check if artifacts have correct attributes copied over
       for (Artifact artifact : afterArtifacts) {
-         String artifactName = artifact.getName();
          List<?> attributes = artifact.getAttributes(CoreAttributeTypes.ParagraphNumber);
          for (Object attribute : attributes) {
-            String paragraphNumberAnswer = answerParagraphNumbers.get(artifactName);
+            String paragraphNumberAnswer = answerParagraphNumbers.get(artifact.getName());
             if (paragraphNumberAnswer != null) {
-               Assert.assertTrue(String.format("Expected attribute: %s, on Artifact %s, wasn't copied. ",
+               Assert.assertTrue(String.format("Expected attribute: %s, on Artifact %s, was not copied. ",
                   CoreAttributeTypes.ParagraphNumber, artifact), paragraphNumberAnswer.equals(attribute.toString()));
             }
          }

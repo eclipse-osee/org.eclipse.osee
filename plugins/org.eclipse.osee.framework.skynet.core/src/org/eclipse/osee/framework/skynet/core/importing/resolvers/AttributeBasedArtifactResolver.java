@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.importing.resolvers;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -44,11 +44,8 @@ public class AttributeBasedArtifactResolver extends NewArtifactImportResolver {
 
       for (IAttributeType attributeType : nonChangingAttributes) {
          Collection<String> attributeValues = artifact.getAttributesToStringList(attributeType);
-         Collection<String> roughAttributes = roughAttributeSet.getAttributeValueList(attributeType);
-
-         if (roughAttributes == null) {
-            roughAttributes = Collections.emptyList();
-         }
+         Collection<String> roughAttributes =
+            roughAttributeSet.getAttributeValueList(attributeType, new ArrayList<String>());
 
          if (attributeValues.size() == roughAttributes.size()) {
             for (String attributeValue : attributeValues) {
@@ -81,7 +78,10 @@ public class AttributeBasedArtifactResolver extends NewArtifactImportResolver {
          List<Artifact> descendants = root.getDescendants();
          Collection<Artifact> candidates = new LinkedList<Artifact>();
 
-         for (Artifact artifact : descendants) {
+         System.out.println(String.format("Resolved using: %s",
+            !descendants.isEmpty() ? "root node." : "realParent descendants."));
+
+         for (Artifact artifact : !descendants.isEmpty() ? descendants : realParent.getDescendants()) {
             if (attributeValuesMatch(roughArtifact, artifact)) {
                candidates.add(artifact);
             }

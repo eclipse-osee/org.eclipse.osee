@@ -29,8 +29,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
- * Test: @link RoughArtifactTest
- * 
+ * @see RoughArtifactTest
  * @author Robert A. Fisher
  * @author Ryan D. Brooks
  */
@@ -44,8 +43,12 @@ public class RoughArtifact {
    private final Collection<RoughArtifact> children;
    private IArtifactType primaryArtifactType;
 
-   public RoughArtifact(RoughArtifactKind roughArtifactKind) {
+   public RoughArtifact(RoughArtifactKind roughArtifactKind, String name) {
+      this(roughArtifactKind);
+      addAttribute("Name", name);
+   }
 
+   public RoughArtifact(RoughArtifactKind roughArtifactKind) {
       this.attributes = new RoughAttributeSet();
       this.children = new ArrayList<RoughArtifact>();
       this.roughArtifactKind = roughArtifactKind;
@@ -59,11 +62,6 @@ public class RoughArtifact {
       number = null;
       roughParent = null;
       primaryArtifactType = null;
-   }
-
-   public RoughArtifact(RoughArtifactKind roughArtifactKind, String name) {
-      this(roughArtifactKind);
-      addAttribute("Name", name);
    }
 
    public Set<String> getAttributeTypeNames() {
@@ -170,6 +168,16 @@ public class RoughArtifact {
 
    public Collection<RoughArtifact> getChildren() {
       return children;
+   }
+
+   public Collection<RoughArtifact> getDescendants() {
+      Collection<RoughArtifact> decendants = new ArrayList<RoughArtifact>();
+      for (RoughArtifact child : getChildren()) {
+         if (equals(child.roughParent)) {
+            decendants.add(child);
+         }
+      }
+      return decendants;
    }
 
    public void setGuid(String guid) {

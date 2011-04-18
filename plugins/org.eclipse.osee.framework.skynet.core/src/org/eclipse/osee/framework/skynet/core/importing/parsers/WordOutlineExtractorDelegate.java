@@ -34,8 +34,7 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 
 /**
- * Test: @link WordOutlineTest
- * 
+ * @see WordOutlineTest
  * @author Karol M. Wilk
  */
 public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate {
@@ -44,7 +43,7 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
    private static final Pattern WT_ELEMENT_REGEX = Pattern.compile("<w:t>(.*?)</w:t>");
    // Node: <wx:t wx:val="1.1.1 "/>
    private static final Pattern LIST_ITEM_REGEX = Pattern.compile("<wx:t wx:val=\"([0-9.]+\\s*)\".*/>");
-   private static final Pattern OUTLINE_NUMBER = Pattern.compile("((?>\\d+\\.)+\\d*)\\s*");
+   private static final Pattern OUTLINE_NUMBER_REGEX = Pattern.compile("((?>\\d+\\.)+\\d*(?>-\\d+)*)\\s*");
 
    // This assumes that the user uses a generated Table of Contents from Word and does not come up with
    // his/hers own version of of a style can call it "TOC\d+"
@@ -53,7 +52,7 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
    private boolean possibleTableOfContents;
 
    private static String detectedTableOfContentsReportError =
-      "Table of Contents found in document. Please remove per the spec on: \n http://wiki.eclipse.org/OSEE/HowTo/ImportArtifactsFromWordML";
+      "Table of Contents found in document. Please remove per the spec on: \n http://wiki.eclipse.org/OSEE/HowTo/ImportArtifacts";
 
    public enum ContentType {
       CONTENT,
@@ -102,7 +101,6 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
    }
 
    public WordOutlineExtractorDelegate(IConflictResolvingGui gui) {
-      super();
       conflictResolvingGui = gui;
    }
 
@@ -137,7 +135,7 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
    }
 
    /**
-    * Sublcasses may extend this method to dispose resources.
+    * Subclasses may extend this method to dispose resources.
     */
    @Override
    public void dispose() {
@@ -189,7 +187,7 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
    }
 
    /**
-    * Given content (a <w:p> paragraph), fill outlineContent with extracted content information from
+    * Given content a <w:p> paragraph, fill outlineContent with extracted content information from
     * grabNameAndTemplateContent()
     * 
     * @param content a <w:p> paragraph.
@@ -197,15 +195,14 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
     * @return if found any new content or not...
     */
    private boolean processContentOfParagraph(String content, StringBuilder outlineContent) {
-      outlineContent = new StringBuilder(300); //average content is larger than 16 chars
+      outlineContent = new StringBuilder(content.length());
       grabNameAndTemplateContent(content, outlineContent);
 
-      boolean newOutlineContent = false;
-      newOutlineContent = outlineContent.length() != 0;
+      boolean newOutlineContent = outlineContent.length() != 0;
 
       if (newOutlineContent) {
-         resetLastContent();
-         setLastContent(outlineContent.toString());
+         lastContent.setLength(0);
+         lastContent.append(outlineContent.toString());
       }
 
       return newOutlineContent;
@@ -229,13 +226,13 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
 
       boolean outlineNumberDetected = outlineNumber.length() != 0;
       if (outlineNumberDetected) {
-         resetLastHeaderNumber();
+         lastHeaderNumber.setLength(0);
          setLastHeaderNumber(outlineNumber.toString());
          grabNameAndTemplateContent(content, outlineName);
 
          if (outlineName.length() != 0) {
-            resetLastHeaderName();
-            setLastHeaderName(outlineName.toString());
+            lastHeaderName.setLength(0);
+            lastHeaderName.append(outlineName.toString());
          }
       }
       return outlineNumberDetected;
@@ -248,7 +245,7 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
       if (outLineStorage.length() == 0) {
          Matcher wtElementMatcher = WT_ELEMENT_REGEX.matcher(paragraph);
          while (wtElementMatcher.find()) {
-            Matcher checkingForOutlineNumber = OUTLINE_NUMBER.matcher(wtElementMatcher.group(1));
+            Matcher checkingForOutlineNumber = OUTLINE_NUMBER_REGEX.matcher(wtElementMatcher.group(1));
             if (!checkingForOutlineNumber.matches()) {
                outLineStorage.append(wtElementMatcher.group(1));
             }
@@ -257,8 +254,10 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
    }
 
    /**
-    * Specializes in extraction of "1. scope" type of outline number and names. Outline name can also be spread out over
-    * multiple <w:t>s
+    * Specializes in extraction of "1.0 scope" type of outline number and names. Outline name can also be spread out
+    * over multiple {@code <w:t> } elements.<br/>
+    *
+    * @note Paragraph numbering must be zero based. "1.0 SCOPE" instead of "1. SCOPE"
     */
    private void specializedOutlineNumberTitleExtract(String paragraph, StringBuilder outlineNumberStorage, StringBuilder outlineTitleStorage) throws OseeCoreException {
       StringBuilder wtStorage = new StringBuilder(paragraph.length());
@@ -269,11 +268,11 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
 
       int indexOfFirstSpace = wtStorage.toString().indexOf(" ");
       if (indexOfFirstSpace != -1) {
-         CharSequence title = wtStorage.subSequence(0, indexOfFirstSpace);
-         Matcher outlineNumberMatcher = OUTLINE_NUMBER.matcher(title);
-         if (outlineNumberMatcher.matches()) {
+         CharSequence paragraphNumber = wtStorage.subSequence(0, indexOfFirstSpace);
+         Matcher outlineNumberMatcher = OUTLINE_NUMBER_REGEX.matcher(paragraphNumber);
+         if (outlineNumberMatcher.matches() && paragraphNumber.length() > 2) { //length check excludes 1. non-zero based paragraph numbers.
             processSpecializedOutlineNumberAndTitle(outlineNumberMatcher.group(),
-               (String) wtStorage.subSequence(indexOfFirstSpace, wtStorage.length()), outlineNumberStorage,
+               wtStorage.subSequence(indexOfFirstSpace, wtStorage.length()).toString(), outlineNumberStorage,
                outlineTitleStorage);
          } else {
             outlineTitleStorage = wtStorage;
@@ -376,32 +375,11 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
       return getBufferString(lastHeaderName);
    }
 
-   private void setLastHeaderName(String headerName) {
-      lastHeaderName.append(headerName);
-   }
-
    public String getLastContent() {
       return getBufferString(lastContent);
-   }
-
-   private void setLastContent(String content) {
-      lastContent.append(content);
    }
 
    private String getBufferString(StringBuffer builder) {
       return builder != null ? builder.toString() : null;
    }
-
-   private void resetLastHeaderNumber() {
-      lastHeaderNumber.setLength(0);
-   }
-
-   private void resetLastHeaderName() {
-      lastHeaderName.setLength(0);
-   }
-
-   private void resetLastContent() {
-      lastContent.setLength(0);
-   }
-
 }

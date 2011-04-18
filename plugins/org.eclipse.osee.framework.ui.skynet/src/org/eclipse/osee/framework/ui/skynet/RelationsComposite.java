@@ -12,6 +12,7 @@
 package org.eclipse.osee.framework.ui.skynet;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -45,6 +46,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSideSorter;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.accessProviders.RelationTypeAccessProvider;
 import org.eclipse.osee.framework.ui.skynet.RelationOrderContributionItem.SelectionListener;
+import org.eclipse.osee.framework.ui.skynet.accessProviders.RelationTypeAccessProvider;
 import org.eclipse.osee.framework.ui.skynet.action.RevealInExplorerAction;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.relation.explorer.RelationExplorerWindow;
@@ -500,11 +502,6 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
       });
    }
 
-   @Override
-   public void dispose() {
-      super.dispose();
-   }
-
    private void expandAll(IStructuredSelection selection) {
       Iterator<?> iter = selection.iterator();
       while (iter.hasNext()) {
@@ -772,7 +769,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
          RelationTypeAccessProvider relationTypeAccessProvider = new RelationTypeAccessProvider();
          hasPermission =
             relationTypeAccessProvider.relationTypeHasPermission(
-               SkynetGuiPlugin.getInstance().getPolicyHandlerService(), Collections.asCollection(relationTypeSide));
+               SkynetGuiPlugin.getInstance().getPolicyHandlerService(), Arrays.asList(relationTypeSide));
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }

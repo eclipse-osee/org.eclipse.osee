@@ -22,8 +22,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 
 /**
- * Test: @link ExcelXmlWriterTest
- * 
+ * @see ExcelXmlWriterTest
  * @author Ryan D. Brooks
  * @author Karol M. Wilk
  */

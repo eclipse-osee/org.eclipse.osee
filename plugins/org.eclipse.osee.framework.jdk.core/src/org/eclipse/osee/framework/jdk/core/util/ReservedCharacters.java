@@ -140,12 +140,12 @@ public final class ReservedCharacters {
    }
 
    public static Character toCharacter(String entity) {
-      Character toReturn = null;
+      Character character = null;
       if (Strings.isValid(entity)) {
          entity = entity.trim();
-         toReturn = reservedCharacters.get(entity);
+         character = reservedCharacters.get(entity);
       }
-      return toReturn;
+      return character;
    }
 
    public static Collection<Character> getChars() {

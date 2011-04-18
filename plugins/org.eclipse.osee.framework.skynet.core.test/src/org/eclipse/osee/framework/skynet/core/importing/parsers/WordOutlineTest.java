@@ -17,7 +17,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.ReservedCharacters;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -54,50 +53,28 @@ public final class WordOutlineTest {
       this.expectedData = expectedData;
    }
 
-   //@formatter:off
    /**
-	 * Note: some of the data objects need to repeat data
-	 * from previous test because they are considered to
-	 * be lastHeaderNumber or lastHeaderName or lastContent
-	 * 
-	 * @return collection of data sets used as input for parameterized unit test
-	 */
+    * Note: some of the data objects need to repeat data from previous test because they are considered to be
+    * lastHeaderNumber or lastHeaderName or lastContent
+    *
+    * @return collection of data sets used as input for parameterized unit test
+    */
    @Parameters
    public static Collection<Object[]> getData() {
       List<Object[]> data = new ArrayList<Object[]>();
-      addTest(data, OUTLINE_WITH_NUMBER, data("1.", "Outline TITLE", ""));
-      addTest(data, OUTLINE_WITH_NUMBER_AND_CONTENT, data("5.", "SCOPE", ""), data("5.", "SCOPE", "content content content more content"));
-      
+      addTest(data, OUTLINE_WITH_NUMBER, data("1.0", "Outline TITLE", ""));
+      addTest(data, OUTLINE_WITH_NUMBER_AND_CONTENT, data("5.0", "SCOPE", ""),
+         data("5.0", "SCOPE", "content content content more content"));
+
       StringBuilder builder = new StringBuilder();
       builder.append("This 1.6 is some interesting content 2.3SAMPL");
       builder.append(ReservedCharacters.toCharacter("&acirc;"));
       builder.append(ReservedCharacters.toCharacter("&euro;"));
       builder.append(ReservedCharacters.toCharacter("&ldquo;"));
       builder.append("10.");
-      
-      addTest(data, NUMBER_EMBED_IN_CONTENT, data("1.", "SCOPE", ""), data("1.", "SCOPE", builder.toString()));
+
+      addTest(data, NUMBER_EMBED_IN_CONTENT, data("1.0", "SCOPE", ""), data("1.0", "SCOPE", builder.toString()));
       return data;
-   }
-   //@formatter:on
-
-   private static void addTest(List<Object[]> data, String dataFileName, DelegateData... expectedData) {
-      data.add(new Object[] {dataFileName, expectedData});
-   }
-
-   private static DelegateData data(String headerNumber, String headerName, String content) {
-      return new DelegateData(headerNumber, headerName, content);
-   }
-
-   private static String getResourceData(String name) throws IOException {
-      InputStream inputStream = null;
-      try {
-         inputStream = WordOutlineTest.class.getResourceAsStream(name);
-         String data = Lib.inputStreamToString(inputStream);
-         Assert.assertTrue(Strings.isValid(data));
-         return data;
-      } finally {
-         Lib.close(inputStream);
-      }
    }
 
    @Test
@@ -146,13 +123,33 @@ public final class WordOutlineTest {
       Assert.assertNull(delegate.getLastContent());
    }
 
+   private static void addTest(List<Object[]> data, String dataFileName, DelegateData... expectedData) {
+      data.add(new Object[] {dataFileName, expectedData});
+   }
+
+   private static DelegateData data(String headerNumber, String headerName, String content) {
+      return new DelegateData(headerNumber, headerName, content);
+   }
+
+   private static String getResourceData(String name) throws IOException {
+      InputStream inputStream = null;
+      String data;
+      try {
+         inputStream = WordOutlineTest.class.getResourceAsStream(name);
+         data = Lib.inputStreamToString(inputStream);
+         Assert.assertTrue(Strings.isValid(data));
+      } finally {
+         Lib.close(inputStream);
+      }
+      return data;
+   }
+
    private static final class DelegateData {
       private final String headerNumber;
       private final String headerName;
       private final String content;
 
       public DelegateData(String headerNumber, String headerName, String content) {
-         super();
          this.headerNumber = headerNumber;
          this.headerName = headerName;
          this.content = content;

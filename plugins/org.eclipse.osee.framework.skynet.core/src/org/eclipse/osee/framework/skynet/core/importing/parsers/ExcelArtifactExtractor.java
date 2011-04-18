@@ -46,6 +46,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
 public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
 
    private static final Pattern guidPattern = Pattern.compile("(\\d*);(.*)");
+   private static final Pattern paragraphNumberPattern = Pattern.compile("\\d{1}+");
 
    @Override
    public String getDescription() {
@@ -201,7 +202,10 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
                   if (Strings.isValid(rowValue)) {
                      switch (rowType) {
                         case PARAGRAPH_NO:
-                           roughArtifact.setSectionNumber(row[rowIndex]);
+                           if (paragraphNumberPattern.matcher(rowValue).matches()) {
+                              rowValue = String.format("%s.0", rowValue); //forcing \\d.0 format
+                           }
+                           roughArtifact.setSectionNumber(rowValue);
                            roughArtifact.addAttribute(CoreAttributeTypes.ParagraphNumber, rowValue);
                            break;
                         case ARTIFACT_NAME:
@@ -250,7 +254,5 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
       public void reachedEndOfWorksheet() {
          // do nothing
       }
-
    }
-
 }

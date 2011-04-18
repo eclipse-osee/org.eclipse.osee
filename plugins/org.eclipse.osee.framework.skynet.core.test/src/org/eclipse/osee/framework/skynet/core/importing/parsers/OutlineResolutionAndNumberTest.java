@@ -14,16 +14,16 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
+ * Asserting true in general means GUI should be called for user to make decision; false - opposite
+ *
  * @author Karol M. Wilk
  */
 public final class OutlineResolutionAndNumberTest {
 
+   //TODO: change to parameterized type test
+
    private static final String LAST_OUTLINE_NUMBER = "3.1.1.2.1.7"; /* realistic outline number */
    private final OutlineResolution outlineResolution = new OutlineResolution();
-
-   /**
-    * ! Asserting true in general means GUI should be called for user to make decision; false - opposite
-    */
 
    @Test
    public void testLowerOutlineNumbers() {
@@ -36,6 +36,7 @@ public final class OutlineResolutionAndNumberTest {
       Assert.assertTrue(outlineResolution.isInvalidOutlineNumber("2.10", LAST_OUTLINE_NUMBER));
       Assert.assertTrue(outlineResolution.isInvalidOutlineNumber("2.1", LAST_OUTLINE_NUMBER));
       Assert.assertTrue(outlineResolution.isInvalidOutlineNumber("1.8", LAST_OUTLINE_NUMBER));
+      Assert.assertTrue(outlineResolution.isInvalidOutlineNumber("0.15", LAST_OUTLINE_NUMBER));
    }
 
    @Test
@@ -49,14 +50,16 @@ public final class OutlineResolutionAndNumberTest {
    }
 
    @Test
+   public void testZeroBasedOutlineNumbers() {
+      Assert.assertFalse(outlineResolution.isInvalidOutlineNumber("3.2.1.0.1", "3.2.1"));
+      Assert.assertTrue(outlineResolution.isInvalidOutlineNumber("3.2.0.0.1", "3.2.1"));
+   }
+
+   @Test
    public void testRandomOutlineNumbers() {
       Assert.assertTrue(outlineResolution.isInvalidOutlineNumber("6.5", LAST_OUTLINE_NUMBER));
       Assert.assertTrue(outlineResolution.isInvalidOutlineNumber("0.25", LAST_OUTLINE_NUMBER));
       Assert.assertTrue(outlineResolution.isInvalidOutlineNumber("10.48", LAST_OUTLINE_NUMBER));
-      Assert.assertTrue(outlineResolution.isInvalidOutlineNumber("-5.6", LAST_OUTLINE_NUMBER));
-      Assert.assertTrue(outlineResolution.isInvalidOutlineNumber("34.fin3bbtb34fm34", LAST_OUTLINE_NUMBER));
-      Assert.assertFalse(outlineResolution.isInvalidOutlineNumber("", ""));
-      Assert.assertFalse(outlineResolution.isInvalidOutlineNumber(null, null));
       Assert.assertTrue(outlineResolution.isInvalidOutlineNumber("200.12.3", LAST_OUTLINE_NUMBER));
       Assert.assertFalse(outlineResolution.isInvalidOutlineNumber("4.0", "3.1"));
       Assert.assertFalse(outlineResolution.isInvalidOutlineNumber("2.1.1.1.2", "2.1.1.1.1"));
@@ -66,7 +69,5 @@ public final class OutlineResolutionAndNumberTest {
       Assert.assertFalse(outlineResolution.isInvalidOutlineNumber("2.2", "2.1.1.1.1"));
       Assert.assertFalse(outlineResolution.isInvalidOutlineNumber("2.1.2", "2.1.1.1.1"));
       Assert.assertTrue(outlineResolution.isInvalidOutlineNumber("3.2", "2.1.1.1.1"));
-      Assert.assertTrue(outlineResolution.isInvalidOutlineNumber("b", "c"));
    }
-
 }

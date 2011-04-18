@@ -10,13 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.importing.operations;
 
-import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Default_Hierarchical__Parent;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.type.RelationType;
@@ -78,7 +78,7 @@ public class RoughToRealArtifactOperation extends AbstractOperation {
          monitor.worked(unitOfWork);
       }
 
-      if (deleteUnmatchedArtifacts && !unmatchedArtifacts.isEmpty()) {
+      if (deleteUnmatchedArtifacts) {
          for (Artifact toDelete : unmatchedArtifacts) {
             toDelete.deleteAndPersist(transaction);
          }
@@ -94,7 +94,7 @@ public class RoughToRealArtifactOperation extends AbstractOperation {
       realArtifact = artifactResolver.resolve(roughArtifact, transaction.getBranch(), realParent, destinationArtifact);
       unmatchedArtifacts.remove(realArtifact);
 
-      for (RoughArtifact childRoughArtifact : roughArtifact.getChildren()) {
+      for (RoughArtifact childRoughArtifact : roughArtifact.getDescendants()) {
          Artifact childArtifact = createArtifact(monitor, childRoughArtifact, realArtifact);
          if (areValid(realArtifact, childArtifact)) {
             removeOtherParent(childArtifact, realArtifact);
@@ -112,7 +112,7 @@ public class RoughToRealArtifactOperation extends AbstractOperation {
 
    private void removeOtherParent(Artifact child, Artifact parent) throws OseeCoreException {
       if (hasDifferentParent(child, parent)) {
-         child.deleteRelations(Default_Hierarchical__Parent);
+         child.deleteRelations(CoreRelationTypes.Default_Hierarchical__Parent);
          child.persist(transaction);
       }
    }
