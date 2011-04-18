@@ -26,14 +26,14 @@ public class Strings {
    }
 
    /**
-    * Don't remove this function without coordinating the change with the OTE source code.
+    * OTE pre-compile dependency. Left for binary compatibility for 0.9.8
     */
    public static boolean isValid(String value) {
       return value != null && value.length() > 0;
    }
 
-   public static boolean isValid(String... values) {
-      for (String value : values) {
+   public static boolean isValid(CharSequence... values) {
+      for (CharSequence value : values) {
          if (value == null || value.length() == 0) {
             return false;
          }
@@ -41,17 +41,13 @@ public class Strings {
       return true;
    }
 
-   public static boolean isValid(CharSequence value) {
-      return value != null && value.length() > 0;
-   }
-
    public static String emptyString() {
       return EMPTY_STRING;
    }
 
    /**
-    * This method adjusts '&'-containing strings to break the keyboard shortcut ("Accelerator") feature some widgets
-    * offer, where &Test will make Alt+T a shortcut. This method breaks the accelerator by escaping ampersands.
+    * Adjusts '&'-containing strings to break the keyboard shortcut ("Accelerator") feature some widgets offer, where
+    * &Test will make Alt+T a shortcut. This method breaks the accelerator by escaping ampersands.
     * 
     * @return a string with doubled ampersands.
     */
@@ -109,17 +105,20 @@ public class Strings {
    }
 
    /**
+    * Provides a nicer list of items with an 'and' at the end. This could be done using iterator().
+    * 
+    * @param items Lists of form { apple, banana, orange } or { apple, banana }
     * @return string of form "apple, banana and orange" or "apple and banana" depending on size of list
     */
-   public static String buildItemizedStatment(List<?> items) {
+   public static String buildStatment(List<?> items) {
       StringBuilder niceList = new StringBuilder();
       if (items.size() >= 2) {
          int andIndex = items.size() - 2;
-         for (int branchIndex = 0; branchIndex < items.size(); branchIndex++) {
-            niceList.append(items.get(branchIndex));
-            if (branchIndex == andIndex) {
+         for (int itemIndex = 0; itemIndex < items.size(); itemIndex++) {
+            niceList.append(items.get(itemIndex));
+            if (itemIndex == andIndex) {
                niceList.append(" and ");
-            } else if (branchIndex < andIndex) {
+            } else if (itemIndex < andIndex) {
                niceList.append(", ");
             }
          }

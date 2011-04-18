@@ -77,7 +77,7 @@ public abstract class GeneralBranchHandler extends CommandHandler {
    private String buildDialogMessage(List<Branch> selectedBranches, String actionDesc) {
       StringBuilder branchesStatement = new StringBuilder();
       branchesStatement.append(String.format("Are you sure you want to %s branch(es): ", actionDesc));
-      branchesStatement.append(Strings.buildItemizedStatment(selectedBranches));
+      branchesStatement.append(Strings.buildStatment(selectedBranches));
       branchesStatement.append(" \u003F");
       return branchesStatement.toString();
    }
